@@ -1,0 +1,116 @@
+#################################
+###Tolkien addon language file###
+#################################
+#Chat formatting is done here 
+#All other formatting is internal
+#################################
+
+//###################################Blocks###################################//
+tile.xRayBlock.name=Distortion Flame
+tile.sunDial.name=Sun Dial
+tile.weatherController.name=Weather Controller
+tile.draconiumOre.name=Draconium Ore
+tile.grinder.name=Mob Grinder
+tile.potentiometer.name=Potentiometer
+tile.rainSensor.name=Rain Sensor
+tile.particleGenerator.name=Particle Generator
+tile.playerDetector.name=Player Detector
+
+msg.range.txt=Range:
+
+//###################################Item names###################################//
+item.draconicCompound.name=Draconic Compound
+item.draconiumIngot.name=Draconium Ingot
+item.draconiumDust.name=Draconium Dust
+item.draconiumBlend.name=Draconium Blend
+item.dragonHeart.name=Dragon Heart
+item.infusedCompound.name=Infused Compound
+item.sunFocus.name=Solar Focus 
+item.tclogo.name=TCLogo 
+item.draconicCore.name=Draconic Core 
+item.reader.name=WIP 
+item.wyvernChestPlate.name=WIP 
+
+//###################################Item Groups###################################//
+itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
+itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
+
+//###################################Tool modes###################################//
+msg.size0.txt=Tool Mode: Single Block
+msg.size1.txt=Tool Mode: 3x3
+msg.size2.txt=Tool Mode: 5x5
+msg.size3.txt=Tool Mode: 7x7
+msg.size4.txt=Tool Mode: 9x9
+msg.oblittrue.txt=§aObliteration Mode: §4Active
+msg.oblitfalse.txt=§aObliteration Mode: §2Inactive
+msg.bowmoderapidfire.txt=§aFire Mode: §4Rapid Fire
+msg.bowmodesharpshooter.txt=§aFire Mode: §4Sharp Shooter
+msg.bowmodeexplosive.txt=§aFire Mode: §4Explosive
+msg.bowmodedevistation.txt=§aFire Mode: §4Devastation!!! §2(Creative Only)
+msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
+
+//###################################Teleporter###################################//
+item.teleporterMKI.name=Charm of Dislocation
+item.teleporterMKII.name=Enhanced Charm of Dislocation
+msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
+msg.teleporterBound.txt=§aTeleporter bound to:
+msg.teleporterLowHealth.txt= §cYou are to low on health!
+msg.teleporterSentMob.txt=The mob has been sent to 
+msg.teleporterEntityDimensional.txt=§cYou can not send mobs across dimensions!
+msg.teleporterAlreadySet.txt=§cError this charm can only be bound to one location
+msg.teleporterOutOfFuel.txt=§cOUT OF FUEL!!!
+msg.teleporterOutOfPearls.txt=§cOut of Ender Pearls!!!
+
+info.teleporterInfUnset1.txt=Unbound
+info.teleporterInfUnset2.txt=Shift right click to bind your current
+info.teleporterInfUnset3.txt=x, y, z coordinates
+info.teleporterInfUnset4.txt=As well as the direction you are facing
+info.teleporterInfUnset5.txt=And the dimension you are currently in
+info.teleporterInfDest.txt=Destination
+info.teleporterInfFuel.txt=Fuel:
+
+info.teleporterInfSet1.txt=Bound to
+info.teleporterInfSet2.txt=Uses remaining
+
+
+//###################################Wyvern###################################//
+item.wyvernPickaxe.name=Pickaxe of the Wyvern
+
+
+item.wyvernShovel.name=Shovel of the Wyvern
+
+
+item.wyvernSword.name=Sword of the Wyvern
+
+
+item.wyvernBow.name=Bow of the Wyvern
+
+
+info.wyvernLaw1.txt=Weary of plain tools you begin to understand
+info.wyvernLaw2.txt=ways to use Draconic energy to upgrade
+//###################################Draconic###################################//
+item.draconicPickaxe.name=Draconic Pickaxe
+
+
+item.draconicAxe.name=Draconic Axe
+
+
+item.draconicShovel.name=Draconic Shovel
+
+
+item.draconicHoe.name=Draconic Hoe
+
+
+item.draconicSword.name=Draconic Sword
+
+
+item.draconicBow.name=Draconic Bow
+
+
+item.draconicDistructionStaff.name=Draconic Staff of Power
+
+
+info.draconicLaw1.txt=Further Draconic research has allowed
+info.draconicLaw2.txt=you to unlock even better methods
+
+info.draconicAxe1.txt=Timber!!!!!!

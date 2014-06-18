@@ -1,0 +1,144 @@
+package draconicevolution.common.blocks;
+
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import draconicevolution.common.DraconicEvolution;
+import draconicevolution.common.lib.References;
+import draconicevolution.common.lib.Strings;
+import draconicevolution.common.tileentities.TilePlayerDetector;
+
+public class PlayerDetector extends TolkienBlock
+{
+	IIcon side_inactive;
+	IIcon side_active;
+	IIcon top;
+	IIcon bottom;
+
+	protected PlayerDetector() {
+		this.setBlockName(Strings.playerDetectorName);
+		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setStepSound(soundTypeStone);
+		this.setHardness(1f);
+		this.setResistance(200.0f);
+		ModBlocks.register(this);
+	}
+	
+	@Override
+	public void registerBlockIcons(IIconRegister iconRegister)
+	{
+		side_inactive = iconRegister.registerIcon(References.RESOURCESPREFIX + "player_detector_side_inactive");
+		side_active = iconRegister.registerIcon(References.RESOURCESPREFIX + "player_detector_side_active");
+		top = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_top_0");
+		bottom  = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
+	}
+	
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+	{
+		IIcon side_icon;
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if (tile != null && tile instanceof TilePlayerDetector && ((TilePlayerDetector)tile).output)
+			side_icon = side_active;
+		else
+			side_icon = side_inactive;
+
+		if (side == 0)
+			return bottom;
+		else if (side == 1)
+			return top;
+		else
+			return side_icon;	
+	}
+
+	@Override
+	public IIcon getIcon(int side, int meta)
+	{
+		if (side == 0)
+			return bottom;
+		else if (side == 1)
+			return top;
+		else
+			return side_active;
+	}
+	
+	
+	@Override
+	public boolean hasTileEntity(int meta)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, int metadata)
+	{
+		return new TilePlayerDetector();
+	}
+
+	@Override
+	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canProvidePower()
+	{
+		return true;
+	}
+	
+	@Override
+	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		TilePlayerDetector detector = (te != null && te instanceof TilePlayerDetector) ? (TilePlayerDetector) te : null;
+		if(detector != null)
+			return detector.output ? 15 : 0;
+		else
+			return 0;
+	}
+	
+	@Override
+	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		TilePlayerDetector detector = (te != null && te instanceof TilePlayerDetector) ? (TilePlayerDetector) te : null;
+		if(detector != null)
+			return detector.output ? 15 : 0;
+		else
+			return 0;
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		TilePlayerDetector detector = (te != null && te instanceof TilePlayerDetector) ? (TilePlayerDetector) te : null;
+		if(detector != null)
+		{
+			int range = detector.getRange();
+			
+			if(player.isSneaking())
+			{
+				range--;
+			}else
+			{
+				range++;
+			}
+			
+			if (range > 10)
+				range = 1;
+			if (range < 1)
+				range = 10;
+			detector.setRange(range);
+			
+			if (world.isRemote)
+				player.addChatMessage(new ChatComponentTranslation("msg.range.txt").appendSibling(new ChatComponentText(" " + range)));
+		}
+		return true;
+	}
+}

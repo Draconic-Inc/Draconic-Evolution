@@ -1,0 +1,45 @@
+package draconicevolution.common.lib;
+
+public class Strings {//                                              public static Block name
+	public static final String blockWeatherControllerName = "weatherController";
+	public static final String tclogoName = "tclogo";
+	public static final String xrayBlockName = "xRayBlock";
+	public static final String blockSunDialName = "sunDial";
+	public static final String sunFocusName = "sunFocus";
+	public static final String draconicCoreName = "draconicCore";
+	public static final String draconicPickaxeName = "draconicPickaxe";
+	public static final String draconicSwordName = "draconicSword";
+	public static final String infusedCompoundName = "infusedCompound";
+	public static final String rawDraconicPickHeadName = "rawDraconicPickHead";
+	public static final String rawDraconicSwordBladeName = "rawDraconicSwordBlade";
+	public static final String draconicSwordBladeName = "draconicSwordBlade";
+	public static final String draconicPickHeadName = "draconicPickHead";
+	public static final String draconiumOreEndName = "draconiumOreEnd";
+	public static final String draconiumOreNetherName = "draconiumOreNether";
+	public static final String draconiumDustName = "draconiumDust";
+	public static final String draconiumIngotName = "draconiumIngot";
+	public static final String draconiumBlendName = "draconiumBlend";
+	public static final String dragonHeartName = "dragonHeart";
+	public static final String draconicShovelName = "draconicShovel";
+	public static final String wyvernShovelName = "wyvernShovel";
+	public static final String wyvernPickaxeName = "wyvernPickaxe";
+	public static final String draconicDStaffName = "draconicDistructionStaff";
+	public static final String draconicCompoundName = "draconicCompound";
+	public static final String wyvernSwordName = "wyvernSword";
+	public static final String testFurnaceName = "testFurnace";
+	public static final String wyvernBowName = "wyvernBow";
+	public static final String draconicBowName = "draconicBow";
+	public static final String wyvernChestPlateName = "wyvernChestPlate";
+	public static final String draconiumOreName = "draconiumOre";
+	public static final String teleporterMKIName = "teleporterMKI";
+	public static final String draconicHoeName = "draconicHoe";
+	public static final String draconicAxeName = "draconicAxe";
+	public static final String teleporterMKIIName = "teleporterMKII";
+	public static final String grinderName = "grinder";
+	public static final String potentiometerName = "potentiometer";
+	public static final String rainSensorName = "rainSensor";
+	public static final String readerName = "reader";
+	public static final String particleGeneratorName = "particleGenerator";
+	public static final String playerDetectorName = "playerDetector";
+	public static final String playerDetectorAdvancedName = "playerDetectorAdvanced";
+}
