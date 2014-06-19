@@ -20,6 +20,7 @@ import draconicevolution.common.core.network.PlayerDetectorButtonPacket;
 import draconicevolution.common.core.network.PlayerDetectorStringPacket;
 import draconicevolution.common.lib.References;
 import draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import sun.misc.MessageUtils;
 
 @SideOnly(Side.CLIENT)
 public class GUIPlayerDetector extends GuiContainer
@@ -39,6 +40,7 @@ public class GUIPlayerDetector extends GuiContainer
 	private String[] names = new String[42];
 	private GuiTextField selectedNameText;
 	private int selected = -1;
+    private boolean outputInverted = false;
 
 	public GUIPlayerDetector(InventoryPlayer invPlayer, TilePlayerDetectorAdvanced detector) {
 		super(detector.getGuiContainer(invPlayer));
@@ -93,8 +95,9 @@ public class GUIPlayerDetector extends GuiContainer
 			int centre = width / 2;
 			buttonList.add(new GuiButton(0, centre - 20 - 20, guiTop + 20, 20, 20, "+"));
 			buttonList.add(new GuiButton(1, centre + 20, guiTop + 20, 20, 20, "-"));
-			buttonList.add(new GuiButton(3, centre - 40, guiTop + 60, 60, 20, wt));
-			buttonList.add(new GuiButton(4, centre + 20, guiTop + 60, 20, 20, "!"));
+			buttonList.add(new GuiButton(3, centre - 40, guiTop + 45, 60, 20, wt));
+			buttonList.add(new GuiButton(4, centre + 20, guiTop + 45, 20, 20, "!"));
+            buttonList.add(new GuiButton(6, centre - 40, guiTop + 70, 80, 20, "Invert Output"));
 		} else
 		{
 			buttonList.add(new GuiButton(5, guiLeft - 40, guiTop + ySize - 20, 40, 20, "Back"));
@@ -109,7 +112,8 @@ public class GUIPlayerDetector extends GuiContainer
 
 		//ID
 		//buttonList.add(new GuiButton(0, guiLeft + 85, guiTop , 85, 20, "sgASGgs"));
-		syncWithServer();
+
+		//syncWithServer();
 	}
 
 	@Override
@@ -142,6 +146,12 @@ public class GUIPlayerDetector extends GuiContainer
 				((ContainerPlayerDetector) this.inventorySlots).updateContainerSlots();
 				initScedualed = true;
 			break;
+            case 6: //Back -
+                outputInverted = !outputInverted;
+                initScedualed = true;
+                byte val2 = (byte) (outputInverted ? 1 : 0);
+                DraconicEvolution.channelHandler.sendToServer(new PlayerDetectorButtonPacket((byte)2, val2));
+                break;
 		}
 
 		//DraconicEvolution.channelHandler.sendToServer(new ButtonPacket((byte) 0, true));
@@ -209,7 +219,7 @@ public class GUIPlayerDetector extends GuiContainer
 
 	@Override
 	protected void mouseClicked(int x, int y, int par3)
-	{
+    {
 		super.mouseClicked(x, y, par3);
 
 		//Check if the camo slot was clicked
@@ -232,6 +242,7 @@ public class GUIPlayerDetector extends GuiContainer
 			drawCenteredString(fontRendererObj, "Advanced Player Detector", xSize/2, 5, 0x00FFFF);
 			
 			fontRendererObj.drawString("Range:", 73, 21, 0x000000, false);
+            fontRendererObj.drawString("Output Inverted: " + String.valueOf(outputInverted), 33, 97, 0x000000, false);
 			if (range < 10)
 				fontRendererObj.drawString("" + range, 85, 31, 0x000000, false);
 			else
@@ -307,5 +318,6 @@ public class GUIPlayerDetector extends GuiContainer
 				names[i] = detector.names[i];
 		}
 		range = detector.range;
+        outputInverted = detector.outputInverted;
 	}
 }

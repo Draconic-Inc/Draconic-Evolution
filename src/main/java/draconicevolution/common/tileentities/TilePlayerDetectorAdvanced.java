@@ -30,6 +30,7 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
 	private int tick = 0;
 	private int scanRate = 5;
 	public boolean output = false;
+    public boolean outputInverted = false;
 	List<EntityLiving> EntityList;
 	AxisAlignedBB ScanBox;
 	
@@ -278,6 +279,7 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
 		compound.setBoolean("WhiteList", whiteList);
 		compound.setBoolean("Output", output);
 		compound.setInteger("Range", range);
+        compound.setBoolean("OutputInverted", outputInverted);
 		
 		super.writeToNBT(compound);
 	}
@@ -299,6 +301,7 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
 		whiteList = compound.getBoolean("WhiteList");
 		range = compound.getInteger("Range");
 		output = compound.getBoolean("Output");
+        outputInverted = compound.getBoolean("OutputInverted");
 					
 		super.readFromNBT(compound);
 	}

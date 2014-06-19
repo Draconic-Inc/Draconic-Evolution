@@ -55,6 +55,9 @@ public class PlayerDetectorButtonPacket implements IPacket
 				case 1:
 					tile.whiteList = value == 1 ? true : false;
 					break;
+                case 2:
+                    tile.outputInverted = value == 1 ? true : false;
+                    break;
 			}
 			player.playerEntity.worldObj.markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
 		}
