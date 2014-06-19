@@ -120,7 +120,10 @@ public class PlayerDetectorAdvanced extends BlockContainer
 		TileEntity te = world.getTileEntity(x, y, z);
 		TilePlayerDetectorAdvanced detector = (te != null && te instanceof TilePlayerDetectorAdvanced) ? (TilePlayerDetectorAdvanced) te : null;
 		if(detector != null)
-			return detector.output ? 15 : 0;
+            if (!detector.outputInverted)
+			    return detector.output ? 15 : 0;
+            else
+                return detector.output ? 0 : 15;
 		else
 			return 0;
 	}
