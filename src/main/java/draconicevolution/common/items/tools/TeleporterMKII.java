@@ -140,7 +140,6 @@ public class TeleporterMKII extends Item
 			travelEffect(world, player);
 			Teleporter.teleport(player, x, y, z, yaw, pitch, dim);
 			player.fallDistance = 0;
-			player.setVelocity(0, 0, 0);
 			travelEffect(world, player);
 		}
 
