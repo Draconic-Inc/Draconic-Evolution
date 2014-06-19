@@ -143,6 +143,7 @@ public class TileParticleGenerator extends TileEntity
 		compound.setFloat("Gravity", gravity);
 		compound.setBoolean("Active", active);
 		compound.setBoolean("Signal", signal);
+        compound.setBoolean("Inverted", inverted);
 
 		super.writeToNBT(compound);
 	}
@@ -180,6 +181,7 @@ public class TileParticleGenerator extends TileEntity
 		gravity = compound.getFloat("Gravity");
 		active = compound.getBoolean("Active");
 		signal = compound.getBoolean("Signal");
+        inverted = compound.getBoolean("Inverted");
 
 		super.readFromNBT(compound);
 	}
