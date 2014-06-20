@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -55,7 +56,7 @@ public class TeleporterMKII extends Item
 		int dim = ItemNBTHelper.getIntager(stack, "Dimension_" + selection, 0);
 		int fuel = ItemNBTHelper.getIntager(stack, "Fuel", 0);
 
-		if (entity instanceof EntityPlayer)
+		if (entity instanceof EntityPlayer || entity instanceof IBossDisplayData)
 		{
 			return true;
 		}
@@ -157,7 +158,7 @@ public class TeleporterMKII extends Item
 
 	public void travelEffect(World world, Entity entity)
 	{
-		entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "portal.travel", 1F, entity.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "portal.travel", 0.1F, entity.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		/*
 		for (int i = 0; i < 100; i++)
 		{
