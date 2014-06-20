@@ -1,5 +1,6 @@
 package draconicevolution.common.core.proxy;
 
+import draconicevolution.common.core.network.*;
 import draconicevolution.common.world.DraconicWorldGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -14,13 +15,6 @@ import draconicevolution.common.core.handler.ConfigHandler;
 import draconicevolution.common.core.handler.CraftingHandler;
 import draconicevolution.common.core.handler.FMLEventHandler;
 import draconicevolution.common.core.handler.ModEventHandler;
-import draconicevolution.common.core.network.ButtonPacket;
-import draconicevolution.common.core.network.ExamplePacket;
-import draconicevolution.common.core.network.ParticleGenPacket;
-import draconicevolution.common.core.network.PlayerDetectorButtonPacket;
-import draconicevolution.common.core.network.PlayerDetectorStringPacket;
-import draconicevolution.common.core.network.TeleporterPacket;
-import draconicevolution.common.core.network.TeleporterStringPacket;
 import draconicevolution.common.items.ModItems;
 import draconicevolution.common.tileentities.TileGrinder;
 import draconicevolution.common.tileentities.TileParticleGenerator;
