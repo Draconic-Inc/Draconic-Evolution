@@ -41,9 +41,9 @@ public class DraconicDistructionStaff extends ItemTool {
 	public IIcon itemIcon2;
 
 	private static Set<Block> minableBlocks = Sets.newHashSet();
-	private static final Set<Block> field_150915_c = Sets.newHashSet(new Block[] { Blocks.cobblestone, Blocks.double_stone_slab, Blocks.stone_slab, Blocks.stone, Blocks.sandstone, Blocks.mossy_cobblestone, Blocks.iron_ore, Blocks.iron_block, Blocks.coal_ore, Blocks.gold_block, Blocks.gold_ore, Blocks.diamond_ore, Blocks.diamond_block, Blocks.ice, Blocks.netherrack, Blocks.lapis_ore, Blocks.lapis_block, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.rail, Blocks.detector_rail, Blocks.golden_rail, Blocks.activator_rail });
-	private static final Set<Block> field_150916_c = Sets.newHashSet(new Block[] { Blocks.grass, Blocks.dirt, Blocks.sand, Blocks.gravel, Blocks.snow_layer, Blocks.snow, Blocks.clay, Blocks.farmland, Blocks.soul_sand, Blocks.mycelium });
-	private static final Set<Block> field_150917_c = Sets.newHashSet(new Block[] { Blocks.planks, Blocks.bookshelf, Blocks.log, Blocks.log2, Blocks.chest, Blocks.pumpkin, Blocks.lit_pumpkin });
+	private static final Set<Block> field_150915_c = Sets.newHashSet(new Block[]{Blocks.cobblestone, Blocks.double_stone_slab, Blocks.stone_slab, Blocks.stone, Blocks.sandstone, Blocks.mossy_cobblestone, Blocks.iron_ore, Blocks.iron_block, Blocks.coal_ore, Blocks.gold_block, Blocks.gold_ore, Blocks.diamond_ore, Blocks.diamond_block, Blocks.ice, Blocks.netherrack, Blocks.lapis_ore, Blocks.lapis_block, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.rail, Blocks.detector_rail, Blocks.golden_rail, Blocks.activator_rail});
+	private static final Set<Block> field_150916_c = Sets.newHashSet(new Block[]{Blocks.grass, Blocks.dirt, Blocks.sand, Blocks.gravel, Blocks.snow_layer, Blocks.snow, Blocks.clay, Blocks.farmland, Blocks.soul_sand, Blocks.mycelium});
+	private static final Set<Block> field_150917_c = Sets.newHashSet(new Block[]{Blocks.planks, Blocks.bookshelf, Blocks.log, Blocks.log2, Blocks.chest, Blocks.pumpkin, Blocks.lit_pumpkin});
 
 	static {
 		for (Block block : field_150915_c) {
@@ -70,22 +70,18 @@ public class DraconicDistructionStaff extends ItemTool {
 	}
 
 	@Override
-	public boolean func_150897_b(Block p_150897_1_)
-	{
-		return p_150897_1_ == Blocks.obsidian ? this.toolMaterial.getHarvestLevel() == 3 : (p_150897_1_ != Blocks.diamond_block && p_150897_1_ != Blocks.diamond_ore ? (p_150897_1_ != Blocks.emerald_ore && p_150897_1_ != Blocks.emerald_block ? (p_150897_1_ != Blocks.gold_block && p_150897_1_ != Blocks.gold_ore ? (p_150897_1_ != Blocks.iron_block && p_150897_1_ != Blocks.iron_ore ? (p_150897_1_ != Blocks.lapis_block && p_150897_1_ != Blocks.lapis_ore ? (p_150897_1_ != Blocks.redstone_ore && p_150897_1_ != Blocks.lit_redstone_ore ? (p_150897_1_.getMaterial() == Material.rock ? true : (p_150897_1_.getMaterial() == Material.iron ? true : p_150897_1_.getMaterial() == Material.anvil)) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial
-				.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2);
+	public boolean func_150897_b(Block p_150897_1_) {
+		return p_150897_1_ == Blocks.obsidian ? this.toolMaterial.getHarvestLevel() == 3 : (p_150897_1_ != Blocks.diamond_block && p_150897_1_ != Blocks.diamond_ore ? (p_150897_1_ != Blocks.emerald_ore && p_150897_1_ != Blocks.emerald_block ? (p_150897_1_ != Blocks.gold_block && p_150897_1_ != Blocks.gold_ore ? (p_150897_1_ != Blocks.iron_block && p_150897_1_ != Blocks.iron_ore ? (p_150897_1_ != Blocks.lapis_block && p_150897_1_ != Blocks.lapis_ore ? (p_150897_1_ != Blocks.redstone_ore && p_150897_1_ != Blocks.lit_redstone_ore ? (p_150897_1_.getMaterial() == Material.rock ? true : (p_150897_1_.getMaterial() == Material.iron ? true : p_150897_1_.getMaterial() == Material.anvil)) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2);
 	}
 
 	@Override
-	public float func_150893_a(ItemStack p_150893_1_, Block p_150893_2_)
-	{
+	public float func_150893_a(ItemStack p_150893_1_, Block p_150893_2_) {
 		return p_150893_2_.getMaterial() != Material.iron && p_150893_2_.getMaterial() != Material.anvil && p_150893_2_.getMaterial() != Material.rock ? super.func_150893_a(p_150893_1_, p_150893_2_) : this.efficiencyOnProperMaterial;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(final IIconRegister iconRegister)
-	{
+	public void registerIcons(final IIconRegister iconRegister) {
 		this.itemIcon0 = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_staff");
 		this.itemIcon1 = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_staff_active");
 		this.itemIcon2 = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_staff_obliterate");
@@ -93,31 +89,24 @@ public class DraconicDistructionStaff extends ItemTool {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
-	{
-		if (ItemNBTHelper.getShort(stack, "size", (short)0) > 0 && ItemNBTHelper.getBoolean(stack, "obliterate", false))
+	public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
+		if (ItemNBTHelper.getShort(stack, "size", (short) 0) > 0 && ItemNBTHelper.getBoolean(stack, "obliterate", false))
 			return itemIcon2;
-		else if (ItemNBTHelper.getShort(stack, "size", (short)0) > 0)
-			return itemIcon1;
-		else
-			return itemIcon0;
+		else if (ItemNBTHelper.getShort(stack, "size", (short) 0) > 0) return itemIcon1;
+		else return itemIcon0;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIconIndex(ItemStack stack)
-	{
-		if (ItemNBTHelper.getShort(stack, "size", (short)0) > 0 && ItemNBTHelper.getBoolean(stack, "obliterate", false))
+	public IIcon getIconIndex(ItemStack stack) {
+		if (ItemNBTHelper.getShort(stack, "size", (short) 0) > 0 && ItemNBTHelper.getBoolean(stack, "obliterate", false))
 			return itemIcon2;
-		else if (ItemNBTHelper.getShort(stack, "size", (short)0) > 0)
-			return itemIcon1;
-		else
-			return itemIcon0;
+		else if (ItemNBTHelper.getShort(stack, "size", (short) 0) > 0) return itemIcon1;
+		else return itemIcon0;
 	}
-	
+
 	@Override
-	public boolean onBlockStartBreak(final ItemStack stack, final int x, final int y, final int z, final EntityPlayer player)
-	{
+	public boolean onBlockStartBreak(final ItemStack stack, final int x, final int y, final int z, final EntityPlayer player) {
 		World world = player.worldObj;
 		Block block = world.getBlock(x, y, z);
 		Material mat = block.getMaterial();
@@ -131,33 +120,29 @@ public class DraconicDistructionStaff extends ItemTool {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player)
-	{
+	public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
 		return ToolHandler.changeMode(stack, player, true, 4);
 	}
 
 	@Override
-	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
-	{
-		ToolHandler.AOEAttack(player, entity, stack, 25, ItemNBTHelper.getShort(stack, "size", (short)0) * 2);
+	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+		ToolHandler.AOEAttack(player, entity, stack, 25, ItemNBTHelper.getShort(stack, "size", (short) 0) * 2);
 		ToolHandler.demageEntytyBasedOnHealth(entity, player, 0.5F);
 		return true;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
-	public Multimap getItemAttributeModifiers()
-	{
+	public Multimap getItemAttributeModifiers() {
 		Multimap multimap = super.getItemAttributeModifiers();
 		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double) 4.0F + ModItems.DRACONIUM_T2.getDamageVsEntity(), 0));
 		return multimap;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
-	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
-	{
-		int size = (ItemNBTHelper.getShort(stack, "size", (short)0) * 2) + 1;
+	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
+		int size = (ItemNBTHelper.getShort(stack, "size", (short) 0) * 2) + 1;
 		boolean oblit = ItemNBTHelper.getBoolean(stack, "obliterate", false);
 		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54)))
 			list.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
@@ -174,13 +159,11 @@ public class DraconicDistructionStaff extends ItemTool {
 	}
 
 	@Override
-	public EnumRarity getRarity(ItemStack stack)
-	{
+	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.epic;
 	}
 
-	public static void registerRecipe()
-	{
+	public static void registerRecipe() {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicDistructionStaff), "DFD", "PTS", "DWD", 'F', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'T', ModItems.draconicCore, 'P', ModItems.draconicPickaxe, 'S', ModItems.draconicShovel, 'W', ModItems.draconicSword);
 	}
 
