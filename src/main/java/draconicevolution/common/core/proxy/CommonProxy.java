@@ -1,5 +1,6 @@
 package draconicevolution.common.core.proxy;
 
+import draconicevolution.common.world.DraconicWorldGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -28,7 +29,6 @@ import draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
 import draconicevolution.common.tileentities.TilePotentiometer;
 import draconicevolution.common.tileentities.TileSunDial;
 import draconicevolution.common.tileentities.TileWeatherController;
-import draconicevolution.common.world.TolkienWorldGenerator;
 
 public class CommonProxy {
 	private final static boolean debug = DraconicEvolution.debug;
@@ -38,7 +38,7 @@ public class CommonProxy {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
 		ModBlocks.init();
 		ModItems.init();
-		GameRegistry.registerWorldGenerator(new TolkienWorldGenerator(), 1);
+		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 1);
 		registerTileEntities();
 	}
 
@@ -96,6 +96,6 @@ public class CommonProxy {
 
 	public void registerWorldGen()
 	{
-		GameRegistry.registerWorldGenerator(new TolkienWorldGenerator(), 1);
+		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 1);
 	}
 }
