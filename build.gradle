@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.2-v0.9.1-Beta-Pre7"
+version = "1.7.2-v0.9.1-Beta-Pre10"
 group= "com.brandon3055.draconicevolution" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Draconic-Evolution"
 

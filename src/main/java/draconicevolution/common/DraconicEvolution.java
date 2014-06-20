@@ -20,7 +20,8 @@ import draconicevolution.common.lib.References;
 
 @Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION)
 public class DraconicEvolution {
-	@Instance
+
+	@Mod.Instance(References.MODID)
 	public static DraconicEvolution instance;
 
 	@SidedProxy(clientSide = References.CLIENTPROXYLOCATION, serverSide = References.COMMONPROXYLOCATION)
