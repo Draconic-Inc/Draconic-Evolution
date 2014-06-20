@@ -5,17 +5,13 @@ import java.util.List;
 import draconicevolution.common.items.tools.ToolHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.common.core.handler.ParticleHandler;
 import draconicevolution.common.lib.Strings;
 
 public class Tclogo extends TolkienItem {
@@ -76,8 +72,15 @@ public class Tclogo extends TolkienItem {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		//if (world.isRemote)
-			//ParticleHandler.spawnParticle("testParticle", player.posX, player.posY, player.posZ, 0, 0, 0, 1);
+		int xPos = (int) player.posX;
+		int yPos = (int) player.posY;
+		int zPos = (int) player.posZ;
+
+		for (int x = xPos - 5; x < xPos + 5; x++) {
+			for (int z = zPos - 5; z < zPos + 5; z++) {
+				if (!world.isRemote) world.markBlockForUpdate(x, yPos, z);
+			}
+		}
 		return stack;
 	}
 	
@@ -85,7 +88,7 @@ public class Tclogo extends TolkienItem {
 	public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
 	{
 		//player.worldObj.scheduleBlockUpdate(X, Y, Z, player.worldObj.getBlock(X, Y, Z), 10);
-		MovingObjectPosition mop = ToolHandler.raytraceFromEntity(player.worldObj, player, true, 4.5D);
+		MovingObjectPosition mop = ToolHandler.raytraceFromEntity(player.worldObj, player, 4.5D);
 		System.out.println(mop.sideHit);
 		return true;
 	}
