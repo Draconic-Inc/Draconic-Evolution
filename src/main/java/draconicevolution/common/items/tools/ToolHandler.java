@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityItem;
@@ -50,9 +49,10 @@ public class ToolHandler {
 
 	public static boolean disSquare(int x, int y, int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
 		int size = stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0);
-		//int direction = getBlockFace(player, x, y, z);
-		MovingObjectPosition mop = raytraceFromEntity(world, player, false, 4.5D);
+		MovingObjectPosition mop = raytraceFromEntity(world, player, 4.5D);
 		if (mop == null) {
+			if (player instanceof EntityPlayer)
+				updateGhostBlocks(player, world);
 			return false;
 		}
 
@@ -63,7 +63,7 @@ public class ToolHandler {
 		Block targetBlock = world.getBlock(x, y, z);
 		if (size > 0) yOff++;
 		if (size == 0) return false;
-		int side = (stack == null || stack.getItem() == null || stack.getItem().equals(ModItems.draconicAxe)) ? 6 : mop.sideHit;
+		int side = (stack.getItem().equals(ModItems.draconicAxe)) ? 6 : mop.sideHit;
 		switch (side) {
 			case 0:
 			case 1:
@@ -82,7 +82,8 @@ public class ToolHandler {
 		for (int x1 = x - sizeX; x1 <= x + sizeX; x1++) {
 			for (int y1 = y - (sizeY + yOff); y1 <= y + (sizeY - yOff); y1++) {
 				for (int z1 = z - sizeZ; z1 <= z + sizeZ; z1++) {
-						mineBlock(x1, y1, z1, player, world, silk, fortune, materialsListing, stack);
+					mineBlock(x1, y1, z1, player, world, silk, fortune, materialsListing, stack);
+					player.worldObj.scheduleBlockUpdate(x1, y1, z1, Blocks.stone, 100);
 				}
 			}
 		}
@@ -123,21 +124,6 @@ public class ToolHandler {
 		}
 	}
 
-	/*
-	public static int getBlockFace(EntityPlayer player, int blockX, int blockY, int blockZ) {
-		double playerX = player.posX;
-		double playerY = player.posY;
-		if (!player.worldObj.isRemote) playerY += 1.62D;
-		if (player.isSneaking()) playerY += -1.62;
-		double playerZ = player.posZ;
-		double xx = Math.abs(playerX - (blockX + 0.5));
-		double yy = Math.abs(playerY - (blockY + 0.5));
-		double zz = Math.abs(playerZ - (blockZ + 0.5));
-		if ((xx > yy) && (xx > zz)) return 1;
-		else if ((yy > xx) && (yy > zz)) return 2;
-		else return 3;
-	}*/
-
 	public static ItemStack changeMode(ItemStack stack, EntityPlayer player, boolean hasOblit, int maxSize) {
 		if (player.isSneaking()) {
 			if (ItemNBTHelper.getShort(stack, "size", (short) 0) < maxSize)
@@ -147,6 +133,7 @@ public class ToolHandler {
 				player.addChatMessage(new ChatComponentTranslation("msg.size" + ItemNBTHelper.getShort(stack, "size", (short) 0) + ".txt"));
 
 		} else {
+			updateGhostBlocks(player, player.worldObj);
 			if (hasOblit) {
 				ItemNBTHelper.setBoolean(stack, "obliterate", !ItemNBTHelper.getBoolean(stack, "obliterate", false));
 				if (player.worldObj.isRemote)
@@ -197,7 +184,7 @@ public class ToolHandler {
 
 	}
 
-	public static MovingObjectPosition raytraceFromEntity (World world, Entity player, boolean par3, double range)
+	public static MovingObjectPosition raytraceFromEntity (World world, Entity player, double range)
 	{
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
@@ -220,6 +207,24 @@ public class ToolHandler {
 			d3 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
 		}
 		Vec3 vec31 = vec3.addVector((double) f7 * d3, (double) f6 * d3, (double) f8 * d3);
-		return world.func_147447_a(vec3, vec31, par3, !par3, par3);
+		return world.rayTraceBlocks(vec3, vec31);
+	}
+
+	private static void updateGhostBlocks(EntityPlayer player, World world)
+	{
+		int xPos = (int) player.posX;
+		int yPos = (int) player.posY;
+		int zPos = (int) player.posZ;
+
+		for (int x = xPos - 6; x < xPos + 6; x++)
+		{
+			for (int y = yPos - 6; y < yPos + 6; y++)
+			{
+				for (int z = zPos - 6; z < zPos + 6; z++)
+				{
+					world.markBlockForUpdate(x, y, z);
+				}
+			}
+		}
 	}
 }
