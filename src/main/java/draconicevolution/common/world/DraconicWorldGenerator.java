@@ -30,7 +30,7 @@ public class DraconicWorldGenerator implements IWorldGenerator {
 	}
 
 	public void generateSurface(final Random random, final int chunkX, final int chunkZ, final World world) {//                                                                    minVainSise, maxVainSize, spawnChance(Def2), minY, maxY
-		addOreSpawn(ModBlocks.draconiumOre, world, random, chunkX, chunkZ, 3, 4, 2, 1, 5);
+		addOreSpawn(ModBlocks.draconiumOre, world, random, chunkX, chunkZ, 3, 4, 2, 2, 8);
 	}
 
 	public void generateEnd(final Random random, final int chunkX, final int chunkZ, final World world) {
