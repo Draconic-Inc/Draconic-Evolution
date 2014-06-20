@@ -2,6 +2,8 @@ package draconicevolution.common.container;
 
 import java.util.Iterator;
 
+import draconicevolution.common.tileentities.TileGrinder;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -89,17 +91,17 @@ public class ContainerPlayerDetector extends Container {
             		}
             		else if (sl.slotNumber < 18)
             		{
-            			sl.xDisplayPosition = 8 + 18 * (sl.slotNumber - 8);
+            			sl.xDisplayPosition = 8 + 18 * (sl.slotNumber - 9);
                 		sl.yDisplayPosition = 116 + 0 * 18;
             		}
-            		else if (sl.slotNumber < 26)
+            		else if (sl.slotNumber < 27)
             		{
-            			sl.xDisplayPosition = 8 + 18 * (sl.slotNumber - 17);
+            			sl.xDisplayPosition = 8 + 18 * (sl.slotNumber - 18);
                 		sl.yDisplayPosition = 116 + 1 * 18;
             		}
-            		else if (sl.slotNumber < 34)
+            		else if (sl.slotNumber < 36)
             		{
-            			sl.xDisplayPosition = 8 + 18 * (sl.slotNumber - 26);
+            			sl.xDisplayPosition = 8 + 18 * (sl.slotNumber - 27);
                 		sl.yDisplayPosition = 116 + 2 * 18;
             		}
             		
@@ -119,8 +121,36 @@ public class ContainerPlayerDetector extends Container {
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+	public ItemStack transferStackInSlot(EntityPlayer player, int i)
 	{
+		Slot slot = getSlot(i);
+
+
+		if (slot != null && slot.getHasStack())
+		{
+			ItemStack stack = slot.getStack();
+			ItemStack result = stack.copy();
+			Block block = Block.getBlockFromItem(stack.getItem());
+
+			if (i >= 36){
+				if (!mergeItemStack(stack, 0, 36, false)){
+					return null;
+				}
+			}else if (!(block.isOpaqueCube() && block.renderAsNormalBlock()) || !mergeItemStack(stack, 36, 36 + tileDetector.getSizeInventory(), false)){
+				return null;
+			}
+
+			if (stack.stackSize == 0) {
+				slot.putStack(null);
+			}else{
+				slot.onSlotChanged();
+			}
+
+			slot.onPickupFromSlot(player, stack);
+
+			return result;
+		}
+
 		return null;
 	}
 
