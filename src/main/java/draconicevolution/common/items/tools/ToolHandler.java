@@ -5,32 +5,32 @@ import java.util.List;
 import java.util.Map;
 
 import draconicevolution.common.core.helper.ItemNBTHelper;
+import draconicevolution.common.items.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.DamageSource;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings.GameType;
 
 public class ToolHandler {
-	public static Material[] materialsPick = { Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock };
-	public static Material[] materialsShovel = { Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow };
-	public static Material[] materialsAxe = { Material.cactus, Material.leaves, Material.wood, Material.plants };
-	public static Material[] materialsDStaff = { Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock, Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow, Material.cactus, Material.leaves, Material.wood, Material.plants };
-	public static Block[] destroyList = { Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand, Blocks.grass, Blocks.netherrack };
+	public static Material[] materialsPick = {Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock};
+	public static Material[] materialsShovel = {Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow};
+	public static Material[] materialsAxe = {Material.cactus, Material.leaves, Material.wood, Material.plants};
+	public static Material[] materialsDStaff = {Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock, Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow, Material.cactus, Material.leaves, Material.wood, Material.plants};
+	public static Block[] destroyList = {Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand, Blocks.grass, Blocks.netherrack};
 
-	public static boolean isRightMaterial(final Material material, final Material[] materialsListing)
-	{
+	public static boolean isRightMaterial(final Material material, final Material[] materialsListing) {
 		for (final Material mat : materialsListing) {
 			if (material == mat) {
 				return true;
@@ -39,8 +39,7 @@ public class ToolHandler {
 		return false;
 	}
 
-	public static boolean checkDestroyList(Block curBlock)
-	{
+	public static boolean checkDestroyList(Block curBlock) {
 		for (Block block : destroyList) {
 			if (curBlock == block) {
 				return true;
@@ -49,43 +48,50 @@ public class ToolHandler {
 		return false;
 	}
 
-	public static void disSquare(int x, int y, int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack)
-	{
-		int size = ItemNBTHelper.getShort(stack, "size", (short)0);
-		int dyrection = getBlockFace(player, x, y, z);
+	public static boolean disSquare(int x, int y, int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
+		int size = stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0);
+		//int direction = getBlockFace(player, x, y, z);
+		MovingObjectPosition mop = raytraceFromEntity(world, player, false, 4.5D);
+		if (mop == null) {
+			return false;
+		}
+
 		int sizeX = size;
 		int sizeY = size;
 		int sizeZ = size;
 		int yOff = (size * -1);
-		if (size > 0)
-			yOff++;
-		if (ItemNBTHelper.getShort(stack, "size", (short)0) == 0)
-			return;
-		switch (dyrection) {
-		case 1:
-			sizeX = 0;
-			break;
-		case 2:
-			sizeY = 0;
-			yOff = 0;
-			break;
-		case 3:
-			sizeZ = 0;
-			break;
+		Block targetBlock = world.getBlock(x, y, z);
+		if (size > 0) yOff++;
+		if (size == 0) return false;
+		int side = (stack == null || stack.getItem() == null || stack.getItem().equals(ModItems.draconicAxe)) ? 6 : mop.sideHit;
+		switch (side) {
+			case 0:
+			case 1:
+				sizeY = 0;
+				yOff = 0;
+				break;
+			case 2:
+			case 3:
+				sizeZ = 0;
+				break;
+			case 4:
+			case 5:
+				sizeX = 0;
+				break;
 		}
 		for (int x1 = x - sizeX; x1 <= x + sizeX; x1++) {
 			for (int y1 = y - (sizeY + yOff); y1 <= y + (sizeY - yOff); y1++) {
 				for (int z1 = z - sizeZ; z1 <= z + sizeZ; z1++) {
-					if ((x1 != x) || (y1 != y) || (z1 != z))
 						mineBlock(x1, y1, z1, player, world, silk, fortune, materialsListing, stack);
 				}
 			}
 		}
+		world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, targetBlock.stepSound.getStepResourcePath(), (targetBlock.stepSound.getVolume() + 1.0F) / 2.0F, targetBlock.stepSound.getPitch() * 0.8F);
+		return true;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void mineBlock(final int x, final int y, final int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack)
-	{
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static void mineBlock(final int x, final int y, final int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
 		Block block = world.getBlock(x, y, z);
 		int meta = world.getBlockMetadata(x, y, z);
 		Material mat = block.getMaterial();
@@ -101,8 +107,7 @@ public class ToolHandler {
 			if ((silk) && (block.canSilkHarvest(world, player, x, y, z, meta))) {
 				if (block == Blocks.lit_redstone_ore)
 					items.add(new ItemStack(Item.getItemFromBlock(Blocks.redstone_ore)));
-				else
-					items.add(new ItemStack(block.getItem(world, x, y, z), 1, meta));
+				else items.add(new ItemStack(block.getItem(world, x, y, z), 1, meta));
 			} else {
 				items.addAll(block.getDrops(world, x, y, z, meta, fortune));
 				//block.dropXpOnBlockBreak(world, (int)player.posX, (int)player.posY, (int)player.posZ, block.getExpDrop(world, meta, fortune));
@@ -118,35 +123,28 @@ public class ToolHandler {
 		}
 	}
 
-	public static int getBlockFace(EntityPlayer player, int blockX, int blockY, int blockZ)
-	{
+	/*
+	public static int getBlockFace(EntityPlayer player, int blockX, int blockY, int blockZ) {
 		double playerX = player.posX;
 		double playerY = player.posY;
-		if (!player.worldObj.isRemote)
-			playerY += 1.62D;
-		if (player.isSneaking())
-			playerY += -1.62;
+		if (!player.worldObj.isRemote) playerY += 1.62D;
+		if (player.isSneaking()) playerY += -1.62;
 		double playerZ = player.posZ;
 		double xx = Math.abs(playerX - (blockX + 0.5));
 		double yy = Math.abs(playerY - (blockY + 0.5));
 		double zz = Math.abs(playerZ - (blockZ + 0.5));
-		if ((xx > yy) && (xx > zz))
-			return 1;
-		else if ((yy > xx) && (yy > zz))
-			return 2;
-		else
-			return 3;
-	}
+		if ((xx > yy) && (xx > zz)) return 1;
+		else if ((yy > xx) && (yy > zz)) return 2;
+		else return 3;
+	}*/
 
-	public static ItemStack changeMode(ItemStack stack, EntityPlayer player, boolean hasOblit, int maxSize)
-	{
+	public static ItemStack changeMode(ItemStack stack, EntityPlayer player, boolean hasOblit, int maxSize) {
 		if (player.isSneaking()) {
-			if (ItemNBTHelper.getShort(stack, "size", (short)0) < maxSize)
+			if (ItemNBTHelper.getShort(stack, "size", (short) 0) < maxSize)
 				ItemNBTHelper.setShort(stack, "size", (short) (ItemNBTHelper.getShort(stack, "size", (short) 0) + 1));
-			else
-				ItemNBTHelper.setShort(stack, "size", (short) 0);
+			else ItemNBTHelper.setShort(stack, "size", (short) 0);
 			if (!player.worldObj.isRemote)
-				player.addChatMessage(new ChatComponentTranslation("msg.size" + ItemNBTHelper.getShort(stack, "size", (short)0) + ".txt"));
+				player.addChatMessage(new ChatComponentTranslation("msg.size" + ItemNBTHelper.getShort(stack, "size", (short) 0) + ".txt"));
 
 		} else {
 			if (hasOblit) {
@@ -158,29 +156,36 @@ public class ToolHandler {
 		return stack;
 	}
 
-	public static void demageEntytyBasedOnHealth(Entity entity, EntityPlayer player, float dmg)
-	{
+	public static void demageEntytyBasedOnHealth(Entity entity, EntityPlayer player, float dmg) {
+		System.out.println(dmg);
 		World world = player.worldObj;
-		if (entity.getEyeHeight() > 0) {
+		if (entity instanceof EntityLivingBase) {//entity.getEyeHeight() > 0) {
 			float entHealth = ((EntityLivingBase) entity).getHealth();
 			if (!world.isRemote) {
 				if (entHealth > 20) {
 					entity.attackEntityFrom(DamageSource.causePlayerDamage(player), (entHealth) * dmg);
 				}
 			}
+		} else if (entity instanceof EntityDragonPart) {
+			if (!world.isRemote) {
+				System.out.println("part");
+				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 200F * dmg);
+			}
+		} else {
+			if (!world.isRemote) {
+				System.out.println("Oter");
+				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 100F * dmg);
+			}
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unused" })
-	public static void AOEAttack(EntityPlayer player, Entity entity, ItemStack stack, int dmg, int range)
-	{
+	@SuppressWarnings({"rawtypes", "unused"})
+	public static void AOEAttack(EntityPlayer player, Entity entity, ItemStack stack, int dmg, int range) {
 		Map enchants = EnchantmentHelper.getEnchantments(stack);
 		int sharp = 0;
 		int loot = 0;
-		if (enchants.get(16) != null)
-			sharp = (Integer) enchants.get(16);
-		if (enchants.get(21) != null)
-			loot = (Integer) enchants.get(21);
+		if (enchants.get(16) != null) sharp = (Integer) enchants.get(16);
+		if (enchants.get(21) != null) loot = (Integer) enchants.get(21);
 		World world = player.worldObj;
 		AxisAlignedBB box = AxisAlignedBB.getAABBPool().getAABB(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
 		List list = world.getEntitiesWithinAABBExcludingEntity(player, box);
@@ -190,5 +195,31 @@ public class ToolHandler {
 
 		}
 
+	}
+
+	public static MovingObjectPosition raytraceFromEntity (World world, Entity player, boolean par3, double range)
+	{
+		float f = 1.0F;
+		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
+		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
+		double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double) f;
+		double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double) f;
+		if (!world.isRemote && player instanceof EntityPlayer)
+			d1 += 1.62D;
+		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
+		Vec3 vec3 = world.getWorldVec3Pool().getVecFromPool(d0, d1, d2);
+		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
+		float f4 = MathHelper.sin(-f2 * 0.017453292F - (float) Math.PI);
+		float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+		float f6 = MathHelper.sin(-f1 * 0.017453292F);
+		float f7 = f4 * f5;
+		float f8 = f3 * f5;
+		double d3 = range;
+		if (player instanceof EntityPlayerMP)
+		{
+			d3 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
+		}
+		Vec3 vec31 = vec3.addVector((double) f7 * d3, (double) f6 * d3, (double) f8 * d3);
+		return world.func_147447_a(vec3, vec31, par3, !par3, par3);
 	}
 }
