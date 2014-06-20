@@ -1,7 +1,11 @@
 package draconicevolution.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
@@ -82,7 +86,10 @@ public class PlayerDetector extends TolkienBlock
 	@Override
 	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
 	{
-		return true;
+		if (side == 0 || side == 1)
+			return false;
+		else
+			return true;
 	}
 
 	@Override
@@ -140,5 +147,18 @@ public class PlayerDetector extends TolkienBlock
 				player.addChatMessage(new ChatComponentTranslation("msg.range.txt").appendSibling(new ChatComponentText(" " + range)));
 		}
 		return true;
+	}
+
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	{
+		super.breakBlock(world, x, y, z, block, meta);
+
+		world.notifyBlocksOfNeighborChange(x - 1, y, z, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x + 1, y, z, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x, y - 1, z, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x, y + 1, z, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x, y, z - 1, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x, y, z + 1, world.getBlock(x, y, z));
 	}
 }

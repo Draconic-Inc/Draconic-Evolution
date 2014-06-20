@@ -12,7 +12,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -105,7 +107,10 @@ public class PlayerDetectorAdvanced extends BlockContainer
 	@Override
 	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
 	{
-		return true;
+		if (side == 0 || side == 1)
+			return false;
+		else
+			return true;
 	}
 	
 	@Override
@@ -134,10 +139,49 @@ public class PlayerDetectorAdvanced extends BlockContainer
 		TileEntity te = world.getTileEntity(x, y, z);
 		TilePlayerDetectorAdvanced detector = (te != null && te instanceof TilePlayerDetectorAdvanced) ? (TilePlayerDetectorAdvanced) te : null;
 		if(detector != null)
-			return detector.output ? 15 : 0;
+			if (!detector.outputInverted)
+				return detector.output ? 15 : 0;
+			else
+				return detector.output ? 0 : 15;
 		else
 			return 0;
 	}
 
-	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te != null && te instanceof IInventory) {
+			IInventory inventory = (IInventory) te;
+
+			for (int i = 0; i < inventory.getSizeInventory(); i++) {
+				ItemStack stack = inventory.getStackInSlot(i);
+
+				if (stack != null) {
+					float spawnX = x + world.rand.nextFloat();
+					float spawnY = y + world.rand.nextFloat();
+					float spawnZ = z + world.rand.nextFloat();
+
+					EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stack);
+
+					float mult = 0.05F;
+
+					droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
+					droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
+					droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
+
+					world.spawnEntityInWorld(droppedItem);
+				}
+			}
+		}
+
+		super.breakBlock(world, x, y, z, block, meta);
+
+		world.notifyBlocksOfNeighborChange(x - 1, y, z, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x + 1, y, z, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x, y - 1, z, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x, y + 1, z, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x, y, z - 1, world.getBlock(x, y, z));
+		world.notifyBlocksOfNeighborChange(x, y, z + 1, world.getBlock(x, y, z));
+	}
 }
