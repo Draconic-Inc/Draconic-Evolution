@@ -3,6 +3,7 @@ package draconicevolution.common.items.tools;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -20,9 +21,9 @@ import draconicevolution.common.DraconicEvolution;
 import draconicevolution.common.items.ModItems;
 import draconicevolution.common.lib.References;
 import draconicevolution.common.lib.Strings;
+import org.lwjgl.input.Keyboard;
 
-public class DraconicAxe extends ItemAxe
-{
+public class DraconicAxe extends ItemAxe {
 
 	public DraconicAxe() {
 		super(ModItems.DRACONIUM_T1);
@@ -33,152 +34,133 @@ public class DraconicAxe extends ItemAxe
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(final IIconRegister iconRegister)
-	{
+	public void registerIcons(final IIconRegister iconRegister) {
 		this.itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_axe");
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player)
-	{
+	public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player) {
 		World world = player.worldObj;
 		boolean tree = isTree(world, X, Y, Z);
-				
-		if (!tree)
-		{
+
+		if (player.isSneaking()) {
 			return false;
 		}
-		
-		if (player.isSneaking())
-		{
+
+		Block block = world.getBlock(X, Y, Z);
+		Material mat = block.getMaterial();
+		if (!ToolHandler.isRightMaterial(mat, ToolHandler.materialsAxe)) {
 			return false;
 		}
-		
-		if (!world.isRemote)
-			world.playAuxSFX(2001, X, Y, Z, Block.getIdFromBlock(world.getBlock(X, Y, Z)));
+
+		if (!tree) {
+			ToolHandler.disSquare(X, Y, Z, player, world, false, 0, ToolHandler.materialsAxe, stack);
+			return false;
+		}
+
+		if (!world.isRemote) world.playAuxSFX(2001, X, Y, Z, Block.getIdFromBlock(world.getBlock(X, Y, Z)));
 		trimLeavs(X, Y, Z, player, world, stack);
 		chopTree(X, Y, Z, player, world, stack);
-		
+
 		return true;
 	}
-	
-	private boolean isTree(World world, int X, int Y, int Z)
-	{
+
+	private boolean isTree(World world, int X, int Y, int Z) {
 		final Block wood = world.getBlock(X, Y, Z);
-		if (wood == null || !wood.isWood(world, X, Y, Z))
-		{
+		if (wood == null || !wood.isWood(world, X, Y, Z)) {
 			return false;
-		}
-		else
-		{
+		} else {
 			int top = Y;
-			for (int y = Y; y <= Y + 50; y++)
-			{
-				if (!world.getBlock(X, y, Z).isWood(world, X, y, Z) && !world.getBlock(X, y, Z).isLeaves(world, X, y, Z))
-				{
+			for (int y = Y; y <= Y + 50; y++) {
+				if (!world.getBlock(X, y, Z).isWood(world, X, y, Z) && !world.getBlock(X, y, Z).isLeaves(world, X, y, Z)) {
 					top += y;
 					break;
 				}
 			}
-			
+
 			int leaves = 0;
-			for (int xPos = X - 1; xPos <= X + 1; xPos++)
-			{
-				for (int yPos = Y; yPos <= top; yPos++)
-				{
-					for (int zPos = Z - 1; zPos <= Z + 1; zPos++)
-					{
-						if (world.getBlock(xPos, yPos, zPos).isLeaves(world, xPos, yPos, zPos))
-							leaves++;
+			for (int xPos = X - 1; xPos <= X + 1; xPos++) {
+				for (int yPos = Y; yPos <= top; yPos++) {
+					for (int zPos = Z - 1; zPos <= Z + 1; zPos++) {
+						if (world.getBlock(xPos, yPos, zPos).isLeaves(world, xPos, yPos, zPos)) leaves++;
 					}
 				}
 			}
-			 if (leaves >= 3)
-				 return true;
+			if (leaves >= 3) return true;
 		}
-		
+
 		return false;
 	}
-	
-	void chopTree(int X, int Y, int Z, EntityPlayer player, World world, ItemStack stack)
-	{
-		for (int xPos = X - 1; xPos <= X + 1; xPos++)
-		{
-			for (int yPos = Y; yPos <= Y + 1; yPos++)
-			{
-				for (int zPos = Z - 1; zPos <= Z + 1; zPos++)
-				{
+
+	void chopTree(int X, int Y, int Z, EntityPlayer player, World world, ItemStack stack) {
+		for (int xPos = X - 1; xPos <= X + 1; xPos++) {
+			for (int yPos = Y; yPos <= Y + 1; yPos++) {
+				for (int zPos = Z - 1; zPos <= Z + 1; zPos++) {
 					Block block = world.getBlock(xPos, yPos, zPos);
 					int meta = world.getBlockMetadata(xPos, yPos, zPos);
-					if(block.isWood(world, xPos, yPos, zPos))
-					{
+					if (block.isWood(world, xPos, yPos, zPos)) {
 						world.setBlockToAir(xPos, yPos, zPos);
-						if (!player.capabilities.isCreativeMode)
-						{
-							if (block.removedByPlayer(world, player, xPos, yPos, zPos))
-                            {
+						if (!player.capabilities.isCreativeMode) {
+							if (block.removedByPlayer(world, player, xPos, yPos, zPos)) {
 								block.onBlockDestroyedByPlayer(world, xPos, yPos, zPos, meta);
-                            }
+							}
 							block.harvestBlock(world, player, xPos, yPos, zPos, meta);
 							block.onBlockHarvested(world, xPos, yPos, zPos, meta, player);
 							onBlockDestroyed(stack, world, block, xPos, yPos, zPos, player);
 						}
 						chopTree(xPos, yPos, zPos, player, world, stack);
 					}//else
-						//trimLeavs(xPos, yPos, zPos, player, world, stack);
+					//trimLeavs(xPos, yPos, zPos, player, world, stack);
 				}
 			}
 		}
 	}
 
-	void trimLeavs(int X, int Y, int Z, EntityPlayer player, World world, ItemStack stack)
-	{
+	void trimLeavs(int X, int Y, int Z, EntityPlayer player, World world, ItemStack stack) {
 		scedualUpdates(X, Y, Z, player, world, stack);
 	}
 
-	void scedualUpdates(int X, int Y, int Z, EntityPlayer player, World world, ItemStack stack)
-	{
-		for (int xPos = X - 15; xPos <= X + 15; xPos++)
-		{
-			for (int yPos = Y; yPos <= Y + 50; yPos++)
-			{
-				for (int zPos = Z - 15; zPos <= Z + 15; zPos++)
-				{
+	void scedualUpdates(int X, int Y, int Z, EntityPlayer player, World world, ItemStack stack) {
+		for (int xPos = X - 15; xPos <= X + 15; xPos++) {
+			for (int yPos = Y; yPos <= Y + 50; yPos++) {
+				for (int zPos = Z - 15; zPos <= Z + 15; zPos++) {
 					Block block = world.getBlock(xPos, yPos, zPos);
-					if(block.isLeaves(world, xPos, yPos, zPos))
-					{
+					if (block.isLeaves(world, xPos, yPos, zPos)) {
 						world.scheduleBlockUpdate(xPos, yPos, zPos, block, 2 + world.rand.nextInt(10));
 					}
 				}
 			}
 		}
 	}
-	
+
 	@Override
-	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int x, int y, int z, int side, float par8, float par9, float par10)
-	{
+	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int x, int y, int z, int side, float par8, float par9, float par10) {
 		//System.out.println(x + " " + y + " " + z);
 		return super.onItemUse(par1ItemStack, par2EntityPlayer, par3World, x, y, z, side, par8, par9, par10);
 	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
-	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
-	{
-		list.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("info.draconicAxe1.txt"));
-		list.add("");
-		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw1.txt"));
-		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw2.txt"));
+	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
+		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
+			list.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("info.draconicAxe1.txt"));
+			list.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
+		} else {
+			list.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("info.draconicAxe2.txt"));
+			list.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("info.draconicAxe3.txt"));
+			list.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("info.draconicAxe4.txt"));
+			list.add("");
+			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw1.txt"));
+			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw2.txt"));
+		}
 	}
-	
+
 	@Override
-	public EnumRarity getRarity(ItemStack stack)
-	{
+	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.rare;
 	}
-	
-	public static void registerRecipe()
-	{
+
+	public static void registerRecipe() {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicAxe), "DFD", "CAC", "DTD", 'F', ModItems.sunFocus, 'C', ModItems.draconicCompound, 'D', ModItems.draconiumIngot, 'T', ModItems.draconicCore, 'A', Items.diamond_axe);
 	}
 
