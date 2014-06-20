@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -14,6 +15,7 @@ import draconicevolution.common.DraconicEvolution;
 import draconicevolution.common.items.ModItems;
 import draconicevolution.common.lib.References;
 import draconicevolution.common.lib.Strings;
+import net.minecraft.world.IBlockAccess;
 
 public class DraconiumOre extends TolkienBlock {
 	public IIcon icon;
@@ -29,7 +31,12 @@ public class DraconiumOre extends TolkienBlock {
 		GameRegistry.registerBlock(this, this.getUnlocalizedName());
 	}
 
-	@Override
+    @Override
+    public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
+        return false;
+    }
+
+    @Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(final IIconRegister iconRegister)
 	{
