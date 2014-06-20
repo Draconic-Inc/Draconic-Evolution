@@ -8,6 +8,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
@@ -42,9 +43,10 @@ public class DraconicHoe extends ItemHoe
 		this.itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_hoe");
 	}
 
-	@Override
+    @Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
 	{
+        boolean successfull = false;
 		Block clicked = world.getBlock(x, y, z);
 		if(!player.isSneaking() && player.canPlayerEdit(x, y, z, par7, stack) && (clicked == Blocks.dirt || clicked == Blocks.grass || clicked == Blocks.farmland) && par7 == 1)
 		{
@@ -53,12 +55,18 @@ public class DraconicHoe extends ItemHoe
 		{
 			for (int z1 = -size; z1 <= size; z1++)
 			{
-				if (world.getBlock(x + x1, y + 1, z + z1) == Blocks.tallgrass || world.getBlock(x + x1, y + 1, z + z1) == Blocks.snow_layer || world.getBlock(x + x1, y + 1, z + z1) == Blocks.double_plant)
+                Block topBlock = world.getBlock(x + x1, y + 1, z + z1);
+				if (topBlock.isReplaceable(world, x + x1, y + 1, z + z1))
 				{
 					world.setBlockToAir(x + x1, y + 1, z + z1);
 				}
-				
-				if (world.getBlock(x + x1, y, z + z1) == Blocks.tallgrass || world.getBlock(x + x1, y, z + z1) == Blocks.snow_layer || world.getBlock(x + x1, y, z + z1) == Blocks.double_plant)
+                Block topBlock2 = world.getBlock(x + x1, y + 2, z + z1);
+                if (topBlock2.isReplaceable(world, x + x1, y + 2, z + z1))
+                {
+                    world.setBlockToAir(x + x1, y + 2, z + z1);
+                }
+                Block block = world.getBlock(x + x1, y, z + z1);
+				if (block.isReplaceable(world, x + x1, y, z + z1))
 				{
 					world.setBlockToAir(x + x1, y, z + z1);
 				}
@@ -77,15 +85,18 @@ public class DraconicHoe extends ItemHoe
 						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Item.getItemFromBlock(Blocks.dirt))));
 					world.setBlock(x + x1, y + 1, z + z1, Blocks.air);
 				}
-				
-				hoe(stack, player, world, x + x1, y, z + z1, par7);
+
+                if(hoe(stack, player, world, x + x1, y, z + z1, par7))
+				    successfull = true;
 			}
 		}
 		}
 		else
-			hoe(stack, player, world, x, y, z, par7);
-		
-		return false;
+            successfull = hoe(stack, player, world, x, y, z, par7);
+        Block block1 = Blocks.farmland;
+        if(successfull)
+            world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
+		return successfull;
 	}
 	
 	private boolean hoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7){
@@ -111,9 +122,8 @@ public class DraconicHoe extends ItemHoe
 			if (par7 != 0 && world.getBlock(x, y + 1, z).isAir(world, x, y + 1, z) && (block == Blocks.grass || block == Blocks.dirt))
 			{
 				Block block1 = Blocks.farmland;
-				world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
 
-				if (world.isRemote)
+		        if (world.isRemote)
 				{
 					return true;
 				} else
