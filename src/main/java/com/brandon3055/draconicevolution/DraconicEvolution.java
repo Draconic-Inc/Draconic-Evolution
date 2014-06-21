@@ -1,4 +1,4 @@
-package draconicevolution;
+package com.brandon3055.draconicevolution;
 
 import java.util.Arrays;
 
@@ -12,10 +12,10 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
-import draconicevolution.client.creativetab.TolkienTab;
-import draconicevolution.common.core.network.ChannelHandler;
-import draconicevolution.common.core.proxy.CommonProxy;
-import draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.client.creativetab.TolkienTab;
+import com.brandon3055.draconicevolution.common.core.network.ChannelHandler;
+import com.brandon3055.draconicevolution.common.core.proxy.CommonProxy;
+import com.brandon3055.draconicevolution.common.lib.References;
 
 @Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION)
 public class DraconicEvolution {

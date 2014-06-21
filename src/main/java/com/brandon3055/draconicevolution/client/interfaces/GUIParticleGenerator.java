@@ -1,4 +1,4 @@
-package draconicevolution.client.interfaces;
+package com.brandon3055.draconicevolution.client.interfaces;
 
 import java.util.ArrayList;
 
@@ -12,10 +12,10 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.core.network.ParticleGenPacket;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.network.ParticleGenPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 
 public class GUIParticleGenerator extends GuiScreen
 {

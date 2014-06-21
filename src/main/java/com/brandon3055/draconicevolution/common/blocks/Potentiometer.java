@@ -1,4 +1,4 @@
-package draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks;
 
 import static net.minecraftforge.common.util.ForgeDirection.DOWN;
 import static net.minecraftforge.common.util.ForgeDirection.EAST;
@@ -19,10 +19,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.lib.Strings;
-import draconicevolution.common.tileentities.TilePotentiometer;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TilePotentiometer;
 
 public class Potentiometer extends TolkienBlock
 {

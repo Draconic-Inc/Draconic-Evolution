@@ -1,4 +1,4 @@
-package draconicevolution.common.tileentities;
+package com.brandon3055.draconicevolution.common.tileentities;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

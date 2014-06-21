@@ -1,4 +1,4 @@
-package draconicevolution.client.interfaces;
+package com.brandon3055.draconicevolution.client.interfaces;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -11,9 +11,9 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.common.container.ContainerGrinder;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.tileentities.TileGrinder;
+import com.brandon3055.draconicevolution.common.container.ContainerGrinder;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 
 @SideOnly(Side.CLIENT)
 public class GUIGrinder extends GuiContainer {

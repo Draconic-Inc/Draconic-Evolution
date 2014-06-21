@@ -1,4 +1,4 @@
-package draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -9,10 +9,10 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.lib.Strings;
-import draconicevolution.common.tileentities.TileSunDial;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
 
 public class BlockSunDial extends TolkienBlock {
 	//@SideOnly(Side.CLIENT)

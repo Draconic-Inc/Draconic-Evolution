@@ -1,7 +1,7 @@
-package draconicevolution.common.core.network;
+package com.brandon3055.draconicevolution.common.core.network;
 
-import draconicevolution.common.container.ContainerWeatherController;
-import draconicevolution.common.tileentities.TileWeatherController;
+import com.brandon3055.draconicevolution.common.container.ContainerWeatherController;
+import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.inventory.Container;

@@ -1,8 +1,8 @@
-package draconicevolution.client.creativetab;
+package com.brandon3055.draconicevolution.client.creativetab;
 
-import draconicevolution.common.blocks.ModBlocks;
-import draconicevolution.common.core.handler.ConfigHandler;
-import draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.items.ModItems;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 

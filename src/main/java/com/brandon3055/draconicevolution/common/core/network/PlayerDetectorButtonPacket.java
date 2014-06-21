@@ -1,11 +1,11 @@
-package draconicevolution.common.core.network;
+package com.brandon3055.draconicevolution.common.core.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetHandlerPlayServer;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import draconicevolution.common.container.ContainerPlayerDetector;
-import draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
+import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
 
 
 public class PlayerDetectorButtonPacket implements IPacket

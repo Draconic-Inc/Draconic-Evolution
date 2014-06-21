@@ -1,4 +1,4 @@
-package draconicevolution.common.tileentities;
+package com.brandon3055.draconicevolution.common.tileentities;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +20,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import draconicevolution.common.container.ContainerPlayerDetector;
+import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
 
 public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
 {

@@ -1,6 +1,6 @@
-package draconicevolution.common.core.utills;
+package com.brandon3055.draconicevolution.common.core.utills;
 
-import draconicevolution.common.items.tools.Reader;
+import com.brandon3055.draconicevolution.common.items.tools.Reader;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

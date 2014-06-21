@@ -1,8 +1,8 @@
-package draconicevolution.common.container;
+package com.brandon3055.draconicevolution.common.container;
 
 import java.util.Iterator;
 
-import draconicevolution.common.tileentities.TileGrinder;
+import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -10,10 +10,10 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import draconicevolution.client.interfaces.GUIPlayerDetector;
-import draconicevolution.client.interfaces.SlotItemValid;
-import draconicevolution.client.interfaces.SlotOpaqueBlock;
-import draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import com.brandon3055.draconicevolution.client.interfaces.GUIPlayerDetector;
+import com.brandon3055.draconicevolution.client.interfaces.SlotItemValid;
+import com.brandon3055.draconicevolution.client.interfaces.SlotOpaqueBlock;
+import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
 
 public class ContainerPlayerDetector extends Container {
 

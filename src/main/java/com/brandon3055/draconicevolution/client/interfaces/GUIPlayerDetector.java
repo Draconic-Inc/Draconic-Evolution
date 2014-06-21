@@ -1,4 +1,4 @@
-package draconicevolution.client.interfaces;
+package com.brandon3055.draconicevolution.client.interfaces;
 
 import java.util.ArrayList;
 
@@ -14,12 +14,12 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.container.ContainerPlayerDetector;
-import draconicevolution.common.core.network.PlayerDetectorButtonPacket;
-import draconicevolution.common.core.network.PlayerDetectorStringPacket;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
+import com.brandon3055.draconicevolution.common.core.network.PlayerDetectorButtonPacket;
+import com.brandon3055.draconicevolution.common.core.network.PlayerDetectorStringPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
 
 @SideOnly(Side.CLIENT)
 public class GUIPlayerDetector extends GuiContainer

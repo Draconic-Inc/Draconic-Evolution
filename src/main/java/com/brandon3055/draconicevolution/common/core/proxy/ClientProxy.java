@@ -1,4 +1,4 @@
-package draconicevolution.common.core.proxy;
+package com.brandon3055.draconicevolution.common.core.proxy;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
@@ -7,13 +7,13 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import draconicevolution.client.render.BowRenderer;
-import draconicevolution.client.render.ItemParticleGenRenderer;
-import draconicevolution.client.render.ParticleGenRenderer;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.blocks.ModBlocks;
-import draconicevolution.common.items.ModItems;
-import draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.client.render.BowRenderer;
+import com.brandon3055.draconicevolution.client.render.ItemParticleGenRenderer;
+import com.brandon3055.draconicevolution.client.render.ParticleGenRenderer;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 
 public class ClientProxy extends CommonProxy {
 	private final static boolean debug = DraconicEvolution.debug;

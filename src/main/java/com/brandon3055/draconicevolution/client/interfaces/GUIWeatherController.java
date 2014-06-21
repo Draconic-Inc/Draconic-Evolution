@@ -1,4 +1,4 @@
-package draconicevolution.client.interfaces;
+package com.brandon3055.draconicevolution.client.interfaces;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -11,11 +11,11 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.container.ContainerWeatherController;
-import draconicevolution.common.core.network.ButtonPacket;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.tileentities.TileWeatherController;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.container.ContainerWeatherController;
+import com.brandon3055.draconicevolution.common.core.network.ButtonPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
 
 @SideOnly(Side.CLIENT)
 public class GUIWeatherController extends GuiContainer {

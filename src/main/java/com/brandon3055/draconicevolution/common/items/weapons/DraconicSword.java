@@ -1,4 +1,4 @@
-package draconicevolution.common.items.weapons;
+package com.brandon3055.draconicevolution.common.items.weapons;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.items.ModItems;
-import draconicevolution.common.items.tools.ToolHandler;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.items.tools.ToolHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
 
 public class DraconicSword extends ItemSword {
 	public DraconicSword() {

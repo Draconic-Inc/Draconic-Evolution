@@ -1,4 +1,4 @@
-package draconicevolution.client.interfaces;
+package com.brandon3055.draconicevolution.client.interfaces;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.IInventory;
@@ -8,8 +8,8 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.common.container.ContainerReader;
-import draconicevolution.common.core.utills.InventoryReader;
+import com.brandon3055.draconicevolution.common.container.ContainerReader;
+import com.brandon3055.draconicevolution.common.core.utills.InventoryReader;
 
 @SideOnly(Side.CLIENT)
 public class GUIReader extends GuiContainer {

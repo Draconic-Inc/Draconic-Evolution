@@ -1,8 +1,8 @@
-package draconicevolution.common.items.weapons;
+package com.brandon3055.draconicevolution.common.items.weapons;
 
 import java.util.Random;
 
-import draconicevolution.common.entity.EntityDraconicArrow;
+import com.brandon3055.draconicevolution.common.entity.EntityDraconicArrow;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;

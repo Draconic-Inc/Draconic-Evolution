@@ -1,4 +1,4 @@
-package draconicevolution.common.lib;
+package com.brandon3055.draconicevolution.common.lib;
 
 public class Strings {//                                              public static Block name
 	public static final String blockWeatherControllerName = "weatherController";

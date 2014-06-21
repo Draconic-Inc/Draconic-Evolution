@@ -1,4 +1,4 @@
-package draconicevolution.client.render;
+package com.brandon3055.draconicevolution.client.render;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -10,8 +10,8 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-import draconicevolution.common.lib.References;
-import draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 
 public class ParticleGenRenderer extends TileEntitySpecialRenderer
 {

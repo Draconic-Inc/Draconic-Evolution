@@ -1,4 +1,4 @@
-package draconicevolution.client.interfaces;
+package com.brandon3055.draconicevolution.client.interfaces;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -10,11 +10,11 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.container.ContainerSunDial;
-import draconicevolution.common.core.network.TeleporterPacket;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.tileentities.TileSunDial;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.container.ContainerSunDial;
+import com.brandon3055.draconicevolution.common.core.network.TeleporterPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
 
 @SideOnly(Side.CLIENT)
 public class GUISunDial extends GuiContainer {

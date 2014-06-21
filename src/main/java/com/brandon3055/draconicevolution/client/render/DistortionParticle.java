@@ -1,4 +1,4 @@
-package draconicevolution.client.render;
+package com.brandon3055.draconicevolution.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.References;
 
 public class DistortionParticle extends EntityFX
 {

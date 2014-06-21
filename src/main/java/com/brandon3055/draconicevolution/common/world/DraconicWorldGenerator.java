@@ -1,4 +1,4 @@
-package draconicevolution.common.world;
+package com.brandon3055.draconicevolution.common.world;
 
 import java.util.Random;
 
@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import cpw.mods.fml.common.IWorldGenerator;
-import draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 
 public class DraconicWorldGenerator implements IWorldGenerator {
 	@Override

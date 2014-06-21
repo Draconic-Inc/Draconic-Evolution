@@ -1,4 +1,4 @@
-package draconicevolution.common.tileentities;
+package com.brandon3055.draconicevolution.common.tileentities;
 
 import java.util.Random;
 
@@ -9,8 +9,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import draconicevolution.client.render.CustomParticle;
-import draconicevolution.common.core.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.render.CustomParticle;
+import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 
 public class TileParticleGenerator extends TileEntity
 {

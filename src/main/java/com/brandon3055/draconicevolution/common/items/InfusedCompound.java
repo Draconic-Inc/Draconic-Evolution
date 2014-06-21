@@ -1,7 +1,7 @@
-package draconicevolution.common.items;
+package com.brandon3055.draconicevolution.common.items;
 
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.Strings;
 
 public class InfusedCompound extends TolkienItem {
 	public InfusedCompound() {

@@ -1,23 +1,23 @@
-package draconicevolution.common.items;
+package com.brandon3055.draconicevolution.common.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraftforge.common.util.EnumHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
-import draconicevolution.common.items.tools.DraconicAxe;
-import draconicevolution.common.items.tools.DraconicDistructionStaff;
-import draconicevolution.common.items.tools.DraconicHoe;
-import draconicevolution.common.items.tools.DraconicPickaxe;
-import draconicevolution.common.items.tools.DraconicShovel;
-import draconicevolution.common.items.tools.TeleporterMKI;
-import draconicevolution.common.items.tools.TeleporterMKII;
-import draconicevolution.common.items.tools.WyvernPickaxe;
-import draconicevolution.common.items.tools.WyvernShovel;
-import draconicevolution.common.items.weapons.DraconicBow;
-import draconicevolution.common.items.weapons.DraconicSword;
-import draconicevolution.common.items.weapons.WyvernBow;
-import draconicevolution.common.items.weapons.WyvernSword;
+import com.brandon3055.draconicevolution.common.items.tools.DraconicAxe;
+import com.brandon3055.draconicevolution.common.items.tools.DraconicDistructionStaff;
+import com.brandon3055.draconicevolution.common.items.tools.DraconicHoe;
+import com.brandon3055.draconicevolution.common.items.tools.DraconicPickaxe;
+import com.brandon3055.draconicevolution.common.items.tools.DraconicShovel;
+import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKI;
+import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKII;
+import com.brandon3055.draconicevolution.common.items.tools.WyvernPickaxe;
+import com.brandon3055.draconicevolution.common.items.tools.WyvernShovel;
+import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
+import com.brandon3055.draconicevolution.common.items.weapons.DraconicSword;
+import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
+import com.brandon3055.draconicevolution.common.items.weapons.WyvernSword;
 
 public class ModItems {
 	public static ArmorMaterial DRACONIUMARMOR_T1 = EnumHelper.addArmorMaterial("DRACONIUMARMOR_T1", -1, new int[] { 3, 8, 6, 3 }, 30);

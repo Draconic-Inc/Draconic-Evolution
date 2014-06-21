@@ -1,12 +1,12 @@
 
-package draconicevolution.common.items;
+package com.brandon3055.draconicevolution.common.items;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.References;
 
 public class TolkienItem extends Item {
 	public String getUnwrappedUnlocalizedName(final String unlocalizedName)

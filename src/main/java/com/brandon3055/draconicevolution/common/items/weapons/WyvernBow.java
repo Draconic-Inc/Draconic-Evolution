@@ -1,4 +1,4 @@
-package draconicevolution.common.items.weapons;
+package com.brandon3055.draconicevolution.common.items.weapons;
 
 import java.util.List;
 
@@ -22,11 +22,11 @@ import org.lwjgl.input.Keyboard;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.core.helper.ItemNBTHelper;
-import draconicevolution.common.items.ModItems;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
 
 public class WyvernBow extends ItemBow {
 	public static final String[] bowPullIconNameArray = new String[] { "pulling_0", "pulling_1", "pulling_2" };

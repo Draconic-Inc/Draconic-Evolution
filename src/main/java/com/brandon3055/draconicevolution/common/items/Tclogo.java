@@ -1,8 +1,8 @@
-package draconicevolution.common.items;
+package com.brandon3055.draconicevolution.common.items;
 
 import java.util.List;
 
-import draconicevolution.common.items.tools.ToolHandler;
+import com.brandon3055.draconicevolution.common.items.tools.ToolHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -12,7 +12,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.lib.Strings;
 
 public class Tclogo extends TolkienItem {
 	public Tclogo() {

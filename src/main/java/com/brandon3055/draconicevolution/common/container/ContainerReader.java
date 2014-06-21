@@ -1,4 +1,4 @@
-package draconicevolution.common.container;
+package com.brandon3055.draconicevolution.common.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -6,8 +6,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import draconicevolution.common.core.utills.InventoryReader;
-import draconicevolution.common.items.tools.Reader;
+import com.brandon3055.draconicevolution.common.core.utills.InventoryReader;
+import com.brandon3055.draconicevolution.common.items.tools.Reader;
 
 public class ContainerReader extends Container
 {

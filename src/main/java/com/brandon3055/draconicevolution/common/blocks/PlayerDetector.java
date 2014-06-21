@@ -1,4 +1,4 @@
-package draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -9,10 +9,10 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.lib.Strings;
-import draconicevolution.common.tileentities.TilePlayerDetector;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetector;
 
 public class PlayerDetector extends TolkienBlock
 {

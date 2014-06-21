@@ -1,4 +1,4 @@
-package draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks;
 
 import java.util.List;
 
@@ -22,11 +22,11 @@ import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.client.interfaces.GuiHandler;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.lib.Strings;
-import draconicevolution.common.tileentities.TileGrinder;
+import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 
 public class Grinder extends BlockContainer
 {

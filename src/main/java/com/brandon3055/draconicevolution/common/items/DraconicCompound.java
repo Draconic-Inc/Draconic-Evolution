@@ -1,9 +1,9 @@
-package draconicevolution.common.items;
+package com.brandon3055.draconicevolution.common.items;
 
 import java.util.List;
 
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 

@@ -1,9 +1,9 @@
-package draconicevolution.common.core.handler;
+package com.brandon3055.draconicevolution.common.core.handler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
-import draconicevolution.client.render.DistortionParticle;
+import com.brandon3055.draconicevolution.client.render.DistortionParticle;
 
 public class ParticleHandler
 {

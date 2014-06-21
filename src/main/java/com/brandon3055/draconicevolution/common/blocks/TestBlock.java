@@ -1,4 +1,4 @@
-package draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks;
 
 import java.util.Random;
 
@@ -8,9 +8,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.core.handler.ParticleHandler;
-import draconicevolution.common.core.network.ExamplePacket;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.common.core.network.ExamplePacket;
 
 public class TestBlock extends TolkienBlock {
 

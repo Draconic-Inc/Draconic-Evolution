@@ -1,4 +1,4 @@
-package draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks;
 
 import java.util.Random;
 
@@ -11,10 +11,10 @@ import net.minecraft.util.IIcon;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.items.ModItems;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.world.IBlockAccess;
 
 public class DraconiumOre extends TolkienBlock {

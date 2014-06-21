@@ -1,8 +1,8 @@
-package draconicevolution.common.core.network;
+package com.brandon3055.draconicevolution.common.core.network;
 
-import draconicevolution.common.core.handler.ConfigHandler;
-import draconicevolution.common.core.helper.ItemNBTHelper;
-import draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.items.ModItems;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.init.Items;

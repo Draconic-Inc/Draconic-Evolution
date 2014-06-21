@@ -1,9 +1,9 @@
-package draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks;
 
 import net.minecraft.block.Block;
 import cpw.mods.fml.common.registry.GameRegistry;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.core.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 
 public class ModBlocks {
 	public static Block xRayBlock;

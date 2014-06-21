@@ -1,4 +1,4 @@
-package draconicevolution.common.core.helper;
+package com.brandon3055.draconicevolution.common.core.helper;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

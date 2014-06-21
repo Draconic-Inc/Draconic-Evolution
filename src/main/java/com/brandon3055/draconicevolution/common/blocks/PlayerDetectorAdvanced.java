@@ -1,12 +1,12 @@
-package draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import draconicevolution.client.interfaces.GuiHandler;
-import draconicevolution.DraconicEvolution;
-import draconicevolution.common.lib.References;
-import draconicevolution.common.lib.Strings;
-import draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;

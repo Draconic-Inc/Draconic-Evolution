@@ -1,10 +1,10 @@
-package draconicevolution.common.core.network;
+package com.brandon3055.draconicevolution.common.core.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
-import draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 
 public class ParticleGenPacket implements IPacket
 {

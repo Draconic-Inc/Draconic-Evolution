@@ -1,4 +1,4 @@
-package draconicevolution.common.core.network;
+package com.brandon3055.draconicevolution.common.core.network;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

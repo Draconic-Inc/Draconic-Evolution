@@ -1,11 +1,11 @@
-package draconicevolution.common.items.tools;
+package com.brandon3055.draconicevolution.common.items.tools;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import draconicevolution.common.core.helper.ItemNBTHelper;
-import draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.items.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -144,9 +144,8 @@ public class ToolHandler {
 	}
 
 	public static void demageEntytyBasedOnHealth(Entity entity, EntityPlayer player, float dmg) {
-		System.out.println(dmg);
 		World world = player.worldObj;
-		if (entity instanceof EntityLivingBase) {//entity.getEyeHeight() > 0) {
+		if (entity instanceof EntityLivingBase) {
 			float entHealth = ((EntityLivingBase) entity).getHealth();
 			if (!world.isRemote) {
 				if (entHealth > 20) {
@@ -155,12 +154,10 @@ public class ToolHandler {
 			}
 		} else if (entity instanceof EntityDragonPart) {
 			if (!world.isRemote) {
-				System.out.println("part");
 				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 200F * dmg);
 			}
 		} else {
 			if (!world.isRemote) {
-				System.out.println("Oter");
 				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 100F * dmg);
 			}
 		}
