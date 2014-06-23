@@ -38,31 +38,31 @@ public class BowHandler {
 
 			f *= speedModifier;
 
-			EntityDraconicArrow entityarrow = new EntityDraconicArrow(stack, world, player, f * 2.0F);//.setShooter(player);
+			EntityDraconicArrow entityArrow = new EntityDraconicArrow(stack, world, player, f * 2.0F);//.setShooter(player);
 
 			if (f >= 1.0F)
-				entityarrow.setIsCritical(true);
+				entityArrow.setIsCritical(true);
 
 			int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, stack);
 
 			if (k > 0) 											//
-				entityarrow.setDamage(entityarrow.getDamage() + k + 0.5D);
+				entityArrow.setDamage(entityArrow.getDamage() + k + 0.5D);
 
 			int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, stack);
 
 			if (l > 0)
-				entityarrow.setKnockbackStrength(l * 2);
+				entityArrow.setKnockbackStrength(l * 2);
 
 			if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, stack) > 0)
-				entityarrow.setFire(200);
+				entityArrow.setFire(200);
 
 			if (ignorSpeedWhenCalculatingDamage) {
-				entityarrow.ignorSpeed = true;
-				entityarrow.setDamage(entityarrow.getDamage() + ignorSpeedCompensation);
+				entityArrow.ignorSpeed = true;
+				entityArrow.setDamage(entityArrow.getDamage() + ignorSpeedCompensation);
 			}
 			if (isExplosive) {
 				if ((player.inventory.hasItemStack(new ItemStack(Items.gunpowder, 4)) || player.capabilities.isCreativeMode)) {
-					entityarrow.explosive = isExplosive;
+					entityArrow.explosive = isExplosive;
 					for (int i = 0; i < 4; ++i)
 						player.inventory.consumeInventoryItem(Items.gunpowder);
 				} else {
@@ -75,14 +75,14 @@ public class BowHandler {
 			world.playSoundAtEntity(player, "random.bow", 1.0F, soundPitchModifier * (1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.3F));
 
 			if (flag)
-				entityarrow.canBePickedUp = 2;
+				entityArrow.canBePickedUp = 2;
 			else {
-				entityarrow.canBePickedUp = 1;
+				entityArrow.canBePickedUp = 1;
 				player.inventory.consumeInventoryItem(Items.arrow);
 			}
 
 			if (!world.isRemote)
-				world.spawnEntityInWorld(entityarrow);
+				world.spawnEntityInWorld(entityArrow);
 		}
 	}
 

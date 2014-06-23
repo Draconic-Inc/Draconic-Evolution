@@ -87,9 +87,9 @@ public class DraconicBow extends ItemBow
 		else if (currentMode.equals("sharpshooter"))
 			BowHandler.standerdShot(stack, world, player, count, itemRand, 21F, 5F, true, 30D, 0.7F, false, 20);
 		else if (currentMode.equals("explosive"))
-			BowHandler.standerdShot(stack, world, player, count, itemRand, 5F, 0.8F, true, 0D, 1F, true, 40);
+			BowHandler.standerdShot(stack, world, player, count, itemRand, 5F, 0.5F, true, 0D, 1F, true, 80);
 		else if (currentMode.equals("devistation"))
-			BowHandler.standerdShot(stack, world, player, count, itemRand, 2F, 1.5F, true, 0D, 1F, true, 0);
+			BowHandler.standerdShot(stack, world, player, count, itemRand, 2F, 2.0F, true, 0D, 1F, true, 0);
 	}
 
 	public void changeMode(ItemStack stack, EntityPlayer player)
@@ -170,9 +170,9 @@ public class DraconicBow extends ItemBow
 				return getItemIconForUseDuration(0);
 		} else
 		{
-			if (j >= 40)
+			if (j >= 80)
 				return getItemIconForUseDuration(2);
-			else if (j > 20)
+			else if (j > 40)
 				return getItemIconForUseDuration(1);
 			else if (j > 0)
 				return getItemIconForUseDuration(0);
