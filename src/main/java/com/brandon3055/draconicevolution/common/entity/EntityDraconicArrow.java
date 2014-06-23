@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.entity;
 
 import java.util.List;
 
+import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -71,10 +72,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		//this.dataWatcher.addObject(16, Byte.valueOf((byte) 0));
 	}
 
-	/**
-	 * Similar to setArrowHeading, it's point the throwable entity to a x, y, z
-	 * direction.
-	 */
 	@Override
 	public void setThrowableHeading(double par1, double par3, double par5, float par7, float par8)
 	{
@@ -97,11 +94,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		this.ticksInGround = 0;
 	}
 
-	/**
-	 * Sets the position and rotation. Only difference from the other one is no
-	 * bounding on the rotation. Args: posX,
-	 * posY, posZ, yaw, pitch
-	 */
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9)
@@ -110,9 +102,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		this.setRotation(par7, par8);
 	}
 
-	/**
-	 * Sets the velocity to the args. Args: x, y, z
-	 */
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void setVelocity(double par1, double par3, double par5)
@@ -132,9 +121,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		}
 	}
 
-	/**
-	 * Called to update the entity's position/logic.
-	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void onUpdate()
@@ -151,7 +137,7 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 
 		if (block.getMaterial() != Material.air) {
 			if (explosive) {
-				world.createExplosion(this.shootingEntity, this.field_145791_d, this.field_145792_e, this.field_145789_f, 10, true);
+				world.createExplosion(this.shootingEntity, this.field_145791_d, this.field_145792_e, this.field_145789_f, 4, ConfigHandler.bowBlockDamage);
 				this.setDead();
 			}
 			block.setBlockBoundsBasedOnState(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
@@ -239,9 +225,9 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 			if (movingobjectposition != null) {
 				if (movingobjectposition.entityHit != null) {
 					if (explosive) {
-						world.createExplosion(this.shootingEntity, movingobjectposition.entityHit.posX, movingobjectposition.entityHit.posY, movingobjectposition.entityHit.posZ, 15, false);
-						movingobjectposition.entityHit.hurtResistantTime = 0;
-						world.createExplosion(this.shootingEntity, movingobjectposition.entityHit.posX, movingobjectposition.entityHit.posY, movingobjectposition.entityHit.posZ, 4, true);
+						//world.createExplosion(this.shootingEntity, movingobjectposition.entityHit.posX, movingobjectposition.entityHit.posY, movingobjectposition.entityHit.posZ, 6, false);
+						//movingobjectposition.entityHit.hurtResistantTime = 0;
+						world.createExplosion(this.shootingEntity, movingobjectposition.entityHit.posX, movingobjectposition.entityHit.posY, movingobjectposition.entityHit.posZ, 4, ConfigHandler.bowBlockDamage);
 						this.setDead();
 					}
 					int k;
@@ -394,9 +380,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		}
 	}
 
-	/**
-	 * (abstract) Protected helper method to write subclass entity data to NBT.
-	 */
 	@Override
 	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
 	{
@@ -413,9 +396,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		//par1NBTTagCompound.setString("shooter", getShooter() instanceof EntityPlayer ? ((EntityPlayer) getShooter()).getCommandSenderName() : "");
 	}
 
-	/**
-	 * (abstract) Protected helper method to read subclass entity data from NBT.
-	 */
 	@Override
 	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
 	{
@@ -440,9 +420,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		}
 	}
 
-	/**
-	 * Called by a player entity when they collide with an entity
-	 */
 	@Override
 	public void onCollideWithPlayer(EntityPlayer par1EntityPlayer)
 	{
@@ -461,11 +438,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		}
 	}
 
-	/**
-	 * returns if this entity triggers Block.onEntityWalking on the blocks they
-	 * walk on. used for spiders and wolves to
-	 * prevent them from trampling crops
-	 */
 	@Override
 	protected boolean canTriggerWalking()
 	{
@@ -491,28 +463,18 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		return this.damage;
 	}
 
-	/**
-	 * Sets the amount of knockback the arrow applies when it hits a mob.
-	 */
 	@Override
 	public void setKnockbackStrength(int par1)
 	{
 		this.knockbackStrength = par1;
 	}
 
-	/**
-	 * If returns false, the item will not inflict any damage against entities.
-	 */
 	@Override
 	public boolean canAttackWithItem()
 	{
 		return false;
 	}
 
-	/**
-	 * Whether the arrow has a stream of critical hit particles flying behind
-	 * it.
-	 */
 	@Override
 	public void setIsCritical(boolean par1)
 	{
@@ -525,10 +487,6 @@ public class EntityDraconicArrow extends EntityArrow implements IProjectile {
 		}
 	}
 
-	/**
-	 * Whether the arrow has a stream of critical hit particles flying behind
-	 * it.
-	 */
 	@Override
 	public boolean getIsCritical()
 	{

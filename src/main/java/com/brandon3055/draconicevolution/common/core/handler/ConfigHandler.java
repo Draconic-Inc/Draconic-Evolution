@@ -15,6 +15,7 @@ public class ConfigHandler
 		disableSunDial = config.get("Misc", "'Disable Sun Dial' 0:Default, 1:Disable recipe, 2:Disable compleatly", 0).getInt(0);
 		disableXrayBlock = config.get("Misc", "'Disable Distortion Flame' 0:Default, 1:Disable recipe, 2:Disable compleatly", 0).getInt(0);
 		teleporterUsesPerPearl = config.get("Misc", "Charm of Dislocation uses per pearl", 10).getInt(10);
+		bowBlockDamage = config.get("Misc", "Draconic bow explosion damages blocks", true).getBoolean(true);
 		
 		config.save();
 	}
@@ -22,5 +23,6 @@ public class ConfigHandler
 	public static int disableSunDial;
 	public static int teleporterUsesPerPearl;
 	public static int disableXrayBlock;
+	public static boolean bowBlockDamage;
 
 }
