@@ -17,6 +17,8 @@ public class ModBlocks {
 	public static Block particleGenerator;
 	public static Block playerDetector;
 	public static Block playerDetectorAdvanced;
+	public static Block energyInfuser;
+	public static Block customSpawner;
 
 	public static void init()
 	{
@@ -30,13 +32,15 @@ public class ModBlocks {
 		particleGenerator = new ParticleGenerator();
 		playerDetector = new PlayerDetector();
 		playerDetectorAdvanced = new PlayerDetectorAdvanced();
+		energyInfuser = new EnergyInfuser();
+		customSpawner = new CustomSpawner();
 		
 		if(DraconicEvolution.debug) testBlock = new TestBlock();
 		//testBlock = new TestBlock();
 
 	}
 
-	public static void register(final TolkienBlock block)
+	public static void register(final DraconicEvolutionBlock block)
 	{
 		GameRegistry.registerBlock(block, block.getUnwrappedUnlocalizedName(block.getUnlocalizedName()));
 	}

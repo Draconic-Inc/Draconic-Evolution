@@ -1,7 +1,11 @@
 package com.brandon3055.draconicevolution.common.core.proxy;
 
+import com.brandon3055.draconicevolution.common.core.handler.MinecraftForgeEventHandler;
 import com.brandon3055.draconicevolution.common.core.network.*;
+import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -14,15 +18,7 @@ import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.core.handler.CraftingHandler;
 import com.brandon3055.draconicevolution.common.core.handler.FMLEventHandler;
-import com.brandon3055.draconicevolution.common.core.handler.ModEventHandler;
 import com.brandon3055.draconicevolution.common.items.ModItems;
-import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
-import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetector;
-import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
-import com.brandon3055.draconicevolution.common.tileentities.TilePotentiometer;
-import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
-import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
 
 public class CommonProxy {
 	private final static boolean debug = DraconicEvolution.debug;
@@ -44,6 +40,7 @@ public class CommonProxy {
 		registerWorldGen();
 		DraconicEvolution.channelHandler.initialise();
 		registerPackets();
+		registerEntitys();
 	}
 
 	public void postInit(FMLPostInitializationEvent event)
@@ -60,11 +57,15 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileParticleGenerator.class, "TileParticleGenerator");
 		GameRegistry.registerTileEntity(TilePlayerDetector.class, "TilePlayerDetector");
 		GameRegistry.registerTileEntity(TilePlayerDetectorAdvanced.class, "TilePlayerDetectorAdvanced");
+		GameRegistry.registerTileEntity(TileEnergyInfuser.class, "TileEnergyInfuser");
+		GameRegistry.registerTileEntity(TileCustomSpawner.class, "TileCustomSpawner");
+		if(DraconicEvolution.debug)
+			GameRegistry.registerTileEntity(TileTestBlock.class, "TileTestBlock");
 	}
 
 	public void registerEventListeners()
 	{
-		MinecraftForge.EVENT_BUS.register(new ModEventHandler());
+		MinecraftForge.EVENT_BUS.register(new MinecraftForgeEventHandler());
 		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
 	}
 
@@ -91,5 +92,11 @@ public class CommonProxy {
 	public void registerWorldGen()
 	{
 		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 1);
+	}
+
+	public void registerEntitys(){
+		int dragonID = EntityRegistry.findGlobalUniqueEntityId();
+		int cyan = (0 << 16) + (255 << 8) + 255;
+		EntityRegistry.registerGlobalEntityID(EntityCustomDragon.class, "enderDragon", dragonID, cyan, 0);
 	}
 }

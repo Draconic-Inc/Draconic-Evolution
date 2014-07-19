@@ -10,12 +10,6 @@ public class Strings {//                                              public sta
 	public static final String draconicPickaxeName = "draconicPickaxe";
 	public static final String draconicSwordName = "draconicSword";
 	public static final String infusedCompoundName = "infusedCompound";
-	public static final String rawDraconicPickHeadName = "rawDraconicPickHead";
-	public static final String rawDraconicSwordBladeName = "rawDraconicSwordBlade";
-	public static final String draconicSwordBladeName = "draconicSwordBlade";
-	public static final String draconicPickHeadName = "draconicPickHead";
-	public static final String draconiumOreEndName = "draconiumOreEnd";
-	public static final String draconiumOreNetherName = "draconiumOreNether";
 	public static final String draconiumDustName = "draconiumDust";
 	public static final String draconiumIngotName = "draconiumIngot";
 	public static final String draconiumBlendName = "draconiumBlend";
@@ -26,10 +20,8 @@ public class Strings {//                                              public sta
 	public static final String draconicDStaffName = "draconicDistructionStaff";
 	public static final String draconicCompoundName = "draconicCompound";
 	public static final String wyvernSwordName = "wyvernSword";
-	public static final String testFurnaceName = "testFurnace";
 	public static final String wyvernBowName = "wyvernBow";
 	public static final String draconicBowName = "draconicBow";
-	public static final String wyvernChestPlateName = "wyvernChestPlate";
 	public static final String draconiumOreName = "draconiumOre";
 	public static final String teleporterMKIName = "teleporterMKI";
 	public static final String draconicHoeName = "draconicHoe";
@@ -42,4 +34,15 @@ public class Strings {//                                              public sta
 	public static final String particleGeneratorName = "particleGenerator";
 	public static final String playerDetectorName = "playerDetector";
 	public static final String playerDetectorAdvancedName = "playerDetectorAdvanced";
+	public static final String energyInfuserName = "energyInfuser";
+	public static final String draconicHelmName = "draconicHelm";
+	public static final String draconicChestName = "draconicChest";
+	public static final String draconicLeggsName = "draconicLeggs";
+	public static final String draconicBootsName = "draconicBoots";
+	public static final String wyvernHelmName = "wyvernHelm";
+	public static final String wyvernChestName = "wyvernChest";
+	public static final String wyvernLeggsName = "wyvernLeggs";
+	public static final String wyvernBootsName = "wyvernBoots";
+	public static final String customSpawnerName = "customSpawner";
+	public static final String MobSoulName = "mobSoul";
 }

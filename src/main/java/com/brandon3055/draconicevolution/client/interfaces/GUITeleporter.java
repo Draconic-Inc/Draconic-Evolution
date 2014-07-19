@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.core.network.TeleporterPacket;
 import com.brandon3055.draconicevolution.common.core.network.TeleporterStringPacket;
 import com.brandon3055.draconicevolution.common.items.ModItems;

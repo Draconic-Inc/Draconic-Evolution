@@ -17,13 +17,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
-import org.lwjgl.input.Keyboard;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -147,7 +145,6 @@ public class WyvernBow extends ItemBow {
 		return this.itemIcon;
 	}
 
-	//@Override
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getItemIconForUseDuration(int par1)
@@ -162,14 +159,11 @@ public class WyvernBow extends ItemBow {
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
 		list.add(EnumChatFormatting.DARK_PURPLE + "" + StatCollector.translateToLocal("msg.bowmode" + ItemNBTHelper.getString(stack, "mode", "rapidfire") + ".txt"));
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "Hold shift for info");
-		} else {
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "You have learned how to use draconic power to upgrade");
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "your bow, what benefits does it have?");
-			list.add("");
-			list.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + "Enchants are twice as effective on this bow");
-		}
+		list.add("");
+		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "You have learned how to use draconic power to upgrade");
+		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "your bow, what benefits does it have?");
+		list.add("");
+		list.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + "Enchants are twice as effective on this bow");
 	}
 
 	public static void registerRecipe()
@@ -177,3 +171,4 @@ public class WyvernBow extends ItemBow {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.wyvernBow), " I ", "CBC", " I ", 'C', ModItems.infusedCompound, 'B', Items.bow, 'I', ModItems.draconiumIngot);
 	}
 }
+

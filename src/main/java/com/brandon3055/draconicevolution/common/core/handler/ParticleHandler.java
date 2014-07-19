@@ -9,8 +9,7 @@ public class ParticleHandler
 {
 	private static Minecraft mc = Minecraft.getMinecraft();
 	private static World theWorld = mc.theWorld;
-	//private static TextureManager renderEngine = mc.renderEngine;
-	
+
 	public static EntityFX spawnParticle(String particleName, double x, double y, double z, double motionX, double motionY, double motionZ, float scale)
 	{
 		if (mc != null && mc.renderViewEntity != null && mc.effectRenderer != null)
@@ -44,8 +43,12 @@ public class ParticleHandler
 		}
 		return null;
 	}
-	
-	public static EntityFX spawnCustomParticle(EntityFX particle)
+
+	public static EntityFX spawnCustomParticle(EntityFX particle){
+		return spawnCustomParticle(particle, 256);
+	}
+
+	public static EntityFX spawnCustomParticle(EntityFX particle, double vewRange)
 	{
 		if (mc != null && mc.renderViewEntity != null && mc.effectRenderer != null)
 		{
@@ -57,8 +60,7 @@ public class ParticleHandler
 			double var15 = mc.renderViewEntity.posX - particle.posX;
 			double var17 = mc.renderViewEntity.posY - particle.posY;
 			double var19 = mc.renderViewEntity.posZ - particle.posZ;
-			double var22 = 256.0D;
-			if (var15 * var15 + var17 * var17 + var19 * var19 > var22 * var22)
+			if (var15 * var15 + var17 * var17 + var19 * var19 > vewRange * vewRange)
 			{
 				return null;
 			} else if (var14 > 1)

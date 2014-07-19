@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.blocks;
 import java.util.List;
 import java.util.Random;
 
+import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -10,18 +11,16 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.core.network.ExamplePacket;
 
-public class TestBlock extends TolkienBlock {
+public class TestBlock extends DraconicEvolutionBlock {
 
 	protected TestBlock() {
 		super(Material.rock);
@@ -41,6 +40,16 @@ public class TestBlock extends TolkienBlock {
 	}
 
 	@Override
+	public boolean hasTileEntity(int metadata) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, int metadata) {
+		return null;//new TileTestBlock();
+	}
+
+	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
 		return new ItemStack(Item.getItemFromBlock(world.getBlock(x,y,z)), 1, world.getBlockMetadata(x,y,z));
 		//return super.getPickBlock(target, world, x, y, z);
@@ -56,16 +65,16 @@ public class TestBlock extends TolkienBlock {
 	{
 		return false;
 	}
-	
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float px, float py, float pz)
 	{
 
-		//EntityLightningBolt bolt = new EntityLightningBolt(world, x, y, z + 5);
-		System.out.println(world.getBlockMetadata(x,y,z));
-		//world.spawnEntityInWorld(bolt);
+		EntityLightningBolt bolt = new EntityLightningBolt(world, x, y, z + 5);
+		//System.out.println(world.getBlockMetadata(x,y,z));
+		world.spawnEntityInWorld(bolt);
 		/*
+
 		if (!world.isRemote && !player.isSneaking())
 		{
 			System.out.println("Sending from server");
@@ -96,7 +105,6 @@ public class TestBlock extends TolkienBlock {
 		return super.getItemDropped( p_149650_1_,  p_149650_2_,  p_149650_3_);
 	}
 
-	
 	@Override
 	public void randomDisplayTick(World world, int x, int y, int z, Random rand)
 	{

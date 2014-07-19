@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.weapons;
 
 import java.util.List;
 
+import cofh.api.energy.IEnergyContainerItem;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,6 +12,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -21,7 +23,12 @@ import com.brandon3055.draconicevolution.common.items.tools.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class WyvernSword extends ItemSword {
+public class WyvernSword extends ItemSword implements IEnergyContainerItem{
+
+	protected int capacity = References.WYVERNCAPACITY;
+	protected int maxReceive = References.WYVERNTRANSFER;
+	protected int maxExtract = References.WYVERNTRANSFER;
+
 	public WyvernSword() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.wyvernSwordName);
@@ -72,4 +79,60 @@ public class WyvernSword extends ItemSword {
 		System.out.println(par3EntityLivingBase.isEntityAlive());
 		return super.hitEntity(par1ItemStack, par2EntityLivingBase, par3EntityLivingBase);
 	}
+
+	@Override
+	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+
+		if (container.stackTagCompound == null) {
+			container.stackTagCompound = new NBTTagCompound();
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+
+		if (!simulate) {
+			energy += energyReceived;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyReceived;
+	}
+
+	@Override
+	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+
+		if (!simulate) {
+			energy -= energyExtracted;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyExtracted;
+	}
+
+	@Override
+	public int getEnergyStored(ItemStack container) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		return container.stackTagCompound.getInteger("EnergyHelper");
+	}
+
+	@Override
+	public int getMaxEnergyStored(ItemStack container) {
+		return capacity;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return !(getEnergyStored(stack) == getMaxEnergyStored(stack));
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+		return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
+	}
 }
+

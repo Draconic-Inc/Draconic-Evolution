@@ -24,7 +24,7 @@ public class DraconicWorldGenerator implements IWorldGenerator {
 				generateNether(random, chunkX * 16, chunkZ * 16, world);
 				break;
 			default:
-				;
+				break;
 		}
 
 	}

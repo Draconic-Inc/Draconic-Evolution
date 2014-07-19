@@ -5,7 +5,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 
 public class TeleporterStringPacket implements IPacket

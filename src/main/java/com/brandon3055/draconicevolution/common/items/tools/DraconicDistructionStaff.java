@@ -3,6 +3,8 @@ package com.brandon3055.draconicevolution.common.items.tools;
 import java.util.List;
 import java.util.Set;
 
+import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,6 +18,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -30,18 +33,21 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class DraconicDistructionStaff extends ItemTool {
+public class DraconicDistructionStaff extends ItemTool implements IEnergyContainerItem {
 	public IIcon itemIcon0;
 	public IIcon itemIcon1;
 	public IIcon itemIcon2;
+	protected int capacity = References.DRACONICCAPACITY;
+	protected int maxReceive = References.DRACONICTRANSFER;
+	protected int maxExtract = References.DRACONICTRANSFER * 50;
 
 	private static Set<Block> minableBlocks = Sets.newHashSet();
-	private static final Set<Block> field_150915_c = Sets.newHashSet(new Block[]{Blocks.cobblestone, Blocks.double_stone_slab, Blocks.stone_slab, Blocks.stone, Blocks.sandstone, Blocks.mossy_cobblestone, Blocks.iron_ore, Blocks.iron_block, Blocks.coal_ore, Blocks.gold_block, Blocks.gold_ore, Blocks.diamond_ore, Blocks.diamond_block, Blocks.ice, Blocks.netherrack, Blocks.lapis_ore, Blocks.lapis_block, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.rail, Blocks.detector_rail, Blocks.golden_rail, Blocks.activator_rail});
+/*	private static final Set<Block> field_150915_c = Sets.newHashSet(new Block[]{Blocks.cobblestone, Blocks.double_stone_slab, Blocks.stone_slab, Blocks.stone, Blocks.sandstone, Blocks.mossy_cobblestone, Blocks.iron_ore, Blocks.iron_block, Blocks.coal_ore, Blocks.gold_block, Blocks.gold_ore, Blocks.diamond_ore, Blocks.diamond_block, Blocks.ice, Blocks.netherrack, Blocks.lapis_ore, Blocks.lapis_block, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.rail, Blocks.detector_rail, Blocks.golden_rail, Blocks.activator_rail});
 	private static final Set<Block> field_150916_c = Sets.newHashSet(new Block[]{Blocks.grass, Blocks.dirt, Blocks.sand, Blocks.gravel, Blocks.snow_layer, Blocks.snow, Blocks.clay, Blocks.farmland, Blocks.soul_sand, Blocks.mycelium});
 	private static final Set<Block> field_150917_c = Sets.newHashSet(new Block[]{Blocks.planks, Blocks.bookshelf, Blocks.log, Blocks.log2, Blocks.chest, Blocks.pumpkin, Blocks.lit_pumpkin});
 
@@ -57,7 +63,7 @@ public class DraconicDistructionStaff extends ItemTool {
 
 			minableBlocks.add(block);
 		}
-	}
+	}*/
 
 	public DraconicDistructionStaff() {
 		super(0F, ModItems.DRACONIUM_T3, minableBlocks);
@@ -70,13 +76,13 @@ public class DraconicDistructionStaff extends ItemTool {
 	}
 
 	@Override
-	public boolean func_150897_b(Block p_150897_1_) {
-		return p_150897_1_ == Blocks.obsidian ? this.toolMaterial.getHarvestLevel() == 3 : (p_150897_1_ != Blocks.diamond_block && p_150897_1_ != Blocks.diamond_ore ? (p_150897_1_ != Blocks.emerald_ore && p_150897_1_ != Blocks.emerald_block ? (p_150897_1_ != Blocks.gold_block && p_150897_1_ != Blocks.gold_ore ? (p_150897_1_ != Blocks.iron_block && p_150897_1_ != Blocks.iron_ore ? (p_150897_1_ != Blocks.lapis_block && p_150897_1_ != Blocks.lapis_ore ? (p_150897_1_ != Blocks.redstone_ore && p_150897_1_ != Blocks.lit_redstone_ore ? (p_150897_1_.getMaterial() == Material.rock ? true : (p_150897_1_.getMaterial() == Material.iron ? true : p_150897_1_.getMaterial() == Material.anvil)) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2);
+	public boolean func_150897_b(Block block) {
+		return block == Blocks.obsidian ? toolMaterial.getHarvestLevel() == 3 : (block != Blocks.diamond_block && block != Blocks.diamond_ore ? (block != Blocks.emerald_ore && block != Blocks.emerald_block ? (block != Blocks.gold_block && block != Blocks.gold_ore ? (block != Blocks.iron_block && block != Blocks.iron_ore ? (block != Blocks.lapis_block && block != Blocks.lapis_ore ? (block != Blocks.redstone_ore && block != Blocks.lit_redstone_ore ? (block.getMaterial() == Material.rock ? true : (block.getMaterial() == Material.iron ? true : block.getMaterial() == Material.anvil)) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2);
 	}
 
 	@Override
-	public float func_150893_a(ItemStack p_150893_1_, Block p_150893_2_) {
-		return p_150893_2_.getMaterial() != Material.iron && p_150893_2_.getMaterial() != Material.anvil && p_150893_2_.getMaterial() != Material.rock ? super.func_150893_a(p_150893_1_, p_150893_2_) : this.efficiencyOnProperMaterial;
+	public float func_150893_a(ItemStack stack, Block block) {
+		return block.getMaterial() != Material.iron && block.getMaterial() != Material.anvil && block.getMaterial() != Material.rock ? super.func_150893_a(stack, block) : this.efficiencyOnProperMaterial;
 	}
 
 	@Override
@@ -144,8 +150,10 @@ public class DraconicDistructionStaff extends ItemTool {
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
 		int size = (ItemNBTHelper.getShort(stack, "size", (short) 0) * 2) + 1;
 		boolean oblit = ItemNBTHelper.getBoolean(stack, "obliterate", false);
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54)))
+		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
 			list.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
+			ItemInfoHelper.energyDisplayInfo(stack, list);
+		}
 		else {
 			list.add(EnumChatFormatting.GREEN + "Mining Mode: " + EnumChatFormatting.BLUE + size + "x" + size);
 			list.add(EnumChatFormatting.GREEN + "Shift Right-click to change minning mode");
@@ -167,4 +175,66 @@ public class DraconicDistructionStaff extends ItemTool {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicDistructionStaff), "DFD", "PTS", "DWD", 'F', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'T', ModItems.draconicCore, 'P', ModItems.draconicPickaxe, 'S', ModItems.draconicShovel, 'W', ModItems.draconicSword);
 	}
 
+	@Override
+	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+
+		if (container.stackTagCompound == null) {
+			container.stackTagCompound = new NBTTagCompound();
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+
+		if (!simulate) {
+			energy += energyReceived;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyReceived;
+	}
+
+	@Override
+	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+
+		if (!simulate) {
+			energy -= energyExtracted;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyExtracted;
+	}
+
+	@Override
+	public int getEnergyStored(ItemStack container) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		return container.stackTagCompound.getInteger("EnergyHelper");
+	}
+
+	@Override
+	public int getMaxEnergyStored(ItemStack container) {
+		return capacity;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return !(getEnergyStored(stack) == getMaxEnergyStored(stack));
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+		return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
+	}
+
+	@Override
+	public float getDigSpeed(ItemStack stack, Block block, int meta) {
+		if ((stack.getItem() instanceof IEnergyContainerItem) && ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) >= References.ENERGYPERBLOCK)
+			return super.getDigSpeed(stack, block, meta);
+		else
+			return 1F;
+	}
 }

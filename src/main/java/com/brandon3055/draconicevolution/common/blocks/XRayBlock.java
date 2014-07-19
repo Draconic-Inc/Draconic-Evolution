@@ -18,7 +18,7 @@ import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class XRayBlock extends TolkienBlock {
+public class XRayBlock extends DraconicEvolutionBlock {
 
 	protected XRayBlock() {
 		super(Material.rock);

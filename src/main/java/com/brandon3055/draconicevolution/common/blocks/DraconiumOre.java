@@ -17,7 +17,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.world.IBlockAccess;
 
-public class DraconiumOre extends TolkienBlock {
+public class DraconiumOre extends DraconicEvolutionBlock {
 	public IIcon icon;
 	public IIcon iconEnd;
 	public IIcon iconNether;

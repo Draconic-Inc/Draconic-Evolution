@@ -1,22 +1,14 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.container.*;
+import com.brandon3055.draconicevolution.common.tileentities.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import com.brandon3055.draconicevolution.common.container.ContainerGrinder;
-import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
-import com.brandon3055.draconicevolution.common.container.ContainerReader;
-import com.brandon3055.draconicevolution.common.container.ContainerSunDial;
-import com.brandon3055.draconicevolution.common.container.ContainerWeatherController;
 import com.brandon3055.draconicevolution.common.core.utills.InventoryReader;
-import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
-import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
-import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
-import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -27,6 +19,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int GUIID_READER = 4;
 	public static final int GUIID_PARTICLEGEN = 5;
 	public static final int GUIID_PLAYERDETECTOR = 6;
+	public static final int GUIID_ENERGY_INFUSER = 7;
 	
 	public GuiHandler() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(DraconicEvolution.instance, this);
@@ -62,7 +55,13 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerPlayerDetector(player.inventory, (TilePlayerDetectorAdvanced) detector);
 			}
 			break;
+		case GUIID_ENERGY_INFUSER:
+		TileEntity infuser = world.getTileEntity(x, y, z);
+		if (infuser != null && infuser instanceof TileEnergyInfuser) {
+			return new ContainerEnergyInfuser(player.inventory, (TileEnergyInfuser) infuser);
 		}
+		break;
+	}
 
 		return null;
 	}
@@ -100,6 +99,11 @@ public class GuiHandler implements IGuiHandler {
 			TileEntity detector = world.getTileEntity(x, y, z);
 			if (detector != null && detector instanceof TilePlayerDetectorAdvanced) {
 				return new GUIPlayerDetector(player.inventory, (TilePlayerDetectorAdvanced) detector);
+			}
+		case GUIID_ENERGY_INFUSER:
+			TileEntity infuser = world.getTileEntity(x, y, z);
+			if (infuser != null && infuser instanceof TileEnergyInfuser) {
+				return new GUIEnergyInfuser(player.inventory, (TileEnergyInfuser) infuser);
 			}
 		}
 

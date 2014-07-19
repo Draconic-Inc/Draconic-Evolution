@@ -14,7 +14,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
 
-public class BlockSunDial extends TolkienBlock {
+public class BlockSunDial extends DraconicEvolutionBlock {
 	//@SideOnly(Side.CLIENT)
 	public IIcon icon_front;
 	public IIcon icon_front_active;
@@ -91,5 +91,4 @@ public class BlockSunDial extends TolkienBlock {
 		}
 		return true;
 	}
-
 }

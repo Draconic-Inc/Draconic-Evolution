@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.common.items.weapons;
 
 import java.util.List;
 
+import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +11,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -19,7 +22,11 @@ import com.brandon3055.draconicevolution.common.items.tools.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class DraconicSword extends ItemSword {
+public class DraconicSword extends ItemSword implements IEnergyContainerItem{
+	protected int capacity = References.DRACONICCAPACITY;
+	protected int maxReceive = References.DRACONICTRANSFER;
+	protected int maxExtract = References.DRACONICTRANSFER * 50;
+
 	public DraconicSword() {
 		super(ModItems.DRACONIUM_T2);
 		this.setUnlocalizedName(Strings.draconicSwordName);
@@ -47,7 +54,7 @@ public class DraconicSword extends ItemSword {
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
 		list.add(EnumChatFormatting.DARK_RED + "Your enemy's strength will be their undoing");
-		list.add("");
+		ItemInfoHelper.energyDisplayInfo(stack, list);
 		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "Further Draconic research has allowed");
 		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "you to unlock even better methods");
 	}
@@ -61,5 +68,60 @@ public class DraconicSword extends ItemSword {
 	public static void registerRecipe()
 	{
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicSword), "ISI", "DPD", "ITI", 'P', ModItems.wyvernSword, 'D', ModItems.draconicCompound, 'S', ModItems.sunFocus, 'T', ModItems.draconicCore, 'I', ModItems.draconiumIngot);
+	}
+
+	@Override
+	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+
+		if (container.stackTagCompound == null) {
+			container.stackTagCompound = new NBTTagCompound();
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+
+		if (!simulate) {
+			energy += energyReceived;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyReceived;
+	}
+
+	@Override
+	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+
+		if (!simulate) {
+			energy -= energyExtracted;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyExtracted;
+	}
+
+	@Override
+	public int getEnergyStored(ItemStack container) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		return container.stackTagCompound.getInteger("EnergyHelper");
+	}
+
+	@Override
+	public int getMaxEnergyStored(ItemStack container) {
+		return capacity;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return !(getEnergyStored(stack) == getMaxEnergyStored(stack));
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+		return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
 	}
 }

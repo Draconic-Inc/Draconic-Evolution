@@ -1,10 +1,15 @@
 package com.brandon3055.draconicevolution.client.creativetab;
 
+import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class TolkienTab extends CreativeTabs {
 	private String label;
@@ -16,8 +21,9 @@ public class TolkienTab extends CreativeTabs {
 	@Override
 	public Item getTabIconItem()
 	{
+
 		if(this.label.equals("toolsAndWeapons"))
-			return ModItems.draconicDistructionStaff;
+			return ModItems.draconicBow;
 		else if(this.label.equals("blocksAndItems"))
 			return ConfigHandler.disableSunDial == 2 ? Item.getItemFromBlock(ModBlocks.weatherController) : Item.getItemFromBlock(ModBlocks.sunDial);
 		else

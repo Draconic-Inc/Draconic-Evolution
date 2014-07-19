@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.client.render;
 
+import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

@@ -2,8 +2,11 @@ package com.brandon3055.draconicevolution.common.items;
 
 import java.util.List;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.items.tools.ToolHandler;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -14,7 +17,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class Tclogo extends TolkienItem {
+public class Tclogo extends DraconicEvolutionItem {
 	public Tclogo() {
 		this.setUnlocalizedName(Strings.tclogoName);
 		//this.setCreativeTab(draconicevolution.getCreativeTab());
@@ -72,6 +75,10 @@ public class Tclogo extends TolkienItem {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+
+
+			world.spawnEntityInWorld(new EntityLightningBolt(world, player.posX, player.posY, player.posZ + 5));
+
 		int xPos = (int) player.posX;
 		int yPos = (int) player.posY;
 		int zPos = (int) player.posZ;
@@ -88,8 +95,7 @@ public class Tclogo extends TolkienItem {
 	public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
 	{
 		//player.worldObj.scheduleBlockUpdate(X, Y, Z, player.worldObj.getBlock(X, Y, Z), 10);
-		MovingObjectPosition mop = ToolHandler.raytraceFromEntity(player.worldObj, player, 4.5D);
-		System.out.println(mop.sideHit);
+
 		return true;
 	}
 	

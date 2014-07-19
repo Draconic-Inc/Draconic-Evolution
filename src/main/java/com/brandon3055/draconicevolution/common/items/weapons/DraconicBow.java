@@ -17,20 +17,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
-import org.lwjgl.input.Keyboard;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
 public class DraconicBow extends ItemBow
 {
-
 	public static final String[] bowPullIconNameArray = new String[] { "pulling_0", "pulling_1", "pulling_2" };
 	@SideOnly(Side.CLIENT)
 	private IIcon[] iconArray;
@@ -195,16 +192,11 @@ public class DraconicBow extends ItemBow
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
 		list.add(EnumChatFormatting.DARK_PURPLE + "" + StatCollector.translateToLocal("msg.bowmode" + ItemNBTHelper.getString(stack, "mode", "rapidfire") + ".txt"));
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54)))
-		{
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "Hold shift for info");
-		} else
-		{
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "After being imbued with the heart of a dragon the bow pulses");
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "with a great power and roars to be unleashed");
-			list.add("");
-			list.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + "Enchants are twice as effective on this bow");
-		}
+		list.add("");
+		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "After being imbued with the heart of a dragon the bow pulses");
+		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "with a great power and roars to be unleashed");
+		list.add("");
+		list.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + "Enchants are twice as effective on this bow");
 	}
 
 	public static void registerRecipe()

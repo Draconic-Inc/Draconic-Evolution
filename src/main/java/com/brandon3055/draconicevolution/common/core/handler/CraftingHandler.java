@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.common.core.handler;
 
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
+import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.common.items.tools.DraconicAxe;
 import com.brandon3055.draconicevolution.common.items.tools.DraconicDistructionStaff;
 import com.brandon3055.draconicevolution.common.items.tools.DraconicHoe;
@@ -27,10 +29,10 @@ public class CraftingHandler {
 		registerShapedRecipes();
 		registerSmeltingRecipes();
 		registerShapelessRecipes();
-		registerToolRecipes();
+		registerRemoteRecipes();
 	}
 
-	private static void registerToolRecipes()
+	private static void registerRemoteRecipes()
 	{
 		DraconicPickaxe.registerRecipe();
 		DraconicAxe.registerRecipe();
@@ -45,6 +47,8 @@ public class CraftingHandler {
 		WyvernBow.registerRecipe();
 		TeleporterMKI.registerRecipe();
 		TeleporterMKII.registerRecipe();
+		DraconicArmor.registerRecipe();
+		WyvernArmor.registerRecipe();
 	}
 
 	public static void registerShapedRecipes()
@@ -76,7 +80,6 @@ public class CraftingHandler {
 
 	public static void registerShapelessRecipes()
 	{
-		//CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ModItems.tcPickaxe), ModItems.tcPickHead, Items.stick);
 		//CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ModItems.tcSword), ModItems.tcSwordBlade, Items.stick);
 	}
 

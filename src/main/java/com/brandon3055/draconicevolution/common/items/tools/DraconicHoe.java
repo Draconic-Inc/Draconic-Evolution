@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import java.util.List;
 
+import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -13,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -27,7 +30,12 @@ import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class DraconicHoe extends ItemHoe {
+public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
+
+	protected int capacity = References.DRACONICCAPACITY;
+	protected int maxReceive = References.DRACONICTRANSFER;
+	protected int maxExtract = References.DRACONICTRANSFER;
+
 	public DraconicHoe() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.draconicHoeName);
@@ -49,6 +57,10 @@ public class DraconicHoe extends ItemHoe {
 			int size = 4;
 			for (int x1 = -size; x1 <= size; x1++) {
 				for (int z1 = -size; z1 <= size; z1++) {
+					if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+						if (!player.capabilities.isCreativeMode)
+							return false;
+					}
 					Block topBlock = world.getBlock(x + x1, y + 1, z + z1);
 					if (topBlock.isReplaceable(world, x + x1, y + 1, z + z1)) {
 						world.setBlockToAir(x + x1, y + 1, z + z1);
@@ -86,6 +98,13 @@ public class DraconicHoe extends ItemHoe {
 	}
 
 	private boolean hoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7) {
+		if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+			if (!player.capabilities.isCreativeMode)
+				return false;
+		} else {
+			if (!player.capabilities.isCreativeMode)
+				((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
+		}
 		if (!player.canPlayerEdit(x, y, z, par7, stack)) {
 			return false;
 		} else {
@@ -121,11 +140,67 @@ public class DraconicHoe extends ItemHoe {
 	@Override
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
 
+		ItemInfoHelper.energyDisplayInfo(stack, list);
 		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw1.txt"));
 		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw2.txt"));
 	}
 
 	public static void registerRecipe() {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicHoe), "ISI", "DHD", "ITI", 'H', Items.diamond_hoe, 'T', ModItems.draconicCore, 'S', ModItems.sunFocus, 'D', ModItems.draconiumIngot, 'I', Items.diamond);
+	}
+
+	@Override
+	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+
+		if (container.stackTagCompound == null) {
+			container.stackTagCompound = new NBTTagCompound();
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+
+		if (!simulate) {
+			energy += energyReceived;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyReceived;
+	}
+
+	@Override
+	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+
+		if (!simulate) {
+			energy -= energyExtracted;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyExtracted;
+	}
+
+	@Override
+	public int getEnergyStored(ItemStack container) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		return container.stackTagCompound.getInteger("EnergyHelper");
+	}
+
+	@Override
+	public int getMaxEnergyStored(ItemStack container) {
+		return capacity;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return !(getEnergyStored(stack) == getMaxEnergyStored(stack));
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+		return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
 	}
 }

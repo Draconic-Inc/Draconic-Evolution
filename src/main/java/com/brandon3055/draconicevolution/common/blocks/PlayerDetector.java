@@ -13,8 +13,9 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetector;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class PlayerDetector extends TolkienBlock
+public class PlayerDetector extends DraconicEvolutionBlock
 {
 	IIcon side_inactive;
 	IIcon side_active;
@@ -66,8 +67,17 @@ public class PlayerDetector extends TolkienBlock
 		else
 			return side_active;
 	}
-	
-	
+
+	@Override
+	public boolean isBlockSolid(IBlockAccess p_149747_1_, int p_149747_2_, int p_149747_3_, int p_149747_4_, int p_149747_5_) {
+		return true;
+	}
+
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+		return true;
+	}
+
 	@Override
 	public boolean hasTileEntity(int meta)
 	{

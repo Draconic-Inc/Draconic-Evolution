@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import java.util.List;
 
+import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -12,6 +14,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -22,14 +25,17 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class WyvernShovel extends ItemSpade {
+public class WyvernShovel extends ItemSpade implements IEnergyContainerItem{
 	public IIcon itemIcon0;
 	public IIcon itemIcon1;
+	protected int capacity = References.WYVERNCAPACITY;
+	protected int maxReceive = References.WYVERNTRANSFER;
+	protected int maxExtract = References.WYVERNTRANSFER;
 
 	public WyvernShovel() {
 		super(ModItems.DRACONIUM_T1);
@@ -98,9 +104,10 @@ public class WyvernShovel extends ItemSpade {
 	{
 		int size = (ItemNBTHelper.getShort(stack, "size", (short)0) * 2) + 1;
 
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54)))
+		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
 			list.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
-		else {
+			ItemInfoHelper.energyDisplayInfo(stack, list);
+		} else {
 			list.add(EnumChatFormatting.GREEN + "Mining Mode: " + EnumChatFormatting.BLUE + size + "x" + size);
 			list.add(EnumChatFormatting.GREEN + "Shift Right-click to change mode");
 			list.add("");
@@ -119,4 +126,68 @@ public class WyvernShovel extends ItemSpade {
 	{
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.wyvernShovel), " C ", "CDC", " C ", 'C', ModItems.infusedCompound, 'D', Items.diamond_shovel);
 	}
+
+	@Override
+	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+
+		if (container.stackTagCompound == null) {
+			container.stackTagCompound = new NBTTagCompound();
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+
+		if (!simulate) {
+			energy += energyReceived;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyReceived;
+	}
+
+	@Override
+	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+
+		if (!simulate) {
+			energy -= energyExtracted;
+			container.stackTagCompound.setInteger("EnergyHelper", energy);
+		}
+		return energyExtracted;
+	}
+
+	@Override
+	public int getEnergyStored(ItemStack container) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+			return 0;
+		}
+		return container.stackTagCompound.getInteger("EnergyHelper");
+	}
+
+	@Override
+	public int getMaxEnergyStored(ItemStack container) {
+		return capacity;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return !(getEnergyStored(stack) == getMaxEnergyStored(stack));
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+		return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
+	}
+
+	@Override
+	public float getDigSpeed(ItemStack stack, Block block, int meta) {
+		if ((stack.getItem() instanceof IEnergyContainerItem) && ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) >= References.ENERGYPERBLOCK)
+			return super.getDigSpeed(stack, block, meta);
+		else
+			return 1F;
+	}
 }
+

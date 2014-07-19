@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.brandon3055.draconicevolution.common.core.helper.ItemNBTHelper;
+import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -62,7 +64,7 @@ public class ToolHandler {
 		int yOff = (size * -1);
 		Block targetBlock = world.getBlock(x, y, z);
 		if (size > 0) yOff++;
-		if (size == 0) return false;
+		//if (size == 0) return false;
 		int side = (stack.getItem().equals(ModItems.draconicAxe)) ? 6 : mop.sideHit;
 		switch (side) {
 			case 0:
@@ -79,11 +81,12 @@ public class ToolHandler {
 				sizeX = 0;
 				break;
 		}
+
 		for (int x1 = x - sizeX; x1 <= x + sizeX; x1++) {
 			for (int y1 = y - (sizeY + yOff); y1 <= y + (sizeY - yOff); y1++) {
 				for (int z1 = z - sizeZ; z1 <= z + sizeZ; z1++) {
 					mineBlock(x1, y1, z1, player, world, silk, fortune, materialsListing, stack);
-					player.worldObj.scheduleBlockUpdate(x1, y1, z1, Blocks.stone, 100);
+					//player.worldObj.scheduleBlockUpdate(x1, y1, z1, Blocks.stone, 100);
 				}
 			}
 		}
@@ -105,6 +108,14 @@ public class ToolHandler {
 				world.setBlockToAir(x, y, z);
 				return;
 			}
+			if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+				if (!player.capabilities.isCreativeMode)
+					return;
+			} else {
+				if (!player.capabilities.isCreativeMode)
+					((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
+			}
+			if ((stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0)) == 0) return;
 			if ((silk) && (block.canSilkHarvest(world, player, x, y, z, meta))) {
 				if (block == Blocks.lit_redstone_ore)
 					items.add(new ItemStack(Item.getItemFromBlock(Blocks.redstone_ore)));
@@ -145,19 +156,41 @@ public class ToolHandler {
 
 	public static void demageEntytyBasedOnHealth(Entity entity, EntityPlayer player, float dmg) {
 		World world = player.worldObj;
+		ItemStack stack = player.getCurrentEquippedItem();
 		if (entity instanceof EntityLivingBase) {
 			float entHealth = ((EntityLivingBase) entity).getHealth();
 			if (!world.isRemote) {
 				if (entHealth > 20) {
+					if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+						if (!player.capabilities.isCreativeMode)
+							return;
+					} else {
+						if (!player.capabilities.isCreativeMode)
+							((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int)((entHealth) * 100), false);
+					}
 					entity.attackEntityFrom(DamageSource.causePlayerDamage(player), (entHealth) * dmg);
 				}
 			}
 		} else if (entity instanceof EntityDragonPart) {
 			if (!world.isRemote) {
+				if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+					if (!player.capabilities.isCreativeMode)
+						return;
+				} else {
+					if (!player.capabilities.isCreativeMode)
+						((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int)((200F) * 100), false);
+				}
 				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 200F * dmg);
 			}
 		} else {
 			if (!world.isRemote) {
+				if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+					if (!player.capabilities.isCreativeMode)
+						return;
+				} else {
+					if (!player.capabilities.isCreativeMode)
+						((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int)((100F) * 100), false);
+				}
 				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 100F * dmg);
 			}
 		}
@@ -167,13 +200,18 @@ public class ToolHandler {
 	public static void AOEAttack(EntityPlayer player, Entity entity, ItemStack stack, int dmg, int range) {
 		Map enchants = EnchantmentHelper.getEnchantments(stack);
 		int sharp = 0;
-		int loot = 0;
 		if (enchants.get(16) != null) sharp = (Integer) enchants.get(16);
-		if (enchants.get(21) != null) loot = (Integer) enchants.get(21);
 		World world = player.worldObj;
-		AxisAlignedBB box = AxisAlignedBB.getAABBPool().getAABB(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
+		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
 		List list = world.getEntitiesWithinAABBExcludingEntity(player, box);
 		for (Object o : list) {
+			if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+				if (!player.capabilities.isCreativeMode)
+					return;
+			} else {
+				if (!player.capabilities.isCreativeMode)
+					((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK, false);
+			}
 			if (((Entity) o) instanceof EntityLivingBase)
 				((Entity) o).attackEntityFrom(DamageSource.causePlayerDamage(player), dmg + sharp);
 
@@ -191,7 +229,7 @@ public class ToolHandler {
 		if (!world.isRemote && player instanceof EntityPlayer)
 			d1 += 1.62D;
 		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
-		Vec3 vec3 = world.getWorldVec3Pool().getVecFromPool(d0, d1, d2);
+		Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
 		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
 		float f4 = MathHelper.sin(-f2 * 0.017453292F - (float) Math.PI);
 		float f5 = -MathHelper.cos(-f1 * 0.017453292F);

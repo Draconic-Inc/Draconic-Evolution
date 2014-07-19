@@ -42,6 +42,7 @@ public class ParticleGenRenderer extends TileEntitySpecialRenderer
 		
 
 		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, 0.0F, 1.0F);
 		tessellator.setColorRGBA(255, 255, 255, 255);
 		//tessellator.setBrightness(200);
 		

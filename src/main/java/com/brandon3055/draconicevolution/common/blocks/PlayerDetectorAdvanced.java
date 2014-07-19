@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class PlayerDetectorAdvanced extends BlockContainer
 {
@@ -45,7 +46,17 @@ public class PlayerDetectorAdvanced extends BlockContainer
 		top = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_top_0");
 		bottom  = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
 	}
-	
+
+	@Override
+	public boolean isBlockSolid(IBlockAccess p_149747_1_, int p_149747_2_, int p_149747_3_, int p_149747_4_, int p_149747_5_) {
+		return true;
+	}
+
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+		return true;
+	}
+
 	@Override
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
