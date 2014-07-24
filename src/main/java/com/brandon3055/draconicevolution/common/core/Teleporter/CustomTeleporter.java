@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.common.core.utills;
+package com.brandon3055.draconicevolution.common.core.Teleporter;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.Teleporter;

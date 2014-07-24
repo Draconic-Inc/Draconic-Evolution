@@ -71,6 +71,16 @@ public class CustonSpawnerRenderer extends TileEntitySpecialRenderer
 			tessellator.addVertexWithUV(1, 0.99D, 1, 1, 1);
 			tessellator.addVertexWithUV(1, 0.99D, 0, 0, 1);
 
+			tessellator.addVertexWithUV(0, 0.01D, 0, 0, 0);
+			tessellator.addVertexWithUV(1, 0.01D, 0, 1, 0);
+			tessellator.addVertexWithUV(1, 0.01D, 1, 1, 1);
+			tessellator.addVertexWithUV(0, 0.01D, 1, 0, 1);
+
+			tessellator.addVertexWithUV(0, 0.01D, 0, 0, 0);
+			tessellator.addVertexWithUV(0, 0.01D, 1, 1, 0);
+			tessellator.addVertexWithUV(1, 0.01D, 1, 1, 1);
+			tessellator.addVertexWithUV(1, 0.01D, 0, 0, 1);
+
 			tessellator.draw();
 
 			GL11.glPopMatrix();

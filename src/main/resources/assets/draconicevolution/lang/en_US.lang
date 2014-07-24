@@ -1,11 +1,4 @@
-#################################
-###Tolkien addon language file###
-#################################
-#Chat formatting is done here 
-#All other formatting is internal
-#################################
-
-//###################################Blocks###################################//
+//###################################Block Names###################################//
 tile.xRayBlock.name=Distortion Flame
 tile.sunDial.name=Sun Dial
 tile.weatherController.name=Weather Controller
@@ -17,9 +10,10 @@ tile.particleGenerator.name=Particle Generator
 tile.playerDetector.name=Player Detector
 tile.playerDetectorAdvanced.name=Advanced Player Detector
 tile.energyInfuser.name=Energy Infuser
-Tile.customSpawner.name=Stabilized Monster Spawner
-
-msg.range.txt=Range:
+tile.customSpawner.name=Stabilized Mob Spawner
+tile.longRangeDislocator1.name=Admin Dislocator
+tile.longRangeDislocator0.name=Long Range Dislocator
+tile.generator.name=Generator
 
 //###################################Item names###################################//
 item.draconicCompound.name=Draconic Compound
@@ -32,52 +26,9 @@ item.sunFocus.name=Solar Focus
 item.tclogo.name=TCLogo 
 item.draconicCore.name=Draconic Core 
 item.reader.name=WIP 
-item.wyvernChestPlate.name=WIP 
-
-//###################################Item Groups###################################//
-itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
-itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
-
-//###################################Tool modes###################################//
-msg.size0.txt=Tool Mode: Single Block
-msg.size1.txt=Tool Mode: 3x3
-msg.size2.txt=Tool Mode: 5x5
-msg.size3.txt=Tool Mode: 7x7
-msg.size4.txt=Tool Mode: 9x9
-msg.oblittrue.txt=§aObliteration Mode: §4Active
-msg.oblitfalse.txt=§aObliteration Mode: §2Inactive
-msg.bowmoderapidfire.txt=§aFire Mode: §4Rapid Fire
-msg.bowmodesharpshooter.txt=§aFire Mode: §4Sharp Shooter
-msg.bowmodeexplosive.txt=§aFire Mode: §4Explosive
-msg.bowmodedevistation.txt=§aFire Mode: §4Devastation!!! §2(Creative Only)
-msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
-
-//###################################Teleporter###################################//
+item.wyvernChestPlate.name=WIP
 item.teleporterMKI.name=Charm of Dislocation
 item.teleporterMKII.name=Enhanced Charm of Dislocation
-msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
-msg.teleporterBound.txt=§aTeleporter bound to:
-msg.teleporterLowHealth.txt= §cYou are to low on health!
-msg.teleporterSentMob.txt=The mob has been sent to 
-msg.teleporterEntityDimensional.txt=§cYou can not send mobs across dimensions!
-msg.teleporterAlreadySet.txt=§cError this charm can only be bound to one location
-msg.teleporterOutOfFuel.txt=§cOUT OF FUEL!!!
-msg.teleporterOutOfPearls.txt=§cOut of Ender Pearls!!!
-
-info.teleporterInfUnset1.txt=Unbound
-info.teleporterInfUnset2.txt=Shift right click to bind your current
-info.teleporterInfUnset3.txt=x, y, z coordinates
-info.teleporterInfUnset4.txt=As well as the direction you are facing
-info.teleporterInfUnset5.txt=And the dimension you are currently in
-info.teleporterInfDest.txt=Destination
-info.teleporterInfFuel.txt=Fuel:
-
-info.teleporterInfSet1.txt=Bound to
-info.teleporterInfSet2.txt=Uses remaining
-
-
-//###################################Wyvern###################################//
-
 item.wyvernPickaxe.name=Pickaxe of the Wyvern
 item.wyvernShovel.name=Shovel of the Wyvern
 item.wyvernSword.name=Sword of the Wyvern
@@ -86,13 +37,6 @@ item.wyvernHelm.name=Wyvern Helm
 item.wyvernChest.name=Wyvern Chestplate
 item.wyvernLeggs.name=Wyvern Leggings
 item.wyvernBoots.name=Wyvern Boots
-
-info.wyvernLaw1.txt=Weary of plain tools you begin to understand
-info.wyvernLaw2.txt=ways to use Draconic energy to upgrade
-info.wyvernArmorLegend1.txt=Mundane armor was too weak
-info.wyvernArmorLegend2.txt=you use Draconic knowledge to improve it
-
-//###################################Draconic###################################//
 item.draconicPickaxe.name=Draconic Pickaxe
 item.draconicAxe.name=Draconic Axe
 item.draconicShovel.name=Draconic Shovel
@@ -106,6 +50,59 @@ item.draconicBoots.name=Draconic Boots
 item.draconicDistructionStaff.name=Draconic Staff of Power
 item.mobSoul.name=Mob Soul
 
+//###################################Item Groups###################################//
+itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
+itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
+
+//###################################Chat Messages###################################//
+msg.size0.txt=Tool Mode: Single Block
+msg.size1.txt=Tool Mode: 3x3
+msg.size2.txt=Tool Mode: 5x5
+msg.size3.txt=Tool Mode: 7x7
+msg.size4.txt=Tool Mode: 9x9
+msg.oblittrue.txt=§aObliteration Mode: §4Active
+msg.oblitfalse.txt=§aObliteration Mode: §2Inactive
+msg.bowmoderapidfire.txt=§aFire Mode: §4Rapid Fire
+msg.bowmodesharpshooter.txt=§aFire Mode: §4Sharp Shooter
+msg.bowmodeexplosive.txt=§aFire Mode: §4Explosive
+msg.bowmodedevistation.txt=§aFire Mode: §4Devastation!!! §2(Creative Only)
+msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
+msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
+msg.teleporterBound.txt=§aTeleporter bound to:
+msg.teleporterLowHealth.txt= §cYou are to low on health!
+msg.teleporterSentMob.txt=The mob has been sent to 
+msg.teleporterEntityDimensional.txt=§cYou can not send mobs across dimensions!
+msg.teleporterAlreadySet.txt=§cError this charm can only be bound to one location
+msg.teleporterOutOfFuel.txt=§cOUT OF FUEL!!!
+msg.teleporterOutOfPearls.txt=§cOut of Ender Pearls!!!
+msg.spawnerInfo1.txt=Mob Type
+msg.spawnerInfo2.txt=Requires Player
+msg.spawnerInfo3.txt=Ignore Spawn Requirements
+msg.spawnerInfo4.txt=Spawner Tier
+msg.spawnerInfo5.txt=Shift Right click for upgrade info
+msg.spawnerInfo6.txt=Requires players : Nether Star
+msg.spawnerInfo7.txt=Ignore Spawn Requirements : Notch Apple
+msg.spawnerInfo8.txt=Tier 1 : Infused Compound
+msg.spawnerInfo9.txt=Tier 2 : Draconic Compound
+msg.spawnerInfo10.txt=Tier 3 : ???...
+msg.dislocatorUnsafe.txt=Destination Unsafe Please Try Again
+msg.dislocatorNoGround.txt=Error world not found
+msg.range.txt=Range:
+
+//###################################Tool Tips###################################//
+info.teleporterInfUnset1.txt=Unbound
+info.teleporterInfUnset2.txt=Shift right click to bind your current
+info.teleporterInfUnset3.txt=x, y, z coordinates
+info.teleporterInfUnset4.txt=As well as the direction you are facing
+info.teleporterInfUnset5.txt=And the dimension you are currently in
+info.teleporterInfDest.txt=Destination
+info.teleporterInfFuel.txt=Fuel:
+info.teleporterInfSet1.txt=Bound to
+info.teleporterInfSet2.txt=Uses remaining
+info.wyvernLaw1.txt=Weary of plain tools you begin to understand
+info.wyvernLaw2.txt=ways to use Draconic energy to upgrade
+info.wyvernArmorLegend1.txt=Mundane armor was too weak
+info.wyvernArmorLegend2.txt=you use Draconic knowledge to improve it
 info.draconicLaw1.txt=Further Draconic research has allowed
 info.draconicLaw2.txt=you to unlock even better methods
 info.draconicAxe1.txt=Timber!!!!!!
@@ -122,15 +119,17 @@ info.draconicArmorInfoChest1.txt=and with the set complete
 info.draconicArmorInfoChest2.txt=walk through fire and fear
 info.draconicArmorInfoChest3.txt=not the dark magic magic!!!
 info.draconicArmorInfoHelm.txt=See through the darkness what lies beyond
-info.draconicCore.txt=Can be used to stabilize mob spawners
+info.draconicCore.txt=The core crafting component for Draconic Evolution
+info.draconicCore1.txt=Can be used to stabilize mob spawners
+info.mobSoul1.txt=Can be used on a stabilized spawner to set the type
+info.mobSoul2.txt=Or shift right click to spawn a mob
+info.mobSoul3.txt=(Single Use)
+info.wyvernArmor.txt=Having enjoyed the protection of diamond for so long
+info.wyvernArmor1.txt=you realize that you can infuse it with the power of the Draconic
+info.draconicArmor.txt=Further Draconic research
+info.draconicArmor1.txt=has shown you ways to even greater protection
 
-msg.spawnerInfo1.txt=Mob Type
-msg.spawnerInfo2.txt=Requires Player
-msg.spawnerInfo3.txt=Ignore Spawn Requirements
-msg.spawnerInfo4.txt=Spawner Tier
-msg.spawnerInfo5.txt=Shift Right click for upgrade info
-msg.spawnerInfo6.txt=Requires players : Nether Star
-msg.spawnerInfo7.txt=Ignore Spawn Requirements : Notch Apple
-msg.spawnerInfo8.txt=Tier 1 : Infused Compound
-msg.spawnerInfo9.txt=Tier 2 : Draconic Compound
-msg.spawnerInfo10.txt=Tier 3 : ???...
+entity.draconicevolution:EnderDragon.name=Ender Dragon
+
+
+

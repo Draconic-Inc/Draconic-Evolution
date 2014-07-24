@@ -66,6 +66,9 @@ public class CraftingHandler {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.rainSensor), "   ", "RBR", "SPS", 'R', Items.redstone, 'B', Items.bucket, 'S', Blocks.stone_slab, 'P', Blocks.heavy_weighted_pressure_plate);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.particleGenerator), "RBR", "BCB", "RBR", 'R', Blocks.redstone_block, 'B', Items.blaze_rod, 'C', ModItems.draconicCore);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.playerDetector), "ITI", "CEC", "IDI", 'I', Items.iron_ingot, 'E', Items.ender_eye, 'T', Blocks.redstone_torch, 'C', Items.comparator, 'D', ModItems.draconicCore);
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.playerDetectorAdvanced), "ISI", "EDE", "ICI", 'I', ModItems.draconiumIngot, 'E', Items.ender_eye, 'S', new ItemStack(Items.skull, 1, 1), 'C', Items.compass, 'D', ModBlocks.playerDetector);
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.generator, 1, 3), "NIN", "IFI", "NCN", 'N', Items.netherbrick, 'I', Items.iron_ingot, 'F', Blocks.furnace, 'C', ModItems.draconicCore);
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.energyInfuser), "IPI", "CEC", "IDI", 'I', ModItems.draconiumIngot, 'P', ModBlocks.particleGenerator, 'C', ModItems.draconicCore, 'D', ModItems.infusedCompound, 'E', Blocks.enchanting_table);
 
 		if(ConfigHandler.disableSunDial == 0)
 			CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.sunDial), "IFI", "TDT", "GEG", 'I', ModItems.draconiumIngot, 'F', ModItems.sunFocus, 'T', ModItems.draconicCore, 'G', Blocks.glowstone, 'E', Blocks.enchanting_table, 'D', ModItems.dragonHeart);
@@ -85,7 +88,7 @@ public class CraftingHandler {
 
 }
 /*
-//turns dirt into enchanted diamond sword!
+//turns dirt into enchanted diamond sword
 ItemStack manipulation = new ItemStack(Items.diamond_sword);
 manipulation.addEnchantment(Enchantment.efficiency, 2);
 CraftingManager.getInstance().addShapelessRecipe(manipulation, Blocks.dirt);

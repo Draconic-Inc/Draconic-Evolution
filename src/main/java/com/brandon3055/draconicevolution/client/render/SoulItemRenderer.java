@@ -47,23 +47,21 @@ public class SoulItemRenderer implements IItemRenderer {
 		Entity mob = EntityList.createEntityByName(ItemNBTHelper.getString(item, "Name", "Pig"), mc.theWorld);
 
 		GL11.glPushMatrix();
-		//GL11.glEnable(GL11.GL_BLEND);
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glScalef(0.5F, 0.5F, 0.5F);
-		//GL11.glColor4f(1F, 1F, 1F, 0.5F);
 
 		if (type == ItemRenderType.INVENTORY)
 		{
 			GL11.glPushMatrix();
-			//RenderHelper.enableStandardItemLighting();
 			GL11.glScalef(13F, 13F, 13F);
 			GL11.glTranslated(1.2, 2.2, 0);
 			GL11.glRotatef(180F, 1F, 0F, 0F);
 			GL11.glRotatef(mc.getSystemTime() / -10, 0F, 1F, 0F);
 			GL11.glRotatef(-20F, 1F, 0F, 0F);
 			RenderManager.instance.renderEntityWithPosYaw(mob, 0, 0, 0, 0F, 1F);
-			//RenderHelper.disableStandardItemLighting();
 			GL11.glPopMatrix();
-		} else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+		}
+		else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON)
 		{
 			GL11.glPushMatrix();
 			GL11.glScalef(0.8F, 0.8F, 0.8F);
@@ -73,7 +71,8 @@ public class SoulItemRenderer implements IItemRenderer {
 			GL11.glRotatef(-20F, 1F, 0F, 0F);
 			RenderManager.instance.renderEntityWithPosYaw(mob, 0, 0, 0, 0F, 1F);
 			GL11.glPopMatrix();
-		} else if (type == ItemRenderType.EQUIPPED)
+		}
+		else if (type == ItemRenderType.EQUIPPED)
 		{
 			GL11.glPushMatrix();
 			GL11.glScalef(0.8F, 0.8F, 0.8F);
@@ -83,19 +82,18 @@ public class SoulItemRenderer implements IItemRenderer {
 			GL11.glRotatef(-20F, 1F, 0F, 0F);
 			RenderManager.instance.renderEntityWithPosYaw(mob, 0, 0, 0, 0F, 1F);
 			GL11.glPopMatrix();
-
-		} else
+		}
+		else
 		{
 			GL11.glPushMatrix();
 			GL11.glScalef(1.5F, 1.5F, 1.5F);
 			GL11.glRotatef(mc.getSystemTime() / -10, 0F, 1F, 0F);
 			GL11.glRotatef(-20F, 1F, 0F, 0F);
-			RenderManager.instance.renderEntityWithPosYaw(mob, 0, 0, 0, 0F, 0F);
+			RenderManager.instance.renderEntityWithPosYaw(mob, 0, 0, 0, 0F, 1F);
 			GL11.glPopMatrix();
-
 		}
 
-		//GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 
 	}

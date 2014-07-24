@@ -19,6 +19,8 @@ public class ModBlocks {
 	public static Block playerDetectorAdvanced;
 	public static Block energyInfuser;
 	public static Block customSpawner;
+	public static Block longRangeDislocator;
+	public static Block generator;
 
 	public static void init()
 	{
@@ -34,6 +36,8 @@ public class ModBlocks {
 		playerDetectorAdvanced = new PlayerDetectorAdvanced();
 		energyInfuser = new EnergyInfuser();
 		customSpawner = new CustomSpawner();
+		generator = new Generator();
+		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
 		
 		if(DraconicEvolution.debug) testBlock = new TestBlock();
 		//testBlock = new TestBlock();

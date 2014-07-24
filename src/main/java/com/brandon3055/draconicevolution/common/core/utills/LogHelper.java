@@ -12,7 +12,7 @@ public class LogHelper {
 
 	public static void log(Level logLevel, Object object)
 	{
-		FMLLog.log(logLevel, "Draconic Evolution", String.valueOf(object));
+		FMLLog.log(References.MODNAME, logLevel, String.valueOf(object));
 	}
 
 	public static void all(Object object){ log(Level.ALL, object); }

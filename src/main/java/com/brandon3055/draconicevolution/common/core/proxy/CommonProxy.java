@@ -3,9 +3,11 @@ package com.brandon3055.draconicevolution.common.core.proxy;
 import com.brandon3055.draconicevolution.common.core.handler.MinecraftForgeEventHandler;
 import com.brandon3055.draconicevolution.common.core.network.*;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
 import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -59,6 +61,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TilePlayerDetectorAdvanced.class, "TilePlayerDetectorAdvanced");
 		GameRegistry.registerTileEntity(TileEnergyInfuser.class, "TileEnergyInfuser");
 		GameRegistry.registerTileEntity(TileCustomSpawner.class, "TileCustomSpawner");
+		GameRegistry.registerTileEntity(TileGenerator.class, "TileGenerator");
 		if(DraconicEvolution.debug)
 			GameRegistry.registerTileEntity(TileTestBlock.class, "TileTestBlock");
 	}
@@ -95,8 +98,8 @@ public class CommonProxy {
 	}
 
 	public void registerEntitys(){
-		int dragonID = EntityRegistry.findGlobalUniqueEntityId();
-		int cyan = (0 << 16) + (255 << 8) + 255;
-		EntityRegistry.registerGlobalEntityID(EntityCustomDragon.class, "enderDragon", dragonID, cyan, 0);
+		//int cyan = (0 << 16) + (255 << 8) + 255;
+		//EntityRegistry.registerGlobalEntityID(EntityCustomDragon.class, References.RESOURCESPREFIX + "EnderDragon", EntityRegistry.findGlobalUniqueEntityId(), cyan, 0);
+		EntityRegistry.registerModEntity(EntityCustomDragon.class, References.RESOURCESPREFIX + "EnderDragon", 0, DraconicEvolution.instance, 200, 3, true);
 	}
 }

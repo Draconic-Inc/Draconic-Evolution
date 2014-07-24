@@ -8,6 +8,7 @@ import static net.minecraftforge.common.util.ForgeDirection.UP;
 import static net.minecraftforge.common.util.ForgeDirection.WEST;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -17,12 +18,20 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class TileTestBlock extends TileEntity implements IEnergyHandler {
 	public EnergyStorage energy = new EnergyStorage(100000000);
 	public int maxInput = 100000000;
+	public float modelRotation;
 
 	@Override
 	public void updateEntity() {
+
+		if (worldObj.isRemote) modelRotation += 0.5;
+
+		//LogHelper.info(modelRotation);
+
+
+
 		int test = 4;
-		if (!worldObj.isRemote)
-			System.out.println(energy.getEnergyStored());
+		//if (!worldObj.isRemote)
+			//System.out.println(energy.getEnergyStored());
 
 		if ((this.energy.getEnergyStored() > 0)) {
 

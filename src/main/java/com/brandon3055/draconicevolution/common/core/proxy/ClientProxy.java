@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.core.proxy;
 import com.brandon3055.draconicevolution.client.render.*;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
+import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
 import net.minecraft.client.renderer.tileentity.TileEntityMobSpawnerRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
@@ -63,5 +64,8 @@ public class ClientProxy extends CommonProxy {
 
 		render = new CustonSpawnerRenderer();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileCustomSpawner.class, render);
+
+		render = new TestBlockRenderer();
+		ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, render);
 	}
 }

@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.common.items;
 
+import cofh.api.energy.EnergyStorage;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -21,6 +23,8 @@ public class DraconicCore extends DraconicEvolutionItem {
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
 		par3List.add(StatCollector.translateToLocal("info.draconicCore.txt"));
+		par3List.add("");
+		par3List.add("" + EnumChatFormatting.DARK_PURPLE + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicCore1.txt"));
 	}
 
 	@Override

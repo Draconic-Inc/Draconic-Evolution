@@ -71,7 +71,7 @@ public class EnergyParticle extends EntityFX {
 			setDead();
 		}
 		moveEntity(motionX, motionY, motionZ);// also important if you want your particle to move
-		float speedMultiplyer = 0.0501F;
+		float speedMultiplyer = 0.000501F;
 		float ySpeedMultiplyer = 0.1006F;
 		if (expand) {
 			motionX = motionX + (targetX - posX) * speedMultiplyer;

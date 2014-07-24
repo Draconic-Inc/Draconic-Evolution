@@ -1,20 +1,23 @@
 package com.brandon3055.draconicevolution.common.container;
 
 import com.brandon3055.draconicevolution.client.interfaces.SlotItemValid;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.tileentities.TileGenerator;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerGrinder extends Container {
+public class ContainerGenerator extends Container {
 
+	private TileGenerator tile;
 	private int cachSize = -1;
-	private TileGrinder tile;
 
-	public ContainerGrinder(InventoryPlayer invPlayer, TileGrinder tile) {
+	public ContainerGenerator(InventoryPlayer invPlayer, TileGenerator tile) {
 		this.tile = tile;
 
 		for (int x = 0; x < 9; x++) {
@@ -26,11 +29,8 @@ public class ContainerGrinder extends Container {
 				addSlotToContainer(new Slot(invPlayer, x + y * 9 + 9, 8 + 18 * x, 80 + y * 18));
 			}
 		}
-		if (!tile.isExternallyPowered())
-			addSlotToContainer(new SlotItemValid(tile, 0, 64, 35, true));
-		else
-			addSlotToContainer(new SlotItemValid(tile, 0, -10000, -10000, true));
-
+		
+		addSlotToContainer(new SlotItemValid(tile, 0, 64, 35, true));
 	}
 
 	@Override
@@ -39,7 +39,6 @@ public class ContainerGrinder extends Container {
 		return tile.isUseableByPlayer(player);
 	}
 
-	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int i)
 	{
@@ -54,7 +53,7 @@ public class ContainerGrinder extends Container {
 				if (!mergeItemStack(stack, 0, 36, false)){
 					return null;
 				}
-			}else if (TileGrinder.getItemBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)){
+			}else if (TileGenerator.getItemBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)){
 				return null;
 			}
 

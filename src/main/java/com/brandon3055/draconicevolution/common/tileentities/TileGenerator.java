@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import java.util.List;
-
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -15,12 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -28,111 +23,49 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyHandler {
+import java.util.List;
+
+import static net.minecraftforge.common.util.ForgeDirection.UP;
+
+public class TileGenerator extends TileEntity implements ISidedInventory, IEnergyHandler {
 	//########### variables #############//
-	public int meta = -1;
-	List<EntityLiving> killList;
-	AxisAlignedBB killBox;
-	int tick = 0;
-	double centreX;
-	double centreY = -1;
-	double centreZ;
 	private ItemStack[] items;
 	public int burnTime = 1;
 	public int burnTimeRemaining = 0;
-	public boolean disabled = false;
-	private boolean readyNext = false;
-	protected EnergyStorage internalGenBuffer = new EnergyStorage(20000, 32000, 0);
-	protected EnergyStorage externalInputBuffer = new EnergyStorage(100000, 32000, 0);
-	public int energyPerKill = 1000;
-	private int burnSpeed = 2;
-	private int EPBT = 10;
+	private int burnSpeed = 6;
+	/**
+	 * Energy per burn tick
+	 */
+	private int EPBT = 14;
+	protected EnergyStorage storage = new EnergyStorage(100000, 0, 1000);
 
-	public void updateVariables() {
-		if (meta == -1) meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-
-		if (centreY == -1) {
-			switch (meta) {
-				case 0:
-					centreX = xCoord + 0.5;
-					centreY = yCoord + 0.5;
-					centreZ = zCoord + 0.5 - 4;
-					break;
-				case 1:
-					centreX = xCoord + 0.5 + 4;
-					centreY = yCoord + 0.5;
-					centreZ = zCoord + 0.5;
-					break;
-				case 2:
-					centreX = xCoord + 0.5;
-					centreY = yCoord + 0.5;
-					centreZ = zCoord + 0.5 + 4;
-					break;
-				case 3:
-					centreX = xCoord + 0.5 - 4;
-					centreY = yCoord + 0.5;
-					centreZ = zCoord + 0.5;
-					break;
-			}
-		}
-	}
 	//##################################//
 
-	public TileGrinder() {
+	public TileGenerator() {
 		items = new ItemStack[1];
 	}
 
 	@Override
 	public void updateEntity() {
-		updateVariables();
-
-		if (burnTimeRemaining > 0 && internalGenBuffer.getEnergyStored() < internalGenBuffer.getMaxEnergyStored()) {
+		if (burnTimeRemaining > 0 && storage.getEnergyStored() < storage.getMaxEnergyStored()) {
 			burnTimeRemaining -= burnSpeed;
-			internalGenBuffer.setEnergyStored(internalGenBuffer.getEnergyStored() + Math.min(burnSpeed * EPBT, internalGenBuffer.getMaxEnergyStored() - internalGenBuffer.getEnergyStored()));
+			storage.setEnergyStored(storage.getEnergyStored() + Math.min(burnSpeed * EPBT, storage.getMaxEnergyStored() - storage.getEnergyStored()));
 		} else if (burnTimeRemaining <= 0) tryRefuel();
 
-		if ((internalGenBuffer.getEnergyStored() > 0)) {
+		if ((storage.getEnergyStored() > 0)) {
 			for (int i = 0; i < 6; i++){
 				TileEntity tile = worldObj.getTileEntity(xCoord + ForgeDirection.getOrientation(i).offsetX, yCoord + ForgeDirection.getOrientation(i).offsetY, zCoord + ForgeDirection.getOrientation(i).offsetZ);
 				if (tile != null && tile instanceof IEnergyHandler) {
-					internalGenBuffer.extractEnergy(((IEnergyHandler) tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), internalGenBuffer.extractEnergy(internalGenBuffer.getMaxExtract(), true), false), false);
+					storage.extractEnergy(((IEnergyHandler)tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
 				}
 			}
 		}
-
-		if (!worldObj.isRemote && readyNext && !disabled && getActiveBuffer().getEnergyStored() >= energyPerKill) {
-			if (killNextEntity()) {
-				getActiveBuffer().modifyEnergyStored(-energyPerKill);
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			}
-		}
-
-		if (tick >= 100) {
-			tick = 0;
-			checkSignal();
-			readyNext = true;
-			if (burnTimeRemaining > 0) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		} else tick++;
-	}
-
-	public EnergyStorage getActiveBuffer(){
-		return isExternallyPowered() ? externalInputBuffer : internalGenBuffer;
-	}
-
-	public void checkSignal() {
-		disabled = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-	}
-
-	public boolean isExternallyPowered()
-	{
-		return externalInputBuffer.getEnergyStored() > energyPerKill;
 	}
 
 	public void tryRefuel() {
-		if (burnTimeRemaining > 0 || internalGenBuffer.getEnergyStored() >= internalGenBuffer.getMaxEnergyStored()) return;
+		if (burnTimeRemaining > 0 || storage.getEnergyStored() >= storage.getMaxEnergyStored()) return;
 		if (items[0] != null && items[0].stackSize > 0) {
 			int itemBurnTime = getItemBurnTime(items[0]);
 
@@ -140,52 +73,8 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 				decrStackSize(0, 1);
 				burnTime = itemBurnTime;
 				burnTimeRemaining = itemBurnTime;
+				//LogHelper.info(itemBurnTime);
 			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public boolean killNextEntity() {
-		killBox = AxisAlignedBB.getBoundingBox(centreX - 3.5, centreY - 1, centreZ - 3.5, centreX + 3.5, centreY + 3, centreZ + 3.5);
-		killList = worldObj.getEntitiesWithinAABB(EntityLiving.class, killBox);
-
-		if (killList.size() > 0) {
-			EntityLiving mob = killList.get(worldObj.rand.nextInt(killList.size()));
-			if (mob instanceof EntityCreature) {
-				if (((EntityCreature) mob).isEntityAlive()) {
-					((EntityCreature) mob).attackEntityFrom(DamageSource.magic, 50000F);
-					if (worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) dropXP(mob);
-					readyNext = true;
-					if (mob instanceof EntitySkeleton) {
-						if (((EntitySkeleton) mob).getSkeletonType() == 1) {
-							int random = worldObj.rand.nextInt(100);
-							if (random == 55)
-								((EntityCreature) mob).entityDropItem(new ItemStack(Items.skull, 1, 1), 0.0F);
-						}
-					}
-					return true;
-				}
-				readyNext = true;
-				return false;
-			} else if (mob instanceof EntityLiving) {
-				if (((EntityLiving) mob).isEntityAlive()) {
-					((EntityLiving) mob).attackEntityFrom(DamageSource.magic, 50000F);
-					if (worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) dropXP(mob);
-					readyNext = true;
-					return true;
-				}
-				readyNext = true;
-				return false;
-			}
-		}
-		readyNext = false;
-		return false;
-	}
-
-	public void dropXP(Entity mob) {
-		int count = 1 + worldObj.rand.nextInt(3);
-		for (int i = 0; i < count; i++) {
-			worldObj.spawnEntityInWorld(new EntityXPOrb(worldObj, mob.lastTickPosX, mob.lastTickPosY, mob.lastTickPosZ, 1));
 		}
 	}
 
@@ -327,11 +216,9 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 			compound.setTag("Item" + i, tag[i]);
 		}
 
-		compound.setBoolean("Disabled", disabled);
 		compound.setInteger("BurnTime", burnTime);
 		compound.setInteger("BurnTimeRemaining", burnTimeRemaining);
-		externalInputBuffer.writeToNBT(compound, "ExternalBuffer");
-		internalGenBuffer.writeToNBT(compound, "InternalBuffer");
+		storage.writeToNBT(compound);
 
 		super.writeToNBT(compound);
 	}
@@ -345,11 +232,9 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 			items[i] = ItemStack.loadItemStackFromNBT(tag[i]);
 		}
 
-		disabled = compound.getBoolean("Disabled");
 		burnTime = compound.getInteger("BurnTime");
 		burnTimeRemaining = compound.getInteger("BurnTimeRemaining");
-		externalInputBuffer.readFromNBT(compound, "ExternalBuffer");
-		internalGenBuffer.readFromNBT(compound, "InternalBuffer");
+		storage.readFromNBT(compound);
 
 		super.readFromNBT(compound);
 	}
@@ -376,26 +261,22 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
 
-		return externalInputBuffer.receiveEnergy(maxReceive, simulate);
+		return storage.receiveEnergy(maxReceive, simulate);
 	}
 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		return externalInputBuffer.extractEnergy(maxExtract, simulate);
+		return storage.extractEnergy(maxExtract, simulate);
 	}
 
 	@Override
 	public int getEnergyStored(ForgeDirection from) {
-		return externalInputBuffer.getEnergyStored();
+		return storage.getEnergyStored();
 	}
 
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from) {
-		return externalInputBuffer.getMaxEnergyStored();
-	}
-
-	public EnergyStorage getInternalBuffer(){
-		return internalGenBuffer;
+		return storage.getMaxEnergyStored();
 	}
 }

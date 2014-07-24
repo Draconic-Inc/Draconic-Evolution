@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.core.utills.Teleporter;
+import com.brandon3055.draconicevolution.common.core.Teleporter.Teleporter;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;

@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -33,10 +34,17 @@ public class TestBlock extends DraconicEvolutionBlock {
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_)
-	{
-		return super.getCollisionBoundingBoxFromPool( p_149668_1_,  p_149668_2_,  p_149668_3_,  p_149668_4_);
-		//return null;
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(IBlockAccess p_149673_1_, int p_149673_2_, int p_149673_3_, int p_149673_4_, int p_149673_5_) {
+		return null;
+		//return super.getIcon(p_149673_1_, p_149673_2_, p_149673_3_, p_149673_4_, p_149673_5_);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
+		return null;
+		//return super.getIcon(p_149691_1_, p_149691_2_);
 	}
 
 	@Override
@@ -109,5 +117,25 @@ public class TestBlock extends DraconicEvolutionBlock {
 	public void randomDisplayTick(World world, int x, int y, int z, Random rand)
 	{
 
+	}
+
+	@Override
+	public int getRenderType() {
+		return super.getRenderType();
+	}
+
+	@Override
+	public boolean shouldSideBeRendered(IBlockAccess world, int p_149646_2_, int p_149646_3_, int p_149646_4_, int p_149646_5_) {
+		return true;
+	}
+
+	@Override
+	public int getLightValue(IBlockAccess world, int x, int y, int z) {
+		return 0;
+	}
+
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
 	}
 }

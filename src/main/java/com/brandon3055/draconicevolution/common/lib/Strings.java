@@ -45,4 +45,6 @@ public class Strings {//                                              public sta
 	public static final String wyvernBootsName = "wyvernBoots";
 	public static final String customSpawnerName = "customSpawner";
 	public static final String MobSoulName = "mobSoul";
+	public static final String longRangeDislocatorName = "longRangeDislocator";
+	public static final String generatorName = "generator";
 }

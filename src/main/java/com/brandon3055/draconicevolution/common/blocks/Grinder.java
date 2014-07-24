@@ -88,7 +88,7 @@ public class Grinder extends BlockContainer
 		IIcon back;
 		IIcon front;
 		
-		if (!tile.disabled && tile.energy >= 50)
+		if (!tile.disabled && tile.getActiveBuffer().getEnergyStored() >= tile.energyPerKill)
 		{
 			back = icon_back;
 			front = icon_front;
