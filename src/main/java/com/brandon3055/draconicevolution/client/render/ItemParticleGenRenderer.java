@@ -35,6 +35,8 @@ public class ItemParticleGenRenderer implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
+		GL11.glPushMatrix();
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		if (type == IItemRenderer.ItemRenderType.ENTITY)
 			GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
 		this.dummytile.xCoord = 0;
@@ -42,6 +44,8 @@ public class ItemParticleGenRenderer implements IItemRenderer
 		this.dummytile.zCoord = 0;
 		this.dummytile.setWorldObj(Minecraft.getMinecraft().theWorld);
 		this.render.renderTileEntityAt(this.dummytile, 0.0D, 0.0D, 0.0D, 0.0F);
+		GL11.glPopAttrib();
+		GL11.glPopMatrix();
 	}
 
 	

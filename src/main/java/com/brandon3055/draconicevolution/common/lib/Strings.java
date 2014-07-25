@@ -47,4 +47,7 @@ public class Strings {//                                              public sta
 	public static final String MobSoulName = "mobSoul";
 	public static final String longRangeDislocatorName = "longRangeDislocator";
 	public static final String generatorName = "generator";
+	public static final String energyStorageCoreName = "energyStorageCore";
+	public static final String draconiumName = "draconium";
+	public static final String invisibleMultiblockName = "invisibleMultiblock";
 }

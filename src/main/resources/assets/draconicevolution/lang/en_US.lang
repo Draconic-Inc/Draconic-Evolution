@@ -88,6 +88,7 @@ msg.spawnerInfo10.txt=Tier 3 : ???...
 msg.dislocatorUnsafe.txt=Destination Unsafe Please Try Again
 msg.dislocatorNoGround.txt=Error world not found
 msg.range.txt=Range:
+msg.energyStorageCoreUTA.txt=Unable to activate (Invalid Configuration)
 
 //###################################Tool Tips###################################//
 info.teleporterInfUnset1.txt=Unbound

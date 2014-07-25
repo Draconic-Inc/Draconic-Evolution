@@ -54,7 +54,7 @@ public class TestBlock extends DraconicEvolutionBlock {
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
-		return null;//new TileTestBlock();
+		return new TileTestBlock();
 	}
 
 	@Override

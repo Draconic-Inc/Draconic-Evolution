@@ -111,6 +111,7 @@ public class TileCustomSpawner extends TileEntity
 		isSetToSpawn = tagCompound.getBoolean("Running");
 	}
 
+	@Override
 	public Packet getDescriptionPacket(){
 		NBTTagCompound nbttagcompound = new NBTTagCompound();
 		writeToNBT(nbttagcompound);

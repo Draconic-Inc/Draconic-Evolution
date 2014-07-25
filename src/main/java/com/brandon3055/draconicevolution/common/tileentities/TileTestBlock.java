@@ -10,6 +10,7 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -74,4 +75,8 @@ public class TileTestBlock extends TileEntity implements IEnergyHandler {
 		return true;
 	}
 
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		return INFINITE_EXTENT_AABB;
+	}
 }

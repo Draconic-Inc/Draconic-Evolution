@@ -1,0 +1,127 @@
+package com.brandon3055.draconicevolution.common.blocks.multiblock;
+
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.blocks.DraconicEvolutionBlock;
+import com.brandon3055.draconicevolution.common.blocks.Draconium;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileInvisibleMultiblock;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
+
+/**
+ * Created by Brandon on 25/07/2014.
+ */
+public class InvisibleMultiblock extends DraconicEvolutionBlock {
+
+	public InvisibleMultiblock() {
+		super(Material.iron);
+		this.setHardness(10F);
+		this.setResistance(100F);
+		//this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setBlockName(Strings.invisibleMultiblockName);
+		ModBlocks.register(this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister iconRegister) {
+		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconium_block");
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderType() {
+		return -1;
+	}
+
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
+
+	@Override
+	public boolean hasTileEntity(int metadata) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, int metadata) {
+		return new TileInvisibleMultiblock();
+	}
+
+	@Override
+	public Item getItemDropped(int meta, Random p_149650_2_, int var2) {
+		if (meta == 0)
+			return Item.getItemFromBlock(ModBlocks.draconium);
+		else if (meta == 1)
+			return Item.getItemFromBlock(Blocks.redstone_block);
+		else
+			return null;
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+		TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
+		if (thisTile == null)
+		{
+			LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock)");
+			return false;
+		}
+		TileEnergyStorageCore master= thisTile.getMaster();
+		if (master == null) {
+			onNeighborBlockChange(world, x, y, z, this);
+			return false;
+		}
+		if (world.isRemote)
+			player.addChatComponentMessage(new ChatComponentText(""+master.getEnergyStored(ForgeDirection.UP)));
+		return true;
+	}
+
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block p_149695_5_) {
+		TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
+		if (thisTile == null)
+		{
+			LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock)");
+			revert(world, x, y, z);
+			return;
+		}
+		TileEnergyStorageCore master = thisTile.getMaster();
+		if (master == null) {
+			LogHelper.error("Master = null reverting!");
+			revert(world, x, y, z);
+			return;
+		}
+		if (!master.isOnline()) revert(world, x, y, z);
+	}
+
+	private void revert(World world, int x, int y, int z){
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 0)
+			world.setBlock(x, y, z, ModBlocks.draconium);
+		else if (meta == 1)
+			world.setBlock(x, y, z, Blocks.redstone_block);
+	}
+}

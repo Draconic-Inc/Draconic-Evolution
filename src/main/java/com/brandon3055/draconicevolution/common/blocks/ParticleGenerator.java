@@ -2,11 +2,15 @@ package com.brandon3055.draconicevolution.common.blocks;
 
 import java.util.Random;
 
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -45,8 +49,10 @@ public class ParticleGenerator extends Block
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float p_149727_7_, float p_149727_8_, float p_149727_9_)
 	{
+		if (meta == 1) return false;
 		if (player.isSneaking())
 		{
+			if (activateEnergyStorageCore(world, x, y, z, player)) return true;
 			TileEntity tile = world.getTileEntity(x, y, z);
 			TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
 			if (gen != null)
@@ -148,4 +154,34 @@ public class ParticleGenerator extends Block
 		return new TileParticleGenerator();
 	}
 
+	private boolean activateEnergyStorageCore(World world, int x, int y, int z, EntityPlayer player){
+		for (int x1 = x - 11; x1 <= x + 11; x1++){
+			if (world.getBlock(x1, y, z) == ModBlocks.energyStorageCore) {
+				TileEnergyStorageCore tile = (world.getTileEntity(x1, y, z) != null && world.getTileEntity(x1, y, z) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) world.getTileEntity(x1, y, z) : null;
+				if (tile != null && !tile.isOnline())
+				{
+					if (!tile.tryActivate() && world.isRemote) {
+						player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+						return false;
+					}
+					return true;
+				}
+			}
+		}
+
+		for (int z1 = z - 11; z1 <= z + 11; z1++){
+			if (world.getBlock(x, y, z1) == ModBlocks.energyStorageCore) {
+				TileEnergyStorageCore tile = (world.getTileEntity(x, y, z1) != null && world.getTileEntity(x, y, z1) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) world.getTileEntity(x, y, z1) : null;
+				if (tile != null && !tile.isOnline())
+				{
+					if (!tile.tryActivate() && world.isRemote) {
+						player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+						return false;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
