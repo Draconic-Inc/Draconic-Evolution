@@ -50,4 +50,5 @@ public class Strings {//                                              public sta
 	public static final String energyStorageCoreName = "energyStorageCore";
 	public static final String draconiumName = "draconium";
 	public static final String invisibleMultiblockName = "invisibleMultiblock";
+	public static final String energyPylonName = "energyPylon";
 }

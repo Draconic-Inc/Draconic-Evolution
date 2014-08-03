@@ -1,18 +1,21 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
  * Created by Brandon on 26/07/2014.
  */
 public class TileInvisibleMultiblock extends TileEntity {
-	public TileLocation master;
+	public TileLocation master = new TileLocation();
 
 	public boolean isMasterOnline() {
 		TileEnergyStorageCore tile = (worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) != null && worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) : null;
@@ -31,13 +34,15 @@ public class TileInvisibleMultiblock extends TileEntity {
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		master.writeToNBT(compound, "Key");
+		//if (master != null)
+			master.writeToNBT(compound, "Key");
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		master.readFromNBT(compound, "Key");
+		//if (master != null)
+			master.readFromNBT(compound, "Key");
 	}
 
 	@Override
@@ -52,4 +57,20 @@ public class TileInvisibleMultiblock extends TileEntity {
 		readFromNBT(pkt.func_148857_g());
 	}
 
+	public void isStructureStillValid(){
+		if (getMaster() == null) {
+			LogHelper.error("{Tile} Master = null reverting!");
+			revert();
+			return;
+		}
+		if (!getMaster().isOnline()) revert();
+	}
+
+	private void revert(){
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		if (meta == 0)
+			worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.draconium);
+		else if (meta == 1)
+			worldObj.setBlock(xCoord, yCoord, zCoord, Blocks.redstone_block);
+	}
 }

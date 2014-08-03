@@ -47,9 +47,9 @@ public class ParticleGenerator extends Block
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float p_149727_7_, float p_149727_8_, float p_149727_9_)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_)
 	{
-		if (meta == 1) return false;
+		if (world.getBlockMetadata(x, y, z) == 1) return false;
 		if (player.isSneaking())
 		{
 			if (activateEnergyStorageCore(world, x, y, z, player)) return true;
@@ -160,9 +160,16 @@ public class ParticleGenerator extends Block
 				TileEnergyStorageCore tile = (world.getTileEntity(x1, y, z) != null && world.getTileEntity(x1, y, z) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) world.getTileEntity(x1, y, z) : null;
 				if (tile != null && !tile.isOnline())
 				{
-					if (!tile.tryActivate() && world.isRemote) {
-						player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
-						return false;
+					if (player.capabilities.isCreativeMode) {
+						if (!tile.creativeActivate()) {
+							if (world.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+							return false;
+						}
+					}else {
+						if (!tile.tryActivate()) {
+							if (world.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+							return false;
+						}
 					}
 					return true;
 				}
@@ -174,14 +181,37 @@ public class ParticleGenerator extends Block
 				TileEnergyStorageCore tile = (world.getTileEntity(x, y, z1) != null && world.getTileEntity(x, y, z1) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) world.getTileEntity(x, y, z1) : null;
 				if (tile != null && !tile.isOnline())
 				{
-					if (!tile.tryActivate() && world.isRemote) {
-						player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
-						return false;
+					if (player.capabilities.isCreativeMode) {
+						if (!tile.creativeActivate()) {
+							if (world.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+							return false;
+						}
+					}else {
+						if (!tile.tryActivate()) {
+							if (world.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+							return false;
+						}
 					}
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int meta) {
+		if (meta == 1)
+		{
+			TileEntity tile = world.getTileEntity(x, y, z);
+			TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
+			if (gen != null && gen.getMaster() != null)
+			{
+				world.setBlockMetadataWithNotify(x, y, z, 0, 2);
+				//LogHelper.info("deActivate");
+				gen.getMaster().isStructureStillValid(true);
+			}
+		}
+		super.breakBlock(world, x, y, z, p_149749_5_, meta);
 	}
 }

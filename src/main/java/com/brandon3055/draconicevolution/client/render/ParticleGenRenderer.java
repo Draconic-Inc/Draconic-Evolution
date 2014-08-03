@@ -1,45 +1,63 @@
 package com.brandon3055.draconicevolution.client.render;
 
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 
+
+@SideOnly(Side.CLIENT)
 public class ParticleGenRenderer extends TileEntitySpecialRenderer
 {
 
 	private final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/ParticleGenTextureSheet.png");
+	private final ResourceLocation beamTexture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/stabilizer_beam.png");
+	private static final ResourceLocation modelTexture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/stabilizer_sphere.png");
+	private IModelCustom stabilizerSphereModel;
 
 	private float pxl = 1F / 64;
 
-	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f)
+	public ParticleGenRenderer()
 	{
+		stabilizerSphereModel = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/stabilizer_sphere.obj"));
+	}
+
+	@Override
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
 		GL11.glPushMatrix();
 		
 		GL11.glTranslatef((float) x, (float) y, (float) z);
 		TileParticleGenerator tileEntityGen = (TileParticleGenerator) tileEntity;
-		renderBlock(tileEntityGen, tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.getWorldObj().getBlock(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
+		renderBlock(tileEntityGen, tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.getWorldObj().getBlock(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), f);
 		
 		GL11.glPopMatrix();
 	}
 
-	//And this method actually renders your tile entity
-	public void renderBlock(TileParticleGenerator tl, World world, int x, int y, int z, Block block)
-	{
+	public void renderBlock(TileParticleGenerator tl, World world, int x, int y, int z, Block block, float f3) {
 		Tessellator tessellator = Tessellator.instance;
-		 
-		bindTexture(texture);
+
 		boolean inverted = tl.inverted;
-		
+		boolean stabilizerMode = tl.stabalizerMode;
+
+		GL11.glPushMatrix();
+
+		GL11.glDisable(GL11.GL_LIGHTING);
+		bindTexture(texture);
 
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, 0.0F, 1.0F);
@@ -53,19 +71,18 @@ public class ParticleGenRenderer extends TileEntitySpecialRenderer
 	     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)l1, (float)l2); 
 	     
 		 //tessellator.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1F);
-		
-	
+
 	     
 		{//Draw Corners
 			float f = 0.4F;
-			drawCornerCube(tessellator, f, f, f, 1F - f, inverted);
-			drawCornerCube(tessellator, f, -f, f, 1F - f, inverted);
-			drawCornerCube(tessellator, -f, f, -f, 1F - f, inverted);
-			drawCornerCube(tessellator, -f, -f, -f, 1F - f, inverted);
-			drawCornerCube(tessellator, -f, f, f, 1F - f, inverted);
-			drawCornerCube(tessellator, f, f, -f, 1F - f, inverted);
-			drawCornerCube(tessellator, f, -f, -f, 1F - f, inverted);
-			drawCornerCube(tessellator, -f, -f, f, 1F - f, inverted);
+			drawCornerCube(tessellator, f, f, f, 1F - f, inverted, stabilizerMode);
+			drawCornerCube(tessellator, f, -f, f, 1F - f, inverted, stabilizerMode);
+			drawCornerCube(tessellator, -f, f, -f, 1F - f, inverted, stabilizerMode);
+			drawCornerCube(tessellator, -f, -f, -f, 1F - f, inverted, stabilizerMode);
+			drawCornerCube(tessellator, -f, f, f, 1F - f, inverted, stabilizerMode);
+			drawCornerCube(tessellator, f, f, -f, 1F - f, inverted, stabilizerMode);
+			drawCornerCube(tessellator, f, -f, -f, 1F - f, inverted, stabilizerMode);
+			drawCornerCube(tessellator, -f, -f, f, 1F - f, inverted, stabilizerMode);
 		}
 		{//Draw Beams
 			float f = 0.45F;
@@ -87,18 +104,241 @@ public class ParticleGenRenderer extends TileEntitySpecialRenderer
 		}
 
 		tessellator.draw();
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glPopMatrix();
 
+		if (stabilizerMode)
+		{
+			drawEnergyBeam(tessellator, tl, f3);
+		}
 		
 	}
 
-	private void drawCornerCube(Tessellator tess, float x, float y, float z, float FP, boolean inverted)
-	{
+	private void drawEnergyBeam(Tessellator tess, TileParticleGenerator gen, float f){
+		TileEnergyStorageCore master = gen.getMaster();
+		if (master == null) return;
+		float length = 0;
+
+		GL11.glPushMatrix();
+
+		if (master.xCoord > gen.xCoord){
+			GL11.glRotatef(-90F, 0F, 0F, 1F);
+			GL11.glTranslated(-1, 0.5, 0);
+			length = master.xCoord - gen.xCoord - 0.2F;
+		}
+		else if (master.xCoord < gen.xCoord){
+			GL11.glRotatef(90F, 0F, 0F, 1F);
+			GL11.glTranslated(0, -0.5, 0);
+			length = gen.xCoord - master.xCoord - 0.2F;
+		}
+		else if (master.zCoord > gen.zCoord){
+			GL11.glRotatef(90F, 1F, 0F, 0F);
+			GL11.glTranslated(0, 0.5, -1);
+			length = master.zCoord - gen.zCoord - 0.2F;
+		}
+		else if (master.zCoord < gen.zCoord){
+			GL11.glRotatef(-90F, 1F, 0F, 0F);
+			GL11.glTranslated(0, -0.5, 0);
+			length = gen.zCoord - master.zCoord - 0.2F;
+		}
+
+		renderStabilizerSphere(gen);
+		renderEnergyBeam(tess, gen, length, f);
+
+		GL11.glPopMatrix();
+	}
+
+	public void renderStabilizerSphere(TileParticleGenerator tile){
+		GL11.glPushMatrix();
+		//GL11.glColor4f(0.5F, 0.0F, 0.0F, 1F);
+		GL11.glColor4f(0.0F, 2.0F, 0.0F, 1F);
+		GL11.glTranslated(0.5, 0, 0.5);
+		GL11.glScalef(0.4F, 0.4F, 0.4F);
+
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200, 200);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+
+		FMLClientHandler.instance().getClient().getTextureManager().bindTexture(modelTexture);
+
+		GL11.glRotatef(tile.rotation, 0F, 1F, 0F);
+		stabilizerSphereModel.renderAll();
+
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200, 200);
+		GL11.glRotatef(tile.rotation*2, 0F, -1F, 0F);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDepthMask(false);
+		GL11.glColor4f(0.0F, 1.0F, 1.0F, 0.5F);
+		GL11.glEnable(GL11.GL_BLEND);
+		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		GL11.glScalef(1.3F, 1.3F, 1.3F);
+		stabilizerSphereModel.renderAll();
+		GL11.glDepthMask(true);
+
+		GL11.glPopMatrix();
+	}
+
+	private void renderEnergyBeam(Tessellator tess, TileParticleGenerator tile, float length, float f){
+		int x = 0;
+		int y = 0;
+		int z = 0;
+
+		GL11.glPushMatrix();
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+
+		bindTexture(beamTexture);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glDepthMask(true);
+		OpenGlHelper.glBlendFunc(770, 1, 1, 0);
+
+		float time = (float)tile.getWorldObj().getTotalWorldTime() + f;
+		float upMot = -time * 0.2F - (float) MathHelper.floor_float(-time * 0.1F);
+		byte scaleMult = 1;
+		double rotation = (double)time * 0.025D * (1.0D - (double)(scaleMult & 1) * 2.5D);
+
+
+		tess.startDrawingQuads();
+		tess.setColorRGBA(255, 255, 255, 32);
+
+		double scale = (double)scaleMult * 0.2D;
+		double d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale;  //x point 1
+		double d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale;  //z point 1
+		double d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale;    	//x point 2
+		double d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale;     //z point 2
+		double d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale;//Dist from x-3
+		double d17 = 0.5D + Math.sin(rotation + 3.9269908169872414D) * scale;
+		double d19 = 0.5D + Math.cos(rotation + 5.497787143782138D) * scale;
+		double d21 = 0.5D + Math.sin(rotation + 5.497787143782138D) * scale;
+		double height = (double)(length);
+		double texXMin = 0.0D;
+		double texXMax = 1.0D;
+		double d28 = (double)(-1.0F + upMot);
+		double texHeight = (double)(length) * (0.5D / scale) + d28;
+
+		tess.addVertexWithUV(x + d7, y + height, z + d9, texXMax, texHeight);
+		tess.addVertexWithUV(x + d7, y, z + d9, texXMax, d28);
+		tess.addVertexWithUV(x + d11, y, z + d13, texXMin, d28);
+		tess.addVertexWithUV(x + d11, y + height, z + d13, texXMin, texHeight);
+
+		tess.addVertexWithUV(x + d19, y + height, z + d21, texXMax, texHeight);
+		tess.addVertexWithUV(x + d19, y, z + d21, texXMax, d28);
+		tess.addVertexWithUV(x + d15, y, z + d17, texXMin, d28);
+		tess.addVertexWithUV(x + d15, y + height, z + d17, texXMin, texHeight);
+
+		tess.addVertexWithUV(x + d11, y + height, z + d13, texXMax, texHeight);
+		tess.addVertexWithUV(x + d11, y, z + d13, texXMax, d28);
+		tess.addVertexWithUV(x + d19, y, z + d21, texXMin, d28);
+		tess.addVertexWithUV(x + d19, y + height, z + d21, texXMin, texHeight);
+
+		tess.addVertexWithUV(x + d15, y + height, z + d17, texXMax, texHeight);
+		tess.addVertexWithUV(x + d15, y, z + d17, texXMax, d28);
+		tess.addVertexWithUV(x + d7, y, z + d9, texXMin, d28);
+		tess.addVertexWithUV(x + d7, y + height, z + d9, texXMin, texHeight);
+
+		rotation += 0.77f;
+		d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale;
+		d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale;
+		d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale;
+		d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale;
+		d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale;
+		d17 = 0.5D + Math.sin(rotation + 3.9269908169872414D) * scale;
+		d19 = 0.5D + Math.cos(rotation + 5.497787143782138D) * scale;
+		d21 = 0.5D + Math.sin(rotation + 5.497787143782138D) * scale;
+
+		d28 = (-1F + (upMot*1));
+		texHeight = (double)(length) * (0.5D / scale) + d28;
+
+		tess.setColorRGBA_F(1.0F, 1.0f, 1.0f, 1f);
+
+		tess.addVertexWithUV(x + d7, y + height, z + d9, texXMax, texHeight);
+		tess.addVertexWithUV(x + d7, y, z + d9, texXMax, d28);
+		tess.addVertexWithUV(x + d11, y, z + d13, texXMin, d28);
+		tess.addVertexWithUV(x + d11, y + height, z + d13, texXMin, texHeight);
+
+		tess.addVertexWithUV(x + d19, y + height, z + d21, texXMax, texHeight);
+		tess.addVertexWithUV(x + d19, y, z + d21, texXMax, d28);
+		tess.addVertexWithUV(x + d15, y, z + d17, texXMin, d28);
+		tess.addVertexWithUV(x + d15, y + height, z + d17, texXMin, texHeight);
+
+		tess.addVertexWithUV(x + d11, y + height, z + d13, texXMax, texHeight);
+		tess.addVertexWithUV(x + d11, y, z + d13, texXMax, d28);
+		tess.addVertexWithUV(x + d19, y, z + d21, texXMin, d28);
+		tess.addVertexWithUV(x + d19, y + height, z + d21, texXMin, texHeight);
+
+		tess.addVertexWithUV(x + d15, y + height, z + d17, texXMax, texHeight);
+		tess.addVertexWithUV(x + d15, y, z + d17, texXMax, d28);
+		tess.addVertexWithUV(x + d7, y, z + d9, texXMin, d28);
+		tess.addVertexWithUV(x + d7, y + height, z + d9, texXMin, texHeight);
+
+		tess.draw();
+		GL11.glPushMatrix();
+
+		GL11.glTranslated(0, 0.4, 0);
+		length -= 0.5F;
+
+		GL11.glEnable(GL11.GL_BLEND);
+		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		GL11.glDepthMask(false);
+		tess.startDrawingQuads();
+		tess.setColorRGBA(255, 255, 255, 32);
+		double d30 = 0.2D;
+		double d4 = 0.2D;
+		double d6 = 0.8D;
+		double d8 = 0.2D;
+		double d10 = 0.2D;
+		double d12 = 0.8D;
+		double d14 = 0.8D;
+		double d16 = 0.8D;
+		double d18 = (double)(length);
+		double d20 = 0.0D;
+		double d22 = 1.0D;
+		double d24 = (double)(-1.0F + upMot);
+		double d26 = (double)(length) + d24;
+		tess.addVertexWithUV(x + d30, y + d18, z + d4, d22, d26);
+		tess.addVertexWithUV(x + d30, y, z + d4, d22, d24);
+		tess.addVertexWithUV(x + d6, y, z + d8, d20, d24);
+		tess.addVertexWithUV(x + d6, y + d18, z + d8, d20, d26);
+		tess.addVertexWithUV(x + d14, y + d18, z + d16, d22, d26);
+		tess.addVertexWithUV(x + d14, y, z + d16, d22, d24);
+		tess.addVertexWithUV(x + d10, y, z + d12, d20, d24);
+		tess.addVertexWithUV(x + d10, y + d18, z + d12, d20, d26);
+		tess.addVertexWithUV(x + d6, y + d18, z + d8, d22, d26);
+		tess.addVertexWithUV(x + d6, y, z + d8, d22, d24);
+		tess.addVertexWithUV(x + d14, y, z + d16, d20, d24);
+		tess.addVertexWithUV(x + d14, y + d18, z + d16, d20, d26);
+		tess.addVertexWithUV(x + d10, y + d18, z + d12, d22, d26);
+		tess.addVertexWithUV(x + d10, y, z + d12, d22, d24);
+		tess.addVertexWithUV(x + d30, y, z + d4, d20, d24);
+		tess.addVertexWithUV(x + d30, y + d18, z + d4, d20, d26);
+		tess.draw();
+		GL11.glPopMatrix();
+
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDepthMask(true);
+
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glPopMatrix();
+
+	}
+
+	private void drawCornerCube(Tessellator tess, float x, float y, float z, float FP, boolean inverted, boolean stabalizerMode) {
 		float srcXMin = inverted ? 38F * pxl: 32F * pxl;
 		float srcYMin = 0F;
 		float srcXMax = inverted ? 44F * pxl : 38F * pxl;
 		float srcYMax = 6 * pxl;
 		//float FP = 0.6F; //Scale
 		float FN = 1F - FP;
+
+		if (stabalizerMode){
+			srcXMin = 44F * pxl;
+			srcXMax = 50F * pxl;
+		}
 
 		//X+
 		tess.addVertexWithUV(FP + x, FN + y, FN + z, srcXMin, srcYMin);
@@ -137,8 +377,7 @@ public class ParticleGenRenderer extends TileEntitySpecialRenderer
 		tess.addVertexWithUV(FP + x, FN + y, FN + z, srcXMin, srcYMax);
 	}
 
-	private void drawBeamX(Tessellator tess, float x, float y, float z, float FP)
-	{
+	private void drawBeamX(Tessellator tess, float x, float y, float z, float FP) {
 		float srcXMin = 0;
 		float srcYMin = 0F;
 		float srcXMax = 32F * pxl;
@@ -173,8 +412,7 @@ public class ParticleGenRenderer extends TileEntitySpecialRenderer
 		tess.addVertexWithUV(XX, FN + y, FN + z, srcXMax, srcYMax);
 	}
 
-	private void drawBeamY(Tessellator tess, float x, float y, float z, float FP)
-	{
+	private void drawBeamY(Tessellator tess, float x, float y, float z, float FP) {
 		float srcXMin = 0;
 		float srcYMin = 0F;
 		float srcXMax = 32F * pxl;
@@ -210,8 +448,7 @@ public class ParticleGenRenderer extends TileEntitySpecialRenderer
 		
 	}
 
-	private void drawBeamZ(Tessellator tess, float x, float y, float z, float FP)
-	{
+	private void drawBeamZ(Tessellator tess, float x, float y, float z, float FP) {
 		float srcXMin = 0;
 		float srcYMin = 0F;
 		float srcXMax = 32F * pxl;

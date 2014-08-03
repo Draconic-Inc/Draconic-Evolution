@@ -2,6 +2,10 @@ package com.brandon3055.draconicevolution.common.tileentities;
 
 import java.util.Random;
 
+import com.brandon3055.draconicevolution.client.render.Particles;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,9 +15,10 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import com.brandon3055.draconicevolution.client.render.CustomParticle;
 import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
+import net.minecraft.util.AxisAlignedBB;
+import org.lwjgl.opengl.GL11;
 
-public class TileParticleGenerator extends TileEntity
-{
+public class TileParticleGenerator extends TileEntity {
 	public int red = 0;
 	public int green = 0;
 	public int blue = 0;
@@ -45,26 +50,29 @@ public class TileParticleGenerator extends TileEntity
 	public boolean active = true;
 	public boolean signal = false;
 	public boolean inverted = false;
-	
-	
+	TileLocation master = new TileLocation();
+	public float rotation = 0;
+	public boolean stabalizerMode = false;
+
 	private int tick = 0;
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void updateEntity()
-	{
-		if (signal && !inverted)
-			active = true;
-		else if (!signal && inverted)
-			active = true;
-		else
-			active = false;
-		
-		if (tick >= spawn_rate && active)
-		{
+	public void updateEntity() {
+
+		if (stabalizerMode && worldObj.isRemote) {
+			rotation += 0.5F;
+			spawnStabilizerParticle();
+		}
+		if (stabalizerMode) return;
+
+		if (signal && !inverted) active = true;
+		else if (!signal && inverted) active = true;
+		else active = false;
+
+		if (tick >= spawn_rate && active) {
 			tick = 0;
-			if (worldObj.isRemote)
-			{
+			if (worldObj.isRemote) {
 				Random rand = worldObj.rand;
 
 				float MX = motion_x + (random_motion_x * rand.nextFloat());
@@ -86,33 +94,54 @@ public class TileParticleGenerator extends TileEntity
 
 				ParticleHandler.spawnCustomParticle(particle);
 			}
-		}
-		else
-			tick++;
+		} else tick++;
 	}
-	
-	public void toggleInverted(){
+
+	@SideOnly(Side.CLIENT)
+	private void spawnStabilizerParticle(){
+		if (getMaster() == null || worldObj.getTotalWorldTime() % (20) != 1) return;
+
+		double x = xCoord + 0.5;
+		double y = yCoord + 0.5;
+		double z = zCoord + 0.5;
+		int direction = 0;
+
+		if (getMaster().xCoord > xCoord)
+			direction = 0;
+		else if (getMaster().xCoord < xCoord)
+			direction = 1;
+		else if (getMaster().zCoord > zCoord)
+			direction = 2;
+		else if (getMaster().zCoord < zCoord)
+			direction = 3;
+
+		Particles.EnergyBeamParticle particle = new Particles.EnergyBeamParticle(worldObj, x, y, z, getMaster().xCoord + 0.5, getMaster().zCoord + 0.5, direction, false);
+		Particles.EnergyBeamParticle particle2 = new Particles.EnergyBeamParticle(worldObj, x, y, z, getMaster().xCoord + 0.5, getMaster().zCoord + 0.5, direction, true);
+		ParticleHandler.spawnCustomParticle(particle, 60);
+		ParticleHandler.spawnCustomParticle(particle2, 60);
+	}
+
+	public void toggleInverted() {
 		inverted = !inverted;
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
-	{
+	public Packet getDescriptionPacket() {
 		NBTTagCompound tagCompound = new NBTTagCompound();
 		this.writeToNBT(tagCompound);
 		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, tagCompound);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-	{
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound)
-	{
+	public void writeToNBT(NBTTagCompound compound) {
+		master.writeToNBT(compound, "Key");
+		compound.setBoolean("StabalizerMode", stabalizerMode);
 		compound.setInteger("Red", red);
 		compound.setInteger("Green", green);
 		compound.setInteger("Blue", blue);
@@ -143,14 +172,15 @@ public class TileParticleGenerator extends TileEntity
 		compound.setFloat("Gravity", gravity);
 		compound.setBoolean("Active", active);
 		compound.setBoolean("Signal", signal);
-        compound.setBoolean("Inverted", inverted);
+		compound.setBoolean("Inverted", inverted);
 
 		super.writeToNBT(compound);
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound compound)
-	{
+	public void readFromNBT(NBTTagCompound compound) {
+		master.readFromNBT(compound, "Key");
+		stabalizerMode = compound.getBoolean("StabalizerMode");
 		red = compound.getInteger("Red");
 		green = compound.getInteger("Green");
 		blue = compound.getInteger("Blue");
@@ -181,9 +211,23 @@ public class TileParticleGenerator extends TileEntity
 		gravity = compound.getFloat("Gravity");
 		active = compound.getBoolean("Active");
 		signal = compound.getBoolean("Signal");
-        inverted = compound.getBoolean("Inverted");
+		inverted = compound.getBoolean("Inverted");
 
 		super.readFromNBT(compound);
 	}
 
+	public TileEnergyStorageCore getMaster() {
+		if (master == null) return null;
+		TileEnergyStorageCore tile = (worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) != null && worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) : null;
+		return tile;
+	}
+
+	public void setMaster(TileLocation master) {
+		this.master = master;
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		return INFINITE_EXTENT_AABB;
+	}
 }

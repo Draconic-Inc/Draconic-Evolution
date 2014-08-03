@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
+import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyPylon;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyStorageCore;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.InvisibleMultiblock;
 import net.minecraft.block.Block;
@@ -26,6 +27,7 @@ public class ModBlocks {
 	public static Block energyStorageCore;
 	public static Block draconium;
 	public static Block invisibleMultiblock;
+	public static Block energyPylon;
 
 	public static void init()
 	{
@@ -45,6 +47,7 @@ public class ModBlocks {
 		energyStorageCore = new EnergyStorageCore();
 		draconium = new Draconium();
 		invisibleMultiblock = new InvisibleMultiblock();
+		energyPylon = new EnergyPylon();
 		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
 		
 		if(DraconicEvolution.debug) testBlock = new TestBlock();

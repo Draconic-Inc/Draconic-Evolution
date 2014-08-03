@@ -5,29 +5,42 @@ import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by Brandon on 25/07/2014.
  */
-public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler {
+public class TileEnergyStorageCore extends TileEntity {
 
-	protected EnergyStorage storage = new EnergyStorage(1000000, 1000000, 1000000);
 	protected TileLocation[] stabilizers = new TileLocation[4];
-	protected int tier = 6;
+	protected int tier = 0;
 	protected boolean online = false;
+	public float modelRotation = 0;
+	private double energy = 0;
+	private double capacity = 0;
+	private int maxReceive = 1000000;
+	private int maxExtract = 1000000;
 
+
+	public TileEnergyStorageCore(){
+		for (int i = 0; i < stabilizers.length; i++)
+		{
+			stabilizers[i] = new TileLocation();
+		}
+	}
 
 	@Override
 	public void updateEntity() {
-		if (tier != 6)
-			LogHelper.info(tier);
+		if (!online) return;
+		if (worldObj.isRemote) modelRotation += 0.5;
 	}
 
 
@@ -39,51 +52,109 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 		if (!findStabalyzers()) return false;
 		if (!setTier(false)) return false;
 		if (!testOrActivateStructureIfValid(false, false)) return false;
-		if (!testOrActivateStructureIfValid(false, true)) return false;
-		//LogHelper.info(testOrActivateStructureIfValid(false, true));
-
+		online = true;
+		if (!testOrActivateStructureIfValid(false, true)) {
+			online = false;
+			deactivateStabilizers();
+			return false;
+		}
+		activateStabilizers();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return true;
 	}
 
-	public boolean isStructureStillValid(){
+	public boolean creativeActivate() {
+		if (!findStabalyzers()) return false;
+		if (!setTier(false)) return false;
+		if (!testOrActivateStructureIfValid(true, false)) return false;
+		online = true;
+		if (!testOrActivateStructureIfValid(false, true)) {
+			online = false;
+			deactivateStabilizers();
+			return false;
+		}
+		activateStabilizers();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return true;
+	}
+
+	public boolean isStructureStillValid(boolean update){
+		if (!checkStabilizers()) online = false;
+		if (!testOrActivateStructureIfValid(false, false)) online = false;
+		if (!areStabilizersActive()) online = false;
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		if (!online) deactivateStabilizers();
+		if (update && !online) reIntegrate();
+		//if (update && !online && worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) != null && worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof TileInvisibleMultiblock) ((TileInvisibleMultiblock)worldObj.getTileEntity(xCoord, yCoord + 1, zCoord)).isStructureStillValid();
+		return online;
+	}
+
+	private void reIntegrate(){
+		for (int x = xCoord - 1; x <= xCoord + 1; x++) {
+			for (int y = yCoord - 1; y <= yCoord + 1; y++) {
+				for (int z = zCoord - 1; z <= zCoord + 1; z++) {
+					if (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock)
+					{
+						if (worldObj.getBlockMetadata(x, y, z) == 0) worldObj.setBlock(x, y, z, ModBlocks.draconium);
+						else if (worldObj.getBlockMetadata(x, y, z) == 1) worldObj.setBlock(x, y, z, Blocks.redstone_block);
+					}
+				}
+			}
+		}
 	}
 
 	private boolean findStabalyzers() {
+		boolean flag = true;
 		for (int x = xCoord; x <= xCoord + 11; x++) {
 			if (worldObj.getBlock(x, yCoord, zCoord) == ModBlocks.particleGenerator) {
+				if (worldObj.getBlockMetadata(x, yCoord, zCoord) == 1) {
+					flag = false;
+					break;
+				}
 				stabilizers[0] = new TileLocation(x, yCoord, zCoord);
 				break;
 			} else if (x == xCoord + 11) {
-				return false;
+				flag = false;
 			}
 
 		}
 		for (int x = xCoord; x >= xCoord - 11; x--) {
 			if (worldObj.getBlock(x, yCoord, zCoord) == ModBlocks.particleGenerator) {
+				if (worldObj.getBlockMetadata(x, yCoord, zCoord) == 1) {
+					flag = false;
+					break;
+				}
 				stabilizers[1] = new TileLocation(x, yCoord, zCoord);
 				break;
 			} else if (x == xCoord - 11) {
-				return false;
+				flag = false;
 			}
 		}
 		for (int z = zCoord; z <= zCoord + 11; z++) {
 			if (worldObj.getBlock(xCoord, yCoord, z) == ModBlocks.particleGenerator) {
+				if (worldObj.getBlockMetadata(xCoord, yCoord, z) == 1) {
+					flag = false;
+					break;
+				}
 				stabilizers[2] = new TileLocation(xCoord, yCoord, z);
 				break;
 			} else if (z == zCoord + 11) {
-				return false;
+				flag = false;
 			}
 		}
 		for (int z = zCoord; z >= zCoord - 11; z--) {
 			if (worldObj.getBlock(xCoord, yCoord, z) == ModBlocks.particleGenerator) {
+				if (worldObj.getBlockMetadata(xCoord, yCoord, z) == 1) {
+					flag = false;
+					break;
+				}
 				stabilizers[3] = new TileLocation(xCoord, yCoord, z);
 				break;
 			} else if (z == zCoord - 11) {
-				return false;
+				flag = false;
 			}
 		}
-		return true;
+		return flag;
 	}
 
 	private boolean setTier(boolean force) {
@@ -106,7 +177,6 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 		for (int x = 0; x <= range; x++) {
 			if (testForOrActivateDraconium(xCoord - x, yCoord, zCoord, false, false)) {
 				xNeg = x;
-				if (xNeg != xPos) return false;
 				break;
 			}
 		}
@@ -114,7 +184,6 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 		for (int y = 0; y <= range; y++) {
 			if (testForOrActivateDraconium(xCoord, yCoord + y, zCoord, false, false)) {
 				yPos = y;
-				if (yPos != xNeg) return false;
 				break;
 			}
 		}
@@ -122,7 +191,6 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 		for (int y = 0; y <= range; y++) {
 			if (testForOrActivateDraconium(xCoord, yCoord - y, zCoord, false, false)) {
 				yNeg = y;
-				if (yNeg != yPos) return false;
 				break;
 			}
 		}
@@ -130,7 +198,6 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 		for (int z = 0; z <= range; z++) {
 			if (testForOrActivateDraconium(xCoord, yCoord, zCoord + z, false, false)) {
 				zPos = z;
-				if (zPos != yNeg) return false;
 				break;
 			}
 		}
@@ -138,17 +205,16 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 		for (int z = 0; z <= range; z++) {
 			if (testForOrActivateDraconium(xCoord, yCoord, zCoord - z, false, false)) {
 				zNeg = z;
-				if (zNeg != zPos) return false;
 				break;
 			}
 		}
 
+		if (zNeg != zPos || zNeg != yNeg || zNeg != yPos || zNeg != xNeg || zNeg != xPos) return false;
 		tier = xPos;
 		if (tier > 1) tier++;
 		if (tier == 1){
 			if (testForOrActivateDraconium(xCoord + 1, yCoord + 1, zCoord, false, false)) tier = 2;
 		}
-		//LogHelper.info(""+tier);
 		return true;
 	}
 
@@ -521,6 +587,99 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 		return online;
 	}
 
+	private void activateStabilizers(){
+		for (int i = 0; i < stabilizers.length; i++)
+		{
+			if (stabilizers[i] == null){
+				LogHelper.error("activateStabilizers stabalizers["+i+"] == null!!!");
+				return;
+			}
+			TileParticleGenerator tile = (worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) != null && worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) instanceof TileParticleGenerator) ? (TileParticleGenerator) worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) : null;
+			if (tile == null)
+			{
+				LogHelper.error("Missing Tile Entity (Particle Generator)");
+				return;
+			}
+			tile.stabalizerMode = true;
+			tile.setMaster(new TileLocation(xCoord, yCoord, zCoord));
+			worldObj.setBlockMetadataWithNotify(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord(), 1, 2);
+		}
+		double capacity = 0;
+		switch (tier){
+			case 0:
+				capacity = 45500000D;
+				break;
+			case 1:
+				capacity = 273000000D;
+				break;
+			case 2:
+				capacity = 1640000000D;
+				break;
+			case 3:
+				capacity = 9880000000D;
+				break;
+			case 4:
+				capacity = 59300000000D;
+				break;
+			case 5:
+				capacity = 356000000000D;
+				break;
+			case 6:
+				capacity = 2140000000000D;
+				break;
+		}
+		this.capacity = capacity;
+	}
+
+	public void deactivateStabilizers(){
+		for (int i = 0; i < stabilizers.length; i++)
+		{
+			if (stabilizers[i] == null){
+				LogHelper.error("activateStabilizers stabalizers["+i+"] == null!!!");
+			}else {
+				TileParticleGenerator tile = (worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) != null && worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) instanceof TileParticleGenerator) ? (TileParticleGenerator) worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) : null;
+				if (tile == null) {
+					//LogHelper.error("Missing Tile Entity (Particle Generator)");
+				}else {
+					tile.stabalizerMode = false;
+					worldObj.setBlockMetadataWithNotify(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord(), 0, 2);
+				}
+			}
+		}
+	}
+
+	private boolean areStabilizersActive(){
+		for (int i = 0; i < stabilizers.length; i++)
+		{
+			if (stabilizers[i] == null){
+				LogHelper.error("activateStabilizers stabalizers["+i+"] == null!!!");
+				return false;
+			}
+			TileParticleGenerator tile = (worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) != null && worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) instanceof TileParticleGenerator) ? (TileParticleGenerator) worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) : null;
+			if (tile == null)
+			{
+				//LogHelper.error("Missing Tile Entity (Particle Generator)");
+				return false;
+			}
+			if (!tile.stabalizerMode || worldObj.getBlockMetadata(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) != 1) return false;
+		}
+		return true;
+	}
+
+	private boolean checkStabilizers(){
+		for (int i = 0; i < stabilizers.length; i++)
+		{
+			if (stabilizers[i] == null) return false;
+			TileParticleGenerator gen = (worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) != null && worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) instanceof TileParticleGenerator) ? (TileParticleGenerator)worldObj.getTileEntity(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord()) : null;
+			if (gen == null || !gen.stabalizerMode) return false;
+			if (gen.getMaster().xCoord != xCoord || gen.getMaster().yCoord != yCoord || gen.getMaster().zCoord != zCoord) return false;
+		}
+		return true;
+	}
+
+	public int getTier(){
+		return tier;
+	}
 	/**
 	 * ###############################################################
 	 */
@@ -528,8 +687,10 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
-		storage.writeToNBT(compound);
 		super.writeToNBT(compound);
+		compound.setBoolean("Online", online);
+		compound.setShort("Tier", (short)tier);
+		compound.setDouble("Energy", energy);
 		for (int i = 0; i < stabilizers.length; i++){
 			if (stabilizers[i] != null)
 				stabilizers[i].writeToNBT(compound, String.valueOf(i));
@@ -538,12 +699,39 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		storage.readFromNBT(compound);
-		super.readFromNBT(compound);
+		online = compound.getBoolean("Online");
+		tier = (int)compound.getShort("Tier");
+		energy = compound.getDouble("Energy");
 		for (int i = 0; i < stabilizers.length; i++){
 			if (stabilizers[i] != null)
 				stabilizers[i].readFromNBT(compound, String.valueOf(i));
 		}
+		double capacity = 0;
+		switch (tier){
+			case 0:
+				capacity = 45500000D;//000
+				break;
+			case 1:
+				capacity = 273000000D;//000
+				break;
+			case 2:
+				capacity = 1640000000D;//000
+				break;
+			case 3:
+				capacity = 9880000000D;//000
+				break;
+			case 4:
+				capacity = 59300000000D;//000
+				break;
+			case 5:
+				capacity = 356000000000D;//000
+				break;
+			case 6:
+				capacity = 2140000000000D;//000
+				break;
+		}
+		this.capacity = capacity;
+		super.readFromNBT(compound);
 	}
 
 	@Override
@@ -558,31 +746,37 @@ public class TileEnergyStorageCore extends TileEntity implements IEnergyHandler 
 		readFromNBT(pkt.func_148857_g());
 	}
 
-	/* IEnergyHandler */
-	@Override
-	public boolean canConnectEnergy(ForgeDirection from) {
-		return true;
+	/* EnergyHandler */
+
+	public int receiveEnergy(int maxReceive, boolean simulate) {
+		double energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+
+		if (!simulate) {
+			energy += energyReceived;
+		}
+		return (int)energyReceived;
 	}
 
-	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-
-		return storage.receiveEnergy(maxReceive, simulate);
-	}
-
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+	public int extractEnergy(int maxExtract, boolean simulate) {
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		return storage.extractEnergy(maxExtract, simulate);
+		double energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+
+		if (!simulate) {
+			energy -= energyExtracted;
+		}
+		return (int)energyExtracted;
+	}
+
+	public double getEnergyStored() {
+		return energy;
+	}
+
+	public double getMaxEnergyStored() {
+		return capacity;
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from) {
-		return storage.getEnergyStored();
-	}
-
-	@Override
-	public int getMaxEnergyStored(ForgeDirection from) {
-		return storage.getMaxEnergyStored();
+	public AxisAlignedBB getRenderBoundingBox() {
+		return INFINITE_EXTENT_AABB;
 	}
 }

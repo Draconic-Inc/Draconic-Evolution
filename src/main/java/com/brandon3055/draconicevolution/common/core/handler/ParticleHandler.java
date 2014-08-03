@@ -1,10 +1,13 @@
 package com.brandon3055.draconicevolution.common.core.handler;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
 import com.brandon3055.draconicevolution.client.render.DistortionParticle;
 
+@SideOnly(Side.CLIENT)
 public class ParticleHandler
 {
 	private static Minecraft mc = Minecraft.getMinecraft();

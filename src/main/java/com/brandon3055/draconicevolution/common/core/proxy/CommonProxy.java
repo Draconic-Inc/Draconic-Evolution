@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.common.core.network.*;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileInvisibleMultiblock;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
@@ -66,6 +67,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileGenerator.class, "TileGenerator");
 		GameRegistry.registerTileEntity(TileEnergyStorageCore.class, "TileEnergyStorageCore");
 		GameRegistry.registerTileEntity(TileInvisibleMultiblock.class, "TileInvisibleMultiblock");
+		GameRegistry.registerTileEntity(TileEnergyPylon.class, "TileEnergyPylon");
 		if(DraconicEvolution.debug)
 			GameRegistry.registerTileEntity(TileTestBlock.class, "TileTestBlock");
 	}

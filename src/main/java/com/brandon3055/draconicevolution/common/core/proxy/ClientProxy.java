@@ -4,6 +4,8 @@ import com.brandon3055.draconicevolution.client.render.*;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import net.minecraft.client.renderer.tileentity.TileEntityMobSpawnerRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
@@ -67,5 +69,11 @@ public class ClientProxy extends CommonProxy {
 
 		render = new TestBlockRenderer();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, render);
+
+		render = new EnergyStorageCoreRenderer();
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyStorageCore.class, render);
+
+		render = new EnergyPylonRenderer();
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, render);
 	}
 }

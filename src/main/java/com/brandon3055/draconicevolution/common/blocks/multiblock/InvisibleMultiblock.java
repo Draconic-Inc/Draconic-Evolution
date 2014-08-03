@@ -5,8 +5,11 @@ import com.brandon3055.draconicevolution.common.blocks.DraconicEvolutionBlock;
 import com.brandon3055.draconicevolution.common.blocks.Draconium;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.core.utills.Utills;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileInvisibleMultiblock;
 import cpw.mods.fml.relauncher.Side;
@@ -18,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -63,12 +67,14 @@ public class InvisibleMultiblock extends DraconicEvolutionBlock {
 
 	@Override
 	public boolean hasTileEntity(int metadata) {
-		return true;
+		return metadata == 0 || metadata == 1;
 	}
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
-		return new TileInvisibleMultiblock();
+		if (metadata == 0 || metadata == 1)
+			return new TileInvisibleMultiblock();
+		else return null;
 	}
 
 	@Override
@@ -83,38 +89,55 @@ public class InvisibleMultiblock extends DraconicEvolutionBlock {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-		TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
-		if (thisTile == null)
-		{
-			LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock)");
-			return false;
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 0 || meta == 1) {
+			TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
+			if (thisTile == null) {
+				LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock)");
+				return false;
+			}
+			TileEnergyStorageCore master = thisTile.getMaster();
+			if (master == null) {
+				onNeighborBlockChange(world, x, y, z, this);
+				return false;
+			}
+			if (!world.isRemote) {
+				player.addChatComponentMessage(new ChatComponentText("Tier:" + master.getTier()));
+				player.addChatComponentMessage(new ChatComponentText("" + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored())));
+			}
+			return true;
+		} else if (meta == 2) {
+			TileEnergyPylon pylon = (world.getTileEntity(x, y+1, z) != null && world.getTileEntity(x, y+1, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y+1, z) : (world.getTileEntity(x, y-1, z) != null && world.getTileEntity(x, y-1, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y-1, z) : null;
+			if (pylon == null) return false;
+			pylon.input = !pylon.input;
+			world.markBlockForUpdate(pylon.xCoord, pylon.yCoord, pylon.zCoord);
+			pylon.onActivated();
+			return true;
 		}
-		TileEnergyStorageCore master= thisTile.getMaster();
-		if (master == null) {
-			onNeighborBlockChange(world, x, y, z, this);
-			return false;
-		}
-		if (world.isRemote)
-			player.addChatComponentMessage(new ChatComponentText(""+master.getEnergyStored(ForgeDirection.UP)));
-		return true;
+		return false;
 	}
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block p_149695_5_) {
-		TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
-		if (thisTile == null)
-		{
-			LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock)");
-			revert(world, x, y, z);
-			return;
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 0 || meta == 1) {
+			TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
+			if (thisTile == null) {
+				LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock)");
+				revert(world, x, y, z);
+				return;
+			}
+			TileEnergyStorageCore master = thisTile.getMaster();
+			if (master == null) {
+				LogHelper.error("Master = null reverting!");
+				revert(world, x, y, z);
+				return;
+			}
+			if (master.isOnline()) master.isStructureStillValid(false);
+			if (!master.isOnline()) revert(world, x, y, z);
+		}else if (meta == 2) {
+			if (world.getBlock(x, y + 1, z) != ModBlocks.energyPylon && world.getBlock(x, y - 1, z) != ModBlocks.energyPylon) world.setBlock(x, y, z, Blocks.glass);
 		}
-		TileEnergyStorageCore master = thisTile.getMaster();
-		if (master == null) {
-			LogHelper.error("Master = null reverting!");
-			revert(world, x, y, z);
-			return;
-		}
-		if (!master.isOnline()) revert(world, x, y, z);
 	}
 
 	private void revert(World world, int x, int y, int z){
@@ -124,4 +147,34 @@ public class InvisibleMultiblock extends DraconicEvolutionBlock {
 		else if (meta == 1)
 			world.setBlock(x, y, z, Blocks.redstone_block);
 	}
+
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int meta) {
+		TileEntity tile = world.getTileEntity(x, y, z);
+		TileInvisibleMultiblock thisTile = (tile != null && tile instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) tile : null;
+		if (thisTile != null && thisTile.getMaster() != null && thisTile.getMaster().isOnline())
+		{
+			world.setBlockMetadataWithNotify(x, y, z, 0, 2);
+
+			thisTile.getMaster().isStructureStillValid(true);
+		}
+		super.breakBlock(world, x, y, z, p_149749_5_, meta);
+	}
+
+	@Override
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 0 || meta == 1) {
+			TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
+			if (thisTile != null && thisTile.getMaster() != null) {
+				return AxisAlignedBB.getBoundingBox(thisTile.getMaster().xCoord, thisTile.getMaster().yCoord, thisTile.getMaster().zCoord, thisTile.getMaster().xCoord + 0.5, thisTile.getMaster().yCoord + 0.5, thisTile.getMaster().zCoord + 0.5);
+			}
+			return super.getSelectedBoundingBoxFromPool(world, x, y, z);
+		}else if (meta == 2) {
+			return AxisAlignedBB.getBoundingBox(x + 0.49, y + 0.49, z + 0.49, x + 0.51, y + 0.51, z + 0.51);
+		}
+		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
+	}
+
+
 }
