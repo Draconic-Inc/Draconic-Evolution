@@ -133,7 +133,7 @@ public class InvisibleMultiblock extends DraconicEvolutionBlock {
 				revert(world, x, y, z);
 				return;
 			}
-			if (master.isOnline()) master.isStructureStillValid(false);
+			if (master.isOnline()) master.isStructureStillValid(thisTile.getMaster().getTier() == 1);
 			if (!master.isOnline()) revert(world, x, y, z);
 		}else if (meta == 2) {
 			if (world.getBlock(x, y + 1, z) != ModBlocks.energyPylon && world.getBlock(x, y - 1, z) != ModBlocks.energyPylon) world.setBlock(x, y, z, Blocks.glass);
@@ -156,7 +156,7 @@ public class InvisibleMultiblock extends DraconicEvolutionBlock {
 		{
 			world.setBlockMetadataWithNotify(x, y, z, 0, 2);
 
-			thisTile.getMaster().isStructureStillValid(true);
+			thisTile.getMaster().isStructureStillValid(thisTile.getMaster().getTier() == 1);
 		}
 		super.breakBlock(world, x, y, z, p_149749_5_, meta);
 	}

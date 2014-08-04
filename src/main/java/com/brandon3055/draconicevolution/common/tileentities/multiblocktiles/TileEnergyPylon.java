@@ -83,7 +83,8 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 			int maxRecived = (int)Math.min(storage.getMaxEnergyStored() - storage.getEnergyStored(), getMaster().getEnergyStored());
 			storage.modifyEnergyStored(maxRecived);
 			getMaster().extractEnergy(maxRecived, false);
-			if (particleRate < 10) particleRate++;
+			particleRate = maxRecived / 40;
+			if (particleRate > 100) particleRate = 100;
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}else {
 			if (particleRate > 0) particleRate--;
@@ -109,8 +110,8 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 			int maxSent = (int)Math.min(getMaster().getMaxEnergyStored() - getMaster().getEnergyStored(), storage.getEnergyStored());
 			storage.modifyEnergyStored(-maxSent);
 			getMaster().receiveEnergy(maxSent, false);
-
-			if (particleRate < 10) particleRate++;
+			particleRate = maxSent / 40;
+			if (particleRate > 100) particleRate = 100;
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}else {
 			if (particleRate > 0) particleRate--;
@@ -155,6 +156,7 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 		double targetX;
 		double targetY;
 		double targetZ;
+		if (particleRate > 100) particleRate = 100;
 		if (input){
 			spawnX = x+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 			spawnY = y+0.5 - disMod + (rand.nextFloat() * (disMod*2));
@@ -167,11 +169,18 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 				ParticleHandler.spawnCustomParticle(passiveParticle, 50);
 			}
 			if (particleRate > 0){
-				if (particleRate > 10) particleRate = 10;
-				for (int i = 0; i <= particleRate; i++){
-					spawnX = x+0.5 - disMod + (rand.nextFloat() * (disMod*2));
-					spawnY = y+0.5 - disMod + (rand.nextFloat() * (disMod*2));
-					spawnZ = z+0.5 - disMod + (rand.nextFloat() * (disMod*2));
+				if (particleRate > 10) {
+					for (int i = 0; i <= particleRate/10; i++) {
+						spawnX = x + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
+						spawnY = y + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
+						spawnZ = z + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
+						Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
+						ParticleHandler.spawnCustomParticle(passiveParticle, 50);
+					}
+				}else if (rand.nextInt(Math.max(1, 10 - particleRate)) == 0){
+					spawnX = x + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
+					spawnY = y + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
+					spawnZ = z + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
 					Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
 					ParticleHandler.spawnCustomParticle(passiveParticle, 50);
 				}
@@ -188,9 +197,17 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 				Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, true);
 				ParticleHandler.spawnCustomParticle(passiveParticle, 50);
 			}
+
 			if (particleRate > 0){
-				if (particleRate > 10) particleRate = 10;
-				for (int i = 0; i <= particleRate; i++){
+				if (particleRate > 10) {
+					for (int i = 0; i <= particleRate/10; i++) {
+						targetX = x+0.5 - disMod + (rand.nextFloat() * (disMod*2));
+						targetY = y+0.5 - disMod + (rand.nextFloat() * (disMod*2));
+						targetZ = z+0.5 - disMod + (rand.nextFloat() * (disMod*2));
+						Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
+						ParticleHandler.spawnCustomParticle(passiveParticle, 50);
+					}
+				}else if (rand.nextInt(Math.max(1, 10 - particleRate)) == 0){
 					targetX = x+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 					targetY = y+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 					targetZ = z+0.5 - disMod + (rand.nextFloat() * (disMod*2));
