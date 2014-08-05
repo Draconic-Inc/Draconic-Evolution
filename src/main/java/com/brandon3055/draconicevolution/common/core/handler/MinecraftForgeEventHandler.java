@@ -1,22 +1,31 @@
 package com.brandon3055.draconicevolution.common.core.handler;
 
 
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.core.utills.Utills;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import net.minecraftforge.event.world.ChunkEvent;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,8 +99,7 @@ public class MinecraftForgeEventHandler {
 		}
 	}
 
-	private boolean isValidEntity(EntityLivingBase entity)
-	{
+	private boolean isValidEntity(EntityLivingBase entity){
 		if (entity instanceof IBossDisplayData) { return false; }
 		for (int i = 0; i < ConfigHandler.spawnerList.length; i++)
 		{
@@ -109,5 +117,41 @@ public class MinecraftForgeEventHandler {
 			return true;
 		}
 	}
-	
+
+	@SubscribeEvent
+	public void ChunkEvent(ChunkEvent event) {
+		if (!ConfigHandler.updateFix) return;
+		Chunk chunk = event.getChunk();
+		for (ExtendedBlockStorage storage : chunk.getBlockStorageArray()) {
+			if (storage != null) {
+				for (int x = 0; x < 16; ++x) {
+					for (int y = 0; y < 16; ++y) {
+						for (int z = 0; z < 16; ++z) {
+							changeBlock(storage, x, y, z);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private boolean changeBlock(ExtendedBlockStorage storage, int x, int y, int z){
+
+		if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.particleGenerator")) return makeChange(storage, x, y, z, ModBlocks.particleGenerator);
+		else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.customSpawner")) return makeChange(storage, x, y, z, ModBlocks.customSpawner);
+		else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.generator")) return makeChange(storage, x, y, z, ModBlocks.generator);
+		else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.playerDetectorAdvanced")) return makeChange(storage, x, y, z, ModBlocks.playerDetectorAdvanced);
+		else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.energyInfuser")) return makeChange(storage, x, y, z, ModBlocks.energyInfuser);
+		else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.draconiumOre")) return makeChange(storage, x, y, z, ModBlocks.draconiumOre);
+		else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.weatherController")) return makeChange(storage, x, y, z, ModBlocks.weatherController);
+		else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.longRangeDislocator")) return makeChange(storage, x, y, z, ModBlocks.longRangeDislocator);
+		else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.grinder")) return makeChange(storage, x, y, z, ModBlocks.grinder);
+		return false;
+	}
+
+	private boolean makeChange(ExtendedBlockStorage storage, int x, int y, int z, Block block){
+		LogHelper.info("Changing block at [X:"+x+" Y:"+y+" Z:"+z+"] from "+storage.getBlockByExtId(x, y, z).getUnlocalizedName()+" to "+block.getUnlocalizedName());
+		storage.func_150818_a(x, y, z, block);
+		return true;
+	}
 }

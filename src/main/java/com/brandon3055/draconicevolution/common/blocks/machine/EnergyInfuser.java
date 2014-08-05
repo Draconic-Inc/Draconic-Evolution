@@ -1,7 +1,9 @@
-package com.brandon3055.draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
+import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
@@ -21,7 +23,7 @@ import net.minecraft.world.World;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class EnergyInfuser extends BlockContainer{
+public class EnergyInfuser extends BlockContainerDE {
 	public EnergyInfuser() {
 		super(Material.iron);
 		this.setBlockName(Strings.energyInfuserName);
@@ -30,7 +32,7 @@ public class EnergyInfuser extends BlockContainer{
 		this.setHardness(1f);
 		this.setResistance(200.0f);
 		this.setBlockBounds(0f, 0f, 0f, 1f, 0.375f, 1f);
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		ModBlocks.register(this);
 	}
 
 	@Override

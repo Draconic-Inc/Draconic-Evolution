@@ -14,7 +14,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class RainSensor extends DraconicEvolutionBlock
+public class RainSensor extends BlockDE
 {
 	IIcon icon_inactive;
 	IIcon icon_active;

@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import cofh.api.energy.EnergyStorage;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -13,7 +12,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class DraconicCore extends DraconicEvolutionItem {
+public class DraconicCore extends ItemDE {
 	public DraconicCore() {
 		this.setUnlocalizedName(Strings.draconicCoreName);
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));

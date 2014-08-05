@@ -1,13 +1,12 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.blocks.DraconicEvolutionBlock;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileInvisibleMultiblock;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -26,7 +25,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by Brandon on 28/07/2014.
  */
-public class EnergyPylon extends DraconicEvolutionBlock {
+public class EnergyPylon extends BlockDE {
 	@SideOnly(Side.CLIENT)
 	public IIcon icon_active_face;
 	public IIcon icon_input;

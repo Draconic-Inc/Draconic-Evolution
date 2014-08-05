@@ -1,5 +1,7 @@
-package com.brandon3055.draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks.machine;
 
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,14 +17,14 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetector;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class PlayerDetector extends DraconicEvolutionBlock
+public class PlayerDetector extends BlockDE
 {
 	IIcon side_inactive;
 	IIcon side_active;
 	IIcon top;
 	IIcon bottom;
 
-	protected PlayerDetector() {
+	public PlayerDetector() {
 		this.setBlockName(Strings.playerDetectorName);
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setStepSound(soundTypeStone);

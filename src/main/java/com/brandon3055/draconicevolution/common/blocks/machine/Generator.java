@@ -1,7 +1,9 @@
-package com.brandon3055.draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
+import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -35,7 +37,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 23/07/2014.
  */
-public class Generator extends BlockContainer {
+public class Generator extends BlockContainerDE {
 
 	public IIcon icon_front;
 	public IIcon icon_side;
@@ -44,14 +46,14 @@ public class Generator extends BlockContainer {
 	public IIcon icon_front_inactive;
 	public IIcon icon_top[] = new IIcon[4];
 
-	protected Generator() {
+	public Generator() {
 		super(Material.rock);
 		this.setBlockName(Strings.generatorName);
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(2000.0f);
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		ModBlocks.register(this);
 
 	}
 

@@ -1,7 +1,9 @@
-package com.brandon3055.draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import java.util.List;
 
+import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -28,7 +30,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 
-public class Grinder extends BlockContainer
+public class Grinder extends BlockContainerDE
 {
 	public IIcon icon_front;
 	public IIcon icon_side;
@@ -37,14 +39,14 @@ public class Grinder extends BlockContainer
 	public IIcon icon_front_inactive;
 	public IIcon icon_top[] = new IIcon[4];
 
-	protected Grinder() {
+	public Grinder() {
 		super(Material.rock);
 		this.setBlockName(Strings.grinderName);
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(2000.0f);
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		ModBlocks.register(this);
 
 	}
 

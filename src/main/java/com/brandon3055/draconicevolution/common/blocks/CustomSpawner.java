@@ -32,7 +32,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 5/07/2014.
  */
-public class CustomSpawner extends Block{
+public class CustomSpawner extends BlockDE{
 	public CustomSpawner()
 	{
 		super(Material.rock);
@@ -40,7 +40,7 @@ public class CustomSpawner extends Block{
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setHardness(10F);
 		this.setHarvestLevel("pickaxe", 3);
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		ModBlocks.register(this);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.items.weapons;
 import java.util.List;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,6 +36,18 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem{
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
 		GameRegistry.registerItem(this, Strings.wyvernSwordName);
 	}
+
+	@Override
+	public String getUnlocalizedName(){
+
+		return String.format("item.%s%s", References.MODID.toLowerCase() + ":", super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
+	}
+
+	@Override
+	public String getUnlocalizedName(final ItemStack itemStack){
+		return getUnlocalizedName();
+	}
+
 
 	@Override
 	@SideOnly(Side.CLIENT)

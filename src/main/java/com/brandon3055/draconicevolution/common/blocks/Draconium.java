@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 /**
  * Created by Brandon on 25/07/2014.
  */
-public class Draconium extends DraconicEvolutionBlock {
+public class Draconium extends BlockDE {
 	public Draconium() {
 		super(Material.iron);
 		this.setHardness(10F);

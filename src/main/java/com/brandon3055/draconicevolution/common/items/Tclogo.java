@@ -2,22 +2,20 @@ package com.brandon3055.draconicevolution.common.items;
 
 import java.util.List;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
-import com.brandon3055.draconicevolution.common.items.tools.ToolHandler;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class Tclogo extends DraconicEvolutionItem {
+public class Tclogo extends ItemDE {
 	public Tclogo() {
 		this.setUnlocalizedName(Strings.tclogoName);
 		//this.setCreativeTab(draconicevolution.getCreativeTab());
@@ -75,19 +73,11 @@ public class Tclogo extends DraconicEvolutionItem {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+		String name = References.MODID.toLowerCase() + ":" + getUnwrappedUnlocalizedName(getUnlocalizedName());
 
+		name = name.substring(name.indexOf(":") + 1);
 
-			world.spawnEntityInWorld(new EntityLightningBolt(world, player.posX, player.posY, player.posZ + 5));
-
-		int xPos = (int) player.posX;
-		int yPos = (int) player.posY;
-		int zPos = (int) player.posZ;
-
-		for (int x = xPos - 5; x < xPos + 5; x++) {
-			for (int z = zPos - 5; z < zPos + 5; z++) {
-				if (!world.isRemote) world.markBlockForUpdate(x, yPos, z);
-			}
-		}
+		LogHelper.info(getUnlocalizedName());
 		return stack;
 	}
 	

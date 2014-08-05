@@ -40,6 +40,17 @@ public class DraconicAxe extends ItemAxe implements IEnergyContainerItem{
 	}
 
 	@Override
+	public String getUnlocalizedName(){
+
+		return String.format("item.%s%s", References.MODID.toLowerCase() + ":", super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
+	}
+
+	@Override
+	public String getUnlocalizedName(final ItemStack itemStack){
+		return getUnlocalizedName();
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(final IIconRegister iconRegister) {
 		this.itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_axe");

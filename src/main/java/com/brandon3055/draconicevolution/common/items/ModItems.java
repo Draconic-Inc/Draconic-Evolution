@@ -49,20 +49,20 @@ public class ModItems {
 	public static Item wyvernLeggs;
 	public static Item wyvernBoots;
 
-	public static Item infusedCompound;
-	public static Item draconiumDust;
-	public static Item draconiumIngot;
-	public static Item draconiumBlend;
-	public static Item dragonHeart;
+	public static ItemDE infusedCompound;
+	public static ItemDE draconiumDust;
+	public static ItemDE draconiumIngot;
+	public static ItemDE draconiumBlend;
+	public static ItemDE dragonHeart;
 	public static Item draconicDistructionStaff;
-	public static Item draconicCompound;
-	public static Item tclogo;
-	public static Item draconicCore;
-	public static Item sunFocus;
-	public static Item mobSoul;
+	public static ItemDE draconicCompound;
+	public static ItemDE tclogo;
+	public static ItemDE draconicCore;
+	public static ItemDE sunFocus;
+	public static ItemDE mobSoul;
 
-	public static Item teleporterMKI;
-	public static Item teleporterMKII;
+	public static ItemDE teleporterMKI;
+	public static ItemDE teleporterMKII;
 	
 
 	public static void init()
@@ -103,8 +103,10 @@ public class ModItems {
 
 	}
 
-	public static void register(final DraconicEvolutionItem item)
+	public static void register(final ItemDE item)
 	{
-		GameRegistry.registerItem(item, item.getUnwrappedUnlocalizedName(item.getUnlocalizedName()));
+		String name = item.getUnwrappedUnlocalizedName(item.getUnlocalizedName());
+		GameRegistry.registerItem(item, name.substring(name.indexOf(":") + 1));
+		//GameRegistry.registerItem(item, item.getUnwrappedUnlocalizedName(item.getUnlocalizedName()));
 	}
 }

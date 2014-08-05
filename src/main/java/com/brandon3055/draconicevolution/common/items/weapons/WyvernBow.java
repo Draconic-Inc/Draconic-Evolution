@@ -39,6 +39,17 @@ public class WyvernBow extends ItemBow {
 		GameRegistry.registerItem(this, Strings.wyvernBowName);
 	}
 
+	@Override
+	public String getUnlocalizedName(){
+
+		return String.format("item.%s%s", References.MODID.toLowerCase() + ":", super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
+	}
+
+	@Override
+	public String getUnlocalizedName(final ItemStack itemStack){
+		return getUnlocalizedName();
+	}
+
 	/* ======================================== CUSTOMEBOW START =====================================*/
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -99,23 +110,12 @@ public class WyvernBow extends ItemBow {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister)
 	{
-		this.itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + getUnwrappedUnlocalizedName(getUnlocalizedName()) + "_standby");
+		this.itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "wyvern_bow" + "_standby");
 		this.iconArray = new IIcon[bowPullIconNameArray.length];
 
 		for (int i = 0; i < this.iconArray.length; ++i) {
-			this.iconArray[i] = iconRegister.registerIcon(References.RESOURCESPREFIX + getUnwrappedUnlocalizedName(getUnlocalizedName()) + "_" + bowPullIconNameArray[i]);
+			this.iconArray[i] = iconRegister.registerIcon(References.RESOURCESPREFIX + "wyvern_bow" + "_" + bowPullIconNameArray[i]);
 		}
-	}
-
-	@Override
-	public String getUnlocalizedName()
-	{
-		return String.format("item.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
-	}
-
-	public String getUnwrappedUnlocalizedName(final String unlocalizedName)
-	{
-		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
 	}
 
 	@Override

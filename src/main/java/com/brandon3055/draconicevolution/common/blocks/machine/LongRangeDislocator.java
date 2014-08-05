@@ -1,11 +1,13 @@
-package com.brandon3055.draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.blocks.LRDItemBlock;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.TileLRD;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,7 +27,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 20/07/2014.
  */
-public class LongRangeDislocator extends DraconicEvolutionBlock {
+public class LongRangeDislocator extends BlockDE {
 
 	IIcon blockIconTop;
 
@@ -34,7 +36,7 @@ public class LongRangeDislocator extends DraconicEvolutionBlock {
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setHardness(5f);
 		this.setResistance(20.0f);
-		GameRegistry.registerBlock(this, LRDItemBlock.class, this.getUnlocalizedName());
+		ModBlocks.registerWithItem(this, LRDItemBlock.class);
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 
-public class ParticleGenerator extends Block
+public class ParticleGenerator extends BlockDE
 {
 	public static Block instance;
 
@@ -37,7 +37,7 @@ public class ParticleGenerator extends Block
 		this.setHardness(1f);
 		this.setResistance(200.0f);
 		this.setLightOpacity(0);
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		ModBlocks.register(this);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class DraconicEvolution {
 	public static final String networkChannelName = "DraconicEvolution";
 	public static ChannelHandler channelHandler = new ChannelHandler(References.MODID, networkChannelName);
 	//public static FMLEventChannel channel;
-	public static boolean debug = true;
+	public static boolean debug = false;
 	
 	public DraconicEvolution()
 	{

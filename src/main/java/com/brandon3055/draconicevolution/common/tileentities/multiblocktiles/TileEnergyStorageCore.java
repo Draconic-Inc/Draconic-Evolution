@@ -629,6 +629,7 @@ public class TileEnergyStorageCore extends TileEntity {
 				break;
 		}
 		this.capacity = capacity;
+		if (energy > capacity) energy = capacity;
 	}
 
 	public void deactivateStabilizers(){
@@ -731,6 +732,7 @@ public class TileEnergyStorageCore extends TileEntity {
 				break;
 		}
 		this.capacity = capacity;
+		if (energy > capacity) energy = capacity;
 		super.readFromNBT(compound);
 	}
 

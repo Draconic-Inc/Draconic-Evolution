@@ -1,5 +1,7 @@
-package com.brandon3055.draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks.machine;
 
+import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
@@ -21,21 +23,21 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class PlayerDetectorAdvanced extends BlockContainer
+public class PlayerDetectorAdvanced extends BlockContainerDE
 {
 	IIcon side_inactive;
 	IIcon side_active;
 	IIcon top;
 	IIcon bottom;
-	
-	protected PlayerDetectorAdvanced() {
+
+	public PlayerDetectorAdvanced() {
 		super(Material.iron);
 		this.setBlockName(Strings.playerDetectorAdvancedName);
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(200.0f);
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		ModBlocks.register(this);
 	}
 
 	@Override

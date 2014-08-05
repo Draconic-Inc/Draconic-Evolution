@@ -35,6 +35,17 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem{
 	}
 
 	@Override
+	public String getUnlocalizedName(){
+
+		return String.format("item.%s%s", References.MODID.toLowerCase() + ":", super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
+	}
+
+	@Override
+	public String getUnlocalizedName(final ItemStack itemStack){
+		return getUnlocalizedName();
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(final IIconRegister iconRegister)
 	{

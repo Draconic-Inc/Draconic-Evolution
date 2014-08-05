@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.core.proxy;
 
 import com.brandon3055.draconicevolution.common.core.handler.MinecraftForgeEventHandler;
 import com.brandon3055.draconicevolution.common.core.network.*;
+import com.brandon3055.draconicevolution.common.core.utills.Utills;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
@@ -68,6 +69,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEnergyStorageCore.class, "TileEnergyStorageCore");
 		GameRegistry.registerTileEntity(TileInvisibleMultiblock.class, "TileInvisibleMultiblock");
 		GameRegistry.registerTileEntity(TileEnergyPylon.class, "TileEnergyPylon");
+		GameRegistry.registerTileEntity(Utills.TileBlockChanger.class, "TileBlockChanger");
 		if(DraconicEvolution.debug)
 			GameRegistry.registerTileEntity(TileTestBlock.class, "TileTestBlock");
 	}

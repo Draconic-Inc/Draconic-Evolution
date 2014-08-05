@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import java.util.List;
 
+import com.brandon3055.draconicevolution.common.items.ItemDE;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.IBossDisplayData;
@@ -27,7 +28,7 @@ import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class TeleporterMKII extends Item
+public class TeleporterMKII extends ItemDE
 {
 
 	public TeleporterMKII() {

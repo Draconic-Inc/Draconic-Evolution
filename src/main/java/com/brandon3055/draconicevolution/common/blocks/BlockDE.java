@@ -7,27 +7,27 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.common.lib.References;
 
-public class DraconicEvolutionBlock extends Block {
+public class BlockDE extends Block {
 
-	public DraconicEvolutionBlock(final Material material) {
+	public BlockDE(final Material material) {
 		super(material);
 
 	}
 
-	public DraconicEvolutionBlock() {
+	public BlockDE() {
 		super(Material.rock);
 	}
 
 	@Override
 	public String getUnlocalizedName()
 	{
-		
-		return String.format("tile.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		return String.format("tile.%s%s", References.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		//return String.format("tile.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
 	public String getUnwrappedUnlocalizedName(final String unlocalizedName)
 	{
-		
+
 		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
 	}
 

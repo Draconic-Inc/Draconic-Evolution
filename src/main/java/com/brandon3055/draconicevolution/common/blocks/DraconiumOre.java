@@ -17,7 +17,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.world.IBlockAccess;
 
-public class DraconiumOre extends DraconicEvolutionBlock {
+public class DraconiumOre extends BlockDE {
 	public IIcon icon;
 	public IIcon iconEnd;
 	public IIcon iconNether;
@@ -28,7 +28,7 @@ public class DraconiumOre extends DraconicEvolutionBlock {
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setHardness(5f);
 		this.setResistance(20.0f);
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		ModBlocks.register(this);
 	}
 
     @Override

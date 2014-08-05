@@ -19,6 +19,7 @@ public class ConfigHandler {
 	public static int admin_dislocator_Max_Range;
 	public static int admin_dislocator_Detect_Range;
 	public static int disable_LRD;
+	public static boolean updateFix;
 
 	private static String[] defaultList = new String[] {"ExampleMob1", "ExampleMob2", "ExampleMob3 (these examples can be deleted)"};
 
@@ -36,6 +37,7 @@ public class ConfigHandler {
 			spawnerListType = config.get("Spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);
 			spawnerList = config.getStringList("Spawn List", "Spawner", defaultList, "List of names that will be ether accepted or rejected by the spawner depending on the list type");
 			soulDropChance = config.get("Spawner", "soulDropChance", 1000, "Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(1000);
+			updateFix = config.get(Configuration.CATEGORY_GENERAL, "Update Fix", true, "Convert blocks from v0.9.2 to the v0.2.3+ format (set to false if you are not updating from v0.9.2 or earlier)").getBoolean(true);
 
 			//dislocator_Min_Range = config.get("Long Range Dislocator", "Admin Dislocator Min Range", 1000000).getInt(1000000);
 			//dislocator_Max_Range = config.get("Long Range Dislocator", "Admin Dislocator Max Range", 29000000).getInt(29000000);

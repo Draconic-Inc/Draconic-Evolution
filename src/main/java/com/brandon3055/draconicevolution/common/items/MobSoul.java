@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,7 +18,7 @@ import java.util.List;
 /**
  * Created by Brandon on 7/07/2014.
  */
-public class MobSoul extends DraconicEvolutionItem {
+public class MobSoul extends ItemDE {
 	public MobSoul() {
 		this.setUnlocalizedName(Strings.MobSoulName);
 		ModItems.register(this);

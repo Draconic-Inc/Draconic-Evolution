@@ -45,6 +45,17 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor{
 	}
 
 	@Override
+	public String getUnlocalizedName(){
+
+		return String.format("item.%s%s", References.MODID.toLowerCase() + ":", super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
+	}
+
+	@Override
+	public String getUnlocalizedName(final ItemStack itemStack){
+		return getUnlocalizedName();
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		helmIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "wyvern_helmet");

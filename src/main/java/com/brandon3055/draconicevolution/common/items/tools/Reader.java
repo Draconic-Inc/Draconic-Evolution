@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.draconicevolution.common.items.ItemDE;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -16,7 +17,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class Reader extends Item
+public class Reader extends ItemDE
 {
 	public Reader() {
 		this.setUnlocalizedName(Strings.readerName);

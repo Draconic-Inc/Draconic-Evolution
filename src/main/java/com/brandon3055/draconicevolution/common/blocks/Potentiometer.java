@@ -24,7 +24,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TilePotentiometer;
 
-public class Potentiometer extends DraconicEvolutionBlock
+public class Potentiometer extends BlockDE
 {
 	IIcon icons[] = new IIcon[16];
 

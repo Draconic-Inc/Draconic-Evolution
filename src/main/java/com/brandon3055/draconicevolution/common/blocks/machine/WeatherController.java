@@ -1,7 +1,9 @@
-package com.brandon3055.draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import java.util.List;
 
+import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -26,7 +28,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
 
-public class BlockWeatherController extends BlockContainer {
+public class WeatherController extends BlockContainerDE {
 
 	public boolean blockState = true;
 	public IIcon icon_top;
@@ -38,31 +40,20 @@ public class BlockWeatherController extends BlockContainer {
 	public IIcon icon_side_sun_on;
 	public IIcon icon_side_sun_off;
 
-	public BlockWeatherController() {
+	public WeatherController() {
 		super(Material.rock);
 		this.setBlockName(Strings.blockWeatherControllerName);
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(200.0f);
-		GameRegistry.registerBlock(this, this.getUnlocalizedName());
+		ModBlocks.register(this);
 	}
 
 	@Override
 	public boolean hasTileEntity(final int meta)
 	{
 		return true;
-	}
-
-	@Override
-	public String getUnlocalizedName()
-	{
-		return String.format("tile.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
-	}
-
-	public String getUnwrappedUnlocalizedName(final String unlocalizedName)
-	{
-		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
 	}
 
 	@Override
@@ -144,11 +135,6 @@ public class BlockWeatherController extends BlockContainer {
 			FMLNetworkHandler.openGui(entityPlayer, DraconicEvolution.instance, GuiHandler.GUIID_WEATHER_CONTROLLER, world, x, y, z);
 		}
 		return true;
-	}
-
-	public String getUnlocalizedWeatherControllerName()
-	{
-		return String.format("tile.%s%s", References.RESOURCESPREFIX, "weatherController/weatherController");
 	}
 
 	@Override

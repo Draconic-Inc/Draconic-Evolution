@@ -1,5 +1,7 @@
-package com.brandon3055.draconicevolution.common.blocks;
+package com.brandon3055.draconicevolution.common.blocks.machine;
 
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,14 +16,14 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
 
-public class BlockSunDial extends DraconicEvolutionBlock {
+public class SunDial extends BlockDE {
 	//@SideOnly(Side.CLIENT)
 	public IIcon icon_front;
 	public IIcon icon_front_active;
 	public IIcon icon_side;
 	public boolean blockState = true;
 
-	public BlockSunDial() {
+	public SunDial() {
 		this.setBlockName(Strings.blockSunDialName);
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setStepSound(soundTypeStone);

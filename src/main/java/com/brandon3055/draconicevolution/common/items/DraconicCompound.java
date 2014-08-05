@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-public class DraconicCompound extends DraconicEvolutionItem {
+public class DraconicCompound extends ItemDE {
 	public DraconicCompound() {
 		this.setUnlocalizedName(Strings.draconicCompoundName);
 		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));

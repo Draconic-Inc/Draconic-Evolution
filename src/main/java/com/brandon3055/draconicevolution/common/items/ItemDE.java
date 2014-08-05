@@ -8,22 +8,22 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.common.lib.References;
 
-public class DraconicEvolutionItem extends Item {
+public class ItemDE extends Item {
 	public String getUnwrappedUnlocalizedName(final String unlocalizedName)
 	{
 		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
 	}
 
 	@Override
-	public String getUnlocalizedName()
-	{
-		return String.format("item.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+	public String getUnlocalizedName(){
+		//return String.format("item.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		return String.format("item.%s%s", References.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
 	@Override
-	public String getUnlocalizedName(final ItemStack itemStack)
-	{
-		return String.format("item.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+	public String getUnlocalizedName(final ItemStack itemStack){
+		//return String.format("item.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		return getUnlocalizedName();
 	}
 
 	@Override

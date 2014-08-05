@@ -14,14 +14,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 
-public class TestBlock extends DraconicEvolutionBlock {
+public class TestBlock extends BlockDE {
 
 	protected TestBlock() {
 		super(Material.rock);
@@ -30,7 +29,7 @@ public class TestBlock extends DraconicEvolutionBlock {
 		this.setHardness(5f);
 		this.setResistance(200.0f);
 		//this.setBlockBounds(0.4f, 0f, 0.4f, 0.6f, 1f, 0.6f);
-		GameRegistry.registerBlock(this, TestItemBlock.class, this.getUnlocalizedName());
+		ModBlocks.registerWithItem(this, TestItemBlock.class);
 	}
 
 	@Override
