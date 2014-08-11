@@ -23,7 +23,7 @@ public class XRayBlock extends BlockDE {
 	protected XRayBlock() {
 		super(Material.rock);
 		this.setBlockName(Strings.xrayBlockName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockBounds(0.4F, 0.4F, 0.4F, 0.6F, 0.6F, 0.6F);
 		this.setHardness(7f);
 		this.setHarvestLevel("pickaxe", 4);

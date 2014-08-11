@@ -3,8 +3,8 @@ package com.brandon3055.draconicevolution.common.blocks;
 import java.util.List;
 import java.util.Random;
 
+import com.brandon3055.draconicevolution.common.blocks.itemblocks.TestItemBlock;
 import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
@@ -25,7 +25,7 @@ public class TestBlock extends BlockDE {
 	protected TestBlock() {
 		super(Material.rock);
 		this.setBlockName("testBlock");
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setHardness(5f);
 		this.setResistance(200.0f);
 		//this.setBlockBounds(0.4f, 0f, 0.4f, 0.6f, 1f, 0.6f);

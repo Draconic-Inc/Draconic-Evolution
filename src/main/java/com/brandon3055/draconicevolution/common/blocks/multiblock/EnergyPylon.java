@@ -35,7 +35,7 @@ public class EnergyPylon extends BlockDE {
 		super(Material.iron);
 		this.setHardness(5F);
 		this.setResistance(20F);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.energyPylonName);
 		ModBlocks.register(this);
 	}
@@ -101,6 +101,7 @@ public class EnergyPylon extends BlockDE {
 		if (thisTile != null) {
 			thisTile.onActivated();
 		}
+		if (world.getBlockMetadata(x, y, z) == 0 && world.getTileEntity(x, y, z) != null) world.removeTileEntity(x, y, z);
 	}
 
 	private boolean isGlass(World world, int x, int y, int z){

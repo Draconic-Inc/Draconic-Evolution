@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 public class DraconiumIngot extends ItemDE {
 	public DraconiumIngot() {
 		this.setUnlocalizedName(Strings.draconiumIngotName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		ModItems.register(this);
 	}
 

@@ -1,23 +1,24 @@
 package com.brandon3055.draconicevolution.common.core.proxy;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.*;
+import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
-import net.minecraft.client.renderer.tileentity.TileEntityMobSpawnerRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.MinecraftForgeClient;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
-import com.brandon3055.draconicevolution.common.items.ModItems;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 public class ClientProxy extends CommonProxy {
 	private final static boolean debug = DraconicEvolution.debug;
@@ -75,5 +76,7 @@ public class ClientProxy extends CommonProxy {
 
 		render = new EnergyPylonRenderer();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, render);
+
+		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new CustomDragonRenderer());
 	}
 }

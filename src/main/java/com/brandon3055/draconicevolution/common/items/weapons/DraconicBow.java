@@ -35,7 +35,7 @@ public class DraconicBow extends ItemBow
 	public DraconicBow() {
 		this.maxStackSize = 1;
 		this.setMaxDamage(-1);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		this.setUnlocalizedName(Strings.draconicBowName);
 		GameRegistry.registerItem(this, Strings.draconicBowName);
 	}

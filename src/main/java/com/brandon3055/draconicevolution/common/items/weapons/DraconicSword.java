@@ -30,7 +30,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem{
 	public DraconicSword() {
 		super(ModItems.DRACONIUM_T2);
 		this.setUnlocalizedName(Strings.draconicSwordName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.draconicSwordName);
 	}
 

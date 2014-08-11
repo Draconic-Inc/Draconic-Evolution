@@ -17,9 +17,11 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -97,6 +99,7 @@ public class InvisibleMultiblock extends BlockDE {
 				return false;
 			}
 			if (!world.isRemote) {
+				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 				player.addChatComponentMessage(new ChatComponentText("Tier:" + master.getTier()));
 				player.addChatComponentMessage(new ChatComponentText("" + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored())));
 			}
@@ -171,5 +174,13 @@ public class InvisibleMultiblock extends BlockDE {
 		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
 	}
 
-
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
+		if (world.getBlockMetadata(x, y, z) == 0)
+			return new ItemStack(ModBlocks.draconium);
+		else if (world.getBlockMetadata(x, y, z) == 1)
+			return new ItemStack(Blocks.redstone_block);
+		else
+			return new ItemStack(Blocks.glass);
+	}
 }

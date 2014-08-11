@@ -40,7 +40,7 @@ public class WyvernShovel extends ItemSpade implements IEnergyContainerItem{
 	public WyvernShovel() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.wyvernShovelName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.wyvernShovelName);
 	}
 

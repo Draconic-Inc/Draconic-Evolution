@@ -41,7 +41,7 @@ public class DraconicShovel extends ItemSpade implements IEnergyContainerItem{
 	public DraconicShovel() {
 		super(ModItems.DRACONIUM_T2);
 		this.setUnlocalizedName(Strings.draconicShovelName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.draconicShovelName);
 	}
 

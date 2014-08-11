@@ -1,7 +1,13 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
-import java.util.List;
-
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -17,14 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.items.ModItems;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
+import java.util.List;
 
 public class WyvernBow extends ItemBow {
 	public static final String[] bowPullIconNameArray = new String[] { "pulling_0", "pulling_1", "pulling_2" };
@@ -34,7 +33,7 @@ public class WyvernBow extends ItemBow {
 	public WyvernBow() {
 		this.maxStackSize = 1;
 		this.setMaxDamage(-1);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		this.setUnlocalizedName(Strings.wyvernBowName);
 		GameRegistry.registerItem(this, Strings.wyvernBowName);
 	}

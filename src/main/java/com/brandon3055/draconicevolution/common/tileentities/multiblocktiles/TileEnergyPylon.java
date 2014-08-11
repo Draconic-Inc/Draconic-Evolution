@@ -62,10 +62,9 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 	public void onActivated(){
 		if (!active){
 			active = isValidStructure();
-			findMaster();
-			return;
 		}
 		findMaster();
+
 		if (input){
 			storage.setMaxReceive(0);
 			storage.setMaxExtract(500000);
@@ -83,7 +82,7 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 			int maxRecived = (int)Math.min(storage.getMaxEnergyStored() - storage.getEnergyStored(), getMaster().getEnergyStored());
 			storage.modifyEnergyStored(maxRecived);
 			getMaster().extractEnergy(maxRecived, false);
-			particleRate = maxRecived / 40;
+			particleRate = maxRecived / 80;
 			if (particleRate > 100) particleRate = 100;
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}else {
@@ -110,7 +109,7 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 			int maxSent = (int)Math.min(getMaster().getMaxEnergyStored() - getMaster().getEnergyStored(), storage.getEnergyStored());
 			storage.modifyEnergyStored(-maxSent);
 			getMaster().receiveEnergy(maxSent, false);
-			particleRate = maxSent / 40;
+			particleRate = maxSent / 80;
 			if (particleRate > 100) particleRate = 100;
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}else {
@@ -156,7 +155,7 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 		double targetX;
 		double targetY;
 		double targetZ;
-		if (particleRate > 100) particleRate = 100;
+		if (particleRate > 20) particleRate = 20;
 		if (input){
 			spawnX = x+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 			spawnY = y+0.5 - disMod + (rand.nextFloat() * (disMod*2));
@@ -164,9 +163,9 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 			targetX = xCoord + 0.5;
 			targetY = cYCoord + 0.5;
 			targetZ = zCoord + 0.5;
-			if (rand.nextFloat() < 0.1F) {
+			if (rand.nextFloat() < 0.05F) {
 				Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, true);
-				ParticleHandler.spawnCustomParticle(passiveParticle, 50);
+				ParticleHandler.spawnCustomParticle(passiveParticle, 35);
 			}
 			if (particleRate > 0){
 				if (particleRate > 10) {
@@ -175,14 +174,14 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 						spawnY = y + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
 						spawnZ = z + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
 						Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
-						ParticleHandler.spawnCustomParticle(passiveParticle, 50);
+						ParticleHandler.spawnCustomParticle(passiveParticle, 35);
 					}
 				}else if (rand.nextInt(Math.max(1, 10 - particleRate)) == 0){
 					spawnX = x + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
 					spawnY = y + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
 					spawnZ = z + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
 					Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
-					ParticleHandler.spawnCustomParticle(passiveParticle, 50);
+					ParticleHandler.spawnCustomParticle(passiveParticle, 35);
 				}
 			}
 
@@ -193,9 +192,9 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 			spawnX = xCoord + 0.5;
 			spawnY = cYCoord + 0.5;
 			spawnZ = zCoord + 0.5;
-			if (rand.nextFloat() < 0.1F) {
+			if (rand.nextFloat() < 0.05F) {
 				Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, true);
-				ParticleHandler.spawnCustomParticle(passiveParticle, 50);
+				ParticleHandler.spawnCustomParticle(passiveParticle, 35);
 			}
 
 			if (particleRate > 0){
@@ -205,14 +204,14 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 						targetY = y+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 						targetZ = z+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 						Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
-						ParticleHandler.spawnCustomParticle(passiveParticle, 50);
+						ParticleHandler.spawnCustomParticle(passiveParticle, 35);
 					}
 				}else if (rand.nextInt(Math.max(1, 10 - particleRate)) == 0){
 					targetX = x+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 					targetY = y+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 					targetZ = z+0.5 - disMod + (rand.nextFloat() * (disMod*2));
 					Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
-					ParticleHandler.spawnCustomParticle(passiveParticle, 50);
+					ParticleHandler.spawnCustomParticle(passiveParticle, 35);
 				}
 			}
 		}
@@ -234,6 +233,13 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 		input = compound.getBoolean("Input");
 		masterLocation.readFromNBT(compound, "Master");
 		particleRate = compound.getShort("ParticleRate");
+		if (input){
+			storage.setMaxReceive(0);
+			storage.setMaxExtract(500000);
+		}else{
+			storage.setMaxReceive(500000);
+			storage.setMaxExtract(0);
+		}
 	}
 
 	@Override

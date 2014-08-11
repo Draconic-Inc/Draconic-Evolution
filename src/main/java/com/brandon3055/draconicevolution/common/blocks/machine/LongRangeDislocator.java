@@ -2,13 +2,12 @@ package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.BlockDE;
-import com.brandon3055.draconicevolution.common.blocks.LRDItemBlock;
+import com.brandon3055.draconicevolution.common.blocks.itemblocks.LRDItemBlock;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -33,7 +32,7 @@ public class LongRangeDislocator extends BlockDE {
 
 	public LongRangeDislocator() {
 		this.setBlockName(Strings.longRangeDislocatorName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setHardness(5f);
 		this.setResistance(20.0f);
 		ModBlocks.registerWithItem(this, LRDItemBlock.class);
@@ -57,6 +56,7 @@ public class LongRangeDislocator extends BlockDE {
 			return blockIcon;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs p_149666_2_, List list) {
 		//list.add(new ItemStack(item, 1, 0));

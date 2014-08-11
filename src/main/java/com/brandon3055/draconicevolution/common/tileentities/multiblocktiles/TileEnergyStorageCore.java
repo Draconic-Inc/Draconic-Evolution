@@ -28,7 +28,7 @@ public class TileEnergyStorageCore extends TileEntity {
 	private double capacity = 0;
 	private int maxReceive = 1000000;
 	private int maxExtract = 1000000;
-
+	private boolean loaded = false;
 
 	public TileEnergyStorageCore(){
 		for (int i = 0; i < stabilizers.length; i++)

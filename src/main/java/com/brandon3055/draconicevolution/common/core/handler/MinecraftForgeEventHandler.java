@@ -4,7 +4,7 @@ package com.brandon3055.draconicevolution.common.core.handler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.core.utills.Utills;
+import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
@@ -12,20 +12,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.world.ChunkEvent;
-import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +84,7 @@ public class MinecraftForgeEventHandler {
 		EntityLivingBase entity = event.entityLiving;
 		Entity attacker = event.source.getEntity();
 		if (attacker == null || !(attacker instanceof EntityPlayer)) { return; }
-		if (!(((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicSword) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicDistructionStaff) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicBow) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.wyvernBow) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.wyvernSword))) { return; }
+		if (((EntityPlayer) attacker).getHeldItem() == null || !(((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicSword) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicDistructionStaff) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicBow) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.wyvernBow) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.wyvernSword))) { return; }
 		World world = entity.worldObj;
 		int rand = random.nextInt(ConfigHandler.soulDropChance);
 		if (rand == 0) {
@@ -127,7 +122,7 @@ public class MinecraftForgeEventHandler {
 				for (int x = 0; x < 16; ++x) {
 					for (int y = 0; y < 16; ++y) {
 						for (int z = 0; z < 16; ++z) {
-							changeBlock(storage, x, y, z);
+							if (changeBlock(storage, x, y, z)) chunk.isModified = true;
 						}
 					}
 				}
@@ -150,8 +145,15 @@ public class MinecraftForgeEventHandler {
 	}
 
 	private boolean makeChange(ExtendedBlockStorage storage, int x, int y, int z, Block block){
+		if (block == null) return false;
 		LogHelper.info("Changing block at [X:"+x+" Y:"+y+" Z:"+z+"] from "+storage.getBlockByExtId(x, y, z).getUnlocalizedName()+" to "+block.getUnlocalizedName());
 		storage.func_150818_a(x, y, z, block);
 		return true;
+	}
+
+	@SubscribeEvent
+	public void onEntityConstructing(EntityEvent.EntityConstructing event)
+	{
+		if (event.entity instanceof EntityPlayer && ExtendedPlayer.get((EntityPlayer) event.entity) == null) ExtendedPlayer.register((EntityPlayer) event.entity);
 	}
 }

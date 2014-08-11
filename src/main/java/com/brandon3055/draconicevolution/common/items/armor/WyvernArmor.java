@@ -40,7 +40,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor{
 	public WyvernArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
 		this.setUnlocalizedName(name);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, name);
 	}
 

@@ -41,7 +41,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor{
 	public DraconicArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
 		this.setUnlocalizedName(name);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, name);
 	}
 

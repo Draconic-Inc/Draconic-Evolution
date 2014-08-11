@@ -68,7 +68,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	public DraconicDistructionStaff() {
 		super(0F, ModItems.DRACONIUM_T3, minableBlocks);
 		this.setUnlocalizedName(Strings.draconicDStaffName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		this.setHarvestLevel("pickaxe", 4);
 		this.setHarvestLevel("spade", 4);
 		this.setHarvestLevel("axe", 4);

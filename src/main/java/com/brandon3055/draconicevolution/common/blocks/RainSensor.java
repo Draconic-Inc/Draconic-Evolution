@@ -22,7 +22,7 @@ public class RainSensor extends BlockDE
 
 	protected RainSensor() {
 		super(Material.iron);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockBounds(0, 0, 0, 1, 0.125F, 1);
 		this.setHardness(5f);
 		this.setResistance(10f);

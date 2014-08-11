@@ -43,7 +43,7 @@ public class WeatherController extends BlockContainerDE {
 	public WeatherController() {
 		super(Material.rock);
 		this.setBlockName(Strings.blockWeatherControllerName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(200.0f);

@@ -25,7 +25,7 @@ public class SunDial extends BlockDE {
 
 	public SunDial() {
 		this.setBlockName(Strings.blockSunDialName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(200.0f);

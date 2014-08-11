@@ -39,7 +39,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 	public DraconicHoe() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.draconicHoeName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.draconicHoeName);
 	}
 

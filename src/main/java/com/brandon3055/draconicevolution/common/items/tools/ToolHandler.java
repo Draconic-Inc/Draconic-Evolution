@@ -1,9 +1,5 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
@@ -23,6 +19,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings.GameType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ToolHandler {
 	public static Material[] materialsPick = {Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock};

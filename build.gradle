@@ -17,12 +17,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-v0.9.3-Beta-Pre4"
+version = "1.7.10-v0.9.32-Beta"
 group= "com.brandon3055.draconicevolution" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Draconic-Evolution"
 
 minecraft {
-    version = "1.7.10-10.13.0.1188"
+    version = "1.7.10-10.13.0.1199"
     //assetDir = "run/assets"
 }
 

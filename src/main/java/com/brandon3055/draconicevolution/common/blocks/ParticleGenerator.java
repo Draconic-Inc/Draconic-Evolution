@@ -32,7 +32,7 @@ public class ParticleGenerator extends BlockDE
 	public ParticleGenerator() {
 		super(Material.rock);
 		this.setBlockName(Strings.particleGeneratorName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(200.0f);
@@ -40,6 +40,7 @@ public class ParticleGenerator extends BlockDE
 		ModBlocks.register(this);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
@@ -64,6 +65,7 @@ public class ParticleGenerator extends BlockDE
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getRenderType()
 	{

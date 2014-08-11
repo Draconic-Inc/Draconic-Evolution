@@ -16,7 +16,9 @@ tile.draconicevolution:longRangeDislocator0.name=Long Range Dislocator
 tile.draconicevolution:generator.name=Generator
 tile.draconicevolution:energyStorageCore.name=Energy Core
 tile.draconicevolution:energyPylon.name=Energy Pylon
-tile.draconicevolution:draconium.name=Block Of Draconium
+tile.draconicevolution:draconium0.name=Draconium Block
+tile.draconicevolution:draconium1.name=Resurrection Stone
+tile.draconicevolution:draconium2.name=Charged Draconium Block
 
 //###################################Item names###################################//
 item.draconicevolution:draconicCompound.name=Draconic Compound
@@ -92,6 +94,7 @@ msg.dislocatorUnsafe.txt=Destination Unsafe Please Try Again
 msg.dislocatorNoGround.txt=Error world not found
 msg.range.txt=Range:
 msg.energyStorageCoreUTA.txt=Unable to activate (Invalid Configuration)
+msg.SpawnDragonToFarFrom00.txt=[ERROR] to far from 0,0
 
 //###################################Tool Tips###################################//
 info.teleporterInfUnset1.txt=Unbound
@@ -133,7 +136,7 @@ info.wyvernArmor1.txt=you realize that you can infuse it with the power of the D
 info.draconicArmor.txt=Further Draconic research
 info.draconicArmor1.txt=has shown you ways to even greater protection
 
-entity.draconicevolution:EnderDragon.name=Ender Dragon
+entity.DraconicEvolution.EnderDragon.name=Ender Dragon
 
 
 

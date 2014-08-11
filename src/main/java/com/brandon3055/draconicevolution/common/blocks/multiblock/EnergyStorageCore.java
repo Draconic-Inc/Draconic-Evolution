@@ -30,7 +30,7 @@ public class EnergyStorageCore extends BlockDE {
 		super(Material.iron);
 		this.setHardness(10F);
 		this.setResistance(100F);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.energyStorageCoreName);
 		ModBlocks.register(this);
 	}

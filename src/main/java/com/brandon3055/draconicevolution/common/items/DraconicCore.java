@@ -15,7 +15,7 @@ import java.util.List;
 public class DraconicCore extends ItemDE {
 	public DraconicCore() {
 		this.setUnlocalizedName(Strings.draconicCoreName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		ModItems.register(this);
 	}
 

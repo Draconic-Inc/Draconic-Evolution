@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 public class DragonHeart extends ItemDE {
 	public DragonHeart() {
 		this.setUnlocalizedName(Strings.dragonHeartName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		ModItems.register(this);
 	}
 

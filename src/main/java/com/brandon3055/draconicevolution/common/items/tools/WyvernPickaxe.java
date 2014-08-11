@@ -40,7 +40,7 @@ public class WyvernPickaxe extends ItemPickaxe implements IEnergyContainerItem{
 	public WyvernPickaxe() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.wyvernPickaxeName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.wyvernPickaxeName);
 	}
 

@@ -21,7 +21,7 @@ public class Reader extends ItemDE
 {
 	public Reader() {
 		this.setUnlocalizedName(Strings.readerName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		this.setMaxStackSize(1);
 		GameRegistry.registerItem(this, Strings.readerName);
 	}

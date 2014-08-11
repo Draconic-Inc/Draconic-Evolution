@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 public class DraconicCompound extends ItemDE {
 	public DraconicCompound() {
 		this.setUnlocalizedName(Strings.draconicCompoundName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		ModItems.register(this);
 	}
 

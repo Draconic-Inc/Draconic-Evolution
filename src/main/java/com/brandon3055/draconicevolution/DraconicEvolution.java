@@ -1,27 +1,20 @@
 package com.brandon3055.draconicevolution;
 
-import java.util.Arrays;
-
+import com.brandon3055.draconicevolution.client.creativetab.DETab;
+import com.brandon3055.draconicevolution.common.core.network.ChannelHandler;
+import com.brandon3055.draconicevolution.common.core.proxy.CommonProxy;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.items.ModItems;
-import net.minecraft.stats.Achievement;
-import net.minecraftforge.common.AchievementPage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraft.creativetab.CreativeTabs;
+import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.FMLEventChannel;
-import com.brandon3055.draconicevolution.client.creativetab.TolkienTab;
-import com.brandon3055.draconicevolution.common.core.network.ChannelHandler;
-import com.brandon3055.draconicevolution.common.core.proxy.CommonProxy;
-import com.brandon3055.draconicevolution.common.lib.References;
+import net.minecraft.creativetab.CreativeTabs;
 
-@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, canBeDeactivated = false)
+import java.util.Arrays;
+
+@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, canBeDeactivated = false, guiFactory = References.GUIFACTORY)
 public class DraconicEvolution {
 
 	@Mod.Instance(References.MODID)
@@ -30,16 +23,15 @@ public class DraconicEvolution {
 	@SidedProxy(clientSide = References.CLIENTPROXYLOCATION, serverSide = References.COMMONPROXYLOCATION)
 	public static CommonProxy proxy;
 
-	private static CreativeTabs tolkienTabToolsWeapons = new TolkienTab(CreativeTabs.getNextID(), References.MODID, "toolsAndWeapons");
-	private static CreativeTabs tolkienTabBlocksItems = new TolkienTab(CreativeTabs.getNextID(), References.MODID, "blocksAndItems");
+	public static CreativeTabs tolkienTabToolsWeapons = new DETab(CreativeTabs.getNextID(), References.MODID, "toolsAndWeapons", 0);
+	public static CreativeTabs tolkienTabBlocksItems = new DETab(CreativeTabs.getNextID(), References.MODID, "blocksAndItems", 1);
 	public static final String networkChannelName = "DraconicEvolution";
 	public static ChannelHandler channelHandler = new ChannelHandler(References.MODID, networkChannelName);
-	//public static FMLEventChannel channel;
 	public static boolean debug = false;
 	
 	public DraconicEvolution()
 	{
-		//logger.info("This is Draconic Evolution");
+		LogHelper.info("Hello Minecraft!!!");
 	}
 	
 	@Mod.EventHandler
@@ -81,10 +73,5 @@ public class DraconicEvolution {
 	
 		proxy.postInit(event);
 		
-	}
-
-	public static CreativeTabs getCreativeTab(int tab)
-	{
-		return tab == 1 ? tolkienTabToolsWeapons : tolkienTabBlocksItems;
 	}
 }

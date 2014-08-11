@@ -9,6 +9,8 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -33,13 +35,14 @@ public class PlayerDetectorAdvanced extends BlockContainerDE
 	public PlayerDetectorAdvanced() {
 		super(Material.iron);
 		this.setBlockName(Strings.playerDetectorAdvancedName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(200.0f);
 		ModBlocks.register(this);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
@@ -59,6 +62,7 @@ public class PlayerDetectorAdvanced extends BlockContainerDE
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
@@ -89,7 +93,8 @@ public class PlayerDetectorAdvanced extends BlockContainerDE
 					
 		return null;
 	}
-	
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int side, int meta)
 	{

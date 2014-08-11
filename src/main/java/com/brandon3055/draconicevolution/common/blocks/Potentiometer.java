@@ -30,7 +30,7 @@ public class Potentiometer extends BlockDE
 
 	protected Potentiometer() {
 		super(Material.circuits);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setHardness(0.3f);
 		this.setResistance(0.1f);
 		this.setLightLevel(0.3F);

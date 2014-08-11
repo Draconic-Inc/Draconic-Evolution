@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.render;
 
-import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -270,4 +268,186 @@ public final class Particles {
 		}
 	}
 
+	public static class AdvancedSeekerParticle extends EntityFX {
+
+		public double targetX;
+		public double targetY;
+		public double targetZ;
+		public double startDist = 0;
+		public int behaviour;
+		public int timer = 0;
+
+		public AdvancedSeekerParticle(World world, double x, double y, double z, double tX, double tY, double tZ, int type, int maxAge) {
+			super(world, x, y, z, 0.0D, 0.0D, 0.0D);
+			this.targetX = tX;
+			this.targetY = tY;
+			this.targetZ = tZ;
+			this.motionX = 0;
+			this.motionY = 0;
+			this.motionZ = 0;
+			this.particleTextureIndexX = 0;
+			this.particleTextureIndexY = 0;
+			this.particleScale = world.rand.nextFloat() + 0.5F;
+			this.particleMaxAge = 100;
+			this.noClip = true;
+			this.behaviour = type;
+			this.startDist = getDistance(targetX, targetY, targetZ);
+			this.particleMaxAge = maxAge;
+		}
+
+		public AdvancedSeekerParticle(World world, double x, double y, double z, double tX, double tY, double tZ, int type, float red, float green, float blue, int maxAge) {
+			this(world, x, y, z, tX, tY, tZ, type, maxAge);
+			this.particleRed = red;
+			this.particleGreen = green;
+			this.particleBlue = blue;
+		}
+
+		public AdvancedSeekerParticle(World world, double x, double y, double z, double tX, double tY, double tZ, int type, float red, float green, float blue, int maxAge, int timer) {
+			this(world, x, y, z, tX, tY, tZ, type, maxAge);
+			this.particleRed = red;
+			this.particleGreen = green;
+			this.particleBlue = blue;
+			this.timer = timer;
+		}
+
+		@Override
+		public void onUpdate() {
+			switch (behaviour){
+				case 1:
+					behaviour1();
+					break;
+				case 2:
+					behaviour2();
+					break;
+				case 3:
+					behaviour3();
+					break;}
+		}
+
+		/**Fade Out*/
+		private void behaviour1(){
+			if (particleAge > particleMaxAge) setDead();
+			if (particleAge + 10 >= particleMaxAge) particleAlpha = ((float)particleMaxAge - (float)particleAge) / 10F;
+			particleAge ++;
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+			moveEntity(motionX, motionY, motionZ);
+		}
+
+		/**Go to target and expand with timer*/
+		private void behaviour3(){
+			if (this.getDistanceSq(targetX, targetY, targetZ) < 0.1 && particleAge < particleMaxAge - 40) particleAge = particleMaxAge - 40;
+			if (particleAge > particleMaxAge) setDead();
+			particleAge ++;
+
+
+
+			if (particleScale > 0) particleScale -= 0.02F;
+
+			if ((particleRed == 1F || (particleGreen == 1F && particleBlue == 0F)) && particleAge > particleMaxAge - 10){
+				int t = timer - 300;
+				particleScale = (float)t / (1F - (particleAge / (particleMaxAge - 10F)) * 100F);
+			}else if (particleBlue == 1F && particleAge > particleMaxAge - 15){
+				int t = timer - 700;
+				particleScale = (float)t / (1F - (particleAge / (particleMaxAge - 10F)) * 100F);
+			}
+
+			float motionMod = 0.001F * Math.max(1F - (float) (particleAge / 50), 0F);
+			motionX += (targetX - posX) * motionMod;
+			motionY += (targetY - posY) * motionMod;
+			motionZ += (targetZ - posZ) * motionMod;
+
+			float directMotMod = 0.05F;
+			float directMotT = Math.max(1F-((float)particleAge/(float)50), 0F);
+			directMotMod = (directMotMod * (1F - directMotT));
+			motionX = (motionX * directMotT) + (targetX - posX) * directMotMod;
+			motionY = (motionY * directMotT) + (targetY - posY) * directMotMod;
+			motionZ = (motionZ * directMotT) + (targetZ - posZ) * directMotMod;
+
+			if (particleMaxAge - particleAge < 40 && timer > 2300 && (particleRed == 1F || (particleGreen == 1f && particleBlue == 1f))){
+				double yChange = (double)(timer - 2300);
+				//setPosition(posX, targetY + yChange, posZ);
+				if (posY < targetY + 60)motionY = yChange * 0.05F;
+			}
+
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+			moveEntity(motionX, motionY, motionZ);
+		}
+
+		/**Goes to target and Expand*/
+		private void behaviour2(){
+			if (particleAge > particleMaxAge) setDead();
+			particleAge ++;
+
+			if (particleScale > 0) particleScale -= 0.02F;
+
+			if (particleAge > particleMaxAge - 10){
+				particleScale += 1F;
+				particleAlpha -= 0.1F;
+			}
+
+			float motionMod = 0.001F * Math.max(1F - (float) (particleAge / 50), 0F);
+			motionX += (targetX - posX) * motionMod;
+			motionY += (targetY - posY) * motionMod;
+			motionZ += (targetZ - posZ) * motionMod;
+
+			float directMotMod = 0.05F;
+			float directMotT = Math.max(1F-((float)particleAge/(float)50), 0F);
+			directMotMod = (directMotMod * (1F - directMotT));
+			motionX = (motionX * directMotT) + (targetX - posX) * directMotMod;
+			motionY = (motionY * directMotT) + (targetY - posY) * directMotMod;
+			motionZ = (motionZ * directMotT) + (targetZ - posZ) * directMotMod;
+
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+			moveEntity(motionX, motionY, motionZ);
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+
+			tesselator.draw();
+			Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(References.RESOURCESPREFIX + "textures/particle/particles.png"));
+			tesselator.startDrawingQuads();
+			tesselator.setBrightness(200);
+
+
+			float minU = 0.0F + 0F;//(float)this.particleTextureIndexX / 32.0F;
+			float maxU = 0.0F + 0.1245F;//minU + 0.124F;
+			float minV = 0F;//(float)this.particleTextureIndexY / 32.0F;
+			float maxV = 0.1245F;//minV + 0.124F;
+			float drawScale = 0.1F * this.particleScale;
+
+			if (this.particleIcon != null) {
+				minU = this.particleIcon.getMinU();
+				maxU = this.particleIcon.getMaxU();
+				minV = this.particleIcon.getMinV();
+				maxV = this.particleIcon.getMaxV();
+			}
+
+			float drawX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) par2 - interpPosX);
+			float drawY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) par2 - interpPosY);
+			float drawZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) par2 - interpPosZ);
+
+			tesselator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
+
+			//tesselator.setColorRGBA(0, 255, 255, (int) (this.particleAlpha * 255F));
+
+			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ - par5 * drawScale - par7 * drawScale), (double) maxU, (double) maxV);
+			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ - par5 * drawScale + par7 * drawScale), (double) maxU, (double) minV);
+			tesselator.addVertexWithUV((double) (drawX + par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ + par5 * drawScale + par7 * drawScale), (double) minU, (double) minV);
+			tesselator.addVertexWithUV((double) (drawX + par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ + par5 * drawScale - par7 * drawScale), (double) minU, (double) maxV);
+
+			tesselator.draw();
+			Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("textures/particle/particles.png"));
+			tesselator.startDrawingQuads();
+
+		}
+
+	}
 }

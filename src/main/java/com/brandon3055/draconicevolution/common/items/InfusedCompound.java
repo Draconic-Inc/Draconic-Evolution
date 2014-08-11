@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 public class InfusedCompound extends ItemDE {
 	public InfusedCompound() {
 		this.setUnlocalizedName(Strings.infusedCompoundName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		ModItems.register(this);
 	}
 

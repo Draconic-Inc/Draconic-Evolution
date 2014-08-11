@@ -33,7 +33,7 @@ public class TeleporterMKI extends ItemDE
 
 	public TeleporterMKI() {
 		this.setUnlocalizedName(Strings.teleporterMKIName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		this.setMaxDamage(19);
 		this.setMaxStackSize(1);
 		GameRegistry.registerItem(this, Strings.teleporterMKIName);

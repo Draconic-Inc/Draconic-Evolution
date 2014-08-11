@@ -1,10 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ISpecialArmor;
 
@@ -57,7 +55,7 @@ public class ArmorPropertiesHandler {
 		ItemStack slotLeggs = player.getEquipmentInSlot(2);
 		ItemStack slotChest = player.getEquipmentInSlot(3);
 		ItemStack slotHelmet = player.getEquipmentInSlot(4);
-		if (slotBoots == null || slotHelmet == null || slotChest == null || slotHelmet == null)
+		if (slotBoots == null || slotHelmet == null || slotChest == null || slotLeggs == null)
 			return false;
 		if(slotBoots.getItem() == ModItems.draconicBoots && slotLeggs.getItem() == ModItems.draconicLeggs && slotChest.getItem() == ModItems.draconicChest && slotHelmet.getItem() == ModItems.draconicHelm)
 			return true;
@@ -97,7 +95,7 @@ public class ArmorPropertiesHandler {
 		ItemStack slotLeggs = player.getEquipmentInSlot(2);
 		ItemStack slotChest = player.getEquipmentInSlot(3);
 		ItemStack slotHelmet = player.getEquipmentInSlot(4);
-		if (slotBoots == null || slotHelmet == null || slotChest == null || slotHelmet == null)
+		if (slotBoots == null || slotHelmet == null || slotChest == null || slotLeggs == null)
 			return false;
 		if(slotBoots.getItem() == ModItems.wyvernBoots && slotLeggs.getItem() == ModItems.wyvernLeggs && slotChest.getItem() == ModItems.wyvernChest && slotHelmet.getItem() == ModItems.wyvernHelm)
 			return true;

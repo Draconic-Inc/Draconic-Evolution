@@ -15,6 +15,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -35,22 +37,28 @@ public class EntityCustomDragon extends EntityDragon {
 	private int portalY = 67;
 	private int portalZ = 0;
 	private boolean createPortal = true;
+	public float attackDamage = 10F;
 
 	public EntityCustomDragon(World par1World) {
 		super(par1World);
-		this.serverPosX = (int) this.posX;
-		this.serverPosY = (int) this.posY;
-		this.serverPosZ = (int) this.posZ;
 	}
 
+	public EntityCustomDragon(World world, double health, float attack){
+		this(world);
+		this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(health);
+		this.attackDamage = attack;
+		//LogHelper.info(attackDamage);
+		this.addPotionEffect(new PotionEffect(10, 600, 10, false));;
+	}
+
+	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
-		this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
+		this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(200D);
 	}
 
 	@Override
 	public void onLivingUpdate() {
-
 		float f;
 		float f1;
 
@@ -366,10 +374,11 @@ public class EntityCustomDragon extends EntityDragon {
 
 	private void attackEntitiesInList(List par1List) {
 		for (int i = 0; i < par1List.size(); ++i) {
+			LogHelper.info(attackDamage);
 			Entity entity = (Entity) par1List.get(i);
 
 			if (entity instanceof EntityLivingBase) {
-				entity.attackEntityFrom(DamageSource.causeMobDamage(this), 10.0F);
+				entity.attackEntityFrom(DamageSource.causeMobDamage(this), attackDamage);
 			}
 		}
 	}
@@ -555,4 +564,15 @@ public class EntityCustomDragon extends EntityDragon {
 		this.worldObj.setBlock(par1, b0 + 3, par2, Blocks.bedrock);
 	}
 
+	@Override
+	public void writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+		compound.setFloat("AttackDamage", attackDamage);
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
+		attackDamage = compound.getFloat("AttackDamage");
+	}
 }

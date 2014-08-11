@@ -9,6 +9,8 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -27,7 +29,7 @@ public class EnergyInfuser extends BlockContainerDE {
 	public EnergyInfuser() {
 		super(Material.iron);
 		this.setBlockName(Strings.energyInfuserName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(200.0f);
@@ -35,6 +37,7 @@ public class EnergyInfuser extends BlockContainerDE {
 		ModBlocks.register(this);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister) {
 		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
@@ -54,6 +57,7 @@ public class EnergyInfuser extends BlockContainerDE {
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getRenderType() {
 		return -1;

@@ -58,7 +58,7 @@ public class ParticleHandler
 			int var14 = mc.gameSettings.particleSetting;
 			if (var14 == 1 && theWorld.rand.nextInt(3) == 0)
 			{
-				//var14 = 2;
+				var14 = 2;
 			}
 			double var15 = mc.renderViewEntity.posX - particle.posX;
 			double var17 = mc.renderViewEntity.posY - particle.posY;

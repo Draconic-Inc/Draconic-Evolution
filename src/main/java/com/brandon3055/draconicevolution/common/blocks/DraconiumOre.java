@@ -25,7 +25,7 @@ public class DraconiumOre extends BlockDE {
 	protected DraconiumOre() {
 		super(Material.rock);
 		this.setBlockName(Strings.draconiumOreName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
+		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setHardness(5f);
 		this.setResistance(20.0f);
 		ModBlocks.register(this);

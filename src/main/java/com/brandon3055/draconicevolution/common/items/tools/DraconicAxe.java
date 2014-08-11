@@ -35,7 +35,7 @@ public class DraconicAxe extends ItemAxe implements IEnergyContainerItem{
 	public DraconicAxe() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.draconicAxeName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.draconicAxeName);
 	}
 

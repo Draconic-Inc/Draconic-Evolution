@@ -33,7 +33,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem{
 	public WyvernSword() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.wyvernSwordName);
-		this.setCreativeTab(DraconicEvolution.getCreativeTab(1));
+		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.wyvernSwordName);
 	}
 

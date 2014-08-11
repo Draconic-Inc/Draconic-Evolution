@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
@@ -22,6 +23,7 @@ import com.brandon3055.draconicevolution.common.items.weapons.DraconicSword;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernSword;
 
+@GameRegistry.ObjectHolder(References.MODID)
 public class ModItems {
 	public static ArmorMaterial DRACONIUMARMOR_T1 = EnumHelper.addArmorMaterial("DRACONIUMARMOR_T1", -1, new int[] { 3, 8, 6, 3 }, 30);
 	public static ArmorMaterial DRACONIUMARMOR_T2 = EnumHelper.addArmorMaterial("DRACONIUMARMOR_T2", -1, new int[] { 3, 8, 6, 3 }, 30);

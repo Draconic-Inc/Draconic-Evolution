@@ -5,12 +5,14 @@ import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyPylon;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyStorageCore;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.InvisibleMultiblock;
 import com.brandon3055.draconicevolution.common.core.utills.Utills;
+import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.registry.GameRegistry;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 
+@GameRegistry.ObjectHolder(References.MODID)
 public class ModBlocks {
 	public static BlockDE xRayBlock;
 	public static BlockDE weatherController;
@@ -55,6 +57,7 @@ public class ModBlocks {
 		
 		if(DraconicEvolution.debug) testBlock = new TestBlock();
 
+		if (ConfigHandler.updateFix)
 		{
 			Block changer1 = new Utills.BlockChanger("tile.particleGenerator", particleGenerator);
 			Block changer2 = new Utills.BlockChanger("tile.customSpawner", customSpawner);
