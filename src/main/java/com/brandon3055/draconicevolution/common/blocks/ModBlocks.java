@@ -33,6 +33,7 @@ public class ModBlocks {
 	public static BlockDE draconium;
 	public static BlockDE invisibleMultiblock;
 	public static BlockDE energyPylon;
+	public static BlockDE placedItem;
 
 	public static void init()
 	{
@@ -53,6 +54,7 @@ public class ModBlocks {
 		draconium = new Draconium();
 		invisibleMultiblock = new InvisibleMultiblock();
 		energyPylon = new EnergyPylon();
+		placedItem = new PlacedItem();
 		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
 		
 		if(DraconicEvolution.debug) testBlock = new TestBlock();

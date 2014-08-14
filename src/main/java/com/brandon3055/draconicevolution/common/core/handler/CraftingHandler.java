@@ -56,9 +56,9 @@ public class CraftingHandler {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicCore), "GIG", "ISI", "GIG", 'S', Items.diamond, 'G', Items.gold_ingot, 'I', ModItems.draconiumIngot);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.sunFocus), "RIR", "ISI", "RIR", 'S', Items.nether_star, 'R', Items.blaze_rod, 'I', ModItems.draconiumIngot);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.infusedCompound, 2), "IDI", "DSD", "IDI", 'S', Items.nether_star, 'D', Items.diamond, 'I', ModItems.draconiumIngot);
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.dragonHeart), " C ", "CIC", " C ", 'C', ModItems.infusedCompound, 'I', ModItems.draconiumIngot);
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.dragonHeart), " C ", "CEC", " C ", 'C', ModItems.infusedCompound, 'I', Blocks.dragon_egg);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconiumBlend), " D ", "DID", " D ", 'I', Items.iron_ingot, 'D', ModItems.draconiumDust);
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicCompound), " C ", "CHC", " C ", 'C', ModItems.infusedCompound, 'H', ModItems.dragonHeart);		
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicCompound, 2), " C ", "CHC", " C ", 'C', ModItems.infusedCompound, 'H', ModItems.dragonHeart);
 				
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.grinder, 1, 3), "IXI", "DCD", "IFI", 'I', Items.iron_ingot, 'X', ModItems.draconiumIngot, 'D', Items.diamond_sword, 'C', ModItems.draconicCore, 'F', Blocks.furnace);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.weatherController), "RSR", "TPT", "IEI", 'R', Items.blaze_rod, 'S', ModItems.sunFocus, 'T', Blocks.tnt, 'P', ModItems.draconicCore, 'I', Items.iron_ingot, 'E', Blocks.enchanting_table);
@@ -68,10 +68,12 @@ public class CraftingHandler {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.playerDetector), "ITI", "CEC", "IDI", 'I', Items.iron_ingot, 'E', Items.ender_eye, 'T', Blocks.redstone_torch, 'C', Items.comparator, 'D', ModItems.draconicCore);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.playerDetectorAdvanced), "ISI", "EDE", "ICI", 'I', ModItems.draconiumIngot, 'E', Items.ender_eye, 'S', new ItemStack(Items.skull, 1, 1), 'C', Items.compass, 'D', ModBlocks.playerDetector);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.generator, 1, 3), "NIN", "IFI", "NCN", 'N', Items.netherbrick, 'I', Items.iron_ingot, 'F', Blocks.furnace, 'C', ModItems.draconicCore);
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.energyInfuser), "IPI", "CEC", "IDI", 'I', ModItems.draconiumIngot, 'P', ModBlocks.particleGenerator, 'C', ModItems.draconicCore, 'D', ModItems.infusedCompound, 'E', Blocks.enchanting_table);
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.energyInfuser), "IPI", "CEC", "ICI", 'I', ModItems.draconiumIngot, 'P', ModBlocks.particleGenerator, 'C', ModItems.draconicCore, 'E', Blocks.enchanting_table);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.draconium), "III", "III", "III", 'I', ModItems.draconiumIngot);
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.energyStorageCore), "SRS", "DCD", "SRS", 'S', Items.nether_star, 'R', Blocks.redstone_block, 'C', ModItems.draconicCore, 'D', ModBlocks.draconium);
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.energyStorageCore), "SRS", "DCD", "SRS", 'S', Items.nether_star, 'R', Blocks.redstone_block, 'C', ModItems.draconicCore, 'D', new ItemStack(ModBlocks.draconium, 1, 0));
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.energyPylon, 2), "IEI", "MCM", "IDI", 'I', ModItems.draconiumIngot, 'E', Items.ender_eye, 'C', ModItems.draconicCore, 'D', Items.diamond, 'M', Items.emerald);
+
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.draconium, 1, 1), "CSC", "SDS", "CSC", 'C', ModItems.draconicCompound, 'S', ModItems.sunFocus, 'D', new ItemStack(ModBlocks.draconium, 1, 0));
 
 		if(ConfigHandler.disableSunDial == 0)
 			CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.sunDial), "IFI", "TDT", "GEG", 'I', ModItems.draconiumIngot, 'F', ModItems.sunFocus, 'T', ModItems.draconicCore, 'G', Blocks.glowstone, 'E', Blocks.enchanting_table, 'D', ModItems.dragonHeart);

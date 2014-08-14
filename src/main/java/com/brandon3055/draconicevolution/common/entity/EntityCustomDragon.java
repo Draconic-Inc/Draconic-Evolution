@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.common.entity;
 
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.items.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEndPortal;
 import net.minecraft.entity.Entity;
@@ -11,10 +10,8 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
@@ -41,6 +38,7 @@ public class EntityCustomDragon extends EntityDragon {
 
 	public EntityCustomDragon(World par1World) {
 		super(par1World);
+		this.addPotionEffect(new PotionEffect(10, 600, 10, false));;
 	}
 
 	public EntityCustomDragon(World world, double health, float attack){
@@ -301,7 +299,9 @@ public class EntityCustomDragon extends EntityDragon {
 
 		if (worldObj.rand.nextInt(5) == 2)
 		{
-			worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, portalX, portalY + 1, portalZ));
+			EntityLightningBolt bolt = new EntityLightningBolt(worldObj, portalX, portalY + 1, portalZ);
+			bolt.ignoreFrustumCheck = true;
+			worldObj.addWeatherEffect(bolt);
 		}
 
 		if (this.deathTicks >= 180 && this.deathTicks <= 200) {
@@ -323,14 +323,14 @@ public class EntityCustomDragon extends EntityDragon {
 					i -= j;
 					this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
 				}
-
+/*
 				float mm = 0.3F;
 				EntityItem item = new EntityItem(worldObj, posX, posY, posZ, new ItemStack(ModItems.draconiumDust, 3 + worldObj.rand.nextInt(3)));
 				item.motionX = mm * ((((float)worldObj.rand.nextInt(100))/100F) - 0.5F);
 				item.motionY = mm * ((((float)worldObj.rand.nextInt(100))/100F) - 0.5F);
 				item.motionZ = mm * ((((float)worldObj.rand.nextInt(100))/100F) - 0.5F);
 				worldObj.spawnEntityInWorld(item);
-
+*/
 			}
 
 			if (this.deathTicks == 1) {

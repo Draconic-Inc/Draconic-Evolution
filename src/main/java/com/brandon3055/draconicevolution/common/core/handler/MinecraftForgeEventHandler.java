@@ -10,6 +10,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -80,6 +81,21 @@ public class MinecraftForgeEventHandler {
 
 	@SubscribeEvent
 	public void onDropEvent(LivingDropsEvent event){
+		if (event.entity instanceof EntityDragon && !event.entity.worldObj.isRemote){
+			EntityItem item = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(ModItems.dragonHeart));
+			event.entity.worldObj.spawnEntityInWorld(item);
+
+			int count = 30 + event.entity.worldObj.rand.nextInt(30);
+			for (int i = 0; i < count; i++) {
+				float mm = 0.3F;
+				EntityItem item2 = new EntityItem(event.entity.worldObj, event.entity.posX-2+event.entity.worldObj.rand.nextInt(4), event.entity.posY-2+event.entity.worldObj.rand.nextInt(4), event.entity.posZ-2+event.entity.worldObj.rand.nextInt(4), new ItemStack(ModItems.draconiumDust));
+				item.motionX = mm * ((((float) event.entity.worldObj.rand.nextInt(100)) / 100F) - 0.5F);
+				item.motionY = mm * ((((float) event.entity.worldObj.rand.nextInt(100)) / 100F) - 0.5F);
+				item.motionZ = mm * ((((float) event.entity.worldObj.rand.nextInt(100)) / 100F) - 0.5F);
+				event.entity.worldObj.spawnEntityInWorld(item2);
+			}
+		}
+
 		if (event.entity.worldObj.isRemote || !(event.source.damageType.equals("player") || event.source.damageType.equals("arrow")) || !isValidEntity(event.entityLiving)){ return; }
 		EntityLivingBase entity = event.entityLiving;
 		Entity attacker = event.source.getEntity();
@@ -89,7 +105,9 @@ public class MinecraftForgeEventHandler {
 		int rand = random.nextInt(ConfigHandler.soulDropChance);
 		if (rand == 0) {
 			ItemStack soul = new ItemStack(ModItems.mobSoul);
-			ItemNBTHelper.setString(soul, "Name", entity.getCommandSenderName());
+			String name = entity.getCommandSenderName();
+			if (name.equals("Ocelot")) name = "Ozelot";
+			ItemNBTHelper.setString(soul, "Name", name);
 			world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
 		}
 	}

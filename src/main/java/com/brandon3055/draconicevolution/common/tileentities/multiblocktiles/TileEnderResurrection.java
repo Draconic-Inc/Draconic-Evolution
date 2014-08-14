@@ -58,7 +58,9 @@ public class TileEnderResurrection extends TileEntity{
 				spawn();
 				spawnInProgress = false;
 			}
-			timer++;
+			if (timer < 556 || timer > 2300)
+				timer++;
+			else timer += 2;
 		}
 	}
 

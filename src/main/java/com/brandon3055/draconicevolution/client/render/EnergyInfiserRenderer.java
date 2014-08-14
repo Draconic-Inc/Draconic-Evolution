@@ -1,37 +1,20 @@
 package com.brandon3055.draconicevolution.client.render;
 
-import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemCloth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import java.util.Random;
-
-import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 
 public class EnergyInfiserRenderer extends TileEntitySpecialRenderer
 {
@@ -52,7 +35,6 @@ public class EnergyInfiserRenderer extends TileEntitySpecialRenderer
 		GL11.glPopMatrix();
 	}
 
-	//And this method actually renders your tile entity
 	public void renderBlock(TileEnergyInfuser tile, World world, int x, int y, int z, Block block)
 	{
 		Tessellator tessellator = Tessellator.instance;

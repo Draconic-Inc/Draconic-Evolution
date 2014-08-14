@@ -333,6 +333,7 @@ public final class Particles {
 			prevPosY = posY;
 			prevPosZ = posZ;
 			moveEntity(motionX, motionY, motionZ);
+			timer++;
 		}
 
 		/**Go to target and expand with timer*/
@@ -375,6 +376,7 @@ public final class Particles {
 			prevPosY = posY;
 			prevPosZ = posZ;
 			moveEntity(motionX, motionY, motionZ);
+			timer++;
 		}
 
 		/**Goes to target and Expand*/
@@ -405,6 +407,7 @@ public final class Particles {
 			prevPosY = posY;
 			prevPosZ = posZ;
 			moveEntity(motionX, motionY, motionZ);
+			timer++;
 		}
 
 		@Override

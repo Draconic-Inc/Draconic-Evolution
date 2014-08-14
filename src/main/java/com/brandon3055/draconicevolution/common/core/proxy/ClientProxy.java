@@ -1,14 +1,12 @@
 package com.brandon3055.draconicevolution.common.core.proxy;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.render.*;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.items.ModItems;
-import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
-import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
-import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
+import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -38,7 +36,7 @@ public class ClientProxy extends CommonProxy {
 	{if(debug)
 		System.out.println("on Client side");
 		super.init(event);
-
+		KeyBindings.init();
 		//Client Only
 	}
 
@@ -76,6 +74,9 @@ public class ClientProxy extends CommonProxy {
 
 		render = new EnergyPylonRenderer();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, render);
+
+		render = new PlacedItemRenderer();
+		ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, render);
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new CustomDragonRenderer());
 	}
