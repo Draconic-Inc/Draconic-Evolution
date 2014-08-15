@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -11,17 +11,16 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S2BPacketChangeGameState;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
 import java.util.List;
 
-public class EntityDraconicArrow extends EntityArrow {
+public class EntityEnderArrow extends EntityDraconicArrow {
 	private int field_145791_d = -1;
 	private int field_145792_e = -1;
 	private int field_145789_f = -1;
@@ -36,44 +35,25 @@ public class EntityDraconicArrow extends EntityArrow {
 	public boolean ignorSpeed = false;
 	public boolean explosive = false;
 
-	public EntityDraconicArrow(World p_i1753_1_)
+	public EntityEnderArrow(World p_i1753_1_)
 	{
 		super(p_i1753_1_);
 	}
 
-	public EntityDraconicArrow(World p_i1754_1_, double p_i1754_2_, double p_i1754_4_, double p_i1754_6_)
+	public EntityEnderArrow(World p_i1754_1_, double p_i1754_2_, double p_i1754_4_, double p_i1754_6_)
 	{
 		super(p_i1754_1_, p_i1754_2_, p_i1754_4_, p_i1754_6_);
 	}
 
-	public EntityDraconicArrow(World p_i1755_1_, EntityLivingBase p_i1755_2_, EntityLivingBase p_i1755_3_, float p_i1755_4_, float p_i1755_5_)
+	public EntityEnderArrow(World p_i1755_1_, EntityLivingBase p_i1755_2_, EntityLivingBase p_i1755_3_, float p_i1755_4_, float p_i1755_5_)
 	{
 		super(p_i1755_1_, p_i1755_2_, p_i1755_3_, p_i1755_4_, p_i1755_5_);
 	}
 
-	public EntityDraconicArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
+	public EntityEnderArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
 		super(par1World, par2EntityLivingBase, par3);
 	}
 
-	/*public EntityDraconicArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-		super(par1World);
-		this.renderDistanceWeight = 10.0D;
-		this.shootingEntity = par2EntityLivingBase;
-		world = par1World;
-
-		this.setSize(0.5F, 0.5F);
-		this.setLocationAndAngles(par2EntityLivingBase.posX, par2EntityLivingBase.posY + par2EntityLivingBase.getEyeHeight(), par2EntityLivingBase.posZ, par2EntityLivingBase.rotationYaw, par2EntityLivingBase.rotationPitch);
-		this.posX -= MathHelper.cos(this.rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-		this.posY -= 0.10000000149011612D;
-		this.posZ -= MathHelper.sin(this.rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-		this.setPosition(this.posX, this.posY, this.posZ);
-		this.yOffset = 0.0F;
-		this.motionX = -MathHelper.sin(this.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float) Math.PI);
-		this.motionZ = MathHelper.cos(this.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float) Math.PI);
-		this.motionY = (-MathHelper.sin(this.rotationPitch / 180.0F * (float) Math.PI));
-		this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, par3 * 1.5F, 1.0F);
-	}
-*/
 	@Override
 	protected void entityInit()
 	{
@@ -134,7 +114,10 @@ public class EntityDraconicArrow extends EntityArrow {
 	@Override
 	public void onUpdate()
 	{
-		//super.onUpdate();
+
+			this.worldObj.spawnParticle("portal", this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
+
+
 		super.onEntityUpdate();
 		if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
 			float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -145,10 +128,7 @@ public class EntityDraconicArrow extends EntityArrow {
 		Block block = this.worldObj.getBlock(this.field_145791_d, this.field_145792_e, this.field_145789_f);
 
 		if (block.getMaterial() != Material.air) {
-			if (explosive) {
-				worldObj.createExplosion(this.shootingEntity, this.field_145791_d, this.field_145792_e, this.field_145789_f, 4, ConfigHandler.bowBlockDamage);
-				this.setDead();
-			}
+			onImpact(null);
 			block.setBlockBoundsBasedOnState(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
 			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBoxFromPool(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
 
@@ -162,22 +142,7 @@ public class EntityDraconicArrow extends EntityArrow {
 		}
 
 		if (this.inGround) {
-			int j = this.worldObj.getBlockMetadata(this.field_145791_d, this.field_145792_e, this.field_145789_f);
-
-			if (block == this.field_145790_g && j == this.inData) {
-				++this.ticksInGround;
-
-				if (this.ticksInGround == 1200) {
-					this.setDead();
-				}
-			} else {
-				this.inGround = false;
-				this.motionX *= this.rand.nextFloat() * 0.2F;
-				this.motionY *= this.rand.nextFloat() * 0.2F;
-				this.motionZ *= this.rand.nextFloat() * 0.2F;
-				this.ticksInGround = 0;
-				this.ticksInAir = 0;
-			}
+			this.setDead();
 		} else {
 			++this.ticksInAir;
 			Vec3 vec31 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
@@ -188,7 +153,6 @@ public class EntityDraconicArrow extends EntityArrow {
 
 			if (movingobjectposition != null) {
 				vec3 = Vec3.createVectorHelper(movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord);
-
 			}
 
 			Entity entity = null;
@@ -233,12 +197,7 @@ public class EntityDraconicArrow extends EntityArrow {
 
 			if (movingobjectposition != null) {
 				if (movingobjectposition.entityHit != null) {
-					if (explosive) {
-						//world.createExplosion(this.shootingEntity, movingobjectposition.entityHit.posX, movingobjectposition.entityHit.posY, movingobjectposition.entityHit.posZ, 6, false);
-						//movingobjectposition.entityHit.hurtResistantTime = 0;
-						worldObj.createExplosion(this.shootingEntity, movingobjectposition.entityHit.posX, movingobjectposition.entityHit.posY, movingobjectposition.entityHit.posZ, 4, ConfigHandler.bowBlockDamage);
-						this.setDead();
-					}
+					onImpact(movingobjectposition.entityHit);
 					int k;
 					if (!ignorSpeed) {
 						f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
@@ -334,12 +293,6 @@ public class EntityDraconicArrow extends EntityArrow {
 				}
 			}
 
-			if (this.getIsCritical()) {
-				for (i = 0; i < 4; ++i) {
-					this.worldObj.spawnParticle("crit", this.posX + this.motionX * i / 4.0D, this.posY + this.motionY * i / 4.0D, this.posZ + this.motionZ * i / 4.0D, -this.motionX, -this.motionY + 0.2D, -this.motionZ);
-				}
-			}
-
 			this.posX += this.motionX;
 			this.posY += this.motionY;
 			this.posZ += this.motionZ;
@@ -431,75 +384,50 @@ public class EntityDraconicArrow extends EntityArrow {
 
 	@Override
 	public void onCollideWithPlayer(EntityPlayer par1EntityPlayer)
+	{}
+
+	protected void onImpact(Entity entityHit)
 	{
-		if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
-			boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
+		if (!(shootingEntity instanceof EntityPlayer) || shootingEntity.isDead) return;
+		if (entityHit != null)
+		{
+			entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.shootingEntity), 0.0F);
+		}
 
-			if (this.canBePickedUp == 1 && !par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1))) {
-				flag = false;
-			}
+		for (int i = 0; i < 32; ++i)
+		{
+			this.worldObj.spawnParticle("portal", this.posX, this.posY + this.rand.nextDouble() * 2.0D, this.posZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
+		}
 
-			if (flag) {
-				this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-				par1EntityPlayer.onItemPickup(this, 1);
-				this.setDead();
+		if (!this.worldObj.isRemote)
+		{
+			if (this.shootingEntity != null && this.shootingEntity instanceof EntityPlayerMP)
+			{
+				EntityPlayerMP entityplayermp = (EntityPlayerMP)this.shootingEntity;
+
+				if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen() && entityplayermp.worldObj == this.worldObj)
+				{
+					EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, this.posX, this.posY, this.posZ, 5.0F);
+					if (!MinecraftForge.EVENT_BUS.post(event))
+					{ // Don't indent to lower patch size
+						if (this.shootingEntity.isRiding())
+						{
+							shootingEntity.mountEntity((Entity)null);
+						}
+						((EntityPlayer)shootingEntity).setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+						shootingEntity.fallDistance = 0.0F;
+						if (((EntityPlayer) shootingEntity).getHealth() < 18) {
+							((EntityPlayer) shootingEntity).setHealth(0.5F);
+							shootingEntity.attackEntityFrom(DamageSource.fall, Float.MAX_VALUE);
+							LogHelper.info("Kill");
+						}else {
+							((EntityPlayer) shootingEntity).setHealth(((EntityPlayer) shootingEntity).getHealth() - 18);
+							shootingEntity.attackEntityFrom(DamageSource.fall, 0.5F);
+						}
+					}
+				}
 			}
 		}
-	}
-
-	@Override
-	protected boolean canTriggerWalking()
-	{
-		return false;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getShadowSize()
-	{
-		return 0.0F;
-	}
-
-	@Override
-	public void setDamage(double par1)
-	{
-		this.damage = par1;
-	}
-
-	@Override
-	public double getDamage()
-	{
-		return this.damage;
-	}
-
-	@Override
-	public void setKnockbackStrength(int par1)
-	{
-		this.knockbackStrength = par1;
-	}
-
-	@Override
-	public boolean canAttackWithItem()
-	{
-		return false;
-	}
-
-	@Override
-	public void setIsCritical(boolean par1)
-	{
-		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
-
-		if (par1) {
-			this.dataWatcher.updateObject(16, Byte.valueOf((byte) (b0 | 1)));
-		} else {
-			this.dataWatcher.updateObject(16, Byte.valueOf((byte) (b0 & -2)));
-		}
-	}
-
-	@Override
-	public boolean getIsCritical()
-	{
-		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
-		return (b0 & 1) != 0;
+		this.setDead();
 	}
 }

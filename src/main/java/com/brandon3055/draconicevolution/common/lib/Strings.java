@@ -52,4 +52,5 @@ public class Strings {//                                              public sta
 	public static final String invisibleMultiblockName = "invisibleMultiblock";
 	public static final String energyPylonName = "energyPylon";
 	public static final String placedItemName = "placedItem";
+	public static final String enderArrowName = "enderArrow";
 }

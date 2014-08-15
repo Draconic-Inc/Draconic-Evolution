@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.weapons;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -9,6 +10,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBow;
@@ -60,7 +62,7 @@ public class WyvernBow extends ItemBow {
 				return event.result;
 			}
 
-			if (player.capabilities.isCreativeMode || player.inventory.hasItem(Items.arrow)) {
+			if (player.capabilities.isCreativeMode || player.inventory.hasItem(Items.arrow) || player.inventory.hasItem(ModItems.enderArrow)) {
 				player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 			}
 		} else
@@ -72,6 +74,7 @@ public class WyvernBow extends ItemBow {
 	public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
+		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "ender";
 		if (currentMode.equals("rapidfire"))
 			BowHandler.rapidFire(player, count, 18);
 		else if (currentMode.equals("sharpshooter"))
@@ -82,6 +85,7 @@ public class WyvernBow extends ItemBow {
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int count)
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
+		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "rapidfire";
 		if (currentMode.equals("rapidfire"))
 			BowHandler.standerdShot(stack, world, player, count, itemRand, 19F, 1F, false, 0D, 1F, false, 0);
 		else if (currentMode.equals("sharpshooter"))
@@ -122,6 +126,7 @@ public class WyvernBow extends ItemBow {
 	public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
+		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "rapidfire";
 		int j = stack.getMaxItemUseDuration() - useRemaining;
 		if (usingItem == null) {
 			return this.itemIcon;
@@ -168,6 +173,16 @@ public class WyvernBow extends ItemBow {
 	public static void registerRecipe()
 	{
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.wyvernBow), " I ", "CBC", " I ", 'C', ModItems.infusedCompound, 'B', Items.bow, 'I', ModItems.draconiumIngot);
+	}
+
+	@Override
+	public boolean hasCustomEntity(ItemStack stack) {
+		return true;
+	}
+
+	@Override
+	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+		return new EntityPersistentItem(world, location, itemstack);
 	}
 }
 

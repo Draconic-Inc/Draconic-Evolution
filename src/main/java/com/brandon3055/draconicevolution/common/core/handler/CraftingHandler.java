@@ -88,7 +88,7 @@ public class CraftingHandler {
 
 	public static void registerShapelessRecipes()
 	{
-		//CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ModItems.tcSword), ModItems.tcSwordBlade, Items.stick);
+		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ModItems.enderArrow), Items.arrow, Items.ender_pearl);
 	}
 
 }

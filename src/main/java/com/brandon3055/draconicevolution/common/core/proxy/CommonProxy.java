@@ -11,6 +11,9 @@ import com.brandon3055.draconicevolution.common.core.handler.MinecraftForgeEvent
 import com.brandon3055.draconicevolution.common.core.network.*;
 import com.brandon3055.draconicevolution.common.core.utills.Utills;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.entity.EntityDraconicArrow;
+import com.brandon3055.draconicevolution.common.entity.EntityEnderArrow;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
@@ -103,8 +106,9 @@ public class CommonProxy {
 	}
 
 	public void registerEntitys() {
-		//int cyan = (0 << 16) + (255 << 8) + 255;
-		//EntityRegistry.registerGlobalEntityID(EntityCustomDragon.class, References.RESOURCESPREFIX + "EnderDragon", EntityRegistry.findGlobalUniqueEntityId(), cyan, 0);
 		EntityRegistry.registerModEntity(EntityCustomDragon.class, "EnderDragon", 0, DraconicEvolution.instance, 500, 3, true);
+		EntityRegistry.registerModEntity(EntityPersistentItem.class, "Persistent Item", 1, DraconicEvolution.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityDraconicArrow.class, "Arrow", 2, DraconicEvolution.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityEnderArrow.class, "Ender Arrow", 2, DraconicEvolution.instance, 32, 5, true);
 	}
 }

@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlacedItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -27,6 +28,11 @@ public class PlacedItem extends BlockDE {
 		this.setResistance(20F);
 		this.setBlockName(Strings.placedItemName);
 		ModBlocks.register(this);
+	}
+
+	@Override
+	public void registerBlockIcons(IIconRegister iconRegister) {
+		blockIcon = iconRegister.registerIcon("glass");
 	}
 
 	@Override
@@ -86,7 +92,7 @@ public class PlacedItem extends BlockDE {
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta){
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te != null && te instanceof TilePlacedItem && ((TilePlacedItem)te).getStack() != null) {
 			TilePlacedItem tile = (TilePlacedItem) te;
@@ -130,6 +136,23 @@ public class PlacedItem extends BlockDE {
 	}
 
 	@Override
+	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+		if (player.isSneaking()){
+			TilePlacedItem tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem) ? (TilePlacedItem) world.getTileEntity(x, y, z) : null;
+			if (tile == null) {
+				world.setBlockToAir(x, y, z);
+			}
+			tile.rotation += 25;
+		}else {
+			TilePlacedItem tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem) ? (TilePlacedItem) world.getTileEntity(x, y, z) : null;
+			if (tile == null) {
+				world.setBlockToAir(x, y, z);
+			}
+			tile.rotation -= 25;
+		}
+	}
+
+	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te != null && te instanceof TilePlacedItem && ((TilePlacedItem)te).getStack() != null) {
@@ -148,4 +171,6 @@ public class PlacedItem extends BlockDE {
 		}
 		return null;
 	}
+
+
 }

@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
+import com.brandon3055.draconicevolution.common.items.tools.*;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.item.Item;
@@ -9,15 +10,6 @@ import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraftforge.common.util.EnumHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
-import com.brandon3055.draconicevolution.common.items.tools.DraconicAxe;
-import com.brandon3055.draconicevolution.common.items.tools.DraconicDistructionStaff;
-import com.brandon3055.draconicevolution.common.items.tools.DraconicHoe;
-import com.brandon3055.draconicevolution.common.items.tools.DraconicPickaxe;
-import com.brandon3055.draconicevolution.common.items.tools.DraconicShovel;
-import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKI;
-import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKII;
-import com.brandon3055.draconicevolution.common.items.tools.WyvernPickaxe;
-import com.brandon3055.draconicevolution.common.items.tools.WyvernShovel;
 import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
 import com.brandon3055.draconicevolution.common.items.weapons.DraconicSword;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
@@ -62,6 +54,7 @@ public class ModItems {
 	public static ItemDE draconicCore;
 	public static ItemDE sunFocus;
 	public static ItemDE mobSoul;
+	public static ItemDE enderArrow;
 
 	public static ItemDE teleporterMKI;
 	public static ItemDE teleporterMKII;
@@ -102,6 +95,7 @@ public class ModItems {
 		draconicCore = new DraconicCore();
 		sunFocus = new SunFocus();
 		mobSoul = new MobSoul();
+		enderArrow = new EnderArrow();
 
 	}
 

@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.armor;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -17,14 +18,12 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -179,5 +178,15 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor{
 				"IDI",
 				"PCP",
 				'I', ModItems.infusedCompound, 'D', Items.diamond_boots, 'C', ModItems.draconicCore, 'P', Blocks.piston);
+	}
+
+	@Override
+	public boolean hasCustomEntity(ItemStack stack) {
+		return true;
+	}
+
+	@Override
+	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+		return new EntityPersistentItem(world, location, itemstack);
 	}
 }

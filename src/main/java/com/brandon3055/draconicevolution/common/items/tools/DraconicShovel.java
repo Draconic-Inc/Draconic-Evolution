@@ -1,13 +1,21 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
-import java.util.List;
-
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemSpade;
@@ -18,17 +26,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
 import org.lwjgl.input.Keyboard;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.items.ModItems;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
+import java.util.List;
 
 public class DraconicShovel extends ItemSpade implements IEnergyContainerItem{
 	public IIcon itemIcon0;
@@ -208,5 +208,15 @@ public class DraconicShovel extends ItemSpade implements IEnergyContainerItem{
 			return super.getDigSpeed(stack, block, meta);
 		else
 			return 1F;
+	}
+
+	@Override
+	public boolean hasCustomEntity(ItemStack stack) {
+		return true;
+	}
+
+	@Override
+	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+		return new EntityPersistentItem(world, location, itemstack);
 	}
 }

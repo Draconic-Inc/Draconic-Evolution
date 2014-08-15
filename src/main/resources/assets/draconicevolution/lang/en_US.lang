@@ -54,6 +54,7 @@ item.draconicevolution:draconicLeggs.name=Draconic Leggings
 item.draconicevolution:draconicBoots.name=Draconic Boots
 item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
 item.draconicevolution:mobSoul.name=Mob Soul
+item.draconicevolution:enderArrow.name=Ender Arrow
 
 //###################################Item Groups###################################//
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -135,6 +136,8 @@ info.wyvernArmor.txt=Having enjoyed the protection of diamond for so long
 info.wyvernArmor1.txt=you realize that you can infuse it with the power of the Draconic
 info.draconicArmor.txt=Further Draconic research
 info.draconicArmor1.txt=has shown you ways to even greater protection
+info.arrowInfo.txt=A Painful Ride
+info.arrowInfo0.txt=Too heavy for a regular bow
 
 entity.DraconicEvolution.EnderDragon.name=Ender Dragon
 

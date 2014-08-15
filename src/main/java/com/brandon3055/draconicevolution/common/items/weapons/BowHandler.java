@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
-import java.util.Random;
-
 import com.brandon3055.draconicevolution.common.entity.EntityDraconicArrow;
+import com.brandon3055.draconicevolution.common.entity.EntityEnderArrow;
+import com.brandon3055.draconicevolution.common.items.ModItems;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +12,8 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
+
+import java.util.Random;
 
 public class BowHandler {
 	public static void standerdShot(ItemStack stack, World world, EntityPlayer player, int count, Random itemRand, float pullSpeedModifier, float speedModifier, boolean ignorSpeedWhenCalculatingDamage, double ignorSpeedCompensation, float soundPitchModifier, boolean isExplosive, int minRelease)
@@ -26,7 +28,7 @@ public class BowHandler {
 
 		boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-		if (flag || player.inventory.hasItem(Items.arrow)) {
+		if (flag || player.inventory.hasItem(Items.arrow) || player.inventory.hasItem(ModItems.enderArrow)) {
 			float f = j / pullSpeedModifier;
 			f = (f * f + f * 2.0F) / 3.0F;
 
@@ -38,7 +40,13 @@ public class BowHandler {
 
 			f *= speedModifier;
 
-			EntityDraconicArrow entityArrow = new EntityDraconicArrow(stack, world, player, f * 2.0F);//.setShooter(player);
+			EntityDraconicArrow entityArrow;
+
+			if (player.inventory.hasItem(ModItems.enderArrow))
+				/*EntityEnderArrow*/ entityArrow = new EntityEnderArrow(world, player, f * 2.0F);
+			else
+				/*EntityDraconicArrow*/ entityArrow = new EntityDraconicArrow(world, player, f * 2.0F);
+
 
 			if (f >= 1.0F)
 				entityArrow.setIsCritical(true);
@@ -78,7 +86,10 @@ public class BowHandler {
 				entityArrow.canBePickedUp = 2;
 			else {
 				entityArrow.canBePickedUp = 1;
-				player.inventory.consumeInventoryItem(Items.arrow);
+				if (player.inventory.hasItem(ModItems.enderArrow))
+					player.inventory.consumeInventoryItem(ModItems.enderArrow);
+				else
+					player.inventory.consumeInventoryItem(Items.arrow);
 			}
 
 			if (!world.isRemote)
