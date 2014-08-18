@@ -58,7 +58,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem{
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
 		ToolHandler.AOEAttack(player, entity, stack, 15, 3);
-		ToolHandler.demageEntytyBasedOnHealth(entity, player, 0.3F);
+		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.3F);
 		return true;
 	}
 

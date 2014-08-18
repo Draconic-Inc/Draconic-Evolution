@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.common.core.proxy;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
-import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.core.handler.CraftingHandler;
@@ -79,7 +78,6 @@ public class CommonProxy {
 	public void registerEventListeners() {
 		MinecraftForge.EVENT_BUS.register(new MinecraftForgeEventHandler());
 		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
-		FMLCommonHandler.instance().bus().register(new KeyInputHandler());
 	}
 
 	public void registerPackets() {

@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
@@ -13,7 +11,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by Brandon on 25/07/2014.

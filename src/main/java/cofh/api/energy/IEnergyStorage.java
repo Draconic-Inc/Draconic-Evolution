@@ -3,7 +3,7 @@ package cofh.api.energy;
 /**
  * An energy internalGenBuffer is the unit of interaction with EnergyHelper inventories.
  * 
- * A reference implementation can be found at {@link EnergyStorage}.
+ * A reference implementation can be found at {@link com.brandon3055.draconicevolution.common.core.utills.EnergyStorage}.
  * 
  * @author King Lemming
  * 

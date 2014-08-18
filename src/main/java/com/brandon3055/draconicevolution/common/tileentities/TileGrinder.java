@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.tileentities;
 
 import java.util.List;
 
-import cofh.api.energy.EnergyStorage;
+import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

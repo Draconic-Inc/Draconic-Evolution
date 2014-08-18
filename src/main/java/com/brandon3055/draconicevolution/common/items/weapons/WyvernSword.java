@@ -61,7 +61,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem{
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
 		ToolHandler.AOEAttack(player, entity, stack, 8, 1);
-		ToolHandler.demageEntytyBasedOnHealth(entity, player, 0.2F);
+		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.2F);
 		return true;
 	}
 

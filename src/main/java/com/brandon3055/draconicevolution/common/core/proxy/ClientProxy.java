@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.core.proxy;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
+import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.*;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
@@ -11,6 +12,7 @@ import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.Til
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -28,6 +30,7 @@ public class ClientProxy extends CommonProxy {
 		super.preInit(event);
 		
 		//Client Only
+		FMLCommonHandler.instance().bus().register(new KeyInputHandler());
 		registerRendering();
 	}
 

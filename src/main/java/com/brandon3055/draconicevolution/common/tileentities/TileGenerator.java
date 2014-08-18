@@ -1,16 +1,10 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import cofh.api.energy.EnergyStorage;
+import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -21,13 +15,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.List;
-
-import static net.minecraftforge.common.util.ForgeDirection.UP;
 
 public class TileGenerator extends TileEntity implements ISidedInventory, IEnergyHandler {
 	//########### variables #############//

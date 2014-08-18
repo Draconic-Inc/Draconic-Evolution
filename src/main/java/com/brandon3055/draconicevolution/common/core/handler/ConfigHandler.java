@@ -14,6 +14,7 @@ public class ConfigHandler {
 	public static int disableXrayBlock;
 	public static boolean bowBlockDamage;
 	public static String[] spawnerList;
+	public static String[] obliterationList;
 	public static boolean spawnerListType;
 	public static int soulDropChance;
 	public static int dislocator_Min_Range;
@@ -23,8 +24,10 @@ public class ConfigHandler {
 	public static int admin_dislocator_Detect_Range;
 	public static int disable_LRD;
 	public static boolean updateFix;
+	public static boolean showUnlocalizedNames;
 
-	private static String[] defaultList = new String[] {"ExampleMob1", "ExampleMob2", "ExampleMob3 (these examples can be deleted)"};
+	private static String[] defaultSpawnerList = new String[] {"ExampleMob1", "ExampleMob2", "ExampleMob3 (these examples can be deleted)"};
+	private static String[] defaultObliterationList = new String[] {"tile.stonebrick", "tile.gravel", "tile.dirt", "tile.stone", "tile.dirt", "tile.sandStone", "tile.sand", "tile.grass", "tile.hellrock"};
 
 	public static void init(File confFile) {
 		if (config == null) {
@@ -43,8 +46,10 @@ public class ConfigHandler {
 			teleporterUsesPerPearl = config.get(Configuration.CATEGORY_GENERAL, "Teleporter Uses PerPearl", 1, "Charm of Dislocation uses per Ender pearl").getInt(10);
 			bowBlockDamage = config.get(Configuration.CATEGORY_GENERAL, "Bow Block Damage", true, "Dose Draconic bow explosion damage blocks").getBoolean(true);
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);
-			spawnerList = config.getStringList("Spawn List", "spawner", defaultList, "List of names that will be ether accepted or rejected by the spawner depending on the list type");
-			soulDropChance = config.get("spawner", "soulDropChance", 1000, "Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(1000);
+			spawnerList = config.getStringList("Spawn List", "spawner", defaultSpawnerList, "List of names that will be ether accepted or rejected by the spawner depending on the list type");
+			obliterationList = config.getStringList("Oblit Mode List", Configuration.CATEGORY_GENERAL, defaultObliterationList, "List of block (unlocalized)names that will be destroyed by tools in obliteration mode. To find the unlocalized name of a block see the \"Show Unlocalized Names\" config option");
+			showUnlocalizedNames = config.get(Configuration.CATEGORY_GENERAL, "Show Unlocalized Names", false, "If set to true the unlocalized name of every block and item will be displayed in its tool tip").getBoolean(false);
+			soulDropChance = config.get(Configuration.CATEGORY_GENERAL, "soulDropChance", 1000, "Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(1000);
 			updateFix = config.get(Configuration.CATEGORY_GENERAL, "Update Fix", true, "Convert blocks from v0.9.2 to the v0.2.3+ format (set to false if you are not updating from v0.9.2 or earlier)").getBoolean(true);
 
 			//dislocator_Min_Range = config.get("Long Range Dislocator", "Admin Dislocator Min Range", 1000000).getInt(1000000);
@@ -72,7 +77,7 @@ public class ConfigHandler {
 			teleporterUsesPerPearl = config.getInt("Teleporter Uses PerPearl", Configuration.CATEGORY_GENERAL, teleporterUsesPerPearl, 0, Integer.MAX_VALUE, "Charm of Dislocation uses per Ender pearl");
 			bowBlockDamage = config.getBoolean(Configuration.CATEGORY_GENERAL, "Bow Block Damage", bowBlockDamage, "Dose Draconic bow explosion damage blocks");
 			spawnerListType = config.getBoolean("spawner", "listType", spawnerListType, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)");
-			spawnerList = config.getStringList("Spawn List", "spawner", defaultList, "List of names that will be ether accepted or rejected by the spawner depending on the list type");
+			spawnerList = config.getStringList("Spawn List", "spawner", defaultSpawnerList, "List of names that will be ether accepted or rejected by the spawner depending on the list type");
 			soulDropChance = config.getInt("soulDropChance", "spawner", soulDropChance, 1, Integer.MAX_VALUE, "Mobs have a 1 in this number chance to drop a soul");
 			updateFix = config.getBoolean(Configuration.CATEGORY_GENERAL, "Update Fix", updateFix, "Convert blocks from v0.9.2 to the v0.2.3+ format (set to false if you are not updating from v0.9.2 or earlier)");
 

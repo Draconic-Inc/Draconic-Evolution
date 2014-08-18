@@ -1,9 +1,10 @@
-package cofh.api.energy;
+package com.brandon3055.draconicevolution.common.core.utills;
 
+import cofh.api.energy.IEnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
- * Reference implementation of {@link IEnergyStorage}. Use/extend this or implement your own.
+ * Reference implementation of {@link cofh.api.energy.IEnergyStorage}. Use/extend this or implement your own.
  * 
  * @author King Lemming
  * 

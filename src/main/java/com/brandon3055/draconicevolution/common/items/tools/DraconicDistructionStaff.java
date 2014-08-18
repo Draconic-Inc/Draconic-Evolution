@@ -40,7 +40,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	public IIcon itemIcon0;
 	public IIcon itemIcon1;
 	public IIcon itemIcon2;
-	protected int capacity = References.DRACONICCAPACITY;
+	protected int capacity = References.DRACONICCAPACITY * 10;
 	protected int maxReceive = References.DRACONICTRANSFER;
 	protected int maxExtract = References.DRACONICTRANSFER * 50;
 
@@ -68,7 +68,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 		this.setUnlocalizedName(Strings.draconicDStaffName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		this.setHarvestLevel("pickaxe", 4);
-		this.setHarvestLevel("spade", 4);
+		this.setHarvestLevel("shovel", 4);
 		this.setHarvestLevel("axe", 4);
 		GameRegistry.registerItem(this, Strings.draconicDStaffName);
 	}
@@ -142,7 +142,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
 		ToolHandler.AOEAttack(player, entity, stack, 25, ItemNBTHelper.getShort(stack, "size", (short) 0) * 2);
-		ToolHandler.demageEntytyBasedOnHealth(entity, player, 0.5F);
+		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.5F);
 		return true;
 	}
 

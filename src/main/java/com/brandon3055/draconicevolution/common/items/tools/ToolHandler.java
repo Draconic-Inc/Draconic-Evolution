@@ -18,7 +18,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldSettings.GameType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class ToolHandler {
 	public static Material[] materialsPick = {Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock};
 	public static Material[] materialsShovel = {Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow};
 	public static Material[] materialsAxe = {Material.cactus, Material.leaves, Material.wood, Material.plants};
-	public static Material[] materialsDStaff = {Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock, Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow, Material.cactus, Material.leaves, Material.wood, Material.plants};
+	public static Material[] materialsDStaff = {Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock, Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow, Material.cactus, Material.leaves, Material.wood, Material.plants, Material.cloth};
 	public static Block[] destroyList = {Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand, Blocks.grass, Blocks.netherrack};
 
 	public static boolean isRightMaterial(final Material material, final Material[] materialsListing) {
@@ -53,8 +52,7 @@ public class ToolHandler {
 		int size = stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0);
 		MovingObjectPosition mop = raytraceFromEntity(world, player, 4.5D);
 		if (mop == null) {
-			if (player instanceof EntityPlayer)
-				updateGhostBlocks(player, world);
+			if (player instanceof EntityPlayer) updateGhostBlocks(player, world);
 			return false;
 		}
 
@@ -101,21 +99,25 @@ public class ToolHandler {
 		Material mat = block.getMaterial();
 		if ((block != null) && (!block.isAir(world, x, y, z)) && (block.getPlayerRelativeBlockHardness(player, world, x, y, z) != 0.0F)) {
 			List<ItemStack> items = new ArrayList();
+
 			if ((!block.canHarvestBlock(player, meta)) || (!isRightMaterial(mat, materialsListing))) {
 				return;
 			}
+
+			if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+				if (!player.capabilities.isCreativeMode) return;
+			} else {
+				if (!player.capabilities.isCreativeMode)
+					((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
+			}
+
 			if (checkDestroyList(block) && (ItemNBTHelper.getBoolean(stack, "obliterate", false))) {
 				world.setBlockToAir(x, y, z);
 				return;
 			}
-			if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
-				if (!player.capabilities.isCreativeMode)
-					return;
-			} else {
-				if (!player.capabilities.isCreativeMode)
-					((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
-			}
+
 			if ((stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0)) == 0) return;
+
 			if ((silk) && (block.canSilkHarvest(world, player, x, y, z, meta))) {
 				if (block == Blocks.lit_redstone_ore)
 					items.add(new ItemStack(Item.getItemFromBlock(Blocks.redstone_ore)));
@@ -126,8 +128,10 @@ public class ToolHandler {
 				int xp = block.getExpDrop(world, meta, fortune);
 				player.addExperience(xp);
 			}
+
 			world.setBlockToAir(x, y, z);
-			if (!world.isRemote && !(((EntityPlayerMP) player).theItemInWorldManager.getGameType() == GameType.CREATIVE)) {
+
+			if (!world.isRemote && !player.capabilities.isCreativeMode && world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
 				for (final ItemStack item : items) {
 					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, item));
 				}
@@ -154,42 +158,39 @@ public class ToolHandler {
 		return stack;
 	}
 
-	public static void demageEntytyBasedOnHealth(Entity entity, EntityPlayer player, float dmg) {
+	public static void damageEntityBasedOnHealth(Entity entity, EntityPlayer player, float dmg) {
 		World world = player.worldObj;
 		ItemStack stack = player.getCurrentEquippedItem();
 		if (entity instanceof EntityLivingBase) {
 			float entHealth = ((EntityLivingBase) entity).getHealth();
 			if (!world.isRemote) {
 				if (entHealth > 20) {
-					if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
-						if (!player.capabilities.isCreativeMode)
-							return;
+					if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+						if (!player.capabilities.isCreativeMode) return;
 					} else {
 						if (!player.capabilities.isCreativeMode)
-							((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int)((entHealth) * 100), false);
+							((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int) ((entHealth) * 100), false);
 					}
 					entity.attackEntityFrom(DamageSource.causePlayerDamage(player), (entHealth) * dmg);
 				}
 			}
 		} else if (entity instanceof EntityDragonPart) {
 			if (!world.isRemote) {
-				if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
-					if (!player.capabilities.isCreativeMode)
-						return;
+				if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+					if (!player.capabilities.isCreativeMode) return;
 				} else {
 					if (!player.capabilities.isCreativeMode)
-						((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int)((200F) * 100), false);
+						((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int) ((200F) * 100), false);
 				}
 				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 200F * dmg);
 			}
 		} else {
 			if (!world.isRemote) {
-				if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
-					if (!player.capabilities.isCreativeMode)
-						return;
+				if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+					if (!player.capabilities.isCreativeMode) return;
 				} else {
 					if (!player.capabilities.isCreativeMode)
-						((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int)((100F) * 100), false);
+						((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK + (int) ((100F) * 100), false);
 				}
 				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 100F * dmg);
 			}
@@ -205,12 +206,11 @@ public class ToolHandler {
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
 		List list = world.getEntitiesWithinAABBExcludingEntity(player, box);
 		for (Object o : list) {
-			if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
-				if (!player.capabilities.isCreativeMode)
-					return;
+			if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+				if (!player.capabilities.isCreativeMode) return;
 			} else {
 				if (!player.capabilities.isCreativeMode)
-					((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK, false);
+					((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK, false);
 			}
 			if (((Entity) o) instanceof EntityLivingBase)
 				((Entity) o).attackEntityFrom(DamageSource.causePlayerDamage(player), dmg + sharp);
@@ -219,15 +219,13 @@ public class ToolHandler {
 
 	}
 
-	public static MovingObjectPosition raytraceFromEntity (World world, Entity player, double range)
-	{
+	public static MovingObjectPosition raytraceFromEntity(World world, Entity player, double range) {
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
 		double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double) f;
 		double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double) f;
-		if (!world.isRemote && player instanceof EntityPlayer)
-			d1 += 1.62D;
+		if (!world.isRemote && player instanceof EntityPlayer) d1 += 1.62D;
 		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
 		Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
 		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
@@ -237,26 +235,21 @@ public class ToolHandler {
 		float f7 = f4 * f5;
 		float f8 = f3 * f5;
 		double d3 = range;
-		if (player instanceof EntityPlayerMP)
-		{
+		if (player instanceof EntityPlayerMP) {
 			d3 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
 		}
 		Vec3 vec31 = vec3.addVector((double) f7 * d3, (double) f6 * d3, (double) f8 * d3);
 		return world.rayTraceBlocks(vec3, vec31);
 	}
 
-	private static void updateGhostBlocks(EntityPlayer player, World world)
-	{
+	private static void updateGhostBlocks(EntityPlayer player, World world) {
 		int xPos = (int) player.posX;
 		int yPos = (int) player.posY;
 		int zPos = (int) player.posZ;
 
-		for (int x = xPos - 6; x < xPos + 6; x++)
-		{
-			for (int y = yPos - 6; y < yPos + 6; y++)
-			{
-				for (int z = zPos - 6; z < zPos + 6; z++)
-				{
+		for (int x = xPos - 6; x < xPos + 6; x++) {
+			for (int y = yPos - 6; y < yPos + 6; y++) {
+				for (int z = zPos - 6; z < zPos + 6; z++) {
 					world.markBlockForUpdate(x, y, z);
 				}
 			}

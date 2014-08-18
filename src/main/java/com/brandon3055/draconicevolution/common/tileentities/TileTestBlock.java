@@ -1,14 +1,9 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import static net.minecraftforge.common.util.ForgeDirection.DOWN;
-import static net.minecraftforge.common.util.ForgeDirection.EAST;
-import static net.minecraftforge.common.util.ForgeDirection.NORTH;
-import static net.minecraftforge.common.util.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.util.ForgeDirection.UP;
-import static net.minecraftforge.common.util.ForgeDirection.WEST;
-import cofh.api.energy.EnergyStorage;
+
+import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;

@@ -21,6 +21,7 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 
 import java.util.ArrayList;
@@ -173,5 +174,10 @@ public class MinecraftForgeEventHandler {
 	public void onEntityConstructing(EntityEvent.EntityConstructing event)
 	{
 		if (event.entity instanceof EntityPlayer && ExtendedPlayer.get((EntityPlayer) event.entity) == null) ExtendedPlayer.register((EntityPlayer) event.entity);
+	}
+
+	@SubscribeEvent
+	public void itemTooltipEvent(ItemTooltipEvent event){
+		if (ConfigHandler.showUnlocalizedNames) event.toolTip.add(event.itemStack.getUnlocalizedName());
 	}
 }

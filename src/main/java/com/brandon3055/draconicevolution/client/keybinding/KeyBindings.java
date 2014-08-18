@@ -15,7 +15,7 @@ public class KeyBindings {
 	public static KeyBinding placeItem;
 
 	public static void init() {
-		placeItem = new KeyBinding("key.pong", Keyboard.KEY_P, "key.categories."+ References.MODID);
+		placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_P, References.MODNAME);
 		ClientRegistry.registerKeyBinding(placeItem);
 	}
 }

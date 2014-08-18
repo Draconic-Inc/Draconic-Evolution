@@ -138,6 +138,8 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor{
 		if(stack != null && stack.getItem() == ModItems.draconicHelm) {
 			if (player.worldObj.getBlockLightValue((int)player.posX, (int)player.posY, (int)player.posZ) < 5)
 				player.addPotionEffect(new PotionEffect(16, 210, 0, true));
+			else if (player.isPotionActive(16))
+				player.removePotionEffect(16);
 		}
 		if(stack != null && stack.getItem() == ModItems.draconicLeggs) {
 			if (player.isSprinting())
