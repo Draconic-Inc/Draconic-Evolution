@@ -50,7 +50,7 @@ public class ConfigHandler {
 			obliterationList = config.getStringList("Oblit Mode List", Configuration.CATEGORY_GENERAL, defaultObliterationList, "List of block (unlocalized)names that will be destroyed by tools in obliteration mode. To find the unlocalized name of a block see the \"Show Unlocalized Names\" config option");
 			showUnlocalizedNames = config.get(Configuration.CATEGORY_GENERAL, "Show Unlocalized Names", false, "If set to true the unlocalized name of every block and item will be displayed in its tool tip").getBoolean(false);
 			soulDropChance = config.get(Configuration.CATEGORY_GENERAL, "soulDropChance", 1000, "Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(1000);
-			updateFix = config.get(Configuration.CATEGORY_GENERAL, "Update Fix", true, "Convert blocks from v0.9.2 to the v0.2.3+ format (set to false if you are not updating from v0.9.2 or earlier)").getBoolean(true);
+			updateFix = config.get(Configuration.CATEGORY_GENERAL, "Update Fix", false, "Convert blocks from v0.9.2 to the v0.2.3+ format (set to false if you are not updating from v0.9.2 or earlier)").getBoolean(false);
 
 			//dislocator_Min_Range = config.get("Long Range Dislocator", "Admin Dislocator Min Range", 1000000).getInt(1000000);
 			//dislocator_Max_Range = config.get("Long Range Dislocator", "Admin Dislocator Max Range", 29000000).getInt(29000000);

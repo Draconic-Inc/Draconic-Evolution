@@ -1,6 +1,11 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
+import com.brandon3055.draconicevolution.common.container.ContainerGrinder;
 import com.brandon3055.draconicevolution.common.core.utills.GuiHelper;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -8,15 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.common.container.ContainerGrinder;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 
 import java.util.ArrayList;
 
@@ -116,7 +114,7 @@ public class GUIGrinder extends GuiContainer {
 		super.updateScreen();
 		
 	}
-	
+
 	//                      ####Draw at############ read from size
 	//drawTexturedModalRect(guiLeft + 37, guiTop + 4, 0, 143, 37, 38);
 }

@@ -4,7 +4,6 @@ import com.brandon3055.draconicevolution.client.interfaces.SlotItemValid;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -74,6 +73,7 @@ public class ContainerGrinder extends Container {
 
 	@Override
 	public void detectAndSendChanges() {
+		super.detectAndSendChanges();
 		ItemStack stack = tile.getStackInSlot(0);
 		int size = stack == null ? 0 : stack.stackSize;
 		if (cachSize != size) {
