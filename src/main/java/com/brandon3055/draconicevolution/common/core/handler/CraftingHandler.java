@@ -59,7 +59,9 @@ public class CraftingHandler {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.dragonHeart), " C ", "CEC", " C ", 'C', ModItems.infusedCompound, 'I', Blocks.dragon_egg);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconiumBlend), " D ", "DID", " D ", 'I', Items.iron_ingot, 'D', ModItems.draconiumDust);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicCompound, 2), " C ", "CHC", " C ", 'C', ModItems.infusedCompound, 'H', ModItems.dragonHeart);
-				
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.safetyMatch, 1, 1000), " O ", " S ", "   ", 'O', new ItemStack(Items.dye, 1, 14), 'S', Items.stick);
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.safetyMatch, 0), "MMM", "MMM", "MMM", 'M', new ItemStack(ModItems.safetyMatch, 1, 1000));
+
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.grinder, 1, 3), "IXI", "DCD", "IFI", 'I', Items.iron_ingot, 'X', ModItems.draconiumIngot, 'D', Items.diamond_sword, 'C', ModItems.draconicCore, 'F', Blocks.furnace);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.weatherController), "RSR", "TPT", "IEI", 'R', Items.blaze_rod, 'S', ModItems.sunFocus, 'T', Blocks.tnt, 'P', ModItems.draconicCore, 'I', Items.iron_ingot, 'E', Blocks.enchanting_table);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.potentiometer), "ITI", "QCQ", "IRI", 'I', Items.iron_ingot, 'T', Blocks.redstone_torch, 'Q', Items.quartz, 'C', Items.comparator, 'R', Blocks.redstone_block);

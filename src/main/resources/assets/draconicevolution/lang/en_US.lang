@@ -55,6 +55,8 @@ item.draconicevolution:draconicBoots.name=Draconic Boots
 item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
 item.draconicevolution:mobSoul.name=Mob Soul
 item.draconicevolution:enderArrow.name=Ender Arrow
+item.draconicevolution:safetyMatch.name=Safety Match
+item.draconicevolution:safetyMatchBox.name=Box of Safety Matches
 
 //###################################Item Groups###################################//
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 

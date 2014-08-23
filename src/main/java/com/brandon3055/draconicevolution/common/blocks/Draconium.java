@@ -40,8 +40,9 @@ public class Draconium extends BlockDE {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister) {
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++) {
 			icons[i] = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconium_block_" + i);
+		}
 		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconium_block_blank");
 	}
 

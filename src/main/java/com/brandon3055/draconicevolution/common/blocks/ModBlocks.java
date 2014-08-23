@@ -34,6 +34,7 @@ public class ModBlocks {
 	public static BlockDE invisibleMultiblock;
 	public static BlockDE energyPylon;
 	public static BlockDE placedItem;
+	public static Block safetyFlame;
 
 	public static void init()
 	{
@@ -55,6 +56,7 @@ public class ModBlocks {
 		invisibleMultiblock = new InvisibleMultiblock();
 		energyPylon = new EnergyPylon();
 		placedItem = new PlacedItem();
+		safetyFlame = new SafetyFlame();
 		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
 		
 		if(DraconicEvolution.debug) testBlock = new TestBlock();
@@ -84,5 +86,11 @@ public class ModBlocks {
 	{
 		String name = block.getUnwrappedUnlocalizedName(block.getUnlocalizedName());
 		GameRegistry.registerBlock(block, item, name.substring(name.indexOf(":") + 1));
+	}
+
+	public static void registerOther(Block block)
+	{
+		String name = block.getUnlocalizedName().substring(block.getUnlocalizedName().indexOf(".") + 1);
+		GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
 	}
 }

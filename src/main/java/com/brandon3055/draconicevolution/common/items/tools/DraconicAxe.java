@@ -121,7 +121,7 @@ public class DraconicAxe extends ItemAxe implements IEnergyContainerItem{
 					if (block.isWood(world, xPos, yPos, zPos)) {
 						world.setBlockToAir(xPos, yPos, zPos);
 						if (!player.capabilities.isCreativeMode) {
-							if (block.removedByPlayer(world, player, xPos, yPos, zPos)) {
+							if (block.removedByPlayer(world, player, xPos, yPos, zPos, false)) {
 								block.onBlockDestroyedByPlayer(world, xPos, yPos, zPos, meta);
 							}
 							block.harvestBlock(world, player, xPos, yPos, zPos, meta);
@@ -136,10 +136,12 @@ public class DraconicAxe extends ItemAxe implements IEnergyContainerItem{
 		}
 	}
 
+	@SuppressWarnings("all")
 	void trimLeavs(int X, int Y, int Z, EntityPlayer player, World world, ItemStack stack) {
 		scedualUpdates(X, Y, Z, player, world, stack);
 	}
 
+	@SuppressWarnings("all")
 	void scedualUpdates(int X, int Y, int Z, EntityPlayer player, World world, ItemStack stack) {
 		for (int xPos = X - 15; xPos <= X + 15; xPos++) {
 			for (int yPos = Y; yPos <= Y + 50; yPos++) {

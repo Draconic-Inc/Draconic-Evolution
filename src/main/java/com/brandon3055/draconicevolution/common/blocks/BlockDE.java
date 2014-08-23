@@ -22,18 +22,16 @@ public class BlockDE extends Block {
 	public String getUnlocalizedName()
 	{
 		return String.format("tile.%s%s", References.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
-		//return String.format("tile.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
-	public String getUnwrappedUnlocalizedName(final String unlocalizedName)
+	public String getUnwrappedUnlocalizedName(String unlocalizedName)
 	{
-
 		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(final IIconRegister iconRegister)
+	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		this.blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}

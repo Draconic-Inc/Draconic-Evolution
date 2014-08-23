@@ -53,4 +53,6 @@ public class Strings {//                                              public sta
 	public static final String energyPylonName = "energyPylon";
 	public static final String placedItemName = "placedItem";
 	public static final String enderArrowName = "enderArrow";
+	public static final String safetyFlameName = "safetyFlame";
+	public static final String safetyMatchName = "safetyMatch";
 }
