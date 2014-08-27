@@ -71,6 +71,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(Utills.TileBlockChanger.class, References.RESOURCESPREFIX + "TileBlockChanger");
 		GameRegistry.registerTileEntity(TileEnderResurrection.class, References.RESOURCESPREFIX + "TileEnderResurrection");
 		GameRegistry.registerTileEntity(TilePlacedItem.class, References.RESOURCESPREFIX + "TilePlacedItem");
+		GameRegistry.registerTileEntity(TileCKeyStone.class, References.RESOURCESPREFIX + "TileCKeyStone");
 		if (DraconicEvolution.debug)
 			GameRegistry.registerTileEntity(TileTestBlock.class, "References.RESOURCESPREFIX + TileTestBlock");
 	}

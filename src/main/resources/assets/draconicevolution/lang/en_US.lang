@@ -19,6 +19,7 @@ tile.draconicevolution:energyPylon.name=Energy Pylon
 tile.draconicevolution:draconium0.name=Draconium Block
 tile.draconicevolution:draconium1.name=Resurrection Stone
 tile.draconicevolution:draconium2.name=Charged Draconium Block
+tile.draconicevolution:cKeyStone.name=Creative Key Stone
 
 //###################################Item names###################################//
 item.draconicevolution:draconicCompound.name=Draconic Compound
@@ -57,6 +58,7 @@ item.draconicevolution:mobSoul.name=Mob Soul
 item.draconicevolution:enderArrow.name=Ender Arrow
 item.draconicevolution:safetyMatch.name=Safety Match
 item.draconicevolution:safetyMatchBox.name=Box of Safety Matches
+item.draconicevolution:key.name=Key
 
 //###################################Item Groups###################################//
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -98,6 +100,11 @@ msg.dislocatorNoGround.txt=Error world not found
 msg.range.txt=Range:
 msg.energyStorageCoreUTA.txt=Unable to activate (Invalid Configuration)
 msg.SpawnDragonToFarFrom00.txt=[ERROR] to far from 0,0
+msg.wrongKey.txt=This key dose not fit this lock
+msg.cKeyStoneType0.txt=Permanent Activation (Consume Key)
+msg.cKeyStoneType1.txt=Button Activation
+msg.cKeyStoneType2.txt=Toggle Activation
+msg.cKeyStoneType3.txt=Button Activation (Consume Key)
 
 //###################################Tool Tips###################################//
 info.teleporterInfUnset1.txt=Unbound

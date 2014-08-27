@@ -55,4 +55,6 @@ public class Strings {//                                              public sta
 	public static final String enderArrowName = "enderArrow";
 	public static final String safetyFlameName = "safetyFlame";
 	public static final String safetyMatchName = "safetyMatch";
+	public static final String cKeyStoneName = "cKeyStone";
+	public static final String keyName = "key";
 }

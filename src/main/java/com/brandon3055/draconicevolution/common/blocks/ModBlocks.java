@@ -34,6 +34,7 @@ public class ModBlocks {
 	public static BlockDE invisibleMultiblock;
 	public static BlockDE energyPylon;
 	public static BlockDE placedItem;
+	public static BlockDE cKeyStone;
 	public static Block safetyFlame;
 
 	public static void init()
@@ -57,6 +58,7 @@ public class ModBlocks {
 		energyPylon = new EnergyPylon();
 		placedItem = new PlacedItem();
 		safetyFlame = new SafetyFlame();
+		cKeyStone = new CKeyStone();
 		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
 		
 		if(DraconicEvolution.debug) testBlock = new TestBlock();

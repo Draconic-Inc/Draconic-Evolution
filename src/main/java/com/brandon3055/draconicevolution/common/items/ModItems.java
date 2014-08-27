@@ -56,6 +56,7 @@ public class ModItems {
 	public static ItemDE mobSoul;
 	public static ItemDE enderArrow;
 	public static ItemDE safetyMatch;
+	public static ItemDE key;
 
 	public static ItemDE teleporterMKI;
 	public static ItemDE teleporterMKII;
@@ -98,6 +99,7 @@ public class ModItems {
 		mobSoul = new MobSoul();
 		enderArrow = new EnderArrow();
 		safetyMatch = new SafetyMatch();
+		key = new Key();
 
 	}
 
