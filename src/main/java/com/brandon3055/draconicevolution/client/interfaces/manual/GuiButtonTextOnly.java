@@ -34,7 +34,7 @@ public class GuiButtonTextOnly extends GuiButton{
 			int l = 0x777777;
 
 			String trimmedDisplayString = displayString;
-			if (fontrenderer.getStringWidth(displayString) > width && !this.field_146123_n){
+			if (fontrenderer.getStringWidth(displayString) > width+30 && !this.field_146123_n){
 				int energencyBreak = 0;
 				while (fontrenderer.getStringWidth(trimmedDisplayString)*0.7 > width-5){
 					trimmedDisplayString = trimmedDisplayString.substring(0, trimmedDisplayString.length()-1);

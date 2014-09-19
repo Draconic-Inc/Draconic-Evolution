@@ -7,8 +7,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -17,13 +18,17 @@ import org.lwjgl.opengl.GL12;
  * Created by Brandon on 16/09/2014.
  */
 @SideOnly(Side.CLIENT)
-public class GuiManual extends GuiContainer {
+public class GuiManual extends GuiScreen {
 
 	protected final PageCollection root;
 	protected int pageIndex = 0;
+	protected int xSize = 0;
+	protected int ySize = 0;
+	public Container inventorySlots;
+	protected int guiLeft;
+	protected int guiTop;
 
 	public GuiManual() {
-		super(new DummyContainer());
 		this.xSize = 256;
 		this.ySize = 202;
 		root = createRoot();
@@ -75,6 +80,25 @@ public class GuiManual extends GuiContainer {
 		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.safetyMatch), ""));
 		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, mobSoul, ""));
 
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.weatherController), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.sunDial), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.playerDetector), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.playerDetectorAdvanced), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.grinder), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyInfuser), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.customSpawner), ""));
+
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.particleGenerator), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.xRayBlock), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.potentiometer), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.rainSensor), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyStorageCore), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyPylon), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 1), ""));
+		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 2), ""));
+
+
 
 		pageCollection.addPage(new IndexPage("INDEX", pageCollection));
 		return pageCollection;
@@ -89,6 +113,7 @@ public class GuiManual extends GuiContainer {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float par3) {
 		super.drawScreen(mouseX, mouseY, par3);
+		drawGuiBackgroundLayer(par3, mouseX, mouseY);
 		prepareRenderState();
 		GL11.glPushMatrix();
 		root.drawScreen(this.mc, this.guiLeft, this.guiTop, mouseX - this.guiLeft, mouseY - this.guiTop);
@@ -111,8 +136,7 @@ public class GuiManual extends GuiContainer {
 		RenderHelper.enableStandardItemLighting();
 	}
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseY) {
+	protected void drawGuiBackgroundLayer(float p_146976_1_, int mouseX, int mouseY) {
 		GL11.glPushMatrix();
 		GL11.glTranslated(this.guiLeft, this.guiTop, 0);
 		root.renderBackgroundLayer(this.mc, 0, 0, mouseX - this.guiLeft, mouseY - this.guiTop);
@@ -143,6 +167,13 @@ public class GuiManual extends GuiContainer {
 	@Override
 	public void handleInput() {
 		super.handleInput();
+	}
+
+	@Override
+	public void initGui() {
+		super.initGui();
+		this.guiLeft = (this.width - this.xSize) / 2;
+		this.guiTop = (this.height - this.ySize) / 2;
 	}
 }
 

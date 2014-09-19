@@ -24,7 +24,7 @@ public class IndexPage extends TitledPage {
 				String indexName = page.INDEX_NAME;
 				if (indexName==null && page instanceof CraftingPage) indexName = ttl(((CraftingPage)page).result.getUnlocalizedName()+".name");
 				else if (indexName==null) indexName = page.getReferenceName();
-				buttonList.add(new GuiButtonTextOnly(999, getXMin()+5+collum*60, getYMin()+20+(row*7), 60, 7, indexName, page.getReferenceName()));
+				buttonList.add(new GuiButtonTextOnly(999, getXMin()+5+collum*81, getYMin()+20+(row*7), 82, 7, indexName, page.getReferenceName()));
 				row++;
 				if (row > 21){
 					row = 0;

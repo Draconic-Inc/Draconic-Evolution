@@ -59,7 +59,7 @@ public class CraftingPage extends TitledPage {
 				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				drawTexturedModalRect(offsetX + 70, offsetY + 15, 198, 202, 54, 54);
 				GL11.glPopMatrix();
-				drawString(fontRendererObj, "No Recipe", offsetX + 149, offsetY + 60, 0xff0000);
+				drawString(fontRendererObj, "No Crafting Recipe", offsetX + 129, offsetY + 60, 0xff0000);
 			}
 		}
 		GL11.glPopMatrix();
@@ -73,6 +73,7 @@ public class CraftingPage extends TitledPage {
 		int gridOffsetX = isSmelting ? 88 : 71;
 		int gridOffsetY = 16;
 		int itemBoxSize = 18;
+		addDescription(minecraft, offsetX, offsetY);
 
 		ItemStack tooltip = null;
 		int i = 0;
@@ -100,8 +101,6 @@ public class CraftingPage extends TitledPage {
 		if (tooltip != null) {
 			drawItemStackTooltip(tooltip, relativeMouseX, relativeMouseY);
 		}
-
-		addDescription(minecraft, offsetX, offsetY);
 	}
 
 	public void addDescription(Minecraft minecraft, int offsetX, int offsetY){
