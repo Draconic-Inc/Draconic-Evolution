@@ -10,7 +10,6 @@ import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -35,7 +34,8 @@ public class TeleporterMKII extends ItemDE
 		this.setUnlocalizedName(Strings.teleporterMKIIName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		this.setMaxStackSize(1);
-		GameRegistry.registerItem(this, Strings.teleporterMKIIName);
+		ModItems.register(this);
+		//GameRegistry.registerItem(this, Strings.teleporterMKIIName);
 	}
 
 	@Override

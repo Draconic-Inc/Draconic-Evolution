@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -47,6 +48,10 @@ public class MobSoul extends ItemDE {
 		double sX = x + ForgeDirection.getOrientation(side).offsetX + 0.5;
 		double sY = y + ForgeDirection.getOrientation(side).offsetY + 0.5;
 		double sZ = z + ForgeDirection.getOrientation(side).offsetZ + 0.5;
+		if (entity == null) {
+			LogHelper.error("Mob Soul bound entity = null");
+			return false;
+		}
 		entity.setLocationAndAngles(sX, sY, sZ, player.rotationYaw, 0F);
 
 		if (entity instanceof EntityLivingBase && !world.isRemote) {

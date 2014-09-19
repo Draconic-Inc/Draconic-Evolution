@@ -1,64 +1,177 @@
 //###################################Block Names###################################//
 tile.draconicevolution:xRayBlock.name=Distortion Flame
+tile.draconicevolution:xRayBlock.description=Description
+
 tile.draconicevolution:sunDial.name=Sun Dial
+tile.draconicevolution:sunDial.description=Description
+
 tile.draconicevolution:weatherController.name=Weather Controller
+tile.draconicevolution:weatherController.description=Description
+
 tile.draconicevolution:draconiumOre.name=Draconium Ore
+tile.draconicevolution:draconiumOre.description=Description
+
 tile.draconicevolution:grinder.name=Mob Grinder
+tile.draconicevolution:grinder.description=Description
+
 tile.draconicevolution:potentiometer.name=Potentiometer
+tile.draconicevolution:potentiometer.description=Description
+
 tile.draconicevolution:rainSensor.name=Rain Sensor
+tile.draconicevolution:rainSensor.description=Description
+
 tile.draconicevolution:particleGenerator.name=Particle Generator
+tile.draconicevolution:particleGenerator.description=Description
+
 tile.draconicevolution:playerDetector.name=Player Detector
+tile.draconicevolution:playerDetector.description=Description
+
 tile.draconicevolution:playerDetectorAdvanced.name=Advanced Player Detector
+tile.draconicevolution:playerDetectorAdvanced.description=Description
+
 tile.draconicevolution:energyInfuser.name=Energy Infuser
+tile.draconicevolution:energyInfuser.description=Description
+
 tile.draconicevolution:customSpawner.name=Stabilized Mob Spawner
+tile.draconicevolution:customSpawner.description=Description
+
 tile.draconicevolution:longRangeDislocator1.name=Admin Dislocator
+tile.draconicevolution:longRangeDislocator1.description=Description
+
 tile.draconicevolution:longRangeDislocator0.name=Long Range Dislocator
+tile.draconicevolution:longRangeDislocator0.description=Description
+
 tile.draconicevolution:generator.name=Generator
+tile.draconicevolution:generator.description=Description
+
 tile.draconicevolution:energyStorageCore.name=Energy Core
+tile.draconicevolution:energyStorageCore.description=Description
+
 tile.draconicevolution:energyPylon.name=Energy Pylon
+tile.draconicevolution:energyPylon.description=Description
+
 tile.draconicevolution:draconium0.name=Draconium Block
+tile.draconicevolution:draconium0.description=Description
+
 tile.draconicevolution:draconium1.name=Resurrection Stone
+tile.draconicevolution:draconium1.description=Description
+
 tile.draconicevolution:draconium2.name=Charged Draconium Block
+tile.draconicevolution:draconium2.description=Description
+
 tile.draconicevolution:cKeyStone.name=Creative Key Stone
+tile.draconicevolution:cKeyStone.description=Description
 
 //###################################Item names###################################//
 item.draconicevolution:draconicCompound.name=Draconic Compound
-item.draconicevolution:draconiumIngot.name=Draconium Ingot
-item.draconicevolution:draconiumDust.name=Draconium Dust
-item.draconicevolution:draconiumBlend.name=Draconium Blend
-item.draconicevolution:dragonHeart.name=Dragon Heart
-item.draconicevolution:infusedCompound.name=Infused Compound
-item.draconicevolution:sunFocus.name=Solar Focus
-item.draconicevolution:tclogo.name=TCLogo
-item.draconicevolution:draconicCore.name=Draconic Core
+item.draconicevolution:draconicCompound.description=Description
 
-item.draconicevolution:wyvernChestPlate.name=WIP
+item.draconicevolution:draconiumIngot.name=Draconium Ingot
+item.draconicevolution:draconiumIngot.description=Description
+
+item.draconicevolution:draconiumDust.name=Draconium Dust
+item.draconicevolution:draconiumDust.description=Description
+
+item.draconicevolution:draconiumBlend.name=Draconium Blend
+item.draconicevolution:draconiumBlend.description=Description
+
+item.draconicevolution:dragonHeart.name=Dragon Heart
+item.draconicevolution:dragonHeart.description=Description
+
+item.draconicevolution:infusedCompound.name=Infused Compound
+item.draconicevolution:infusedCompound.description=Description
+
+item.draconicevolution:sunFocus.name=Solar Focus
+item.draconicevolution:sunFocus.description=Description
+
+item.draconicevolution:tclogo.name=TCLogo
+
+item.draconicevolution:draconicCore.name=Draconic Core
+item.draconicevolution:draconicCore.description=Description
+
 item.draconicevolution:teleporterMKI.name=Charm of Dislocation
+item.draconicevolution:teleporterMKI.description=Description
+
 item.draconicevolution:teleporterMKII.name=Enhanced Charm of Dislocation
+item.draconicevolution:teleporterMKII.description=Description
+
 item.draconicevolution:wyvernPickaxe.name=Pickaxe of the Wyvern
+item.draconicevolution:wyvernPickaxe.description=Description
+
 item.draconicevolution:wyvernShovel.name=Shovel of the Wyvern
+item.draconicevolution:wyvernShovel.description=Description
+
 item.draconicevolution:wyvernSword.name=Sword of the Wyvern
+item.draconicevolution:wyvernSword.description=Description
+
 item.draconicevolution:wyvernBow.name=Bow of the Wyvern
+item.draconicevolution:wyvernBow.description=Description
+
 item.draconicevolution:wyvernHelm.name=Wyvern Helm
+item.draconicevolution:wyvernHelm.description=Description
+
 item.draconicevolution:wyvernChest.name=Wyvern Chestplate
+item.draconicevolution:wyvernChest.description=Description
+
 item.draconicevolution:wyvernLeggs.name=Wyvern Leggings
+item.draconicevolution:wyvernLeggs.description=Description
+
 item.draconicevolution:wyvernBoots.name=Wyvern Boots
+item.draconicevolution:wyvernBoots.description=Description
+
 item.draconicevolution:draconicPickaxe.name=Draconic Pickaxe
+item.draconicevolution:draconicPickaxe.description=Description
+
 item.draconicevolution:draconicAxe.name=Draconic Axe
+item.draconicevolution:draconicAxe.description=Description 
+
 item.draconicevolution:draconicShovel.name=Draconic Shovel
+item.draconicevolution:draconicShovel.description=Description
+
 item.draconicevolution:draconicHoe.name=Draconic Hoe
+item.draconicevolution:draconicHoe.description=Description
+
 item.draconicevolution:draconicSword.name=Draconic Sword
+item.draconicevolution:draconicSword.description=Description
+
 item.draconicevolution:draconicBow.name=Draconic Bow
+item.draconicevolution:draconicBow.description=Description
+
 item.draconicevolution:draconicHelm.name=Draconic Helm
+item.draconicevolution:draconicHelm.description=Description
+
 item.draconicevolution:draconicChest.name=Draconic Chestplate
+item.draconicevolution:draconicChest.description=Description
+
 item.draconicevolution:draconicLeggs.name=Draconic Leggings
+item.draconicevolution:draconicLeggs.description=Description
+
 item.draconicevolution:draconicBoots.name=Draconic Boots
+item.draconicevolution:draconicBoots.description=Description
+
 item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
+item.draconicevolution:draconicDistructionStaff.description=Description
+
 item.draconicevolution:mobSoul.name=Mob Soul
+item.draconicevolution:mobSoul.description=Description
+
 item.draconicevolution:enderArrow.name=Ender Arrow
+item.draconicevolution:enderArrow.description=Description
+
 item.draconicevolution:safetyMatch.name=Safety Match
+item.draconicevolution:safetyMatch.description=Description
+
 item.draconicevolution:safetyMatchBox.name=Box of Safety Matches
+item.draconicevolution:safetyMatchBox.description=Description
+
 item.draconicevolution:key.name=Key
+item.draconicevolution:key.description=Description
+
+item.draconicevolution:creativeStructureSpawnerComet.name=Spawn Comet
+item.draconicevolution:creativeStructureSpawnerComet.description=Description
+
+item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Island
+item.draconicevolution:creativeStructureSpawnerEnderIsland.description=Description
 
 //###################################Item Groups###################################//
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -152,3 +265,13 @@ entity.DraconicEvolution.EnderDragon.name=Ender Dragon
 
 key.placeItem=Place Item in world
 
+death.attack.ChaosDragon=%1$s was torn apart by a Chaos Guardian
+
+
+//###################################Manual Gui###################################//
+
+button.de.backToIndex.txt=Back to Index
+button.de.back.txt=Back
+button.de.goToIndex.txt=Index Page
+manual.de.indexTitle.txt=Index Page
+manual.de.userGuide.txt=Mod Feature Guide

@@ -1,19 +1,16 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import java.util.List;
-
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.common.lib.Strings;
+
+import java.util.List;
 
 public class Tclogo extends ItemDE {
 	public Tclogo() {
@@ -73,11 +70,20 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		String name = References.MODID.toLowerCase() + ":" + getUnwrappedUnlocalizedName(getUnlocalizedName());
+		int xi = (int)player.posX;
+		int yi = (int)player.posY;
+		int zi = (int)player.posZ;
+		int rad = 100;
 
-		name = name.substring(name.indexOf(":") + 1);
+		for (int x = xi-rad; x < xi+rad; x++){
+			for (int y = yi-5; y < yi+5; y++){
+				for (int z = zi-rad; z < zi+rad; z++){
+					world.markBlockForUpdate(x, y, z);
+				}
+			}
+		}
+		world.markBlockRangeForRenderUpdate(xi-rad, yi-rad, zi-rad, xi+rad, yi+rad, zi+rad);
 
-		LogHelper.info(getUnlocalizedName());
 		return stack;
 	}
 	

@@ -85,11 +85,13 @@ public class WyvernBow extends ItemBow {
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int count)
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
-		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "rapidfire";
+		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "ender";
 		if (currentMode.equals("rapidfire"))
 			BowHandler.standerdShot(stack, world, player, count, itemRand, 19F, 1F, false, 0D, 1F, false, 0);
 		else if (currentMode.equals("sharpshooter"))
 			BowHandler.standerdShot(stack, world, player, count, itemRand, 30F, 5F, true, 20D, 0.7F, false, 30);
+		else if (currentMode.equals("ender"))
+			BowHandler.enderShot(stack, world, player, count, itemRand, 30, 1F, 1F, 0);
 	}
 
 	public void changeMode(ItemStack stack, EntityPlayer player)
@@ -126,7 +128,7 @@ public class WyvernBow extends ItemBow {
 	public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
-		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "rapidfire";
+		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "sharpshooter";
 		int j = stack.getMaxItemUseDuration() - useRemaining;
 		if (usingItem == null) {
 			return this.itemIcon;

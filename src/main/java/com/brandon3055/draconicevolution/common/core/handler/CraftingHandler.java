@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.core.handler;
 
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
@@ -55,6 +56,8 @@ public class CraftingHandler {
 
 	public static void registerShapedRecipes()
 	{
+		ItemStack mobSoul = new ItemStack(ModItems.mobSoul);
+		ItemNBTHelper.setString(mobSoul, "Name", "Any");
 		//GameRegistry.addRecipe(new ShapedOreRecipe(rodObsidianFlux, new Object[]{"  O", " B ", "O  ", 'B', rodObsidian, 'O', "gemCrystalFlux"}));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.draconicCore), "GIG", "ISI", "GIG", 'S', "gemDiamond", 'G', "ingotGold", 'I', ModItems.draconiumIngot));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.infusedCompound, 2), "IDI", "DSD", "IDI", 'S', Items.nether_star, 'D', "gemDiamond", 'I', ModItems.draconiumIngot));
@@ -104,7 +107,7 @@ public class CraftingHandler {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.energyStorageCore), "SRS", "DCD", "SRS", 'S', Items.nether_star, 'R', Blocks.redstone_block, 'C', ModItems.draconicCore, 'D', new ItemStack(ModBlocks.draconium, 1, 0));
 
 
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.draconium, 1, 1), "CSC", "SDS", "CSC", 'C', ModItems.draconicCompound, 'S', ModItems.sunFocus, 'D', new ItemStack(ModBlocks.draconium, 1, 0));
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.draconium, 1, 1), "CSC", "SDS", "CSC", 'C', mobSoul, 'S', ModItems.sunFocus, 'D', new ItemStack(ModBlocks.draconium, 1, 0));
 
 		if(ConfigHandler.disableSunDial == 0)
 			CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.sunDial), "IFI", "TDT", "GEG", 'I', ModItems.draconiumIngot, 'F', ModItems.sunFocus, 'T', ModItems.draconicCore, 'G', Blocks.glowstone, 'E', Blocks.enchanting_table, 'D', ModItems.dragonHeart);

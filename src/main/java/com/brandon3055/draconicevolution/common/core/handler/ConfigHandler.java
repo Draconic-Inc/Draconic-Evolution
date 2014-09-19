@@ -25,6 +25,9 @@ public class ConfigHandler {
 	public static int disable_LRD;
 	public static boolean updateFix;
 	public static boolean showUnlocalizedNames;
+	public static int cometRarity;
+	public static boolean generateEnderComets;
+	public static boolean generateChaosIslands;
 
 	private static String[] defaultSpawnerList = new String[] {"ExampleMob1", "ExampleMob2", "ExampleMob3 (these examples can be deleted)"};
 	private static String[] defaultObliterationList = new String[] {"tile.stonebrick", "tile.gravel", "tile.dirt", "tile.stone", "tile.dirt", "tile.sandStone", "tile.sand", "tile.grass", "tile.hellrock"};
@@ -43,7 +46,7 @@ public class ConfigHandler {
 
 			disableSunDial = config.get(Configuration.CATEGORY_GENERAL, "Disable Sun Dial", 0, "Disable Sun Dial 0:Default, 1:Disable recipe, 2:Disable completely").getInt(0);
 			disableXrayBlock = config.get(Configuration.CATEGORY_GENERAL, "Disable Xray Block", 0, "Disable Distortion Flame 0:Default, 1:Disable recipe, 2:Disable completely").getInt(0);
-			teleporterUsesPerPearl = config.get(Configuration.CATEGORY_GENERAL, "Teleporter Uses PerPearl", 1, "Charm of Dislocation uses per Ender pearl").getInt(10);
+			teleporterUsesPerPearl = config.get(Configuration.CATEGORY_GENERAL, "Teleporter Uses PerPearl", 1, "Charm of Dislocation uses per Ender pearl").getInt(1);
 			bowBlockDamage = config.get(Configuration.CATEGORY_GENERAL, "Bow Block Damage", true, "Dose Draconic bow explosion damage blocks").getBoolean(true);
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);
 			spawnerList = config.getStringList("Spawn List", "spawner", defaultSpawnerList, "List of names that will be ether accepted or rejected by the spawner depending on the list type");
@@ -51,6 +54,9 @@ public class ConfigHandler {
 			showUnlocalizedNames = config.get(Configuration.CATEGORY_GENERAL, "Show Unlocalized Names", false, "If set to true the unlocalized name of every block and item will be displayed in its tool tip").getBoolean(false);
 			soulDropChance = config.get(Configuration.CATEGORY_GENERAL, "soulDropChance", 1000, "Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(1000);
 			updateFix = config.get(Configuration.CATEGORY_GENERAL, "Update Fix", false, "Convert blocks from v0.9.2 to the v0.2.3+ format (set to false if you are not updating from v0.9.2 or earlier)").getBoolean(false);
+			cometRarity = config.get(Configuration.CATEGORY_GENERAL, "Ender Comet Rarity", 10000, "Ender Comet has a 1 in {this number} chance to spawn in each chunk").getInt(10000);
+			generateEnderComets = config.get(Configuration.CATEGORY_GENERAL, "Generate Ender Comets", true, "Should Ender comets be generated").getBoolean(true);
+			generateChaosIslands = config.get(Configuration.CATEGORY_GENERAL, "Generate Chaos Islands", true, "Should Chaos Islands be generated").getBoolean(true);
 
 			//dislocator_Min_Range = config.get("Long Range Dislocator", "Admin Dislocator Min Range", 1000000).getInt(1000000);
 			//dislocator_Max_Range = config.get("Long Range Dislocator", "Admin Dislocator Max Range", 29000000).getInt(29000000);
@@ -64,7 +70,7 @@ public class ConfigHandler {
 			e.printStackTrace();
 		}
 		finally {
-			config.save();
+			if (config.hasChanged()) config.save();
 		}
 	}
 }

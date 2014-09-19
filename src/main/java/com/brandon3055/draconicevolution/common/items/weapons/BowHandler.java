@@ -28,7 +28,7 @@ public class BowHandler {
 
 		boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-		if (flag || player.inventory.hasItem(Items.arrow) || player.inventory.hasItem(ModItems.enderArrow)) {
+			if (flag || player.inventory.hasItem(Items.arrow)) {
 			float f = j / pullSpeedModifier;
 			f = (f * f + f * 2.0F) / 3.0F;
 
@@ -40,13 +40,7 @@ public class BowHandler {
 
 			f *= speedModifier;
 
-			EntityDraconicArrow entityArrow;
-
-			if (player.inventory.hasItem(ModItems.enderArrow))
-				/*EntityEnderArrow*/ entityArrow = new EntityEnderArrow(world, player, f * 2.0F);
-			else
-				/*EntityDraconicArrow*/ entityArrow = new EntityDraconicArrow(world, player, f * 2.0F);
-
+			EntityDraconicArrow entityArrow = new EntityDraconicArrow(world, player, f * 2.0F);//.setShooter(player);
 
 			if (f >= 1.0F)
 				entityArrow.setIsCritical(true);
@@ -86,13 +80,45 @@ public class BowHandler {
 				entityArrow.canBePickedUp = 2;
 			else {
 				entityArrow.canBePickedUp = 1;
-				if (player.inventory.hasItem(ModItems.enderArrow))
-					player.inventory.consumeInventoryItem(ModItems.enderArrow);
-				else
-					player.inventory.consumeInventoryItem(Items.arrow);
+				player.inventory.consumeInventoryItem(Items.arrow);
 			}
 
 			if (!world.isRemote)
+				world.spawnEntityInWorld(entityArrow);
+		}
+	}
+
+	public static void enderShot(ItemStack stack, World world, EntityPlayer player, int count, Random itemRand, float pullSpeedModifier, float speedModifier, float soundPitchModifier, int minRelease)
+	{
+		int j = 72000 - count;
+		ArrowLooseEvent event = new ArrowLooseEvent(player, stack, j);
+		MinecraftForge.EVENT_BUS.post(event);
+		if (event.isCanceled()) {
+			return;
+		}
+		j = event.charge;
+
+		if (player.inventory.hasItem(ModItems.enderArrow)) {
+			float f = j / pullSpeedModifier;
+			f = (f * f + f * 2.0F) / 3.0F;
+
+			if ((j < minRelease) || f < 0.1D)
+				return;
+
+			if (f > 1.0F)
+				f = 1.0F;
+
+			f *= speedModifier;
+
+			EntityEnderArrow entityArrow = new EntityEnderArrow(world, player, f * 2.0F);
+
+
+			stack.damageItem(1, player);																			//
+			world.playSoundAtEntity(player, "random.bow", 1.0F, soundPitchModifier * (1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.3F));
+
+			if (player.inventory.hasItem(ModItems.enderArrow)) player.inventory.consumeInventoryItem(ModItems.enderArrow);
+
+			//if (!world.isRemote)
 				world.spawnEntityInWorld(entityArrow);
 		}
 	}

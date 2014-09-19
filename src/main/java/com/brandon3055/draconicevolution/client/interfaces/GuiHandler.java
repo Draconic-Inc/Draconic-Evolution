@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.interfaces.manual.GuiManual;
 import com.brandon3055.draconicevolution.common.container.*;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +22,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int GUIID_PLAYERDETECTOR = 6;
 	public static final int GUIID_ENERGY_INFUSER = 7;
 	public static final int GUIID_GENERATOR = 8;
+	public static final int GUIID_MANUAL = 9;
 
 	public GuiHandler() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(DraconicEvolution.instance, this);
@@ -115,6 +117,9 @@ public class GuiHandler implements IGuiHandler {
 				if (generator != null && generator instanceof TileGenerator) {
 					return new GUIGenerator(player.inventory, (TileGenerator) generator);
 				}
+			case GUIID_MANUAL:
+				return new GuiManual();
+
 		}
 
 		return null;

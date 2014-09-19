@@ -17,7 +17,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -111,7 +114,7 @@ public class LongRangeDislocator extends BlockDE {
 					break;
 				}
 			}
-
+			player.addChatComponentMessage(new ChatComponentText(""+ EnumChatFormatting.RED+"[WARNING]"+EnumChatFormatting.WHITE+" Do not move until the world loads!"));
 			if (world.getBlock(randX, y, randZ).isBlockSolid(world, randX, y, randZ, 0))
 			{
 				world.setBlock(randX, y, randZ, world.getBlock(randX, y, randZ));
@@ -152,5 +155,10 @@ public class LongRangeDislocator extends BlockDE {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
+		return new ItemStack(ModBlocks.longRangeDislocator, 1, world.getBlockMetadata(x, y, z));
 	}
 }

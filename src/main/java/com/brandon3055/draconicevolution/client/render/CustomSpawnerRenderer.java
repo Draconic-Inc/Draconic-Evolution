@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class CustonSpawnerRenderer extends TileEntitySpecialRenderer
+public class CustomSpawnerRenderer extends TileEntitySpecialRenderer
 {
 	private final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/items/draconicCore.png");
 

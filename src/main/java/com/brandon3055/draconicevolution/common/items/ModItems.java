@@ -57,6 +57,8 @@ public class ModItems {
 	public static ItemDE enderArrow;
 	public static ItemDE safetyMatch;
 	public static ItemDE key;
+	public static ItemDE creativeStructureSpawner;
+	//public static ItemDE obliterationCatalyst;
 
 	public static ItemDE teleporterMKI;
 	public static ItemDE teleporterMKII;
@@ -100,6 +102,8 @@ public class ModItems {
 		enderArrow = new EnderArrow();
 		safetyMatch = new SafetyMatch();
 		key = new Key();
+		creativeStructureSpawner = new CreativeStructureSpawner();
+		//obliterationCatalyst = new ObliterationCatalyst();
 
 	}
 

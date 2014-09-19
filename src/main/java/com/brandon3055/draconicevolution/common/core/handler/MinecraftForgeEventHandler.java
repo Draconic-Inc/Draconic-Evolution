@@ -64,18 +64,20 @@ public class MinecraftForgeEventHandler {
 
 			if ((!hasFlight || !player.capabilities.allowFlying) && shouldHaveFlight)
 			{
-				if (!playersWithFlight.contains(player.getDisplayName()))
+				if (!playersWithFlight.contains(player.getDisplayName()) && !player.worldObj.isRemote)
 					playersWithFlight.add(player.getDisplayName());
 				player.capabilities.allowFlying = true;
 			}
+			if (player.worldObj.isRemote && hasFlight && player.capabilities.getFlySpeed() <= 0.05F) player.capabilities.setFlySpeed(player.capabilities.getFlySpeed() + 0.05F);
+			//if (!player.worldObj.isRemote) LogHelper.info(hasFlight);
 			if (hasFlight && !shouldHaveFlight)
 			{
-				playersWithFlight.remove(player.getDisplayName());
+				if (player.worldObj.isRemote && player.capabilities.getFlySpeed() > 0.05F) player.capabilities.setFlySpeed(0.05F);
+				if (!player.worldObj.isRemote)playersWithFlight.remove(player.getDisplayName());
 				player.capabilities.allowFlying = false;
 				player.capabilities.isFlying = false;
 				if (player.capabilities.isCreativeMode)
 					player.capabilities.allowFlying = true;
-				player.sendPlayerAbilities();
 			}
 		}
 	}

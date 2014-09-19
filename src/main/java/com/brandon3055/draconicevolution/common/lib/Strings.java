@@ -57,4 +57,6 @@ public class Strings {//                                              public sta
 	public static final String safetyMatchName = "safetyMatch";
 	public static final String cKeyStoneName = "cKeyStone";
 	public static final String keyName = "key";
+	public static final String creativeStructureSpawnerName = "creativeStructureSpawner";
+	public static final String obliterationCatalystName = "obliterationCatalyst";
 }

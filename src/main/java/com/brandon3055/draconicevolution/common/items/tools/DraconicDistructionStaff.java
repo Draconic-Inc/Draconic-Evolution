@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
 import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
@@ -16,6 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -23,6 +25,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
@@ -71,6 +74,13 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 		this.setHarvestLevel("shovel", 4);
 		this.setHarvestLevel("axe", 4);
 		GameRegistry.registerItem(this, Strings.draconicDStaffName);
+	}
+
+	@SuppressWarnings("all")
+	@Override
+	public void getSubItems(Item item, CreativeTabs tab, List list) {
+		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), 0));
+		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), capacity));
 	}
 
 	@Override
@@ -190,12 +200,12 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 		if (container.stackTagCompound == null) {
 			container.stackTagCompound = new NBTTagCompound();
 		}
-		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energy = container.stackTagCompound.getInteger("Energy");
 		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
-			container.stackTagCompound.setInteger("EnergyHelper", energy);
+			container.stackTagCompound.setInteger("Energy", energy);
 		}
 		return energyReceived;
 	}
@@ -203,25 +213,25 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	@Override
 	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
 
-		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
 			return 0;
 		}
-		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energy = container.stackTagCompound.getInteger("Energy");
 		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
 
 		if (!simulate) {
 			energy -= energyExtracted;
-			container.stackTagCompound.setInteger("EnergyHelper", energy);
+			container.stackTagCompound.setInteger("Energy", energy);
 		}
 		return energyExtracted;
 	}
 
 	@Override
 	public int getEnergyStored(ItemStack container) {
-		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
 			return 0;
 		}
-		return container.stackTagCompound.getInteger("EnergyHelper");
+		return container.stackTagCompound.getInteger("Energy");
 	}
 
 	@Override

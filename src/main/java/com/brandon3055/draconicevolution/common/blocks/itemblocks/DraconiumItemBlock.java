@@ -71,7 +71,7 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
 		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
 			return 0;
 		}
-		return container.stackTagCompound.getInteger("EnergyHelper");
+		return container.stackTagCompound.getInteger("Energy");
 	}
 
 	@Override

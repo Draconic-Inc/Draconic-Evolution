@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.block.BlockFire;
@@ -15,7 +14,6 @@ import java.util.Random;
 public class SafetyFlame extends BlockFire{
 	public SafetyFlame(){
 		super();
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.safetyFlameName);
 		this.setBlockTextureName("fire");
 		this.setLightLevel(1F);

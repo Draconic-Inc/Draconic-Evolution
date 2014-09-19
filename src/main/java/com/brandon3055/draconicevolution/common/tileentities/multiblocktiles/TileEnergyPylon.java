@@ -122,7 +122,7 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 		int yMod = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? 3 : -3;
 		int range = 15;
 		for (int x = xCoord-range; x <= xCoord+range; x++){
-			for (int y = yCoord+yMod-(range/2); y <= yCoord+yMod+(range/2); y++){
+			for (int y = yCoord+yMod-(range/4); y <= yCoord+yMod+(range/4); y++){
 				for (int z = zCoord-range; z <= zCoord+range; z++){
 					if (worldObj.getBlock(x, y, z) == ModBlocks.energyStorageCore){
 						masterLocation = new TileLocation(x, y, z);

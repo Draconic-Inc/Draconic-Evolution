@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -35,5 +37,11 @@ public class DraconicCore extends ItemDE {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack p_77659_1_, World world, EntityPlayer player) {
+		FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_MANUAL, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+		return super.onItemRightClick(p_77659_1_, world, player);
 	}
 }

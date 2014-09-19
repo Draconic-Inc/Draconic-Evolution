@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.core.utills.Utills;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -114,9 +114,7 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 	@Override
 	public void onUpdate()
 	{
-
-			this.worldObj.spawnParticle("portal", this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
-
+		for (int i=0; i < 10; i++) this.worldObj.spawnParticle("portal", this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
 
 		super.onEntityUpdate();
 		if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
@@ -388,15 +386,20 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 
 	protected void onImpact(Entity entityHit)
 	{
-		if (!(shootingEntity instanceof EntityPlayer) || shootingEntity.isDead) return;
-		if (entityHit != null)
-		{
-			entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.shootingEntity), 0.0F);
-		}
+		if (shootingEntity == null) return;
+		double startX = shootingEntity.posX;
+		double startY = shootingEntity.posY;
+		double startZ = shootingEntity.posZ;
 
 		for (int i = 0; i < 32; ++i)
 		{
 			this.worldObj.spawnParticle("portal", this.posX, this.posY + this.rand.nextDouble() * 2.0D, this.posZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
+		}
+
+		if (!(shootingEntity instanceof EntityPlayer) || shootingEntity.isDead) return;
+		if (entityHit != null)
+		{
+			entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.shootingEntity), 0.0F);
 		}
 
 		if (!this.worldObj.isRemote)
@@ -407,23 +410,22 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 
 				if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen() && entityplayermp.worldObj == this.worldObj)
 				{
-					EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, this.posX, this.posY, this.posZ, 5.0F);
+					int x = (int)Math.floor(posX);
+					int y = (int)Math.floor(posY);
+					int z = (int)Math.floor(posZ);
+
+					double travelDist = Utills.getDistanceAtoB(startX, startY, startZ, x, y, z);
+					float travelDmg = (float)(travelDist / 5D);
+					EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x+0.5, y+0.5, z+0.5, travelDmg);
 					if (!MinecraftForge.EVENT_BUS.post(event))
-					{ // Don't indent to lower patch size
+					{
 						if (this.shootingEntity.isRiding())
 						{
 							shootingEntity.mountEntity((Entity)null);
 						}
 						((EntityPlayer)shootingEntity).setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
 						shootingEntity.fallDistance = 0.0F;
-						if (((EntityPlayer) shootingEntity).getHealth() < 18) {
-							((EntityPlayer) shootingEntity).setHealth(0.5F);
-							shootingEntity.attackEntityFrom(DamageSource.fall, Float.MAX_VALUE);
-							LogHelper.info("Kill");
-						}else {
-							((EntityPlayer) shootingEntity).setHealth(((EntityPlayer) shootingEntity).getHealth() - 18);
-							shootingEntity.attackEntityFrom(DamageSource.fall, 0.5F);
-						}
+						shootingEntity.attackEntityFrom(DamageSource.fall, (float)(travelDist / 5D));
 					}
 				}
 			}

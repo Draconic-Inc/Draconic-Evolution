@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
 import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
@@ -14,6 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,6 +45,13 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 		this.setUnlocalizedName(Strings.draconicHoeName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.draconicHoeName);
+	}
+
+	@SuppressWarnings("all")
+	@Override
+	public void getSubItems(Item item, CreativeTabs tab, List list) {
+		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), 0));
+		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), capacity));
 	}
 
 	@Override
@@ -168,12 +177,12 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 		if (container.stackTagCompound == null) {
 			container.stackTagCompound = new NBTTagCompound();
 		}
-		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energy = container.stackTagCompound.getInteger("Energy");
 		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
-			container.stackTagCompound.setInteger("EnergyHelper", energy);
+			container.stackTagCompound.setInteger("Energy", energy);
 		}
 		return energyReceived;
 	}
@@ -181,25 +190,25 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 	@Override
 	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
 
-		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
 			return 0;
 		}
-		int energy = container.stackTagCompound.getInteger("EnergyHelper");
+		int energy = container.stackTagCompound.getInteger("Energy");
 		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
 
 		if (!simulate) {
 			energy -= energyExtracted;
-			container.stackTagCompound.setInteger("EnergyHelper", energy);
+			container.stackTagCompound.setInteger("Energy", energy);
 		}
 		return energyExtracted;
 	}
 
 	@Override
 	public int getEnergyStored(ItemStack container) {
-		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("EnergyHelper")) {
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
 			return 0;
 		}
-		return container.stackTagCompound.getInteger("EnergyHelper");
+		return container.stackTagCompound.getInteger("Energy");
 	}
 
 	@Override

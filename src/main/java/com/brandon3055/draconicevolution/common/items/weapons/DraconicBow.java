@@ -92,7 +92,7 @@ public class DraconicBow extends ItemBow
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int count)
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
-		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "rapidfire";
+		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "ender";
 		if (currentMode.equals("rapidfire"))
 			BowHandler.standerdShot(stack, world, player, count, itemRand, 5F, 1.5F, true, 9D, 1F, false, 0);
 		else if (currentMode.equals("sharpshooter"))
@@ -101,6 +101,8 @@ public class DraconicBow extends ItemBow
 			BowHandler.standerdShot(stack, world, player, count, itemRand, 5F, 0.5F, true, 0D, 1F, true, 80);
 		else if (currentMode.equals("devistation"))
 			BowHandler.standerdShot(stack, world, player, count, itemRand, 2F, 2.0F, true, 0D, 1F, true, 0);
+		else if (currentMode.equals("ender"))
+			BowHandler.enderShot(stack, world, player, count, itemRand, 21F, 1.5F, 1F, 0);
 	}
 
 	public void changeMode(ItemStack stack, EntityPlayer player)
@@ -141,7 +143,7 @@ public class DraconicBow extends ItemBow
 	public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
-		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "rapidfire";
+		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "sharpshooter";
 		int j = stack.getMaxItemUseDuration() - useRemaining;
 		if (usingItem == null)
 			return this.itemIcon;

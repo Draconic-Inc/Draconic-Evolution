@@ -30,7 +30,6 @@ public class ClientProxy extends CommonProxy {
 		super.preInit(event);
 		
 		//Client Only
-		FMLCommonHandler.instance().bus().register(new KeyInputHandler());
 		registerRendering();
 	}
 
@@ -39,8 +38,9 @@ public class ClientProxy extends CommonProxy {
 	{if(debug)
 		System.out.println("on Client side");
 		super.init(event);
-		KeyBindings.init();
 		//Client Only
+		FMLCommonHandler.instance().bus().register(new KeyInputHandler());
+		KeyBindings.init();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyInfuser.class, render);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new ItemEnergyInfuserRenderer(render, new TileEnergyInfuser()));
 
-		render = new CustonSpawnerRenderer();
+		render = new CustomSpawnerRenderer();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileCustomSpawner.class, render);
 
 		render = new TestBlockRenderer();
@@ -80,6 +80,8 @@ public class ClientProxy extends CommonProxy {
 
 		render = new PlacedItemRenderer();
 		ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, render);
+
+		//RenderingRegistry.registerEntityRenderingHandler(EntityChaosDrill.class, new EntityChaosDrillRenderer());
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new CustomDragonRenderer());
 	}

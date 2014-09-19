@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.core.utills.DamageSourceChaos;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEndPortal;
 import net.minecraft.entity.Entity;
@@ -30,23 +30,37 @@ import java.util.List;
 public class EntityCustomDragon extends EntityDragon {
 
 	private Entity target;
-	private int portalX = 0;
-	private int portalY = 67;
-	private int portalZ = 0;
+	public int portalX = 0;
+	public int portalY = 67;
+	public int portalZ = 0;
 	private boolean createPortal = true;
 	public float attackDamage = 10F;
+	protected boolean isUber = false;
+	private boolean needsRenderUpdate = true;
 
 	public EntityCustomDragon(World par1World) {
 		super(par1World);
-		this.addPotionEffect(new PotionEffect(10, 600, 10, false));;
+		this.addPotionEffect(new PotionEffect(10, 600, 10, false));
 	}
 
 	public EntityCustomDragon(World world, double health, float attack){
 		this(world);
 		this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(health);
+		this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(health);
 		this.attackDamage = attack;
 		//LogHelper.info(attackDamage);
 		this.addPotionEffect(new PotionEffect(10, 600, 10, false));;
+	}
+
+	@Override
+	protected void entityInit() {
+		super.entityInit();
+		this.dataWatcher.addObject(12, Byte.valueOf((isUber ? (byte)1 : (byte)0)));
+	}
+
+	@Override
+	public boolean isNoDespawnRequired() {
+		return true;
 	}
 
 	@Override
@@ -59,7 +73,6 @@ public class EntityCustomDragon extends EntityDragon {
 	public void onLivingUpdate() {
 		float f;
 		float f1;
-
 		if (this.worldObj.isRemote) {
 			f = MathHelper.cos(this.animTime * (float) Math.PI * 2.0F);
 			f1 = MathHelper.cos(this.prevAnimTime * (float) Math.PI * 2.0F);
@@ -79,7 +92,8 @@ public class EntityCustomDragon extends EntityDragon {
 			this.worldObj.spawnParticle("largeexplode", this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
 		} else {
 			this.updateDragonEnderCrystal();
-			f = 0.2F / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F + 1.0F);
+			if (isUber) f = 0.5F / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F + 1.0F); //Wing Speed
+			else f = 0.2F / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F + 1.0F);
 			f *= (float) Math.pow(2.0D, this.motionY);
 
 			if (this.slowed) {
@@ -150,7 +164,8 @@ public class EntityCustomDragon extends EntityDragon {
 				}
 
 				d0 /= (double) MathHelper.sqrt_double(d10 * d10 + d1 * d1);
-				f12 = 0.6F;
+				if (isUber) f12 = 1.0F;//Verticle Motion Speed
+				else f12 = 0.6F;
 
 				if (d0 < (double) (-f12)) {
 					d0 = (double) (-f12);
@@ -197,6 +212,8 @@ public class EntityCustomDragon extends EntityDragon {
 
 				if (this.slowed) {
 					this.moveEntity(this.motionX * 0.800000011920929D, this.motionY * 0.800000011920929D, this.motionZ * 0.800000011920929D);
+				} else if (isUber){
+					this.moveEntity(this.motionX * 2.5D, this.motionY * 1.5D, this.motionZ * 2.5D);
 				} else {
 					this.moveEntity(this.motionX, this.motionY, this.motionZ);
 				}
@@ -281,7 +298,7 @@ public class EntityCustomDragon extends EntityDragon {
 	@Override
 	protected void onDeathUpdate() {
 
-		if (deathTicks == 0)
+		if (deathTicks == 0 && !isUber)
 		{
 			for (int ix = -150; ix < 150; ix++) {
 				for (int iz = -150; iz < 150; iz++) {
@@ -367,18 +384,28 @@ public class EntityCustomDragon extends EntityDragon {
 				double d2 = entity.posX - d0;
 				double d3 = entity.posZ - d1;
 				double d4 = d2 * d2 + d3 * d3;
-				entity.addVelocity(d2 / d4 * 4.0D, 0.20000000298023224D, d3 / d4 * 4.0D);
+				entity.addVelocity(d2 / d4 * 8.0D, 5.20000000298023224D, d3 / d4 * 8.0D);
+				entity.velocityChanged = true;
+				((EntityLivingBase)entity).setLastAttacker(this);
+			}
+			if (entity instanceof EntityLivingBase && isUber){
+				((EntityLivingBase)entity).setLastAttacker(this);
+				entity.attackEntityFrom(new DamageSourceChaos("ChaosDragon", this), 20F);
 			}
 		}
 	}
 
 	private void attackEntitiesInList(List par1List) {
 		for (int i = 0; i < par1List.size(); ++i) {
-			LogHelper.info(attackDamage);
 			Entity entity = (Entity) par1List.get(i);
 
-			if (entity instanceof EntityLivingBase) {
+			if (entity instanceof EntityLivingBase && !isUber) {
+				((EntityLivingBase)entity).setLastAttacker(this);
 				entity.attackEntityFrom(DamageSource.causeMobDamage(this), attackDamage);
+			}
+			if (entity instanceof EntityLivingBase && isUber){
+				((EntityLivingBase)entity).setLastAttacker(this);
+				entity.attackEntityFrom(new DamageSourceChaos("ChaosDragon", this), 50F);
 			}
 		}
 	}
@@ -392,7 +419,8 @@ public class EntityCustomDragon extends EntityDragon {
 
 				this.healingEnderCrystal = null;
 			} else if (this.ticksExisted % 10 == 0 && this.getHealth() < this.getMaxHealth()) {
-				this.setHealth(this.getHealth() + 1.0F);
+				if (isUber) this.setHealth(this.getHealth() + 10.0F);
+				else this.setHealth(this.getHealth() + 1.0F);
 			}
 		}
 
@@ -420,15 +448,15 @@ public class EntityCustomDragon extends EntityDragon {
 	private void setNewTarget() {
 		this.forceNewTarget = false;
 
-		if (this.rand.nextInt(2) == 0 && !this.worldObj.playerEntities.isEmpty()) {
+		if ((isUber || this.rand.nextInt(2) == 0) && (!isUber || 19 > this.rand.nextInt(20)) && !this.worldObj.playerEntities.isEmpty()) {
 			this.target = (Entity) this.worldObj.playerEntities.get(this.rand.nextInt(this.worldObj.playerEntities.size()));
 		} else {
 			boolean flag = false;
 
 			do {
-				this.targetX = 0.0D;
+				this.targetX = portalX;
 				this.targetY = (double) (70.0F + this.rand.nextFloat() * 50.0F);
-				this.targetZ = 0.0D;
+				this.targetZ = portalZ;
 				this.targetX += (double) (this.rand.nextFloat() * 120.0F - 60.0F);
 				this.targetZ += (double) (this.rand.nextFloat() * 120.0F - 60.0F);
 				double d0 = this.posX - this.targetX;
@@ -485,7 +513,7 @@ public class EntityCustomDragon extends EntityDragon {
 	{
 		BlockEndPortal.field_149948_a = true;
 
-		if (createPortal) {
+		if (createPortal || isUber) {
 			createEnderPortal(portalX, portalZ);
 		}
 		if (worldObj.getBlock(portalX, portalY + 1, portalZ) == Blocks.air) {
@@ -523,7 +551,7 @@ public class EntityCustomDragon extends EntityDragon {
 
 	private void createEnderPortal(int par1, int par2)
 	{
-		byte b0 = 64;
+		int b0 = portalY-3;
 		byte b1 = 4;
 
 		for (int k = b0 - 1; k <= b0 + 32; ++k)
@@ -568,11 +596,30 @@ public class EntityCustomDragon extends EntityDragon {
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		compound.setFloat("AttackDamage", attackDamage);
+		compound.setBoolean("IsUber", isUber);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
 		attackDamage = compound.getFloat("AttackDamage");
+		isUber = compound.getBoolean("IsUber");
+		this.dataWatcher.updateObject(12, isUber ? (byte)1: (byte)0);
 	}
+
+	@Override
+	protected boolean canDespawn() {
+		return false;
+	}
+
+	@Override
+	protected void despawnEntity() {
+
+	}
+
+	public void setUber(boolean b){
+		isUber = b;
+		this.dataWatcher.updateObject(12, b ? (byte)1: (byte)0);
+	}
+
 }

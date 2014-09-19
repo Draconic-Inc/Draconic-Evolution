@@ -8,6 +8,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -55,25 +57,6 @@ public class EntityDraconicArrow extends EntityArrow {
 		super(par1World, par2EntityLivingBase, par3);
 	}
 
-	/*public EntityDraconicArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-		super(par1World);
-		this.renderDistanceWeight = 10.0D;
-		this.shootingEntity = par2EntityLivingBase;
-		world = par1World;
-
-		this.setSize(0.5F, 0.5F);
-		this.setLocationAndAngles(par2EntityLivingBase.posX, par2EntityLivingBase.posY + par2EntityLivingBase.getEyeHeight(), par2EntityLivingBase.posZ, par2EntityLivingBase.rotationYaw, par2EntityLivingBase.rotationPitch);
-		this.posX -= MathHelper.cos(this.rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-		this.posY -= 0.10000000149011612D;
-		this.posZ -= MathHelper.sin(this.rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-		this.setPosition(this.posX, this.posY, this.posZ);
-		this.yOffset = 0.0F;
-		this.motionX = -MathHelper.sin(this.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float) Math.PI);
-		this.motionZ = MathHelper.cos(this.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float) Math.PI);
-		this.motionY = (-MathHelper.sin(this.rotationPitch / 180.0F * (float) Math.PI));
-		this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, par3 * 1.5F, 1.0F);
-	}
-*/
 	@Override
 	protected void entityInit()
 	{
@@ -269,7 +252,11 @@ public class EntityDraconicArrow extends EntityArrow {
 					}
 
 					movingobjectposition.entityHit.hurtResistantTime = 0;
-						
+					if (movingobjectposition.entityHit instanceof EntityDragonPart)
+					{
+						((EntityDragon)((EntityDragonPart)movingobjectposition.entityHit).entityDragonObj).hurtResistantTime = 0;
+					}
+
 					if (movingobjectposition.entityHit.attackEntityFrom(damagesource, k)) {
 						if (movingobjectposition.entityHit instanceof EntityLivingBase) {
 							EntityLivingBase entitylivingbase = (EntityLivingBase) movingobjectposition.entityHit;

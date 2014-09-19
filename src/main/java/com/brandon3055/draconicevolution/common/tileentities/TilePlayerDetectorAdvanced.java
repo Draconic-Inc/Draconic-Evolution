@@ -1,16 +1,10 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import java.util.Iterator;
-import java.util.List;
-
-
-
-
+import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -20,7 +14,9 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
 {
@@ -32,9 +28,8 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
 	private int scanRate = 5;
 	public boolean output = false;
     public boolean outputInverted = false;
-	List<EntityLiving> EntityList;
-	AxisAlignedBB ScanBox;
-	
+	private List<EntityLiving> EntityList;
+
 	public TilePlayerDetectorAdvanced()
 	{
 		for (int i = 0; i < names.length; i++)
@@ -122,7 +117,7 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
 	
 	public void updateBlocks()
 	{
-		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, blockType);
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
 		worldObj.notifyBlocksOfNeighborChange(xCoord - 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
 		worldObj.notifyBlocksOfNeighborChange(xCoord + 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
 		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord - 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));

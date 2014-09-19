@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
+import com.brandon3055.draconicevolution.common.core.utills.DamageSourceChaos;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,9 @@ import net.minecraftforge.common.ISpecialArmor;
 public class ArmorPropertiesHandler {
 
 	public static ISpecialArmor.ArmorProperties draconicHelm(EntityLivingBase player, ItemStack armor, DamageSource source){
-		if (source == DamageSource.fallingBlock || source == DamageSource.anvil)
+		if (source instanceof DamageSourceChaos)
+			return new ISpecialArmor.ArmorProperties(1, 0, 0);
+		else if (source == DamageSource.fallingBlock || source == DamageSource.anvil)
 			return new ISpecialArmor.ArmorProperties(1, 1, Integer.MAX_VALUE);
 		else if (isFireDamage(source))
 			return new ISpecialArmor.ArmorProperties(1, 0.15, Integer.MAX_VALUE);
@@ -22,7 +25,9 @@ public class ArmorPropertiesHandler {
 	}
 
 	public static ISpecialArmor.ArmorProperties draconicChest(EntityLivingBase player, ItemStack armor, DamageSource source){
-		if (hasFullSetDraconic(player) && source == DamageSource.wither || source == DamageSource.magic)
+		if (source instanceof DamageSourceChaos)
+			return new ISpecialArmor.ArmorProperties(1, 0, 0);
+		else if (hasFullSetDraconic(player) && source == DamageSource.wither || source == DamageSource.magic)
 			return new ISpecialArmor.ArmorProperties(1, 1, Integer.MAX_VALUE);
 		else if (isFireDamage(source))
 			return new ISpecialArmor.ArmorProperties(1, 0.50, Integer.MAX_VALUE);
@@ -31,14 +36,18 @@ public class ArmorPropertiesHandler {
 	}
 
 	public static ISpecialArmor.ArmorProperties draconicLeggs(EntityLivingBase player, ItemStack armor, DamageSource source){
-		if (isFireDamage(source))
+		if (source instanceof DamageSourceChaos)
+			return new ISpecialArmor.ArmorProperties(1, 0, 0);
+		else if (isFireDamage(source))
 			return new ISpecialArmor.ArmorProperties(1, 0.20, Integer.MAX_VALUE);
 		else
 			return new ISpecialArmor.ArmorProperties(1, 0.18, Integer.MAX_VALUE);
 	}
 
 	public static ISpecialArmor.ArmorProperties draconicBoots(EntityLivingBase player, ItemStack armor, DamageSource source){
-		if (isFireDamage(source))
+		if (source instanceof DamageSourceChaos)
+			return new ISpecialArmor.ArmorProperties(1, 0, 0);
+		else if (isFireDamage(source))
 			return new ISpecialArmor.ArmorProperties(1, 0.15, Integer.MAX_VALUE);
 		else if (source == DamageSource.fall)
 			return new ISpecialArmor.ArmorProperties(1, 1, Integer.MAX_VALUE);

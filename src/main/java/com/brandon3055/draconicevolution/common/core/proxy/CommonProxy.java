@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.core.proxy;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
@@ -9,10 +10,7 @@ import com.brandon3055.draconicevolution.common.core.handler.FMLEventHandler;
 import com.brandon3055.draconicevolution.common.core.handler.MinecraftForgeEventHandler;
 import com.brandon3055.draconicevolution.common.core.network.*;
 import com.brandon3055.draconicevolution.common.core.utills.Utills;
-import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
-import com.brandon3055.draconicevolution.common.entity.EntityDraconicArrow;
-import com.brandon3055.draconicevolution.common.entity.EntityEnderArrow;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
@@ -48,6 +46,7 @@ public class CommonProxy {
 		DraconicEvolution.channelHandler.initialise();
 		registerPackets();
 		registerEntitys();
+		DETab.initialize();
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
@@ -101,7 +100,7 @@ public class CommonProxy {
 	}
 
 	public void registerWorldGen() {
-		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 1);
+		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 0);
 	}
 
 	public void registerEntitys() {
@@ -109,5 +108,6 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityPersistentItem.class, "Persistent Item", 1, DraconicEvolution.instance, 32, 5, true);
 		EntityRegistry.registerModEntity(EntityDraconicArrow.class, "Arrow", 2, DraconicEvolution.instance, 32, 5, true);
 		EntityRegistry.registerModEntity(EntityEnderArrow.class, "Ender Arrow", 2, DraconicEvolution.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityChaosDrill.class, "Chaos Drill", 3, DraconicEvolution.instance, 10, 5, false);
 	}
 }
