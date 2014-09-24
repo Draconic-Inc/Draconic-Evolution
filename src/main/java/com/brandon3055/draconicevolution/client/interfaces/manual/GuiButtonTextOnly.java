@@ -12,10 +12,12 @@ import org.lwjgl.opengl.GL11;
  */
 public class GuiButtonTextOnly extends GuiButton{
 	public String LINKED_PAGE;
+	public int textColour;
 
-	public GuiButtonTextOnly(int id, int xPos, int yPos, int width, int hight, String displayString, String linkedPage) {
+	public GuiButtonTextOnly(int id, int xPos, int yPos, int width, int hight, String displayString, String linkedPage, int colour) {
 		super(id, xPos, yPos, width, hight, displayString);
 		this.LINKED_PAGE = linkedPage;
+		this.textColour = colour;
 	}
 
 	@Override
@@ -31,7 +33,6 @@ public class GuiButtonTextOnly extends GuiButton{
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 			this.mouseDragged(minecraft, mouseX, mouseY);
-			int l = 0x777777;
 
 			String trimmedDisplayString = displayString;
 			if (fontrenderer.getStringWidth(displayString) > width+30 && !this.field_146123_n){
@@ -47,15 +48,15 @@ public class GuiButtonTextOnly extends GuiButton{
 			if (this.field_146123_n)
 			{
 				trimmedDisplayString = EnumChatFormatting.BOLD+""+EnumChatFormatting.ITALIC+trimmedDisplayString;
-				l = 0x000000;
-
-			} {
 				GL11.glPushMatrix();
-				GL11.glScalef(0.7F, 0.7F, 1);
-				fontrenderer.drawString(trimmedDisplayString, (int)(xPosition*1.45), (int)((yPosition + (height - 8) / 2)*1.45), l);
+				GL11.glColor4f(0f, 0f, 0f, 1f);
+				drawTexturedModalRect(xPosition, yPosition, 0, 46, (int)(fontrenderer.getStringWidth(trimmedDisplayString)*0.72)+2, 8);
 				GL11.glPopMatrix();
 			}
-
+			GL11.glPushMatrix();
+			GL11.glScalef(0.7F, 0.7F, 1);
+			fontrenderer.drawString(trimmedDisplayString, (int)(xPosition*1.45), (int)((yPosition + (height - 8) / 2)*1.45), textColour);
+			GL11.glPopMatrix();
 		}
 	}
 

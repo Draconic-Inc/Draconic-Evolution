@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -78,11 +79,15 @@ public class Tclogo extends ItemDE {
 		for (int x = xi-rad; x < xi+rad; x++){
 			for (int y = yi-5; y < yi+5; y++){
 				for (int z = zi-rad; z < zi+rad; z++){
-					world.markBlockForUpdate(x, y, z);
+					//world.markBlockForUpdate(x, y, z);
 				}
 			}
 		}
-		world.markBlockRangeForRenderUpdate(xi-rad, yi-rad, zi-rad, xi+rad, yi+rad, zi+rad);
+		//world.markBlockRangeForRenderUpdate(xi-rad, yi-rad, zi-rad, xi+rad, yi+rad, zi+rad);
+		//if (world.isRemote)player.displayGUIWorkbench((int)player.posX, (int)player.posY, (int)player.posZ);
+		world.setBlock(0, 0, 0, Blocks.crafting_table);
+		if (!world.isRemote)player.displayGUIWorkbench(0, 0, 0);
+
 
 		return stack;
 	}

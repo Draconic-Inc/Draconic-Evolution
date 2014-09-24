@@ -622,4 +622,7 @@ public class EntityCustomDragon extends EntityDragon {
 		this.dataWatcher.updateObject(12, b ? (byte)1: (byte)0);
 	}
 
+	public boolean getIsUber(){
+		return isUber;
+	}
 }

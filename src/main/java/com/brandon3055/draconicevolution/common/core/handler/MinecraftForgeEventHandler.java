@@ -4,6 +4,7 @@ package com.brandon3055.draconicevolution.common.core.handler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -87,6 +88,7 @@ public class MinecraftForgeEventHandler {
 		if (event.entity instanceof EntityDragon && !event.entity.worldObj.isRemote){
 			EntityItem item = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(ModItems.dragonHeart));
 			event.entity.worldObj.spawnEntityInWorld(item);
+			if (event.entity instanceof EntityCustomDragon && ((EntityCustomDragon)event.entity).getIsUber()) event.entity.worldObj.spawnEntityInWorld(item);
 
 			int count = 30 + event.entity.worldObj.rand.nextInt(30);
 			for (int i = 0; i < count; i++) {

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -42,63 +43,67 @@ public class GuiManual extends GuiScreen {
 		pageCollection.addPage(new IntroPage("INTRO", pageCollection));
 		//pageCollection.addPage(new TitledPage("TITLED_PAGE_1", true, pageCollection, "manual.de.Page Title.txt", 0xff0000).setIndexName("manual.de.TitledPage.txt"));
 
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconiumOre), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconiumDust), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconiumBlend), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconiumIngot, 2), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicCore), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.infusedCompound), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.dragonHeart), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicCompound, 2), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.sunFocus), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconiumOre), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconiumDust), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconiumBlend), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconiumIngot, 2), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicCore), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.infusedCompound), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.dragonHeart), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicCompound, 2), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.sunFocus), ""));
 
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernPickaxe), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernShovel), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernSword), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernBow), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernPickaxe), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernShovel), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernSword), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernBow), ""));
 
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicPickaxe), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicShovel), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicHoe), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicAxe), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicSword), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicBow), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicDistructionStaff), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicPickaxe), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicShovel), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicHoe), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicAxe), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicSword), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicBow), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicDistructionStaff), ""));
 
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernHelm), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernChest), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernLeggs), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernBoots), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicHelm), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicChest), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicLeggs), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicBoots), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernHelm), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernChest), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernLeggs), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernBoots), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicHelm), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicChest), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicLeggs), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicBoots), ""));
 
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.teleporterMKI), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.teleporterMKII), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.enderArrow), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModItems.safetyMatch), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, mobSoul, ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.teleporterMKI), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.teleporterMKII), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.enderArrow), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.safetyMatch), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, mobSoul, ""));
 
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.weatherController), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.sunDial), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.playerDetector), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.playerDetectorAdvanced), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.grinder), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyInfuser), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.customSpawner), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.weatherController), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.sunDial), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.playerDetector), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.playerDetectorAdvanced), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.grinder, 1, 3), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyInfuser), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.customSpawner), ""));
 
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.particleGenerator), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.xRayBlock), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.potentiometer), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.rainSensor), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyStorageCore), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyPylon), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 1), ""));
-		pageCollection.addPage(new CraftingPage("CRAFTING_PAGE_"+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 2), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.particleGenerator), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.xRayBlock), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.potentiometer), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.rainSensor), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyStorageCore), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyPylon), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 1), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 2), ""));
 
-
+		pageCollection.addPage(new EnergyCoreTutorialPage("TUTORIAL."+getNextPageIndex(), pageCollection).setIndexName(StatCollector.translateToLocal("manual.de.ecth.txt")));
+		pageCollection.addPage(new EnderResurrectionTutorialPage("TUTORIAL."+getNextPageIndex(), pageCollection).setIndexName("manual.de.roerth.txt"));
+		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.endercomet.description").setIndexName("manual.de.endercomet.txt"));
+		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.chaosisland.description").setIndexName("manual.de.enderisland.txt"));
+		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.placeditems.description").setIndexName("manual.de.placeditems.txt"));
 
 		pageCollection.addPage(new IndexPage("INDEX", pageCollection));
 		return pageCollection;
@@ -112,10 +117,12 @@ public class GuiManual extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float par3) {
-		super.drawScreen(mouseX, mouseY, par3);
 		drawGuiBackgroundLayer(par3, mouseX, mouseY);
+		super.drawScreen(mouseX, mouseY, par3);
+
 		prepareRenderState();
 		GL11.glPushMatrix();
+
 		root.drawScreen(this.mc, this.guiLeft, this.guiTop, mouseX - this.guiLeft, mouseY - this.guiTop);
 
 		GL11.glPopMatrix();
@@ -150,17 +157,17 @@ public class GuiManual extends GuiScreen {
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) {
+	public void actionPerformed(GuiButton button) {
 		root.actionPerformed(button);
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int par1, int par2, int par3){
+	public void mouseMovedOrUp(int par1, int par2, int par3){
 		root.mouseMovedOrUp(par1, par2, par3);
 	}
 
 	@Override
-	protected void mouseClicked(int par1, int par2, int par3){
+	public void mouseClicked(int par1, int par2, int par3){
 		root.mouseClicked(par1, par2, par3);
 	}
 

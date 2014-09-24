@@ -1,7 +1,11 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import java.util.Random;
-
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -11,12 +15,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.items.ModItems;
-import com.brandon3055.draconicevolution.common.lib.Strings;
+
+import java.util.Random;
 
 public class XRayBlock extends BlockDE {
 
@@ -40,7 +40,6 @@ public class XRayBlock extends BlockDE {
 	@Override
 	public boolean isReplaceable(IBlockAccess world, int x, int y, int z)
 	{
-		// TODO Auto-generated method stub
 		return super.isReplaceable(world, x, y, z);
 	}
 	

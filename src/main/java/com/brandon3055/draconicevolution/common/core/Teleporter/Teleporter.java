@@ -39,7 +39,7 @@ public class Teleporter
 				if (thePlayer.isRiding())
 					thePlayer.dismountEntity(thePlayer.ridingEntity);
 				thePlayer.mcServer.getConfigurationManager().transferPlayerToDimension(thePlayer, thePlayer.dimension, new CustomTeleporter(thePlayer.mcServer.worldServerForDimension(thePlayer.dimension), x, y, z, 0, 0));
-				thePlayer.mcServer.getConfigurationManager().transferPlayerToDimension(thePlayer, thePlayer.dimension, new CustomTeleporter(thePlayer.mcServer.worldServerForDimension(thePlayer.dimension), x, y, z, 0, 0));
+				//thePlayer.mcServer.getConfigurationManager().transferPlayerToDimension(thePlayer, thePlayer.dimension, new CustomTeleporter(thePlayer.mcServer.worldServerForDimension(thePlayer.dimension), x, y, z, 0, 0));
 			} else
 			{
 				if (thePlayer.isRiding())

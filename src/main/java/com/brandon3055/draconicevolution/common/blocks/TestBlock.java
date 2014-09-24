@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import java.util.List;
-import java.util.Random;
-
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.itemblocks.TestItemBlock;
 import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
 import cpw.mods.fml.relauncher.Side;
@@ -18,7 +16,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import com.brandon3055.draconicevolution.DraconicEvolution;
+
+import java.util.List;
+import java.util.Random;
 
 public class TestBlock extends BlockDE {
 
@@ -108,7 +108,6 @@ public class TestBlock extends BlockDE {
 	@Override
 	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
 	{
-		// TODO Auto-generated method stub
 		return super.getItemDropped( p_149650_1_,  p_149650_2_,  p_149650_3_);
 	}
 

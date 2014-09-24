@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
  * Created by Brandon on 17/09/2014.
  */
 public class IntroPage extends BasePage {
-	public static final ResourceLocation logo = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/ManualIntro.png");
+	public static final ResourceLocation logo = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/images/ManualIntro.png");
 	public IntroPage(String name, PageCollection collection) {
 		super(name, collection);
 	}

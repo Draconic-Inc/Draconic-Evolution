@@ -1,18 +1,27 @@
 //###################################Block Names###################################//
 tile.draconicevolution:xRayBlock.name=Distortion Flame
-tile.draconicevolution:xRayBlock.description=Description
+tile.draconicevolution:xRayBlock.description=Many of you have probably seen a graphical glitch that sometimes occurs when chunks load that allows you to see through the world and see all of the cave caves and tunnels bellow.
+
+This block replicates that effect. When you place it next to another block the face of the block it is touching becomes transparent allowing you to see through the world. This can be very useful for finding cave systems and dungeons maby even things other players don’t want you to find.
+
+Such a block dose not come cheap. It will cost you several Nether Stars and it is so fragile that once placed it can not be collected without destroying it. (not even with silk touch)
 
 tile.draconicevolution:sunDial.name=Sun Dial
-tile.draconicevolution:sunDial.description=Description
+tile.draconicevolution:sunDial.description=This is an extremely powerful block that allows you to change the time. Simply place it in the world and and apply a constant redstone signal. Once the device charges it will fire a particle beam at the sun accelerating it to 30X its normal speed. Simply shut off the redstone signal when you have the sun where you want it.
 
 tile.draconicevolution:weatherController.name=Weather Controller
-tile.draconicevolution:weatherController.description=Description
+tile.draconicevolution:weatherController.description=To use this block simply place it in the world and right click it with a single emerald (you must only have one in your hand) to charge it.
+Next time it starts to rain simply apply a redstone signal and the block will activate and stop the rain or if you apply a constant redstone signal the block with automatically activate whenever it starts to rain.
+
+This block can also start the rain or create a thunderstorm as needed so long as charges are available.
+
+1 emerald gives 10 charges and the number of charges remaining is indicated by the gauge on the side of the block.
 
 tile.draconicevolution:draconiumOre.name=Draconium Ore
-tile.draconicevolution:draconiumOre.description=Description
+tile.draconicevolution:draconiumOre.description=The very basis of Draconic Research
 
 tile.draconicevolution:grinder.name=Mob Grinder
-tile.draconicevolution:grinder.description=Description
+tile.draconicevolution:grinder.description=Everyone needs effective mob farms. For the cost of a bit of solid fuel (coal, charcoal, etc.), you can kill to your hearts content knowing the forces of the Draconic have your back!
 
 tile.draconicevolution:potentiometer.name=Potentiometer
 tile.draconicevolution:potentiometer.description=Description
@@ -21,31 +30,46 @@ tile.draconicevolution:rainSensor.name=Rain Sensor
 tile.draconicevolution:rainSensor.description=Description
 
 tile.draconicevolution:particleGenerator.name=Particle Generator
-tile.draconicevolution:particleGenerator.description=Description
+tile.draconicevolution:particleGenerator.description=Purely decorative, this blocks allows for fully customizable particle effects to be created.
 
 tile.draconicevolution:playerDetector.name=Player Detector
-tile.draconicevolution:playerDetector.description=Description
+tile.draconicevolution:playerDetector.description=Simple player detection, can be adjusted up to 10 blocks range to detect any players nearby.
 
 tile.draconicevolution:playerDetectorAdvanced.name=Advanced Player Detector
-tile.draconicevolution:playerDetectorAdvanced.description=Description
+tile.draconicevolution:playerDetectorAdvanced.description=Now you’re moving to the big leagues!
+GUI to adjust any of the multiple settings
+Range (Currently no limit to range)
+Whitelist/Blacklist for fine tuning who you do or don’t want
+Camouflage – Hide your detector so no one sees it
+Inverted out put (less redstone needed!)
 
 tile.draconicevolution:energyInfuser.name=Energy Infuser
-tile.draconicevolution:energyInfuser.description=Description
+tile.draconicevolution:energyInfuser.description=Seeing the need for faster energy transfer you have found a way to bring the infuser to being. Has a faster transfer rate than most other mod’s RF recharge stations (and cool particle effects to boot!)
 
 tile.draconicevolution:customSpawner.name=Stabilized Mob Spawner
-tile.draconicevolution:customSpawner.description=Description
+tile.draconicevolution:customSpawner.description=To get started, right click any vanilla spawner to take control of it. You now have a empty transportable spawner (pick up with draconic tools)
+
+Use any mob soul (new drop, random 1 in 1000 chance to get one but is configurable) on the spawner to change it to that type.
+
+You can upgrade using the infused compound, draconic compound, nether star, Notch Apple and a secret very rare item (tool tips in game give more info)
 
 tile.draconicevolution:longRangeDislocator1.name=Admin Dislocator
-tile.draconicevolution:longRangeDislocator1.description=Description
+tile.draconicevolution:longRangeDislocator1.description=If you are a server admin or map creator this block is for you! (creative or op only as there is no recipe on purpose)
+
+Created at the behest of GreatOrator, it allows for a configurable range for teleporting. What makes this different is it is purely random.
+
+Nearest player to the block when activated with redstone will be teleported to a random location (default is 1000 minimum and 10,000 maximum) from the block. If that spot would place the player in water or in the air, a block is generated below them.
 
 tile.draconicevolution:longRangeDislocator0.name=Long Range Dislocator
 tile.draconicevolution:longRangeDislocator0.description=Description
 
 tile.draconicevolution:generator.name=Generator
-tile.draconicevolution:generator.description=Description
+tile.draconicevolution:generator.description=Ever find the need for power beyond simple coal? The generator is here to fill that need!
+
+When used in conjunction with certain blocks in the mod it performs better at transferring power.
 
 tile.draconicevolution:energyStorageCore.name=Energy Core
-tile.draconicevolution:energyStorageCore.description=Description
+tile.draconicevolution:energyStorageCore.description=The pinnacle of Draconic research, you have learned how to use this power to store more power than anything else invented.  Using multi-block strategies you can build ever-larger storage devices.
 
 tile.draconicevolution:energyPylon.name=Energy Pylon
 tile.draconicevolution:energyPylon.description=Description
@@ -64,114 +88,141 @@ tile.draconicevolution:cKeyStone.description=Description
 
 //###################################Item names###################################//
 item.draconicevolution:draconicCompound.name=Draconic Compound
-item.draconicevolution:draconicCompound.description=Description
+item.draconicevolution:draconicCompound.description=Research has found a very powerful item that will be neccessary to create powerful tools
 
 item.draconicevolution:draconiumIngot.name=Draconium Ingot
-item.draconicevolution:draconiumIngot.description=Description
+item.draconicevolution:draconiumIngot.description=The results of using the Draconic Compound in a furnace. Used in most recipes.
 
 item.draconicevolution:draconiumDust.name=Draconium Dust
-item.draconicevolution:draconiumDust.description=Description
+item.draconicevolution:draconiumDust.description=This is the material from mining Draconium Ore
 
 item.draconicevolution:draconiumBlend.name=Draconium Blend
-item.draconicevolution:draconiumBlend.description=Description
+item.draconicevolution:draconiumBlend.description=Mixture of Draconic dust and iron.  Necessary to make Draconium
 
 item.draconicevolution:dragonHeart.name=Dragon Heart
-item.draconicevolution:dragonHeart.description=Description
+item.draconicevolution:dragonHeart.description=Dropped by the Ender Dragon and Draconic Dragon
 
 item.draconicevolution:infusedCompound.name=Infused Compound
-item.draconicevolution:infusedCompound.description=Description
+item.draconicevolution:infusedCompound.description=Research has found a very powerful item that will be neccessary to create powerful tools
 
 item.draconicevolution:sunFocus.name=Solar Focus
-item.draconicevolution:sunFocus.description=Description
+item.draconicevolution:sunFocus.description=With the power of draconium you find a way to harness the heat and light of the sun.
 
 item.draconicevolution:tclogo.name=TCLogo
 
 item.draconicevolution:draconicCore.name=Draconic Core
-item.draconicevolution:draconicCore.description=Description
+item.draconicevolution:draconicCore.description=Used to create all machines and advanced tools
 
 item.draconicevolution:teleporterMKI.name=Charm of Dislocation
-item.draconicevolution:teleporterMKI.description=Description
+item.draconicevolution:teleporterMKI.description=You have managed to infuse the powers of The End with your knowledge of the Draconic to create a basic teleporter, but at a cost. The energies binding them are unstable and only last for 10 uses and will take some of your life energy with each use and can only be linked to a single location but works across dimensions. Once used up, you must create a new one.
 
 item.draconicevolution:teleporterMKII.name=Enhanced Charm of Dislocation
-item.draconicevolution:teleporterMKII.description=Description
+item.draconicevolution:teleporterMKII.description=Learning how draconic powers interract with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 5 locations and using the endermen’s own pearls as fuel, created something that can teleport you across dimensions at will.
 
 item.draconicevolution:wyvernPickaxe.name=Pickaxe of the Wyvern
-item.draconicevolution:wyvernPickaxe.description=Description
+item.draconicevolution:wyvernPickaxe.description=Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade.
+Modes:
+Shift-Right Click to switch modes: 1×1 or 3×3
 
 item.draconicevolution:wyvernShovel.name=Shovel of the Wyvern
-item.draconicevolution:wyvernShovel.description=Description
+item.draconicevolution:wyvernShovel.description=Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade.
+Modes:
+Shift-Right Click to switch modes: 1×1 or 3×3
 
 item.draconicevolution:wyvernSword.name=Sword of the Wyvern
-item.draconicevolution:wyvernSword.description=Description
+item.draconicevolution:wyvernSword.description=Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade.
++15 Attack – Bonus damage on mobs with health above 10 hearts (+20% of the mobs extra health)
+AOE – Hits all mobs in a 3×3 area (bonus damage does not apply to mobs other than the one you hit directly)
 
 item.draconicevolution:wyvernBow.name=Bow of the Wyvern
-item.draconicevolution:wyvernBow.description=Description
+item.draconicevolution:wyvernBow.description=Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade.
+Sharpshooter – Zoom in on your target
+Rapid Fire – Barrage your enemies in a rain of arrows.
 
 item.draconicevolution:wyvernHelm.name=Wyvern Helm
-item.draconicevolution:wyvernHelm.description=Description
+item.draconicevolution:wyvernHelm.description=Having enjoyed the protection of diamond for so long, you realize that you can infuse it with the power of the Draconic.
 
 item.draconicevolution:wyvernChest.name=Wyvern Chestplate
-item.draconicevolution:wyvernChest.description=Description
+item.draconicevolution:wyvernChest.description=Having enjoyed the protection of diamond for so long, you realize that you can infuse it with the power of the Draconic.
 
 item.draconicevolution:wyvernLeggs.name=Wyvern Leggings
-item.draconicevolution:wyvernLeggs.description=Description
+item.draconicevolution:wyvernLeggs.description=Having enjoyed the protection of diamond for so long, you realize that you can infuse it with the power of the Draconic. Small speed boost when worn.
 
 item.draconicevolution:wyvernBoots.name=Wyvern Boots
-item.draconicevolution:wyvernBoots.description=Description
+item.draconicevolution:wyvernBoots.description=Having enjoyed the protection of diamond for so long, you realize that you can infuse it with the power of the Draconic. Small jump boost when worn.
 
 item.draconicevolution:draconicPickaxe.name=Draconic Pickaxe
-item.draconicevolution:draconicPickaxe.description=Description
+item.draconicevolution:draconicPickaxe.description=Further Draconic research has shown you ways to even greater power..
+Modes:
+Shift-Right Click to switch modes: 1×1, 3×3, 5×5 and 7×7
+Right Click to activate: Obliteration Mode – Destroys stone, cobblestone and netherrack.
 
 item.draconicevolution:draconicAxe.name=Draconic Axe
-item.draconicevolution:draconicAxe.description=Description 
+item.draconicevolution:draconicAxe.description=Further Draconic research has shown you ways to even greater power..
+Modes:
+Will harvest the entire tree and leaves above. 
 
 item.draconicevolution:draconicShovel.name=Draconic Shovel
-item.draconicevolution:draconicShovel.description=Description
+item.draconicevolution:draconicShovel.description=Further Draconic research has shown you ways to even greater power..
+Modes:
+Shift-Right Click to switch modes: 1×1, 3×3, 5×5 and 7×7
+Right Click to activate: Obliteration Mode – Destroys dirt, sand and gravel.
 
 item.draconicevolution:draconicHoe.name=Draconic Hoe
-item.draconicevolution:draconicHoe.description=Description
+item.draconicevolution:draconicHoe.description=Further Draconic research has shown you ways to even greater power..
+Modes:
+Will till an entire 9×9 area, just perfect for a full-size farm with water source.
+Also will dig or replace dirt (if dirt in inventory) to make the full 9×9.
 
 item.draconicevolution:draconicSword.name=Draconic Sword
-item.draconicevolution:draconicSword.description=Description
+item.draconicevolution:draconicSword.description=Further Draconic research has shown you ways to even greater power..
++19 Attack – Bonus damage on mobs with health above 10 hearts (+30% of the mobs extra health)
+AOE – Hits all mobs in a 7×7 area (bonus damage does not apply to mobs other than the one you hit directly)
 
 item.draconicevolution:draconicBow.name=Draconic Bow
-item.draconicevolution:draconicBow.description=Description
+item.draconicevolution:draconicBow.description=Further Draconic research has shown you ways to even greater power..
+Sharpshooter – Zoom in on your target
+Rapid Fire – Barrage your enemies in a rain of arrows.
+Explosive – With gunpowder in your inventory destroy an area slightly larger than TNT with your arrows
+Devastation (Creative Mode only) – Explodes an extreme area in rapid fire mode.
 
 item.draconicevolution:draconicHelm.name=Draconic Helm
-item.draconicevolution:draconicHelm.description=Description
+item.draconicevolution:draconicHelm.description=Further Draconic research has shown you ways to even greater protection..Night Vision active when in dark places. Full set of Draconic Armor also gives you full protection from fire!
 
 item.draconicevolution:draconicChest.name=Draconic Chestplate
-item.draconicevolution:draconicChest.description=Description
+item.draconicevolution:draconicChest.description=Further Draconic research has shown you ways to even greater protection..Flight when worn. Full set of Draconic Armor also gives you full protection from fire!
 
 item.draconicevolution:draconicLeggs.name=Draconic Leggings
-item.draconicevolution:draconicLeggs.description=Description
+item.draconicevolution:draconicLeggs.description=Further Draconic research has shown you ways to even greater protection..Improved speed boost. Full set of Draconic Armor also gives you full protection from fire!
 
 item.draconicevolution:draconicBoots.name=Draconic Boots
-item.draconicevolution:draconicBoots.description=Description
+item.draconicevolution:draconicBoots.description=Further Draconic research has shown you ways to even greater protection..Improved jump boost. Full set of Draconic Armor also gives you full protection from fire!
 
 item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
-item.draconicevolution:draconicDistructionStaff.description=Description
+item.draconicevolution:draconicDistructionStaff.description=After great pains you have mastered the powers of the Draconic!
+Mining – Shift-Right Click to switch modes: 1×1, 3×3, 5×5, 7×7 and 9×9
+Mining – Right Click to activate: Obliteration Mode – Destroys all non-valuable blocks.
+Battle: +20 Attack – Bonus damage on mobs with health above 10 hearts (+50% of the mobs extra health)
+Battle: AOE – in 1×1 hits 1×1 area, 3×3 hits 5×5 area, 5×5 hits 9×9, 7×7 hits 13×13, and 9×9 hits 17×17 (bonus damage does not apply to mobs other than the one you hit directly)
 
 item.draconicevolution:mobSoul.name=Mob Soul
-item.draconicevolution:mobSoul.description=Description
+item.draconicevolution:mobSoul.description=You notice that with Draconic Weapons you can now occasionally steal the souls of those things you kill.
 
 item.draconicevolution:enderArrow.name=Ender Arrow
-item.draconicevolution:enderArrow.description=Description
+item.draconicevolution:enderArrow.description=Awesome arrow infused with the power of ender pearls.  You will teleport to the location you hit.
 
 item.draconicevolution:safetyMatch.name=Safety Match
-item.draconicevolution:safetyMatch.description=Description
+item.draconicevolution:safetyMatch.description=Tired of everything burning to the ground when making a fireplace?
 
 item.draconicevolution:safetyMatchBox.name=Box of Safety Matches
-item.draconicevolution:safetyMatchBox.description=Description
+item.draconicevolution:safetyMatchBox.description=High-use safety matches.
 
 item.draconicevolution:key.name=Key
-item.draconicevolution:key.description=Description
+item.draconicevolution:key.description=Magical Key to access various locks.
 
 item.draconicevolution:creativeStructureSpawnerComet.name=Spawn Comet
-item.draconicevolution:creativeStructureSpawnerComet.description=Description
 
 item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Island
-item.draconicevolution:creativeStructureSpawnerEnderIsland.description=Description
 
 //###################################Item Groups###################################//
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -275,3 +326,48 @@ button.de.back.txt=Back
 button.de.goToIndex.txt=Index Page
 manual.de.indexTitle.txt=Index Page
 manual.de.userGuide.txt=Mod Feature Guide
+button.de.previous.txt=<==
+button.de.next.txt===>
+manual.de.ecth.txt=Energy Storage Multiblock
+manual.de.roerth.txt=Ritual of Ender Resurrection
+manual.de.endercomet.txt=Ender Comet
+manual.de.enderisland.txt=Chaos Islands
+manual.de.placeditems.txt=Placing items in world
+
+manual.de.ectdpage0a.txt=The Energy Core is a multiblock structure that is capable of storing immense amounts of RF power using the energy storage capabilities of Draconium and Redstone.
+manual.de.ectdpage0b.txt=The Energy Core has 7 Tiers each capable of storing considerably more then the last to build it you will need 5 different components./n ♦  Energy Core x1/n ♦ Particle Generator x4/n ♦ Redstone Block (number depends on tier)/n ♦ Draconium Block (number depends on tier)/n ♦  Energy Pylon x2+
+manual.de.ectdpage1a.txt=The Energy core consists of the Energy Core(Block) at the centre surrounded by 4 Particle Generators as shown.
+manual.de.ectdpage1b.txt=The Core is then surrounded by a combination of Redstone Blocks and Draconium Blocks the following pages show the construction of each tier as well as the material cost and storage capacity./n/nOnce the  structure is built simply shift right click one of the particle/n generators (with an empty hand)
+manual.de.ectdpage2.txt=Tier 1:/nRedstone x0/nDraconium x0/nCapacity = 45.5Million RF/n/nTier  2:/nRedstone x0/nDraconium x6/nCapacity = 273Million RF
+manual.de.ectdpage3.txt=Tier 3:/nRedstone x0/nDraconium x26/nCapacity = 1.64Billion RF
+manual.de.ectdpage4.txt=Tier 4:/nRedstone x26/nDraconium x54/nCapacity = 9.88Billion RF
+manual.de.ectdpage5.txt=Tier 5:/nRedstone x80/nDraconium x98/nCapacity = 59.3Billion RF
+manual.de.ectdpage6.txt=Tier 6:/nRedstone 133/nDraconium 150/nCapacity = 356Billion RF
+manual.de.ectdpage7.txt=Tier 7:/nRedstone x328/nDraconium x218/nCapacity = 2.14Trillion RF
+manual.de.ectdpage8a.txt=To add and remove energy from the core you need to place energy pylons within 15 blocks of the of the core. To activate a pylon place a glass block ether above or bellow it depending on weather the pylon is placed bellow or above the core e.g. if you place the pylon on the roof you would place the glass block under it. The pylon can be placed up to 6 blocks above or bellow the energy core (centre).
+manual.de.ectdpage8b.txt=When the glass block is placed the pylon should immediately activate and link with a nearby Energy Core the link is indicated by white energy particles and the glass should change to the renderer shown in the image above.
+manual.de.ectdpage9a.txt=You can simply right click the energy core to check the tier and amount of energy stored.
+manual.de.ectdpage9b.txt=Energy is added and removed from the core using the Energy Pylons. To toggle a Pylon between input and output mode simply right click the sphere. The mode is identified by the colour of the Pylon (Blue = input, Orange = output) and the behaviour of the energy particles and the Pylon sphere
+manual.de.ectdpage10.txt=Energy Transfer between the pylon and the core is indicated by a stream of blue energy particles flowing between the Pylon sphere and the core. The amount of energy flowing is roughly shown by the density of the particle stream.
+manual.de.ectdpage11.txt=The above image shows all of the possible Y level placements for the Pylons relative to the core.
+
+manual.de.roertpage0a.txt=The ritual of ender resurrection allows you to summon the Ender Dragon. To set it up you will need the following items./n/n(1)  Resurrection Stone/n(4) Glowstone Blocks/n(4) Obsidian/n(4) Diamond Blocks/n(4) Charged Draconium Blocks/n(12) Quartz Pillars
+manual.de.roertpage0b.txt=To get a Charged Draconium block place a Draconium block in a charging device (requires 100 Million RF)
+manual.de.roertpage1a.txt=The pillars dont have to be in that exact configuration as long as they are within 5 blocks of the Resurrection Stone it also looks better if they are symmetrical.
+manual.de.roertpage1b.txt=Once you have that setup simply right click the Ritual stone and stand back. The ritual should start immediately if it dosnt you have done something wrong.
+manual.de.roertpage1c.txt=During the ritual all of the Ender Crystals will be re-activated. At the end of the ritual there will be a massive explosion at the centre of the structure that wont do too much damage to the terrain but will kill anything that is standing too close.
+manual.de.roertpage1d.txt=The dragon that is spawned by the ritual is almost identical to the original dragon except it has a different texture (By GreatOrator) and it gets harder to kill and deals more damage each time it is summoned (this increase is per player and stops when it reaches a certain difficulty) It also has regeneration for 25 seconds.
+
+manual.de.endercomet.description=Mined out all of the Draconium ore in the end? Get yourself some form of flight and go search the end. If your lucky you may come across an Ender Comet. These comets are comprised of end stone, obsidian and a significant amount of Draconium ore. By default they have a 1 in 10000 chance to spawn in each chunk so you may need to search for a while and they come in various sizes.
+
+manual.de.chaosisland.description=Looking for a challenge? the Ender Dragon wasnt hard enough? This is for you! If you travel to any multiple of 10,000 in the end (e.g. {x=0, z=10000}, {x=0, z=20000}, {x=10000, z=0} etc) you will find a Chaos Island. Each of these islands is guarded by a Chaos Guardian which is basically an extremely powerful Ender Dragon that drops 2 dragon hearts and some draconium dust as well as the standard end portal in the middle of the island with a dragon egg on top. Note: The Chaos Island is a work in progress and there will be changes in the future.
+
+manual.de.placeditems.description=Draconic Evolution adds the ability to place any item in the world as a block allowing you to do things like hang tools or other items on walls for display etc. To pla an item in the world simply look at a block with the item selected (as if you were about to place a block) and press the "Place Item" key (p by default) you can place items on the top bottom or sides of a block. You can left click to rotate the item clockwise and shift+left click to rotate the item counter-clockwise you can also shift+right click to rotate the item in very small increments counter-clockwise. Right click to pick the item up.
+
+manual.de..description=
+
+manual.de..description=
+
+manual.de..description=
+
+
