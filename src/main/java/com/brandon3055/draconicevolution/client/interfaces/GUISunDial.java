@@ -63,7 +63,7 @@ public class GUISunDial extends GuiContainer {
 	protected void actionPerformed(GuiButton button)
 	{
 		if (button.id == 0){
-			DraconicEvolution.channelHandler.sendToServer(new TeleporterPacket());
+			DraconicEvolution.network.sendToServer(new TeleporterPacket());
 		}
 			
 	}

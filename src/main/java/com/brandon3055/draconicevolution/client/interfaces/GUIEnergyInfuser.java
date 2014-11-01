@@ -2,19 +2,14 @@ package com.brandon3055.draconicevolution.client.interfaces;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.container.ContainerEnergyInfuser;
-import com.brandon3055.draconicevolution.common.container.ContainerGrinder;
 import com.brandon3055.draconicevolution.common.core.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumChatFormatting;
@@ -99,14 +94,14 @@ public class GUIEnergyInfuser extends GuiContainer {
 	}
 
 	private void drawEnergyBarHoverText(int x, int y) {
-		if (GuiHelper.isInRect(48, 6, 57, 52, x, y)) {
+		if (GuiHelper.isInRect(48, 6, 9, 46, x, y)) {
 			ArrayList<String> internal = new ArrayList<String>();
 			internal.add("Internal Storage");
 			internal.add("" + EnumChatFormatting.DARK_BLUE + tile.energy.getEnergyStored() + "/" + tile.energy.getMaxEnergyStored());
 			drawHoveringText(internal, x, y, fontRendererObj);
 		}
 
-		if (GuiHelper.isInRect(118, 6, 128, 52, x, y) && tile.running && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
+		if (GuiHelper.isInRect(118, 6, 10, 46, x, y) && tile.running && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
 			IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
 			ArrayList<String> internal = new ArrayList<String>();
 			internal.add("Item Energy Storage");

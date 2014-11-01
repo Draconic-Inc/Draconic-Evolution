@@ -1,10 +1,8 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.client.interfaces.SlotChargable;
-import com.brandon3055.draconicevolution.client.interfaces.SlotItemValid;
+import com.brandon3055.draconicevolution.common.inventory.SlotChargable;
 import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

@@ -2,23 +2,20 @@ package com.brandon3055.draconicevolution.common.blocks;
 
 import java.util.Random;
 
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleCustom;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
-import com.brandon3055.draconicevolution.client.render.CustomParticle;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -111,7 +108,7 @@ public class ParticleGenerator extends BlockDE
 
 				
 				{
-					CustomParticle particle = new CustomParticle(world, spawnX, spawnY, spawnZ, MX, MY, MZ, SCALE, false, 1);
+					ParticleCustom particle = new ParticleCustom(world, spawnX, spawnY, spawnZ, MX, MY, MZ, SCALE, false, 1);
 					particle.red = rand.nextInt(255);
 					particle.green = rand.nextInt(255);
 					particle.blue = rand.nextInt(255);

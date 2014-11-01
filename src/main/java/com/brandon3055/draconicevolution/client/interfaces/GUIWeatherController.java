@@ -84,7 +84,7 @@ public class GUIWeatherController extends GuiContainer {
 	protected void actionPerformed(GuiButton button)
 	{
 		if (button.id == 0){
-			DraconicEvolution.channelHandler.sendToServer(new ButtonPacket((byte) 0, true));
+			DraconicEvolution.network.sendToServer(new ButtonPacket((byte) 0, true));
 			if (button.displayString.equals(STORM_TEXT))
 				button.displayString = RAIN_OFF_TEXT;
 			else if (button.displayString.equals(RAIN_OFF_TEXT))

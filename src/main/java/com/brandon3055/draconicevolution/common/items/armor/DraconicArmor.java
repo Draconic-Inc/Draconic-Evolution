@@ -155,6 +155,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
@@ -200,6 +201,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor {
 		return new EntityPersistentItem(world, location, itemstack);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void clearNegativeEffects(Entity par3Entity) {
 		if (par3Entity.ticksExisted % 20 == 0) {
 			if (par3Entity instanceof EntityPlayer) {

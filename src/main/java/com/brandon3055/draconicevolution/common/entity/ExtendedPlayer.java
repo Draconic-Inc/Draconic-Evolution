@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,7 +48,6 @@ public class ExtendedPlayer implements IExtendedEntityProperties {
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound properties = (NBTTagCompound) compound.getTag(EXT_PROP_NAME);
 		spawnCount = properties.getInteger("SpawnCount");
-		LogHelper.info("Read ExtendedPlayer: " + player.getCommandSenderName() + " SpawnCount = " +spawnCount);
 	}
 
 	@Override

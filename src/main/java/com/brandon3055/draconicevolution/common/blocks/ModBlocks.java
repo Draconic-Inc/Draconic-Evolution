@@ -35,6 +35,10 @@ public class ModBlocks {
 	public static BlockDE energyPylon;
 	public static BlockDE placedItem;
 	public static BlockDE cKeyStone;
+	public static BlockDE containerTemplate;
+	public static BlockDE dissEnchanter;
+	public static BlockDE teleporterStand;
+	public static BlockDE draconiumChest;
 	public static Block safetyFlame;
 
 	public static void init()
@@ -59,9 +63,16 @@ public class ModBlocks {
 		placedItem = new PlacedItem();
 		safetyFlame = new SafetyFlame();
 		cKeyStone = new CKeyStone();
+		dissEnchanter = new DissEnchanter();
+		teleporterStand = new TeleporterStand();
+		draconiumChest = new DraconiumChest();
+
 		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
 		
-		if(DraconicEvolution.debug) testBlock = new TestBlock();
+		if(DraconicEvolution.debug) {
+			testBlock = new TestBlock();
+			containerTemplate = new BlockContainerTemplate();
+		}
 
 		if (ConfigHandler.updateFix)
 		{
@@ -84,7 +95,7 @@ public class ModBlocks {
 		//GameRegistry.registerBlock(block, block.getUnwrappedUnlocalizedName(block.getUnlocalizedName()));
 	}
 
-	public static void registerWithItem(BlockDE block, Class<? extends ItemBlock> item)
+	public static void register(BlockDE block, Class<? extends ItemBlock> item)
 	{
 		String name = block.getUnwrappedUnlocalizedName(block.getUnlocalizedName());
 		GameRegistry.registerBlock(block, item, name.substring(name.indexOf(":") + 1));

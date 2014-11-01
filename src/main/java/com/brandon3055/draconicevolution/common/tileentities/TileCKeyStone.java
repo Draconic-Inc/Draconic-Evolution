@@ -20,12 +20,13 @@ public class TileCKeyStone extends TileEntity {
 	public boolean isActivated = false;
 	private int keyCode = 0;
 	private int activeTicks = 0;
+	public int delay = 5;
 
 	@Override
 	public void updateEntity() {
 		if (isActivated && (getMeta() == 1 || getMeta() == 3)) {
 			activeTicks++;
-			if (activeTicks == 20){
+			if (activeTicks >= delay){
 				activeTicks = 0;
 				isActivated = false;
 				updateBlocks();
@@ -36,7 +37,8 @@ public class TileCKeyStone extends TileEntity {
 
 	public boolean onActivated(ItemStack stack, EntityPlayer player){
 		if (stack == null || stack.getItem() != ModItems.key) {
-			if(player.capabilities.isCreativeMode && stack == null && player.isSneaking()) giveInformation(player);
+			if(player.capabilities.isCreativeMode && stack == null && player.isSneaking() && (getMeta() == 1 || getMeta() == 3)) delay+=5;
+			if(player.capabilities.isCreativeMode && stack == null) giveInformation(player);
 			return false;
 		}
 		if (isMasterKey(stack)) return true;
@@ -77,6 +79,7 @@ public class TileCKeyStone extends TileEntity {
 		if (worldObj.isRemote){
 			player.addChatComponentMessage(new ChatComponentTranslation("msg.cKeyStoneType"+getMeta()+".txt"));
 			player.addChatComponentMessage(new ChatComponentText("Key: "+keyCode));
+			if(getMeta() == 1 || getMeta() == 3)player.addChatComponentMessage(new ChatComponentText("Delay: "+delay +"t ("+(((double)delay)/20D)+"s)"));
 		}
 	}
 
@@ -143,6 +146,7 @@ public class TileCKeyStone extends TileEntity {
 	{
 		compound.setBoolean("IsActivated", isActivated);
 		compound.setInteger("KeyCode", keyCode);
+		compound.setInteger("Delay", delay);
 		super.writeToNBT(compound);
 	}
 
@@ -151,6 +155,7 @@ public class TileCKeyStone extends TileEntity {
 	{
 		isActivated = compound.getBoolean("IsActivated");
 		keyCode = compound.getInteger("KeyCode");
+		delay = compound.getInteger("Delay");
 		super.readFromNBT(compound);
 	}
 

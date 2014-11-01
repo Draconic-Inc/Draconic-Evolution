@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
 import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.client.render.Particles;
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;

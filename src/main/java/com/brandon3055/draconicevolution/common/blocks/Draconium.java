@@ -34,7 +34,7 @@ public class Draconium extends BlockDE {
 		this.setResistance(100F);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.draconiumName);
-		ModBlocks.registerWithItem(this, DraconiumItemBlock.class);
+		ModBlocks.register(this, DraconiumItemBlock.class);
 	}
 
 	@Override
@@ -93,5 +93,12 @@ public class Draconium extends BlockDE {
 	@Override
 	public int damageDropped(int meta) {
 		return meta;
+	}
+
+	@Override
+	public float getEnchantPowerBonus(World world, int x, int y, int z) {
+		if (world.getBlockMetadata(x, y, z) == 0) return 4f;
+		if (world.getBlockMetadata(x, y, z) == 2) return 12f;
+		return 0;
 	}
 }

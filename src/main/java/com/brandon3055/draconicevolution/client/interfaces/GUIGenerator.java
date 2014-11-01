@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
-import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.container.ContainerGenerator;
 import com.brandon3055.draconicevolution.common.core.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -60,7 +59,7 @@ public class GUIGenerator extends GuiContainer {
 
 		int x = X - guiLeft;
 		int y = Y - guiTop;
-		if (GuiHelper.isInRect(83, 10, 95, 50, x, y)) {
+		if (GuiHelper.isInRect(83, 10, 12, 40, x, y)) {
 			ArrayList<String> internal = new ArrayList<String>();
 			internal.add("Internal Storage");
 			internal.add("" + EnumChatFormatting.DARK_BLUE + tile.getEnergyStored(ForgeDirection.UP) + "/" + tile.getMaxEnergyStored(ForgeDirection.UP));

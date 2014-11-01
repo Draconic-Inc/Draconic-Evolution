@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.client.interfaces.SlotItemValid;
+import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

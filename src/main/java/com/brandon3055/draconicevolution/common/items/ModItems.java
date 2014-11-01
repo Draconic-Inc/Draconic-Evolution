@@ -3,17 +3,17 @@ package com.brandon3055.draconicevolution.common.items;
 import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.common.items.tools.*;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import net.minecraft.item.Item;
-import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
-import net.minecraftforge.common.util.EnumHelper;
-import cpw.mods.fml.common.registry.GameRegistry;
 import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
 import com.brandon3055.draconicevolution.common.items.weapons.DraconicSword;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernSword;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraftforge.common.util.EnumHelper;
 
 @GameRegistry.ObjectHolder(References.MODID)
 public class ModItems {
@@ -58,6 +58,8 @@ public class ModItems {
 	public static ItemDE safetyMatch;
 	public static ItemDE key;
 	public static ItemDE creativeStructureSpawner;
+	public static ItemDE adminSpawnEgg;
+	public static ItemDE infoTablet;
 	//public static ItemDE obliterationCatalyst;
 
 	public static ItemDE teleporterMKI;
@@ -93,7 +95,7 @@ public class ModItems {
 		draconiumBlend = new DraconiumBlend();
 		dragonHeart = new DragonHeart();
 		draconicCompound = new DraconicCompound();
-		teleporterMKI = new TeleporterMKI();
+		teleporterMKI = (ItemDE)new TeleporterMKI();
 		teleporterMKII = new TeleporterMKII();
 		tclogo = new Tclogo();
 		draconicCore = new DraconicCore();
@@ -103,6 +105,8 @@ public class ModItems {
 		safetyMatch = new SafetyMatch();
 		key = new Key();
 		creativeStructureSpawner = new CreativeStructureSpawner();
+		adminSpawnEgg = new AdminSpawnEgg();
+		infoTablet = new InfoTablet();
 		//obliterationCatalyst = new ObliterationCatalyst();
 
 	}

@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.interfaces.manual.GuiButtonAHeight;
+import com.brandon3055.draconicevolution.common.core.Teleporter.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.core.network.TeleporterPacket;
-import com.brandon3055.draconicevolution.common.core.network.TeleporterStringPacket;
+import com.brandon3055.draconicevolution.common.core.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -12,9 +14,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -22,23 +27,27 @@ import net.minecraft.world.WorldProvider;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SideOnly(Side.CLIENT)
 public class GUITeleporter extends GuiScreen
 {
-	private final int xSize = 160;
-	private final int ySize = 138;
+	private final int xSize = 182;
+	private final int ySize = 141;
 	private ResourceLocation guiTexture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/TeleporterMKII.png");
 	private ItemStack teleporterItem;
-	private double[] dPosX = { 0, 0, 0, 0, 0 };
-	private double[] dPosY = { 0, 0, 0, 0, 0 };
-	private double[] dPosZ = { 0, 0, 0, 0, 0 };
-	private int[] dPosD = { 0, 0, 0, 0, 0 };
-	private float[] dYaw = { 0, 0, 0, 0, 0 };
-	private float[] dPitch = { 0, 0, 0, 0, 0 };
-	private boolean[] dSet = { false, false, false, false, false };
+	protected List<TeleportLocation> locations = new ArrayList<TeleportLocation>(0);
+
 	private int selected = 0;
+	private int selrctionOffset = 0;
+	private int maxOffset = 0;
 	private int fuel = 0;
-	private boolean editing = false;
+	private boolean editingExisting = false;
+	private boolean editingNew = false;
+	private boolean showFuelLight = true;
+	private int tick = 0;
+	private GuiTextField textBeingEdited;
 
 	private EntityPlayer player;
 
@@ -48,152 +57,334 @@ public class GUITeleporter extends GuiScreen
 		if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.teleporterMKII)))
 		{
 			this.teleporterItem = player.getCurrentEquippedItem();
-			updatePositions(teleporterItem);
-			updateNames(teleporterItem);
+			readDataFromItem(teleporterItem);
 		}
 	}
 
-	String[] destText = { "", "", "", "", "" };
-	String[] destValue = { "[Unset]", "[Unset]", "[Unset]", "[Unset]", "[Unset]" };
-
 	@Override
-	public void drawScreen(int x, int y, float f)
-	{
+	public void drawScreen(int x, int y, float f){
 		drawDefaultBackground();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		Minecraft.getMinecraft().renderEngine.bindTexture(guiTexture);
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 		drawTexturedModalRect(posX, posY, 0, 0, xSize, ySize);
-		drawTexturedModalRect(posX + 3, posY + 3 + selected * 23, 0, ySize, 67, 10);
-		
-		//Light Cursor Position
-		for (int i = 0; i < 5; i++)
-		{
-			if ((x > posX + 2 && x < posX + 70) && (y > posY + 2 + i * 23 && y < posY + 14 + i * 23))
-			{
-				if (!editing)
-					drawTexturedModalRect(posX + 3, posY + 3 + i * 23, 0, ySize, 67, 10);
-				
-				if (i == selected && !editing)
-				{
-					drawTexturedModalRect(posX, posY - 10, 0, ySize + 10, 30, 10);
-					drawTexturedModalRect(posX + 15, posY - 10, 40, ySize + 10, 30, 10);
-					fontRendererObj.drawString("Rename", posX + 3, posY - 9, 0xffffff, false);
-				}else if (!editing
-						)
-				{
-					drawTexturedModalRect(posX, posY - 10, 0, ySize + 10, 30, 10);
-					drawTexturedModalRect(posX + 10, posY - 10, 40, ySize + 10, 30, 10);
-					fontRendererObj.drawString("Select", posX + 3, posY - 9, 0xffffff, false);
-				}
-					
-	
-			}
-		}
-		
-		if (editing)
-		{
-			drawTexturedModalRect(posX, posY - 10, 0, ySize + 10, 60, 10);
-			drawTexturedModalRect(posX + 60, posY - 10, 18, ySize + 10, 60, 10);
-			fontRendererObj.drawString("Press Enter to save", posX + 3, posY - 9, 0xffffff, false);
-		}
 
-		//Draw Destination data
-		for (int i = 0; i < 5; i++)
-		{
-			if (dSet[i])
-			{
-				destValue[i] = "X:" + (int) dPosX[0] + " Y:" + (int) dPosY[0] + " Z:" + (int) dPosZ[0];// + " Dimension:" + world.provider.getProviderForDimension(dPosD[i]).getDimensionName() + "";
-			}
+		if (fuel <= 5) drawTexturedModalRect(posX+169, posY+86, 40, 150, 7, 7);
+		if (fuel <= 5 && showFuelLight || (fuel > 5 && fuel < 10)) drawTexturedModalRect(posX+169, posY+86, 40, 143, 7, 7);
 
-			if (editing && i == selected)
-				fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + destText[i], posX + 5, posY + 5 + (i * 23), 0xff0000);
-			else
-				fontRendererObj.drawString(destText[i], posX + 5, posY + 5 + (i * 23), 0x000000);
-			fontRendererObj.drawString((dSet[i] ? (EnumChatFormatting.DARK_BLUE + WorldProvider.getProviderForDimension(dPosD[i]).getDimensionName()) : EnumChatFormatting.DARK_RED + "[Unset]"), posX + 73, posY + 5 + (i * 23), 0x000000);
-			fontRendererObj.drawString("X:" + String.valueOf((int) dPosX[i]), posX + 4, posY + 16 + (i * 23), 0x00b000);
-			fontRendererObj.drawString("Y:" + String.valueOf((int) dPosY[i]), posX + 50, posY + 16 + (i * 23), 0x00b000);
-			fontRendererObj.drawString("Z:" + String.valueOf((int) dPosZ[i]), posX + 96, posY + 16 + (i * 23), 0x00b000);
-		}
+		drawArrows(x-posX, y-posY);
 
-		fontRendererObj.drawString("Charges: " + fuel, posX + 5, posY + 120, 0x000000);
-		
+		drawLocations(x-posX, y-posY);
+
+		drawSelectionInfo();
+
+		textBeingEdited.drawTextBox();
+
+		String colour = EnumChatFormatting.GREEN + "";
+		if (fuel < 10) colour = EnumChatFormatting.YELLOW + "";
+		if (fuel == 0) colour = EnumChatFormatting.DARK_RED + "";
+		fontRendererObj.drawString(colour+"Fuel: " + fuel, posX + 115, posY + 87, 0x000000);
+
 		super.drawScreen(x, y, f);
-		//initGui();
-		if (player.getCurrentEquippedItem() == null || !player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.teleporterMKII)) || player.isDead)
-		{
-			this.mc.displayGuiScreen(null);
-			this.mc.setIngameFocus();
-		}
 	}
 
-	@Override
-	protected void mouseClicked(int x, int y, int button)
-	{
+	private void drawLocations(int x, int y){
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 
-		for (int i = 0; i < 5; i++)
-		{
-			if ((x > posX + 2 && x < posX + 70) && (y > posY + 2 + i * 23 && y < posY + 14 + i * 23))
-			{
-				if (selected != i && !editing)
-				{
-					selected = i;
-					if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.teleporterMKII)))
-						ItemNBTHelper.setShort(this.player.getCurrentEquippedItem(), "Selection", (short) selected);
-					DraconicEvolution.channelHandler.sendToServer(new TeleporterPacket((byte) 0, selected));
-					initGui();
-				}else if (!editing)
-				{
-					editing = true;
-				}
+		for (int i = 0; i < Math.min(12, locations.size()); i++){
+			if (GuiHelper.isInRect(17, 6+i*11, 80, 10, x, y)) drawTexturedModalRect(posX+19, posY+5+i*11, 0, 188, 80, 10);
+
+			if (locations.get(i+selrctionOffset).getWriteProtected()){
+				if (GuiHelper.isInRect(102, 7+i*11, 6, 6, x, y)) drawTexturedModalRect(posX+102, posY+7+i*11, 26, 149, 6, 6);
+				else drawTexturedModalRect(posX+102, posY+7+i*11, 26, 143, 6, 6);
+			}else{
+				if (GuiHelper.isInRect(101, 7+i*11, 8, 7, x, y)) drawTexturedModalRect(posX+101, posY+7+i*11, 32, 150, 8, 7);
+				else drawTexturedModalRect(posX+101, posY+7+i*11, 32, 143, 8, 7);
 			}
 		}
 
+		drawTexturedModalRect(posX+19, posY+5+selected*11, 0, 188, 80, 10);
+
+		int yl = 0;
+		for (int i = selrctionOffset; i < locations.size() && i < selrctionOffset + 12; i++){
+			String s = locations.get(i).getName();
+			if (fontRendererObj.getStringWidth(s) > 80) {
+				int safety = 0;
+				while (fontRendererObj.getStringWidth(s) > 70){
+					s = s.substring(0, s.length()-1);
+					safety++;
+					if (safety > 200) break;
+				}
+				s = s+"...";
+			}
+			fontRendererObj.drawString(s, posX + 21, posY + 7 + (yl * 11), 0x000000);
+			yl++;
+		}
+	}
+
+	private void drawArrows(int x, int y){
+		int posX = (this.width - xSize) / 2;
+		int posY = (this.height - ySize) / 2;
+
+		if (selrctionOffset > 0){
+			boolean highLighted = GuiHelper.isInRect(4, 4, 13, 15, x, y);
+			if (highLighted) drawTexturedModalRect(posX+4, posY+4, 0, 158, 13, 15);
+			else drawTexturedModalRect(posX+4, posY+4, 0, 143, 13, 15);
+		}else drawTexturedModalRect(posX+4, posY+4, 0, 173, 13, 15);
+		if (selrctionOffset < maxOffset){
+			boolean highLighted = GuiHelper.isInRect(4, 122, 13, 15, x, y);
+			if (highLighted) drawTexturedModalRect(posX+4, posY+122, 13, 158, 13, 15);
+			else drawTexturedModalRect(posX+4, posY+122, 13, 143, 13, 15);
+		} else drawTexturedModalRect(posX+4, posY+122, 13, 173, 13, 15);
+
+		float percent = locations.size() <= 12 ? 1f : 12F / (float)locations.size();
+		int drawSize = (int)(percent * 99F);
+		int space = 99 - drawSize;
+		float location = (float)selrctionOffset / (float)(locations.size()-12);
+		int yOffset = (int) (location * (float)space);
+		drawTexturedModalRect(posX+5, posY+21+yOffset, 182, 0, 11, drawSize);
+		drawTexturedModalRect(posX+5, posY+21+drawSize-1+yOffset, 182, 98, 11, 1);
+	}
+
+	private void drawSelectionInfo(){
+		int posX = (this.width - xSize) / 2;
+		int posY = (this.height - ySize) / 2;
+		if (locations.size() <= 0) return;
+		fontRendererObj.drawString(EnumChatFormatting.GOLD+"X: "+(int)locations.get(selected+selrctionOffset).getXCoord(), posX+114, posY+7, 0x000000);
+		fontRendererObj.drawString(EnumChatFormatting.GOLD + "Y: " + (int) locations.get(selected + selrctionOffset).getYCoord(), posX + 114, posY + 16, 0x000000);
+		fontRendererObj.drawString(EnumChatFormatting.GOLD + "Z: " + (int) locations.get(selected + selrctionOffset).getZCoord(), posX + 114, posY + 25, 0x000000);
+		fontRendererObj.drawString(EnumChatFormatting.GOLD+""+WorldProvider.getProviderForDimension(locations.get(selected + selrctionOffset).getDimension()).getDimensionName(), posX+114, posY+34, 0x000000);
+	}
+
+	@Override
+	protected void mouseClicked(int x, int y, int button){
+		int posX = (this.width - xSize) / 2;
+		int posY = (this.height - ySize) / 2;
+
+		boolean offsetChanged = false;
+		boolean selectionChanged = false;
+
+		if (textBeingEdited.getVisible()) textBeingEdited.mouseClicked(x, y, button);
+
+		//Check for arrow click
+		if (selrctionOffset > 0 && GuiHelper.isInRect(3, 5, 13, 15, x-posX, y-posY)){
+			selrctionOffset--;
+			offsetChanged = true;
+			if (selected < 11) {
+				selected++;
+				selectionChanged = true;
+			}
+		}
+		if (selrctionOffset < maxOffset && GuiHelper.isInRect(3, 123, 13, 15, x-posX, y-posY)){
+			selrctionOffset++;
+			offsetChanged = true;
+			if (selected > 0) {
+				selected--;
+				selectionChanged = true;
+			}
+		}
+
+		//Check for location or lock clicked
+		for (int i = 0; i < Math.min(12, locations.size()); i++){
+			if (GuiHelper.isInRect(17, 6+i*11, 80, 10, x-posX, y-posY)) {
+				if (!(locations.get(i+selrctionOffset).getWriteProtected() && editingExisting)) {
+					selected = i;
+					selectionChanged = true;
+				}
+			}
+
+			if (GuiHelper.isInRect(99, 8+i*11, 8, 7, x-posX, y-posY)) {
+				locations.get(i+selrctionOffset).setWriteProtected(!locations.get(i+selrctionOffset).getWriteProtected());
+				DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATELOCK, i+selrctionOffset, locations.get(i+selrctionOffset).getWriteProtected()));
+			}
+		}
+
+
+		if (selectionChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.CHANGESELECTION, selected, false));
+		if (offsetChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selrctionOffset, false));
+
+		updateButtons();
 		super.mouseClicked(x, y, button);
+	}
+
+	@Override
+	protected void mouseMovedOrUp(int p_146286_1_, int p_146286_2_, int p_146286_3_) {
+		super.mouseMovedOrUp(p_146286_1_, p_146286_2_, p_146286_3_);
+	}
+
+	@Override
+	public void handleMouseInput() {
+		int i = org.lwjgl.input.Mouse.getEventDWheel();
+		boolean offsetChanged = false;
+		boolean selectionChanged = false;
+		if (i < 0 && selrctionOffset < maxOffset) {
+			selrctionOffset++;
+			offsetChanged = true;
+			if (selected > 0) {
+				selected--;
+				selectionChanged = true;
+			}
+			updateButtons();
+		}
+		if (i > 0 && selrctionOffset > 0) {
+			selrctionOffset--;
+			offsetChanged = true;
+			if (selected < 11) {
+				selected++;
+				selectionChanged = true;
+			}
+			updateButtons();
+		}
+
+		if (selectionChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.CHANGESELECTION, selected, false));
+		if (offsetChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selrctionOffset, false));
+
+		super.handleMouseInput();
+	}
+
+	private  void updateButtons(){
+		if (locations.size() > 12) maxOffset = locations.size() - 12;
+		else maxOffset = 0;
+		if (selrctionOffset > maxOffset) selrctionOffset = maxOffset;
+		if (selected > locations.size() || selected < 0) selected = Math.max(locations.size() - 1, 0);
+		if (locations.size() == 0 || locations.get(selected + selrctionOffset).getWriteProtected()) {
+			((GuiButton) buttonList.get(0)).enabled = false;
+			((GuiButton) buttonList.get(1)).enabled = false;
+			((GuiButton) buttonList.get(2)).enabled = false;
+		} else {
+			((GuiButton) buttonList.get(0)).enabled = true;
+			((GuiButton) buttonList.get(1)).enabled = true;
+			((GuiButton) buttonList.get(2)).enabled = true;
+		}
+		if (editingNew){
+			((GuiButton) buttonList.get(4)).enabled = !textBeingEdited.getText().isEmpty();
+			((GuiButton) buttonList.get(4)).displayString = "Commit";
+		}
+		if (editingExisting){
+			((GuiButton) buttonList.get(0)).enabled = !textBeingEdited.getText().isEmpty();
+			((GuiButton) buttonList.get(0)).displayString = "Commit";
+		}
+		if (locations.size() >= 100) ((GuiButton) buttonList.get(4)).enabled = false;
+		else if (!editingNew) ((GuiButton) buttonList.get(4)).enabled = true;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void initGui()
-	{
+	public void initGui(){
 		buttonList.clear();
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 
-		updateTeleporter();
+		//updateTeleporter();
 
-		buttonList.add(new GuiButton(selected, posX - 25, posY + 3 + selected * 23, 25, 20, "Set"));
-		buttonList.add(new GuiButton(5, posX + 109, posY + 117, 50, 20, "Add Fuel"));
+		buttonList.add(new GuiButtonAHeight(0, posX + 112, posY + 45, 66, 12, "Rename"));
+		buttonList.add(new GuiButtonAHeight(1, posX + 112, posY + 58, 66, 12, "Set Here"));
+		buttonList.add(new GuiButtonAHeight(2, posX + 112, posY + 71, 66, 12, "Remove"));
+		buttonList.add(new GuiButtonAHeight(3, posX + 112, posY + 99, 66, 12, "Teleport"));
+		buttonList.add(new GuiButtonAHeight(4, posX + 112, posY + 112, 66, 12, "Add New"));
+		buttonList.add(new GuiButtonAHeight(5, posX + 112, posY + 125, 66, 12, "Add Fuel"));
+		buttonList.add(new GuiButtonAHeight(6, posX+xSize-63, posY-15, 60, 15, "Cancel"));
+		((GuiButton) buttonList.get(6)).visible = false;
+
+		textBeingEdited = new GuiTextField(fontRendererObj, posX+3, posY-14, xSize-67, 12);
+		textBeingEdited.setTextColor(-1);
+		textBeingEdited.setDisabledTextColour(-1);
+		textBeingEdited.setEnableBackgroundDrawing(true);
+		textBeingEdited.setMaxStringLength(40);
+		textBeingEdited.setVisible(false);
+
+		updateButtons();
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button)
-	{
-		super.actionPerformed(button);
-		
-		for (int i = 0; i < 5; i++)
-		{
-			if (i == button.id)
+	protected void actionPerformed(GuiButton button){
+		if (button.id == 0 || button.id == 6 && !editingNew){
+			if(button.id == 6){
+				editingExisting = false;
+				((GuiButton) buttonList.get(0)).displayString = "Rename";
+				((GuiButton) buttonList.get(6)).visible = false;
+				textBeingEdited.setVisible(false);
+				((GuiButton) buttonList.get(0)).enabled = true;
+				return;
+			}
+			if (!editingExisting){
+				editingExisting = true;
+				textBeingEdited.setVisible(true);
+				textBeingEdited.setText(locations.get(selected+selrctionOffset).getName());
+				textBeingEdited.setSelectionPos(0);
+				textBeingEdited.setFocused(true);
+				((GuiButton) buttonList.get(6)).visible = true;
+			}else{
+				if (!textBeingEdited.getText().isEmpty()){
+					locations.get(selected+selrctionOffset).setName(textBeingEdited.getText());
+					TeleportLocation location = new TeleportLocation();
+					location.setName(textBeingEdited.getText());
+					DraconicEvolution.network.sendToServer(new TeleporterPacket(location, TeleporterPacket.UPDATENAME, selected+selrctionOffset));
+					((GuiButton) buttonList.get(0)).displayString = "Rename";
+					editingExisting = false;
+					textBeingEdited.setVisible(false);
+					((GuiButton) buttonList.get(6)).visible = false;
+				}
+			}
+		}
+
+		if (button.id == 1){
+			TeleportLocation location = new TeleportLocation(player.posX, player.posY, player.posZ, player.dimension, player.cameraPitch, player.cameraYaw, locations.get(selected+selrctionOffset).getName());
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(location, TeleporterPacket.UPDATEDESTINATION, selected+selrctionOffset));
+			locations.set(selected + selrctionOffset, location);
+		}
+
+		if (button.id == 2) {
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.REMOVEDESTINATION, selected+selrctionOffset, false));
+			locations.remove(selected+selrctionOffset);
+			if (selrctionOffset > 0) selrctionOffset--;
+			if (selected >= locations.size()) selected--;
+		}
+
+		if (button.id == 3){
+			if (locations.isEmpty()) return;
+			if (player.isRiding())
 			{
-				double playerX = player.posX;
-				double playerY = player.posY - 1.61;
-				double playerZ = player.posZ;
-				float yaw = player.rotationYaw;
-				float pitch = player.rotationPitch;
-				int dim = player.dimension;
-				
-				dPosX[i] = playerX;
-				dPosY[i] = playerY;
-				dPosZ[i] = playerZ;
-				dPosD[i] = dim;
-				dSet[i] = true;
-				
-				DraconicEvolution.channelHandler.sendToServer(new TeleporterPacket((byte) 1, i, dim, playerX, playerY, playerZ, yaw, pitch));
-				
-				
+				return;
+			}
+
+			if (!player.capabilities.isCreativeMode && fuel <= 0)
+			{
+				player.addChatMessage(new ChatComponentTranslation("msg.teleporterOutOfFuel.txt"));
+			}
+
+			if (player.capabilities.isCreativeMode || fuel > 0) {
+				fuel--;
+				DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.TELEPORT, selected+selrctionOffset, false));
+			}
+		}
+
+		if (button.id == 4 || button.id == 6 && !editingExisting){
+			if(button.id == 6){
+				editingNew = false;
+				((GuiButton) buttonList.get(4)).displayString = "Add New";
+				((GuiButton) buttonList.get(6)).visible = false;
+				((GuiButton) buttonList.get(4)).enabled = true;
+				textBeingEdited.setVisible(false);
+				return;
+			}
+			if (!editingNew){
+				editingNew = true;
+				textBeingEdited.setVisible(true);
+				textBeingEdited.setText(""+(int)player.posX+" "+(int)player.posY+" "+(int)player.posZ);
+				textBeingEdited.setSelectionPos(0);
+				textBeingEdited.setFocused(true);
+				((GuiButton) buttonList.get(6)).visible = true;
+			}else{
+				if (!textBeingEdited.getText().isEmpty()){
+					addCurrentLocationToList(textBeingEdited.getText());
+					((GuiButton) buttonList.get(4)).displayString = "Add New";
+					editingNew = false;
+					textBeingEdited.setVisible(false);
+					((GuiButton) buttonList.get(6)).visible = false;
+				}
 			}
 		}
 
@@ -203,11 +394,11 @@ public class GUITeleporter extends GuiScreen
 			{
 				if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54)))
 				{
-					DraconicEvolution.channelHandler.sendToServer(new TeleporterPacket((byte) 6, 1));
+					DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.ADDFUEL, 1, false));
 					this.fuel += ConfigHandler.teleporterUsesPerPearl;
 				}else if (hasPearls(16))
 				{
-					DraconicEvolution.channelHandler.sendToServer(new TeleporterPacket((byte) 6, 16));
+					DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.ADDFUEL, 16, false));
 					this.fuel += ConfigHandler.teleporterUsesPerPearl * 16;
 				}else
 					player.addChatMessage(new ChatComponentTranslation("msg.teleporterOutOfPearls.txt"));
@@ -215,10 +406,10 @@ public class GUITeleporter extends GuiScreen
 			else
 				player.addChatMessage(new ChatComponentTranslation("msg.teleporterOutOfPearls.txt"));
 		}
+		updateButtons();
 	}
 	
-	public boolean hasPearls(int number)
-	{
+	public boolean hasPearls(int number){
 		int found = 0;
 		ItemStack stack;
 		for (int i = 0; i < player.inventory.getSizeInventory(); i++)
@@ -234,41 +425,43 @@ public class GUITeleporter extends GuiScreen
 	}
 
 	@Override
-	public void keyTyped(char key, int keyN)
-	{
-		if ((key == 'e' && !editing) || key == '')
+	public void keyTyped(char key, int keyN){
+		if(this.textBeingEdited.textboxKeyTyped(key, keyN)) {
+			if (editingNew){
+				((GuiButton) buttonList.get(4)).enabled = !textBeingEdited.getText().isEmpty();
+				((GuiButton) buttonList.get(4)).displayString = "Commit";
+			}
+			if (editingExisting){
+				((GuiButton) buttonList.get(0)).enabled = !textBeingEdited.getText().isEmpty();
+				((GuiButton) buttonList.get(0)).displayString = "Commit";
+			}
+			return;
+		}
+
+		if (keyN == 28 && editingNew) actionPerformed((GuiButton)buttonList.get(4));
+		if (keyN == 28 && editingExisting) actionPerformed((GuiButton)buttonList.get(0));
+
+		if ((key == 'e' && (!editingExisting || !editingNew)) || key == '')
 		{
 			this.mc.displayGuiScreen(null);
 			this.mc.setIngameFocus();
 		}
-		
-		if (editing)
-		{
-			String text = destText[selected];
-			if (keyN == 14)
-				if (text.length() > 0)
-					destText[selected] = text.substring(0, text.length() - 1);
-				else
-					return;
-			else if (keyN == 28)
-			{
-				editing = false;
-				DraconicEvolution.channelHandler.sendToServer(new TeleporterStringPacket(selected, destText[selected]));
-			}
-			else if (keyN == 42)
-				return;
-			else if (destText[selected].length() < 13)
-				destText[selected] += key;
-			
-			initGui();
-		}
-		
-		
 	}
 
 	@Override
-	public void updateScreen()
-	{
+	public void updateScreen(){
+		if (player.getCurrentEquippedItem() == null || !player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.teleporterMKII)) || player.isDead)
+		{
+			this.mc.displayGuiScreen(null);
+			this.mc.setIngameFocus();
+		}
+
+
+		tick++;
+		if (tick >= 10){
+			tick = 0;
+			showFuelLight = !showFuelLight;
+		}
 	}
 
 	@Override
@@ -277,55 +470,30 @@ public class GUITeleporter extends GuiScreen
 		return false;
 	}
 
-	private void updatePositions(ItemStack teleporter)
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			this.dPosX[i] = ItemNBTHelper.getDouble(teleporter, "X_" + i, -1);
-		}
-		for (int i = 0; i < 5; i++)
-		{
-			this.dPosY[i] = ItemNBTHelper.getDouble(teleporter, "Y_" + i, -1);
-		}
-		for (int i = 0; i < 5; i++)
-		{
-			this.dPosZ[i] = ItemNBTHelper.getDouble(teleporter, "Z_" + i, -1);
-		}
-		for (int i = 0; i < 5; i++)
-		{
-			this.dPosD[i] = ItemNBTHelper.getIntager(teleporter, "Dimension_" + i, 0);
-		}
-		for (int i = 0; i < 5; i++)
-		{
-			this.dYaw[i] = ItemNBTHelper.getFloat(teleporter, "Yaw_" + i, 0);
-		}
-		for (int i = 0; i < 5; i++)
-		{
-			this.dPitch[i] = ItemNBTHelper.getFloat(teleporter, "Pitch_" + i, 0);
-		}
-		for (int i = 0; i < 5; i++)
-		{
-			this.dSet[i] = ItemNBTHelper.getBoolean(teleporter, "IsSet_" + i, false);
-		}
+	private void readDataFromItem(ItemStack teleporter){
 		this.selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
+		this.selrctionOffset = ItemNBTHelper.getIntager(teleporter, "SelectionOffset", 0);
 		this.fuel = ItemNBTHelper.getIntager(teleporter, "Fuel", 0);
-	}
-	
-	public void updateNames(ItemStack teleporter)
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			this.destText[i] = ItemNBTHelper.getString(teleporter, "Dest_" + i, "Destination " + i);
+
+		locations.clear();
+
+		NBTTagCompound compound = teleporter.getTagCompound();
+		if(compound == null || compound.getTagList("Locations", 0) == null) return;
+		NBTTagList list = (NBTTagList)compound.getTag("Locations");
+		if (list == null) list = new NBTTagList();
+
+		for (int i = 0; i < list.tagCount(); i++){
+			NBTTagCompound tagLocation = list.getCompoundTagAt(i);
+			TeleportLocation location = new TeleportLocation(tagLocation.getDouble("X"), tagLocation.getDouble("Y"), tagLocation.getDouble("Z"), tagLocation.getInteger("Dimension"), tagLocation.getFloat("Pitch"), tagLocation.getFloat("Yaw"), tagLocation.getString("Name"));
+			location.setWriteProtected(tagLocation.getBoolean("WP"));
+			locations.add(location);
 		}
 	}
-	
-	public void updateTeleporter()
-	{
-		if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.teleporterMKII)))
-		{
-			this.teleporterItem = player.getCurrentEquippedItem();
-			updatePositions(teleporterItem);
-		}
+
+	private void addCurrentLocationToList(String name){
+		TeleportLocation currentLocation = new TeleportLocation(player.posX, player.posY, player.posZ, player.dimension, player.rotationPitch, player.rotationYaw, name);
+		DraconicEvolution.network.sendToServer(new TeleporterPacket(currentLocation, 0));
+		locations.add(currentLocation);
 	}
 
 }

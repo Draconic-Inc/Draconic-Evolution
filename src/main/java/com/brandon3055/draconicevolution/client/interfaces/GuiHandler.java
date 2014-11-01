@@ -4,12 +4,11 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.manual.GuiManual;
 import com.brandon3055.draconicevolution.common.container.*;
 import com.brandon3055.draconicevolution.common.tileentities.*;
+import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import com.brandon3055.draconicevolution.common.core.utills.InventoryReader;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -17,12 +16,14 @@ public class GuiHandler implements IGuiHandler {
 	public static final int GUIID_SUN_DIAL = 1;
 	public static final int GUIID_GRINDER = 2;
 	public static final int GUIID_TELEPORTER = 3;
-	public static final int GUIID_READER = 4;
 	public static final int GUIID_PARTICLEGEN = 5;
 	public static final int GUIID_PLAYERDETECTOR = 6;
 	public static final int GUIID_ENERGY_INFUSER = 7;
 	public static final int GUIID_GENERATOR = 8;
 	public static final int GUIID_MANUAL = 9;
+	public static final int GUIID_DISSENCHANTER = 10;
+	public static final int GUIID_DRACONIC_CHEST = 11;
+	public static final int GUIID_CONTAINER_TEMPLATE = 100;
 
 	public GuiHandler() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(DraconicEvolution.instance, this);
@@ -49,8 +50,6 @@ public class GuiHandler implements IGuiHandler {
 					return new ContainerGrinder(player.inventory, (TileGrinder) te2);
 				}
 				break;
-			case GUIID_READER:
-				return new ContainerReader(player.inventory, new InventoryReader(player));
 			case GUIID_PLAYERDETECTOR:
 				TileEntity detector = world.getTileEntity(x, y, z);
 				if (detector != null && detector instanceof TilePlayerDetectorAdvanced) {
@@ -69,6 +68,27 @@ public class GuiHandler implements IGuiHandler {
 					return new ContainerGenerator(player.inventory, (TileGenerator) generator);
 				}
 				break;
+			case GUIID_DISSENCHANTER:
+				TileEntity dissenchanter = world.getTileEntity(x, y, z);
+				if (dissenchanter != null && dissenchanter instanceof TileDissEnchanter) {
+					return new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) dissenchanter);
+				}
+				break;
+			case GUIID_DRACONIC_CHEST:
+				TileEntity containerChest = world.getTileEntity(x, y, z);
+				if (containerChest != null && containerChest instanceof TileDraconiumChest) {
+					return new ContainerDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
+				}
+				break;
+
+
+
+//			case GUIID_CONTAINER_TEMPLATE:
+//				TileEntity containerTemp = world.getTileEntity(x, y, z);
+//				if (containerTemp != null && containerTemp instanceof TileContainerTemplate) {
+//					return new ContainerTemplate(player.inventory, (TileContainerTemplate) containerTemp);
+//				}
+//				break;
 		}
 
 		return null;
@@ -97,8 +117,6 @@ public class GuiHandler implements IGuiHandler {
 					return new GUIGrinder(player.inventory, (TileGrinder) te2);
 				}
 				break;
-			case GUIID_READER:
-				return new GUIReader(player.inventory, new InventoryReader(player));
 			case GUIID_PARTICLEGEN:
 				TileEntity gen = world.getTileEntity(x, y, z);
 				return (gen != null && gen instanceof TileParticleGenerator) ? new GUIParticleGenerator((TileParticleGenerator) gen, player) : null;
@@ -107,19 +125,40 @@ public class GuiHandler implements IGuiHandler {
 				if (detector != null && detector instanceof TilePlayerDetectorAdvanced) {
 					return new GUIPlayerDetector(player.inventory, (TilePlayerDetectorAdvanced) detector);
 				}
+				break;
 			case GUIID_ENERGY_INFUSER:
 				TileEntity infuser = world.getTileEntity(x, y, z);
 				if (infuser != null && infuser instanceof TileEnergyInfuser) {
 					return new GUIEnergyInfuser(player.inventory, (TileEnergyInfuser) infuser);
 				}
+				break;
 			case GUIID_GENERATOR:
 				TileEntity generator = world.getTileEntity(x, y, z);
 				if (generator != null && generator instanceof TileGenerator) {
 					return new GUIGenerator(player.inventory, (TileGenerator) generator);
 				}
+				break;
 			case GUIID_MANUAL:
 				return new GuiManual();
+			case GUIID_DISSENCHANTER:
+				TileEntity dissenchanter = world.getTileEntity(x, y, z);
+				if (dissenchanter != null && dissenchanter instanceof TileDissEnchanter) {
+					return new GUIDissEnchanter(player.inventory, (TileDissEnchanter) dissenchanter);
+				}
+				break;
+			case GUIID_DRACONIC_CHEST:
+				TileEntity containerChest = world.getTileEntity(x, y, z);
+				if (containerChest != null && containerChest instanceof TileDraconiumChest) {
+					return new GUIDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
+				}
+				break;
 
+//			case GUIID_CONTAINER_TEMPLATE:
+//				TileEntity containerTemp = world.getTileEntity(x, y, z);
+//				if (containerTemp != null && containerTemp instanceof TileContainerTemplate) {
+//					return new GUIContainerTemplate(player.inventory, (TileContainerTemplate) containerTemp);
+//				}
+//				break;
 		}
 
 		return null;

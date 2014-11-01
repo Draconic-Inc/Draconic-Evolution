@@ -1,26 +1,19 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import java.util.List;
-
-import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -28,8 +21,9 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
 
 public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyHandler {
 	//########### variables #############//
@@ -48,12 +42,10 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 	protected EnergyStorage internalGenBuffer = new EnergyStorage(20000, 32000, 0);
 	protected EnergyStorage externalInputBuffer = new EnergyStorage(100000, 32000, 0);
 	public int energyPerKill = 1000;
-	private int burnSpeed = 2;
-	private int EPBT = 10;
 
 	public void updateVariables() {
 		if (meta == -1) meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-
+		//if (fakePlayer == null) fakePlayer = new DEFakePlayer((WorldServer)worldObj, new GameProfile(UUID.randomUUID(), "DEGrinderFakePlayer"));
 		if (centreY == -1) {
 			switch (meta) {
 				case 0:
@@ -88,20 +80,22 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 	@Override
 	public void updateEntity() {
 		updateVariables();
+		int burnSpeed = 2;
+		int EPBT = 10;
 
 		if (burnTimeRemaining > 0 && internalGenBuffer.getEnergyStored() < internalGenBuffer.getMaxEnergyStored()) {
 			burnTimeRemaining -= burnSpeed;
 			internalGenBuffer.setEnergyStored(internalGenBuffer.getEnergyStored() + Math.min(burnSpeed * EPBT, internalGenBuffer.getMaxEnergyStored() - internalGenBuffer.getEnergyStored()));
 		} else if (burnTimeRemaining <= 0) tryRefuel();
 
-		if ((internalGenBuffer.getEnergyStored() > 0)) {
-			for (int i = 0; i < 6; i++){
-				TileEntity tile = worldObj.getTileEntity(xCoord + ForgeDirection.getOrientation(i).offsetX, yCoord + ForgeDirection.getOrientation(i).offsetY, zCoord + ForgeDirection.getOrientation(i).offsetZ);
-				if (tile != null && tile instanceof IEnergyHandler) {
-					internalGenBuffer.extractEnergy(((IEnergyHandler) tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), internalGenBuffer.extractEnergy(internalGenBuffer.getMaxExtract(), true), false), false);
-				}
-			}
-		}
+//		if ((internalGenBuffer.getEnergyStored() > 0)) {
+//			for (int i = 0; i < 6; i++){
+//				TileEntity tile = worldObj.getTileEntity(xCoord + ForgeDirection.getOrientation(i).offsetX, yCoord + ForgeDirection.getOrientation(i).offsetY, zCoord + ForgeDirection.getOrientation(i).offsetZ);
+//				if (tile != null && tile instanceof IEnergyHandler) {
+//					internalGenBuffer.extractEnergy(((IEnergyHandler) tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), internalGenBuffer.extractEnergy(internalGenBuffer.getMaxExtract(), true), false), false);
+//				}
+//			}
+//		}
 
 		if (!worldObj.isRemote && readyNext && !disabled && getActiveBuffer().getEnergyStored() >= energyPerKill) {
 			if (killNextEntity()) {
@@ -146,31 +140,27 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 
 	@SuppressWarnings("unchecked")
 	public boolean killNextEntity() {
+		if (worldObj.isRemote) return false;
 		killBox = AxisAlignedBB.getBoundingBox(centreX - 3.5, centreY - 1, centreZ - 3.5, centreX + 3.5, centreY + 3, centreZ + 3.5);
 		killList = worldObj.getEntitiesWithinAABB(EntityLiving.class, killBox);
 
 		if (killList.size() > 0) {
 			EntityLiving mob = killList.get(worldObj.rand.nextInt(killList.size()));
 			if (mob instanceof EntityCreature) {
-				if (((EntityCreature) mob).isEntityAlive()) {
-					((EntityCreature) mob).attackEntityFrom(DamageSource.magic, 50000F);
-					if (worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) dropXP(mob);
+				if (mob.isEntityAlive()) {
+					ReflectionHelper.setPrivateValue(EntityLivingBase.class, mob, 60, new String[]{"recentlyHit", "field_70718_bc"});
+					mob.attackEntityFrom(DamageSource.generic, 50000F);
+					//mob.attackEntityFrom(DamageSource.causePlayerDamage(DEFakePlayerFactory.getPlayer((WorldServer) mob.worldObj)), 50000F);
 					readyNext = true;
-					if (mob instanceof EntitySkeleton) {
-						if (((EntitySkeleton) mob).getSkeletonType() == 1) {
-							int random = worldObj.rand.nextInt(100);
-							if (random == 55)
-								((EntityCreature) mob).entityDropItem(new ItemStack(Items.skull, 1, 1), 0.0F);
-						}
-					}
 					return true;
 				}
 				readyNext = true;
 				return false;
-			} else if (mob instanceof EntityLiving) {
-				if (((EntityLiving) mob).isEntityAlive()) {
-					((EntityLiving) mob).attackEntityFrom(DamageSource.magic, 50000F);
-					if (worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) dropXP(mob);
+			} else {
+				if (mob.isEntityAlive()) {
+					ReflectionHelper.setPrivateValue(EntityLivingBase.class, mob, 60, new String[]{"recentlyHit", "field_70718_bc"});
+					mob.attackEntityFrom(DamageSource.generic, 50000F);
+					//mob.attackEntityFrom(DamageSource.causePlayerDamage(DEFakePlayerFactory.getPlayer((WorldServer) mob.worldObj)), 50000F);
 					readyNext = true;
 					return true;
 				}
@@ -180,13 +170,6 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 		}
 		readyNext = false;
 		return false;
-	}
-
-	public void dropXP(Entity mob) {
-		int count = 1 + worldObj.rand.nextInt(3);
-		for (int i = 0; i < count; i++) {
-			worldObj.spawnEntityInWorld(new EntityXPOrb(worldObj, mob.lastTickPosX, mob.lastTickPosY, mob.lastTickPosZ, 1));
-		}
 	}
 
 	public static int getItemBurnTime(ItemStack stack) {
@@ -375,7 +358,7 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return externalInputBuffer.receiveEnergy(maxReceive, simulate);
 	}
 

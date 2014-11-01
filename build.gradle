@@ -10,14 +10,23 @@ buildscript {
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
+
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
+repositories {
+    maven {
+        name 'CB Maven FS'
+        url "http://chickenbones.net/maven/"
+    }
+}
+
+
 apply plugin: 'forge'
 
-version = "1.7.10-v0.9.5-Beta-pre10"
+version = "1.7.10-v0.9.6-Beta-pre3"
 group= "com.brandon3055.draconicevolution" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Draconic-Evolution"
 
@@ -39,6 +48,9 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    compile "codechicken:CodeChickenLib:1.7.10-1.1.1.99:dev"
+    compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+    compile "codechicken:NotEnoughItems:1.7.10-1.0.3.64:dev"
 
 }
 

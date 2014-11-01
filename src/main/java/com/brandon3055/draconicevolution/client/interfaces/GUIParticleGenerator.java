@@ -1,21 +1,19 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
-import java.util.ArrayList;
-
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.network.ParticleGenPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.network.ParticleGenPacket;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import java.util.ArrayList;
 
 public class GUIParticleGenerator extends GuiScreen {
 	private final int xSize = 212;
@@ -377,7 +375,7 @@ public class GUIParticleGenerator extends GuiScreen {
 				else initGui();
 				break;
 		}
-		DraconicEvolution.channelHandler.sendToServer(new ParticleGenPacket((byte) button.id, packetValue, tile.xCoord, tile.yCoord, tile.zCoord));
+		DraconicEvolution.network.sendToServer(new ParticleGenPacket((byte) button.id, packetValue, tile.xCoord, tile.yCoord, tile.zCoord));
 	}
 
 	@Override

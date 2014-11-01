@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
 import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.client.render.EnergyParticle;
 import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -101,49 +101,49 @@ public class TileEnergyInfuser extends TileEntity implements IEnergyHandler, ISi
 			double rotationF;
 			double yRand;
 			double radRand;
-			EnergyParticle particle;
+			ParticleEnergy particle;
 			float y = 0.6f;
 
 			yRand = ((rand.nextFloat()-0.5)/2);
 			radRand = 1 - rand.nextFloat()/2;
 			rotationF = rotation / 57F;
-			particle = new EnergyParticle(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y + yRand, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 1);
+			particle = new ParticleEnergy(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y + yRand, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 1);
 			ParticleHandler.spawnCustomParticle(particle);
 
 			yRand = ((rand.nextFloat()-0.5)/2);
 			radRand = 1 - rand.nextFloat()/2;
 			rotationF = (rotation + 90) / 57F;
-			particle = new EnergyParticle(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y + yRand, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 1);
+			particle = new ParticleEnergy(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y + yRand, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 1);
 			ParticleHandler.spawnCustomParticle(particle);
 
 			yRand = ((rand.nextFloat()-0.5)/2);
 			radRand = 1 - rand.nextFloat()/2;
 			rotationF = (rotation + 180) / 57F;
-			particle = new EnergyParticle(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y + yRand, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 1);
+			particle = new ParticleEnergy(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y + yRand, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 1);
 			ParticleHandler.spawnCustomParticle(particle);
 
 			yRand = ((rand.nextFloat()-0.5)/2);
 			radRand = 1 - rand.nextFloat()/2;
 			rotationF = (rotation + 270) / 57F;
-			particle = new EnergyParticle(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y + yRand, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 1);
+			particle = new ParticleEnergy(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y + yRand, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 1);
 			ParticleHandler.spawnCustomParticle(particle);
 
 			y = 0.79f;
 			radRand = 0.35;
 			rotationF = rotation / 57F;
-			particle = new EnergyParticle(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 0);
+			particle = new ParticleEnergy(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 0);
 			ParticleHandler.spawnCustomParticle(particle);
 
 			rotationF = (rotation + 90) / 57F;
-			particle = new EnergyParticle(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 0);
+			particle = new ParticleEnergy(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 0);
 			ParticleHandler.spawnCustomParticle(particle);
 
 			rotationF = (rotation + 180) / 57F;
-			particle = new EnergyParticle(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 0);
+			particle = new ParticleEnergy(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 0);
 			ParticleHandler.spawnCustomParticle(particle);
 
 			rotationF = (rotation + 270) / 57F;
-			particle = new EnergyParticle(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 0);
+			particle = new ParticleEnergy(worldObj, xCoord + 0.5 + radRand*Math.sin(rotationF), yCoord + y, zCoord + 0.5 + radRand*Math.cos(rotationF), xCoord + 0.5, yCoord + 0.7, zCoord + 0.5, 0);
 			ParticleHandler.spawnCustomParticle(particle);
 		}
 	}

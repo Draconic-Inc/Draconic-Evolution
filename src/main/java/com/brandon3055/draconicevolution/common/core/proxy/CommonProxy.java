@@ -23,12 +23,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.MinecraftForge;
 
 public class CommonProxy {
-	private final static boolean debug = DraconicEvolution.debug;
+	//private final static boolean debug = DraconicEvolution.debug;
 
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
@@ -37,20 +39,28 @@ public class CommonProxy {
 		ModItems.init();
 		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 1);
 		registerTileEntities();
+		initializeNetwork();
 	}
 
 	public void init(FMLInitializationEvent event) {
 		CraftingHandler.init();
 		registerGuiHandeler();
 		registerWorldGen();
-		DraconicEvolution.channelHandler.initialise();
-		registerPackets();
 		registerEntitys();
 		DETab.initialize();
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
-		DraconicEvolution.channelHandler.postInitialise();
+	}
+
+	public void initializeNetwork(){
+		DraconicEvolution.network = NetworkRegistry.INSTANCE.newSimpleChannel(DraconicEvolution.networkChannelName);
+		DraconicEvolution.network.registerMessage(ButtonPacket.Handler.class, ButtonPacket.class, 0, Side.SERVER);
+		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
+		DraconicEvolution.network.registerMessage(PlacedItemPacket.Handler.class, PlacedItemPacket.class, 2, Side.SERVER);
+		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);
+		DraconicEvolution.network.registerMessage(PlayerDetectorStringPacket.Handler.class, PlayerDetectorStringPacket.class, 4, Side.SERVER);
+		DraconicEvolution.network.registerMessage(TeleporterPacket.Handler.class, TeleporterPacket.class, 5, Side.SERVER);
 	}
 
 	public void registerTileEntities() {
@@ -71,28 +81,19 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEnderResurrection.class, References.RESOURCESPREFIX + "TileEnderResurrection");
 		GameRegistry.registerTileEntity(TilePlacedItem.class, References.RESOURCESPREFIX + "TilePlacedItem");
 		GameRegistry.registerTileEntity(TileCKeyStone.class, References.RESOURCESPREFIX + "TileCKeyStone");
+		GameRegistry.registerTileEntity(TileDissEnchanter.class, References.RESOURCESPREFIX + "TileDissEnchanter");
+		GameRegistry.registerTileEntity(TileTeleporterStand.class, References.RESOURCESPREFIX + "TileTeleporterStand");
+		GameRegistry.registerTileEntity(TileDraconiumChest.class, References.RESOURCESPREFIX + "TileDraconiumChest");
 		if (DraconicEvolution.debug)
-			GameRegistry.registerTileEntity(TileTestBlock.class, "References.RESOURCESPREFIX + TileTestBlock");
+		{
+			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
+			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
+		}
 	}
 
 	public void registerEventListeners() {
 		MinecraftForge.EVENT_BUS.register(new MinecraftForgeEventHandler());
 		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
-	}
-
-	public void registerPackets() {
-		if (debug) {
-			System.out.println("[DEBUG]CommonProxy: registerPackets");
-			DraconicEvolution.channelHandler.registerPacket(ExamplePacket.class);
-		}
-
-		DraconicEvolution.channelHandler.registerPacket(ButtonPacket.class);
-		DraconicEvolution.channelHandler.registerPacket(TeleporterPacket.class);
-		DraconicEvolution.channelHandler.registerPacket(TeleporterStringPacket.class);
-		DraconicEvolution.channelHandler.registerPacket(ParticleGenPacket.class);
-		DraconicEvolution.channelHandler.registerPacket(PlayerDetectorStringPacket.class);
-		DraconicEvolution.channelHandler.registerPacket(PlayerDetectorButtonPacket.class);
-		DraconicEvolution.channelHandler.registerPacket(PlacedItemPacket.class);
 	}
 
 	public void registerGuiHandeler() {

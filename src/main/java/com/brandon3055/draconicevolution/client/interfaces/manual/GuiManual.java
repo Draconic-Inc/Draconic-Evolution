@@ -88,6 +88,9 @@ public class GuiManual extends GuiScreen {
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.grinder, 1, 3), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyInfuser), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.customSpawner), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.generator, 1, 3), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.dissEnchanter), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.teleporterStand), ""));
 
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.particleGenerator), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.xRayBlock), ""));
@@ -98,12 +101,14 @@ public class GuiManual extends GuiScreen {
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyPylon), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 1), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 2), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.longRangeDislocator, 1, 1), ""));
 
 		pageCollection.addPage(new EnergyCoreTutorialPage("TUTORIAL."+getNextPageIndex(), pageCollection).setIndexName(StatCollector.translateToLocal("manual.de.ecth.txt")));
 		pageCollection.addPage(new EnderResurrectionTutorialPage("TUTORIAL."+getNextPageIndex(), pageCollection).setIndexName("manual.de.roerth.txt"));
 		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.endercomet.description").setIndexName("manual.de.endercomet.txt"));
 		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.chaosisland.description").setIndexName("manual.de.enderisland.txt"));
 		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.placeditems.description").setIndexName("manual.de.placeditems.txt"));
+		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.pigmenBloodRage.description").setIndexName("manual.de.pigmenBloodRage.txt"));
 
 		pageCollection.addPage(new IndexPage("INDEX", pageCollection));
 		return pageCollection;

@@ -29,7 +29,7 @@ public class TestBlock extends BlockDE {
 		this.setHardness(5f);
 		this.setResistance(200.0f);
 		//this.setBlockBounds(0.4f, 0f, 0.4f, 0.6f, 1f, 0.6f);
-		ModBlocks.registerWithItem(this, TestItemBlock.class);
+		ModBlocks.register(this, TestItemBlock.class);
 	}
 
 	@Override

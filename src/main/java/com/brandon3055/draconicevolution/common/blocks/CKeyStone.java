@@ -30,7 +30,7 @@ public class CKeyStone extends BlockDE {
 		this.setResistance(100F);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.cKeyStoneName);
-		ModBlocks.registerWithItem(this, CKeyStoneItemBlock.class);
+		ModBlocks.register(this, CKeyStoneItemBlock.class);
 	}
 
 

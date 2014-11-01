@@ -2,9 +2,9 @@ package com.brandon3055.draconicevolution.common.tileentities;
 
 import java.util.Random;
 
-import com.brandon3055.draconicevolution.client.render.Particles;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleCustom;
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,10 +13,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import com.brandon3055.draconicevolution.client.render.CustomParticle;
 import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 import net.minecraft.util.AxisAlignedBB;
-import org.lwjgl.opengl.GL11;
 
 public class TileParticleGenerator extends TileEntity {
 	public int red = 0;
@@ -83,7 +81,7 @@ public class TileParticleGenerator extends TileEntity {
 				double spawnY = yCoord + spawn_y + (random_spawn_y * rand.nextFloat());
 				double spawnZ = zCoord + spawn_z + (random_spawn_z * rand.nextFloat());
 
-				CustomParticle particle = new CustomParticle(worldObj, spawnX + 0.5, spawnY + 0.5, spawnZ + 0.5, MX, MY, MZ, SCALE, collide, this.selected_particle);
+				ParticleCustom particle = new ParticleCustom(worldObj, spawnX + 0.5, spawnY + 0.5, spawnZ + 0.5, MX, MY, MZ, SCALE, collide, this.selected_particle);
 				particle.red = this.red + rand.nextInt(random_red + 1);
 				particle.green = this.green + rand.nextInt(random_green + 1);
 				particle.blue = this.blue + rand.nextInt(random_blue + 1);

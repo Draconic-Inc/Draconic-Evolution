@@ -1,7 +1,13 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
-import java.util.ArrayList;
-
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
+import com.brandon3055.draconicevolution.common.core.network.PlayerDetectorButtonPacket;
+import com.brandon3055.draconicevolution.common.core.network.PlayerDetectorStringPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -9,17 +15,9 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
-import com.brandon3055.draconicevolution.common.core.network.PlayerDetectorButtonPacket;
-import com.brandon3055.draconicevolution.common.core.network.PlayerDetectorStringPacket;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
 public class GUIPlayerDetector extends GuiContainer
@@ -27,8 +25,6 @@ public class GUIPlayerDetector extends GuiContainer
 
 	public EntityPlayer player;
 	private TilePlayerDetectorAdvanced detector;
-	private int guiUpdateTick;
-	public boolean showCamoSlot = false;
 	public boolean showInvSlots = true;
 	private boolean editMode = false;
 	private int range = 0;
@@ -71,15 +67,26 @@ public class GUIPlayerDetector extends GuiContainer
 			drawNameChart(x, y);
 		}
 
-		drawCamoTab(x, y);
+		if (showInvSlots)
+			drawTexturedModalRect(guiLeft + 142, guiTop + 19, xSize, 0, 23, 41);
 
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y)
 	{
-
 		drawGuiText(x, y);
+
+
+	}
+
+	@Override
+	public void drawScreen(int x, int y, float p_73863_3_) {
+		super.drawScreen(x, y, p_73863_3_);
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("Camouflage");
+		if ((x - guiLeft > 142 && x - guiLeft < 160) && (y - guiTop > 19 && y - guiTop < 37) && showInvSlots)
+			drawHoveringText(lines, x, y, fontRendererObj);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -121,11 +128,11 @@ public class GUIPlayerDetector extends GuiContainer
 		switch (button.id) {
 			case 0: //Range +
 				range = (range < maxRange) ? range + 1 : maxRange;
-				DraconicEvolution.channelHandler.sendToServer(new PlayerDetectorButtonPacket((byte)0, (byte)range));
+				DraconicEvolution.network.sendToServer(new PlayerDetectorButtonPacket((byte)0, (byte)range));
 			break;
 			case 1: //Range -
 				range = (range > 1) ? range - 1 : 1;
-				DraconicEvolution.channelHandler.sendToServer(new PlayerDetectorButtonPacket((byte)0, (byte)range));
+				DraconicEvolution.network.sendToServer(new PlayerDetectorButtonPacket((byte)0, (byte)range));
 			break;
 			case 3: //White List -
 				initScedualed = true;
@@ -137,7 +144,7 @@ public class GUIPlayerDetector extends GuiContainer
 				whitelist = !whitelist;
 				initScedualed = true;
 				byte val = (byte) (whitelist ? 1 : 0);
-				DraconicEvolution.channelHandler.sendToServer(new PlayerDetectorButtonPacket((byte)1, val));
+				DraconicEvolution.network.sendToServer(new PlayerDetectorButtonPacket((byte)1, val));
 			break;
 			case 5: //Back -
 				editMode = false;
@@ -149,7 +156,7 @@ public class GUIPlayerDetector extends GuiContainer
                 outputInverted = !outputInverted;
                 initScedualed = true;
                 byte val2 = (byte) (outputInverted ? 1 : 0);
-                DraconicEvolution.channelHandler.sendToServer(new PlayerDetectorButtonPacket((byte)2, val2));
+                DraconicEvolution.network.sendToServer(new PlayerDetectorButtonPacket((byte)2, val2));
                 break;
 		}
 
@@ -169,7 +176,7 @@ public class GUIPlayerDetector extends GuiContainer
 				names[selected] = selectedNameText.getText();
 				selectedNameText.setText("");
 				selectedNameText.setFocused(false);
-				DraconicEvolution.channelHandler.sendToServer(new PlayerDetectorStringPacket((byte)selected, names[selected]));
+				DraconicEvolution.network.sendToServer(new PlayerDetectorStringPacket((byte)selected, names[selected]));
 				selected = -1;
 			}
 		}else
@@ -190,43 +197,10 @@ public class GUIPlayerDetector extends GuiContainer
 		super.updateScreen();
 	}
 
-	private void drawCamoTab(int x, int y)
-	{
-		boolean hovering = false;
-		if ((x - guiLeft > xSize && x - guiLeft < xSize + 20) && (y - guiTop > 0 && y - guiTop < 19))
-			hovering = true;
-
-		if (showCamoSlot)
-		{
-			if (hovering)
-				drawTexturedModalRect(guiLeft + xSize, guiTop, xSize, 85, 23, 41);
-			else
-				drawTexturedModalRect(guiLeft + xSize, guiTop, xSize, 44, 23, 41);
-		} else
-		{
-			if (hovering)
-				drawTexturedModalRect(guiLeft + xSize, guiTop, xSize, 22, 23, 22);
-			else
-				drawTexturedModalRect(guiLeft + xSize, guiTop, xSize, 0, 23, 22);
-		}
-
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("Camouflage");
-		if ((x - guiLeft > xSize && x - guiLeft < xSize + 20) && (y - guiTop > 0 && y - guiTop < 19))
-			drawHoveringText(lines, x, y, fontRendererObj);
-	}
-
 	@Override
 	protected void mouseClicked(int x, int y, int par3)
     {
 		super.mouseClicked(x, y, par3);
-
-		//Check if the camo slot was clicked
-		if ((x - guiLeft > xSize && x - guiLeft < xSize + 20) && (y - guiTop > 0 && y - guiTop < 19))
-		{
-			showCamoSlot = !showCamoSlot;
-			((ContainerPlayerDetector) this.inventorySlots).updateContainerSlots();
-		}
 
 		if (editMode)
 			selectName(x - guiLeft, y - guiTop);

@@ -10,12 +10,20 @@ import com.brandon3055.draconicevolution.common.items.ModItems;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -23,6 +31,7 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 
 import java.util.ArrayList;
@@ -32,8 +41,8 @@ import java.util.Random;
 public class MinecraftForgeEventHandler {
 
 	Random random = new Random();
-	public static List<String> playersWithUphillStep = new ArrayList();
-	public static List<String> playersWithFlight = new ArrayList();
+	public static List<String> playersWithUphillStep = new ArrayList<String>();
+	public static List<String> playersWithFlight = new ArrayList<String>();
 
 	@SubscribeEvent
 	public void onEntityUpdate(LivingUpdateEvent event){
@@ -83,6 +92,7 @@ public class MinecraftForgeEventHandler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public void onDropEvent(LivingDropsEvent event){
 		if (event.entity instanceof EntityDragon && !event.entity.worldObj.isRemote){
@@ -108,10 +118,11 @@ public class MinecraftForgeEventHandler {
 		if (((EntityPlayer) attacker).getHeldItem() == null || !(((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicSword) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicDistructionStaff) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.draconicBow) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.wyvernBow) || ((EntityPlayer) attacker).getHeldItem().getItem().equals(ModItems.wyvernSword))) { return; }
 		World world = entity.worldObj;
 		int rand = random.nextInt(ConfigHandler.soulDropChance);
-		if (rand == 0) {
+		int rand2 = random.nextInt(ConfigHandler.passiveSoulDropChance);
+		boolean isAnimal = entity instanceof EntityAnimal;
+		if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
 			ItemStack soul = new ItemStack(ModItems.mobSoul);
-			String name = entity.getCommandSenderName();
-			if (name.equals("Ocelot")) name = "Ozelot";
+			String name = EntityList.getEntityString(entity);
 			ItemNBTHelper.setString(soul, "Name", name);
 			world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
 		}
@@ -136,6 +147,7 @@ public class MinecraftForgeEventHandler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public void ChunkEvent(ChunkEvent event) {
 		if (!ConfigHandler.updateFix) return;
@@ -180,8 +192,45 @@ public class MinecraftForgeEventHandler {
 		if (event.entity instanceof EntityPlayer && ExtendedPlayer.get((EntityPlayer) event.entity) == null) ExtendedPlayer.register((EntityPlayer) event.entity);
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public void itemTooltipEvent(ItemTooltipEvent event){
 		if (ConfigHandler.showUnlocalizedNames) event.toolTip.add(event.itemStack.getUnlocalizedName());
+	}
+
+	@SuppressWarnings("unused")
+	@SubscribeEvent
+	public void stopUsingEvent(PlayerUseItemEvent.Start event){
+		if (!ConfigHandler.pigmenBloodRage || event.item == null || event.item.getItem() == null) return;
+		if (event.item.getItem() == Items.porkchop || event.item.getItem() == Items.cooked_porkchop){
+			World world = event.entityPlayer.worldObj;
+			if (world.isRemote) return;
+			EntityPlayer player = event.entityPlayer;
+			List list = world.getEntitiesWithinAABB(EntityPigZombie.class, AxisAlignedBB.getBoundingBox(player.posX - 32, player.posY - 32, player.posZ - 32, player.posX + 32, player.posY + 32, player.posZ + 32));
+
+			EntityZombie entityAtPlayer = new EntityPigZombie(world);
+			entityAtPlayer.setPosition(player.posX, player.posY, player.posZ);
+
+			boolean flag = false;
+
+			for (int i = 0; i < list.size(); ++i)
+			{
+				Entity entity1 = (Entity)list.get(i);
+
+				if (entity1 instanceof EntityPigZombie)
+				{
+					EntityPigZombie entitypigzombie = (EntityPigZombie)entity1;
+					NBTTagCompound compound = new NBTTagCompound();
+					entitypigzombie.writeEntityToNBT(compound);
+					compound.setShort("Anger", (short)1000);
+					entitypigzombie.readEntityFromNBT(compound);
+					if (Math.abs(entitypigzombie.posX - player.posX) < 14 && Math.abs(entitypigzombie.posY - player.posY) < 14 && Math.abs(entitypigzombie.posZ - player.posZ) < 14) flag = true;
+					entitypigzombie.addPotionEffect(new PotionEffect(5, 10000, 3));
+					entitypigzombie.addPotionEffect(new PotionEffect(11, 10000, 2));
+				}
+			}
+
+			if (flag) player.addPotionEffect(new PotionEffect(2, 500, 3));
+		}
 	}
 }

@@ -59,4 +59,10 @@ public class Strings {//                                              public sta
 	public static final String keyName = "key";
 	public static final String creativeStructureSpawnerName = "creativeStructureSpawner";
 	public static final String obliterationCatalystName = "obliterationCatalyst";
+	public static final String adminSpawnEggName = "adminSpawnEgg";
+	public static final String infoTabletName = "infoTablet";
+	public static final String containerTemplateName = "containerTemplate";
+	public static final String dissEnchanterName = "dissEnchanter";
+	public static final String teleporterStandName = "teleporterStand";
+	public static final String draconiumChestName = "draconiumChest";
 }

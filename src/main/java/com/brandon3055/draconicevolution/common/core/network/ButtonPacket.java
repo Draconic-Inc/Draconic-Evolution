@@ -1,14 +1,22 @@
 package com.brandon3055.draconicevolution.common.core.network;
 
+import com.brandon3055.draconicevolution.common.container.ContainerDissEnchanter;
+import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.common.container.ContainerWeatherController;
+import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
+import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.inventory.Container;
-import net.minecraft.network.NetHandlerPlayServer;
 
-public class ButtonPacket implements IPacket
+public class ButtonPacket implements IMessage
 {
+	public static final byte ID_WEATHERCONTROLLER = 0;
+	public static final byte ID_DISSENCHANTER = 1;
+	public static final byte ID_DRACONIUMCHEST = 2;
 	byte buttonId = 0;
 	boolean state = false;
 	
@@ -20,44 +28,54 @@ public class ButtonPacket implements IPacket
 	}
 
 	@Override
-	public void readBytes(ByteBuf bytes)
-	{
+	public void fromBytes(ByteBuf bytes){
 		this.buttonId = bytes.readByte();
 		this.state = bytes.readBoolean();
 	}
 
 	@Override
-	public void writeBytes(ByteBuf bytes)
-	{
+	public void toBytes(ByteBuf bytes){
 		bytes.writeByte(buttonId);
 		bytes.writeBoolean(state);
 	}
 
-	@Override
-	public void handleClientSide(NetHandlerPlayClient player)
-	{
-		System.out.println("a client");
-	}
+	public static class Handler implements IMessageHandler<ButtonPacket, IMessage> {
 
-	@Override
-	public void handleServerSide(NetHandlerPlayServer player)
-	{
-		switch (this.buttonId) {
-			case 0:
-			{
-				Container container = player.playerEntity.openContainer;
-				if (container != null && container instanceof ContainerWeatherController){
-					TileWeatherController tileWC = ((ContainerWeatherController) container).getTileWC();
-					tileWC.reciveButtonEvent(buttonId);
+		@Override
+		public IMessage onMessage(ButtonPacket message, MessageContext ctx) {
+			switch (message.buttonId) {
+				case ID_WEATHERCONTROLLER:
+				{
+					Container container = ctx.getServerHandler().playerEntity.openContainer;
+					if (container != null && container instanceof ContainerWeatherController){
+						TileWeatherController tileWC = ((ContainerWeatherController) container).getTileWC();
+						tileWC.reciveButtonEvent(message.buttonId);
+					}
+					break;
 				}
-				break;
-			}
-			case 1:
-			break;
+				case ID_DISSENCHANTER:
+				{
+					Container container = ctx.getServerHandler().playerEntity.openContainer;
+					if (container != null && container instanceof ContainerDissEnchanter){
+						TileDissEnchanter tile = ((ContainerDissEnchanter) container).getTile();
+						tile.buttonClick(ctx.getServerHandler().playerEntity);
+					}
+					break;
+				}
+				case ID_DRACONIUMCHEST:
+				{
+					Container container = ctx.getServerHandler().playerEntity.openContainer;
+					if (container != null && container instanceof ContainerDraconiumChest){
+						TileDraconiumChest tile = ((ContainerDraconiumChest) container).getTile();
+						tile.setAutoFeed(!tile.smeltingAutoFeed);
+					}
+					break;
+				}
 
-			default:
-			break;
+				default:
+					break;
+			}
+			return null;
 		}
 	}
-
 }

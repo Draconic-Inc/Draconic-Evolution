@@ -129,8 +129,9 @@ public class EntityDraconicArrow extends EntityArrow {
 
 		if (block.getMaterial() != Material.air) {
 			if (explosive) {
-				worldObj.createExplosion(this.shootingEntity, this.field_145791_d, this.field_145792_e, this.field_145789_f, 4, ConfigHandler.bowBlockDamage);
+				worldObj.createExplosion(this.shootingEntity, this.prevPosX, this.prevPosY, this.prevPosZ, 4, ConfigHandler.bowBlockDamage);
 				this.setDead();
+				return;
 			}
 			block.setBlockBoundsBasedOnState(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
 			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBoxFromPool(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);

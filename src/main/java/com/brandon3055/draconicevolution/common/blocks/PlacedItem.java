@@ -72,8 +72,44 @@ public class PlacedItem extends BlockDE {
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_) {
-		return null;
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+		TilePlacedItem tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem) ? (TilePlacedItem) world.getTileEntity(x, y, z) : null;
+		int meta = world.getBlockMetadata(x, y, z);
+		if (tile != null && tile.getStack() != null) {
+			if (tile.getStack().getItem() instanceof ItemBlock){
+				switch (meta){
+					case 0:
+						return AxisAlignedBB.getBoundingBox(x+0.25D, y+0.5D, z+0.25D, x+0.75D, y+1D, z+0.75D);
+					case 1:
+						return AxisAlignedBB.getBoundingBox(x+0.25D, y+0D, z+0.25D, x+0.75D, y+0.5D, z+0.75D);
+					case 2:
+						return AxisAlignedBB.getBoundingBox(x+0.25D, y+0.25D, z+0.5D, x+0.75D, y+0.75D, z+1D);
+					case 3:
+						return AxisAlignedBB.getBoundingBox(x+0.25D, y+0.25D, z+0D, x+0.75D, y+0.75D, z+0.5D);
+					case 4:
+						return AxisAlignedBB.getBoundingBox(x+0.5D, y+0.25D, z+0.25D, x+1D, y+0.75D, z+0.75D);
+					case 5:
+						return AxisAlignedBB.getBoundingBox(x+0D, y+0.25D, z+0.25D, x+0.5D, y+0.75D, z+0.75D);
+				}
+			}
+			else {
+				switch (meta){
+					case 0:
+						return AxisAlignedBB.getBoundingBox(x+0.25D, y+0.9D, z+0.25D, x+0.75D, y+1D, z+0.75D);
+					case 1:
+						return AxisAlignedBB.getBoundingBox(x+0.25D, y+0D, z+0.25D, x+0.75D, y+0.1D, z+0.75D);
+					case 2:
+						return AxisAlignedBB.getBoundingBox(x+0.25D, y+0.25D, z+0.9D, x+0.75D, y+0.75D, z+1D);
+					case 3:
+						return AxisAlignedBB.getBoundingBox(x+0.25D, y+0.25D, z+0D, x+0.75D, y+0.75D, z+0.1D);
+					case 4:
+						return AxisAlignedBB.getBoundingBox(x+0.9D, y+0.25D, z+0.25D, x+1D, y+0.75D, z+0.75D);
+					case 5:
+						return AxisAlignedBB.getBoundingBox(x+0D, y+0.25D, z+0.25D, x+0.1D, y+0.75D, z+0.75D);
+				}
+			}
+		}
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
 
 	@Override

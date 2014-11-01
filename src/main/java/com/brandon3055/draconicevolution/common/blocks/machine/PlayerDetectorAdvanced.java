@@ -1,18 +1,16 @@
 package com.brandon3055.draconicevolution.common.blocks.machine;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
-import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
@@ -21,6 +19,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -200,5 +199,15 @@ public class PlayerDetectorAdvanced extends BlockContainerDE
 		world.notifyBlocksOfNeighborChange(x, y + 1, z, world.getBlock(x, y, z));
 		world.notifyBlocksOfNeighborChange(x, y, z - 1, world.getBlock(x, y, z));
 		world.notifyBlocksOfNeighborChange(x, y, z + 1, world.getBlock(x, y, z));
+	}
+
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
+		TileEntity te = world.getTileEntity(x, y, z);
+		TilePlayerDetectorAdvanced detector = (te != null && te instanceof TilePlayerDetectorAdvanced) ? (TilePlayerDetectorAdvanced) te : null;
+		if(detector != null && detector.getStackInSlot(0) != null){
+			return detector.getStackInSlot(0);
+		}
+		return super.getPickBlock(target, world, x, y, z);
 	}
 }

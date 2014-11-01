@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.common.core.handler;
 
+import com.brandon3055.draconicevolution.client.render.particle.ParticleDistortion;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
-import com.brandon3055.draconicevolution.client.render.DistortionParticle;
 
 @SideOnly(Side.CLIENT)
 public class ParticleHandler
@@ -37,7 +37,7 @@ public class ParticleHandler
 			{
 				if (particleName.equals("distortionParticle"))
 				{
-					var21 = new DistortionParticle(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ, scale);
+					var21 = new ParticleDistortion(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ, scale);
 				}
 				
 				mc.effectRenderer.addEffect(var21);

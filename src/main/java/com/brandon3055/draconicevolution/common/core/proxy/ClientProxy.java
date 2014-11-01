@@ -1,12 +1,22 @@
 package com.brandon3055.draconicevolution.common.core.proxy;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.handler.ToolHudHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
-import com.brandon3055.draconicevolution.client.render.*;
+import com.brandon3055.draconicevolution.client.render.block.RenderDraconiumChest;
+import com.brandon3055.draconicevolution.client.render.block.RenderEnergyInfuser;
+import com.brandon3055.draconicevolution.client.render.block.RenderParticleGen;
+import com.brandon3055.draconicevolution.client.render.block.RenderTeleporterStand;
+import com.brandon3055.draconicevolution.client.render.entity.RenderDragon;
+import com.brandon3055.draconicevolution.client.render.item.RenderBow;
+import com.brandon3055.draconicevolution.client.render.item.RenderMobSoul;
+import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
@@ -19,6 +29,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ClientProxy extends CommonProxy {
 	private final static boolean debug = DraconicEvolution.debug;
@@ -40,7 +51,10 @@ public class ClientProxy extends CommonProxy {
 		super.init(event);
 		//Client Only
 		FMLCommonHandler.instance().bus().register(new KeyInputHandler());
+		FMLCommonHandler.instance().bus().register(new ClientEventHandler());
+		MinecraftForge.EVENT_BUS.register(new ToolHudHandler());
 		KeyBindings.init();
+		registerRenderIDs();
 	}
 
 	@Override
@@ -50,39 +64,41 @@ public class ClientProxy extends CommonProxy {
 		super.postInit(event);
 		
 		//Client Only
+
 	}
 
 	public void registerRendering()
 	{
-		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new BowRenderer());
-		MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new BowRenderer());
-		MinecraftForgeClient.registerItemRenderer(ModItems.mobSoul, new SoulItemRenderer());
+		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBow());
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new RenderBow());
+		MinecraftForgeClient.registerItemRenderer(ModItems.mobSoul, new RenderMobSoul());
 		
-		TileEntitySpecialRenderer render = new ParticleGenRenderer();
+		TileEntitySpecialRenderer render = new RenderTileParticleGen();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileParticleGenerator.class, render);
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new ItemParticleGenRenderer(render, new TileParticleGenerator()));
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen(render, new TileParticleGenerator()));
 
-		render = new EnergyInfiserRenderer();
+		render = new RenderTileEnergyInfiser();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyInfuser.class, render);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new ItemEnergyInfuserRenderer(render, new TileEnergyInfuser()));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser(render, new TileEnergyInfuser()));
 
-		render = new CustomSpawnerRenderer();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileCustomSpawner.class, render);
-
-		render = new TestBlockRenderer();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, render);
-
-		render = new EnergyStorageCoreRenderer();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyStorageCore.class, render);
-
-		render = new EnergyPylonRenderer();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, render);
-
-		render = new PlacedItemRenderer();
-		ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, render);
+		ClientRegistry.bindTileEntitySpecialRenderer(TileCustomSpawner.class, new RenderTileCustomSpawner());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, new RenderTileTestBlock());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyStorageCore.class, new RenderTileEnergyStorageCore());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, new RenderTileEnergyPylon());
+		ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, new RenderTilePlacedItem());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileDissEnchanter.class, new RenderTileDissEnchanter());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileTeleporterStand.class, new RenderTileTeleporterStand());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileDraconiumChest.class, new RenderTileDraconiumChest());
 
 		//RenderingRegistry.registerEntityRenderingHandler(EntityChaosDrill.class, new EntityChaosDrillRenderer());
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new CustomDragonRenderer());
+		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
+	}
+
+	public void registerRenderIDs (){
+		References.idTeleporterStand = RenderingRegistry.getNextAvailableRenderId();
+		References.idDraconiumChest = RenderingRegistry.getNextAvailableRenderId();
+		RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
+		RenderingRegistry.registerBlockHandler(new RenderDraconiumChest());
 	}
 }

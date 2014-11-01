@@ -36,6 +36,7 @@ public class TeleporterMKI extends ItemDE
 		this.setMaxDamage(19);
 		this.setMaxStackSize(1);
 		ModItems.register(this);
+		//this.setContainerItem(this);
 		//GameRegistry.registerItem(this, Strings.teleporterMKIName);
 	}
 
@@ -95,6 +96,7 @@ public class TeleporterMKI extends ItemDE
 		float yaw = ItemNBTHelper.getFloat(stack, "Yaw", 0);
 		float pitch = ItemNBTHelper.getFloat(stack, "Pitch", 0);
 		int dim = ItemNBTHelper.getIntager(stack, "Dimension", 0);
+		boolean onStand = !(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof TeleporterMKI);
 
 		if (player.isSneaking())
 		{
@@ -116,10 +118,10 @@ public class TeleporterMKI extends ItemDE
 		{
 			if (isSet)
 			{
-				if ((player.getHealth() > 2 || player.capabilities.isCreativeMode) && !player.isRiding())
+				if ((player.getHealth() > 2 || player.capabilities.isCreativeMode || onStand) && !player.isRiding())
 				{
-					stack.damageItem(1, player);
-					if (!player.capabilities.isCreativeMode)
+					if (!onStand)stack.damageItem(1, player);
+					if (!player.capabilities.isCreativeMode && !onStand)
 						player.setHealth(player.getHealth() - 2);
 
 					travelEffect(world, player);

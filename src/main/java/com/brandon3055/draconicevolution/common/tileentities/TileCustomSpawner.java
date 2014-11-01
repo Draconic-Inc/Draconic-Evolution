@@ -1,11 +1,10 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.draconicevolution.client.render.EnergyParticle;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
 import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -16,7 +15,6 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import sun.rmi.runtime.Log;
 
 import java.util.Iterator;
 import java.util.List;
@@ -156,7 +154,7 @@ public class TileCustomSpawner extends TileEntity
 				double x = (double) xCoord + 0.5 + (Math.sin(rotation) * 3);
 				double y = (double) yCoord - 1 + worldObj.rand.nextInt(4);
 				double z = (double) zCoord + 0.5 + (Math.cos(rotation) * 3);
-				EnergyParticle particle = new EnergyParticle(worldObj, x, y, z, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0, false);
+				ParticleEnergy particle = new ParticleEnergy(worldObj, x, y, z, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0, false);
 				ParticleHandler.spawnCustomParticle(particle, 20);
 			}
 		}else
@@ -164,7 +162,7 @@ public class TileCustomSpawner extends TileEntity
 			double x = (double) xCoord + (worldObj.rand.nextDouble());
 			double y = (double) yCoord + (double)target.getEyeHeight() + worldObj.rand.nextDouble();
 			double z = (double) zCoord + (worldObj.rand.nextDouble());
-			EnergyParticle particle = new EnergyParticle(worldObj, x, y, z, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0);
+			ParticleEnergy particle = new ParticleEnergy(worldObj, x, y, z, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0);
 			ParticleHandler.spawnCustomParticle(particle, 20);
 		}
 	}

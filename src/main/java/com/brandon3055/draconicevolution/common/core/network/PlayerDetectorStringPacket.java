@@ -1,14 +1,15 @@
 package com.brandon3055.draconicevolution.common.core.network;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.NetHandlerPlayServer;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
 
 
-public class PlayerDetectorStringPacket implements IPacket
+public class PlayerDetectorStringPacket implements IMessage
 {
 	private int index = 0;
 	private String name = "";
@@ -21,35 +22,30 @@ public class PlayerDetectorStringPacket implements IPacket
 	}
 
 	@Override
-	public void writeBytes(ByteBuf bytes)
-	{
+	public void toBytes(ByteBuf bytes){
 		bytes.writeByte(index);
 		ByteBufUtils.writeUTF8String(bytes, name);
 	}
 	
 	@Override
-	public void readBytes(ByteBuf bytes)
-	{
+	public void fromBytes(ByteBuf bytes){
 		index = bytes.readByte();
 		name = ByteBufUtils.readUTF8String(bytes);
 	}
 
-	@Override
-	public void handleClientSide(NetHandlerPlayClient player)
-	{
-	}
+	public static class Handler implements IMessageHandler<PlayerDetectorStringPacket, IMessage> {
 
-	@Override
-	public void handleServerSide(NetHandlerPlayServer player)
-	{	
-		ContainerPlayerDetector container = (player.playerEntity.openContainer instanceof ContainerPlayerDetector) ? (ContainerPlayerDetector)player.playerEntity.openContainer : null; 
-		TilePlayerDetectorAdvanced tile = (container != null) ? ((ContainerPlayerDetector)container).getTileDetector() : null;
-			
-		if (tile != null)
-		{
-			tile.names[index] = name;
-			player.playerEntity.worldObj.markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+		@Override
+		public IMessage onMessage(PlayerDetectorStringPacket message, MessageContext ctx) {
+			ContainerPlayerDetector container = (ctx.getServerHandler().playerEntity.openContainer instanceof ContainerPlayerDetector) ? (ContainerPlayerDetector)ctx.getServerHandler().playerEntity.openContainer : null;
+			TilePlayerDetectorAdvanced tile = (container != null) ? container.getTileDetector() : null;
+
+			if (tile != null)
+			{
+				tile.names[message.index] = message.name;
+				ctx.getServerHandler().playerEntity.worldObj.markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+			}
+			return null;
 		}
 	}
-
 }
