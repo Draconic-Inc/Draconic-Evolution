@@ -289,6 +289,11 @@ key.placeItem=Place Item in world
 
 death.attack.ChaosDragon=%1$s was torn apart by a Chaos Guardian
 
+//###################################Buttons######################################//
+button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
+button.de.chestAutoFeed1.txt=FILL.Keep the current stacks full
+button.de.chestAutoFeed2.txt=LOCK.Only pull the currently smelting items from the inventory
+button.de.chestAutoFeed3.txt=ALL.Pull any smeltable items from the inventory
 
 //###################################Manual Gui###################################//
 

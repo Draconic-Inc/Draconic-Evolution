@@ -4,14 +4,12 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
-import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.core.handler.CraftingHandler;
-import com.brandon3055.draconicevolution.common.core.handler.FMLEventHandler;
-import com.brandon3055.draconicevolution.common.core.handler.MinecraftForgeEventHandler;
+import com.brandon3055.draconicevolution.common.core.handler.*;
 import com.brandon3055.draconicevolution.common.core.network.*;
 import com.brandon3055.draconicevolution.common.core.utills.Utills;
 import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
@@ -34,7 +32,7 @@ public class CommonProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
-		registerEventListeners();
+		registerEventListeners(event.getSide());
 		ModBlocks.init();
 		ModItems.init();
 		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 1);
@@ -51,6 +49,7 @@ public class CommonProxy {
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
+		OreDoublingRegistry.init();
 	}
 
 	public void initializeNetwork(){
@@ -91,7 +90,7 @@ public class CommonProxy {
 		}
 	}
 
-	public void registerEventListeners() {
+	public void registerEventListeners(Side s) {
 		MinecraftForge.EVENT_BUS.register(new MinecraftForgeEventHandler());
 		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
 	}

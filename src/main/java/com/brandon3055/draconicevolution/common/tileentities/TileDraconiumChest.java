@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChes
 import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.core.utills.InventoryUtils;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,8 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 	public int smeltingBurnSpeed;
 	public final int smeltingMaxBurnSpeed = 50;
 	public final int smeltingCompleateTime = 1600;
-	public boolean smeltingAutoFeed = false;
+	public int smeltingAutoFeed = 0;
+	public int tick;
 
 	@Override
 	public void updateEntity() {
@@ -103,8 +105,16 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		updateEnergy();
 	}
 
+	public void updateEnergy() {
+		if (energy.getEnergyStored() < energy.getMaxEnergyStored() && getStackInSlot(239) != null && getStackInSlot(239).getItem() instanceof IEnergyContainerItem) {
+			IEnergyContainerItem item = (IEnergyContainerItem) getStackInSlot(239).getItem();
+			item.extractEnergy(getStackInSlot(239), receiveEnergy(ForgeDirection.DOWN, item.extractEnergy(getStackInSlot(239), energy.getMaxReceive(), true), false), false);
+		}
+	}
+
 	public void updateFurnace() {
 		if (worldObj.isRemote) return;
+		tick++;
 		boolean canSmelt = false;
 		boolean flag = true;
 		for (int i = 0; i < 5; i++) {
@@ -113,6 +123,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 			if (isSmeltable(stack)) canSmelt = true;
 			else flag = false;
 		}
+
 
 		if (!flag) canSmelt = false;
 
@@ -134,16 +145,31 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 			}
 		}
 
+		if (canSmelt && getLock()){ //Confirm that the firnace can still run when lock mode is enabled
+			flag = false;
+			for (int i = 0; i < 5; i++) {
+
+				ItemStack recipe = getStackInSlot(234 + i);
+
+				if (recipe == null || recipe.stackSize == 1) continue;
+
+				flag = true;
+			}
+			canSmelt = flag;
+		}
+
+		flag = false;
 		if (canSmelt && smeltingProgressTime >= smeltingCompleateTime) {
 			int itemsToProccess = 5;
 			int proccessAttempts = 0;
-			flag = false;
 			do {
 				for (int i = 0; i < 5; i++) {
 
-					if (getStackInSlot(234 + i) == null) continue;
+					ItemStack recipe = getStackInSlot(234 + i);
 
-					ItemStack result = getResult(getStackInSlot(234 + i)).copy();
+					if (recipe == null || (getLock() && recipe.stackSize == 1)) continue;
+
+					ItemStack result = getResult(recipe).copy();
 
 					for (int j = 0; j < getSizeInventory(); j++) {
 						if (getStackInSlot(j) == null) continue;
@@ -153,8 +179,8 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 					if (result.stackSize > 0) InventoryUtils.insertItemIntoInventory(this, result);
 
 					if (result.stackSize == 0) {
-						getStackInSlot(234 + i).stackSize--;
-						if (getStackInSlot(234 + i).stackSize == 0) setInventorySlotContents(234 + i, null);
+						recipe.stackSize--;
+						if (recipe.stackSize == 0) setInventorySlotContents(234 + i, null);
 						itemsToProccess--;
 						flag = true;
 					}
@@ -165,11 +191,9 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 				proccessAttempts++;
 
 			} while (itemsToProccess > 0 && proccessAttempts < 5);
-
-			if (flag && smeltingAutoFeed) feedNextItem();
-
 		}
 
+		if ((flag && (getFill() || getLock() || getAll())) || (!canSmelt && (getLock() || getAll()) && tick % 60 == 0)) feedNextItem();
 
 		if (canSmelt) {
 			smeltingBurnSpeed = Math.min(energy.getEnergyStored() / 1000, smeltingMaxBurnSpeed);
@@ -182,13 +206,6 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 
 	}
 
-	public void updateEnergy() {
-		if (energy.getEnergyStored() < energy.getMaxEnergyStored() && getStackInSlot(239) != null && getStackInSlot(239).getItem() instanceof IEnergyContainerItem) {
-			IEnergyContainerItem item = (IEnergyContainerItem) getStackInSlot(239).getItem();
-			item.extractEnergy(getStackInSlot(239), receiveEnergy(ForgeDirection.DOWN, item.extractEnergy(getStackInSlot(239), energy.getMaxReceive(), true), false), false);
-		}
-	}
-
 	public void feedNextItem() {
 		boolean[] stacksFull = new boolean[]{false,false,false,false,false};
 
@@ -198,34 +215,57 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 			ItemStack candidate = getStackInSlot(i);
 
 			for (int j = 0; j < 5; j++) {
-				if (getStackInSlot(234 + j) == null) continue;
+				if (getStackInSlot(234 + j) == null && getAll())
+				{
+
+					if (candidate == null) break;
+					boolean candidateSmeltable = FurnaceRecipes.smelting().getSmeltingResult(candidate) != null;
+					if (candidateSmeltable) {
+						LogHelper.info(candidate);
+						setInventorySlotContents(234 + j, candidate.copy());
+						setInventorySlotContents(i, null);
+						candidate = null;
+						LogHelper.info(candidate);
+					}
+				}
+
+				if (getStackInSlot(234 + j) == null || candidate == null) continue;
 
 				ItemStack inputSlot = getStackInSlot(234 + j);
 
-				if (inputSlot.stackSize == inputSlot.getMaxStackSize()) {
-					stacksFull[j] = true;
-					continue;
+				InventoryUtils.tryMergeStacks(candidate, inputSlot);
+
+				if (candidate != null && candidate.stackSize == 0) {
+					setInventorySlotContents(i, null);
+					candidate = null;
 				}
 
-				InventoryUtils.tryMergeStacks(candidate, inputSlot);
+				if (inputSlot.stackSize == inputSlot.getMaxStackSize()) {
+					stacksFull[j] = true;
+				}
 			}
 
-			if (candidate.stackSize == 0) setInventorySlotContents(i, null);
+			if (candidate != null && candidate.stackSize == 0) setInventorySlotContents(i, null);
 
 			if (stacksFull[0] && stacksFull[1] && stacksFull[2] && stacksFull[3] && stacksFull[4]) break;
 		}
 	}
+
+	private boolean getFill() {return smeltingAutoFeed == 1;}
+	private boolean getLock() {return smeltingAutoFeed == 2;}
+	private boolean getAll() {return smeltingAutoFeed == 3;}
 
 	private boolean isSmeltable(ItemStack stack) {
 		return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
 	}
 
 	private ItemStack getResult(ItemStack stack) {
-		return FurnaceRecipes.smelting().getSmeltingResult(stack);
+		ItemStack oreResult = OreDoublingRegistry.getOreResult(stack);
+		return oreResult != null ? oreResult : FurnaceRecipes.smelting().getSmeltingResult(stack);
 	}
 
-	public void setAutoFeed(boolean b){
-		smeltingAutoFeed = b;
+	public void setAutoFeed(int i){
+		smeltingAutoFeed = i;
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
@@ -390,7 +430,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		compound.setInteger("Green", green);
 		compound.setInteger("Blue", blue);
 		compound.setBoolean("Edit", editMode);
-		compound.setBoolean("AutoFeed", smeltingAutoFeed);
+		compound.setByte("AutoFeed", (byte) smeltingAutoFeed);
 		energy.writeToNBT(compound);
 	}
 
@@ -414,7 +454,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		green = compound.getInteger("Green");
 		blue = compound.getInteger("Blue");
 		editMode = compound.getBoolean("Edit");
-		smeltingAutoFeed = compound.getBoolean("AutoFeed");
+		smeltingAutoFeed = compound.getByte("AutoFeed");
 		energy.readFromNBT(compound);
 	}
 
@@ -446,7 +486,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		compound.setInteger("Green", green);
 		compound.setInteger("Blue", blue);
 		compound.setBoolean("Edit", editMode);
-		compound.setBoolean("AutoFeed", smeltingAutoFeed);
+		compound.setByte("AutoFeed", (byte) smeltingAutoFeed);
 		energy.writeToNBT(compound);
 	}
 
@@ -468,7 +508,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		green = compound.getInteger("Green");
 		blue = compound.getInteger("Blue");
 		editMode = compound.getBoolean("Edit");
-		smeltingAutoFeed = compound.getBoolean("AutoFeed");
+		smeltingAutoFeed = compound.getByte("AutoFeed");
 		energy.readFromNBT(compound);
 	}
 

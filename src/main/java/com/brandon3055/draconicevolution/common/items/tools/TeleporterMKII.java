@@ -119,6 +119,8 @@ public class TeleporterMKII extends ItemDE
 				return teleporter;
 			}
 
+			if (destination.getName().isEmpty()) return teleporter;
+
 			if (!player.capabilities.isCreativeMode && fuel <= 0 && !onStand)
 			{
 				if (world.isRemote) player.addChatMessage(new ChatComponentTranslation("msg.teleporterOutOfFuel.txt"));

@@ -144,8 +144,10 @@ public class TeleporterPacket implements IMessage
 			if (message.function == SCROLL){
 				int selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
 				int selectionOffset = ItemNBTHelper.getIntager(teleporter, "SelectionOffset", 0);
-				int maxSelect = Math.min(list.tagCount(), 11);
+				int maxSelect = Math.min(list.tagCount()-1, 11);
 				int maxOffset = Math.max(list.tagCount() - 12, 0);
+
+				LogHelper.info(message.data+" "+maxSelect+" "+selected);
 
 				if(message.data > 0 && selected < maxSelect) {
 					ItemNBTHelper.setShort(teleporter, "Selection", (short) (selected + 1));

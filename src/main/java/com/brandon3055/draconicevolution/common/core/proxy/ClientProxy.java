@@ -101,4 +101,5 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
 		RenderingRegistry.registerBlockHandler(new RenderDraconiumChest());
 	}
+
 }

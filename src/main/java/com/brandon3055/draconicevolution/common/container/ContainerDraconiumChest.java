@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChest
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -15,7 +16,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-//@ChestContainer(isLargeChest = false, rowSize = 26)todo Re enable inv tweaks
+@ChestContainer(isLargeChest = false, rowSize = 26)
 public class ContainerDraconiumChest extends Container { //todo Create and implement IExtendedCrafters
 
 	/** The crafting matrix inventory (3x3). */

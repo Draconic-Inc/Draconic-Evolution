@@ -16,7 +16,10 @@ public class ButtonPacket implements IMessage
 {
 	public static final byte ID_WEATHERCONTROLLER = 0;
 	public static final byte ID_DISSENCHANTER = 1;
-	public static final byte ID_DRACONIUMCHEST = 2;
+	public static final byte ID_DRACONIUMCHEST0 = 2;
+	public static final byte ID_DRACONIUMCHEST1 = 3;
+	public static final byte ID_DRACONIUMCHEST2 = 4;
+	public static final byte ID_DRACONIUMCHEST3 = 5;
 	byte buttonId = 0;
 	boolean state = false;
 	
@@ -62,12 +65,39 @@ public class ButtonPacket implements IMessage
 					}
 					break;
 				}
-				case ID_DRACONIUMCHEST:
+				case ID_DRACONIUMCHEST0:
 				{
 					Container container = ctx.getServerHandler().playerEntity.openContainer;
 					if (container != null && container instanceof ContainerDraconiumChest){
 						TileDraconiumChest tile = ((ContainerDraconiumChest) container).getTile();
-						tile.setAutoFeed(!tile.smeltingAutoFeed);
+						tile.setAutoFeed(0);
+					}
+					break;
+				}
+				case ID_DRACONIUMCHEST1:
+				{
+					Container container = ctx.getServerHandler().playerEntity.openContainer;
+					if (container != null && container instanceof ContainerDraconiumChest){
+						TileDraconiumChest tile = ((ContainerDraconiumChest) container).getTile();
+						tile.setAutoFeed(1);
+					}
+					break;
+				}
+				case ID_DRACONIUMCHEST2:
+				{
+					Container container = ctx.getServerHandler().playerEntity.openContainer;
+					if (container != null && container instanceof ContainerDraconiumChest){
+						TileDraconiumChest tile = ((ContainerDraconiumChest) container).getTile();
+						tile.setAutoFeed(2);
+					}
+					break;
+				}
+				case ID_DRACONIUMCHEST3:
+				{
+					Container container = ctx.getServerHandler().playerEntity.openContainer;
+					if (container != null && container instanceof ContainerDraconiumChest){
+						TileDraconiumChest tile = ((ContainerDraconiumChest) container).getTile();
+						tile.setAutoFeed(3);
 					}
 					break;
 				}

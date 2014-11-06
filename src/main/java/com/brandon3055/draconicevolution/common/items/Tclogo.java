@@ -1,8 +1,11 @@
 package com.brandon3055.draconicevolution.common.items;
 
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -70,15 +73,22 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+		//if (!world.isRemote)OreDoublingRegistry.getOreResult(GameRegistry.findItemStack("ThermalFoundation", "oreCopper", 1));
 
 		int xi = (int)player.posX;
 		int yi = (int)player.posY;
 		int zi = (int)player.posZ;
-		int rad = 100;
+		int rad = 1000;
 
+		Block block;
 		for (int x = xi-rad; x < xi+rad; x++){
-			for (int y = yi-5; y < yi+5; y++){
+			for (int y = yi-10; y < yi+30; y++){
 				for (int z = zi-rad; z < zi+rad; z++){
+					block = world.getBlock(x, y, z);
+					if (block.getMaterial().equals(Material.vine) || block.getMaterial().equals(Material.plants)){
+						world.setBlockToAir(x, y, z);
+					}
+
 					//world.markBlockForUpdate(x, y, z);
 				}
 			}
@@ -97,6 +107,7 @@ public class Tclogo extends ItemDE {
 	@Override
 	public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
 	{
+		LogHelper.info(player.worldObj.getBlock(X, Y, Z).getMaterial());
 		//player.worldObj.scheduleBlockUpdate(X, Y, Z, player.worldObj.getBlock(X, Y, Z), 10);
 
 		return true;

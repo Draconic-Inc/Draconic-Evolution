@@ -110,7 +110,7 @@ public class CraftingInfoPage extends TitledPage {
 		int offset = 0;
 		for (String s : getFormattedText(fontRendererObj)) {
 			if (s == null) break;
-			fontRendererObj.drawString(s, 0, offset, 4210752);
+			fontRendererObj.drawString(s, 0, offset, 0x000000);
 			offset += fontRendererObj.FONT_HEIGHT;
 		}
 		GL11.glPopMatrix();

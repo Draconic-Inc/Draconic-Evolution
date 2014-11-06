@@ -37,7 +37,7 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
 	private TileDraconiumChest tile;
 	private static final ResourceLocation textureLeft = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DraconicChestLeft.png");
 	private static final ResourceLocation textureRight = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DraconicChestRight.png");
-	private boolean lastAutoFeed;
+	private int lastAutoFeed = -1;
 
 	public GUIDraconiumChest(InventoryPlayer invPlayer, TileDraconiumChest tile) {
 		super(new ContainerDraconiumChest(invPlayer, tile));
@@ -75,10 +75,32 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
 		fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("tile.draconicevolution:draconiumChest.name"), 4, 4, 0x00FFFF);
+		//fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("button.de.chestAutoFeed.txt"), 4, 180, 0x00FFFF);
 
 		ArrayList<String> list = new ArrayList<String>();
 		list.add(String.valueOf(tile.getEnergyStored(ForgeDirection.DOWN)) + "/" + String.valueOf(tile.getMaxEnergyStored(ForgeDirection.DOWN)) + "RF");
 		if (GuiHelper.isInRect(44, 235, 90, 16, x-guiLeft, y-guiTop))drawHoveringText(list, x-guiLeft, y-guiTop, fontRendererObj);
+		list.clear();
+		String s = StatCollector.translateToLocal("button.de.chestAutoFeed0.txt");
+		if (GuiHelper.isInRect(4, 180, 38, 12, x-guiLeft, y-guiTop)){
+			list.add(s.substring(s.indexOf(".")+1));
+			drawHoveringText(list, x-guiLeft, y-guiTop, fontRendererObj);
+		}
+		if (GuiHelper.isInRect(4, 193, 38, 12, x-guiLeft, y-guiTop)){
+			s = StatCollector.translateToLocal("button.de.chestAutoFeed1.txt");
+			list.add(s.substring(s.indexOf(".")+1));
+			drawHoveringText(list, x-guiLeft, y-guiTop, fontRendererObj);
+		}
+		if (GuiHelper.isInRect(4, 206, 38, 12, x-guiLeft, y-guiTop)){
+			s = StatCollector.translateToLocal("button.de.chestAutoFeed2.txt");
+			list.add(s.substring(s.indexOf(".")+1));
+			drawHoveringText(list, x-guiLeft, y-guiTop, fontRendererObj);
+		}
+		if (GuiHelper.isInRect(4, 219, 38, 12, x-guiLeft, y-guiTop)){
+			s = StatCollector.translateToLocal("button.de.chestAutoFeed3.txt");
+			list.add(s.substring(s.indexOf(".")+1));
+			drawHoveringText(list, x-guiLeft, y-guiTop, fontRendererObj);
+		}
 		RenderHelper.enableGUIStandardItemLighting();
 	}
 
@@ -89,12 +111,22 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 		buttonList.clear();
-		buttonList.add(new GuiButtonAHeight(0, posX+47, posY+180, 85, 12, "AutoFeed "+(tile.smeltingAutoFeed ? "on" : "off")));
+		String s = StatCollector.translateToLocal("button.de.chestAutoFeed0.txt");
+		buttonList.add(new GuiButtonAHeight(0, posX+4, posY+180, 38, 12, s.substring(0, s.indexOf("."))));
+		s = StatCollector.translateToLocal("button.de.chestAutoFeed1.txt");
+		buttonList.add(new GuiButtonAHeight(1, posX+4, posY+193, 38, 12, s.substring(0, s.indexOf("."))));
+		s = StatCollector.translateToLocal("button.de.chestAutoFeed2.txt");
+		buttonList.add(new GuiButtonAHeight(2, posX+4, posY+206, 38, 12, s.substring(0, s.indexOf("."))));
+		s = StatCollector.translateToLocal("button.de.chestAutoFeed3.txt");
+		buttonList.add(new GuiButtonAHeight(3, posX+4, posY+219, 38, 12, s.substring(0, s.indexOf("."))));
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
-		DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST, false));
+		if (button.id == 0)DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST0, false));
+		else if (button.id == 1)DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST1, false));
+		else if (button.id == 2)DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST2, false));
+		else if (button.id == 3)DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST3, false));
 	}
 
 	@Override
@@ -102,7 +134,10 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
 		super.updateScreen();
 		if (lastAutoFeed != tile.smeltingAutoFeed){
 			lastAutoFeed = tile.smeltingAutoFeed;
-			((GuiButton)buttonList.get(0)).displayString = "AutoFeed "+(tile.smeltingAutoFeed ? "on" : "off");
+			((GuiButton)buttonList.get(0)).enabled = lastAutoFeed != 0;
+			((GuiButton)buttonList.get(1)).enabled = lastAutoFeed != 1;
+			((GuiButton)buttonList.get(2)).enabled = lastAutoFeed != 2;
+			((GuiButton)buttonList.get(3)).enabled = lastAutoFeed != 3;
 		}
 	}
 

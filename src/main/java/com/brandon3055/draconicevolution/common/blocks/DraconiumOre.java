@@ -1,21 +1,20 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import java.util.Random;
-
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.items.ModItems;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.world.IBlockAccess;
+
+import java.util.Random;
 
 public class DraconiumOre extends BlockDE {
 	public IIcon icon;
@@ -38,7 +37,7 @@ public class DraconiumOre extends BlockDE {
 
     @Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(final IIconRegister iconRegister)
+	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		icon = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/draconium_ore");
 		iconEnd = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/draconium_ore_end");
@@ -60,15 +59,15 @@ public class DraconiumOre extends BlockDE {
 	}
 
 	@Override
-	public int quantityDropped(final Random random)
+	public int quantityDropped(Random random)
 	{
 		return 1 + random.nextInt(2);
 	}
 
 	@Override
-	public int quantityDroppedWithBonus(final int number, final Random random)
+	public int quantityDroppedWithBonus(int fortune, Random random)
 	{
-		return this.quantityDropped(random) + random.nextInt(number + 1);
+		return fortune == 0 ? this.quantityDropped(random) : this.quantityDropped(random) + fortune + random.nextInt(fortune * 2);
 	}
 
 	@Override
@@ -78,7 +77,7 @@ public class DraconiumOre extends BlockDE {
 	}
 
 	@Override
-	public Item getItemDropped(final int p_149650_1_, final Random p_149650_2_, final int p_149650_3_)
+	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
 	{
 		return ModItems.draconiumDust;
 	}

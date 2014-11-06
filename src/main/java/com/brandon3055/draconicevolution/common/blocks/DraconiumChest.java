@@ -3,9 +3,11 @@ package com.brandon3055.draconicevolution.common.blocks;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.blocks.itemblocks.DraconiumChestItemBlock;
+import com.brandon3055.draconicevolution.common.core.utills.InventoryUtils;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -231,18 +233,76 @@ public class DraconiumChest extends BlockContainerDE {
 		blockIcon = par1IconRegister.registerIcon(References.RESOURCESPREFIX + "draconiumChest");
 	}
 
-	@Override
-	public boolean hasTileEntityDrops() {
-		return true;
-	}
 
-	@Override
-	public boolean hasNormalDrops() {
+	//TODO Tidy up the crazy mess!!!! and make a block class to handle this type of block also create an interface for tiles that keep their data when harvested similar to openblocks but simpler (two methods one to write to item one to read from item)
+//	public boolean hasTileEntityDrops() {
+//		return true;
+//	}
+//
+//	public boolean hasNormalDrops() {
+//		return false;
+//	}
+//
+//	public void getTileEntityDrops(TileEntity te, List<ItemStack> result, int fortune) {
+//		ItemStack stack = new ItemStack(ModBlocks.draconiumChest);
+//		if (te instanceof TileDraconiumChest){
+//			TileDraconiumChest chest = (TileDraconiumChest)te;
+//			NBTTagCompound tileTag = new NBTTagCompound();
+//			NBTTagCompound itemTag = new NBTTagCompound();
+//			chest.writeToItem(tileTag);
+//			itemTag.setTag("TileCompound", tileTag);
+//			stack.setTagCompound(itemTag);
+//		}
+//		result.add(stack);
+//	}
+//
+//	@Override
+//	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
+//		LogHelper.info(willHarvest);
+//		if (willHarvest && hasTileEntityDrops() && !player.capabilities.isCreativeMode) {
+//			final TileEntity te = world.getTileEntity(x, y, z);
+//
+//			boolean result = super.removedByPlayer(world, player, x, y, z, willHarvest);
+//
+//			if (result) {
+//				List<ItemStack> teDrops = Lists.newArrayList();
+//				getTileEntityDrops(te, teDrops, 0);
+//				for (ItemStack drop : teDrops)
+//					dropBlockAsItem(world, x, y, z, drop);
+//			}
+//
+//			return result;
+//		}
+//
+//		return super.removedByPlayer(world, player, x, y, z, willHarvest);
+//	}
+//
+	public static boolean getTileInventoryDrops(TileEntity tileEntity, List<ItemStack> drops) {
+		if (tileEntity == null) return false;
+
+		if (tileEntity instanceof IInventory) {
+			drops.addAll(InventoryUtils.getInventoryContents((IInventory) tileEntity));
+			return true;
+		}
+
 		return false;
 	}
+//
+//
+//	@Override
+//	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+//		ArrayList<ItemStack> result = Lists.newArrayList();
+//		return result;
+//	}
+	private void getTileEntityDrops(TileEntity te, List<ItemStack> result, int fortune) {
+		if (te != null) {
+			//getTileInventoryDrops(te, result);
+			//if (te instanceof ISpecialDrops) ((ISpecialDrops)te).addDrops(result, fortune);
+			getCustomTileEntityDrops(te, result, fortune);
+		}
+	}
 
-	@Override
-	public void getTileEntityDrops(TileEntity te, List<ItemStack> result, int fortune) {
+	protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> result, int fortune) {
 		ItemStack stack = new ItemStack(ModBlocks.draconiumChest);
 		if (te instanceof TileDraconiumChest){
 			TileDraconiumChest chest = (TileDraconiumChest)te;
@@ -254,5 +314,50 @@ public class DraconiumChest extends BlockContainerDE {
 		}
 		result.add(stack);
 	}
+
+	protected boolean hasNormalDrops() {
+		return false;
+	}
+
+	protected boolean hasTileEntityDrops() {
+		return true;
+	}
+
+	@Override
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
+		// This is last place we have TE, before it's removed,
+		// When removed by player, it will be already unavailable in
+		// getBlockDropped
+		// TODO: evaluate, if new behaviour can be used
+		if (willHarvest && hasTileEntityDrops() && !player.capabilities.isCreativeMode) {
+			final TileEntity te = world.getTileEntity(x, y, z);
+
+			boolean result = super.removedByPlayer(world, player, x, y, z, willHarvest);
+
+			if (result) {
+				List<ItemStack> teDrops = Lists.newArrayList();
+				getTileEntityDrops(te, teDrops, 0);
+				for (ItemStack drop : teDrops)
+					dropBlockAsItem(world, x, y, z, drop);
+			}
+
+			return result;
+		}
+
+		return super.removedByPlayer(world, player, x, y, z, willHarvest);
+	}
+
+	@Override
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+		ArrayList<ItemStack> result = Lists.newArrayList();
+		if (hasNormalDrops()) result.addAll(super.getDrops(world, x, y, z, metadata, fortune));
+		if (hasTileEntityDrops()) {
+			final TileEntity te = world.getTileEntity(x, y, z);
+			getTileEntityDrops(te, result, fortune);
+		}
+
+		return result;
+	}
+
 
 }
