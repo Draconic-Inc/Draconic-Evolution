@@ -24,10 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
@@ -53,7 +50,6 @@ public class DraconiumChest extends BlockContainerDE {
 
 		ModBlocks.register(this, DraconiumChestItemBlock.class);
 	}
-//todo add to guide and update dislocator in guide
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float cx, float cy, float cz) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
@@ -95,7 +91,11 @@ public class DraconiumChest extends BlockContainerDE {
 			return true;
 		}
 
-		if (te.editMode && player.getHeldItem() != null && player.getHeldItem().getItem().equals(Items.paper) && player.getHeldItem().stackSize == 1){
+		if (te.editMode && player.getHeldItem() != null && player.getHeldItem().getItem().equals(Items.paper)){
+			if (player.getHeldItem().stackSize != 1){
+				if (world.isRemote)player.addChatComponentMessage(new ChatComponentTranslation("msg.draconiumChestEdit2.txt"));
+				return true;
+			}
 			ItemStack paper = player.getHeldItem();
 			NBTTagCompound nbt = paper.getTagCompound();
 			if (nbt == null) nbt = new NBTTagCompound();

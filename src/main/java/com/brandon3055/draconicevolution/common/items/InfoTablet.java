@@ -18,6 +18,7 @@ public class InfoTablet extends ItemDE {
 	public InfoTablet() {
 		this.setUnlocalizedName(Strings.infoTabletName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setMaxStackSize(1);
 		ModItems.register(this);
 	}
 

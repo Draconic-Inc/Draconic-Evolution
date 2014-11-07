@@ -50,7 +50,7 @@ public class GuiButtonTextOnly extends GuiButton{
 				trimmedDisplayString = EnumChatFormatting.BOLD+""+EnumChatFormatting.ITALIC+trimmedDisplayString;
 				GL11.glPushMatrix();
 				GL11.glColor4f(0f, 0f, 0f, 1f);
-				drawTexturedModalRect(xPosition, yPosition, 0, 46, (int)(fontrenderer.getStringWidth(trimmedDisplayString)*0.72)+2, 8);
+				drawTexturedModalRect(xPosition+(int)(xPosition*0.01), yPosition+(int)(yPosition*0.01), 0, 46, (int)(fontrenderer.getStringWidth(trimmedDisplayString)*0.72)+2, 8);
 				GL11.glPopMatrix();
 			}
 			GL11.glPushMatrix();

@@ -69,11 +69,11 @@ tile.draconicevolution:teleporterStand.name=Dislocator Pedestal
 tile.draconicevolution:teleporterStand.description=You have figured out how to create a simple pedestal on which you can place you basic or advanced charms of dislocation. Simply right click with a charm in your hand to place it on the pedestal then right click the pedestal to teleport. The advantage of this is the charms wont take damage or use fuel. The disadvantage is you can bring them with you to your destination. To remove the charm from the pedestal simply shift right click with an empty hand.
 
 tile.draconicevolution:draconiumChest.name=Draconic Chest
-tile.draconicevolution:draconiumChest.Description=//TODO Description
+tile.draconicevolution:draconiumChest.description=Using your draconic knowledge you have learned how to create the ultimate chest. With a massive 234 slot storage capacity a built in crafting table and 5 slot RF furnace capable of doubling ore as well as the ability to keep its contents when harvested this chest is the most powerful most versatile storage device in existence! It also comes in a variety of every colour you can imagine gust shift right click it with empty hand for details.
 
 //###################################Item names###################################//
 item.draconicevolution:draconicCompound.name=Draconic Compound
-item.draconicevolution:draconicCompound.description=Research has found a very powerful item that will be neccessary to create powerful tools
+item.draconicevolution:draconicCompound.description=Research has found a very powerful item that will be necessary to create powerful tools
 
 item.draconicevolution:draconiumIngot.name=Draconium Ingot
 item.draconicevolution:draconiumIngot.description=The results of smelting draconium blend in a furnace. Used in most recipes.
@@ -102,7 +102,7 @@ item.draconicevolution:teleporterMKI.name=Charm of Dislocation
 item.draconicevolution:teleporterMKI.description=You have managed to infuse the powers of The End with your knowledge of the Draconic to create a basic teleporter, but at a cost. The energies binding them are unstable and only last for 10 uses and will take some of your life energy with each use and can only be linked to a single location but works across dimensions. Once used up, you must create a new one.
 
 item.draconicevolution:teleporterMKII.name=Enhanced Charm of Dislocation
-item.draconicevolution:teleporterMKII.description=Learning how draconic powers interract with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 5 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will.
+item.draconicevolution:teleporterMKII.description=Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.
 
 item.draconicevolution:wyvernPickaxe.name=Pickaxe of the Wyvern
 item.draconicevolution:wyvernPickaxe.description=Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Modes: Shift-Right Click to switch modes: 1×1 or 3×3
@@ -236,6 +236,7 @@ msg.draconiumChestEditL1.txt=Right click with red green or blue dye to adjust th
 msg.draconiumChestEditL2.txt=Click the top half of the chest to increase the value
 msg.draconiumChestEditL3.txt=Or the bottom half of the chest to decrease the value
 msg.draconiumChestEditL4.txt=Right click with paper to copy the colour to other chests
+msg.draconiumChestEdit2.txt=Please use a single peace of paper
 
 //###################################Tool Tips###################################//
 info.teleporterInfUnset1.txt=Unbound

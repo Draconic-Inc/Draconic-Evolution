@@ -90,7 +90,7 @@ public class CraftingHandler {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.draconium), "III", "III", "III", 'I', ModItems.draconiumIngot);
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.energyStorageCore), "SRS", "DCD", "SRS", 'S', Items.nether_star, 'R', Blocks.redstone_block, 'C', ModItems.draconicCore, 'D', new ItemStack(ModBlocks.draconium, 1, 0));
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.draconium, 1, 1), "CSC", "SDS", "CSC", 'C', mobSoul, 'S', ModItems.sunFocus, 'D', new ItemStack(ModBlocks.draconium, 1, 0));
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.draconiumChest), "ICI", "SWS", "ICI", 'I', ModItems.draconiumIngot, 'C', ModItems.draconicCore, 'S', chest, 'W', Blocks.crafting_table);
+		CraftingManager.getInstance().addRecipe(new ItemStack(ModBlocks.draconiumChest), "IFI", "SCS", "IWI", 'I', ModItems.draconiumIngot, 'C', ModItems.draconicCore, 'S', chest, 'W', Blocks.crafting_table, 'F', Blocks.furnace);
 
 
 		if(ConfigHandler.disableSunDial == 0)

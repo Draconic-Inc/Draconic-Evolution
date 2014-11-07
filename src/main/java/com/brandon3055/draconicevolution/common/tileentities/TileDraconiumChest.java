@@ -221,11 +221,9 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 					if (candidate == null) break;
 					boolean candidateSmeltable = FurnaceRecipes.smelting().getSmeltingResult(candidate) != null;
 					if (candidateSmeltable) {
-						LogHelper.info(candidate);
 						setInventorySlotContents(234 + j, candidate.copy());
 						setInventorySlotContents(i, null);
 						candidate = null;
-						LogHelper.info(candidate);
 					}
 				}
 

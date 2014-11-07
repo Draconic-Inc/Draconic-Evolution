@@ -168,6 +168,7 @@ public class PlacedItem extends BlockDE {
 			if (!world.isRemote) breakBlock(world, x, y, z, this, world.getBlockMetadata(x, y, z));
 			world.setBlockToAir(x, y, z);
 		}
+		world.markBlockForUpdate(x, y, z);
 		return true;
 	}
 
@@ -186,6 +187,7 @@ public class PlacedItem extends BlockDE {
 			}
 			tile.rotation -= 25;
 		}
+		world.markBlockForUpdate(x, y, z);
 	}
 
 	@Override
