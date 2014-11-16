@@ -2,8 +2,7 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
-import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
+import com.brandon3055.draconicevolution.common.core.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
@@ -23,18 +22,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 import java.util.Set;
@@ -76,11 +72,16 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 		GameRegistry.registerItem(this, Strings.draconicDStaffName);
 	}
 
-	@SuppressWarnings("all")
+	@Override
+	public boolean isItemTool(ItemStack p_77616_1_) {
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), 0));
-		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), capacity));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", capacity));
 	}
 
 	@Override
@@ -96,17 +97,17 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 
 	@Override
 	public boolean func_150897_b(Block block) {
-		return block == Blocks.obsidian ? toolMaterial.getHarvestLevel() == 3 : (block != Blocks.diamond_block && block != Blocks.diamond_ore ? (block != Blocks.emerald_ore && block != Blocks.emerald_block ? (block != Blocks.gold_block && block != Blocks.gold_ore ? (block != Blocks.iron_block && block != Blocks.iron_ore ? (block != Blocks.lapis_block && block != Blocks.lapis_ore ? (block != Blocks.redstone_ore && block != Blocks.lit_redstone_ore ? (block.getMaterial() == Material.rock ? true : (block.getMaterial() == Material.iron ? true : block.getMaterial() == Material.anvil)) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 1) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2) : this.toolMaterial.getHarvestLevel() >= 2);
+		return true;
 	}
 
 	@Override
 	public float func_150893_a(ItemStack stack, Block block) {
-		return block.getMaterial() != Material.iron && block.getMaterial() != Material.anvil && block.getMaterial() != Material.rock ? super.func_150893_a(stack, block) : this.efficiencyOnProperMaterial;
+		return this.efficiencyOnProperMaterial;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(final IIconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		this.itemIcon0 = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_staff");
 		this.itemIcon1 = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_staff_active");
 		this.itemIcon2 = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_staff_obliterate");
@@ -131,7 +132,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	}
 
 	@Override
-	public boolean onBlockStartBreak(final ItemStack stack, final int x, final int y, final int z, final EntityPlayer player) {
+	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
 		World world = player.worldObj;
 		Block block = world.getBlock(x, y, z);
 		Material mat = block.getMaterial();
@@ -145,7 +146,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	}
 
 	@Override
-	public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		return ToolHandler.changeMode(stack, player, true, 4);
 	}
 
@@ -156,7 +157,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 		return true;
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({"unchecked"})
 	@Override
 	public Multimap getItemAttributeModifiers() {
 		Multimap multimap = super.getItemAttributeModifiers();
@@ -164,24 +165,21 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 		return multimap;
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({"unchecked"})
 	@Override
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
 		int size = (ItemNBTHelper.getShort(stack, "size", (short) 0) * 2) + 1;
 		boolean oblit = ItemNBTHelper.getBoolean(stack, "obliterate", false);
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
-			list.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
-			ItemInfoHelper.energyDisplayInfo(stack, list);
-		}
-		else {
-			list.add(EnumChatFormatting.GREEN + "Mining Mode: " + EnumChatFormatting.BLUE + size + "x" + size);
-			list.add(EnumChatFormatting.GREEN + "Shift Right-click to change minning mode");
-			list.add(StatCollector.translateToLocal("msg.oblit" + oblit + ".txt"));
-			list.add(EnumChatFormatting.GREEN + "Right-click to toggle Obliteration mode");
-			list.add(EnumChatFormatting.GREEN + "Obliteration mode destroys low value blocks");
-			list.add("");
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "After great pains you have managed");
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "to master the Draconic powers!");
+		if (InfoHelper.holdShiftForDetails(list)){
+			InfoHelper.addEnergyInfo(stack, list);
+
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.miningMode.txt") + ": " + InfoHelper.HITC() + size + "x" + size);
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.changeMiningMode.txt"));
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.obliterationMode.txt") + ": " + InfoHelper.HITC() + StatCollector.translateToLocal("info.de.obliterationMode"+oblit+".txt"));
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.toggleOblit.txt"));
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.oblitInfo.txt"));
+
+			InfoHelper.addLore(stack, list);
 		}
 	}
 

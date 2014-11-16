@@ -53,8 +53,8 @@ public class TeleporterMKII extends ItemDE
 	{
 		World world = player.worldObj;
 		short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		int selrctionOffset = ItemNBTHelper.getIntager(teleporter, "SelectionOffset", 0);
-		int fuel = ItemNBTHelper.getIntager(teleporter, "Fuel", 0);
+		int selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
+		int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
 
 		NBTTagCompound compound = teleporter.getTagCompound();
 		if(compound == null) compound = new NBTTagCompound();
@@ -72,7 +72,7 @@ public class TeleporterMKII extends ItemDE
 		if (entity instanceof EntityPlayer){
 			if (entity.isSneaking()){
 				destination.sendEntityToCoords((EntityPlayer) entity);
-				if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setIntager(teleporter, "Fuel", fuel - 1);
+				if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
 			}else{
 				if (world.isRemote) player.addChatMessage(new ChatComponentTranslation("msg.teleporterPlayerConsent.txt"));
 			}
@@ -81,7 +81,7 @@ public class TeleporterMKII extends ItemDE
 
 		if (entity instanceof EntityLivingBase){
 			destination.sendEntityToCoords((EntityLivingBase) entity);
-			if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setIntager(teleporter, "Fuel", fuel - 1);
+			if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
 		}
 
 		return true;
@@ -91,8 +91,8 @@ public class TeleporterMKII extends ItemDE
 	public ItemStack onItemRightClick(final ItemStack teleporter, final World world, final EntityPlayer player)
 	{
 		short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		int selrctionOffset = ItemNBTHelper.getIntager(teleporter, "SelectionOffset", 0);
-		int fuel = ItemNBTHelper.getIntager(teleporter, "Fuel", 0);
+		int selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
+		int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
 
 		NBTTagCompound compound = teleporter.getTagCompound();
 		if(compound == null) compound = new NBTTagCompound();
@@ -127,7 +127,7 @@ public class TeleporterMKII extends ItemDE
 				return teleporter;
 			}
 
-			if (!player.capabilities.isCreativeMode && fuel > 0 && !onStand) ItemNBTHelper.setIntager(teleporter, "Fuel", fuel - 1);
+			if (!player.capabilities.isCreativeMode && fuel > 0 && !onStand) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
 
 			destination.sendEntityToCoords(player);
 		}
@@ -141,7 +141,7 @@ public class TeleporterMKII extends ItemDE
 	public void addInformation(final ItemStack teleporter, final EntityPlayer player, final List list2, final boolean extraInformation)
 	{
 		short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		int selrctionOffset = ItemNBTHelper.getIntager(teleporter, "SelectionOffset", 0);
+		int selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
 		NBTTagCompound compound = teleporter.getTagCompound();
 		if(compound == null) compound = new NBTTagCompound();
 		NBTTagList list = (NBTTagList)compound.getTag("Locations");
@@ -153,7 +153,7 @@ public class TeleporterMKII extends ItemDE
 			list2.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
 		}
 		else {
-			list2.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " " + ItemNBTHelper.getIntager(teleporter, "Fuel", 0));
+			list2.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " " + ItemNBTHelper.getInteger(teleporter, "Fuel", 0));
 			list2.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.teleporterInfGUI.txt"));
 			list2.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.teleporterInfScroll.txt"));
 		}
@@ -184,7 +184,7 @@ public class TeleporterMKII extends ItemDE
 	@Override
 	public String getItemStackDisplayName(ItemStack teleporter) {
 		short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		int selrctionOffset = ItemNBTHelper.getIntager(teleporter, "SelectionOffset", 0);
+		int selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
 		NBTTagCompound compound = teleporter.getTagCompound();
 		if(compound == null) compound = new NBTTagCompound();
 		NBTTagList list = (NBTTagList)compound.getTag("Locations");

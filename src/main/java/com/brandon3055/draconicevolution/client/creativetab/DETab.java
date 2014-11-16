@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.creativetab;
 
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,7 +16,7 @@ public class DETab extends CreativeTabs {
 	static ItemStack iconStackStaff;
 
 	public static void initialize() {
-		iconStackStaff = EnergyHelper.setDefaultEnergyTag(new ItemStack(ModItems.draconicDistructionStaff), 100000000);
+		iconStackStaff = ItemNBTHelper.setInteger(new ItemStack(ModItems.draconicDistructionStaff), "Energy", 100000000);
 	}
 
 	public DETab(int id, String modid, String label, int tab) {

@@ -11,13 +11,16 @@ public class BlockDE extends Block {
 
 	public BlockDE(final Material material) {
 		super(material);
-
+		this.setHardness(5F);
+		this.setResistance(10.0F);
 	}
 
 	public BlockDE() {
-		super(Material.rock);
+		super(Material.iron);
+		this.setHardness(5F);
+		this.setResistance(10.0F);
 	}
-	//todo unify block resistance and hardness
+
 	@Override
 	public String getUnlocalizedName()
 	{

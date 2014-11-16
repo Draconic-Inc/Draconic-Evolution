@@ -1,8 +1,7 @@
 package com.brandon3055.draconicevolution.common.inventory;
 
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
+import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -20,7 +19,7 @@ public class SlotChargable extends Slot {
 	{
 		if (super.isItemValid(stack))
 		{
-			return EnergyHelper.isEnergyContainerItem(stack);
+			return stack != null && stack.getItem() instanceof IEnergyContainerItem;
 		}
 		return false;
 	}

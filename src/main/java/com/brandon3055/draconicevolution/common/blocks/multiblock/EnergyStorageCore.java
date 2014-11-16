@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -29,7 +30,7 @@ public class EnergyStorageCore extends BlockDE {
 	public EnergyStorageCore() {
 		super(Material.iron);
 		this.setHardness(10F);
-		this.setResistance(100F);
+		this.setResistance(20f);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.energyStorageCoreName);
 		ModBlocks.register(this);
@@ -63,8 +64,9 @@ public class EnergyStorageCore extends BlockDE {
 
 		if (!world.isRemote) {
 			player.addChatComponentMessage(new ChatComponentText("Tier:" + tile.getTier()));
-			player.addChatComponentMessage(new ChatComponentText("" + Utills.formatNumber(tile.getEnergyStored()) + " / " + Utills.formatNumber(tile.getMaxEnergyStored())));
-		}
+			String BN = String.valueOf(tile.getEnergyStored());
+			if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
+			player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(tile.getEnergyStored()) + " / " + Utills.formatNumber(tile.getMaxEnergyStored()) + " [" + BN + " RF]"));		}
 		return true;
 	}
 

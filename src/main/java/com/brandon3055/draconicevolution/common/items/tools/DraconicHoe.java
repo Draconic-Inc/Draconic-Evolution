@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
-import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
+import com.brandon3055.draconicevolution.common.core.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -26,8 +26,6 @@ import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
@@ -47,11 +45,16 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 		GameRegistry.registerItem(this, Strings.draconicHoeName);
 	}
 
+	@Override
+	public boolean isItemTool(ItemStack p_77616_1_) {
+		return true;
+	}
+
 	@SuppressWarnings("all")
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), 0));
-		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), capacity));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", capacity));
 	}
 
 	@Override
@@ -161,10 +164,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
-
-		ItemInfoHelper.energyDisplayInfo(stack, list);
-		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw1.txt"));
-		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw2.txt"));
+		InfoHelper.addEnergyAndLore(stack, list);
 	}
 
 	public static void registerRecipe() {

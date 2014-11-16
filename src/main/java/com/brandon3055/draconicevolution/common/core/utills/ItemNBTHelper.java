@@ -16,45 +16,51 @@ public final class ItemNBTHelper {
 			return stack.getTagCompound();	
 	}
 	
-	public static void setBoolean(ItemStack stack, String tag, boolean b)
+	public static ItemStack setBoolean(ItemStack stack, String tag, boolean b)
 	{
 		NBTTagCompound compound = getCompound(stack);
 		compound.setBoolean(tag, b);
 		stack.setTagCompound(compound);
+		return stack;
 	}
 	
-	public static void setShort(ItemStack stack, String tag, short s)
+	public static ItemStack setShort(ItemStack stack, String tag, short s)
 	{
 		NBTTagCompound compound = getCompound(stack);
 		compound.setShort(tag, s);
 		stack.setTagCompound(compound);
+		return stack;
 	}
 	
-	public static void setIntager(ItemStack stack, String tag, int i)
+	public static ItemStack setInteger(ItemStack stack, String tag, int i)
 	{
 		NBTTagCompound compound = getCompound(stack);
 		compound.setInteger(tag, i);
 		stack.setTagCompound(compound);
+		return stack;
 	}
 	
-	public static void setFloat(ItemStack stack, String tag, float f)
+	public static ItemStack setFloat(ItemStack stack, String tag, float f)
 	{
 		NBTTagCompound compound = getCompound(stack);
 		compound.setFloat(tag, f);
 		stack.setTagCompound(compound);
+		return stack;
 	}
 	
-	public static void setDouble(ItemStack stack, String tag, double d)
+	public static ItemStack setDouble(ItemStack stack, String tag, double d)
 	{
 		NBTTagCompound compound = getCompound(stack);
 		compound.setDouble(tag, d);
 		stack.setTagCompound(compound);
+		return stack;
 	}
 	
-	public static void setString(ItemStack stack, String tag, String s) {
+	public static ItemStack setString(ItemStack stack, String tag, String s) {
 		NBTTagCompound compound = getCompound(stack);
 		compound.setString(tag, s);
 		stack.setTagCompound(compound);
+		return stack;
 	}
 
 	// GETTERS ///////////////////////////////////////////////////////////////////
@@ -75,7 +81,7 @@ public final class ItemNBTHelper {
 		return verifyExistance(stack, tag) ? stack.getTagCompound().getShort(tag) : defaultExpected;
 	}
 	
-	public static int getIntager(ItemStack stack, String tag, int defaultExpected) {
+	public static int getInteger(ItemStack stack, String tag, int defaultExpected) {
 		return verifyExistance(stack, tag) ? stack.getTagCompound().getInteger(tag) : defaultExpected;
 	}
 	

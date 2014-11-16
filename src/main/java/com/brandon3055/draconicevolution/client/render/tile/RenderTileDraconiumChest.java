@@ -18,7 +18,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderTileDraconiumChest extends TileEntitySpecialRenderer{
 
 	ModelChest model;
-	private ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/DraconiumChest.png");//todo make final
+	private final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/DraconiumChest.png");
 	private Random random;
 
 	public RenderTileDraconiumChest()
@@ -37,7 +37,7 @@ public class RenderTileDraconiumChest extends TileEntitySpecialRenderer{
 			return;
 		}
 		int facing = 3;
-		if (tile != null && tile.hasWorldObj()) {
+		if (tile.hasWorldObj()) {
 			facing = tile.getFacing();
 		}
 		bindTexture(texture);
@@ -71,7 +71,6 @@ public class RenderTileDraconiumChest extends TileEntitySpecialRenderer{
 		lidangle = 1.0F - lidangle;
 		lidangle = 1.0F - lidangle * lidangle * lidangle;
 		model.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
-		// Render the chest itself
 		model.renderAll();
 		glDisable(32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glPopAttrib();

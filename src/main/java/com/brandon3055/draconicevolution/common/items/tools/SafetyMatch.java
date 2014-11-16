@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.core.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -13,8 +14,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -130,6 +131,6 @@ public class SafetyMatch extends ItemDE {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
-		list.add(""+EnumChatFormatting.DARK_PURPLE+""+EnumChatFormatting.ITALIC+"Light a fire that will NOT burn your house down!");
+		list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.safetyMatch.txt"));
 	}
 }

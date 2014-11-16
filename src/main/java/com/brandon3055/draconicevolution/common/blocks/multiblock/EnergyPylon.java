@@ -33,7 +33,7 @@ public class EnergyPylon extends BlockDE {
 
 	public EnergyPylon() {
 		super(Material.iron);
-		this.setHardness(5F);
+		this.setHardness(10F);
 		this.setResistance(20F);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.energyPylonName);

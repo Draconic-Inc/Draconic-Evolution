@@ -97,20 +97,20 @@ public class TileCKeyStone extends TileEntity {
 	}
 
 	private boolean setKey(ItemStack key){
-		if (keyCode == 0 && ItemNBTHelper.getIntager(key, "KeyCode", 0) == 0){
+		if (keyCode == 0 && ItemNBTHelper.getInteger(key, "KeyCode", 0) == 0){
 			keyCode = worldObj.rand.nextInt();
-			ItemNBTHelper.setIntager(key, "KeyCode", keyCode);
-			ItemNBTHelper.setIntager(key, "X", xCoord);
-			ItemNBTHelper.setIntager(key, "Y", yCoord);
-			ItemNBTHelper.setIntager(key, "Z", zCoord);
+			ItemNBTHelper.setInteger(key, "KeyCode", keyCode);
+			ItemNBTHelper.setInteger(key, "X", xCoord);
+			ItemNBTHelper.setInteger(key, "Y", yCoord);
+			ItemNBTHelper.setInteger(key, "Z", zCoord);
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			return true;
-		}else if (keyCode == 0 && ItemNBTHelper.getIntager(key, "KeyCode", 0) != 0){
-			keyCode = ItemNBTHelper.getIntager(key, "KeyCode", 0);
-			ItemNBTHelper.setIntager(key, "LockCount", ItemNBTHelper.getIntager(key, "LockCount", 0) + 1);
-			ItemNBTHelper.setIntager(key, "X_"+ItemNBTHelper.getIntager(key, "LockCount", 0), xCoord);
-			ItemNBTHelper.setIntager(key, "Y_"+ItemNBTHelper.getIntager(key, "LockCount", 0), yCoord);
-			ItemNBTHelper.setIntager(key, "Z_"+ItemNBTHelper.getIntager(key, "LockCount", 0), zCoord);
+		}else if (keyCode == 0 && ItemNBTHelper.getInteger(key, "KeyCode", 0) != 0){
+			keyCode = ItemNBTHelper.getInteger(key, "KeyCode", 0);
+			ItemNBTHelper.setInteger(key, "LockCount", ItemNBTHelper.getInteger(key, "LockCount", 0) + 1);
+			ItemNBTHelper.setInteger(key, "X_" + ItemNBTHelper.getInteger(key, "LockCount", 0), xCoord);
+			ItemNBTHelper.setInteger(key, "Y_" + ItemNBTHelper.getInteger(key, "LockCount", 0), yCoord);
+			ItemNBTHelper.setInteger(key, "Z_" + ItemNBTHelper.getInteger(key, "LockCount", 0), zCoord);
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			return true;
 		}
@@ -118,7 +118,7 @@ public class TileCKeyStone extends TileEntity {
 	}
 
 	private boolean isKeyValid(ItemStack key, EntityPlayer player){
-		if (ItemNBTHelper.getIntager(key, "KeyCode", 0) != keyCode) {
+		if (ItemNBTHelper.getInteger(key, "KeyCode", 0) != keyCode) {
 			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.wrongKey.txt"));
 			return false;
 		}

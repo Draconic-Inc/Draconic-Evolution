@@ -1,18 +1,18 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import java.util.Random;
-
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
+
+import java.util.Random;
 
 public class RainSensor extends BlockDE
 {
@@ -21,11 +21,11 @@ public class RainSensor extends BlockDE
 	IIcon icon_side;
 
 	protected RainSensor() {
-		super(Material.iron);
+		super(Material.circuits);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockBounds(0, 0, 0, 1, 0.125F, 1);
-		this.setHardness(5f);
-		this.setResistance(10f);
+		this.setHardness(0.3f);
+		this.setResistance(0.5f);
 		this.setTickRandomly(true);
 		this.setBlockName(Strings.rainSensorName);
 		ModBlocks.register(this);

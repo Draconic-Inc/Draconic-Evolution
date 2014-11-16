@@ -26,8 +26,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class CKeyStone extends BlockDE {
 	private IIcon blockIcon1;
 	public CKeyStone(){
-		this.setHardness(10F);
-		this.setResistance(100F);
+		this.setBlockUnbreakable();
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.cKeyStoneName);
 		ModBlocks.register(this, CKeyStoneItemBlock.class);
@@ -103,10 +102,10 @@ public class CKeyStone extends BlockDE {
 		TileCKeyStone tile = world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileCKeyStone ? (TileCKeyStone) world.getTileEntity(x, y, z) : null;
 		if (tile != null) {
 			ItemStack key = new ItemStack(ModItems.key);
-			ItemNBTHelper.setIntager(key, "KeyCode", tile.getKeyCode());
-			ItemNBTHelper.setIntager(key, "X", x);
-			ItemNBTHelper.setIntager(key, "Y", y);
-			ItemNBTHelper.setIntager(key, "Z", z);
+			ItemNBTHelper.setInteger(key, "KeyCode", tile.getKeyCode());
+			ItemNBTHelper.setInteger(key, "X", x);
+			ItemNBTHelper.setInteger(key, "Y", y);
+			ItemNBTHelper.setInteger(key, "Z", z);
 			return key;
 		}
 		return null;

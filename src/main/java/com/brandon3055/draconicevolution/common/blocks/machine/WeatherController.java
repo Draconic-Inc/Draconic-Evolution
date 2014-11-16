@@ -1,34 +1,30 @@
 package com.brandon3055.draconicevolution.common.blocks.machine;
 
-import java.util.List;
-
-import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
+import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
 
-public class WeatherController extends BlockContainerDE {
+import java.util.List;
+
+public class WeatherController extends BlockCustomDrop {
 
 	public boolean blockState = true;
 	public IIcon icon_top;
@@ -41,12 +37,10 @@ public class WeatherController extends BlockContainerDE {
 	public IIcon icon_side_sun_off;
 
 	public WeatherController() {
-		super(Material.rock);
+		super(Material.iron);
 		this.setBlockName(Strings.blockWeatherControllerName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
-		this.setHardness(1f);
-		this.setResistance(200.0f);
 		ModBlocks.register(this);
 	}
 
@@ -144,34 +138,18 @@ public class WeatherController extends BlockContainerDE {
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
-	{
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te != null && te instanceof IInventory) {
-			IInventory inventory = (IInventory) te;
+	protected boolean dropInventory() {
+		return true;
+	}
 
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
-				ItemStack stack = inventory.getStackInSlot(i);
+	@Override
+	protected boolean hasCustomDropps() {
+		return false;
+	}
 
-				if (stack != null) {
-					float spawnX = x + world.rand.nextFloat();
-					float spawnY = y + world.rand.nextFloat();
-					float spawnZ = z + world.rand.nextFloat();
+	@Override
+	protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
 
-					EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stack);
-
-					float mult = 0.05F;
-
-					droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
-					droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
-					droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
-
-					world.spawnEntityInWorld(droppedItem);
-				}
-			}
-		}
-
-		super.breakBlock(world, x, y, z, block, meta);
 	}
 
 	@Override

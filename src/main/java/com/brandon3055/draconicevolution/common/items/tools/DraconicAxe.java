@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
-import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
+import com.brandon3055.draconicevolution.common.core.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -24,10 +24,8 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -44,11 +42,16 @@ public class DraconicAxe extends ItemAxe implements IEnergyContainerItem{
 		GameRegistry.registerItem(this, Strings.draconicAxeName);
 	}
 
+	@Override
+	public boolean isItemTool(ItemStack p_77616_1_) {
+		return true;
+	}
+
 	@SuppressWarnings("all")
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), 0));
-		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), capacity));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", capacity));
 	}
 
 	@Override
@@ -174,18 +177,14 @@ public class DraconicAxe extends ItemAxe implements IEnergyContainerItem{
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
-			list.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("info.draconicAxe1.txt"));
-			list.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
-			ItemInfoHelper.energyDisplayInfo(stack, list);
-		} else {
-			list.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("info.draconicAxe2.txt"));
-			list.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("info.draconicAxe3.txt"));
-			list.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("info.draconicAxe4.txt"));
-			list.add("");
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw1.txt"));
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicLaw2.txt"));
-		}
+		if (InfoHelper.holdShiftForDetails(list)){
+			InfoHelper.addEnergyInfo(stack, list);
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe2.txt"));
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe3.txt"));
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe4.txt"));
+			InfoHelper.addLore(stack, list);
+
+		}else list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe1.txt"));
 	}
 
 	@Override

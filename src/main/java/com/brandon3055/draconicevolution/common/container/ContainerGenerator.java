@@ -1,17 +1,22 @@
 package com.brandon3055.draconicevolution.common.container;
 
+import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
 import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
 import com.brandon3055.draconicevolution.common.tileentities.TileGenerator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class ContainerGenerator extends Container {
+public class ContainerGenerator extends ContainerDataSync {
 
 	private TileGenerator tile;
-	private int cachSize = -1;
+	private int energyCach = -1;
+	private int burnCach = -1;
+	private int burnRemainingCach = -1;
 
 	public ContainerGenerator(InventoryPlayer invPlayer, TileGenerator tile) {
 		this.tile = tile;
@@ -70,12 +75,16 @@ public class ContainerGenerator extends Container {
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		ItemStack stack = tile.getStackInSlot(0);
-		int size = stack == null ? 0 : stack.stackSize;
-		if (cachSize != size) {
-			cachSize = size;
-			tile.tryRefuel();
-			tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
-		}
+		if (energyCach != tile.getEnergyStored(ForgeDirection.UP)) energyCach = (Integer) sendObject(null, ObjectPacket.INT, 0, tile.getEnergyStored(ForgeDirection.UP));
+		if (burnCach != tile.burnTime) burnCach = (Integer) sendObject(null, ObjectPacket.INT, 1, tile.burnTime);
+		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObject(null, ObjectPacket.INT, 2, tile.burnTimeRemaining);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void receiveSyncData(int index, Object object) {
+		if (index == 0)tile.storage.setEnergyStored((Integer)object);
+		else if (index == 1) tile.burnTime = (Integer)object;
+		else if (index == 2) tile.burnTimeRemaining = (Integer)object;
 	}
 }

@@ -28,8 +28,6 @@ public class PlayerDetector extends BlockDE
 		this.setBlockName(Strings.playerDetectorName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
-		this.setHardness(1f);
-		this.setResistance(200.0f);
 		ModBlocks.register(this);
 	}
 	

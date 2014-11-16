@@ -36,8 +36,6 @@ public class LongRangeDislocator extends BlockDE {
 	public LongRangeDislocator() {
 		this.setBlockName(Strings.longRangeDislocatorName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
-		this.setHardness(5f);
-		this.setResistance(20.0f);
 		ModBlocks.register(this, LRDItemBlock.class);
 	}
 

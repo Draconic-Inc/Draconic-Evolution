@@ -4,13 +4,19 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
-import com.brandon3055.draconicevolution.common.core.handler.*;
+import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.core.handler.CraftingHandler;
+import com.brandon3055.draconicevolution.common.core.handler.FMLEventHandler;
+import com.brandon3055.draconicevolution.common.core.handler.MinecraftForgeEventHandler;
 import com.brandon3055.draconicevolution.common.core.network.*;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.core.utills.Utills;
 import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.magic.EnchantmentReaper;
+import com.brandon3055.draconicevolution.common.magic.PotionHandler;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
@@ -25,7 +31,11 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.potion.Potion;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class CommonProxy {
 	//private final static boolean debug = DraconicEvolution.debug;
@@ -38,6 +48,33 @@ public class CommonProxy {
 		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 1);
 		registerTileEntities();
 		initializeNetwork();
+
+		DraconicEvolution.reaperEnchant = new EnchantmentReaper(ConfigHandler.reaperEnchantID);
+
+		Potion[] potionTypes = null;
+		LogHelper.info("Expanding Potion array size to 256");
+
+		for (Field f : Potion.class.getDeclaredFields()) {
+			f.setAccessible(true);
+
+			try {
+				if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a")) {
+					Field modfield = Field.class.getDeclaredField("modifiers");
+					modfield.setAccessible(true);
+					modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+					potionTypes = (Potion[]) f.get(null);
+					final Potion[] newPotionTypes = new Potion[256];
+					System.arraycopy(potionTypes, 0, newPotionTypes, 0, potionTypes.length);
+					f.set(null, newPotionTypes);
+				}
+			}
+			catch (Exception e) {
+				LogHelper.error("Severe error, please report this to the mod author:");
+				LogHelper.error(e);
+			}
+		}
+
+		LogHelper.info("Finished PreInitialization");
 	}
 
 	public void init(FMLInitializationEvent event) {
@@ -46,13 +83,17 @@ public class CommonProxy {
 		registerWorldGen();
 		registerEntitys();
 		DETab.initialize();
+		PotionHandler.init();
+
+		LogHelper.info("Finished Initialization");
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
 		OreDoublingRegistry.init();
+		LogHelper.info("Finished PostInitialization");
 	}
 
-	public void initializeNetwork(){
+	public void initializeNetwork() {
 		DraconicEvolution.network = NetworkRegistry.INSTANCE.newSimpleChannel(DraconicEvolution.networkChannelName);
 		DraconicEvolution.network.registerMessage(ButtonPacket.Handler.class, ButtonPacket.class, 0, Side.SERVER);
 		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
@@ -60,6 +101,7 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);
 		DraconicEvolution.network.registerMessage(PlayerDetectorStringPacket.Handler.class, PlayerDetectorStringPacket.class, 4, Side.SERVER);
 		DraconicEvolution.network.registerMessage(TeleporterPacket.Handler.class, TeleporterPacket.class, 5, Side.SERVER);
+		DraconicEvolution.network.registerMessage(ObjectPacket.Handler.class, ObjectPacket.class, 6, Side.CLIENT);
 	}
 
 	public void registerTileEntities() {
@@ -83,8 +125,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileDissEnchanter.class, References.RESOURCESPREFIX + "TileDissEnchanter");
 		GameRegistry.registerTileEntity(TileTeleporterStand.class, References.RESOURCESPREFIX + "TileTeleporterStand");
 		GameRegistry.registerTileEntity(TileDraconiumChest.class, References.RESOURCESPREFIX + "TileDraconiumChest");
-		if (DraconicEvolution.debug)
-		{
+		if (DraconicEvolution.debug) {
 			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
 		}

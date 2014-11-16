@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
+import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChest;
 import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChestResult;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @ChestContainer(isLargeChest = false, rowSize = 26)
-public class ContainerDraconiumChest extends Container { //todo Create and implement IExtendedCrafters
+public class ContainerDraconiumChest extends Container {
 
 	/** The crafting matrix inventory (3x3). */
 	public InventoryCrafting craftMatrix;
@@ -165,9 +165,9 @@ public class ContainerDraconiumChest extends Container { //todo Create and imple
 	@Override
 	public void addCraftingToCrafters(ICrafting iCrafting) {
 		super.addCraftingToCrafters(iCrafting);
-		iCrafting.sendProgressBarUpdate(this, 0, tile.smeltingProgressTime);
-		iCrafting.sendProgressBarUpdate(this, 1, tile.getEnergyStored(ForgeDirection.DOWN)/32);
-		iCrafting.sendProgressBarUpdate(this, 2, tile.smeltingBurnSpeed);
+//		iCrafting.sendProgressBarUpdate(this, 0, tile.smeltingProgressTime);
+//		iCrafting.sendProgressBarUpdate(this, 1, tile.getEnergyStored(ForgeDirection.DOWN)/32);
+//		iCrafting.sendProgressBarUpdate(this, 2, tile.smeltingBurnSpeed);
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class ContainerDraconiumChest extends Container { //todo Create and imple
 		{
 			if (super.isItemValid(stack))
 			{
-				return EnergyHelper.isEnergyContainerItem(stack);
+				return stack != null && stack.getItem() instanceof IEnergyContainerItem;
 			}
 			return false;
 		}
@@ -242,4 +242,4 @@ public class ContainerDraconiumChest extends Container { //todo Create and imple
 			return 1;
 		}
 	}
-}//todo update all guis like this
+}

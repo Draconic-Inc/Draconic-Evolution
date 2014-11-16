@@ -1,8 +1,11 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,17 +20,20 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileGenerator extends TileEntity implements ISidedInventory, IEnergyHandler {
+public class TileGenerator extends TileObjectSync implements ISidedInventory, IEnergyHandler {
 	//########### variables #############//
 	private ItemStack[] items;
 	public int burnTime = 1;
 	public int burnTimeRemaining = 0;
 	private int burnSpeed = 6;
+	public boolean isBurning = false;
+	public boolean isBurningCach = false;
+	private int tick;
 	/**
 	 * Energy per burn tick
 	 */
 	private int EPBT = 14;
-	protected EnergyStorage storage = new EnergyStorage(100000, 0, 1000);
+	public EnergyStorage storage = new EnergyStorage(100000, 0, 1000);
 
 	//##################################//
 
@@ -37,6 +43,10 @@ public class TileGenerator extends TileEntity implements ISidedInventory, IEnerg
 
 	@Override
 	public void updateEntity() {
+		if (worldObj.isRemote) return;
+
+		isBurning = burnTimeRemaining > 0 && storage.getEnergyStored() < storage.getMaxEnergyStored();
+
 		if (burnTimeRemaining > 0 && storage.getEnergyStored() < storage.getMaxEnergyStored()) {
 			burnTimeRemaining -= burnSpeed;
 			storage.setEnergyStored(storage.getEnergyStored() + Math.min(burnSpeed * EPBT, storage.getMaxEnergyStored() - storage.getEnergyStored()));
@@ -50,7 +60,11 @@ public class TileGenerator extends TileEntity implements ISidedInventory, IEnerg
 				}
 			}
 		}
+
+		detectAndSentChanges(tick % 500 == 0);
+		tick++;
 	}
+
 
 	public void tryRefuel() {
 		if (burnTimeRemaining > 0 || storage.getEnergyStored() >= storage.getMaxEnergyStored()) return;
@@ -227,6 +241,19 @@ public class TileGenerator extends TileEntity implements ISidedInventory, IEnerg
 		super.readFromNBT(compound);
 	}
 
+	private void detectAndSentChanges(boolean sendAnyway){
+		if (isBurning != isBurningCach || sendAnyway) isBurningCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 0, isBurning);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void receiveObject(int index, Object object) {
+		if (isBurning != (Boolean) object){
+			isBurning = (Boolean) object;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
+	}
+
 	@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound tagCompound = new NBTTagCompound();
@@ -237,7 +264,6 @@ public class TileGenerator extends TileEntity implements ISidedInventory, IEnerg
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	/* IEnergyHandler */
@@ -248,13 +274,11 @@ public class TileGenerator extends TileEntity implements ISidedInventory, IEnerg
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-
 		return storage.receiveEnergy(maxReceive, simulate);
 	}
 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return storage.extractEnergy(maxExtract, simulate);
 	}
 

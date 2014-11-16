@@ -1,18 +1,21 @@
 package com.brandon3055.draconicevolution.common.blocks.machine;
 
-import java.util.List;
-
-import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
+import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -20,17 +23,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 
-public class Grinder extends BlockContainerDE
+import java.util.List;
+
+public class Grinder extends BlockCustomDrop
 {
 	public IIcon icon_front;
 	public IIcon icon_side;
@@ -40,11 +36,10 @@ public class Grinder extends BlockContainerDE
 	public IIcon icon_top[] = new IIcon[4];
 
 	public Grinder() {
-		super(Material.rock);
+		super(Material.iron);
 		this.setBlockName(Strings.grinderName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
-		this.setHardness(1f);
 		this.setResistance(2000.0f);
 		ModBlocks.register(this);
 
@@ -90,7 +85,7 @@ public class Grinder extends BlockContainerDE
 		IIcon back;
 		IIcon front;
 		
-		if (!tile.disabled && tile.getActiveBuffer().getEnergyStored() >= tile.energyPerKill)
+		if (!tile.disabled && tile.hasPower)
 		{
 			back = icon_back;
 			front = icon_front;
@@ -231,36 +226,19 @@ public class Grinder extends BlockContainerDE
 			world.markBlockForUpdate(x, y, z);
 		}
 	}
-	
+
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
-	{
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te != null && te instanceof IInventory) {
-			IInventory inventory = (IInventory) te;
-
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
-				ItemStack stack = inventory.getStackInSlot(i);
-
-				if (stack != null) {
-					float spawnX = x + world.rand.nextFloat();
-					float spawnY = y + world.rand.nextFloat();
-					float spawnZ = z + world.rand.nextFloat();
-
-					EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stack);
-
-					float mult = 0.05F;
-
-					droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
-					droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
-					droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
-
-					world.spawnEntityInWorld(droppedItem);
-				}
-			}
-		}
-
-		super.breakBlock(world, x, y, z, block, meta);
+	protected boolean dropInventory() {
+		return true;
 	}
 
+	@Override
+	protected boolean hasCustomDropps() {
+		return false;
+	}
+
+	@Override
+	protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
+
+	}
 }

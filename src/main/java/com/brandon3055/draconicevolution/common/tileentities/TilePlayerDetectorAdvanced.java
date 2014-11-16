@@ -18,8 +18,7 @@ import net.minecraft.util.AxisAlignedBB;
 import java.util.Iterator;
 import java.util.List;
 
-public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
-{
+public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory {
 	public String[] names = new String[42];
 	private ItemStack[] items;
 	public boolean whiteList = false;

@@ -12,8 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.storage.WorldInfo;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 
-public class TileWeatherController extends TileEntity implements IInventory
-{	
+public class TileWeatherController extends TileEntity implements IInventory {
 	int tick = 0;
 	boolean running = false;
 	public boolean lastTickInput = false;
@@ -149,9 +148,6 @@ public class TileWeatherController extends TileEntity implements IInventory
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		if (debug)
-			System.out.println("[DEBUG]TileWeatherController: getDescriptionPacket");
-
 		NBTTagCompound tagCompound = new NBTTagCompound();
 		this.writeToNBT(tagCompound);
 		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, tagCompound);
@@ -160,9 +156,6 @@ public class TileWeatherController extends TileEntity implements IInventory
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
 	{
-		if (debug)
-			System.out.println("[DEBUG]TileWeatherController: onDataPacket");
-
 		readFromNBT(pkt.func_148857_g());
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
@@ -225,7 +218,7 @@ public class TileWeatherController extends TileEntity implements IInventory
 	@Override
 	public String getInventoryName()
 	{
-		return "InventoryWeatherController";
+		return "";
 	}
 
 	@Override

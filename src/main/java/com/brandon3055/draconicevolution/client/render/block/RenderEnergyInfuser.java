@@ -1,21 +1,19 @@
 package com.brandon3055.draconicevolution.client.render.block;
 
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class RenderEnergyInfuser implements IItemRenderer
 {
-	TileEntitySpecialRenderer render;
-	private TileEnergyInfuser dummytile;
+	private TileEnergyInfuser tile;
 
-	public RenderEnergyInfuser(TileEntitySpecialRenderer render, TileEnergyInfuser dummy) {
-	    this.render = render;
-	    this.dummytile = dummy;
+	public RenderEnergyInfuser() {
+	    this.tile = new TileEnergyInfuser();
+		this.tile.rotation = 0f;
+		this.tile.running = false;
 	}
 
 	@Override
@@ -35,13 +33,7 @@ public class RenderEnergyInfuser implements IItemRenderer
 	{
 		if (type == ItemRenderType.ENTITY)
 			GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
-		dummytile.xCoord = 0;
-		dummytile.yCoord = 0;
-		dummytile.zCoord = 0;
-		dummytile.setWorldObj(Minecraft.getMinecraft().theWorld);
-		dummytile.rotation = 0F;
-		dummytile.running = false;
-		render.renderTileEntityAt(this.dummytile, 0.0D, 0.0D, 0.0D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0.0D, 0.0D, 0.0D, 0.0F);
 	}
 
 	

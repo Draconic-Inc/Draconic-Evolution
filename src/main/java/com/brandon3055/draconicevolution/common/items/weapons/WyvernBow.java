@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.core.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
@@ -18,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -38,6 +38,11 @@ public class WyvernBow extends ItemBow {
 		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		this.setUnlocalizedName(Strings.wyvernBowName);
 		GameRegistry.registerItem(this, Strings.wyvernBowName);
+	}
+
+	@Override
+	public boolean isItemTool(ItemStack p_77616_1_) {
+		return true;
 	}
 
 	@Override
@@ -164,12 +169,11 @@ public class WyvernBow extends ItemBow {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
-		list.add(EnumChatFormatting.DARK_PURPLE + "" + StatCollector.translateToLocal("msg.bowmode" + ItemNBTHelper.getString(stack, "mode", "rapidfire") + ".txt"));
-		list.add("");
-		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "You have learned how to use draconic power to upgrade");
-		list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "your bow, what benefits does it have?");
-		list.add("");
-		list.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + "Enchants are twice as effective on this bow");
+		if (InfoHelper.holdShiftForDetails(list)) {
+			list.add(StatCollector.translateToLocal("msg.bowmode" + ItemNBTHelper.getString(stack, "mode", "rapidfire") + ".txt"));
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.bowEnchants.txt"));
+			InfoHelper.addLore(stack, list);
+		}
 	}
 
 	public static void registerRecipe()

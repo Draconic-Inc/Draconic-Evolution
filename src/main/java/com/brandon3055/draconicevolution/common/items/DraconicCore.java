@@ -2,11 +2,13 @@ package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.core.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -19,11 +21,12 @@ public class DraconicCore extends ItemDE {
 		ModItems.register(this);
 	}
 
+	@SuppressWarnings("unchecked")
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		par3List.add(StatCollector.translateToLocal("info.draconicCore.txt"));
-		par3List.add("");
-		par3List.add("" + EnumChatFormatting.DARK_PURPLE + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicCore1.txt"));
+		par3List.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicCore.txt"));
+		par3List.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicCore1.txt"));
 	}
 
 	@Override

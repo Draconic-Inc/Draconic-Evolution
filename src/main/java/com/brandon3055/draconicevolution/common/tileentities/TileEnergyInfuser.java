@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
 import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
+import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +15,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Random;
@@ -23,76 +22,70 @@ import java.util.Random;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class TileEnergyInfuser extends TileEntity implements IEnergyHandler, ISidedInventory {
+public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler, ISidedInventory {
 	ItemStack[] items = new ItemStack[1];
 	public EnergyStorage energy = new EnergyStorage(1000000);
 	public int maxInput = 81920;
 	public boolean running = false;
+	public boolean runningCach = false;
 	private int tick = 0;
-	private int longTick = 0;
 	public float rotation = 0;
 	public boolean transfer = false;
+	public boolean transferCach = false;
 
 	//==============================================LOGIC=======================================================//
 
 	@Override
 	public void updateEntity() {
-		tick();
-		if (worldObj.isRemote)
+		if (worldObj.isRemote && running) {
+			rotation += 0.5F;
+			if (rotation > 360F) rotation = 0;
 			spawnParticles();
-		if (worldObj.isRemote)
 			return;
+		}
+
+		if (tick % 100 == 0) tryStartOrStop();
+		if (tick % 400 == 0) detectAndSendChanges(true);
+
+
 		if(running && tryStartOrStop())
 		{
 			IEnergyContainerItem item = (IEnergyContainerItem)items[0].getItem();
-			if (energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) > 0 && !transfer)
-				setTransfer(true);
-			else if (energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) <= 0 && transfer)
-				setTransfer(false);
+//			if (energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) > 0 && !transfer)
+//				setTransfer(true);
+//			else if (energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) <= 0 && transfer)
+				setTransfer(energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) > 0);
 		}
+
+		detectAndSendChanges(false);
+		tick++;
 	}
 
 	private boolean tryStartOrStop(){
-		if (items[0] != null && items[0].stackSize == 1 && EnergyHelper.isEnergyContainerItem(items[0])) {
+		if (items[0] != null && items[0].stackSize == 1 && items[0] != null && items[0].getItem() instanceof IEnergyContainerItem) {
 			IEnergyContainerItem item = (IEnergyContainerItem)items[0].getItem();
-			if (item.getEnergyStored(items[0]) < item.getMaxEnergyStored(items[0]))
+			if (item.getEnergyStored(items[0]) < item.getMaxEnergyStored(items[0])) {
+
 				running = true;
-			else{
-				if (running) worldObj.markBlockForUpdate(xCoord, yCoord ,zCoord);
+				//worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+
+			}else{
+
 				running = false;
+				//worldObj.markBlockForUpdate(xCoord, yCoord ,zCoord);
+
 			}
 		}else {
-			if (running) worldObj.markBlockForUpdate(xCoord, yCoord ,zCoord);
+
 			running = false;
+			//worldObj.markBlockForUpdate(xCoord, yCoord ,zCoord);
 		}
 
 		return running;
 	}
 
-	private void tick()
-	{
-		if (tick >= 20) {
-			tick = 0;
-			if (running)
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		}
-		else
-			tick++;
-		if (longTick >= 100) {
-			longTick = 0;
-			tryStartOrStop();
-		}else
-			longTick++;
-		if(rotation >= 360F)
-			rotation = 0F;
-		else if (running)
-			rotation += 0.5F;
-
-	}
-
 	private void setTransfer(boolean t){
 		transfer = t;
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 	@SideOnly(Side.CLIENT)
 	private void spawnParticles(){
@@ -151,14 +144,12 @@ public class TileEnergyInfuser extends TileEntity implements IEnergyHandler, ISi
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		if (tick == 0)
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return this.energy.receiveEnergy(Math.min(maxInput, maxReceive), simulate);
 	}
 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {;
-			return this.energy.extractEnergy(maxExtract, simulate);
+		return this.energy.extractEnergy(maxExtract, simulate);
 	}
 
 	@Override
@@ -188,6 +179,19 @@ public class TileEnergyInfuser extends TileEntity implements IEnergyHandler, ISi
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());
+	}
+
+	public void detectAndSendChanges(boolean sendAnyway){
+		if (runningCach != running || sendAnyway) runningCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 0, running);
+		if (transferCach != transfer || sendAnyway) transferCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 1, transfer);
+	}
+
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void receiveObject(int index, Object object) {
+		if (index == 0) running = (Boolean)object;
+		if (index == 1) transfer = (Boolean)object;
 	}
 
 	//==============================================INVENTORY====================================================//
@@ -237,7 +241,7 @@ public class TileEnergyInfuser extends TileEntity implements IEnergyHandler, ISi
 
 	@Override
 	public String getInventoryName() {
-		return "InventoryWeatherController";
+		return "";
 	}
 
 	@Override
@@ -263,7 +267,7 @@ public class TileEnergyInfuser extends TileEntity implements IEnergyHandler, ISi
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		return EnergyHelper.isEnergyContainerItem(itemstack);
+		return itemstack != null && itemstack.getItem() instanceof IEnergyContainerItem;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -195,6 +196,36 @@ public class ToolHandler {
 				entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 100F * dmg);
 			}
 		}
+
+		if (entity instanceof EntityLivingBase) {
+			EntityLivingBase entityLivingBase = (EntityLivingBase)entity;
+			double d1 = player.posX - entityLivingBase.posX;
+			double d0;
+
+			for (d0 = player.posZ - entityLivingBase.posZ; d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
+			{
+				d1 = (Math.random() - Math.random()) * 0.01D;
+			}
+			entityLivingBase.attackedAtYaw = (float)(Math.atan2(d0, d1) * 180.0D / Math.PI) - entityLivingBase.rotationYaw;
+
+			if (entityLivingBase.worldObj.rand.nextDouble() >= entityLivingBase.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getAttributeValue())
+			{
+				entityLivingBase.isAirBorne = true;
+				float f1 = MathHelper.sqrt_double(d1 * d1 + d0 * d0);
+				float f2 = 0.4F + EnchantmentHelper.getKnockbackModifier(player, entityLivingBase) * 0.4F;
+				entityLivingBase.motionX /= 2.0D;
+				entityLivingBase.motionY /= 2.0D;
+				entityLivingBase.motionZ /= 2.0D;
+				entityLivingBase.motionX -= d1 / (double)f1 * (double)f2;
+				entityLivingBase.motionY += (double)f2;
+				entityLivingBase.motionZ -= d0 / (double)f1 * (double)f2;
+
+				if (entityLivingBase.motionY > 0.4000000059604645D)
+				{
+					entityLivingBase.motionY = 0.4000000059604645D;
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings({"rawtypes", "unused"})
@@ -205,16 +236,40 @@ public class ToolHandler {
 		World world = player.worldObj;
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
 		List list = world.getEntitiesWithinAABBExcludingEntity(player, box);
-		for (Object o : list) {
+		for (Object entityObject : list) {
 			if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
 				if (!player.capabilities.isCreativeMode) return;
 			} else {
 				if (!player.capabilities.isCreativeMode)
 					((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK, false);
 			}
-			if (((Entity) o) instanceof EntityLivingBase)
-				((Entity) o).attackEntityFrom(DamageSource.causePlayerDamage(player), dmg + sharp);
+			if (entityObject instanceof EntityLivingBase) {
+				((Entity) entityObject).attackEntityFrom(DamageSource.causePlayerDamage(player), dmg + sharp);
 
+				EntityLivingBase entityLivingBase = (EntityLivingBase) entityObject;
+				double d1 = player.posX - entityLivingBase.posX;
+				double d0;
+
+				for (d0 = player.posZ - entityLivingBase.posZ; d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D) {
+					d1 = (Math.random() - Math.random()) * 0.01D;
+				}
+
+				if (entityLivingBase.worldObj.rand.nextDouble() >= entityLivingBase.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getAttributeValue()) {
+					entityLivingBase.isAirBorne = true;
+					float f1 = MathHelper.sqrt_double(d1 * d1 + d0 * d0);
+					float f2 = 0.4F + EnchantmentHelper.getKnockbackModifier(player, entityLivingBase) * 0.4F;
+					entityLivingBase.motionX /= 2.0D;
+					entityLivingBase.motionY /= 2.0D;
+					entityLivingBase.motionZ /= 2.0D;
+					entityLivingBase.motionX -= d1 / (double) f1 * (double) f2;
+					entityLivingBase.motionY += (double) f2;
+					entityLivingBase.motionZ -= d0 / (double) f1 * (double) f2;
+
+					if (entityLivingBase.motionY > 0.4000000059604645D) {
+						entityLivingBase.motionY = 0.4000000059604645D;
+					}
+				}
+			}
 		}
 
 	}

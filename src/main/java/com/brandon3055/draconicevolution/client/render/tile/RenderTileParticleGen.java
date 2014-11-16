@@ -1,24 +1,20 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
-
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 
 
 @SideOnly(Side.CLIENT)
@@ -43,12 +39,13 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer
 		
 		GL11.glTranslatef((float) x, (float) y, (float) z);
 		TileParticleGenerator tileEntityGen = (TileParticleGenerator) tileEntity;
-		renderBlock(tileEntityGen, tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.getWorldObj().getBlock(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), f);
-		
+		renderBlock(tileEntityGen, f);
+
+
 		GL11.glPopMatrix();
 	}
 
-	public void renderBlock(TileParticleGenerator tl, World world, int x, int y, int z, Block block, float f3) {
+	public void renderBlock(TileParticleGenerator tl, float f3) {
 		Tessellator tessellator = Tessellator.instance;
 
 		boolean inverted = tl.inverted;
@@ -56,23 +53,13 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer
 
 		GL11.glPushMatrix();
 
-		GL11.glDisable(GL11.GL_LIGHTING);
+		//GL11.glDisable(GL11.GL_LIGHTING);
 		bindTexture(texture);
 
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, 0.0F, 1.0F);
 		tessellator.setColorRGBA(255, 255, 255, 255);
-		//tessellator.setBrightness(200);
-		
-	     int l = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
-	     int l1 = l % 65536;
-	     int l2 = l / 65536;
-	     tessellator.setColorOpaque_F(1f, 1f, 1f);
-	     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)l1, (float)l2); 
-	     
-		 //tessellator.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1F);
 
-	     
 		{//Draw Corners
 			float f = 0.4F;
 			drawCornerCube(tessellator, f, f, f, 1F - f, inverted, stabilizerMode);
@@ -104,7 +91,7 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer
 		}
 
 		tessellator.draw();
-		GL11.glEnable(GL11.GL_LIGHTING);
+		//GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 
 		if (stabilizerMode)
@@ -195,7 +182,8 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer
 		GL11.glDepthMask(true);
 		OpenGlHelper.glBlendFunc(770, 1, 1, 0);
 
-		float time = (float)tile.getWorldObj().getTotalWorldTime() + f;
+		//float time = (float)tile.getWorldObj().getTotalWorldTime() + f;
+		float time = tile.rotation + f;
 		float upMot = -time * 0.2F - (float) MathHelper.floor_float(-time * 0.1F);
 		byte scaleMult = 1;
 		double rotation = (double)time * 0.025D * (1.0D - (double)(scaleMult & 1) * 2.5D);

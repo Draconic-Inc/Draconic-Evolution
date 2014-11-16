@@ -2,8 +2,6 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -13,7 +11,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer
@@ -30,23 +27,21 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer
 		
 		GL11.glTranslatef((float) x, (float) y, (float) z);
 		TileEnergyInfuser tile = (TileEnergyInfuser) tileEntity;
-		renderBlock(tile, tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.getWorldObj().getBlock(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
+		renderBlock(tile);
 		
 		GL11.glPopMatrix();
 	}
 
-	public void renderBlock(TileEnergyInfuser tile, World world, int x, int y, int z, Block block)
+	public void renderBlock(TileEnergyInfuser tile)
 	{
 		Tessellator tessellator = Tessellator.instance;
 		bindTexture(texture);
 
 		tessellator.setColorRGBA(255, 255, 255, 255);
-		tessellator.setBrightness(200);
-		int l = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
-		int l1 = l % 65536;
-		int l2 = l / 65536;
+		//tessellator.setBrightness(200);
+
 		tessellator.setColorOpaque_F(1f, 1f, 1f);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)l1, (float)l2);
+		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)l1, (float)l2);
 
 		drawBase(tessellator);
 		drawWings(tessellator, tile);

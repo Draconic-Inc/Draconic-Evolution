@@ -34,7 +34,8 @@ public class EntityPersistentItem extends EntityItem {
 	public EntityPersistentItem(World world, Entity original, ItemStack stack)
 	{
 		this(world, original.posX, original.posY, original.posZ);
-		this.delayBeforeCanPickup = 20;
+		if (original instanceof EntityItem) this.delayBeforeCanPickup = ((EntityItem)original).delayBeforeCanPickup;
+		else this.delayBeforeCanPickup = 20;
 		this.motionX = original.motionX;
 		this.motionY = original.motionY;
 		this.motionZ = original.motionZ;

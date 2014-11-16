@@ -6,14 +6,10 @@ import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockMobSpawner;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -37,10 +33,10 @@ import java.util.Random;
 public class CustomSpawner extends BlockDE{
 	public CustomSpawner()
 	{
-		super(Material.rock);
 		this.setBlockName(Strings.customSpawnerName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setHardness(10F);
+		this.setResistance(2000F);
 		this.setHarvestLevel("pickaxe", 3);
 		ModBlocks.register(this);
 	}

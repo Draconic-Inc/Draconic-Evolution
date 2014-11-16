@@ -1,4 +1,4 @@
-//###################################Block Names###################################//
+//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:xRayBlock.name=Distortion Flame
 tile.draconicevolution:xRayBlock.description=Many of you have probably seen a graphical glitch that sometimes occurs when chunks load that allows you to see through the world and see all of the cave caves and tunnels bellow. This block replicates that effect. When you place it next to another block the face of the block it is touching becomes transparent allowing you to see through the world. This can be very useful for finding cave systems and dungeons maby even things other players don’t want you to find. Such a block dose not come cheap. It will cost you several Nether Stars and it is so fragile that once placed it can not be collected without destroying it. (not even with silk touch)
 
@@ -71,7 +71,7 @@ tile.draconicevolution:teleporterStand.description=You have figured out how to c
 tile.draconicevolution:draconiumChest.name=Draconic Chest
 tile.draconicevolution:draconiumChest.description=Using your draconic knowledge you have learned how to create the ultimate chest. With a massive 234 slot storage capacity a built in crafting table and 5 slot RF furnace capable of doubling ore as well as the ability to keep its contents when harvested this chest is the most powerful most versatile storage device in existence! It also comes in a variety of every colour you can imagine gust shift right click it with empty hand for details.
 
-//###################################Item names###################################//
+//Item Information ----------------------------------------------------------------------------------------------------------------------------------------
 item.draconicevolution:draconicCompound.name=Draconic Compound
 item.draconicevolution:draconicCompound.description=Research has found a very powerful item that will be necessary to create powerful tools
 
@@ -103,6 +103,9 @@ item.draconicevolution:teleporterMKI.description=You have managed to infuse the 
 
 item.draconicevolution:teleporterMKII.name=Enhanced Charm of Dislocation
 item.draconicevolution:teleporterMKII.description=Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.
+
+info.teleporterInfGUI.txt=Shift + Right click to open gui
+info.teleporterInfScroll.txt=Shift + scroll to cycle destinations
 
 item.draconicevolution:wyvernPickaxe.name=Pickaxe of the Wyvern
 item.draconicevolution:wyvernPickaxe.description=Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Modes: Shift-Right Click to switch modes: 1×1 or 3×3
@@ -182,11 +185,11 @@ item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Isla
 
 item.draconicevolution:infoTablet.name=Draconic Evolution info guide
 
-//###################################Item Groups###################################//
+//Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
 itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
 
-//###################################Chat Messages###################################//
+//Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
 msg.size0.txt=Tool Mode: Single Block
 msg.size1.txt=Tool Mode: 3x3
 msg.size2.txt=Tool Mode: 5x5
@@ -194,10 +197,10 @@ msg.size3.txt=Tool Mode: 7x7
 msg.size4.txt=Tool Mode: 9x9
 msg.oblittrue.txt=§aObliteration Mode: §4Active
 msg.oblitfalse.txt=§aObliteration Mode: §2Inactive
-msg.bowmoderapidfire.txt=§aFire Mode: §4Rapid Fire
-msg.bowmodesharpshooter.txt=§aFire Mode: §4Sharp Shooter
-msg.bowmodeexplosive.txt=§aFire Mode: §4Explosive
-msg.bowmodedevistation.txt=§aFire Mode: §4Devastation!!! §2(Creative Only)
+msg.bowmoderapidfire.txt=§3Fire Mode: §6Rapid Fire
+msg.bowmodesharpshooter.txt=§3Fire Mode: §6Sharp Shooter
+msg.bowmodeexplosive.txt=§3Fire Mode: §6Explosive
+msg.bowmodedevistation.txt=§3Fire Mode: §6Devastation!!! (Creative Only)
 msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
 msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
 msg.teleporterBound.txt=§aTeleporter bound to:
@@ -238,7 +241,7 @@ msg.draconiumChestEditL3.txt=Or the bottom half of the chest to decrease the val
 msg.draconiumChestEditL4.txt=Right click with paper to copy the colour to other chests
 msg.draconiumChestEdit2.txt=Please use a single peace of paper
 
-//###################################Tool Tips###################################//
+//Tool Tips ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=Unbound
 info.teleporterInfUnset2.txt=Shift right click to bind your current
 info.teleporterInfUnset3.txt=x, y, z coordinates
@@ -248,70 +251,102 @@ info.teleporterInfDest.txt=Destination
 info.teleporterInfFuel.txt=Fuel:
 info.teleporterInfSet1.txt=Bound to
 info.teleporterInfSet2.txt=Uses remaining
-info.teleporterInfGUI.txt=Shift + Right click to open gui
-info.teleporterInfScroll.txt=Shift + scroll to cycle destinations
-info.wyvernLaw1.txt=Weary of plain tools you begin to understand
-info.wyvernLaw2.txt=ways to use Draconic energy to upgrade
-info.wyvernArmorLegend1.txt=Mundane armor was too weak
-info.wyvernArmorLegend2.txt=you use Draconic knowledge to improve it
-info.draconicLaw1.txt=Further Draconic research has allowed
-info.draconicLaw2.txt=you to unlock even better methods
+
 info.draconicAxe1.txt=Timber!!!!!!
 info.draconicAxe2.txt=Will fall an entire tree
 info.draconicAxe3.txt=or break out a 5x5x5 chunk of anything wood.
 info.draconicAxe4.txt=Hold shift to mine a single block.
-info.draconicArmorLegend1.txt=Using forgotten knowledge
-info.draconicArmorLegend2.txt=you have created the ultimate armor
-info.draconicArmorInfoBoots.txt=Leap high into the air!!!
-info.draconicArmorInfoBoots1.txt=and fall like a feather
-info.draconicArmorInfoLeggs.txt=Run like the wind!!!
-info.draconicArmorInfoChest.txt=Take to the sky!!!
-info.draconicArmorInfoChest1.txt=and with the set complete
-info.draconicArmorInfoChest2.txt=walk through fire and fear
-info.draconicArmorInfoChest3.txt=not the dark magic magic!!!
-info.draconicArmorInfoHelm.txt=See through the darkness what lies beyond
+
 info.draconicCore.txt=The core crafting component for Draconic Evolution
 info.draconicCore1.txt=Can be used to stabilize mob spawners
+
 info.mobSoul1.txt=Can be used on a stabilized spawner to set the type
 info.mobSoul2.txt=Or shift right click to spawn a mob
 info.mobSoul3.txt=(Single Use)
-info.wyvernArmor.txt=Having enjoyed the protection of diamond for so long
-info.wyvernArmor1.txt=you realize that you can infuse it with the power of the Draconic
-info.draconicArmor.txt=Further Draconic research
-info.draconicArmor1.txt=has shown you ways to even greater protection
+
 info.arrowInfo.txt=A Painful Ride
 info.arrowInfo0.txt=Too heavy for a regular bow
+
+info.de.obliterationMode.txt=Obliteration Mode
+info.de.obliterationModetrue.txt=Active
+info.de.obliterationModefalse.txt=Inactive
+info.de.miningMode.txt=Mining Mode
+info.de.changeMiningMode.txt=Shift Right-click to change mining mode
+info.de.toggleOblit.txt=Right-click to toggle Obliteration mode
+info.de.oblitInfo.txt=Obliteration mode destroys low value blocks
+
+info.de.bowEnchants.txt=Enchants are twice as effective on this bow
+
+info.de.sword.txt=Your enemy's strength makes this blade stronger!
+
+info.de.safetyMatch.txt=Light a fire that will NOT burn your house down!
+
 info.draconiumChestInfo1.txt=Shift right click with an empty hand
 info.draconiumChestInfo2.txt=to access colour options
 
+enchantment.draconicevolution.reaperEnchant=Reaper
+
+//InfoHelper ----------------------------------------------------------------------------------------------------------------------------------------
+info.de.charge.txt=Charge
+info.de.hold.txt=Hold
+info.de.shift.txt=Shift
+info.de.forDetails.txt=for Details
+
+//Lore ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:wyvernPickaxe.lore=2Mundane picks are so weak\nthrough Draconium, you increase the area and speed to mine.
+item.draconicevolution:wyvernShovel.lore=2One block at a time? Not with Draconium!\nfaster, larger area, this is a start!
+item.draconicevolution:wyvernSword.lore=2Draconium begins to unlock the sword’s potential\nthe area and strength of the sword improves.
+item.draconicevolution:wyvernBow.lore=2Infusing Draconium in a mundane bow\nallows you to shoot faster and with more power.
+
+item.draconicevolution:wyvernHelm.lore=2Stronger than diamond\nyou can now withstand even greater blows
+item.draconicevolution:wyvernChest.lore=2Infusing the armor with Dracomiun\nyou vastly improve its resistance
+item.draconicevolution:wyvernLeggs.lore=2You feel even stronger and faster now\nthat you have infused diamond legs with Draconium
+item.draconicevolution:wyvernBoots.lore=2You learn to improve the boots\nDraconium seems to have given you greater\nagility
+
+item.draconicevolution:draconicPickaxe.lore=2Great care and research has\nallowed you to mine even larger areas
+item.draconicevolution:draconicAxe.lore=2After lot’s of trial and error\nyou can now feel an entire tree with one try
+item.draconicevolution:draconicShovel.lore=2Even more efficient\nyou can dig an even larger area
+item.draconicevolution:draconicHoe.lore=2Draconium even improves farming\nentire areas can be tilled and placed in a single click
+item.draconicevolution:draconicSword.lore=2Wyvern was good, but draconic weapons\nare even more powerful and hit more enemies
+item.draconicevolution:draconicBow.lore=2The peak of ranged perfection\nfaster shooting, explosive arrows, what more could you want?
+
+item.draconicevolution:draconicHelm.lore=2No longer do you fear the night\nyou now can see all the time regardless\nof what is out there
+item.draconicevolution:draconicChest.lore=2Using the heart of a dragon\nyou are stronger and have the gift of flight
+item.draconicevolution:draconicLeggs.lore=2Even stronger armor\nthe soul of a dragon protects you and moves you even faster
+item.draconicevolution:draconicBoots.lore=2Stronger, faster, better than before\nthe heart of a dragon grants you\nhigher jumping
+
+item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, true power!\none tool to do it all, mine, battle, and death!
+
+//Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.DraconicEvolution.EnderDragon.name=Ender Dragon
 
+//KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
 key.placeItem=Place Item in world
 
-death.attack.ChaosDragon=%1$s was torn apart by a Chaos Guardian
+//Damage ----------------------------------------------------------------------------------------------------------------------------------------
+death.attack.chaos=%1$s was torn apart by a Chaos Guardian
 
-//###################################Buttons######################################//
+//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
 button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
 button.de.chestAutoFeed1.txt=FILL.Keep the current stacks full
 button.de.chestAutoFeed2.txt=LOCK.Only pull the currently smelting items from the inventory
 button.de.chestAutoFeed3.txt=ALL.Pull any smeltable items from the inventory
-
-//###################################Manual Gui###################################//
-
+button.de.previous.txt=<==
+button.de.next.txt===>
 button.de.backToIndex.txt=Back to Index
 button.de.back.txt=Back
 button.de.goToIndex.txt=Index Page
+
+//Manual Gui ----------------------------------------------------------------------------------------------------------------------------------------
+
 manual.de.indexTitle.txt=Index Page
 manual.de.userGuide.txt=Mod Feature Guide
-button.de.previous.txt=<==
-button.de.next.txt===>
 manual.de.ecth.txt=Energy Storage Multiblock
 manual.de.roerth.txt=Ritual of Ender Resurrection
 manual.de.endercomet.txt=Ender Comet
 manual.de.enderisland.txt=Chaos Islands
 manual.de.placeditems.txt=Placing items in world
 manual.de.pigmenBloodRage.txt=Pigmen Blood Rage
-
 manual.de.ectdpage0a.txt=The Energy Core is a multiblock structure that is capable of storing immense amounts of RF power using the energy storage capabilities of Draconium and Redstone.
 manual.de.ectdpage0b.txt=The Energy Core has 7 Tiers each capable of storing considerably more then the last to build it you will need 5 different components./n ♦  Energy Core x1/n ♦ Particle Generator x4/n ♦ Redstone Block (number depends on tier)/n ♦ Draconium Block (number depends on tier)/n ♦  Energy Pylon x2+
 manual.de.ectdpage1a.txt=The Energy core consists of the Energy Core(Block) at the centre surrounded by 4 Particle Generators as shown.
@@ -328,19 +363,21 @@ manual.de.ectdpage9a.txt=You can simply right click the energy core to check the
 manual.de.ectdpage9b.txt=Energy is added and removed from the core using the Energy Pylons. To toggle a Pylon between input and output mode simply right click the sphere. The mode is identified by the colour of the Pylon (Blue = input, Orange = output) and the behaviour of the energy particles and the Pylon sphere
 manual.de.ectdpage10.txt=Energy Transfer between the pylon and the core is indicated by a stream of blue energy particles flowing between the Pylon sphere and the core. The amount of energy flowing is roughly shown by the density of the particle stream.
 manual.de.ectdpage11.txt=The above image shows all of the possible Y level placements for the Pylons relative to the core.
-
 manual.de.roertpage0a.txt=The ritual of ender resurrection allows you to summon the Ender Dragon. To set it up you will need the following items./n/n(1)  Resurrection Stone/n(4) Glowstone Blocks/n(4) Obsidian/n(4) Diamond Blocks/n(4) Charged Draconium Blocks/n(12) Quartz Pillars
 manual.de.roertpage0b.txt=To get a Charged Draconium block place a Draconium block in a charging device (requires 100 Million RF)
 manual.de.roertpage1a.txt=The pillars dont have to be in that exact configuration as long as they are within 5 blocks of the Resurrection Stone it also looks better if they are symmetrical.
 manual.de.roertpage1b.txt=Once you have that setup simply right click the Ritual stone and stand back. The ritual should start immediately if it dosnt you have done something wrong.
 manual.de.roertpage1c.txt=During the ritual all of the Ender Crystals will be re-activated. At the end of the ritual there will be a massive explosion at the centre of the structure that wont do too much damage to the terrain but will kill anything that is standing too close.
 manual.de.roertpage1d.txt=The dragon that is spawned by the ritual is almost identical to the original dragon except it has a different texture (By GreatOrator) and it gets harder to kill and deals more damage each time it is summoned (this increase is per player and stops when it reaches a certain difficulty) It also has regeneration for 25 seconds.
-
 manual.de.endercomet.description=Mined out all of the Draconium ore in the end? Get yourself some form of flight and go search the end. If your lucky you may come across an Ender Comet. These comets are comprised of end stone, obsidian and a significant amount of Draconium ore. By default they have a 1 in 10000 chance to spawn in each chunk so you may need to search for a while and they come in various sizes.
-
 manual.de.chaosisland.description=Looking for a challenge? the Ender Dragon wasnt hard enough? This is for you! If you travel to any multiple of 10,000 in the end (e.g. {x=0, z=10000}, {x=0, z=20000}, {x=10000, z=0} etc) you will find a Chaos Island. Each of these islands is guarded by a Chaos Guardian which is basically an extremely powerful Ender Dragon that drops 2 dragon hearts and some draconium dust as well as the standard end portal in the middle of the island with a dragon egg on top. Note: The Chaos Island is a work in progress and there will be changes in the future.
-
 manual.de.placeditems.description=Draconic Evolution adds the ability to place any item in the world as a block allowing you to do things like hang tools or other items on walls for display etc. To pla an item in the world simply look at a block with the item selected (as if you were about to place a block) and press the "Place Item" key (p by default) you can place items on the top bottom or sides of a block. You can left click to rotate the item clockwise and shift+left click to rotate the item counter-clockwise you can also shift+right click to rotate the item in very small increments counter-clockwise. Right click to pick the item up.
-
 manual.de.pigmenBloodRage.description=Don't let the pigmen see you eating pork you wont like what happens..
 
+//Potions ----------------------------------------------------------------------------------------------------------------------------------------
+potion.de.effect.txt=Effect
+potion.de.flight.txt=Flight
+potion.de.highStep.txt=High Step
+potion.de.swiftness.txt=Swiftness
+potion.de.fireImmune.txt=Fire Immunity
+potion.de.jumpBoost.txt=Jump Boost

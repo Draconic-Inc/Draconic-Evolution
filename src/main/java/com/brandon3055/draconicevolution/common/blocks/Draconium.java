@@ -7,7 +7,6 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,9 +28,8 @@ public class Draconium extends BlockDE {
 	private final int CHARGED_DRACONIUM_META = 2;
 	IIcon icons[] = new IIcon[3];
 	public Draconium() {
-		super(Material.iron);
 		this.setHardness(10F);
-		this.setResistance(100F);
+		this.setResistance(20F);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockName(Strings.draconiumName);
 		ModBlocks.register(this, DraconiumItemBlock.class);

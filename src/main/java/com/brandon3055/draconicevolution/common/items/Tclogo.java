@@ -5,7 +5,6 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -75,6 +74,10 @@ public class Tclogo extends ItemDE {
 	{
 		//if (!world.isRemote)OreDoublingRegistry.getOreResult(GameRegistry.findItemStack("ThermalFoundation", "oreCopper", 1));
 
+//		player.addPotionEffect(new PotionEffect(PotionHandler.potionFlight.id, 100, 0));
+//		player.addPotionEffect(new PotionEffect(PotionHandler.potionFireResist.id, 100, 1));
+//		player.addPotionEffect(new PotionEffect(PotionHandler.potionSpeed.id, 100, 1));
+//		player.addPotionEffect(new PotionEffect(PotionHandler.potionUpHillStep.id, 100, 1));
 		int xi = (int)player.posX;
 		int yi = (int)player.posY;
 		int zi = (int)player.posZ;
@@ -84,10 +87,10 @@ public class Tclogo extends ItemDE {
 		for (int x = xi-rad; x < xi+rad; x++){
 			for (int y = yi-10; y < yi+30; y++){
 				for (int z = zi-rad; z < zi+rad; z++){
-					block = world.getBlock(x, y, z);
-					if (block.getMaterial().equals(Material.vine) || block.getMaterial().equals(Material.plants)){
-						world.setBlockToAir(x, y, z);
-					}
+				//	block = world.getBlock(x, y, z);
+					//if (block.getMaterial().equals(Material.vine) || block.getMaterial().equals(Material.plants)){
+						//world.setBlockToAir(x, y, z);
+					//}
 
 					//world.markBlockForUpdate(x, y, z);
 				}

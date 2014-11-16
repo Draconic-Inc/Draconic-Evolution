@@ -9,5 +9,4 @@ public class DraconiumIngot extends ItemDE {
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		ModItems.register(this);
 	}
-
 }

@@ -26,7 +26,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
@@ -69,18 +68,20 @@ public class ClientProxy extends CommonProxy {
 
 	public void registerRendering()
 	{
+		//Item Renderers
 		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBow());
 		MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new RenderBow());
 		MinecraftForgeClient.registerItemRenderer(ModItems.mobSoul, new RenderMobSoul());
-		
-		TileEntitySpecialRenderer render = new RenderTileParticleGen();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileParticleGenerator.class, render);
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen(render, new TileParticleGenerator()));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.draconiumChest), new RenderDraconiumChest());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser());
 
-		render = new RenderTileEnergyInfiser();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyInfuser.class, render);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser(render, new TileEnergyInfuser()));
+		//ISimpleBlockRendering
+		RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
 
+		//TileEntitySpecialRenderers
+		ClientRegistry.bindTileEntitySpecialRenderer(TileParticleGenerator.class, new RenderTileParticleGen());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyInfuser.class, new RenderTileEnergyInfiser());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileCustomSpawner.class, new RenderTileCustomSpawner());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, new RenderTileTestBlock());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyStorageCore.class, new RenderTileEnergyStorageCore());
@@ -90,16 +91,12 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileTeleporterStand.class, new RenderTileTeleporterStand());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileDraconiumChest.class, new RenderTileDraconiumChest());
 
-		//RenderingRegistry.registerEntityRenderingHandler(EntityChaosDrill.class, new EntityChaosDrillRenderer());
-
+		//Entitys
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
 	}
 
 	public void registerRenderIDs (){
 		References.idTeleporterStand = RenderingRegistry.getNextAvailableRenderId();
-		References.idDraconiumChest = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
-		RenderingRegistry.registerBlockHandler(new RenderDraconiumChest());
 	}
 
 }

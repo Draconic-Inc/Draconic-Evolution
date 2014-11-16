@@ -10,9 +10,9 @@ import net.minecraft.util.IChatComponent;
  * Created by Brandon on 1/09/2014.
  */
 public class DamageSourceChaos extends EntityDamageSource {
-	public DamageSourceChaos(String s, Entity entity)
+	public DamageSourceChaos(Entity entity)
 	{
-		super(s, entity);
+		super("Chaos", entity);
 		this.setDamageBypassesArmor();
 	}
 

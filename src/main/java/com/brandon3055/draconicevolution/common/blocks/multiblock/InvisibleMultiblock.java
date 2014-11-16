@@ -22,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -34,7 +35,7 @@ public class InvisibleMultiblock extends BlockDE {
 	public InvisibleMultiblock() {
 		super(Material.iron);
 		this.setHardness(10F);
-		this.setResistance(100F);
+		this.setResistance(2000F);
 		//this.setCreativeTab(DraconicEvolution.getCreativeTab(2));
 		this.setBlockName(Strings.invisibleMultiblockName);
 		ModBlocks.register(this);
@@ -101,7 +102,9 @@ public class InvisibleMultiblock extends BlockDE {
 			if (!world.isRemote) {
 				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 				player.addChatComponentMessage(new ChatComponentText("Tier:" + master.getTier()));
-				player.addChatComponentMessage(new ChatComponentText("" + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored())));
+				String BN = String.valueOf(master.getEnergyStored());
+				if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
+				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored()) + " [" + BN + " RF]"));
 			}
 			return true;
 		} else if (meta == 2) {

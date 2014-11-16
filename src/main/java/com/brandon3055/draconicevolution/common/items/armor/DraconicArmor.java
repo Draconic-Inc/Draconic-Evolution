@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
+import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.core.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -10,21 +12,21 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
-import org.lwjgl.input.Keyboard;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,17 +34,34 @@ import java.util.List;
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class DraconicArmor extends ItemArmor implements ISpecialArmor {
+public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem {//TODO Wings
 	private IIcon helmIcon;
 	private IIcon chestIcon;
 	private IIcon leggsIcon;
 	private IIcon bootsIcon;
+
+	private double totalAbsorption = 2; // 1=100%
+	private int maxTransfer = References.DRACONICTRANSFER;
+	private int maxEnergy = References.DRACONICCAPACITY;
+	private int energyPerDamage = 80;
 
 	public DraconicArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
 		GameRegistry.registerItem(this, name);
+	}
+
+	@Override
+	public boolean isItemTool(ItemStack p_77616_1_) {
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item), "Energy", 0));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item), "Energy", maxEnergy));
 	}
 
 	@Override
@@ -92,66 +111,68 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor {
 		}
 	}
 
-	//#####################################################################################
+	@Override
+	public EnumRarity getRarity(ItemStack p_77613_1_) {
+		return EnumRarity.epic;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+		return 1D - (double)ItemNBTHelper.getInteger(stack, "Energy", 0) / (double)maxEnergy;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return getEnergyStored(stack) < maxEnergy;
+	}
+
+	protected double getAbsorptionPercent() {
+		switch (armorType) {
+			case 0:
+				return 0.15D;
+			case 1:
+				return 0.40D;
+			case 2:
+				return 0.30D;
+			case 3:
+				return 0.15D;
+		}
+		return 0;
+	}
+
+	/* ISpecialArmor */
 
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
-		switch (slot) {
-			case 0:
-				return ArmorPropertiesHandler.draconicBoots(player, armor, source);
-			case 1:
-				return ArmorPropertiesHandler.draconicLeggs(player, armor, source);
-			case 2:
-				return ArmorPropertiesHandler.draconicChest(player, armor, source);
-			case 3:
-				return ArmorPropertiesHandler.draconicHelm(player, armor, source);
-			default:
-				LogHelper.error("[Draconic Armor] Invalid slot");
-				return new ArmorProperties(0, 0, 0);
-
-		}
+		int maxAbsorption = 25 * getEnergyStored(armor) / energyPerDamage;
+		if (source.damageType.equals(DamageSource.fall.damageType) && armor.getItem() == ModItems.draconicBoots) return new ArmorProperties(0, 1D, maxAbsorption);
+		if (source.isUnblockable()) return new ArmorProperties(0, (getAbsorptionPercent()*totalAbsorption)/2, maxAbsorption);
+		return new ArmorProperties(0, getAbsorptionPercent()*totalAbsorption, maxAbsorption);
 	}
 
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
-		switch (slot) {
-			case 0:
-				return 3;
-			case 1:
-				return 6;
-			case 2:
-				return 8;
-			case 3:
-				return 3;
-			default:
-				return 0;
-		}
+		return this.getEnergyStored(armor) > 10000 ? (int)(getAbsorptionPercent() * 20D) : (int) ((float)this.getEnergyStored(armor) / 10000F * (float)(getAbsorptionPercent() * 20D));
 	}
 
 	@Override
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
-
+		extractEnergy(stack, damage * energyPerDamage, false);
 	}
 
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
-		if (player.isBurning() && ArmorPropertiesHandler.hasFullSetDraconic(player)) {
-			player.addPotionEffect(new PotionEffect(12, 10, 0, true));
-		}
-		if (stack != null && stack.getItem() == ModItems.draconicHelm) {
+		if (stack == null) return;
+		if (stack.getItem() == ModItems.draconicHelm) {
 			if (world.isRemote) return;
-			clearNegativeEffects(player);
-			if (player.worldObj.getBlockLightValue((int) player.posX, (int) player.posY, (int) player.posZ) < 5)
+			if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) this.extractEnergy(stack, 5000, false);
+			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY, (int)Math.floor(player.posZ)) < 5)
 				player.addPotionEffect(new PotionEffect(16, 210, 0, true));
 			else if (player.isPotionActive(16)) player.removePotionEffect(16);
+
 		}
-		if (stack != null && stack.getItem() == ModItems.draconicLeggs) {
-			if (player.isSprinting()) player.addPotionEffect(new PotionEffect(1, 10, 3, true));
-			else player.addPotionEffect(new PotionEffect(1, 10, 1, true));
-		}
-		if (stack != null && stack.getItem() == ModItems.draconicBoots) {
-			if (player.isSprinting()) player.addPotionEffect(new PotionEffect(8, 10, 3, true));
-			else player.addPotionEffect(new PotionEffect(8, 10, 1, true));
+		if (stack.getItem() == ModItems.draconicLeggs && player.isSprinting() && !player.capabilities.isCreativeMode) {
+			this.extractEnergy(stack, player.capabilities.isFlying ? 160 : 80, false);
 		}
 	}
 
@@ -159,26 +180,82 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
-			list.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
-		} else {
-			if (stack.getItem() == ModItems.draconicHelm) {
-				list.add(StatCollector.translateToLocal("info.draconicArmorInfoHelm.txt"));
-			} else if (stack.getItem() == ModItems.draconicChest) {
-				list.add(StatCollector.translateToLocal("info.draconicArmorInfoChest.txt"));
-				list.add(StatCollector.translateToLocal("info.draconicArmorInfoChest1.txt"));
-				list.add(StatCollector.translateToLocal("info.draconicArmorInfoChest2.txt"));
-				list.add(StatCollector.translateToLocal("info.draconicArmorInfoChest3.txt"));
-			} else if (stack.getItem() == ModItems.draconicLeggs) {
-				list.add(StatCollector.translateToLocal("info.draconicArmorInfoLeggs.txt"));
-			} else if (stack.getItem() == ModItems.draconicBoots) {
-				list.add(StatCollector.translateToLocal("info.draconicArmorInfoBoots.txt"));
-				list.add(StatCollector.translateToLocal("info.draconicArmorInfoBoots1.txt"));
+		InfoHelper.addEnergyAndLore(stack, list);
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean clearNegativeEffects(Entity par3Entity) {
+		boolean flag = false;
+		if (par3Entity.ticksExisted % 20 == 0) {
+			if (par3Entity instanceof EntityPlayer) {
+				EntityPlayer player = (EntityPlayer) par3Entity;
+
+				Collection<PotionEffect> potions = player.getActivePotionEffects();
+
+				if (player.isBurning()) {
+					player.extinguish();
+					flag = true;
+				} else for (PotionEffect potion : potions) {
+					int id = potion.getPotionID();
+					if (ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[id], new String[]{"isBadEffect", "field_76418_K", "J"})) {
+						if ((player.getHeldItem() == null || (player.getHeldItem().getItem() != ModItems.wyvernBow && player.getHeldItem().getItem() != ModItems.draconicBow)) || id != 2) {
+							player.removePotionEffect(id);
+							flag = true;
+						}
+						break;
+					}
+				}
 			}
-			list.add("");
-			list.add("" + EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicArmorLegend1.txt"));
-			list.add("" + EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.draconicArmorLegend2.txt"));
 		}
+		return flag;
+	}
+
+	/* IEnergyContainerItem */
+	@Override
+	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+		int stored = ItemNBTHelper.getInteger(container, "Energy", 0);
+		int receive = Math.min(maxReceive, Math.min(maxEnergy - stored, maxTransfer));
+
+		if (!simulate) {
+			stored += receive;
+			ItemNBTHelper.setInteger(container, "Energy", stored);
+		}
+		return receive;
+	}
+
+	@Override
+	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+
+		int stored = ItemNBTHelper.getInteger(container, "Energy", 0);
+		int extract = Math.min(maxExtract, stored);
+
+		if (!simulate) {
+			stored -= extract;
+			ItemNBTHelper.setInteger(container, "Energy", stored);
+		}
+		return extract;
+	}
+
+	@Override
+	public int getEnergyStored(ItemStack container) {
+		return ItemNBTHelper.getInteger(container, "Energy", 0);
+	}
+
+	@Override
+	public int getMaxEnergyStored(ItemStack container) {
+
+		return maxEnergy;
+	}
+
+	/* Misc */
+	@Override
+	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+		return new EntityPersistentItem(world, location, itemstack);
+	}
+
+	@Override
+	public boolean hasCustomEntity(ItemStack stack) {
+		return true;
 	}
 
 	public static void registerRecipe() {
@@ -189,37 +266,6 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor {
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicLeggs), "ISI", "DAD", "CIC", 'I', ModItems.draconiumIngot, 'S', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'C', ModItems.draconicCore, 'A', ModItems.wyvernLeggs);
 
 		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicBoots), "ISI", "DAD", "CIC", 'I', ModItems.draconiumIngot, 'S', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'C', ModItems.draconicCore, 'A', ModItems.wyvernBoots);
-	}
-
-	@Override
-	public boolean hasCustomEntity(ItemStack stack) {
-		return true;
-	}
-
-	@Override
-	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-		return new EntityPersistentItem(world, location, itemstack);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void clearNegativeEffects(Entity par3Entity) {
-		if (par3Entity.ticksExisted % 20 == 0) {
-			if (par3Entity instanceof EntityPlayer) {
-				EntityPlayer player = (EntityPlayer) par3Entity;
-
-				Collection<PotionEffect> potions = player.getActivePotionEffects();
-
-				if (player.isBurning()) {
-					player.extinguish();
-				} else for (PotionEffect potion : potions) {
-					int id = potion.getPotionID();
-					if (ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[id], new String[]{"isBadEffect", "field_76418_K", "J"})) {
-						if ((player.getHeldItem() == null || (player.getHeldItem().getItem() != ModItems.wyvernBow && player.getHeldItem().getItem() != ModItems.draconicBow)) || id != 2) player.removePotionEffect(id);
-						break;
-					}
-				}
-			}
-		}
 	}
 
 }

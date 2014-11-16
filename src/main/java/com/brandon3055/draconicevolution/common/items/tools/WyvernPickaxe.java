@@ -2,8 +2,7 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
-import com.brandon3055.draconicevolution.common.core.utills.ItemInfoHelper;
+import com.brandon3055.draconicevolution.common.core.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ModItems;
@@ -26,10 +25,9 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -47,11 +45,16 @@ public class WyvernPickaxe extends ItemPickaxe implements IEnergyContainerItem{
 		GameRegistry.registerItem(this, Strings.wyvernPickaxeName);
 	}
 
+	@Override
+	public boolean isItemTool(ItemStack p_77616_1_) {
+		return true;
+	}
+
 	@SuppressWarnings("all")
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), 0));
-		list.add(EnergyHelper.setDefaultEnergyTag(new ItemStack(item, 1, 0), capacity));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", capacity));
 	}
 
 	@Override
@@ -114,27 +117,19 @@ public class WyvernPickaxe extends ItemPickaxe implements IEnergyContainerItem{
 		return ToolHandler.changeMode(stack, player, false, 1);
 	}
 
-	public static int getMode(final ItemStack tool)
-	{
-		return tool.getItemDamage();
-	}
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
-		int size = (ItemNBTHelper.getShort(stack, "size", (short)0) * 2) + 1;
+		int size = (ItemNBTHelper.getShort(stack, "size", (short) 0) * 2) + 1;
+		if (InfoHelper.holdShiftForDetails(list)){
+			InfoHelper.addEnergyInfo(stack, list);
 
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
-			list.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
-			ItemInfoHelper.energyDisplayInfo(stack, list);
-		} else {
-			list.add(EnumChatFormatting.GREEN + "Mining Mode: " + EnumChatFormatting.BLUE + size + "x" + size);
-			list.add(EnumChatFormatting.GREEN + "Shift Right-click to change mode");
-			list.add("");
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "Weary of plain tools you begin to understand");
-			list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + "ways to use Draconic energy to upgrade");
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.miningMode.txt") + ": " + InfoHelper.HITC() + size + "x" + size);
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.changeMiningMode.txt"));
+
+			InfoHelper.addLore(stack, list);
 		}
 	}
 

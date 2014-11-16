@@ -54,7 +54,7 @@ public class TeleporterMKI extends ItemDE
 		double x = ItemNBTHelper.getDouble(stack, "X", 0);
 		double y = ItemNBTHelper.getDouble(stack, "Y", 0);
 		double z = ItemNBTHelper.getDouble(stack, "Z", 0);
-		int dim = ItemNBTHelper.getIntager(stack, "Dimension", 0);
+		int dim = ItemNBTHelper.getInteger(stack, "Dimension", 0);
 
 		if (!(entity instanceof EntityPlayer) && !(entity instanceof IBossDisplayData))
 		{
@@ -95,7 +95,7 @@ public class TeleporterMKI extends ItemDE
 		double z = ItemNBTHelper.getDouble(stack, "Z", 0);
 		float yaw = ItemNBTHelper.getFloat(stack, "Yaw", 0);
 		float pitch = ItemNBTHelper.getFloat(stack, "Pitch", 0);
-		int dim = ItemNBTHelper.getIntager(stack, "Dimension", 0);
+		int dim = ItemNBTHelper.getInteger(stack, "Dimension", 0);
 		boolean onStand = !(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof TeleporterMKI);
 
 		if (player.isSneaking())
@@ -107,7 +107,7 @@ public class TeleporterMKI extends ItemDE
 				ItemNBTHelper.setDouble(stack, "Z", player.posZ);
 				ItemNBTHelper.setFloat(stack, "Yaw", player.rotationYaw);
 				ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
-				ItemNBTHelper.setIntager(stack, "Dimension", player.dimension);
+				ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
 				ItemNBTHelper.setBoolean(stack, "IsSet", true);
 				if (world.isRemote)
 					player.addChatMessage(new ChatComponentText(new ChatComponentTranslation("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.worldObj.provider.getDimensionName() + "}"));
@@ -151,7 +151,7 @@ public class TeleporterMKI extends ItemDE
 		} else
 		{
 			list.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("info.teleporterInfSet1.txt"));
-			list.add(EnumChatFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + WorldProvider.getProviderForDimension(ItemNBTHelper.getIntager(stack, "Dimension", 0)).getDimensionName() + "}");
+			list.add(EnumChatFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + WorldProvider.getProviderForDimension(ItemNBTHelper.getInteger(stack, "Dimension", 0)).getDimensionName() + "}");
 			list.add(EnumChatFormatting.BLUE + String.valueOf(stack.getMaxDamage() - stack.getItemDamage() + 1) + " " + StatCollector.translateToLocal("info.teleporterInfSet2.txt"));
 		}
 	}

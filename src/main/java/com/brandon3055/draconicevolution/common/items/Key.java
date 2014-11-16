@@ -41,14 +41,14 @@ public class Key extends ItemDE {
 			return;
 		}
 
-		int keyCode = ItemNBTHelper.getIntager(key, "KeyCode", 0);
+		int keyCode = ItemNBTHelper.getInteger(key, "KeyCode", 0);
 		list.add(keyCode == 0 ? "Un-Bound" : "Key Code: " + String.valueOf(keyCode));
 
 		if (keyCode != 0){
-			list.add("Linked to {X:"+ItemNBTHelper.getIntager(key, "X", 0)+" Y:"+ItemNBTHelper.getIntager(key, "Y", 0)+" X:"+ItemNBTHelper.getIntager(key, "Z", 0)+"}");
-			if (ItemNBTHelper.getIntager(key, "LockCount", 0) == 0) return;
-			for (int i = 1; i <= ItemNBTHelper.getIntager(key, "LockCount", 0); i++){
-				list.add("Linked to {X:"+ItemNBTHelper.getIntager(key, "X_"+i, 0)+" Y:"+ItemNBTHelper.getIntager(key, "Y_"+i, 0)+" X:"+ItemNBTHelper.getIntager(key, "Z_"+i, 0)+"}");
+			list.add("Linked to {X:"+ItemNBTHelper.getInteger(key, "X", 0)+" Y:"+ItemNBTHelper.getInteger(key, "Y", 0)+" X:"+ItemNBTHelper.getInteger(key, "Z", 0)+"}");
+			if (ItemNBTHelper.getInteger(key, "LockCount", 0) == 0) return;
+			for (int i = 1; i <= ItemNBTHelper.getInteger(key, "LockCount", 0); i++){
+				list.add("Linked to {X:"+ItemNBTHelper.getInteger(key, "X_" + i, 0)+" Y:"+ItemNBTHelper.getInteger(key, "Y_" + i, 0)+" X:"+ItemNBTHelper.getInteger(key, "Z_" + i, 0)+"}");
 			}
 		}
 	}
@@ -56,6 +56,6 @@ public class Key extends ItemDE {
 	@Override
 	public boolean hasEffect(ItemStack stack, int pass) {
 		if (stack.getItemDamage() == 1) return true;
-		return ItemNBTHelper.getIntager(stack, "KeyCode", 0) != 0;
+		return ItemNBTHelper.getInteger(stack, "KeyCode", 0) != 0;
 	}
 }

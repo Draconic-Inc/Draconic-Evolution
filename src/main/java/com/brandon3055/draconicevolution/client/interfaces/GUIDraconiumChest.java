@@ -32,7 +32,6 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
-//todo unify gui headings
 	public EntityPlayer player;
 	private TileDraconiumChest tile;
 	private static final ResourceLocation textureLeft = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DraconicChestLeft.png");
@@ -60,7 +59,7 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
 		drawTexturedModalRect(guiLeft+387, guiTop+236, 44, 177, 90, 16);
 		drawTexturedModalRect(guiLeft+387, guiTop+180, 44, 177, 90, 16);
 
-		int arrowHight = (int)(((float)tile.smeltingProgressTime / (float)tile.smeltingCompleateTime) * 22f);//todo maby need adjustment
+		int arrowHight = (int)(((float)tile.smeltingProgressTime / (float)tile.smeltingCompleateTime) * 22f);
 		drawTexturedModalRect(guiLeft+140, guiTop+192+22-arrowHight, 140, 216+22-arrowHight, 16, arrowHight);
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture(textureRight);
@@ -74,7 +73,7 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
-		fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("tile.draconicevolution:draconiumChest.name"), 4, 4, 0x00FFFF);
+		fontRendererObj.drawString(tile.getInventoryName(), 4, 4, 0x222222);
 		//fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("button.de.chestAutoFeed.txt"), 4, 180, 0x00FFFF);
 
 		ArrayList<String> list = new ArrayList<String>();

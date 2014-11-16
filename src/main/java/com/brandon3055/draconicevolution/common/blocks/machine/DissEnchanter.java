@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
-import com.brandon3055.draconicevolution.common.blocks.BlockContainerDE;
+import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -10,21 +10,22 @@ import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import java.util.List;
+import java.util.Random;
+
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class DissEnchanter extends BlockContainerDE {
+public class DissEnchanter extends BlockCustomDrop {
 	IIcon top;
 	IIcon bottom;
 	public DissEnchanter() {
@@ -32,8 +33,6 @@ public class DissEnchanter extends BlockContainerDE {
 		this.setBlockName(Strings.dissEnchanterName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setStepSound(soundTypeStone);
-		this.setHardness(1f);
-		this.setResistance(200.0f);
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.75F, 1.0F);
 		ModBlocks.register(this);
 	}
@@ -82,33 +81,46 @@ public class DissEnchanter extends BlockContainerDE {
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
-	{
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te != null && te instanceof IInventory) {
-			IInventory inventory = (IInventory) te;
+	protected boolean dropInventory() {
+		return true;
+	}
 
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
-				ItemStack stack = inventory.getStackInSlot(i);
+	@Override
+	protected boolean hasCustomDropps() {
+		return false;
+	}
 
-				if (stack != null) {
-					float spawnX = x + world.rand.nextFloat();
-					float spawnY = y + world.rand.nextFloat();
-					float spawnZ = z + world.rand.nextFloat();
+	@Override
+	protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
 
-					EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stack);
+	}
 
-					float multiplier = 0.05F;
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+		super.randomDisplayTick(world, x, y, z, rand);
 
-					droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * multiplier;
-					droppedItem.motionY = (4 + world.rand.nextFloat()) * multiplier;
-					droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * multiplier;
+		for (int x1 = x - 2; x1 <= x + 2; ++x1) {
+			for (int z1 = z - 2; z1 <= z + 2; ++z1) {
+				if (x1 > x - 2 && x1 < x + 2 && z1 == z - 1) {
+					z1 = z + 2;
+				}
 
-					world.spawnEntityInWorld(droppedItem);
+				if (rand.nextInt(16) == 0) {
+					for (int y1 = y; y1 <= y + 1; ++y1) {
+						if (world.getBlock(x1, y1, z1) == Blocks.bookshelf) {
+							if (!world.isAirBlock((x1 - x) / 2 + x, y1, (z1 - z)
+									/ 2 + z)) {
+								break;
+							}
+
+							//world.spawnParticle("enchantmenttable", x + 0.5D, y + 2.0D, z + 0.5D, l - x + rand.nextFloat() - 0.5D, j1 - y - rand.nextFloat() - 1.0F, i1 - z	+ rand.nextFloat() - 0.5D);
+							world.spawnParticle("enchantmenttable", x1+0.4+(rand.nextFloat()*0.2), y1+0.8, z1+0.4+(rand.nextFloat()*0.2), x - x1+rand.nextFloat()-0.5, y - y1+rand.nextFloat(), z - z1+rand.nextFloat()-0.5);
+
+						}
+					}
 				}
 			}
 		}
-
-		super.breakBlock(world, x, y, z, block, meta);
 	}
 }

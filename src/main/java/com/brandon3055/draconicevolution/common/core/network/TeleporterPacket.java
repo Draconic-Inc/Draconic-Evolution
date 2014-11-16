@@ -143,18 +143,16 @@ public class TeleporterPacket implements IMessage
 
 			if (message.function == SCROLL){
 				int selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-				int selectionOffset = ItemNBTHelper.getIntager(teleporter, "SelectionOffset", 0);
+				int selectionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
 				int maxSelect = Math.min(list.tagCount()-1, 11);
 				int maxOffset = Math.max(list.tagCount() - 12, 0);
-
-				LogHelper.info(message.data+" "+maxSelect+" "+selected);
 
 				if(message.data > 0 && selected < maxSelect) {
 					ItemNBTHelper.setShort(teleporter, "Selection", (short) (selected + 1));
 					return null;
 				}
 				if(message.data > 0 && selectionOffset < maxOffset) {
-					ItemNBTHelper.setIntager(teleporter, "SelectionOffset", selectionOffset + 1);
+					ItemNBTHelper.setInteger(teleporter, "SelectionOffset", selectionOffset + 1);
 					return null;
 				}
 				if(message.data < 0 && selected > 0) {
@@ -162,7 +160,7 @@ public class TeleporterPacket implements IMessage
 					return null;
 				}
 				if(message.data < 0 && selectionOffset > 0) {
-					ItemNBTHelper.setIntager(teleporter, "SelectionOffset", selectionOffset-1);
+					ItemNBTHelper.setInteger(teleporter, "SelectionOffset", selectionOffset - 1);
 					return null;
 				}
 
@@ -196,15 +194,15 @@ public class TeleporterPacket implements IMessage
 			}
 
 			if (message.function == TELEPORT){
-				int fuel = ItemNBTHelper.getIntager(teleporter, "Fuel", 0);
-				if (!ctx.getServerHandler().playerEntity.capabilities.isCreativeMode)ItemNBTHelper.setIntager(teleporter, "Fuel", fuel - 1);
+				int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
+				if (!ctx.getServerHandler().playerEntity.capabilities.isCreativeMode)ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
 				TeleportLocation destination = new TeleportLocation();
 				destination.readFromNBT(list.getCompoundTagAt(message.data));
 				destination.sendEntityToCoords(ctx.getServerHandler().playerEntity);
 			}
 
 			if (message.function == ADDFUEL){
-				int fuel = ItemNBTHelper.getIntager(teleporter, "Fuel", 0);
+				int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
 				int count = 0;
 				for (int i = 0; i < message.data; i++)
 				{
@@ -213,7 +211,7 @@ public class TeleporterPacket implements IMessage
 						count++;
 					}else break;
 				}
-				ItemNBTHelper.setIntager(teleporter, "Fuel", fuel + (ConfigHandler.teleporterUsesPerPearl * count));
+				ItemNBTHelper.setInteger(teleporter, "Fuel", fuel + (ConfigHandler.teleporterUsesPerPearl * count));
 			}
 
 			if (message.function == CHANGESELECTION){
@@ -221,7 +219,7 @@ public class TeleporterPacket implements IMessage
 			}
 
 			if (message.function == UPDATEOFFSET){
-				ItemNBTHelper.setIntager(teleporter, "SelectionOffset", message.data);
+				ItemNBTHelper.setInteger(teleporter, "SelectionOffset", message.data);
 			}
 			return null;
 		}

@@ -1,17 +1,22 @@
 package com.brandon3055.draconicevolution.common.container;
 
+import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
 import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerGrinder extends Container {
+public class ContainerGrinder extends ContainerDataSync {
 
-	private int cachSize = -1;
 	private TileGrinder tile;
+	private int energyCach = -1;
+	private int energy2Cach = -1;
+	private int burnCach = -1;
+	private int burnRemainingCach = -1;
 
 	public ContainerGrinder(InventoryPlayer invPlayer, TileGrinder tile) {
 		this.tile = tile;
@@ -74,12 +79,19 @@ public class ContainerGrinder extends Container {
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		ItemStack stack = tile.getStackInSlot(0);
-		int size = stack == null ? 0 : stack.stackSize;
-		if (cachSize != size) {
-			cachSize = size;
-			tile.tryRefuel();
-			tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
-		}
+		if (energyCach != tile.externalInputBuffer.getEnergyStored()) energyCach = (Integer) sendObject(null, ObjectPacket.INT, 0, tile.externalInputBuffer.getEnergyStored());
+		if (energy2Cach != tile.internalGenBuffer.getEnergyStored()) energy2Cach = (Integer) sendObject(null, ObjectPacket.INT, 1, tile.internalGenBuffer.getEnergyStored());
+		if (burnCach != tile.burnTime) burnCach = (Integer) sendObject(null, ObjectPacket.INT, 2, tile.burnTime);
+		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObject(null, ObjectPacket.INT, 3, tile.burnTimeRemaining);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void receiveSyncData(int index, Object object) {
+		if (index == 0) tile.externalInputBuffer.setEnergyStored((Integer)object);
+		else if (index == 1) tile.internalGenBuffer.setEnergyStored((Integer)object);
+		else if (index == 2) tile.burnTime = (Integer)object;
+		else if (index == 3) tile.burnTimeRemaining = (Integer)object;
+
 	}
 }

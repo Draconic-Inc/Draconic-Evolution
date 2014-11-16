@@ -5,10 +5,8 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 public class ItemDE extends Item {
 	public String getUnwrappedUnlocalizedName(final String unlocalizedName){
@@ -36,10 +34,5 @@ public class ItemDE extends Item {
 	@Override
 	public boolean hasCustomEntity(ItemStack stack) {
 		return false;
-	}
-
-	@Override
-	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-		return null;//new EntityPersistentItem(world, location, itemstack);
 	}
 }

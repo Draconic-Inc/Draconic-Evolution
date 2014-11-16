@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.core.network.TeleporterPacket;
 import com.brandon3055.draconicevolution.common.core.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.relauncher.Side;
@@ -249,6 +250,13 @@ public class GUITeleporter extends GuiScreen
 		else maxOffset = 0;
 		if (selrctionOffset > maxOffset) selrctionOffset = maxOffset;
 		if (selected > locations.size() || selected < 0) selected = Math.max(locations.size() - 1, 0);
+		if ((selected + selrctionOffset)+1 > locations.size()){
+			selected = 0;
+			selrctionOffset = 0;
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.CHANGESELECTION, selected, false));
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selrctionOffset, false));
+			LogHelper.info("Crash Aborted!");
+		}
 		if (locations.size() == 0 || locations.get(selected + selrctionOffset).getWriteProtected()) {
 			((GuiButton) buttonList.get(0)).enabled = false;
 			((GuiButton) buttonList.get(1)).enabled = false;
@@ -472,8 +480,8 @@ public class GUITeleporter extends GuiScreen
 
 	private void readDataFromItem(ItemStack teleporter){
 		this.selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		this.selrctionOffset = ItemNBTHelper.getIntager(teleporter, "SelectionOffset", 0);
-		this.fuel = ItemNBTHelper.getIntager(teleporter, "Fuel", 0);
+		this.selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
+		this.fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
 
 		locations.clear();
 

@@ -1,23 +1,18 @@
 package com.brandon3055.draconicevolution.client.render.block;
 
-import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.IItemRenderer;
-
 import org.lwjgl.opengl.GL11;
 
 public class RenderParticleGen implements IItemRenderer
 {
-	TileEntitySpecialRenderer render;
-	private TileEntity dummytile;
+	private TileEntity tile;
 	
-	public RenderParticleGen(TileEntitySpecialRenderer render, TileEntity dummy) {
-	    this.render = render;
-	    this.dummytile = dummy;
+	public RenderParticleGen() {
+	    this.tile = new TileParticleGenerator();
 	}
 
 	@Override
@@ -39,11 +34,7 @@ public class RenderParticleGen implements IItemRenderer
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		if (type == IItemRenderer.ItemRenderType.ENTITY)
 			GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
-		this.dummytile.xCoord = 0;
-		this.dummytile.yCoord = 0;
-		this.dummytile.zCoord = 0;
-		this.dummytile.setWorldObj(Minecraft.getMinecraft().theWorld);
-		this.render.renderTileEntityAt(this.dummytile, 0.0D, 0.0D, 0.0D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0.0D, 0.0D, 0.0D, 0.0F);
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}

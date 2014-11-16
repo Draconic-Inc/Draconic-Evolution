@@ -1,19 +1,21 @@
 package com.brandon3055.draconicevolution.common.container;
 
+import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
 import com.brandon3055.draconicevolution.common.inventory.SlotChargable;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyHelper;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerEnergyInfuser extends Container {
+public class ContainerEnergyInfuser extends ContainerDataSync {
 
 	private TileEnergyInfuser tile;
 	private EntityPlayer player;
+	private int lastTickEnergyStorage = -1;
 
 	public ContainerEnergyInfuser(InventoryPlayer invPlayer, TileEnergyInfuser tile) {
 		this.tile = tile;
@@ -52,7 +54,7 @@ public class ContainerEnergyInfuser extends Container {
 				if (!mergeItemStack(stack, 0, 36, false)){
 					return null;
 				}
-			}else if (!EnergyHelper.isEnergyContainerItem(stack) || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)){
+			}else if (!(stack.getItem() instanceof IEnergyContainerItem) || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)){
 				return null;
 			}
 
@@ -70,18 +72,19 @@ public class ContainerEnergyInfuser extends Container {
 		return null;
 	}
 
-	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting) {
-		super.addCraftingToCrafters(par1ICrafting);
-	}
-
-	@Override
-	public void updateProgressBar(int par1, int par2) {
-		super.updateProgressBar(par1, par2);
-	}
 
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
+		if (tile.energy.getEnergyStored() != lastTickEnergyStorage){
+			sendObject(null, ObjectPacket.INT, 0, tile.energy.getEnergyStored());
+			lastTickEnergyStorage = tile.energy.getEnergyStored();
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void receiveSyncData(int index, Object value) {
+		tile.energy.setEnergyStored((Integer)value);
 	}
 }

@@ -390,7 +390,7 @@ public class EntityCustomDragon extends EntityDragon {
 			}
 			if (entity instanceof EntityLivingBase && isUber){
 				((EntityLivingBase)entity).setLastAttacker(this);
-				entity.attackEntityFrom(new DamageSourceChaos("ChaosDragon", this), 20F);
+				entity.attackEntityFrom(new DamageSourceChaos(this), 20F);
 			}
 		}
 	}
@@ -405,7 +405,7 @@ public class EntityCustomDragon extends EntityDragon {
 			}
 			if (entity instanceof EntityLivingBase && isUber){
 				((EntityLivingBase)entity).setLastAttacker(this);
-				entity.attackEntityFrom(new DamageSourceChaos("ChaosDragon", this), 50F);
+				entity.attackEntityFrom(new DamageSourceChaos(this), 50F);
 			}
 		}
 	}

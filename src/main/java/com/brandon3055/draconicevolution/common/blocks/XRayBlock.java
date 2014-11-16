@@ -6,7 +6,6 @@ import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,13 +20,11 @@ import java.util.Random;
 public class XRayBlock extends BlockDE {
 
 	protected XRayBlock() {
-		super(Material.rock);
 		this.setBlockName(Strings.xrayBlockName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
 		this.setBlockBounds(0.4F, 0.4F, 0.4F, 0.6F, 0.6F, 0.6F);
-		this.setHardness(7f);
+		this.setHardness(10f);
 		this.setHarvestLevel("pickaxe", 4);
-		this.setResistance(200.0f);
 		ModBlocks.register(this);
 	}
 	

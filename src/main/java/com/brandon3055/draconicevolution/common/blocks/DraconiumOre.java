@@ -25,8 +25,9 @@ public class DraconiumOre extends BlockDE {
 		super(Material.rock);
 		this.setBlockName(Strings.draconiumOreName);
 		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
-		this.setHardness(5f);
+		this.setHardness(10f);
 		this.setResistance(20.0f);
+		this.setHarvestLevel("pickaxe", 4);
 		ModBlocks.register(this);
 	}
 

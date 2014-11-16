@@ -1,10 +1,9 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import java.util.Random;
-
 import com.brandon3055.draconicevolution.client.render.particle.ParticleCustom;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
+import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,8 +12,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
 import net.minecraft.util.AxisAlignedBB;
+
+import java.util.Random;
 
 public class TileParticleGenerator extends TileEntity {
 	public int red = 0;

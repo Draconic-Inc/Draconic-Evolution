@@ -112,7 +112,7 @@ public class ContainerDissEnchanter extends Container {
 		@Override
 		public boolean isItemValid(ItemStack stack)
 		{
-			return EnchantmentHelper.getEnchantments(stack).size() > 0 || ItemNBTHelper.getIntager(stack, "RepairCost", 0) > 0;
+			return EnchantmentHelper.getEnchantments(stack).size() > 0 || ItemNBTHelper.getInteger(stack, "RepairCost", 0) > 0;
 		}
 
 		@Override

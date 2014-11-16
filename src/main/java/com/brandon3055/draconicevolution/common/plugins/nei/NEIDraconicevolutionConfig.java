@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.common;
+package com.brandon3055.draconicevolution.common.plugins.nei;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
@@ -7,8 +7,6 @@ import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
 import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.items.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.plugins.nei.CraftingChestOverlayHandler;
-import com.brandon3055.draconicevolution.common.plugins.nei.CraftingChestStackPositioner;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -26,6 +24,7 @@ public class NEIDraconicevolutionConfig implements IConfigureNEI {
 		API.hideItem(new ItemStack(ModBlocks.safetyFlame));
 		API.hideItem(new ItemStack(ModItems.tclogo));
 		API.hideItem(new ItemStack(ModItems.creativeStructureSpawner));
+		API.hideItem(new ItemStack(ModItems.creativeStructureSpawner, 1, 1));
 		LogHelper.info("Added NEI integration");
 	}
 

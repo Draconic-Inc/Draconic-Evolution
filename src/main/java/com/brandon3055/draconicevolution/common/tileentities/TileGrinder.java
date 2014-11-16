@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
 import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityCreature;
@@ -18,14 +21,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
-public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyHandler {
+public class TileGrinder extends TileObjectSync implements ISidedInventory, IEnergyHandler {
 	//########### variables #############//
 	public int meta = -1;
 	List<EntityLiving> killList;
@@ -38,14 +40,16 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 	public int burnTime = 1;
 	public int burnTimeRemaining = 0;
 	public boolean disabled = false;
+	private boolean disabledCach = false;
+	public boolean hasPower = false;
+	public boolean hasPowerCach = false;
 	private boolean readyNext = false;
-	protected EnergyStorage internalGenBuffer = new EnergyStorage(20000, 32000, 0);
-	protected EnergyStorage externalInputBuffer = new EnergyStorage(100000, 32000, 0);
+	public EnergyStorage internalGenBuffer = new EnergyStorage(20000, 32000, 0);
+	public EnergyStorage externalInputBuffer = new EnergyStorage(100000, 32000, 0);
 	public int energyPerKill = 1000;
 
 	public void updateVariables() {
 		if (meta == -1) meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-		//if (fakePlayer == null) fakePlayer = new DEFakePlayer((WorldServer)worldObj, new GameProfile(UUID.randomUUID(), "DEGrinderFakePlayer"));
 		if (centreY == -1) {
 			switch (meta) {
 				case 0:
@@ -70,6 +74,7 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 					break;
 			}
 		}
+		hasPower = getActiveBuffer().getEnergyStored() >= energyPerKill;
 	}
 	//##################################//
 
@@ -79,6 +84,8 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 
 	@Override
 	public void updateEntity() {
+		if (worldObj.isRemote) return;
+
 		updateVariables();
 		int burnSpeed = 2;
 		int EPBT = 10;
@@ -88,28 +95,18 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 			internalGenBuffer.setEnergyStored(internalGenBuffer.getEnergyStored() + Math.min(burnSpeed * EPBT, internalGenBuffer.getMaxEnergyStored() - internalGenBuffer.getEnergyStored()));
 		} else if (burnTimeRemaining <= 0) tryRefuel();
 
-//		if ((internalGenBuffer.getEnergyStored() > 0)) {
-//			for (int i = 0; i < 6; i++){
-//				TileEntity tile = worldObj.getTileEntity(xCoord + ForgeDirection.getOrientation(i).offsetX, yCoord + ForgeDirection.getOrientation(i).offsetY, zCoord + ForgeDirection.getOrientation(i).offsetZ);
-//				if (tile != null && tile instanceof IEnergyHandler) {
-//					internalGenBuffer.extractEnergy(((IEnergyHandler) tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), internalGenBuffer.extractEnergy(internalGenBuffer.getMaxExtract(), true), false), false);
-//				}
-//			}
-//		}
-
-		if (!worldObj.isRemote && readyNext && !disabled && getActiveBuffer().getEnergyStored() >= energyPerKill) {
+		if (readyNext && !disabled && getActiveBuffer().getEnergyStored() >= energyPerKill) {
 			if (killNextEntity()) {
 				getActiveBuffer().modifyEnergyStored(-energyPerKill);
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			}
 		}
 
-		if (tick >= 100) {
-			tick = 0;
-			checkSignal();
+		if (tick % 100 == 0) {
+			//checkSignal();
 			readyNext = true;
-			if (burnTimeRemaining > 0) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		} else tick++;
+		}
+		detectAndSendChanges(tick % 500 == 0);
+		tick++;
 	}
 
 	public EnergyStorage getActiveBuffer(){
@@ -337,6 +334,24 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 		super.readFromNBT(compound);
 	}
 
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void receiveObject(int index, Object object) {
+		if (index == 0 && disabled != (Boolean) object) {
+			disabled = (Boolean) object;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
+		else if (hasPower != (Boolean) object){
+			hasPower = (Boolean) object;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
+	}
+
+	private void detectAndSendChanges(boolean sendAnyway){
+		if (disabledCach != disabled || sendAnyway) disabledCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 0, disabled);
+		if (hasPowerCach != hasPower || sendAnyway) hasPowerCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 1, hasPower);
+	}
+
 	@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound tagCompound = new NBTTagCompound();
@@ -347,7 +362,6 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	/* IEnergyHandler */
@@ -381,4 +395,5 @@ public class TileGrinder extends TileEntity implements ISidedInventory, IEnergyH
 	public EnergyStorage getInternalBuffer(){
 		return internalGenBuffer;
 	}
+
 }
