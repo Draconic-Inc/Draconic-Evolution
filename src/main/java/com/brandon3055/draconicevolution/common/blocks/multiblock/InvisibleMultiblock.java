@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
 import com.brandon3055.draconicevolution.common.blocks.BlockDE;
-import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.core.utills.Utills;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.utills.Utills;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;

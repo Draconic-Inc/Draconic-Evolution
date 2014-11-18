@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.common.blocks.machine;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
-import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
 import com.brandon3055.draconicevolution.common.container.ContainerGrinder;
-import com.brandon3055.draconicevolution.common.core.utills.GuiHelper;
+import com.brandon3055.draconicevolution.common.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import cpw.mods.fml.relauncher.Side;

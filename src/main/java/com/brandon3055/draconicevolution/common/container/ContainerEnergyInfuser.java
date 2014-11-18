@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.container;
 
 import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.network.ObjectPacket;
 import com.brandon3055.draconicevolution.common.inventory.SlotChargable;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import cpw.mods.fml.relauncher.Side;

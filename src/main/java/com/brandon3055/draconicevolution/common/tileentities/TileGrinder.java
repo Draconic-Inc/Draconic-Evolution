@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
+import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;

@@ -1,11 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;

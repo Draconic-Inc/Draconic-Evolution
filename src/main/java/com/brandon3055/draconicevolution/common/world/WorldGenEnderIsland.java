@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.world;
 
-import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.init.Blocks;

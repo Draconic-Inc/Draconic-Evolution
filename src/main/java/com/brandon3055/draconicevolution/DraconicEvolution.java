@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
-import com.brandon3055.draconicevolution.common.core.proxy.CommonProxy;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.CommonProxy;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;

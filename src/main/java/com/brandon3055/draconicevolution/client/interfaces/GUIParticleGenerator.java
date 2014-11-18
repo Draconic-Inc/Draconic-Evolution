@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.network.ParticleGenPacket;
+import com.brandon3055.draconicevolution.common.network.ParticleGenPacket;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import net.minecraft.client.Minecraft;

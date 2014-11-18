@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.blocks.itemblocks;
 
-import com.brandon3055.draconicevolution.common.core.utills.ICustomItemData;
+import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;

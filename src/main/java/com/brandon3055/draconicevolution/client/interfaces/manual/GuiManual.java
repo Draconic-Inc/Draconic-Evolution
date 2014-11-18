@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.interfaces.manual;
 
-import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
-import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.ModItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.block;
 
-import com.brandon3055.draconicevolution.common.core.utills.ICustomItemData;
+import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;

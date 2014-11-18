@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
 import com.brandon3055.draconicevolution.common.items.ItemDE;
-import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.world.WorldGenEnderComet;
 import com.brandon3055.draconicevolution.common.world.WorldGenEnderIsland;

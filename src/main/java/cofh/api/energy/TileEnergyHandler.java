@@ -1,6 +1,6 @@
 package cofh.api.energy;
 
-import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;

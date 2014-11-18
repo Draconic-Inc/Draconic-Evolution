@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.client.interfaces;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
-import com.brandon3055.draconicevolution.common.core.network.PlayerDetectorButtonPacket;
-import com.brandon3055.draconicevolution.common.core.network.PlayerDetectorStringPacket;
+import com.brandon3055.draconicevolution.common.network.PlayerDetectorButtonPacket;
+import com.brandon3055.draconicevolution.common.network.PlayerDetectorStringPacket;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
 import cpw.mods.fml.relauncher.Side;

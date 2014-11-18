@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.itemblocks.TestItemBlock;
 import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
 import cpw.mods.fml.relauncher.Side;

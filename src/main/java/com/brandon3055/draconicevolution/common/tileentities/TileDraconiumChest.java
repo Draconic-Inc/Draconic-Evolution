@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
-import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
-import com.brandon3055.draconicevolution.common.core.utills.ICustomItemData;
-import com.brandon3055.draconicevolution.common.core.utills.InventoryUtils;
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
+import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
+import com.brandon3055.draconicevolution.common.utills.InventoryUtils;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

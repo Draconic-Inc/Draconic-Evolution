@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.common.tileentities;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleCustom;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

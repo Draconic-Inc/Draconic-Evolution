@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.draconicevolution.common.core.utills.DamageSourceChaos;
+import com.brandon3055.draconicevolution.common.utills.DamageSourceChaos;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEndPortal;
 import net.minecraft.entity.Entity;

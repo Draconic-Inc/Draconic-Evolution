@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

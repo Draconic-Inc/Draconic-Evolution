@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.network.ObjectPacket;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

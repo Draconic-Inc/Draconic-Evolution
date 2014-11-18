@@ -1,14 +1,11 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
-import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.IConfigElement;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
-
-import java.util.List;
 
 /**
  * Created by Brandon on 6/08/2014.

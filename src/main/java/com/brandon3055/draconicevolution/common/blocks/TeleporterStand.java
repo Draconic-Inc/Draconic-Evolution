@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKI;
 import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKII;
 import com.brandon3055.draconicevolution.common.lib.References;

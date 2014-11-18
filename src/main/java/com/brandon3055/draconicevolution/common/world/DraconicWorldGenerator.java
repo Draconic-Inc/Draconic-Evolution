@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.world;
 
-import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
-import com.brandon3055.draconicevolution.common.core.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import cpw.mods.fml.common.IWorldGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;

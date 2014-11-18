@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.lib;
 
 import com.brandon3055.draconicevolution.common.items.DraconiumBlend;
-import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.ModItems;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

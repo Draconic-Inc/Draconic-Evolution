@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.network.PlacedItemPacket;
-import com.brandon3055.draconicevolution.common.core.network.TeleporterPacket;
-import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.network.PlacedItemPacket;
+import com.brandon3055.draconicevolution.common.network.TeleporterPacket;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.ToolHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;

@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
-import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
-import com.brandon3055.draconicevolution.common.blocks.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.common.core.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.tileentities;
 
 import static net.minecraftforge.common.util.ForgeDirection.UP;
 
-import com.brandon3055.draconicevolution.common.core.utills.EnergyStorage;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.block.BlockFire;

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.items.weapons;
 
 import com.brandon3055.draconicevolution.common.entity.EntityDraconicArrow;
 import com.brandon3055.draconicevolution.common.entity.EntityEnderArrow;
-import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.ModItems;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;

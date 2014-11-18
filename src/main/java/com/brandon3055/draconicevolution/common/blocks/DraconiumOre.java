@@ -1,7 +1,8 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.items.ModItems;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
@@ -82,4 +83,5 @@ public class DraconiumOre extends BlockDE {
 	{
 		return ModItems.draconiumDust;
 	}
+
 }

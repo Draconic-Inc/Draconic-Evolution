@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.client.interfaces;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.manual.GuiButtonAHeight;
 import com.brandon3055.draconicevolution.common.container.ContainerDissEnchanter;
-import com.brandon3055.draconicevolution.common.core.network.ButtonPacket;
+import com.brandon3055.draconicevolution.common.network.ButtonPacket;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import cpw.mods.fml.relauncher.Side;

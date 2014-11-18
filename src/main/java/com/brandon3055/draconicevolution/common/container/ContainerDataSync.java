@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.container;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.core.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.network.ObjectPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

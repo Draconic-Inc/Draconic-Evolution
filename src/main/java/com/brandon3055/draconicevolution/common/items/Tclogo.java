@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import com.brandon3055.draconicevolution.common.core.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.achievements.Achievements;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -10,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -73,6 +76,37 @@ public class Tclogo extends ItemDE {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		//if (!world.isRemote)OreDoublingRegistry.getOreResult(GameRegistry.findItemStack("ThermalFoundation", "oreCopper", 1));
+
+		player.triggerAchievement(Achievements.getAchievement("Draconium Ore"));
+		//player.fallDistance = 0;
+		//player.motionY+=1;
+		//player.moveFlying(0f, 0f, 1f);
+		float horizontal = 0f;
+		float forward = 1f;
+		float acceleration = 1f;
+
+			float f3 = forward * forward;
+
+			if (f3 >= 1.0E-4F)
+			{
+				f3 = MathHelper.sqrt_float(f3);
+
+				if (f3 < 1.0F)
+				{
+					f3 = 1.0F;
+				}
+
+				f3 = acceleration / f3;
+				horizontal *= f3;
+				forward *= f3;
+				float f4 = MathHelper.sin(player.rotationYaw * (float)Math.PI / 180.0F);
+				float f5 = MathHelper.cos(player.rotationYaw * (float) Math.PI / 180.0F);
+				float f6 = (player.rotationPitch-20) * (float) Math.PI / 180.0F;
+				player.motionX += (double)( - forward * f4);
+				player.motionY += (double)(f6*-1);
+				player.motionZ += (double)(forward * f5);
+			}
+
 
 //		player.addPotionEffect(new PotionEffect(PotionHandler.potionFlight.id, 100, 0));
 //		player.addPotionEffect(new PotionEffect(PotionHandler.potionFireResist.id, 100, 1));

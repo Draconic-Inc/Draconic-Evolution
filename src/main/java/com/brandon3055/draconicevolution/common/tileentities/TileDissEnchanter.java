@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.draconicevolution.common.core.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
