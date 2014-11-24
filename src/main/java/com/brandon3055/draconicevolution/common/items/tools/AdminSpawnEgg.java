@@ -27,7 +27,7 @@ import java.util.List;
 public class AdminSpawnEgg extends ItemDE {
 	public AdminSpawnEgg() {
 		this.setUnlocalizedName(Strings.adminSpawnEggName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		ModItems.register(this);
 	}
 

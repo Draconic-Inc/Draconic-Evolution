@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 public class SunFocus extends ItemDE {
 	public SunFocus() {
 		this.setUnlocalizedName(Strings.sunFocusName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		ModItems.register(this);
 	}
 

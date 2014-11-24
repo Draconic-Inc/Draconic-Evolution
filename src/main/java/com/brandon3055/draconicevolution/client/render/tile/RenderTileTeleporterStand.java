@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL12;
 /**
  * Created by Brandon on 25/10/2014.
  */
-public class RenderTileTeleporterStand extends TileEntitySpecialRenderer{
+public class RenderTileTeleporterStand extends TileEntitySpecialRenderer{//TODO Render name abouve stand
 
 
 	ModelTeleporterStand model = new ModelTeleporterStand();

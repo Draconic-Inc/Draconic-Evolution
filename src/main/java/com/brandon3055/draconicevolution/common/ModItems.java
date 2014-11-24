@@ -14,6 +14,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.EnumHelper;
 
 @GameRegistry.ObjectHolder(References.MODID)
@@ -34,6 +35,7 @@ public class ModItems {
 	public static Item draconicChest;
 	public static Item draconicLeggs;
 	public static Item draconicBoots;
+	public static Item draconicDestructionStaff;
 
 	public static Item wyvernPickaxe;
 	public static Item wyvernShovel;
@@ -44,13 +46,12 @@ public class ModItems {
 	public static Item wyvernLeggs;
 	public static Item wyvernBoots;
 
-	public static ItemDE infusedCompound;
+	public static ItemDE wyvernCore;
 	public static ItemDE draconiumDust;
 	public static ItemDE draconiumIngot;
 	public static ItemDE draconiumBlend;
 	public static ItemDE dragonHeart;
-	public static Item draconicDistructionStaff;
-	public static ItemDE draconicCompound;
+	public static ItemDE awakenedCore;
 	public static ItemDE tclogo;
 	public static ItemDE draconicCore;
 	public static ItemDE sunFocus;
@@ -61,15 +62,22 @@ public class ModItems {
 	public static ItemDE creativeStructureSpawner;
 	public static ItemDE adminSpawnEgg;
 	public static ItemDE infoTablet;
-	//public static ItemDE obliterationCatalyst;
+	public static ItemDE draconicIngot;
+	public static ItemDE draconiumEnergyCore;
+	public static ItemDE draconiumFluxCapacitor;
 
 	public static ItemDE teleporterMKI;
 	public static ItemDE teleporterMKII;
+
+	public static ItemStack wyvernFluxCapacitor;
+	public static ItemStack draconicFluxCapacitor;
+	public static ItemStack wyvernEnergyCore;
+	public static ItemStack draconicEnergyCore;
 	
 
 	public static void init()
 	{	
-		draconicDistructionStaff = new DraconicDistructionStaff();
+		draconicDestructionStaff = new DraconicDistructionStaff();
 		draconicPickaxe = new DraconicPickaxe();
 		draconicAxe = new DraconicAxe();
 		draconicShovel = new DraconicShovel();
@@ -90,13 +98,13 @@ public class ModItems {
 		wyvernLeggs = new WyvernArmor(DRACONIUMARMOR_T1, 2, Strings.wyvernLeggsName);
 		wyvernBoots = new WyvernArmor(DRACONIUMARMOR_T1, 3, Strings.wyvernBootsName);
 
-		infusedCompound = new InfusedCompound();
+		wyvernCore = new WyvernCore();
 		draconiumDust = new DraconiumDust();
 		draconiumIngot = new DraconiumIngot();
 		draconiumBlend = new DraconiumBlend();
 		dragonHeart = new DragonHeart();
-		draconicCompound = new DraconicCompound();
-		teleporterMKI = (ItemDE)new TeleporterMKI();
+		awakenedCore = new AwakenedCore();
+		teleporterMKI = new TeleporterMKI();
 		teleporterMKII = new TeleporterMKII();
 		tclogo = new Tclogo();
 		draconicCore = new DraconicCore();
@@ -108,8 +116,15 @@ public class ModItems {
 		creativeStructureSpawner = new CreativeStructureSpawner();
 		adminSpawnEgg = new AdminSpawnEgg();
 		infoTablet = new InfoTablet();
-		//obliterationCatalyst = new ObliterationCatalyst();
+		draconicIngot = new DraconicIngot();
+		draconiumEnergyCore = new DraconiumEnergyCore();
+		draconiumFluxCapacitor = new DraconiumFluxCapacitor();
 
+		//Custom ItemStacks
+		wyvernEnergyCore = new ItemStack(ModItems.draconiumEnergyCore, 1, 0);
+		draconicEnergyCore = new ItemStack(ModItems.draconiumEnergyCore, 1, 1);
+		wyvernFluxCapacitor = new ItemStack(ModItems.draconiumFluxCapacitor, 1, 0);
+		draconicFluxCapacitor = new ItemStack(ModItems.draconiumFluxCapacitor, 1, 1);
 	}
 
 	public static void register(final ItemDE item)

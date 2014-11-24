@@ -26,7 +26,7 @@ public class BlockContainerTemplate extends BlockContainerDE {
 	public BlockContainerTemplate() {
 		super(Material.iron);
 		this.setBlockName(Strings.containerTemplateName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1f);
 		this.setResistance(200.0f);

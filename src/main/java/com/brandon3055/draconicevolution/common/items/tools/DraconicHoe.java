@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -20,11 +20,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,7 +39,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 	public DraconicHoe() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.draconicHoeName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.draconicHoeName);
 	}
 
@@ -50,6 +48,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@SuppressWarnings("all")
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
@@ -165,10 +164,6 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 	@Override
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
 		InfoHelper.addEnergyAndLore(stack, list);
-	}
-
-	public static void registerRecipe() {
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicHoe), "ISI", "DHD", "ITI", 'H', Items.diamond_hoe, 'T', ModItems.draconicCore, 'S', ModItems.sunFocus, 'D', ModItems.draconiumIngot, 'I', Items.diamond);
 	}
 
 	@Override

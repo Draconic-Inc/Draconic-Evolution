@@ -35,7 +35,7 @@ public class CustomSpawner extends BlockDE{
 	public CustomSpawner()
 	{
 		this.setBlockName(Strings.customSpawnerName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setHardness(10F);
 		this.setResistance(2000F);
 		this.setHarvestLevel("pickaxe", 3);
@@ -54,6 +54,7 @@ public class CustomSpawner extends BlockDE{
 				if (name.equals(spawner.getBaseLogic().entityName)){return false;}
 				spawner.getBaseLogic().entityName = name;
 				spawner.isSetToSpawn = true;
+				spawner.getBaseLogic().skeletonType = ItemNBTHelper.getInteger(item, "SkeletonType", 0);
 				world.markBlockForUpdate(x, y, z);
 				item.splitStack(1);
 				return true;
@@ -62,12 +63,12 @@ public class CustomSpawner extends BlockDE{
 				world.markBlockForUpdate(x, y, z);
 				item.splitStack(1);
 				return true;
-			}else if (item != null && item.getItem().equals(ModItems.infusedCompound) && spawner.getBaseLogic().spawnSpeed == 0){
+			}else if (item != null && item.getItem().equals(ModItems.wyvernCore) && spawner.getBaseLogic().spawnSpeed == 0){
 				spawner.getBaseLogic().setSpawnRate(1);
 				world.markBlockForUpdate(x, y, z);
 				item.splitStack(1);
 				return true;
-			}else if (item != null && item.getItem().equals(ModItems.draconicCompound) && spawner.getBaseLogic().spawnSpeed == 1){
+			}else if (item != null && item.getItem().equals(ModItems.awakenedCore) && spawner.getBaseLogic().spawnSpeed == 1){
 				spawner.getBaseLogic().setSpawnRate(2);
 				world.markBlockForUpdate(x, y, z);
 				item.splitStack(1);
@@ -188,7 +189,7 @@ public class CustomSpawner extends BlockDE{
 			}
 			if (spawner.getBaseLogic().spawnSpeed > 0)
 			{
-				EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.infusedCompound));
+				EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.wyvernCore));
 				item.motionX = (-0.5F + world.rand.nextFloat()) * multiplyer;
 				item.motionY = (4 + world.rand.nextFloat()) * multiplyer;
 				item.motionZ = (-0.5F + world.rand.nextFloat()) * multiplyer;
@@ -196,7 +197,7 @@ public class CustomSpawner extends BlockDE{
 			}
 			if (spawner.getBaseLogic().spawnSpeed > 1)
 			{
-				EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.draconicCompound));
+				EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.awakenedCore));
 				item.motionX = (-0.5F + world.rand.nextFloat()) * multiplyer;
 				item.motionY = (4 + world.rand.nextFloat()) * multiplyer;
 				item.motionZ = (-0.5F + world.rand.nextFloat()) * multiplyer;

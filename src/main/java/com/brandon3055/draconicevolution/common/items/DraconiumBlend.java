@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 public class DraconiumBlend extends ItemDE {
 	public DraconiumBlend() {
 		this.setUnlocalizedName(Strings.draconiumBlendName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		ModItems.register(this);
 	}
 

@@ -23,10 +23,10 @@ import java.util.Random;
 
 public class TestBlock extends BlockDE {
 
-	protected TestBlock() {
+	public TestBlock() {
 		super(Material.rock);
 		this.setBlockName("testBlock");
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setHardness(5f);
 		this.setResistance(200.0f);
 		//this.setBlockBounds(0.4f, 0f, 0.4f, 0.6f, 1f, 0.6f);

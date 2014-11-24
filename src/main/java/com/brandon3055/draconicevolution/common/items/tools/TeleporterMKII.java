@@ -3,13 +3,14 @@ package com.brandon3055.draconicevolution.common.items.tools;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ToolHudHandler;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
-import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
-import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,14 +20,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class TeleporterMKII extends ItemDE
 
 	public TeleporterMKII() {
 		this.setUnlocalizedName(Strings.teleporterMKIIName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setMaxStackSize(1);
 		ModItems.register(this);
 		//GameRegistry.registerItem(this, Strings.teleporterMKIIName);
@@ -149,10 +148,8 @@ public class TeleporterMKII extends ItemDE
 		String selectedDest = list.getCompoundTagAt(selected+selrctionOffset).getString("Name");
 
 		list2.add(EnumChatFormatting.GOLD + "" + selectedDest);
-		if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
-			list2.add(EnumChatFormatting.DARK_GREEN + "Hold shift for information");
-		}
-		else {
+		if (InfoHelper.holdShiftForDetails(list2))
+		{
 			list2.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " " + ItemNBTHelper.getInteger(teleporter, "Fuel", 0));
 			list2.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.teleporterInfGUI.txt"));
 			list2.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.teleporterInfScroll.txt"));
@@ -163,11 +160,6 @@ public class TeleporterMKII extends ItemDE
 	public EnumRarity getRarity(ItemStack stack)
 	{
 		return EnumRarity.rare;
-	}
-
-	public static void registerRecipe()
-	{
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.teleporterMKII), "BIB", "DED", "BIB", 'D', ModItems.draconicCore, 'E', ModItems.teleporterMKI, 'B', ModItems.draconiumIngot, 'I', ModItems.infusedCompound);
 	}
 
 	@Override

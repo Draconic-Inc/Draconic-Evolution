@@ -69,19 +69,19 @@ public class TutorialPage extends TitledPage {
 			List<String> modified = new ArrayList();
 			for (int i = 0; i < formattedDescription[descriptionIndex].size(); i++){
 				String line = formattedDescription[descriptionIndex].get(i);
-				if (!line.contains("/n")) modified.add(line);
+				if (!line.contains("\\n")) modified.add(line);
 				else {
 					String joinedLine = "";
 					for (i=i; i < formattedDescription[descriptionIndex].size(); i++) joinedLine = joinedLine + formattedDescription[descriptionIndex].get(i);
 					int escape = 0;
 					while (!joinedLine.isEmpty() && escape < 20) {
 						int index = 0;
-						if (joinedLine.contains("/n")) index = joinedLine.indexOf("/n");
+						if (joinedLine.contains("\\n")) index = joinedLine.indexOf("\\n");
 						else index = joinedLine.length();
 						String s = joinedLine.substring(0, index);
 						modified.add(s);
 						joinedLine = joinedLine.substring(index);
-						joinedLine = joinedLine.replaceFirst("/n", "");
+						joinedLine = joinedLine.replaceFirst("\\n", "");
 						escape++;
 					}
 					break;

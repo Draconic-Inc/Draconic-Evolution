@@ -25,9 +25,9 @@ public class Potentiometer extends BlockDE
 {
 	IIcon icons[] = new IIcon[16];
 
-	protected Potentiometer() {
+	public Potentiometer() {
 		super(Material.circuits);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setHardness(0.3f);
 		this.setResistance(0.1f);
 		this.setLightLevel(0.3F);

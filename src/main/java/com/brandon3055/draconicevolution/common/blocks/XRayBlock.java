@@ -20,9 +20,9 @@ import java.util.Random;
 
 public class XRayBlock extends BlockDE {
 
-	protected XRayBlock() {
+	public XRayBlock() {
 		this.setBlockName(Strings.xrayBlockName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockBounds(0.4F, 0.4F, 0.4F, 0.6F, 0.6F, 0.6F);
 		this.setHardness(10f);
 		this.setHarvestLevel("pickaxe", 4);
@@ -85,7 +85,7 @@ public class XRayBlock extends BlockDE {
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player)
 	{
 		ItemStack tool = player.getCurrentEquippedItem();
-		if (tool != null && (player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.draconicDistructionStaff)) || player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.draconicPickaxe))))
+		if (tool != null && (player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.draconicDestructionStaff)) || player.getCurrentEquippedItem().isItemEqual(new ItemStack(ModItems.draconicPickaxe))))
 		{
 			EntityItem item = new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Item.getItemFromBlock(ModBlocks.xRayBlock)));
 			world.setBlockToAir(x, y, z);

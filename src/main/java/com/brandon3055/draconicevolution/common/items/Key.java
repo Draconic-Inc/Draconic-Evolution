@@ -19,7 +19,7 @@ import java.util.List;
 public class Key extends ItemDE {
 	public Key() {
 		this.setUnlocalizedName(Strings.keyName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
 		ModItems.register(this);

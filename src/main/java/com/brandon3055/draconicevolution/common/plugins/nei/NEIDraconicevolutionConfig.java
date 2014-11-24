@@ -4,15 +4,16 @@ import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import com.brandon3055.draconicevolution.client.interfaces.GUIDraconiumChest;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.item.ItemStack;
 
 /**
  * Created by Brandon on 30/10/2014.
  */
-public class NEIDraconicevolutionConfig implements IConfigureNEI {
+public class NEIDraconicevolutionConfig implements IConfigureNEI
+{
 
 	@Override
 	public void loadConfig() {

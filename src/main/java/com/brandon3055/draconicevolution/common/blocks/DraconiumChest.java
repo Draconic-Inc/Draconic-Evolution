@@ -42,7 +42,7 @@ public class DraconiumChest extends BlockCustomDrop {
 	public DraconiumChest() {
 		super(Material.iron);
 		this.setBlockName(Strings.draconiumChestName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		setBlockBounds(0.0625F, 0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);
 		this.setResistance(2000.0f);

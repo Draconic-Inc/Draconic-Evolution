@@ -28,7 +28,7 @@ public class CKeyStone extends BlockDE {
 	private IIcon blockIcon1;
 	public CKeyStone(){
 		this.setBlockUnbreakable();
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName(Strings.cKeyStoneName);
 		ModBlocks.register(this, CKeyStoneItemBlock.class);
 	}

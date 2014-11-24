@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class TileTeleporterStand extends TileEntity implements IInventory {
+public class TileTeleporterStand extends TileEntity implements IInventory {//todo Create IRotatable Tile and gui
 	ItemStack[] items = new ItemStack[1];
 	public int rotation = 0;
 

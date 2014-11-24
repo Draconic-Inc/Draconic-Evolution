@@ -20,7 +20,6 @@ public class ConfigHandler {
 	public static boolean generateEnderComets;
 	public static boolean generateChaosIslands;
 	public static boolean pigmenBloodRage;
-	public static boolean updateFix;
 	public static boolean bowBlockDamage;
 	public static boolean showUnlocalizedNames;
 	public static boolean disableLore;
@@ -66,7 +65,6 @@ public class ConfigHandler {
 			showUnlocalizedNames = config.get(Configuration.CATEGORY_GENERAL, "Show Unlocalized Names", false, "If set to true the unlocalized name of every block and item will be displayed in its tool tip").getBoolean(false);
 			soulDropChance = config.get(Configuration.CATEGORY_GENERAL, "soulDropChance", 1000, "Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(1000);
 			passiveSoulDropChance = config.get(Configuration.CATEGORY_GENERAL, "passiveSoulDropChance", 800, "Passive (Animals) Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(800);
-			updateFix = config.get(Configuration.CATEGORY_GENERAL, "Update Fix", false, "Convert blocks from v0.9.2 to the v0.2.3+ format (set to false if you are not updating from v0.9.2 or earlier)").getBoolean(false);
 			cometRarity = config.get(Configuration.CATEGORY_GENERAL, "Ender Comet Rarity", 10000, "Ender Comet has a 1 in {this number} chance to spawn in each chunk").getInt(10000);
 			generateEnderComets = config.get(Configuration.CATEGORY_GENERAL, "Generate Ender Comets", true, "Should Ender comets be generated").getBoolean(true);
 			generateChaosIslands = config.get(Configuration.CATEGORY_GENERAL, "Generate Chaos Islands", true, "Should Chaos Islands be generated").getBoolean(true);
@@ -87,7 +85,7 @@ public class ConfigHandler {
 //			potionFlightID = config.get("magic id's", "potionFlightID", 50).getInt(50);
 
 			//Enchantments
-			reaperEnchantID = config.get("magic id's", "Reaper Enchant id", 220).getInt(220);
+			reaperEnchantID = config.get("magic id's", "Reaper Enchant id", 180).getInt(180);
 		}
 		catch (Exception e) {
 			LogHelper.error("Unable to load Config");

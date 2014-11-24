@@ -22,10 +22,10 @@ public class DraconiumOre extends BlockDE {
 	public IIcon iconEnd;
 	public IIcon iconNether;
 
-	protected DraconiumOre() {
+	public DraconiumOre() {
 		super(Material.rock);
 		this.setBlockName(Strings.draconiumOreName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setHardness(10f);
 		this.setResistance(20.0f);
 		this.setHarvestLevel("pickaxe", 4);

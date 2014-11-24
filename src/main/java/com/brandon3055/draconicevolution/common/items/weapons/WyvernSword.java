@@ -2,13 +2,13 @@ package com.brandon3055.draconicevolution.common.items.weapons;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.tools.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,12 +17,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -38,7 +36,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem{
 	public WyvernSword() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.wyvernSwordName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.wyvernSwordName);
 	}
 
@@ -98,11 +96,6 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem{
 	public EnumRarity getRarity(ItemStack stack)
 	{
 		return EnumRarity.uncommon;
-	}
-
-	public static void registerRecipe()
-	{
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.wyvernSword), " C ", "CSC", " C ", 'C', ModItems.infusedCompound, 'S', Items.diamond_sword);
 	}
 
 	@Override

@@ -1,22 +1,27 @@
 package com.brandon3055.draconicevolution.common.handler;
 
 
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class FMLEventHandler {
 
 	public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
 	public static List<String> playersWithUphillStep = new ArrayList<String>();
+	public static Field walkSpeed;
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
@@ -31,7 +36,18 @@ public class FMLEventHandler {
 		if (event.phase != TickEvent.Phase.START)return;
 		EntityPlayer player = event.player;
 
-		ObfuscationReflectionHelper.setPrivateValue(PlayerCapabilities.class, player.capabilities, Float.valueOf(0.1f), new String[]{"walkSpeed", "g", "field_75097_g"});
+		if (walkSpeed == null){
+			walkSpeed = ReflectionHelper.findField(PlayerCapabilities.class, "walkSpeed", "g", "field_75097_g");
+			walkSpeed.setAccessible(true);
+		}
+		if (walkSpeed != null) {
+			try {
+				walkSpeed.setFloat(player.capabilities, 0.1f);
+			}
+			catch (IllegalAccessException e) {
+				LogHelper.error(e);
+			}
+		}
 
 		if (player.worldObj.isRemote) {
 			boolean highStepListed = playersWithUphillStep.contains(player.getDisplayName()) && player.stepHeight >= 1f;

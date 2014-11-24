@@ -1,5 +1,11 @@
 package com.brandon3055.draconicevolution.common.plugins.nei;
 
+//import codechicken.lib.inventory.InventoryUtils;
+//import codechicken.nei.FastTransferManager;
+//import codechicken.nei.PositionedStack;
+//import codechicken.nei.api.IOverlayHandler;
+//import codechicken.nei.recipe.IRecipeHandler;
+
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.nei.FastTransferManager;
 import codechicken.nei.PositionedStack;

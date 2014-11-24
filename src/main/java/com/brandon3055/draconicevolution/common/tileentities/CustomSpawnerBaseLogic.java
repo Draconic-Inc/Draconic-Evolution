@@ -10,8 +10,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -60,6 +62,7 @@ public abstract class CustomSpawnerBaseLogic {
 	 * The range coefficient for spawning entities around.
 	 */
 	private int spawnRange = 4;
+	public int skeletonType = 0;
 	/**
 	 * Gets the entity name that should be spawned.
 	 */
@@ -155,8 +158,11 @@ public abstract class CustomSpawnerBaseLogic {
 
 	public Entity spawnEntity(Entity par1Entity) {
 		if (par1Entity instanceof EntityLivingBase && par1Entity.worldObj != null) {
-
-			((EntityLiving) par1Entity).onSpawnWithEgg((IEntityLivingData) null);
+			if (par1Entity instanceof EntitySkeleton) {
+				((EntitySkeleton)par1Entity).setSkeletonType(skeletonType);
+				par1Entity.setCurrentItemOrArmor(0, new ItemStack(Items.stone_sword));
+				((EntitySkeleton) par1Entity).setEquipmentDropChance(0, 0f);
+			} else ((EntityLiving) par1Entity).onSpawnWithEgg(null);
 			this.getSpawnerWorld().spawnEntityInWorld(par1Entity);
 		}
 
@@ -181,6 +187,7 @@ public abstract class CustomSpawnerBaseLogic {
 		spawnSpeed = par1NBTTagCompound.getShort("Speed");
 		requiresPlayer = par1NBTTagCompound.getBoolean("RequiresPlayer");
 		ignoreSpawnRequirements = par1NBTTagCompound.getBoolean("IgnoreSpawnRequirements");
+		skeletonType = par1NBTTagCompound.getInteger("SkeletonType");
 
 		if (par1NBTTagCompound.hasKey("MinSpawnDelay", 99)) {
 			this.minSpawnDelay = par1NBTTagCompound.getShort("MinSpawnDelay");
@@ -215,6 +222,7 @@ public abstract class CustomSpawnerBaseLogic {
 		par1NBTTagCompound.setShort("Speed", (short) spawnSpeed);
 		par1NBTTagCompound.setBoolean("RequiresPlayer", requiresPlayer);
 		par1NBTTagCompound.setBoolean("IgnoreSpawnRequirements", ignoreSpawnRequirements);
+		par1NBTTagCompound.setInteger("SkeletonType", skeletonType);
 	}
 
 	/**
@@ -234,6 +242,7 @@ public abstract class CustomSpawnerBaseLogic {
 		if (this.renderedEntity == null) {
 			Entity entity = EntityList.createEntityByName(this.getEntityNameToSpawn(), (World) null);
 			entity = this.spawnEntity(entity);
+			if (entity instanceof EntitySkeleton) ((EntitySkeleton)entity).setSkeletonType(skeletonType);
 			this.renderedEntity = entity;
 		}
 

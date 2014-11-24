@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
@@ -35,7 +34,7 @@ public class WyvernBow extends ItemBow {
 	public WyvernBow() {
 		this.maxStackSize = 1;
 		this.setMaxDamage(-1);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setUnlocalizedName(Strings.wyvernBowName);
 		GameRegistry.registerItem(this, Strings.wyvernBowName);
 	}
@@ -174,11 +173,6 @@ public class WyvernBow extends ItemBow {
 			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.bowEnchants.txt"));
 			InfoHelper.addLore(stack, list);
 		}
-	}
-
-	public static void registerRecipe()
-	{
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.wyvernBow), " I ", "CBC", " I ", 'C', ModItems.infusedCompound, 'B', Items.bow, 'I', ModItems.draconiumIngot);
 	}
 
 	@Override

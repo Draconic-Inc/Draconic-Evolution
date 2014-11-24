@@ -26,7 +26,7 @@ public class EnergyInfuser extends BlockCustomDrop {
 	public EnergyInfuser() {
 		super(Material.iron);
 		this.setBlockName(Strings.energyInfuserName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setBlockBounds(0f, 0f, 0f, 1f, 0.375f, 1f);
 		ModBlocks.register(this);

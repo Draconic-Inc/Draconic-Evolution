@@ -25,7 +25,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by Brandon on 28/07/2014.
  */
-public class EnergyPylon extends BlockDE {
+public class EnergyPylon extends BlockDE {//todo fix sphere renderer
 	@SideOnly(Side.CLIENT)
 	public IIcon icon_active_face;
 	public IIcon icon_input;
@@ -35,7 +35,7 @@ public class EnergyPylon extends BlockDE {
 		super(Material.iron);
 		this.setHardness(10F);
 		this.setResistance(20F);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName(Strings.energyPylonName);
 		ModBlocks.register(this);
 	}
@@ -74,6 +74,11 @@ public class EnergyPylon extends BlockDE {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 1 && side == 1)
+			return icon_active_face;
+		if (meta == 2 && side == 0)
+			return icon_active_face;
 		TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
 		if (thisTile == null) return icon_input;
 		return thisTile.input ? icon_output : icon_input;

@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 public class ObliterationCatalyst extends ItemDE {
 	public ObliterationCatalyst(){
 		this.setUnlocalizedName(Strings.obliterationCatalystName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setMaxStackSize(1);
 		ModItems.register(this);
 	}

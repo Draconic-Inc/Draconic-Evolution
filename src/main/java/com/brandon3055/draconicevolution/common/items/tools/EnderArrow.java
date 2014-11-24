@@ -19,7 +19,7 @@ import java.util.List;
 public class EnderArrow extends ItemDE {
 	public EnderArrow(){
 		this.setUnlocalizedName(Strings.enderArrowName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		ModItems.register(this);
 	}
 

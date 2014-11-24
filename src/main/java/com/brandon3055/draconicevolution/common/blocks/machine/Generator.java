@@ -45,7 +45,7 @@ public class Generator extends BlockCustomDrop {
 	public Generator() {
 		super(Material.iron);
 		this.setBlockName(Strings.generatorName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		ModBlocks.register(this);
 

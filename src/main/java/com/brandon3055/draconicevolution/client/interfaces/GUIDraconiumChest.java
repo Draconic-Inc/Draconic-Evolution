@@ -6,10 +6,10 @@ import codechicken.nei.api.TaggedInventoryArea;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.manual.GuiButtonAHeight;
 import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
-import com.brandon3055.draconicevolution.common.network.ButtonPacket;
-import com.brandon3055.draconicevolution.common.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.ButtonPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
+import com.brandon3055.draconicevolution.common.utills.GuiHelper;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,7 +31,8 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
-public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
+public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler
+{
 	public EntityPlayer player;
 	private TileDraconiumChest tile;
 	private static final ResourceLocation textureLeft = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DraconicChestLeft.png");

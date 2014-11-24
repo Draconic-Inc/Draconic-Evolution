@@ -28,7 +28,7 @@ public class ArmorEffectHandler {
 	}
 
 	public static boolean getHasJumpBoost(EntityPlayer player){
-		return (isDraconicArmor(player, 1) || isWyvernArmor(player, 1)) && extractEnergy(player, (getJumpLevel(player)+1)*1000, 1);
+		return (isDraconicArmor(player, 1) || isWyvernArmor(player, 1)) && extractEnergy(player, (getJumpLevel(player)+1)*80, 1);
 	}
 
 	public static int getJumpLevel(EntityPlayer player){

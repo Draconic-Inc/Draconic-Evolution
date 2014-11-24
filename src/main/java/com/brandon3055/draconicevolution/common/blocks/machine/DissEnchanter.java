@@ -31,7 +31,7 @@ public class DissEnchanter extends BlockCustomDrop {
 	public DissEnchanter() {
 		super(Material.iron);
 		this.setBlockName(Strings.dissEnchanterName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.75F, 1.0F);
 		ModBlocks.register(this);

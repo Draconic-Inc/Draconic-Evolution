@@ -54,10 +54,10 @@ tile.draconicevolution:draconium0.name=Draconium Block
 tile.draconicevolution:draconium0.description=A storage block for draconium.
 
 tile.draconicevolution:draconium1.name=Resurrection Stone
-tile.draconicevolution:draconium1.description=The key component in the Ritual of ender resurrection.
+tile.draconicevolution:draconium1.description=The key component in the Ritual of Draconic Resurrection.
 
 tile.draconicevolution:draconium2.name=Charged Draconium Block
-tile.draconicevolution:draconium2.description=Used in the Ritual of ender resurrection. Place a draconium block in a charging device and 100 million RF later you have a charged draconium block!
+tile.draconicevolution:draconium2.description=Used in the Ritual of Draconic Resurrection. Place a draconium block in a charging device and 100 million RF later you have a charged draconium block!
 
 tile.draconicevolution:cKeyStone.name=Creative Key Stone
 tile.draconicevolution:cKeyStone.description=Description
@@ -71,9 +71,13 @@ tile.draconicevolution:teleporterStand.description=You have figured out how to c
 tile.draconicevolution:draconiumChest.name=Draconic Chest
 tile.draconicevolution:draconiumChest.description=Using your draconic knowledge you have learned how to create the ultimate chest. With a massive 234 slot storage capacity a built in crafting table and 5 slot RF furnace capable of doubling ore as well as the ability to keep its contents when harvested this chest is the most powerful most versatile storage device in existence! It also comes in a variety of every colour you can imagine gust shift right click it with empty hand for details.
 
+tile.draconicevolution:draconicBlock.name=Awakened Draconium Block
+tile.draconicevolution:draconicBlock.description=You have been studying the interactions of Draconium with various materials and have come to realize that this is only an inert state.  You have discovered a method to bring out the true power of Draconium using a complex ritual involving a dragon heart. (See the dragon heart page for details)
+
+
 //Item Information ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:draconicCompound.name=Draconic Compound
-item.draconicevolution:draconicCompound.description=Research has found a very powerful item that will be necessary to create powerful tools
+item.draconicevolution:awakenedCore.name=Awakened Core
+item.draconicevolution:awakenedCore.description=This component is used to craft the most advanced draconic items
 
 item.draconicevolution:draconiumIngot.name=Draconium Ingot
 item.draconicevolution:draconiumIngot.description=The results of smelting draconium blend in a furnace. Used in most recipes.
@@ -85,10 +89,10 @@ item.draconicevolution:draconiumBlend.name=Draconium Blend
 item.draconicevolution:draconiumBlend.description=Mixture of Draconic dust and iron. Necessary to make Draconium
 
 item.draconicevolution:dragonHeart.name=Dragon Heart
-item.draconicevolution:dragonHeart.description=Dropped by the Ender Dragon and Draconic Dragon. Used in the highest tier recipes
+item.draconicevolution:dragonHeart.description=Dropped by the Ender Dragon and Draconic Dragon. It is your belief that this immensely powerful item may hold the key to unlocking the true power of draconium using an ancient ritual known as the ritual of awakening. \n\nThe Ritual:\n1.Drop a dragon heart on the ground and activate it with an explosion.\n\n2.Drop 4 to 16 draconic cores on the ground near the activated heart (4 per block of draconium). A few seconds after its initial activation it will draw all nearby items towards it anything that is not a core will be destroyed.\n\n3.Now quickly place 1 to 4 (depending on how many cores you dropped) Charged draconium blocks near the heart.\n\n4.You will know its working when you see the hearts energy targeting the charged draconium blocks. Now stand back and watch the magic happen.\n\nYou can only do this ritual once per heart so you best make the most of it.
 
-item.draconicevolution:infusedCompound.name=Infused Compound
-item.draconicevolution:infusedCompound.description=Research has found a very powerful item that will be necessary to create powerful tools
+item.draconicevolution:wyvernCore.name=Wyvern Core
+item.draconicevolution:wyvernCore.description=This component is used to craft all Wyvern tools
 
 item.draconicevolution:sunFocus.name=Solar Focus
 item.draconicevolution:sunFocus.description=With the power of draconium you find a way to harness the heat and light of the sun. (crafting component)
@@ -179,11 +183,26 @@ item.draconicevolution:safetyMatchBox.description=High-use safety matches.
 item.draconicevolution:key.name=Key
 item.draconicevolution:key.description=Magical Key to access various locks.
 
+item.draconicevolution:draconiumEnergyCore0.name=Wyvern Energy Core
+item.draconicevolution:draconiumEnergyCore0.description=This component is used in devices that need to be able to store energy
+
+item.draconicevolution:draconiumEnergyCore1.name=Draconic Energy Core
+item.draconicevolution:draconiumEnergyCore1.description=This is a more powerful version of the wyvern energy core
+
+item.draconicevolution:draconiumFluxCapacitor0.name=Wyvern Flux Capacitor
+item.draconicevolution:draconiumFluxCapacitor0.description=Tired of your tools and armor running out of energy when you need them most you have figured out how to create an item capable of storing an immense amount of energy and transferring it to your items as they need it.
+
+item.draconicevolution:draconiumFluxCapacitor1.name=Draconic Flux Capacitor
+item.draconicevolution:draconiumFluxCapacitor1.description=With this upgrade you will be able to go for days without needing to stop and recharge.
+
+item.draconicevolution:draconicIngot.name=Awakened Draconium Ingot
+item.draconicevolution:draconicIngot.description=You have been studying the interactions of Draconium with various materials and have come to realize that this is only an inert state.  You have discovered a method to bring out the true power of Draconium using a complex ritual involving a dragon heart. (See the dragon heart page for details)
+
 item.draconicevolution:creativeStructureSpawnerComet.name=Spawn Comet
 
 item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Island
 
-item.draconicevolution:infoTablet.name=Draconic Evolution info guide
+item.draconicevolution:infoTablet.name=Draconic Evolution Information Tablet
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -271,7 +290,7 @@ info.de.obliterationMode.txt=Obliteration Mode
 info.de.obliterationModetrue.txt=Active
 info.de.obliterationModefalse.txt=Inactive
 info.de.miningMode.txt=Mining Mode
-info.de.changeMiningMode.txt=Shift Right-click to change mining mode
+info.de.changeMiningMode.txt=Shift Right click to change mining mode
 info.de.toggleOblit.txt=Right-click to toggle Obliteration mode
 info.de.oblitInfo.txt=Obliteration mode destroys low value blocks
 
@@ -283,6 +302,13 @@ info.de.safetyMatch.txt=Light a fire that will NOT burn your house down!
 
 info.draconiumChestInfo1.txt=Shift right click with an empty hand
 info.draconiumChestInfo2.txt=to access colour options
+
+info.de.capacitorMode.txt=Mode
+info.de.capacitorMode0.txt=Inactive
+info.de.capacitorMode1.txt=Charge Hotbar
+info.de.capacitorMode2.txt=Charge Armor & Held Item
+info.de.capacitorMode3.txt=Charge Armor & Hotbar
+info.de.changwMode.txt=Shift Right click to change mode
 
 enchantment.draconicevolution.reaperEnchant=Reaper
 
@@ -342,28 +368,28 @@ button.de.goToIndex.txt=Index Page
 manual.de.indexTitle.txt=Index Page
 manual.de.userGuide.txt=Mod Feature Guide
 manual.de.ecth.txt=Energy Storage Multiblock
-manual.de.roerth.txt=Ritual of Ender Resurrection
+manual.de.roerth.txt=Ritual of Draconic Resurrection
 manual.de.endercomet.txt=Ender Comet
 manual.de.enderisland.txt=Chaos Islands
 manual.de.placeditems.txt=Placing items in world
 manual.de.pigmenBloodRage.txt=Pigmen Blood Rage
 manual.de.ectdpage0a.txt=The Energy Core is a multiblock structure that is capable of storing immense amounts of RF power using the energy storage capabilities of Draconium and Redstone.
-manual.de.ectdpage0b.txt=The Energy Core has 7 Tiers each capable of storing considerably more then the last to build it you will need 5 different components./n ♦  Energy Core x1/n ♦ Particle Generator x4/n ♦ Redstone Block (number depends on tier)/n ♦ Draconium Block (number depends on tier)/n ♦  Energy Pylon x2+
+manual.de.ectdpage0b.txt=The Energy Core has 7 Tiers each capable of storing considerably more then the last to build it you will need 5 different components.\n ♦  Energy Core x1\n ♦ Particle Generator x4\n ♦ Redstone Block (number depends on tier)\n ♦ Draconium Block (number depends on tier)\n ♦  Energy Pylon x2+
 manual.de.ectdpage1a.txt=The Energy core consists of the Energy Core(Block) at the centre surrounded by 4 Particle Generators as shown.
-manual.de.ectdpage1b.txt=The Core is then surrounded by a combination of Redstone Blocks and Draconium Blocks the following pages show the construction of each tier as well as the material cost and storage capacity./n/nOnce the  structure is built simply shift right click one of the particle/n generators (with an empty hand)
-manual.de.ectdpage2.txt=Tier 1:/nRedstone x0/nDraconium x0/nCapacity = 45.5Million RF/n/nTier  2:/nRedstone x0/nDraconium x6/nCapacity = 273Million RF
-manual.de.ectdpage3.txt=Tier 3:/nRedstone x0/nDraconium x26/nCapacity = 1.64Billion RF
-manual.de.ectdpage4.txt=Tier 4:/nRedstone x26/nDraconium x54/nCapacity = 9.88Billion RF
-manual.de.ectdpage5.txt=Tier 5:/nRedstone x80/nDraconium x98/nCapacity = 59.3Billion RF
-manual.de.ectdpage6.txt=Tier 6:/nRedstone 133/nDraconium 150/nCapacity = 356Billion RF
-manual.de.ectdpage7.txt=Tier 7:/nRedstone x328/nDraconium x218/nCapacity = 2.14Trillion RF
+manual.de.ectdpage1b.txt=The Core is then surrounded by a combination of Redstone Blocks and Draconium Blocks the following pages show the construction of each tier as well as the material cost and storage capacity.\n\nOnce the  structure is built simply shift right click one of the particle\n generators (with an empty hand)
+manual.de.ectdpage2.txt=Tier 0:\nRedstone x0\nDraconium x0\nCapacity = 45.5Million RF\n\nTier  1:\nRedstone x0\nDraconium x6\nCapacity = 273Million RF
+manual.de.ectdpage3.txt=Tier 2:\nRedstone x0\nDraconium x26\nCapacity = 1.64Billion RF
+manual.de.ectdpage4.txt=Tier 3:\nRedstone x26\nDraconium x54\nCapacity = 9.88Billion RF
+manual.de.ectdpage5.txt=Tier 4:\nRedstone x80\nDraconium x98\nCapacity = 59.3Billion RF
+manual.de.ectdpage6.txt=Tier 5:\nRedstone 133\nDraconium 150\nCapacity = 356Billion RF
+manual.de.ectdpage7.txt=Tier 6:\nRedstone x328\nDraconium x218\nCapacity = 2.14Trillion RF
 manual.de.ectdpage8a.txt=To add and remove energy from the core you need to place energy pylons within 15 blocks of the of the core. To activate a pylon place a glass block ether above or bellow it depending on weather the pylon is placed bellow or above the core e.g. if you place the pylon on the roof you would place the glass block under it. The pylon can be placed up to 6 blocks above or bellow the energy core (centre).
 manual.de.ectdpage8b.txt=When the glass block is placed the pylon should immediately activate and link with a nearby Energy Core the link is indicated by white energy particles and the glass should change to the renderer shown in the image above.
 manual.de.ectdpage9a.txt=You can simply right click the energy core to check the tier and amount of energy stored.
 manual.de.ectdpage9b.txt=Energy is added and removed from the core using the Energy Pylons. To toggle a Pylon between input and output mode simply right click the sphere. The mode is identified by the colour of the Pylon (Blue = input, Orange = output) and the behaviour of the energy particles and the Pylon sphere
 manual.de.ectdpage10.txt=Energy Transfer between the pylon and the core is indicated by a stream of blue energy particles flowing between the Pylon sphere and the core. The amount of energy flowing is roughly shown by the density of the particle stream.
 manual.de.ectdpage11.txt=The above image shows all of the possible Y level placements for the Pylons relative to the core.
-manual.de.roertpage0a.txt=The ritual of ender resurrection allows you to summon the Ender Dragon. To set it up you will need the following items./n/n(1)  Resurrection Stone/n(4) Glowstone Blocks/n(4) Obsidian/n(4) Diamond Blocks/n(4) Charged Draconium Blocks/n(12) Quartz Pillars
+manual.de.roertpage0a.txt=The Ritual of Draconic Resurrection allows you to summon the Ender Dragon. To set it up you will need the following items.\n\n(1)  Resurrection Stone\n(4) Glowstone Blocks\n(4) Obsidian\n(4) Diamond Blocks\n(4) Charged Draconium Blocks\n(12) Quartz Pillars
 manual.de.roertpage0b.txt=To get a Charged Draconium block place a Draconium block in a charging device (requires 100 Million RF)
 manual.de.roertpage1a.txt=The pillars dont have to be in that exact configuration as long as they are within 5 blocks of the Resurrection Stone it also looks better if they are symmetrical.
 manual.de.roertpage1b.txt=Once you have that setup simply right click the Ritual stone and stand back. The ritual should start immediately if it dosnt you have done something wrong.

@@ -29,7 +29,7 @@ public class TeleporterStand extends BlockCustomDrop {
 	public TeleporterStand() {
 		super(Material.rock);
 		this.setBlockName(Strings.teleporterStandName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setHardness(1.5f);
 		this.setResistance(10.0f);

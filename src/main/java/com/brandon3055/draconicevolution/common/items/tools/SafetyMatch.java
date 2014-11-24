@@ -29,7 +29,7 @@ public class SafetyMatch extends ItemDE {
 	public SafetyMatch()
 	{
 		this.setUnlocalizedName(Strings.safetyMatchName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setHasSubtypes(true);
 		ModItems.register(this);
 	}

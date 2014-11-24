@@ -15,13 +15,11 @@ public class ItemDE extends Item {
 
 	@Override
 	public String getUnlocalizedName(){
-		//return String.format("item.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 		return String.format("item.%s%s", References.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
 	@Override
 	public String getUnlocalizedName(final ItemStack itemStack){
-		//return String.format("item.%s", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 		return getUnlocalizedName();
 	}
 

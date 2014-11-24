@@ -44,7 +44,7 @@ public class InvisibleMultiblock extends BlockDE {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister) {
-		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconium_block");
+		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconium_block_0");
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class InvisibleMultiblock extends BlockDE {
 	@Override
 	public Item getItemDropped(int meta, Random p_149650_2_, int var2) {
 		if (meta == 0)
-			return Item.getItemFromBlock(ModBlocks.draconium);
+			return Item.getItemFromBlock(ModBlocks.draconiumBlock);
 		else if (meta == 1)
 			return Item.getItemFromBlock(Blocks.redstone_block);
 		else
@@ -144,7 +144,7 @@ public class InvisibleMultiblock extends BlockDE {
 	private void revert(World world, int x, int y, int z){
 		int meta = world.getBlockMetadata(x, y, z);
 		if (meta == 0)
-			world.setBlock(x, y, z, ModBlocks.draconium);
+			world.setBlock(x, y, z, ModBlocks.draconiumBlock);
 		else if (meta == 1)
 			world.setBlock(x, y, z, Blocks.redstone_block);
 	}
@@ -180,7 +180,7 @@ public class InvisibleMultiblock extends BlockDE {
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
 		if (world.getBlockMetadata(x, y, z) == 0)
-			return new ItemStack(ModBlocks.draconium);
+			return new ItemStack(ModBlocks.draconiumBlock);
 		else if (world.getBlockMetadata(x, y, z) == 1)
 			return new ItemStack(Blocks.redstone_block);
 		else

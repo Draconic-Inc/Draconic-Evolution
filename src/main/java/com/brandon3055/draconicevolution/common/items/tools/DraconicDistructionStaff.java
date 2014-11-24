@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -26,7 +26,6 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -39,7 +38,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	public IIcon itemIcon0;
 	public IIcon itemIcon1;
 	public IIcon itemIcon2;
-	protected int capacity = References.DRACONICCAPACITY * 10;
+	protected int capacity = References.DRACONICCAPACITY * 3;
 	protected int maxReceive = References.DRACONICTRANSFER;
 	protected int maxExtract = References.DRACONICTRANSFER * 50;
 
@@ -65,7 +64,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	public DraconicDistructionStaff() {
 		super(0F, ModItems.DRACONIUM_T3, minableBlocks);
 		this.setUnlocalizedName(Strings.draconicDStaffName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setHarvestLevel("pickaxe", 4);
 		this.setHarvestLevel("shovel", 4);
 		this.setHarvestLevel("axe", 4);
@@ -77,6 +76,7 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@SuppressWarnings("unchecked")
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
@@ -186,10 +186,6 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 	@Override
 	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.epic;
-	}
-
-	public static void registerRecipe() {
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicDistructionStaff), "DFD", "PTS", "DWD", 'F', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'T', ModItems.draconicCore, 'P', ModItems.draconicPickaxe, 'S', ModItems.draconicShovel, 'W', ModItems.draconicSword);
 	}
 
 	@Override

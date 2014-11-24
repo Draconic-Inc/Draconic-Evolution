@@ -1,23 +1,21 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.utills.Teleporter;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
-import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.Teleporter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
@@ -32,7 +30,7 @@ public class TeleporterMKI extends ItemDE
 
 	public TeleporterMKI() {
 		this.setUnlocalizedName(Strings.teleporterMKIName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setMaxDamage(19);
 		this.setMaxStackSize(1);
 		ModItems.register(this);
@@ -125,7 +123,7 @@ public class TeleporterMKI extends ItemDE
 						player.setHealth(player.getHealth() - 2);
 
 					travelEffect(world, player);
-					Teleporter.teleport(player, x, y, z, yaw, pitch, dim);
+					Teleporter.teleport(player, x, y+0.3, z, yaw, pitch, dim);
 					travelEffect(world, player);
 
 				} else if (world.isRemote && player.getHealth() <= 2 && !player.capabilities.isCreativeMode)
@@ -179,11 +177,6 @@ public class TeleporterMKI extends ItemDE
 	public EnumRarity getRarity(ItemStack stack)
 	{
 		return EnumRarity.uncommon;
-	}
-
-	public static void registerRecipe()
-	{
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.teleporterMKI), "BDB", "DED", "BDB", 'D', ModItems.draconiumDust, 'E', Items.ender_eye, 'B', Items.blaze_powder);
 	}
 
 	@Override

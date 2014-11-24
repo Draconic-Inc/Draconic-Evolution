@@ -68,7 +68,7 @@ public class TileInvisibleMultiblock extends TileEntity {
 	private void revert(){
 		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		if (meta == 0)
-			worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.draconium);
+			worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.draconiumBlock);
 		else if (meta == 1)
 			worldObj.setBlock(xCoord, yCoord, zCoord, Blocks.redstone_block);
 	}

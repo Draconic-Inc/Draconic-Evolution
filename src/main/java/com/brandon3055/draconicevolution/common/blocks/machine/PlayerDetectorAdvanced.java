@@ -34,7 +34,7 @@ public class PlayerDetectorAdvanced extends BlockCustomDrop
 	public PlayerDetectorAdvanced() {
 		super(Material.iron);
 		this.setBlockName(Strings.playerDetectorAdvancedName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		ModBlocks.register(this);
 	}

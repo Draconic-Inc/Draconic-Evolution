@@ -109,7 +109,7 @@ public class EnergyCoreTutorialPage extends  TutorialPage {
 		int yOffset = (int)((minecraft.getSystemTime()/2000 % 2)*22);
 		drawTexturedModalRect((int)((offsetX+49)*scaleMult), (int)((offsetY+15)*scaleMult), 180, 0+yOffset, 30, 20);
 		GL11.glPopMatrix();
-		drawCenteredString(fontRendererObj, "Tier 2", offsetX+128, offsetY+107, 0xff0000);
+		drawCenteredString(fontRendererObj, "Tier 1", offsetX+128, offsetY+107, 0xff0000);
 		addDescription(minecraft, offsetX, offsetY+45, getFormattedText(fontRendererObj, ttl("manual.de.ectdpage2.txt"), 4));
 	}
 
@@ -123,7 +123,7 @@ public class EnergyCoreTutorialPage extends  TutorialPage {
 		int yOffset = (int)((minecraft.getSystemTime()/2000 % 2)*22);
 		drawTexturedModalRect((int)((offsetX+54)*scaleMult), (int)((offsetY+15)*scaleMult), 151, 0+yOffset, 28, 20);
 		GL11.glPopMatrix();
-		drawCenteredString(fontRendererObj, "Tier 3", offsetX+128, offsetY+107, 0xff0000);
+		drawCenteredString(fontRendererObj, "Tier 2", offsetX+128, offsetY+107, 0xff0000);
 		addDescription(minecraft, offsetX, offsetY+45, getFormattedText(fontRendererObj, ttl("manual.de.ectdpage3.txt"), 5));
 	}
 
@@ -137,7 +137,7 @@ public class EnergyCoreTutorialPage extends  TutorialPage {
 		int yOffset = (int)((minecraft.getSystemTime()/2000 % 3)*22);
 		drawTexturedModalRect((int)((offsetX+54)*scaleMult), (int)((offsetY+15)*scaleMult), 123, 0+yOffset, 28, 20);
 		GL11.glPopMatrix();
-		drawCenteredString(fontRendererObj, "Tier 4", offsetX+128, offsetY+107, 0xff0000);
+		drawCenteredString(fontRendererObj, "Tier 3", offsetX+128, offsetY+107, 0xff0000);
 		addDescription(minecraft, offsetX, offsetY+45, getFormattedText(fontRendererObj, ttl("manual.de.ectdpage4.txt"), 6));
 	}
 
@@ -151,7 +151,7 @@ public class EnergyCoreTutorialPage extends  TutorialPage {
 		int yOffset = (int)((minecraft.getSystemTime()/2000 % 4)*22);
 		drawTexturedModalRect((int)((offsetX+60)*scaleMult), (int)((offsetY+15)*scaleMult), 98, 0+yOffset, 25, 20);
 		GL11.glPopMatrix();
-		drawCenteredString(fontRendererObj, "Tier 5", offsetX+128, offsetY+107, 0xff0000);
+		drawCenteredString(fontRendererObj, "Tier 4", offsetX+128, offsetY+107, 0xff0000);
 		addDescription(minecraft, offsetX, offsetY+45, getFormattedText(fontRendererObj, ttl("manual.de.ectdpage5.txt"), 7));
 	}
 
@@ -165,7 +165,7 @@ public class EnergyCoreTutorialPage extends  TutorialPage {
 		int yOffset = (int)((minecraft.getSystemTime()/2000 % 5)*43 );
 		drawTexturedModalRect((int)((offsetX+60)*scaleMult), (int)((offsetY+15)*scaleMult), 53, 0+yOffset, 44, 41);
 		GL11.glPopMatrix();
-		drawCenteredString(fontRendererObj, "Tier 6", offsetX+128, offsetY+130, 0xff0000);
+		drawCenteredString(fontRendererObj, "Tier 5", offsetX+128, offsetY+130, 0xff0000);
 		addDescription(minecraft, offsetX, offsetY+65, getFormattedText(fontRendererObj, ttl("manual.de.ectdpage6.txt"), 8));
 	}
 
@@ -179,7 +179,7 @@ public class EnergyCoreTutorialPage extends  TutorialPage {
 		int yOffset = (int)((minecraft.getSystemTime()/2000 % 6)*43 );
 		drawTexturedModalRect((int)((offsetX+49)*scaleMult), (int)((offsetY+15)*scaleMult), 0, 0+yOffset, 52, 41);
 		GL11.glPopMatrix();
-		drawCenteredString(fontRendererObj, "Tier 7", offsetX+128, offsetY+130, 0xff0000);
+		drawCenteredString(fontRendererObj, "Tier 6", offsetX+128, offsetY+130, 0xff0000);
 		addDescription(minecraft, offsetX, offsetY+65, getFormattedText(fontRendererObj, ttl("manual.de.ectdpage7.txt"), 9));
 	}
 

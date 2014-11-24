@@ -38,7 +38,7 @@ public class Grinder extends BlockCustomDrop
 	public Grinder() {
 		super(Material.iron);
 		this.setBlockName(Strings.grinderName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setResistance(2000.0f);
 		ModBlocks.register(this);
@@ -183,10 +183,23 @@ public class Grinder extends BlockCustomDrop
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz)
+	public boolean onBlockActivated(World world, int X, int Y, int Z, EntityPlayer player, int side, float prx, float pry, float prz)
 	{
-		if (!world.isRemote) {
-			FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GRINDER, world, x, y, z);
+		TileEntity tile = world.getTileEntity(X, Y, Z);
+		if (!(tile instanceof TileGrinder))
+		{
+			return false;
+		}
+		if (!world.isRemote && ! player.isSneaking()) {
+			FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GRINDER, world, X, Y, Z);
+		} else if (player.isSneaking()){
+			for (double x = ((TileGrinder)tile).centreX - 4; x <= ((TileGrinder)tile).centreX + 4; x++) {
+				for (double y = ((TileGrinder)tile).centreY - 4; y <= ((TileGrinder)tile).centreY + 4; y++) {
+					for (double z = ((TileGrinder)tile).centreZ - 4; z <= ((TileGrinder)tile).centreZ + 4; z++) {
+						world.spawnParticle("flame", x, y, z, 0D, 0D, 0D);
+					}
+				}
+			}
 		}
 		return true;
 	}

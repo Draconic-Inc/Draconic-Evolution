@@ -22,7 +22,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler, ISidedInventory {
+public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler, ISidedInventory {//todo fix display not working when buffer is empty
 	ItemStack[] items = new ItemStack[1];
 	public EnergyStorage energy = new EnergyStorage(1000000);
 	public int maxInput = 81920;
@@ -44,6 +44,9 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler,
 			return;
 		}
 
+		if(worldObj.isRemote) return;
+
+
 		if (tick % 100 == 0) tryStartOrStop();
 		if (tick % 400 == 0) detectAndSendChanges(true);
 
@@ -51,11 +54,8 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler,
 		if(running && tryStartOrStop())
 		{
 			IEnergyContainerItem item = (IEnergyContainerItem)items[0].getItem();
-//			if (energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) > 0 && !transfer)
-//				setTransfer(true);
-//			else if (energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) <= 0 && transfer)
-				setTransfer(energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) > 0);
-		}
+			setTransfer(energy.extractEnergy(item.receiveEnergy(items[0], energy.getEnergyStored(), false), false) > 0);
+		}else setTransfer(false);
 
 		detectAndSendChanges(false);
 		tick++;
@@ -65,20 +65,12 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler,
 		if (items[0] != null && items[0].stackSize == 1 && items[0] != null && items[0].getItem() instanceof IEnergyContainerItem) {
 			IEnergyContainerItem item = (IEnergyContainerItem)items[0].getItem();
 			if (item.getEnergyStored(items[0]) < item.getMaxEnergyStored(items[0])) {
-
 				running = true;
-				//worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-
 			}else{
-
 				running = false;
-				//worldObj.markBlockForUpdate(xCoord, yCoord ,zCoord);
-
 			}
 		}else {
-
 			running = false;
-			//worldObj.markBlockForUpdate(xCoord, yCoord ,zCoord);
 		}
 
 		return running;
@@ -182,8 +174,12 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler,
 	}
 
 	public void detectAndSendChanges(boolean sendAnyway){
-		if (runningCach != running || sendAnyway) runningCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 0, running);
-		if (transferCach != transfer || sendAnyway) transferCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 1, transfer);
+		if (runningCach != running || sendAnyway) {
+			runningCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 0, running);
+		}
+		if (transferCach != transfer || sendAnyway) {
+			transferCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 1, transfer);
+		}
 	}
 
 

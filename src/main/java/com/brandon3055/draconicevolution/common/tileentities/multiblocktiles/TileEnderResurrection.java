@@ -205,7 +205,7 @@ public class TileEnderResurrection extends TileEntity{
 		if (spawnInProgress) {
 			for (int i = 0; i < draconiumPillars.length; i++){
 				if (draconiumPillars[i] == null || !arePillarsValid()) return false;
-				worldObj.setBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord(), ModBlocks.draconium);
+				worldObj.setBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord(), ModBlocks.draconiumBlock);
 			}
 			flag = false;
 		}
@@ -235,7 +235,7 @@ public class TileEnderResurrection extends TileEntity{
 		}
 		for (int i = 0; i < draconiumPillars.length; i++){
 			if (draconiumPillars[i] == null) return false;
-			if ((worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord()) != ModBlocks.draconium && worldObj.getBlockMetadata(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord()) != 2) || worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord()-1, draconiumPillars[i].getZCoord()) != Blocks.quartz_block || worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord()-2, draconiumPillars[i].getZCoord()) != Blocks.quartz_block) return false;
+			if ((worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord()) != ModBlocks.draconiumBlock && worldObj.getBlockMetadata(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord()) != 2) || worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord()-1, draconiumPillars[i].getZCoord()) != Blocks.quartz_block || worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord()-2, draconiumPillars[i].getZCoord()) != Blocks.quartz_block) return false;
 		}
 		return true;
 	}
@@ -247,7 +247,7 @@ public class TileEnderResurrection extends TileEntity{
 		for (int x = xCoord - xzRange; x < xCoord + xzRange; x++){
 			for (int y = yCoord +2; y < yCoord + 5; y++){
 				for (int z = zCoord - xzRange; z < zCoord + xzRange; z++){
-					if (worldObj.getBlock(x, y, z) == ModBlocks.draconium && isPillarValid(0, x, y, z) && worldObj.getBlockMetadata(x, y, z) == 2 && draconiumCount < 4){
+					if (worldObj.getBlock(x, y, z) == ModBlocks.draconiumBlock && isPillarValid(0, x, y, z) && worldObj.getBlockMetadata(x, y, z) == 2 && draconiumCount < 4){
 						draconiumPillars[draconiumCount] = new MultiblockHelper.TileLocation(x, y, z);
 						draconiumCount++;
 					}

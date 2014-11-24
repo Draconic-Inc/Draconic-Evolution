@@ -16,7 +16,7 @@ import net.minecraft.enchantment.Enchantment;
 import java.util.Arrays;
 
 @Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, canBeDeactivated = false, guiFactory = References.GUIFACTORY,  dependencies = "after:NotEnoughItems;after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;")
-public class DraconicEvolution {
+public class DraconicEvolution { // TODO Update Licence and add change log to github
 
 	@Mod.Instance(References.MODID)
 	public static DraconicEvolution instance;
@@ -24,8 +24,8 @@ public class DraconicEvolution {
 	@SidedProxy(clientSide = References.CLIENTPROXYLOCATION, serverSide = References.COMMONPROXYLOCATION)
 	public static CommonProxy proxy;
 
-	public static CreativeTabs tolkienTabToolsWeapons = new DETab(CreativeTabs.getNextID(), References.MODID, "toolsAndWeapons", 0);
-	public static CreativeTabs tolkienTabBlocksItems = new DETab(CreativeTabs.getNextID(), References.MODID, "blocksAndItems", 1);
+	public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), References.MODID, "toolsAndWeapons", 0);
+	public static CreativeTabs tabBlocksItems = new DETab(CreativeTabs.getNextID(), References.MODID, "blocksAndItems", 1);
 
 	public static final String networkChannelName = "DraconicEvolution";
 	public static SimpleNetworkWrapper network;
@@ -56,7 +56,7 @@ public class DraconicEvolution {
 
 		/*
 		public static Achievement ultimatePower;
-		ultimatePower = new Achievement("achievment.ultimatePower", "Ultimate Power!!!", 1, -2, ModItems.draconicDistructionStaff, null).registerStat();
+		ultimatePower = new Achievement("achievment.ultimatePower", "Ultimate Power!!!", 1, -2, ModItems.draconicDestructionStaff, null).registerStat();
 		AchievementPage draconicEvolution = new AchievementPage("Draconic Evolution", ultimatePower);
 		AchievementPage.registerAchievementPage(draconicEvolution);
 		*/

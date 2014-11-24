@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.client.interfaces.manual;
 
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
@@ -18,6 +18,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,15 +52,10 @@ public class CraftingInfoPage extends TitledPage {
 		if (isSmelting){
 			drawTexturedModalRect(offsetX + 87, offsetY + 15, 116, 202, 82, 54);
 		}else {
-			drawTexturedModalRect(offsetX + 70, offsetY + 15, 0, 202, 116, 54);
-			if (!hasRecipe) {
-				GL11.glPushMatrix();
-				GL11.glEnable(GL11.GL_BLEND);
-				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				drawTexturedModalRect(offsetX + 70, offsetY + 15, 198, 202, 54, 54);
-				GL11.glPopMatrix();
-				drawString(fontRendererObj, "No Crafting Recipe", offsetX + 129, offsetY + 60, 0xff0000);
+			if (hasRecipe) drawTexturedModalRect(offsetX + 70, offsetY + 15, 0, 202, 116, 54);
+			else {
+				drawTexturedModalRect(offsetX + 119, offsetY + 17, 0, 202, 18, 18);
+				drawString(fontRendererObj, "No Crafting Recipe", offsetX + 145, offsetY + 17, 0xff0000);
 			}
 		}
 		GL11.glPopMatrix();
@@ -93,6 +89,11 @@ public class CraftingInfoPage extends TitledPage {
 		}
 		int itemX = offsetX + (isSmelting ? 148 : 165);
 		int itemY = offsetY + 34;
+		if (!hasRecipe){
+			itemX = offsetX+120;
+			itemY = offsetY+18;
+		}
+
 		drawItemStack(result, itemX, itemY, "");
 		if (relativeMouseX > itemX - 2 && relativeMouseX < itemX - 2 + itemBoxSize &&
 				relativeMouseY > itemY - 2 && relativeMouseY < itemY - 2 + itemBoxSize) {
@@ -105,7 +106,8 @@ public class CraftingInfoPage extends TitledPage {
 
 	public void addDescription(Minecraft minecraft, int offsetX, int offsetY){
 		GL11.glPushMatrix();
-		GL11.glTranslated(offsetX+5, offsetY+75, 1);
+		if (hasRecipe) GL11.glTranslated(offsetX+5, offsetY+75, 1);
+		else GL11.glTranslated(offsetX+5, offsetY+40, 1);
 		GL11.glScalef(descriptionScale, descriptionScale, descriptionScale);
 		int offset = 0;
 		for (String s : getFormattedText(fontRendererObj)) {
@@ -116,14 +118,43 @@ public class CraftingInfoPage extends TitledPage {
 		GL11.glPopMatrix();
 	}
 
+
 	@SuppressWarnings("unchecked")
 	public List<String> getFormattedText(FontRenderer fr) {
-		if (formattedDescription == null) {
-			if (Strings.isNullOrEmpty(rawDescription)) formattedDescription = ImmutableList.of();
-			else formattedDescription = ImmutableList.copyOf(fr.listFormattedStringToWidth(rawDescription, 370));
+	if (formattedDescription == null) {
+		formattedDescription = new ArrayList<String>();
+
+		if (Strings.isNullOrEmpty(rawDescription)) {
+			formattedDescription = ImmutableList.of();
+			return formattedDescription;
 		}
-		return formattedDescription;
+		if (!rawDescription.contains("\\n")) {
+			formattedDescription = ImmutableList.copyOf(fr.listFormattedStringToWidth(rawDescription, 370));
+			return formattedDescription;
+		}
+
+		List<String> segments = new ArrayList(); //Each separate string that is separated by a \n
+		String raw = rawDescription;
+
+
+		int escape = 0;
+		while (raw.contains("\\n")) {
+			segments.add(raw.substring(0, raw.indexOf("\\n")));
+			raw = raw.substring(raw.indexOf("\\n") + 2);
+			if (!raw.contains("\\n")) segments.add(raw);
+
+			escape++;
+			if (escape > 100) {
+				LogHelper.error("Bailing Out!");
+				break;
+			}
+		}
+
+		for (String s : segments)
+			formattedDescription.addAll(ImmutableList.copyOf(fr.listFormattedStringToWidth(s, 370)));
 	}
+	return formattedDescription;
+}
 
 	protected void drawItemStackTooltip(ItemStack stack, int x, int y) {
 		final Minecraft mc = Minecraft.getMinecraft();

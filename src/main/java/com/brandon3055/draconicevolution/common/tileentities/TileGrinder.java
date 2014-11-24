@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.tileentities;
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.common.network.ObjectPacket;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -25,6 +26,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class TileGrinder extends TileObjectSync implements ISidedInventory, IEnergyHandler {
@@ -33,9 +35,9 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	List<EntityLiving> killList;
 	AxisAlignedBB killBox;
 	int tick = 0;
-	double centreX;
-	double centreY = -1;
-	double centreZ;
+	public double centreX;
+	public double centreY = -1;
+	public double centreZ;
 	private ItemStack[] items;
 	public int burnTime = 1;
 	public int burnTimeRemaining = 0;
@@ -47,6 +49,7 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	public EnergyStorage internalGenBuffer = new EnergyStorage(20000, 32000, 0);
 	public EnergyStorage externalInputBuffer = new EnergyStorage(100000, 32000, 0);
 	public int energyPerKill = 1000;
+	private static Field recentlyHit;
 
 	public void updateVariables() {
 		if (meta == -1) meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
@@ -55,20 +58,20 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 				case 0:
 					centreX = xCoord + 0.5;
 					centreY = yCoord + 0.5;
-					centreZ = zCoord + 0.5 - 4;
+					centreZ = zCoord + 0.5 - 5;
 					break;
 				case 1:
-					centreX = xCoord + 0.5 + 4;
+					centreX = xCoord + 0.5 + 5;
 					centreY = yCoord + 0.5;
 					centreZ = zCoord + 0.5;
 					break;
 				case 2:
 					centreX = xCoord + 0.5;
 					centreY = yCoord + 0.5;
-					centreZ = zCoord + 0.5 + 4;
+					centreZ = zCoord + 0.5 + 5;
 					break;
 				case 3:
-					centreX = xCoord + 0.5 - 4;
+					centreX = xCoord + 0.5 - 5;
 					centreY = yCoord + 0.5;
 					centreZ = zCoord + 0.5;
 					break;
@@ -84,9 +87,11 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 	@Override
 	public void updateEntity() {
-		if (worldObj.isRemote) return;
 
 		updateVariables();
+		if (worldObj.isRemote) return;
+
+
 		int burnSpeed = 2;
 		int EPBT = 10;
 
@@ -138,16 +143,26 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	@SuppressWarnings("unchecked")
 	public boolean killNextEntity() {
 		if (worldObj.isRemote) return false;
-		killBox = AxisAlignedBB.getBoundingBox(centreX - 3.5, centreY - 1, centreZ - 3.5, centreX + 3.5, centreY + 3, centreZ + 3.5);
+		killBox = AxisAlignedBB.getBoundingBox(centreX - 4.5, centreY - 4.5, centreZ - 4.5, centreX + 4.5, centreY + 4.5, centreZ + 4.5);
+
 		killList = worldObj.getEntitiesWithinAABB(EntityLiving.class, killBox);
 
 		if (killList.size() > 0) {
 			EntityLiving mob = killList.get(worldObj.rand.nextInt(killList.size()));
 			if (mob instanceof EntityCreature) {
 				if (mob.isEntityAlive()) {
-					ReflectionHelper.setPrivateValue(EntityLivingBase.class, mob, 60, new String[]{"recentlyHit", "field_70718_bc"});
+					if (recentlyHit == null) {
+						recentlyHit = ReflectionHelper.findField(EntityLivingBase.class,  "recentlyHit", "field_70718_bc");
+						recentlyHit.setAccessible(true);
+					}
+					try {
+						recentlyHit.setInt(mob, 60);
+					}
+					catch (IllegalAccessException e) {
+						LogHelper.error(e);
+					}
+
 					mob.attackEntityFrom(DamageSource.generic, 50000F);
-					//mob.attackEntityFrom(DamageSource.causePlayerDamage(DEFakePlayerFactory.getPlayer((WorldServer) mob.worldObj)), 50000F);
 					readyNext = true;
 					return true;
 				}
@@ -155,9 +170,19 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 				return false;
 			} else {
 				if (mob.isEntityAlive()) {
-					ReflectionHelper.setPrivateValue(EntityLivingBase.class, mob, 60, new String[]{"recentlyHit", "field_70718_bc"});
+					if (recentlyHit == null) {
+						recentlyHit = ReflectionHelper.findField(EntityLivingBase.class,  "recentlyHit", "field_70718_bc");
+						recentlyHit.setAccessible(true);
+					}
+					try {
+						recentlyHit.setInt(mob, 60);
+						LogHelper.info(recentlyHit.getInt(mob));
+					}
+					catch (IllegalAccessException e) {
+						LogHelper.error(e);
+					}
+
 					mob.attackEntityFrom(DamageSource.generic, 50000F);
-					//mob.attackEntityFrom(DamageSource.causePlayerDamage(DEFakePlayerFactory.getPlayer((WorldServer) mob.worldObj)), 50000F);
 					readyNext = true;
 					return true;
 				}

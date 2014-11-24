@@ -23,7 +23,7 @@ public class InfoHelper {
 		if (energy < 1000)
 			eS = String.valueOf(energy);
 		else if (energy < 1000000)
-			eS = String.valueOf(Math.round((float)energy / 10F)/100F)+"k";
+			eS = String.valueOf(energy);//Math.round((float)energy / 10F)/100F)+"k";
 		else
 			eS = String.valueOf(Math.round((float)energy / 1000F)/1000F)+"m";
 		if (maxEnergy < 1000)

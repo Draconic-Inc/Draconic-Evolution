@@ -15,10 +15,10 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class DraconicCore extends ItemDE {
+public class DraconicCore extends ItemDE {//todo new description
 	public DraconicCore() {
 		this.setUnlocalizedName(Strings.draconicCoreName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		ModItems.register(this);
 	}
 

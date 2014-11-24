@@ -23,16 +23,17 @@ import java.util.List;
 /**
  * Created by Brandon on 25/07/2014.
  */
-public class Draconium extends BlockDE {
+public class DraconiumBlock extends BlockDE {//todo new description
 	private final int DRACONIUM_META = 0;
 	private final int SUMMON_BLOCK_META = 1;
 	private final int CHARGED_DRACONIUM_META = 2;
 	IIcon icons[] = new IIcon[3];
-	public Draconium() {
+	public DraconiumBlock() {
 		this.setHardness(10F);
 		this.setResistance(20F);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
-		this.setBlockName(Strings.draconiumName);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+		this.setBlockName(Strings.draconiumBlockName);
+		this.setHarvestLevel("pickaxe", 4);
 		ModBlocks.register(this, DraconiumItemBlock.class);
 	}
 
@@ -42,13 +43,11 @@ public class Draconium extends BlockDE {
 		for (int i = 0; i < 3; i++) {
 			icons[i] = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconium_block_" + i);
 		}
-		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconium_block_blank");
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int side, int meta) {
-		if ((meta == DRACONIUM_META || meta == CHARGED_DRACONIUM_META) && (side == 0 || side == 1)) return blockIcon;
 		return icons[meta];
 	}
 

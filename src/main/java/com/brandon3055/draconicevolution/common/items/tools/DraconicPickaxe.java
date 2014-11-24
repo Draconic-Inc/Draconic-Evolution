@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,7 +22,6 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -41,7 +40,7 @@ public class DraconicPickaxe extends ItemPickaxe implements IEnergyContainerItem
 	public DraconicPickaxe() {
 		super(ModItems.DRACONIUM_T2);
 		this.setUnlocalizedName(Strings.draconicPickaxeName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.draconicPickaxeName);
 	}
 
@@ -50,6 +49,7 @@ public class DraconicPickaxe extends ItemPickaxe implements IEnergyContainerItem
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@SuppressWarnings("unchecked")
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
@@ -145,11 +145,6 @@ public class DraconicPickaxe extends ItemPickaxe implements IEnergyContainerItem
 	public EnumRarity getRarity(ItemStack stack)
 	{
 		return EnumRarity.rare;
-	}
-
-	public static void registerRecipe()
-	{
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicPickaxe), "ISI", "DPD", "ITI", 'P', ModItems.wyvernPickaxe, 'D', ModItems.draconicCompound, 'S', ModItems.sunFocus, 'T', ModItems.draconicCore, 'I', ModItems.draconiumIngot);
 	}
 
 	@Override

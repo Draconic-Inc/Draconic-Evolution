@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.common.handler;
 
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
-import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -18,6 +18,7 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +28,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -35,7 +35,6 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
-import net.minecraftforge.event.world.ChunkEvent;
 
 import java.util.List;
 import java.util.Random;
@@ -64,6 +63,15 @@ public class MinecraftForgeEventHandler {
 		if (event.source.isFireDamage() && ArmorEffectHandler.getFireImunity(player)) {
 			event.setCanceled(true);
 			event.entityLiving.extinguish();
+		}
+
+		if (event.source.damageType.equals("fall") && ArmorEffectHandler.getHasJumpBoost(player)) {
+			if (event.ammount < (ArmorEffectHandler.getJumpLevel(player)+1)*2) event.setCanceled(true);
+		}
+
+		if ((event.source.damageType.equals("inWall") || event.source.damageType.equals("drown")) && (ArmorEffectHandler.isWyvernArmor(player, 4) || ArmorEffectHandler.isDraconicArmor(player, 4))) {
+			if (event.ammount <= 2f)  event.setCanceled(true);
+			LogHelper.info("drown"+event.ammount);
 		}
 	}
 
@@ -105,11 +113,12 @@ public class MinecraftForgeEventHandler {
 		int rand = random.nextInt(Math.max(ConfigHandler.soulDropChance / dropChanceModifier, 1));
 		int rand2 = random.nextInt(Math.max(ConfigHandler.passiveSoulDropChance / dropChanceModifier, 1));
 		boolean isAnimal = entity instanceof EntityAnimal;
-		LogHelper.info(dropChanceModifier+" "+rand);
+
 		if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
 			ItemStack soul = new ItemStack(ModItems.mobSoul);
 			String name = EntityList.getEntityString(entity);
 			ItemNBTHelper.setString(soul, "Name", name);
+			if (entity instanceof EntitySkeleton) ItemNBTHelper.setInteger(soul, "SkeletonType", ((EntitySkeleton)entity).getSkeletonType());
 			world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
 		}
 	}
@@ -119,7 +128,7 @@ public class MinecraftForgeEventHandler {
 		if (stack == null) return 0;
 		if (stack.getItem().equals(ModItems.wyvernBow) || stack.getItem().equals(ModItems.wyvernSword)) chance++;
 		if (stack.getItem().equals(ModItems.draconicSword) || stack.getItem().equals(ModItems.draconicBow)) chance+=2;
-		if (stack.getItem().equals(ModItems.draconicDistructionStaff)) chance+=3;
+		if (stack.getItem().equals(ModItems.draconicDestructionStaff)) chance+=3;
 
 		chance += EnchantmentHelper.getEnchantmentLevel(ConfigHandler.reaperEnchantID, stack);
 		return chance;
@@ -140,23 +149,6 @@ public class MinecraftForgeEventHandler {
 			return false;
 		} else {
 			return true;
-		}
-	}
-
-	@SubscribeEvent
-	public void ChunkEvent(ChunkEvent event) {
-		if (!ConfigHandler.updateFix) return;
-		Chunk chunk = event.getChunk();
-		for (ExtendedBlockStorage storage : chunk.getBlockStorageArray()) {
-			if (storage != null) {
-				for (int x = 0; x < 16; ++x) {
-					for (int y = 0; y < 16; ++y) {
-						for (int z = 0; z < 16; ++z) {
-							if (changeBlock(storage, x, y, z)) chunk.isModified = true;
-						}
-					}
-				}
-			}
 		}
 	}
 

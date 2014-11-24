@@ -321,7 +321,12 @@ public final class Particles {
 					break;
 				case 3:
 					behaviour3();
-					break;}
+					break;
+				case 4:
+					behaviour4();
+					break;
+			}
+
 		}
 
 		/**Fade Out*/
@@ -329,49 +334,6 @@ public final class Particles {
 			if (particleAge > particleMaxAge) setDead();
 			if (particleAge + 10 >= particleMaxAge) particleAlpha = ((float)particleMaxAge - (float)particleAge) / 10F;
 			particleAge ++;
-			prevPosX = posX;
-			prevPosY = posY;
-			prevPosZ = posZ;
-			moveEntity(motionX, motionY, motionZ);
-			timer++;
-		}
-
-		/**Go to target and expand with timer*/
-		private void behaviour3(){
-			if (this.getDistanceSq(targetX, targetY, targetZ) < 0.1 && particleAge < particleMaxAge - 40) particleAge = particleMaxAge - 40;
-			if (particleAge > particleMaxAge) setDead();
-			particleAge ++;
-
-
-
-			if (particleScale > 0) particleScale -= 0.02F;
-
-			if ((particleRed == 1F || (particleGreen == 1F && particleBlue == 0F)) && particleAge > particleMaxAge - 10){
-				int t = timer - 300;
-				particleScale = (float)t / (1F - (particleAge / (particleMaxAge - 10F)) * 100F);
-			}else if (particleBlue == 1F && particleAge > particleMaxAge - 15){
-				int t = timer - 700;
-				particleScale = (float)t / (1F - (particleAge / (particleMaxAge - 10F)) * 100F);
-			}
-
-			float motionMod = 0.001F * Math.max(1F - (float) (particleAge / 50), 0F);
-			motionX += (targetX - posX) * motionMod;
-			motionY += (targetY - posY) * motionMod;
-			motionZ += (targetZ - posZ) * motionMod;
-
-			float directMotMod = 0.05F;
-			float directMotT = Math.max(1F-((float)particleAge/(float)50), 0F);
-			directMotMod = (directMotMod * (1F - directMotT));
-			motionX = (motionX * directMotT) + (targetX - posX) * directMotMod;
-			motionY = (motionY * directMotT) + (targetY - posY) * directMotMod;
-			motionZ = (motionZ * directMotT) + (targetZ - posZ) * directMotMod;
-
-			if (particleMaxAge - particleAge < 40 && timer > 2300 && (particleRed == 1F || (particleGreen == 1f && particleBlue == 1f))){
-				double yChange = (double)(timer - 2300);
-				//setPosition(posX, targetY + yChange, posZ);
-				if (posY < targetY + 60)motionY = yChange * 0.05F;
-			}
-
 			prevPosX = posX;
 			prevPosY = posY;
 			prevPosZ = posZ;
@@ -408,6 +370,52 @@ public final class Particles {
 			prevPosZ = posZ;
 			moveEntity(motionX, motionY, motionZ);
 			timer++;
+		}
+
+		/**Go to target and expand with timer*/
+		private void behaviour3(){
+			if (this.getDistanceSq(targetX, targetY, targetZ) < 0.1 && particleAge < particleMaxAge - 40) particleAge = particleMaxAge - 40;
+			if (particleAge > particleMaxAge) setDead();
+			particleAge ++;
+
+			if (particleScale > 0) particleScale -= 0.02F;
+
+			if ((particleRed == 1F || (particleGreen == 1F && particleBlue == 0F)) && particleAge > particleMaxAge - 10){
+				int t = timer - 300;
+				if (timer > 0) particleScale = (float)t / (1F - (particleAge / (particleMaxAge - 10F)) * 100F);
+			}else if (particleBlue == 1F && particleAge > particleMaxAge - 15){
+				int t = timer - 700;
+				if (timer > 0) particleScale = (float)t / (1F - (particleAge / (particleMaxAge - 10F)) * 100F);
+			}
+
+			float motionMod = 0.001F * Math.max(1F - (float) (particleAge / 50), 0F);
+			motionX += (targetX - posX) * motionMod;
+			motionY += (targetY - posY) * motionMod;
+			motionZ += (targetZ - posZ) * motionMod;
+
+			float directMotMod = 0.05F;
+			float directMotT = Math.max(1F-((float)particleAge/(float)50), 0F);
+			directMotMod = (directMotMod * (1F - directMotT));
+			motionX = (motionX * directMotT) + (targetX - posX) * directMotMod;
+			motionY = (motionY * directMotT) + (targetY - posY) * directMotMod;
+			motionZ = (motionZ * directMotT) + (targetZ - posZ) * directMotMod;
+
+			if (particleMaxAge - particleAge < 40 && timer > 2300 && (particleRed == 1F || (particleGreen == 1f && particleBlue == 1f))){
+				double yChange = (double)(timer - 2300);
+				//setPosition(posX, targetY + yChange, posZ);
+				if (posY < targetY + 60)motionY = yChange * 0.05F;
+			}
+
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+			moveEntity(motionX, motionY, motionZ);
+			timer++;
+		}
+
+		/**Go to target and shrink out of existence*/
+		private void behaviour4(){
+
 		}
 
 		@Override

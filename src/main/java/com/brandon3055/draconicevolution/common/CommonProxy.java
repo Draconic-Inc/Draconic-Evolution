@@ -4,23 +4,22 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.achievements.Achievements;
+import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.handler.CraftingHandler;
 import com.brandon3055.draconicevolution.common.handler.FMLEventHandler;
 import com.brandon3055.draconicevolution.common.handler.MinecraftForgeEventHandler;
-import com.brandon3055.draconicevolution.common.network.*;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.utills.Utills;
-import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.common.magic.PotionHandler;
+import com.brandon3055.draconicevolution.common.network.*;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileInvisibleMultiblock;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -119,7 +118,6 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEnergyStorageCore.class, References.RESOURCESPREFIX + "TileEnergyStorageCore");
 		GameRegistry.registerTileEntity(TileInvisibleMultiblock.class, References.RESOURCESPREFIX + "TileInvisibleMultiblock");
 		GameRegistry.registerTileEntity(TileEnergyPylon.class, References.RESOURCESPREFIX + "TileEnergyPylon");
-		GameRegistry.registerTileEntity(Utills.TileBlockChanger.class, References.RESOURCESPREFIX + "TileBlockChanger");
 		GameRegistry.registerTileEntity(TileEnderResurrection.class, References.RESOURCESPREFIX + "TileEnderResurrection");
 		GameRegistry.registerTileEntity(TilePlacedItem.class, References.RESOURCESPREFIX + "TilePlacedItem");
 		GameRegistry.registerTileEntity(TileCKeyStone.class, References.RESOURCESPREFIX + "TileCKeyStone");
@@ -149,7 +147,8 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityCustomDragon.class, "EnderDragon", 0, DraconicEvolution.instance, 500, 3, true);
 		EntityRegistry.registerModEntity(EntityPersistentItem.class, "Persistent Item", 1, DraconicEvolution.instance, 32, 5, true);
 		EntityRegistry.registerModEntity(EntityDraconicArrow.class, "Arrow", 2, DraconicEvolution.instance, 32, 5, true);
-		EntityRegistry.registerModEntity(EntityEnderArrow.class, "Ender Arrow", 2, DraconicEvolution.instance, 32, 5, true);
-		EntityRegistry.registerModEntity(EntityChaosDrill.class, "Chaos Drill", 3, DraconicEvolution.instance, 10, 5, false);
+		EntityRegistry.registerModEntity(EntityEnderArrow.class, "Ender Arrow", 3, DraconicEvolution.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityChaosDrill.class, "Chaos Drill", 4, DraconicEvolution.instance, 10, 5, false);
+		EntityRegistry.registerModEntity(EntityDragonHeart.class, "Dragon Heart Item", 5, DraconicEvolution.instance, 32, 5, true);
 	}
 }

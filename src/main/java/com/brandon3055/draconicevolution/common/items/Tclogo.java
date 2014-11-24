@@ -2,15 +2,21 @@ package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.achievements.Achievements;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -75,6 +81,38 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+	
+		if (world.isRemote) return stack;
+
+		if (1 == 1) return  stack;
+
+		int x = (int)player.posX;
+		int y = (int)player.posY;
+		int z = (int)player.posZ;
+		world.setBlock(x, y, z, Blocks.mob_spawner);
+		TileEntity spawner = world.getTileEntity(x, y, z);
+		if (spawner instanceof TileEntityMobSpawner){
+			MobSpawnerBaseLogic logic = ((TileEntityMobSpawner)spawner).func_145881_a();
+			logic.setEntityName("Zombie");
+
+			EntityZombie zombie = new EntityZombie(world);
+			zombie.setChild(true);
+			zombie.setCurrentItemOrArmor(0, new ItemStack(Items.diamond_axe));
+
+			NBTTagCompound compound = new NBTTagCompound();
+			zombie.writeEntityToNBT(compound);
+
+			NBTTagCompound compound2 = new NBTTagCompound();
+			logic.writeToNBT(compound2);
+			compound2.setTag("SpawnData", compound);
+
+			logic.readFromNBT(compound2);
+
+			LogHelper.info(compound2);
+		}
+
+
+
 		//if (!world.isRemote)OreDoublingRegistry.getOreResult(GameRegistry.findItemStack("ThermalFoundation", "oreCopper", 1));
 
 		player.triggerAchievement(Achievements.getAchievement("Draconium Ore"));
@@ -117,19 +155,19 @@ public class Tclogo extends ItemDE {
 		int zi = (int)player.posZ;
 		int rad = 1000;
 
-		Block block;
-		for (int x = xi-rad; x < xi+rad; x++){
-			for (int y = yi-10; y < yi+30; y++){
-				for (int z = zi-rad; z < zi+rad; z++){
-				//	block = world.getBlock(x, y, z);
-					//if (block.getMaterial().equals(Material.vine) || block.getMaterial().equals(Material.plants)){
-						//world.setBlockToAir(x, y, z);
-					//}
-
-					//world.markBlockForUpdate(x, y, z);
-				}
-			}
-		}
+//		Block block;
+//		for (int x = xi-rad; x < xi+rad; x++){
+//			for (int y = yi-10; y < yi+30; y++){
+//				for (int z = zi-rad; z < zi+rad; z++){
+//				//	block = world.getBlock(x, y, z);
+//					//if (block.getMaterial().equals(Material.vine) || block.getMaterial().equals(Material.plants)){
+//						//world.setBlockToAir(x, y, z);
+//					//}
+//
+//					//world.markBlockForUpdate(x, y, z);
+//				}
+//			}
+//		}
 
 
 		//world.markBlockRangeForRenderUpdate(xi-rad, yi-rad, zi-rad, xi+rad, yi+rad, zi+rad);

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.entity;
 
+import com.brandon3055.draconicevolution.common.items.DragonHeart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -46,9 +47,12 @@ public class EntityPersistentItem extends EntityItem {
 	@Override
 	public boolean attackEntityFrom (DamageSource par1DamageSource, float par2)
 	{
-		if (par1DamageSource.getDamageType().equals("outOfWorld"))
-			return true;
-		return false;
+		if (getEntityItem().getItem() instanceof DragonHeart && par1DamageSource.isExplosion() && par2 > 35f){
+			worldObj.spawnEntityInWorld(new EntityDragonHeart(worldObj, posX, posY, posZ));
+			this.setDead();
+		}
+
+		return par1DamageSource.getDamageType().equals("outOfWorld");
 	}
 
 	@Override

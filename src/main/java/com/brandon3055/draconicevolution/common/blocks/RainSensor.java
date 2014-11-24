@@ -21,9 +21,9 @@ public class RainSensor extends BlockDE
 	IIcon icon_active;
 	IIcon icon_side;
 
-	protected RainSensor() {
+	public RainSensor() {
 		super(Material.circuits);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockBounds(0, 0, 0, 1, 0.125F, 1);
 		this.setHardness(0.3f);
 		this.setResistance(0.5f);

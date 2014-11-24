@@ -10,13 +10,15 @@ import com.brandon3055.draconicevolution.client.render.block.RenderEnergyInfuser
 import com.brandon3055.draconicevolution.client.render.block.RenderParticleGen;
 import com.brandon3055.draconicevolution.client.render.block.RenderTeleporterStand;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragon;
+import com.brandon3055.draconicevolution.client.render.entity.RenderDragonHeart;
 import com.brandon3055.draconicevolution.client.render.item.RenderBow;
 import com.brandon3055.draconicevolution.client.render.item.RenderMobSoul;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.common.CommonProxy;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
@@ -88,6 +90,7 @@ public class ClientProxy extends CommonProxy {
 
 		//Entitys
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
+		RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart());
 	}
 
 	public void registerRenderIDs (){

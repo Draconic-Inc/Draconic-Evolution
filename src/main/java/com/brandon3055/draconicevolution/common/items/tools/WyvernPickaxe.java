@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,12 +18,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -41,7 +39,7 @@ public class WyvernPickaxe extends ItemPickaxe implements IEnergyContainerItem{
 	public WyvernPickaxe() {
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.wyvernPickaxeName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		GameRegistry.registerItem(this, Strings.wyvernPickaxeName);
 	}
 
@@ -50,7 +48,8 @@ public class WyvernPickaxe extends ItemPickaxe implements IEnergyContainerItem{
 		return true;
 	}
 
-	@SuppressWarnings("all")
+	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unchecked")
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));
@@ -137,11 +136,6 @@ public class WyvernPickaxe extends ItemPickaxe implements IEnergyContainerItem{
 	public EnumRarity getRarity(ItemStack stack)
 	{
 		return EnumRarity.uncommon;
-	}
-
-	public static void registerRecipe()
-	{
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.wyvernPickaxe), " C ", "CPC", " C ", 'C', ModItems.infusedCompound, 'P', Items.diamond_pickaxe);
 	}
 
 	@Override

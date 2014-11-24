@@ -4,10 +4,10 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 
-public class InfusedCompound extends ItemDE {
-	public InfusedCompound() {
+public class WyvernCore extends ItemDE {//todo new description
+	public WyvernCore() {
 		this.setUnlocalizedName(Strings.infusedCompoundName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		ModItems.register(this);
 	}
 

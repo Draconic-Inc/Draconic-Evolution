@@ -21,7 +21,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 28/07/2014.
  */
-public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
+public class TileEnergyPylon extends TileEntity implements IEnergyHandler {//todo optimize packets
 
 	protected EnergyStorage storage = new EnergyStorage(500000, 0, 0);
 	public boolean active = false;
@@ -85,6 +85,7 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			updateDelay = 20;
 		}
+		if (worldObj.isRemote) return;
 		if ((storage.getEnergyStored() > 0)) {
 			for (int i = 0; i < 6; i++){
 				TileEntity tile = worldObj.getTileEntity(xCoord + ForgeDirection.getOrientation(i).offsetX, yCoord + ForgeDirection.getOrientation(i).offsetY, zCoord + ForgeDirection.getOrientation(i).offsetZ);
@@ -100,7 +101,7 @@ public class TileEnergyPylon extends TileEntity implements IEnergyHandler {
 		if (updateDelay > 0){
 			updateDelay--;
 			if (particleRate > 0) particleRate--;
-		}else if (storage.getEnergyStored() > 0 && getMaster().isOnline() && getMaster().getEnergyStored() < getMaster().getMaxEnergyStored()){
+		}else if (storage.getEnergyStored() > 0 && getMaster().getEnergyStored() < getMaster().getMaxEnergyStored()){
 			int maxSent = (int)Math.min(getMaster().getMaxEnergyStored() - getMaster().getEnergyStored(), storage.getEnergyStored());
 			storage.modifyEnergyStored(-maxSent);
 			getMaster().receiveEnergy(maxSent, false);

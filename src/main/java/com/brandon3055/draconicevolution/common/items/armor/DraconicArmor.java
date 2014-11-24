@@ -2,11 +2,11 @@ package com.brandon3055.draconicevolution.common.items.armor;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -20,7 +20,6 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -48,7 +47,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	public DraconicArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
 		this.setUnlocalizedName(name);
-		this.setCreativeTab(DraconicEvolution.tolkienTabToolsWeapons);
+		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		GameRegistry.registerItem(this, name);
 	}
 
@@ -257,15 +256,4 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	public boolean hasCustomEntity(ItemStack stack) {
 		return true;
 	}
-
-	public static void registerRecipe() {
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicHelm), "ISI", "DAD", "CIC", 'I', ModItems.draconiumIngot, 'S', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'C', ModItems.draconicCore, 'A', ModItems.wyvernHelm);
-
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicChest), "ISI", "DAD", "CDC", 'I', ModItems.draconiumIngot, 'S', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'C', ModItems.draconicCore, 'A', ModItems.wyvernChest);
-
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicLeggs), "ISI", "DAD", "CIC", 'I', ModItems.draconiumIngot, 'S', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'C', ModItems.draconicCore, 'A', ModItems.wyvernLeggs);
-
-		CraftingManager.getInstance().addRecipe(new ItemStack(ModItems.draconicBoots), "ISI", "DAD", "CIC", 'I', ModItems.draconiumIngot, 'S', ModItems.sunFocus, 'D', ModItems.draconicCompound, 'C', ModItems.draconicCore, 'A', ModItems.wyvernBoots);
-	}
-
 }

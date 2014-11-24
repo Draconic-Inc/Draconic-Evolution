@@ -48,15 +48,18 @@ public class GuiManual extends GuiScreen {
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconiumBlend), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconiumIngot, 2), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicCore), ""));
-		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.infusedCompound), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernCore), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.dragonHeart), ""));
-		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicCompound, 2), ""));
-		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.sunFocus), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.awakenedCore), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, ModItems.wyvernEnergyCore, ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, ModItems.draconicEnergyCore, ""));
+//		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.sunFocus), ""));
 
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernPickaxe), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernShovel), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernSword), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernBow), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, ModItems.wyvernFluxCapacitor, ""));
 
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicPickaxe), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicShovel), ""));
@@ -64,7 +67,8 @@ public class GuiManual extends GuiScreen {
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicAxe), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicSword), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicBow), ""));
-		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicDistructionStaff), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.draconicDestructionStaff), ""));
+		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, ModItems.draconicFluxCapacitor, ""));
 
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernHelm), ""));
 		pageCollection.addPage(new CraftingInfoPage("ITEM_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModItems.wyvernChest), ""));
@@ -97,11 +101,11 @@ public class GuiManual extends GuiScreen {
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.xRayBlock), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.potentiometer), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.rainSensor), ""));
-		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconiumBlock), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyStorageCore), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyPylon), ""));
-		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 1), ""));
-		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconium, 1, 2), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconiumBlock, 1, 1), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconiumBlock, 1, 2), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.longRangeDislocator, 1, 1), ""));
 
 		pageCollection.addPage(new EnergyCoreTutorialPage("TUTORIAL."+getNextPageIndex(), pageCollection).setIndexName(StatCollector.translateToLocal("manual.de.ecth.txt")));

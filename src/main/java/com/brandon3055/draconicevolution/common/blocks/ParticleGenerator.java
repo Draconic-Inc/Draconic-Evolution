@@ -28,7 +28,7 @@ public class ParticleGenerator extends BlockDE
 
 	public ParticleGenerator() {
 		this.setBlockName(Strings.particleGeneratorName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		this.setLightOpacity(0);
 		ModBlocks.register(this);

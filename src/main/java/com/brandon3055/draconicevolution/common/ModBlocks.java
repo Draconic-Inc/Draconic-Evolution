@@ -1,17 +1,17 @@
 package com.brandon3055.draconicevolution.common;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.*;
 import com.brandon3055.draconicevolution.common.blocks.machine.*;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyPylon;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyStorageCore;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.InvisibleMultiblock;
-import com.brandon3055.draconicevolution.common.utills.Utills;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.registry.GameRegistry;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 
 @GameRegistry.ObjectHolder(References.MODID)
 public class ModBlocks {
@@ -31,7 +31,7 @@ public class ModBlocks {
 	public static BlockDE longRangeDislocator;
 	public static BlockDE generator;
 	public static BlockDE energyStorageCore;
-	public static BlockDE draconium;
+	public static BlockDE draconiumBlock;
 	public static BlockDE invisibleMultiblock;
 	public static BlockDE energyPylon;
 	public static BlockDE placedItem;
@@ -40,7 +40,10 @@ public class ModBlocks {
 	public static BlockDE dissEnchanter;
 	public static BlockDE teleporterStand;
 	public static BlockDE draconiumChest;
+	public static BlockDE draconicBlock;
 	public static Block safetyFlame;
+
+	public static ItemStack resurrectionStone;
 
 	public static void init()
 	{
@@ -58,7 +61,7 @@ public class ModBlocks {
 		customSpawner = new CustomSpawner();
 		generator = new Generator();
 		energyStorageCore = new EnergyStorageCore();
-		draconium = new Draconium();
+		draconiumBlock = new DraconiumBlock();
 		invisibleMultiblock = new InvisibleMultiblock();
 		energyPylon = new EnergyPylon();
 		placedItem = new PlacedItem();
@@ -67,6 +70,7 @@ public class ModBlocks {
 		dissEnchanter = new DissEnchanter();
 		teleporterStand = new TeleporterStand();
 		draconiumChest = new DraconiumChest();
+		draconicBlock = new DraconicBlock();
 
 		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
 		
@@ -75,18 +79,7 @@ public class ModBlocks {
 			containerTemplate = new BlockContainerTemplate();
 		}
 
-		if (ConfigHandler.updateFix)
-		{
-			Block changer1 = new Utills.BlockChanger("tile.particleGenerator", particleGenerator);
-			Block changer2 = new Utills.BlockChanger("tile.customSpawner", customSpawner);
-			Block changer3 = new Utills.BlockChanger("tile.generator", generator);
-			Block changer4 = new Utills.BlockChanger("tile.playerDetectorAdvanced", playerDetectorAdvanced);
-			Block changer5 = new Utills.BlockChanger("tile.energyInfuser", energyInfuser);
-			Block changer6 = new Utills.BlockChanger("tile.draconiumOre", draconiumOre);
-			Block changer7 = new Utills.BlockChanger("tile.weatherController", weatherController);
-			Block changer8 = new Utills.BlockChanger("tile.longRangeDislocator", longRangeDislocator);
-			Block changer9 = new Utills.BlockChanger("tile.grinder", grinder);
-		}
+		resurrectionStone = new ItemStack(ModBlocks.draconiumBlock, 1, 1);
 	}
 
 	public static void register(BlockDE block)

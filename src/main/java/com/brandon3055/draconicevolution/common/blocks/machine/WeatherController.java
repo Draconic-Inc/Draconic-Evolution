@@ -39,7 +39,7 @@ public class WeatherController extends BlockCustomDrop {
 	public WeatherController() {
 		super(Material.iron);
 		this.setBlockName(Strings.blockWeatherControllerName);
-		this.setCreativeTab(DraconicEvolution.tolkienTabBlocksItems);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setStepSound(soundTypeStone);
 		ModBlocks.register(this);
 	}

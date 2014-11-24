@@ -26,6 +26,7 @@ public class CreativeStructureSpawner extends ItemDE {
 		ModItems.register(this);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@SuppressWarnings("unchecked")
 	@Override
 	public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
@@ -72,7 +73,7 @@ public class CreativeStructureSpawner extends ItemDE {
 	}
 
 	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("all")
+	@SuppressWarnings("unchecked")
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
 		if (stack.getItemDamage() == 1) list.add("Warning this will take between 5-10 minutes (maby longer) to generate");
