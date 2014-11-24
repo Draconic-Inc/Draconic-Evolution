@@ -21,3 +21,6 @@ You CANNOT
 -Redistribute this in its entirety as source or compiled code.
 
 -Create or distribute code which contains 50% or more Functionally Equivalent Statements* from this repository.
+
+
+This is bassed on the CoFH "Don't Be a Jerk" License https://github.com/CoFH/CoFHCore/blob/master/README.md
