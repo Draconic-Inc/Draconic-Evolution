@@ -2,14 +2,13 @@ package com.brandon3055.draconicevolution.client.interfaces;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.manual.GuiButtonAHeight;
-import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.TeleporterPacket;
 import com.brandon3055.draconicevolution.common.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -255,7 +254,6 @@ public class GUITeleporter extends GuiScreen
 			selrctionOffset = 0;
 			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.CHANGESELECTION, selected, false));
 			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selrctionOffset, false));
-			LogHelper.info("Crash Aborted!");
 		}
 		if (locations.size() == 0 || locations.get(selected + selrctionOffset).getWriteProtected()) {
 			((GuiButton) buttonList.get(0)).enabled = false;
@@ -339,7 +337,7 @@ public class GUITeleporter extends GuiScreen
 		}
 
 		if (button.id == 1){
-			TeleportLocation location = new TeleportLocation(player.posX, player.posY, player.posZ, player.dimension, player.cameraPitch, player.cameraYaw, locations.get(selected+selrctionOffset).getName());
+			TeleportLocation location = new TeleportLocation(player.posX, player.posY-1.62, player.posZ, player.dimension, player.rotationPitch, player.rotationYaw, locations.get(selected+selrctionOffset).getName());
 			DraconicEvolution.network.sendToServer(new TeleporterPacket(location, TeleporterPacket.UPDATEDESTINATION, selected+selrctionOffset));
 			locations.set(selected + selrctionOffset, location);
 		}
@@ -499,8 +497,8 @@ public class GUITeleporter extends GuiScreen
 	}
 
 	private void addCurrentLocationToList(String name){
-		TeleportLocation currentLocation = new TeleportLocation(player.posX, player.posY, player.posZ, player.dimension, player.rotationPitch, player.rotationYaw, name);
-		DraconicEvolution.network.sendToServer(new TeleporterPacket(currentLocation, 0));
+		TeleportLocation currentLocation = new TeleportLocation(player.posX, player.posY-1.62, player.posZ, player.dimension, player.rotationPitch, player.rotationYaw, name);
+		DraconicEvolution.network.sendToServer(new TeleporterPacket(currentLocation, TeleporterPacket.ADDDESTINATION));
 		locations.add(currentLocation);
 	}
 

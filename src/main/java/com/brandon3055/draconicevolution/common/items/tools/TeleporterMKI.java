@@ -7,11 +7,13 @@ import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.Teleporter;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -25,8 +27,10 @@ import net.minecraft.world.WorldProvider;
 
 import java.util.List;
 
-public class TeleporterMKI extends ItemDE
-{
+public class TeleporterMKI extends ItemDE {
+
+	public TeleporterMKI(boolean MKII) {
+	}
 
 	public TeleporterMKI() {
 		this.setUnlocalizedName(Strings.teleporterMKIName);
@@ -34,71 +38,49 @@ public class TeleporterMKI extends ItemDE
 		this.setMaxDamage(19);
 		this.setMaxStackSize(1);
 		ModItems.register(this);
-		//this.setContainerItem(this);
-		//GameRegistry.registerItem(this, Strings.teleporterMKIName);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(final IIconRegister iconRegister)
-	{
+	public void registerIcons(final IIconRegister iconRegister) {
 		this.itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + Strings.teleporterMKIName);
 	}
 
 	@Override
-	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
-	{
-		boolean isSet = ItemNBTHelper.getBoolean(stack, "IsSet", false);
-		double x = ItemNBTHelper.getDouble(stack, "X", 0);
-		double y = ItemNBTHelper.getDouble(stack, "Y", 0);
-		double z = ItemNBTHelper.getDouble(stack, "Z", 0);
-		int dim = ItemNBTHelper.getInteger(stack, "Dimension", 0);
-
-		if (!(entity instanceof EntityPlayer) && !(entity instanceof IBossDisplayData))
+	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+		if (getLocation(stack) == null)
 		{
-			if (entity.dimension == dim)
-			{
-				if (isSet)
-				{
-					if (player.getHealth() > 2 || player.capabilities.isCreativeMode)
-					{
-						stack.damageItem(1, player);
-						if (!player.capabilities.isCreativeMode)
-							player.setHealth(player.getHealth() - 2);
-						travelEffect(player.worldObj, entity);
-						entity.setPosition(x, y, z);
-						travelEffect(player.worldObj, entity);
-						if (player.worldObj.isRemote)
-							player.addChatMessage(new ChatComponentText(new ChatComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + "x:" + (int) x + " y:" + (int) y + " z:" + (int) z));
-					} else if (player.worldObj.isRemote)
-						player.addChatMessage(new ChatComponentTranslation("msg.teleporterLowHealth.txt"));
-				} else if (player.worldObj.isRemote)
-					player.addChatMessage(new ChatComponentTranslation("msg.teleporterUnSet.txt"));
-
-			} else if (player.worldObj.isRemote)
-			{
-				player.addChatMessage(new ChatComponentTranslation("msg.teleporterEntityDimensional.txt"));
-			}
+			if (player.worldObj.isRemote)
+				player.addChatMessage(new ChatComponentTranslation("msg.teleporterUnSet.txt"));
+			return true;
 		}
+
+		if (entity instanceof EntityPlayer)
+		{
+			if (player.worldObj.isRemote) player.addChatMessage(new ChatComponentTranslation("msg.teleporterPlayerT1.txt"));
+			return true;
+		}
+
+		if (entity instanceof IBossDisplayData || !(entity instanceof EntityLiving)) return true;
+
+		if (player.getHealth() > 2 || player.capabilities.isCreativeMode)
+		{
+			stack.damageItem(1, player);
+			if (!player.capabilities.isCreativeMode) player.setHealth(player.getHealth() - 2);
+			getLocation(stack).sendEntityToCoords(entity);
+			if (player.worldObj.isRemote) player.addChatMessage(new ChatComponentText(new ChatComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) getLocation(stack).getXCoord() + " y:" + (int) getLocation(stack).getYCoord() + " z:" + (int) getLocation(stack).getZCoord() + " Dimension: " + getLocation(stack).getDimensionName()));
+		}
+		else if (player.worldObj.isRemote)
+			player.addChatMessage(new ChatComponentTranslation("msg.teleporterLowHealth.txt"));
 
 		return true;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player)
-	{
-		boolean isSet = ItemNBTHelper.getBoolean(stack, "IsSet", false);
-		double x = ItemNBTHelper.getDouble(stack, "X", 0);
-		double y = ItemNBTHelper.getDouble(stack, "Y", 0);
-		double z = ItemNBTHelper.getDouble(stack, "Z", 0);
-		float yaw = ItemNBTHelper.getFloat(stack, "Yaw", 0);
-		float pitch = ItemNBTHelper.getFloat(stack, "Pitch", 0);
-		int dim = ItemNBTHelper.getInteger(stack, "Dimension", 0);
-		boolean onStand = !(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof TeleporterMKI);
-
+	public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
 		if (player.isSneaking())
 		{
-			if (!isSet)
+			if (getLocation(stack) == null)
 			{
 				ItemNBTHelper.setDouble(stack, "X", player.posX);
 				ItemNBTHelper.setDouble(stack, "Y", player.posY);
@@ -109,36 +91,35 @@ public class TeleporterMKI extends ItemDE
 				ItemNBTHelper.setBoolean(stack, "IsSet", true);
 				if (world.isRemote)
 					player.addChatMessage(new ChatComponentText(new ChatComponentTranslation("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.worldObj.provider.getDimensionName() + "}"));
-
+				return stack;
 			} else if (world.isRemote)
 				player.addChatMessage(new ChatComponentTranslation("msg.teleporterAlreadySet.txt"));
+
+			return stack;
 		} else
 		{
-			if (isSet)
+			if (getLocation(stack) == null)
 			{
-				if ((player.getHealth() > 2 || player.capabilities.isCreativeMode || onStand) && !player.isRiding())
-				{
-					if (!onStand)stack.damageItem(1, player);
-					if (!player.capabilities.isCreativeMode && !onStand)
-						player.setHealth(player.getHealth() - 2);
+				if (world.isRemote) player.addChatMessage(new ChatComponentTranslation("msg.teleporterUnSet.txt"));
+				return stack;
+			}
 
-					travelEffect(world, player);
-					Teleporter.teleport(player, x, y+0.3, z, yaw, pitch, dim);
-					travelEffect(world, player);
-
-				} else if (world.isRemote && player.getHealth() <= 2 && !player.capabilities.isCreativeMode)
-					player.addChatMessage(new ChatComponentTranslation("msg.teleporterLowHealth.txt"));
+			if (player.getHealth() > 2 || player.capabilities.isCreativeMode)
+			{
+				getLocation(stack).sendEntityToCoords(player);
+				LogHelper.info(getLocation(stack).getYCoord());
+				stack.damageItem(1, player);
+				if (!player.capabilities.isCreativeMode) player.setHealth(player.getHealth() - 2);
 			} else if (world.isRemote)
-				player.addChatMessage(new ChatComponentTranslation("msg.teleporterUnSet.txt"));
+				player.addChatMessage(new ChatComponentTranslation("msg.teleporterLowHealth.txt"));
+			return stack;
 		}
 
-		return stack;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
-	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
-	{
+	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
 		if (!ItemNBTHelper.getBoolean(stack, "IsSet", false))
 		{
 			list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("info.teleporterInfUnset1.txt"));
@@ -154,28 +135,8 @@ public class TeleporterMKI extends ItemDE
 		}
 	}
 
-	public void travelEffect(World world, Entity entity)
-	{
-		entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "portal.travel", 0.1F, entity.worldObj.rand.nextFloat() * 0.1F + 0.9F);
-		/*
-		for (int i = 0; i < 100; i++)
-		{
-			if (entity instanceof EntityPlayer)
-			{
-				world.spawnParticle("portal", entity.posX + (world.rand.nextFloat() - 0.5), entity.posY + (world.rand.nextFloat() - 0.5), entity.posZ + (world.rand.nextFloat() - 0.5), 0D, 0D, 0D);
-				world.spawnParticle("portal", entity.posX + (world.rand.nextFloat() - 0.5), entity.posY - 1 + (world.rand.nextFloat() - 0.5), entity.posZ + (world.rand.nextFloat() - 0.5), 0D, 0D, 0D);
-			} else
-			{
-				world.spawnParticle("portal", entity.posX + (world.rand.nextFloat() - 0.5), entity.posY + (world.rand.nextFloat() - 0.5), entity.posZ + (world.rand.nextFloat() - 0.5), 0D, 0D, 0D);
-				world.spawnParticle("portal", entity.posX + (world.rand.nextFloat() - 0.5), entity.posY + 1 + (world.rand.nextFloat() - 0.5), entity.posZ + (world.rand.nextFloat() - 0.5), 0D, 0D, 0D);
-			}
-		}
-		*/
-	}
-
 	@Override
-	public EnumRarity getRarity(ItemStack stack)
-	{
+	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.uncommon;
 	}
 
@@ -187,5 +148,18 @@ public class TeleporterMKI extends ItemDE
 	@Override
 	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
 		return new EntityPersistentItem(world, location, itemstack);
+	}
+
+	public TeleportLocation getLocation(ItemStack stack) {
+		double x = ItemNBTHelper.getDouble(stack, "X", 0);
+		double y = ItemNBTHelper.getDouble(stack, "Y", 0);
+		double z = ItemNBTHelper.getDouble(stack, "Z", 0);
+		float yaw = ItemNBTHelper.getFloat(stack, "Yaw", 0);
+		float pitch = ItemNBTHelper.getFloat(stack, "Pitch", 0);
+		int dim = ItemNBTHelper.getInteger(stack, "Dimension", 0);
+
+		if (!ItemNBTHelper.getBoolean(stack, "IsSet", false)) return null;
+
+		return new TeleportLocation(x, y, z, dim, pitch, yaw);
 	}
 }

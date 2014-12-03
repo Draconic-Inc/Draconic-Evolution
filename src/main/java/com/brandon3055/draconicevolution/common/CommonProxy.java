@@ -30,6 +30,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.potion.Potion;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.lang.reflect.Field;
@@ -102,6 +103,8 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(PlayerDetectorStringPacket.Handler.class, PlayerDetectorStringPacket.class, 4, Side.SERVER);
 		DraconicEvolution.network.registerMessage(TeleporterPacket.Handler.class, TeleporterPacket.class, 5, Side.SERVER);
 		DraconicEvolution.network.registerMessage(ObjectPacket.Handler.class, ObjectPacket.class, 6, Side.CLIENT);
+		DraconicEvolution.network.registerMessage(MountUpdatePacket.Handler.class, MountUpdatePacket.class, 7, Side.CLIENT);
+		DraconicEvolution.network.registerMessage(MountUpdatePacket.Handler.class, MountUpdatePacket.class, 8, Side.SERVER);
 	}
 
 	public void registerTileEntities() {
@@ -132,6 +135,8 @@ public class CommonProxy {
 
 	public void registerEventListeners(Side s) {
 		MinecraftForge.EVENT_BUS.register(new MinecraftForgeEventHandler());
+		MinecraftForge.EVENT_BUS.register(new Achievements());
+		FMLCommonHandler.instance().bus().register(new Achievements());
 		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
 	}
 
@@ -150,5 +155,11 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityEnderArrow.class, "Ender Arrow", 3, DraconicEvolution.instance, 32, 5, true);
 		EntityRegistry.registerModEntity(EntityChaosDrill.class, "Chaos Drill", 4, DraconicEvolution.instance, 10, 5, false);
 		EntityRegistry.registerModEntity(EntityDragonHeart.class, "Dragon Heart Item", 5, DraconicEvolution.instance, 32, 5, true);
+	}
+
+	public boolean isClientSide(){return false;}
+
+	public MinecraftServer getMCServer(){
+		return FMLCommonHandler.instance().getMinecraftServerInstance();
 	}
 }

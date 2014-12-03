@@ -1,10 +1,9 @@
 package com.brandon3055.draconicevolution.common.network;
 
-import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -167,7 +166,6 @@ public class TeleporterPacket implements IMessage
 			}
 
 			if (message.function == UPDATEDESTINATION){
-				LogHelper.info("setHere "+message.data);
 				NBTTagCompound tag = list.getCompoundTagAt(message.data);
 				message.location.writeToNBT(tag);
 				list.func_150304_a(message.data, tag);

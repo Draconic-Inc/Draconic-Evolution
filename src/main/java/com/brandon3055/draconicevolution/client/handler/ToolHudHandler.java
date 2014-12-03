@@ -40,11 +40,13 @@ public class ToolHudHandler {
 
 			if (opacity > 0) {
 				GL11.glPushMatrix();
+				GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 				GL11.glEnable(GL11.GL_BLEND);
 				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				int color = Color.getHSBColor((float) Math.cos(ClientEventHandler.elapsedTicks / 250D), 0.6F, 1F).getRGB();
 				var8.drawStringWithShadow(currentTooltip, tooltipStartX, tooltipStartY, color + (opacity << 24));
 				GL11.glDisable(GL11.GL_BLEND);
+				GL11.glPopAttrib();
 				GL11.glPopMatrix();
 			}
 		}
@@ -53,7 +55,7 @@ public class ToolHudHandler {
 	public static void setTooltip(String tooltip) {
 		if (!tooltip.equals(currentTooltip)) {
 			currentTooltip = tooltip;
-			tooltipDisplayTicks = 900;
+			tooltipDisplayTicks = 500;
 		}
 	}
 

@@ -1,14 +1,18 @@
 package com.brandon3055.draconicevolution.common.items;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.achievements.Achievements;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
@@ -21,6 +25,11 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.List;
 
 public class Tclogo extends ItemDE {
@@ -81,7 +90,43 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-	
+		LogHelper.info(player.ridingEntity);
+		if (!world.isRemote)DraconicEvolution.network.sendTo(new MountUpdatePacket(player.ridingEntity.getEntityId()), (EntityPlayerMP)player);
+		if (1==1) return stack;
+//		Set<String> set = Achievements.achievementsList.keySet();
+//		for (String s : set) Achievements.triggerAchievement(player, s);
+
+
+
+		LogHelper.info("Downloading Image");
+
+		try {
+			URL url = new URL("http://i.imgur.com/oHRx1yQ.jpg");
+			String fileName = url.getFile();
+			String destName = ClientProxy.downloadLocation + fileName.substring(fileName.lastIndexOf("/"));
+			System.out.println(destName);
+
+			InputStream is = url.openStream();
+			OutputStream os = new FileOutputStream(destName);
+
+			byte[] b = new byte[2048];
+			int length;
+
+			while ((length = is.read(b)) != -1) {
+				os.write(b, 0, length);
+			}
+
+			is.close();
+			os.close();
+		}catch (IOException e){
+			LogHelper.info(e);
+		}
+
+
+
+
+
+
 		if (world.isRemote) return stack;
 
 		if (1 == 1) return  stack;

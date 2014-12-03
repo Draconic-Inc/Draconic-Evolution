@@ -2,20 +2,21 @@ package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
 /**
  * Created by Brandon on 25/07/2014.
  */
-public class TileEnergyStorageCore extends TileEntity {
+public class TileEnergyStorageCore extends TileObjectSync {
 
 	protected TileLocation[] stabilizers = new TileLocation[4];
 	protected int tier = 0;
@@ -23,9 +24,8 @@ public class TileEnergyStorageCore extends TileEntity {
 	public float modelRotation = 0;
 	private double energy = 0;
 	private double capacity = 0;
-	private int maxReceive = 1000000;
-	private int maxExtract = 1000000;
-	private boolean loaded = false;
+	private double lastTickCapacity = 0;
+	private int tick = 0;
 
 	public TileEnergyStorageCore(){
 		for (int i = 0; i < stabilizers.length; i++)
@@ -38,6 +38,8 @@ public class TileEnergyStorageCore extends TileEntity {
 	public void updateEntity() {
 		if (!online) return;
 		if (worldObj.isRemote) modelRotation += 0.5;
+		detectAndRendChanges();
+		tick++;
 	}
 
 
@@ -748,7 +750,8 @@ public class TileEnergyStorageCore extends TileEntity {
 	/* EnergyHandler */
 
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-		double energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+		int maxReceive1 = Integer.MAX_VALUE;
+		double energyReceived = Math.min(capacity - energy, Math.min(maxReceive1, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
@@ -757,8 +760,8 @@ public class TileEnergyStorageCore extends TileEntity {
 	}
 
 	public int extractEnergy(int maxExtract, boolean simulate) {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		double energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+		int maxExtract1 = Integer.MAX_VALUE;
+		double energyExtracted = Math.min(energy, Math.min(maxExtract1, maxExtract));
 
 		if (!simulate) {
 			energy -= energyExtracted;
@@ -777,5 +780,15 @@ public class TileEnergyStorageCore extends TileEntity {
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		return INFINITE_EXTENT_AABB;
+	}
+
+	private void detectAndRendChanges(){
+		int diff = (int)Math.abs(lastTickCapacity - energy);
+		if (diff > 100000) lastTickCapacity = (Double)sendObject(ObjectPacket.DOUBLE, 0, energy);
+	}
+
+	@Override
+	public void receiveObject(int index, Object object) {
+		energy = (Double) object;
 	}
 }

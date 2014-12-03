@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -85,8 +84,8 @@ public class DraconicBow extends ItemBow
 		if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "ender";
 		if (currentMode.equals("rapidfire"))
 			BowHandler.rapidFire(player, count, 4);
-		else if (currentMode.equals("sharpshooter"))
-			player.addPotionEffect(new PotionEffect(2, 2, 10, true));
+//		else if (currentMode.equals("sharpshooter"))
+//			player.addPotionEffect(new PotionEffect(2, 2, 10, true));
 		else if (currentMode.equals("devistation"))
 			BowHandler.rapidFire(player, count, 2);
 

@@ -1,15 +1,23 @@
 package com.brandon3055.draconicevolution.common.handler;
 
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.achievements.Achievements;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
+import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -24,18 +32,22 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
@@ -43,6 +55,7 @@ import java.util.Random;
 public class MinecraftForgeEventHandler {
 
 	Random random = new Random();
+	private static Method becomeAngryAt;
 
 	@SubscribeEvent
 	public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
@@ -71,7 +84,6 @@ public class MinecraftForgeEventHandler {
 
 		if ((event.source.damageType.equals("inWall") || event.source.damageType.equals("drown")) && (ArmorEffectHandler.isWyvernArmor(player, 4) || ArmorEffectHandler.isDraconicArmor(player, 4))) {
 			if (event.ammount <= 2f)  event.setCanceled(true);
-			LogHelper.info("drown"+event.ammount);
 		}
 	}
 
@@ -79,9 +91,18 @@ public class MinecraftForgeEventHandler {
 	public void onDropEvent(LivingDropsEvent event) {
 		if (event.entity instanceof EntityDragon && !event.entity.worldObj.isRemote) {
 			EntityItem item = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(ModItems.dragonHeart));
-			event.entity.worldObj.spawnEntityInWorld(item);
+			//event.entity.worldObj.spawnEntityInWorld(item);
+			event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, ((int) event.entity.posX) + 0.5, event.entity.posY, ((int) event.entity.posZ) + 0.5));
 			if (event.entity instanceof EntityCustomDragon && ((EntityCustomDragon) event.entity).getIsUber())
-				event.entity.worldObj.spawnEntityInWorld(item);
+				event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, event.entity.posX, event.entity.posY+2, event.entity.posZ));
+				//event.entity.worldObj.spawnEntityInWorld(item);
+
+			for (Object o : event.entity.worldObj.playerEntities)
+			{
+				LogHelper.info(o);
+				if (o instanceof EntityPlayer) ((EntityPlayer)o).addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
+
+			}
 
 			int count = 30 + event.entity.worldObj.rand.nextInt(30);
 			for (int i = 0; i < count; i++) {
@@ -120,6 +141,7 @@ public class MinecraftForgeEventHandler {
 			ItemNBTHelper.setString(soul, "Name", name);
 			if (entity instanceof EntitySkeleton) ItemNBTHelper.setInteger(soul, "SkeletonType", ((EntitySkeleton)entity).getSkeletonType());
 			world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
+			Achievements.triggerAchievement((EntityPlayer) attacker, "draconicevolution.soul");
 		}
 	}
 
@@ -207,23 +229,44 @@ public class MinecraftForgeEventHandler {
 
 			boolean flag = false;
 
-			for (int i = 0; i < list.size(); ++i) {//TODO tidy up and use for each aswell as reflection to access becomeAngryAt
-				Entity entity1 = (Entity) list.get(i);
+			for (Object o : list) {
+				if (o instanceof EntityPigZombie)
+				{
+					EntityPigZombie zombie = (EntityPigZombie) o;
+					if (becomeAngryAt == null)
+					{
+						becomeAngryAt = ReflectionHelper.findMethod(EntityPigZombie.class, zombie, new String[]{"becomeAngryAt", "func_70835_c"}, Entity.class);
+						becomeAngryAt.setAccessible(true);
+					}
 
-				if (entity1 instanceof EntityPigZombie) {
-					EntityPigZombie entitypigzombie = (EntityPigZombie) entity1;
-					NBTTagCompound compound = new NBTTagCompound();
-					entitypigzombie.writeEntityToNBT(compound);
-					compound.setShort("Anger", (short) 1000);
-					entitypigzombie.readEntityFromNBT(compound);
-					if (Math.abs(entitypigzombie.posX - player.posX) < 14 && Math.abs(entitypigzombie.posY - player.posY) < 14 && Math.abs(entitypigzombie.posZ - player.posZ) < 14)
-						flag = true;
-					entitypigzombie.addPotionEffect(new PotionEffect(5, 10000, 3));
-					entitypigzombie.addPotionEffect(new PotionEffect(11, 10000, 2));
+					try
+					{
+						becomeAngryAt.invoke(zombie, player);
+					}
+					catch (IllegalAccessException e)
+					{
+						e.printStackTrace();
+					}
+					catch (InvocationTargetException e)
+					{
+						e.printStackTrace();
+					}
+
+					if (Math.abs(zombie.posX - player.posX) < 14 && Math.abs(zombie.posY - player.posY) < 14 && Math.abs(zombie.posZ - player.posZ) < 14) flag = true;
+					zombie.addPotionEffect(new PotionEffect(5, 10000, 3));
+					zombie.addPotionEffect(new PotionEffect(11, 10000, 2));
 				}
 			}
 
 			if (flag) player.addPotionEffect(new PotionEffect(2, 500, 3));
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void joinWorld(EntityJoinWorldEvent event){
+		if (event.entity instanceof EntityPlayerSP) {
+			DraconicEvolution.network.sendToServer(new MountUpdatePacket(0));
 		}
 	}
 }

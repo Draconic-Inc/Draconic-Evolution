@@ -24,6 +24,8 @@ public class IntroPage extends BasePage {
 	@Override
 	public void renderBackgroundLayer(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		super.renderBackgroundLayer(minecraft, offsetX, offsetY, mouseX, mouseY);
+		//ResourceLocation logo = new ResourceLocation(References.RESOURCESPREFIX +"oHRx1.png");
+
 		minecraft.renderEngine.bindTexture(logo);
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);

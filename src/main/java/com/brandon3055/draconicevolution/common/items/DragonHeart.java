@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class DragonHeart extends ItemDE {//todo new description
+public class DragonHeart extends ItemDE {
 
 	public DragonHeart() {
 		this.setUnlocalizedName(Strings.dragonHeartName);

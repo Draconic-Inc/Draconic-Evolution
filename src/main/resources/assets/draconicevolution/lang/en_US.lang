@@ -1,3 +1,4 @@
+//Description format \n=Force new line \% at start of line=add half line space above line
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:xRayBlock.name=Distortion Flame
 tile.draconicevolution:xRayBlock.description=Many of you have probably seen a graphical glitch that sometimes occurs when chunks load that allows you to see through the world and see all of the cave caves and tunnels bellow. This block replicates that effect. When you place it next to another block the face of the block it is touching becomes transparent allowing you to see through the world. This can be very useful for finding cave systems and dungeons maby even things other players don’t want you to find. Such a block dose not come cheap. It will cost you several Nether Stars and it is so fragile that once placed it can not be collected without destroying it. (not even with silk touch)
@@ -33,7 +34,7 @@ tile.draconicevolution:energyInfuser.name=Energy Infuser
 tile.draconicevolution:energyInfuser.description=Seeing the need for faster energy transfer you have found a way to bring the infuser to being. Has a faster transfer rate than most other mod’s RF recharge stations (and cool particle effects to boot!)
 
 tile.draconicevolution:customSpawner.name=Stabilized Mob Spawner
-tile.draconicevolution:customSpawner.description=To get started, right click any vanilla spawner with a draconic core to stabilize it. You now have a empty transportable spawner (pick up with draconic tools) Use any mob soul (new drop, random 1 in 1000 chance to get one when you kill a mob with a draconic or wyvern weapon) on the spawner to change it to that type. You can upgrade using the infused compound, draconic compound, nether star, Notch Apple and a secret very rare item (tool tips in game give more info) When broken you get back everything except the mob soul (it is to fragile and is destroyed when the spawner is broken)
+tile.draconicevolution:customSpawner.description=To get started, right click any vanilla spawner with a draconic core to stabilize it. You now have a empty transportable spawner (pick up with draconic tools) Use any mob soul on the spawner to change it to that type. There are several items you can use to upgrade the spawner:\n\%-Wyvern Core: Upgrades to tier 2 (increases spawn count and speed)\n\%-Awakened Core: Upgrades to tier 3 (further increases spawn count and speed)\n\%-Nether Star: Removes the requirement for a player to be within 16 blocks for the spawner to function.\n\%-Notch Apple: Makes the spawner ignore spawn requirements for the mob it is spawning e.g. Will make monsters spawn even if the light level is to high.\n\%When broken you get back everything except the mob soul (it is to fragile and is destroyed when the spawner is broken)
 
 tile.draconicevolution:longRangeDislocator1.name=Admin Dislocator
 tile.draconicevolution:longRangeDislocator1.description=If you are a server admin or map creator this block is for you! (creative or op only as there is no recipe on purpose) Created at the behest of GreatOrator, it allows for a configurable range for teleporting. What makes this different is it is purely random. Nearest player to the block when activated with redstone will be teleported to a random location (default is 1000 minimum and 10,000 maximum) from the block. If that spot would place the player in water or in the air, a block is generated below them.
@@ -62,11 +63,11 @@ tile.draconicevolution:draconium2.description=Used in the Ritual of Draconic Res
 tile.draconicevolution:cKeyStone.name=Creative Key Stone
 tile.draconicevolution:cKeyStone.description=Description
 
-tile.draconicevolution:dissEnchanter.name=Diss-Enchanter
+tile.draconicevolution:dissEnchanter.name=Disenchanter
 tile.draconicevolution:dissEnchanter.description=With this device you are now able to transfer enchantments from your items to books at the cost of experience. The cost is determined by the repair cost of the item and the repair cost of the item is decreased slightly each time. To use it simply place the enchanted item in the first slot a regular book in the center slot and press the transfer button. One enchantment (the first one) will be stripped from the item and applied to the book. When you strip an enchant the item will loos a percentage of its total durability this percentage is shown in the gui. You can decrease the damage bu placing book shelves around it or other enchanting boosters (It takes a total of 20 book shelves to prevent all damage). WARNING Items that use energy instead of durability will also be damaged and destroyed but will not show their damage value.
 
 tile.draconicevolution:teleporterStand.name=Dislocator Pedestal
-tile.draconicevolution:teleporterStand.description=You have figured out how to create a simple pedestal on which you can place you basic or advanced charms of dislocation. Simply right click with a charm in your hand to place it on the pedestal then right click the pedestal to teleport. The advantage of this is the charms wont take damage or use fuel. The disadvantage is you can bring them with you to your destination. To remove the charm from the pedestal simply shift right click with an empty hand.
+tile.draconicevolution:teleporterStand.description=You have figured out how to create a simple pedestal on which you can place you basic or advanced charms of dislocation. Simply right click with a charm in your hand to place it on the pedestal then right click the pedestal to teleport. The advantage of this is the charms wont take damage or use fuel. The disadvantage is you can bring them with you to your destination. To remove the charm from the pedestal simply shift right click with an empty hand\n\nWhen holding basic dislocator that has been renamed in an anvil or an enhanced dislocator with a destination set the name or destination will be displayed above the pedestal. If you hold shift all names will be hidden except the one you are looking at. (Shift behavior can be reversed in the config)
 
 tile.draconicevolution:draconiumChest.name=Draconic Chest
 tile.draconicevolution:draconiumChest.description=Using your draconic knowledge you have learned how to create the ultimate chest. With a massive 234 slot storage capacity a built in crafting table and 5 slot RF furnace capable of doubling ore as well as the ability to keep its contents when harvested this chest is the most powerful most versatile storage device in existence! It also comes in a variety of every colour you can imagine gust shift right click it with empty hand for details.
@@ -224,11 +225,12 @@ msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
 msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
 msg.teleporterBound.txt=§aTeleporter bound to:
 msg.teleporterLowHealth.txt= §cYou are to low on health!
-msg.teleporterSentMob.txt=The mob has been sent to 
+msg.teleporterSentMob.txt=The entity has been sent to
 msg.teleporterEntityDimensional.txt=§cYou can not send mobs across dimensions!
 msg.teleporterAlreadySet.txt=§cError this charm can only be bound to one location
 msg.teleporterOutOfFuel.txt=§cOUT OF FUEL!!!
 msg.teleporterOutOfPearls.txt=§cOut of Ender Pearls!!!
+msg.teleporterPlayerT1.txt=You need a more powerful dislocator to do that
 msg.teleporterPlayerConsent.txt=The player must give their consent by sneaking
 msg.spawnerInfo1.txt=Mob Type
 msg.spawnerInfo2.txt=Requires Player
@@ -237,9 +239,8 @@ msg.spawnerInfo4.txt=Spawner Tier
 msg.spawnerInfo5.txt=Shift Right click for upgrade info
 msg.spawnerInfo6.txt=Requires players : Nether Star
 msg.spawnerInfo7.txt=Ignore Spawn Requirements : Notch Apple
-msg.spawnerInfo8.txt=Tier 1 : Infused Compound
-msg.spawnerInfo9.txt=Tier 2 : Draconic Compound
-msg.spawnerInfo10.txt=Tier 3 : ???...
+msg.spawnerInfo8.txt=Tier 2 : Wyvern Core
+msg.spawnerInfo9.txt=Tier 3 : Awakened Core
 msg.dislocatorUnsafe.txt=Destination Unsafe Please Try Again
 msg.dislocatorNoGround.txt=Error world not found
 msg.range.txt=Range:
@@ -259,6 +260,7 @@ msg.draconiumChestEditL2.txt=Click the top half of the chest to increase the val
 msg.draconiumChestEditL3.txt=Or the bottom half of the chest to decrease the value
 msg.draconiumChestEditL4.txt=Right click with paper to copy the colour to other chests
 msg.draconiumChestEdit2.txt=Please use a single peace of paper
+msg.de.dragonDeath.txt=§5The heart is temporarily awakened by the dragons explosive §5death
 
 //Tool Tips ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=Unbound
@@ -311,6 +313,94 @@ info.de.capacitorMode3.txt=Charge Armor & Hotbar
 info.de.changwMode.txt=Shift Right click to change mode
 
 enchantment.draconicevolution.reaperEnchant=Reaper
+
+//Achievements ----------------------------------------------------------------------------------------------------------------------------------------
+draconicevolution.achievementPage.name=Draconic Evolution
+
+achievement.draconicevolution.dust=The Start of something BIG!
+achievement.draconicevolution.dust.desc=Collect Draconium dust
+achievement.draconicevolution.ingot=Better then Diamond!
+achievement.draconicevolution.ingot.desc=Refine 4 Draconium dust into 2 Draconium Ingots
+achievement.draconicevolution.core=This is where it begins
+achievement.draconicevolution.core.desc=Craft a Draconic Core
+achievement.draconicevolution.core2=Not Good Enough!
+achievement.draconicevolution.core2.desc=Upgrade Draconic Core to Wyvern
+
+achievement.draconicevolution.dislocator=Endermen got nothin’
+achievement.draconicevolution.dislocator.desc=Create a dislocator
+achievement.draconicevolution.chest=Never enough Storage!
+achievement.draconicevolution.chest.desc=Craft a Draconic Chest
+achievement.draconicevolution.particles=OOOOH Sparkles!
+achievement.draconicevolution.particles.desc=Create a particle generator
+achievement.draconicevolution.weather=Who Needs Mother Nature
+achievement.draconicevolution.weather.desc=Craft a weather controller
+achievement.draconicevolution.dissenchanter=Only What I Want!
+achievement.draconicevolution.dissenchanter.desc=Create a disenchanter.
+achievement.draconicevolution.ecore=It keeps going, and going, and going
+achievement.draconicevolution.ecore.desc=Build the Energy Core
+achievement.draconicevolution.wpick=
+achievement.draconicevolution.wpick.desc=
+achievement.draconicevolution.wshovel=
+achievement.draconicevolution.wshovel.desc=
+achievement.draconicevolution.wsword=
+achievement.draconicevolution.wsword.desc=
+achievement.draconicevolution.wbow=
+achievement.draconicevolution.wbow.desc=
+achievement.draconicevolution.whelm=
+achievement.draconicevolution.whelm.desc=
+achievement.draconicevolution.wchest=
+achievement.draconicevolution.wchest.desc=
+achievement.draconicevolution.wleggs=
+achievement.draconicevolution.wleggs.desc=
+achievement.draconicevolution.wboots=
+achievement.draconicevolution.wboots.desc=
+achievement.draconicevolution.resurrection=Brimming with Antici-pation!
+achievement.draconicevolution.resurrection.desc=Craft the Resurrection Stone
+achievement.draconicevolution.dislocator2=Ender-ruler!
+achievement.draconicevolution.dislocator2.desc=Craft the Advanced Dislocator
+achievement.draconicevolution.flux=1.21 jiggawatts!
+achievement.draconicevolution.flux.desc=Craft the Wyvern Flux Capacitor
+
+achievement.draconicevolution.heart=Heart of the Dragon!
+achievement.draconicevolution.heart.desc=Kill a Dragon and claim it’s heart.
+achievement.draconicevolution.awakenedblock=It’s all in the ritual!
+achievement.draconicevolution.awakenedblock.desc=Create Awakened Draconium
+achievement.draconicevolution.core3=Expense vs. Power
+achievement.draconicevolution.core3.desc=Upgrade Wyvern Core to Awakened
+
+achievement.draconicevolution.dhelm=
+achievement.draconicevolution.dhelm.desc=
+achievement.draconicevolution.dChest=Fly like an eagle!
+achievement.draconicevolution.dChest.desc=Craft the Draconic Chest Plate
+achievement.draconicevolution.dleggs=
+achievement.draconicevolution.dleggs.desc=
+achievement.draconicevolution.dboots=
+achievement.draconicevolution.dboots.desc=
+
+achievement.draconicevolution.dpick=Mine With Authority!
+achievement.draconicevolution.dpick.desc=Craft a Draconic Pick
+achievement.draconicevolution.dshovel=
+achievement.draconicevolution.dshovel.desc=
+achievement.draconicevolution.daxe=
+achievement.draconicevolution.daxe.desc=
+achievement.draconicevolution.dsword=
+achievement.draconicevolution.dsword.desc=
+achievement.draconicevolution.dbow=
+achievement.draconicevolution.dbow.desc=
+achievement.draconicevolution.flux2=Phenomenal Cosmic Power! itty bitty living space.
+achievement.draconicevolution.flux2.desc=Craft the Draconic Flux Capacitor
+achievement.draconicevolution.dhoe=Kick it up a Notch! -BAM-
+achievement.draconicevolution.dhoe.desc=Craft the Draconic Hoe
+
+achievement.draconicevolution.dstaff=With your powers combined!
+achievement.draconicevolution.dstaff.desc=Create the Draconic Staff
+
+achievement.draconicevolution.soul=
+achievement.draconicevolution.soul.desc=
+achievement.draconicevolution.sundial=
+achievement.draconicevolution.sundial.desc=
+achievement.draconicevolution.manual=
+achievement.draconicevolution.manual.desc=
 
 //InfoHelper ----------------------------------------------------------------------------------------------------------------------------------------
 info.de.charge.txt=Charge

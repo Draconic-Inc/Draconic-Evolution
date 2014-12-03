@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem{//TODO reconsider fall damage energy adjust fall damage from jumping and jump energy usage
+public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem{
 	private IIcon helmIcon;
 	private IIcon chestIcon;
 	private IIcon leggsIcon;
@@ -147,7 +147,9 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
-		return (int)(getAbsorptionPercent() * 20D);
+		return this.getEnergyStored(armor) > 10000 ? (int)(getAbsorptionPercent() * 20D) : (int) ((float)this.getEnergyStored(armor) / 10000F * (float)(getAbsorptionPercent() * 20D));
+
+		//	return (int)(getAbsorptionPercent() * 20D);
 	}
 
 	@Override

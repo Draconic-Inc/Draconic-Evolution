@@ -61,7 +61,7 @@ public class EntityDragonHeart extends Entity {
 
 	@Override
 	public boolean attackEntityFrom(DamageSource damageSource, float dmg) {
-		setDead();
+
 		return false;
 	}
 
@@ -75,6 +75,9 @@ public class EntityDragonHeart extends Entity {
 		rotationInc = getDataWatcher().getWatchableObjectFloat(12);
 		coresConsumed = getDataWatcher().getWatchableObjectInt(13);
 		opPhase = getDataWatcher().getWatchableObjectInt(14);
+		motionX = 0;
+		motionZ = 0;
+		motionY = 0;
 
 
 		age++;
@@ -100,7 +103,11 @@ public class EntityDragonHeart extends Entity {
 					age = 1240;
 					opPhase = 3;
 					if (coresConsumed < 4){
-						if (!worldObj.isRemote) worldObj.spawnEntityInWorld(new EntityItem(worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart)));
+						EntityPersistentItem item = new EntityPersistentItem(worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart));
+						item.motionX = 0;
+						item.motionY = 0;
+						item.motionZ = 0;
+						if (!worldObj.isRemote) worldObj.spawnEntityInWorld(item);
 						this.worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 						this.setDead();
 					}

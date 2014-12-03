@@ -21,9 +21,9 @@ import net.minecraftforge.common.util.EnumHelper;
 public class ModItems {
 	public static ArmorMaterial DRACONIUMARMOR_T1 = EnumHelper.addArmorMaterial("DRACONIUMARMOR_T1", -1, new int[] { 3, 8, 6, 3 }, 30);
 	public static ArmorMaterial DRACONIUMARMOR_T2 = EnumHelper.addArmorMaterial("DRACONIUMARMOR_T2", -1, new int[] { 3, 8, 6, 3 }, 30);
-	public static ToolMaterial DRACONIUM_T1 = EnumHelper.addToolMaterial("DRACONIUM_T1", 4, -1, 12.0F, 11.0F, 35);
-	public static ToolMaterial DRACONIUM_T2 = EnumHelper.addToolMaterial("DRACONIUM_T2", 4, -1, 16.0F, 15.0F, 40);
-	public static ToolMaterial DRACONIUM_T3 = EnumHelper.addToolMaterial("DRACONIUM_T3", 4, -1, 400.0F, 20.0F, 45);
+	public static ToolMaterial DRACONIUM_T1 = EnumHelper.addToolMaterial("DRACONIUM_T1", 10, -1, 12.0F, 11.0F, 35);
+	public static ToolMaterial DRACONIUM_T2 = EnumHelper.addToolMaterial("DRACONIUM_T2", 10, -1, 16.0F, 15.0F, 40);
+	public static ToolMaterial DRACONIUM_T3 = EnumHelper.addToolMaterial("DRACONIUM_T3", 10, -1, 400.0F, 20.0F, 45);
 
 	public static Item draconicPickaxe;
 	public static Item draconicShovel;

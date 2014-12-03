@@ -81,7 +81,7 @@ public class EnergyPylon extends BlockDE {//todo fix sphere renderer
 			return icon_active_face;
 		TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
 		if (thisTile == null) return icon_input;
-		return thisTile.input ? icon_output : icon_input;
+		return !thisTile.reciveEnergy ? icon_output : icon_input;
 	}
 
 	@Override

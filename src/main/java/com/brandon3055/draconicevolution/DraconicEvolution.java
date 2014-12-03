@@ -30,7 +30,7 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 	public static final String networkChannelName = "DraconicEvolution";
 	public static SimpleNetworkWrapper network;
 
-	public static boolean debug = false;
+	public static boolean debug = true;
 
 	public static Enchantment reaperEnchant;
 	

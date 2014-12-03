@@ -110,7 +110,7 @@ public class InvisibleMultiblock extends BlockDE {
 		} else if (meta == 2) {
 			TileEnergyPylon pylon = (world.getTileEntity(x, y+1, z) != null && world.getTileEntity(x, y+1, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y+1, z) : (world.getTileEntity(x, y-1, z) != null && world.getTileEntity(x, y-1, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y-1, z) : null;
 			if (pylon == null) return false;
-			pylon.input = !pylon.input;
+			pylon.reciveEnergy = !pylon.reciveEnergy;
 			world.markBlockForUpdate(pylon.xCoord, pylon.yCoord, pylon.zCoord);
 			pylon.onActivated();
 			return true;

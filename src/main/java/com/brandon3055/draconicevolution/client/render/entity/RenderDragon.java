@@ -174,7 +174,7 @@ public class RenderDragon extends RenderLiving
 				f2 = (f1 - 0.8F) / 0.2F;
 			}
 
-			Random random = new Random(432L);
+			Random random = new Random(1L);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 			GL11.glEnable(GL11.GL_BLEND);

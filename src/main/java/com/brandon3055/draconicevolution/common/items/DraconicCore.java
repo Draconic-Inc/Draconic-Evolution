@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class DraconicCore extends ItemDE {//todo new description
+public class DraconicCore extends ItemDE {
 	public DraconicCore() {
 		this.setUnlocalizedName(Strings.draconicCoreName);
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);

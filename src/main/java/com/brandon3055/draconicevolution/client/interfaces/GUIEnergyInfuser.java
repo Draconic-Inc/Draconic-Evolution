@@ -24,7 +24,6 @@ public class GUIEnergyInfuser extends GuiContainer {
 
 	public EntityPlayer player;
 	private TileEnergyInfuser tile;
-	private int guiUpdateTick;
 	private float rotation = 0;
 
 	public GUIEnergyInfuser(InventoryPlayer invPlayer, TileEnergyInfuser tile) {
@@ -49,12 +48,12 @@ public class GUIEnergyInfuser extends GuiContainer {
 
 
 		float power = (float) tile.energy.getEnergyStored() / (float) tile.energy.getMaxEnergyStored() * -1F + 1F;
-		drawTexturedModalRect(guiLeft + 49, guiTop + 7 + (int) (power * 45), xSize, 0 + (int) (power * 45), 8, 45 - (int) (power * 45));//Power bar
+		drawTexturedModalRect(guiLeft + 49, guiTop + 7 + (int) (power * 45), xSize, (int) (power * 45), 8, 45 - (int) (power * 45));//Power bar
 
 		if (tile.running && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
 			IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
 			float charge = (float) item.getEnergyStored(tile.getStackInSlot(0)) / (float) item.getMaxEnergyStored(tile.getStackInSlot(0)) * -1F + 1F;
-			drawTexturedModalRect(guiLeft + 119, guiTop + 7 + (int) (charge * 45), xSize, 0 + (int) (charge * 45), 8, 45 - (int) (charge * 45));//Item Power bar
+			drawTexturedModalRect(guiLeft + 119, guiTop + 7 + (int) (charge * 45), xSize, (int) (charge * 45), 8, 45 - (int) (charge * 45));//Item Power bar
 		}
 
 		drawAnimatedParts();
@@ -122,7 +121,7 @@ public class GUIEnergyInfuser extends GuiContainer {
 			GL11.glTranslatef(-26, -26, 0);
 			drawTexturedModalRect(0, 0, xSize, 63, 52, 52);
 		}
-		if (tile.running && tile.energy.getEnergyStored() > 0){
+		if (tile.running && tile.transfer){
 			Random rand = tile.getWorldObj().rand;
 			int boltL = rand.nextInt(4);
 			int boltS = rand.nextInt(3);

@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.client.FMLClientHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -60,15 +61,26 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {
 
 		GL11.glPushMatrix();
 		GL11.glColor4f(1F, 1F, 1F, 1F);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) 100, (float) 100);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 150f, 150f);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glTranslated(x+0.5, y+0.5, z+0.5);
 		FMLClientHandler.instance().getClient().getTextureManager().bindTexture(iner_model_texture);
 
+
+		//float colour = (float)(Minecraft.getSystemTime()%10000) / 10000f;
+		//double colour = Math.sin((float)Minecraft.getSystemTime() / 10000f);
+		double colour = ((TileEnergyStorageCore) tile).getEnergyStored() / ((TileEnergyStorageCore) tile).getMaxEnergyStored();
+		float brightness = (float)Math.abs(Math.sin((float) Minecraft.getSystemTime() / 3000f) * 150f);
+
+		colour = 1f - colour;
+		//LogHelper.info(colour + " " + ((TileEnergyStorageCore) tile).getEnergyStored() +" "+ ((TileEnergyStorageCore) tile).getMaxEnergyStored());
+		//GL11.glColor4d(1F, 0.3F, 0.7f, 1F);
 		GL11.glScalef(scale, scale, scale);
 		GL11.glPushMatrix();
 		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
+		GL11.glColor4d(1F, colour * 0.3f, colour * 0.7f, 1F);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 50f + brightness, 50f + brightness);
 		iner_model.renderAll();
 		GL11.glPopMatrix();
 

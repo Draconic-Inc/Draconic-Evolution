@@ -35,7 +35,7 @@ public abstract class CustomSpawnerBaseLogic {
 	/**
 	 * A counter for spawn tries.
 	 */
-	private int spawnCount = 4;
+	private int spawnCount = 6;
 	private Entity renderedEntity;
 	private int maxNearbyEntities = 20;
 	/**
@@ -53,7 +53,7 @@ public abstract class CustomSpawnerBaseLogic {
 	/**
 	 * Spawn Speed
 	 */
-	public int spawnSpeed = 0;
+	public int spawnSpeed = 1;
 	/**
 	 * The distance from which a player activates the spawner.
 	 */
@@ -143,9 +143,6 @@ public abstract class CustomSpawnerBaseLogic {
 
 						flag = true;
 
-						if (spawnCount > 4) spawnCount --;
-					}else if (spawnCount < 10){
-						spawnCount ++;
 					}
 				}
 
@@ -160,8 +157,12 @@ public abstract class CustomSpawnerBaseLogic {
 		if (par1Entity instanceof EntityLivingBase && par1Entity.worldObj != null) {
 			if (par1Entity instanceof EntitySkeleton) {
 				((EntitySkeleton)par1Entity).setSkeletonType(skeletonType);
-				par1Entity.setCurrentItemOrArmor(0, new ItemStack(Items.stone_sword));
-				((EntitySkeleton) par1Entity).setEquipmentDropChance(0, 0f);
+				if (skeletonType == 1) {
+					par1Entity.setCurrentItemOrArmor(0, new ItemStack(Items.stone_sword));
+					((EntitySkeleton) par1Entity).setEquipmentDropChance(0, 0f);
+				}else{
+					par1Entity.setCurrentItemOrArmor(0, new ItemStack(Items.bow));
+				}
 			} else ((EntityLiving) par1Entity).onSpawnWithEgg(null);
 			this.getSpawnerWorld().spawnEntityInWorld(par1Entity);
 		}
@@ -189,11 +190,9 @@ public abstract class CustomSpawnerBaseLogic {
 		ignoreSpawnRequirements = par1NBTTagCompound.getBoolean("IgnoreSpawnRequirements");
 		skeletonType = par1NBTTagCompound.getInteger("SkeletonType");
 
-		if (par1NBTTagCompound.hasKey("MinSpawnDelay", 99)) {
 			this.minSpawnDelay = par1NBTTagCompound.getShort("MinSpawnDelay");
 			this.maxSpawnDelay = par1NBTTagCompound.getShort("MaxSpawnDelay");
 			this.spawnCount = par1NBTTagCompound.getShort("SpawnCount");
-		}
 
 		if (par1NBTTagCompound.hasKey("MaxNearbyEntities", 99)) {
 			this.maxNearbyEntities = par1NBTTagCompound.getShort("MaxNearbyEntities");
@@ -263,9 +262,11 @@ public abstract class CustomSpawnerBaseLogic {
 		spawnSpeed = i;
 		minSpawnDelay = 400 - (i * 150);
 		maxSpawnDelay = 600 - (i * 200);
+		spawnCount = 4 + (i*2);
 		if (i == 3){
 			minSpawnDelay = 40;
 			maxSpawnDelay = 40;
+			spawnCount = 12;
 		}
 		if (minSpawnDelay < 0) minSpawnDelay = 0;
 		if (maxSpawnDelay < 1) maxSpawnDelay = 1;

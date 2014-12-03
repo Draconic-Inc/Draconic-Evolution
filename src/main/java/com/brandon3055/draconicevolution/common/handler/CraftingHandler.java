@@ -81,7 +81,7 @@ public class CraftingHandler {
 
 		//machines adv
 		add(ModBlocks.resurrectionStone, "CSC", "SMS", "CSC", 'C', mobSoul, 'S', ModItems.wyvernCore, 'M', new ItemStack(ModBlocks.draconiumBlock, 1, 0));
-		add(ModBlocks.energyStorageCore, "CSC", "SMS", "CSC", 'C', ModItems.draconiumIngot, 'S', ModItems.wyvernEnergyCore, 'M', ModItems.wyvernCore);
+		add(ModBlocks.energyStorageCore, "CCC", "SMS", "CCC", 'C', ModItems.draconiumIngot, 'S', ModItems.wyvernEnergyCore, 'M', ModItems.wyvernCore);
 		add(ModBlocks.weatherController, "RIR", "TPT", "IEI", 'R', Items.blaze_rod, 'T', Blocks.tnt, 'P', ModItems.draconicCore, 'I', ModItems.draconiumIngot, 'E', Blocks.enchanting_table);
 		add(ModBlocks.playerDetectorAdvanced, "ISI", "EDE", "ICI", 'I', ModItems.draconiumIngot, 'E', Items.ender_eye, 'S', new ItemStack(Items.skull, 1, 1), 'C', Items.compass, 'D', ModBlocks.playerDetector);
 		add(ModBlocks.energyInfuser, "IPI", "CEC", "ICI", 'I', ModItems.draconiumIngot, 'P', ModBlocks.particleGenerator, 'C', ModItems.draconicCore, 'E', Blocks.enchanting_table);

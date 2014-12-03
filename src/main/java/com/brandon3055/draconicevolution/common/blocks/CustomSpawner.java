@@ -2,18 +2,17 @@ package com.brandon3055.draconicevolution.common.blocks;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -63,17 +62,12 @@ public class CustomSpawner extends BlockDE{
 				world.markBlockForUpdate(x, y, z);
 				item.splitStack(1);
 				return true;
-			}else if (item != null && item.getItem().equals(ModItems.wyvernCore) && spawner.getBaseLogic().spawnSpeed == 0){
-				spawner.getBaseLogic().setSpawnRate(1);
-				world.markBlockForUpdate(x, y, z);
-				item.splitStack(1);
-				return true;
-			}else if (item != null && item.getItem().equals(ModItems.awakenedCore) && spawner.getBaseLogic().spawnSpeed == 1){
+			}else if (item != null && item.getItem().equals(ModItems.wyvernCore) && spawner.getBaseLogic().spawnSpeed == 1){
 				spawner.getBaseLogic().setSpawnRate(2);
 				world.markBlockForUpdate(x, y, z);
 				item.splitStack(1);
 				return true;
-			}else if (item != null && item.getItem().equals(Item.getItemFromBlock(Blocks.dragon_egg)) && spawner.getBaseLogic().spawnSpeed == 2){
+			}else if (item != null && item.getItem().equals(ModItems.awakenedCore) && spawner.getBaseLogic().spawnSpeed == 2){
 				spawner.getBaseLogic().setSpawnRate(3);
 				world.markBlockForUpdate(x, y, z);
 				item.splitStack(1);
@@ -100,7 +94,6 @@ public class CustomSpawner extends BlockDE{
 					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo7.txt"));
 					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo8.txt"));
 					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo9.txt"));
-					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo10.txt"));
 					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
 				}
 				return true;
@@ -172,6 +165,8 @@ public class CustomSpawner extends BlockDE{
 		return new ItemStack(ModBlocks.customSpawner);
 	}
 
+
+
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int p_149749_6_) {
 		TileCustomSpawner spawner = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileCustomSpawner) ? (TileCustomSpawner)world.getTileEntity(x, y, z) : null;
@@ -187,7 +182,7 @@ public class CustomSpawner extends BlockDE{
 				item.motionZ = (-0.5F + world.rand.nextFloat()) * multiplyer;
 				world.spawnEntityInWorld(item);
 			}
-			if (spawner.getBaseLogic().spawnSpeed > 0)
+			if (spawner.getBaseLogic().spawnSpeed > 1)
 			{
 				EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.wyvernCore));
 				item.motionX = (-0.5F + world.rand.nextFloat()) * multiplyer;
@@ -195,17 +190,9 @@ public class CustomSpawner extends BlockDE{
 				item.motionZ = (-0.5F + world.rand.nextFloat()) * multiplyer;
 				world.spawnEntityInWorld(item);
 			}
-			if (spawner.getBaseLogic().spawnSpeed > 1)
-			{
-				EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.awakenedCore));
-				item.motionX = (-0.5F + world.rand.nextFloat()) * multiplyer;
-				item.motionY = (4 + world.rand.nextFloat()) * multiplyer;
-				item.motionZ = (-0.5F + world.rand.nextFloat()) * multiplyer;
-				world.spawnEntityInWorld(item);
-			}
 			if (spawner.getBaseLogic().spawnSpeed > 2)
 			{
-				EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(Item.getItemFromBlock(Blocks.dragon_egg)));
+				EntityItem item = new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, new ItemStack(ModItems.awakenedCore));
 				item.motionX = (-0.5F + world.rand.nextFloat()) * multiplyer;
 				item.motionY = (4 + world.rand.nextFloat()) * multiplyer;
 				item.motionZ = (-0.5F + world.rand.nextFloat()) * multiplyer;

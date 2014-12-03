@@ -23,6 +23,7 @@ public class ConfigHandler {
 	public static boolean bowBlockDamage;
 	public static boolean showUnlocalizedNames;
 	public static boolean disableLore;
+	public static boolean invertDPDSB;
 
 	//spawner
 	public static String[] spawnerList;
@@ -70,6 +71,7 @@ public class ConfigHandler {
 			generateChaosIslands = config.get(Configuration.CATEGORY_GENERAL, "Generate Chaos Islands", true, "Should Chaos Islands be generated").getBoolean(true);
 			pigmenBloodRage = config.get(Configuration.CATEGORY_GENERAL, "Pigmen Blood Rage", true, "Is Pigmen blood rage active").getBoolean(true);
 			disableLore = config.get(Configuration.CATEGORY_GENERAL, "Disable Item Lore", false, "Set to true to disable all item lore").getBoolean(false);
+			invertDPDSB = config.get(Configuration.CATEGORY_GENERAL, "InvertDPDSB", false, "Invert Dislocator Pedestal display name shift behavior").getBoolean(false);
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);

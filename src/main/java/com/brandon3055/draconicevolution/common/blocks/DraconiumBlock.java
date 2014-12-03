@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by Brandon on 25/07/2014.
  */
-public class DraconiumBlock extends BlockDE {//todo new description
+public class DraconiumBlock extends BlockDE {
 	private final int DRACONIUM_META = 0;
 	private final int SUMMON_BLOCK_META = 1;
 	private final int CHARGED_DRACONIUM_META = 2;

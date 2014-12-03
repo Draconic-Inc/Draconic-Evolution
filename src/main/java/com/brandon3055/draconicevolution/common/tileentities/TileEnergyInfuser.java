@@ -22,7 +22,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler, ISidedInventory {//todo fix display not working when buffer is empty
+public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler, ISidedInventory {
 	ItemStack[] items = new ItemStack[1];
 	public EnergyStorage energy = new EnergyStorage(1000000);
 	public int maxInput = 81920;
@@ -30,6 +30,7 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler,
 	public boolean runningCach = false;
 	private int tick = 0;
 	public float rotation = 0;
+	/**True is energy was transferred this tick*/
 	public boolean transfer = false;
 	public boolean transferCach = false;
 
@@ -45,7 +46,6 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler,
 		}
 
 		if(worldObj.isRemote) return;
-
 
 		if (tick % 100 == 0) tryStartOrStop();
 		if (tick % 400 == 0) detectAndSendChanges(true);

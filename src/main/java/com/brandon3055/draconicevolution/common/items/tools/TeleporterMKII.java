@@ -5,7 +5,6 @@ import com.brandon3055.draconicevolution.client.handler.ToolHudHandler;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
-import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
@@ -16,7 +15,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -29,15 +28,15 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class TeleporterMKII extends ItemDE
+public class TeleporterMKII extends TeleporterMKI
 {
 
 	public TeleporterMKII() {
+		super(true);
 		this.setUnlocalizedName(Strings.teleporterMKIIName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setMaxStackSize(1);
 		ModItems.register(this);
-		//GameRegistry.registerItem(this, Strings.teleporterMKIIName);
 	}
 
 	@Override
@@ -48,20 +47,16 @@ public class TeleporterMKII extends ItemDE
 	}
 
 	@Override
-	public boolean onLeftClickEntity(ItemStack teleporter, EntityPlayer player, Entity entity)
+	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
 		World world = player.worldObj;
-		short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		int selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
-		int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
+		int fuel = ItemNBTHelper.getInteger(stack, "Fuel", 0);
 
-		NBTTagCompound compound = teleporter.getTagCompound();
-		if(compound == null) compound = new NBTTagCompound();
-		NBTTagList list = (NBTTagList)compound.getTag("Locations");
-		if (list == null) list = new NBTTagList();
-
-		TeleportLocation destination = new TeleportLocation();
-		destination.readFromNBT(list.getCompoundTagAt(selected+selrctionOffset));
+		if (getLocation(stack) == null) {
+			if (world.isRemote)
+				FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+			return true;
+		}
 
 		if (!player.capabilities.isCreativeMode && fuel <= 0) {
 			if (world.isRemote) player.addChatMessage(new ChatComponentTranslation("msg.teleporterOutOfFuel.txt"));
@@ -70,38 +65,24 @@ public class TeleporterMKII extends ItemDE
 
 		if (entity instanceof EntityPlayer){
 			if (entity.isSneaking()){
-				destination.sendEntityToCoords((EntityPlayer) entity);
-				if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
+				getLocation(stack).sendEntityToCoords(entity);
+				if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setInteger(stack, "Fuel", fuel - 1);
 			}else{
 				if (world.isRemote) player.addChatMessage(new ChatComponentTranslation("msg.teleporterPlayerConsent.txt"));
 			}
 			return true;
-		}
-
-		if (entity instanceof EntityLivingBase){
-			destination.sendEntityToCoords((EntityLivingBase) entity);
-			if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
+		}else if (entity instanceof EntityLiving){
+			getLocation(stack).sendEntityToCoords(entity);
+			if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setInteger(stack, "Fuel", fuel - 1);
 		}
 
 		return true;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(final ItemStack teleporter, final World world, final EntityPlayer player)
+	public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player)
 	{
-		short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		int selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
-		int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
-
-		NBTTagCompound compound = teleporter.getTagCompound();
-		if(compound == null) compound = new NBTTagCompound();
-		NBTTagList list = (NBTTagList)compound.getTag("Locations");
-		if (list == null) list = new NBTTagList();
-
-		TeleportLocation destination = new TeleportLocation();
-		destination.readFromNBT(list.getCompoundTagAt(selected+selrctionOffset));
-
-		boolean onStand = !(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof TeleporterMKII);
+		int fuel = ItemNBTHelper.getInteger(stack, "Fuel", 0);
 
 		if (player.isSneaking())
 		{
@@ -111,27 +92,24 @@ public class TeleporterMKII extends ItemDE
 			}
 		} else
 		{
-			if (player.isRiding() && player.dimension != destination.getDimension()) return teleporter;
 
-			if (destination.getName().isEmpty() && !onStand){
+			if (getLocation(stack) == null){
 				if (world.isRemote) FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
-				return teleporter;
+				return stack;
 			}
 
-			if (destination.getName().isEmpty()) return teleporter;
-
-			if (!player.capabilities.isCreativeMode && fuel <= 0 && !onStand)
+			if (!player.capabilities.isCreativeMode && fuel <= 0)
 			{
 				if (world.isRemote) player.addChatMessage(new ChatComponentTranslation("msg.teleporterOutOfFuel.txt"));
-				return teleporter;
+				return stack;
 			}
 
-			if (!player.capabilities.isCreativeMode && fuel > 0 && !onStand) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
+			if (!player.capabilities.isCreativeMode && fuel > 0) ItemNBTHelper.setInteger(stack, "Fuel", fuel - 1);
 
-			destination.sendEntityToCoords(player);
+			getLocation(stack).sendEntityToCoords(player);
 		}
 
-		return teleporter;
+		return stack;
 	}
 
 
@@ -175,14 +153,29 @@ public class TeleporterMKII extends ItemDE
 	@SideOnly(Side.CLIENT)
 	@Override
 	public String getItemStackDisplayName(ItemStack teleporter) {
-		short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		int selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
-		NBTTagCompound compound = teleporter.getTagCompound();
-		if(compound == null) compound = new NBTTagCompound();
-		NBTTagList list = (NBTTagList)compound.getTag("Locations");
-		if (list == null) list = new NBTTagList();
-		String selectedDest = list.getCompoundTagAt(selected+selrctionOffset).getString("Name");
-		ToolHudHandler.setTooltip(selectedDest);
 		return super.getItemStackDisplayName(teleporter);
+	}
+
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
+		if (world.isRemote && entity instanceof EntityPlayer && ((EntityPlayer) entity).getHeldItem() != null && ((EntityPlayer) entity).getHeldItem().getItem() instanceof TeleporterMKII){
+			if (getLocation(((EntityPlayer) entity).getHeldItem()) != null) ToolHudHandler.setTooltip(getLocation(((EntityPlayer) entity).getHeldItem()).getName());
+		}
+	}
+
+	@Override
+	public TeleportLocation getLocation(ItemStack stack) {
+		short selected = ItemNBTHelper.getShort(stack, "Selection", (short) 0);
+		int selrctionOffset = ItemNBTHelper.getInteger(stack, "SelectionOffset", 0);
+		NBTTagCompound compound = stack.getTagCompound();
+		if(compound == null) return null;
+		NBTTagList list = (NBTTagList)compound.getTag("Locations");
+		if (list == null) return null;
+
+		TeleportLocation destination = new TeleportLocation();
+		destination.readFromNBT(list.getCompoundTagAt(selected+selrctionOffset));
+		if (destination.getName().isEmpty()) return null;
+
+		return destination;
 	}
 }
