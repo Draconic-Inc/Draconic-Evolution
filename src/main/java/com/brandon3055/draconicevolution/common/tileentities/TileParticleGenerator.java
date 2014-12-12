@@ -57,8 +57,9 @@ public class TileParticleGenerator extends TileEntity {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void updateEntity() {
+		if (!worldObj.isRemote) return;
 
-		if (stabalizerMode && worldObj.isRemote) {
+		if (stabalizerMode) {
 			rotation += 0.5F;
 			spawnStabilizerParticle();
 		}
@@ -70,7 +71,7 @@ public class TileParticleGenerator extends TileEntity {
 
 		if (tick >= spawn_rate && active) {
 			tick = 0;
-			if (worldObj.isRemote) {
+
 				Random rand = worldObj.rand;
 
 				float MX = motion_x + (random_motion_x * rand.nextFloat());
@@ -91,7 +92,7 @@ public class TileParticleGenerator extends TileEntity {
 				particle.gravity = this.gravity;
 
 				ParticleHandler.spawnCustomParticle(particle);
-			}
+
 		} else tick++;
 	}
 

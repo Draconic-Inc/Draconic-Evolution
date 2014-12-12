@@ -46,10 +46,10 @@ tile.draconicevolution:generator.name=Generator
 tile.draconicevolution:generator.description=This is a basic low power (around 80RF/t) generator that may come in handy if you have no other mods capable of generating RF power.
 
 tile.draconicevolution:energyStorageCore.name=Energy Core
-tile.draconicevolution:energyStorageCore.description=The pinnacle of Draconic research, you have learned how to use this power to store more power than anything else invented. Using multi-block strategies you can build ever-larger storage devices. (you can find more info tn the Energy core multiblock tutorial)
+tile.draconicevolution:energyStorageCore.description=Using Draconic knowledge you have discovered how to build a multi-block structure capable of storing more power then any other device ever invented with the highest tier able to store up to 2.14 trillion RF (you can find more info in the Energy core multiblock tutorial)
 
 tile.draconicevolution:energyPylon.name=Energy Pylon
-tile.draconicevolution:energyPylon.description=A component of the Energy core multiblock.
+tile.draconicevolution:energyPylon.description=This device is used to extract or insert energy into the energy storage multiblock. Its maximum transfer rate is 2,147,483,647 RF/t
 
 tile.draconicevolution:draconium0.name=Draconium Block
 tile.draconicevolution:draconium0.description=A storage block for draconium.
@@ -125,16 +125,16 @@ item.draconicevolution:wyvernBow.name=Bow of the Wyvern
 item.draconicevolution:wyvernBow.description=Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Sharpshooter – Zoom in on your target and deal extreme damage with pin point accuracy. Rapid Fire – Barrage your enemies in a rain of arrows.
 
 item.draconicevolution:wyvernHelm.name=Wyvern Helm
-item.draconicevolution:wyvernHelm.description=Having enjoyed the protection of diamond for so long, you realize that you can infuse it with the power of the Draconic.
+item.draconicevolution:wyvernHelm.description=Stronger than diamond you can now withstand even greater blows.\n\n\nFull set gives total fire immunity
 
 item.draconicevolution:wyvernChest.name=Wyvern Chestplate
-item.draconicevolution:wyvernChest.description=Having enjoyed the protection of diamond for so long, you realize that you can infuse it with the power of the Draconic.
+item.draconicevolution:wyvernChest.description=Infusing the armor with Dracomiun you vastly improve its resistance.\n\n\nFull set gives total fire immunity
 
 item.draconicevolution:wyvernLeggs.name=Wyvern Leggings
-item.draconicevolution:wyvernLeggs.description=Having enjoyed the protection of diamond for so long, you realize that you can infuse it with the power of the Draconic. Small speed boost when worn.
+item.draconicevolution:wyvernLeggs.description=You feel even stronger and faster now\nthat you have infused diamond legs with Draconium.\n\%Armor Effects:\n\%-Speed boost\n\n\nFull set gives total fire immunity
 
 item.draconicevolution:wyvernBoots.name=Wyvern Boots
-item.draconicevolution:wyvernBoots.description=Having enjoyed the protection of diamond for so long, you realize that you can infuse it with the power of the Draconic. Small jump boost when worn.
+item.draconicevolution:wyvernBoots.description=You learn to improve the boots Draconium seems to have given you greater agility.\n\%Armor Effects:\n\%-Reduced fall damage\n\%-Jump boost\n\n\nFull set gives total fire immunity
 
 item.draconicevolution:draconicPickaxe.name=Draconic Pickaxe
 item.draconicevolution:draconicPickaxe.description=Further Draconic research has shown you ways to even greater power.. Modes: Shift-Right Click to switch modes: 1×1, 3×3, 5×5 and 7×7 Right Click to activate: Obliteration Mode – Destroys stone, cobblestone and netherrack.
@@ -155,16 +155,16 @@ item.draconicevolution:draconicBow.name=Draconic Bow
 item.draconicevolution:draconicBow.description=Further Draconic research has shown you ways to even greater power.. Sharpshooter – Zoom in on your target and deal extreme damage with pin point accuracy. Rapid Fire – Barrage your enemies in a rain of arrows. Explosive – With gunpowder in your inventory destroy an area slightly larger than TNT with your arrows. Devastation (Creative Mode only) – Explodes an extreme area in rapid fire mode.
 
 item.draconicevolution:draconicHelm.name=Draconic Helm
-item.draconicevolution:draconicHelm.description=Further Draconic research has shown you ways to even greater protection.. Night Vision active when in dark places. Full set of Draconic Armor also gives you full protection from fire!
+item.draconicevolution:draconicHelm.description=No longer do you fear the night you now can see all the time regardless of what is out there.\n\%Armor Effects:\n\%-Night Vision (Activates when in darkness)\n\%-Cures negative potion effects\n\%-Bypass suffocation and drowning damage\n\%-Removes mining slowdown under water
 
 item.draconicevolution:draconicChest.name=Draconic Chestplate
-item.draconicevolution:draconicChest.description=Further Draconic research has shown you ways to even greater protection.. Flight when worn. Full set of Draconic Armor also gives you full protection from fire!
+item.draconicevolution:draconicChest.description=Using the heart of a dragon you are stronger and have the gift of flight.\n\%Armor Effects:\n\%-Flight\n\%-Removes mining slowdown when in the air \n\%-Fire immunity
 
 item.draconicevolution:draconicLeggs.name=Draconic Leggings
-item.draconicevolution:draconicLeggs.description=Further Draconic research has shown you ways to even greater protection.. Improved speed boost. Full set of Draconic Armor also gives you full protection from fire!
+item.draconicevolution:draconicLeggs.description=Even stronger armor the soul of a dragon protects you and moves you even faster Improved speed boost.\n\%Armor Effects:\n\%-Speed boost
 
 item.draconicevolution:draconicBoots.name=Draconic Boots
-item.draconicevolution:draconicBoots.description=Further Draconic research has shown you ways to even greater protection.. Improved jump boost. Full set of Draconic Armor also gives you full protection from fire!
+item.draconicevolution:draconicBoots.description=Stronger, faster, better than before the heart of a dragon grants you higher jumping. \n\%Armor Effects:\n\%-Fall protection\n\%-Jump boost\n\%-Up Hill Step
 
 item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
 item.draconicevolution:draconicDistructionStaff.description=After great pains you have mastered the powers of the Draconic! Mining – Shift-Right Click to switch modes: 1×1, 3×3, 5×5, 7×7 and 9×9 Mining – Right Click to activate: Obliteration Mode – Destroys all non-valuable blocks. Battle: +20 Attack – Bonus damage on mobs with health above 10 hearts (+50% of the mobs extra health) Battle: AOE – in 1×1 hits 1×1 area, 3×3 hits 5×5 area, 5×5 hits 9×9, 7×7 hits 13×13, and 9×9 hits 17×17 (bonus damage does not apply to mobs other than the one you hit directly)
@@ -338,22 +338,22 @@ achievement.draconicevolution.dissenchanter=Only What I Want!
 achievement.draconicevolution.dissenchanter.desc=Create a disenchanter.
 achievement.draconicevolution.ecore=It keeps going, and going, and going
 achievement.draconicevolution.ecore.desc=Build the Energy Core
-achievement.draconicevolution.wpick=
-achievement.draconicevolution.wpick.desc=
-achievement.draconicevolution.wshovel=
-achievement.draconicevolution.wshovel.desc=
-achievement.draconicevolution.wsword=
-achievement.draconicevolution.wsword.desc=
-achievement.draconicevolution.wbow=
-achievement.draconicevolution.wbow.desc=
-achievement.draconicevolution.whelm=
-achievement.draconicevolution.whelm.desc=
-achievement.draconicevolution.wchest=
-achievement.draconicevolution.wchest.desc=
-achievement.draconicevolution.wleggs=
-achievement.draconicevolution.wleggs.desc=
-achievement.draconicevolution.wboots=
-achievement.draconicevolution.wboots.desc=
+achievement.draconicevolution.wpick=Nothing like Diamond
+achievement.draconicevolution.wpick.desc=Upgrade to a wyvern pick
+achievement.draconicevolution.wshovel=Pro Digger!
+achievement.draconicevolution.wshovel.desc=Craft a Wyvern shovel
+achievement.draconicevolution.wsword=Better Weaponry
+achievement.draconicevolution.wsword.desc=Craft a Wyvern sword
+achievement.draconicevolution.wbow=Snipers at the Ready!
+achievement.draconicevolution.wbow.desc=Craft the Wyvern Bow
+achievement.draconicevolution.whelm=Free Breathing!
+achievement.draconicevolution.whelm.desc=Craft the Wyvern Helm
+achievement.draconicevolution.wchest=High Resistance
+achievement.draconicevolution.wchest.desc=Craft a Wyvern Chestplate
+achievement.draconicevolution.wleggs=Run like the wind
+achievement.draconicevolution.wleggs.desc=Craft Wyvern leggings
+achievement.draconicevolution.wboots=Feather Fall
+achievement.draconicevolution.wboots.desc=Craft Wyvern boots
 achievement.draconicevolution.resurrection=Brimming with Antici-pation!
 achievement.draconicevolution.resurrection.desc=Craft the Resurrection Stone
 achievement.draconicevolution.dislocator2=Ender-ruler!
@@ -368,25 +368,25 @@ achievement.draconicevolution.awakenedblock.desc=Create Awakened Draconium
 achievement.draconicevolution.core3=Expense vs. Power
 achievement.draconicevolution.core3.desc=Upgrade Wyvern Core to Awakened
 
-achievement.draconicevolution.dhelm=
-achievement.draconicevolution.dhelm.desc=
+achievement.draconicevolution.dhelm=Gliding through water!
+achievement.draconicevolution.dhelm.desc=Upgrade to the Draconic Helm
 achievement.draconicevolution.dChest=Fly like an eagle!
 achievement.draconicevolution.dChest.desc=Craft the Draconic Chest Plate
-achievement.draconicevolution.dleggs=
-achievement.draconicevolution.dleggs.desc=
-achievement.draconicevolution.dboots=
-achievement.draconicevolution.dboots.desc=
+achievement.draconicevolution.dleggs=Dance like a Butterfly!
+achievement.draconicevolution.dleggs.desc=Craft Draconic Leggings
+achievement.draconicevolution.dboots=Higher and Higher!
+achievement.draconicevolution.dboots.desc=Upgrade to Draconic Boots.
 
 achievement.draconicevolution.dpick=Mine With Authority!
 achievement.draconicevolution.dpick.desc=Craft a Draconic Pick
-achievement.draconicevolution.dshovel=
-achievement.draconicevolution.dshovel.desc=
-achievement.draconicevolution.daxe=
-achievement.draconicevolution.daxe.desc=
-achievement.draconicevolution.dsword=
-achievement.draconicevolution.dsword.desc=
-achievement.draconicevolution.dbow=
-achievement.draconicevolution.dbow.desc=
+achievement.draconicevolution.dshovel=Moving Mountains
+achievement.draconicevolution.dshovel.desc=Upgrade Wyvern Shovel
+achievement.draconicevolution.daxe=One giant Chop for tree Kind!
+achievement.draconicevolution.daxe.desc=Craft the Draconic Axe
+achievement.draconicevolution.dsword=Sting Like a Bee!
+achievement.draconicevolution.dsword.desc=Upgrade to the Draconic Sword
+achievement.draconicevolution.dbow=Now you’re playing with Power!
+achievement.draconicevolution.dbow.desc=Craft the Draconic Bow.
 achievement.draconicevolution.flux2=Phenomenal Cosmic Power! itty bitty living space.
 achievement.draconicevolution.flux2.desc=Craft the Draconic Flux Capacitor
 achievement.draconicevolution.dhoe=Kick it up a Notch! -BAM-
@@ -395,12 +395,12 @@ achievement.draconicevolution.dhoe.desc=Craft the Draconic Hoe
 achievement.draconicevolution.dstaff=With your powers combined!
 achievement.draconicevolution.dstaff.desc=Create the Draconic Staff
 
-achievement.draconicevolution.soul=
-achievement.draconicevolution.soul.desc=
-achievement.draconicevolution.sundial=
-achievement.draconicevolution.sundial.desc=
-achievement.draconicevolution.manual=
-achievement.draconicevolution.manual.desc=
+achievement.draconicevolution.soul=Reaper!!!!
+achievement.draconicevolution.soul.desc=Acquire the soul of an unsuspecting mob.
+achievement.draconicevolution.sundial=Timekeeper
+achievement.draconicevolution.sundial.desc=Craft a sun dial and take control of night and day
+achievement.draconicevolution.manual=Knowledge to the Max!
+achievement.draconicevolution.manual.desc=Craft the Draconic Tablet
 
 //InfoHelper ----------------------------------------------------------------------------------------------------------------------------------------
 info.de.charge.txt=Charge
@@ -474,7 +474,7 @@ manual.de.ectdpage5.txt=Tier 4:\nRedstone x80\nDraconium x98\nCapacity = 59.3Bil
 manual.de.ectdpage6.txt=Tier 5:\nRedstone 133\nDraconium 150\nCapacity = 356Billion RF
 manual.de.ectdpage7.txt=Tier 6:\nRedstone x328\nDraconium x218\nCapacity = 2.14Trillion RF
 manual.de.ectdpage8a.txt=To add and remove energy from the core you need to place energy pylons within 15 blocks of the of the core. To activate a pylon place a glass block ether above or bellow it depending on weather the pylon is placed bellow or above the core e.g. if you place the pylon on the roof you would place the glass block under it. The pylon can be placed up to 6 blocks above or bellow the energy core (centre).
-manual.de.ectdpage8b.txt=When the glass block is placed the pylon should immediately activate and link with a nearby Energy Core the link is indicated by white energy particles and the glass should change to the renderer shown in the image above.
+manual.de.ectdpage8b.txt=When the glass block is placed the pylon should immediately activate and link with a nearby Energy Core the link is indicated by white energy particles and the glass should change to the renderer shown in the image above. You can shift right click the pylon to change which core it is linked to (if there is more then one in range)
 manual.de.ectdpage9a.txt=You can simply right click the energy core to check the tier and amount of energy stored.
 manual.de.ectdpage9b.txt=Energy is added and removed from the core using the Energy Pylons. To toggle a Pylon between input and output mode simply right click the sphere. The mode is identified by the colour of the Pylon (Blue = input, Orange = output) and the behaviour of the energy particles and the Pylon sphere
 manual.de.ectdpage10.txt=Energy Transfer between the pylon and the core is indicated by a stream of blue energy particles flowing between the Pylon sphere and the core. The amount of energy flowing is roughly shown by the density of the particle stream.

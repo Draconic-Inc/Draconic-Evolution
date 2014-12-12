@@ -16,7 +16,7 @@ public class DETab extends CreativeTabs {
 	static ItemStack iconStackStaff;
 
 	public static void initialize() {
-		iconStackStaff = ItemNBTHelper.setInteger(new ItemStack(ModItems.draconicDestructionStaff), "Energy", 100000000);
+		iconStackStaff = ItemNBTHelper.setInteger(new ItemStack(ModItems.draconicDestructionStaff), "Energy", 30000000);
 	}
 
 	public DETab(int id, String modid, String label, int tab) {

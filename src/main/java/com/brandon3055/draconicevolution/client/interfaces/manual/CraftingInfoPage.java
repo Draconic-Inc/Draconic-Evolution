@@ -112,7 +112,7 @@ public class CraftingInfoPage extends TitledPage {
 		int offset = 0;
 		for (String s : getFormattedText(fontRendererObj)) {
 			if (s == null) break;
-			if (s.substring(0,2).equals("\\%")){
+			if (s.contains("\\%") && s.substring(0,2).equals("\\%")){
 				s = s.substring(2);
 				offset += fontRendererObj.FONT_HEIGHT/2;
 			}

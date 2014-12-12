@@ -10,7 +10,7 @@ import net.minecraft.util.IIcon;
 /**
  * Created by Brandon on 21/11/2014.
  */
-public class DraconicBlock extends BlockDE{//todo new description
+public class DraconicBlock extends BlockDE{
 	IIcon top;
 	public DraconicBlock() {
 		this.setHardness(20F);

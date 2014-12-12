@@ -17,6 +17,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -44,6 +45,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -267,6 +269,23 @@ public class MinecraftForgeEventHandler {
 	public void joinWorld(EntityJoinWorldEvent event){
 		if (event.entity instanceof EntityPlayerSP) {
 			DraconicEvolution.network.sendToServer(new MountUpdatePacket(0));
+		}
+	}
+
+	@SubscribeEvent
+	public void getBreakSpeed(PlayerEvent.BreakSpeed event){
+		if (event.entityPlayer != null )
+		{
+			float newDigSpeed = event.originalSpeed;
+			if (event.entityPlayer.isInsideOfMaterial(Material.water))
+			{
+				if (ArmorEffectHandler.isDraconicArmor(event.entityPlayer, 4)) newDigSpeed *= 5f;
+			}
+			if (!event.entityPlayer.onGround)
+			{
+				if (ArmorEffectHandler.isDraconicArmor(event.entityPlayer, 3)) newDigSpeed *= 5f;
+			}
+			event.newSpeed = newDigSpeed;
 		}
 	}
 }

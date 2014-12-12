@@ -1,35 +1,17 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.achievements.Achievements;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.MobSpawnerBaseLogic;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.List;
 
 public class Tclogo extends ItemDE {
@@ -90,105 +72,59 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		LogHelper.info(player.ridingEntity);
-		if (!world.isRemote)DraconicEvolution.network.sendTo(new MountUpdatePacket(player.ridingEntity.getEntityId()), (EntityPlayerMP)player);
-		if (1==1) return stack;
-//		Set<String> set = Achievements.achievementsList.keySet();
-//		for (String s : set) Achievements.triggerAchievement(player, s);
 
+		if (!player.isSneaking())
+		{
+			player.capabilities.allowFlying = true;
+			//player.setPosition(player.posX, player.posY+1, player.posZ);
+			player.onGround = false;
+			player.capabilities.isFlying = true;
+			player.noClip = !player.noClip;
 
-
-		LogHelper.info("Downloading Image");
-
-		try {
-			URL url = new URL("http://i.imgur.com/oHRx1yQ.jpg");
-			String fileName = url.getFile();
-			String destName = ClientProxy.downloadLocation + fileName.substring(fileName.lastIndexOf("/"));
-			System.out.println(destName);
-
-			InputStream is = url.openStream();
-			OutputStream os = new FileOutputStream(destName);
-
-			byte[] b = new byte[2048];
-			int length;
-
-			while ((length = is.read(b)) != -1) {
-				os.write(b, 0, length);
-			}
-
-			is.close();
-			os.close();
-		}catch (IOException e){
-			LogHelper.info(e);
 		}
+		else{
+			int xi = (int)player.posX;
+			int yi = (int)player.posY;
+			int zi = (int)player.posZ;
+			int rad = 100;
 
-
-
-
-
-
-		if (world.isRemote) return stack;
-
-		if (1 == 1) return  stack;
-
-		int x = (int)player.posX;
-		int y = (int)player.posY;
-		int z = (int)player.posZ;
-		world.setBlock(x, y, z, Blocks.mob_spawner);
-		TileEntity spawner = world.getTileEntity(x, y, z);
-		if (spawner instanceof TileEntityMobSpawner){
-			MobSpawnerBaseLogic logic = ((TileEntityMobSpawner)spawner).func_145881_a();
-			logic.setEntityName("Zombie");
-
-			EntityZombie zombie = new EntityZombie(world);
-			zombie.setChild(true);
-			zombie.setCurrentItemOrArmor(0, new ItemStack(Items.diamond_axe));
-
-			NBTTagCompound compound = new NBTTagCompound();
-			zombie.writeEntityToNBT(compound);
-
-			NBTTagCompound compound2 = new NBTTagCompound();
-			logic.writeToNBT(compound2);
-			compound2.setTag("SpawnData", compound);
-
-			logic.readFromNBT(compound2);
-
-			LogHelper.info(compound2);
-		}
-
-
-
-		//if (!world.isRemote)OreDoublingRegistry.getOreResult(GameRegistry.findItemStack("ThermalFoundation", "oreCopper", 1));
-
-		player.triggerAchievement(Achievements.getAchievement("Draconium Ore"));
-		//player.fallDistance = 0;
-		//player.motionY+=1;
-		//player.moveFlying(0f, 0f, 1f);
-		float horizontal = 0f;
-		float forward = 1f;
-		float acceleration = 1f;
-
-			float f3 = forward * forward;
-
-			if (f3 >= 1.0E-4F)
-			{
-				f3 = MathHelper.sqrt_float(f3);
-
-				if (f3 < 1.0F)
-				{
-					f3 = 1.0F;
+		for (int x = xi-rad; x < xi+rad; x++){
+			for (int y = yi-10; y < yi+30; y++){
+				for (int z = zi-rad; z < zi+rad; z++){
+					world.markBlockForUpdate(x, y, z);
 				}
-
-				f3 = acceleration / f3;
-				horizontal *= f3;
-				forward *= f3;
-				float f4 = MathHelper.sin(player.rotationYaw * (float)Math.PI / 180.0F);
-				float f5 = MathHelper.cos(player.rotationYaw * (float) Math.PI / 180.0F);
-				float f6 = (player.rotationPitch-20) * (float) Math.PI / 180.0F;
-				player.motionX += (double)( - forward * f4);
-				player.motionY += (double)(f6*-1);
-				player.motionZ += (double)(forward * f5);
 			}
+		}
+
+
+			world.markBlockRangeForRenderUpdate(xi-rad, yi-20, zi-rad, xi+rad, yi+20, zi+rad);
+		}
+//
+//		LogHelper.info("Downloading Image");
+//
+//		try {
+//			URL url = new URL("http://i.imgur.com/oHRx1yQ.jpg");
+//			String fileName = url.getFile();
+//			String destName = ClientProxy.downloadLocation + fileName.substring(fileName.lastIndexOf("/"));
+//			System.out.println(destName);
+//
+//			InputStream is = url.openStream();
+//			OutputStream os = new FileOutputStream(destName);
+//
+//			byte[] b = new byte[2048];
+//			int length;
+//
+//			while ((length = is.read(b)) != -1) {
+//				os.write(b, 0, length);
+//			}
+//
+//			is.close();
+//			os.close();
+//		}catch (IOException e){
+//			LogHelper.info(e);
+//		}
+
+
 
 
 //		player.addPotionEffect(new PotionEffect(PotionHandler.potionFlight.id, 100, 0));

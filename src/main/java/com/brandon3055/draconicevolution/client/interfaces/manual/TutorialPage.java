@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.interfaces.manual;
 
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
@@ -62,32 +63,39 @@ public class TutorialPage extends TitledPage {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String> getFormattedText(FontRenderer fr, String raw, int descriptionIndex) {
+	public List<String> getFormattedText(FontRenderer fr, String rawDescription, int descriptionIndex) {
 		if (formattedDescription[descriptionIndex] == null) {
-			if (Strings.isNullOrEmpty(raw)) formattedDescription[descriptionIndex] = ImmutableList.of();
-			else formattedDescription[descriptionIndex] = ImmutableList.copyOf(fr.listFormattedStringToWidth(raw, 370));
-			List<String> modified = new ArrayList();
-			for (int i = 0; i < formattedDescription[descriptionIndex].size(); i++){
-				String line = formattedDescription[descriptionIndex].get(i);
-				if (!line.contains("\\n")) modified.add(line);
-				else {
-					String joinedLine = "";
-					for (i=i; i < formattedDescription[descriptionIndex].size(); i++) joinedLine = joinedLine + formattedDescription[descriptionIndex].get(i);
-					int escape = 0;
-					while (!joinedLine.isEmpty() && escape < 20) {
-						int index = 0;
-						if (joinedLine.contains("\\n")) index = joinedLine.indexOf("\\n");
-						else index = joinedLine.length();
-						String s = joinedLine.substring(0, index);
-						modified.add(s);
-						joinedLine = joinedLine.substring(index);
-						joinedLine = joinedLine.replaceFirst("\\n", "");
-						escape++;
-					}
+
+			formattedDescription[descriptionIndex] = new ArrayList<String>();
+
+			if (Strings.isNullOrEmpty(rawDescription)) {
+				formattedDescription[descriptionIndex] = ImmutableList.of();
+				return formattedDescription[descriptionIndex];
+			}
+			if (!rawDescription.contains("\\n")) {
+				formattedDescription[descriptionIndex] = ImmutableList.copyOf(fr.listFormattedStringToWidth(rawDescription, 370));
+				return formattedDescription[descriptionIndex];
+			}
+
+			List<String> segments = new ArrayList(); //Each separate string that is separated by a \n
+			String raw = rawDescription;
+
+
+			int escape = 0;
+			while (raw.contains("\\n")) {
+				segments.add(raw.substring(0, raw.indexOf("\\n")));
+				raw = raw.substring(raw.indexOf("\\n") + 2);
+				if (!raw.contains("\\n")) segments.add(raw);
+
+				escape++;
+				if (escape > 100) {
+					LogHelper.error("Bailing Out!");
 					break;
 				}
 			}
-			formattedDescription[descriptionIndex] = modified;
+
+			for (String s : segments)
+				formattedDescription[descriptionIndex].addAll(ImmutableList.copyOf(fr.listFormattedStringToWidth(s, 370)));
 		}
 		return formattedDescription[descriptionIndex];
 	}

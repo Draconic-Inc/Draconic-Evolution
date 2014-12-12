@@ -185,7 +185,7 @@ public class DraconiumFluxCapacitor extends ItemDE implements IEnergyContainerIt
 			InfoHelper.addEnergyInfo(stack, list);
 			list.add(StatCollector.translateToLocal("info.de.changwMode.txt"));
 			list.add(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.capacitorMode.txt")+": "+InfoHelper.HITC()+StatCollector.translateToLocal("info.de.capacitorMode"+ItemNBTHelper.getShort(stack, "Mode", (short)0)+".txt"));
-			InfoHelper.addLore(stack, list);
+			//InfoHelper.addLore(stack, list);
 		}
 	}
 

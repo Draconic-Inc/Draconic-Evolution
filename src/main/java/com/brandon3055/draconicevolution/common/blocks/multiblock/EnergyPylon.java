@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
@@ -14,13 +13,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by Brandon on 28/07/2014.
@@ -118,12 +114,9 @@ public class EnergyPylon extends BlockDE {//todo fix sphere renderer
 		int meta = world.getBlockMetadata(x, y, z);
 		if (meta == 0) return false;
 		TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
-		if (player.getHeldItem() != null && player.getHeldItem().isItemEqual(new ItemStack(Items.stick)) && thisTile != null && world.isRemote)
-		{
-			LogHelper.info(thisTile.getEnergyStored(ForgeDirection.UP));
-		}
 		if (thisTile != null) {
-			thisTile.onActivated();
+			if (!player.isSneaking()) thisTile.onActivated();
+			else thisTile.nextCore();
 			return true;
 		}
 		return false;

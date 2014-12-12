@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Brandon on 20/09/2014.
  */
-public class EnergyCoreTutorialPage extends  TutorialPage {
+public class EnergyCoreTutorialPage extends TutorialPage {
 	public static final ResourceLocation Energy_Core = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/images/T5_Energy_Core.png");
 	public static final ResourceLocation Stabilizer_Placement = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/images/Stabilizer_Placement.png");
 	public static final ResourceLocation Core_Tiers = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/images/Core_Tiers.png");
@@ -20,7 +20,7 @@ public class EnergyCoreTutorialPage extends  TutorialPage {
 	public static final ResourceLocation Pylon_Particles_2 = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/images/Energy_Pylon_Particles_2.png");
 	public static final ResourceLocation Pylon_y_Placement = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/images/Pylon_y_Placement.png");
 
-
+	@SuppressWarnings("unchecked")
 	public EnergyCoreTutorialPage(String name, PageCollection collection) {
 		super(name, collection, StatCollector.translateToLocal("manual.de.ecth.txt"));
 		this.lastPage = 11;
@@ -106,8 +106,8 @@ public class EnergyCoreTutorialPage extends  TutorialPage {
 		GL11.glScaled(imageScale, imageScale, 1D);
 		double scaleMult = 0.21;
 
-		int yOffset = (int)((minecraft.getSystemTime()/2000 % 2)*22);
-		drawTexturedModalRect((int)((offsetX+49)*scaleMult), (int)((offsetY+15)*scaleMult), 180, 0+yOffset, 30, 20);
+		int yOffset = (int)((Minecraft.getSystemTime()/2000 % 2)*22);
+		drawTexturedModalRect((int)((offsetX+49)*scaleMult), (int)((offsetY+15)*scaleMult), 180, yOffset, 30, 20);
 		GL11.glPopMatrix();
 		drawCenteredString(fontRendererObj, "Tier 1", offsetX+128, offsetY+107, 0xff0000);
 		addDescription(minecraft, offsetX, offsetY+45, getFormattedText(fontRendererObj, ttl("manual.de.ectdpage2.txt"), 4));

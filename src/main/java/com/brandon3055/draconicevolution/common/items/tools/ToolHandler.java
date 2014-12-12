@@ -122,7 +122,7 @@ public class ToolHandler {
 			if ((silk) && (block.canSilkHarvest(world, player, x, y, z, meta))) {
 				if (block == Blocks.lit_redstone_ore)
 					items.add(new ItemStack(Item.getItemFromBlock(Blocks.redstone_ore)));
-				else items.add(new ItemStack(block.getItem(world, x, y, z), 1, meta));
+				else items.add(new ItemStack(block, 1, meta));
 			} else {
 				items.addAll(block.getDrops(world, x, y, z, meta, fortune));
 				//block.dropXpOnBlockBreak(world, (int)player.posX, (int)player.posY, (int)player.posZ, block.getExpDrop(world, meta, fortune));

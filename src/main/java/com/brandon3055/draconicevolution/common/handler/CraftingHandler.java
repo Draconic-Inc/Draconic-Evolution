@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.utills.ShapedOreEnergyRecipe;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -13,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class CraftingHandler {
 	public static void init()
@@ -48,20 +50,20 @@ public class CraftingHandler {
 
 
 	//Draconic Tools
-		add(ModItems.draconicFluxCapacitor, "CMC", "SPS", "CSC", 'C', ModItems.draconicIngot, 'S', ModItems.draconicEnergyCore, 'M', ModItems.awakenedCore, 'P', ModItems.wyvernFluxCapacitor);
+		addEnergy(ModItems.draconicFluxCapacitor, "CMC", "SPS", "CSC", 'C', ModItems.draconicIngot, 'S', ModItems.draconicEnergyCore, 'M', ModItems.awakenedCore, 'P', ModItems.wyvernFluxCapacitor);
 		//tools
-		add(ModItems.draconicPickaxe, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', ModItems.wyvernPickaxe, 'E', ModItems.draconicEnergyCore);
-		add(ModItems.draconicShovel, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', ModItems.wyvernShovel, 'E', ModItems.draconicEnergyCore);
+		addEnergy(ModItems.draconicPickaxe, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', ModItems.wyvernPickaxe, 'E', ModItems.draconicEnergyCore);
+		addEnergy(ModItems.draconicShovel, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', ModItems.wyvernShovel, 'E', ModItems.draconicEnergyCore);
 		add(ModItems.draconicAxe, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', Items.diamond_axe, 'E', ModItems.draconicEnergyCore);
 		add(ModItems.draconicHoe, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', Items.diamond_hoe, 'E', ModItems.draconicEnergyCore);
-		add(ModItems.draconicSword, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', ModItems.wyvernSword, 'E', ModItems.draconicEnergyCore);
+		addEnergy(ModItems.draconicSword, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', ModItems.wyvernSword, 'E', ModItems.draconicEnergyCore);
 		add(ModItems.draconicBow, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'T', ModItems.wyvernBow, 'E', ModItems.draconicEnergyCore);
-		add(ModItems.draconicDestructionStaff, "IAI", "PIS", "IWI", 'I', ModItems.draconicIngot, 'A', ModItems.awakenedCore, 'P', ModItems.draconicPickaxe, 'S', ModItems.draconicShovel, 'W', ModItems.draconicSword);
+		addEnergy(ModItems.draconicDestructionStaff, "IAI", "PIS", "IWI", 'I', ModItems.draconicIngot, 'A', ModItems.awakenedCore, 'P', ModItems.draconicPickaxe, 'S', ModItems.draconicShovel, 'W', ModItems.draconicSword);
 		//armor
-		add(ModItems.draconicHelm, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'A', ModItems.wyvernHelm, 'E', ModItems.draconicEnergyCore);
-		add(ModItems.draconicChest, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'A', ModItems.wyvernChest, 'E', ModItems.draconicEnergyCore);
-		add(ModItems.draconicLeggs, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'A', ModItems.wyvernLeggs, 'E', ModItems.draconicEnergyCore);
-		add(ModItems.draconicBoots, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'A', ModItems.wyvernBoots, 'E', ModItems.draconicEnergyCore);
+		addEnergy(ModItems.draconicHelm, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'A', ModItems.wyvernHelm, 'E', ModItems.draconicEnergyCore);
+		addEnergy(ModItems.draconicChest, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'A', ModItems.wyvernChest, 'E', ModItems.draconicEnergyCore);
+		addEnergy(ModItems.draconicLeggs, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'A', ModItems.wyvernLeggs, 'E', ModItems.draconicEnergyCore);
+		addEnergy(ModItems.draconicBoots, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', ModItems.draconicIngot, 'A', ModItems.wyvernBoots, 'E', ModItems.draconicEnergyCore);
 
 
 
@@ -103,6 +105,8 @@ public class CraftingHandler {
 	//Other
 		addOre(ModItems.infoTablet, "SSS", "SDS", "SSS", 'S', "stone", 'D', ModItems.draconiumDust);
 		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ModItems.enderArrow), Items.arrow, Items.ender_pearl);
+		addShaplessOre(new ItemStack(Blocks.dirt), Item.getItemFromBlock(Blocks.sand), Items.rotten_flesh, "treeSapling", "treeSapling", "treeSapling");
+		addShaplessOre(new ItemStack(Blocks.dirt), Item.getItemFromBlock(Blocks.sand), Items.rotten_flesh, "treeLeaves", "treeLeaves", "treeLeaves");
 
 
 	//Disable able
@@ -128,9 +132,21 @@ public class CraftingHandler {
 	private static void addOre(ItemStack result, Object... recipe){
 		GameRegistry.addRecipe(new ShapedOreRecipe(result, recipe));
 	}
+	private static void addShaplessOre(ItemStack result, Object... recipe){
+		GameRegistry.addRecipe(new ShapelessOreRecipe(result, recipe));
+	}
+
+
+
 	private static void add(Block result, Object... recipe){ add(new ItemStack(result), recipe); }
 	private static void add(Item result, Object... recipe){ add(new ItemStack(result), recipe); }
 	private static void add(ItemStack result, Object... recipe){
 		GameRegistry.addRecipe(result, recipe);
+	}
+
+	private static void addEnergy(Block result, Object... recipe){ addEnergy(new ItemStack(result), recipe); }
+	private static void addEnergy(Item result, Object... recipe){ addEnergy(new ItemStack(result), recipe); }
+	private static void addEnergy(ItemStack result, Object... recipe){
+		GameRegistry.addRecipe(new ShapedOreEnergyRecipe(result, recipe));
 	}
 }

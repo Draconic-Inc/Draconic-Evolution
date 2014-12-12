@@ -36,7 +36,11 @@ public class IntroPage extends BasePage {
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();
 		GL11.glScalef(2.5F, 2.5F, 1F);
-		drawCenteredString(minecraft.fontRenderer, ttl("manual.de.userGuide.txt"), (int) ((offsetX + 128) / 2.5), (int) ((offsetY + 128) / 2.5), 0x00b400);
+		drawCenteredString(fontRendererObj, ttl("manual.de.userGuide.txt"), (int) ((offsetX + 128) / 2.5), (int) ((offsetY + 128) / 2.5), 0x00b400);
+		GL11.glPopMatrix();
+		GL11.glPushMatrix();
+		GL11.glScalef(0.5F, 0.5F, 0.5F);
+		fontRendererObj.drawString("This gui is a work in progress", (offsetX + 4)*2, (offsetY + 194)*2, 0x000000);
 		GL11.glPopMatrix();
 	}
 

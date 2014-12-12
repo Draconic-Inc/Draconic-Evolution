@@ -102,6 +102,7 @@ public class GuiManual extends GuiScreen {
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.potentiometer), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.rainSensor), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconiumBlock), ""));
+		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconicBlock), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyStorageCore), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.energyPylon), ""));
 		pageCollection.addPage(new CraftingInfoPage("BLOCK_PAGE."+getNextPageIndex(), pageCollection, new ItemStack(ModBlocks.draconiumBlock, 1, 1), ""));
@@ -110,10 +111,10 @@ public class GuiManual extends GuiScreen {
 
 		pageCollection.addPage(new EnergyCoreTutorialPage("TUTORIAL."+getNextPageIndex(), pageCollection).setIndexName(StatCollector.translateToLocal("manual.de.ecth.txt")));
 		pageCollection.addPage(new EnderResurrectionTutorialPage("TUTORIAL."+getNextPageIndex(), pageCollection).setIndexName("manual.de.roerth.txt"));
-		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.endercomet.description").setIndexName("manual.de.endercomet.txt"));
-		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.chaosisland.description").setIndexName("manual.de.enderisland.txt"));
-		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.placeditems.description").setIndexName("manual.de.placeditems.txt"));
-		pageCollection.addPage(new DescriptionPage("INFO"+getNextPageIndex(), pageCollection, "manual.de.pigmenBloodRage.description").setIndexName("manual.de.pigmenBloodRage.txt"));
+		pageCollection.addPage(new DescriptionPage("INFO."+getNextPageIndex(), pageCollection, "manual.de.endercomet.description").setIndexName("manual.de.endercomet.txt"));
+		pageCollection.addPage(new DescriptionPage("INFO."+getNextPageIndex(), pageCollection, "manual.de.chaosisland.description").setIndexName("manual.de.enderisland.txt"));
+		pageCollection.addPage(new DescriptionPage("INFO."+getNextPageIndex(), pageCollection, "manual.de.placeditems.description").setIndexName("manual.de.placeditems.txt"));
+		pageCollection.addPage(new DescriptionPage("INFO."+getNextPageIndex(), pageCollection, "manual.de.pigmenBloodRage.description").setIndexName("manual.de.pigmenBloodRage.txt"));
 
 		pageCollection.addPage(new IndexPage("INDEX", pageCollection));
 		return pageCollection;

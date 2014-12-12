@@ -18,21 +18,22 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by Brandon on 28/07/2014.
  */
-public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {//todo make it possible to select which core to to link to
-//todo make core change color as it fuills
-	//protected EnergyStorage storage = new EnergyStorage(500000, 0, 0);
+public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {
 	public boolean active = false;
 	public boolean lastTickActive = false;
 	public boolean reciveEnergy = false; //Power Flow to system
 	public boolean lastTickReciveEnergy = false;
 	public float modelRotation = 0;
 	public float modelScale = 0;
-	private TileLocation masterLocation = new TileLocation();
+	private List<TileLocation> coreLocatios = new ArrayList<TileLocation>();
+	private int selectedCore = 0;
 	private byte particleRate = 0;
 	private byte lastTickParticleRate = 0;
 
@@ -66,39 +67,57 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {/
 		if (!active){
 			active = isValidStructure();
 		}
-		findMaster();
+		findCores();
 	}
 
 	private TileEnergyStorageCore getMaster(){
-		return  (worldObj.getTileEntity(masterLocation.getXCoord(), masterLocation.getYCoord(), masterLocation.getZCoord()) != null && worldObj.getTileEntity(masterLocation.getXCoord(), masterLocation.getYCoord(), masterLocation.getZCoord()) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore)worldObj.getTileEntity(masterLocation.getXCoord(), masterLocation.getYCoord(), masterLocation.getZCoord()) : null;
+		if (coreLocatios.isEmpty()) return null;
+		if (selectedCore >= coreLocatios.size()) selectedCore = coreLocatios.size() - 1;
+		TileLocation core = coreLocatios.get(selectedCore);
+		if (core == null || !(worldObj.getTileEntity(core.getXCoord(), core.getYCoord(), core.getZCoord()) instanceof TileEnergyStorageCore)) return null;
+		return (TileEnergyStorageCore) worldObj.getTileEntity(core.getXCoord(), core.getYCoord(), core.getZCoord());
 	}
 
-	private void findMaster(){
+	private void findCores(){
 		int yMod = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? 3 : -3;
 		int range = 15;
+		List<TileLocation> locations = new ArrayList<TileLocation>();
 		for (int x = xCoord-range; x <= xCoord+range; x++){
 			for (int y = yCoord+yMod-(range/4); y <= yCoord+yMod+(range/4); y++){
 				for (int z = zCoord-range; z <= zCoord+range; z++){
 					if (worldObj.getBlock(x, y, z) == ModBlocks.energyStorageCore){
-						masterLocation = new TileLocation(x, y, z);
-						return;
+						locations.add(new TileLocation(x, y, z));
 					}
 				}
 			}
-
 		}
+
+		if (locations != coreLocatios){
+			coreLocatios.clear();
+			coreLocatios.addAll(locations);
+			selectedCore = selectedCore >= coreLocatios.size() ? 0 : selectedCore;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
+	}
+
+	public void nextCore(){
+		findCores();
+		selectedCore++;
+		if (selectedCore >= coreLocatios.size()) selectedCore = 0;
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void spawnParticles(){
 		Random rand = new Random();
-		int x = masterLocation.getXCoord();
-		int y = masterLocation.getYCoord();
-		int z = masterLocation.getZCoord();
+		if (getMaster() == null || !getMaster().isOnline()) return;
+
+		int x = getMaster().xCoord;
+		int y = getMaster().yCoord;
+		int z = getMaster().zCoord;
 		int cYCoord = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? yCoord+1 : yCoord-1;
-		TileEnergyStorageCore master = (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) worldObj.getTileEntity(x, y, z) : null;
-		if (master == null || !master.isOnline()) return;
-		float disMod = master.getTier()==0 ? 0.5F : master.getTier()==1 ? 1F: master.getTier()==2 ? 1F : master.getTier()==3 ? 2F : master.getTier()==4 ? 2F : master.getTier()==5 ? 3F : 4F;
+
+		float disMod = getMaster().getTier()==0 ? 0.5F : getMaster().getTier()==1 ? 1F: getMaster().getTier()==2 ? 1F : getMaster().getTier()==3 ? 2F : getMaster().getTier()==4 ? 2F : getMaster().getTier()==5 ? 3F : 4F;
 		double spawnX;
 		double spawnY;
 		double spawnZ;
@@ -180,7 +199,14 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {/
 		super.readFromNBT(compound);
 		active = compound.getBoolean("Active");
 		reciveEnergy = compound.getBoolean("Input");
-		masterLocation.readFromNBT(compound, "Master");
+		int i = compound.getInteger("Cores");
+		List<TileLocation> list = new ArrayList<TileLocation>();
+		for (int j = 0; j < i; j++){
+			TileLocation l = new TileLocation();
+			l.readFromNBT(compound, "Core" + j);
+			list.add(l);
+		}
+		coreLocatios = list;
 		particleRate = compound.getByte("ParticleRate");
 	}
 
@@ -190,7 +216,12 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {/
 		super.writeToNBT(compound);
 		compound.setBoolean("Active", active);
 		compound.setBoolean("Input", reciveEnergy);
-		masterLocation.writeToNBT(compound, "Master");
+		int i = coreLocatios.size();
+		compound.setInteger("Cores", i);
+		for (int j = 0; j < i; j++){
+			coreLocatios.get(j).writeToNBT(compound, "Core" + j);
+		}
+		compound.setInteger("SelectedCore", selectedCore);
 		compound.setByte("ParticleRate", particleRate);
 	}
 

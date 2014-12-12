@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Brandon on 27/07/2014.
  */
-public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {
+public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {//todo give core antygravirt
 
 	private static final ResourceLocation iner_model_texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_1.png");
 	private static final ResourceLocation outer_model_texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_2.png");
@@ -71,7 +71,7 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {
 		//float colour = (float)(Minecraft.getSystemTime()%10000) / 10000f;
 		//double colour = Math.sin((float)Minecraft.getSystemTime() / 10000f);
 		double colour = ((TileEnergyStorageCore) tile).getEnergyStored() / ((TileEnergyStorageCore) tile).getMaxEnergyStored();
-		float brightness = (float)Math.abs(Math.sin((float) Minecraft.getSystemTime() / 3000f) * 150f);
+		float brightness = (float)Math.abs(Math.sin((float) Minecraft.getSystemTime() / 3000f) * 100f);
 
 		colour = 1f - colour;
 		//LogHelper.info(colour + " " + ((TileEnergyStorageCore) tile).getEnergyStored() +" "+ ((TileEnergyStorageCore) tile).getMaxEnergyStored());
@@ -80,20 +80,20 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {
 		GL11.glPushMatrix();
 		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
 		GL11.glColor4d(1F, colour * 0.3f, colour * 0.7f, 1F);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 50f + brightness, 50f + brightness);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 80f + brightness, 80f + brightness);
 		iner_model.renderAll();
 		GL11.glPopMatrix();
 
 		GL11.glPushMatrix();
 		GL11.glScalef(0.8F, 0.8F, 0.8F);
-		GL11.glColor4f(0.5F, 1F, 1F, 1F);
+		GL11.glColor4d(1F, 1f, 0.2f, 1F);
 		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
 		iner_model.renderAll();
 		GL11.glPopMatrix();
 
 		GL11.glPushMatrix();
 		GL11.glScalef(0.9F, 0.9F, 0.9F);
-		GL11.glColor4f(0F, 1F, 1F, 1F);
+		GL11.glColor4d(1F, 0f, 0.2f, 1F);
 		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
 		iner_model.renderAll();
 		GL11.glPopMatrix();

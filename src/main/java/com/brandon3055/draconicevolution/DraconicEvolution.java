@@ -30,7 +30,7 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 	public static final String networkChannelName = "DraconicEvolution";
 	public static SimpleNetworkWrapper network;
 
-	public static boolean debug = true;
+	public static boolean debug = false;//todo
 
 	public static Enchantment reaperEnchant;
 	
@@ -49,7 +49,7 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 		event.getModMetadata().description = "This is a mod originally made for the Tolkiencraft mod pack";
 		event.getModMetadata().authorList = Arrays.asList("brandon3055");
 		event.getModMetadata().logoFile = "banner.png";
-		event.getModMetadata().url = "http://dragontalk.net/draconic_evolution";
+		event.getModMetadata().url = "http://www.tolkiencraft.com/draconic-evolution/";
 		event.getModMetadata().version = References.VERSION + "-MC1.7.10";
 
 		proxy.preInit(event);
