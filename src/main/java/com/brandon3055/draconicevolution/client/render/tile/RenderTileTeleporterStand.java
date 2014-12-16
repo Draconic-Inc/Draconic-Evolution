@@ -96,7 +96,7 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer{
 	private void drawNameString(ItemStack item, float rotation, TileEntity tileentity, float f){
 		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 		MovingObjectPosition mop = player.rayTrace(10, f);
-		boolean isCursorOver = mop.blockX == tileentity.xCoord && mop.blockY == tileentity.yCoord && mop.blockZ == tileentity.zCoord;
+		boolean isCursorOver = mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mop.blockX == tileentity.xCoord && mop.blockY == tileentity.yCoord && mop.blockZ == tileentity.zCoord;
 		boolean isSneaking = player.isSneaking();
 
 		if (!isCursorOver && (isSneaking != ConfigHandler.invertDPDSB)) return;

@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKII;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileTeleporterStand;
+import com.brandon3055.draconicevolution.common.utills.Teleporter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -71,7 +72,8 @@ public class TeleporterStand extends BlockCustomDrop {
 		}
 
 		if(tile.getStackInSlot(0) != null && !player.isSneaking() && tile.getStackInSlot(0).getItem() instanceof TeleporterMKI){
-			((TeleporterMKI)tile.getStackInSlot(0).getItem()).getLocation(tile.getStackInSlot(0)).sendEntityToCoords(player);
+			Teleporter.TeleportLocation l = ((TeleporterMKI) tile.getStackInSlot(0).getItem()).getLocation(tile.getStackInSlot(0));
+			if (l != null) l.sendEntityToCoords(player);
 			return true;
 		}
 
