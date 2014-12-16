@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
+import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -47,6 +48,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
+import net.minecraftforge.event.world.WorldEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -61,10 +63,11 @@ public class MinecraftForgeEventHandler {
 
 	@SubscribeEvent
 	public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
-		if (!(event.entityLiving instanceof EntityPlayer))return;
-		EntityPlayer player = (EntityPlayer)event.entityLiving;
+		if (!(event.entityLiving instanceof EntityPlayer)) return;
+		EntityPlayer player = (EntityPlayer) event.entityLiving;
 
-		if (ArmorEffectHandler.getHasJumpBoost(player)) {
+		if (ArmorEffectHandler.getHasJumpBoost(player))
+		{
 			int i = ArmorEffectHandler.getJumpLevel(player);
 			event.entityLiving.motionY += (0.1f) * (2 + i);
 		}
@@ -72,42 +75,47 @@ public class MinecraftForgeEventHandler {
 
 	@SubscribeEvent
 	public void onEntityDamaged(LivingAttackEvent event) {
-		if (!(event.entityLiving instanceof EntityPlayer))return;
+		if (!(event.entityLiving instanceof EntityPlayer)) return;
 
-		EntityPlayer player = (EntityPlayer)event.entityLiving;
-		if (event.source.isFireDamage() && ArmorEffectHandler.getFireImunity(player)) {
+		EntityPlayer player = (EntityPlayer) event.entityLiving;
+		if (event.source.isFireDamage() && ArmorEffectHandler.getFireImunity(player))
+		{
 			event.setCanceled(true);
 			event.entityLiving.extinguish();
 		}
 
-		if (event.source.damageType.equals("fall") && ArmorEffectHandler.getHasJumpBoost(player)) {
-			if (event.ammount < (ArmorEffectHandler.getJumpLevel(player)+1)*2) event.setCanceled(true);
+		if (event.source.damageType.equals("fall") && ArmorEffectHandler.getHasJumpBoost(player))
+		{
+			if (event.ammount < (ArmorEffectHandler.getJumpLevel(player) + 1) * 2) event.setCanceled(true);
 		}
 
-		if ((event.source.damageType.equals("inWall") || event.source.damageType.equals("drown")) && (ArmorEffectHandler.isWyvernArmor(player, 4) || ArmorEffectHandler.isDraconicArmor(player, 4))) {
-			if (event.ammount <= 2f)  event.setCanceled(true);
+		if ((event.source.damageType.equals("inWall") || event.source.damageType.equals("drown")) && (ArmorEffectHandler.isWyvernArmor(player, 4) || ArmorEffectHandler.isDraconicArmor(player, 4)))
+		{
+			if (event.ammount <= 2f) event.setCanceled(true);
 		}
 	}
 
 	@SubscribeEvent
 	public void onDropEvent(LivingDropsEvent event) {
-		if (event.entity instanceof EntityDragon && !event.entity.worldObj.isRemote) {
+
+		if (!event.entity.worldObj.isRemote && ((event.entity instanceof EntityDragon) || (EntityList.getEntityString(event.entity) != null && !EntityList.getEntityString(event.entity).isEmpty() && EntityList.getEntityString(event.entity).equals("HardcoreEnderExpansion.Dragon"))))
+		{
 			EntityItem item = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(ModItems.dragonHeart));
-			//event.entity.worldObj.spawnEntityInWorld(item);
 			event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, ((int) event.entity.posX) + 0.5, event.entity.posY, ((int) event.entity.posZ) + 0.5));
 			if (event.entity instanceof EntityCustomDragon && ((EntityCustomDragon) event.entity).getIsUber())
-				event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, event.entity.posX, event.entity.posY+2, event.entity.posZ));
-				//event.entity.worldObj.spawnEntityInWorld(item);
+				event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, event.entity.posX, event.entity.posY + 2, event.entity.posZ));
 
 			for (Object o : event.entity.worldObj.playerEntities)
 			{
 				LogHelper.info(o);
-				if (o instanceof EntityPlayer) ((EntityPlayer)o).addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
+				if (o instanceof EntityPlayer)
+					((EntityPlayer) o).addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
 
 			}
 
 			int count = 30 + event.entity.worldObj.rand.nextInt(30);
-			for (int i = 0; i < count; i++) {
+			for (int i = 0; i < count; i++)
+			{
 				float mm = 0.3F;
 				EntityItem item2 = new EntityItem(event.entity.worldObj, event.entity.posX - 2 + event.entity.worldObj.rand.nextInt(4), event.entity.posY - 2 + event.entity.worldObj.rand.nextInt(4), event.entity.posZ - 2 + event.entity.worldObj.rand.nextInt(4), new ItemStack(ModItems.draconiumDust));
 				item.motionX = mm * ((((float) event.entity.worldObj.rand.nextInt(100)) / 100F) - 0.5F);
@@ -117,14 +125,16 @@ public class MinecraftForgeEventHandler {
 			}
 		}
 
-		if (event.entity.worldObj.isRemote || !(event.source.damageType.equals("player") || event.source.damageType.equals("arrow")) || !isValidEntity(event.entityLiving)) {
+		if (event.entity.worldObj.isRemote || !(event.source.damageType.equals("player") || event.source.damageType.equals("arrow")) || !isValidEntity(event.entityLiving))
+		{
 			return;
 		}
 
 		EntityLivingBase entity = event.entityLiving;
 		Entity attacker = event.source.getEntity();
 
-		if (attacker == null || !(attacker instanceof EntityPlayer)) {
+		if (attacker == null || !(attacker instanceof EntityPlayer))
+		{
 			return;
 		}
 
@@ -137,41 +147,49 @@ public class MinecraftForgeEventHandler {
 		int rand2 = random.nextInt(Math.max(ConfigHandler.passiveSoulDropChance / dropChanceModifier, 1));
 		boolean isAnimal = entity instanceof EntityAnimal;
 
-		if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
+		if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal))
+		{
 			ItemStack soul = new ItemStack(ModItems.mobSoul);
 			String name = EntityList.getEntityString(entity);
 			ItemNBTHelper.setString(soul, "Name", name);
-			if (entity instanceof EntitySkeleton) ItemNBTHelper.setInteger(soul, "SkeletonType", ((EntitySkeleton)entity).getSkeletonType());
+			if (entity instanceof EntitySkeleton)
+				ItemNBTHelper.setInteger(soul, "SkeletonType", ((EntitySkeleton) entity).getSkeletonType());
 			world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
 			Achievements.triggerAchievement((EntityPlayer) attacker, "draconicevolution.soul");
 		}
 	}
 
-	private int getDropChanceFromItem(ItemStack stack){
+	private int getDropChanceFromItem(ItemStack stack) {
 		int chance = 0;
 		if (stack == null) return 0;
 		if (stack.getItem().equals(ModItems.wyvernBow) || stack.getItem().equals(ModItems.wyvernSword)) chance++;
-		if (stack.getItem().equals(ModItems.draconicSword) || stack.getItem().equals(ModItems.draconicBow)) chance+=2;
-		if (stack.getItem().equals(ModItems.draconicDestructionStaff)) chance+=3;
+		if (stack.getItem().equals(ModItems.draconicSword) || stack.getItem().equals(ModItems.draconicBow)) chance += 2;
+		if (stack.getItem().equals(ModItems.draconicDestructionStaff)) chance += 3;
 
 		chance += EnchantmentHelper.getEnchantmentLevel(ConfigHandler.reaperEnchantID, stack);
 		return chance;
 	}
 
 	private boolean isValidEntity(EntityLivingBase entity) {
-		if (entity instanceof IBossDisplayData) {
+		if (entity instanceof IBossDisplayData)
+		{
 			return false;
 		}
-		for (int i = 0; i < ConfigHandler.spawnerList.length; i++) {
-			if (ConfigHandler.spawnerList[i].equals(entity.getCommandSenderName()) && ConfigHandler.spawnerListType) {
+		for (int i = 0; i < ConfigHandler.spawnerList.length; i++)
+		{
+			if (ConfigHandler.spawnerList[i].equals(entity.getCommandSenderName()) && ConfigHandler.spawnerListType)
+			{
 				return true;
-			} else if (ConfigHandler.spawnerList[i].equals(entity.getCommandSenderName()) && !ConfigHandler.spawnerListType) {
+			} else if (ConfigHandler.spawnerList[i].equals(entity.getCommandSenderName()) && !ConfigHandler.spawnerListType)
+			{
 				return false;
 			}
 		}
-		if (ConfigHandler.spawnerListType) {
+		if (ConfigHandler.spawnerListType)
+		{
 			return false;
-		} else {
+		} else
+		{
 			return true;
 		}
 	}
@@ -220,7 +238,8 @@ public class MinecraftForgeEventHandler {
 	@SubscribeEvent
 	public void stopUsingEvent(PlayerUseItemEvent.Start event) {
 		if (!ConfigHandler.pigmenBloodRage || event.item == null || event.item.getItem() == null) return;
-		if (event.item.getItem() == Items.porkchop || event.item.getItem() == Items.cooked_porkchop) {
+		if (event.item.getItem() == Items.porkchop || event.item.getItem() == Items.cooked_porkchop)
+		{
 			World world = event.entityPlayer.worldObj;
 			if (world.isRemote) return;
 			EntityPlayer player = event.entityPlayer;
@@ -231,7 +250,8 @@ public class MinecraftForgeEventHandler {
 
 			boolean flag = false;
 
-			for (Object o : list) {
+			for (Object o : list)
+			{
 				if (o instanceof EntityPigZombie)
 				{
 					EntityPigZombie zombie = (EntityPigZombie) o;
@@ -254,7 +274,8 @@ public class MinecraftForgeEventHandler {
 						e.printStackTrace();
 					}
 
-					if (Math.abs(zombie.posX - player.posX) < 14 && Math.abs(zombie.posY - player.posY) < 14 && Math.abs(zombie.posZ - player.posZ) < 14) flag = true;
+					if (Math.abs(zombie.posX - player.posX) < 14 && Math.abs(zombie.posY - player.posY) < 14 && Math.abs(zombie.posZ - player.posZ) < 14)
+						flag = true;
 					zombie.addPotionEffect(new PotionEffect(5, 10000, 3));
 					zombie.addPotionEffect(new PotionEffect(11, 10000, 2));
 				}
@@ -266,15 +287,16 @@ public class MinecraftForgeEventHandler {
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void joinWorld(EntityJoinWorldEvent event){
-		if (event.entity instanceof EntityPlayerSP) {
+	public void joinWorld(EntityJoinWorldEvent event) {
+		if (event.entity instanceof EntityPlayerSP)
+		{
 			DraconicEvolution.network.sendToServer(new MountUpdatePacket(0));
 		}
 	}
 
 	@SubscribeEvent
-	public void getBreakSpeed(PlayerEvent.BreakSpeed event){
-		if (event.entityPlayer != null )
+	public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
+		if (event.entityPlayer != null)
 		{
 			float newDigSpeed = event.originalSpeed;
 			if (event.entityPlayer.isInsideOfMaterial(Material.water))
@@ -287,5 +309,10 @@ public class MinecraftForgeEventHandler {
 			}
 			event.newSpeed = newDigSpeed;
 		}
+	}
+
+	@SubscribeEvent
+	public void worldUnload(WorldEvent.Unload e) {
+		TileGrinder.fakePlayer = null;
 	}
 }

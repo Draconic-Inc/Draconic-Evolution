@@ -65,9 +65,9 @@ public class DraconicDistructionStaff extends ItemTool implements IEnergyContain
 		super(0F, ModItems.DRACONIUM_T3, minableBlocks);
 		this.setUnlocalizedName(Strings.draconicDStaffName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
-		this.setHarvestLevel("pickaxe", 4);
-		this.setHarvestLevel("shovel", 4);
-		this.setHarvestLevel("axe", 4);
+		this.setHarvestLevel("pickaxe", 10);
+		this.setHarvestLevel("shovel", 10);
+		this.setHarvestLevel("axe", 10);
 		GameRegistry.registerItem(this, Strings.draconicDStaffName);
 	}
 

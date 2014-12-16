@@ -70,8 +70,8 @@ public class TeleporterStand extends BlockCustomDrop {
 			return true;
 		}
 
-		if(tile.getStackInSlot(0) != null && !player.isSneaking()){
-			tile.getStackInSlot(0).useItemRightClick(world, player);
+		if(tile.getStackInSlot(0) != null && !player.isSneaking() && tile.getStackInSlot(0).getItem() instanceof TeleporterMKI){
+			((TeleporterMKI)tile.getStackInSlot(0).getItem()).getLocation(tile.getStackInSlot(0)).sendEntityToCoords(player);
 			return true;
 		}
 

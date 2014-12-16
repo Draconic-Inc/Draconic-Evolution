@@ -12,10 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class FMLEventHandler {
 
@@ -45,7 +42,10 @@ public class FMLEventHandler {
 				walkSpeed.setFloat(player.capabilities, 0.1f);
 			}
 			catch (IllegalAccessException e) {
-				LogHelper.error(e);
+				e.printStackTrace();
+			}
+			catch (ConcurrentModificationException e) {
+				e.printStackTrace();
 			}
 		}
 

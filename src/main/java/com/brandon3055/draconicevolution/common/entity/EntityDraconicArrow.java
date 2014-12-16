@@ -253,7 +253,7 @@ public class EntityDraconicArrow extends EntityArrow {
 					}
 
 					movingobjectposition.entityHit.hurtResistantTime = 0;
-					if (movingobjectposition.entityHit instanceof EntityDragonPart)
+					if (movingobjectposition.entityHit instanceof EntityDragonPart && ((EntityDragonPart)movingobjectposition.entityHit).entityDragonObj instanceof EntityDragon)
 					{
 						((EntityDragon)((EntityDragonPart)movingobjectposition.entityHit).entityDragonObj).hurtResistantTime = 0;
 					}
@@ -314,7 +314,6 @@ public class EntityDraconicArrow extends EntityArrow {
 					this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
 					this.inGround = true;
 					this.arrowShake = 7;
-					this.setIsCritical(false);
 
 					if (this.field_145790_g.getMaterial() != Material.air) {
 						this.field_145790_g.onEntityCollidedWithBlock(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f, this);

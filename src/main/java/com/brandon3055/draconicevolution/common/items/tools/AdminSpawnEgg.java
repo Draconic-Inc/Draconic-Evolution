@@ -63,7 +63,7 @@ public class AdminSpawnEgg extends ItemDE {
 		if (ItemNBTHelper.getBoolean(stack1, "IsSet", false)) return true;
 		NBTTagCompound compound = ItemNBTHelper.getCompound(stack1);
 		entity.writeToNBT(compound);
-		compound.setString("EntityName", EntityList.getEntityString(entity));
+		if (EntityList.getEntityString(entity) != null)compound.setString("EntityName", EntityList.getEntityString(entity));
 		stack1.setTagCompound(compound);
 		ItemNBTHelper.setBoolean(stack1, "IsSet", true);
 		entity.setDead();

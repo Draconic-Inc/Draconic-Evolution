@@ -20,7 +20,9 @@ public class Tclogo extends ItemDE {
 		//this.setCreativeTab(draconicevolution.getCreativeTab());
 		ModItems.register(this);
 	}
-	
+
+
+
 	@Override
 	public int getMaxItemUseDuration(ItemStack par1ItemStack)
 	{
@@ -73,6 +75,7 @@ public class Tclogo extends ItemDE {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 
+
 		if (!player.isSneaking())
 		{
 			player.capabilities.allowFlying = true;
@@ -82,19 +85,20 @@ public class Tclogo extends ItemDE {
 			player.noClip = !player.noClip;
 
 		}
-		else{
+		else
+		{
 			int xi = (int)player.posX;
 			int yi = (int)player.posY;
 			int zi = (int)player.posZ;
 			int rad = 100;
 
-		for (int x = xi-rad; x < xi+rad; x++){
-			for (int y = yi-10; y < yi+30; y++){
-				for (int z = zi-rad; z < zi+rad; z++){
-					world.markBlockForUpdate(x, y, z);
+			for (int x = xi-rad; x < xi+rad; x++){
+				for (int y = yi-10; y < yi+30; y++){
+					for (int z = zi-rad; z < zi+rad; z++){
+						world.markBlockForUpdate(x, y, z);
+					}
 				}
 			}
-		}
 
 
 			world.markBlockRangeForRenderUpdate(xi-rad, yi-20, zi-rad, xi+rad, yi+20, zi+rad);
@@ -163,10 +167,10 @@ public class Tclogo extends ItemDE {
 	@Override
 	public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
 	{
-		LogHelper.info(player.worldObj.getBlock(X, Y, Z).getMaterial());
+		LogHelper.info(player.worldObj.getBlock(X, Y, Z).getHarvestLevel(player.worldObj.getBlockMetadata(X, Y, Z)));
 		//player.worldObj.scheduleBlockUpdate(X, Y, Z, player.worldObj.getBlock(X, Y, Z), 10);
 
-		return true;
+		return false;
 	}
 	
 	@Override

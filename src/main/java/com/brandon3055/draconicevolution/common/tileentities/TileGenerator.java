@@ -72,10 +72,13 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 			int itemBurnTime = getItemBurnTime(items[0]);
 
 			if (itemBurnTime > 0) {
-				decrStackSize(0, 1);
+				--items[0].stackSize;
+				if (this.items[0].stackSize == 0)
+				{
+					this.items[0] = items[0].getItem().getContainerItem(items[0]);
+				}
 				burnTime = itemBurnTime;
 				burnTimeRemaining = itemBurnTime;
-				//LogHelper.info(itemBurnTime);
 			}
 		}
 	}

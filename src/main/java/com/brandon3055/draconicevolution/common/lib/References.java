@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.common.lib;
 public final class References {
 	public static final String MODID = "DraconicEvolution";
 	public static final String MODNAME = "Draconic Evolution";
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "1.0.0c";
 	public static final String MCVERSION = "1.7.10";
 	public static final String CLIENTPROXYLOCATION = "com.brandon3055.draconicevolution.client.ClientProxy";
 	public static final String COMMONPROXYLOCATION = "com.brandon3055.draconicevolution.common.CommonProxy";

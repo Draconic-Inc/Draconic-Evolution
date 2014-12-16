@@ -3,16 +3,15 @@ package com.brandon3055.draconicevolution.common.tileentities;
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.common.network.ObjectPacket;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -24,10 +23,14 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.UUID;
 
 public class TileGrinder extends TileObjectSync implements ISidedInventory, IEnergyHandler {
 	//########### variables #############//
@@ -50,6 +53,7 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	public EnergyStorage externalInputBuffer = new EnergyStorage(100000, 32000, 0);
 	public int energyPerKill = 1000;
 	private static Field recentlyHit;
+	public static FakePlayer fakePlayer;
 
 	public void updateVariables() {
 		if (meta == -1) meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
@@ -133,7 +137,11 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 			int itemBurnTime = getItemBurnTime(items[0]);
 
 			if (itemBurnTime > 0) {
-				decrStackSize(0, 1);
+				--items[0].stackSize;
+				if (this.items[0].stackSize == 0)
+				{
+					this.items[0] = items[0].getItem().getContainerItem(items[0]);
+				}
 				burnTime = itemBurnTime;
 				burnTimeRemaining = itemBurnTime;
 			}
@@ -143,6 +151,7 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	@SuppressWarnings("unchecked")
 	public boolean killNextEntity() {
 		if (worldObj.isRemote) return false;
+		if (fakePlayer == null) fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.randomUUID(), "[Draconic-Evolution]"));
 		killBox = AxisAlignedBB.getBoundingBox(centreX - 4.5, centreY - 4.5, centreZ - 4.5, centreX + 4.5, centreY + 4.5, centreZ + 4.5);
 
 		killList = worldObj.getEntitiesWithinAABB(EntityLiving.class, killBox);
@@ -151,18 +160,26 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 			EntityLiving mob = killList.get(worldObj.rand.nextInt(killList.size()));
 			if (mob instanceof EntityCreature) {
 				if (mob.isEntityAlive()) {
-					if (recentlyHit == null) {
-						recentlyHit = ReflectionHelper.findField(EntityLivingBase.class,  "recentlyHit", "field_70718_bc");
-						recentlyHit.setAccessible(true);
+					if (mob instanceof EntitySkeleton && ((EntitySkeleton) mob).getSkeletonType() == 1)
+					{
+						if (worldObj.rand.nextInt(200) < 5) mob.entityDropItem(new ItemStack(Items.skull, 1, 1), 0);
 					}
-					try {
-						recentlyHit.setInt(mob, 60);
-					}
-					catch (IllegalAccessException e) {
-						LogHelper.error(e);
-					}
+					mob.attackEntityFrom(DamageSource.causePlayerDamage(fakePlayer), 50000F);
+					//mob.attackEntityFrom(DamageSource.causePlayerDamage(FakePlayerFactory.getMinecraft((WorldServer)worldObj)), 50000F);
 
-					mob.attackEntityFrom(DamageSource.generic, 50000F);
+//					if (recentlyHit == null) {
+//						recentlyHit = ReflectionHelper.findField(EntityLivingBase.class, "recentlyHit", "field_70718_bc");
+//						recentlyHit.setAccessible(true);
+//					}
+//					try {
+//						recentlyHit.setInt(mob, 0);
+//					}
+//					catch (IllegalAccessException e)
+//					{
+//						LogHelper.error(e);
+//					}
+
+//					mob.attackEntityFrom(DamageSource.generic, 50000F);
 					readyNext = true;
 					return true;
 				}
@@ -170,21 +187,22 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 				return false;
 			} else {
 				if (mob.isEntityAlive()) {
-					if (recentlyHit == null) {
-						recentlyHit = ReflectionHelper.findField(EntityLivingBase.class,  "recentlyHit", "field_70718_bc");
-						recentlyHit.setAccessible(true);
-					}
-					try {
-						recentlyHit.setInt(mob, 60);
-						LogHelper.info(recentlyHit.getInt(mob));
-					}
-					catch (IllegalAccessException e) {
-						LogHelper.error(e);
-					}
-
-					mob.attackEntityFrom(DamageSource.generic, 50000F);
-					readyNext = true;
-					return true;
+					mob.attackEntityFrom(DamageSource.causePlayerDamage(fakePlayer), 50000F);
+//					if (recentlyHit == null) {
+//						recentlyHit = ReflectionHelper.findField(EntityLivingBase.class,  "recentlyHit", "field_70718_bc");
+//						recentlyHit.setAccessible(true);
+//					}
+//					try {
+//						recentlyHit.setInt(mob, 60);
+//						LogHelper.info(recentlyHit.getInt(mob));
+//					}
+//					catch (IllegalAccessException e) {
+//						LogHelper.error(e);
+//					}
+//
+//					mob.attackEntityFrom(DamageSource.generic, 50000F);
+//					readyNext = true;
+//					return true;
 				}
 				readyNext = true;
 				return false;
