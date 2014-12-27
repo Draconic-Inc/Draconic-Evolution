@@ -438,6 +438,7 @@ entity.DraconicEvolution.EnderDragon.name=Ender Dragon
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
 key.placeItem=Place Item in world
+key.toolConfig=Tool Config GUI
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian

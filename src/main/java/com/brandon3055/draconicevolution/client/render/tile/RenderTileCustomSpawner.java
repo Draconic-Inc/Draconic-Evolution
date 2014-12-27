@@ -30,7 +30,7 @@ public class RenderTileCustomSpawner extends TileEntitySpecialRenderer
 		GL11.glPopMatrix();
 	}
 
-	public void renderTile(CustomSpawnerBaseLogic customSpawnerBaseLogic, double x, double y, double z, float p_147517_7_)
+	public void renderTile(CustomSpawnerBaseLogic customSpawnerBaseLogic, double x, double y, double z, float partialTick)
 	{
 		Tessellator tessellator = Tessellator.instance;
 
@@ -38,16 +38,17 @@ public class RenderTileCustomSpawner extends TileEntitySpecialRenderer
 
 		if (entity != null)
 		{
+			if (customSpawnerBaseLogic.powered) partialTick = 0f;
 			GL11.glPushMatrix();
 			entity.setWorld(customSpawnerBaseLogic.getSpawnerWorld());
 			float f1 = 0.4375F;
 			GL11.glTranslatef(0.0F, 0.4F, 0.0F);
-			GL11.glRotatef((float) (customSpawnerBaseLogic.renderRotation1 + (customSpawnerBaseLogic.renderRotation0 - customSpawnerBaseLogic.renderRotation1) * (double) p_147517_7_) * 10.0F, 0.0F, 1.0F, 0.0F);
+			GL11.glRotatef((float) (customSpawnerBaseLogic.renderRotation1 + (customSpawnerBaseLogic.renderRotation0 - customSpawnerBaseLogic.renderRotation1) * (double) partialTick) * 10.0F, 0.0F, 1.0F, 0.0F);
 			GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.4F, 0.0F);
 			GL11.glScalef(f1, f1, f1);
 			entity.setLocationAndAngles(x, y, z, 0.0F, 0.0F);
-			RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, p_147517_7_);
+			RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTick);
 			GL11.glPopMatrix();
 		}
 		{

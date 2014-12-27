@@ -13,9 +13,12 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class KeyBindings {
 	public static KeyBinding placeItem;
+	public static KeyBinding toolConfig;
 
 	public static void init() {
 		placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_P, References.MODNAME);
+		toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_C, References.MODNAME);
 		ClientRegistry.registerKeyBinding(placeItem);
+		ClientRegistry.registerKeyBinding(toolConfig);
 	}
 }

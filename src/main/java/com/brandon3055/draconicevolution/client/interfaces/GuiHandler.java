@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.interfaces;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.interfaces.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.client.interfaces.manual.GuiManual;
 import com.brandon3055.draconicevolution.common.container.*;
 import com.brandon3055.draconicevolution.common.tileentities.*;
@@ -23,6 +24,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int GUIID_MANUAL = 9;
 	public static final int GUIID_DISSENCHANTER = 10;
 	public static final int GUIID_DRACONIC_CHEST = 11;
+	public static final int GUIID_TOOL_CONFIG = 12;
 	public static final int GUIID_CONTAINER_TEMPLATE = 100;
 
 	public GuiHandler() {
@@ -152,6 +154,8 @@ public class GuiHandler implements IGuiHandler {
 					return new GUIDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
 				}
 				break;
+			case GUIID_TOOL_CONFIG:
+				return new GUIToolConfig(player);
 
 //			case GUIID_CONTAINER_TEMPLATE:
 //				TileEntity containerTemp = world.getTileEntity(x, y, z);

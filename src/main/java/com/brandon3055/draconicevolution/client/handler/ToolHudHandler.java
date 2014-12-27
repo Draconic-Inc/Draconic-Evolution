@@ -22,7 +22,7 @@ public class ToolHudHandler {
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void drawDislocationFocusHUD(RenderGameOverlayEvent.Post event) {
+	public void drawToolHUD(RenderGameOverlayEvent.Post event) {
 		if (event.type == RenderGameOverlayEvent.ElementType.ALL && tooltipDisplayTicks > 0 && !MathHelper.stringNullOrLengthZero(currentTooltip)) {
 			Minecraft mc = Minecraft.getMinecraft();
 			ScaledResolution var5 = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
