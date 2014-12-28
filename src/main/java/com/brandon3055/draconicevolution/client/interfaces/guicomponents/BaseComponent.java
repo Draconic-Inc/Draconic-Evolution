@@ -7,7 +7,7 @@ package com.brandon3055.draconicevolution.client.interfaces.guicomponents;
 import net.minecraft.client.gui.GuiScreen;
 
 /**Base class for gui components*/
-public class GUIComponentBase extends GuiScreen {
+public class BaseComponent extends GuiScreen {
 
 	public boolean componentEnabled = true;
 
