@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.client.interfaces.componentguis;
 
-import com.brandon3055.draconicevolution.client.interfaces.guicomponents.ComponentGUI;
+import com.brandon3055.draconicevolution.client.interfaces.guicomponents.GUIBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Created by Brandon on 26/12/2014.
  */
-public class GUIToolConfig extends ComponentGUI {
+public class GUIToolConfig extends GUIBase {
 
 	EntityPlayer player;
 

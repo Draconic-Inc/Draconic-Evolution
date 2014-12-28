@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**Base class for guis that use gui components*/
-public abstract class ComponentGUI extends GuiScreen {
+public abstract class GUIBase extends GuiScreen {
 
-	List<BaseComponent> guiComponents = new ArrayList<BaseComponent>();
+	List<ComponentBase> guiComponents = new ArrayList<ComponentBase>();
 
-	public ComponentGUI(){
+	public GUIBase(){
 	}
 
 	public abstract void addComponents();
@@ -23,13 +23,13 @@ public abstract class ComponentGUI extends GuiScreen {
 	@Override
 	public void drawScreen(int x, int y, float f) {
 		super.drawScreen(x, y, f);
-		for (BaseComponent b : guiComponents) b.drawScreen(x, y, f);
+		//for (ComponentBase b : guiComponents) b.drawScreen(x, y, f);
 	}
 
 	@Override
 	protected void mouseClicked(int x, int y, int button) {
 		super.mouseClicked(x, y, button);
-		for (BaseComponent b : guiComponents) b.mouseClick(x, y, button);
+		//for (ComponentBase b : guiComponents) b.mouseClick(x, y, button);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public abstract class ComponentGUI extends GuiScreen {
 
 	@Override
 	public void updateScreen() {
-		for (BaseComponent b : guiComponents) b.updateScreen();
+		//for (ComponentBase b : guiComponents) b.updateScreen();
 	}
 
 	@Override
