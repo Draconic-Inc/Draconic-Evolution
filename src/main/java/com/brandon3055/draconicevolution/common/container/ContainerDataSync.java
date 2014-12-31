@@ -1,7 +1,8 @@
 package com.brandon3055.draconicevolution.common.container;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.TileObjectPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,7 +22,7 @@ public abstract class ContainerDataSync extends Container {
 	 */
 	public Object sendObject(TileObjectSync tile, short dataType, int index, Object object){
 		for (Object p : crafters){
-			DraconicEvolution.network.sendTo(new ObjectPacket(tile, ObjectPacket.INT, index, object), (EntityPlayerMP)p);
+			DraconicEvolution.network.sendTo(new TileObjectPacket(tile, References.INT_ID, index, object), (EntityPlayerMP)p);
 		}
 		return object;
 	}

@@ -36,10 +36,10 @@ public class RenderBow implements IItemRenderer {
 	}
 
 	@Override
-//HandleRenderType lets forge know if it will render the item in the requested view.
+//HandleRenderType lets forge know if it will renderBackground the item in the requested view.
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
-//You can remove everything after "EQUIPPED" if you only want this class to render the third person item.
+//You can remove everything after "EQUIPPED" if you only want this class to renderBackground the third person item.
 		return type == ItemRenderType.EQUIPPED;// || type == ItemRenderType.EQUIPPED_FIRST_PERSON;
 	}
 
@@ -71,7 +71,7 @@ public class RenderBow implements IItemRenderer {
 			GL11.glScalef(f2, f2, f2);
 			GL11.glTranslatef(0.15F, -0.1875F, 0.1875F);
 
-// render the item as 'real' bow
+// renderBackground the item as 'real' bow
 //This is pulled from RenderBiped
 			float f3 = 0.625F;
 			GL11.glTranslatef(0.0F, 0.125F, 0.3125F);

@@ -15,7 +15,15 @@ public final class ItemNBTHelper {
 		else
 			return stack.getTagCompound();	
 	}
-	
+
+	public static ItemStack setByte(ItemStack stack, String tag, byte b)
+	{
+		NBTTagCompound compound = getCompound(stack);
+		compound.setByte(tag, b);
+		stack.setTagCompound(compound);
+		return stack;
+	}
+
 	public static ItemStack setBoolean(ItemStack stack, String tag, boolean b)
 	{
 		NBTTagCompound compound = getCompound(stack);
@@ -36,6 +44,14 @@ public final class ItemNBTHelper {
 	{
 		NBTTagCompound compound = getCompound(stack);
 		compound.setInteger(tag, i);
+		stack.setTagCompound(compound);
+		return stack;
+	}
+
+	public static ItemStack setLong(ItemStack stack, String tag, long i)
+	{
+		NBTTagCompound compound = getCompound(stack);
+		compound.setLong(tag, i);
 		stack.setTagCompound(compound);
 		return stack;
 	}
@@ -72,7 +88,11 @@ public final class ItemNBTHelper {
 		else
 			return stack.getTagCompound().hasKey(tag);
 	}
-	
+
+	public static byte getByte(ItemStack stack, String tag, byte defaultExpected) {
+		return verifyExistance(stack, tag) ? stack.getTagCompound().getByte(tag) : defaultExpected;
+	}
+
 	public static boolean getBoolean(ItemStack stack, String tag, boolean defaultExpected) {
 		return verifyExistance(stack, tag) ? stack.getTagCompound().getBoolean(tag) : defaultExpected;
 	}
@@ -84,7 +104,11 @@ public final class ItemNBTHelper {
 	public static int getInteger(ItemStack stack, String tag, int defaultExpected) {
 		return verifyExistance(stack, tag) ? stack.getTagCompound().getInteger(tag) : defaultExpected;
 	}
-	
+
+	public static long getLong(ItemStack stack, String tag, long defaultExpected) {
+		return verifyExistance(stack, tag) ? stack.getTagCompound().getLong(tag) : defaultExpected;
+	}
+
 	public static float getFloat(ItemStack stack, String tag, float defaultExpected) {
 		return verifyExistance(stack, tag) ? stack.getTagCompound().getFloat(tag) : defaultExpected;
 	}

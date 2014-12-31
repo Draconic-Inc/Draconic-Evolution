@@ -2,70 +2,110 @@ package com.brandon3055.draconicevolution.client.interfaces.guicomponents;
 
 /**
  * Created by Brandon on 25/12/2014.
+ * This class is copied from open blocks
  */
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.inventory.Container;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
-import java.util.ArrayList;
-import java.util.List;
+public abstract class GUIBase extends GuiContainer {
 
-/**Base class for guis that use gui components*/
-public abstract class GUIBase extends GuiScreen {
+	protected ComponentCollection collection;
 
-	List<ComponentBase> guiComponents = new ArrayList<ComponentBase>();
-
-	public GUIBase(){
+	public GUIBase(Container container, int xSize, int ySize) {
+		super(container);
+		this.xSize = xSize;
+		this.ySize = ySize;
+		collection = assembleComponents();
 	}
 
-	public abstract void addComponents();
+	protected abstract ComponentCollection assembleComponents();
 
-	@Override
-	public void drawScreen(int x, int y, float f) {
-		super.drawScreen(x, y, f);
-		//for (ComponentBase b : guiComponents) b.drawScreen(x, y, f);
-	}
+	protected void addDependentComponents(){}
 
 	@Override
 	protected void mouseClicked(int x, int y, int button) {
 		super.mouseClicked(x, y, button);
-		//for (ComponentBase b : guiComponents) b.mouseClick(x, y, button);
+		if (collection.isMouseOver(x - this.guiLeft, y - this.guiTop)) {
+			collection.mouseClicked(x - this.guiLeft, y - this.guiTop, button);
+		}
 	}
 
 	@Override
 	protected void mouseMovedOrUp(int x, int y, int button) {
 		super.mouseMovedOrUp(x, y, button);
+		if (collection.isMouseOver(x - this.guiLeft, y - this.guiTop)) {
+			//if (button >= 0) collection.mouseUp(x - this.guiLeft, y - this.guiTop, button);
+		}
 	}
 
 	@Override
 	protected void mouseClickMove(int x, int y, int button, long time) {
+		super.mouseClickMove(x, y, button, time);
+		//if (collection.isMouseOver(x - this.guiLeft, y - this.guiTop)) collection.mouseDrag(x - this.guiLeft, y - this.guiTop, button, time);
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) {
+	protected void keyTyped(char par1, int par2) {
+		super.keyTyped(par1, par2);
+		//collection.keyTyped(par1, par2);
+	}
+
+	public void preRender(float mouseX, float mouseY) {}
+
+	public void postRender(int mouseX, int mouseY) {}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
+		preRender(mouseX, mouseY);
+		GL11.glPushMatrix();
+		GL11.glTranslated(this.guiLeft, this.guiTop, 0);
+		collection.renderBackground(this.mc, 0, 0, mouseX - this.guiLeft, mouseY - this.guiTop);
+		GL11.glPopMatrix();
+		postRender(mouseX, mouseY);
 	}
 
 	@Override
-	protected void keyTyped(char keyChar, int keyInt) {
-		super.keyTyped(keyChar, keyInt);
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		prepareRenderState();
+		GL11.glPushMatrix();
+		collection.renderForground(this.mc, 0, 0, mouseX - this.guiLeft, mouseY - this.guiTop);
+		GL11.glPopMatrix();
+		restoreRenderState();
 	}
 
 	@Override
-	public void updateScreen() {
-		//for (ComponentBase b : guiComponents) b.updateScreen();
+	public void drawScreen(int mouseX, int mouseY, float par3) {
+		super.drawScreen(mouseX, mouseY, par3);
+		prepareRenderState();
+		GL11.glPushMatrix();
+		collection.renderFinal(this.mc, this.guiLeft, this.guiTop, mouseX - this.guiLeft, mouseY - this.guiTop);
+		GL11.glPopMatrix();
+		restoreRenderState();
+	}
+
+	protected void prepareRenderState() {
+		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		RenderHelper.disableStandardItemLighting();
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+	}
+
+	protected void restoreRenderState() {
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		RenderHelper.enableStandardItemLighting();
 	}
 
 	@Override
-	public boolean doesGuiPauseGame() {
-		return false;
+	public void setWorldAndResolution(Minecraft mc, int width, int height) {
+		super.setWorldAndResolution(mc, width, height);
+		collection.setWorldAndResolution(mc, width, height);
+
 	}
-
-	@Override
-	public void initGui() {
-		super.initGui();
-	}
-
-	public abstract int getSizeX();
-
-	public abstract int getSizeY();
 }

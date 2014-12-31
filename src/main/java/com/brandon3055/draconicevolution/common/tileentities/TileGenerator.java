@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -245,7 +245,7 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 	}
 
 	private void detectAndSentChanges(boolean sendAnyway){
-		if (isBurning != isBurningCach || sendAnyway) isBurningCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 0, isBurning);
+		if (isBurning != isBurningCach || sendAnyway) isBurningCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, isBurning);
 	}
 
 	@SideOnly(Side.CLIENT)

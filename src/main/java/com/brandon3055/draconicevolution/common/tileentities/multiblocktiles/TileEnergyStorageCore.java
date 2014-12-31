@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
@@ -784,7 +784,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 	private void detectAndRendChanges(){
 		int diff = (int)Math.abs(lastTickCapacity - energy);
-		if (diff > 100000) lastTickCapacity = (Double)sendObject(ObjectPacket.DOUBLE, 0, energy);
+		if (diff > 100000) lastTickCapacity = (Double)sendObject(References.DOUBLE_ID, 0, energy);
 	}
 
 	@Override

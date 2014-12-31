@@ -219,7 +219,7 @@ public class RenderDragon extends RenderLiving
 	}
 
 	/**
-	 * Queries whether should render the specified pass or not.
+	 * Queries whether should renderBackground the specified pass or not.
 	 */
 	protected int shouldRenderPass(EntityCustomDragon p_77032_1_, int p_77032_2_, float p_77032_3_)
 	{
@@ -262,7 +262,7 @@ public class RenderDragon extends RenderLiving
 	}
 
 	/**
-	 * Queries whether should render the specified pass or not.
+	 * Queries whether should renderBackground the specified pass or not.
 	 */
 	protected int shouldRenderPass(EntityLivingBase p_77032_1_, int p_77032_2_, float p_77032_3_)
 	{

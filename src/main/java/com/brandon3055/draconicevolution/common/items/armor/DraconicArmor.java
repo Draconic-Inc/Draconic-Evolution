@@ -5,7 +5,9 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigValue;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -27,13 +29,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem {//TODO Wings
+public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem {//TODO Wings
 	private IIcon helmIcon;
 	private IIcon chestIcon;
 	private IIcon leggsIcon;
@@ -43,12 +46,21 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	private int maxTransfer = References.DRACONICTRANSFER;
 	private int maxEnergy = References.DRACONICCAPACITY;
 	private int energyPerDamage = 80;
+//	private Map<String, Byte> fieldsHelm;
+//	private Map<String, Byte> fieldsChest;
+//	private Map<String, Byte> fieldsLeggs;
+//	private Map<String, Byte> fieldsBoots;
 
 	public DraconicArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		GameRegistry.registerItem(this, name);
+
+//		fieldsHelm.put("NVActive", References.BOOLEAN_ID);
+//		fieldsChest.put("FlightLock", References.BOOLEAN_ID);
+//		fieldsLeggs.put("SpeedMult", References.FLOAT_ID);
+//		fieldsLeggs.put("JumpMult", References.FLOAT_ID);
 	}
 
 	@Override
@@ -255,5 +267,49 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Override
 	public boolean hasCustomEntity(ItemStack stack) {
 		return true;
+	}
+
+//	@Override
+//	public String[] getNames(ItemStack stack) {
+//		String[] s = new String[1];
+//
+//		if (armorType == 0)
+//			return fieldsHelm.keySet().toArray(s);
+//		else if (armorType == 1)
+//			return fieldsChest.keySet().toArray(s);
+//		else if (armorType == 2)
+//			return fieldsLeggs.keySet().toArray(s);
+//		else if (armorType == 3)
+//			return fieldsBoots.keySet().toArray(s);
+//
+//		return null;
+//	}
+//
+//	@Override
+//	public int getDataType(String name) {
+//		if (fieldsHelm.containsKey(name)) return fieldsHelm.get(name);
+//		else if (fieldsChest.containsKey(name)) return fieldsChest.get(name);
+//		else if (fieldsLeggs.containsKey(name)) return fieldsLeggs.get(name);
+//		else if (fieldsBoots.containsKey(name)) return fieldsBoots.get(name);
+//		return 0;
+//	}
+
+	@Override
+	public List<ItemConfigValue> getFields(ItemStack stack, int slot) {
+		List<ItemConfigValue> list = new ArrayList<ItemConfigValue>();
+		if (armorType == 0)
+			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack));
+		else if (armorType == 1)
+		{
+			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack));
+			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock2").readFromItem(stack));
+			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock3").readFromItem(stack));
+			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock4").readFromItem(stack));
+		}
+		else if (armorType == 2)
+			list.add(new ItemConfigValue(References.FLOAT_ID, slot, "ArmorSpeedMult").readFromItem(stack));
+		else if (armorType == 3)
+			list.add(new ItemConfigValue(References.FLOAT_ID, slot, "ArmorJumpMult").readFromItem(stack));
+		return list;
 	}
 }

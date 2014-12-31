@@ -5,7 +5,7 @@ import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -277,9 +277,9 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {
 	}
 
 	private void detectAndSendChanges(){
-		if (lastTickActive != active) lastTickActive = (Boolean) sendObject(ObjectPacket.BOOLEAN, 0, active,  new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
-		if (lastTickReciveEnergy != reciveEnergy) lastTickReciveEnergy = (Boolean) sendObject(ObjectPacket.BOOLEAN, 1, reciveEnergy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
-		if (lastTickParticleRate != particleRate) lastTickParticleRate = (Byte) sendObject(ObjectPacket.BYTE, 2, particleRate);
+		if (lastTickActive != active) lastTickActive = (Boolean) sendObject(References.BOOLEAN_ID, 0, active,  new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
+		if (lastTickReciveEnergy != reciveEnergy) lastTickReciveEnergy = (Boolean) sendObject(References.BOOLEAN_ID, 1, reciveEnergy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
+		if (lastTickParticleRate != particleRate) lastTickParticleRate = (Byte) sendObject(References.BYTE_ID, 2, particleRate);
 	}
 
 	@SideOnly(Side.CLIENT)

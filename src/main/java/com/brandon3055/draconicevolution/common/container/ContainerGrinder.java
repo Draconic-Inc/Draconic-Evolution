@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import cpw.mods.fml.relauncher.Side;
@@ -79,10 +79,10 @@ public class ContainerGrinder extends ContainerDataSync {
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		if (energyCach != tile.externalInputBuffer.getEnergyStored()) energyCach = (Integer) sendObject(null, ObjectPacket.INT, 0, tile.externalInputBuffer.getEnergyStored());
-		if (energy2Cach != tile.internalGenBuffer.getEnergyStored()) energy2Cach = (Integer) sendObject(null, ObjectPacket.INT, 1, tile.internalGenBuffer.getEnergyStored());
-		if (burnCach != tile.burnTime) burnCach = (Integer) sendObject(null, ObjectPacket.INT, 2, tile.burnTime);
-		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObject(null, ObjectPacket.INT, 3, tile.burnTimeRemaining);
+		if (energyCach != tile.externalInputBuffer.getEnergyStored()) energyCach = (Integer) sendObject(null, References.INT_ID, 0, tile.externalInputBuffer.getEnergyStored());
+		if (energy2Cach != tile.internalGenBuffer.getEnergyStored()) energy2Cach = (Integer) sendObject(null, References.INT_ID, 1, tile.internalGenBuffer.getEnergyStored());
+		if (burnCach != tile.burnTime) burnCach = (Integer) sendObject(null, References.INT_ID, 2, tile.burnTime);
+		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObject(null, References.INT_ID, 3, tile.burnTimeRemaining);
 	}
 
 	@SideOnly(Side.CLIENT)

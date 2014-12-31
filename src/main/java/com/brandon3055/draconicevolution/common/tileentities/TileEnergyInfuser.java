@@ -4,7 +4,7 @@ import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
 import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -175,10 +175,10 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler,
 
 	public void detectAndSendChanges(boolean sendAnyway){
 		if (runningCach != running || sendAnyway) {
-			runningCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 0, running);
+			runningCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, running);
 		}
 		if (transferCach != transfer || sendAnyway) {
-			transferCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 1, transfer);
+			transferCach = (Boolean)sendObject(References.BOOLEAN_ID, 1, transfer);
 		}
 	}
 

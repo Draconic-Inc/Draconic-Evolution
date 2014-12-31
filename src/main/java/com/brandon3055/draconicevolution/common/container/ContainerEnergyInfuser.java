@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.container;
 
 import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.inventory.SlotChargable;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import cpw.mods.fml.relauncher.Side;
@@ -77,7 +77,7 @@ public class ContainerEnergyInfuser extends ContainerDataSync {
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		if (tile.energy.getEnergyStored() != lastTickEnergyStorage){
-			sendObject(null, ObjectPacket.INT, 0, tile.energy.getEnergyStored());
+			sendObject(null, References.INT_ID, 0, tile.energy.getEnergyStored());
 			lastTickEnergyStorage = tile.energy.getEnergyStored();
 		}
 	}

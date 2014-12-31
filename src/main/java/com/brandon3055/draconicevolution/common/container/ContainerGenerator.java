@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
 import com.brandon3055.draconicevolution.common.tileentities.TileGenerator;
 import cpw.mods.fml.relauncher.Side;
@@ -75,9 +75,9 @@ public class ContainerGenerator extends ContainerDataSync {
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		if (energyCach != tile.getEnergyStored(ForgeDirection.UP)) energyCach = (Integer) sendObject(null, ObjectPacket.INT, 0, tile.getEnergyStored(ForgeDirection.UP));
-		if (burnCach != tile.burnTime) burnCach = (Integer) sendObject(null, ObjectPacket.INT, 1, tile.burnTime);
-		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObject(null, ObjectPacket.INT, 2, tile.burnTimeRemaining);
+		if (energyCach != tile.getEnergyStored(ForgeDirection.UP)) energyCach = (Integer) sendObject(null, References.INT_ID, 0, tile.getEnergyStored(ForgeDirection.UP));
+		if (burnCach != tile.burnTime) burnCach = (Integer) sendObject(null, References.INT_ID, 1, tile.burnTime);
+		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObject(null, References.INT_ID, 2, tile.burnTimeRemaining);
 	}
 
 	@SideOnly(Side.CLIENT)

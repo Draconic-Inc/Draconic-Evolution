@@ -82,6 +82,8 @@ public class GuiHandler implements IGuiHandler {
 					return new ContainerDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
 				}
 				break;
+			case GUIID_TOOL_CONFIG:
+				return new DummyContainer();
 
 
 

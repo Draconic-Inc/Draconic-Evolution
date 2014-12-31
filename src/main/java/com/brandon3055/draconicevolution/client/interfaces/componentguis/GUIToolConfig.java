@@ -1,7 +1,13 @@
 package com.brandon3055.draconicevolution.client.interfaces.componentguis;
 
-import com.brandon3055.draconicevolution.client.interfaces.guicomponents.GUIBase;
+import com.brandon3055.draconicevolution.client.interfaces.guicomponents.*;
+import com.brandon3055.draconicevolution.common.container.DummyContainer;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigValue;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Brandon on 26/12/2014.
@@ -9,23 +15,63 @@ import net.minecraft.entity.player.EntityPlayer;
 public class GUIToolConfig extends GUIBase {
 
 	EntityPlayer player;
+	private static final ResourceLocation inventoryTexture = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/ToolConfig.png");
 
-	public GUIToolConfig(EntityPlayer player){
-
+	public GUIToolConfig(EntityPlayer player) {
+		super(new DummyContainer(), 198, 89);
+		this.player = player;
+		addDependentComponents();
 	}
 
 	@Override
-	public void addComponents() {
+	protected ComponentCollection assembleComponents() {
+		ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize);
+		c.addComponent(new ComponentBackground(0, 0, 198, 89, inventoryTexture)).setGroup("BACKGROUND");
+		return c;
+	}
 
+	protected void addDependentComponents(){
+		for (int x = 0; x < 9; x++) {
+			collection.addComponent(new ComponentConfigItemButton(29 + 18 * x, 64, x, player)).setGroup("INV_SCREEN");
+		}
+
+		for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < 9; x++) {
+				collection.addComponent(new ComponentConfigItemButton(29 + 18 * x, 7 + y * 18, x + y * 9 + 9, player)).setGroup("INV_SCREEN");
+			}
+		}
+
+		for (int y = 0; y < 4; y++){
+			collection.addComponent(new ComponentConfigItemButton(6, 7 + y * 19, 39 - y, player)).setGroup("INV_SCREEN");
+		}
+
+		collection.setOnlyGroupEnabled("INV_SCREEN");
+		collection.setGroupEnabled("BACKGROUND", true);
 	}
 
 	@Override
-	public int getSizeX() {
-		return 0;
-	}
+	protected void mouseClicked(int x, int y, int button) {
+		super.mouseClicked(x, y, button);
 
-	@Override
-	public int getSizeY() {
-		return 0;
+		int fieldOffsetX = 24;
+		int fieldOffsetY = 5;
+
+		for (ComponentBase component : collection.getComponents()){
+			if (component.isEnabled() && component instanceof ComponentConfigItemButton && component.isMouseOver(x - this.guiLeft, y - this.guiTop) && ((ComponentConfigItemButton) component).hasValidItem){
+				ItemStack stack = player.inventory.getStackInSlot(((ComponentConfigItemButton) component).slot);
+				if (stack == null || !(stack.getItem() instanceof IConfigurableItem)) return;
+				IConfigurableItem item = (IConfigurableItem)stack.getItem();
+
+				for (ItemConfigValue field : item.getFields(stack, ((ComponentConfigItemButton) component).slot)){
+					collection.addComponent(new ComponentFieldButton(fieldOffsetX, fieldOffsetY, player, field)).setGroup("LIST_SCREEN");
+					fieldOffsetY += 12;
+				}
+
+				collection.addComponent(new ComponentItemRenderer(4, 3, stack)).setGroup("LIST_SCREEN");
+				collection.setOnlyGroupEnabled("LIST_SCREEN");
+				collection.setGroupEnabled("BACKGROUND", true);
+				break;
+			}
+		}
 	}
 }

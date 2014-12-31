@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.network.TileObjectPacket;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,7 +17,7 @@ public abstract class TileObjectSync extends TileEntity {
 	}
 
 	public Object sendObject(byte dataType, int index, Object object, TargetPoint point){
-		DraconicEvolution.network.sendToAllAround(new ObjectPacket(this, dataType, index, object), point);
+		DraconicEvolution.network.sendToAllAround(new TileObjectPacket(this, dataType, index, object), point);
 		return object;
 	}
 

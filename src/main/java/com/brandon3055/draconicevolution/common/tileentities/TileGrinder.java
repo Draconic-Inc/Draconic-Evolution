@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.common.network.ObjectPacket;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -391,8 +391,8 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	}
 
 	private void detectAndSendChanges(boolean sendAnyway){
-		if (disabledCach != disabled || sendAnyway) disabledCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 0, disabled);
-		if (hasPowerCach != hasPower || sendAnyway) hasPowerCach = (Boolean)sendObject(ObjectPacket.BOOLEAN, 1, hasPower);
+		if (disabledCach != disabled || sendAnyway) disabledCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, disabled);
+		if (hasPowerCach != hasPower || sendAnyway) hasPowerCach = (Boolean)sendObject(References.BOOLEAN_ID, 1, hasPower);
 	}
 
 	@Override
