@@ -61,21 +61,23 @@ public abstract class GUIBase extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
+		prepareRenderState();
 		preRender(mouseX, mouseY);
 		GL11.glPushMatrix();
 		GL11.glTranslated(this.guiLeft, this.guiTop, 0);
 		collection.renderBackground(this.mc, 0, 0, mouseX - this.guiLeft, mouseY - this.guiTop);
 		GL11.glPopMatrix();
 		postRender(mouseX, mouseY);
+		restoreRenderState();
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		prepareRenderState();
+		//prepareRenderState();
 		GL11.glPushMatrix();
 		collection.renderForground(this.mc, 0, 0, mouseX - this.guiLeft, mouseY - this.guiTop);
 		GL11.glPopMatrix();
-		restoreRenderState();
+		//restoreRenderState();
 	}
 
 	@Override

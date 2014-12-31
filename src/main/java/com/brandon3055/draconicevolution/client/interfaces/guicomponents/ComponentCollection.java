@@ -102,9 +102,11 @@ public class ComponentCollection extends ComponentBase {
 	}
 
 	public void removeGroup(String group){
+		List<ComponentBase> list = new ArrayList<ComponentBase>();
 		for (ComponentBase component : components){
-			if (component.getGroup().equals(group)) components.remove(component);
+			if (component.getGroup().equals(group)) list.add(component);
 		}
+		components.removeAll(list);
 	}
 
 	@Override

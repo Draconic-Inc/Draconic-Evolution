@@ -1,10 +1,13 @@
 package com.brandon3055.draconicevolution.client.interfaces.componentguis;
 
 import com.brandon3055.draconicevolution.client.interfaces.guicomponents.*;
+import com.brandon3055.draconicevolution.client.interfaces.manual.GuiButtonAHeight;
 import com.brandon3055.draconicevolution.common.container.DummyContainer;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigValue;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,6 +24,25 @@ public class GUIToolConfig extends GUIBase {
 		super(new DummyContainer(), 198, 89);
 		this.player = player;
 		addDependentComponents();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void initGui() {
+		super.initGui();
+		buttonList.clear();
+		buttonList.add(new GuiButtonAHeight(0, guiLeft + 3, guiTop + 25, 20, 12, "<="));
+		((GuiButton)buttonList.get(0)).visible = false;
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton button) {
+		super.actionPerformed(button);
+		((GuiButton)buttonList.get(0)).visible = false;
+		collection.removeGroup("LIST_SCREEN");
+		collection.setOnlyGroupEnabled("INV_SCREEN");
+		collection.setGroupEnabled("BACKGROUND", true);
+		LogHelper.info("button");
 	}
 
 	@Override
@@ -67,9 +89,10 @@ public class GUIToolConfig extends GUIBase {
 					fieldOffsetY += 12;
 				}
 
-				collection.addComponent(new ComponentItemRenderer(4, 3, stack)).setGroup("LIST_SCREEN");
+				collection.addComponent(new ComponentItemRenderer(3, 5, stack)).setGroup("LIST_SCREEN");
 				collection.setOnlyGroupEnabled("LIST_SCREEN");
 				collection.setGroupEnabled("BACKGROUND", true);
+				((GuiButton)buttonList.get(0)).visible = true;
 				break;
 			}
 		}

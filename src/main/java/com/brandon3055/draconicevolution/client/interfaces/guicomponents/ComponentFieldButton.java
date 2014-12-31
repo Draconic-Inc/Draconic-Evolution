@@ -7,6 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Brandon on 31/12/2014.
  */
@@ -62,5 +65,15 @@ public class ComponentFieldButton extends ComponentBase {
 	@Override
 	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		drawString(fontRendererObj, field.name, x + offsetX + 2, y + offsetY + (getHeight() / 2) - (fontRendererObj.FONT_HEIGHT / 2), 0xffffff);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void renderFinal(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
+		if (isMouseOver(mouseX, mouseY)) {
+			List list = new ArrayList();
+			list.add(String.valueOf(field.value));
+			drawHoveringText(list, mouseX + offsetX, mouseY + offsetY + 10, fontRendererObj);
+		}
 	}
 }

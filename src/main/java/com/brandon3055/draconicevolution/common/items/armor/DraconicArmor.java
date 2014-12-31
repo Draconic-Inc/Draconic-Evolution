@@ -46,10 +46,6 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	private int maxTransfer = References.DRACONICTRANSFER;
 	private int maxEnergy = References.DRACONICCAPACITY;
 	private int energyPerDamage = 80;
-//	private Map<String, Byte> fieldsHelm;
-//	private Map<String, Byte> fieldsChest;
-//	private Map<String, Byte> fieldsLeggs;
-//	private Map<String, Byte> fieldsBoots;
 
 	public DraconicArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
@@ -269,31 +265,6 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		return true;
 	}
 
-//	@Override
-//	public String[] getNames(ItemStack stack) {
-//		String[] s = new String[1];
-//
-//		if (armorType == 0)
-//			return fieldsHelm.keySet().toArray(s);
-//		else if (armorType == 1)
-//			return fieldsChest.keySet().toArray(s);
-//		else if (armorType == 2)
-//			return fieldsLeggs.keySet().toArray(s);
-//		else if (armorType == 3)
-//			return fieldsBoots.keySet().toArray(s);
-//
-//		return null;
-//	}
-//
-//	@Override
-//	public int getDataType(String name) {
-//		if (fieldsHelm.containsKey(name)) return fieldsHelm.get(name);
-//		else if (fieldsChest.containsKey(name)) return fieldsChest.get(name);
-//		else if (fieldsLeggs.containsKey(name)) return fieldsLeggs.get(name);
-//		else if (fieldsBoots.containsKey(name)) return fieldsBoots.get(name);
-//		return 0;
-//	}
-
 	@Override
 	public List<ItemConfigValue> getFields(ItemStack stack, int slot) {
 		List<ItemConfigValue> list = new ArrayList<ItemConfigValue>();
@@ -302,9 +273,9 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		else if (armorType == 1)
 		{
 			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack));
-			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock2").readFromItem(stack));
-			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock3").readFromItem(stack));
-			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock4").readFromItem(stack));
+			list.add(new ItemConfigValue(References.FLOAT_ID, slot, "ArmorFlightLock2").readFromItem(stack));
+			list.add(new ItemConfigValue(References.INT_ID, slot, "ArmorFlightLock3").readFromItem(stack));
+			list.add(new ItemConfigValue(References.STRING_ID, slot, "ArmorFlightLock4").readFromItem(stack));
 		}
 		else if (armorType == 2)
 			list.add(new ItemConfigValue(References.FLOAT_ID, slot, "ArmorSpeedMult").readFromItem(stack));
