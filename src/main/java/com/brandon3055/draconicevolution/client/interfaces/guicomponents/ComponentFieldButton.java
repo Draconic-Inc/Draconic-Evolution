@@ -1,8 +1,12 @@
 package com.brandon3055.draconicevolution.client.interfaces.guicomponents;
 
+import com.brandon3055.draconicevolution.client.interfaces.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigValue;
+import com.brandon3055.draconicevolution.common.utills.DataUtills;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -15,19 +19,21 @@ import java.util.List;
  */
 public class ComponentFieldButton extends ComponentBase {
 
-	private static final ResourceLocation texture = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/Widgets.png");
+	private static final ResourceLocation widgets = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/Widgets.png");
 
 	public EntityPlayer player;
 	public int slot;
 	public ItemStack stack;
-	public ItemConfigValue field;
+	public ItemConfigField field;
+	public GUIToolConfig gui;
 
-	public ComponentFieldButton(int x, int y, EntityPlayer player, ItemConfigValue field) {
+	public ComponentFieldButton(int x, int y, EntityPlayer player, ItemConfigField field, GUIToolConfig gui) {
 		super(x, y);
 		this.player = player;
 		this.slot = field.slot;
 		this.stack = player.inventory.getStackInSlot(slot);
 		this.field = field;
+		this.gui = gui;
 	}
 
 	@Override
@@ -42,7 +48,7 @@ public class ComponentFieldButton extends ComponentBase {
 
 	@Override
 	public void renderBackground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
-		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+		Minecraft.getMinecraft().renderEngine.bindTexture(widgets);
 
 		if (!isMouseOver(mouseX - offsetX, mouseY - offsetY))
 		{
@@ -64,7 +70,7 @@ public class ComponentFieldButton extends ComponentBase {
 
 	@Override
 	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
-		drawString(fontRendererObj, field.name, x + offsetX + 2, y + offsetY + (getHeight() / 2) - (fontRendererObj.FONT_HEIGHT / 2), 0xffffff);
+		drawString(fontRendererObj, field.getLocalizedName(), x + offsetX + 2, y + offsetY + (getHeight() / 2) - (fontRendererObj.FONT_HEIGHT / 2), 0xffffff);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -75,5 +81,20 @@ public class ComponentFieldButton extends ComponentBase {
 			list.add(String.valueOf(field.value));
 			drawHoveringText(list, mouseX + offsetX, mouseY + offsetY + 10, fontRendererObj);
 		}
+	}
+
+	@Override
+	public void mouseClicked(int x, int y, int button) {
+		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+		if (field.datatype == References.BOOLEAN_ID){
+			field.value = !(Boolean) field.value;
+			field.sendChanges();
+			ItemStack stack = gui.player.inventory.getStackInSlot(field.slot);
+			if (stack != null && stack.getItem() instanceof IConfigurableItem){
+				DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+			}
+			return;
+		}
+		gui.editField(field);
 	}
 }

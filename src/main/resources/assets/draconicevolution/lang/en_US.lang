@@ -438,7 +438,7 @@ entity.DraconicEvolution.EnderDragon.name=Ender Dragon
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
 key.placeItem=Place Item in world
-key.toolConfig=Tool Config GUI
+key.toolConfig=Tool & Armor Config GUI
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian
@@ -453,6 +453,15 @@ button.de.next.txt===>
 button.de.backToIndex.txt=Back to Index
 button.de.back.txt=Back
 button.de.goToIndex.txt=Index Page
+
+//Item Config Buttons
+button.de.ArmorNVActive.name=Night Vision
+button.de.ArmorFlightLock.name=Lock Flight
+button.de.ArmorSpeedMult.name=Speed Multiplier
+button.de.ArmorJumpMult.name=Jump Multiplier
+button.de.ArmorHillStep.name=Hill Step
+button.de.ArmorSprintOnly.name=Boost while sprinting
+button.de..name=
 
 //Manual Gui ----------------------------------------------------------------------------------------------------------------------------------------
 

@@ -15,6 +15,8 @@ import org.lwjgl.opengl.GL12;
 public abstract class GUIBase extends GuiContainer {
 
 	protected ComponentCollection collection;
+	/**used to prevent multiple buttons being pressed wen overlapping components are changed*/
+	protected boolean buttonPressed = false;
 
 	public GUIBase(Container container, int xSize, int ySize) {
 		super(container);
@@ -110,4 +112,13 @@ public abstract class GUIBase extends GuiContainer {
 		collection.setWorldAndResolution(mc, width, height);
 
 	}
+
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+		collection.removeScheduled();
+		buttonPressed = false;
+	}
+
+	public void buttonClicked(int id){buttonPressed = true;}
 }

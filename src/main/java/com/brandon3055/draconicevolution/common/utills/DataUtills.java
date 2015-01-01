@@ -98,6 +98,29 @@ public class DataUtills {
 		}
 	}
 
+	public static Object readObjectFromItem(ItemStack stack, int dataType, String name, Object defaultExpected){
+		switch (dataType){
+			case References.BYTE_ID:
+				return ItemNBTHelper.getByte(stack, name, (Byte)defaultExpected);
+			case References.SHORT_ID:
+				return ItemNBTHelper.getShort(stack, name, (Short)defaultExpected);
+			case References.INT_ID:
+				return ItemNBTHelper.getInteger(stack, name, (Integer)defaultExpected);
+			case References.LONG_ID:
+				return ItemNBTHelper.getLong(stack, name, (Long)defaultExpected);
+			case References.FLOAT_ID:
+				return ItemNBTHelper.getFloat(stack, name, (Float)defaultExpected);
+			case References.DOUBLE_ID:
+				return ItemNBTHelper.getDouble(stack, name, (Double)defaultExpected);
+			//case References.CHAR_ID:
+			case References.STRING_ID:
+				return ItemNBTHelper.getString(stack, name, (String)defaultExpected);
+			case References.BOOLEAN_ID:
+				return ItemNBTHelper.getBoolean(stack, name, (Boolean)defaultExpected);
+		}
+		return null;
+	}
+
 	public static Object readObjectFromItem(ItemStack stack, int dataType, String name){
 		switch (dataType){
 			case References.BYTE_ID:

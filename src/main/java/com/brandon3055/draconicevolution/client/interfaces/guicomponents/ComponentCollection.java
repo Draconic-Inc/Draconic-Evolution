@@ -13,12 +13,15 @@ public class ComponentCollection extends ComponentBase {
 	protected List<ComponentBase> components = new ArrayList<ComponentBase>();
 	protected int xSize;
 	protected int ySize;
+	protected List<String> deadGroups = new ArrayList<String>();
+	protected GUIBase gui;
 
 
-	public ComponentCollection(int x, int y, int xSize, int ySize) {
+	public ComponentCollection(int x, int y, int xSize, int ySize, GUIBase gui) {
 		super(x, y);
 		this.xSize = xSize;
 		this.ySize = ySize;
+		this.gui = gui;
 	}
 
 	@Override
@@ -68,18 +71,26 @@ public class ComponentCollection extends ComponentBase {
 			if (isComponentEnabled(component)) {
 				component.renderFinal(minecraft, offsetX + this.x, offsetY + this.y, mouseX - this.x, mouseY - this.y);
 			}
-	}
+ 	}
 
 	@Override
 	public void mouseClicked(int x, int y, int button) {
 		for (ComponentBase component : components){
-			if (component.isEnabled() && component.isMouseOver(x, y)) {
+			if (!gui.buttonPressed && component.isEnabled() && component.isMouseOver(x, y)) {
 				component.mouseClicked(x, y, button);
 			}
 		}
+		//removeScheduled();
 	}
 
 	public List<ComponentBase> getComponents() { return components; }
+
+	public ComponentBase getComponent(String name){
+		for (ComponentBase component : components){
+			if (component.name != null && component.name.equals(name)) return component;
+		}
+		return null;
+	}
 
 	public void setGroupEnabled(String group, boolean enabled){
 		for (ComponentBase component : components){
@@ -101,6 +112,14 @@ public class ComponentCollection extends ComponentBase {
 		}
 	}
 
+	public void setComponentEnabled(String name, boolean enabled){
+		for (ComponentBase component : components){
+			if (component.name != null && component.name.equals(name)) {
+				component.setEnabled(enabled);
+			}
+		}
+	}
+
 	public void removeGroup(String group){
 		List<ComponentBase> list = new ArrayList<ComponentBase>();
 		for (ComponentBase component : components){
@@ -115,5 +134,16 @@ public class ComponentCollection extends ComponentBase {
 		for (ComponentBase component : components){
 			component.setWorldAndResolution(mc, width, height);
 		}
+	}
+
+	public void removeScheduled(){
+		if (!deadGroups.isEmpty()){
+			for (String s : deadGroups) removeGroup(s);
+			deadGroups.clear();
+		}
+	}
+
+	public void schedulRemoval(String group){
+		deadGroups.add(group);
 	}
 }

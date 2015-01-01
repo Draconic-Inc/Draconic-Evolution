@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigValue;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -52,11 +52,6 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		GameRegistry.registerItem(this, name);
-
-//		fieldsHelm.put("NVActive", References.BOOLEAN_ID);
-//		fieldsChest.put("FlightLock", References.BOOLEAN_ID);
-//		fieldsLeggs.put("SpeedMult", References.FLOAT_ID);
-//		fieldsLeggs.put("JumpMult", References.FLOAT_ID);
 	}
 
 	@Override
@@ -173,8 +168,8 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		if (stack.getItem() == ModItems.draconicHelm) {
 			if (world.isRemote) return;
 			if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) this.extractEnergy(stack, 5000, false);
-			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY, (int)Math.floor(player.posZ)) < 5)
-				player.addPotionEffect(new PotionEffect(16, 210, 0, true));
+			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY, (int)Math.floor(player.posZ)) < 5 && ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false))
+				player.addPotionEffect(new PotionEffect(16, 419, 0, true));
 			else if (player.isPotionActive(16)) player.removePotionEffect(16);
 
 		}
@@ -266,21 +261,25 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	}
 
 	@Override
-	public List<ItemConfigValue> getFields(ItemStack stack, int slot) {
-		List<ItemConfigValue> list = new ArrayList<ItemConfigValue>();
+	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
+		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
 		if (armorType == 0)
-			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack, false));
 		else if (armorType == 1)
 		{
-			list.add(new ItemConfigValue(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack));
-			list.add(new ItemConfigValue(References.FLOAT_ID, slot, "ArmorFlightLock2").readFromItem(stack));
-			list.add(new ItemConfigValue(References.INT_ID, slot, "ArmorFlightLock3").readFromItem(stack));
-			list.add(new ItemConfigValue(References.STRING_ID, slot, "ArmorFlightLock4").readFromItem(stack));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack, false));
 		}
 		else if (armorType == 2)
-			list.add(new ItemConfigValue(References.FLOAT_ID, slot, "ArmorSpeedMult").readFromItem(stack));
+		{
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorSpeedMult").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1F));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
+		}
 		else if (armorType == 3)
-			list.add(new ItemConfigValue(References.FLOAT_ID, slot, "ArmorJumpMult").readFromItem(stack));
+		{
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorJumpMult").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1f));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorHillStep").readFromItem(stack, true));
+		}
 		return list;
 	}
 }

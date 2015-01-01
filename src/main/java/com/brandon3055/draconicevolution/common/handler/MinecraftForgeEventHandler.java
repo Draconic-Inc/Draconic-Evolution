@@ -69,7 +69,7 @@ public class MinecraftForgeEventHandler {
 		if (ArmorEffectHandler.getHasJumpBoost(player))
 		{
 			int i = ArmorEffectHandler.getJumpLevel(player);
-			event.entityLiving.motionY += (0.1f) * (2 + i);
+			event.entityLiving.motionY += ArmorEffectHandler.getJumpMultiplier(player) * ((0.1f) * (2 + i));
 		}
 	}
 
@@ -233,6 +233,17 @@ public class MinecraftForgeEventHandler {
 	@SubscribeEvent
 	public void itemTooltipEvent(ItemTooltipEvent event) {
 		if (ConfigHandler.showUnlocalizedNames) event.toolTip.add(event.itemStack.getUnlocalizedName());
+		if (DraconicEvolution.debug && event.itemStack.hasTagCompound()){
+			String s = event.itemStack.getTagCompound().toString();
+			int escape = 0;
+			while (s.contains(",")){
+				event.toolTip.add(s.substring(0, s.indexOf(",")+1));
+				s = s.substring(s.indexOf(",")+1, s.length());
+
+				if (escape++ >= 100) break;
+			}
+			event.toolTip.add(s);
+		}
 	}
 
 	@SubscribeEvent

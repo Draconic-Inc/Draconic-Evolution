@@ -33,6 +33,8 @@ public class FMLEventHandler {
 		if (event.phase != TickEvent.Phase.START)return;
 		EntityPlayer player = event.player;
 
+		//Reset Walk Speed----------------------------------------------------------------------------------------------
+
 		if (walkSpeed == null){
 			walkSpeed = ReflectionHelper.findField(PlayerCapabilities.class, "walkSpeed", "g", "field_75097_g");
 			walkSpeed.setAccessible(true);
@@ -49,6 +51,8 @@ public class FMLEventHandler {
 			}
 		}
 
+		//Apply Hill Step-----------------------------------------------------------------------------------------------
+
 		if (player.worldObj.isRemote) {
 			boolean highStepListed = playersWithUphillStep.contains(player.getDisplayName()) && player.stepHeight >= 1f;
 			boolean hasHighStep = ArmorEffectHandler.getHasHighStep(player);
@@ -64,22 +68,24 @@ public class FMLEventHandler {
 			}
 		}
 
+		//Apply Swiftness-----------------------------------------------------------------------------------------------
 
 		if (ArmorEffectHandler.getHasSwiftness(player)) {
 			int i = ArmorEffectHandler.getSwiftnessLevel(player);
 
-			float percentIncrease = (i + 1) * 0.05f;
-
+			float percentIncrease = ArmorEffectHandler.getSwiftnessMultiplier(player) * ((i + 1) * 0.05f);
 
 			if ((player.onGround || player.capabilities.isFlying) && player.moveForward > 0F)
 				player.moveFlying(0F, 1F, player.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
 
 		}
 
+		//Apply Flight--------------------------------------------------------------------------------------------------
 
 		if (ArmorEffectHandler.getHasFlight(player)) {
 			playersWithFlight.put(player, true);
 			player.capabilities.allowFlying = true;
+			if (ArmorEffectHandler.getFlightLock(player)) player.capabilities.isFlying = true;
 
 		} else {
 

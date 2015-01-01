@@ -13,5 +13,5 @@ public interface IConfigurableItem {
 //
 //	int getDataType(String name);
 
-	List<ItemConfigValue> getFields(ItemStack stack, int slot);
+	List<ItemConfigField> getFields(ItemStack stack, int slot);
 }

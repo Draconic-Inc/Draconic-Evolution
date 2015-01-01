@@ -30,6 +30,7 @@ public abstract class ComponentBase extends Gui {
 	public int width;
 	/** The height of the screen object. */
 	public int height;
+	public String name;
 
 	public ComponentBase(int x, int y) {
 		this.x = x;
@@ -44,6 +45,11 @@ public abstract class ComponentBase extends Gui {
 
 	public ComponentBase setGroup(String group) {
 		this.group = group;
+		return this;
+	}
+
+	public ComponentBase setName(String name) {
+		this.name = name;
 		return this;
 	}
 

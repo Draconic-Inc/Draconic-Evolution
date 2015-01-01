@@ -1,12 +1,10 @@
 package com.brandon3055.draconicevolution.client.interfaces.componentguis;
 
 import com.brandon3055.draconicevolution.client.interfaces.guicomponents.*;
-import com.brandon3055.draconicevolution.client.interfaces.manual.GuiButtonAHeight;
 import com.brandon3055.draconicevolution.common.container.DummyContainer;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigValue;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,8 +15,10 @@ import net.minecraft.util.ResourceLocation;
  */
 public class GUIToolConfig extends GUIBase {
 
-	EntityPlayer player;
+	public EntityPlayer player;
 	private static final ResourceLocation inventoryTexture = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/ToolConfig.png");
+
+	private int screenLevel = 0;
 
 	public GUIToolConfig(EntityPlayer player) {
 		super(new DummyContainer(), 198, 89);
@@ -30,25 +30,19 @@ public class GUIToolConfig extends GUIBase {
 	@Override
 	public void initGui() {
 		super.initGui();
-		buttonList.clear();
-		buttonList.add(new GuiButtonAHeight(0, guiLeft + 3, guiTop + 25, 20, 12, "<="));
-		((GuiButton)buttonList.get(0)).visible = false;
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		super.actionPerformed(button);
-		((GuiButton)buttonList.get(0)).visible = false;
-		collection.removeGroup("LIST_SCREEN");
-		collection.setOnlyGroupEnabled("INV_SCREEN");
-		collection.setGroupEnabled("BACKGROUND", true);
-		LogHelper.info("button");
 	}
 
 	@Override
 	protected ComponentCollection assembleComponents() {
-		ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize);
+		ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize, this);
 		c.addComponent(new ComponentBackground(0, 0, 198, 89, inventoryTexture)).setGroup("BACKGROUND");
+		c.addComponent(new ComponentButton(3, 26, 20, 12, 0, this, "<=", "Back")).setGroup("BUTTONS").setName("BACK_BUTTON");
+		c.addComponent(new ComponentFieldAdjuster(4, 34, null, this)).setGroup("FIELD_BUTTONS").setName("FIELD_CONFIG_BUTTON_ARRAY");
 		return c;
 	}
 
@@ -67,13 +61,14 @@ public class GUIToolConfig extends GUIBase {
 			collection.addComponent(new ComponentConfigItemButton(6, 7 + y * 19, 39 - y, player)).setGroup("INV_SCREEN");
 		}
 
-		collection.setOnlyGroupEnabled("INV_SCREEN");
-		collection.setGroupEnabled("BACKGROUND", true);
+		setLevel(0);
 	}
 
 	@Override
 	protected void mouseClicked(int x, int y, int button) {
 		super.mouseClicked(x, y, button);
+		if (buttonPressed) return;
+
 
 		int fieldOffsetX = 24;
 		int fieldOffsetY = 5;
@@ -82,19 +77,55 @@ public class GUIToolConfig extends GUIBase {
 			if (component.isEnabled() && component instanceof ComponentConfigItemButton && component.isMouseOver(x - this.guiLeft, y - this.guiTop) && ((ComponentConfigItemButton) component).hasValidItem){
 				ItemStack stack = player.inventory.getStackInSlot(((ComponentConfigItemButton) component).slot);
 				if (stack == null || !(stack.getItem() instanceof IConfigurableItem)) return;
+				buttonPressed = true;
 				IConfigurableItem item = (IConfigurableItem)stack.getItem();
 
-				for (ItemConfigValue field : item.getFields(stack, ((ComponentConfigItemButton) component).slot)){
-					collection.addComponent(new ComponentFieldButton(fieldOffsetX, fieldOffsetY, player, field)).setGroup("LIST_SCREEN");
+				setLevel(1);
+				for (ItemConfigField field : item.getFields(stack, ((ComponentConfigItemButton) component).slot)){
+					collection.addComponent(new ComponentFieldButton(fieldOffsetX, fieldOffsetY, player, field, this)).setGroup("LIST_SCREEN");
 					fieldOffsetY += 12;
 				}
 
 				collection.addComponent(new ComponentItemRenderer(3, 5, stack)).setGroup("LIST_SCREEN");
-				collection.setOnlyGroupEnabled("LIST_SCREEN");
-				collection.setGroupEnabled("BACKGROUND", true);
-				((GuiButton)buttonList.get(0)).visible = true;
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void buttonClicked(int id) {
+		super.buttonClicked(id);
+
+		if (id == 0 && screenLevel > 0){//button back
+			setLevel(screenLevel - 1);
+		}
+	}
+
+	public void setLevel(int level){
+		this.screenLevel = level;
+
+		if (level == 0){//inv screen
+			collection.schedulRemoval("LIST_SCREEN");
+			collection.setOnlyGroupEnabled("INV_SCREEN");
+			collection.setGroupEnabled("BACKGROUND", true);
+			collection.setComponentEnabled("BACK_BUTTON", false);
+		}
+		else if (level == 1){//list screen
+			collection.setOnlyGroupEnabled("LIST_SCREEN");
+			collection.setGroupEnabled("BACKGROUND", true);
+			collection.setComponentEnabled("BACK_BUTTON", true);
+			if (collection.getComponent("BACK_BUTTON") != null) collection.getComponent("BACK_BUTTON").setY(26);
+		}
+		else if (level == 2){//field screen
+			collection.setOnlyGroupEnabled("FIELD_BUTTONS");
+			collection.setGroupEnabled("BACKGROUND", true);
+			collection.setComponentEnabled("BACK_BUTTON", true);
+			if (collection.getComponent("BACK_BUTTON") != null) collection.getComponent("BACK_BUTTON").setY(3);
+		}
+	}
+
+	public void editField(ItemConfigField field){
+		((ComponentFieldAdjuster) collection.getComponent("FIELD_CONFIG_BUTTON_ARRAY")).field = field;
+		setLevel(2);
 	}
 }

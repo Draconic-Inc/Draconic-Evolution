@@ -2,11 +2,15 @@ package com.brandon3055.draconicevolution.client.interfaces.guicomponents;
 
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Brandon on 29/12/2014.
@@ -22,7 +26,7 @@ public class ComponentConfigItemButton extends ComponentBase {
 		super(x, y);
 		this.slot = slot;
 		this.inventory = player.inventory;
-		if (inventory.getStackInSlot(slot) != null && inventory.getStackInSlot(slot).getItem() instanceof IConfigurableItem) hasValidItem = true;//todo && instanceof IConfigurableItem
+		if (inventory.getStackInSlot(slot) != null && inventory.getStackInSlot(slot).getItem() instanceof IConfigurableItem && !((IConfigurableItem) inventory.getStackInSlot(slot).getItem()).getFields(inventory.getStackInSlot(slot), slot).isEmpty()) hasValidItem = true;//todo && instanceof IConfigurableItem
 	}
 
 	@Override
@@ -50,6 +54,16 @@ public class ComponentConfigItemButton extends ComponentBase {
 	@Override
 	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 
+	}
+
+	@Override
+	public void renderFinal(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
+		if (isMouseOver(mouseX, mouseY) && hasValidItem){
+			List<String> list = new ArrayList<String>();
+			List<ItemConfigField> fields = ((IConfigurableItem)inventory.getStackInSlot(slot).getItem()).getFields(inventory.getStackInSlot(slot), slot);
+			for (ItemConfigField field : fields) list.add(field.getLocalizedName() + ": " + field.value);
+			drawHoveringText(list, mouseX + offsetX, mouseY + offsetY + 10, fontRendererObj);
+		}
 	}
 
 	@Override
