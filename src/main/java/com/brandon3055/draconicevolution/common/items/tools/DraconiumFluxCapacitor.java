@@ -3,8 +3,7 @@ package com.brandon3055.draconicevolution.common.items.tools;
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
-import com.brandon3055.draconicevolution.common.items.ItemDE;
+import com.brandon3055.draconicevolution.common.items.tools.baseclasses.RFItemBase;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
@@ -16,7 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -27,8 +25,9 @@ import java.util.List;
 /**
  * Created by Brandon on 24/11/2014.
  */
-public class DraconiumFluxCapacitor extends ItemDE implements IEnergyContainerItem{
+public class DraconiumFluxCapacitor extends RFItemBase {
 	IIcon[] icons = new IIcon[2];
+
 	public DraconiumFluxCapacitor()
 	{
 		this.setUnlocalizedName(Strings.draconiumFluxCapacitorName);
@@ -56,9 +55,9 @@ public class DraconiumFluxCapacitor extends ItemDE implements IEnergyContainerIt
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));
-		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", getCapacity(0)));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 80000000));
 		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 1), "Energy", 0));
-		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 1), "Energy", getCapacity(1)));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 1), "Energy", 250000000));
 	}
 
 	@Override
@@ -66,12 +65,19 @@ public class DraconiumFluxCapacitor extends ItemDE implements IEnergyContainerIt
 		return super.getUnlocalizedName(itemStack)+itemStack.getItemDamage();
 	}
 
-	private int getCapacity(int damage){
-		return damage == 0 ? 80000000 : damage == 1 ? 250000000 : 0;
+	@Override
+	public int getCapacity(ItemStack stack){
+		return stack.getItemDamage() == 0 ? 80000000 : stack.getItemDamage() == 1 ? 250000000 : 0;
  	}
 
-	private int getTransfer(int damage){
-		return damage == 0 ? 100000 : damage == 1 ? 1000000 : 0;
+	@Override
+	 public int getMaxExtract(ItemStack stack){
+		return stack.getItemDamage() == 0 ? 100000 : stack.getItemDamage() == 1 ? 1000000 : 0;
+	}
+
+	@Override
+	public int getMaxReceive(ItemStack stack){
+		return stack.getItemDamage() == 0 ? 100000 : stack.getItemDamage() == 1 ? 1000000 : 0;
 	}
 
 	@Override
@@ -83,7 +89,7 @@ public class DraconiumFluxCapacitor extends ItemDE implements IEnergyContainerIt
 
 		if (mode == 1 || mode == 3){ //Charge Hotbar
 			for (int i = 0; i < 9; i++){
-				int max = Math.min(getEnergyStored(container), getTransfer(container.getItemDamage()));
+				int max = Math.min(getEnergyStored(container), getMaxExtract(container));
 				ItemStack stack = player.inventory.getStackInSlot(i);
 
 				if (stack != null && stack.getItem() instanceof IEnergyContainerItem && stack.getItem() != ModItems.draconiumFluxCapacitor) {
@@ -95,7 +101,7 @@ public class DraconiumFluxCapacitor extends ItemDE implements IEnergyContainerIt
 
 		if (mode == 2 || mode == 3){ //Charge Armor and held item
 			for (int i = mode == 3 ? 1 : 0; i < 5; i++){
-				int max = Math.min(getEnergyStored(container), getTransfer(container.getItemDamage()));
+				int max = Math.min(getEnergyStored(container), getMaxExtract(container));
 				ItemStack stack = player.getEquipmentInSlot(i);
 
 				if (stack != null && stack.getItem() instanceof IEnergyContainerItem && stack.getItem() != ModItems.draconiumFluxCapacitor) {
@@ -122,60 +128,60 @@ public class DraconiumFluxCapacitor extends ItemDE implements IEnergyContainerIt
 		return stack;
 	}
 
-	@Override
-	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-
-		if (container.stackTagCompound == null) {
-			container.stackTagCompound = new NBTTagCompound();
-		}
-		int energy = container.stackTagCompound.getInteger("Energy");
-		int energyReceived = Math.min(getCapacity(container.getItemDamage()) - energy, Math.min(getTransfer(container.getItemDamage()), maxReceive));
-
-		if (!simulate) {
-			energy += energyReceived;
-			container.stackTagCompound.setInteger("Energy", energy);
-		}
-		return energyReceived;
-	}
-
-	@Override
-	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-
-		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-			return 0;
-		}
-		int energy = container.stackTagCompound.getInteger("Energy");
-		int energyExtracted = Math.min(energy, Math.min(getTransfer(container.getItemDamage()), maxExtract));
-
-		if (!simulate) {
-			energy -= energyExtracted;
-			container.stackTagCompound.setInteger("Energy", energy);
-		}
-		return energyExtracted;
-	}
-
-	@Override
-	public int getEnergyStored(ItemStack container) {
-		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-			return 0;
-		}
-		return container.stackTagCompound.getInteger("Energy");
-	}
-
-	@Override
-	public int getMaxEnergyStored(ItemStack container) {
-		return getCapacity(container.getItemDamage());
-	}
-
-	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
-		return !(getEnergyStored(stack) == getMaxEnergyStored(stack));
-	}
-
-	@Override
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
-	}
+//	@Override
+//	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+//
+//		if (container.stackTagCompound == null) {
+//			container.stackTagCompound = new NBTTagCompound();
+//		}
+//		int energy = container.stackTagCompound.getInteger("Energy");
+//		int energyReceived = Math.min(getCapacity(container.getItemDamage()) - energy, Math.min(getTransfer(container.getItemDamage()), maxReceive));
+//
+//		if (!simulate) {
+//			energy += energyReceived;
+//			container.stackTagCompound.setInteger("Energy", energy);
+//		}
+//		return energyReceived;
+//	}
+//
+//	@Override
+//	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+//
+//		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
+//			return 0;
+//		}
+//		int energy = container.stackTagCompound.getInteger("Energy");
+//		int energyExtracted = Math.min(energy, Math.min(getTransfer(container.getItemDamage()), maxExtract));
+//
+//		if (!simulate) {
+//			energy -= energyExtracted;
+//			container.stackTagCompound.setInteger("Energy", energy);
+//		}
+//		return energyExtracted;
+//	}
+//
+//	@Override
+//	public int getEnergyStored(ItemStack container) {
+//		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
+//			return 0;
+//		}
+//		return container.stackTagCompound.getInteger("Energy");
+//	}
+//
+//	@Override
+//	public int getMaxEnergyStored(ItemStack container) {
+//		return getCapacity(container.getItemDamage());
+//	}
+//
+//	@Override
+//	public boolean showDurabilityBar(ItemStack stack) {
+//		return !(getEnergyStored(stack) == getMaxEnergyStored(stack));
+//	}
+//
+//	@Override
+//	public double getDurabilityForDisplay(ItemStack stack) {
+//		return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
+//	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
@@ -189,13 +195,13 @@ public class DraconiumFluxCapacitor extends ItemDE implements IEnergyContainerIt
 		}
 	}
 
-	@Override
-	public boolean hasCustomEntity(ItemStack stack) {
-		return true;
-	}
-
-	@Override
-	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-		return new EntityPersistentItem(world, location, itemstack);
-	}
+//	@Override
+//	public boolean hasCustomEntity(ItemStack stack) {
+//		return true;
+//	}
+//
+//	@Override
+//	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+//		return new EntityPersistentItem(world, location, itemstack);
+//	}
 }

@@ -19,6 +19,7 @@ public class ItemConfigField {
 	public Object max;
 	public Object min;
 	public Object incroment;
+	public String modifier;
 
 
 	public ItemConfigField(int datatype, int slot, String name){
@@ -49,6 +50,11 @@ public class ItemConfigField {
 
 	public ItemConfigField readFromItem(ItemStack stack, Object defaultExpected){
 		value = DataUtills.readObjectFromItem(stack, datatype, name, defaultExpected);
+		return this;
+	}
+
+	public ItemConfigField setModifier(String modifier){
+		this.modifier = modifier;
 		return this;
 	}
 

@@ -34,4 +34,11 @@ public final class References {
 	public static final byte BOOLEAN_ID	= 6;
 	public static final byte CHAR_ID 	= 7;
 	public static final byte STRING_ID	= 8;
+
+	//======================Tags========================//
+
+	public static final String DIG_SPEED_MULTIPLIER = "ToolDigMultiplier";
+	public static final String DIG_AOE = "ToolDigAOE";
+	public static final String DIG_DEPTH = "ToolDigDepth";
+	public static final String ATTACK_AOE = "WeaponAttackAOE";
 }

@@ -10,6 +10,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,12 @@ public class ComponentFieldButton extends ComponentBase {
 		if (isMouseOver(mouseX, mouseY)) {
 			List list = new ArrayList();
 			list.add(String.valueOf(field.value));
+			if (field.datatype == References.INT_ID && !StringUtils.isNullOrEmpty(field.modifier) && field.modifier.equals("AOE")){
+				list.clear();
+				int i = (Integer) field.value;
+				i *= 2;
+				list.add(String.valueOf((i+1) + "x" + (i+1)));
+			}
 			drawHoveringText(list, mouseX + offsetX, mouseY + offsetY + 10, fontRendererObj);
 		}
 	}

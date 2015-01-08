@@ -131,6 +131,5 @@ public class ModItems {
 	{
 		String name = item.getUnwrappedUnlocalizedName(item.getUnlocalizedName());
 		GameRegistry.registerItem(item, name.substring(name.indexOf(":") + 1));
-		//GameRegistry.registerItem(item, item.getUnwrappedUnlocalizedName(item.getUnlocalizedName()));
 	}
 }

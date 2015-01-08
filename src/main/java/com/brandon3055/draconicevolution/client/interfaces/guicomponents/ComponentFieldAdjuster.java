@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
 
 /**
  * Created by Brandon on 1/01/2015.
@@ -60,29 +61,35 @@ public class ComponentFieldAdjuster extends ComponentBase {
 	@Override
 	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		if (field == null) return;
-		String s = field.name;
-		String s2 = String.valueOf(field.value);
+		String fieldName = field.getLocalizedName();
+		String fieldValue = String.valueOf(field.value);
 		if (field.datatype == References.DOUBLE_ID) {
 			double d = (Double)field.value;
-			s2 = String.valueOf((double)Math.round(d*100f) / 100D);
+			fieldValue = String.valueOf((double)Math.round(d*100f) / 100D);
 		}
 		if (field.datatype == References.FLOAT_ID) {
 			float d = (Float)field.value;
-			s2 = String.valueOf((double)Math.round((double)(d*100f)) / 100D);
+			fieldValue = String.valueOf((double)Math.round((double)(d*100f)) / 100D);
 		}
-		int centre = fontRendererObj.getStringWidth(s) / 2;
-		int centre2 = fontRendererObj.getStringWidth(s2) / 2;
-		fontRendererObj.drawString(s, x + getWidth() / 2 - centre, y - 12, 0x00000);
-		fontRendererObj.drawStringWithShadow(s2, x + getWidth() / 2 - centre2, y + 6, 0xffffff);
+		if (field.datatype == References.INT_ID && !StringUtils.isNullOrEmpty(field.modifier) && field.modifier.equals("AOE")){
+			int i = (Integer) field.value;
+			i *= 2;
+			fieldValue = String.valueOf((i+1) + "x" + (i+1));
+		}
+
+		int centre = fontRendererObj.getStringWidth(fieldName) / 2;
+		int centre2 = fontRendererObj.getStringWidth(fieldValue) / 2;
+		fontRendererObj.drawString(fieldName, x + getWidth() / 2 - centre, y - 12, 0x00000);
+		fontRendererObj.drawStringWithShadow(fieldValue, x + getWidth() / 2 - centre2, y + 6, 0xffffff);
 
 		if (isDecimal() || isNonDecimal())
 		{
-			fontRendererObj.drawString("+++", 8, y + 6, 0x000000);
-			fontRendererObj.drawString("++", 40, y + 6, 0x000000);
-			fontRendererObj.drawString("+", 70, y + 6, 0x000000);
-			fontRendererObj.drawString("-", 121, y + 6, 0x000000);
-			fontRendererObj.drawString("--", 147, y + 6, 0x000000);
-			fontRendererObj.drawString("---", 172, y + 6, 0x000000);
+			fontRendererObj.drawString("---", 8, y + 6, 0x000000);
+			fontRendererObj.drawString("--", 40, y + 6, 0x000000);
+			fontRendererObj.drawString("-", 70, y + 6, 0x000000);
+			fontRendererObj.drawString("+", 121, y + 6, 0x000000);
+			fontRendererObj.drawString("++", 147, y + 6, 0x000000);
+			fontRendererObj.drawString("+++", 172, y + 6, 0x000000);
 
 		}
 	}
@@ -99,23 +106,23 @@ public class ComponentFieldAdjuster extends ComponentBase {
 		if (!isBoolean())
 		{
 			if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 39, this.y + 3, 26, 14, x, y))
-			{//+
-				incroment(1);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 67, this.y + 3, 26, 14, x, y))
-			{//++
-				incroment(10);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 95, this.y + 3, 26, 14, x, y))
-			{//+++
-				incroment(100);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 12, this.y + 3, 26, 14, x, y))
 			{//-
 				incroment(-1);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 40, this.y + 3, 26, 14, x, y))
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 67, this.y + 3, 26, 14, x, y))
 			{//--
 				incroment(-10);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 68, this.y + 3, 26, 14, x, y))
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 95, this.y + 3, 26, 14, x, y))
 			{//---
 				incroment(-100);
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 12, this.y + 3, 26, 14, x, y))
+			{//+
+				incroment(1);
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 40, this.y + 3, 26, 14, x, y))
+			{//++
+				incroment(10);
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 68, this.y + 3, 26, 14, x, y))
+			{//+++
+				incroment(100);
 			}
 		}
 		else if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 30, this.y, 60, 20, x, y)){
