@@ -4,11 +4,10 @@ import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
+import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
 import com.brandon3055.draconicevolution.common.utills.InventoryUtils;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -286,7 +285,6 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 	public void rotateAround(ForgeDirection axis) {
 		setFacing((byte) ForgeDirection.getOrientation(facing).getRotation(axis).ordinal());
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, ModBlocks.draconiumChest, 3, ((numUsingPlayers << 3) & 0xF8) | (facing & 0x7));
-		LogHelper.info(facing);
 	}
 
 	public int getFacing() {
@@ -495,7 +493,6 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		compound.setBoolean("Edit", editMode);
 		compound.setByte("AutoFeed", (byte) smeltingAutoFeed);
 		if (hasCustomInventoryName()) stack.setStackDisplayName(customName);
-		LogHelper.info(stack.getDisplayName());
 		energy.writeToNBT(compound);
 	}
 

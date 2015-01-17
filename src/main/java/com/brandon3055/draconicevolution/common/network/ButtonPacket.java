@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.common.network;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.container.ContainerDissEnchanter;
 import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.common.container.ContainerWeatherController;
@@ -20,6 +22,8 @@ public class ButtonPacket implements IMessage
 	public static final byte ID_DRACONIUMCHEST1 = 3;
 	public static final byte ID_DRACONIUMCHEST2 = 4;
 	public static final byte ID_DRACONIUMCHEST3 = 5;
+	public static final byte ID_TOOLINVENTORY = 6;
+	public static final byte ID_TOOLCONFIG = 7;
 	byte buttonId = 0;
 	boolean state = false;
 	
@@ -100,6 +104,10 @@ public class ButtonPacket implements IMessage
 						tile.setAutoFeed(3);
 					}
 					break;
+				}
+				case ID_TOOLCONFIG:
+				{
+					ctx.getServerHandler().playerEntity.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().playerEntity.worldObj, (int)ctx.getServerHandler().playerEntity.posX, (int)ctx.getServerHandler().playerEntity.posY, (int)ctx.getServerHandler().playerEntity.posZ);
 				}
 
 				default:

@@ -149,6 +149,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public boolean isClientSide() { return true; }
-
+	public boolean isDedicatedServer() {
+		return false;
+	}
 }

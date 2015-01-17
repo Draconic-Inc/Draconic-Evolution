@@ -6,7 +6,7 @@ public final class References {
 	public static final String VERSION 				= "1.0.1-snapshot_0";
 	public static final String MCVERSION 			= "1.7.10";
 	public static final String CLIENTPROXYLOCATION 	= "com.brandon3055.draconicevolution.client.ClientProxy";
-	public static final String COMMONPROXYLOCATION 	= "com.brandon3055.draconicevolution.common.CommonProxy";
+	public static final String SERVERPROXYLOCATION = "com.brandon3055.draconicevolution.common.ServerProxy";
 	public static final String GUIFACTORY 			= "com.brandon3055.draconicevolution.client.interfaces.DEGUIFactory";
 	public static final String RESOURCESPREFIX 		= MODID.toLowerCase() + ":";
 
@@ -41,4 +41,6 @@ public final class References {
 	public static final String DIG_AOE = "ToolDigAOE";
 	public static final String DIG_DEPTH = "ToolDigDepth";
 	public static final String ATTACK_AOE = "WeaponAttackAOE";
+	public static final String OBLITERATE = "ToolVoidJunk";
+	public static final String TREE_MODE = "AxeTreeMode";
 }

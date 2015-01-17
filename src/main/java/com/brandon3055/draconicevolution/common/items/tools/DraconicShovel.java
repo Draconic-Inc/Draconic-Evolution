@@ -4,6 +4,12 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+
+import java.util.List;
 
 public class DraconicShovel extends MiningTool {
 //	public IIcon itemIcon0;
@@ -24,19 +30,28 @@ public class DraconicShovel extends MiningTool {
 		ModItems.register(this);
 	}
 
+	@Override
+	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
+		List<ItemConfigField> list = super.getFields(stack, slot);
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, 3, 1).readFromItem(stack, 0).setModifier("AOE"));
+		list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.OBLITERATE).readFromItem(stack, false));
+		return list;
+	}
 
+	@Override
+	public String getInventoryName() {
+		return StatCollector.translateToLocal("info.de.toolInventory.txt");
+	}
 
+	@Override
+	public int getInventorySlots() {
+		return 9;
+	}
 
-
-
-
-
-
-
-
-
-
-
+	@Override
+	public boolean isEnchantValid(Enchantment enchant) {
+		return false;
+	}
 
 
 //	@Override

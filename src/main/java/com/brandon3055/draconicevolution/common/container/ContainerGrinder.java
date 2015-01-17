@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import cpw.mods.fml.relauncher.Side;
@@ -79,19 +78,19 @@ public class ContainerGrinder extends ContainerDataSync {
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		if (energyCach != tile.externalInputBuffer.getEnergyStored()) energyCach = (Integer) sendObject(null, References.INT_ID, 0, tile.externalInputBuffer.getEnergyStored());
-		if (energy2Cach != tile.internalGenBuffer.getEnergyStored()) energy2Cach = (Integer) sendObject(null, References.INT_ID, 1, tile.internalGenBuffer.getEnergyStored());
-		if (burnCach != tile.burnTime) burnCach = (Integer) sendObject(null, References.INT_ID, 2, tile.burnTime);
-		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObject(null, References.INT_ID, 3, tile.burnTimeRemaining);
+		if (energyCach != tile.externalInputBuffer.getEnergyStored()) energyCach = (Integer) sendObjectToClient(null, 0, tile.externalInputBuffer.getEnergyStored());
+		if (energy2Cach != tile.internalGenBuffer.getEnergyStored()) energy2Cach = (Integer) sendObjectToClient(null, 1, tile.internalGenBuffer.getEnergyStored());
+		if (burnCach != tile.burnTime) burnCach = (Integer) sendObjectToClient(null, 2, tile.burnTime);
+		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObjectToClient(null, 3, tile.burnTimeRemaining);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveSyncData(int index, Object object) {
-		if (index == 0) tile.externalInputBuffer.setEnergyStored((Integer)object);
-		else if (index == 1) tile.internalGenBuffer.setEnergyStored((Integer)object);
-		else if (index == 2) tile.burnTime = (Integer)object;
-		else if (index == 3) tile.burnTimeRemaining = (Integer)object;
+	public void receiveSyncData(int index, int i) {
+		if (index == 0) tile.externalInputBuffer.setEnergyStored(i);
+		else if (index == 1) tile.internalGenBuffer.setEnergyStored(i);
+		else if (index == 2) tile.burnTime = i;
+		else if (index == 3) tile.burnTimeRemaining = i;
 
 	}
 }

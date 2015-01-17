@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
 import com.brandon3055.draconicevolution.common.tileentities.TileGenerator;
 import cpw.mods.fml.relauncher.Side;
@@ -75,16 +74,16 @@ public class ContainerGenerator extends ContainerDataSync {
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		if (energyCach != tile.getEnergyStored(ForgeDirection.UP)) energyCach = (Integer) sendObject(null, References.INT_ID, 0, tile.getEnergyStored(ForgeDirection.UP));
-		if (burnCach != tile.burnTime) burnCach = (Integer) sendObject(null, References.INT_ID, 1, tile.burnTime);
-		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObject(null, References.INT_ID, 2, tile.burnTimeRemaining);
+		if (energyCach != tile.getEnergyStored(ForgeDirection.UP)) energyCach = (Integer) sendObjectToClient(null, 0, tile.getEnergyStored(ForgeDirection.UP));
+		if (burnCach != tile.burnTime) burnCach = (Integer) sendObjectToClient(null, 1, tile.burnTime);
+		if (burnRemainingCach != tile.burnTimeRemaining) burnRemainingCach = (Integer) sendObjectToClient(null, 2, tile.burnTimeRemaining);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveSyncData(int index, Object object) {
-		if (index == 0)tile.storage.setEnergyStored((Integer)object);
-		else if (index == 1) tile.burnTime = (Integer)object;
-		else if (index == 2) tile.burnTimeRemaining = (Integer)object;
+	public void receiveSyncData(int index, int i) {
+		if (index == 0)tile.storage.setEnergyStored(i);
+		else if (index == 1) tile.burnTime = i;
+		else if (index == 2) tile.burnTimeRemaining = i;
 	}
 }

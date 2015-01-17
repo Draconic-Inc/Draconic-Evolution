@@ -4,6 +4,11 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 public class WyvernShovel extends MiningTool {
 
@@ -19,28 +24,27 @@ public class WyvernShovel extends MiningTool {
 		ModItems.register(this);
 	}
 
+	@Override
+	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
+		List<ItemConfigField> list = super.getFields(stack, slot);
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, 1, 1).readFromItem(stack, 0).setModifier("AOE"));
+		return list;
+	}
 
+	@Override
+	public String getInventoryName() {
+		return "";
+	}
 
+	@Override
+	public int getInventorySlots() {
+		return 0;
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	@Override
+	public boolean isEnchantValid(Enchantment enchant) {
+		return false;
+	}
 
 
 //	@Override

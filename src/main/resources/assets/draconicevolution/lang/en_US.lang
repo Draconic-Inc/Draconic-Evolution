@@ -312,6 +312,8 @@ info.de.capacitorMode2.txt=Charge Armor & Held Item
 info.de.capacitorMode3.txt=Charge Armor & Hotbar
 info.de.changwMode.txt=Shift Right click to change mode
 
+info.de.toolInventory.txt=Obliteration filter
+
 enchantment.draconicevolution.reaperEnchant=Reaper
 
 //Achievements ----------------------------------------------------------------------------------------------------------------------------------------
@@ -461,6 +463,14 @@ button.de.ArmorSpeedMult.name=Speed Multiplier
 button.de.ArmorJumpMult.name=Jump Multiplier
 button.de.ArmorHillStep.name=Hill Step
 button.de.ArmorSprintOnly.name=Boost while sprinting
+button.de.ToolDigMultiplier.name=Dig Speed Multiplier
+button.de.ToolDigAOE.name=Size
+button.de.ToolDigDepth.name=Dig Depth
+button.de.WeaponAttackAOE.name=Attack A.O.E
+button.de.ToolVoidJunk.name=Void Junk
+button.de.AxeTreeMode.name=Tree Mode
+button.de..name=
+button.de..name=
 button.de..name=
 
 //Manual Gui ----------------------------------------------------------------------------------------------------------------------------------------

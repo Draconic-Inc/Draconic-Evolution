@@ -7,7 +7,6 @@ import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -107,7 +106,6 @@ public class TeleporterMKI extends ItemDE {
 			if (player.getHealth() > 2 || player.capabilities.isCreativeMode)
 			{
 				getLocation(stack).sendEntityToCoords(player);
-				LogHelper.info(getLocation(stack).getYCoord());
 				stack.damageItem(1, player);
 				if (!player.capabilities.isCreativeMode) player.setHealth(player.getHealth() - 2);
 			} else if (world.isRemote)

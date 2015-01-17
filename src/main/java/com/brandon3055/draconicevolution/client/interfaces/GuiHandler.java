@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.client.interfaces.manual.GuiManual;
 import com.brandon3055.draconicevolution.common.container.*;
+import com.brandon3055.draconicevolution.common.inventory.InventoryTool;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -83,7 +84,7 @@ public class GuiHandler implements IGuiHandler {
 				}
 				break;
 			case GUIID_TOOL_CONFIG:
-				return new DummyContainer();
+				return new ContainerAdvTool(player.inventory, new InventoryTool(player, null));
 
 
 
@@ -157,7 +158,8 @@ public class GuiHandler implements IGuiHandler {
 				}
 				break;
 			case GUIID_TOOL_CONFIG:
-				return new GUIToolConfig(player);
+				return new GUIToolConfig(player, new ContainerAdvTool(player.inventory, new InventoryTool(player, null)));
+
 
 //			case GUIID_CONTAINER_TEMPLATE:
 //				TileEntity containerTemp = world.getTileEntity(x, y, z);

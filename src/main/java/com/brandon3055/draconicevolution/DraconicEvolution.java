@@ -21,7 +21,7 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 	@Mod.Instance(References.MODID)
 	public static DraconicEvolution instance;
 
-	@SidedProxy(clientSide = References.CLIENTPROXYLOCATION, serverSide = References.COMMONPROXYLOCATION)
+	@SidedProxy(clientSide = References.CLIENTPROXYLOCATION, serverSide = References.SERVERPROXYLOCATION)
 	public static CommonProxy proxy;
 
 	public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), References.MODID, "toolsAndWeapons", 0);
@@ -30,7 +30,7 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 	public static final String networkChannelName = "DraconicEvolution";
 	public static SimpleNetworkWrapper network;
 
-	public static boolean debug = false;//todo
+	public static boolean debug = true;//todo
 
 	public static Enchantment reaperEnchant;
 	

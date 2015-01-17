@@ -25,10 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ToolHandler {
-	public static Material[] materialsPick = {Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock};
-	public static Material[] materialsShovel = {Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow};
-	public static Material[] materialsAxe = {Material.cactus, Material.leaves, Material.wood, Material.plants};
-	public static Material[] materialsDStaff = {Material.anvil, Material.circuits, Material.coral, Material.glass, Material.ice, Material.iron, Material.rock, Material.clay, Material.ground, Material.grass, Material.sand, Material.snow, Material.craftedSnow, Material.cactus, Material.leaves, Material.wood, Material.plants, Material.cloth};
 	public static Block[] destroyList = {Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand, Blocks.grass, Blocks.netherrack};
 
 	public static boolean isRightMaterial(final Material material, final Material[] materialsListing) {
@@ -53,7 +49,7 @@ public class ToolHandler {
 		int size = stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0);
 		MovingObjectPosition mop = raytraceFromEntity(world, player, 4.5D);
 		if (mop == null) {
-			if (player instanceof EntityPlayer) updateGhostBlocks(player, world);
+			updateGhostBlocks(player, world);
 			return false;
 		}
 
@@ -297,7 +293,7 @@ public class ToolHandler {
 		return world.rayTraceBlocks(vec3, vec31);
 	}
 
-	private static void updateGhostBlocks(EntityPlayer player, World world) {
+	public static void updateGhostBlocks(EntityPlayer player, World world) {
 		int xPos = (int) player.posX;
 		int yPos = (int) player.posY;
 		int zPos = (int) player.posZ;

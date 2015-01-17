@@ -15,7 +15,9 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
@@ -81,5 +83,15 @@ public class EnergyInfuser extends BlockCustomDrop {
 	@Override
 	protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
 
+	}
+
+	@Override
+	public boolean shouldSideBeRendered(IBlockAccess access, int x, int y, int z, int side) {
+		return false;
+	}
+
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+		return true;
 	}
 }

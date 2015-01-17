@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.ItemConfigPacket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.StringUtils;
 
 /**
  * Created by Brandon on 29/12/2014.
@@ -56,6 +57,18 @@ public class ItemConfigField {
 	public ItemConfigField setModifier(String modifier){
 		this.modifier = modifier;
 		return this;
+	}
+
+	public String getFormatedValue(){
+		if (datatype == References.INT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("AOE")){
+			int i = (Integer) value;
+			i *= 2;
+			return String.valueOf((i + 1) + "x" + (i + 1));
+		}
+		else
+		{
+			return String.valueOf(value);
+		}
 	}
 
 	public void sendChanges(){

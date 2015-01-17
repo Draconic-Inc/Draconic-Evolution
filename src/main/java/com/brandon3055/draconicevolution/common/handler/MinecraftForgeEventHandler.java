@@ -40,6 +40,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -47,6 +48,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -325,5 +327,21 @@ public class MinecraftForgeEventHandler {
 	@SubscribeEvent
 	public void worldUnload(WorldEvent.Unload e) {
 		TileGrinder.fakePlayer = null;
+	}
+
+	@SubscribeEvent
+	public void playerInteract(PlayerInteractEvent event){
+		if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK){
+
+			ForgeDirection face = ForgeDirection.getOrientation(event.face);
+			int x = event.x + face.offsetX;
+			int y = event.y + face.offsetY;
+			int z = event.z + face.offsetZ;
+			if (event.world.getBlock(x, y, z) == ModBlocks.safetyFlame){
+				event.world.setBlockToAir(x, y, z);
+				event.world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "random.fizz", 1F, event.world.rand.nextFloat() * 0.1F + 2F);
+				event.setCanceled(true);
+			}
+		}
 	}
 }

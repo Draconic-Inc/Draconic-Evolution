@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.google.common.collect.Sets;
@@ -9,6 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -121,5 +123,18 @@ public class ToolBase extends RFItemBase {
 		List<ItemConfigField> list = super.getFields(stack, slot);
 		if (!getToolClasses(stack).isEmpty()) list.add(new ItemConfigField(References.FLOAT_ID, slot, References.DIG_SPEED_MULTIPLIER).setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1f));
 		return list;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {
+		boolean show = InfoHelper.holdShiftForDetails(list);
+		if (show) InfoHelper.addEnergyInfo(stack, list);
+		addAditionalInformation(stack, player, list, extended);
+		if (show) InfoHelper.addLore(stack, list, true);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void addAditionalInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {
 	}
 }

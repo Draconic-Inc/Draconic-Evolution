@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StringUtils;
 
 /**
  * Created by Brandon on 1/01/2015.
@@ -62,7 +61,7 @@ public class ComponentFieldAdjuster extends ComponentBase {
 	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		if (field == null) return;
 		String fieldName = field.getLocalizedName();
-		String fieldValue = String.valueOf(field.value);
+		String fieldValue = field.getFormatedValue();
 		if (field.datatype == References.DOUBLE_ID) {
 			double d = (Double)field.value;
 			fieldValue = String.valueOf((double)Math.round(d*100f) / 100D);
@@ -70,11 +69,6 @@ public class ComponentFieldAdjuster extends ComponentBase {
 		if (field.datatype == References.FLOAT_ID) {
 			float d = (Float)field.value;
 			fieldValue = String.valueOf((double)Math.round((double)(d*100f)) / 100D);
-		}
-		if (field.datatype == References.INT_ID && !StringUtils.isNullOrEmpty(field.modifier) && field.modifier.equals("AOE")){
-			int i = (Integer) field.value;
-			i *= 2;
-			fieldValue = String.valueOf((i+1) + "x" + (i+1));
 		}
 
 		int centre = fontRendererObj.getStringWidth(fieldName) / 2;

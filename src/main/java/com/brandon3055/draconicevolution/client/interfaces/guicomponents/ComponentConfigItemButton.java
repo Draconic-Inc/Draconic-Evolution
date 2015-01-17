@@ -61,7 +61,10 @@ public class ComponentConfigItemButton extends ComponentBase {
 		if (isMouseOver(mouseX, mouseY) && hasValidItem){
 			List<String> list = new ArrayList<String>();
 			List<ItemConfigField> fields = ((IConfigurableItem)inventory.getStackInSlot(slot).getItem()).getFields(inventory.getStackInSlot(slot), slot);
-			for (ItemConfigField field : fields) list.add(field.getLocalizedName() + ": " + field.value);
+			for (ItemConfigField field : fields) {
+				list.add(field.getLocalizedName() + ": " + field.getFormatedValue());
+
+			}
 			drawHoveringText(list, mouseX + offsetX, mouseY + offsetY + 10, fontRendererObj);
 		}
 	}

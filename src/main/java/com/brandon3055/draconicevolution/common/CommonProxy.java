@@ -36,7 +36,7 @@ import net.minecraftforge.common.MinecraftForge;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class CommonProxy {
+public abstract class CommonProxy {
 	//private final static boolean debug = DraconicEvolution.debug;
 
 	public void preInit(FMLPreInitializationEvent event) {
@@ -106,6 +106,7 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(MountUpdatePacket.Handler.class, MountUpdatePacket.class, 7, Side.CLIENT);
 		DraconicEvolution.network.registerMessage(MountUpdatePacket.Handler.class, MountUpdatePacket.class, 8, Side.SERVER);
 		DraconicEvolution.network.registerMessage(ItemConfigPacket.Handler.class, ItemConfigPacket.class, 9, Side.SERVER);
+		DraconicEvolution.network.registerMessage(TileObjectPacket.Handler.class, TileObjectPacket.class, 10, Side.SERVER);
 	}
 
 	public void registerTileEntities() {
@@ -158,7 +159,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityDragonHeart.class, "Dragon Heart Item", 5, DraconicEvolution.instance, 32, 5, true);
 	}
 
-	public boolean isClientSide(){return false;}
+	public abstract boolean isDedicatedServer();
 
 	public MinecraftServer getMCServer(){
 		return FMLCommonHandler.instance().getMinecraftServerInstance();
