@@ -236,11 +236,11 @@ msg.spawnerInfo1.txt=Mob Type
 msg.spawnerInfo2.txt=Requires Player
 msg.spawnerInfo3.txt=Ignore Spawn Requirements
 msg.spawnerInfo4.txt=Spawner Tier
-msg.spawnerInfo5.txt=Shift Right click for upgrade info
-msg.spawnerInfo6.txt=Requires players : Nether Star
-msg.spawnerInfo7.txt=Ignore Spawn Requirements : Notch Apple
-msg.spawnerInfo8.txt=Tier 2 : Wyvern Core
-msg.spawnerInfo9.txt=Tier 3 : Awakened Core
+msg.spawnerInfo5.txt=§3Hold shift for upgrade info
+msg.spawnerInfo6.txt=Requires players: §3Nether Star
+msg.spawnerInfo7.txt=Ignore Spawn Requirements: §3Notch Apple
+msg.spawnerInfo8.txt=Tier 2: §3Wyvern Core
+msg.spawnerInfo9.txt=Tier 3:§3 Awakened Core
 msg.dislocatorUnsafe.txt=Destination Unsafe Please Try Again
 msg.dislocatorNoGround.txt=Error world not found
 msg.range.txt=Range:
@@ -312,7 +312,14 @@ info.de.capacitorMode2.txt=Charge Armor & Held Item
 info.de.capacitorMode3.txt=Charge Armor & Hotbar
 info.de.changwMode.txt=Shift Right click to change mode
 
-info.de.toolInventory.txt=Obliteration filter
+info.de.toolInventoryOblit.txt=Junk filter & Enchants
+info.de.toolInventoryEnch.txt=Enchants
+
+info.de.hudDisplayConfigTxt1.txt=#### HUD Display ####
+info.de.hudDisplayConfigTxt2.txt=Click and drag to move
+info.de.hudDisplayConfigTxt3.txt=###################
+info.de.hudDisplayConfigInfo1.txt=Click and drag HUD
+info.de.hudDisplayConfigInfo2.txt=to change location
 
 enchantment.draconicevolution.reaperEnchant=Reaper
 

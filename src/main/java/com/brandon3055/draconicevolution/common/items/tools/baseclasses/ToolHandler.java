@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
@@ -294,6 +295,7 @@ public class ToolHandler {
 	}
 
 	public static void updateGhostBlocks(EntityPlayer player, World world) {
+		if (world.isRemote) return;
 		int xPos = (int) player.posX;
 		int yPos = (int) player.posY;
 		int zPos = (int) player.posZ;
@@ -301,7 +303,8 @@ public class ToolHandler {
 		for (int x = xPos - 6; x < xPos + 6; x++) {
 			for (int y = yPos - 6; y < yPos + 6; y++) {
 				for (int z = zPos - 6; z < zPos + 6; z++) {
-					world.markBlockForUpdate(x, y, z);
+					((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
+					//world.markBlockForUpdate(x, y, z);
 				}
 			}
 		}

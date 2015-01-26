@@ -4,13 +4,16 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 import java.util.List;
 
-public class WyvernPickaxe extends MiningTool {
+public class WyvernPickaxe extends MiningTool implements IInventoryTool {
 
 	public WyvernPickaxe() {
 		super(ModItems.DRACONIUM_T1);
@@ -32,7 +35,7 @@ public class WyvernPickaxe extends MiningTool {
 
 	@Override
 	public String getInventoryName() {
-		return "";
+		return StatCollector.translateToLocal("info.de.toolInventoryEnch.txt");
 	}
 
 	@Override
@@ -42,7 +45,7 @@ public class WyvernPickaxe extends MiningTool {
 
 	@Override
 	public boolean isEnchantValid(Enchantment enchant) {
-		return false;
+		return enchant.type == EnumEnchantmentType.digger;
 	}
 
 

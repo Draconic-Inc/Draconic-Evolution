@@ -5,12 +5,16 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -23,9 +27,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicBow extends ItemBow
+public class DraconicBow extends ItemBow implements IInventoryTool
 {
 	public static final String[] bowPullIconNameArray = new String[] { "pulling_0", "pulling_1", "pulling_2" };
 	@SideOnly(Side.CLIENT)
@@ -215,5 +220,25 @@ public class DraconicBow extends ItemBow
 	@Override
 	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
 		return new EntityPersistentItem(world, location, itemstack);
+	}
+
+	@Override
+	public String getInventoryName() {
+		return StatCollector.translateToLocal("info.de.toolInventoryEnch.txt");
+	}
+
+	@Override
+	public int getInventorySlots() {
+		return 0;
+	}
+
+	@Override
+	public boolean isEnchantValid(Enchantment enchant) {
+		return enchant.type == EnumEnchantmentType.bow || enchant.effectId == DraconicEvolution.reaperEnchant.effectId;
+	}
+
+	@Override
+	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
+		return new ArrayList<ItemConfigField>();
 	}
 }

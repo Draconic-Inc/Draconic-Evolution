@@ -10,10 +10,8 @@ public final class ItemNBTHelper {
 
 	// SETTERS ///////////////////////////////////////////////////////////////////
 	public static NBTTagCompound getCompound(ItemStack stack){
-		if (stack.getTagCompound() == null)
-			return new NBTTagCompound();
-		else
-			return stack.getTagCompound();	
+		if (stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
+		return stack.getTagCompound();
 	}
 
 	public static ItemStack setByte(ItemStack stack, String tag, byte b)

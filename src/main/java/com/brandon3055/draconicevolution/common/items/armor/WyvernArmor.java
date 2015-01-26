@@ -5,15 +5,14 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +22,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 
@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem{
+public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool  {
 	private IIcon helmIcon;
 	private IIcon chestIcon;
 	private IIcon leggsIcon;
@@ -243,5 +243,20 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
 		}
 		return list;
+	}
+
+	@Override
+	public String getInventoryName() {
+		return StatCollector.translateToLocal("info.de.toolInventoryEnch.txt");
+	}
+
+	@Override
+	public int getInventorySlots() {
+		return 0;
+	}
+
+	@Override
+	public boolean isEnchantValid(Enchantment enchant) {
+		return enchant.type == EnumEnchantmentType.armor || (armorType == 0 && enchant.type == EnumEnchantmentType.armor_head) || (armorType == 1 && enchant.type == EnumEnchantmentType.armor_torso) || (armorType == 2 && enchant.type == EnumEnchantmentType.armor_legs) || (armorType == 3 && enchant.type == EnumEnchantmentType.armor_feet);
 	}
 }

@@ -4,15 +4,14 @@ import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
-import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.List;
 /**
  * Created by Brandon on 8/01/2015.
  */
-public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigurableItem {
+public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigurableItem, IHudDisplayItem {
 	private int capacity = 0;
 	/**Max Receive*/
 	private int maxReceive = 0;
@@ -124,4 +123,14 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		return new ArrayList<ItemConfigField>();
 	}
+
+	@Override
+	public List<String> getDisplayData(ItemStack stack) {
+		List<String> list = new ArrayList<String>();
+		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getLocalizedName() + ": " + field.getFormatedValue());
+		if (capacity > 0) list.add(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
+
+		return list;
+	}
+
 }

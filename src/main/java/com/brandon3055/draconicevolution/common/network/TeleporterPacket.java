@@ -26,6 +26,7 @@ public class TeleporterPacket implements IMessage
 	public static final int UPDATEDESTINATION = 7;
 	public static final int TELEPORT = 8;
 	public static final int SCROLL = 9;
+	public static final int MOVELOCATION = 10;
 
 	private int data = 0;
 	private boolean dataB;
@@ -66,7 +67,7 @@ public class TeleporterPacket implements IMessage
 			if (function == UPDATEDESTINATION) bytes.writeInt(data);
 		}
 
-		if (function == UPDATELOCK){
+		if (function == UPDATELOCK || function == MOVELOCATION){
 			bytes.writeInt(data);
 			bytes.writeBoolean(dataB);
 		}
@@ -100,7 +101,7 @@ public class TeleporterPacket implements IMessage
 			if (function == UPDATEDESTINATION) data = bytes.readInt();
 		}
 
-		if (function == UPDATELOCK){
+		if (function == UPDATELOCK || function == MOVELOCATION){
 			data = bytes.readInt();
 			dataB = bytes.readBoolean();
 		}
@@ -197,6 +198,39 @@ public class TeleporterPacket implements IMessage
 				TeleportLocation destination = new TeleportLocation();
 				destination.readFromNBT(list.getCompoundTagAt(message.data));
 				destination.sendEntityToCoords(ctx.getServerHandler().playerEntity);
+			}
+
+			if (message.function == MOVELOCATION)
+			{
+				int selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
+				int selectionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
+				int maxSelect = Math.min(list.tagCount()-1, 11);
+				int maxOffset = Math.max(list.tagCount() - 12, 0);
+
+				if (message.dataB) //up
+				{
+					if (selected > 0)
+					{
+						NBTTagCompound temp = list.getCompoundTagAt(selected+selectionOffset);
+						list.func_150304_a(selected+selectionOffset, list.getCompoundTagAt(selected+selectionOffset - 1));
+						list.func_150304_a(selected+selectionOffset - 1, temp);
+						compound.setTag("Locations", list);
+						teleporter.setTagCompound(compound);
+						ItemNBTHelper.setShort(teleporter, "Selection", (short) (ItemNBTHelper.getShort(teleporter, "Selection", (short) 0) - 1));
+					}
+				}
+				else //down
+				{
+					if (selected < maxSelect)
+					{
+						NBTTagCompound temp = list.getCompoundTagAt(selected+selectionOffset);
+						list.func_150304_a(selected+selectionOffset, list.getCompoundTagAt(selected+selectionOffset + 1));
+						list.func_150304_a(selected+selectionOffset + 1, temp);
+						compound.setTag("Locations", list);
+						teleporter.setTagCompound(compound);
+						ItemNBTHelper.setShort(teleporter, "Selection", (short) (ItemNBTHelper.getShort(teleporter, "Selection", (short) 0) + 1));
+					}
+				}
 			}
 
 			if (message.function == ADDFUEL){

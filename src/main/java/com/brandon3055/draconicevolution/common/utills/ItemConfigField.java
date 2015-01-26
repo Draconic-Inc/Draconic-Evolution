@@ -71,6 +71,11 @@ public class ItemConfigField {
 		}
 	}
 
+	public String getTooltipInfo()
+	{
+		return InfoHelper.ITC() + getLocalizedName() + ": " + InfoHelper.HITC() + getFormatedValue();
+	}
+
 	public void sendChanges(){
 		DraconicEvolution.network.sendToServer(new ItemConfigPacket(this));
 	}

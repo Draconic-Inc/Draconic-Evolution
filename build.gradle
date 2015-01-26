@@ -31,7 +31,7 @@ group= "com.brandon3055.draconicevolution" // http://maven.apache.org/guides/min
 archivesBaseName = "Draconic-Evolution"
 
 minecraft {
-    version = "1.7.10-10.13.2.1236"
+    version = "1.7.10-10.13.2.1286"
     //assetDir = "run/assets"
 }
 

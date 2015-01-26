@@ -7,13 +7,17 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,9 +29,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class WyvernSword extends ItemSword implements IEnergyContainerItem{
+public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInventoryTool {
 
 	protected int capacity = References.WYVERNCAPACITY;
 	protected int maxReceive = References.WYVERNTRANSFER;
@@ -169,6 +174,26 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem{
 	@Override
 	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
 		return new EntityPersistentItem(world, location, itemstack);
+	}
+
+	@Override
+	public String getInventoryName() {
+		return StatCollector.translateToLocal("info.de.toolInventoryEnch.txt");
+	}
+
+	@Override
+	public int getInventorySlots() {
+		return 0;
+	}
+
+	@Override
+	public boolean isEnchantValid(Enchantment enchant) {
+		return enchant.type == EnumEnchantmentType.weapon;
+	}
+
+	@Override
+	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
+		return new ArrayList<ItemConfigField>();
 	}
 }
 

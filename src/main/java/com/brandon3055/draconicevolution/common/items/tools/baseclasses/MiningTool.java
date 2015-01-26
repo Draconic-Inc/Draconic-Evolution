@@ -1,16 +1,17 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.server.S18PacketEntityTeleport;
 import net.minecraft.network.play.server.S23PacketBlockChange;
@@ -19,14 +20,14 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by Brandon on 2/01/2015.
  */
-public abstract class MiningTool extends ToolBase {//todo add custom information to sub classes,
+public abstract class MiningTool extends ToolBase {//todo add custom information to sub classes, Update documentation and add doc for hud
 
 
 	public MiningTool(ToolMaterial material) {
@@ -34,8 +35,25 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 	}
 
 
-	public Set<Block> getObliterationList(ItemStack stack){
-		return new HashSet<Block>();
+	public Map<Block, Integer> getObliterationList(ItemStack stack){
+		Map<Block, Integer> blockMap = new HashMap<Block, Integer>();
+
+		NBTTagCompound compound = ItemNBTHelper.getCompound(stack);
+
+		if (compound.hasNoTags()) return blockMap;
+		for (int i = 0; i < 9; i++)
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			if (compound.hasKey("Item" + i)) tag = compound.getCompoundTag("Item" + i);
+
+			if (tag.hasNoTags()) continue;
+
+			ItemStack stack1 = ItemStack.loadItemStackFromNBT(tag);
+
+			if (stack1 != null && stack1.getItem() instanceof ItemBlock) blockMap.put(Block.getBlockFromItem(stack1.getItem()), stack1.getItemDamage());
+		}
+
+		return blockMap;
 	}
 
 	@Override
@@ -43,22 +61,37 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		int radius = ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0);
 		int depth = ItemNBTHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
 
-
 		return getEnergyStored(stack) >= energyPerOperation && (radius > 0 || depth > 0) ? breakAOEBlocks(stack, x, y, z, radius, depth, player) : super.onBlockStartBreak(stack, x, y, z, player);
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		ToolHandler.updateGhostBlocks(player, world);
-		LogHelper.info(DraconicEvolution.proxy.isDedicatedServer());
-		return super.onItemRightClick(stack, world, player);
+		LogHelper.info(getDisplayData(stack));
+		if (player.isSneaking())
+		{
+			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);
+			for (ItemConfigField field : fields)
+			{
+				if (!world.isRemote && field.name.equals(References.DIG_AOE))
+				{
+					int aoe = (Integer) field.value;
+					aoe++;
+					if (aoe > (Integer)field.max) aoe = (Integer) field.min;
+					field.value = aoe;
+					field.sendChanges();
+				}
+			}
+		}
+
+ 		return super.onItemRightClick(stack, world, player);
 	}
 
-	//todo power, oblit, optimization, collection, Hud, Hud Config, shift right click, attack
+	//todo Hud, Hud Config, shift right click, attack, axe, hoe
 	//This method is basses on tinkerers construct
-	public boolean breakAOEBlocks(ItemStack stack, int x, int y, int z, int breakRadius, int breakDepth, EntityPlayer player) {
-
-		// only effective materials matter. We don't want to aoe when beraking dirt with a hammer.
+	public boolean breakAOEBlocks(ItemStack stack, int x, int y, int z, int breakRadius, int breakDepth, EntityPlayer player)
+	{
+		Map<Block, Integer> blockMap = getObliterationList(stack);
 		Block block = player.worldObj.getBlock(x,y,z);
 		int meta = player.worldObj.getBlockMetadata(x,y,z);
 		boolean effective = false;
@@ -82,7 +115,6 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		}
 		int sideHit = mop.sideHit;
 
-		// we successfully destroyed a block. time to do AOE!
 		int xRange = breakRadius;
 		int yRange = breakRadius;
 		int zRange = breakDepth;
@@ -113,7 +145,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 			{
 				for (int zPos = z - zRange; zPos <= z + zRange; zPos++)
 				{
-					breakExtraBlock(stack, player.worldObj, xPos, yPos, zPos, sideHit, player, refStrength, Math.abs(x - xPos) <= 1 && Math.abs(y - yPos) <= 1 && Math.abs(z - zPos) <= 1);
+					breakExtraBlock(stack, player.worldObj, xPos, yPos, zPos, sideHit, player, refStrength, Math.abs(x - xPos) <= 1 && Math.abs(y - yPos) <= 1 && Math.abs(z - zPos) <= 1, blockMap);
 				}
 			}
 		}
@@ -133,8 +165,8 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 	}
 
 	//This method is basses on tinkerers construct
-	protected void breakExtraBlock(ItemStack stack, World world, int x, int y, int z, int sidehit, EntityPlayer player, float refStrength, boolean breakSound) {
-		// prevent calling that stuff for air blocks, could lead to unexpected behaviour since it fires events
+	protected void breakExtraBlock(ItemStack stack, World world, int x, int y, int z, int sidehit, EntityPlayer player, float refStrength, boolean breakSound, Map<Block, Integer> blockMap)
+	{
 		if (world.isAirBlock(x, y, z))
 			return;
 
@@ -153,16 +185,14 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 
 		float strength = ForgeHooks.blockStrength(block, player, world, x,y,z);
 
-		// only harvestable blocks that aren't impossibly slow to harvest
 		if (!player.canHarvestBlock(block) || !ForgeHooks.canHarvestBlock(block, player, meta) || refStrength/strength > 10f)
 			return;
 
-		if (player.capabilities.isCreativeMode || getObliterationList(stack).contains(block)) {
+		if (player.capabilities.isCreativeMode || (blockMap.containsKey(block) && blockMap.get(block) == meta)) {
 			block.onBlockHarvested(world, x, y, z, meta, player);
 			if (block.removedByPlayer(world, player, x, y, z, false))
 				block.onBlockDestroyedByPlayer(world, x, y, z, meta);
 
-			// send update to client
 			if (!world.isRemote) {
 				((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
 			}
@@ -171,7 +201,6 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 
 		extractEnergy(stack, energyPerOperation, false);
 
-		// server sided handling
 		if (!world.isRemote) {
 
 			block.onBlockHarvested(world, x, y, z, meta, player);
@@ -183,13 +212,11 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 				player.addExhaustion(-0.025F);
 			}
 
-			// always send block update to client
 			EntityPlayerMP mpPlayer = (EntityPlayerMP) player;
 			mpPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
 		}
-		// client sided handlinge
-		else {
-
+		else
+		{
 			if (breakSound) world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
 			if(block.removedByPlayer(world, player, x,y,z, true))
 			{
@@ -199,12 +226,6 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 			Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C07PacketPlayerDigging(2, x,y,z, Minecraft.getMinecraft().objectMouseOver.sideHit));
 		}
 	}
-
-	public abstract String getInventoryName();
-
-	public abstract int getInventorySlots();
-
-	public abstract boolean isEnchantValid(Enchantment enchant);
 }
 
 

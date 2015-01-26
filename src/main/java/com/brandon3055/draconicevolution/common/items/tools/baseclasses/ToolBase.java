@@ -129,7 +129,12 @@ public class ToolBase extends RFItemBase {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {
 		boolean show = InfoHelper.holdShiftForDetails(list);
-		if (show) InfoHelper.addEnergyInfo(stack, list);
+		//if (show) InfoHelper.addEnergyInfo(stack, list);
+		if (show){
+			List<ItemConfigField> l = getFields(stack, 0);
+			for (ItemConfigField f : l) list.add(f.getTooltipInfo());
+		}
+
 		addAditionalInformation(stack, player, list, extended);
 		if (show) InfoHelper.addLore(stack, list, true);
 	}

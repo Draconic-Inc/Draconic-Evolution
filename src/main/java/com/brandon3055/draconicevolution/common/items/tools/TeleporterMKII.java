@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.handler.ToolHudHandler;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
@@ -26,9 +26,10 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TeleporterMKII extends TeleporterMKI
+public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem
 {
 
 	public TeleporterMKII() {
@@ -158,9 +159,9 @@ public class TeleporterMKII extends TeleporterMKI
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
-		if (world.isRemote && entity instanceof EntityPlayer && ((EntityPlayer) entity).getHeldItem() != null && ((EntityPlayer) entity).getHeldItem().getItem() instanceof TeleporterMKII){
-			if (getLocation(((EntityPlayer) entity).getHeldItem()) != null) ToolHudHandler.setTooltip(getLocation(((EntityPlayer) entity).getHeldItem()).getName());
-		}
+//		if (world.isRemote && entity instanceof EntityPlayer && ((EntityPlayer) entity).getHeldItem() != null && ((EntityPlayer) entity).getHeldItem().getItem() instanceof TeleporterMKII){
+//			if (getLocation(((EntityPlayer) entity).getHeldItem()) != null) HudHandler.setTooltip(getLocation(((EntityPlayer) entity).getHeldItem()).getName());
+//		}
 	}
 
 	@Override
@@ -177,5 +178,18 @@ public class TeleporterMKII extends TeleporterMKI
 		if (destination.getName().isEmpty()) return null;
 
 		return destination;
+	}
+
+	@Override
+	public List<String> getDisplayData(ItemStack stack) {
+		List<String> list = new ArrayList<String>();
+		TeleportLocation location = getLocation(stack);
+		if (location != null)
+		{
+			list.add(location.getName());
+		}
+		list.add(StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " " + ItemNBTHelper.getInteger(stack, "Fuel", 0));
+
+		return list;
 	}
 }

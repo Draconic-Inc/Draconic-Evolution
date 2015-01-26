@@ -4,14 +4,16 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
 import java.util.List;
 
-public class DraconicPickaxe extends MiningTool {
+public class DraconicPickaxe extends MiningTool implements IInventoryTool {
 
 
 	public DraconicPickaxe() {
@@ -36,7 +38,7 @@ public class DraconicPickaxe extends MiningTool {
 
 	@Override
 	public String getInventoryName() {
-		return StatCollector.translateToLocal("info.de.toolInventory.txt");
+		return StatCollector.translateToLocal("info.de.toolInventoryOblit.txt");
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class DraconicPickaxe extends MiningTool {
 
 	@Override
 	public boolean isEnchantValid(Enchantment enchant) {
-		return false;
+		return enchant.type == EnumEnchantmentType.digger;
 	}
 
 

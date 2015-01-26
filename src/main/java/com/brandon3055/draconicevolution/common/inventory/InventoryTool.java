@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.inventory;
 
 import com.brandon3055.draconicevolution.common.container.ContainerAdvTool;
-import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
+import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +18,7 @@ import net.minecraft.util.StringUtils;
 public class InventoryTool implements IInventory {
 
 	public int size;
-	ItemStack inventoryItem;
+	public ItemStack inventoryItem;
 	private ItemStack[] inventoryStacks;
 	private EntityPlayer player;
 	private ContainerAdvTool container;
@@ -27,8 +27,8 @@ public class InventoryTool implements IInventory {
 	public InventoryTool(EntityPlayer player, ItemStack stack){
 		this.inventoryItem = stack;
 		this.player = player;
-		if (stack != null && stack.getItem() instanceof MiningTool){
-			this.size = ((MiningTool) stack.getItem()).getInventorySlots();
+		if (stack != null && stack.getItem() instanceof IInventoryTool){
+			this.size = ((IInventoryTool) stack.getItem()).getInventorySlots();
 			readFromNBT(ItemNBTHelper.getCompound(inventoryItem));
 		}
 		this.inventoryStacks = new ItemStack[size + 5];
@@ -37,7 +37,7 @@ public class InventoryTool implements IInventory {
 	public void setAndReadFromStack(ItemStack stack, int slot){
 		this.slot = slot;
 		this.inventoryItem = stack;
-		this.size = ((MiningTool) stack.getItem()).getInventorySlots();
+		this.size = ((IInventoryTool) stack.getItem()).getInventorySlots();
 		this.inventoryStacks = new ItemStack[size + 5];
 		readFromNBT(ItemNBTHelper.getCompound(inventoryItem));
 	}
@@ -100,7 +100,7 @@ public class InventoryTool implements IInventory {
 	@Override
 	public String getInventoryName()
 	{
-		return inventoryItem != null && inventoryItem.getItem() instanceof MiningTool ? !StringUtils.isNullOrEmpty(((MiningTool) inventoryItem.getItem()).getInventoryName()) ? ((MiningTool) inventoryItem.getItem()).getInventoryName() : "" : "";
+		return inventoryItem != null && inventoryItem.getItem() instanceof IInventoryTool ? !StringUtils.isNullOrEmpty(((IInventoryTool) inventoryItem.getItem()).getInventoryName()) ? ((IInventoryTool) inventoryItem.getItem()).getInventoryName() : "" : "";
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class InventoryTool implements IInventory {
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return 64;
+		return 1;
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class InventoryTool implements IInventory {
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return itemstack.isItemEqual(new ItemStack(Items.emerald));
+		return true;
 	}
 
 	public void writeToNBT(NBTTagCompound compound)
@@ -205,6 +205,7 @@ public class InventoryTool implements IInventory {
 
 		for (int i = 0; i < getSizeInventory(); i++)
 		{
+			inventoryStacks[i] = null;
 			if (i < size)
 			{
 				tag[i] = compound.getCompoundTag("Item" + i);

@@ -31,7 +31,7 @@ public class ClientEventHandler {
 	public void tickEnd(TickEvent event) {
 		if (event.phase != TickEvent.Phase.START || event.side != Side.CLIENT) return;
 		elapsedTicks++;
-		ToolHudHandler.clientTick();
+		HudHandler.clientTick();
 
 		if (bowZoom && !lastTickBowZoom){
 			previousSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;

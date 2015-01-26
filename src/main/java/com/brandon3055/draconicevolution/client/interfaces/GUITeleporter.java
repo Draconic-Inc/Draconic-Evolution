@@ -87,6 +87,14 @@ public class GUITeleporter extends GuiScreen
 		fontRendererObj.drawString(colour+"Fuel: " + fuel, posX + 115, posY + 87, 0x000000);
 
 		super.drawScreen(x, y, f);
+
+		for (int i = 0; i < Math.min(12, locations.size()); i++){
+			if (GuiHelper.isInRect(17, 6+i*11, 80, 10, x - posX, y - posY)) {
+				List l = new ArrayList();
+				l.add("Right click to teleport");
+				drawHoveringText(l, x, y, fontRendererObj);
+			}
+		}
 	}
 
 	private void drawLocations(int x, int y){
@@ -94,7 +102,9 @@ public class GUITeleporter extends GuiScreen
 		int posY = (this.height - ySize) / 2;
 
 		for (int i = 0; i < Math.min(12, locations.size()); i++){
-			if (GuiHelper.isInRect(17, 6+i*11, 80, 10, x, y)) drawTexturedModalRect(posX+19, posY+5+i*11, 0, 188, 80, 10);
+			if (GuiHelper.isInRect(17, 6+i*11, 80, 10, x, y)) {
+				drawTexturedModalRect(posX+19, posY+5+i*11, 0, 188, 80, 10);
+			}
 
 			if (locations.get(i+selrctionOffset).getWriteProtected()){
 				if (GuiHelper.isInRect(102, 7+i*11, 6, 6, x, y)) drawTexturedModalRect(posX+102, posY+7+i*11, 26, 149, 6, 6);
@@ -189,9 +199,24 @@ public class GUITeleporter extends GuiScreen
 		//Check for location or lock clicked
 		for (int i = 0; i < Math.min(12, locations.size()); i++){
 			if (GuiHelper.isInRect(17, 6+i*11, 80, 10, x-posX, y-posY)) {
-				if (!(locations.get(i+selrctionOffset).getWriteProtected() && editingExisting)) {
+				if (!(locations.get(i+selrctionOffset).getWriteProtected() && editingExisting) && button == 0)
+				{
 					selected = i;
 					selectionChanged = true;
+				}
+				if (!(locations.get(i+selrctionOffset).getWriteProtected() && editingExisting) && button == 1)
+				{
+					if (locations.isEmpty()) return;
+
+					if (!player.capabilities.isCreativeMode && fuel <= 0)
+					{
+						player.addChatMessage(new ChatComponentTranslation("msg.teleporterOutOfFuel.txt"));
+					}
+
+					if (player.capabilities.isCreativeMode || fuel > 0) {
+						fuel--;
+						DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.TELEPORT, i+selrctionOffset, false));
+					}
 				}
 			}
 
@@ -288,10 +313,14 @@ public class GUITeleporter extends GuiScreen
 		buttonList.add(new GuiButtonAHeight(0, posX + 112, posY + 45, 66, 12, "Rename"));
 		buttonList.add(new GuiButtonAHeight(1, posX + 112, posY + 58, 66, 12, "Set Here"));
 		buttonList.add(new GuiButtonAHeight(2, posX + 112, posY + 71, 66, 12, "Remove"));
-		buttonList.add(new GuiButtonAHeight(3, posX + 112, posY + 99, 66, 12, "Teleport"));
+
+		buttonList.add(new GuiButtonAHeight(3, posX + 112, posY + 99, 33, 12, "▲ ▲ ▲"));
+
 		buttonList.add(new GuiButtonAHeight(4, posX + 112, posY + 112, 66, 12, "Add New"));
 		buttonList.add(new GuiButtonAHeight(5, posX + 112, posY + 125, 66, 12, "Add Fuel"));
 		buttonList.add(new GuiButtonAHeight(6, posX+xSize-63, posY-15, 60, 15, "Cancel"));
+
+		buttonList.add(new GuiButtonAHeight(7, posX + 112 + 34, posY + 99, 33, 12, "▼ ▼ ▼"));
 		((GuiButton) buttonList.get(6)).visible = false;
 
 		textBeingEdited = new GuiTextField(fontRendererObj, posX+3, posY-14, xSize-67, 12);
@@ -349,22 +378,30 @@ public class GUITeleporter extends GuiScreen
 			if (selected >= locations.size()) selected--;
 		}
 
-		if (button.id == 3){
-			if (locations.isEmpty()) return;
-			if (player.isRiding())
+		if (button.id == 3 || button.id == 7)
+		{
+			if (button.id == 3)
 			{
-				return;
+				if (selected > 0)
+				{
+					TeleportLocation temp = locations.get(selected + selrctionOffset);
+					locations.set(selected + selrctionOffset, locations.get(selected + selrctionOffset - 1));
+					locations.set(selected + selrctionOffset - 1, temp);
+					selected--;
+				}
+			}
+			else
+			{
+				if (selected < Math.min(11, locations.size()))
+				{
+					TeleportLocation temp = locations.get(selected + selrctionOffset);
+					locations.set(selected + selrctionOffset, locations.get(selected + selrctionOffset + 1));
+					locations.set(selected + selrctionOffset + 1, temp);
+					selected++;
+				}
 			}
 
-			if (!player.capabilities.isCreativeMode && fuel <= 0)
-			{
-				player.addChatMessage(new ChatComponentTranslation("msg.teleporterOutOfFuel.txt"));
-			}
-
-			if (player.capabilities.isCreativeMode || fuel > 0) {
-				fuel--;
-				DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.TELEPORT, selected+selrctionOffset, false));
-			}
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.MOVELOCATION, selected+selrctionOffset, button.id == 3));
 		}
 
 		if (button.id == 4 || button.id == 6 && !editingExisting){

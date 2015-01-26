@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Brandon on 31/12/2014.
@@ -33,7 +34,9 @@ public class ComponentItemRenderer extends ComponentBase {
 	}
 
 	@Override
-	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
+	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY)
+	{
+		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		drawTexturedModalRect(x, y, 118, 0, getWidth(), getHeight());
 		drawItemStack(stack, x + 2, y + 2, "null");

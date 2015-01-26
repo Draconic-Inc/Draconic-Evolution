@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.utills;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -189,11 +190,12 @@ public class Teleporter
 
 		boolean interDimensional = startWorld.provider.dimensionId != destinationWorld.provider.dimensionId;
 
-		//startWorld.updateEntityWithOptionalForce(entity, false);
+		startWorld.updateEntityWithOptionalForce(entity, false);//added
 
 		if ((entity instanceof EntityPlayerMP) && interDimensional)
 		{
 			EntityPlayerMP player = (EntityPlayerMP)entity;
+			player.closeScreen();//added
 			player.dimension = destination.dimension;
 			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, destinationWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
 			((WorldServer)startWorld).getPlayerManager().removePlayer(player);
@@ -265,6 +267,7 @@ public class Teleporter
 			}
 
 			player.playerNetServerHandler.sendPacket(new S1FPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
+			FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, startWorld.provider.dimensionId, destinationWorld.provider.dimensionId);
 		}
 		entity.setLocationAndAngles(destination.xCoord, destination.yCoord, destination.zCoord, destination.yaw, entity.rotationPitch);
 

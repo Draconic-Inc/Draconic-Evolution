@@ -1,11 +1,9 @@
 package com.brandon3055.draconicevolution.client.interfaces.componentguis;
 
-import com.brandon3055.draconicevolution.client.interfaces.guicomponents.ComponentTexturedRect;
-import com.brandon3055.draconicevolution.client.interfaces.guicomponents.ComponentCollection;
-import com.brandon3055.draconicevolution.client.interfaces.guicomponents.ComponentSlotBackground;
-import com.brandon3055.draconicevolution.client.interfaces.guicomponents.GUIBase;
+import com.brandon3055.draconicevolution.client.interfaces.guicomponents.*;
 import com.brandon3055.draconicevolution.common.container.ContainerAdvTool;
 import com.brandon3055.draconicevolution.common.lib.References;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -19,13 +17,21 @@ public class GUIToolInventory extends GUIBase {
 
 	private ContainerAdvTool container;
 	private String inventoryName;
+	private EntityPlayer player;
+	private GUIToolConfig guiToolConfig;
 
 	public GUIToolInventory(EntityPlayer player, ContainerAdvTool container) {
 		super(container, 198, 130);
 		this.container = container;
 		this.container.setSlotsActive(true);
 		this.inventoryName = container.inventoryTool.getInventoryName();
+		this.player = player;
 		addDependentComponents();
+	}
+
+	public GUIToolInventory(EntityPlayer player, ContainerAdvTool container, GUIToolConfig guiToolConfig) {
+		this(player, container);
+		this.guiToolConfig = guiToolConfig;
 	}
 
 	@Override
@@ -33,6 +39,7 @@ public class GUIToolInventory extends GUIBase {
 		ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize, this);
 		c.addComponent(new ComponentTexturedRect(0, 130 - 89, 198, 89, inventoryTexture)).setGroup("BACKGROUND");
 		c.addComponent(new ComponentTexturedRect(0, 0, 198, 80, inventoryTexture)).setGroup("BACKGROUND");
+		c.addComponent(new ComponentButton(172, 3, 18, 12, 0, this, "<=", "Back"));
 
 		for (int i = 0; i < 5; i++)
 		{
@@ -43,9 +50,19 @@ public class GUIToolInventory extends GUIBase {
 	}
 
 	@Override
+	public void buttonClicked(int id) {
+		super.buttonClicked(id);
+		if (guiToolConfig == null) guiToolConfig = new GUIToolConfig(player, container);
+		Minecraft.getMinecraft().displayGuiScreen(guiToolConfig);
+		guiToolConfig.setLevel(1);
+		container.setSlotsActive(false);
+	}
+
+	@Override
 	protected void addDependentComponents() {
 		for (int x = 0; x < container.inventoryTool.size; x++) collection.addComponent(new ComponentSlotBackground(7 + x * 18, 18)).setGroup("INVENTORY");
 		ComponentSlotBackground.addInventorySlots(collection, 7, 44, container.inventoryItemSlot);
+		if (container.inventoryItemSlot > 35) collection.addComponent(new ComponentItemRenderer(6, 18, container.inventoryTool.inventoryItem)).setGroup("INVENTORY");
 	}
 
 	@Override

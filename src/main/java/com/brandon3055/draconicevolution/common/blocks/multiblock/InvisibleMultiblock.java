@@ -1,14 +1,16 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
-import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.utills.Utills;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileInvisibleMultiblock;
+import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.utills.Utills;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -20,17 +22,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by Brandon on 25/07/2014.
  */
-public class InvisibleMultiblock extends BlockDE {
+public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 
 	public InvisibleMultiblock() {
 		super(Material.iron);
@@ -89,23 +92,23 @@ public class InvisibleMultiblock extends BlockDE {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		int meta = world.getBlockMetadata(x, y, z);
 		if (meta == 0 || meta == 1) {
-			TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
-			if (thisTile == null) {
-				LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock)");
-				return false;
-			}
-			TileEnergyStorageCore master = thisTile.getMaster();
-			if (master == null) {
-				onNeighborBlockChange(world, x, y, z, this);
-				return false;
-			}
-			if (!world.isRemote) {
-				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
-				player.addChatComponentMessage(new ChatComponentText("Tier:" + master.getTier()));
-				String BN = String.valueOf(master.getEnergyStored());
-				if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
-				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored()) + " [" + BN + " RF]"));
-			}
+//			TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
+//			if (thisTile == null) {
+//				LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock)");
+//				return false;
+//			}
+//			TileEnergyStorageCore master = thisTile.getMaster();
+//			if (master == null) {
+//				onNeighborBlockChange(world, x, y, z, this);
+//				return false;
+//			}
+//			if (!world.isRemote) {
+//				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
+//				player.addChatComponentMessage(new ChatComponentText("Tier:" + master.getTier()));
+//				String BN = String.valueOf(master.getEnergyStored());
+//				if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
+//				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored()) + " [" + BN + " RF]"));
+//			}
 			return true;
 		} else if (meta == 2) {
 			TileEnergyPylon pylon = (world.getTileEntity(x, y+1, z) != null && world.getTileEntity(x, y+1, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y+1, z) : (world.getTileEntity(x, y-1, z) != null && world.getTileEntity(x, y-1, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y-1, z) : null;
@@ -178,12 +181,41 @@ public class InvisibleMultiblock extends BlockDE {
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
 		if (world.getBlockMetadata(x, y, z) == 0)
 			return new ItemStack(ModBlocks.draconiumBlock);
 		else if (world.getBlockMetadata(x, y, z) == 1)
 			return new ItemStack(Blocks.redstone_block);
 		else
 			return new ItemStack(Blocks.glass);
+	}
+
+	@Override
+	public List<String> getDisplayData(World world, int x, int y, int z) {
+		List<String> list = new ArrayList<String>();
+
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 0 || meta == 1)
+		{
+			TileInvisibleMultiblock thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileInvisibleMultiblock) ? (TileInvisibleMultiblock) world.getTileEntity(x, y, z) : null;
+			if (thisTile == null) {
+				LogHelper.error("Missing Tile Entity (TileInvisibleMultiblock getDisplayData)");
+				return list;
+			}
+
+			TileEnergyStorageCore master = thisTile.getMaster();
+
+			if (master == null) { return list; }
+
+			list.add(InfoHelper.HITC() + ModBlocks.energyStorageCore.getLocalizedName());
+			list.add("Tier: " + InfoHelper.ITC() + master.getTier());
+			String BN = String.valueOf(master.getEnergyStored());
+			if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
+			list.add(StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.ITC() + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored()) + " [" + BN + " RF]");
+
+			return list;
+		}
+
+		return list;
 	}
 }

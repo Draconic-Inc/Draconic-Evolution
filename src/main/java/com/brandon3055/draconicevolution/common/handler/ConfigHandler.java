@@ -16,6 +16,8 @@ public class ConfigHandler {
 	public static int soulDropChance;
 	public static int passiveSoulDropChance;
 	public static int cometRarity;
+	public static int hudX;
+	public static int hudY;
 	public static String[] obliterationList;
 	public static boolean generateEnderComets;
 	public static boolean generateChaosIslands;
@@ -72,6 +74,9 @@ public class ConfigHandler {
 			pigmenBloodRage = config.get(Configuration.CATEGORY_GENERAL, "Pigmen Blood Rage", true, "Is Pigmen blood rage active").getBoolean(true);
 			disableLore = config.get(Configuration.CATEGORY_GENERAL, "Disable Item Lore", false, "Set to true to disable all item lore").getBoolean(false);
 			invertDPDSB = config.get(Configuration.CATEGORY_GENERAL, "InvertDPDSB", false, "Invert Dislocator Pedestal display name shift behavior").getBoolean(false);
+			hudX = config.get(Configuration.CATEGORY_GENERAL, "Hud Display X pos", 7).getInt(7);
+			hudY = config.get(Configuration.CATEGORY_GENERAL, "Hud Display Y pos", 874).getInt(874);
+
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);
