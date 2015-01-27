@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
@@ -12,9 +13,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
+import org.lwjgl.input.Keyboard;
 
 import java.util.HashSet;
 import java.util.List;
@@ -129,7 +132,6 @@ public class ToolBase extends RFItemBase {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {
 		boolean show = InfoHelper.holdShiftForDetails(list);
-		//if (show) InfoHelper.addEnergyInfo(stack, list);
 		if (show){
 			List<ItemConfigField> l = getFields(stack, 0);
 			for (ItemConfigField f : l) list.add(f.getTooltipInfo());
@@ -141,5 +143,13 @@ public class ToolBase extends RFItemBase {
 
 	@SideOnly(Side.CLIENT)
 	public void addAditionalInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {
+		list.add("Press " + Keyboard.getKeyName(KeyBindings.toolConfig.getKeyCode()) + " to open config gui");
+	}
+
+	@Override
+	public EnumRarity getRarity(ItemStack stack) {
+		if (stack.getUnlocalizedName().contains(":wyvern")) return EnumRarity.rare;
+		if (stack.getUnlocalizedName().contains(":draconic")) return EnumRarity.epic;
+		return EnumRarity.uncommon;
 	}
 }

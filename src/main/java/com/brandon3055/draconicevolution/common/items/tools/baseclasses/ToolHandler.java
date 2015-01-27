@@ -172,6 +172,7 @@ public class ToolHandler {
 					entity.attackEntityFrom(DamageSource.causePlayerDamage(player), (entHealth) * dmg);
 				}
 			}
+			((EntityLivingBase) entity).attackTime = 0;
 		} else if (entity instanceof EntityDragonPart) {
 			if (!world.isRemote) {
 				if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
@@ -233,13 +234,18 @@ public class ToolHandler {
 		World world = player.worldObj;
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
 		List list = world.getEntitiesWithinAABBExcludingEntity(player, box);
-		for (Object entityObject : list) {
-			if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+		if (range == 0){
+			if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERATTACK) {
 				if (!player.capabilities.isCreativeMode) return;
 			} else {
 				if (!player.capabilities.isCreativeMode)
 					((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERATTACK, false);
 			}
+			entity.attackEntityFrom(DamageSource.causePlayerDamage(player), dmg + sharp);
+			return;
+		}
+
+		for (Object entityObject : list) {
 			if (entityObject instanceof EntityLivingBase) {
 				((Entity) entityObject).attackEntityFrom(DamageSource.causePlayerDamage(player), dmg + sharp);
 
@@ -266,6 +272,7 @@ public class ToolHandler {
 						entityLivingBase.motionY = 0.4000000059604645D;
 					}
 				}
+				entityLivingBase.attackTime = 0;
 			}
 		}
 

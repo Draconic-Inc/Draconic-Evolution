@@ -145,7 +145,11 @@ public class WorldGenEnderIsland extends WorldGenerator {
 	private void generateObelisk(World world, int x1, int y1, int z1, boolean outer, Random rand) {
 		if (!outer) {
 			world.setBlock(x1, y1 + 20, z1, Blocks.bedrock, 0, 2);
-			if (!world.isRemote) world.spawnEntityInWorld(new EntityEnderCrystal(world, x1 + 0.5, y1 + 21, z1 + 0.5));
+			if (!world.isRemote) {
+				EntityEnderCrystal crystal = new EntityEnderCrystal(world);
+				crystal.setPosition(x1 + 0.5, y1 + 21, z1 + 0.5);
+				world.spawnEntityInWorld(crystal);
+			}
 			for (int y = y1; y < y1 + 20; y++) {
 				world.setBlock(x1, y, z1, Blocks.obsidian, 0, 2);
 				world.setBlock(x1 + 1, y, z1, Blocks.obsidian, 0, 2);
@@ -159,7 +163,11 @@ public class WorldGenEnderIsland extends WorldGenerator {
 			}
 		} else {
 			world.setBlock(x1, y1 + 40, z1, Blocks.bedrock, 0, 2);
-			if (!world.isRemote) world.spawnEntityInWorld(new EntityEnderCrystal(world, x1 + 0.5, y1 + 41, z1 + 0.5));
+			if (!world.isRemote) {
+				EntityEnderCrystal crystal = new EntityEnderCrystal(world);
+				crystal.setPosition(x1 + 0.5, y1 + 41, z1 + 0.5);
+				world.spawnEntityInWorld(crystal);
+			}
 			int diff = 0;
 			for (int y = y1 + 20; y < y1 + 40; y++) {
 				diff++;

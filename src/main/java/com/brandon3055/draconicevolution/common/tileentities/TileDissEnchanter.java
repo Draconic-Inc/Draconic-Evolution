@@ -117,14 +117,14 @@ public class TileDissEnchanter extends TileEntity implements  ISidedInventory {
 		if (!player.capabilities.isCreativeMode) player.addExperienceLevel(-dissenchantCost);
 		if (items[0] != null && ItemNBTHelper.getInteger(items[0], "RepairCost", 0) > 0)ItemNBTHelper.setInteger(items[0], "RepairCost", ItemNBTHelper.getInteger(items[0], "RepairCost", 0) - Math.min(2, ItemNBTHelper.getInteger(items[0], "RepairCost", 0)));
 		if (!player.capabilities.isCreativeMode) decrStackSize(1, 1);
-		int maxDamage = items[0].getMaxDamage();
+		int maxDamage = items[0] != null ? items[0].getMaxDamage() : 0;
 		float damageF = (40f - bookPower)/100f;
 		int damage = (int)(damageF*(float)maxDamage);
-		int damageResult = items[0].getItemDamage() + damage;
+		int damageResult = items[0] != null ? items[0].getItemDamage() + damage : 0;
 
 		if (!player.capabilities.isCreativeMode && damageResult > maxDamage && maxDamage > 0) {
 			setInventorySlotContents(0, null);
-		}else if (!player.capabilities.isCreativeMode && maxDamage > 0){
+		}else if (!player.capabilities.isCreativeMode && maxDamage > 0 && items[0] != null){
 			items[0].setItemDamage(damageResult);
 		}
 		onInventoryChanged();

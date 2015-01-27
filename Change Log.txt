@@ -1,0 +1,184 @@
+######## 1.0.1-Snap Shot(?) ########
+
+-fixed spawner display mob shaking when disabled 
+-removed energy cost for Draconic Chest flight
+-added tool config gui
+-safety flame can now be extinguished without breaking the block it is placed on
+-removed a few leftover debug lines
+-fixed teleporting between dimensions breaking NEI 
+-added tool hud display
+-implemented hud display in all configurable tools
+-implemented hud display in energy core & stabilized spawner
+-added option to rearrange locations in advanced dislocator 
+-fixed galacticraft mob soul crash
+-fixed disenchanter book crash
+-fixed network channel name too long
+-fixed chaos island server crash
+
+######## 1.0.0-BugFix(e) ########
+
+-fixed crash when opening manual if the distortion flame or sun dial are disabled.
+
+######## 1.0.0-BugFix(d) ########
+
+-fixed null pointer related to the dislocator stand renderer
+-fixed null pointer when trying to use a dislocator stand that has an un-set dislocator
+
+######## 1.0.0-BugFix(c) ########
+
+-fixed possible null pointer in event handler.
+
+######## 1.0.0-BugFix(b) ########
+
+-fixed generator and grinder not respecting fuel container items.
+-fixed crash when shooting Hardcore Ender Expansions dragon.
+-fixed dislocators using fuel/durability when on a stand.
+-fixed dragon heart not dropping from Hardcore Ender Expansions dragon.
+-switched mob grinder to a fake player.
+
+######## 1.0.0-BugFix(a) ########
+
+BUGFIX
+-Fixed silk touch on tools crashing server.
+-Fixed minor packet error.
+
+######## 1.0.0 ######## 
+
+-Added Dislocator Stand.
+-Re wrote the advanced charm of dislocation.
+     >Re designed gui.
+     >Can now teleport other players if they give consent (by sneaking)
+     >Can now scroll through the destinations by holding shift and scrolling.
+     >Now stores 100 destinations.
+-Switched to the new IMessage network system (Fixes minor memory leak)
+-Hid items that should not be shown in nei.
+-Added Draconic Chest.
+-Draconium ore now drops 4 - 12 dust when harvested with fortune 3 as opposed to 2 - 8.
+-Re wrote a lot of the damage and effect code for armor.
+-Armor now uses RF.
+-Re wrote most item information code.
+-Added lore to language localization.
+-Added config option to disable item lore.
+-Tools are now enchantable.
+-Fixed knockback not working.
+-Fixed staff not mining some blocks at correct speed.
+-Fixed some rendering bugginess with the particle gen.
+-Removed 0.9.3-beta update fix.
+-Grinder now kills in a 9x9x9 area 4 blocks bellow and 4 blocks above the grinder.
+-You can now shift right click the grinder to display the kill area.
+-Reduced energy usage of the tools from 450RF to 80RF per block.
+-Reduced energy usage of the swords from 1000RF per hit to 250RF.
+-Increased charge rates 5x.
+-Added Awakened Draconium.
+-Added Awakened Draconium Block.
+-Added Wyvern Core (Crafting component)
+-Added Awakened Core (Crafting component)
+-Removed Draconic Compound.
+-Removed Infused Compound.
+-Added Wyvern Energy Core (Crafting component)
+-Added Draconic Energy Core (Crafting component)
+-Added Wyvern Flux Capacitor.
+-Added Draconic Flux Capacitor.
+-Added Ritual of Draconic Awakening.
+-Changed a lot of crafting recipes.
+-Changed the energy core and energy pylon (block) texture.
+-Improved bow VOF manipulation.
+-Added Achievements.
+-Changed stabilized spawner upgrade requirements.
+-Dislocators can now also teleport player mounts.
+-Increased Energy pylon max transfer to 2,147,483,647 RF/t
+-Energy core now changes colour to red as it fills.
+-Draconic Helm prevents mining slowdown under water.
+-Draconic Chest stops mining slowdown when flying.
+-If an Energy Pylon is within range of multiple cores the core it is connected to can be toggled.
+-Tools and armor now retain their energy when upgraded to draconic
+-Added a recipe to create dirt from sand rotten flesh and plant matter
+
+######## 0.9.5-beta ######## 
+
+Added safety matches.
+Recipe Handler now uses the ore dictionary.
+Added charged versions of all the tools to the creative menu.
+Added Ender Comets.
+Added Chaos Islands (WIP)
+Added Chaos Guardian (OP Enderdragon)
+Adjusted the ender arrow range.
+Added Admin spawn egg (a spawn egg that can be set to any custom entity)
+Ender arrow damage is now based on the distance travelled (100 blocks is fatal without fall protection of some sort)
+Draconic helm clears negative potion effects.
+Added Draconic Evolution info guide (An in game information gui similar to those used by other mods)
+Added Diss-Enchanter.
+Added Pigmen Blood Rage.
+Moved camouflage slot in advanced player detector gui.
+Advanced player detector now shows that block it is camouflaged as in its mouse over text (e.g. WAILA)
+Placed items are now solid.
+All mobs killed by the mob grinder now drop loot and player only loot.
+
+######## 0.9.4-beta ######## 
+
+Fixed Armor Crash
+All tool and armor item entities are now Persistent and can not be killed except if they fall out of the world
+All items in the game can be placed in the world using the “Place Item” key (default P)
+Added ender arrow
+Improved Draconic Helm night vision effect (effect now stops immediately when you enter a lit area)
+Fixed Mob grinder crash
+Update Fix is now disabled by default
+Fixed Buggy gui’s for grinder and generator
+
+######## 0.9.32-beta (Bug Fix) ######## 
+
+Updated Cofh energy API
+
+######## 0.9.31-beta (Bug Fix) ######## 
+
+Fixed Crash when killing mobs by hand
+
+######## 0.9.3-beta######## 
+
+Added Energy Core Multiblock Structure
+Added Energy Core
+Added Energy Pylon
+Updated Naming system (READ THE RELEASE NOTES!)
+Added Draconium Block
+
+######## 0.9.2-beta ######## 
+
+Implemented cofh energy API
+Added Energy Infuser
+All tools now require RF
+Added Draconic armor
+Added Wyvern armor
+Added Stabilized mob spawner
+Added Mob Soul
+Mob Grinder can run on RF
+
+######## 0.9.1-beta ######## 
+
+Distortion Flame is only collectable via Draconic pick or staff
+Added config option to disable the Distortion Flame
+Added Player Detector and Advanced Player Detector
+Fixed Advanced charm of dislocation server crash
+Draconium ore can no longer be destroyed by the Enderdragon
+Weapons now work on the Enderdragon
+Fixed Draconic Hoe use animation
+Draconic Hoe now checks “isReplacable”
+Reduced the teleport sound effect volume
+Fixed Mining AOE bugginess
+Added AOE to the Draconic Axe
+Charm of Dislocation no longer works on boss mobs
+Added config option to disable block damage the Draconic Bows explosive mode
+
+######## 0.9.0-beta ######## 
+
+First Public release
+Changed name from Tolkien Addon to Draconic Evolution
+Added config file and option to disable the sun dial
+Started the process of updating textures and texture names
+Renamed the Translocator to Charm of Dislocation
+Added the Enhanced Charm of Dislocation
+Added the Mob Grinder
+Added the Potentiometer
+Added the Rain sensor
+Optimized the leave code used by the Draconic axe to reduce lag
+Renamed the Xray Block to Distortion flame
+The Distortion flame can be collected using Wyvern Draconic or other pick with a mining level of 4

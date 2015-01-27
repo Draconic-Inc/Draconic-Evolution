@@ -7,14 +7,13 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class RenderMobSoul implements IItemRenderer {
 	private Minecraft mc;
-	private Entity randomEntity = new EntityPig(Minecraft.getMinecraft().theWorld);
+	private Entity randomEntity = null;
 	private String[] randomEntitys = new String[] {"Pig", "Sheep", "Enderman", "Zombie", "Creeper", "Cow", "Chicken", "Ozelot", "Witch", "Wolf", "MushroomCow", "Squid", "EntityHorse", "Spider", "Skeleton", "Blaze", "Bat", "Villager", "Silverfish"};
 
 	public RenderMobSoul() {
@@ -35,9 +34,9 @@ public class RenderMobSoul implements IItemRenderer {
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 		Entity mob = EntityList.createEntityByName(ItemNBTHelper.getString(item, "Name", "Pig"), mc.theWorld);
+		randomEntity = EntityList.createEntityByName(randomEntitys[(int)((Minecraft.getSystemTime() / 1000) % 18)], mc.theWorld);
 		if (ItemNBTHelper.getString(item, "Name", "Pig").equals("Any"))	mob = randomEntity;
 		if (mob instanceof EntitySkeleton) ((EntitySkeleton)mob).setSkeletonType(ItemNBTHelper.getInteger(item, "SkeletonType", 0));
-		randomEntity = EntityList.createEntityByName(randomEntitys[(int)((mc.getSystemTime() / 1000) % 18)], mc.theWorld);
 
 		if (mob == null) {
 			LogHelper.error("Invalid Mob Name:" + ItemNBTHelper.getString(item, "Name", "Pig"));

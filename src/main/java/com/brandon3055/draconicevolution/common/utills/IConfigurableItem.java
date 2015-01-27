@@ -8,10 +8,5 @@ import java.util.List;
  * Created by Brandon on 29/12/2014.
  */
 public interface IConfigurableItem {
-//todo
-//	String[] getNames(ItemStack stack);
-//
-//	int getDataType(String name);
-
 	List<ItemConfigField> getFields(ItemStack stack, int slot);
 }

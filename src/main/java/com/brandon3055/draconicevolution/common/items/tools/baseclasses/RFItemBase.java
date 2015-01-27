@@ -127,8 +127,8 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 	@Override
 	public List<String> getDisplayData(ItemStack stack) {
 		List<String> list = new ArrayList<String>();
-		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getLocalizedName() + ": " + field.getFormatedValue());
-		if (capacity > 0) list.add(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
+		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormatedValue());
+		if (capacity > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
 
 		return list;
 	}

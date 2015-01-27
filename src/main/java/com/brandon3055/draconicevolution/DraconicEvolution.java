@@ -27,10 +27,10 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 	public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), References.MODID, "toolsAndWeapons", 0);
 	public static CreativeTabs tabBlocksItems = new DETab(CreativeTabs.getNextID(), References.MODID, "blocksAndItems", 1);
 
-	public static final String networkChannelName = "DraconicEvolution";
+	public static final String networkChannelName = "DEvolutionNC";
 	public static SimpleNetworkWrapper network;
 
-	public static boolean debug = true;//todo
+	public static boolean debug = false;//todo
 
 	public static Enchantment reaperEnchant;
 	

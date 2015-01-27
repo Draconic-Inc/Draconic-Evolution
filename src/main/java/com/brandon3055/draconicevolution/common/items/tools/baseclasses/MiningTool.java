@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.DataUtills;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
@@ -61,7 +62,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		int radius = ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0);
 		int depth = ItemNBTHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
 
-		return getEnergyStored(stack) >= energyPerOperation && (radius > 0 || depth > 0) ? breakAOEBlocks(stack, x, y, z, radius, depth, player) : super.onBlockStartBreak(stack, x, y, z, player);
+		return getEnergyStored(stack) >= energyPerOperation && (radius > 0) ? breakAOEBlocks(stack, x, y, z, radius, depth, player) : super.onBlockStartBreak(stack, x, y, z, player);
 	}
 
 	@Override
@@ -73,13 +74,13 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);
 			for (ItemConfigField field : fields)
 			{
-				if (!world.isRemote && field.name.equals(References.DIG_AOE))
-				{
+				if (field.name.equals(References.DIG_AOE)) {
 					int aoe = (Integer) field.value;
 					aoe++;
-					if (aoe > (Integer)field.max) aoe = (Integer) field.min;
+					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
 					field.value = aoe;
-					field.sendChanges();
+					//field.sendChanges();
+					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
 				}
 			}
 		}
@@ -87,11 +88,11 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
  		return super.onItemRightClick(stack, world, player);
 	}
 
-	//todo Hud, Hud Config, shift right click, attack, axe, hoe
+	//todo attack, hoe, textures
 	//This method is basses on tinkerers construct
 	public boolean breakAOEBlocks(ItemStack stack, int x, int y, int z, int breakRadius, int breakDepth, EntityPlayer player)
 	{
-		Map<Block, Integer> blockMap = getObliterationList(stack);
+		Map<Block, Integer> blockMap = ItemNBTHelper.getBoolean(stack, References.OBLITERATE, false) ? getObliterationList(stack) : new HashMap<Block, Integer>();
 		Block block = player.worldObj.getBlock(x,y,z);
 		int meta = player.worldObj.getBlockMetadata(x,y,z);
 		boolean effective = false;
@@ -196,6 +197,9 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 			if (!world.isRemote) {
 				((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
 			}
+
+			if ((blockMap.containsKey(block) && blockMap.get(block) == meta)) extractEnergy(stack, energyPerOperation, false);
+			if (breakSound) world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
 			return;
 		}
 

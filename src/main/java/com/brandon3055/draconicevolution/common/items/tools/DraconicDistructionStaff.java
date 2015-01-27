@@ -2,13 +2,17 @@ package com.brandon3055.draconicevolution.common.items.tools;
 
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
+import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
@@ -61,27 +65,11 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 		return enchant.type == EnumEnchantmentType.digger || enchant.type == EnumEnchantmentType.weapon;
 	}
 
-
-//	@SuppressWarnings({"unchecked"})
-//	@Override
-//	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
-//		int size = (ItemNBTHelper.getShort(stack, "size", (short) 0) * 2) + 1;
-//		boolean oblit = ItemNBTHelper.getBoolean(stack, "obliterate", false);
-//		if (InfoHelper.holdShiftForDetails(list)){
-//			InfoHelper.addEnergyInfo(stack, list);
-//
-//			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.miningMode.txt") + ": " + InfoHelper.HITC() + size + "x" + size);
-//			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.changeMiningMode.txt"));
-//			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.obliterationMode.txt") + ": " + InfoHelper.HITC() + StatCollector.translateToLocal("info.de.obliterationMode"+oblit+".txt"));
-//			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.toggleOblit.txt"));
-//			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.oblitInfo.txt"));
-//
-//			InfoHelper.addLore(stack, list);
-//		}
-//	}
-//
-//	@Override
-//	public EnumRarity getRarity(ItemStack stack) {
-//		return EnumRarity.epic;
-//	}
+	@Override
+	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+		//todo Make this awesome
+		ToolHandler.AOEAttack(player, entity, stack, 25, ItemNBTHelper.getInteger(stack, References.ATTACK_AOE, 0));
+		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.5F);
+		return true;
+	}
 }
