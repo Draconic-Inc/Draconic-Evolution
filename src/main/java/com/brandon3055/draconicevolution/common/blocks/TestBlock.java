@@ -77,7 +77,6 @@ public class TestBlock extends BlockDE {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float px, float py, float pz)
 	{
-
 		EntityLightningBolt bolt = new EntityLightningBolt(world, x, y, z + 5);
 		//System.out.println(world.getBlockMetadata(x,y,z));
 		world.spawnEntityInWorld(bolt);
@@ -101,9 +100,9 @@ public class TestBlock extends BlockDE {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs p_149666_2_, List list) {
-		for (int i = 0; i < 16; i++) {
-			list.add(new ItemStack(item, 1, i));
-		}
+		//for (int i = 0; i < 16; i++) {
+			list.add(new ItemStack(item, 1, 0));
+		//}
 	}
 
 	@Override
@@ -120,7 +119,7 @@ public class TestBlock extends BlockDE {
 
 	@Override
 	public int getRenderType() {
-		return super.getRenderType();
+		return -1;//super.getRenderType();
 	}
 
 	@Override

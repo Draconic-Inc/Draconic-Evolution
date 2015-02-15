@@ -41,6 +41,7 @@ public class ModBlocks {
 	public static BlockDE teleporterStand;
 	public static BlockDE draconiumChest;
 	public static BlockDE draconicBlock;
+	public static BlockDE energyCrystal;
 	public static Block safetyFlame;
 
 	public static ItemStack resurrectionStone;
@@ -71,6 +72,7 @@ public class ModBlocks {
 		teleporterStand = new TeleporterStand();
 		draconiumChest = new DraconiumChest();
 		draconicBlock = new DraconicBlock();
+		energyCrystal = new EnergyCrystal();
 
 		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
 		

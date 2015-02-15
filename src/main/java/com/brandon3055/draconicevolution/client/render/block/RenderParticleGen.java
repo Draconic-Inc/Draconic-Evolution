@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.block;
 
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -35,6 +36,7 @@ public class RenderParticleGen implements IItemRenderer
 		if (type == IItemRenderer.ItemRenderType.ENTITY)
 			GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
 		TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0.0D, 0.0D, 0.0D, 0.0F);
+		RenderHelper.disableStandardItemLighting();
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}

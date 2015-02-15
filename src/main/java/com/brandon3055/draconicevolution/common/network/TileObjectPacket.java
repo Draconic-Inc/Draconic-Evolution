@@ -51,7 +51,7 @@ public class TileObjectPacket implements IMessage{
 		bytes.writeByte(dataType);
 		bytes.writeShort(index);
 
-		DataUtills.writeObjectToBytes(bytes, dataType, object);
+		DataUtills.instance.writeObjectToBytes(bytes, dataType, object);
 
 	}
 
@@ -68,7 +68,7 @@ public class TileObjectPacket implements IMessage{
 		dataType = bytes.readByte();
 		index = bytes.readShort();
 
-		object = DataUtills.readObjectFromBytes(bytes, dataType);
+		object = DataUtills.instance.readObjectFromBytes(bytes, dataType);
 	}
 
 	public static class Handler implements IMessageHandler<TileObjectPacket, IMessage> {

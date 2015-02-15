@@ -5,7 +5,7 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.blocks.DraconiumBlock;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.utills.Utills;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

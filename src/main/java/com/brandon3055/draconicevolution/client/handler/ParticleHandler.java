@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.common.handler;
+package com.brandon3055.draconicevolution.client.handler;
 
 import com.brandon3055.draconicevolution.client.render.particle.ParticleDistortion;
 import cpw.mods.fml.relauncher.Side;
@@ -48,7 +48,7 @@ public class ParticleHandler
 	}
 
 	public static EntityFX spawnCustomParticle(EntityFX particle){
-		return spawnCustomParticle(particle, 256);
+		return spawnCustomParticle(particle, 64);
 	}
 
 	public static EntityFX spawnCustomParticle(EntityFX particle, double vewRange)
@@ -60,10 +60,7 @@ public class ParticleHandler
 			{
 				var14 = 2;
 			}
-			double var15 = mc.renderViewEntity.posX - particle.posX;
-			double var17 = mc.renderViewEntity.posY - particle.posY;
-			double var19 = mc.renderViewEntity.posZ - particle.posZ;
-			if (var15 * var15 + var17 * var17 + var19 * var19 > vewRange * vewRange)
+			if (!isInRange(particle.posX, particle.posY, particle.posZ, vewRange))
 			{
 				return null;
 			} else if (var14 > 1)
@@ -76,5 +73,20 @@ public class ParticleHandler
 			}
 		}
 		return null;
+	}
+
+	public static boolean isInRange(double x, double y, double z, double vewRange)
+	{
+		if (mc == null || mc.renderViewEntity == null || mc.effectRenderer == null) return false;
+
+
+		double var15 = mc.renderViewEntity.posX - x;
+		double var17 = mc.renderViewEntity.posY - y;
+		double var19 = mc.renderViewEntity.posZ - z;
+		if (var15 * var15 + var17 * var17 + var19 * var19 > vewRange * vewRange)
+		{
+			return false;
+		}
+		return true;
 	}
 }

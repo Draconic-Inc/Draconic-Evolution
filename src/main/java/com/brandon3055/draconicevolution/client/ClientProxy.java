@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.HudHandler;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.block.RenderDraconiumChest;
@@ -13,6 +14,8 @@ import com.brandon3055.draconicevolution.client.render.entity.RenderDragon;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragonHeart;
 import com.brandon3055.draconicevolution.client.render.item.RenderBow;
 import com.brandon3055.draconicevolution.client.render.item.RenderMobSoul;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyRing;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.common.CommonProxy;
 import com.brandon3055.draconicevolution.common.ModBlocks;
@@ -21,8 +24,10 @@ import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -30,6 +35,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.item.Item;
+import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -131,13 +137,14 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileParticleGenerator.class, new RenderTileParticleGen());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyInfuser.class, new RenderTileEnergyInfiser());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileCustomSpawner.class, new RenderTileCustomSpawner());
-		//ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, new RenderTileTestBlock());
+		//ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, new RenderTileCrystal());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyStorageCore.class, new RenderTileEnergyStorageCore());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, new RenderTileEnergyPylon());
 		ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, new RenderTilePlacedItem());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileDissEnchanter.class, new RenderTileDissEnchanter());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileTeleporterStand.class, new RenderTileTeleporterStand());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileDraconiumChest.class, new RenderTileDraconiumChest());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyRelay.class, new RenderTileCrystal());
 
 		//Entitys
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
@@ -151,5 +158,59 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public boolean isDedicatedServer() {
 		return false;
+	}
+
+	@Override
+	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render) {
+		if (!worldObj.isRemote) return null;
+		ParticleEnergyBeam beam = oldBeam;
+		boolean inRange = ParticleHandler.isInRange(x, y, z, 50) || ParticleHandler.isInRange(tx, ty, tz, 50);
+
+		if (beam == null || beam.isDead)
+		{
+			if (inRange)
+			{
+				beam = new ParticleEnergyBeam(worldObj, x, y, z, tx, ty, tz, 8, powerFlow, advanced, 3);
+
+				FMLClientHandler.instance().getClient().effectRenderer.addEffect(beam);
+			}
+		}
+		else if (!inRange)
+		{
+			beam.setDead();
+			return null;
+		}
+		else
+		{
+			beam.update(powerFlow, render);
+		}
+		return beam;
+	}
+
+	@Override
+	public ParticleEnergyRing energyRing(World worldObj, double x, double y, double z, int powerFlow, boolean advanced, ParticleEnergyRing oldBeam, boolean render) {
+		if (!worldObj.isRemote) return null;
+		ParticleEnergyRing beam = oldBeam;
+		boolean inRange = ParticleHandler.isInRange(x, y, z, 50);
+
+		if (beam == null || beam.isDead)
+		{
+			if (inRange)
+			{
+				beam = new ParticleEnergyRing(worldObj, x, y, z, 8, powerFlow, advanced);
+
+				FMLClientHandler.instance().getClient().effectRenderer.addEffect(beam);
+			}
+		}
+		else if (!inRange)
+		{
+			beam.setDead();
+			return null;
+		}
+		else
+		{
+			beam.update(powerFlow, render);
+		}
+		return beam;
 	}
 }

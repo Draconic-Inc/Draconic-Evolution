@@ -3,6 +3,8 @@ package com.brandon3055.draconicevolution.common;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyRing;
 import com.brandon3055.draconicevolution.common.achievements.Achievements;
 import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
@@ -15,6 +17,7 @@ import com.brandon3055.draconicevolution.common.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.common.magic.PotionHandler;
 import com.brandon3055.draconicevolution.common.network.*;
 import com.brandon3055.draconicevolution.common.tileentities.*;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
@@ -31,6 +34,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.lang.reflect.Field;
@@ -129,6 +133,7 @@ public abstract class CommonProxy {
 		GameRegistry.registerTileEntity(TileDissEnchanter.class, References.RESOURCESPREFIX + "TileDissEnchanter");
 		GameRegistry.registerTileEntity(TileTeleporterStand.class, References.RESOURCESPREFIX + "TileTeleporterStand");
 		GameRegistry.registerTileEntity(TileDraconiumChest.class, References.RESOURCESPREFIX + "TileDraconiumChest");
+		GameRegistry.registerTileEntity(TileEnergyRelay.class, References.RESOURCESPREFIX + "TileEnergyRelay");
 		if (DraconicEvolution.debug) {
 			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
@@ -163,5 +168,14 @@ public abstract class CommonProxy {
 
 	public MinecraftServer getMCServer(){
 		return FMLCommonHandler.instance().getMinecraftServerInstance();
+	}
+
+	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render)
+	{
+		return null;
+	}
+
+	public ParticleEnergyRing energyRing(World worldObj, double x, double y, double z, int powerFlow, boolean advanced, ParticleEnergyRing oldBeam, boolean render) {
+		return null;
 	}
 }

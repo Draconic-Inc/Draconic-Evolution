@@ -160,6 +160,7 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		GL11.glScalef(1.3F, 1.3F, 1.3F);
 		stabilizerSphereModel.renderAll();
+		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDepthMask(true);
 
 		GL11.glPopMatrix();
@@ -311,6 +312,7 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer
 
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 
 	}

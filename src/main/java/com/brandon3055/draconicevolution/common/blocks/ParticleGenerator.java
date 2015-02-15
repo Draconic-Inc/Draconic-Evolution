@@ -4,7 +4,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleCustom;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;

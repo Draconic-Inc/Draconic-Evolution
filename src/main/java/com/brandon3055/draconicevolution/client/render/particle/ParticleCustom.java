@@ -1,13 +1,11 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import com.brandon3055.draconicevolution.client.handler.ResourceHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.common.lib.References;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.world.World;
 
 public class ParticleCustom extends EntityFX
 {
@@ -63,7 +61,7 @@ public class ParticleCustom extends EntityFX
 	{//Note U=X V=Y
 		
 		tesselator.draw();
-		Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(References.RESOURCESPREFIX + "textures/particle/particles.png"));
+		ResourceHelper.bindParticles();
 		tesselator.startDrawingQuads();
 		tesselator.setBrightness(200);//make sure you have this!!
 		
@@ -94,7 +92,7 @@ public class ParticleCustom extends EntityFX
         tesselator.addVertexWithUV((double)(drawX + par3 * drawScale - par6 * drawScale), (double)(drawY - par4 * drawScale), (double)(drawZ + par5 * drawScale - par7 * drawScale), (double)minU, (double)maxV);
         
         tesselator.draw();
-		Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("textures/particle/particles.png"));
+		ResourceHelper.bindDefaultParticles();
 		tesselator.startDrawingQuads();
 		
 	}

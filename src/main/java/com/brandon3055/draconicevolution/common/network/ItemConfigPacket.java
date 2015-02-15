@@ -32,7 +32,7 @@ public class ItemConfigPacket implements IMessage
 		this.datatype = bytes.readByte();
 		this.slot = bytes.readInt();
 		this.name = ByteBufUtils.readUTF8String(bytes);
-		this.value = DataUtills.readObjectFromBytes(bytes, datatype);
+		this.value = DataUtills.instance.readObjectFromBytes(bytes, datatype);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ItemConfigPacket implements IMessage
 		bytes.writeByte(datatype);
 		bytes.writeInt(slot);
 		ByteBufUtils.writeUTF8String(bytes, name);
-		DataUtills.writeObjectToBytes(bytes, datatype, value);
+		DataUtills.instance.writeObjectToBytes(bytes, datatype, value);
 	}
 
 	public static class Handler implements IMessageHandler<ItemConfigPacket, IMessage> {

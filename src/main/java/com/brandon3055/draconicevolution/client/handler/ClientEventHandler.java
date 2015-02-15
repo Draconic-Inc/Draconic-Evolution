@@ -13,6 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 
+import java.util.Random;
+
 /**
  * Created by Brandon on 28/10/2014.
  */
@@ -26,10 +28,13 @@ public class ClientEventHandler {
 	public static int tickSet = 0;
 	private static int remountTicksRemaining = 0;
 	private static int remountEntityID = 0;
+	public static float energyCrystalAlphaValue = 0f;
+	public static float energyCrystalAlphaTarget = 0f;
+	private static Random rand = new Random();
 
 	@SubscribeEvent
 	public void tickEnd(TickEvent event) {
-		if (event.phase != TickEvent.Phase.START || event.side != Side.CLIENT) return;
+		if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT) return;
 		elapsedTicks++;
 		HudHandler.clientTick();
 
@@ -42,6 +47,11 @@ public class ClientEventHandler {
 
 		lastTickBowZoom = bowZoom;
 		if (elapsedTicks - tickSet > 10) bowZoom = false;
+
+		if (energyCrystalAlphaValue < energyCrystalAlphaTarget) energyCrystalAlphaValue += 0.01f;
+		if (energyCrystalAlphaValue > energyCrystalAlphaTarget) energyCrystalAlphaValue -= 0.01f;
+
+		if (Math.abs(energyCrystalAlphaTarget - energyCrystalAlphaValue) <= 0.02f) energyCrystalAlphaTarget = rand.nextFloat();
 
 		searchForPlayerMount();
 	}

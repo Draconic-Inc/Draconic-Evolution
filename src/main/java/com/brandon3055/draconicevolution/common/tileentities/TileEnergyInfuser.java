@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.common.tileentities;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
-import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cpw.mods.fml.relauncher.Side;

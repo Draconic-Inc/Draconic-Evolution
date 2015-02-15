@@ -10,7 +10,9 @@ import net.minecraft.item.ItemStack;
  */
 public class DataUtills {
 
-	public static void writeObjectToBytes(ByteBuf bytes, int dataType, Object object){
+	public static DataUtills instance = new DataUtills();
+
+	public void writeObjectToBytes(ByteBuf bytes, int dataType, Object object){
 		switch (dataType){
 			case References.BYTE_ID:
 				bytes.writeByte((Byte)object);
@@ -39,10 +41,14 @@ public class DataUtills {
 			case References.BOOLEAN_ID:
 				bytes.writeBoolean((Boolean) object);
 				break;
+			case References.TWO_INTS_ID:
+				bytes.writeInt(((TwoXInteger)object).i1);
+				bytes.writeInt(((TwoXInteger)object).i2);
+				break;
 		}
 	}
 
-	public static Object readObjectFromBytes(ByteBuf bytes, int dataType){
+	public Object readObjectFromBytes(ByteBuf bytes, int dataType){
 		switch (dataType){
 			case References.BYTE_ID:
 				return bytes.readByte();
@@ -62,6 +68,11 @@ public class DataUtills {
 				return ByteBufUtils.readUTF8String(bytes);
 			case References.BOOLEAN_ID:
 				return bytes.readBoolean();
+			case References.TWO_INTS_ID:
+				TwoXInteger tx = new TwoXInteger(0, 0);
+				tx.i1 = bytes.readInt();
+				tx.i2 = bytes.readInt();
+				return tx;
 		}
 		return null;
 	}
@@ -144,4 +155,15 @@ public class DataUtills {
 		return null;
 	}
 
+	public static class TwoXInteger
+	{
+		public int i1;
+		public int i2;
+
+		public TwoXInteger(int i1, int i2)
+		{
+			this.i1 = i1;
+			this.i2 = i2;
+		}
+	}
 }

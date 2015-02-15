@@ -1,13 +1,11 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import com.brandon3055.draconicevolution.client.handler.ResourceHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.common.lib.References;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.world.World;
 
 public class ParticleDistortion extends EntityFX {
 	double originalX;
@@ -62,12 +60,12 @@ public class ParticleDistortion extends EntityFX {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+	public void renderParticle(Tessellator tessellator, float par2, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
 
-		tesselator.draw();
-		Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(References.RESOURCESPREFIX + "textures/particle/particles.png"));
-		tesselator.startDrawingQuads();
-		tesselator.setBrightness(200);//make sure you have this!!
+		tessellator.draw();
+		ResourceHelper.bindParticles();
+		tessellator.startDrawingQuads();
+		tessellator.setBrightness(200);//make sure you have this!!
 
 
 		float minU = 0.0F + 0F;//(float)this.particleTextureIndexX / 32.0F;
@@ -87,17 +85,17 @@ public class ParticleDistortion extends EntityFX {
 		float drawY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) par2 - interpPosY);
 		float drawZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) par2 - interpPosZ);
 
-		tesselator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
-		tesselator.setColorRGBA(0, 255, 255, (int) (this.particleAlpha * 255F));
+		tessellator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
+		tessellator.setColorRGBA(0, 255, 255, (int) (this.particleAlpha * 255F));
 
-		tesselator.addVertexWithUV((double) (drawX - par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ - par5 * drawScale - par7 * drawScale), (double) maxU, (double) maxV);
-		tesselator.addVertexWithUV((double) (drawX - par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ - par5 * drawScale + par7 * drawScale), (double) maxU, (double) minV);
-		tesselator.addVertexWithUV((double) (drawX + par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ + par5 * drawScale + par7 * drawScale), (double) minU, (double) minV);
-		tesselator.addVertexWithUV((double) (drawX + par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ + par5 * drawScale - par7 * drawScale), (double) minU, (double) maxV);
+		tessellator.addVertexWithUV((double) (drawX - par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ - par5 * drawScale - par7 * drawScale), (double) maxU, (double) maxV);
+		tessellator.addVertexWithUV((double) (drawX - par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ - par5 * drawScale + par7 * drawScale), (double) maxU, (double) minV);
+		tessellator.addVertexWithUV((double) (drawX + par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ + par5 * drawScale + par7 * drawScale), (double) minU, (double) minV);
+		tessellator.addVertexWithUV((double) (drawX + par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ + par5 * drawScale - par7 * drawScale), (double) minU, (double) maxV);
 
-		tesselator.draw();
-		Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("textures/particle/particles.png"));
-		tesselator.startDrawingQuads();
+		tessellator.draw();
+		ResourceHelper.bindDefaultParticles();
+		tessellator.startDrawingQuads();
 
 	}
 }

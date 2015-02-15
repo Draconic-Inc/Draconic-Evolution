@@ -22,7 +22,6 @@ public class ButtonPacket implements IMessage
 	public static final byte ID_DRACONIUMCHEST1 = 3;
 	public static final byte ID_DRACONIUMCHEST2 = 4;
 	public static final byte ID_DRACONIUMCHEST3 = 5;
-	public static final byte ID_TOOLINVENTORY = 6;
 	public static final byte ID_TOOLCONFIG = 7;
 	byte buttonId = 0;
 	boolean state = false;

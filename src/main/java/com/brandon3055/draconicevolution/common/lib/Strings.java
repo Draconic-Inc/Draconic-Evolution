@@ -68,4 +68,6 @@ public class Strings {//                                              public sta
 	public static final String draconicBlockName = "draconicBlock";
 	public static final String draconiumEnergyCoreName = "draconiumEnergyCore";
 	public static final String draconiumFluxCapacitorName = "draconiumFluxCapacitor";
+	public static final String energyCrystalName = "energyCrystal";
+	public static final String wrenchName = "wrench";
 }

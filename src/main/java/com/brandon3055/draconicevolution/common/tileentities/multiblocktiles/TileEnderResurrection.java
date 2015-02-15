@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 import com.brandon3055.draconicevolution.client.render.particle.Particles.AdvancedSeekerParticle;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
-import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;

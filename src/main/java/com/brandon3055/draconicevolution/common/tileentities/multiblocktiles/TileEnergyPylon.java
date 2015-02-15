@@ -4,7 +4,7 @@ import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.common.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import cpw.mods.fml.common.network.NetworkRegistry;

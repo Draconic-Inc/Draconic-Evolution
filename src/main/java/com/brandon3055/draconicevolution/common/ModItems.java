@@ -65,6 +65,7 @@ public class ModItems {
 	public static ItemDE draconicIngot;
 	public static ItemDE draconiumEnergyCore;
 	public static ItemDE draconiumFluxCapacitor;
+	public static ItemDE wrench;
 
 	public static ItemDE teleporterMKI;
 	public static ItemDE teleporterMKII;
@@ -119,6 +120,7 @@ public class ModItems {
 		draconicIngot = new DraconicIngot();
 		draconiumEnergyCore = new DraconiumEnergyCore();
 		draconiumFluxCapacitor = new DraconiumFluxCapacitor();
+		wrench = new Wrench();
 
 		//Custom ItemStacks
 		wyvernEnergyCore = new ItemStack(ModItems.draconiumEnergyCore, 1, 0);
