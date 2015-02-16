@@ -6,10 +6,7 @@ import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.blocks.itemblocks.EnergyCrystalItemBlock;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.IRemoteEnergyHandler;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.LinkedEnergyDevice;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileRemoteEnergyBase;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.*;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
 import com.brandon3055.draconicevolution.common.utills.InfoHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -34,8 +31,10 @@ import java.util.List;
  */
 public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 {
-	public static final byte RELAY_TIER_1 = 0;
-	public static final byte RELAY_TIER_2 = 1;
+	public static final byte RELAY_TIER_1  			= 0;
+	public static final byte RELAY_TIER_2			= 1;
+	public static final byte TRANSCEIVER_TIER_1		= 2;
+	public static final byte TRANSCEIVER_TIER_2		= 3;
 
 	public EnergyCrystal()
 	{
@@ -52,6 +51,8 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 	public void getSubBlocks(Item item, CreativeTabs p_149666_2_, List list) {
 		list.add(new ItemStack(item, 1, 0));
 		list.add(new ItemStack(item, 1, 1));
+		list.add(new ItemStack(item, 1, 2));
+		list.add(new ItemStack(item, 1, 3));
 	}
 
 	@Override
@@ -62,12 +63,12 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 
 	@Override
 	public boolean hasTileEntity(int metadata) {
-		return metadata == 0 || metadata == 1;
+		return true;
 	}
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
-		return metadata == 0 || metadata == 1 ? new TileEnergyRelay(metadata) : null;
+		return metadata == 0 || metadata == 1 ? new TileEnergyRelay(metadata) : metadata == 2 || metadata == 3 ? new TileEnergyTransceiver(metadata - 2) : null;
 	}
 
 	@Override
@@ -115,9 +116,9 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 			list.add(InfoHelper.HITC()+getLocalizedName());
 			list.add("RF: " + tile.getEnergyStored(ForgeDirection.DOWN));
 			list.add("Cap: " + tile.getCapacity() + "%");
-			if (tile instanceof TileEnergyRelay)
+			if (tile instanceof TileRemoteEnergyBase)
 			{
-				for (LinkedEnergyDevice l : ((TileEnergyRelay) tile).linkedDevices)
+				for (LinkedEnergyDevice l : ((TileRemoteEnergyBase) tile).linkedDevices)
 				{
 					list.add(l.toString());
 				}

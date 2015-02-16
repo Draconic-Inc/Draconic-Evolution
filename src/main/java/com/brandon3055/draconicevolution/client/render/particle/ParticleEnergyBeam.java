@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.ResourceHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.Utills;
@@ -164,17 +165,6 @@ public class ParticleEnergyBeam extends EntityFX {
 		double var44 = -0.15D * (double)size;
 		double var17 = 0.15D * (double)size;
 
-//		if (offset == -1)
-//		{
-//			offset = rp / 90F * 0.3f;
-//			LogHelper.info(offset);
-//		}
-//
-//
-//
-////		GL11.glTranslated(0, 0.4 - Math.abs(offset) / 1.8, -offset);
-//		GL11.glTranslated(0, 0.16 + Math.abs(offset), 0);
-
 
 		for(int t = 0; t < 2; ++t) {
 			double var29 = (double)(this.length * var9);
@@ -194,6 +184,31 @@ public class ParticleEnergyBeam extends EntityFX {
 			GL11.glRotatef(t * 90.0F, 0.0F, -1.0F, 0.0F);
 		}
 
+		if (ClientEventHandler.playerHoldingWrench)
+		{
+			var44 = -0.15D * (double)1;
+			var17 = 0.15D * (double)1;
+
+			//GL11.glColor4f(1f, 1f, 1f, 1f);
+			for(int t = 0; t < 2; ++t) {
+				double var29 = (double)(this.length * var9);
+				double var31 = 0D;
+				double var33 = 1D;
+				double var35 = (double)(-1.0F + var12 + (float)t / 3.0F);
+				double var37 = (double)(this.length * var9) + var35;
+				GL11.glRotatef(t * 90.0F, 0.0F, 1.0F, 0.0F);
+				tessellator.startDrawingQuads();
+				tessellator.setBrightness(200);
+				tessellator.setColorRGBA_F(0f, 1f, 0f, 1f);
+				tessellator.addVertexWithUV(var44, var29, 0.0D, var33, var37);
+				tessellator.addVertexWithUV(var44, 0.0D, 0.0D, var33, var35);
+				tessellator.addVertexWithUV(var17, 0.0D, 0.0D, var31, var35);
+				tessellator.addVertexWithUV(var17, var29, 0.0D, var31, var37);
+				tessellator.draw();
+				GL11.glRotatef(t * 90.0F, 0.0F, -1.0F, 0.0F);
+			}
+		}
+
 
 		GL11.glDepthMask(true);
 		GL11.glBlendFunc(770, 771);
@@ -201,7 +216,6 @@ public class ParticleEnergyBeam extends EntityFX {
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 
-		//renderParticleRing(tessellator, partialTick, rotX, rotXZ, rotZ, rotYZ, rotXY);
 
 		ResourceHelper.bindDefaultParticles();
 		tessellator.startDrawingQuads();

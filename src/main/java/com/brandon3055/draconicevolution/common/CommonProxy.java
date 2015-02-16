@@ -18,6 +18,7 @@ import com.brandon3055.draconicevolution.common.magic.PotionHandler;
 import com.brandon3055.draconicevolution.common.network.*;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
@@ -134,6 +135,7 @@ public abstract class CommonProxy {
 		GameRegistry.registerTileEntity(TileTeleporterStand.class, References.RESOURCESPREFIX + "TileTeleporterStand");
 		GameRegistry.registerTileEntity(TileDraconiumChest.class, References.RESOURCESPREFIX + "TileDraconiumChest");
 		GameRegistry.registerTileEntity(TileEnergyRelay.class, References.RESOURCESPREFIX + "TileEnergyRelay");
+		GameRegistry.registerTileEntity(TileEnergyTransceiver.class, References.RESOURCESPREFIX + "TileEnergyTransceiver");
 		if (DraconicEvolution.debug) {
 			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
@@ -170,7 +172,7 @@ public abstract class CommonProxy {
 		return FMLCommonHandler.instance().getMinecraftServerInstance();
 	}
 
-	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render)
+	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render, int beamType)
 	{
 		return null;
 	}

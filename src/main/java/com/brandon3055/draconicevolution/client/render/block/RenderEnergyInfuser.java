@@ -35,7 +35,4 @@ public class RenderEnergyInfuser implements IItemRenderer
 			GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
 		TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0.0D, 0.0D, 0.0D, 0.0F);
 	}
-
-	
-
 }

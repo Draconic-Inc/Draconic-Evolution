@@ -6,10 +6,7 @@ import com.brandon3055.draconicevolution.client.handler.HudHandler;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
-import com.brandon3055.draconicevolution.client.render.block.RenderDraconiumChest;
-import com.brandon3055.draconicevolution.client.render.block.RenderEnergyInfuser;
-import com.brandon3055.draconicevolution.client.render.block.RenderParticleGen;
-import com.brandon3055.draconicevolution.client.render.block.RenderTeleporterStand;
+import com.brandon3055.draconicevolution.client.render.block.*;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragon;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragonHeart;
 import com.brandon3055.draconicevolution.client.render.item.RenderBow;
@@ -25,6 +22,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -129,6 +127,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.draconiumChest), new RenderDraconiumChest());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyCrystal), new RenderCrystal());
 
 		//ISimpleBlockRendering
 		RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
@@ -145,6 +144,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileTeleporterStand.class, new RenderTileTeleporterStand());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileDraconiumChest.class, new RenderTileDraconiumChest());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyRelay.class, new RenderTileCrystal());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyTransceiver.class, new RenderTileCrystal());
 
 		//Entitys
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
@@ -161,7 +161,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render) {
+	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render, int beamType) {
 		if (!worldObj.isRemote) return null;
 		ParticleEnergyBeam beam = oldBeam;
 		boolean inRange = ParticleHandler.isInRange(x, y, z, 50) || ParticleHandler.isInRange(tx, ty, tz, 50);
@@ -170,7 +170,7 @@ public class ClientProxy extends CommonProxy {
 		{
 			if (inRange)
 			{
-				beam = new ParticleEnergyBeam(worldObj, x, y, z, tx, ty, tz, 8, powerFlow, advanced, 3);
+				beam = new ParticleEnergyBeam(worldObj, x, y, z, tx, ty, tz, 8, powerFlow, advanced, beamType);
 
 				FMLClientHandler.instance().getClient().effectRenderer.addEffect(beam);
 			}

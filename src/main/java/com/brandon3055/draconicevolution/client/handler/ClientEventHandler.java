@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
@@ -30,30 +31,45 @@ public class ClientEventHandler {
 	private static int remountEntityID = 0;
 	public static float energyCrystalAlphaValue = 0f;
 	public static float energyCrystalAlphaTarget = 0f;
+	public static boolean playerHoldingWrench = false;
+	public static Minecraft mc;
 	private static Random rand = new Random();
 
 	@SubscribeEvent
 	public void tickEnd(TickEvent event) {
 		if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT) return;
-		elapsedTicks++;
-		HudHandler.clientTick();
 
-		if (bowZoom && !lastTickBowZoom){
-			previousSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-			Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity / 3;
-		}else if (!bowZoom && lastTickBowZoom){
-			Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity;
+		if (mc == null) mc = Minecraft.getMinecraft();
+		else if (mc.theWorld != null)
+		{
+			mc.theWorld.theProfiler.startSection("DE Client Tick Handler");
+
+			elapsedTicks++;
+			HudHandler.clientTick();
+
+			if (bowZoom && !lastTickBowZoom)
+			{
+				previousSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+				Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity / 3;
+			} else if (!bowZoom && lastTickBowZoom)
+			{
+				Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity;
+			}
+
+			lastTickBowZoom = bowZoom;
+			if (elapsedTicks - tickSet > 10) bowZoom = false;
+
+			if (energyCrystalAlphaValue < energyCrystalAlphaTarget) energyCrystalAlphaValue += 0.01f;
+			if (energyCrystalAlphaValue > energyCrystalAlphaTarget) energyCrystalAlphaValue -= 0.01f;
+
+			if (Math.abs(energyCrystalAlphaTarget - energyCrystalAlphaValue) <= 0.02f) energyCrystalAlphaTarget = rand.nextFloat();
+
+			playerHoldingWrench = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == ModItems.wrench;
+
+			searchForPlayerMount();
+
+			mc.theWorld.theProfiler.endSection();
 		}
-
-		lastTickBowZoom = bowZoom;
-		if (elapsedTicks - tickSet > 10) bowZoom = false;
-
-		if (energyCrystalAlphaValue < energyCrystalAlphaTarget) energyCrystalAlphaValue += 0.01f;
-		if (energyCrystalAlphaValue > energyCrystalAlphaTarget) energyCrystalAlphaValue -= 0.01f;
-
-		if (Math.abs(energyCrystalAlphaTarget - energyCrystalAlphaValue) <= 0.02f) energyCrystalAlphaTarget = rand.nextFloat();
-
-		searchForPlayerMount();
 	}
 
 	@SubscribeEvent
