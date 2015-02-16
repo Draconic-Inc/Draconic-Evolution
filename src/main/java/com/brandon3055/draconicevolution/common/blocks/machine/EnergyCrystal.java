@@ -56,9 +56,37 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 	}
 
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess iBlockAccess, int x, int y, int z) {
-		int meta = iBlockAccess.getBlockMetadata(x, y, z);
+	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+		int meta = world.getBlockMetadata(x, y, z);
 		if (meta == 1 || meta == 0) setBlockBounds(0.37F, 0.135F, 0.37F, 0.63F, 0.865F, 0.63F);
+		else if (meta == 2 || meta == 3)
+		{
+			TileEnergyTransceiver tile = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver ? (TileEnergyTransceiver) world.getTileEntity(x, y, z) : null;
+			if (tile != null)
+			{
+				switch (tile.facing)
+				{
+					case 0:
+						setBlockBounds(0.37F, 0.59F, 0.37F, 0.63F, 1.0F, 0.63F);
+						break;
+					case 1:
+						setBlockBounds(0.37F, 0.0F, 0.37F, 0.63F, 0.41F, 0.63F);
+						break;
+					case 2:
+						setBlockBounds(0.37F, 0.37F, 0.59F, 0.63F, 0.63F, 1.0F);
+						break;
+					case 3:
+						setBlockBounds(0.37F, 0.37F, 0.0F, 0.63F, 0.63F, 0.41F);
+						break;
+					case 4:
+						setBlockBounds(0.59F, 0.37F, 0.37F, 1.0F, 0.63F, 0.63F);
+						break;
+					case 5:
+						setBlockBounds(0.0F, 0.37F, 0.37F, 0.41F, 0.63F, 0.63F);
+						break;
+				}
+			}
+		}
 	}
 
 	@Override
@@ -126,4 +154,5 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 		}
 		return list;
 	}
+
 }

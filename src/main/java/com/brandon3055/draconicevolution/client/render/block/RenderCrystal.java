@@ -23,6 +23,8 @@ public class RenderCrystal implements IItemRenderer {
 		relay2 = new TileEnergyRelay(1);
 		transceiver1 = new TileEnergyTransceiver(0);
 		transceiver2 = new TileEnergyTransceiver(1);
+		transceiver1.facing = 1;
+		transceiver2.facing = 1;
 	}
 
 

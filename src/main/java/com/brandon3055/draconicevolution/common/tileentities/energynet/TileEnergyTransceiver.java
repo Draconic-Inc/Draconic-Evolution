@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class TileEnergyTransceiver extends TileRemoteEnergyBase{
 
+	public int facing = 0;//0=up, 1=down, 3=north, 2=south, 4=east, 5=west
+
 	public TileEnergyTransceiver() {}
 
 	public TileEnergyTransceiver(int powerTier)
@@ -15,6 +17,10 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase{
 		this.updateStorage();
 	}
 
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+	}
 
 	@Override
 	public double getBeamX() {
@@ -49,10 +55,12 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase{
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
+		compound.setInteger("Facing", facing);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
+		facing = compound.getInteger("Facing");
 	}
 }

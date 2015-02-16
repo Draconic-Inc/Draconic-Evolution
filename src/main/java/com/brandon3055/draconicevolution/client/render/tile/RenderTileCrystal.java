@@ -94,6 +94,28 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 		GL11.glPushMatrix();
 		GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 		GL11.glScalef(0.5f, 0.5f, 0.5f);
+
+		switch (tileEntity.facing)
+		{
+			case 0:
+				GL11.glRotatef(180, 0, 0, 1);
+				break;
+			case 3:
+				GL11.glRotatef(90, 1, 0, 0);
+				break;
+			case 2:
+				GL11.glRotatef(90, -1, 0, 0);
+				break;
+			case 4:
+				GL11.glRotatef(90, 0, 0, 1);
+				break;
+			case 5:
+				GL11.glRotatef(90, 0, 0, -1);
+				break;
+		}
+
+		GL11.glTranslated(0, -1, 0);
+
 		//GL11.glDisable(GL11.GL_LIGHTING); //todo disable?
 		RenderHelper.disableStandardItemLighting();
 		GL11.glEnable(GL11.GL_BLEND);
