@@ -30,7 +30,7 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 	public static final String networkChannelName = "DEvolutionNC";
 	public static SimpleNetworkWrapper network;
 
-	public static boolean debug = true;//todo
+	public static boolean debug = false;//todo
 
 	public static Enchantment reaperEnchant;
 	
@@ -53,13 +53,6 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 		event.getModMetadata().version = References.VERSION + "-MC1.7.10";
 
 		proxy.preInit(event);
-
-		/*
-		public static Achievement ultimatePower;
-		ultimatePower = new Achievement("achievment.ultimatePower", "Ultimate Power!!!", 1, -2, ModItems.draconicDestructionStaff, null).registerStat();
-		AchievementPage draconicEvolution = new AchievementPage("Draconic Evolution", ultimatePower);
-		AchievementPage.registerAchievementPage(draconicEvolution);
-		*/
 
 	}
 

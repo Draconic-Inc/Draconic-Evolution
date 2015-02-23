@@ -140,7 +140,7 @@ public class ParticleEnergyBeam extends EntityFX {
 		if (!renderParticle) return;
 		tessellator.draw();
 		GL11.glPushMatrix();
-		GL11.glPushAttrib(GL11.GL_ATTRIB_STACK_DEPTH);
+		//GL11.glPushAttrib(GL11.GL_ATTRIB_STACK_DEPTH);
 		float var9 = 1.0F;
 		float slide = (float) getPlayer().ticksExisted;
 		float size = (float) flow / 100f * 2f; //0.7F;
@@ -148,7 +148,7 @@ public class ParticleEnergyBeam extends EntityFX {
 		else Minecraft.getMinecraft().renderEngine.bindTexture(beamTextureBasic);
 		GL11.glTexParameterf(3553, 10242, 10497.0F);
 		GL11.glTexParameterf(3553, 10243, 10497.0F);
-		GL11.glDisable(2884);
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		float var11 = slide + partialTick;
 		float var12 = -var11 * 0.2F - (float) MathHelper.floor_float(-var11 * 0.1F);
 		GL11.glBlendFunc(770, 1);
@@ -165,7 +165,7 @@ public class ParticleEnergyBeam extends EntityFX {
 		double var44 = -0.15D * (double)size;
 		double var17 = 0.15D * (double)size;
 
-
+		GL11.glTranslated(0.03, 0, 0);
 		for(int t = 0; t < 2; ++t) {
 			double var29 = (double)(this.length * var9);
 			double var31 = 0D;
@@ -190,6 +190,7 @@ public class ParticleEnergyBeam extends EntityFX {
 			var17 = 0.15D * (double)1;
 
 			//GL11.glColor4f(1f, 1f, 1f, 1f);
+			//GL11.glTranslated(0.1, 0, 0);
 			for(int t = 0; t < 2; ++t) {
 				double var29 = (double)(this.length * var9);
 				double var31 = 0D;
@@ -210,10 +211,10 @@ public class ParticleEnergyBeam extends EntityFX {
 		}
 
 
-		GL11.glDepthMask(true);
+		//GL11.glDepthMask(true);
 		GL11.glBlendFunc(770, 771);
-		GL11.glEnable(2884);
-		GL11.glPopAttrib();
+		GL11.glEnable(GL11.GL_CULL_FACE);
+	//	GL11.glPopAttrib();
 		GL11.glPopMatrix();
 
 

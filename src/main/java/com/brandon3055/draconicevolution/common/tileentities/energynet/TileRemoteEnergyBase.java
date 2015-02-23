@@ -2,19 +2,21 @@ package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.items.tools.Wrench;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import com.brandon3055.draconicevolution.common.utills.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
@@ -23,13 +25,14 @@ import java.util.List;
 /**
  * Created by Brandon on 10/02/2015.
  */
-public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRemoteEnergyHandler {
+public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRemoteEnergyHandler {//todo optimize (add cutoff, explore possible cach optimization)
 
 	/**The tier of the relay (0-1)*/
 	protected int powerTier;
 	protected EnergyStorage storage = new EnergyStorage(0);
 	public List<LinkedEnergyDevice> linkedDevices = new ArrayList<LinkedEnergyDevice>();
 	protected int lastTickEnergy;
+	private int tick = 0;
 
 	public byte inView = 0;
 
@@ -48,22 +51,42 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 
 	@Override
 	public void updateEntity() {
+		tick++;
+		//worldObj.theProfiler.startSection("DE REB");
 		updateLinkedDevices();
+		if (linkedDevices.size() == 0) detectAndSendChanges(-1);
 
 		if (worldObj.isRemote && inView > 0) --inView;
+		//worldObj.theProfiler.endSection();
 	}
 
 	//**********Distribution Logic**********
 
 	private void updateLinkedDevices()
 	{
-		//LogHelper.info(storage.getEnergyStored());
+		boolean inView = false;
+//		if (worldObj.isRemote)
+//		{
+//			MovingObjectPosition mop = Minecraft.getMinecraft().thePlayer.rayTrace(5, 0);
+//			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mop.blockX == xCoord && mop.blockY == yCoord && mop.blockZ == zCoord) inView = true;//todo remove
+//		}
+
+
+		if (inView)LogHelper.info("######Start#######");
+
 		for (LinkedEnergyDevice device : linkedDevices)
 		{
 			if (!device.isValid(worldObj)) {
-				linkedDevices.remove(device);
-				updateLinkedDevices();
-				return;
+				if (worldObj.getChunkFromBlockCoords(device.xCoord, device.zCoord).isChunkLoaded)
+				{
+					linkedDevices.remove(device);
+					updateLinkedDevices();
+					return;
+				}
+				else
+				{
+					continue;
+				}
 			}
 
 			IRemoteEnergyHandler remoteTile = device.getEnergyTile(worldObj);
@@ -81,7 +104,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 					if (remoteTile instanceof TileEnergyRelay) rType = 1;
 					else rType = 0;
 				}
-
+				if (inView) LogHelper.info(device.energyFlow);
 				device.beam = DraconicEvolution.proxy.energyBeam(worldObj, getBeamX(), getBeamY(), getBeamZ(), remoteTile.getBeamX(), remoteTile.getBeamY(), remoteTile.getBeamZ(), (int)device.energyFlow, getPowerTier() == 1, device.beam, true, rType);
 			}
 			else
@@ -91,15 +114,18 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 				double difference = getCapacity() - remoteTile.getCapacity();
 
 
-				int energyToEqual = (int)(((difference / 100D) * (double)remoteTile.getMaxEnergyStored(ForgeDirection.UNKNOWN)) / 2.1D);
+				int energyToEqual = (int)(((difference / 100D) * (double)remoteTile.getStorage().getMaxEnergyStored()) / 2.1D);
 
-				double maxFlow = Math.min(energyToEqual, Math.min(transferCap, remoteTile.getMaxEnergyStored(ForgeDirection.UNKNOWN) - remoteTile.getEnergyStored(ForgeDirection.UNKNOWN)));
+				double maxFlow = Math.min(energyToEqual, Math.min(transferCap, remoteTile.getStorage().getMaxEnergyStored() - remoteTile.getStorage().getEnergyStored()));
 
 				device.energyFlow = getFlow(getCapacity(), remoteTile.getCapacity());
 				int flow = (int) ((device.energyFlow / 100D) * maxFlow);
 
 
-				storage.extractEnergy(remoteTile.receiveEnergy(ForgeDirection.UNKNOWN, storage.extractEnergy(flow, true), false), false);
+				int transfered = storage.extractEnergy(remoteTile.getStorage().receiveEnergy(storage.extractEnergy(flow, true), false), false);
+
+				if (inView)LogHelper.info(transfered);
+				device.energyFlow = Math.min(((double)transfered / 10000D) * 100D, 100D);
 
 				//LogHelper.info("dif:" + difference + " flow:" + getFlow(getCapacity(), remoteTile.getCapacity()) + " EtoE:" + energyToEqual + " tfrd:" + transfered + " X:" + xCoord + " lCap:" + getCapacity() + " rCap:" + remoteTile.getCapacity() + " strd:" + storage.getEnergyStored() + " T:" + type + " mxflw:" + maxFlow);
 
@@ -107,18 +133,21 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 				//if (device.energyFlow > 0)LogHelper.info(device.energyFlow + " " + transfered);
 				//if (device.energyFlow == 0) LogHelper.info(device.getEnergyTile(worldObj));//todo clean up
 				detectAndSendChanges(linkedDevices.indexOf(device));
+				if (inView) LogHelper.info(device.energyFlow);
 			}
 		}
+		if (inView)LogHelper.info("#######END########");
 	}
 
 	protected void detectAndSendChanges(int index)
 	{
-		if (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow)	{
+		boolean forceSend = (tick + xCoord + yCoord + zCoord) % 100 == 0;
+		if (index >= 0 && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow || forceSend))	{
 			sendObject(References.TWO_INTS_ID, 0, new DataUtills.TwoXInteger(index, (int)linkedDevices.get(index).energyFlow));
 			linkedDevices.get(index).lastTickEnergyFlow = linkedDevices.get(index).energyFlow;
 		}
 
-		if (getEnergyStored(ForgeDirection.UNKNOWN) != lastTickEnergy) sendObject(References.INT_ID, 1, getEnergyStored(ForgeDirection.UNKNOWN));
+		if (storage.getEnergyStored() != lastTickEnergy || forceSend) sendObject(References.INT_ID, 1, storage.getEnergyStored());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -134,7 +163,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 
 	@Override
 	public double getCapacity() {
-		return ((double) getEnergyStored(ForgeDirection.UNKNOWN) / (double) getMaxEnergyStored(ForgeDirection.UNKNOWN)) * 100D;
+		return ((double) storage.getEnergyStored() / (double) storage.getMaxEnergyStored()) * 100D;
 	}
 
 	/**Calculates the energy flow based on the local buffer
@@ -149,14 +178,25 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		return powerTier;
 	}
 
-	public void onBlockActivated(EntityPlayer player) {
+	public void onBlockActivated(EntityPlayer player)
+	{
+		ItemStack wrench = player.getHeldItem();
 
-		if (player.getHeldItem() != null && player.getHeldItem().getItem() == ModItems.wrench)
+		if (wrench != null && wrench.getItem() == Items.stick)
 		{
-			ItemStack wrench = player.getHeldItem();
-			NBTTagCompound linkDat = null;
-			if (wrench.hasTagCompound() && wrench.getTagCompound().hasKey("LinkData")) linkDat = wrench.getTagCompound().getCompoundTag("LinkData");
+			for (LinkedEnergyDevice ld : linkedDevices)
+			{
+				if (ld.beam != null) LogHelper.info(ld.beam.getFlow());
+			}
+		}
 
+		if (wrench == null || wrench.getItem() != ModItems.wrench) return;
+		String mode = Wrench.getMode(wrench);
+		NBTTagCompound linkDat = null;
+		if (wrench.hasTagCompound() && wrench.getTagCompound().hasKey("LinkData")) linkDat = wrench.getTagCompound().getCompoundTag("LinkData");
+
+		if (mode.equals(Wrench.BIND_MODE))
+		{
 			if (linkDat != null && linkDat.hasKey("Bound") && linkDat.getBoolean("Bound"))
 			{
 				handleBinding(player, linkDat.getInteger("XCoord"), linkDat.getInteger("YCoord"), linkDat.getInteger("ZCoord"), true);
@@ -170,34 +210,101 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 				linkDat.setInteger("ZCoord", zCoord);
 				linkDat.setBoolean("Bound", true);
 				ItemNBTHelper.getCompound(wrench).setTag("LinkData", linkDat);
-				if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("txt.posSaved"));
+				if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.de.posSaved.txt"));
 			}
 		}
-		else {
-			if (!player.isSneaking())receiveEnergy(ForgeDirection.UNKNOWN, 100000, false);
-			else extractEnergy(ForgeDirection.UNKNOWN, 100000, false);
-			LogHelper.info(getEnergyStored(ForgeDirection.UNKNOWN));
+		else if (mode.equals(Wrench.UNBIND_MODE))
+		{
+			if (linkDat != null && linkDat.hasKey("Bound") && linkDat.getBoolean("Bound"))
+			{
+				for (LinkedEnergyDevice ld : linkedDevices)
+				{
+					if (ld.xCoord == linkDat.getInteger("XCoord") && ld.yCoord == linkDat.getInteger("YCoord") && ld.zCoord == linkDat.getInteger("ZCoord"))
+					{
+
+						if (!(ld.getTile(worldObj) instanceof TileRemoteEnergyBase))
+						{
+							LogHelper.error("TileRemoteEnergyBase - UNBIND - Remote tile invalid (This should be reported)");
+							break;
+						}
+
+						for (LinkedEnergyDevice rld : ((TileRemoteEnergyBase)ld.getTile(worldObj)).linkedDevices)
+						{
+							if (rld.xCoord == xCoord && rld.yCoord == yCoord && rld.zCoord == zCoord)
+							{
+								((TileRemoteEnergyBase)ld.getTile(worldObj)).linkedDevices.remove(rld);
+								break;
+							}
+						}
+
+						linkedDevices.remove(ld);
+						break;
+					}
+				}
+
+				linkDat.setBoolean("Bound", false);
+			}
+			else
+			{
+				linkDat = new NBTTagCompound();
+				linkDat.setInteger("XCoord", xCoord);
+				linkDat.setInteger("YCoord", yCoord);
+				linkDat.setInteger("ZCoord", zCoord);
+				linkDat.setBoolean("Bound", true);
+				ItemNBTHelper.getCompound(wrench).setTag("LinkData", linkDat);
+				if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.de.posSaved.txt"));
+			}
+		}
+		else if (mode.equals(Wrench.CLEAR_BINDINGS))
+		{
+			for (LinkedEnergyDevice ld : linkedDevices)
+			{
+				if (!(ld.getTile(worldObj) instanceof TileRemoteEnergyBase))
+				{
+					LogHelper.error("TileRemoteEnergyBase - UNBIND - Remote tile invalid (This should be reported)");
+					break;
+				}
+
+				for (LinkedEnergyDevice rld : ((TileRemoteEnergyBase)ld.getTile(worldObj)).linkedDevices)
+				{
+					if (rld.xCoord == xCoord && rld.yCoord == yCoord && rld.zCoord == zCoord)
+					{
+						((TileRemoteEnergyBase)ld.getTile(worldObj)).linkedDevices.remove(rld);
+						break;
+					}
+				}
+
+			}
+
+			linkedDevices.clear();
+		}
+		else
+		{
+			handleOther(player, wrench);
 		}
 	}
 
 	@Override
 	public boolean handleBinding(EntityPlayer player, int x, int y, int z, boolean callOther)
 	{
-		int range = (powerTier + 1) * 10;
+		int range = (powerTier + 1) * 25;
 		IRemoteEnergyHandler tile = worldObj.getTileEntity(x, y, z) instanceof IRemoteEnergyHandler ? (IRemoteEnergyHandler) worldObj.getTileEntity(x, y, z) : null;
 
 		if (tile == null || (x == xCoord && y == yCoord && z == zCoord))
 		{
-			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("txt.invalidTile"));
+			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.de.invalidTile.txt"));
 			return false;
 		}
 		else if (Utills.getDistanceAtoB(xCoord, yCoord, zCoord, x, y, z) > range)
 		{
-			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("txt.outOfRange"));
+			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.de.outOfRange.txt"));
 			return false;
 		}
-
-
+		else if (linkedDevices.size() >= getMaxConnections())
+		{
+			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.de.maxConnections.txt"));
+			return false;
+		}
 
 		if (callOther && !tile.handleBinding(player, xCoord, yCoord, zCoord, false))
 		{
@@ -205,7 +312,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 			return false;
 		}
 
-		if (callOther && worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("txt.linked"));
+		if (callOther && worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.de.linked.txt"));
 
 		for (LinkedEnergyDevice ld : linkedDevices)
 		{
@@ -218,18 +325,23 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		return true;
 	}
 
+	public boolean handleOther(EntityPlayer player, ItemStack wrench) { return false; }
 
+	@Override
+	public EnergyStorage getStorage() {
+		return storage;
+	}
 
 	//**************************************
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		return storage.receiveEnergy(maxReceive, simulate);
+		return 0;
 	}
 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		return storage.extractEnergy(maxExtract, simulate);
+		return 0;
 	}
 
 	@Override

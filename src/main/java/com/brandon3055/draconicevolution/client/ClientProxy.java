@@ -12,7 +12,7 @@ import com.brandon3055.draconicevolution.client.render.entity.RenderDragonHeart;
 import com.brandon3055.draconicevolution.client.render.item.RenderBow;
 import com.brandon3055.draconicevolution.client.render.item.RenderMobSoul;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyRing;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.common.CommonProxy;
 import com.brandon3055.draconicevolution.common.ModBlocks;
@@ -188,16 +188,16 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public ParticleEnergyRing energyRing(World worldObj, double x, double y, double z, int powerFlow, boolean advanced, ParticleEnergyRing oldBeam, boolean render) {
+	public ParticleEnergyField energyField(World worldObj, double x, double y, double z, int type, boolean advanced, ParticleEnergyField oldBeam, boolean render) {
 		if (!worldObj.isRemote) return null;
-		ParticleEnergyRing beam = oldBeam;
+		ParticleEnergyField beam = oldBeam;
 		boolean inRange = ParticleHandler.isInRange(x, y, z, 50);
 
 		if (beam == null || beam.isDead)
 		{
 			if (inRange)
 			{
-				beam = new ParticleEnergyRing(worldObj, x, y, z, 8, powerFlow, advanced);
+				beam = new ParticleEnergyField(worldObj, x, y, z, 8, type, advanced);
 
 				FMLClientHandler.instance().getClient().effectRenderer.addEffect(beam);
 			}
@@ -209,7 +209,7 @@ public class ClientProxy extends CommonProxy {
 		}
 		else
 		{
-			beam.update(powerFlow, render);
+			beam.update(render);
 		}
 		return beam;
 	}

@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,6 +73,18 @@ public class GUIToolConfig extends GUIBase {
 		}
 
 		setLevel(0);
+	}
+
+	public void updateItemButtons()
+	{
+		LogHelper.info("Update Buttons");
+		for (ComponentBase component : collection.getComponents())
+		{
+			if (component instanceof ComponentConfigItemButton)
+			{
+				((ComponentConfigItemButton) component).refreshState();
+			}
+		}
 	}
 
 	@Override

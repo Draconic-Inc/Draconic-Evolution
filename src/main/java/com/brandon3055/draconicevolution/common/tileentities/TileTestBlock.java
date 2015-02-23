@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyRing;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.utills.Utills;
@@ -26,14 +26,14 @@ public class TileTestBlock extends TileEntity implements IEnergyHandler {
 	public float modelRotation;
 	//Use a map for the beam to each target (Target, Beam)
 	private ParticleEnergyBeam beam = null;
-	private ParticleEnergyRing ring = null;
+	private ParticleEnergyField ring = null;
 
 
 	@Override
 	public void updateEntity() {
 
 		//beam = DraconicEvolution.proxy.energyBeam(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0.5, 4.5, 0.5, 100, true, beam);
-		//ring = DraconicEvolution.proxy.energyRing(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, ClientEventHandler.elapsedTicks % 100, true, ring);
+		//ring = DraconicEvolution.proxy.energyField(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, ClientEventHandler.elapsedTicks % 100, true, ring);
 
 		if (worldObj.isRemote) return;
 		for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {

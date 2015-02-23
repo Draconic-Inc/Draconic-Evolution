@@ -1,14 +1,14 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyRing;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created by Brandon on 10/02/2015.
  */
 public class TileEnergyRelay extends TileRemoteEnergyBase {
-	private ParticleEnergyRing ring;
+	private ParticleEnergyField ring;
 
 	public TileEnergyRelay(){}
 
@@ -20,17 +20,17 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
 
 	@Override
 	public int getCap() {
-		return 50000 + (powerTier * 450000);
+		return 50000 + (powerTier * 4500000);
 	}
 
 	@Override
 	public int getRec() {
-		return  50000 + (powerTier * 450000);
+		return  50000 + (powerTier * 4500000);
 	}
 
 	@Override
 	public int getExt() {
-		return  50000 + (powerTier * 450000);
+		return  50000 + (powerTier * 4500000);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
 
 		if (worldObj.isRemote)
 		{
-			ring = DraconicEvolution.proxy.energyRing(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0, powerTier == 1, ring, inView > 0);
+			ring = DraconicEvolution.proxy.energyField(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0, powerTier == 1, ring, inView > 0);
 			return;
 		}
 	}
@@ -66,7 +66,7 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
 	 *return double between 0 to 100*/
 	public double getFlow(double localCap, double remoteCap)
 	{
-		return  Math.max(0, Math.min(100, (localCap - remoteCap) * 10D/*Flow Multiplier*/));
+		return  Math.max(0, Math.min(100, (localCap - remoteCap) * 100D/*Flow Multiplier*/));
 	}
 
 	@Override
@@ -82,5 +82,10 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
 	@Override
 	public double getBeamZ() {
 		return zCoord + 0.5D;
+	}
+
+	@Override
+	public int getMaxConnections() {
+		return powerTier == 0 ? 10 : 20;
 	}
 }

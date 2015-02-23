@@ -16,4 +16,6 @@ public class ConfigGUI  extends GuiConfig {
 		configElements.addAll(new ConfigElement(ConfigHandler.config.getCategory("spawner")).getChildElements());
 		configElements.addAll(new ConfigElement(ConfigHandler.config.getCategory("long range dislocator")).getChildElements());
 	}
+
+
 }

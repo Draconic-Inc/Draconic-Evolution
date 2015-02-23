@@ -34,4 +34,14 @@ public class DraconiumChestItemBlock extends ItemBlockCustomData {
 	public boolean hasCustomEntity(ItemStack stack) {
 		return true;
 	}
+
+	@Override
+	public boolean getShareTag() {
+		return false;
+	}
+
+	@Override
+	public boolean isDamageable() {
+		return false;
+	}
 }

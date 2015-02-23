@@ -34,7 +34,7 @@ public class HudHandler {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void drawHUD(RenderGameOverlayEvent.Post event) {
-		if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
+		if (ConfigHandler.enableHudDisplay && event.type == RenderGameOverlayEvent.ElementType.ALL) {
 			if (hudList == null) return;
 
 			Minecraft mc = Minecraft.getMinecraft();

@@ -24,11 +24,11 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f)
 	{
 		GL11.glPushMatrix();
-		
+
 		GL11.glTranslatef((float) x, (float) y, (float) z);
 		TileEnergyInfuser tile = (TileEnergyInfuser) tileEntity;
 		renderBlock(tile);
-		
+
 		GL11.glPopMatrix();
 	}
 
@@ -40,19 +40,26 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer
 		tessellator.setColorRGBA(255, 255, 255, 255);
 		//tessellator.setBrightness(200);
 
-		tessellator.setColorOpaque_F(1f, 1f, 1f);
+		//tessellator.setColorOpaque_F(1f, 1f, 1f);
 		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)l1, (float)l2);
-
+//		GL11.glEnable(GL11.GL_CULL_FACE);
+//		GL11.glDisable(GL11.GL_ALPHA_TEST);
+//		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+//		GL11.glDepthMask(true);
 		drawBase(tessellator);
 		drawWings(tessellator, tile);
 		renderChargingItem(tile);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+//		GL11.glDepthMask(false);
 
 	}
 
 	private void drawBase(Tessellator tess){
 		GL11.glPushMatrix();
 		tess.startDrawingQuads();
-		tess.setNormal(0.0F, 0.0F, 1.0F);
+		tess.setNormal(0F, 0F, 1.0F);
 
 		double srcXMin = 0D;
 		double srcYMin = 0D;

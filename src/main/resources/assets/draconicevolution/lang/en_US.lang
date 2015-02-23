@@ -75,6 +75,18 @@ tile.draconicevolution:draconiumChest.description=Using your draconic knowledge 
 tile.draconicevolution:draconicBlock.name=Awakened Draconium Block
 tile.draconicevolution:draconicBlock.description=You have been studying the interactions of Draconium with various materials and have come to realize that this is only an inert state.  You have discovered a method to bring out the true power of Draconium using a complex ritual involving a dragon heart. (See the dragon heart page for details)
 
+tile.draconicevolution:energyCrystal0.name=Energy Relay [WIP]
+tile.draconicevolution:energyCrystal0.description=
+
+tile.draconicevolution:energyCrystal1.name=Advanced Energy Relay [WIP]
+tile.draconicevolution:energyCrystal1.description=
+
+tile.draconicevolution:energyCrystal2.name=Energy Transceiver [WIP]
+tile.draconicevolution:energyCrystal2.description=
+
+tile.draconicevolution:energyCrystal3.name=Advanced Energy Transceiver [WIP]
+tile.draconicevolution:energyCrystal3.description=
+
 
 //Item Information ----------------------------------------------------------------------------------------------------------------------------------------
 item.draconicevolution:awakenedCore.name=Awakened Core
@@ -205,6 +217,10 @@ item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Isla
 
 item.draconicevolution:infoTablet.name=Draconic Evolution Information Tablet
 
+item.draconicevolution:wrench.name=Crystal Wrench [WIP]
+item.draconicevolution:wrench.description=
+
+
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
 itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
@@ -261,6 +277,20 @@ msg.draconiumChestEditL3.txt=Or the bottom half of the chest to decrease the val
 msg.draconiumChestEditL4.txt=Right click with paper to copy the colour to other chests
 msg.draconiumChestEdit2.txt=Please use a single peace of paper
 msg.de.dragonDeath.txt=§5The heart is temporarily awakened by the dragons explosive §5death
+
+//Energy Net
+msg.de.wrenchMode.bind.txt=Function: Bind
+msg.de.wrenchMode.unBind.txt=Function: Un-Bind
+msg.de.wrenchMode.unBindAll.txt=Function: Un-Bind All
+msg.de.wrenchMode.modeSwitch.txt=Function: Mode Change
+msg.de.rightClickUnbind.txt=Right click air to un-bind
+msg.de.boundTo.txt=Bound To
+msg.de.posSaved.txt=Position Saved
+msg.de.invalidTile.txt=Target Invalid
+msg.de.outOfRange.txt=Target out of range
+msg.de.maxConnections.txt=Connection limit reached
+msg.de.linked.txt=Devices Linked
+
 
 //Tool Tips ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=Unbound
@@ -320,6 +350,13 @@ info.de.hudDisplayConfigTxt2.txt=Click and drag to move
 info.de.hudDisplayConfigTxt3.txt=###################
 info.de.hudDisplayConfigInfo1.txt=Click and drag HUD
 info.de.hudDisplayConfigInfo2.txt=to change location
+
+//Energy Net
+info.de.modeIn.txt=Mode: Input
+info.de.modeOut.txt=Mode: Output
+info.de.5xTransfer.txt= (5x Transfer)
+info.de.connections.txt=Connections
+
 
 enchantment.draconicevolution.reaperEnchant=Reaper
 

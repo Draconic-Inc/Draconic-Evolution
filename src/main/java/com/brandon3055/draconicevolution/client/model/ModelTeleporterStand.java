@@ -59,7 +59,7 @@ public class ModelTeleporterStand extends ModelBase {
 	}
 
 	public void render() {
-		final float scale = 1F / 16F;
+		final float scale = 1F / 16;
 
 		plate.render(scale);
 		holders.render(scale);

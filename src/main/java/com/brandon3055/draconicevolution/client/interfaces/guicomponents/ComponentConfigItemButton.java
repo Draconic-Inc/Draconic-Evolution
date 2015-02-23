@@ -27,7 +27,12 @@ public class ComponentConfigItemButton extends ComponentBase {
 		super(x, y);
 		this.slot = slot;
 		this.inventory = player.inventory;
-		if (inventory.getStackInSlot(slot) != null && ((inventory.getStackInSlot(slot).getItem() instanceof IConfigurableItem && !((IConfigurableItem) inventory.getStackInSlot(slot).getItem()).getFields(inventory.getStackInSlot(slot), slot).isEmpty()) || inventory.getStackInSlot(slot).getItem() instanceof IInventoryTool)) hasValidItem = true;
+		refreshState();
+	}
+
+	public void refreshState()
+	{
+		hasValidItem = (inventory.getStackInSlot(slot) != null && ((inventory.getStackInSlot(slot).getItem() instanceof IConfigurableItem && !((IConfigurableItem) inventory.getStackInSlot(slot).getItem()).getFields(inventory.getStackInSlot(slot), slot).isEmpty()) || inventory.getStackInSlot(slot).getItem() instanceof IInventoryTool));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.container;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChest;
 import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChestResult;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
@@ -54,7 +55,7 @@ public class ContainerDraconiumChest extends Container {
 		{
 			for (int chestCol = 0; chestCol < 26; chestCol++)
 			{
-				addSlotToContainer(new Slot(tile, chestCol + (chestRow * 26), 8 + chestCol * 18, 15 + chestRow * 18));
+				addSlotToContainer(new SlotDChest(tile, chestCol + (chestRow * 26), 8 + chestCol * 18, 15 + chestRow * 18));
 			}
 		}
 
@@ -88,7 +89,7 @@ public class ContainerDraconiumChest extends Container {
 		{
 			for (int gridRow = 0; gridRow < 3; ++gridRow)
 			{
-				addSlotToContainer(new Slot(craftMatrix, gridRow + (gridCol * 3), xOffset + (gridRow * 18), yOffset + (gridCol * 18)));
+				addSlotToContainer(new SlotDChest(craftMatrix, gridRow + (gridCol * 3), xOffset + (gridRow * 18), yOffset + (gridCol * 18)));
 			}
 		}
 	}
@@ -241,5 +242,21 @@ public class ContainerDraconiumChest extends Container {
 		{
 			return 1;
 		}
+	}
+
+	public class SlotDChest extends Slot {
+
+
+		public SlotDChest(IInventory inventory, int id, int x, int y) {
+			super(inventory, id, x, y);
+
+		}
+
+		@Override
+		public boolean isItemValid(ItemStack stack)
+		{
+			return DraconiumChest.isStackValid(stack);
+		}
+
 	}
 }

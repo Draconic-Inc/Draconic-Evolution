@@ -53,6 +53,7 @@ public class GUIToolInventory extends GUIBase {
 	public void buttonClicked(int id) {
 		super.buttonClicked(id);
 		if (guiToolConfig == null) guiToolConfig = new GUIToolConfig(player, container);
+		guiToolConfig.updateItemButtons();
 		Minecraft.getMinecraft().displayGuiScreen(guiToolConfig);
 		guiToolConfig.setLevel(1);
 		container.setSlotsActive(false);

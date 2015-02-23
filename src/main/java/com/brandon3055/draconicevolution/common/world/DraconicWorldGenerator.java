@@ -31,7 +31,7 @@ public class DraconicWorldGenerator implements IWorldGenerator {
 	}
 
 	public void generateSurface(Random random, int x, int z, World world) {//                                                                    minVainSise, maxVainSize, spawnChance(Def2), minY, maxY
-		addOreSpawn(ModBlocks.draconiumOre, world, random, x, z, 3, 4, 2, 2, 8);
+		if (!ConfigHandler.disableOreSpawnOverworld) addOreSpawn(ModBlocks.draconiumOre, world, random, x, z, 3, 4, 2, 2, 8);
 	}
 
 	public void generateEnd(Random random, int x, int z, World world) {
@@ -42,11 +42,11 @@ public class DraconicWorldGenerator implements IWorldGenerator {
 		int cX = x/16;
 		int cZ = z/16;
 		if (ConfigHandler.generateChaosIslands && Math.sqrt(x*x + z*z) > 9000 && cX%625 == 0 && cZ%625 == 0) new WorldGenEnderIsland().generate(world, random, x1, 100 , z1);
-		addOreSpawn(ModBlocks.draconiumOre, world, random, x, z, 4, 5, 10, 1, 70);
+		if (!ConfigHandler.disableOreSpawnEnd) addOreSpawn(ModBlocks.draconiumOre, world, random, x, z, 4, 5, 10, 1, 70);
 	}
 
 	public void generateNether(final Random random, final int chunkX, final int chunkZ, final World world) {
-		addOreSpawn(ModBlocks.draconiumOre, world, random, chunkX, chunkZ, 3, 4, 5, 1, 125);
+		if (!ConfigHandler.disableOreSpawnNether) addOreSpawn(ModBlocks.draconiumOre, world, random, chunkX, chunkZ, 3, 4, 5, 1, 125);
 	}
 	/**Generate Ore
 	 * Block to generate

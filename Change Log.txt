@@ -1,10 +1,23 @@
 ######## 1.0.1-Snap Shot(?) ########
 -reduced default particle view range to 64 blocks.
+-fixed up and down arrows in advanced dislocator GUI.
+-fixed chaos guardian not spawning a portal on servers.
+-re added the ability to change mining aoe of the tools with shift right click.
+-fixed item config gui crash (needs server testing to confirm).
+-optimized draconium chest packet handling.
+-added config option to disable ore generation.
+-blocked cheaty method of killing the dragon on servers by going out of its update range.
+-added config option to disable the HUD info.
+-added Energy Relay [WIP]
+-added Advanced Energy Relay [WIP]
+-added Energy Transceiver [WIP]
+-added Advanced Energy Transceiver [WIP]
+-added Crystal Wrench [WIP]
 
 
 ######## 1.0.1-Snap Shot(3) ########
 
--fixed spawner display mob shaking when disabled 
+-fixed spawner display mob shaking when disabled.
 -removed energy cost for Draconic Chest flight.
 -added tool config gui.
 -safety flame can now be extinguished without breaking the block it is placed on.

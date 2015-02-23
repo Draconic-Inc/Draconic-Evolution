@@ -18,7 +18,6 @@ public class ConfigHandler {
 	public static int cometRarity;
 	public static int hudX;
 	public static int hudY;
-	public static String[] obliterationList;
 	public static boolean generateEnderComets;
 	public static boolean generateChaosIslands;
 	public static boolean pigmenBloodRage;
@@ -26,6 +25,10 @@ public class ConfigHandler {
 	public static boolean showUnlocalizedNames;
 	public static boolean disableLore;
 	public static boolean invertDPDSB;
+	public static boolean disableOreSpawnEnd;
+	public static boolean disableOreSpawnOverworld;
+	public static boolean disableOreSpawnNether;
+	public static boolean enableHudDisplay;
 
 	//spawner
 	public static String[] spawnerList;
@@ -46,7 +49,6 @@ public class ConfigHandler {
 
 
 	private static String[] defaultSpawnerList = new String[] {"ExampleMob1", "ExampleMob2", "ExampleMob3 (these examples can be deleted)"};
-	private static String[] defaultObliterationList = new String[] {"tile.stonebrick", "tile.gravel", "tile.dirt", "tile.stone", "tile.dirt", "tile.sandStone", "tile.sand", "tile.grass", "tile.hellrock"};
 
 	public static void init(File confFile) {
 		if (config == null) {
@@ -64,7 +66,6 @@ public class ConfigHandler {
 			disableXrayBlock = config.get(Configuration.CATEGORY_GENERAL, "Disable Xray Block", 0, "Disable Distortion Flame 0:Default, 1:Disable recipe, 2:Disable completely").getInt(0);
 			teleporterUsesPerPearl = config.get(Configuration.CATEGORY_GENERAL, "Teleporter Uses PerPearl", 1, "Charm of Dislocation uses per Ender pearl").getInt(1);
 			bowBlockDamage = config.get(Configuration.CATEGORY_GENERAL, "Bow Block Damage", true, "Dose Draconic bow explosion damage blocks").getBoolean(true);
-			obliterationList = config.getStringList("Oblit Mode List", Configuration.CATEGORY_GENERAL, defaultObliterationList, "List of block (unlocalized)names that will be destroyed by tools in obliteration mode. To find the unlocalized name of a block see the \"Show Unlocalized Names\" config option");
 			showUnlocalizedNames = config.get(Configuration.CATEGORY_GENERAL, "Show Unlocalized Names", false, "If set to true the unlocalized name of every block and item will be displayed in its tool tip").getBoolean(false);
 			soulDropChance = config.get(Configuration.CATEGORY_GENERAL, "soulDropChance", 1000, "Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(1000);
 			passiveSoulDropChance = config.get(Configuration.CATEGORY_GENERAL, "passiveSoulDropChance", 800, "Passive (Animals) Mobs have a 1 in this number chance to drop a soul", 1, Integer.MAX_VALUE).getInt(800);
@@ -76,7 +77,10 @@ public class ConfigHandler {
 			invertDPDSB = config.get(Configuration.CATEGORY_GENERAL, "InvertDPDSB", false, "Invert Dislocator Pedestal display name shift behavior").getBoolean(false);
 			hudX = config.get(Configuration.CATEGORY_GENERAL, "Hud Display X pos", 7).getInt(7);
 			hudY = config.get(Configuration.CATEGORY_GENERAL, "Hud Display Y pos", 874).getInt(874);
-
+			disableOreSpawnEnd = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (End)", false, "Set to true to prevent draconium ore from spawning in the end").getBoolean(false);
+			disableOreSpawnNether = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Nether)", false, "Set to true to prevent draconium ore from spawning in the nether").getBoolean(false);
+			disableOreSpawnOverworld = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Overworld)", false, "Set to true to prevent draconium ore from spawning in the overworld").getBoolean(false);
+			enableHudDisplay = config.get(Configuration.CATEGORY_GENERAL, "Enable HUD info", true, "Set to false to disable the HUD info for tools and blocks").getBoolean(true);
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);

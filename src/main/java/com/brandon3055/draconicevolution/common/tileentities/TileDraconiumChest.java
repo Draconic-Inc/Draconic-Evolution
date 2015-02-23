@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.tileentities;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
@@ -13,6 +14,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
@@ -297,9 +299,21 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 
 	@Override
 	public Packet getDescriptionPacket() {
-		NBTTagCompound tagCompound = new NBTTagCompound();
-		this.writeToNBT(tagCompound);
-		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, tagCompound);
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setByte("facing", (byte) facing);
+		compound.setInteger("Red", red);
+		compound.setInteger("Green", green);
+		compound.setInteger("Blue", blue);
+		compound.setBoolean("Edit", editMode);
+		compound.setByte("AutoFeed", (byte) smeltingAutoFeed);
+		if (customName != null && customName.length() > 0)compound.setString("CustomName", customName);
+		energy.writeToNBT(compound);
+		super.writeToNBT(compound);
+
+		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, compound);
+//		NBTTagCompound tagCompound = new NBTTagCompound();
+//		this.writeToNBT(tagCompound);
+//		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, tagCompound);
 	}
 
 	@Override
@@ -400,7 +414,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		return true;
+		return DraconiumChest.isStackValid(itemstack);
 	}
 
 	@Override
@@ -465,27 +479,30 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 
 	@Override
 	public void writeDataToItem(NBTTagCompound compound, ItemStack stack) {
-		NBTTagCompound[] tag = new NBTTagCompound[items.length];
+
+		NBTTagList tagList = new NBTTagList();
 
 		for (int i = 0; i < items.length; i++) {
-			tag[i] = new NBTTagCompound();
-
-			if (items[i] != null) {
-				tag[i] = items[i].writeToNBT(tag[i]);
+			if (items[i] != null)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setShort("IS", (short)i);
+				items[i].writeToNBT(tag);
+				tagList.appendTag(tag);
 			}
-
-			compound.setTag("Item" + i, tag[i]);
 		}
 
 		for (int i = 0; i < itemsCrafting.length; i++) {
-			tag[i] = new NBTTagCompound();
-
-			if (itemsCrafting[i] != null) {
-				tag[i] = itemsCrafting[i].writeToNBT(tag[i]);
+			if (itemsCrafting[i] != null)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setShort("CS", (short)i);
+				itemsCrafting[i].writeToNBT(tag);
+				tagList.appendTag(tag);
 			}
-
-			compound.setTag("CraftingItem" + i, tag[i]);
 		}
+
+		compound.setTag("Inventory", tagList);
 
 		compound.setInteger("Red", red);
 		compound.setInteger("Green", green);
@@ -498,16 +515,22 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 
 	@Override
 	public void readDataFromItem(NBTTagCompound compound, ItemStack stack) {
-		NBTTagCompound[] tag = new NBTTagCompound[items.length];
 
-		for (int i = 0; i < items.length; i++) {
-			tag[i] = compound.getCompoundTag("Item" + i);
-			items[i] = ItemStack.loadItemStackFromNBT(tag[i]);
-		}
-
-		for (int i = 0; i < itemsCrafting.length; i++) {
-			tag[i] = compound.getCompoundTag("CraftingItem" + i);
-			itemsCrafting[i] = ItemStack.loadItemStackFromNBT(tag[i]);
+		if (compound.hasKey("Inventory"))
+		{
+			NBTTagList tagList = compound.getTagList("Inventory", 10);
+			for (int i = 0; i < tagList.tagCount(); i++)
+			{
+				NBTTagCompound tag = tagList.getCompoundTagAt(i);
+				if (tag.hasKey("IS"))
+				{
+					items[tag.getShort("IS")] = ItemStack.loadItemStackFromNBT(tag);
+				}
+				else if (tag.hasKey("CS"))
+				{
+					itemsCrafting[tag.getShort("CS")] = ItemStack.loadItemStackFromNBT(tag);
+				}
+			}
 		}
 
 		red = compound.getInteger("Red");
@@ -517,6 +540,61 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		smeltingAutoFeed = compound.getByte("AutoFeed");
 		energy.readFromNBT(compound);
 	}
+
+//	@Override
+//	public void writeDataToItem(NBTTagCompound compound, ItemStack stack) {
+//		NBTTagCompound[] tag = new NBTTagCompound[items.length];
+//
+//		for (int i = 0; i < items.length; i++) {
+//			tag[i] = new NBTTagCompound();
+//
+//			if (items[i] != null) {
+//				tag[i] = items[i].writeToNBT(tag[i]);
+//			}
+//
+//			compound.setTag("Item" + i, tag[i]);
+//		}
+//
+//		for (int i = 0; i < itemsCrafting.length; i++) {
+//			tag[i] = new NBTTagCompound();
+//
+//			if (itemsCrafting[i] != null) {
+//				tag[i] = itemsCrafting[i].writeToNBT(tag[i]);
+//			}
+//
+//			compound.setTag("CraftingItem" + i, tag[i]);
+//		}
+//
+//		compound.setInteger("Red", red);
+//		compound.setInteger("Green", green);
+//		compound.setInteger("Blue", blue);
+//		compound.setBoolean("Edit", editMode);
+//		compound.setByte("AutoFeed", (byte) smeltingAutoFeed);
+//		if (hasCustomInventoryName()) stack.setStackDisplayName(customName);
+//		energy.writeToNBT(compound);
+//	}
+
+//	@Override
+//	public void readDataFromItem(NBTTagCompound compound, ItemStack stack) {
+//		NBTTagCompound[] tag = new NBTTagCompound[items.length];
+//
+//		for (int i = 0; i < items.length; i++) {
+//			tag[i] = compound.getCompoundTag("Item" + i);
+//			items[i] = ItemStack.loadItemStackFromNBT(tag[i]);
+//		}
+//
+//		for (int i = 0; i < itemsCrafting.length; i++) {
+//			tag[i] = compound.getCompoundTag("CraftingItem" + i);
+//			itemsCrafting[i] = ItemStack.loadItemStackFromNBT(tag[i]);
+//		}
+//
+//		red = compound.getInteger("Red");
+//		green = compound.getInteger("Green");
+//		blue = compound.getInteger("Blue");
+//		editMode = compound.getBoolean("Edit");
+//		smeltingAutoFeed = compound.getByte("AutoFeed");
+//		energy.readFromNBT(compound);
+//	}
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {

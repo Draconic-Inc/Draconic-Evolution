@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -24,4 +25,8 @@ public interface IRemoteEnergyHandler extends IEnergyHandler {
 	double getBeamY();
 
 	double getBeamZ();
+
+	EnergyStorage getStorage();
+
+	int getMaxConnections();
 }

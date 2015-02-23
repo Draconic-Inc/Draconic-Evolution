@@ -18,7 +18,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -90,6 +92,66 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 	}
 
 	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 1 || meta == 0) return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.135F, z + 0.37F, x + 0.63F, y + 0.865F, z + 0.63F);
+		else if (meta == 2 || meta == 3)
+		{
+			TileEnergyTransceiver tile = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver ? (TileEnergyTransceiver) world.getTileEntity(x, y, z) : null;
+			if (tile != null)
+			{
+				switch (tile.facing)
+				{
+					case 0:
+						return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.59F, z + 0.37F, x + 0.63F, y + 1.0F, z + 0.63F);
+					case 1:
+						return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.0F, z + 0.37F, x + 0.63F, y + 0.41F, z + 0.63F);
+					case 2:
+						return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.37F, z + 0.59F, x + 0.63F, y + 0.63F, z + 1.0F);
+					case 3:
+						return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.37F, z + 0.0F, x + 0.63F, y + 0.63F, z + 0.41F);
+					case 4:
+						return AxisAlignedBB.getBoundingBox(x + 0.59F, y + 0.37F, z + 0.37F, x + 1.0F, y + 0.63F, z + 0.63F);
+					case 5:
+						return AxisAlignedBB.getBoundingBox(x + 0.0F, y + 0.37F, z + 0.37F, x + 0.41F, y + 0.63F, z + 0.63F);
+				}
+			}
+		}
+
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+	}
+
+	@Override
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta == 1 || meta == 0) return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.135F, z + 0.37F, x + 0.63F, y + 0.865F, z + 0.63F);
+		else if (meta == 2 || meta == 3)
+		{
+			TileEnergyTransceiver tile = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver ? (TileEnergyTransceiver) world.getTileEntity(x, y, z) : null;
+			if (tile != null)
+			{
+				switch (tile.facing)
+				{
+					case 0:
+						return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.59F, z + 0.37F, x + 0.63F, y + 1.0F, z + 0.63F);
+					case 1:
+						return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.0F, z + 0.37F, x + 0.63F, y + 0.41F, z + 0.63F);
+					case 2:
+						return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.37F, z + 0.59F, x + 0.63F, y + 0.63F, z + 1.0F);
+					case 3:
+						return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.37F, z + 0.0F, x + 0.63F, y + 0.63F, z + 0.41F);
+					case 4:
+						return AxisAlignedBB.getBoundingBox(x + 0.59F, y + 0.37F, z + 0.37F, x + 1.0F, y + 0.63F, z + 0.63F);
+					case 5:
+						return AxisAlignedBB.getBoundingBox(x + 0.0F, y + 0.37F, z + 0.37F, x + 0.41F, y + 0.63F, z + 0.63F);
+				}
+			}
+		}
+
+		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
+	}
+
+	@Override
 	public boolean hasTileEntity(int metadata) {
 		return true;
 	}
@@ -136,7 +198,7 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 	}
 
 	@Override
-	public List<String> getDisplayData(World world, int x, int y, int z) {
+	public List<String> getDisplayData(World world, int x, int y, int z) {//todo Localization
 		List<String> list = new ArrayList<String>();
 		IRemoteEnergyHandler tile = world.getTileEntity(x, y, z) instanceof IRemoteEnergyHandler ? (IRemoteEnergyHandler) world.getTileEntity(x, y, z) : null;
 		if (tile != null)
@@ -144,6 +206,14 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 			list.add(InfoHelper.HITC()+getLocalizedName());
 			list.add("RF: " + tile.getEnergyStored(ForgeDirection.DOWN));
 			list.add("Cap: " + tile.getCapacity() + "%");
+			if (tile instanceof TileEnergyTransceiver) {
+				String x5 = ((TileEnergyTransceiver) tile).getPowerTier() > 0 && ((TileEnergyTransceiver) tile).transferBoost ? StatCollector.translateToLocal("info.de.5xTransfer.txt") : "";
+				list.add(((TileEnergyTransceiver)tile).getInput() ? StatCollector.translateToLocal("info.de.modeIn.txt") + x5 : StatCollector.translateToLocal("info.de.modeOut.txt") + x5);
+			}
+			if (tile instanceof TileRemoteEnergyBase) {
+				list.add(StatCollector.translateToLocal("info.de.connections.txt") + ": " + ((TileRemoteEnergyBase) tile).linkedDevices.size() + "/" + tile.getMaxConnections());
+			}
+
 			if (tile instanceof TileRemoteEnergyBase)
 			{
 				for (LinkedEnergyDevice l : ((TileRemoteEnergyBase) tile).linkedDevices)
@@ -155,4 +225,8 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 		return list;
 	}
 
+	@Override
+	public int damageDropped(int dmg) {
+		return dmg;
+	}
 }

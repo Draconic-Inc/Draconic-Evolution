@@ -224,8 +224,8 @@ public class TileEnergyStorageCore extends TileObjectSync {
 				break;
 			case 1:
 				if (!testForOrActivateDraconium(xCoord + 1, yCoord, zCoord, setBlocks, activate) || !testForOrActivateDraconium(xCoord - 1, yCoord, zCoord, setBlocks, activate) || !testForOrActivateDraconium(xCoord, yCoord + 1, zCoord, setBlocks, activate) || !testForOrActivateDraconium(xCoord, yCoord - 1, zCoord, setBlocks, activate) || !testForOrActivateDraconium(xCoord, yCoord, zCoord + 1, setBlocks, activate) || !testForOrActivateDraconium(xCoord, yCoord, zCoord - 1, setBlocks, activate)) return false;
-				if (!isAir(xCoord+1, yCoord+1, zCoord, setBlocks) || !isAir(xCoord, yCoord+1, zCoord+1, setBlocks) || !isAir(xCoord-1, yCoord+1, zCoord, setBlocks) || !isAir(xCoord, yCoord+1, zCoord-1, setBlocks) || !isAir(xCoord+1, yCoord-1, zCoord, setBlocks) || !isAir(xCoord, yCoord-1, zCoord+1, setBlocks) || !isAir(xCoord-1, yCoord-1, zCoord, setBlocks) || !isAir(xCoord, yCoord-1, zCoord-1, setBlocks) || !isAir(xCoord+1, yCoord, zCoord+1, setBlocks) || !isAir(xCoord-1, yCoord, zCoord-1, setBlocks) || !isAir(xCoord+1, yCoord, zCoord-1, setBlocks) || !isAir(xCoord-1, yCoord, zCoord+1, setBlocks)) return false;
-				if (!isAir(xCoord+1, yCoord+1, zCoord+1, setBlocks) || !isAir(xCoord-1, yCoord+1, zCoord-1, setBlocks) || !isAir(xCoord+1, yCoord+1, zCoord-1, setBlocks) || !isAir(xCoord-1, yCoord+1, zCoord+1, setBlocks) || !isAir(xCoord+1, yCoord-1, zCoord+1, setBlocks) || !isAir(xCoord-1, yCoord-1, zCoord-1, setBlocks) || !isAir(xCoord+1, yCoord-1, zCoord-1, setBlocks) || !isAir(xCoord-1, yCoord-1, zCoord+1, setBlocks)) return false;
+				if (!isReplacable(xCoord + 1, yCoord + 1, zCoord, setBlocks) || !isReplacable(xCoord, yCoord + 1, zCoord + 1, setBlocks) || !isReplacable(xCoord - 1, yCoord + 1, zCoord, setBlocks) || !isReplacable(xCoord, yCoord + 1, zCoord - 1, setBlocks) || !isReplacable(xCoord + 1, yCoord - 1, zCoord, setBlocks) || !isReplacable(xCoord, yCoord - 1, zCoord + 1, setBlocks) || !isReplacable(xCoord - 1, yCoord - 1, zCoord, setBlocks) || !isReplacable(xCoord, yCoord - 1, zCoord - 1, setBlocks) || !isReplacable(xCoord + 1, yCoord, zCoord + 1, setBlocks) || !isReplacable(xCoord - 1, yCoord, zCoord - 1, setBlocks) || !isReplacable(xCoord + 1, yCoord, zCoord - 1, setBlocks) || !isReplacable(xCoord - 1, yCoord, zCoord + 1, setBlocks)) return false;
+				if (!isReplacable(xCoord + 1, yCoord + 1, zCoord + 1, setBlocks) || !isReplacable(xCoord - 1, yCoord + 1, zCoord - 1, setBlocks) || !isReplacable(xCoord + 1, yCoord + 1, zCoord - 1, setBlocks) || !isReplacable(xCoord - 1, yCoord + 1, zCoord + 1, setBlocks) || !isReplacable(xCoord + 1, yCoord - 1, zCoord + 1, setBlocks) || !isReplacable(xCoord - 1, yCoord - 1, zCoord - 1, setBlocks) || !isReplacable(xCoord + 1, yCoord - 1, zCoord - 1, setBlocks) || !isReplacable(xCoord - 1, yCoord - 1, zCoord + 1, setBlocks)) return false;
 				break;
 			case 2:
 				if (!testOrActivateRect(1, 1, 1, "draconiumBlock", setBlocks, activate)) return false;
@@ -266,7 +266,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 				for (int z = zCoord - zDim; z <= zCoord + zDim; z++){
 
 					if (block.equals("air")){
-						if (!(x == xCoord && y == yCoord && z == zCoord) && !isAir(x, y, z, set)) return false;
+						if (!(x == xCoord && y == yCoord && z == zCoord) && !isReplacable(x, y, z, set)) return false;
 					}
 					else if (block.equals("redstone")){
 						if (!(x == xCoord && y == yCoord && z == zCoord) && !testForOrActivateRedstone(x, y, z, set, activate)) return false;
@@ -290,7 +290,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 				if (y == yCoord-size || y == yCoord+size || z == zCoord-size || z==zCoord+size) {
 					if (block.equals("air")) {
-						if (!(xCoord + dist == xCoord && y == yCoord && z == zCoord) && !isAir(xCoord + dist, y, z, set))
+						if (!(xCoord + dist == xCoord && y == yCoord && z == zCoord) && !isReplacable(xCoord + dist, y, z, set))
 							return false;
 					} else if (block.equals("redstone")) {
 						if (!(xCoord + dist == xCoord && y == yCoord && z == zCoord) && !testForOrActivateRedstone(xCoord + dist, y, z, set, activate))
@@ -310,7 +310,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 				if (y == yCoord-size || y == yCoord+size || z == zCoord-size || z==zCoord+size) {
 					if (block.equals("air")) {
-						if (!(xCoord - dist == xCoord && y == yCoord && z == zCoord) && !isAir(xCoord - dist, y, z, set))
+						if (!(xCoord - dist == xCoord && y == yCoord && z == zCoord) && !isReplacable(xCoord - dist, y, z, set))
 							return false;
 					} else if (block.equals("redstone")) {
 						if (!(xCoord - dist == xCoord && y == yCoord && z == zCoord) && !testForOrActivateRedstone(xCoord - dist, y, z, set, activate))
@@ -331,7 +331,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 				if (x == xCoord-size || x == xCoord+size || z == zCoord-size || z == zCoord+size) {
 					if (block.equals("air")){
-						if (!(x == xCoord && yCoord + dist == yCoord && z == zCoord) && !isAir(x, yCoord + dist, z, set)) return false;
+						if (!(x == xCoord && yCoord + dist == yCoord && z == zCoord) && !isReplacable(x, yCoord + dist, z, set)) return false;
 					}
 					else if (block.equals("redstone")){
 						if (!(x == xCoord && yCoord + dist == yCoord && z == zCoord) && !testForOrActivateRedstone(x, yCoord + dist, z, set, activate)) return false;
@@ -351,7 +351,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 				if (x == xCoord-size || x == xCoord+size || z == zCoord-size || z==zCoord+size) {
 					if (block.equals("air")){
-						if (!(x == xCoord && yCoord - dist == yCoord && z == zCoord) && !isAir(x, yCoord - dist, z, set)) return false;
+						if (!(x == xCoord && yCoord - dist == yCoord && z == zCoord) && !isReplacable(x, yCoord - dist, z, set)) return false;
 					}
 					else if (block.equals("redstone")){
 						if (!(x == xCoord && yCoord - dist == yCoord && z == zCoord) && !testForOrActivateRedstone(x, yCoord - dist, z, set, activate)) return false;
@@ -372,7 +372,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 				if (y == yCoord-size || y == yCoord+size || x == xCoord-size || x == xCoord+size) {
 					if (block.equals("air")){
-						if (!(x == xCoord && y == yCoord && zCoord + dist == zCoord) && !isAir(x, y, zCoord + dist, set)) return false;
+						if (!(x == xCoord && y == yCoord && zCoord + dist == zCoord) && !isReplacable(x, y, zCoord + dist, set)) return false;
 					}
 					else if (block.equals("redstone")){
 						if (!(x == xCoord && y == yCoord && zCoord + dist == zCoord) && !testForOrActivateRedstone(x, y, zCoord + dist, set, activate)) return false;
@@ -392,7 +392,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 				if (y == yCoord-size || y == yCoord+size || x == xCoord-size || x==xCoord+size) {
 					if (block.equals("air")){
-						if (!(x == xCoord && y == yCoord && zCoord - dist == zCoord) && !isAir(x, y, zCoord - dist, set)) return false;
+						if (!(x == xCoord && y == yCoord && zCoord - dist == zCoord) && !isReplacable(x, y, zCoord - dist, set)) return false;
 					}
 					else if (block.equals("redstone")){
 						if (!(x == xCoord && y == yCoord && zCoord - dist == zCoord) && !testForOrActivateRedstone(x, y, zCoord - dist, set, activate)) return false;
@@ -416,7 +416,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			for (int z=zCoord-1; z<=zCoord+1;z++){
 
 				if (block.equals("air")){
-					if (!(xCoord + dist == xCoord && y == yCoord && z == zCoord) && !isAir(xCoord + dist, y, z, set)) return false;
+					if (!(xCoord + dist == xCoord && y == yCoord && z == zCoord) && !isReplacable(xCoord + dist, y, z, set)) return false;
 				}
 				else if (block.equals("redstone")){
 					if (!(xCoord + dist == xCoord && y == yCoord && z == zCoord) && !testForOrActivateRedstone(xCoord + dist, y, z, set, activate)) return false;
@@ -434,7 +434,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			for (int z=zCoord-1; z<=zCoord+1;z++){
 
 				if (block.equals("air")){
-					if (!(xCoord - dist == xCoord && y == yCoord && z == zCoord) && !isAir(xCoord - dist, y, z, set)) return false;
+					if (!(xCoord - dist == xCoord && y == yCoord && z == zCoord) && !isReplacable(xCoord - dist, y, z, set)) return false;
 				}
 				else if (block.equals("redstone")){
 					if (!(xCoord - dist == xCoord && y == yCoord && z == zCoord) && !testForOrActivateRedstone(xCoord - dist, y, z, set, activate)) return false;
@@ -453,7 +453,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			for (int z=zCoord-1; z<=zCoord+1;z++){
 
 				if (block.equals("air")){
-					if (!(x == xCoord && yCoord + dist == yCoord && z == zCoord) && !isAir(x, yCoord + dist, z, set)) return false;
+					if (!(x == xCoord && yCoord + dist == yCoord && z == zCoord) && !isReplacable(x, yCoord + dist, z, set)) return false;
 				}
 				else if (block.equals("redstone")){
 					if (!(x == xCoord && yCoord + dist == yCoord && z == zCoord) && !testForOrActivateRedstone(x, yCoord + dist, z, set, activate)) return false;
@@ -471,7 +471,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			for (int z=zCoord-1; z<=zCoord+1;z++){
 
 				if (block.equals("air")){
-					if (!(x == xCoord && yCoord - dist == yCoord && z == zCoord) && !isAir(x, yCoord - dist, z, set)) return false;
+					if (!(x == xCoord && yCoord - dist == yCoord && z == zCoord) && !isReplacable(x, yCoord - dist, z, set)) return false;
 				}
 				else if (block.equals("redstone")){
 					if (!(x == xCoord && yCoord - dist == yCoord && z == zCoord) && !testForOrActivateRedstone(x, yCoord - dist, z, set, activate)) return false;
@@ -490,7 +490,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			for (int x=xCoord-1; x<=xCoord+1;x++){
 
 				if (block.equals("air")){
-					if (!(x == xCoord && y == yCoord && zCoord + dist == zCoord) && !isAir(x, y, zCoord + dist, set)) return false;
+					if (!(x == xCoord && y == yCoord && zCoord + dist == zCoord) && !isReplacable(x, y, zCoord + dist, set)) return false;
 				}
 				else if (block.equals("redstone")){
 					if (!(x == xCoord && y == yCoord && zCoord + dist == zCoord) && !testForOrActivateRedstone(x, y, zCoord + dist, set, activate)) return false;
@@ -508,7 +508,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			for (int x=xCoord-1; x<=xCoord+1;x++){
 
 				if (block.equals("air")){
-					if (!(x == xCoord && y == yCoord && zCoord - dist == zCoord) && !isAir(x, y, zCoord - dist, set)) return false;
+					if (!(x == xCoord && y == yCoord && zCoord - dist == zCoord) && !isReplacable(x, y, zCoord - dist, set)) return false;
 				}
 				else if (block.equals("redstone")){
 					if (!(x == xCoord && y == yCoord && zCoord - dist == zCoord) && !testForOrActivateRedstone(x, y, zCoord - dist, set, activate)) return false;
@@ -574,12 +574,12 @@ public class TileEnergyStorageCore extends TileObjectSync {
 		return false;
 	}
 
-	private boolean isAir(int x, int y, int z, boolean set){
+	private boolean isReplacable(int x, int y, int z, boolean set){
 		if (set){
 			worldObj.setBlock(x, y, z, Blocks.air);
 			return true;
 		}else
-			return worldObj.getBlock(x, y, z) == Blocks.air;
+			return worldObj.getBlock(x, y, z).isReplaceable(worldObj, x, y, z);
 	}
 
 	public boolean isOnline(){

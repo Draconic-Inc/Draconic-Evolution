@@ -4,7 +4,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.client.interfaces.GuiHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyRing;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.common.achievements.Achievements;
 import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
@@ -177,7 +177,7 @@ public abstract class CommonProxy {
 		return null;
 	}
 
-	public ParticleEnergyRing energyRing(World worldObj, double x, double y, double z, int powerFlow, boolean advanced, ParticleEnergyRing oldBeam, boolean render) {
+	public ParticleEnergyField energyField(World worldObj, double x, double y, double z, int type, boolean advanced, ParticleEnergyField oldBeam, boolean render) {
 		return null;
 	}
 }

@@ -303,7 +303,7 @@ public class GUITeleporter extends GuiScreen
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void initGui(){
+	public void initGui(){//todo Localization
 		buttonList.clear();
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
@@ -314,13 +314,13 @@ public class GUITeleporter extends GuiScreen
 		buttonList.add(new GuiButtonAHeight(1, posX + 112, posY + 58, 66, 12, "Set Here"));
 		buttonList.add(new GuiButtonAHeight(2, posX + 112, posY + 71, 66, 12, "Remove"));
 
-		buttonList.add(new GuiButtonAHeight(3, posX + 112, posY + 99, 33, 12, "▲ ▲ ▲"));
+		buttonList.add(new GuiButtonAHeight(3, posX + 112, posY + 99, 33, 12, "UP"));
 
 		buttonList.add(new GuiButtonAHeight(4, posX + 112, posY + 112, 66, 12, "Add New"));
 		buttonList.add(new GuiButtonAHeight(5, posX + 112, posY + 125, 66, 12, "Add Fuel"));
 		buttonList.add(new GuiButtonAHeight(6, posX+xSize-63, posY-15, 60, 15, "Cancel"));
 
-		buttonList.add(new GuiButtonAHeight(7, posX + 112 + 34, posY + 99, 33, 12, "▼ ▼ ▼"));
+		buttonList.add(new GuiButtonAHeight(7, posX + 112 + 34, posY + 99, 33, 12, "DOWN"));
 		((GuiButton) buttonList.get(6)).visible = false;
 
 		textBeingEdited = new GuiTextField(fontRendererObj, posX+3, posY-14, xSize-67, 12);

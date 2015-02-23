@@ -48,8 +48,7 @@ public class EntityCustomDragon extends EntityDragon {
 		this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(health);
 		this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(health);
 		this.attackDamage = attack;
-		//LogHelper.info(attackDamage);
-		this.addPotionEffect(new PotionEffect(10, 600, 10, false));;
+		this.addPotionEffect(new PotionEffect(10, 600, 10, false));
 	}
 
 	@Override
@@ -297,6 +296,7 @@ public class EntityCustomDragon extends EntityDragon {
 
 	@Override
 	protected void onDeathUpdate() {
+
 
 		if (deathTicks == 0 && !isUber)
 		{
@@ -597,6 +597,9 @@ public class EntityCustomDragon extends EntityDragon {
 		super.writeToNBT(compound);
 		compound.setFloat("AttackDamage", attackDamage);
 		compound.setBoolean("IsUber", isUber);
+		compound.setInteger("PortalX", portalX);
+		compound.setInteger("PortalY", portalY);
+		compound.setInteger("PortalZ", portalZ);
 	}
 
 	@Override
@@ -605,6 +608,9 @@ public class EntityCustomDragon extends EntityDragon {
 		attackDamage = compound.getFloat("AttackDamage");
 		isUber = compound.getBoolean("IsUber");
 		this.dataWatcher.updateObject(12, isUber ? (byte)1: (byte)0);
+		portalX = compound.getInteger("PortalX");
+		portalY = compound.getInteger("PortalY");
+		portalZ = compound.getInteger("PortalZ");
 	}
 
 	@Override
@@ -624,5 +630,17 @@ public class EntityCustomDragon extends EntityDragon {
 
 	public boolean getIsUber(){
 		return isUber;
+	}
+
+	@Override
+	public boolean attackEntityFrom(DamageSource damageSource, float dmg) {
+		if (damageSource.getEntity() != null && getDistanceToEntity(damageSource.getEntity()) > 100) return false;
+		return super.attackEntityFrom(damageSource, dmg);
+	}
+
+	@Override
+	public boolean attackEntityFromPart(EntityDragonPart p_70965_1_, DamageSource damageSource, float p_70965_3_) {
+		if (damageSource.getEntity() != null && getDistanceSqToEntity(damageSource.getEntity()) > 100) return false;
+		return super.attackEntityFromPart(p_70965_1_, damageSource, p_70965_3_);
 	}
 }

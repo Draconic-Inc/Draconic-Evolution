@@ -3,8 +3,8 @@ package com.brandon3055.draconicevolution.common.lib;
 public final class References {
 	public static final String MODID 				= "DraconicEvolution";
 	public static final String MODNAME 				= "Draconic Evolution";
-	public static final String VERSION 				= "1.0.1-snapshot_3";
-	public static final String MCVERSION 			= "1.7.10";
+	public static final String VERSION 				= VersionHandler.FULL_VERSION;
+	public static final String MCVERSION 			= VersionHandler.MCVERSION;
 	public static final String CLIENTPROXYLOCATION 	= "com.brandon3055.draconicevolution.client.ClientProxy";
 	public static final String SERVERPROXYLOCATION = "com.brandon3055.draconicevolution.common.ServerProxy";
 	public static final String GUIFACTORY 			= "com.brandon3055.draconicevolution.client.interfaces.DEGUIFactory";

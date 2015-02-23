@@ -29,6 +29,7 @@ public class ContainerAdvTool extends ContainerDataSync {
 		this.inventoryTool = inventory;
 		this.inventoryTool.setContainer(this);
 		this.player = invPlayer.player;
+		setSlotsActive(false);
 	}
 
 	public void setSlotsActive(boolean active) {
@@ -54,6 +55,18 @@ public class ContainerAdvTool extends ContainerDataSync {
 
 			for (int y = 0; y < 5; y++) {
 				addSlotToContainer(new SlotEnchantment(inventoryTool, inventoryTool.size + y, 173, 19 + y * 21));
+			}
+		}
+		else
+		{
+			for (int x = 0; x < 9; x++) {
+				addSlotToContainer(new SlotPlayerInv(player.inventory, x, -1000 + 8 + 18 * x, -1000 + 103, inventoryItemSlot));
+			}
+
+			for (int y = 0; y < 3; y++) {
+				for (int x = 0; x < 9; x++) {
+					addSlotToContainer(new SlotPlayerInv(player.inventory, x + y * 9 + 9, -1000 + 8 + 18 * x, -1000 + 45 + y * 18, inventoryItemSlot));
+				}
 			}
 		}
 

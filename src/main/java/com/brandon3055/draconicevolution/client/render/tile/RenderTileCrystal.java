@@ -72,7 +72,8 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
 		modelCrystal.renderAll();
 
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0f);
+//		GL11.glDisable(GL11.GL_ALPHA_TEST);
 
 
 		//--- Render Overlay ---//
@@ -84,6 +85,7 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
 		//--- Post Render ---//
 		GL11.glDisable(GL11.GL_BLEND);
+		RenderHelper.enableStandardItemLighting();
 		GL11.glPopMatrix();
 	}
 
@@ -151,6 +153,7 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
 		//--- Post Render ---//
 		GL11.glDisable(GL11.GL_BLEND);
+		RenderHelper.enableStandardItemLighting();
 		GL11.glPopMatrix();
 	}
 }

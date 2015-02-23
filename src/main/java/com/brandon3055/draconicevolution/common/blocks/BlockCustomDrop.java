@@ -23,8 +23,7 @@ public abstract class BlockCustomDrop extends BlockContainerDE {
 	/**If true the tile will drop its inventory when broken*/
 	protected abstract boolean dropInventory();
 
-	/**If true the tile will a custom block with custom data when broken
-	 * use getCustomTileEntityCrop to specify the lock that should be dropped*/
+	/**If true the tile will drop a custom block with custom data when broken*/
 	protected abstract boolean hasCustomDropps();
 
 	/**Use to specify custom drops*/

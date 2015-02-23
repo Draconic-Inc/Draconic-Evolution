@@ -6,8 +6,8 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.itemblocks.DraconiumChestItemBlock;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
+import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,6 +39,9 @@ import static net.minecraftforge.common.util.ForgeDirection.UP;
  * Created by Brandon on 28/10/2014.
  */
 public class DraconiumChest extends BlockCustomDrop {
+
+	private static final String[] STORAGE_BLACKLIST = new String[] {"tile.thermalexpansion.strongbox", "item.thermalexpansion.satchel", "tile.draconicevolution:draconiumChest"};
+
 	public DraconiumChest() {
 		super(Material.iron);
 		this.setBlockName(Strings.draconiumChestName);
@@ -49,11 +52,21 @@ public class DraconiumChest extends BlockCustomDrop {
 
 		ModBlocks.register(this, DraconiumChestItemBlock.class);
 	}
+
+	public static boolean isStackValid(ItemStack stack)
+	{
+		for (int i = 0; i < STORAGE_BLACKLIST.length; i++)
+			if (stack.getUnlocalizedName().contains(STORAGE_BLACKLIST[i])) return false;
+		return true;
+	}
+
+
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float cx, float cy, float cz) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (!(tileEntity instanceof TileDraconiumChest)) return false;
 		TileDraconiumChest te = (TileDraconiumChest) tileEntity;
+
 		if (player.isSneaking()) {
 			te.editMode = !te.editMode;
 			if (world.isRemote)player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_GREEN + "" + StatCollector.translateToLocal("msg.draconiumChestEditmode.txt") + EnumChatFormatting.DARK_AQUA + " " + String.valueOf(te.editMode)));
@@ -255,4 +268,6 @@ public class DraconiumChest extends BlockCustomDrop {
 		}
 		droppes.add(stack);
 	}
+
+
 }
