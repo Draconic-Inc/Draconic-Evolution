@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
@@ -36,18 +37,18 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase{
 		{
 			ForgeDirection direction = ForgeDirection.getOrientation(facing).getOpposite();
 			TileEntity adjacentTile = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
-			if (!input && adjacentTile instanceof IEnergyHandler)
+			if (!input && adjacentTile instanceof IEnergyReceiver)
 			{
-				IEnergyHandler handler = (IEnergyHandler) adjacentTile;
+				IEnergyReceiver handler = (IEnergyReceiver) adjacentTile;
 				storage.extractEnergy(handler.receiveEnergy(direction.getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
 				if (transferBoost)
 				{
 					for (int i = 0; i < 4; i++) storage.extractEnergy(handler.receiveEnergy(direction.getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
 				}
 			}
-			else if (input && adjacentTile instanceof IEnergyHandler)
+			else if (input && adjacentTile instanceof IEnergyProvider)
 			{
-				IEnergyHandler handler = (IEnergyHandler) adjacentTile;
+				IEnergyProvider handler = (IEnergyProvider) adjacentTile;
 				if (transferBoost)
 				{
 					for (int i = 0; i < 4; i++) storage.receiveEnergy(handler.extractEnergy(direction.getOpposite(), storage.receiveEnergy(storage.getMaxExtract(), true), false), false);

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyContainerItem;
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class TileDraconiumChest extends TileEntity implements IInventory, IEnergyHandler, ICustomItemData {
+public class TileDraconiumChest extends TileEntity implements IInventory, IEnergyReceiver, ICustomItemData {
 	ItemStack[] items = new ItemStack[240];
 	ItemStack[] itemsCrafting = new ItemStack[10];
 	private int ticksSinceSync = -1;
@@ -599,12 +599,6 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
 		return this.energy.receiveEnergy(maxReceive, simulate);
-	}
-
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		;
-		return 0;
 	}
 
 	@Override

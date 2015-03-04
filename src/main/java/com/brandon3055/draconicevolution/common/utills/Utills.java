@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.common.utills;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 /**
  * Created by Brandon on 25/07/2014.
  */
@@ -47,5 +49,15 @@ public class Utills {
 		double dx = x1-x2;
 		double dz = z1-z2;
 		return Math.sqrt((dx*dx + dz*dz ));
+	}
+
+	public static final boolean isSinglePlayerServer()
+	{
+		return FMLCommonHandler.instance().getMinecraftServerInstance() != null;
+	}
+
+	public static final boolean isMultiPlayerServer()
+	{
+		return FMLCommonHandler.instance().getMinecraftServerInstance() == null;
 	}
 }

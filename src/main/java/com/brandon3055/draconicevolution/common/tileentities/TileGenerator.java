@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -20,7 +21,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileGenerator extends TileObjectSync implements ISidedInventory, IEnergyHandler {
+public class TileGenerator extends TileObjectSync implements ISidedInventory, IEnergyProvider {
 	//########### variables #############//
 	private ItemStack[] items;
 	public int burnTime = 1;
@@ -55,8 +56,8 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 		if ((storage.getEnergyStored() > 0)) {
 			for (int i = 0; i < 6; i++){
 				TileEntity tile = worldObj.getTileEntity(xCoord + ForgeDirection.getOrientation(i).offsetX, yCoord + ForgeDirection.getOrientation(i).offsetY, zCoord + ForgeDirection.getOrientation(i).offsetZ);
-				if (tile != null && tile instanceof IEnergyHandler) {
-					storage.extractEnergy(((IEnergyHandler)tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
+				if (tile != null && tile instanceof IEnergyReceiver) {
+					storage.extractEnergy(((IEnergyReceiver)tile).receiveEnergy(ForgeDirection.getOrientation(i).getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
 				}
 			}
 		}
@@ -273,11 +274,6 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 	@Override
 	public boolean canConnectEnergy(ForgeDirection from) {
 		return true;
-	}
-
-	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		return storage.receiveEnergy(maxReceive, simulate);
 	}
 
 	@Override

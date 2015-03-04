@@ -6,7 +6,7 @@ package com.brandon3055.draconicevolution.common.lib;
 public class VersionHandler
 {
 	public static final String VERSION 		= "1.0.1";
-	public static final int SNAPSHOT		= 4;
+	public static final int SNAPSHOT		= 5;
 	public static final String MCVERSION 	= "1.7.10";
 
 	public static final String FULL_VERSION	= VERSION + (SNAPSHOT > 0 ? "-snapshot_" + SNAPSHOT: "");

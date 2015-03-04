@@ -29,6 +29,7 @@ public class ConfigHandler {
 	public static boolean disableOreSpawnOverworld;
 	public static boolean disableOreSpawnNether;
 	public static boolean enableHudDisplay;
+	public static boolean enableVersionChecker;
 
 	//spawner
 	public static String[] spawnerList;
@@ -81,6 +82,7 @@ public class ConfigHandler {
 			disableOreSpawnNether = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Nether)", false, "Set to true to prevent draconium ore from spawning in the nether").getBoolean(false);
 			disableOreSpawnOverworld = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Overworld)", false, "Set to true to prevent draconium ore from spawning in the overworld").getBoolean(false);
 			enableHudDisplay = config.get(Configuration.CATEGORY_GENERAL, "Enable HUD info", true, "Set to false to disable the HUD info for tools and blocks").getBoolean(true);
+			enableVersionChecker = config.get(Configuration.CATEGORY_GENERAL, "Enable version checker", true, "Set to false to disable the version checker").getBoolean(true);
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);

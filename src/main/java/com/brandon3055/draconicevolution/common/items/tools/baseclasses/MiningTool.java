@@ -4,7 +4,6 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.DataUtills;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
@@ -68,7 +67,6 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		ToolHandler.updateGhostBlocks(player, world);
-		LogHelper.info(getDisplayData(stack));
 		if (player.isSneaking())
 		{
 			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);

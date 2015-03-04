@@ -37,10 +37,10 @@ public class EntityCustomDragon extends EntityDragon {
 	public float attackDamage = 10F;
 	protected boolean isUber = false;
 	private boolean needsRenderUpdate = true;
+	private boolean initialized = false;
 
 	public EntityCustomDragon(World par1World) {
 		super(par1World);
-		this.addPotionEffect(new PotionEffect(10, 600, 10, false));
 	}
 
 	public EntityCustomDragon(World world, double health, float attack){
@@ -48,13 +48,12 @@ public class EntityCustomDragon extends EntityDragon {
 		this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(health);
 		this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(health);
 		this.attackDamage = attack;
-		this.addPotionEffect(new PotionEffect(10, 600, 10, false));
 	}
 
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		this.dataWatcher.addObject(12, Byte.valueOf((isUber ? (byte)1 : (byte)0)));
+		this.dataWatcher.addObject(12, (isUber ? (byte)1 : (byte)0));
 	}
 
 	@Override
@@ -72,6 +71,12 @@ public class EntityCustomDragon extends EntityDragon {
 	public void onLivingUpdate() {
 		float f;
 		float f1;
+
+		if (!initialized){
+			this.addPotionEffect(new PotionEffect(10, 600, 10, false));
+			initialized = true;
+		}
+
 		if (this.worldObj.isRemote) {
 			f = MathHelper.cos(this.animTime * (float) Math.PI * 2.0F);
 			f1 = MathHelper.cos(this.prevAnimTime * (float) Math.PI * 2.0F);
@@ -597,6 +602,7 @@ public class EntityCustomDragon extends EntityDragon {
 		super.writeToNBT(compound);
 		compound.setFloat("AttackDamage", attackDamage);
 		compound.setBoolean("IsUber", isUber);
+		compound.setBoolean("Initialized", initialized);
 		compound.setInteger("PortalX", portalX);
 		compound.setInteger("PortalY", portalY);
 		compound.setInteger("PortalZ", portalZ);
@@ -607,6 +613,7 @@ public class EntityCustomDragon extends EntityDragon {
 		super.readFromNBT(compound);
 		attackDamage = compound.getFloat("AttackDamage");
 		isUber = compound.getBoolean("IsUber");
+		initialized = compound.getBoolean("Initialized");
 		this.dataWatcher.updateObject(12, isUber ? (byte)1: (byte)0);
 		portalX = compound.getInteger("PortalX");
 		portalY = compound.getInteger("PortalY");

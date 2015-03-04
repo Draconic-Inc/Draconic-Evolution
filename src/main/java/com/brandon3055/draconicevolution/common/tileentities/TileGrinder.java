@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.mojang.authlib.GameProfile;
@@ -32,7 +32,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 
-public class TileGrinder extends TileObjectSync implements ISidedInventory, IEnergyHandler {
+public class TileGrinder extends TileObjectSync implements ISidedInventory, IEnergyReceiver {
 	//########### variables #############//
 	public int meta = -1;
 	List<EntityLiving> killList;
@@ -391,8 +391,12 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	}
 
 	private void detectAndSendChanges(boolean sendAnyway){
-		if (disabledCach != disabled || sendAnyway) disabledCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, disabled);
-		if (hasPowerCach != hasPower || sendAnyway) hasPowerCach = (Boolean)sendObject(References.BOOLEAN_ID, 1, hasPower);
+		if (disabledCach != disabled || sendAnyway) {
+			disabledCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, disabled);
+		}
+		if (hasPowerCach != hasPower || sendAnyway) {
+			hasPowerCach = (Boolean)sendObject(References.BOOLEAN_ID, 1, hasPower);
+		}
 	}
 
 	@Override
@@ -417,12 +421,6 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return externalInputBuffer.receiveEnergy(maxReceive, simulate);
-	}
-
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		return externalInputBuffer.extractEnergy(maxExtract, simulate);
 	}
 
 	@Override

@@ -93,14 +93,19 @@ public class CraftingHandler {
 		addOre(ModBlocks.playerDetector, "ITI", "CEC", "IDI", 'I', "ingotIron", 'E', Items.ender_eye, 'T', Blocks.redstone_torch, 'C', Items.comparator, 'D', ModItems.draconicCore);
 		addOre(new ItemStack(ModBlocks.generator, 1, 3), "NIN", "IFI", "NCN", 'N', Items.netherbrick, 'I', "ingotIron", 'F', Blocks.furnace, 'C', ModItems.draconicCore);
 		addOre(ModBlocks.dissEnchanter, "PIP", "ETE", "CBC", 'P', Items.ender_eye, 'I', Items.enchanted_book, 'E', "gemEmerald", 'T', Blocks.enchanting_table, 'C', ModItems.draconicCore, 'B', Items.book);
-
+		addOre(new ItemStack(ModBlocks.energyCrystal, 4, 0), "IDI", "DCD", "IDI", 'I' , ModItems.draconiumIngot, 'D', "gemDiamond", 'C', ModItems.draconicCore);
+		addOre(new ItemStack(ModBlocks.energyCrystal, 4, 1), "CRC", "RWR", "CRC", 'R' , new ItemStack(ModBlocks.energyCrystal, 1), 'W', ModItems.wyvernCore, 'C', ModItems.draconicCore);
+		addShaplessOre(new ItemStack(ModBlocks.energyCrystal, 1, 0), new ItemStack(ModBlocks.energyCrystal, 1, 2), new ItemStack(ModBlocks.energyCrystal, 1, 2));
+		addShaplessOre(new ItemStack(ModBlocks.energyCrystal, 2, 2), new ItemStack(ModBlocks.energyCrystal, 1, 0));
+		addShaplessOre(new ItemStack(ModBlocks.energyCrystal, 1, 1), new ItemStack(ModBlocks.energyCrystal, 1, 3), new ItemStack(ModBlocks.energyCrystal, 1, 3));
+		addShaplessOre(new ItemStack(ModBlocks.energyCrystal, 2, 3), new ItemStack(ModBlocks.energyCrystal, 1, 1));
 
 	//Tools
 		add(ModItems.teleporterMKII, "IEI", "ETE", "IWI", 'I', ModItems.draconiumIngot, 'E', Items.ender_pearl, 'T', ModItems.teleporterMKI, 'W', ModItems.wyvernCore);
 		add(ModItems.teleporterMKI, "CSC", "SMS", "CSC", 'C', Items.blaze_powder, 'S', ModItems.draconiumDust, 'M', Items.ender_eye);
 		addOre(new ItemStack(ModItems.safetyMatch, 1, 1000), " O ", " S ", "   ", 'O', "dyeOrange", 'S', "stickWood");
 		add(ModItems.safetyMatch, "MMM", "MMM", "MMM", 'M', new ItemStack(ModItems.safetyMatch, 1, 1000));
-
+		addOre(ModItems.wrench, " ID", " RI", "C  ", 'I' , ModItems.draconiumIngot, 'D', "gemDiamond", 'R', Items.blaze_rod, 'C', ModItems.draconicCore);
 
 	//Other
 		addOre(ModItems.infoTablet, "SSS", "SDS", "SSS", 'S', "stone", 'D', ModItems.draconiumDust);

@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.common.blocks.itemblocks;
 
 import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -57,7 +60,10 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
 			energy += energyReceived;
 			container.stackTagCompound.setInteger("Energy", energy);
 		}
-		if (getEnergyStored(container) == getMaxEnergyStored(container)) container.setItemDamage(2);
+		if (getEnergyStored(container) == getMaxEnergyStored(container)) {
+			container.setItemDamage(2);
+			container.setTagCompound(null);
+		}
 		return energyReceived;
 	}
 
@@ -83,5 +89,12 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
 	public void onUpdate(ItemStack stack, World p_77663_2_, Entity p_77663_3_, int p_77663_4_, boolean p_77663_5_) {
 		if (stack.getItemDamage() == 0 && getEnergyStored(stack) == getMaxEnergyStored(stack)) stack.setItemDamage(2);
 		super.onUpdate(stack, p_77663_2_, p_77663_3_, p_77663_4_, p_77663_5_);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
+		if (stack.hasTagCompound()) list.add(getEnergyStored(stack) + " / " + getMaxEnergyStored(stack) + "RF");
 	}
 }

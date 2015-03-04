@@ -164,6 +164,8 @@ public abstract class CustomSpawnerBaseLogic {
 					par1Entity.setCurrentItemOrArmor(0, new ItemStack(Items.bow));
 				}
 			} else ((EntityLiving) par1Entity).onSpawnWithEgg(null);
+
+			((EntityLiving)par1Entity).func_110163_bv();
 			this.getSpawnerWorld().spawnEntityInWorld(par1Entity);
 		}
 

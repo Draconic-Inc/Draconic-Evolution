@@ -1,4 +1,12 @@
-######## 1.0.1-Snap Shot(?) ########
+######## 1.0.1-Snapshot(?) ########
+-fixed tesseracts not accepting energy from pylons.
+-updated RF API.
+-fixed energy pylons not remembering which core they are connected to.
+-fixed spawner not working with hostile mobs when chunk loaded.
+-added recipes for energy relays and transceivers.
+-added tool tip to charging draconium blocks.
+
+######## 1.0.1-Snapshot(4) ########
 -reduced default particle view range to 64 blocks.
 -fixed up and down arrows in advanced dislocator GUI.
 -fixed chaos guardian not spawning a portal on servers.
@@ -13,9 +21,11 @@
 -added Energy Transceiver [WIP]
 -added Advanced Energy Transceiver [WIP]
 -added Crystal Wrench [WIP]
+-added version checker.
+-fixed fake air blocks messing with energy core.
 
 
-######## 1.0.1-Snap Shot(3) ########
+######## 1.0.1-Snapshot(3) ########
 
 -fixed spawner display mob shaking when disabled.
 -removed energy cost for Draconic Chest flight.

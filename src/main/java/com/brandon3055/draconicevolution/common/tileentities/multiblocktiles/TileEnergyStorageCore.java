@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -209,6 +210,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 		}
 
 		if (zNeg != zPos || zNeg != yNeg || zNeg != yPos || zNeg != xNeg || zNeg != xPos) return false;
+
 		tier = xPos;
 		if (tier > 1) tier++;
 		if (tier == 1){
@@ -579,7 +581,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			worldObj.setBlock(x, y, z, Blocks.air);
 			return true;
 		}else
-			return worldObj.getBlock(x, y, z).isReplaceable(worldObj, x, y, z);
+			return worldObj.getBlock(x, y, z).isReplaceable(worldObj, x, y, z) || worldObj.isAirBlock(x, y, z);
 	}
 
 	public boolean isOnline(){
@@ -784,7 +786,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 	private void detectAndRendChanges(){
 		int diff = (int)Math.abs(lastTickCapacity - energy);
-		if (diff > 100000) lastTickCapacity = (Double)sendObject(References.DOUBLE_ID, 0, energy);
+		if (diff > 1000) lastTickCapacity = (Double)sendObject(References.DOUBLE_ID, 0, energy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 20));
 	}
 
 	@Override

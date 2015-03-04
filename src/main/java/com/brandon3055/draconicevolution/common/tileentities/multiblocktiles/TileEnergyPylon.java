@@ -1,10 +1,11 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
 import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -53,8 +54,8 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {
 		if (active && !reciveEnergy){
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {
 				TileEntity tile = worldObj.getTileEntity(xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ);
-				if (tile != null && tile instanceof IEnergyHandler) {
-					extractEnergy(d, ((IEnergyHandler)tile).receiveEnergy(d.getOpposite(), extractEnergy(d, Integer.MAX_VALUE, true), false), false);
+				if (tile != null && tile instanceof IEnergyReceiver) {
+					 extractEnergy(d, ((IEnergyReceiver)tile).receiveEnergy(d.getOpposite(), extractEnergy(d, Integer.MAX_VALUE, true), false), false);
 				}
 			}
 		}
@@ -109,7 +110,7 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {
 
 	@SideOnly(Side.CLIENT)
 	private void spawnParticles(){
-		Random rand = new Random();
+		Random rand = worldObj.rand;
 		if (getMaster() == null || !getMaster().isOnline()) return;
 
 		int x = getMaster().xCoord;
@@ -207,6 +208,7 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {
 			list.add(l);
 		}
 		coreLocatios = list;
+		selectedCore = compound.getInteger("SelectedCore");
 		particleRate = compound.getByte("ParticleRate");
 	}
 

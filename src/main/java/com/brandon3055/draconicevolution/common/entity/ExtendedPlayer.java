@@ -58,9 +58,6 @@ public class ExtendedPlayer implements IExtendedEntityProperties {
 		return spawnCount;
 	}
 
-	/**
-	* Simple method sets current mana to max mana
-	*/
 	public void setSpawnCount(int count) {
 		spawnCount = count;
 	}

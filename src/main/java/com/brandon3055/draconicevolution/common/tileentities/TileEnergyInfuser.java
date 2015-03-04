@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyContainerItem;
-import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
+import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +22,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler, ISidedInventory {
+public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver, ISidedInventory {
 	ItemStack[] items = new ItemStack[1];
 	public EnergyStorage energy = new EnergyStorage(1000000);
 	public int maxInput = 81920;
@@ -137,11 +137,6 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyHandler,
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
 		return this.energy.receiveEnergy(Math.min(maxInput, maxReceive), simulate);
-	}
-
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {;
-		return this.energy.extractEnergy(maxExtract, simulate);
 	}
 
 	@Override

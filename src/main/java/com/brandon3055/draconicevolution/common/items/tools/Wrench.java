@@ -6,7 +6,6 @@ import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.UpdateChecker;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +39,8 @@ public class Wrench extends ItemDE implements IHudDisplayItem{
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 
-		new UpdateChecker();
+		//if (world.isRemote)FMLCommonHandler.instance().bus().register(new UpdateChecker());
+		//player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.BLUE + "[Draconic Evolution]" + EnumChatFormatting.RESET + " New version available:"));
 
 		if (player.isSneaking()) cycleMode(stack, world, player);
 		else if (ItemNBTHelper.getCompound(stack).hasKey("LinkData") && ItemNBTHelper.getCompound(stack).getCompoundTag("LinkData").getBoolean("Bound")) ItemNBTHelper.getCompound(stack).getCompoundTag("LinkData").setBoolean("Bound", false);
