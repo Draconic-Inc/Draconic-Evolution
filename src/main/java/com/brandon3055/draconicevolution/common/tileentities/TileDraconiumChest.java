@@ -59,7 +59,6 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-
 		// Resynchronize clients with the server state
 		if (worldObj != null && !this.worldObj.isRemote && this.numUsingPlayers != 0 && (this.ticksSinceSync + this.xCoord + this.yCoord + this.zCoord) % 200 == 0) {
 			this.numUsingPlayers = 0;
@@ -223,7 +222,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 				{
 
 					if (candidate == null) break;
-					boolean candidateSmeltable = FurnaceRecipes.smelting().getSmeltingResult(candidate) != null;
+					boolean candidateSmeltable = getResult(candidate) != null;
 					if (candidateSmeltable) {
 						setInventorySlotContents(234 + j, candidate.copy());
 						setInventorySlotContents(i, null);
@@ -258,7 +257,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 	private boolean getAll() {return smeltingAutoFeed == 3;}
 
 	private boolean isSmeltable(ItemStack stack) {
-		return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+		return FurnaceRecipes.smelting().getSmeltingResult(stack) != null || OreDoublingRegistry.getOreResult(stack) != null;
 	}
 
 	private ItemStack getResult(ItemStack stack) {
@@ -268,7 +267,6 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 
 	public void setAutoFeed(int i){
 		smeltingAutoFeed = i;
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override

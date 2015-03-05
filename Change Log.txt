@@ -1,4 +1,9 @@
-######## 1.0.1-Snapshot(?) ########
+######## 1.0.1-Snapshot(6) ########
+-fixed teleporting mobs with a dislocator on a server crashing the client. 
+
+
+
+######## 1.0.1-Snapshot(5) ########
 -fixed tesseracts not accepting energy from pylons.
 -updated RF API.
 -fixed energy pylons not remembering which core they are connected to.
@@ -23,8 +28,7 @@
 -added Crystal Wrench [WIP]
 -added version checker.
 -fixed fake air blocks messing with energy core.
-
-
+ 
 ######## 1.0.1-Snapshot(3) ########
 
 -fixed spawner display mob shaking when disabled.

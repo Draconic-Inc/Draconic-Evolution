@@ -19,6 +19,7 @@ import java.util.Map;
 public class OreDoublingRegistry {
 	private static Map<String, ItemStack> oreResults = new HashMap<String, ItemStack>();
 	private static String[] names = {"oreGold", "oreIron", "oreAluminum", "oreCopper", "oreLead", "oreSilver", "oreTin", "oreUranium", "orePlatinum", "oreNickel", "oreMithril", "oreCobalt", "oreArdite"};
+	public static Map<String, ItemStack> resultOverrides = new HashMap<String, ItemStack>();
 
 	public static void init(){
 
@@ -34,7 +35,10 @@ public class OreDoublingRegistry {
 
 	}
 
-	public static ItemStack getOreResult(ItemStack stack){
+	public static ItemStack getOreResult(ItemStack stack)
+	{
+		if (resultOverrides.containsKey(stack.getItem().getUnlocalizedName(stack))) return resultOverrides.get(stack.getItem().getUnlocalizedName(stack)).copy();
+
 		if (stack.getItem() instanceof DraconiumBlend) return new ItemStack(ModItems.draconiumIngot, 4);
 		else if (stack.getItem() == Item.getItemFromBlock(Blocks.cobblestone)) return new ItemStack(Blocks.stone, 2);
 		else if (stack.getItem() == Item.getItemFromBlock(Blocks.sand)) return new ItemStack(Blocks.glass, 2);
@@ -45,12 +49,14 @@ public class OreDoublingRegistry {
 		String name;
 		ItemStack resultStack = null;
 
-		if (ids.length > 0){
+		if (ids.length > 0)
+		{
 			name = OreDictionary.getOreName(ids[0]);
 			resultStack = oreResults.get(name);
 		}
 
-		if (resultStack != null) {
+		if (resultStack != null)
+		{
 			ItemStack doubledStack = resultStack.copy();
 			doubledStack.stackSize = FurnaceRecipes.smelting().getSmeltingResult(stack).stackSize * 2;
 			return doubledStack;

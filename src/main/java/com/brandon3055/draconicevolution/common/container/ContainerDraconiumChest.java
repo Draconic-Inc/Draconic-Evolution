@@ -4,6 +4,7 @@ import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChest;
 import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChestResult;
+import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,6 +32,7 @@ public class ContainerDraconiumChest extends Container {
 	/**how much energy is stored in the tile*/
 	private int lastEnergyStored;
 	private int lastBurnSpeed;
+	private int lastTickFeedMode;
 
 	public ContainerDraconiumChest(InventoryPlayer invPlayer, TileDraconiumChest tile) {
 		this.tile = tile;
@@ -190,8 +192,13 @@ public class ContainerDraconiumChest extends Container {
 			{
 				icrafting.sendProgressBarUpdate(this, 2, tile.smeltingBurnSpeed);
 			}
+			if (lastTickFeedMode != tile.smeltingAutoFeed)
+			{
+				icrafting.sendProgressBarUpdate(this, 3, tile.smeltingAutoFeed);
+			}
 		}
 
+		lastTickFeedMode = tile.smeltingAutoFeed;
 		lastBurnSpeed = tile.smeltingBurnSpeed;
 		lastProgressTime = tile.smeltingProgressTime;
 		lastEnergyStored = tile.getEnergyStored(ForgeDirection.DOWN);
@@ -203,6 +210,7 @@ public class ContainerDraconiumChest extends Container {
 		if (id == 0) tile.smeltingProgressTime = value;
 		else if (id == 1) tile.energy.setEnergyStored(value*32);
 		else if (id == 2) tile.smeltingBurnSpeed = value;
+		else if (id == 3) tile.smeltingAutoFeed = value;
 	}
 
 	public TileDraconiumChest getTile(){return tile;}
@@ -215,7 +223,7 @@ public class ContainerDraconiumChest extends Container {
 
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+			return FurnaceRecipes.smelting().getSmeltingResult(stack) != null || OreDoublingRegistry.getOreResult(stack) != null;
 		}
 	}
 

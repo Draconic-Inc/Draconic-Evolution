@@ -75,6 +75,7 @@ public class Teleporter
 		public int getDimension() {return dimension;}
 
 		public String getDimensionName() {
+			if (DraconicEvolution.proxy.getMCServer() == null) return String.valueOf(dimension);
 			return MinecraftServer.getServer().worldServerForDimension(dimension).provider.getDimensionName();
 		}
 

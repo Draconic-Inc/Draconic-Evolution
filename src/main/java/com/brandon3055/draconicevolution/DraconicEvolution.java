@@ -2,11 +2,13 @@ package com.brandon3055.draconicevolution;
 
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.common.CommonProxy;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -71,5 +73,18 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 	
 		proxy.postInit(event);
 		
+	}
+
+	//FMLInterModComms.sendMessage("DraconicEvolution", "addChestRecipe:item.coal", new ItemStack(Items.diamond, 2));
+	@Mod.EventHandler
+	public void processMessage(FMLInterModComms.IMCEvent event) {
+		for (FMLInterModComms.IMCMessage m : event.getMessages()) {
+			LogHelper.info(m.key);
+			if (m.isItemStackMessage() && m.key.contains("addChestRecipe:")) {
+				String s = m.key.substring(m.key.indexOf("addChestRecipe:") + 15);
+				OreDoublingRegistry.resultOverrides.put(s, m.getItemStackValue());
+				LogHelper.info("Added Chest recipe override: " + s + " to " + m.getItemStackValue());
+			}
+		}
 	}
 }
