@@ -1,6 +1,6 @@
 ######## 1.0.1-Snapshot(6) ########
 -fixed teleporting mobs with a dislocator on a server crashing the client. 
-
+-added support for other mods to add recipes to the draconium chest.
 
 
 ######## 1.0.1-Snapshot(5) ########

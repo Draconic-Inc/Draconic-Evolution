@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.handler;
 
-import com.brandon3055.draconicevolution.client.interfaces.componentguis.GUIToolConfig;
+import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;

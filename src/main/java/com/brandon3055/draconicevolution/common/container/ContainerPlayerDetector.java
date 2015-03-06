@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.client.interfaces.GUIPlayerDetector;
+import com.brandon3055.draconicevolution.client.gui.GUIPlayerDetector;
 import com.brandon3055.draconicevolution.common.inventory.SlotOpaqueBlock;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
 import net.minecraft.entity.player.EntityPlayer;

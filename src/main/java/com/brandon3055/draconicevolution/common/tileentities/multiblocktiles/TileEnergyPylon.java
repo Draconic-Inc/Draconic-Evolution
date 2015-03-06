@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
+import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModBlocks;
@@ -26,7 +27,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 28/07/2014.
  */
-public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {
+public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, IExtendedRFStorage {
 	public boolean active = false;
 	public boolean lastTickActive = false;
 	public boolean reciveEnergy = false; //Power Flow to system
@@ -298,5 +299,15 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler {
 				particleRate = (Byte) object;
 				break;
 		}
+	}
+
+	@Override
+	public double getEnergyStored() {
+		return getMaster() != null ? getMaster().getEnergyStored() : 0D;
+	}
+
+	@Override
+	public double getMaxEnergyStored() {
+		return getMaster() != null ? getMaster().getMaxEnergyStored() : 0D;
 	}
 }

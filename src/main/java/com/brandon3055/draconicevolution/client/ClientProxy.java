@@ -53,7 +53,7 @@ public class ClientProxy extends CommonProxy {
 
 //		downloadLocation = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/mods/derspack";
 //		downloadLocation = downloadLocation.replaceAll("\\\\", "/");
-
+//
 //		File rescourcePack = new File(event.getModConfigurationDirectory().getParentFile(), "/mods/derspack");
 //
 //

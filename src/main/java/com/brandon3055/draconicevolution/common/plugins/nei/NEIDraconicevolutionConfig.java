@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.plugins.nei;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
-import com.brandon3055.draconicevolution.client.interfaces.GUIDraconiumChest;
+import com.brandon3055.draconicevolution.client.gui.GUIDraconiumChest;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
