@@ -20,7 +20,7 @@ public class ManualPage {
 
 	public String getLocalizedName()
 	{
-		return (name.contains("item.") || name.contains("tile.")) ? StatCollector.translateToLocal(name) : name.contains("info.") ? name.substring(name.indexOf("info.") + 5) : "Invalid Name Data";
+		return (name.contains("item.") || name.contains("tile.")) ? StatCollector.translateToLocal(name + ".name") : name.contains("info.") ? name.substring(name.indexOf("info.") + 5) : "Invalid Name Data";
 	}
 
 

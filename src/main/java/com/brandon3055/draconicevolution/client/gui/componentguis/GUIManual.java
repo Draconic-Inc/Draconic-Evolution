@@ -33,7 +33,7 @@ public class GUIManual extends GUIScrollingBase {
 	@Override
 	public void initGui() {
 		super.initGui();
-		loadPages();
+
 	}
 
 	public static final String GR_BACKGROUND = "BACKGROUND";
@@ -43,15 +43,16 @@ public class GUIManual extends GUIScrollingBase {
 
 	@Override
 	protected ComponentCollection assembleComponents() {
+		loadPages();
 		collection = new ComponentCollection(0, 0, xSize, ySize, this);
 
 		collection.addComponent(new ComponentTexturedRect(0, 0, 255, 255, ResourceHandler.getResource("textures/gui/manualTop.png"))).setGroup(GR_BACKGROUND);
 		collection.addComponent(new ComponentTexturedRect(0, 255, 255, 69, ResourceHandler.getResource("textures/gui/manualBottom.png"))).setGroup(GR_BACKGROUND);
 
-		for (int i = 0; i < 35; i ++)
+		for (int i = 0; i < pageList.size(); i++)
 		{
-			collection.addComponent(new ComponentIndexButton(20, 20 + i * 12, this)).setGroup(GR_INDEX);
-			pageLength += 12;
+			collection.addComponent(new ComponentIndexButton(20, 20 + i * 12, this, pageList.get(i))).setGroup(GR_INDEX);
+			pageLength += 15;
 		}
 
 
