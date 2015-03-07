@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.handler.ResourceHelper;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.Utills;
 import net.minecraft.client.Minecraft;
@@ -218,7 +218,7 @@ public class ParticleEnergyBeam extends EntityFX {
 		GL11.glPopMatrix();
 
 
-		ResourceHelper.bindDefaultParticles();
+		ResourceHandler.bindDefaultParticles();
 		tessellator.startDrawingQuads();
 	}
 

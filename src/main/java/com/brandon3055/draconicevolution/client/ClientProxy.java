@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.HudHandler;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.block.*;
@@ -49,7 +50,7 @@ public class ClientProxy extends CommonProxy {
 		System.out.println("on Client side");
 		super.preInit(event);
 
-
+		ResourceHandler.init(event);
 
 //		downloadLocation = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/mods/derspack";
 //		downloadLocation = downloadLocation.replaceAll("\\\\", "/");

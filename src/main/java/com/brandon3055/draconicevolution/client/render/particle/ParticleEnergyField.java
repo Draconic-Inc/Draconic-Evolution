@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHelper;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
@@ -60,7 +60,7 @@ public class ParticleEnergyField extends EntityFX {//todo Fancy Animated Particl
 		GL11.glPushMatrix();
 		//GL11.glPushAttrib(GL11.GL_ATTRIB_STACK_DEPTH);
 		GL11.glDepthMask(false);
-		ResourceHelper.bindParticles();
+		ResourceHandler.bindParticles();
 
 		float minU = 0.0F + 0.125F * (advanced ? 4 : 3);
 		float maxU = 0.0F + 0.125F * (advanced ? 5 : 4);//minU + 0.124F;
@@ -126,7 +126,7 @@ public class ParticleEnergyField extends EntityFX {//todo Fancy Animated Particl
 		//GL11.glPopAttrib();
 		GL11.glPopMatrix();
 
-		ResourceHelper.bindDefaultParticles();
+		ResourceHandler.bindDefaultParticles();
 		tessellator.startDrawingQuads();
 	}
 }

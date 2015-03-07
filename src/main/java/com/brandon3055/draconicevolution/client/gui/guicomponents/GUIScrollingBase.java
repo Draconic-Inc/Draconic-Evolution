@@ -7,6 +7,9 @@ import net.minecraft.inventory.Container;
  */
 public abstract class GUIScrollingBase extends GUIBase {
 
+	public int scrollOffset;
+	public int pageLength;
+
 	public GUIScrollingBase(Container container, int xSize, int ySize) {
 		super(container, xSize, ySize);
 	}
@@ -15,11 +18,11 @@ public abstract class GUIScrollingBase extends GUIBase {
 	public void handleMouseInput() {
 		int i = org.lwjgl.input.Mouse.getEventDWheel();
 		if (i != 0) {
-			handleScrollInput(i > 0 ? 1 : -1);
+			handleScrollInput(i > 0 ? -1 : 1);
 
 			for (ComponentBase c : collection.getComponents())
 			{
-				if (c instanceof ComponentScrollingBase) ((ComponentScrollingBase) c).handleScrollInput(i > 0 ? 1 : -1);
+				if (c instanceof ComponentScrollingBase) ((ComponentScrollingBase) c).handleScrollInput(i > 0 ? -1 : 1);
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -75,6 +76,7 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+
 		if (world.isRemote)
 		{
 			String str = "A String";
@@ -87,6 +89,10 @@ public class Tclogo extends ItemDE {
 					"info.cofh.updater.tooltip" + ".\",\"color\":\"yellow\"}}," + "\"clickEvent\":{\"action\":\"open_url\",\"value\":\"" + "www.google.com" + "\"}}]");
 
 			//player.addChatMessage(localIChatComponent);
+		}
+		else
+		{
+			for (Object o : EntityList.classToStringMapping.values()) LogHelper.info(o);
 		}
 
 

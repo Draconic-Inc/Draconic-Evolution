@@ -49,7 +49,8 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
 
 	@Override
 	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-		if(container.getItemDamage() != 0) return 0;
+		if(container.getItemDamage() != 0 || container.stackSize <= 0) return 0;
+		maxReceive /= container.stackSize;
 		if (container.stackTagCompound == null) {
 			container.stackTagCompound = new NBTTagCompound();
 		}
@@ -64,7 +65,7 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
 			container.setItemDamage(2);
 			container.setTagCompound(null);
 		}
-		return energyReceived;
+		return energyReceived * container.stackSize;
 	}
 
 	@Override

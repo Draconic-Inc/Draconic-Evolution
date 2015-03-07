@@ -121,4 +121,8 @@ public abstract class GUIBase extends GuiContainer {
 	}
 
 	public void buttonClicked(int id){buttonPressed = true;}
+
+	public int getXSize() { return xSize; }
+
+	public int getYSize() { return ySize; }
 }

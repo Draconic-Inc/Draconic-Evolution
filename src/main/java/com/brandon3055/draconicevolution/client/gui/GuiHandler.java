@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.gui.componentguis.GUIManual;
 import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
-import com.brandon3055.draconicevolution.client.gui.manual.GuiManual;
 import com.brandon3055.draconicevolution.common.container.*;
 import com.brandon3055.draconicevolution.common.inventory.InventoryTool;
 import com.brandon3055.draconicevolution.common.tileentities.*;
@@ -144,7 +144,7 @@ public class GuiHandler implements IGuiHandler {
 				}
 				break;
 			case GUIID_MANUAL:
-				return new GuiManual();
+				return new GUIManual();
 			case GUIID_DISSENCHANTER:
 				TileEntity dissenchanter = world.getTileEntity(x, y, z);
 				if (dissenchanter != null && dissenchanter instanceof TileDissEnchanter) {
