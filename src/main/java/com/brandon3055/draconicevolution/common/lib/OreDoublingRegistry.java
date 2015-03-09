@@ -37,8 +37,9 @@ public class OreDoublingRegistry {
 
 	public static ItemStack getOreResult(ItemStack stack)
 	{
+		if (stack == null) return null;
 		if (resultOverrides.containsKey(stack.getItem().getUnlocalizedName(stack))) return resultOverrides.get(stack.getItem().getUnlocalizedName(stack)).copy();
-
+		if (FurnaceRecipes.smelting().getSmeltingResult(stack) == null) return null;
 		if (stack.getItem() instanceof DraconiumBlend) return new ItemStack(ModItems.draconiumIngot, 4);
 		else if (stack.getItem() == Item.getItemFromBlock(Blocks.cobblestone)) return new ItemStack(Blocks.stone, 2);
 		else if (stack.getItem() == Item.getItemFromBlock(Blocks.sand)) return new ItemStack(Blocks.glass, 2);
