@@ -55,6 +55,8 @@ public class GUIManual extends GUIScrollingBase {
 		}
 
 
+		collection.setOnlyGroupEnabled(GR_BACKGROUND);
+		collection.setGroupEnabled(GR_INTRO, true);
 		return collection;
 	}
 
@@ -179,4 +181,5 @@ public class GUIManual extends GUIScrollingBase {
 
 		//for (ManualPage p : pageList) LogHelper.info(p.getLocalizedName());
 	}
+
 }
