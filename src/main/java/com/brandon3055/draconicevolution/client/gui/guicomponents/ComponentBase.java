@@ -183,8 +183,9 @@ public abstract class ComponentBase extends Gui {
 		FontRenderer font;
 		font = stack.getItem().getFontRenderer(stack);
 		if (font == null) font = fontRendererObj;
-		itemRender.renderItemAndEffectIntoGUI(font, this.mc.getTextureManager(), stack, x, y);
-		if (!count.equals("null"))itemRender.renderItemOverlayIntoGUI(font, this.mc.getTextureManager(), stack, x, y, count);
+		itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, x, y);
+		//itemRender.renderEffect(mc.getTextureManager(), x, y);
+		if (!count.equals("null"))itemRender.renderItemOverlayIntoGUI(font, mc.getTextureManager(), stack, x, y, count);
 		this.zLevel = 0.0F;
 		itemRender.zLevel = 0.0F;
 

@@ -8,6 +8,8 @@ import net.minecraft.util.StatCollector;
 public class ManualPage {
 
 	public String name;
+	public String nameL;
+	public int meta;
 	public String[] imageURLs;
 	public String[] content;
 
@@ -18,8 +20,16 @@ public class ManualPage {
 		this.content = content;
 	}
 
+	public ManualPage(String name, String[] imageURLs, String[] content, String nameL, int meta)
+	{
+		this(name, imageURLs, content);
+		this.nameL = nameL;
+		this.meta = meta;
+	}
+
 	public String getLocalizedName()
 	{
+		if (nameL != null) return nameL;
 		return (name.contains("item.") || name.contains("tile.")) ? StatCollector.translateToLocal(name + ".name") : name.contains("info.") ? name.substring(name.indexOf("info.") + 5) : "Invalid Name Data";
 	}
 

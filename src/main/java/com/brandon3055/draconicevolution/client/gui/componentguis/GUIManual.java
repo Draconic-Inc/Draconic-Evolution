@@ -6,7 +6,6 @@ import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentTextu
 import com.brandon3055.draconicevolution.client.gui.guicomponents.GUIScrollingBase;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.DummyContainer;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.google.gson.stream.JsonReader;
 import org.lwjgl.opengl.GL11;
 
@@ -51,8 +50,8 @@ public class GUIManual extends GUIScrollingBase {
 
 		for (int i = 0; i < pageList.size(); i++)
 		{
-			collection.addComponent(new ComponentIndexButton(20, 20 + i * 12, this, pageList.get(i))).setGroup(GR_INDEX);
-			pageLength += 15;
+			collection.addComponent(new ComponentIndexButton(20, 20 + i * 20, this, pageList.get(i))).setGroup(GR_INDEX);
+			pageLength += 20;
 		}
 
 
@@ -61,7 +60,7 @@ public class GUIManual extends GUIScrollingBase {
 
 	@Override
 	public void handleScrollInput(int direction) {
-		scrollOffset += direction * 5;
+		scrollOffset += direction * 10;
 		if (scrollOffset < 0) scrollOffset = 0;
 		if (scrollOffset > pageLength - ySize + 40) scrollOffset = pageLength - ySize + 40;
 		if (pageLength + 40 <= ySize) scrollOffset = 0;
@@ -93,7 +92,7 @@ public class GUIManual extends GUIScrollingBase {
 
 	public static void loadPages()
 	{
-		LogHelper.info("loading pages");
+		//LogHelper.info("loading pages");
 
 		try
 		{
@@ -109,6 +108,8 @@ public class GUIManual extends GUIScrollingBase {
 			while (reader.hasNext())
 			{
 				String name;
+				String nameL = null;
+				int meta = 0;
 				images = new ArrayList<String>();
 				content = new ArrayList<String>();
 
@@ -124,6 +125,17 @@ public class GUIManual extends GUIScrollingBase {
 
 				//Read page images
 				s = reader.nextName();
+				if (s.equals("nameL"))
+				{
+					nameL = reader.nextString();
+					s = reader.nextName();
+				}
+				if (s.equals("meta"))
+				{
+					meta = reader.nextInt();
+					s = reader.nextName();
+				}
+
 				if (s.equals("images"))
 				{
 					reader.beginArray();
@@ -150,7 +162,7 @@ public class GUIManual extends GUIScrollingBase {
 
 				reader.endObject();
 
-				pageList.add(new ManualPage(name, images.toArray(new String[images.size()]), content.toArray(new String[content.size()])));
+				pageList.add(new ManualPage(name, images.toArray(new String[images.size()]), content.toArray(new String[content.size()]), nameL, meta));
 			}
 
 			reader.endArray();
@@ -165,6 +177,6 @@ public class GUIManual extends GUIScrollingBase {
 			e.printStackTrace();
 		}
 
-		for (ManualPage p : pageList) LogHelper.info(p.getLocalizedName());
+		//for (ManualPage p : pageList) LogHelper.info(p.getLocalizedName());
 	}
 }

@@ -6,7 +6,7 @@ public final class References {
 	public static final String VERSION 				= VersionHandler.FULL_VERSION;
 	public static final String MCVERSION 			= VersionHandler.MCVERSION;
 	public static final String CLIENTPROXYLOCATION 	= "com.brandon3055.draconicevolution.client.ClientProxy";
-	public static final String SERVERPROXYLOCATION = "com.brandon3055.draconicevolution.common.ServerProxy";
+	public static final String SERVERPROXYLOCATION = "com.brandon3055.draconicevolution.common.CommonProxy";
 	public static final String GUIFACTORY 			= "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
 	public static final String RESOURCESPREFIX 		= MODID.toLowerCase() + ":";
 

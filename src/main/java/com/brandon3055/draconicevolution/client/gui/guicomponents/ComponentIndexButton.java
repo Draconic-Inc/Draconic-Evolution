@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
 import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Brandon on 7/03/2015.
@@ -14,15 +14,12 @@ import net.minecraft.item.ItemStack;
 public class ComponentIndexButton extends ComponentScrollingBase {
 
 	private ManualPage page;
-	private EntityItem item;
+	private ItemStack stack;
 
 	public ComponentIndexButton(int x, int y, GUIScrollingBase gui, ManualPage page) {
 		super(x, y, gui);
 		this.page = page;
-		if (page.name.contains(".tile")) item = new EntityItem(Minecraft.getMinecraft().theWorld, 0, 0, 0, new ItemStack(GameData.getBlockRegistry().getObject(page.name.substring(page.name.indexOf(".") + 1).replace("draconicevolution", "DraconicEvolution"))));
-		if (page.name.contains(".item")) item = new EntityItem(Minecraft.getMinecraft().theWorld, 0, 0, 0, new ItemStack(GameData.getItemRegistry().getObject(page.name.substring(page.name.indexOf(".") + 1).replace("draconicevolution", "DraconicEvolution"))));
-		LogHelper.info(item + " " + GameData.getBlockRegistry().getObject("DraconicEvolution:draconiumOre") + " " + page.name.substring(page.name.indexOf(".") + 1).replace("draconicevolution", "DraconicEvolution") +
-		" " + new ItemStack(GameData.getBlockRegistry().getObject(page.name.substring(page.name.indexOf(".") + 1).replace("draconicevolution", "DraconicEvolution"))));
+		getStackFromName(page.name);
 	}
 
 	@Override
@@ -37,7 +34,7 @@ public class ComponentIndexButton extends ComponentScrollingBase {
 
 	@Override
 	public int getHeight() {
-		return 16;
+		return 20;
 	}
 
 	@Override
@@ -45,15 +42,40 @@ public class ComponentIndexButton extends ComponentScrollingBase {
 		int sy = y - gui.scrollOffset;
 		if (sy > 1 && sy + getHeight() < gui.getYSize())
 		{
-			fontRendererObj.drawString("!!!!!!!!!!! Test !!!!!!!!!! " + y/12, x, sy, 0xffffff);
-		}
-		if (item != null) {
-			LogHelper.info("r");
-			RenderManager.instance.renderEntityWithPosYaw(item, 0D, 0D, 0D, 0F, 0F);
+			boolean mouseOver = isMouseOver(mouseX, mouseY);
+
+			fontRendererObj.drawString(page.getLocalizedName(), x + 19, sy, mouseOver ? 0xdd00ff : 0x000000);
+			ResourceHandler.bindResource("textures/gui/Widgets.png");
+
+
+			GL11.glColor4f(1f, 1f, 1f, 1f);
+			if (mouseOver) {
+				GL11.glColor4f(0f, 1f, 1f, 1f);
+				drawTexturedModalRect(x - 2, sy - 2, 118, 0, 20, 20);
+			}
+			else drawTexturedModalRect(x-1, sy-1, 138, 0, 18, 18);
+
+			if (stack != null && stack.getItem() != null) drawItemStack(stack, x, sy, "");
+			else drawItemStack(new ItemStack(Items.writable_book), x, sy, "");
+
 		}
 	}
 
 	@Override
 	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
+	}
+
+	private void getStackFromName(String name)
+	{
+		if (name.contains("tile."))
+		{
+			name = name.replace("draconicevolution", "DraconicEvolution").replace("tile.", "");
+			stack = new ItemStack(GameData.getBlockRegistry().getObject(name), 1, page.meta);
+		}
+		if (name.contains("item."))
+		{
+			name = name.replace("draconicevolution", "DraconicEvolution").replace("item.", "");
+			stack = new ItemStack(GameData.getItemRegistry().getObject(name), 1, page.meta);
+		}
 	}
 }

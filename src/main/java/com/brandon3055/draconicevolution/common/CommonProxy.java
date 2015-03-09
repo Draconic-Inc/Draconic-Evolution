@@ -41,7 +41,7 @@ import net.minecraftforge.common.MinecraftForge;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public abstract class CommonProxy {
+public class CommonProxy {
 	//private final static boolean debug = DraconicEvolution.debug;
 
 	public void preInit(FMLPreInitializationEvent event) {
@@ -166,7 +166,7 @@ public abstract class CommonProxy {
 		EntityRegistry.registerModEntity(EntityDragonHeart.class, "Dragon Heart Item", 5, DraconicEvolution.instance, 32, 5, true);
 	}
 
-	public abstract boolean isDedicatedServer();
+	public boolean isDedicatedServer() {return true;}
 
 	public MinecraftServer getMCServer(){
 		return FMLCommonHandler.instance().getMinecraftServerInstance();

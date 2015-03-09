@@ -236,7 +236,7 @@ public class TileWeatherController extends TileEntity implements IInventory {
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player)
 	{
-		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.4) < 64;
+		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
 	}
 
 	@Override

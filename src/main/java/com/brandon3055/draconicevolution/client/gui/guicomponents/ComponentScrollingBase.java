@@ -15,4 +15,9 @@ public abstract class ComponentScrollingBase extends ComponentBase {
 	}
 
 	public abstract void handleScrollInput(int direction);
+
+	@Override
+	public boolean isMouseOver(int mouseX, int mouseY) {
+		return super.isMouseOver(mouseX, mouseY + gui.scrollOffset);
+	}
 }
