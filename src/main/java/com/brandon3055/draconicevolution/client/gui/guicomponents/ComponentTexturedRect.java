@@ -48,11 +48,14 @@ public class ComponentTexturedRect extends ComponentBase {
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glScalef(1f, 0.33f, 1f);
+			GL11.glScalef(0.5f, 0.5f, 0.5f);
 		}
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		drawTexturedModalRect(x, y, texX, texY, width, height);
 		if (transparent)
 		{
+			GL11.glScalef(2f, 2f, 2f);
 			GL11.glDisable(GL11.GL_BLEND);
 			GL11.glPopMatrix();
 		}

@@ -22,6 +22,7 @@ import java.util.List;
 public class GUIManual extends GUIScrollingBase {
 
 	private static List<ManualPage> pageList = new ArrayList<ManualPage>();
+	public static List<String> imageURLs = new ArrayList<String>();
 
 	public GUIManual() {
 		super(new DummyContainer(), 0, 0);
@@ -47,6 +48,16 @@ public class GUIManual extends GUIScrollingBase {
 
 		collection.addComponent(new ComponentTexturedRect(0, 0, 255, 255, ResourceHandler.getResource("textures/gui/manualTop.png"))).setGroup(GR_BACKGROUND);
 		collection.addComponent(new ComponentTexturedRect(0, 255, 255, 69, ResourceHandler.getResource("textures/gui/manualBottom.png"))).setGroup(GR_BACKGROUND);
+
+		collection.addComponent(new ComponentTexturedRect(0, 100, 0, 0, 255, 255, ResourceHandler.getResource("textures/gui/manualimages/debanner.png"), true)).setGroup(GR_INTRO);
+
+//		ITextureObject iTextureObject = mc.getTextureManager().getTexture(ResourceHandler.getResource("textures/gui/manualBottom.png"));
+//		mc.getResourceManager().getResource(ResourceHandler.getResource("textures/gui/manualBottom.png")).
+//		LogHelper.info(iTextureObject);
+//		if (iTextureObject instanceof TextureMap)
+//		{
+//			LogHelper.info(((TextureMap) iTextureObject).getTextureExtry("textures/gui/manualBottom.png"));
+//		}
 
 		for (int i = 0; i < pageList.size(); i++)
 		{
@@ -99,7 +110,7 @@ public class GUIManual extends GUIScrollingBase {
 		try
 		{
 			pageList.clear();
-			File manualJSON = new File(ResourceHandler.getSaveFolder(), "manual.json");
+			File manualJSON = new File(ResourceHandler.getConfigFolder(), "manual.json");
 			JsonReader reader = new JsonReader(new FileReader(manualJSON));
 			List<String> images;
 			List<String> content;
@@ -143,7 +154,9 @@ public class GUIManual extends GUIScrollingBase {
 					reader.beginArray();
 					while (reader.hasNext())
 					{
-						images.add(reader.nextString());
+						String url = reader.nextString();
+						images.add(url);
+						if (!imageURLs.contains(url)) imageURLs.add(url);
 					}
 					reader.endArray();
 				}

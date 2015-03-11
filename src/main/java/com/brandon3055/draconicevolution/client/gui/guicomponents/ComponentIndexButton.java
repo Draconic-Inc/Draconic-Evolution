@@ -48,6 +48,7 @@ public class ComponentIndexButton extends ComponentScrollingBase {
 			ResourceHandler.bindResource("textures/gui/Widgets.png");
 
 
+
 			GL11.glColor4f(1f, 1f, 1f, 1f);
 			if (mouseOver) {
 				GL11.glColor4f(0f, 1f, 1f, 1f);
