@@ -22,6 +22,7 @@ public abstract class GUIBase extends GuiContainer {
 		super(container);
 		this.xSize = xSize;
 		this.ySize = ySize;
+		mc = Minecraft.getMinecraft();
 		collection = assembleComponents();
 	}
 
