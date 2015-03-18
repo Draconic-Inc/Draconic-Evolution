@@ -8,9 +8,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.resources.FileResourcePack;
 import net.minecraft.client.resources.FolderResourcePack;
 import net.minecraft.util.ResourceLocation;
+import scala.actors.threadpool.Arrays;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -28,13 +28,19 @@ public class ResourceHandler {
 
 	private static String savePath;
 	private static File saveFolder;
+	private static File imagesFolder;
 
 
 	//-------------------- File Handling -----------------------//
 	public static void init(FMLPreInitializationEvent event)
 	{
-		savePath = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/config/draconicevolution";
+		if (event != null)savePath = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/config/draconicevolution";
 		GUIManual.loadPages();
+
+		for (String s : GUIManual.imageURLs)
+		{
+			LogHelper.info(s + " " + checkExistence(s));
+		}
 
 		addRSPack();
 	}
@@ -47,6 +53,14 @@ public class ResourceHandler {
 		return saveFolder;
 	}
 
+	public static File getImagesFolder()
+	{
+		if (imagesFolder == null) { imagesFolder = new File(getConfigFolder(), "/resources/assets/draconicevolution/textures/gui/manualimages"); }
+		if (!imagesFolder.exists()) imagesFolder.mkdirs();
+
+		return imagesFolder;
+	}
+
 
 	private static void downloadImages()
 	{
@@ -55,7 +69,7 @@ public class ResourceHandler {
 
 	private static boolean checkExistence(String url)
 	{
-
+		LogHelper.info("checkExistence " + Arrays.asList(getImagesFolder().list()) + " " + Arrays.asList(getImagesFolder().list()).contains(url) + " " + url);
 		return true;
 	}
 
@@ -69,17 +83,17 @@ public class ResourceHandler {
 		try {
 			defaultResourcePacks = (List)f.get(Minecraft.getMinecraft());
 			defaultResourcePacks.add(new FolderResourcePack(rspack));
-			for (Object o : defaultResourcePacks){
-				if (o instanceof FolderResourcePack) LogHelper.info(((FolderResourcePack) o).getPackName());
-				if (o instanceof FileResourcePack) LogHelper.info(((FileResourcePack)o).getPackName());
-			}
+//			for (Object o : defaultResourcePacks){
+//				if (o instanceof FolderResourcePack) LogHelper.info(((FolderResourcePack) o).getPackName());
+//				if (o instanceof FileResourcePack) LogHelper.info(((FileResourcePack)o).getPackName());
+//			}
 
 			f.set(Minecraft.getMinecraft(), defaultResourcePacks);
 		}
 		catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-	}
+	}//http://i.imgur.com/zYLHSxW.png
 
 
 

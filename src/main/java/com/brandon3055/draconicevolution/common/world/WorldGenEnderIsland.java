@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.world;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
@@ -28,8 +29,12 @@ public class WorldGenEnderIsland extends WorldGenerator {
 
 	@Override
 	public boolean generate(World world, Random random, int x, int y, int z) {
+		LogHelper.info("Generate");
 		for (int y1 = y - 10; y1 < y + 10; y1++) {
-			if (world.getBlock(x, y1, z) == Blocks.end_stone) return false;
+			if (world.getBlock(x, y1, z) == Blocks.end_stone) {
+				LogHelper.info("cancel");
+				return false;
+			}
 		}
 		initialize(random, x, y, z);
 		generateCentre(world, random);
@@ -43,6 +48,7 @@ public class WorldGenEnderIsland extends WorldGenerator {
 		dragon.portalZ = z;
 		dragon.setCustomNameTag("Chaos Guardian");
 		//two dragons?dragon.onSpawnWithEgg(null);
+		LogHelper.info("Spawn dragon");
 		world.spawnEntityInWorld(dragon);
 		return true;
 	}

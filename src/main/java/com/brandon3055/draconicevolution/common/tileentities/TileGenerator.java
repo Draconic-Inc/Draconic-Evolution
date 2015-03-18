@@ -205,7 +205,7 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 
 	@Override
 	public boolean canExtractItem(int var1, ItemStack var2, int var3) {
-		return false;
+		return getItemBurnTime(var2) == 0;
 	}
 
 	@Override

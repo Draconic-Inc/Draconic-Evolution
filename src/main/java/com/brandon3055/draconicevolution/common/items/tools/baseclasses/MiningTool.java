@@ -19,6 +19,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -184,6 +185,14 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 
 		float strength = ForgeHooks.blockStrength(block, player, world, x,y,z);
 
+		if (!world.isRemote)
+		{
+			BlockEvent.BreakEvent event = ForgeHooks.onBlockBreakEvent(world, world.getWorldInfo().getGameType(), (EntityPlayerMP) player, x, y, z);
+			if (event.isCanceled()) {
+				((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
+				return;
+			}
+		}
 		if (!player.canHarvestBlock(block) || !ForgeHooks.canHarvestBlock(block, player, meta) || refStrength/strength > 10f)
 			return;
 

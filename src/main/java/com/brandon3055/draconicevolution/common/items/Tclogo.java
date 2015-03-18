@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.common.items;
 
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -77,8 +77,10 @@ public class Tclogo extends ItemDE {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 
+
 		if (world.isRemote)
 		{
+			ResourceHandler.init(null);
 			String str = "A String";
 			IChatComponent localIChatComponent;
 
@@ -92,7 +94,7 @@ public class Tclogo extends ItemDE {
 		}
 		else
 		{
-			for (Object o : EntityList.classToStringMapping.values()) LogHelper.info(o);
+			//for (Object o : EntityList.classToStringMapping.values()) LogHelper.info(o);
 		}
 
 

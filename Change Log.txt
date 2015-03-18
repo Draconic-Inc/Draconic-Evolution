@@ -1,7 +1,9 @@
 ######## 1.0.1-Snapshot(6) ########
 -fixed teleporting mobs with a dislocator on a server crashing the client. 
 -added support for other mods to add recipes to the draconium chest.
--fixed arrows bouncing off of dragons... oops
+-fixed arrows bouncing off of dragons... oops.
+-non fuel items such as empty buckets can now be extracted from the generator.
+-fixed charging exployt with draconium blocks.
 
 ######## 1.0.1-Snapshot(5) ########
 -fixed tesseracts not accepting energy from pylons.
