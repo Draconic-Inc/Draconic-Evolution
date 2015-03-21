@@ -292,7 +292,7 @@ msg.de.maxConnections.txt=Connection limit reached
 msg.de.linked.txt=Devices Linked
 
 
-//Tool Tips ----------------------------------------------------------------------------------------------------------------------------------------
+//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=Unbound
 info.teleporterInfUnset2.txt=Shift right click to bind your current
 info.teleporterInfUnset3.txt=x, y, z coordinates
@@ -350,6 +350,10 @@ info.de.hudDisplayConfigTxt2.txt=Click and drag to move
 info.de.hudDisplayConfigTxt3.txt=###################
 info.de.hudDisplayConfigInfo1.txt=Click and drag HUD
 info.de.hudDisplayConfigInfo2.txt=to change location
+
+info.de.manual.introTxt.txt=Everything you need to know. All in one place.
+info.de.manual.indexButton.txt=Index
+info.de.manual.indexButtonTip.txt=Go to index page
 
 //Energy Net
 info.de.modeIn.txt=Mode: Input
@@ -546,7 +550,7 @@ manual.de.ectdpage11.txt=The above image shows all of the possible Y level place
 manual.de.roertpage0a.txt=The Ritual of Draconic Resurrection allows you to summon the Ender Dragon. To set it up you will need the following items.\n\n(1)  Resurrection Stone\n(4) Glowstone Blocks\n(4) Obsidian\n(4) Diamond Blocks\n(4) Charged Draconium Blocks\n(12) Quartz Pillars
 manual.de.roertpage0b.txt=To get a Charged Draconium block place a Draconium block in a charging device (requires 100 Million RF)
 manual.de.roertpage1a.txt=The pillars dont have to be in that exact configuration as long as they are within 5 blocks of the Resurrection Stone it also looks better if they are symmetrical.
-manual.de.roertpage1b.txt=Once you have that setup simply right click the Ritual stone and stand back. The ritual should start immediately if it dosnt you have done something wrong.
+manual.de.roertpage1b.txt=Once you have that setup simply right click the Ritual stone and stand back. The ritual should start immediately if it doesn't you have done something wrong.
 manual.de.roertpage1c.txt=During the ritual all of the Ender Crystals will be re-activated. At the end of the ritual there will be a massive explosion at the centre of the structure that wont do too much damage to the terrain but will kill anything that is standing too close.
 manual.de.roertpage1d.txt=The dragon that is spawned by the ritual is almost identical to the original dragon except it has a different texture (By GreatOrator) and it gets harder to kill and deals more damage each time it is summoned (this increase is per player and stops when it reaches a certain difficulty) It also has regeneration for 25 seconds.
 manual.de.endercomet.description=Mined out all of the Draconium ore in the end? Get yourself some form of flight and go search the end. If your lucky you may come across an Ender Comet. These comets are comprised of end stone, obsidian and a significant amount of Draconium ore. By default they have a 1 in 10000 chance to spawn in each chunk so you may need to search for a while and they come in various sizes.

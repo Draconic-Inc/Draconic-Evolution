@@ -74,7 +74,7 @@ public class CommonProxy {
 			}
 			catch (Exception e) {
 				LogHelper.error("Severe error, please report this to the mod author:");
-				LogHelper.error(e);
+				e.printStackTrace();
 			}
 		}
 

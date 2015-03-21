@@ -1,0 +1,325 @@
+[
+  {
+    "name":"item.draconicevolution:tclogo",
+    "images":["http://i.imgur.com/zYLHSxW.png", "http://i.imgur.com/ss70hgS.jpg"],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "",
+      "line 3",
+      "http://i.imgur.com/zYLHSxW.png",
+      "line 4",
+      "line 4",
+      "http://i.imgur.com/ss70hgS.jpg"
+    ]
+  },
+  {
+    "name":"item.coal",
+    "images":["http://i.imgur.com/hZOyCf9.png", "http://i.imgur.com/IGDBOvC.png"],
+    "content":
+    [
+      "http://i.imgur.com/IGDBOvC.png",
+      "line 1",
+      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
+      "line 3",
+      "http://i.imgur.com/hZOyCf9.png",
+      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
+      "Test Info"
+    ]
+  },
+  {
+    "name":"info.Test Information!!!!",
+    "images":[],
+    "content":
+    [
+      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
+      "line 1",
+      "[c]item.iron_ingot:0",
+      "line 3",
+      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
+      "line 4"
+    ]
+  },
+  {
+    "name":"item.stick",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumOre",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"item.coal",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumOre",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:potentiometer",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumOre",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"item.coal",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumOre",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyPylon",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:awakenedCore",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"item.coal",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumOre",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:generator",
+    "meta":3,
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"item.coal",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumOre",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumChest",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumOre",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"item.coal",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyCrystal",
+    "nameL":"Energy Relay",
+    "meta":1,
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumOre",
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:grinder",
+    "meta":3,
+    "images":[],
+    "content":
+    [
+      "line 1",
+      "line 2",
+      "line 3",
+      "www.image1",
+      "line 4",
+      "www.image2"
+    ]
+  }
+]
+
+//Test
+//Test
+//Test

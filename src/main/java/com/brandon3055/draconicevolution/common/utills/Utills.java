@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.utills;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.item.ItemStack;
 
 /**
  * Created by Brandon on 25/07/2014.
@@ -59,5 +61,20 @@ public class Utills {
 	public static final boolean isMultiPlayerServer()
 	{
 		return FMLCommonHandler.instance().getMinecraftServerInstance() == null;
+	}
+
+	public static ItemStack getStackFromName(String name, int meta)
+	{
+		if (name.contains("tile."))
+		{
+			name = name.replace("draconicevolution", "DraconicEvolution").replace("tile.", "");
+			if (GameData.getBlockRegistry().getObject(name) != null) return new ItemStack(GameData.getBlockRegistry().getObject(name), 1, meta);
+		}
+		if (name.contains("item."))
+		{
+			name = name.replace("draconicevolution", "DraconicEvolution").replace("item.", "");
+			if (GameData.getItemRegistry().getObject(name) != null) return new ItemStack(GameData.getItemRegistry().getObject(name), 1, meta);
+		}
+		return null;
 	}
 }

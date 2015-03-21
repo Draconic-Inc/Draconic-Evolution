@@ -38,6 +38,8 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	private int selectedCore = 0;
 	private byte particleRate = 0;
 	private byte lastTickParticleRate = 0;
+	private int lastCheckCompOverride = 0;
+	private int tick = 0;
 
 
 	@Override
@@ -51,6 +53,23 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 		} else if (worldObj.isRemote) modelScale = 0.5F;
 
 		if (worldObj.isRemote) return;
+
+		tick++;
+		if (tick % 20 == 0)
+		{
+			int cOut = (int)(getEnergyStored() / getMaxEnergyStored() * 15D);
+			if (cOut != lastCheckCompOverride)
+			{
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord - 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord + 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord - 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord + 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord - 1, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord + 1, worldObj.getBlock(xCoord, yCoord, zCoord));
+				lastCheckCompOverride = cOut;
+			}
+		}
 
 		if (active && !reciveEnergy){
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {
@@ -81,11 +100,11 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	}
 
 	private void findCores(){
-		int yMod = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? 3 : -3;
+		int yMod = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? 16 : -16;
 		int range = 15;
 		List<TileLocation> locations = new ArrayList<TileLocation>();
 		for (int x = xCoord-range; x <= xCoord+range; x++){
-			for (int y = yCoord+yMod-(range/4); y <= yCoord+yMod+(range/4); y++){
+			for (int y = yCoord+yMod-range; y <= yCoord+yMod+range; y++){
 				for (int z = zCoord-range; z <= zCoord+range; z++){
 					if (worldObj.getBlock(x, y, z) == ModBlocks.energyStorageCore){
 						locations.add(new TileLocation(x, y, z));

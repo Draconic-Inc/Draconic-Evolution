@@ -4,6 +4,14 @@
 -fixed arrows bouncing off of dragons... oops.
 -non fuel items such as empty buckets can now be extracted from the generator.
 -fixed charging exployt with draconium blocks.
+-added block break event to aoe mining tools.
+-added comparator output to the energy pylon. 
+-changed. Pylons can now be placed up to 16 blocks above and bellow the core
+-Special additions for FTB
+	> added option to set where the dragon egg will spawn
+	> added option to disable dragon block destruction
+	> added a beam option for the particle gen
+	> added the ability to copy settings from one particle gen to another
 
 ######## 1.0.1-Snapshot(5) ########
 -fixed tesseracts not accepting energy from pylons.

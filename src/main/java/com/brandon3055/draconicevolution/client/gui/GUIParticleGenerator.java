@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.network.ParticleGenPacket;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.ParticleGenPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -13,15 +13,17 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-
 public class GUIParticleGenerator extends GuiScreen {
 	private final int xSize = 212;
 	private final int ySize = 198;
 	private ResourceLocation guiTexture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/ParticleGenerator.png");
 	private int page = 1;
+	private int infoPage = 0;
+	private boolean hasInitialized = false;
 
 	//Particle variables
+	private boolean particles_enabled = true;
+
 	private int red = 0;
 	private int green = 0;
 	private int blue = 0;
@@ -50,6 +52,21 @@ public class GUIParticleGenerator extends GuiScreen {
 	private int selected_particle = 1;
 	private int selected_max = 3;
 	private float gravity = 0F;
+
+	//Beam variables
+	private boolean beam_enabled = false;
+	private boolean render_core = false;
+
+	private int beam_red = 0;
+	private int beam_green = 0;
+	private int beam_blue = 0;
+	private float beam_scale = 0F;
+	private float beam_pitch = 0F;
+	private float beam_yaw = 0F;
+	private float beam_length = 0F;
+	private float beam_rotation = 0F;
+
+
 	//Buttons	
 
 	//Info Page
@@ -74,13 +91,15 @@ public class GUIParticleGenerator extends GuiScreen {
 		int posY = (this.height - ySize) / 2;
 		drawTexturedModalRect(posX, posY, 0, 0, xSize, ySize);
 		if (page < 3) fontRendererObj.drawStringWithShadow("Particle Generator", posX + 60, posY + 5, 0x00FFFF);
+		else if (page < 10) fontRendererObj.drawStringWithShadow("Beam Generator", posX + 65, posY + 5, 0x00FFFF);
 		else fontRendererObj.drawStringWithShadow("Information", posX + 75, posY + 5, 0x00FFFF);
 
 		if (page == 1) page1Txt();
 		else if (page == 2) page2Txt();
-		else {
-			fontRendererObj.drawSplitString(InfoText[page - 3], posX + 5, posY + 20, 200, 0x000000);
-			fontRendererObj.drawSplitString("Page: " + (page - 3), posX + 88, posY + 180, 200, 0xFF0000);
+		else if (page == 3) page3Txt();
+		else if (page == 10) {
+			fontRendererObj.drawSplitString(InfoText[infoPage], posX + 5, posY + 20, 200, 0x000000);
+			fontRendererObj.drawSplitString("Page: " + (infoPage + 1), posX + 88, posY + 180, 200, 0xFF0000);
 		}
 
 		fontRendererObj.drawStringWithShadow("Hold:", posX + 215, posY + 11, 0xFFFFFF);
@@ -89,13 +108,6 @@ public class GUIParticleGenerator extends GuiScreen {
 		fontRendererObj.drawStringWithShadow("Shift+Ctrl +- 100", posX + 215, posY + 41, 0xFFFFFF);
 
 		super.drawScreen(x, y, f);
-
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("test");
-
-		//drawHoveringText(lines, x, y, fontRendererObj);
-
-
 	}
 	//@formatter:on
 
@@ -111,20 +123,35 @@ public class GUIParticleGenerator extends GuiScreen {
 		int posY = (this.height - ySize) / 2;
 		buttonList.clear();
 
+		if (page < 10)
+		{
+			buttonList.add(new GuiButton(33, posX + 213, posY + 177, 47, 20, "===>"));
+			buttonList.add(new GuiButton(32, posX - 47, posY + 177, 47, 20, "<==="));
+		}
+
 		if (page == 1) page1Buttons();
 		else if (page == 2) page2Buttons();
-		else {
+		else if (page == 3) page3Buttons();
+		else if (page == 10){
 			buttonList.add(new GuiButton(57, posX + 4, posY + 174, 80, 20, "Previous page"));
 			buttonList.add(new GuiButton(56, posX + 128, posY + 174, 80, 20, "Next page"));
 		}
 
-		if (page < 3) buttonList.add(new GuiButton(54, posX - 21, posY + 3, 20, 20, "i"));
+		if (page < 10) buttonList.add(new GuiButton(54, posX - 21, posY + 3, 20, 20, "i"));
 		else buttonList.add(new GuiButton(55, posX - 31, posY + 23, 30, 20, "Back"));
+
+
+
 
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
+		if (button.id < 100) particleActions(button);
+		else beamActions(button);
+	}
+
+	private void particleActions(GuiButton button) {
 		int value = 1;
 		float value_F;
 		short packetValue = 0;
@@ -135,7 +162,8 @@ public class GUIParticleGenerator extends GuiScreen {
 
 		value_F = (value) / 1000F;
 
-		switch (button.id) {
+		switch (button.id)
+		{
 			case 0://Red +
 				red = (red + value) > 255 ? 255 : red + value;
 				packetValue = (short) red;
@@ -265,12 +293,12 @@ public class GUIParticleGenerator extends GuiScreen {
 				packetValue = (short) (random_scale * 100F);
 				break;
 			case 32://Page 2
-				page = 2;
+				if (page > 1) page--;
 				packetValue = (short) page;
 				initGui();
 				break;
 			case 33://Page 1
-				page = 1;
+				if (page < 3) page++;
 				initGui();
 				packetValue = (short) page;
 				break;
@@ -357,7 +385,7 @@ public class GUIParticleGenerator extends GuiScreen {
 				packetValue = (short) (gravity * 1000F);
 				break;
 			case 54://Info Page
-				page = 3;
+				page = 10;
 				initGui();
 				packetValue = (short) page;
 				break;
@@ -367,12 +395,17 @@ public class GUIParticleGenerator extends GuiScreen {
 				packetValue = (short) page;
 				break;
 			case 56://Info Next Page
-				if (page < 7) page++;
+				if (infoPage < 4) infoPage++;
 				else initGui();
 				break;
 			case 57://Info Previous Page
-				if (page > 3) page--;
+				if (infoPage > 0) infoPage--;
 				else initGui();
+				break;
+			case 58://particles Enabled
+				particles_enabled = !particles_enabled;
+				packetValue = particles_enabled ? (byte)1 : (byte)0;
+				initGui();
 				break;
 		}
 		DraconicEvolution.network.sendToServer(new ParticleGenPacket((byte) button.id, packetValue, tile.xCoord, tile.yCoord, tile.zCoord));
@@ -424,6 +457,18 @@ public class GUIParticleGenerator extends GuiScreen {
 		fade = tile.fade;
 		selected_particle = tile.selected_particle;
 		gravity = tile.gravity;
+		particles_enabled = tile.particles_enabled;
+
+		render_core = tile.render_core;
+		beam_enabled = tile.beam_enabled;
+		beam_red = tile.beam_red;
+		beam_green = tile.beam_green;
+		beam_blue = tile.beam_blue;
+		beam_scale = tile.beam_scale;
+		beam_pitch = tile.beam_pitch;
+		beam_yaw = tile.beam_yaw;
+		beam_length = tile.beam_length;
+		beam_rotation = tile.beam_rotation;
 	}
 
 	//@formatter:off
@@ -529,7 +574,7 @@ public class GUIParticleGenerator extends GuiScreen {
 		buttonList.add(new GuiButton(27, posX + DX4, posY + y1 + 6 * 22, 20, 20, "-"));
 		buttonList.add(new GuiButton(31, posX + DX4, posY + y1 + 7 * 22, 20, 20, "-"));
 
-		buttonList.add(new GuiButton(32, posX + 213, posY + 177, 47, 20, "Page 2"));
+
 	}
 
 	private void page2Txt() {
@@ -607,9 +652,172 @@ public class GUIParticleGenerator extends GuiScreen {
 		buttonList.add(new GuiButton(41, posX + DX4, posY + y1 + 1 * 22, 20, 20, "-"));
 		buttonList.add(new GuiButton(45, posX + DX4, posY + y1 + 2 * 22, 20, 20, "-"));
 
-		buttonList.add(new GuiButton(33, posX - 47, posY + 177, 47, 20, "Page 1"));
 		buttonList.add(new GuiButton(50, posX + DX3 - 11, posY + y1 + 3 * 22, 102, 20, "Block Collision: " + (collide ? "on" : "off")));
 		buttonList.add(new GuiButton(51, posX + DX3 - 11, posY + y1 + 4 * 22, 102, 20, "Particle Selected: " + selected_particle));
+
+		buttonList.add(new GuiButton(58, posX + DX3 - 11, posY + y1 + 5 * 22, 102, 20, "Enabled: " + (particles_enabled ? "on" : "off")));
+	}
+
+	private void page3Txt() {
+		int posX = (this.width - xSize) / 2;
+		int posY = (this.height - ySize) / 2;
+
+		int col1 = posX + 30;
+		int col2 = posX + 141;
+		int ln1 = 20;
+		int ln2 = 30;
+
+		String pitch = String.valueOf(Math.round(beam_pitch * 100F) / 100F);
+		String yaw = String.valueOf(Math.round(beam_yaw * 100F) / 100F);
+		String length = String.valueOf(Math.round(beam_length * 100F) / 100F);
+		String rotation = String.valueOf(Math.round(beam_rotation * 100F) / 100F);
+		String scale = String.valueOf(Math.round(beam_scale * 100F) / 100F);
+
+		fontRendererObj.drawString("Red:", col1, posY + ln1 + 0 * 22, 0x000000, false);
+		fontRendererObj.drawString(String.valueOf(beam_red), col1, posY + ln2 + 0 * 22, 0x000000, false);
+		fontRendererObj.drawString("Green:", col1, posY + ln1 + 1 * 22, 0x000000, false);
+		fontRendererObj.drawString(String.valueOf(beam_green), col1, posY + ln2 + 1 * 22, 0x000000, false);
+		fontRendererObj.drawString("Blue:", col1, posY + ln1 + 2 * 22, 0x000000, false);
+		fontRendererObj.drawString(String.valueOf(beam_blue), col1, posY + ln2 + 2 * 22, 0x000000, false);
+
+		fontRendererObj.drawString("Z Rot:", col1, posY + ln1 + 3 * 22, 0x000000, false);
+		fontRendererObj.drawString(pitch, col1, posY + ln2 + 3 * 22, 0x000000, false);
+		fontRendererObj.drawString("X Rot:", col1, posY + ln1 + 4 * 22, 0x000000, false);
+		fontRendererObj.drawString(yaw, col1, posY + ln2 + 4 * 22, 0x000000, false);
+		fontRendererObj.drawString("Length:", col1, posY + ln1 + 5 * 22, 0x000000, false);
+		fontRendererObj.drawString(length, col1, posY + ln2 + 5 * 22, 0x000000, false);
+		fontRendererObj.drawString("Rotation:", col1, posY + ln1 + 6 * 22, 0x000000, false);
+		fontRendererObj.drawString(rotation, col1, posY + ln2 + 6 * 22, 0x000000, false);
+		fontRendererObj.drawString("Scale:", col1, posY + ln1 + 7 * 22, 0x000000, false);
+		fontRendererObj.drawString(scale, col1, posY + ln2 + 7 * 22, 0x000000, false);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	private void page3Buttons() {
+		int posX = (this.width - xSize) / 2;
+		int posY = (this.height - ySize) / 2;
+		int DX1 = 5;//x pos for row 1,2,3,4
+		int DX2 = DX1 + 71;
+		int DX3 = DX2 + 40;
+		int DX4 = DX3 + 71;
+		int y1 = 19;
+
+		buttonList.add(new GuiButton(100, posX + DX1, posY + y1 + 0 * 22, 20, 20, "+"));
+		buttonList.add(new GuiButton(101, posX + DX1, posY + y1 + 1 * 22, 20, 20, "+"));
+		buttonList.add(new GuiButton(102, posX + DX1, posY + y1 + 2 * 22, 20, 20, "+"));
+		buttonList.add(new GuiButton(103, posX + DX1, posY + y1 + 3 * 22, 20, 20, "+"));
+		buttonList.add(new GuiButton(104, posX + DX1, posY + y1 + 4 * 22, 20, 20, "+"));
+		buttonList.add(new GuiButton(105, posX + DX1, posY + y1 + 5 * 22, 20, 20, "+"));
+		buttonList.add(new GuiButton(106, posX + DX1, posY + y1 + 6 * 22, 20, 20, "+"));
+		buttonList.add(new GuiButton(107, posX + DX1, posY + y1 + 7 * 22, 20, 20, "+"));
+
+		buttonList.add(new GuiButton(108, posX + DX2, posY + y1 + 0 * 22, 20, 20, "-"));
+		buttonList.add(new GuiButton(109, posX + DX2, posY + y1 + 1 * 22, 20, 20, "-"));
+		buttonList.add(new GuiButton(110, posX + DX2, posY + y1 + 2 * 22, 20, 20, "-"));
+		buttonList.add(new GuiButton(111, posX + DX2, posY + y1 + 3 * 22, 20, 20, "-"));
+		buttonList.add(new GuiButton(112, posX + DX2, posY + y1 + 4 * 22, 20, 20, "-"));
+		buttonList.add(new GuiButton(113, posX + DX2, posY + y1 + 5 * 22, 20, 20, "-"));
+		buttonList.add(new GuiButton(114, posX + DX2, posY + y1 + 6 * 22, 20, 20, "-"));
+		buttonList.add(new GuiButton(115, posX + DX2, posY + y1 + 7 * 22, 20, 20, "-"));
+
+		buttonList.add(new GuiButton(116, posX + DX3 - 11, posY + y1 + 0 * 22, 102, 20, "Enabled: " + (beam_enabled ? "on" : "off")));
+		buttonList.add(new GuiButton(117, posX + DX3 - 11, posY + y1 + 1 * 22, 102, 20, "Render Core: " + (render_core ? "on" : "off")));
+
+
+		buttonList.add(new GuiButton(127, posX + DX3 - 11, posY + y1 + 7 * 22, 102, 20, "Take note of values"));
+	}
+
+	private void beamActions(GuiButton button) {
+		int value = 1;
+		float value_F;
+		short packetValue = 0;
+		if (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)) value = 10;
+		if (Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157)) value = 100;
+		if ((Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157)) && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)))
+			value = 1000;
+
+		value_F = (value) / 100F;
+
+		switch (button.id)
+		{
+			case 100: //beam red +
+				beam_red = (beam_red + value) > 255 ? 255 : beam_red + value;
+				packetValue = (short) beam_red;
+				break;
+			case 101: //beam green +
+				beam_green = (beam_green + value) > 255 ? 255 : beam_green + value;
+				packetValue = (short) beam_green;
+				break;
+			case 102: //beam blue +
+				beam_blue = (beam_blue + value) > 255 ? 255 : beam_blue + value;
+				packetValue = (short) beam_blue;
+				break;
+			case 103: //beam pitch +
+				beam_pitch = (beam_pitch + value_F) > 360F ? 360F : beam_pitch + value_F;
+				packetValue = (short) (beam_pitch * 100F);
+				break;
+			case 104: //beam yaw +
+				beam_yaw = (beam_yaw + value_F) > 360F ? 360F : beam_yaw + value_F;
+				packetValue = (short) (beam_yaw * 100F);
+				break;
+			case 105: //beam length +
+				beam_length = (beam_length + value_F) > 30F ? 30F : beam_length + value_F;
+				packetValue = (short) (beam_length * 100F);
+				break;
+			case 106: //beam rotation +
+				beam_rotation = (beam_rotation + value_F) > 1F ? 1F : beam_rotation + value_F;
+				packetValue = (short) (beam_rotation * 100F);
+				break;
+			case 107: //beam scale +
+				beam_scale = (beam_scale + value_F) > 5F ? 5F : beam_scale + value_F;
+				packetValue = (short) (beam_scale * 100F);
+				break;
+			case 108: //beam red -
+				beam_red = (beam_red - value) < 0 ? 0 : beam_red - value;
+				packetValue = (short) beam_red;
+				break;
+			case 109: //beam green -
+				beam_green = (beam_green - value) < 0 ? 0 : beam_green - value;
+				packetValue = (short) beam_green;
+				break;
+			case 110: //beam blue -
+				beam_blue = (beam_blue - value) < 0 ? 0 : beam_blue - value;
+				packetValue = (short) beam_blue;
+				break;
+			case 111: //beam pitch -
+				beam_pitch = (beam_pitch - value_F) < -0F ? -0F : beam_pitch - value_F;
+				packetValue = (short) (beam_pitch * 100F);
+				break;
+			case 112: //beam yaw -
+				beam_yaw = (beam_yaw - value_F) < -0F ? -0F : beam_yaw - value_F;
+				packetValue = (short) (beam_yaw * 100F);
+				break;
+			case 113: //beam length -
+				beam_length = (beam_length - value_F) < -0F ? -0F : beam_length - value_F;
+				packetValue = (short) (beam_length * 100F);
+				break;
+			case 114: //beam rotation -
+				beam_rotation = (beam_rotation - value_F) < -1F ? -1F : beam_rotation - value_F;
+				packetValue = (short) (beam_rotation * 100F);
+				break;
+			case 115: //beam scale -
+				beam_scale = (beam_scale - value_F) < -0F ? -0F : beam_scale - value_F;
+				packetValue = (short) (beam_scale * 100F);
+				break;
+			case 116: //beam enabled
+				beam_enabled = !beam_enabled;
+				packetValue = beam_enabled ? (byte) 1 : (byte) 0;
+				initGui();
+				break;
+			case 117: //beam enabled
+				render_core = !render_core;
+				packetValue = render_core ? (byte) 1 : (byte) 0;
+				initGui();
+				break;
+
+		}
+		DraconicEvolution.network.sendToServer(new ParticleGenPacket((byte) button.id, packetValue, tile.xCoord, tile.yCoord, tile.zCoord));
 	}
 	//@formatter:on
 

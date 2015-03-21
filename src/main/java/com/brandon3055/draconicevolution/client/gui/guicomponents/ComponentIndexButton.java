@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
 import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import cpw.mods.fml.common.registry.GameData;
+import com.brandon3055.draconicevolution.common.utills.Utills;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -19,7 +19,7 @@ public class ComponentIndexButton extends ComponentScrollingBase {
 	public ComponentIndexButton(int x, int y, GUIScrollingBase gui, ManualPage page) {
 		super(x, y, gui);
 		this.page = page;
-		getStackFromName(page.name);
+		stack = Utills.getStackFromName(page.name, page.meta);
 	}
 
 	@Override
@@ -39,9 +39,9 @@ public class ComponentIndexButton extends ComponentScrollingBase {
 
 	@Override
 	public void renderBackground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
-		int sy = y - gui.scrollOffset;
-		if (sy > 1 && sy + getHeight() < gui.getYSize())
+		if (isOnScreen())
 		{
+			int sy = y - gui.scrollOffset;
 			boolean mouseOver = isMouseOver(mouseX, mouseY);
 
 			fontRendererObj.drawString(page.getLocalizedName(), x + 19, sy, mouseOver ? 0xdd00ff : 0x000000);
@@ -62,21 +62,17 @@ public class ComponentIndexButton extends ComponentScrollingBase {
 		}
 	}
 
+	public boolean isOnScreen()
+	{
+		int sy = y - gui.scrollOffset;
+		return sy > 1 && sy + getHeight() < gui.getYSize();
+	}
+
 	@Override
 	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 	}
 
-	private void getStackFromName(String name)
-	{
-		if (name.contains("tile."))
-		{
-			name = name.replace("draconicevolution", "DraconicEvolution").replace("tile.", "");
-			stack = new ItemStack(GameData.getBlockRegistry().getObject(name), 1, page.meta);
-		}
-		if (name.contains("item."))
-		{
-			name = name.replace("draconicevolution", "DraconicEvolution").replace("item.", "");
-			stack = new ItemStack(GameData.getItemRegistry().getObject(name), 1, page.meta);
-		}
+	public ManualPage getPage() {
+		return page;
 	}
 }

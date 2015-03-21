@@ -15,6 +15,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.IBlockAccess;
@@ -45,6 +47,19 @@ public class ParticleGenerator extends BlockDE
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_)
 	{
 		if (world.getBlockMetadata(x, y, z) == 1) return false;
+
+		if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.paper)
+		{
+			TileEntity tile = world.getTileEntity(x, y, z);
+			TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
+			ItemStack stack = player.getHeldItem();
+			if (gen != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("particles_enabled"))
+			{
+				gen.setBlockNBT(stack.getTagCompound());
+				return true;
+			}
+		}
+
 		if (player.isSneaking())
 		{
 			if (activateEnergyStorageCore(world, x, y, z, player)) return true;

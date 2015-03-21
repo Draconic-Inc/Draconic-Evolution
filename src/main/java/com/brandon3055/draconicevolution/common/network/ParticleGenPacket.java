@@ -1,11 +1,18 @@
 package com.brandon3055.draconicevolution.common.network;
 
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 
 public class ParticleGenPacket implements IMessage
 {
@@ -221,10 +228,94 @@ public class ParticleGenPacket implements IMessage
 					case 55://Back
 						gen.page = (int) message.value;
 						break;
+					case 58://Back
+						LogHelper.info(message.value);
+						gen.particles_enabled = message.value == 1;
+						break;
+
+					case 100: //beam red +
+						gen.beam_red = message.value;
+						break;
+					case 101: //beam green +
+						gen.beam_green = message.value;
+						break;
+					case 102: //beam blue +
+						gen.beam_blue = message.value;
+						break;
+					case 103: //beam pitch +
+						gen.beam_pitch = (float) message.value / 100F;
+						break;
+					case 104: //beam yaw +
+						gen.beam_yaw = (float) message.value / 100F;
+						break;
+					case 105: //beam length +
+						gen.beam_length = (float) message.value / 100F;
+						break;
+					case 106: //beam rotation +
+						gen.beam_rotation = (float) message.value / 100F;
+						break;
+					case 107: //beam scale +
+						gen.beam_scale = (float) message.value / 100F;
+						break;
+					case 108: //beam red -
+						gen.beam_red = message.value;
+						break;
+					case 109: //beam green -
+						gen.beam_green = message.value;
+						break;
+					case 110: //beam blue -
+						gen.beam_blue = message.value;
+						break;
+					case 111: //beam pitch -
+						gen.beam_pitch = (float) message.value / 100F;
+						break;
+					case 112: //beam yaw -
+						gen.beam_yaw = (float) message.value / 100F;
+						break;
+					case 113: //beam length -
+						gen.beam_length = (float) message.value / 100F;
+						break;
+					case 114: //beam rotation -
+						gen.beam_rotation = (float) message.value / 100F;
+						break;
+					case 115: //beam scale -
+						gen.beam_scale = (float) message.value / 100F;
+						break;
+					case 116: //beam enabled
+						gen.beam_enabled = message.value == 1;
+						break;
+					case 117: //beam enabled
+						gen.render_core = message.value == 1;
+						break;
 				}
+
+				if (message.buttonId == 127)
+				{
+					if (ctx.getServerHandler().playerEntity.capabilities.isCreativeMode || ctx.getServerHandler().playerEntity.inventory.hasItem(Items.paper)) {
+						giveNote(message, ctx);
+					}
+					else ctx.getServerHandler().playerEntity.addChatComponentMessage(new ChatComponentText("You need paper in your inventory to do that"));
+				}
+
 				ctx.getServerHandler().playerEntity.worldObj.markBlockForUpdate(message.tileX, message.tileY, message.tileZ);
 			}
 			return null; 
+		}
+
+		private void giveNote(ParticleGenPacket message, MessageContext ctx)
+		{
+			EntityPlayer player = ctx.getServerHandler().playerEntity;
+			if (!player.capabilities.isCreativeMode) player.inventory.consumeInventoryItem(Items.paper);
+			ItemStack stack = new ItemStack(Items.paper);
+			stack.setTagCompound(new NBTTagCompound());
+			TileEntity tile = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.tileX, message.tileY, message.tileZ);
+			TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator)tile : null;
+			if (gen != null)
+			{
+				gen.getBlockNBT(stack.getTagCompound());
+				stack.setStackDisplayName("Saved Particle Gen Settings");
+				player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, stack));
+			}
 		}
 	}
 }

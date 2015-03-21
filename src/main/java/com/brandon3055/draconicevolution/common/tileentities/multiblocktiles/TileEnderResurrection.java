@@ -194,8 +194,11 @@ public class TileEnderResurrection extends TileEntity{
 
 	public boolean onActivated(EntityPlayer player){
 		boolean flag = true;
-		if (player.dimension != 1) return true;
-		if (xCoord > 80 || zCoord > 80 || xCoord < -80 || zCoord < -80){
+		if (worldObj.provider.dimensionId != 1) {
+			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.SpawnDragonMustBeInTheEnd.txt"));
+			return true;
+		}
+		if (xCoord > 100 || zCoord > 100 || xCoord < -100 || zCoord < -100){
 			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.SpawnDragonToFarFrom00.txt"));
 			return false;
 		}

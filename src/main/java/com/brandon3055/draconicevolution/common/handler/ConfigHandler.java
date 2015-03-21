@@ -30,6 +30,8 @@ public class ConfigHandler {
 	public static boolean disableOreSpawnNether;
 	public static boolean enableHudDisplay;
 	public static boolean enableVersionChecker;
+	public static boolean dragonBreaksBlocks;
+	public static int[] dragonEggSpawnLocation;
 
 	//spawner
 	public static String[] spawnerList;
@@ -83,6 +85,8 @@ public class ConfigHandler {
 			disableOreSpawnOverworld = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Overworld)", false, "Set to true to prevent draconium ore from spawning in the overworld").getBoolean(false);
 			enableHudDisplay = config.get(Configuration.CATEGORY_GENERAL, "Enable HUD info", true, "Set to false to disable the HUD info for tools and blocks").getBoolean(true);
 			enableVersionChecker = config.get(Configuration.CATEGORY_GENERAL, "Enable version checker", true, "Set to false to disable the version checker").getBoolean(true);
+			dragonBreaksBlocks = config.get(Configuration.CATEGORY_GENERAL, "Can dragon break blocks", true, "Set to false to disable the DE dragons ability to break blocks (dose not effect vanilla dragon)").getBoolean(true);
+			dragonEggSpawnLocation = config.get(Configuration.CATEGORY_GENERAL, "Dragon egg spawn location", new int[] {0, 0, 0}, "Sets the exact location to spawn the dragon egg and disables the portal spawn (dose not effect vanilla dragon)").getIntList();
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);
