@@ -102,8 +102,8 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {//to
 		GL11.glDepthMask(false);
 		FMLClientHandler.instance().getClient().getTextureManager().bindTexture(outer_model_texture);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glRotatef(rotation*0.5F, 0F, -1F, -0.5F);
 		GL11.glColor4f(0.5F, 2F, 2F, 0.7F);
 		iner_model.renderAll();
