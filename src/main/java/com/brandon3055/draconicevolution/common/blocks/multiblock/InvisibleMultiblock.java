@@ -179,6 +179,16 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 		}
 		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
 	}
+	
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+		
+		int meta = world.getBlockMetadata(x, y, z);
+		if(meta == 2){
+			return AxisAlignedBB.getBoundingBox(x, y, z, x, y, z);
+		}
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+	}
 
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
