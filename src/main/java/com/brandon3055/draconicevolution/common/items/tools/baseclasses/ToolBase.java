@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.ToolModePacket;
 import com.brandon3055.draconicevolution.common.utills.*;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.relauncher.Side;
@@ -157,11 +158,57 @@ public class ToolBase extends RFItemBase {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World p_77659_2_, EntityPlayer player) {
-
-		if (InfoHelper.isCtrlKeyDown() && InfoHelper.isShiftKeyDown())
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		if (!world.isRemote && !DraconicEvolution.proxy.isDedicatedServer())
 		{
-			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);
+			handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
+		}
+		else if (world.isRemote && DraconicEvolution.proxy.getMCServer() == null)
+		{
+			handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
+			DraconicEvolution.network.sendToServer(new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));
+		}
+
+		return super.onItemRightClick(stack, world, player);
+	}
+
+	public static void handleModeChange(ItemStack stack, EntityPlayer player, boolean shift, boolean ctrl)
+	{
+		if (stack == null || !(stack.getItem() instanceof RFItemBase)) return;
+		RFItemBase item = (RFItemBase)stack.getItem();
+
+		if (shift && !ctrl)
+		{
+			List<ItemConfigField> fields = item.getFields(stack, player.inventory.currentItem);
+			for (ItemConfigField field : fields)
+			{
+				if (field.name.equals(References.DIG_AOE))
+				{
+					int aoe = (Integer) field.value;
+					aoe++;
+					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
+					field.value = aoe;
+					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+				}
+			}
+		}
+		else if (ctrl && !shift)
+		{
+			List<ItemConfigField> fields = item.getFields(stack, player.inventory.currentItem);
+			for (ItemConfigField field : fields)
+			{
+				if (field.name.equals(References.DIG_DEPTH)) {
+					int aoe = (Integer) field.value;
+					aoe++;
+					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
+					field.value = aoe;
+					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+				}
+			}
+		}
+		else if (ctrl && shift)
+		{
+			List<ItemConfigField> fields = item.getFields(stack, player.inventory.currentItem);
 			for (ItemConfigField field : fields)
 			{
 				if (field.name.equals(References.ATTACK_AOE)) {
@@ -173,7 +220,6 @@ public class ToolBase extends RFItemBase {
 				}
 			}
 		}
-		return super.onItemRightClick(stack, p_77659_2_, player);
 	}
 
 	public ToolMaterial getToolMaterial()

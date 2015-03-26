@@ -1,4 +1,7 @@
-######## 1.0.1-Snapshot(6) ########
+######## 1.0.1-Snapshot 7 (RC 2)########
+-hotfix for server crash in RC 1 related to changing tool modes
+
+######## 1.0.1-Snapshot 6 (RC 1)########
 -fixed teleporting mobs with a dislocator on a server crashing the client. 
 -added support for other mods to add recipes to the draconium chest.
 -fixed arrows bouncing off of dragons... oops.
@@ -39,6 +42,8 @@
 -added config to disable any blocks or items in the mod
 -removed old config to disable distortion flame and sun dial 
 -added config option to limit player speed
+-added Wireless Energy Transceiver
+-added Advanced Wireless Energy Transceiver
 
 ######## 1.0.1-Snapshot(5) ########
 -fixed tesseracts not accepting energy from pylons.

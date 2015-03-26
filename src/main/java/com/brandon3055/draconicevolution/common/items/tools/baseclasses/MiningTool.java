@@ -75,36 +75,6 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		ToolHandler.updateGhostBlocks(player, world);
-		if (InfoHelper.isShiftKeyDown() && !InfoHelper.isCtrlKeyDown())
-		{
-			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);
-			for (ItemConfigField field : fields)
-			{
-				if (field.name.equals(References.DIG_AOE))
-				{
-					int aoe = (Integer) field.value;
-					aoe++;
-					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
-					field.value = aoe;
-					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
-				}
-			}
-		}
-		else if (InfoHelper.isCtrlKeyDown() && !InfoHelper.isShiftKeyDown())
-		{
-			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);
-			for (ItemConfigField field : fields)
-			{
-				if (field.name.equals(References.DIG_DEPTH)) {
-					int aoe = (Integer) field.value;
-					aoe++;
-					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
-					field.value = aoe;
-					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
-				}
-			}
-		}
-
  		return super.onItemRightClick(stack, world, player);
 	}
 
