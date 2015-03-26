@@ -14,6 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +42,7 @@ public class DraconicBow extends ItemBow implements IInventoryTool
 		this.setMaxDamage(-1);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setUnlocalizedName(Strings.draconicBowName);
-		GameRegistry.registerItem(this, Strings.draconicBowName);
+		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.draconicBowName);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class DraconicBow extends ItemBow implements IInventoryTool
 				return event.result;
 			}
 
-			if (player.capabilities.isCreativeMode || player.inventory.hasItem(Items.arrow) || player.inventory.hasItem(ModItems.enderArrow))
+			if (player.capabilities.isCreativeMode || player.inventory.hasItem(Items.arrow) || player.inventory.hasItem(ModItems.enderArrow) || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0)
 			{
 				player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 			}

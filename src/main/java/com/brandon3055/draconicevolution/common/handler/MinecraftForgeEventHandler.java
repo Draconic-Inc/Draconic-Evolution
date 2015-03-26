@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
+import com.brandon3055.draconicevolution.common.network.SpeedRequestPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
@@ -62,6 +63,38 @@ public class MinecraftForgeEventHandler {
 
 	Random random = new Random();
 	private static Method becomeAngryAt;
+
+	public static double maxSpeed = 10F;
+	public static int ticksSinceRequest = 0;
+	public static boolean speedNeedsUpdating = true;
+
+	@SubscribeEvent
+	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event)
+	{
+		if (!event.entityLiving.worldObj.isRemote || !(event.entityLiving instanceof EntityPlayerSP)) return;
+		EntityPlayerSP player = (EntityPlayerSP) event.entityLiving;
+
+		double motionX = player.motionX;
+		double motionZ = player.motionZ;
+		double motion = Math.sqrt((motionX*motionX + motionZ*motionZ));
+		double reduction = motion - maxSpeed;
+
+		if (motion > maxSpeed && (player.onGround || player.capabilities.isFlying))
+		{
+			player.motionX -= motionX * reduction;
+			player.motionZ -= motionZ * reduction;
+		}
+
+		if (speedNeedsUpdating)
+		{
+			if (ticksSinceRequest == 0) {
+				DraconicEvolution.network.sendToServer(new SpeedRequestPacket());
+				LogHelper.info("Requesting speed packet from server");
+			}
+			ticksSinceRequest++;
+			if (ticksSinceRequest > 500) ticksSinceRequest = 0;
+		}
+	}
 
 	@SubscribeEvent
 	public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
@@ -303,6 +336,7 @@ public class MinecraftForgeEventHandler {
 	public void joinWorld(EntityJoinWorldEvent event) {
 		if (event.entity instanceof EntityPlayerSP)
 		{
+			speedNeedsUpdating = true;
 			DraconicEvolution.network.sendToServer(new MountUpdatePacket(0));
 		}
 	}

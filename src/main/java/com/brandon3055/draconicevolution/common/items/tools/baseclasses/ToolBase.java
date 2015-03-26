@@ -3,9 +3,7 @@ package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.*;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,6 +14,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import org.lwjgl.input.Keyboard;
 
@@ -125,6 +125,7 @@ public class ToolBase extends RFItemBase {
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = super.getFields(stack, slot);
 		if (!getToolClasses(stack).isEmpty()) list.add(new ItemConfigField(References.FLOAT_ID, slot, References.DIG_SPEED_MULTIPLIER).setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1f));
+		if (!getToolClasses(stack).isEmpty()) list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.BASE_SAFE_AOE).readFromItem(stack, false));
 		return list;
 	}
 
@@ -135,15 +136,17 @@ public class ToolBase extends RFItemBase {
 		if (show){
 			List<ItemConfigField> l = getFields(stack, 0);
 			for (ItemConfigField f : l) list.add(f.getTooltipInfo());
+			if (getCapacity(stack) > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(getCapacity(stack)));
 		}
 
 		addAditionalInformation(stack, player, list, extended);
 		if (show) InfoHelper.addLore(stack, list, true);
+		InfoHelper.addEnergyInfo(stack, list);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void addAditionalInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {
-		list.add("Press " + Keyboard.getKeyName(KeyBindings.toolConfig.getKeyCode()) + " to open config gui");
+		list.add(StatCollector.translateToLocal("info.de.press.txt") + " " + Keyboard.getKeyName(KeyBindings.toolConfig.getKeyCode()) + " " + StatCollector.translateToLocal("info.de.toOpenConfigGUI.txt"));
 	}
 
 	@Override
@@ -151,5 +154,30 @@ public class ToolBase extends RFItemBase {
 		if (stack.getUnlocalizedName().contains(":wyvern")) return EnumRarity.rare;
 		if (stack.getUnlocalizedName().contains(":draconic")) return EnumRarity.epic;
 		return EnumRarity.uncommon;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World p_77659_2_, EntityPlayer player) {
+
+		if (InfoHelper.isCtrlKeyDown() && InfoHelper.isShiftKeyDown())
+		{
+			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);
+			for (ItemConfigField field : fields)
+			{
+				if (field.name.equals(References.ATTACK_AOE)) {
+					int aoe = (Integer) field.value;
+					aoe++;
+					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
+					field.value = aoe;
+					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+				}
+			}
+		}
+		return super.onItemRightClick(stack, p_77659_2_, player);
+	}
+
+	public ToolMaterial getToolMaterial()
+	{
+		return toolMaterial;
 	}
 }

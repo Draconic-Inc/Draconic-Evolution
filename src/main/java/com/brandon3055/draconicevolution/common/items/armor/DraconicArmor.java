@@ -51,7 +51,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		super(material, 0, armorType);
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
-		GameRegistry.registerItem(this, name);
+		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, name);
 	}
 
 	@Override
@@ -169,7 +169,10 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 			if (world.isRemote) return;
 			if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) this.extractEnergy(stack, 5000, false);
 			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY, (int)Math.floor(player.posZ)) < 5 && ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false))
+			{
 				player.addPotionEffect(new PotionEffect(16, 419, 0, true));
+			}
+			else if ( ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false) && ItemNBTHelper.getBoolean(stack, "ArmorNVLock", false)) player.addPotionEffect(new PotionEffect(16, 419, 0, true));
 			else if (player.isPotionActive(16)) player.removePotionEffect(16);
 
 		}
@@ -264,7 +267,10 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
 		if (armorType == 0)
+		{
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack, false));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVLock").readFromItem(stack, false));
+		}
 		else if (armorType == 1)
 		{
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack, false));

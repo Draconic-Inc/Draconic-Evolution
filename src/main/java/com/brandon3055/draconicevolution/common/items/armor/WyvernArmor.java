@@ -47,7 +47,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 		super(material, 0, armorType);
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
-		GameRegistry.registerItem(this, name);
+		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, name);
 	}
 
 	@Override

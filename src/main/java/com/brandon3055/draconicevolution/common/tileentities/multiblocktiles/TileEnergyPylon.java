@@ -275,7 +275,7 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		if (getMaster() == null) return 0;
+		if (getMaster() == null || !getMaster().isOnline()) return 0;
 		int extracted = reciveEnergy ? 0 : getMaster().extractEnergy(maxExtract, simulate);
 		if (!simulate && extracted > 0) particleRate = (byte)Math.min(20, extracted < 500 && extracted > 0 ? 1 : extracted/500);
 		return extracted;

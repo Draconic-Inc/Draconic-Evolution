@@ -11,7 +11,6 @@ import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -26,6 +25,7 @@ public class Teleporter
 		protected float pitch;
 		protected float yaw;
 		protected String name;
+		protected String dimentionName = "";
 		protected boolean writeProtected = false;
 
 		public TeleportLocation(){
@@ -75,8 +75,7 @@ public class Teleporter
 		public int getDimension() {return dimension;}
 
 		public String getDimensionName() {
-			if (DraconicEvolution.proxy.getMCServer() == null) return String.valueOf(dimension);
-			return MinecraftServer.getServer().worldServerForDimension(dimension).provider.getDimensionName();
+			return dimentionName;
 		}
 
 		public float getPitch() {return pitch;}
@@ -117,6 +116,7 @@ public class Teleporter
 			compound.setFloat("Pitch", pitch);
 			compound.setFloat("Yaw", yaw);
 			compound.setString("Name", name);
+			compound.setString("DimentionName", dimentionName);
 			compound.setBoolean("WP", writeProtected);
 		}
 
@@ -128,6 +128,7 @@ public class Teleporter
 			pitch = compound.getFloat("Pitch");
 			yaw = compound.getFloat("Yaw");
 			name = compound.getString("Name");
+			dimentionName = compound.getString("DimentionName");
 			writeProtected = compound.getBoolean("WP");
 		}
 
@@ -164,6 +165,10 @@ public class Teleporter
 //
 //			entity.fallDistance = 0;
 			entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "portal.travel", 0.1F, entity.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		}
+
+		public void setDimentionName(String dimentionName) {
+			this.dimentionName = dimentionName;
 		}
 	}
 

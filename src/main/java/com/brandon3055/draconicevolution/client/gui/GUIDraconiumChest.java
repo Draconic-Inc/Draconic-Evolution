@@ -5,6 +5,7 @@ import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.manual.GuiButtonAHeight;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.ButtonPacket;
@@ -60,6 +61,13 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler
 		drawTexturedModalRect(guiLeft+387, guiTop+236, 44, 177, 90, 16);
 		drawTexturedModalRect(guiLeft+387, guiTop+180, 44, 177, 90, 16);
 
+		if (tile.lockOutputSlots) {
+			ResourceHandler.bindResource("textures/gui/Widgets.png");
+			GL11.glColor4f(1f, 1f, 1f, 1f);
+			for (int i = 0; i < 5; i++) drawTexturedModalRect(guiLeft + 385 + i * 18, guiTop + 158, 138, 18, 18, 18);
+			Minecraft.getMinecraft().getTextureManager().bindTexture(textureLeft);
+		}
+
 		int arrowHight = (int)(((float)tile.smeltingProgressTime / (float)tile.smeltingCompleateTime) * 22f);
 		drawTexturedModalRect(guiLeft+140, guiTop+192+22-arrowHight, 140, 216+22-arrowHight, 16, arrowHight);
 
@@ -101,6 +109,12 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler
 			list.add(s.substring(s.indexOf(".")+1));
 			drawHoveringText(list, x-guiLeft, y-guiTop, fontRendererObj);
 		}
+		if (GuiHelper.isInRect(398, 180, 70, 12, x-guiLeft, y-guiTop)){
+			s = StatCollector.translateToLocal("button.de.chestLockOutput.txt");
+			list.add(s.substring(s.indexOf(".")+1));
+			drawHoveringText(list, x-guiLeft, y-guiTop, fontRendererObj);
+		}
+
 		RenderHelper.enableGUIStandardItemLighting();
 	}
 
@@ -119,6 +133,8 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler
 		buttonList.add(new GuiButtonAHeight(2, posX+4, posY+206, 38, 12, s.substring(0, s.indexOf("."))));
 		s = StatCollector.translateToLocal("button.de.chestAutoFeed3.txt");
 		buttonList.add(new GuiButtonAHeight(3, posX+4, posY+219, 38, 12, s.substring(0, s.indexOf("."))));
+		s = StatCollector.translateToLocal("button.de.chestLockOutput.txt");
+		buttonList.add(new GuiButtonAHeight(4, posX+398, posY+180, 70, 12, s.substring(0, s.indexOf("."))));
 	}
 
 	@Override
@@ -127,6 +143,7 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler
 		else if (button.id == 1)DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST1, false));
 		else if (button.id == 2)DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST2, false));
 		else if (button.id == 3)DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST3, false));
+		else if (button.id == 4)DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_DRACONIUMCHEST4, false));
 	}
 
 	@Override

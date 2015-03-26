@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.render.block;
 
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
@@ -17,12 +18,16 @@ public class RenderCrystal implements IItemRenderer {
 	private TileEnergyRelay relay2;
 	private TileEnergyTransceiver transceiver1;
 	private TileEnergyTransceiver transceiver2;
+	private TileWirelessEnergyTransceiver wirelessTransceiver1;
+	private TileWirelessEnergyTransceiver wirelessTransceiver2;
 
 	public RenderCrystal() {
 		relay1 = new TileEnergyRelay(0);
 		relay2 = new TileEnergyRelay(1);
 		transceiver1 = new TileEnergyTransceiver(0);
 		transceiver2 = new TileEnergyTransceiver(1);
+		wirelessTransceiver1 = new TileWirelessEnergyTransceiver(0);
+		wirelessTransceiver2 = new TileWirelessEnergyTransceiver(1);
 		transceiver1.facing = 1;
 		transceiver2.facing = 1;
 	}
@@ -57,7 +62,7 @@ public class RenderCrystal implements IItemRenderer {
 			else GL11.glTranslatef(0.0F, -0.6F, 0.0F);
 		}
 		int meta = item.getItemDamage();
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(meta == 0 ? relay1 : meta == 1 ? relay2 : meta == 2 ? transceiver1 : transceiver2, 0.0D, 0.0D, 0.0D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(meta == 0 ? relay1 : meta == 1 ? relay2 : meta == 2 ? transceiver1 : meta == 3 ? transceiver2 : meta == 4 ? wirelessTransceiver1 : wirelessTransceiver2, 0.0D, 0.0D, 0.0D, 0.0F);
 		GL11.glPopMatrix();
 		RenderHelper.enableStandardItemLighting();
 	}

@@ -32,7 +32,6 @@ public class FMLEventHandler {
 	public void onEntityUpdate(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.START) return;
 		EntityPlayer player = event.player;
-
 		//Reset Walk Speed----------------------------------------------------------------------------------------------
 
 		if (walkSpeed == null){

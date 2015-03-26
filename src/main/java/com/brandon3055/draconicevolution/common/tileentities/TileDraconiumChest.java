@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
 import com.brandon3055.draconicevolution.common.utills.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class TileDraconiumChest extends TileEntity implements IInventory, IEnergyReceiver, ICustomItemData {
+public class TileDraconiumChest extends TileEntity implements ISidedInventory, IEnergyReceiver, ICustomItemData {
 	ItemStack[] items = new ItemStack[240];
 	ItemStack[] itemsCrafting = new ItemStack[10];
 	private int ticksSinceSync = -1;
@@ -40,6 +40,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 	public int green = 0;
 	public int blue = 150;
 	public boolean editMode = false;
+	public boolean lockOutputSlots = false;
 	private String customName;
 	public EnergyStorage energy = new EnergyStorage(1000000, 10000, 0);
 
@@ -55,6 +56,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 	public final int smeltingCompleateTime = 1600;
 	public int smeltingAutoFeed = 0;
 	public int tick;
+	private boolean inTick = false;
 
 	@Override
 	public void updateEntity() {
@@ -108,7 +110,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		updateEnergy();
 	}
 
-	public void updateEnergy() {
+	public void updateEnergy() {//todo if no charging item wait a sec before checking again
 		if (energy.getEnergyStored() < energy.getMaxEnergyStored() && getStackInSlot(239) != null && getStackInSlot(239).getItem() instanceof IEnergyContainerItem) {
 			IEnergyContainerItem item = (IEnergyContainerItem) getStackInSlot(239).getItem();
 			item.extractEnergy(getStackInSlot(239), receiveEnergy(ForgeDirection.DOWN, item.extractEnergy(getStackInSlot(239), energy.getMaxReceive(), true), false), false);
@@ -117,6 +119,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 
 	public void updateFurnace() {
 		if (worldObj.isRemote) return;
+		inTick = true;
 		tick++;
 		boolean canSmelt = false;
 		boolean flag = true;
@@ -196,7 +199,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 			} while (itemsToProccess > 0 && proccessAttempts < 5);
 		}
 
-		if ((flag && (getFill() || getLock() || getAll())) || (!canSmelt && (getLock() || getAll()) && tick % 60 == 0)) feedNextItem();
+		if ((flag && (getFill() || getLock() || getAll())) || (!canSmelt && (getLock() || getAll()) && (tick + xCoord + yCoord + zCoord) % 60 == 0)) feedNextItem();
 
 		if (canSmelt) {
 			smeltingBurnSpeed = Math.min(energy.getEnergyStored() / 1000, smeltingMaxBurnSpeed);
@@ -206,7 +209,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 			smeltingProgressTime += smeltingBurnSpeed;
 			energy.modifyEnergyStored(-smeltingBurnSpeed * 5);
 		} else smeltingProgressTime = 0;
-
+		inTick = false;
 	}
 
 	public void feedNextItem() {
@@ -445,6 +448,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		compound.setInteger("Green", green);
 		compound.setInteger("Blue", blue);
 		compound.setBoolean("Edit", editMode);
+		compound.setBoolean("LockOutputSlots", lockOutputSlots);
 		compound.setByte("AutoFeed", (byte) smeltingAutoFeed);
 		if (customName != null && customName.length() > 0)compound.setString("CustomName", customName);
 		energy.writeToNBT(compound);
@@ -470,6 +474,7 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		green = compound.getInteger("Green");
 		blue = compound.getInteger("Blue");
 		editMode = compound.getBoolean("Edit");
+		lockOutputSlots = compound.getBoolean("LockOutputSlots");
 		smeltingAutoFeed = compound.getByte("AutoFeed");
 		customName = compound.getString("CustomName");
 		energy.readFromNBT(compound);
@@ -539,61 +544,6 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 		energy.readFromNBT(compound);
 	}
 
-//	@Override
-//	public void writeDataToItem(NBTTagCompound compound, ItemStack stack) {
-//		NBTTagCompound[] tag = new NBTTagCompound[items.length];
-//
-//		for (int i = 0; i < items.length; i++) {
-//			tag[i] = new NBTTagCompound();
-//
-//			if (items[i] != null) {
-//				tag[i] = items[i].writeToNBT(tag[i]);
-//			}
-//
-//			compound.setTag("Item" + i, tag[i]);
-//		}
-//
-//		for (int i = 0; i < itemsCrafting.length; i++) {
-//			tag[i] = new NBTTagCompound();
-//
-//			if (itemsCrafting[i] != null) {
-//				tag[i] = itemsCrafting[i].writeToNBT(tag[i]);
-//			}
-//
-//			compound.setTag("CraftingItem" + i, tag[i]);
-//		}
-//
-//		compound.setInteger("Red", red);
-//		compound.setInteger("Green", green);
-//		compound.setInteger("Blue", blue);
-//		compound.setBoolean("Edit", editMode);
-//		compound.setByte("AutoFeed", (byte) smeltingAutoFeed);
-//		if (hasCustomInventoryName()) stack.setStackDisplayName(customName);
-//		energy.writeToNBT(compound);
-//	}
-
-//	@Override
-//	public void readDataFromItem(NBTTagCompound compound, ItemStack stack) {
-//		NBTTagCompound[] tag = new NBTTagCompound[items.length];
-//
-//		for (int i = 0; i < items.length; i++) {
-//			tag[i] = compound.getCompoundTag("Item" + i);
-//			items[i] = ItemStack.loadItemStackFromNBT(tag[i]);
-//		}
-//
-//		for (int i = 0; i < itemsCrafting.length; i++) {
-//			tag[i] = compound.getCompoundTag("CraftingItem" + i);
-//			itemsCrafting[i] = ItemStack.loadItemStackFromNBT(tag[i]);
-//		}
-//
-//		red = compound.getInteger("Red");
-//		green = compound.getInteger("Green");
-//		blue = compound.getInteger("Blue");
-//		editMode = compound.getBoolean("Edit");
-//		smeltingAutoFeed = compound.getByte("AutoFeed");
-//		energy.readFromNBT(compound);
-//	}
-
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
 		return this.energy.receiveEnergy(maxReceive, simulate);
@@ -611,6 +561,23 @@ public class TileDraconiumChest extends TileEntity implements IInventory, IEnerg
 
 	@Override
 	public boolean canConnectEnergy(ForgeDirection from) {
+		return true;
+	}
+
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side) {
+		int[] i = new int[getSizeInventory()];
+		for (int i1 = 0; i1 < i.length; i1++) i[i1] = i1;
+		return i;
+	}
+
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+		return !lockOutputSlots || inTick || slot < getSizeInventory() - 5;
+	}
+
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		return true;
 	}
 }

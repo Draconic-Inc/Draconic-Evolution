@@ -6,12 +6,39 @@
 -fixed charging exployt with draconium blocks.
 -added block break event to aoe mining tools.
 -added comparator output to the energy pylon. 
--changed. Pylons can now be placed up to 16 blocks above and bellow the core
--Special additions for FTB
-	> added option to set where the dragon egg will spawn
-	> added option to disable dragon block destruction
-	> added a beam option for the particle gen
-	> added the ability to copy settings from one particle gen to another
+-changed. Pylons can now be placed up to 16 blocks above and bellow the core.
+-option to set where the dragon egg will spawn.
+-added option to disable dragon block destruction.
+-added a beam option for the particle gen.
+-added the ability to copy settings from one particle gen to another.
+-added base safe AOE mode.
+-added Crtl + right click to change dig depth.
+-added Ctrl + Shift + right click to change attack aoe.
+-fixed dragon health bar glitchiness.
+-fixed advanced dislocator crash related to moving destinations in the gui.
+-fixed crash when trying to teleport to a dimension that has been removed.
+-fixed staff breaking liquid.
+-fixed tool config gui not accepting enchant type "all".
+-added night vision lock option to draconic helm.
+-added draconium ore, draconium dust, draconium ingot and awakened draconium ingot to the ore dictionary.
+-added ore generation to mod dimensions (configurable)
+-re-added right click information to stabilized mob spawner and energy core.
+-fixed minor syncing issue with the dislocator stand.
+-fixed a little bugines when crafting with the draconic chest.
+-mobs spawned from the stabilized spawner are now only persistent if the spawner has the "ignore players" upgrade.
+-fixed weapon attack damage tool tips.
+-buffed sword and staff attack damage.
+-fixed some enchants not working properly with the swords and staff.
+-fixed dig depth on staff breaking blocks behind player.
+-bows no longer need a single arrow when enchanted with infinity.
+-fixed tools not using energy in 1x1 mode.
+-adjusted mining tool power usage.
+-added option to lock the last 5 slots in the draconic chest.
+-energy core tiers now range from 1 to 7 instead of 0 to 6.
+-reduced the mining level of the stabilized spawner to 1 (iron)
+-added config to disable any blocks or items in the mod
+-removed old config to disable distortion flame and sun dial 
+-added config option to limit player speed
 
 ######## 1.0.1-Snapshot(5) ########
 -fixed tesseracts not accepting energy from pylons.

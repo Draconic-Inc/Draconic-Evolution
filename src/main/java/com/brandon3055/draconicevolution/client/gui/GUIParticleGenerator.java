@@ -680,9 +680,9 @@ public class GUIParticleGenerator extends GuiScreen {
 		fontRendererObj.drawString("Blue:", col1, posY + ln1 + 2 * 22, 0x000000, false);
 		fontRendererObj.drawString(String.valueOf(beam_blue), col1, posY + ln2 + 2 * 22, 0x000000, false);
 
-		fontRendererObj.drawString("Z Rot:", col1, posY + ln1 + 3 * 22, 0x000000, false);
+		fontRendererObj.drawString("Y Rot:", col1, posY + ln1 + 3 * 22, 0x000000, false);
 		fontRendererObj.drawString(pitch, col1, posY + ln2 + 3 * 22, 0x000000, false);
-		fontRendererObj.drawString("X Rot:", col1, posY + ln1 + 4 * 22, 0x000000, false);
+		fontRendererObj.drawString("Z,X Rot:", col1, posY + ln1 + 4 * 22, 0x000000, false);
 		fontRendererObj.drawString(yaw, col1, posY + ln2 + 4 * 22, 0x000000, false);
 		fontRendererObj.drawString("Length:", col1, posY + ln1 + 5 * 22, 0x000000, false);
 		fontRendererObj.drawString(length, col1, posY + ln2 + 5 * 22, 0x000000, false);

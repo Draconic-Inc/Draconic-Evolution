@@ -74,7 +74,7 @@ public class EntityCustomDragon extends EntityDragon {
 		float f;
 		float f1;
 
-		if (!initialized){
+		if (!initialized && !worldObj.isRemote){
 			this.addPotionEffect(new PotionEffect(10, 600, 10, false));
 			initialized = true;
 		}
@@ -389,7 +389,7 @@ public class EntityCustomDragon extends EntityDragon {
 				double d2 = entity.posX - d0;
 				double d3 = entity.posZ - d1;
 				double d4 = d2 * d2 + d3 * d3;
-				entity.addVelocity(d2 / d4 * 8.0D, 5.20000000298023224D, d3 / d4 * 8.0D);
+				if (rand.nextInt(isUber ? 3 : 10) == 0) entity.addVelocity(d2 / d4 * 8.0D, 5.20000000298023224D, d3 / d4 * 8.0D);
 				entity.velocityChanged = true;
 				((EntityLivingBase)entity).setLastAttacker(this);
 			}
@@ -620,8 +620,6 @@ public class EntityCustomDragon extends EntityDragon {
 			compound.setInteger("PortalY", portalY);
 			compound.setInteger("PortalZ", portalZ);
 		}
-		LogHelper.info(portalY + " write");
-
 	}
 
 	@Override
@@ -637,8 +635,6 @@ public class EntityCustomDragon extends EntityDragon {
 			portalY = compound.getInteger("PortalY");
 			portalZ = compound.getInteger("PortalZ");
 		}
-		LogHelper.info(portalY + " read");
-
 	}
 
 	@Override

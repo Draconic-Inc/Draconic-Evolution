@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.network;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
@@ -64,6 +65,7 @@ public class TeleporterPacket implements IMessage
 			bytes.writeFloat(location.getPitch());
 			bytes.writeFloat(location.getYaw());
 			ByteBufUtils.writeUTF8String(bytes, location.getName());
+			//ByteBufUtils.writeUTF8String(bytes, location.getDimensionName());
 			if (function == UPDATEDESTINATION) bytes.writeInt(data);
 		}
 
@@ -98,6 +100,7 @@ public class TeleporterPacket implements IMessage
 			location.setPitch(bytes.readFloat());
 			location.setYaw(bytes.readFloat());
 			location.setName(ByteBufUtils.readUTF8String(bytes));
+			//location.setDimentionName(ByteBufUtils.readUTF8String(bytes));
 			if (function == UPDATEDESTINATION) data = bytes.readInt();
 		}
 
@@ -135,6 +138,7 @@ public class TeleporterPacket implements IMessage
 
 			if (message.function == ADDDESTINATION){
 				NBTTagCompound tag = new NBTTagCompound();
+				message.location.setDimentionName(DraconicEvolution.proxy.getMCServer().worldServerForDimension(message.location.getDimension()).provider.getDimensionName());
 				message.location.writeToNBT(tag);
 				list.appendTag(tag);
 				compound.setTag("Locations", list);
@@ -168,6 +172,7 @@ public class TeleporterPacket implements IMessage
 
 			if (message.function == UPDATEDESTINATION){
 				NBTTagCompound tag = list.getCompoundTagAt(message.data);
+				message.location.setDimentionName(DraconicEvolution.proxy.getMCServer().worldServerForDimension(message.location.getDimension()).provider.getDimensionName());
 				message.location.writeToNBT(tag);
 				list.func_150304_a(message.data, tag);
 				compound.setTag("Locations", list);

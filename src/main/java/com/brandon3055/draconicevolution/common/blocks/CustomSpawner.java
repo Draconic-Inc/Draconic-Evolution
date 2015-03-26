@@ -39,7 +39,7 @@ public class CustomSpawner extends BlockDE implements IHudDisplayBlock {
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setHardness(10F);
 		this.setResistance(2000F);
-		this.setHarvestLevel("pickaxe", 3);
+		this.setHarvestLevel("pickaxe", 1);
 		ModBlocks.register(this);
 	}
 
@@ -81,23 +81,23 @@ public class CustomSpawner extends BlockDE implements IHudDisplayBlock {
 				return true;
 			}else
 			{
-//				if (world.isRemote && !player.isSneaking()) {
-//					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo1.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().entityName));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo2.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().requiresPlayer));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo3.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().ignoreSpawnRequirements));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo4.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().spawnSpeed));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo5.txt"));
-//					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
-//				}else if (world.isRemote && player.isSneaking())
-//				{
-//					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo6.txt"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo7.txt"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo8.txt"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo9.txt"));
-//					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
-//				}
+				if (world.isRemote && !player.isSneaking()) {
+					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo1.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().entityName));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo2.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().requiresPlayer));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo3.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().ignoreSpawnRequirements));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo4.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().spawnSpeed));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo5.txt"));
+					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
+				}else if (world.isRemote && player.isSneaking())
+				{
+					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo6.txt"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo7.txt"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo8.txt"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo9.txt"));
+					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
+				}
 				return true;
 			}
 		}

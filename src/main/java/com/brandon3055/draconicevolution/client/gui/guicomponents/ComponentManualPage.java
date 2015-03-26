@@ -4,7 +4,6 @@ import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.utill.CustomResourceLocation;
 import com.brandon3055.draconicevolution.common.utills.GuiHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.utills.Utills;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -38,26 +37,25 @@ public class ComponentManualPage extends ComponentScrollingBase {
 			pageLength += c.getHeight();
 			contentList.add(c);
 		}
-		pageLength += 100;
-		LogHelper.info(page.scrollOffset);
+		pageLength += 25;
 	}
 
 	@Override
 	public void handleScrollInput(int direction) {
 		page.scrollOffset += direction * 10;
 		if (page.scrollOffset < 0) page.scrollOffset = 0;
-		if (page.scrollOffset > pageLength - getHeight() + 40) page.scrollOffset = pageLength - getHeight() + 40;
-		if (pageLength + 40 <= getHeight()) page.scrollOffset = 0;
+		if (page.scrollOffset > pageLength - getHeight()) page.scrollOffset = pageLength - getHeight();
+		if (pageLength <= getHeight()) page.scrollOffset = 0;
 	}
 
 	@Override
 	public int getWidth() {
-		return gui.width;
+		return gui.getXSize();
 	}
 
 	@Override
 	public int getHeight() {
-		return gui.height;
+		return gui.getYSize();
 	}
 
 	@Override
@@ -109,14 +107,14 @@ public class ComponentManualPage extends ComponentScrollingBase {
 			else if (type == 2)
 			{
 				String s = content.substring(content.indexOf("[c]") + 3);
-				LogHelper.info(content + " " + s);
+//				LogHelper.info(content + " " + s);
 				String name = s.substring(0, s.lastIndexOf(":"));
 				ItemStack stack = Utills.getStackFromName(name, Integer.parseInt(s.substring(s.lastIndexOf(":") + 1)));
 				result = stack;
 
 				if (stack != null)
 				{
-					LogHelper.info(stack);
+//					LogHelper.info(stack);
 
 					for (IRecipe recipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList())
 					{
@@ -143,8 +141,8 @@ public class ComponentManualPage extends ComponentScrollingBase {
 						}
 					}
 
-					LogHelper.info(recipes);
-					LogHelper.info(smeltingRecipes);
+//					LogHelper.info(recipes);
+//					LogHelper.info(smeltingRecipes);
 				}
 			}
 			else textLines = null;

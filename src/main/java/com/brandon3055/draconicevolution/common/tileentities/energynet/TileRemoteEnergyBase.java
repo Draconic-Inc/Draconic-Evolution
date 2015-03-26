@@ -94,14 +94,14 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 			if (worldObj.isRemote)
 			{
 				int rType = 0;
-				if (this instanceof TileEnergyRelay)
+				if (this instanceof TileEnergyRelay || this instanceof TileWirelessEnergyTransceiver)
 				{
 					if (remoteTile instanceof TileEnergyTransceiver) rType = 2;
 					else rType = 3;
 				}
 				else if (this instanceof TileEnergyTransceiver)
 				{
-					if (remoteTile instanceof TileEnergyRelay) rType = 1;
+					if (remoteTile instanceof TileEnergyRelay || remoteTile instanceof TileWirelessEnergyTransceiver) rType = 1;
 					else rType = 0;
 				}
 				if (inView) LogHelper.info(device.energyFlow);
@@ -199,11 +199,13 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		{
 			if (linkDat != null && linkDat.hasKey("Bound") && linkDat.getBoolean("Bound"))
 			{
+				LogHelper.info("Bind");
 				handleBinding(player, linkDat.getInteger("XCoord"), linkDat.getInteger("YCoord"), linkDat.getInteger("ZCoord"), true);
 				linkDat.setBoolean("Bound", false);
 			}
 			else
 			{
+				LogHelper.info("Bind2");
 				linkDat = new NBTTagCompound();
 				linkDat.setInteger("XCoord", xCoord);
 				linkDat.setInteger("YCoord", yCoord);
@@ -257,6 +259,8 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		}
 		else if (mode.equals(Wrench.CLEAR_BINDINGS))
 		{
+			if (this instanceof TileWirelessEnergyTransceiver) ((TileWirelessEnergyTransceiver)this).receiverList.clear();
+
 			for (LinkedEnergyDevice ld : linkedDevices)
 			{
 				if (!(ld.getTile(worldObj) instanceof TileRemoteEnergyBase))

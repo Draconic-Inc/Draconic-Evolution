@@ -1,14 +1,15 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.DataUtills;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.*;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,6 +17,7 @@ import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.server.S18PacketEntityTeleport;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -61,24 +63,43 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
 		int radius = ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0);
 		int depth = ItemNBTHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
-
 		return getEnergyStored(stack) >= energyPerOperation && (radius > 0) ? breakAOEBlocks(stack, x, y, z, radius, depth, player) : super.onBlockStartBreak(stack, x, y, z, player);
+	}
+
+	@Override
+	public boolean onBlockDestroyed(ItemStack stack, World p_150894_2_, Block p_150894_3_, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase p_150894_7_) {
+		if (ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0) == 0) extractEnergy(stack, References.ENERGYPERBLOCK, false);
+		return super.onBlockDestroyed(stack, p_150894_2_, p_150894_3_, p_150894_4_, p_150894_5_, p_150894_6_, p_150894_7_);
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		ToolHandler.updateGhostBlocks(player, world);
-		if (player.isSneaking())
+		if (InfoHelper.isShiftKeyDown() && !InfoHelper.isCtrlKeyDown())
 		{
 			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);
 			for (ItemConfigField field : fields)
 			{
-				if (field.name.equals(References.DIG_AOE)) {
+				if (field.name.equals(References.DIG_AOE))
+				{
 					int aoe = (Integer) field.value;
 					aoe++;
 					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
 					field.value = aoe;
-					//field.sendChanges();
+					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+				}
+			}
+		}
+		else if (InfoHelper.isCtrlKeyDown() && !InfoHelper.isShiftKeyDown())
+		{
+			List<ItemConfigField> fields = getFields(stack, player.inventory.currentItem);
+			for (ItemConfigField field : fields)
+			{
+				if (field.name.equals(References.DIG_DEPTH)) {
+					int aoe = (Integer) field.value;
+					aoe++;
+					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
+					field.value = aoe;
 					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
 				}
 			}
@@ -88,7 +109,6 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 	}
 
 	//todo attack, hoe, textures
-	//This method is basses on tinkerers construct
 	public boolean breakAOEBlocks(ItemStack stack, int x, int y, int z, int breakRadius, int breakDepth, EntityPlayer player)
 	{
 		Map<Block, Integer> blockMap = ItemNBTHelper.getBoolean(stack, References.OBLITERATE, false) ? getObliterationList(stack) : new HashMap<Block, Integer>();
@@ -115,43 +135,84 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		}
 		int sideHit = mop.sideHit;
 
-		int xRange = breakRadius;
-		int yRange = breakRadius;
-		int zRange = breakDepth;
+		int xMax = 	breakRadius;
+		int xMin = 	breakRadius;
+		int yMax = 	breakRadius;
+		int yMin = 	breakRadius;
+		int zMax = 	breakRadius;
+		int zMin = 	breakRadius;
 		int yOffset = 0;
+
 		switch (sideHit) {
 			case 0:
+				yMax = breakDepth;
+				yMin = 0;
+				zMax = breakRadius;
+				break;
 			case 1:
-				yRange = breakDepth;
-				zRange = breakRadius;
+				yMin = breakDepth;
+				yMax = 0;
+				zMax = breakRadius;
 				break;
 			case 2:
+				xMax = breakRadius;
+				zMin = 0;
+				zMax = breakDepth;
+				yOffset = breakRadius - 1;
+				break;
 			case 3:
-				xRange = breakRadius;
-				zRange = breakDepth;
+				xMax = breakRadius;
+				zMax = 0;
+				zMin = breakDepth;
 				yOffset = breakRadius - 1;
 				break;
 			case 4:
+				xMax = breakDepth;
+				xMin = 0;
+				zMax = breakRadius;
+				yOffset = breakRadius - 1;
+				break;
 			case 5:
-				xRange = breakDepth;
-				zRange = breakRadius;
+				xMin = breakDepth;
+				xMax = 0;
+				zMax = breakRadius;
 				yOffset = breakRadius - 1;
 				break;
 		}
 
-		for (int xPos = x - xRange; xPos <= x + xRange; xPos++)
+		if (ItemNBTHelper.getBoolean(stack, References.BASE_SAFE_AOE, false))
 		{
-			for (int yPos = y + yOffset - yRange; yPos <= y + yOffset + yRange; yPos++)
+			for (int xPos = x - xMin; xPos <= x + xMax; xPos++)
 			{
-				for (int zPos = z - zRange; zPos <= z + zRange; zPos++)
+				for (int yPos = y + yOffset - yMin; yPos <= y + yOffset + yMax; yPos++)
 				{
-					breakExtraBlock(stack, player.worldObj, xPos, yPos, zPos, sideHit, player, refStrength, Math.abs(x - xPos) <= 1 && Math.abs(y - yPos) <= 1 && Math.abs(z - zPos) <= 1, blockMap);
+					for (int zPos = z - zMin; zPos <= z + zMax; zPos++)
+					{
+						if (player.worldObj.getTileEntity(xPos, yPos, zPos) != null) {
+							if (player.worldObj.isRemote) {
+								player.addChatComponentMessage(new ChatComponentTranslation("msg.de.baseSafeAOW.txt"));
+							}
+							else ((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, ((EntityPlayerMP)player).worldObj));
+							return true;
+						}
+					}
+				}
+			}
+		}
+
+		for (int xPos = x - xMin; xPos <= x + xMax; xPos++)
+		{
+			for (int yPos = y + yOffset - yMin; yPos <= y + yOffset + yMax; yPos++)
+			{
+				for (int zPos = z - zMin; zPos <= z + zMax; zPos++)
+				{
+					breakExtraBlock(stack, player.worldObj, xPos, yPos, zPos, breakRadius * ((breakDepth / 2) + 1) , player, refStrength, Math.abs(x - xPos) <= 1 && Math.abs(y - yPos) <= 1 && Math.abs(z - zPos) <= 1, blockMap);
 				}
 			}
 		}
 
 		@SuppressWarnings("unchecked")
-		List<EntityItem> items = player.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x - xRange, y + yOffset - yRange, z - zRange, x + xRange + 1, y + yOffset + yRange + 1, z + zRange + 1));
+		List<EntityItem> items = player.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x - xMin, y + yOffset - yMin, z - zMin, x + xMax + 1, y + yOffset + yMax + 1, z + zMax + 1));
 		for (EntityItem item : items){
 			if (!player.worldObj.isRemote)
 			{
@@ -164,23 +225,22 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		return true;
 	}
 
-	//This method is basses on tinkerers construct
-	protected void breakExtraBlock(ItemStack stack, World world, int x, int y, int z, int sidehit, EntityPlayer player, float refStrength, boolean breakSound, Map<Block, Integer> blockMap)
+	protected void breakExtraBlock(ItemStack stack, World world, int x, int y, int z, int totalSize, EntityPlayer player, float refStrength, boolean breakSound, Map<Block, Integer> blockMap)
 	{
-		if (world.isAirBlock(x, y, z))
-			return;
+		if (world.isAirBlock(x, y, z)) return;
 
 		Block block = world.getBlock(x, y, z);
+		if (block == Blocks.bedrock || block.getMaterial() instanceof MaterialLiquid) return;
+
 		int meta = world.getBlockMetadata(x, y, z);
 
 		boolean effective = false;
-		if(block != null)
+
+		for (String s : getToolClasses(stack))
 		{
-			for (String s : getToolClasses(stack))
-			{
-				if (block.isToolEffective(s, meta) || func_150893_a(stack, block) > 1F) effective = true;
-			}
+			if (block.isToolEffective(s, meta) || func_150893_a(stack, block) > 1F) effective = true;
 		}
+
 		if (!effective)	return;
 
 		float strength = ForgeHooks.blockStrength(block, player, world, x,y,z);
@@ -193,8 +253,11 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 				return;
 			}
 		}
+
 		if (!player.canHarvestBlock(block) || !ForgeHooks.canHarvestBlock(block, player, meta) || refStrength/strength > 10f)
 			return;
+
+		int scaledPower = energyPerOperation + (totalSize * (energyPerOperation / 10));
 
 		if (player.capabilities.isCreativeMode || (blockMap.containsKey(block) && blockMap.get(block) == meta)) {
 			block.onBlockHarvested(world, x, y, z, meta, player);
@@ -205,18 +268,18 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 				((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
 			}
 
-			if ((blockMap.containsKey(block) && blockMap.get(block) == meta)) extractEnergy(stack, energyPerOperation, false);
+			if ((blockMap.containsKey(block) && blockMap.get(block) == meta)) extractEnergy(stack, scaledPower, false);
 			if (breakSound) world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
 			return;
 		}
 
-		extractEnergy(stack, energyPerOperation, false);
+		extractEnergy(stack, scaledPower, false);
 
 		if (!world.isRemote) {
 
 			block.onBlockHarvested(world, x, y, z, meta, player);
 
-			if(block.removedByPlayer(world, player, x,y,z, true)) // boolean is if block can be harvested, checked above
+			if(block.removedByPlayer(world, player, x,y,z, true))
 			{
 				block.onBlockDestroyedByPlayer( world, x,y,z, meta);
 				block.harvestBlock(world, player, x,y,z, meta);

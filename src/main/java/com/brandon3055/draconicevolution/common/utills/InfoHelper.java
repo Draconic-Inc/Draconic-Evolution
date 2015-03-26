@@ -98,6 +98,10 @@ public class InfoHelper {
 		return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
 	}
 
+	public static boolean isCtrlKeyDown() {
+		return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static boolean holdShiftForDetails(List list, boolean inverted){
 		if (isShiftKeyDown() == inverted) list.add(StatCollector.translateToLocal("info.de.hold.txt")+" "+EnumChatFormatting.AQUA + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.de.shift.txt") + EnumChatFormatting.RESET + " " + EnumChatFormatting.GRAY + StatCollector.translateToLocal("info.de.forDetails.txt"));

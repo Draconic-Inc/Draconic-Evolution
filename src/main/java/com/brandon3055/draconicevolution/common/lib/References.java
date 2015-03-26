@@ -44,4 +44,6 @@ public final class References {
 	public static final String ATTACK_AOE = "WeaponAttackAOE";
 	public static final String OBLITERATE = "ToolVoidJunk";
 	public static final String TREE_MODE = "AxeTreeMode";
+	public static final String BASE_SAFE_AOE = "BaseSafeAOE";
+
 }

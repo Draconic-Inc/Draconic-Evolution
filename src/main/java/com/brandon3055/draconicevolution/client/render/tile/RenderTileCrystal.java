@@ -4,6 +4,8 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileRemoteEnergyBase;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -38,12 +40,12 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick) {
-		if (tileEntity instanceof TileEnergyRelay) renderEnergyRelay((TileEnergyRelay) tileEntity, x, y, z, partialTick);
+		if (tileEntity instanceof TileEnergyRelay || tileEntity instanceof TileWirelessEnergyTransceiver) renderEnergyRelay((TileRemoteEnergyBase) tileEntity, x, y, z, partialTick);
 		else if (tileEntity instanceof TileEnergyTransceiver) renderTransceiver((TileEnergyTransceiver) tileEntity, x, y, z, partialTick);
 	}
 
 
-	public void renderEnergyRelay(TileEnergyRelay tileEntity, double x, double y, double z, float partialTick) {
+	public void renderEnergyRelay(TileRemoteEnergyBase tileEntity, double x, double y, double z, float partialTick) {
 		//--- Pre Render ---//
 		tileEntity.inView = 10;
 		GL11.glPushMatrix();

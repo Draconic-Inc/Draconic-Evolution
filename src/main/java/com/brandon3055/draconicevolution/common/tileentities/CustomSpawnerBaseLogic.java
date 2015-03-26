@@ -165,7 +165,7 @@ public abstract class CustomSpawnerBaseLogic {
 				}
 			} else ((EntityLiving) par1Entity).onSpawnWithEgg(null);
 
-			((EntityLiving)par1Entity).func_110163_bv();
+			if (!requiresPlayer)((EntityLiving)par1Entity).func_110163_bv();
 			this.getSpawnerWorld().spawnEntityInWorld(par1Entity);
 		}
 

@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.common.achievements;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -26,6 +25,7 @@ public class Achievements {
 
 	public static void addAchievement (String name, Achievement achievement, ItemStack stack, String triggerCondition)
 	{
+		if (stack == null || stack.getItem() == null) return;
 		achievementsList.put(name, achievement.registerStat());
 		achievementItems.put(stack.getUnlocalizedName(), new AchievementCondition(name, triggerCondition));
 	}
@@ -104,7 +104,7 @@ public class Achievements {
 		ItemStack mobSoul = new ItemStack(ModItems.mobSoul);
 		ItemNBTHelper.setString(mobSoul, "Name", "Any");
 		addAchievement("draconicevolution.soul", new Achievement("draconicevolution.soul", "draconicevolution.soul", 0+x, -2, mobSoul, null).initIndependentStat(), "null");
-		if (ConfigHandler.disableSunDial == 0)addAchievement("draconicevolution.sundial", new Achievement("draconicevolution.sundial", "draconicevolution.sundial", 4+x, -4, ModBlocks.sunDial, getAchievement("draconicevolution.core3")).setSpecial(), "craft");
+		//if (ConfigHandler.disableSunDial == 0)addAchievement("draconicevolution.sundial", new Achievement("draconicevolution.sundial", "draconicevolution.sundial", 4+x, -4, ModBlocks.sunDial, getAchievement("draconicevolution.core3")).setSpecial(), "craft");
 		addAchievement("draconicevolution.manual", new Achievement("draconicevolution.manual", "draconicevolution.manual", -8+x, -1, ModItems.infoTablet, getAchievement("draconicevolution.dust")), "craft");
 
 	}

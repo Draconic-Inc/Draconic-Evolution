@@ -25,13 +25,11 @@ public class RenderTileEnergyPylon extends TileEntitySpecialRenderer {
 	@Override
 	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
 
-
 		if (tile == null || !(tile instanceof TileEnergyPylon)) return;
 		TileEnergyPylon pylon = (TileEnergyPylon) tile;
 		if (!pylon.active) return;
 		float scale = pylon.modelScale + (timeSinceLastTick *= !pylon.reciveEnergy ? -0.01F : 0.01F);
 		float rotation = pylon.modelRotation + (timeSinceLastTick / 2F);
-
 
 		GL11.glPushMatrix();
 		GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
@@ -43,14 +41,7 @@ public class RenderTileEnergyPylon extends TileEntitySpecialRenderer {
 			GL11.glTranslated(0, -1, 0);
 		}
 
-//		//GL11.glDepthMask(false);
-//		FMLClientHandler.instance().getClient().getTextureManager().bindTexture(model_texture);
-//		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
-//		GL11.glEnable(GL11.GL_CULL_FACE);
-//		//GL11.glEnable(GL11.GL_BLEND);
-//		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-//		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
 
 		bindTexture(model_texture);
 		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
@@ -62,8 +53,6 @@ public class RenderTileEnergyPylon extends TileEntitySpecialRenderer {
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		GL11.glDepthMask(false);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
-
-
 
 		GL11.glPushMatrix();
 		float scale1 = scale % 1F;
@@ -96,7 +85,6 @@ public class RenderTileEnergyPylon extends TileEntitySpecialRenderer {
 		GL11.glColor4f(1F, 1F, 1F, 1F-(scale4));
 		model.renderAll();
 		GL11.glPopMatrix();
-
 
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);

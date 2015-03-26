@@ -1,161 +1,270 @@
 [
   {
-    "name":"item.draconicevolution:tclogo",
-    "images":["http://i.imgur.com/zYLHSxW.png", "http://i.imgur.com/ss70hgS.jpg"],
-    "content":
-    [
-      "line 1",
-      "line 2",
-      "",
-      "line 3",
-      "http://i.imgur.com/zYLHSxW.png",
-      "line 4",
-      "line 4",
-      "http://i.imgur.com/ss70hgS.jpg"
-    ]
-  },
-  {
-    "name":"item.coal",
-    "images":["http://i.imgur.com/hZOyCf9.png", "http://i.imgur.com/IGDBOvC.png"],
-    "content":
-    [
-      "http://i.imgur.com/IGDBOvC.png",
-      "line 1",
-      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
-      "line 3",
-      "http://i.imgur.com/hZOyCf9.png",
-      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
-      "Test Info"
-    ]
-  },
-  {
-    "name":"info.Test Information!!!!",
-    "images":[],
-    "content":
-    [
-      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
-      "line 1",
-      "[c]item.iron_ingot:0",
-      "line 3",
-      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
-      "line 4"
-    ]
-  },
-  {
-    "name":"item.stick",
-    "images":[],
-    "content":
-    [
-      "line 1",
-      "",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
-    ]
-  },
-  {
     "name":"tile.draconicevolution:draconiumOre",
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "The very basis of Draconic Research"
     ]
   },
   {
-    "name":"item.coal",
+    "name":"item.draconicevolution:draconiumDust",
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "This is the material from mining Draconium Ore"
     ]
   },
   {
-    "name":"tile.draconicevolution:draconiumOre",
+    "name":"item.draconicevolution:draconiumBlend",
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "Mixture of Draconic dust and iron. Necessary to make Draconium",
+      "[c]item.draconicevolution:draconiumBlend:0"
     ]
   },
   {
-    "name":"tile.draconicevolution:potentiometer",
+    "name":"item.draconicevolution:draconiumIngot",
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "The results of smelting draconium blend in a furnace. Used in most recipes",
+      "[c]item.draconicevolution:draconiumIngot:0"
     ]
   },
   {
-    "name":"tile.draconicevolution:draconiumOre",
+    "name":"tile.draconicevolution:draconium",
+    "nameL":"Draconium Block",
+    "meta":0,
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "A storage block for draconium",
+      "[c]tile.draconicevolution:draconium:0"
     ]
   },
   {
-    "name":"item.coal",
+    "name":"tile.draconicevolution:draconium",
+    "nameL":"Charged Draconium Block",
+    "meta":2,
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "Used in the Ritual of Draconic Resurrection. Place a draconium block in a charging device and 100 million RF later you have a charged draconium block!",
+      "[c]tile.draconicevolution:draconium:2"
     ]
   },
   {
-    "name":"tile.draconicevolution:draconiumOre",
+    "name":"item.draconicevolution:draconicCore",
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "Used in most Draconic Evolution recipes",
+      "[c]item.draconicevolution:draconicCore:0"
     ]
   },
   {
-    "name":"tile.draconicevolution:energyPylon",
+    "name":"item.draconicevolution:wyvernCore",
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "This component is used to craft all Wyvern tools",
+      "[c]item.draconicevolution:wyvernCore:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wyvernPickaxe",
+    "images":[],
+    "content":
+    [
+      "Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Modes: Shift-Right Click to switch modes: 1×1 or 3×3",
+      "[c]item.draconicevolution:wyvernPickaxe:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wyvernShovel",
+    "images":[],
+    "content":
+    [
+      "Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Modes: Shift-Right Click to switch modes: 1×1 or 3×3",
+      "[c]item.draconicevolution:wyvernShovel:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wyvernSword",
+    "images":[],
+    "content":
+    [
+      "Ordinary weaponry not good enough anymore? Using draconic knowledge you have found a way to imbue an ordinary diamond sword with the power of Draconium",
+      "+20 Attack damage",
+      "+10% Mob Health (Adds 10% of the mobs own health to the attack damage)",
+      "3x3 AOE Attack",
+      "[c]item.draconicevolution:wyvernSword:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wyvernBow",
+    "images":[],
+    "content":
+    [
+      "Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Sharpshooter – Zoom in on your target and deal extreme damage with pin point accuracy. Rapid Fire – Barrage your enemies in a rain of arrows.",
+      "[c]item.draconicevolution:wyvernBow:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconiumFluxCapacitor",
+    "nameL":"Wyvern Flux Capacitor",
+    "meta":0,
+    "images":[],
+    "content":
+    [
+      "Tired of your tools and armor running out of energy when you need them most, you have figured out how to create an item capable of storing an immense amount of energy and transferring it to your items as they need it.",
+      "[c]item.draconicevolution:draconiumFluxCapacitor:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconiumEnergyCore",
+    "nameL":"Wyvern Energy Core",
+    "meta":0,
+    "images":[],
+    "content":
+    [
+      "This component is used in devices that need to be able to store energy",
+      "[c]item.draconicevolution:draconiumFluxCapacitor:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wyvernHelm",
+    "images":[],
+    "content":
+    [
+      "Stronger than diamond you can now withstand even greater blows.",
+      "Full set gives total fire immunity",
+      "[c]item.draconicevolution:wyvernHelm:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wyvernChest",
+    "images":[],
+    "content":
+    [
+      "Infusing the armor with Dracomiun you vastly improve its resistance.",
+      "Full set gives total fire immunity",
+      "[c]item.draconicevolution:wyvernChest:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wyvernLeggs",
+    "images":[],
+    "content":
+    [
+      "You feel even stronger and faster now that you have infused diamond legs with Draconium.",
+      "Full set gives total fire immunity",
+      "+Speed boost",
+      "[c]item.draconicevolution:wyvernLeggs:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wyvernBoots",
+    "images":[],
+    "content":
+    [
+      "You learn to improve the boots Draconium seems to have given you greater agility.",
+      "Full set gives total fire immunity",
+      "+Reduced fall damage",
+      "+Jump boost",
+      "[c]item.draconicevolution:wyvernBoots:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:teleporterMKI",
+    "images":[],
+    "content":
+    [
+      "You have managed to infuse the powers of The End with your knowledge of the Draconic to create a basic teleporter, but at a cost. The energies binding them are unstable and only last for 10 uses and will take some of your life energy with each use and can only be linked to a single location but works across dimensions. Once used up, you must create a new one.",
+      "[c]item.draconicevolution:teleporterMKI:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:teleporterMKII",
+    "images":[],
+    "content":
+    [
+      "Learning how draconic powers interact with the powers of the endermen, you have created the ultimate teleporter. You can now store up to 100 locations and using the endermen’s own pearls as fuel, created something that can teleport you extreme distances even across dimensions at will. Shift right click to open the GUI. Most functionality should be self explanatory. On the left is the destination list. Each destination has a lock button that prevents you from accidentally overwriting or deleting it. On the right starting from the top you have information about the selected destination, An option to rename the selected destination, An option to change the selected destination to your current coordinates and an option to delete the selected destination. Under that is the fuel, An option to teleport to the selected destination, an option to add a new destination (your current location), And an option to add fuel (Ender pearls from your inventory) Shift click to add a stack. You can also shift+Scroll with the item in your hand to cycle through the destinations without opening the gui and right click to teleport. You can also teleport players and mobs by left clicking them however players must be holding shift and mobs can not be teleported across dimensions.",
+      "[c]item.draconicevolution:teleporterMKII:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:teleporterStand",
+    "images":[],
+    "content":
+    [
+      "You have figured out how to create a simple pedestal on which you can place you basic or advanced charms of dislocation. Simply right click with a charm in your hand to place it on the pedestal then right click the pedestal to teleport. The advantage of this is the charms wont take damage or use fuel. The disadvantage is you can bring them with you to your destination. To remove the charm from the pedestal simply shift right click with an empty hand\n\nWhen holding basic dislocator that has been renamed in an anvil or an enhanced dislocator with a destination set the name or destination will be displayed above the pedestal. If you hold shift all names will be hidden except the one you are looking at. (Shift behavior can be reversed in the config)",
+      "[c]tile.draconicevolution:teleporterStand:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconium",
+    "nameL":"Resurrection Stone",
+    "meta":1,
+    "images":[],
+    "content":
+    [
+      "The key component in the Ritual of Draconic Resurrection.",
+      "[c]tile.draconicevolution:draconium:1"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:enderArrow",
+    "images":[],
+    "content":
+    [
+      "Perhaps not your brightest idea... You found a way to travel even longer distances using ender perls by strapping them to the end of a arrow.",
+      "This of course makes the arrow a lot heavier. Too heavy for a regular for a regular bow. Leaving you no choice but to use ether a wyvern or draconic bow.",
+      "So what could go wrong you ask? Well as im sure you are aware ender perls on their own are a rather painful way to travel. Now add the power of a wayvern or worse a draconic bow to that and you have a recipe for extreme pain.",
+      "Be sure to wear your best fall protection. And just hope its enough",
+      "[c]item.draconicevolution:enderArrow.name:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:mobSoul",
+    "images":[],
+    "content":
+    [
+      "You notice that with Draconic Weapons you can now occasionally steal the souls of those things you kill."
+    ]
+  },
+  {
+    "name":"item.draconicevolution:dragonHeart",
+    "images":[],
+    "content":
+    [
+      "Dropped by the Ender Dragon and Draconic Dragon. It is your belief that this immensely powerful item may hold the key to unlocking the true power of draconium using an ancient ritual known as the ritual of awakening.",
+      "The Ritual:",
+      "1.Drop a dragon heart on the ground and activate it with an explosion.",
+      "2.Drop 4 to 16 draconic cores on the ground near the activated heart (4 per block of draconium). A few seconds after its initial activation it will draw all nearby items towards it anything that is not a core will be destroyed.",
+      "3.Now quickly place 1 to 4 (depending on how many cores you dropped) Charged draconium blocks near the heart.",
+      "4.You will know its working when you see the hearts energy targeting the charged draconium blocks. Now stand back and watch the magic happen.",
+      "You can only do this ritual once per heart so you best make the most of it."
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicIngot",
+    "images":[],
+    "content":
+    [
+      "You have been studying the interactions of Draconium with various materials and have come to realize that this is only an inert state.  You have discovered a method to bring out the true power of Draconium using a complex ritual involving a dragon heart. (See the dragon heart page for details)",
+      "[c]item.draconicevolution:draconicIngot:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconicBlock",
+    "images":[],
+    "content":
+    [
+      "You have been studying the interactions of Draconium with various materials and have come to realize that this is only an inert state.  You have discovered a method to bring out the true power of Draconium using a complex ritual involving a dragon heart. (See the dragon heart page for details)",
+      "[c]tile.draconicevolution:draconicBlock:0"
     ]
   },
   {
@@ -163,38 +272,161 @@
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "This component is used to craft the most advanced draconic items",
+      "[c]item.draconicevolution:awakenedCore:0"
     ]
   },
   {
-    "name":"item.coal",
+    "name":"item.draconicevolution:draconiumEnergyCore",
+    "nameL":"Draconic Energy Core",
+    "meta":1,
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "This is a more powerful version of the wyvern energy core",
+      "[c]item.draconicevolution:draconiumEnergyCore:1"
     ]
   },
   {
-    "name":"tile.draconicevolution:draconiumOre",
+    "name":"item.draconicevolution:draconicPickaxe",
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "Further Draconic research has shown you ways to even greater power.. Modes: Shift-Right Click to switch modes: 1×1, 3×3, 5×5 and 7×7 Right Click to activate: Obliteration Mode – Destroys blocks that you specify.",
+      "[c]item.draconicevolution:draconicPickaxe:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicShovel",
+    "images":[],
+    "content":
+    [
+      "Further Draconic research has shown you ways to even greater power.. Modes: Shift-Right Click to switch modes: 1×1, 3×3, 5×5 and 7×7 Right Click to activate: Obliteration Mode – Destroys blocks that you specify.",
+      "[c]item.draconicevolution:draconicShovel:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicAxe",
+    "images":[],
+    "content":
+    [
+      "Further Draconic research has shown you ways to even greater power.. Will harvest the entire tree and leaves above.",
+      "[c]item.draconicevolution:draconicAxe:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicHoe",
+    "images":[],
+    "content":
+    [
+      "Further Draconic research has shown you ways to even greater power.. Will till an entire 9×9 area, just perfect for a full-size farm with water source. Also will dig or replace dirt (if dirt in inventory) to make the full 9×9.",
+      "[c]item.draconicevolution:draconicHoe:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicSword",
+    "images":[],
+    "content":
+    [
+      "Seeking an even more powerful weapon you combine your Wyvern sword with Awakened Draconium to make the ultimate sword",
+      "+40 Attack damage",
+      "+20% Mob Health (Adds 20% of the mobs own health to the attack damage)",
+      "7x7 AOE Attack",
+      "[c]item.draconicevolution:draconicSword:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicBow",
+    "images":[],
+    "content":
+    [
+      "Further Draconic research has shown you ways to even greater power.. Sharpshooter – Zoom in on your target and deal extreme damage with pin point accuracy. Rapid Fire – Barrage your enemies in a rain of arrows. Explosive – With gunpowder in your inventory destroy an area slightly larger than TNT with your arrows. Devastation (Creative Mode only) – Explosive + Double rapid fire",
+      "[c]item.draconicevolution:draconicBow:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicDistructionStaff",
+    "images":[],
+    "content":
+    [
+      "After great pains you have mastered the powers of the Draconic and created the ultimate weapon and destructive tool!",
+      "Mining:",
+      "  Extreme mining speed",
+      "  1x1x1 to 9x9x9 AOE with depth independently adjustable",
+      "  Junk filter",
+      "  AOE safe mode. To ensure you don't accidental mine your entire base",
+      "Attack:",
+      "  +60 Attack damage",
+      "  +30% Mob Health (Adds 30% of the mobs own health to the attack damage)",
+      "  1x1 to 25x25 AOE Attack",
+      "[c]item.draconicevolution:draconicDistructionStaff:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconiumFluxCapacitor",
+    "nameL":"Draconic Flux Capacitor",
+    "meta":1,
+    "images":[],
+    "content":
+    [
+      "With this upgrade you will be able to go for days without needing to stop and recharge.",
+      "[c]item.draconicevolution:draconiumFluxCapacitor:1"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicHelm",
+    "images":[],
+    "content":
+    [
+      "No longer do you fear the night you now can see all the time regardless of what is out there.",
+      " -Night Vision",
+      " -Cures negative potion effects",
+      " -Bypass suffocation and drowning damage",
+      " -Removes mining slowdown under water (Aqua affinity)",
+      "[c]item.draconicevolution:draconicHelm:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicChest",
+    "images":[],
+    "content":
+    [
+      "Using the heart of a dragon you are stronger and have the gift of flight.",
+      " -Flight",
+      " -Removes mining slowdown when in the air",
+      " -Fire immunity",
+      "[c]item.draconicevolution:draconicChest:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicLeggs",
+    "images":[],
+    "content":
+    [
+      "Even stronger armor the soul of a dragon protects you and moves you even faster Improved speed boost.",
+      " -Speed boost",
+      "[c]item.draconicevolution:draconicLeggs:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:draconicBoots",
+    "images":[],
+    "content":
+    [
+      "Stronger, faster, better than before the heart of a dragon grants you higher jumping.",
+      " -Fall protection",
+      " -Jump boost",
+      " -Up Hill Step",
+      "[c]item.draconicevolution:draconicBoots:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:weatherController",
+    "images":[],
+    "content":
+    [
+      "This is a block that allows you to control the weather. To use it place some emeralds in its inventory and select a mode. There are 3 available modes Rain off, Rain on and Thunder storm. To activate apply a redstone signal.",
+      "[c]tile.draconicevolution:weatherController:0"
     ]
   },
   {
@@ -203,105 +435,8 @@
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
-    ]
-  },
-  {
-    "name":"item.coal",
-    "images":[],
-    "content":
-    [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
-    ]
-  },
-  {
-    "name":"tile.draconicevolution:draconiumOre",
-    "images":[],
-    "content":
-    [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
-    ]
-  },
-  {
-    "name":"tile.draconicevolution:draconiumChest",
-    "images":[],
-    "content":
-    [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
-    ]
-  },
-  {
-    "name":"tile.draconicevolution:draconiumOre",
-    "images":[],
-    "content":
-    [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
-    ]
-  },
-  {
-    "name":"item.coal",
-    "images":[],
-    "content":
-    [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
-    ]
-  },
-  {
-    "name":"tile.draconicevolution:energyCrystal",
-    "nameL":"Energy Relay",
-    "meta":1,
-    "images":[],
-    "content":
-    [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
-    ]
-  },
-  {
-    "name":"tile.draconicevolution:draconiumOre",
-    "images":[],
-    "content":
-    [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "This is a basic low power (around 80RF/t) generator that may come in handy if you have no other mods capable of generating RF power.",
+      "[c]tile.draconicevolution:generator:3"
     ]
   },
   {
@@ -310,16 +445,314 @@
     "images":[],
     "content":
     [
-      "line 1",
-      "line 2",
-      "line 3",
-      "www.image1",
-      "line 4",
-      "www.image2"
+      "Everyone needs effective mob farms. For the cost of a bit of solid fuel (coal, charcoal, etc.) or RF power, you can kill to your hearts content knowing the forces of the Draconic have your back! The grinder will kill all mobs in a 7x7 area in front of it. It is much more efficient and can kill mobs faster if powered by RF.",
+      "[c]tile.draconicevolution:grinder:3"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyInfuser",
+    "images":[],
+    "content":
+    [
+      "Seeing the need for faster energy transfer you have found a way to bring the infuser to being. Has a faster transfer rate than most other mod’s RF recharge stations (and cool particle effects to boot!)",
+      "[c]tile.draconicevolution:energyInfuser:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:sunDial",
+    "images":[],
+    "content":
+    [
+      "This is an extremely powerful block that allows you to change the time. Simply place it in the world and and apply a constant redstone signal. Once the device charges it will fire a particle beam at the sun accelerating it to 30X its normal speed. Simply shut off the redstone signal when you have the sun where you want it.",
+      "[c]tile.draconicevolution:sunDial:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:playerDetector",
+    "images":[],
+    "content":
+    [
+      "Simple player detection, can be adjusted up to 10 blocks range to detect any players nearby.",
+      "[c]tile.draconicevolution:playerDetector:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:playerDetectorAdvanced",
+    "images":[],
+    "content":
+    [
+      "This is an advanced version of the player detector it has the following features. Max range of 20 blocks. Whitelist/Blacklist for fine tuning who you do or don’t want. Camouflage – Hide your detector so no one sees it. Inverted out put (less redstone needed!).",
+      "[c]tile.draconicevolution:playerDetectorAdvanced:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:dissEnchanter",
+    "images":[],
+    "content":
+    [
+      "With this device you are now able to transfer enchantments from your items to books at the cost of experience. The cost is determined by the repair cost of the item and the repair cost of the item is decreased slightly each time. To use it simply place the enchanted item in the first slot a regular book in the center slot and press the transfer button. One enchantment (the first one) will be stripped from the item and applied to the book. When you strip an enchant the item will loos a percentage of its total durability this percentage is shown in the gui. You can decrease the damage bu placing book shelves around it or other enchanting boosters (It takes a total of 20 book shelves to prevent all damage). WARNING Items that use energy instead of durability will also be damaged and destroyed but will not show their damage value.",
+      "[c]tile.draconicevolution:dissEnchanter:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:draconiumChest",
+    "images":[],
+    "content":
+    [
+      "Using your draconic knowledge you have learned how to create the ultimate chest. With a massive 234 slot storage capacity a built in crafting table and 5 slot RF furnace capable of doubling ore as well as the ability to keep its contents when harvested this chest is the most powerful most versatile storage device in existence! It also comes in a variety of every colour you can imagine gust shift right click it with empty hand for details.",
+      "[c]tile.draconicevolution:draconiumChest:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:customSpawner",
+    "images":[],
+    "content":
+    [
+      "To get started, right click any vanilla spawner with a draconic core to stabilize it. You now have a empty transportable spawner (pick up with draconic tools) Use any mob soul on the spawner to change it to that type.",
+      "There are several items you can use to upgrade the spawner:",
+      "  -Wyvern Core: Upgrades to tier 2 (increases spawn count and speed)",
+      "  -Awakened Core: Upgrades to tier 3 (further increases spawn count and speed)",
+      "  -Nether Star: Removes the requirement for a player to be within 16 blocks for the spawner to function.",
+      "  -Notch Apple: Makes the spawner ignore spawn requirements for the mob it is spawning e.g. Will make monsters spawn even if the light level is to high.",
+      "When broken you get back everything except the mob soul (it is to fragile and is destroyed when the spawner is broken)",
+      "[c]tile.draconicevolution:customSpawner:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyStorageCore",
+    "images":[],
+    "content":
+    [
+      "Using Draconic knowledge you have discovered how to build a multi-block structure capable of storing more power then any other device ever invented with the highest tier able to store up to 2.14 trillion RF (you can find more info in the Energy core multiblock tutorial)",
+      "[c]tile.draconicevolution:energyStorageCore:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyPylon",
+    "images":[],
+    "content":
+    [
+      "This device is used to extract or insert energy into the energy storage multiblock. Its maximum transfer rate is 2,147,483,647 RF/t",
+      "[c]tile.draconicevolution:energyPylon:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:particleGenerator",
+    "images":[],
+    "content":
+    [
+      "Purely decorative, this blocks allows for fully customizable particle effects to be created. For more information check out the instruction manual built into its GUI.",
+      "This block is also used as a part of the Energy Core multiblock structure",
+      "[c]tile.draconicevolution:particleGenerator:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyCrystal",
+    "nameL":"Energy Relay",
+    "meta":0,
+    "images":[],
+    "content":
+    [
+      "This is a the base component of the DE energy net. This device on its own can not send or receive energy from a block. Its purpose is to act as a hub to link devices that can.",
+      "See Crystal Binder info for more information on linking and energy distribution",
+      "Range:25",
+      "Max Connections: 10",
+      "[c]tile.draconicevolution:energyCrystal:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyCrystal",
+    "nameL":"Advanced Energy Relay",
+    "meta":1,
+    "images":[],
+    "content":
+    [
+      "This is a more powerful version of the Energy Relay. It is capable of transferring energy much faster and it has the ability to link to a larger number of devices",
+      "See Crystal Binder info for more information on linking and energy distribution",
+      "Range:50",
+      "Max Connections: 20",
+      "[c]tile.draconicevolution:energyCrystal:1"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyCrystal",
+    "nameL":"Energy Transceiver",
+    "meta":2,
+    "images":[],
+    "content":
+    [
+      "This is the block used to actually import and export energy from the energy net. Simply place it on the side of an energy acceptor or producer and link it to the network. You can change between input and output mode by right clicking it with a crystal binder in \"Mode Change\" mode",
+      "See Crystal Binder info for more information on linking and energy distribution",
+      "Range:25",
+      "Max Connections: 2",
+      "[c]tile.draconicevolution:energyCrystal:2"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyCrystal",
+    "nameL":"Advanced Energy Transceiver",
+    "meta":3,
+    "images":[],
+    "content":
+    [
+      "This is a more powerful version of the Energy Transceiver. Along with having a much higher energy transfer rate it also has the ability to extract or insert energy into a device 5 times faster then would normally be possible.",
+      "See Crystal Binder info for more information on linking and energy distribution",
+      "Range:50",
+      "Max Connections: 4",
+      "[c]tile.draconicevolution:energyCrystal:3"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyCrystal",
+    "nameL":"Wireless Energy Transceiver",
+    "meta":4,
+    "images":[],
+    "content":
+    [
+      "This device works similar to the Energy Relay except it is also able to wirelessly connect to RF accepting devices",
+      "See Crystal Binder info for more information on linking and energy distribution",
+      "Range:25",
+      "Max Connections: 3",
+      "Wireless Range: 15",
+      "Max Wireless Connections: 8",
+      "[c]tile.draconicevolution:energyCrystal:4"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:energyCrystal",
+    "nameL":"Advanced Wireless Energy Transceiver",
+    "meta":5,
+    "images":[],
+    "content":
+    [
+      "This is an advanced version of the Wireless Energy Transceiver that is able to connect to a larger number of devices as well as transfer energy at a much higher rate.",
+      "See Crystal Binder info for more information on linking and energy distribution",
+      "Range:50",
+      "Max Connections: 6",
+      "Wireless Range: 30",
+      "Max Wireless Connections: 16",
+      "[c]tile.draconicevolution:energyCrystal:5"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:wrench",
+    "images":[],
+    "content":
+    [
+      "This is the tool used to link energy devices",
+      "Binding: To link two devices switch the tool to bind mode with shift+right click. Then just right click both devices (any order) to link them. Any energy net devices (Relay, Transceiver or Wireless Transceiver) and be linked to one another. The Wireless Transceiver can also be linked to any other RF accepting block by first clicking the transceiver then clicking the block.",
+      "Un-Binding: To un bind two linked devices switch the tool to un-bind mode then simply right click the two devices you with to un link. You can also clear all of a devices connections using \"un-bind all\" mode",
+      "Visual Indicator: While holding the Crystal Binder you are able to see the connections between all linked devices (Except the link between wireless transceivers and RF devices)",
+      "Connection Limits: All devices support a limited number of connections. This is the number of devices the block can be linked to. Relays have the highest number of available connections and therefor are useful for linking a network of Transceivers which have a very limited number of available connections.",
+      "Energy Transfer Mechanic: Each Energy device has its own internal energy buffer. If the buffer of a device it is linked to is lower then its own it will send some energy to that device to try to balance the two buffers. The energy difference between the two buffers is what determines the rate at which energy is sent.",
+      "[c]item.draconicevolution:wrench:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:rainSensor",
+    "images":[],
+    "content":
+    [
+      "A device that emits a redstine signal when it rains. This is perfect for controlling the weather controller.",
+      "[c]ile.draconicevolution:rainSensor:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:potentiometer",
+    "images":[],
+    "content":
+    [
+      "A simple redstone emitter that is capable of emitting a variable strength redstone signal between 0 and 15.",
+      "[c]tile.draconicevolution:potentiometer:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:xRayBlock",
+    "images":[],
+    "content":
+    [
+      "Many of you have probably seen a graphical glitch that sometimes occurs when chunks load that allows you to see through the world and see all of the cave caves and tunnels bellow. This block replicates that effect. When you place it next to another block the face of the block it is touching becomes transparent allowing you to see through the world. This can be very useful for finding cave systems and dungeons maby even things other players don’t want you to find. Such a block dose not come cheap. It will cost you several Nether Stars and it is so fragile that once placed it can not be collected without destroying it. (not even with silk touch)",
+      "[c]tile.draconicevolution:xRayBlock:0",
+      "TODO"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:safetyMatch",
+    "nameL":"Safety Match",
+    "meta":1000,
+    "images":[],
+    "content":
+    [
+      "Tired of everything burning to the ground when making a fireplace? Use this match to light a fire that will never go out, Will never burn you and will never burn down your house",
+      "[c]item.draconicevolution:safetyMatch:1000",
+      "Sic of having so many loos matches in your pocket?",
+      "[c]item.draconicevolution:safetyMatch:0"
+    ]
+  },
+  {
+    "name":"item.enchantedBook",
+    "nameL":"Reaper Enchant",
+    "images":[],
+    "content":
+    [
+      "TODO"
+    ]
+  },
+  {
+    "name":"info.Energy Storage Multiblock",
+    "images":[],
+    "content":
+    [
+      "TODO"
+    ]
+  },
+  {
+    "name":"info.Ritual of Draconic Resurrection",
+    "images":[],
+    "content":
+    [
+      "TODO"
+    ]
+  },
+  {
+    "name":"info.Pigman Blood Rage",
+    "images":[],
+    "content":
+    [
+      "Don't let the pigmen see you eating pork you wont like what happens...",
+      "TODO"
+    ]
+  },
+  {
+    "name":"info.Comets",
+    "images":[],
+    "content":
+    [
+      "TODO"
+    ]
+  },
+  {
+    "name":"info.Chaos Islands",
+    "images":[],
+    "content":
+    [
+      "TODO"
+    ]
+  },
+  {
+    "name":"info.Tool Config GUI",
+    "images":[],
+    "content":
+    [
+      "TODO"
+    ]
+  },
+  {
+    "name":"info.Placing items in world",
+    "images":[],
+    "content":
+    [
+      "TODO"
     ]
   }
 ]
-
-//Test
-//Test
-//Test

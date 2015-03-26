@@ -19,6 +19,7 @@ import com.brandon3055.draconicevolution.common.network.*;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
@@ -33,13 +34,10 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class CommonProxy {
 	//private final static boolean debug = DraconicEvolution.debug;
@@ -53,30 +51,35 @@ public class CommonProxy {
 		registerTileEntities();
 		initializeNetwork();
 
+		if (ModBlocks.isEnabled(ModBlocks.draconiumOre)) OreDictionary.registerOre("oreDraconium", ModBlocks.draconiumOre);
+		if (ModItems.isEnabled(ModItems.draconiumIngot)) OreDictionary.registerOre("ingotDraconium", ModItems.draconiumIngot);
+		if (ModItems.isEnabled(ModItems.draconiumDust)) OreDictionary.registerOre("dustDraconium", ModItems.draconiumDust);
+		if (ModItems.isEnabled(ModItems.draconicIngot)) OreDictionary.registerOre("ingotDraconiumAwakened", ModItems.draconicIngot);
+
 		DraconicEvolution.reaperEnchant = new EnchantmentReaper(ConfigHandler.reaperEnchantID);
-
-		Potion[] potionTypes = null;
-		LogHelper.info("Expanding Potion array size to 256");
-
-		for (Field f : Potion.class.getDeclaredFields()) {
-			f.setAccessible(true);
-
-			try {
-				if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a")) {
-					Field modfield = Field.class.getDeclaredField("modifiers");
-					modfield.setAccessible(true);
-					modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-					potionTypes = (Potion[]) f.get(null);
-					final Potion[] newPotionTypes = new Potion[256];
-					System.arraycopy(potionTypes, 0, newPotionTypes, 0, potionTypes.length);
-					f.set(null, newPotionTypes);
-				}
-			}
-			catch (Exception e) {
-				LogHelper.error("Severe error, please report this to the mod author:");
-				e.printStackTrace();
-			}
-		}
+//
+//		Potion[] potionTypes = null;
+//		LogHelper.info("Expanding Potion array size to 256");
+//
+//		for (Field f : Potion.class.getDeclaredFields()) {
+//			f.setAccessible(true);
+//
+//			try {
+//				if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a")) {
+//					Field modfield = Field.class.getDeclaredField("modifiers");
+//					modfield.setAccessible(true);
+//					modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+//					potionTypes = (Potion[]) f.get(null);
+//					final Potion[] newPotionTypes = new Potion[256];
+//					System.arraycopy(potionTypes, 0, newPotionTypes, 0, potionTypes.length);
+//					f.set(null, newPotionTypes);
+//				}
+//			}
+//			catch (Exception e) {
+//				LogHelper.error("Severe error, please report this to the mod author:");
+//				e.printStackTrace();
+//			}
+//		}
 
 		Achievements.addModAchievements();
 		LogHelper.info("Finished PreInitialization");
@@ -112,6 +115,9 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(MountUpdatePacket.Handler.class, MountUpdatePacket.class, 8, Side.SERVER);
 		DraconicEvolution.network.registerMessage(ItemConfigPacket.Handler.class, ItemConfigPacket.class, 9, Side.SERVER);
 		DraconicEvolution.network.registerMessage(TileObjectPacket.Handler.class, TileObjectPacket.class, 10, Side.SERVER);
+		DraconicEvolution.network.registerMessage(BlockUpdatePacket.Handler.class, BlockUpdatePacket.class, 11, Side.SERVER);
+		DraconicEvolution.network.registerMessage(SpeedRequestPacket.Handler.class, SpeedRequestPacket.class, 12, Side.SERVER);
+		DraconicEvolution.network.registerMessage(SpeedRequestPacket.Handler.class, SpeedRequestPacket.class, 13, Side.CLIENT);
 	}
 
 	public void registerTileEntities() {
@@ -136,6 +142,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileDraconiumChest.class, References.RESOURCESPREFIX + "TileDraconiumChest");
 		GameRegistry.registerTileEntity(TileEnergyRelay.class, References.RESOURCESPREFIX + "TileEnergyRelay");
 		GameRegistry.registerTileEntity(TileEnergyTransceiver.class, References.RESOURCESPREFIX + "TileEnergyTransceiver");
+		GameRegistry.registerTileEntity(TileWirelessEnergyTransceiver.class, References.RESOURCESPREFIX + "TileWirelessEnergyTransceiver");
 		if (DraconicEvolution.debug) {
 			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
@@ -179,5 +186,17 @@ public class CommonProxy {
 
 	public ParticleEnergyField energyField(World worldObj, double x, double y, double z, int type, boolean advanced, ParticleEnergyField oldBeam, boolean render) {
 		return null;
+	}
+
+	public boolean isOp(String paramString)
+	{
+		MinecraftServer localMinecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+		paramString = paramString.trim();
+		for (String str : localMinecraftServer.getConfigurationManager().func_152606_n()) {
+			if (paramString.equalsIgnoreCase(str)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.gui.componentguis;
 import com.brandon3055.draconicevolution.client.gui.guicomponents.*;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.DummyContainer;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.client.Minecraft;
@@ -50,7 +51,6 @@ public class GUIManual extends GUIScrollingBase {
 
 	@Override
 	protected ComponentCollection assembleComponents() {
-		loadPages();//todo remove
 		collection = new ComponentCollection(0, 0, xSize, ySize + 20, this);
 
 		collection.addComponent(new ComponentTexturedRect(0, 0, 255, 255, ResourceHandler.getResource("textures/gui/manualTop.png"))).setGroup(GR_BACKGROUND);
@@ -59,14 +59,6 @@ public class GUIManual extends GUIScrollingBase {
 		collection.addComponent(new ComponentTexturedRect(7, 100, 0, 0, 255, 255, ResourceHandler.getResource("textures/gui/images/debanner.png"), true)).setGroup(GR_INTRO).setName("BANNER");
 
 		collection.addComponent(new ComponentButton(75, 260, 100, 20, 0, this, StatCollector.translateToLocal("info.de.manual.indexButton.txt"), StatCollector.translateToLocal("info.de.manual.indexButtonTip.txt"))).setGroup(GR_INTRO);
-
-//		ITextureObject iTextureObject = mc.getTextureManager().getTexture(ResourceHandler.getResource("textures/gui/manualBottom.png"));
-//		mc.getResourceManager().getResource(ResourceHandler.getResource("textures/gui/manualBottom.png")).
-//		LogHelper.info(iTextureObject);
-//		if (iTextureObject instanceof TextureMap)
-//		{
-//			LogHelper.info(((TextureMap) iTextureObject).getTextureExtry("textures/gui/manualBottom.png"));
-//		}todo old
 
 		for (int i = 0; i < pageList.size(); i++)
 		{
@@ -94,6 +86,12 @@ public class GUIManual extends GUIScrollingBase {
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 		if (collection.getComponent("BANNER") != null && collection.getComponent("BANNER").isEnabled()) fontRendererObj.drawSplitString(StatCollector.translateToLocal("info.de.manual.introTxt.txt"), posX + 20, posY + 190, 150, 0x000000);
+		if (collection.getComponent("BANNER") != null && collection.getComponent("BANNER").isEnabled()) {
+			GL11.glPushMatrix();
+			GL11.glScalef(0.8F, 0.8F, 0.8F);
+			fontRendererObj.drawSplitString("I am still in the process of adding documentation to this manual. There is also some fine tuning that i still need to do.", posX + 110, posY + 380, 280, 0xFF0000);
+			GL11.glPopMatrix();
+		}
 	}
 
 	@Override
@@ -132,11 +130,8 @@ public class GUIManual extends GUIScrollingBase {
 
 	public static void loadPages()
 	{
-		//LogHelper.info("loading pages");
 		try
 		{
-			pageList.clear();//todo remove these (only needed for testing)
-			imageURLs.clear();
 			File manualJSON = new File(ResourceHandler.getConfigFolder(), "manual.json");
 
 			InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(References.RESOURCESPREFIX + "manual.json")).getInputStream();
@@ -213,7 +208,7 @@ public class GUIManual extends GUIScrollingBase {
 
 				reader.endObject();
 
-				pageList.add(new ManualPage(name, images.toArray(new String[images.size()]), content.toArray(new String[content.size()]), nameL, meta));
+				if (isValidPage(name))pageList.add(new ManualPage(name, images.toArray(new String[images.size()]), content.toArray(new String[content.size()]), nameL, meta));
 			}
 
 			reader.endArray();
@@ -227,8 +222,6 @@ public class GUIManual extends GUIScrollingBase {
 		{
 			e.printStackTrace();
 		}
-
-		//for (ManualPage p : pageList) LogHelper.info(p.getLocalizedName());
 	}
 
 	@Override
@@ -249,5 +242,12 @@ public class GUIManual extends GUIScrollingBase {
 				break;
 			}
 		}
+	}
+
+	private static boolean isValidPage(String name)
+	{
+		if (name.contains("info.")) return true;
+		else if (!ConfigHandler.disabledNamesList.contains(name)) return true;
+		return false;
 	}
 }

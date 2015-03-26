@@ -48,9 +48,9 @@ public class ModBlocks {
 
 	public static void init()
 	{
-		if(ConfigHandler.disableXrayBlock < 2) xRayBlock = new XRayBlock();
+		xRayBlock = new XRayBlock();
 		weatherController = new WeatherController();
-		if(ConfigHandler.disableSunDial < 2) sunDial = new SunDial();
+		sunDial = new SunDial();
 		draconiumOre = new DraconiumOre();
 		grinder = new Grinder();
 		potentiometer = new Potentiometer();
@@ -74,7 +74,7 @@ public class ModBlocks {
 		draconicBlock = new DraconicBlock();
 		energyCrystal = new EnergyCrystal();
 
-		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
+		longRangeDislocator = new LongRangeDislocator();
 		
 		if(DraconicEvolution.debug) {
 			testBlock = new TestBlock();
@@ -87,19 +87,23 @@ public class ModBlocks {
 	public static void register(BlockDE block)
 	{
 		String name = block.getUnwrappedUnlocalizedName(block.getUnlocalizedName());
-		GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
-		//GameRegistry.registerBlock(block, block.getUnwrappedUnlocalizedName(block.getUnlocalizedName()));
+		if (isEnabled(block))GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
 	}
 
 	public static void register(BlockDE block, Class<? extends ItemBlock> item)
 	{
 		String name = block.getUnwrappedUnlocalizedName(block.getUnlocalizedName());
-		GameRegistry.registerBlock(block, item, name.substring(name.indexOf(":") + 1));
+		if (isEnabled(block))GameRegistry.registerBlock(block, item, name.substring(name.indexOf(":") + 1));
 	}
 
 	public static void registerOther(Block block)
 	{
 		String name = block.getUnlocalizedName().substring(block.getUnlocalizedName().indexOf(".") + 1);
-		GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
+		if (isEnabled(block)) GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
+	}
+
+	public static boolean isEnabled(Block block)
+	{
+		return !ConfigHandler.disabledNamesList.contains(block.getUnlocalizedName());
 	}
 }

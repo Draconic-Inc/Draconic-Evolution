@@ -23,7 +23,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.WorldProvider;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -84,14 +84,14 @@ public class GUITeleporter extends GuiScreen
 		String colour = EnumChatFormatting.GREEN + "";
 		if (fuel < 10) colour = EnumChatFormatting.YELLOW + "";
 		if (fuel == 0) colour = EnumChatFormatting.DARK_RED + "";
-		fontRendererObj.drawString(colour+"Fuel: " + fuel, posX + 115, posY + 87, 0x000000);
+		fontRendererObj.drawString(colour+StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " " + fuel, posX + 115, posY + 87, 0x000000);
 
 		super.drawScreen(x, y, f);
 
 		for (int i = 0; i < Math.min(12, locations.size()); i++){
 			if (GuiHelper.isInRect(17, 6+i*11, 80, 10, x - posX, y - posY)) {
 				List l = new ArrayList();
-				l.add("Right click to teleport");
+				l.add(StatCollector.translateToLocal("info.de.rightClickToTeleport.txt"));
 				drawHoveringText(l, x, y, fontRendererObj);
 			}
 		}
@@ -165,7 +165,7 @@ public class GUITeleporter extends GuiScreen
 		fontRendererObj.drawString(EnumChatFormatting.GOLD+"X: "+(int)locations.get(selected+selrctionOffset).getXCoord(), posX+114, posY+7, 0x000000);
 		fontRendererObj.drawString(EnumChatFormatting.GOLD + "Y: " + (int) locations.get(selected + selrctionOffset).getYCoord(), posX + 114, posY + 16, 0x000000);
 		fontRendererObj.drawString(EnumChatFormatting.GOLD + "Z: " + (int) locations.get(selected + selrctionOffset).getZCoord(), posX + 114, posY + 25, 0x000000);
-		fontRendererObj.drawString(EnumChatFormatting.GOLD+""+WorldProvider.getProviderForDimension(locations.get(selected + selrctionOffset).getDimension()).getDimensionName(), posX+114, posY+34, 0x000000);
+		fontRendererObj.drawString(EnumChatFormatting.GOLD+""+ locations.get(selected + selrctionOffset).getDimensionName(), posX+114, posY+34, 0x000000);
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class GUITeleporter extends GuiScreen
 					}
 
 					if (player.capabilities.isCreativeMode || fuel > 0) {
-						fuel--;
+						if (!player.capabilities.isCreativeMode) fuel--;
 						DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.TELEPORT, i+selrctionOffset, false));
 					}
 				}
@@ -269,7 +269,7 @@ public class GUITeleporter extends GuiScreen
 		super.handleMouseInput();
 	}
 
-	private  void updateButtons(){
+	private void updateButtons(){
 		if (locations.size() > 12) maxOffset = locations.size() - 12;
 		else maxOffset = 0;
 		if (selrctionOffset > maxOffset) selrctionOffset = maxOffset;
@@ -291,11 +291,11 @@ public class GUITeleporter extends GuiScreen
 		}
 		if (editingNew){
 			((GuiButton) buttonList.get(4)).enabled = !textBeingEdited.getText().isEmpty();
-			((GuiButton) buttonList.get(4)).displayString = "Commit";
+			((GuiButton) buttonList.get(4)).displayString = StatCollector.translateToLocal("button.de.commit.txt");
 		}
 		if (editingExisting){
 			((GuiButton) buttonList.get(0)).enabled = !textBeingEdited.getText().isEmpty();
-			((GuiButton) buttonList.get(0)).displayString = "Commit";
+			((GuiButton) buttonList.get(0)).displayString = StatCollector.translateToLocal("button.de.commit.txt");
 		}
 		if (locations.size() >= 100) ((GuiButton) buttonList.get(4)).enabled = false;
 		else if (!editingNew) ((GuiButton) buttonList.get(4)).enabled = true;
@@ -303,24 +303,24 @@ public class GUITeleporter extends GuiScreen
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void initGui(){//todo Localization
+	public void initGui(){
 		buttonList.clear();
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 
 		//updateTeleporter();
 
-		buttonList.add(new GuiButtonAHeight(0, posX + 112, posY + 45, 66, 12, "Rename"));
-		buttonList.add(new GuiButtonAHeight(1, posX + 112, posY + 58, 66, 12, "Set Here"));
-		buttonList.add(new GuiButtonAHeight(2, posX + 112, posY + 71, 66, 12, "Remove"));
+		buttonList.add(new GuiButtonAHeight(0, posX + 112, posY + 45, 66, 12, StatCollector.translateToLocal("button.de.rename.txt")));
+		buttonList.add(new GuiButtonAHeight(1, posX + 112, posY + 58, 66, 12, StatCollector.translateToLocal("button.de.setHere.txt")));
+		buttonList.add(new GuiButtonAHeight(2, posX + 112, posY + 71, 66, 12, StatCollector.translateToLocal("button.de.remove.txt")));
 
-		buttonList.add(new GuiButtonAHeight(3, posX + 112, posY + 99, 33, 12, "UP"));
+		buttonList.add(new GuiButtonAHeight(3, posX + 112, posY + 99, 33, 12, StatCollector.translateToLocal("button.de.UP.txt")));
 
-		buttonList.add(new GuiButtonAHeight(4, posX + 112, posY + 112, 66, 12, "Add New"));
-		buttonList.add(new GuiButtonAHeight(5, posX + 112, posY + 125, 66, 12, "Add Fuel"));
-		buttonList.add(new GuiButtonAHeight(6, posX+xSize-63, posY-15, 60, 15, "Cancel"));
+		buttonList.add(new GuiButtonAHeight(4, posX + 112, posY + 112, 66, 12, StatCollector.translateToLocal("button.de.addNew.txt")));
+		buttonList.add(new GuiButtonAHeight(5, posX + 112, posY + 125, 66, 12, StatCollector.translateToLocal("button.de.addFuel.txt")));
+		buttonList.add(new GuiButtonAHeight(6, posX+xSize-63, posY-15, 60, 15, StatCollector.translateToLocal("button.de.cancel.txt")));
 
-		buttonList.add(new GuiButtonAHeight(7, posX + 112 + 34, posY + 99, 33, 12, "DOWN"));
+		buttonList.add(new GuiButtonAHeight(7, posX + 112 + 34, posY + 99, 33, 12, StatCollector.translateToLocal("button.de.DOWN.txt")));
 		((GuiButton) buttonList.get(6)).visible = false;
 
 		textBeingEdited = new GuiTextField(fontRendererObj, posX+3, posY-14, xSize-67, 12);
@@ -338,7 +338,7 @@ public class GUITeleporter extends GuiScreen
 		if (button.id == 0 || button.id == 6 && !editingNew){
 			if(button.id == 6){
 				editingExisting = false;
-				((GuiButton) buttonList.get(0)).displayString = "Rename";
+				((GuiButton) buttonList.get(0)).displayString = StatCollector.translateToLocal("button.de.rename.txt");
 				((GuiButton) buttonList.get(6)).visible = false;
 				textBeingEdited.setVisible(false);
 				((GuiButton) buttonList.get(0)).enabled = true;
@@ -357,7 +357,7 @@ public class GUITeleporter extends GuiScreen
 					TeleportLocation location = new TeleportLocation();
 					location.setName(textBeingEdited.getText());
 					DraconicEvolution.network.sendToServer(new TeleporterPacket(location, TeleporterPacket.UPDATENAME, selected+selrctionOffset));
-					((GuiButton) buttonList.get(0)).displayString = "Rename";
+					((GuiButton) buttonList.get(0)).displayString = StatCollector.translateToLocal("button.de.rename.txt");
 					editingExisting = false;
 					textBeingEdited.setVisible(false);
 					((GuiButton) buttonList.get(6)).visible = false;
@@ -392,7 +392,7 @@ public class GUITeleporter extends GuiScreen
 			}
 			else
 			{
-				if (selected < Math.min(11, locations.size()))
+				if (selected < Math.min(11, locations.size()-1))
 				{
 					TeleportLocation temp = locations.get(selected + selrctionOffset);
 					locations.set(selected + selrctionOffset, locations.get(selected + selrctionOffset + 1));
@@ -407,7 +407,7 @@ public class GUITeleporter extends GuiScreen
 		if (button.id == 4 || button.id == 6 && !editingExisting){
 			if(button.id == 6){
 				editingNew = false;
-				((GuiButton) buttonList.get(4)).displayString = "Add New";
+				((GuiButton) buttonList.get(4)).displayString = StatCollector.translateToLocal("button.de.addNew.txt");
 				((GuiButton) buttonList.get(6)).visible = false;
 				((GuiButton) buttonList.get(4)).enabled = true;
 				textBeingEdited.setVisible(false);
@@ -423,7 +423,7 @@ public class GUITeleporter extends GuiScreen
 			}else{
 				if (!textBeingEdited.getText().isEmpty()){
 					addCurrentLocationToList(textBeingEdited.getText());
-					((GuiButton) buttonList.get(4)).displayString = "Add New";
+					((GuiButton) buttonList.get(4)).displayString = StatCollector.translateToLocal("button.de.addNew.txt");
 					editingNew = false;
 					textBeingEdited.setVisible(false);
 					((GuiButton) buttonList.get(6)).visible = false;
@@ -472,11 +472,11 @@ public class GUITeleporter extends GuiScreen
 		if(this.textBeingEdited.textboxKeyTyped(key, keyN)) {
 			if (editingNew){
 				((GuiButton) buttonList.get(4)).enabled = !textBeingEdited.getText().isEmpty();
-				((GuiButton) buttonList.get(4)).displayString = "Commit";
+				((GuiButton) buttonList.get(4)).displayString = StatCollector.translateToLocal("button.de.commit.txt");
 			}
 			if (editingExisting){
 				((GuiButton) buttonList.get(0)).enabled = !textBeingEdited.getText().isEmpty();
-				((GuiButton) buttonList.get(0)).displayString = "Commit";
+				((GuiButton) buttonList.get(0)).displayString = StatCollector.translateToLocal("button.de.commit.txt");
 			}
 			return;
 		}
@@ -499,6 +499,7 @@ public class GUITeleporter extends GuiScreen
 			this.mc.setIngameFocus();
 		}
 
+		if (tick % 5 == 0 && locations.size() > 0 && locations.get(selected + selrctionOffset).getDimensionName().equals("") && player.getHeldItem() != null && player.getHeldItem().getItem() == ModItems.teleporterMKII) readDataFromItem(player.getHeldItem());
 
 		tick++;
 		if (tick >= 10){
@@ -527,7 +528,9 @@ public class GUITeleporter extends GuiScreen
 
 		for (int i = 0; i < list.tagCount(); i++){
 			NBTTagCompound tagLocation = list.getCompoundTagAt(i);
-			TeleportLocation location = new TeleportLocation(tagLocation.getDouble("X"), tagLocation.getDouble("Y"), tagLocation.getDouble("Z"), tagLocation.getInteger("Dimension"), tagLocation.getFloat("Pitch"), tagLocation.getFloat("Yaw"), tagLocation.getString("Name"));
+			//TeleportLocation location = new TeleportLocation(tagLocation.getDouble("X"), tagLocation.getDouble("Y"), tagLocation.getDouble("Z"), tagLocation.getInteger("Dimension"), tagLocation.getFloat("Pitch"), tagLocation.getFloat("Yaw"), tagLocation.getString("Name"));
+			TeleportLocation location = new TeleportLocation();
+			location.readFromNBT(tagLocation);
 			location.setWriteProtected(tagLocation.getBoolean("WP"));
 			locations.add(location);
 		}
