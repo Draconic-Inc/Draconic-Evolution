@@ -50,14 +50,17 @@ public class DraconiumOre extends BlockDE {
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		int dim = Minecraft.getMinecraft().theWorld.provider.dimensionId;
-
-		if (dim == -1)
-			return iconNether;
-		else if (dim == 0)
-			return icon;
-		else
-			return iconEnd;
+		switch (Minecraft.getMinecraft().theWorld.provider.dimensionId)
+		{
+			case -1:
+				return iconNether;
+			case 0:
+				return icon;
+			case 1:
+				return iconEnd;
+			default:
+				return icon;
+		}
 	}
 
 	@Override
