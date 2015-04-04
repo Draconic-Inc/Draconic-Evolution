@@ -673,4 +673,7 @@ public class EntityCustomDragon extends EntityDragon {
 //		}
 		return super.attackEntityFromPart(p_70965_1_, damageSource, p_70965_3_);
 	}
+
+	@Override
+	public void travelToDimension(int p_71027_1_) {}
 }

@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.DummyContainer;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -32,7 +33,7 @@ public class GUIManual extends GUIScrollingBase {
 		if (currentPage != null)
 		{
 			collection.addComponent(new ComponentManualPage(0, 0, this, currentPage)).setGroup(GR_PAGE);
-			collection.addComponent(new ComponentButton(102, 325, 50, 20, 1, this, StatCollector.translateToLocal("button.de.back.txt"))).setGroup(GR_PAGE);
+			collection.addComponent(new ComponentButton(102, 314, 50, 12, 1, this, StatCollector.translateToLocal("button.de.back.txt"))).setGroup(GR_PAGE);
 			collection.setOnlyGroupEnabled(GR_BACKGROUND);
 			collection.setGroupEnabled(GR_PAGE, true);
 		}
@@ -51,7 +52,7 @@ public class GUIManual extends GUIScrollingBase {
 
 	@Override
 	protected ComponentCollection assembleComponents() {
-		collection = new ComponentCollection(0, 0, xSize, ySize + 20, this);
+		collection = new ComponentCollection(0, 0, xSize, ySize, this);
 
 		collection.addComponent(new ComponentTexturedRect(0, 0, 255, 255, ResourceHandler.getResource("textures/gui/manualTop.png"))).setGroup(GR_BACKGROUND);
 		collection.addComponent(new ComponentTexturedRect(0, 255, 255, 69, ResourceHandler.getResource("textures/gui/manualBottom.png"))).setGroup(GR_BACKGROUND);
@@ -74,7 +75,7 @@ public class GUIManual extends GUIScrollingBase {
 	@Override
 	public void handleScrollInput(int direction) {
 		if (currentPage != null) return;
-		scrollOffset += direction * 10;
+		scrollOffset += direction * (InfoHelper.isShiftKeyDown() ? 30 : 10);
 		if (scrollOffset < 0) scrollOffset = 0;
 		if (scrollOffset > pageLength - ySize + 40) scrollOffset = pageLength - ySize + 40;
 		if (pageLength + 40 <= ySize) scrollOffset = 0;
@@ -96,7 +97,7 @@ public class GUIManual extends GUIScrollingBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
@@ -109,6 +110,7 @@ public class GUIManual extends GUIScrollingBase {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
 	@Override
@@ -236,7 +238,7 @@ public class GUIManual extends GUIScrollingBase {
 				Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 				currentPage = ((ComponentIndexButton) c).getPage();
 				collection.addComponent(new ComponentManualPage(0, 0, this, currentPage)).setGroup(GR_PAGE);
-				collection.addComponent(new ComponentButton(102, 325, 50, 20, 1, this, StatCollector.translateToLocal("button.de.back.txt"))).setGroup(GR_PAGE);
+				collection.addComponent(new ComponentButton(102, 314, 50, 12, 1, this, StatCollector.translateToLocal("button.de.back.txt"))).setGroup(GR_PAGE);
 				collection.setOnlyGroupEnabled(GR_BACKGROUND);
 				collection.setGroupEnabled(GR_PAGE, true);
 				break;

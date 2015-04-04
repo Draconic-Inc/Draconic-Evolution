@@ -141,6 +141,8 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 
 	protected void detectAndSendChanges(int index)
 	{
+		if (worldObj.isRemote) return;
+
 		boolean forceSend = (tick + xCoord + yCoord + zCoord) % 100 == 0;
 		if (index >= 0 && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow || forceSend))	{
 			sendObject(References.TWO_INTS_ID, 0, new DataUtills.TwoXInteger(index, (int)linkedDevices.get(index).energyFlow));

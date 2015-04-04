@@ -106,7 +106,7 @@ public class Wrench extends ItemDE implements IHudDisplayItem {
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return false;
-		DraconicEvolution.debug = true;
+
 		TileEntity tileClicked = world.getTileEntity(x, y, z);
 		if (tileClicked instanceof TileRemoteEnergyBase) return false;
 		else if (!(tileClicked instanceof IEnergyReceiver)) return false;

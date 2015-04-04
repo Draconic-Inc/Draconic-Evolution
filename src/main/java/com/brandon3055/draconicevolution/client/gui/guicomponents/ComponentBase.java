@@ -230,4 +230,6 @@ public abstract class ComponentBase extends Gui {
 
 	/**Translate To Local*/
 	public String ttl(String unlocalizedName){return StatCollector.translateToLocal(unlocalizedName);}
+
+	public void updateScreen(){}
 }

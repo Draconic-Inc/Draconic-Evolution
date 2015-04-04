@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.network;
 
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -37,7 +36,6 @@ public class BlockUpdatePacket implements IMessage
 
 		@Override
 		public IMessage onMessage(BlockUpdatePacket message, MessageContext ctx) {
-			LogHelper.info("update " + message.x + " " + message.y + " " + message.z);
 			ctx.getServerHandler().playerEntity.playerNetServerHandler.sendPacket(new S23PacketBlockChange(message.x, message.y, message.z, ctx.getServerHandler().playerEntity.worldObj));
 			return null;
 		}

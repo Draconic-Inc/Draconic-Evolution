@@ -40,6 +40,7 @@ public class SpeedRequestPacket  implements IMessage
 			if (ctx.side == Side.SERVER)
 			{
 				if (ConfigHandler.speedLimitDimList.contains(ctx.getServerHandler().playerEntity.dimension) || (DraconicEvolution.proxy.isOp(ctx.getServerHandler().playerEntity.getCommandSenderName()) && !ConfigHandler.speedLimitops)) return new SpeedRequestPacket(20F);
+				LogHelper.info(ConfigHandler.speedLimitops);
 				return new SpeedRequestPacket(ConfigHandler.maxPlayerSpeed);
 			}
 			else {

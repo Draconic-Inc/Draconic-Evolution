@@ -4,7 +4,9 @@
     "images":[],
     "content":
     [
-      "The very basis of Draconic Research"
+      "The very basis of Draconic Research",
+      "This ore can be found in the overworld bellow y level 8 as well as in the nether at any y level but it is extremely rare in both. You can also find it in much larger quantities in the end in both the main island and in the comets that randomly spawn throughout the end.",
+      "Drops 1 - 3 draconium dist when mined. 4 - 12 with fortune 3"
     ]
   },
   {
@@ -12,7 +14,7 @@
     "images":[],
     "content":
     [
-      "This is the material from mining Draconium Ore"
+      "This is the dust dropped by draconium ore. Can be smelted into draconium ingots."
     ]
   },
   {
@@ -20,8 +22,7 @@
     "images":[],
     "content":
     [
-      "Mixture of Draconic dust and iron. Necessary to make Draconium",
-      "[c]item.draconicevolution:draconiumBlend:0"
+      "This item is now depreciated and will be removed in 1.0.2. If you still have some you should smelt it into draconium ingots before you update to 1.0.2"
     ]
   },
   {
@@ -29,7 +30,7 @@
     "images":[],
     "content":
     [
-      "The results of smelting draconium blend in a furnace. Used in most recipes",
+      "The results of smelting draconium dust in a furnace. Used in most Draconic Evolution recipes.",
       "[c]item.draconicevolution:draconiumIngot:0"
     ]
   },
@@ -41,7 +42,8 @@
     "content":
     [
       "A storage block for draconium",
-      "[c]tile.draconicevolution:draconium:0"
+      "[c]tile.draconicevolution:draconium:0",
+      "This block is resistant to the wither"
     ]
   },
   {
@@ -51,7 +53,7 @@
     "images":[],
     "content":
     [
-      "Used in the Ritual of Draconic Resurrection. Place a draconium block in a charging device and 100 million RF later you have a charged draconium block!",
+      "Used in the Ritual of Draconic Resurrection and the Ritual of Awakening. Place a draconium block in a charging device and 100 million RF later you have a charged draconium block!",
       "[c]tile.draconicevolution:draconium:2"
     ]
   },
@@ -69,8 +71,18 @@
     "images":[],
     "content":
     [
-      "This component is used to craft all Wyvern tools",
+      "This is a higher tier core used in higher tier crafting recipes.",
       "[c]item.draconicevolution:wyvernCore:0"
+    ]
+  },
+  {
+    "name":"info.Tool Config GUI",
+    "images":[],
+    "content":
+    [
+      "This gui is used to configure most Draconic Evolution tools and armor. The default key to open this gui is 'c'",
+      "When you open the gui you will see all the items in your inventory. Items that can be configured will be highlighted. When you click on one of the highlighted items you will see a list of settings specific to that item that you can adjust.",
+      "You can also use this gui to apply and remove enchantments. In the list of options for the item there is an inventory button. This will open a new gui in which you will have access to your inventory, Enchantment slots on the right and if the item has additional inventory slots such as the obliteration filter for the draconic tools. Those slots will show at the top of the gui."
     ]
   },
   {
@@ -78,7 +90,10 @@
     "images":[],
     "content":
     [
-      "Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Modes: Shift-Right Click to switch modes: 1×1 or 3×3",
+      "Tiered of your slow old diamond pick? Maby its time to upgrade! Wyvern tools run on RF and never break",
+      "All mining tools have an option to adjust mining speed, Dig AOE and AOE safe mode",
+      "Dig AOE: Allows you to adjust the mining AOE of the tool. Wyvern AOE: 1x1 and 3x3",
+      "AOE Safe mode: If enabled the tool will check for any tile entities in the AOE and if it finds any the tool will not mine",
       "[c]item.draconicevolution:wyvernPickaxe:0"
     ]
   },
@@ -87,7 +102,10 @@
     "images":[],
     "content":
     [
-      "Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Modes: Shift-Right Click to switch modes: 1×1 or 3×3",
+      "Tiered of your slow old diamond shovel? Maby its time to upgrade! Wyvern tools run on RF and never break",
+      "All mining tools have an option to adjust mining speed, Dig AOE and AOE safe mode",
+      "Dig AOE: Allows you to adjust the mining AOE of the tool. Wyvern AOE: 1x1 and 3x3",
+      "AOE Safe mode: If enabled the tool will check for any tile entities in the AOE and if it finds any the tool will not mine",
       "[c]item.draconicevolution:wyvernShovel:0"
     ]
   },
@@ -108,7 +126,10 @@
     "images":[],
     "content":
     [
-      "Weary of ordinary tools you begin to understand ways to use Draconic energy to upgrade. Sharpshooter – Zoom in on your target and deal extreme damage with pin point accuracy. Rapid Fire – Barrage your enemies in a rain of arrows.",
+      "Looking for a more powerful bow with some fancy features? This is the one for you. The Wyvern bow has 2 operating modes. Selectable with shift + right click",
+      "Rapid Fire: As the name suggests fires arrows at a rather high rate and dose moderate damage.",
+      "Sharp Shooter: Allows you to zoom in on your target and deal extremely high damage with pin point accuracy.",
+      "Enchantments are twice as effective on this bow.",
       "[c]item.draconicevolution:wyvernBow:0"
     ]
   },
@@ -264,7 +285,8 @@
     "content":
     [
       "You have been studying the interactions of Draconium with various materials and have come to realize that this is only an inert state.  You have discovered a method to bring out the true power of Draconium using a complex ritual involving a dragon heart. (See the dragon heart page for details)",
-      "[c]tile.draconicevolution:draconicBlock:0"
+      "[c]tile.draconicevolution:draconicBlock:0",
+      "This block is resistant to the wither"
     ]
   },
   {
@@ -690,28 +712,84 @@
     ]
   },
   {
-    "name":"item.enchantedBook",
+    "name":"item.enchanted_book",
     "nameL":"Reaper Enchant",
     "images":[],
     "content":
     [
-      "TODO"
+      "The Reaper enchant increases the drop chance of souls from mobs. It has a max level of 5 and it also makes it possible for regular weapons to drop souls from mobs."
     ]
   },
   {
     "name":"info.Energy Storage Multiblock",
-    "images":[],
+    "images":[
+      "http://i.imgur.com/BXl1x7e.png",
+      "http://i.imgur.com/gmgDwH8.png",
+      "http://i.imgur.com/DyYw9Tr.png",
+      "http://i.imgur.com/46X3Kqd.png",
+      "http://i.imgur.com/SoAY47W.png",
+      "http://i.imgur.com/tmL6ot4.png",
+      "http://i.imgur.com/7rtdJV2.png",
+      "http://i.imgur.com/x4IxV9F.png",
+      "http://i.imgur.com/4FxoUvf.png",
+      "http://i.imgur.com/IagzpKW.png",
+      "http://i.imgur.com/TvL8TVG.png",
+      "http://i.imgur.com/MTmGhLv.png",
+      "http://i.imgur.com/crmnC6v.png",
+      "http://i.imgur.com/eH3OvhW.png",
+      "http://i.imgur.com/oEBI4lj.png",
+      "http://i.imgur.com/KSpFook.png",
+      "http://i.imgur.com/C7WwlAu.png",
+      "http://i.imgur.com/uC4b8AC.png",
+      "http://i.imgur.com/rS9rOoF.png"
+    ],
     "content":
     [
-      "TODO"
+      "The Energy Core is a multiblock structure that is capable of storing immense amounts of RF power using the energy storage capabilities of Draconium and Redstone.",
+      "The Energy Core has 7 Tiers each capable of storing considerably more then the last to build it you will need 5 different components.\n ♦ Energy Core x1\n ♦ Particle Generator x4\n ♦ Redstone Block (number depends on tier)\n ♦ Draconium Block (number depends on tier)\n ♦  Energy Pylon x2+",
+      "The Energy core consists of the Energy Core(Block) at the centre surrounded by 4 Particle Generators. The generators must be directly in line with the core as shown in the following images. \nThe generators must be placed within 10 blocks of the core.",
+      "The Core is then surrounded by a combination of Redstone Blocks and Draconium Blocks the following images show the construction of each tier as well as the material cost and storage capacity. Once the structure is built simply shift right click one of the particle generators (with an empty hand) to activate the core.",
+      "§4Tier 1",
+      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/gmgDwH8.png",
+      "Redstone x0\nDraconium x0\nCapacity = 45.5Million RF",
+      "§4Tier 2",
+      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/DyYw9Tr.png[>]http://i.imgur.com/46X3Kqd.png",
+      "Redstone x0\nDraconium x6\nCapacity = 273Million RF",
+      "§4Tier 3",
+      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/SoAY47W.png[>]http://i.imgur.com/tmL6ot4.png",
+      "Redstone x0\nDraconium x26\nCapacity = 1.64Billion RF",
+      "§4Tier 4",
+      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/7rtdJV2.png[>]http://i.imgur.com/x4IxV9F.png[>]http://i.imgur.com/4FxoUvf.png",
+      "Redstone x26\nDraconium x54\nCapacity = 9.88Billion RF",
+      "§4Tier 5",
+      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/7rtdJV2.png[>]http://i.imgur.com/IagzpKW.png[>]http://i.imgur.com/TvL8TVG.png[>]http://i.imgur.com/MTmGhLv.png",
+      "Redstone x80\nDraconium x98\nCapacity = 59.3Billion RF",
+      "§4Tier 6",
+      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/7rtdJV2.png[>]http://i.imgur.com/IagzpKW.png[>]http://i.imgur.com/crmnC6v.png[>]http://i.imgur.com/eH3OvhW.png[>]http://i.imgur.com/oEBI4lj.png",
+      "Redstone 133\nDraconium 150\nCapacity = 356Billion RF",
+      "§4Tier 7",
+      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/7rtdJV2.png[>]http://i.imgur.com/IagzpKW.png[>]http://i.imgur.com/crmnC6v.png[>]http://i.imgur.com/KSpFook.png[>]http://i.imgur.com/C7WwlAu.png[>]http://i.imgur.com/uC4b8AC.png",
+      "Redstone x328\nDraconium x218\nCapacity = 2.14Trillion RF",
+      "To add and remove energy from the core you need to place energy pylons within 15 blocks of the of the core. To activate a pylon place a glass block ether above or below it depending on whether the pylon is placed below or above the core e.g. if you place the pylon on the roof you would place the glass block under it.",
+      "http://i.imgur.com/rS9rOoF.png",
+      "When the glass block is placed the pylon should immediately activate and link with a nearby Energy Core the link is indicated by white energy particles and the glass should change to the renderer shown in the image above. You can shift right click the pylon to change which core it is linked to (if there is more then one in range)",
+      "Energy is added and removed from the core using the Energy Pylons. To toggle a Pylon between input and output mode simply right click the sphere. The mode is identified by the colour of the Pylon (Blue = input, Orange = output) and the behaviour of the energy particles and the Pylon sphere.",
+      "Energy Transfer between the pylon and the core is indicated by a stream of blue energy particles flowing between the Pylon sphere and the core. The amount of energy flowing is roughly shown by the density of the particle stream.",
+      "The energy stored in the core is displayed by the HUD when you look at it. And in chat when you right click it. The core will also change to a dark red colour as it fills and its energy level can be read by placing a comparator on one of the attached pylons."
     ]
   },
   {
     "name":"info.Ritual of Draconic Resurrection",
-    "images":[],
+    "images":["http://i.imgur.com/j2Hm0Am.png"],
     "content":
     [
-      "TODO"
+      "The Ritual of Draconic Resurrection allows you to summon the Ender Dragon. To set it up you will need the following items.\n\n(1) Resurrection Stone\n(4) Glowstone Blocks\n(4) Obsidian\n(4) Diamond Blocks\n(4) Charged Draconium Blocks\n(12) Quartz Pillars\nSetup in the following configuration.",
+      "http://i.imgur.com/j2Hm0Am.png",
+      "The pillars dont have to be in that exact configuration as long as they are within 5 blocks of the Resurrection Stone. It also looks better if they are symmetrical. The ritual must be setup within 150 blocks of 0,0",
+      "Once you have that setup simply right click the Ritual stone and stand back. The ritual should start immediately if it doesn't you have done something wrong.",
+      "Right clicking the ritual stone again will stop the ritual and drain the charge from the draconium blocks.",
+      "During the ritual all of the Ender Crystals will be re-activated. At the end of the ritual there will be a massive explosion at the centre of the structure that wont do too much damage to the terrain but will kill anything that is standing too close.",
+      "The dragon that is spawned by the ritual is almost identical to the original dragon except it has a different texture (By GreatOrator) and it gets harder to kill and deals more damage each time it is summoned (this increase is per player and stops when it reaches a certain difficulty) It also has regeneration for 25 seconds."
     ]
   },
   {
@@ -719,32 +797,25 @@
     "images":[],
     "content":
     [
-      "Don't let the pigmen see you eating pork you wont like what happens...",
-      "TODO"
+      "Don't let the pigmen see you eating pork. You wont like what happens..."
     ]
   },
   {
     "name":"info.Comets",
-    "images":[],
+    "images":["http://i.imgur.com/894RVmP.png"],
     "content":
     [
-      "TODO"
+      "Mined out all of the Draconium ore in the end? Get yourself some form of flight and go search the end. If your lucky you may come across an Ender Comet. These comets are comprised of end stone, obsidian and a significant amount of Draconium ore. By default they have a 1 in 10000 chance to spawn in each chunk so you may need to search for a while and they come in various sizes.",
+      "http://i.imgur.com/894RVmP.png"
     ]
   },
   {
     "name":"info.Chaos Islands",
-    "images":[],
+    "images":["http://i.imgur.com/gL4T6dG.png"],
     "content":
     [
-      "TODO"
-    ]
-  },
-  {
-    "name":"info.Tool Config GUI",
-    "images":[],
-    "content":
-    [
-      "TODO"
+      "Looking for a challenge? the Ender Dragon wasnt hard enough? This is for you! If you travel to any multiple of 10,000 in the end (e.g. {x=0, z=10000}, {x=0, z=20000}, {x=10000, z=0} etc) you will find a Chaos Island. Each of these islands is guarded by a Chaos Guardian which is basically an extremely powerful Ender Dragon that drops 2 dragon hearts and some draconium dust as well as the standard end portal in the middle of the island with a dragon egg on top. Note: The Chaos Island is a work in progress and there will be changes in the future.",
+      "http://i.imgur.com/gL4T6dG.png"
     ]
   },
   {
@@ -752,7 +823,7 @@
     "images":[],
     "content":
     [
-      "TODO"
+      "Draconic Evolution adds the ability to place any item in the world as a block allowing you to do things like hang tools or other items on walls for display etc. To pla an item in the world simply look at a block with the item selected (as if you were about to place a block) and press the \"Place Item\" key (p by default) you can place items on the top bottom or sides of a block. You can left click to rotate the item clockwise and shift+left click to rotate the item counter-clockwise you can also shift+right click to rotate the item in very small increments counter-clockwise. Right click to pick the item up."
     ]
   }
 ]

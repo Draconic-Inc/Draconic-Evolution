@@ -94,6 +94,7 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
 	public void renderTransceiver(TileEnergyTransceiver tileEntity, double x, double y, double z, float partialTick) {
 		//--- Pre Render ---//
+
 		tileEntity.inView = 10;
 		GL11.glPushMatrix();
 		GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
@@ -156,6 +157,7 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 		//--- Post Render ---//
 		GL11.glDisable(GL11.GL_BLEND);
 		RenderHelper.enableStandardItemLighting();
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.0f);
 		GL11.glPopMatrix();
 	}
 }

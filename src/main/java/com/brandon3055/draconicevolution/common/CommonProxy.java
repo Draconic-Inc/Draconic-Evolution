@@ -200,4 +200,10 @@ public class CommonProxy {
 		}
 		return false;
 	}
+
+	public void spawnParticle(Object particle)
+	{
+
+	}
+
 }

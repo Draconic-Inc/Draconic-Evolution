@@ -52,6 +52,11 @@ public class ComponentButton extends ComponentBase {
 
 	@Override
 	public void renderBackground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
+
+	}
+
+	@Override
+	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		GL11.glPushMatrix();
 		GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 		//FontRenderer fontrenderer = minecraft.fontRenderer;
@@ -86,11 +91,6 @@ public class ComponentButton extends ComponentBase {
 		this.drawCenteredString(fontRendererObj, this.displayString, this.x + this.xSize / 2, this.y + (this.ySize - 8) / 2, l);
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
-	}
-
-	@Override
-	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
-
 	}
 
 	@Override

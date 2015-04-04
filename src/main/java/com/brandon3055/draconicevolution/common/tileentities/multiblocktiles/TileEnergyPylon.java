@@ -100,7 +100,7 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	}
 
 	private void findCores(){
-		int yMod = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? 16 : -16;
+		int yMod = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? 15 : -15;
 		int range = 15;
 		List<TileLocation> locations = new ArrayList<TileLocation>();
 		for (int x = xCoord-range; x <= xCoord+range; x++){

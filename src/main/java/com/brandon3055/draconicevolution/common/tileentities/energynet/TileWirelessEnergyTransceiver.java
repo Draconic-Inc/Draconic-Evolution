@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
@@ -67,7 +66,7 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
 					receiver.particleEnergyCounter -= particleValue;
 
 					//todo detect box size
-					ParticleHandler.spawnCustomParticle(new Particles.TransceiverParticle(worldObj, xCoord + 0.5, yCoord + 0.3 + (worldObj.rand.nextDouble() * 0.4), zCoord + 0.5, receiver.xCoord + worldObj.rand.nextDouble(), receiver.yCoord + worldObj.rand.nextDouble(), receiver.zCoord + worldObj.rand.nextDouble()));
+					DraconicEvolution.proxy.spawnParticle(new Particles.TransceiverParticle(worldObj, xCoord + 0.5, yCoord + 0.3 + (worldObj.rand.nextDouble() * 0.4), zCoord + 0.5, receiver.xCoord + worldObj.rand.nextDouble(), receiver.yCoord + worldObj.rand.nextDouble(), receiver.zCoord + worldObj.rand.nextDouble()));
 				}
 			}
 		}

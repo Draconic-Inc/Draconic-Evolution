@@ -1,5 +1,22 @@
+######## 1.0.1-Snapshot 9 (RC 4)########
+-stopped draconic chest eating up a tone of tick time.
+-prevented dragon travelling through portals.
+-you now make draconium ingots by smelting draconium dust directly.
+-draconium blend is now depreciated and will be removed completely in 1.0.2.
+-fixed server crash related to the wireless energy transceiver.
+-draconium and awakened draconium blocks are now immune to the wither.
+-added more documentation to the information tablet.
+-you can now scroll faster in the info tablet gui by holding shift.
+-changed the default texture for draconium ore to the overworld texture.
+-increased draconic chest energy usage to 1000RF/t
+
+######## 1.0.1-Snapshot 8 (RC 3)########
+-fixed manual crashing due to ingredients with wiled card damage values.  
+-removed some debug code from the crystal binder.
+-fixed dislocator client crash when binding.
+
 ######## 1.0.1-Snapshot 7 (RC 2)########
--hotfix for server crash in RC 1 related to changing tool modes
+-hotfix for server crash in RC 1 related to changing tool modes.
 
 ######## 1.0.1-Snapshot 6 (RC 1)########
 -fixed teleporting mobs with a dislocator on a server crashing the client. 

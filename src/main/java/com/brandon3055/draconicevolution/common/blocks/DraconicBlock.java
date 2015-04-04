@@ -5,20 +5,27 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 
 /**
  * Created by Brandon on 21/11/2014.
  */
-public class DraconicBlock extends BlockDE{
+public class DraconicBlock extends BlockDE {
 	IIcon top;
 	public DraconicBlock() {
 		this.setHardness(20F);
-		this.setResistance(40F);
+		this.setResistance(100F);
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName(Strings.draconicBlockName);
 		this.setHarvestLevel("pickaxe", 4);
 		ModBlocks.register(this);
+	}
+
+	@Override
+	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
+		return false;
 	}
 
 	@Override

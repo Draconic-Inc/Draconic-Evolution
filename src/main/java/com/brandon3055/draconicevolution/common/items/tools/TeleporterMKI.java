@@ -80,16 +80,20 @@ public class TeleporterMKI extends ItemDE {
 		{
 			if (getLocation(stack) == null)
 			{
-				ItemNBTHelper.setDouble(stack, "X", player.posX);
-				ItemNBTHelper.setDouble(stack, "Y", player.posY);
-				ItemNBTHelper.setDouble(stack, "Z", player.posZ);
-				ItemNBTHelper.setFloat(stack, "Yaw", player.rotationYaw);
-				ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
-				ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
-				ItemNBTHelper.setBoolean(stack, "IsSet", true);
-				ItemNBTHelper.setString(stack, "DimentionName", DraconicEvolution.proxy.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionName());
 				if (world.isRemote)
+				{
 					player.addChatMessage(new ChatComponentText(new ChatComponentTranslation("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.worldObj.provider.getDimensionName() + "}"));
+				}else
+				{
+					ItemNBTHelper.setDouble(stack, "X", player.posX);
+					ItemNBTHelper.setDouble(stack, "Y", player.posY);
+					ItemNBTHelper.setDouble(stack, "Z", player.posZ);
+					ItemNBTHelper.setFloat(stack, "Yaw", player.rotationYaw);
+					ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
+					ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
+					ItemNBTHelper.setBoolean(stack, "IsSet", true);
+					ItemNBTHelper.setString(stack, "DimentionName", DraconicEvolution.proxy.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionName());
+				}
 				return stack;
 			} else if (world.isRemote)
 				player.addChatMessage(new ChatComponentTranslation("msg.teleporterAlreadySet.txt"));

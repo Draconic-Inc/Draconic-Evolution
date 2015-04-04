@@ -4,11 +4,13 @@ import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.utill.CustomResourceLocation;
 import com.brandon3055.draconicevolution.common.utills.GuiHelper;
+import com.brandon3055.draconicevolution.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.Utills;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.*;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.lwjgl.opengl.GL11;
@@ -26,11 +28,17 @@ public class ComponentManualPage extends ComponentScrollingBase {
 	public ManualPage page;
 	public List<ContentComponent> contentList = new ArrayList<ContentComponent>();
 	private int pageLength = 0;
+	ItemStack stack = null;
+	private int slideTick = 0;
 
 	public ComponentManualPage(int x, int y, GUIScrollingBase gui, ManualPage page) {
 		super(x, y, gui);
 		this.page = page;
 		pageLength = 25;
+		stack = Utills.getStackFromName(page.name, page.meta);
+		ContentComponent title = new ContentComponent("title." + page.getLocalizedName(), pageLength, this);
+		pageLength += title.getHeight();
+		contentList.add(title);
 		for (String s : page.content)
 		{
 			ContentComponent c = new ContentComponent(s, pageLength, this);
@@ -42,7 +50,8 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
 	@Override
 	public void handleScrollInput(int direction) {
-		page.scrollOffset += direction * 10;
+	//	page.scrollOffset += direction * 10;
+		page.scrollOffset += direction * (InfoHelper.isShiftKeyDown() ? 30 : 10);
 		if (page.scrollOffset < 0) page.scrollOffset = 0;
 		if (page.scrollOffset > pageLength - getHeight()) page.scrollOffset = pageLength - getHeight();
 		if (pageLength <= getHeight()) page.scrollOffset = 0;
@@ -76,6 +85,11 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
 	}
 
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+		if (!InfoHelper.isShiftKeyDown()) slideTick++;
+	}
 
 	private static class ContentComponent {
 
@@ -88,6 +102,9 @@ public class ComponentManualPage extends ComponentScrollingBase {
 		private List<IRecipe> recipes = new ArrayList<IRecipe>();
 		private List<ItemStack> smeltingRecipes = new ArrayList<ItemStack>();
 		private ItemStack result;
+		private boolean isTitle = false;
+		private boolean slide = false;
+		private List<String> slides = new ArrayList<String>();
 
 		public ContentComponent(String content, int y, ComponentManualPage page)
 		{
@@ -99,22 +116,46 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
 		public void init()
 		{
+			isTitle = content != null && content.contains("title.");
+
 			type = content.contains("http://") ? 1 : content.contains("[c]") ? 2 : 0;
+			slide = (type == 1) && content.contains("[>]");
+			if (slide)
+			{
+				String s = content;
+				while (s.contains("[>]"))
+				{
+					slides.add(s.substring(0, s.indexOf("[>]")));
+					s = s.substring(s.indexOf("[>]") + 3);
+				}
+				slides.add(s);
+			}
+
 			if (type == 0) {
 				List<String> l = page.fontRendererObj.listFormattedStringToWidth(content, 220);
-				textLines = l.toArray(new String[l.size()]);
+				List<String> sl = new ArrayList<String>();
+				for (String st : l)
+				{
+					String s = st;
+					while (s.contains("\\n"))
+					{
+						String s2 = s.substring(0, s.indexOf("\\n"));
+						s = s.substring(s.indexOf("\\n") + 2);
+						sl.add(s2);
+					}
+					sl.add(s);
+				}
+				textLines = sl.toArray(new String[sl.size()]);
 			}
 			else if (type == 2)
 			{
 				String s = content.substring(content.indexOf("[c]") + 3);
-//				LogHelper.info(content + " " + s);
 				String name = s.substring(0, s.lastIndexOf(":"));
 				ItemStack stack = Utills.getStackFromName(name, Integer.parseInt(s.substring(s.lastIndexOf(":") + 1)));
 				result = stack;
 
 				if (stack != null)
 				{
-//					LogHelper.info(stack);
 
 					for (IRecipe recipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList())
 					{
@@ -140,9 +181,6 @@ public class ComponentManualPage extends ComponentScrollingBase {
 							smeltingRecipes.add((ItemStack) entry.getKey());
 						}
 					}
-
-//					LogHelper.info(recipes);
-//					LogHelper.info(smeltingRecipes);
 				}
 			}
 			else textLines = null;
@@ -150,9 +188,9 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
 		public int getHeight()
 		{
-			if (type == 1 && ResourceHandler.downloadedImages.containsKey(content))
+			if (type == 1 && (ResourceHandler.downloadedImages.containsKey(content) || (slide && ResourceHandler.downloadedImages.containsKey(content.substring(0, content.indexOf("[>]"))))))
 			{
-				CustomResourceLocation texture = ResourceHandler.downloadedImages.get(content);
+				CustomResourceLocation texture = slide ? ResourceHandler.downloadedImages.get(content.substring(0, content.indexOf("[>]"))) : ResourceHandler.downloadedImages.get(content);
 				return (int)((double)texture.getHeight() / (double)texture.getWidth() * 220D) + 5;
 			}
 			else if (type == 2)
@@ -160,7 +198,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
 				return (recipes.size() + smeltingRecipes.size()) * 57;
 			}
 
-			return (textLines != null ? textLines.length * 12 : 12) + 5;
+			return ((textLines != null ? textLines.length * 10 : 10) + 5) + ((isTitle && (page.page.name.contains("tile.") || page.page.name.contains("item."))) ? 18 : 0);
 		}
 
 		public void render(int mouseX, int mouseY)
@@ -174,11 +212,25 @@ public class ComponentManualPage extends ComponentScrollingBase {
 				renderCrafting(mouseX, mouseY);
 				return;
 			}
+			else if (isTitle)
+			{
+				int y = yPos - page.page.scrollOffset;
+				if (y > 310 || y < 5) return;
+				page.drawCenteredString(page.fontRendererObj, content.substring(content.indexOf("title.") + 6), 128, y, 0x00ffff);
+
+				if ((page.page.name.contains("tile.") || page.page.name.contains("item.")) && page.stack != null)
+				{
+					ResourceHandler.bindResource("textures/gui/Widgets.png");
+					GL11.glColor4f(0.5F, 0.5F, 0.5F, 1F);
+					page.drawTexturedModalRect(119, y + 11, 138, 0, 18, 18);
+					page.drawItemStack(page.stack, 120, 12 + y, "");
+				}
+			}
 			else if (textLines != null)
 			{
 				for (int i = 0; i < textLines.length; i++)
 				{
-					int y = (yPos + i * 12) - page.page.scrollOffset;
+					int y = (yPos + i * 10) - page.page.scrollOffset;
 					if (y > 310 || y < 5) continue;
 					page.fontRendererObj.drawString(textLines[i], 20, y, 0x000000);
 				}
@@ -187,13 +239,21 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
 		private void renderImage()
 		{
-			if (ResourceHandler.downloadedImages.containsKey(content))
+			CustomResourceLocation image = null;//slide ? ResourceHandler.downloadedImages.get(slides.get(page.slideTick % slides.size() - 1)) : ResourceHandler.downloadedImages.get(content);
+			if (slide)
 			{
-				CustomResourceLocation texture = ResourceHandler.downloadedImages.get(content);
-				texture.bind();
+				int index = (page.slideTick / 20) % (slides.size());
+				image = (slides.size() > index) ? ResourceHandler.downloadedImages.get(slides.get(index)) : null;
+			}
+			else if (ResourceHandler.downloadedImages.containsKey(content)) image = ResourceHandler.downloadedImages.get(content);
+
+			if (image != null)
+			{
+				//CustomResourceLocation image = ResourceHandler.downloadedImages.get(content);
+				image.bind();
 				Tessellator tess = Tessellator.instance;
 
-				double ySize = (double)texture.getHeight() / (double)texture.getWidth() * 220D;
+				double ySize = (double)image.getHeight() / (double)image.getWidth() * 220D;
 
 				double topS = 0;
 				if ((yPos - page.page.scrollOffset) < 0) {
@@ -221,6 +281,8 @@ public class ComponentManualPage extends ComponentScrollingBase {
 				tess.addVertexWithUV(xmax, ymin, 0, 1, vmin);
 
 				tess.draw();
+
+				if (slide && (int)ymax - 10 < 305 && (int)ymax - 10 > 0 && !InfoHelper.isShiftKeyDown()) page.fontRendererObj.drawString(page.ttl("info.de.shiftToPause.txt"), 20, (int)ymax - 8, 0xff0000);
 			}
 		}
 
@@ -248,6 +310,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
 					if (stack != null)
 					{
+						if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) stack.setItemDamage(0);
 						page.drawItemStack(stack, 1 + x + posX, 1 + y + yDown + posY, "");
 					}
 				}

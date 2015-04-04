@@ -10,6 +10,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StringUtils;
 
 /**
@@ -24,7 +25,7 @@ public class InventoryTool implements IInventory {
 	private ContainerAdvTool container;
 	private int slot = -1;
 
-	public InventoryTool(EntityPlayer player, ItemStack stack){
+	public InventoryTool(EntityPlayer player, ItemStack stack) {
 		this.inventoryItem = stack;
 		this.player = player;
 		if (stack != null && stack.getItem() instanceof IInventoryTool){
@@ -117,17 +118,23 @@ public class InventoryTool implements IInventory {
 
 	@Override
 	public void markDirty() {
+		//if (player.getCommandSenderName().equals("brandon3055")) player.addChatComponentMessage(new ChatComponentText("markDirty " + (player.worldObj.isRemote ? ":client" : ":server")));
+
 		for (int i = 0; i < getSizeInventory(); ++i)
 		{
 			if (getStackInSlot(i) != null && getStackInSlot(i).stackSize == 0) {
 				inventoryStacks[i] = null;
 			}
 		}
+		if (player.getCommandSenderName().equals("brandon3055")) player.addChatComponentMessage(new ChatComponentText("markDirty " + inventoryItem + (player.worldObj.isRemote ? ":client" : ":server")));
 		if (inventoryItem != null) {
 			writeToNBT(ItemNBTHelper.getCompound(inventoryItem));
 			readFromNBT(ItemNBTHelper.getCompound(inventoryItem));
 		}
-		else LogHelper.error("[InventoryItem] storage item == null This is not a good thing...");
+		else {
+			LogHelper.error("[InventoryItem] storage item == null This is not a good thing...");
+			if (player.getCommandSenderName().equals("brandon3055")) player.addChatComponentMessage(new ChatComponentText("[InventoryItem] storage item == null " + (player.worldObj.isRemote ? ":client" : ":server")));
+		}
 
 
 		container.detectAndSendChanges();
@@ -179,7 +186,6 @@ public class InventoryTool implements IInventory {
 				else
 				{
 					enchList.appendTag(inventoryStacks[i].getTagCompound().getTagList("StoredEnchantments", 10).getCompoundTagAt(0));
-
 				}
 			}
 			compound.setTag("ench", enchList);
@@ -195,10 +201,12 @@ public class InventoryTool implements IInventory {
 //		}
 
 		if (compound.hasKey("ench") && compound.getTagList("ench", 10).tagCount() == 0) compound.removeTag("ench");
+		if (player.getCommandSenderName().equals("brandon3055")) player.addChatComponentMessage(new ChatComponentText("writeToNBT " + (player.worldObj.isRemote ? ":client" : ":server") + " Tag:" + compound));
 	}
 
 	public void readFromNBT(NBTTagCompound compound)
 	{
+		if (player.getCommandSenderName().equals("brandon3055")) player.addChatComponentMessage(new ChatComponentText("readFromNBT " + (player.worldObj.isRemote ? ":client" : ":server") + " Tag:" + compound));
 		NBTTagCompound[] tag = new NBTTagCompound[size];
 		NBTTagList enchList = null;
 		if (compound.hasKey("ench")) enchList = compound.getTagList("ench", 10);

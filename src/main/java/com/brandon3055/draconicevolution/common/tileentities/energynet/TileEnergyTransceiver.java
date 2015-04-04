@@ -123,6 +123,7 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase{
 		super.writeToNBT(compound);
 		compound.setInteger("Facing", facing);
 		compound.setBoolean("Input", input);
+		compound.setBoolean("TransferBoost", transferBoost);
 	}
 
 	@Override
@@ -130,6 +131,7 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase{
 		super.readFromNBT(compound);
 		facing = compound.getInteger("Facing");
 		input = compound.getBoolean("Input");
+		transferBoost = compound.getBoolean("TransferBoost");
 	}
 
 	@Override

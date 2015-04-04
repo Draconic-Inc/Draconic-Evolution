@@ -146,4 +146,11 @@ public class ComponentCollection extends ComponentBase {
 	public void schedulRemoval(String group){
 		deadGroups.add(group);
 	}
+
+	@Override
+	public void updateScreen() {
+		for (ComponentBase component : components){
+			component.updateScreen();
+		}
+	}
 }

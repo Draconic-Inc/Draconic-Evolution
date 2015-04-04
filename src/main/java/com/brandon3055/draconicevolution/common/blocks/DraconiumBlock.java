@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,11 +31,16 @@ public class DraconiumBlock extends BlockDE {
 	IIcon icons[] = new IIcon[3];
 	public DraconiumBlock() {
 		this.setHardness(10F);
-		this.setResistance(20F);
+		this.setResistance(50F);
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName(Strings.draconiumBlockName);
 		this.setHarvestLevel("pickaxe", 4);
 		ModBlocks.register(this, DraconiumItemBlock.class);
+	}
+
+	@Override
+	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
+		return false;
 	}
 
 	@Override

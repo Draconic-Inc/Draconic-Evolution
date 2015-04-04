@@ -28,6 +28,7 @@ public class DraconiumOre extends BlockDE {
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setHardness(10f);
 		this.setResistance(20.0f);
+
 		this.setHarvestLevel("pickaxe", 3);
 		ModBlocks.register(this);
 	}
@@ -54,10 +55,10 @@ public class DraconiumOre extends BlockDE {
 
 		if (dim == -1)
 			return iconNether;
-		else if (dim == 0)
-			return icon;
-		else
+		else if (dim == 1)
 			return iconEnd;
+		else
+			return icon;
 	}
 
 	@Override

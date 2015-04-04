@@ -118,6 +118,7 @@ public abstract class GUIBase extends GuiContainer {
 	public void updateScreen() {
 		super.updateScreen();
 		collection.removeScheduled();
+		collection.updateScreen();
 		buttonPressed = false;
 	}
 

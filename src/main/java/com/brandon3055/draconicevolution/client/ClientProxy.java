@@ -37,6 +37,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -224,5 +225,10 @@ public class ClientProxy extends CommonProxy {
 	public boolean isOp(String paramString)
 	{
 		return Minecraft.getMinecraft().theWorld.getWorldInfo().getGameType().isCreative();
+	}
+
+	@Override
+	public void spawnParticle(Object particle) {
+		if (particle instanceof EntityFX) ParticleHandler.spawnCustomParticle((EntityFX)particle);
 	}
 }

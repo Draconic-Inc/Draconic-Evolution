@@ -93,7 +93,7 @@ item.draconicevolution:draconiumIngot.name=Draconium Ingot
 item.draconicevolution:draconiumDust.name=Draconium Dust
 -----item.draconicevolution:draconiumDust.description=This is the material from mining Draconium Ore
 
-item.draconicevolution:draconiumBlend.name=Draconium Blend
+item.draconicevolution:draconiumBlend.name=Draconium Blend (Depreciated)
 -----item.draconicevolution:draconiumBlend.description=Mixture of Draconic dust and iron. Necessary to make Draconium
 
 item.draconicevolution:dragonHeart.name=Dragon Heart
@@ -327,6 +327,7 @@ info.de.attackDamage.txt=Attack Damage
 info.de.bonusHealthDamage.txt=Mob Health
 info.de.press.txt=Press
 info.de.toOpenConfigGUI.txt=To open config GUI
+info.de.shiftToPause.txt=Hold shift to pause slide
 
 info.de.bowEnchants.txt=Enchants are twice as effective on this bow
 
@@ -538,39 +539,10 @@ button.de..name=
 
 //Manual Gui ----------------------------------------------------------------------------------------------------------------------------------------
 
-manual.de.indexTitle.txt=Index Page
-manual.de.userGuide.txt=Mod Feature Guide
-manual.de.ecth.txt=Energy Storage Multiblock
-manual.de.roerth.txt=Ritual of Draconic Resurrection
-manual.de.endercomet.txt=Ender Comet
-manual.de.enderisland.txt=Chaos Islands
-manual.de.placeditems.txt=Placing items in world
-manual.de.pigmenBloodRage.txt=Pigmen Blood Rage
-manual.de.ectdpage0a.txt=The Energy Core is a multiblock structure that is capable of storing immense amounts of RF power using the energy storage capabilities of Draconium and Redstone.
-manual.de.ectdpage0b.txt=The Energy Core has 7 Tiers each capable of storing considerably more then the last to build it you will need 5 different components.\n ♦  Energy Core x1\n ♦ Particle Generator x4\n ♦ Redstone Block (number depends on tier)\n ♦ Draconium Block (number depends on tier)\n ♦  Energy Pylon x2+
-manual.de.ectdpage1a.txt=The Energy core consists of the Energy Core(Block) at the centre surrounded by 4 Particle Generators as shown.
-manual.de.ectdpage1b.txt=The Core is then surrounded by a combination of Redstone Blocks and Draconium Blocks the following pages show the construction of each tier as well as the material cost and storage capacity.\n\nOnce the  structure is built simply shift right click one of the particle\n generators (with an empty hand)
-manual.de.ectdpage2.txt=Tier 0:\nRedstone x0\nDraconium x0\nCapacity = 45.5Million RF\n\nTier  1:\nRedstone x0\nDraconium x6\nCapacity = 273Million RF
-manual.de.ectdpage3.txt=Tier 2:\nRedstone x0\nDraconium x26\nCapacity = 1.64Billion RF
-manual.de.ectdpage4.txt=Tier 3:\nRedstone x26\nDraconium x54\nCapacity = 9.88Billion RF
-manual.de.ectdpage5.txt=Tier 4:\nRedstone x80\nDraconium x98\nCapacity = 59.3Billion RF
-manual.de.ectdpage6.txt=Tier 5:\nRedstone 133\nDraconium 150\nCapacity = 356Billion RF
-manual.de.ectdpage7.txt=Tier 6:\nRedstone x328\nDraconium x218\nCapacity = 2.14Trillion RF
-manual.de.ectdpage8a.txt=To add and remove energy from the core you need to place energy pylons within 15 blocks of the of the core. To activate a pylon place a glass block ether above or below it depending on whether the pylon is placed below or above the core e.g. if you place the pylon on the roof you would place the glass block under it. The pylon can be placed up to 6 blocks above or below the energy core (centre).
-manual.de.ectdpage8b.txt=When the glass block is placed the pylon should immediately activate and link with a nearby Energy Core the link is indicated by white energy particles and the glass should change to the renderer shown in the image above. You can shift right click the pylon to change which core it is linked to (if there is more then one in range)
-manual.de.ectdpage9a.txt=You can simply right click the energy core to check the tier and amount of energy stored.
-manual.de.ectdpage9b.txt=Energy is added and removed from the core using the Energy Pylons. To toggle a Pylon between input and output mode simply right click the sphere. The mode is identified by the colour of the Pylon (Blue = input, Orange = output) and the behaviour of the energy particles and the Pylon sphere
-manual.de.ectdpage10.txt=Energy Transfer between the pylon and the core is indicated by a stream of blue energy particles flowing between the Pylon sphere and the core. The amount of energy flowing is roughly shown by the density of the particle stream.
-manual.de.ectdpage11.txt=The above image shows all of the possible Y level placements for the Pylons relative to the core.
-manual.de.roertpage0a.txt=The Ritual of Draconic Resurrection allows you to summon the Ender Dragon. To set it up you will need the following items.\n\n(1)  Resurrection Stone\n(4) Glowstone Blocks\n(4) Obsidian\n(4) Diamond Blocks\n(4) Charged Draconium Blocks\n(12) Quartz Pillars
-manual.de.roertpage0b.txt=To get a Charged Draconium block place a Draconium block in a charging device (requires 100 Million RF)
-manual.de.roertpage1a.txt=The pillars dont have to be in that exact configuration as long as they are within 5 blocks of the Resurrection Stone it also looks better if they are symmetrical.
-manual.de.roertpage1b.txt=Once you have that setup simply right click the Ritual stone and stand back. The ritual should start immediately if it doesn't you have done something wrong.
-manual.de.roertpage1c.txt=During the ritual all of the Ender Crystals will be re-activated. At the end of the ritual there will be a massive explosion at the centre of the structure that wont do too much damage to the terrain but will kill anything that is standing too close.
-manual.de.roertpage1d.txt=The dragon that is spawned by the ritual is almost identical to the original dragon except it has a different texture (By GreatOrator) and it gets harder to kill and deals more damage each time it is summoned (this increase is per player and stops when it reaches a certain difficulty) It also has regeneration for 25 seconds.
-manual.de.endercomet.description=Mined out all of the Draconium ore in the end? Get yourself some form of flight and go search the end. If your lucky you may come across an Ender Comet. These comets are comprised of end stone, obsidian and a significant amount of Draconium ore. By default they have a 1 in 10000 chance to spawn in each chunk so you may need to search for a while and they come in various sizes.
-manual.de.chaosisland.description=Looking for a challenge? the Ender Dragon wasnt hard enough? This is for you! If you travel to any multiple of 10,000 in the end (e.g. {x=0, z=10000}, {x=0, z=20000}, {x=10000, z=0} etc) you will find a Chaos Island. Each of these islands is guarded by a Chaos Guardian which is basically an extremely powerful Ender Dragon that drops 2 dragon hearts and some draconium dust as well as the standard end portal in the middle of the island with a dragon egg on top. Note: The Chaos Island is a work in progress and there will be changes in the future.
-manual.de.placeditems.description=Draconic Evolution adds the ability to place any item in the world as a block allowing you to do things like hang tools or other items on walls for display etc. To pla an item in the world simply look at a block with the item selected (as if you were about to place a block) and press the "Place Item" key (p by default) you can place items on the top bottom or sides of a block. You can left click to rotate the item clockwise and shift+left click to rotate the item counter-clockwise you can also shift+right click to rotate the item in very small increments counter-clockwise. Right click to pick the item up.
+
+
+
+
 manual.de.pigmenBloodRage.description=Don't let the pigmen see you eating pork you wont like what happens..
 
 //Potions ----------------------------------------------------------------------------------------------------------------------------------------

@@ -200,7 +200,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		if (world.isAirBlock(x, y, z)) return;
 
 		Block block = world.getBlock(x, y, z);
-		if (block == Blocks.bedrock || block.getMaterial() instanceof MaterialLiquid) return;
+		if (block == Blocks.bedrock || block.getMaterial() instanceof MaterialLiquid || block.getBlockHardness(world, x, y, x) == -1) return;
 
 		int meta = world.getBlockMetadata(x, y, z);
 
@@ -230,6 +230,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		int scaledPower = energyPerOperation + (totalSize * (energyPerOperation / 10));
 
 		if (player.capabilities.isCreativeMode || (blockMap.containsKey(block) && blockMap.get(block) == meta)) {
+
 			block.onBlockHarvested(world, x, y, z, meta, player);
 			if (block.removedByPlayer(world, player, x, y, z, false))
 				block.onBlockDestroyedByPlayer(world, x, y, z, meta);

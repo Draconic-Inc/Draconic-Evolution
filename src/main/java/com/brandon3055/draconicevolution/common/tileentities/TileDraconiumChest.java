@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
 import com.brandon3055.draconicevolution.common.utills.InventoryUtils;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -57,6 +58,7 @@ public class TileDraconiumChest extends TileEntity implements ISidedInventory, I
 	public int smeltingAutoFeed = 0;
 	public int tick;
 	private boolean inTick = false;
+	private boolean requiresUpdate = false;
 
 	@Override
 	public void updateEntity() {
@@ -117,99 +119,154 @@ public class TileDraconiumChest extends TileEntity implements ISidedInventory, I
 		}
 	}
 
+	private boolean smeltInProgress = false;
+	private boolean updateSuspended = false;
+
 	public void updateFurnace() {
 		if (worldObj.isRemote) return;
-		inTick = true;
 		tick++;
-		boolean canSmelt = false;
-		boolean flag = true;
+
+		if (requiresUpdate && numUsingPlayers > 0)
+		{
+			if (!smeltInProgress && !updateSuspended) {
+				LogHelper.info("update");
+				if (getFill() || getLock() || getAll()) feedNextItem();
+				smeltInProgress = canFurnaceRun();
+			}
+			requiresUpdate = false;
+		}
+
+		//LogHelper.info("S.I.P: " + smeltInProgress + " S.S.D: " + updateSuspended + " C.F.R: " + canFurnaceRun());
+		if (updateSuspended && (getTick() % 500) != 0) return;
+
+		updateSuspended = false;
+		inTick = true;
+
+	//======= Try to start the furnace ====================================================
+		if (!smeltInProgress && (getTick() % 500) == 0 && energy.getEnergyStored() > 1000)
+		{
+			if (getFill() || getLock() || getAll()) feedNextItem();
+			smeltInProgress = canFurnaceRun();
+		}
+	//=====================================================================================
+	//======= Furnace running =============================================================
+
+		if (smeltInProgress)
+		{
+			smeltingBurnSpeed = Math.min(energy.getEnergyStored() / 1000, smeltingMaxBurnSpeed);
+			energy.modifyEnergyStored(-smeltingBurnSpeed * 20);
+			smeltingProgressTime += smeltingBurnSpeed;
+
+			if (smeltingProgressTime >= smeltingCompleateTime)
+			{
+				if (canFurnaceRun() && trySmelt())
+				{
+					if (getFill() || getLock() || getAll()) feedNextItem();
+					smeltInProgress = canFurnaceRun();
+				}
+				else
+				{
+					updateSuspended = true;
+					smeltInProgress = false;
+					smeltingProgressTime = 0;
+					smeltingBurnSpeed = 0;
+				}
+				smeltingProgressTime = 0;
+			}
+		}
+		else
+		{
+			smeltingProgressTime = 0;
+			smeltingBurnSpeed = 0;
+		}
+
+		inTick = false;
+	}
+
+	private void confirmRunningState() {}
+
+	private boolean canFurnaceRun()
+	{
+		boolean flag = false;
+	//====== Check if there is anything to smelt =========================================
 		for (int i = 0; i < 5; i++) {
 			if (getStackInSlot(234 + i) == null) continue;
 			ItemStack stack = getStackInSlot(234 + i);
-			if (isSmeltable(stack)) canSmelt = true;
-			else flag = false;
-		}
-
-
-		if (!flag) canSmelt = false;
-
-		if (canSmelt) {//Check if there is room for the output
-			for (int i = 0; i < 5; i++) {
-
-				if (getStackInSlot(234 + i) == null) continue;
-				ItemStack output = getResult(getStackInSlot(234 + i)).copy();
-
-				for (int j = 0; j < getSizeInventory(); j++) {
-					InventoryUtils.insertItemIntoInventory(this, output, ForgeDirection.DOWN, j, false);
-					if (output.stackSize == 0) break;
-				}
-
-				if (output.stackSize > 0) {
-					canSmelt = false;
-					break;
-				}
+			if (isSmeltable(stack))
+			{
+				flag = true;
+				break;
 			}
 		}
-
-		if (canSmelt && getLock()){ //Confirm that the firnace can still run when lock mode is enabled
+		if (!flag) return false; //Return false if there is nothing to smelt
+	//=====================================================================================
+	//===== Confirm that the furnace can still run when lock mode is enabled ==============
+		if (getLock()){
 			flag = false;
+			for (int i = 0; i < 5; i++)
+			{
+				ItemStack recipe = getStackInSlot(234 + i);
+				if (recipe == null || recipe.stackSize == 1) continue; //checks that there is more then one of at least one item in the input
+				flag = true;
+			}
+			if (!flag) return false;
+		}
+	//=====================================================================================
+	//====== Check if there is room for the output ========================================
+		for (int i = 0; i < 5; i++)
+		{
+			if (getStackInSlot(234 + i) == null) continue;
+			ItemStack output = getResult(getStackInSlot(234 + i)).copy();
+
+			for (int j = 0; j < getSizeInventory(); j++) {
+				//if (getStackInSlot(234 + j).stackSize >= getStackInSlot(234 + j).getMaxStackSize()) continue;todo consider?
+				InventoryUtils.insertItemIntoInventory(this, output, ForgeDirection.DOWN, j, false);
+				if (output.stackSize == 0) break;
+			}
+			if (output.stackSize > 0) return false; //return false if the output could not be added to the inventory
+		}
+	//=====================================================================================
+		return true;
+	}
+
+	private boolean trySmelt()
+	{
+		int itemsToProcess = 5;
+		int processAttempts = 0;
+		boolean itemSmelted = false;
+
+		do {
 			for (int i = 0; i < 5; i++) {
 
 				ItemStack recipe = getStackInSlot(234 + i);
 
-				if (recipe == null || recipe.stackSize == 1) continue;
+				if (recipe == null || (getLock() && recipe.stackSize == 1)) continue;
 
-				flag = true;
-			}
-			canSmelt = flag;
-		}
+				ItemStack result = getResult(recipe).copy();
 
-		flag = false;
-		if (canSmelt && smeltingProgressTime >= smeltingCompleateTime) {
-			int itemsToProccess = 5;
-			int proccessAttempts = 0;
-			do {
-				for (int i = 0; i < 5; i++) {
-
-					ItemStack recipe = getStackInSlot(234 + i);
-
-					if (recipe == null || (getLock() && recipe.stackSize == 1)) continue;
-
-					ItemStack result = getResult(recipe).copy();
-
-					for (int j = 0; j < getSizeInventory(); j++) {
-						if (getStackInSlot(j) == null) continue;
-						InventoryUtils.tryMergeStacks(result, getStackInSlot(j));
-					}
-
-					if (result.stackSize > 0) InventoryUtils.insertItemIntoInventory(this, result);
-
-					if (result.stackSize == 0) {
-						recipe.stackSize--;
-						if (recipe.stackSize == 0) setInventorySlotContents(234 + i, null);
-						itemsToProccess--;
-						flag = true;
-					}
-
-					if (itemsToProccess == 0) break;
+				//Try to merge with existing stacks todo needed?
+				for (int j = 0; j < getSizeInventory(); j++) {
+					if (getStackInSlot(j) == null) continue;
+					InventoryUtils.tryMergeStacks(result, getStackInSlot(j));
 				}
 
-				proccessAttempts++;
+				if (result.stackSize > 0) InventoryUtils.insertItemIntoInventory(this, result); //Insert stack into inventory
 
-			} while (itemsToProccess > 0 && proccessAttempts < 5);
-		}
+				if (result.stackSize == 0) {
+					recipe.stackSize--;
+					if (recipe.stackSize == 0) setInventorySlotContents(234 + i, null);
+					itemsToProcess--;
+					itemSmelted = true;
+				}
 
-		if ((flag && (getFill() || getLock() || getAll())) || (!canSmelt && (getLock() || getAll()) && (tick + xCoord + yCoord + zCoord) % 60 == 0)) feedNextItem();
+				if (itemsToProcess == 0) break;
+			}
 
-		if (canSmelt) {
-			smeltingBurnSpeed = Math.min(energy.getEnergyStored() / 1000, smeltingMaxBurnSpeed);
-		} else smeltingBurnSpeed = 0;
+			processAttempts++;
 
-		if (canSmelt && smeltingProgressTime < smeltingCompleateTime) {
-			smeltingProgressTime += smeltingBurnSpeed;
-			energy.modifyEnergyStored(-smeltingBurnSpeed * 5);
-		} else smeltingProgressTime = 0;
-		inTick = false;
+		} while (itemsToProcess > 0 && processAttempts < 5);
+
+		return itemSmelted;
 	}
 
 	public void feedNextItem() {
@@ -239,7 +296,7 @@ public class TileDraconiumChest extends TileEntity implements ISidedInventory, I
 
 				InventoryUtils.tryMergeStacks(candidate, inputSlot);
 
-				if (candidate != null && candidate.stackSize == 0) {
+				if (candidate.stackSize == 0) {
 					setInventorySlotContents(i, null);
 					candidate = null;
 				}
@@ -580,4 +637,109 @@ public class TileDraconiumChest extends TileEntity implements ISidedInventory, I
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		return true;
 	}
+
+	private int getTick() {return xCoord + yCoord + zCoord + tick; }
+
+	@Override
+	public void markDirty() {
+		super.markDirty();
+		if (!worldObj.isRemote) requiresUpdate = true;
+
+	}
 }
+
+
+
+//inTick = true;
+//		tick++;
+//
+//		boolean canSmelt = false;
+//		boolean flag = true;
+//
+//		for (int i = 0; i < 5; i++) {
+//		if (getStackInSlot(234 + i) == null) continue;
+//		ItemStack stack = getStackInSlot(234 + i);
+//		if (isSmeltable(stack)) canSmelt = true;
+//		else flag = false;
+//		}
+//
+//
+//		if (!flag) canSmelt = false;
+//
+//		if (canSmelt) {//Check if there is room for the output
+//		for (int i = 0; i < 5; i++) {
+//
+//		if (getStackInSlot(234 + i) == null) continue;
+//		ItemStack output = getResult(getStackInSlot(234 + i)).copy();
+//
+//		for (int j = 0; j < getSizeInventory(); j++) {
+//		InventoryUtils.insertItemIntoInventory(this, output, ForgeDirection.DOWN, j, false);
+//		if (output.stackSize == 0) break;
+//		}
+//
+//		if (output.stackSize > 0) {
+//		canSmelt = false;
+//		break;
+//		}
+//		}
+//		}
+//
+//		if (canSmelt && getLock()){ //Confirm that the firnace can still run when lock mode is enabled
+//		flag = false;
+//		for (int i = 0; i < 5; i++) {
+//
+//		ItemStack recipe = getStackInSlot(234 + i);
+//
+//		if (recipe == null || recipe.stackSize == 1) continue;
+//
+//		flag = true;
+//		}
+//		canSmelt = flag;
+//		}
+//
+//		flag = false;
+//		if (canSmelt && smeltingProgressTime >= smeltingCompleateTime) {
+//		int itemsToProccess = 5;
+//		int proccessAttempts = 0;
+//		do {
+//		for (int i = 0; i < 5; i++) {
+//
+//		ItemStack recipe = getStackInSlot(234 + i);
+//
+//		if (recipe == null || (getLock() && recipe.stackSize == 1)) continue;
+//
+//		ItemStack result = getResult(recipe).copy();
+//
+//		for (int j = 0; j < getSizeInventory(); j++) {
+//		if (getStackInSlot(j) == null) continue;
+//		InventoryUtils.tryMergeStacks(result, getStackInSlot(j));
+//		}
+//
+//		if (result.stackSize > 0) InventoryUtils.insertItemIntoInventory(this, result);
+//
+//		if (result.stackSize == 0) {
+//		recipe.stackSize--;
+//		if (recipe.stackSize == 0) setInventorySlotContents(234 + i, null);
+//		itemsToProccess--;
+//		flag = true;
+//		}
+//
+//		if (itemsToProccess == 0) break;
+//		}
+//
+//		proccessAttempts++;
+//
+//		} while (itemsToProccess > 0 && proccessAttempts < 5);
+//		}
+//
+//		if ((flag && (getFill() || getLock() || getAll())) || (!canSmelt && (getLock() || getAll()) && (tick + xCoord + yCoord + zCoord) % 60 == 0)) feedNextItem();
+//
+//		if (canSmelt) {
+//		smeltingBurnSpeed = Math.min(energy.getEnergyStored() / 1000, smeltingMaxBurnSpeed);
+//		} else smeltingBurnSpeed = 0;
+//
+//		if (canSmelt && smeltingProgressTime < smeltingCompleateTime) {
+//		smeltingProgressTime += smeltingBurnSpeed;
+//		energy.modifyEnergyStored(-smeltingBurnSpeed * 5);
+//		} else smeltingProgressTime = 0;
+//		inTick = false;

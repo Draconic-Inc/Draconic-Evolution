@@ -27,11 +27,12 @@ public class CraftingHandler {
 		add(ModItems.awakenedCore, "CSC", "SCS", "CSC", 'C', ModItems.draconicIngot, 'S', ModItems.wyvernCore);
 		add(ModItems.wyvernEnergyCore, "CSC", "SMS", "CSC", 'C', ModItems.draconiumIngot, 'S', Blocks.redstone_block, 'M', ModItems.draconicCore);
 		add(ModItems.draconicEnergyCore, "CSC", "SMS", "CSC", 'C', ModItems.draconicIngot, 'S', ModItems.wyvernEnergyCore, 'M', ModItems.wyvernCore);
-		addOre(ModItems.draconiumBlend, " D ", "DID", " D ", 'I', "ingotIron", 'D', ModItems.draconiumDust);
+		//addOre(ModItems.draconiumBlend, " D ", "DID", " D ", 'I', "ingotIron", 'D', ModItems.draconiumDust);
 
 		addShaplessOre(getStack(ModItems.draconicIngot, 9, 0), Item.getItemFromBlock(ModBlocks.draconicBlock));
 		addShaplessOre(getStack(ModItems.draconiumIngot, 9, 0), Item.getItemFromBlock(ModBlocks.draconiumBlock));
 		if (ModItems.isEnabled(ModItems.draconiumIngot) && ModItems.isEnabled(ModItems.draconiumBlend)) GameRegistry.addSmelting(ModItems.draconiumBlend, getStack(ModItems.draconiumIngot, 2, 0), 1.0f);
+		if (ModItems.isEnabled(ModItems.draconiumIngot) && ModItems.isEnabled(ModItems.draconiumDust)) GameRegistry.addSmelting(ModItems.draconiumDust, getStack(ModItems.draconiumIngot, 1, 0), 1.0f);
 
 
 	//Wyvern tools
