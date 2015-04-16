@@ -47,6 +47,8 @@ public class ModItems {
 	public static Item wyvernLeggs;
 	public static Item wyvernBoots;
 
+	public static Item dezilsMarshmallow;
+
 	public static ItemDE wyvernCore;
 	public static ItemDE draconiumDust;
 	public static ItemDE draconiumIngot;
@@ -121,6 +123,8 @@ public class ModItems {
 		draconiumEnergyCore = new DraconiumEnergyCore();
 		draconiumFluxCapacitor = new DraconiumFluxCapacitor();
 		wrench = new Wrench();
+
+		dezilsMarshmallow = new DezilsMarshmallow();
 
 		//Custom ItemStacks
 		wyvernEnergyCore = new ItemStack(ModItems.draconiumEnergyCore, 1, 0);

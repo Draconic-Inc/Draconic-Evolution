@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 import java.util.Random;
 
@@ -51,7 +52,8 @@ public class DraconiumOre extends BlockDE {
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		int dim = Minecraft.getMinecraft().theWorld.provider.dimensionId;
+		World world = Minecraft.getMinecraft().theWorld;
+		int dim = world != null && world.provider != null ? world.provider.dimensionId : 0;
 
 		if (dim == -1)
 			return iconNether;

@@ -1,12 +1,15 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -189,6 +192,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 				item.setLocationAndAngles(player.posX, player.posY, player.posZ, 0, 0);
 				((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S18PacketEntityTeleport(item));
 				item.delayBeforeCanPickup = 0;
+				if (ConfigHandler.rapidlyDespawnMinedItems) item.lifespan = 100;
 			}
 		}
 
@@ -252,9 +256,14 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 
 			if(block.removedByPlayer(world, player, x,y,z, true))
 			{
-				block.onBlockDestroyedByPlayer( world, x,y,z, meta);
+				block.onBlockDestroyedByPlayer(world, x,y,z, meta);
 				block.harvestBlock(world, player, x,y,z, meta);
 				player.addExhaustion(-0.025F);
+				if (block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)) > 0) {
+					EntityXPOrb xp = new EntityXPOrb(world, player.posX, player.posY, player.posZ, block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)));
+					xp.xpOrbAge = 5400;
+					world.spawnEntityInWorld(xp);
+				}
 			}
 
 			EntityPlayerMP mpPlayer = (EntityPlayerMP) player;

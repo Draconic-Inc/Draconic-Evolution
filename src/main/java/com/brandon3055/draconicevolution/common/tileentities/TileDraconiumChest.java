@@ -9,7 +9,6 @@ import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
 import com.brandon3055.draconicevolution.common.utills.InventoryUtils;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -129,7 +128,6 @@ public class TileDraconiumChest extends TileEntity implements ISidedInventory, I
 		if (requiresUpdate && numUsingPlayers > 0)
 		{
 			if (!smeltInProgress && !updateSuspended) {
-				LogHelper.info("update");
 				if (getFill() || getLock() || getAll()) feedNextItem();
 				smeltInProgress = canFurnaceRun();
 			}

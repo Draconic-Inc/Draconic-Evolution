@@ -1,3 +1,10 @@
+######## 1.0.1-Snapshot 10 (RC 5)########
+-fixed mob grinder creating a tone of network traffic.
+-fixed tools not dropping xp on aoe mode.
+-added config option to make items dropped by tools in aoe mode despawn after 5 seconds if not collected.
+-xp dropped by the mob grinder will now despawn after 30 seconds to reduce lag.
+-fixed crash with veinminer.
+
 ######## 1.0.1-Snapshot 9 (RC 4)########
 -stopped draconic chest eating up a tone of tick time.
 -prevented dragon travelling through portals.

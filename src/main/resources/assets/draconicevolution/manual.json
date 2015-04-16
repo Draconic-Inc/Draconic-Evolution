@@ -468,6 +468,7 @@
     "content":
     [
       "Everyone needs effective mob farms. For the cost of a bit of solid fuel (coal, charcoal, etc.) or RF power, you can kill to your hearts content knowing the forces of the Draconic have your back! The grinder will kill all mobs in a 7x7 area in front of it. It is much more efficient and can kill mobs faster if powered by RF.",
+      "To reduce lag xp orbs dropped by the grinder will despawn after 30 seconds if not collected. It is recommended that you use something like the extra utilities vacuum hopper to collect the xp (if available)",
       "[c]tile.draconicevolution:grinder:3"
     ]
   },

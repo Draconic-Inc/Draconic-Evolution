@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
  */
 public class NEIDraconicevolutionConfig implements IConfigureNEI
 {
-
 	@Override
 	public void loadConfig() {
 
@@ -25,6 +24,7 @@ public class NEIDraconicevolutionConfig implements IConfigureNEI
 		API.hideItem(new ItemStack(ModBlocks.safetyFlame));
 		API.hideItem(new ItemStack(ModItems.tclogo));
 		API.hideItem(new ItemStack(ModItems.creativeStructureSpawner));
+		API.hideItem(new ItemStack(ModItems.dezilsMarshmallow));
 		API.hideItem(new ItemStack(ModItems.creativeStructureSpawner, 1, 1));
 		LogHelper.info("Added NEI integration");
 	}

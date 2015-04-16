@@ -15,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.resources.FolderResourcePack;
 import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -23,10 +22,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Brandon on 8/02/2015.
@@ -88,6 +84,7 @@ public class ResourceHandler {
 
 			for (String s : imageURLs)
 			{
+				LogHelper.info("Checking Image: " + s);
 				boolean success = true;
 				if (!checkExistence(s)) downloadImage(s);
 				if (checkExistence(s))

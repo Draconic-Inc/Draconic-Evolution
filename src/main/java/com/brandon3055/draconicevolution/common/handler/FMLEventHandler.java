@@ -1,15 +1,20 @@
 package com.brandon3055.draconicevolution.common.handler;
 
 
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -19,6 +24,7 @@ public class FMLEventHandler {
 	public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
 	public static List<String> playersWithUphillStep = new ArrayList<String>();
 	public static Field walkSpeed;
+	private static boolean mmGiven = false;
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
@@ -101,6 +107,17 @@ public class FMLEventHandler {
 					player.sendPlayerAbilities();
 				}
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public void playerLogin(PlayerEvent.PlayerLoggedInEvent event)
+	{
+		if (!mmGiven && event.player.getCommandSenderName().toLowerCase().equals("dezil_nz"))
+		{
+			mmGiven = true;
+			event.player.addChatComponentMessage(new ChatComponentText("Hello Dez! Here have a Marshmallow"));
+			event.player.worldObj.spawnEntityInWorld(new EntityItem(event.player.worldObj, event.player.posX, event.player.posY, event.player.posZ, new ItemStack(ModItems.dezilsMarshmallow)));
 		}
 	}
 }

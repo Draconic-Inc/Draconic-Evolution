@@ -9,7 +9,6 @@ import com.brandon3055.draconicevolution.common.tileentities.energynet.TileRemot
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
 import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -117,12 +116,12 @@ public class Wrench extends ItemDE implements IHudDisplayItem {
 			int xCoord = linkData.getInteger("XCoord");
 			int yCoord = linkData.getInteger("YCoord");
 			int zCoord = linkData.getInteger("ZCoord");
-			LogHelper.info("side");
+
 			if (world.getTileEntity(xCoord, yCoord, zCoord) instanceof TileWirelessEnergyTransceiver)
 			{
 				((TileWirelessEnergyTransceiver)world.getTileEntity(xCoord, yCoord, zCoord)).linkDevice(x, y, z, side, player, ItemNBTHelper.getString(stack, "Mode", "bind"));
 
-				linkData.setBoolean("Bound", false);
+				//linkData.setBoolean("Bound", false);
 				return true;
 			}
 			else return false;

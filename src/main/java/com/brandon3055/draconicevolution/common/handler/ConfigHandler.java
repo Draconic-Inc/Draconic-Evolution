@@ -37,9 +37,9 @@ public class ConfigHandler {
 	public static List<String> disabledNamesList = new ArrayList<String>();
 	public static double maxPlayerSpeed;
 	private static int[] speedDimBlackList;
-public static List<Integer> speedLimitDimList = new ArrayList<Integer>();
+	public static List<Integer> speedLimitDimList = new ArrayList<Integer>();
 	public static boolean speedLimitops;
-
+	public static boolean rapidlyDespawnMinedItems;
 	//spawner
 	public static String[] spawnerList;
 	public static boolean spawnerListType;
@@ -98,6 +98,7 @@ public static List<Integer> speedLimitDimList = new ArrayList<Integer>();
 			maxPlayerSpeed = config.get(Configuration.CATEGORY_GENERAL, "Player speed cap", 10D, "Limits the max speed of players. Recommend between 0.5 - 1.0 for servers").getDouble(10D);
 			speedDimBlackList = config.get(Configuration.CATEGORY_GENERAL, "Speed limit Dim black lack list", new int[] {1}, "A list of dimensions the speed limit will not effect (speed limit is not so really required in the end)").getIntList();
 			speedLimitops = config.get(Configuration.CATEGORY_GENERAL, "Speed limit effects ops", false, "Dose the speed limit effect ops").getBoolean(false);
+			rapidlyDespawnMinedItems = config.get(Configuration.CATEGORY_GENERAL, "Rapidly despawn aoe mined items", false, "If true items dropped by a tool in aoe mode will despawn after 5 seconds").getBoolean(false);
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);

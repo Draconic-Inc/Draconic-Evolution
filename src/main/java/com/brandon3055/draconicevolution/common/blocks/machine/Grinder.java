@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
-import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
@@ -84,7 +84,7 @@ public class Grinder extends BlockCustomDrop
 		
 		IIcon back;
 		IIcon front;
-		
+
 		if (!tile.disabled && tile.hasPower)
 		{
 			back = icon_back;

@@ -214,6 +214,8 @@ item.draconicevolution:infoTablet.name=Draconic Evolution Information Tablet
 
 item.draconicevolution:wrench.name=Crystal Binder
 
+item.draconicevolution:dezilsMarshmallow.name=Dezil's Marshmallow
+
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
