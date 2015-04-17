@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.*;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -28,6 +29,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import thaumcraft.api.IGoggles;
+import thaumcraft.api.nodes.IRevealer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +39,11 @@ import java.util.List;
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool {//TODO Wings
+@Optional.InterfaceList(value = {
+	@Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
+	@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft")
+})
+public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IGoggles, IRevealer {//TODO Wings
 	private IIcon helmIcon;
 	private IIcon chestIcon;
 	private IIcon leggsIcon;
@@ -302,5 +309,17 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Override
 	public boolean isEnchantValid(Enchantment enchant) {
 		return enchant.type == EnumEnchantmentType.armor || (armorType == 0 && enchant.type == EnumEnchantmentType.armor_head) || (armorType == 1 && enchant.type == EnumEnchantmentType.armor_torso) || (armorType == 2 && enchant.type == EnumEnchantmentType.armor_legs) || (armorType == 3 && enchant.type == EnumEnchantmentType.armor_feet);
+	}
+
+	@Optional.Method(modid = "Thaumcraft")
+	@Override
+	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
+		return true;
+	}
+
+	@Optional.Method(modid = "Thaumcraft")
+	@Override
+	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) {
+		return true;
 	}
 }

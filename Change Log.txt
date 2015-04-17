@@ -4,6 +4,17 @@
 -added config option to make items dropped by tools in aoe mode despawn after 5 seconds if not collected.
 -xp dropped by the mob grinder will now despawn after 30 seconds to reduce lag.
 -fixed crash with veinminer.
+-tweaked armor jumping mechanic.
+-increased flight up/down speed (speed boost applied by leggings).
+-increased resistance of draconium.
+-fixed shovel not working on some blocks such as cursed earth.
+-fixed tools no mining some blocks such as bedrock when in creative mode.
+-can now use backspace to go to the previous page in the information tablet.
+-increased render distance of persistent items and active dragon heart.
+-reduced explosion power required to activate the dragon heart.
+-stabilized spawner now shows its tier as part of its renderer.
+-added thaumcraft support to the draconic helm. (goggles of revealing)
+-fixed charged draconium blocks not extracting from energy infuser.
 
 ######## 1.0.1-Snapshot 9 (RC 4)########
 -stopped draconic chest eating up a tone of tick time.

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.handler;
 
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -81,8 +82,23 @@ public class FMLEventHandler {
 			float percentIncrease = ArmorEffectHandler.getSwiftnessMultiplier(player) * ((i + 1) * 0.05f);
 
 			if ((player.onGround || player.capabilities.isFlying) && player.moveForward > 0F)
+			{
 				player.moveFlying(0F, 1F, player.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
 
+			}
+			if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0)
+			{
+				if (DraconicEvolution.proxy.isSpaceDown() && !DraconicEvolution.proxy.isShiftDown())
+				{
+					player.motionY = 0.124D + (double)(percentIncrease * 3F);
+				}
+
+				if (DraconicEvolution.proxy.isShiftDown() && !DraconicEvolution.proxy.isSpaceDown())
+				{
+					player.motionY = -0.124D - (double)(percentIncrease * 3F);
+				}
+			}
+			player.jumpMovementFactor = 0.02F + (percentIncrease * 0.2F);
 		}
 
 		//Apply Flight--------------------------------------------------------------------------------------------------

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.*;
+import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,8 +63,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
-		int radius = ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0);
-		int depth = ItemNBTHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
+		int radius = ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0);		int depth = ItemNBTHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
 		return getEnergyStored(stack) >= energyPerOperation && (radius > 0) ? breakAOEBlocks(stack, x, y, z, radius, depth, player) : super.onBlockStartBreak(stack, x, y, z, player);
 	}
 
@@ -88,6 +86,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		Block block = player.worldObj.getBlock(x,y,z);
 		int meta = player.worldObj.getBlockMetadata(x,y,z);
 		boolean effective = false;
+
 		if(block != null)
 		{
 			for (String s : getToolClasses(stack))
@@ -95,6 +94,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 				if (block.isToolEffective(s, meta) || func_150893_a(stack, block) > 1F) effective = true;
 			}
 		}
+
 		if (!effective)	return true;
 
 		float refStrength = ForgeHooks.blockStrength(block, player, player.worldObj, x, y, z);
@@ -204,7 +204,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 		if (world.isAirBlock(x, y, z)) return;
 
 		Block block = world.getBlock(x, y, z);
-		if (block == Blocks.bedrock || block.getMaterial() instanceof MaterialLiquid || block.getBlockHardness(world, x, y, x) == -1) return;
+		if (block.getMaterial() instanceof MaterialLiquid || (block.getBlockHardness(world, x, y, x) == -1 && !player.capabilities.isCreativeMode)) return;
 
 		int meta = world.getBlockMetadata(x, y, z);
 
@@ -228,7 +228,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 			}
 		}
 
-		if (!player.canHarvestBlock(block) || !ForgeHooks.canHarvestBlock(block, player, meta) || refStrength/strength > 10f)
+		if (!player.canHarvestBlock(block) || !ForgeHooks.canHarvestBlock(block, player, meta) || refStrength/strength > 10f && !player.capabilities.isCreativeMode)
 			return;
 
 		int scaledPower = energyPerOperation + (totalSize * (energyPerOperation / 10));

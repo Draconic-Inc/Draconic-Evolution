@@ -1,18 +1,15 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -77,27 +74,26 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		Minecraft.getMinecraft().gameSettings.mouseSensitivity = -0.34F;
+		//Minecraft.getMinecraft().gameSettings.mouseSensitivity = -0.34F;
 
-
-		if (world.isRemote)
-		{
-			ResourceHandler.init(null);
-			String str = "A String";
-			IChatComponent localIChatComponent;
-
-
-			localIChatComponent = IChatComponent.Serializer.func_150699_a("[{\"text\":\"" + str + "\",\"color\":\"aqua\"}," + "{\"text\":\" " + EnumChatFormatting.WHITE + "[" + EnumChatFormatting.GREEN +
-					"info.cofh.updater.download" + EnumChatFormatting.WHITE + "]\"," + "\"color\":\"green\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":" + "{\"text\":\"" +
-
-					"info.cofh.updater.tooltip" + ".\",\"color\":\"yellow\"}}," + "\"clickEvent\":{\"action\":\"open_url\",\"value\":\"" + "www.google.com" + "\"}}]");
-
-			//player.addChatMessage(localIChatComponent);
-		}
-		else
-		{
-			//for (Object o : EntityList.classToStringMapping.values()) LogHelper.info(o);
-		}
+//		if (world.isRemote)
+//		{
+//			ResourceHandler.init(null);
+//			String str = "A String";
+//			IChatComponent localIChatComponent;
+//
+//
+//			localIChatComponent = IChatComponent.Serializer.func_150699_a("[{\"text\":\"" + str + "\",\"color\":\"aqua\"}," + "{\"text\":\" " + EnumChatFormatting.WHITE + "[" + EnumChatFormatting.GREEN +
+//					"info.cofh.updater.download" + EnumChatFormatting.WHITE + "]\"," + "\"color\":\"green\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":" + "{\"text\":\"" +
+//
+//					"info.cofh.updater.tooltip" + ".\",\"color\":\"yellow\"}}," + "\"clickEvent\":{\"action\":\"open_url\",\"value\":\"" + "www.google.com" + "\"}}]");
+//
+//			//player.addChatMessage(localIChatComponent);
+//		}
+//		else
+//		{
+//			//for (Object o : EntityList.classToStringMapping.values()) LogHelper.info(o);
+//		}
 
 
 		if (!player.isSneaking())

@@ -16,7 +16,7 @@ public class DraconicBlock extends BlockDE {
 	IIcon top;
 	public DraconicBlock() {
 		this.setHardness(20F);
-		this.setResistance(100F);
+		this.setResistance(1000F);
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName(Strings.draconicBlockName);
 		this.setHarvestLevel("pickaxe", 4);

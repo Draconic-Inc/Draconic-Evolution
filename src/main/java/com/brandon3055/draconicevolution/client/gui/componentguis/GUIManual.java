@@ -12,6 +12,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.apache.commons.io.IOUtils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.io.*;
@@ -127,6 +128,26 @@ public class GUIManual extends GUIScrollingBase {
 			collection.setOnlyGroupEnabled(GR_BACKGROUND);
 			collection.setGroupEnabled(GR_INDEX, true);
 			collection.schedulRemoval(GR_PAGE);
+		}
+	}
+
+	@Override
+	protected void keyTyped(char par1, int par2) {
+		super.keyTyped(par1, par2);
+		if (Keyboard.KEY_BACK == par2)
+		{
+			if (currentPage != null)
+			{
+				currentPage = null;
+				collection.setOnlyGroupEnabled(GR_BACKGROUND);
+				collection.setGroupEnabled(GR_INDEX, true);
+				collection.schedulRemoval(GR_PAGE);
+			}
+			else
+			{
+				collection.setOnlyGroupEnabled(GR_BACKGROUND);
+				collection.setGroupEnabled(GR_INTRO, true);
+			}
 		}
 	}
 

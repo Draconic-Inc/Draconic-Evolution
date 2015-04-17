@@ -273,7 +273,9 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack item, int side) {
-		if (item != null && item.getItem() instanceof IEnergyContainerItem && (((IEnergyContainerItem)item.getItem()).getEnergyStored(item) >= ((IEnergyContainerItem)item.getItem()).getMaxEnergyStored(item)))
+		if (item == null || !(item.getItem() instanceof IEnergyContainerItem)) return true;
+
+		if ((((IEnergyContainerItem)item.getItem()).getEnergyStored(item) >= ((IEnergyContainerItem)item.getItem()).getMaxEnergyStored(item)) || ((IEnergyContainerItem)item.getItem()).receiveEnergy(item, 1, true) == 0)
 			return true;
 		else
 			return false;

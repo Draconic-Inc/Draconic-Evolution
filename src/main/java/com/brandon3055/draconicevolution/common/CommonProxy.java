@@ -206,4 +206,14 @@ public class CommonProxy {
 
 	}
 
+	public boolean isSpaceDown()
+	{
+		return false;
+	}
+
+	public boolean isShiftDown()
+	{
+		return false;
+	}
+
 }

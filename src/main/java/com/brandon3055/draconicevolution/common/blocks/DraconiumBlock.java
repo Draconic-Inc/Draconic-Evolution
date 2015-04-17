@@ -31,7 +31,7 @@ public class DraconiumBlock extends BlockDE {
 	IIcon icons[] = new IIcon[3];
 	public DraconiumBlock() {
 		this.setHardness(10F);
-		this.setResistance(50F);
+		this.setResistance(500F);
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName(Strings.draconiumBlockName);
 		this.setHarvestLevel("pickaxe", 4);
@@ -54,6 +54,7 @@ public class DraconiumBlock extends BlockDE {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int side, int meta) {
+		if (meta >= icons.length) return icons[0];
 		return icons[meta];
 	}
 

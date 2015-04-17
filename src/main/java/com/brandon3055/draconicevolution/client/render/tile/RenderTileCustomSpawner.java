@@ -4,7 +4,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
  * Created by Brandon on 5/07/2014.
  */
 
-import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.tileentities.CustomSpawnerBaseLogic;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
 import cpw.mods.fml.relauncher.Side;
@@ -14,14 +14,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderTileCustomSpawner extends TileEntitySpecialRenderer
 {
-	private final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/items/draconicCore.png");
-
 	public void renderTileEntityAt(TileCustomSpawner tile, double x, double y, double z, float p_147518_8_)
 	{
 		GL11.glPushMatrix();
@@ -53,7 +50,10 @@ public class RenderTileCustomSpawner extends TileEntitySpecialRenderer
 		}
 		{
 			GL11.glPushMatrix();
-			bindTexture(texture);
+
+			if (customSpawnerBaseLogic.spawnSpeed == 2) ResourceHandler.bindResource("textures/items/wyvernCore.png");
+			else if (customSpawnerBaseLogic.spawnSpeed == 3) ResourceHandler.bindResource("textures/items/awakenedCore.png");
+			else ResourceHandler.bindResource("textures/items/draconicCore.png");
 
 			tessellator.setColorRGBA(255, 255, 255, 255);
 			tessellator.setBrightness(200);

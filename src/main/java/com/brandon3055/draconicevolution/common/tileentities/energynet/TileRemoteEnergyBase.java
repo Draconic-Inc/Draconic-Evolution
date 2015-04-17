@@ -201,13 +201,13 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		{
 			if (linkDat != null && linkDat.hasKey("Bound") && linkDat.getBoolean("Bound"))
 			{
-				LogHelper.info("Bind");
+				//LogHelper.info("Bind");
 				handleBinding(player, linkDat.getInteger("XCoord"), linkDat.getInteger("YCoord"), linkDat.getInteger("ZCoord"), true);
 				linkDat.setBoolean("Bound", false);
 			}
 			else
 			{
-				LogHelper.info("Bind2");
+				//LogHelper.info("Bind2");
 				linkDat = new NBTTagCompound();
 				linkDat.setInteger("XCoord", xCoord);
 				linkDat.setInteger("YCoord", yCoord);
@@ -314,7 +314,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 
 		if (callOther && !tile.handleBinding(player, xCoord, yCoord, zCoord, false))
 		{
-			LogHelper.info("other Invalid");
+			//LogHelper.info("other Invalid");
 			return false;
 		}
 

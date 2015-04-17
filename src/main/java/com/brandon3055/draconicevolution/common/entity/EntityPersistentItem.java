@@ -52,12 +52,24 @@ public class EntityPersistentItem extends EntityItem {
 	@Override
 	public boolean attackEntityFrom (DamageSource par1DamageSource, float par2)
 	{
-		if (getEntityItem().getItem() instanceof DragonHeart && par1DamageSource.isExplosion() && par2 > 35f){
+		if (getEntityItem().getItem() instanceof DragonHeart && par1DamageSource.isExplosion() && par2 > 10f){
 			worldObj.spawnEntityInWorld(new EntityDragonHeart(worldObj, posX, posY, posZ));
 			this.setDead();
 		}
 
 		return par1DamageSource.getDamageType().equals("outOfWorld");
+	}
+
+	@Override
+	public boolean isInRangeToRenderDist(double p_70112_1_) {
+		double d1 = this.boundingBox.getAverageEdgeLength();
+		d1 *= 64.0D * 4;
+		return p_70112_1_ < d1 * d1;
+	}
+
+	@Override
+	public boolean isInRangeToRender3d(double p_145770_1_, double p_145770_3_, double p_145770_5_) {
+		return super.isInRangeToRender3d(p_145770_1_, p_145770_3_, p_145770_5_);
 	}
 
 	@Override

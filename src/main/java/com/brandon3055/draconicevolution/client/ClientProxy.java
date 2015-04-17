@@ -231,4 +231,14 @@ public class ClientProxy extends CommonProxy {
 	public void spawnParticle(Object particle) {
 		if (particle instanceof EntityFX) ParticleHandler.spawnCustomParticle((EntityFX)particle);
 	}
+
+	@Override
+	public boolean isSpaceDown() {
+		return Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed();
+	}
+
+	@Override
+	public boolean isShiftDown() {
+		return Minecraft.getMinecraft().gameSettings.keyBindSneak.getIsKeyPressed();
+	}
 }
