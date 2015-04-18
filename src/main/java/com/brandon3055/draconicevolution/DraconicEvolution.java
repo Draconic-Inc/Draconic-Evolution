@@ -72,7 +72,6 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 		System.out.println("postInit()");
 	
 		proxy.postInit(event);
-		
 	}
 
 	//FMLInterModComms.sendMessage("DraconicEvolution", "addChestRecipe:item.coal", new ItemStack(Items.diamond, 2));
