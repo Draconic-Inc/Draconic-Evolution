@@ -241,4 +241,9 @@ public class ClientProxy extends CommonProxy {
 	public boolean isShiftDown() {
 		return Minecraft.getMinecraft().gameSettings.keyBindSneak.getIsKeyPressed();
 	}
+
+	@Override
+	public boolean isCtrlDown() {
+		return Minecraft.getMinecraft().gameSettings.keyBindSprint.getIsKeyPressed();
+	}
 }

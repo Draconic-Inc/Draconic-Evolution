@@ -144,20 +144,25 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		if (worldObj.isRemote) return;
 
 		boolean forceSend = (tick + xCoord + yCoord + zCoord) % 100 == 0;
-		if (index >= 0 && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow || forceSend))	{
-			sendObject(References.TWO_INTS_ID, 0, new DataUtills.TwoXInteger(index, (int)linkedDevices.get(index).energyFlow));
-			linkedDevices.get(index).lastTickEnergyFlow = linkedDevices.get(index).energyFlow;
-		}
 
-		if (storage.getEnergyStored() != lastTickEnergy || forceSend) sendObject(References.INT_ID, 1, storage.getEnergyStored());
+		if ((tick + xCoord + yCoord + zCoord) % 20 == 0 || forceSend)
+		{
+			if (index >= 0 && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow || forceSend))
+			{
+				sendObject(References.INT_PAIR_ID, 0, new DataUtills.IntPair(index, (int) linkedDevices.get(index).energyFlow));
+				linkedDevices.get(index).lastTickEnergyFlow = linkedDevices.get(index).energyFlow;
+			}
+
+			if (storage.getEnergyStored() != lastTickEnergy || forceSend) sendObject(References.INT_ID, 1, storage.getEnergyStored());
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void receiveObject(int index, Object object) {
-		if (index == 0 && object instanceof DataUtills.TwoXInteger && linkedDevices.size() > ((DataUtills.TwoXInteger) object).i1)
+		if (index == 0 && object instanceof DataUtills.IntPair && linkedDevices.size() > ((DataUtills.IntPair) object).i1)
 		{
-			linkedDevices.get(((DataUtills.TwoXInteger) object).i1).energyFlow = ((DataUtills.TwoXInteger) object).i2;
+			linkedDevices.get(((DataUtills.IntPair) object).i1).energyFlow = ((DataUtills.IntPair) object).i2;
 		}
 		else if (index == 1) storage.setEnergyStored((Integer)object);
 	}

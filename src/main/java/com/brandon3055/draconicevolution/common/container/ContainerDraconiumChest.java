@@ -103,8 +103,7 @@ public class ContainerDraconiumChest extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
-	{
+	public boolean canInteractWith(EntityPlayer player) {
 		return tile.isUseableByPlayer(player);
 	}
 	

@@ -536,8 +536,8 @@ button.de.WeaponAttackAOE.name=Attack A.O.E
 button.de.ToolVoidJunk.name=Void Junk
 button.de.AxeTreeMode.name=Tree Mode
 button.de.BaseSafeAOE.name=AOE Safe Mode
-button.de..name=
-button.de..name=
+button.de.VerticalAcceleration.name=Vertical Acceleration
+button.de.EffectiveOnSprint.name=Effective while sprinting
 
 //Manual Gui ----------------------------------------------------------------------------------------------------------------------------------------
 

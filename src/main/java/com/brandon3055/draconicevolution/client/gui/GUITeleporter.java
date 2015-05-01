@@ -40,7 +40,7 @@ public class GUITeleporter extends GuiScreen
 	protected List<TeleportLocation> locations = new ArrayList<TeleportLocation>(0);
 
 	private int selected = 0;
-	private int selrctionOffset = 0;
+	private int selectionOffset = 0;
 	private int maxOffset = 0;
 	private int fuel = 0;
 	private boolean editingExisting = false;
@@ -106,7 +106,7 @@ public class GUITeleporter extends GuiScreen
 				drawTexturedModalRect(posX+19, posY+5+i*11, 0, 188, 80, 10);
 			}
 
-			if (locations.get(i+selrctionOffset).getWriteProtected()){
+			if (getLocationSafely(i + selectionOffset).getWriteProtected()){
 				if (GuiHelper.isInRect(102, 7+i*11, 6, 6, x, y)) drawTexturedModalRect(posX+102, posY+7+i*11, 26, 149, 6, 6);
 				else drawTexturedModalRect(posX+102, posY+7+i*11, 26, 143, 6, 6);
 			}else{
@@ -118,8 +118,8 @@ public class GUITeleporter extends GuiScreen
 		drawTexturedModalRect(posX+19, posY+5+selected*11, 0, 188, 80, 10);
 
 		int yl = 0;
-		for (int i = selrctionOffset; i < locations.size() && i < selrctionOffset + 12; i++){
-			String s = locations.get(i).getName();
+		for (int i = selectionOffset; i < locations.size() && i < selectionOffset + 12; i++){
+			String s = getLocationSafely(i).getName();
 			if (fontRendererObj.getStringWidth(s) > 80) {
 				int safety = 0;
 				while (fontRendererObj.getStringWidth(s) > 70){
@@ -138,12 +138,12 @@ public class GUITeleporter extends GuiScreen
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 
-		if (selrctionOffset > 0){
+		if (selectionOffset > 0){
 			boolean highLighted = GuiHelper.isInRect(4, 4, 13, 15, x, y);
 			if (highLighted) drawTexturedModalRect(posX+4, posY+4, 0, 158, 13, 15);
 			else drawTexturedModalRect(posX+4, posY+4, 0, 143, 13, 15);
 		}else drawTexturedModalRect(posX+4, posY+4, 0, 173, 13, 15);
-		if (selrctionOffset < maxOffset){
+		if (selectionOffset < maxOffset){
 			boolean highLighted = GuiHelper.isInRect(4, 122, 13, 15, x, y);
 			if (highLighted) drawTexturedModalRect(posX+4, posY+122, 13, 158, 13, 15);
 			else drawTexturedModalRect(posX+4, posY+122, 13, 143, 13, 15);
@@ -152,7 +152,7 @@ public class GUITeleporter extends GuiScreen
 		float percent = locations.size() <= 12 ? 1f : 12F / (float)locations.size();
 		int drawSize = (int)(percent * 99F);
 		int space = 99 - drawSize;
-		float location = (float)selrctionOffset / (float)(locations.size()-12);
+		float location = (float) selectionOffset / (float)(locations.size()-12);
 		int yOffset = (int) (location * (float)space);
 		drawTexturedModalRect(posX+5, posY+21+yOffset, 182, 0, 11, drawSize);
 		drawTexturedModalRect(posX+5, posY+21+drawSize-1+yOffset, 182, 98, 11, 1);
@@ -162,10 +162,10 @@ public class GUITeleporter extends GuiScreen
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 		if (locations.size() <= 0) return;
-		fontRendererObj.drawString(EnumChatFormatting.GOLD+"X: "+(int)locations.get(selected+selrctionOffset).getXCoord(), posX+114, posY+7, 0x000000);
-		fontRendererObj.drawString(EnumChatFormatting.GOLD + "Y: " + (int) locations.get(selected + selrctionOffset).getYCoord(), posX + 114, posY + 16, 0x000000);
-		fontRendererObj.drawString(EnumChatFormatting.GOLD + "Z: " + (int) locations.get(selected + selrctionOffset).getZCoord(), posX + 114, posY + 25, 0x000000);
-		fontRendererObj.drawString(EnumChatFormatting.GOLD+""+ locations.get(selected + selrctionOffset).getDimensionName(), posX+114, posY+34, 0x000000);
+		fontRendererObj.drawString(EnumChatFormatting.GOLD+"X: "+(int)getLocationSafely(selected + selectionOffset).getXCoord(), posX+114, posY+7, 0x000000);
+		fontRendererObj.drawString(EnumChatFormatting.GOLD + "Y: " + (int) getLocationSafely(selected + selectionOffset).getYCoord(), posX + 114, posY + 16, 0x000000);
+		fontRendererObj.drawString(EnumChatFormatting.GOLD + "Z: " + (int) getLocationSafely(selected + selectionOffset).getZCoord(), posX + 114, posY + 25, 0x000000);
+		fontRendererObj.drawString(EnumChatFormatting.GOLD+""+ getLocationSafely(selected + selectionOffset).getDimensionName(), posX+114, posY+34, 0x000000);
 	}
 
 	@Override
@@ -179,16 +179,16 @@ public class GUITeleporter extends GuiScreen
 		if (textBeingEdited.getVisible()) textBeingEdited.mouseClicked(x, y, button);
 
 		//Check for arrow click
-		if (selrctionOffset > 0 && GuiHelper.isInRect(3, 5, 13, 15, x-posX, y-posY)){
-			selrctionOffset--;
+		if (selectionOffset > 0 && GuiHelper.isInRect(3, 5, 13, 15, x-posX, y-posY)){
+			selectionOffset--;
 			offsetChanged = true;
 			if (selected < 11) {
 				selected++;
 				selectionChanged = true;
 			}
 		}
-		if (selrctionOffset < maxOffset && GuiHelper.isInRect(3, 123, 13, 15, x-posX, y-posY)){
-			selrctionOffset++;
+		if (selectionOffset < maxOffset && GuiHelper.isInRect(3, 123, 13, 15, x-posX, y-posY)){
+			selectionOffset++;
 			offsetChanged = true;
 			if (selected > 0) {
 				selected--;
@@ -199,12 +199,12 @@ public class GUITeleporter extends GuiScreen
 		//Check for location or lock clicked
 		for (int i = 0; i < Math.min(12, locations.size()); i++){
 			if (GuiHelper.isInRect(17, 6+i*11, 80, 10, x-posX, y-posY)) {
-				if (!(locations.get(i+selrctionOffset).getWriteProtected() && editingExisting) && button == 0)
+				if (!(getLocationSafely(i + selectionOffset).getWriteProtected() && editingExisting) && button == 0)
 				{
 					selected = i;
 					selectionChanged = true;
 				}
-				if (!(locations.get(i+selrctionOffset).getWriteProtected() && editingExisting) && button == 1)
+				if (!(getLocationSafely(i + selectionOffset).getWriteProtected() && editingExisting) && button == 1)
 				{
 					if (locations.isEmpty()) return;
 
@@ -215,20 +215,20 @@ public class GUITeleporter extends GuiScreen
 
 					if (player.capabilities.isCreativeMode || fuel > 0) {
 						if (!player.capabilities.isCreativeMode) fuel--;
-						DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.TELEPORT, i+selrctionOffset, false));
+						DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.TELEPORT, i+ selectionOffset, false));
 					}
 				}
 			}
 
 			if (GuiHelper.isInRect(99, 8+i*11, 8, 7, x-posX, y-posY)) {
-				locations.get(i+selrctionOffset).setWriteProtected(!locations.get(i+selrctionOffset).getWriteProtected());
-				DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATELOCK, i+selrctionOffset, locations.get(i+selrctionOffset).getWriteProtected()));
+				getLocationSafely(i + selectionOffset).setWriteProtected(!getLocationSafely(i + selectionOffset).getWriteProtected());
+				DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATELOCK, i+ selectionOffset, getLocationSafely(i + selectionOffset).getWriteProtected()));
 			}
 		}
 
 
 		if (selectionChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.CHANGESELECTION, selected, false));
-		if (offsetChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selrctionOffset, false));
+		if (offsetChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selectionOffset, false));
 
 		updateButtons();
 		super.mouseClicked(x, y, button);
@@ -244,8 +244,8 @@ public class GUITeleporter extends GuiScreen
 		int i = org.lwjgl.input.Mouse.getEventDWheel();
 		boolean offsetChanged = false;
 		boolean selectionChanged = false;
-		if (i < 0 && selrctionOffset < maxOffset) {
-			selrctionOffset++;
+		if (i < 0 && selectionOffset < maxOffset) {
+			selectionOffset++;
 			offsetChanged = true;
 			if (selected > 0) {
 				selected--;
@@ -253,8 +253,8 @@ public class GUITeleporter extends GuiScreen
 			}
 			updateButtons();
 		}
-		if (i > 0 && selrctionOffset > 0) {
-			selrctionOffset--;
+		if (i > 0 && selectionOffset > 0) {
+			selectionOffset--;
 			offsetChanged = true;
 			if (selected < 11) {
 				selected++;
@@ -264,7 +264,7 @@ public class GUITeleporter extends GuiScreen
 		}
 
 		if (selectionChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.CHANGESELECTION, selected, false));
-		if (offsetChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selrctionOffset, false));
+		if (offsetChanged) DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selectionOffset, false));
 
 		super.handleMouseInput();
 	}
@@ -272,15 +272,15 @@ public class GUITeleporter extends GuiScreen
 	private void updateButtons(){
 		if (locations.size() > 12) maxOffset = locations.size() - 12;
 		else maxOffset = 0;
-		if (selrctionOffset > maxOffset) selrctionOffset = maxOffset;
+		if (selectionOffset > maxOffset) selectionOffset = maxOffset;
 		if (selected > locations.size() || selected < 0) selected = Math.max(locations.size() - 1, 0);
-		if ((selected + selrctionOffset)+1 > locations.size()){
+		if ((selected + selectionOffset)+1 > locations.size()){
 			selected = 0;
-			selrctionOffset = 0;
+			selectionOffset = 0;
 			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.CHANGESELECTION, selected, false));
-			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selrctionOffset, false));
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.UPDATEOFFSET, selectionOffset, false));
 		}
-		if (locations.size() == 0 || locations.get(selected + selrctionOffset).getWriteProtected()) {
+		if (locations.size() == 0 || getLocationSafely(selected + selectionOffset).getWriteProtected()) {
 			((GuiButton) buttonList.get(0)).enabled = false;
 			((GuiButton) buttonList.get(1)).enabled = false;
 			((GuiButton) buttonList.get(2)).enabled = false;
@@ -347,16 +347,16 @@ public class GUITeleporter extends GuiScreen
 			if (!editingExisting){
 				editingExisting = true;
 				textBeingEdited.setVisible(true);
-				textBeingEdited.setText(locations.get(selected+selrctionOffset).getName());
+				textBeingEdited.setText(getLocationSafely(selected + selectionOffset).getName());
 				textBeingEdited.setSelectionPos(0);
 				textBeingEdited.setFocused(true);
 				((GuiButton) buttonList.get(6)).visible = true;
 			}else{
 				if (!textBeingEdited.getText().isEmpty()){
-					locations.get(selected+selrctionOffset).setName(textBeingEdited.getText());
+					getLocationSafely(selected + selectionOffset).setName(textBeingEdited.getText());
 					TeleportLocation location = new TeleportLocation();
 					location.setName(textBeingEdited.getText());
-					DraconicEvolution.network.sendToServer(new TeleporterPacket(location, TeleporterPacket.UPDATENAME, selected+selrctionOffset));
+					DraconicEvolution.network.sendToServer(new TeleporterPacket(location, TeleporterPacket.UPDATENAME, selected+ selectionOffset));
 					((GuiButton) buttonList.get(0)).displayString = StatCollector.translateToLocal("button.de.rename.txt");
 					editingExisting = false;
 					textBeingEdited.setVisible(false);
@@ -366,15 +366,15 @@ public class GUITeleporter extends GuiScreen
 		}
 
 		if (button.id == 1){
-			TeleportLocation location = new TeleportLocation(player.posX, player.posY-1.62, player.posZ, player.dimension, player.rotationPitch, player.rotationYaw, locations.get(selected+selrctionOffset).getName());
-			DraconicEvolution.network.sendToServer(new TeleporterPacket(location, TeleporterPacket.UPDATEDESTINATION, selected+selrctionOffset));
-			locations.set(selected + selrctionOffset, location);
+			TeleportLocation location = new TeleportLocation(player.posX, player.posY-1.62, player.posZ, player.dimension, player.rotationPitch, player.rotationYaw, getLocationSafely(selected + selectionOffset).getName());
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(location, TeleporterPacket.UPDATEDESTINATION, selected+ selectionOffset));
+			locations.set(selected + selectionOffset, location);
 		}
 
 		if (button.id == 2) {
-			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.REMOVEDESTINATION, selected+selrctionOffset, false));
-			locations.remove(selected+selrctionOffset);
-			if (selrctionOffset > 0) selrctionOffset--;
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.REMOVEDESTINATION, selected+ selectionOffset, false));
+			locations.remove(selected+ selectionOffset);
+			if (selectionOffset > 0) selectionOffset--;
 			if (selected >= locations.size()) selected--;
 		}
 
@@ -384,9 +384,9 @@ public class GUITeleporter extends GuiScreen
 			{
 				if (selected > 0)
 				{
-					TeleportLocation temp = locations.get(selected + selrctionOffset);
-					locations.set(selected + selrctionOffset, locations.get(selected + selrctionOffset - 1));
-					locations.set(selected + selrctionOffset - 1, temp);
+					TeleportLocation temp = getLocationSafely(selected + selectionOffset);
+					locations.set(selected + selectionOffset, getLocationSafely(selected + selectionOffset - 1));
+					locations.set(selected + selectionOffset - 1, temp);
 					selected--;
 				}
 			}
@@ -394,14 +394,14 @@ public class GUITeleporter extends GuiScreen
 			{
 				if (selected < Math.min(11, locations.size()-1))
 				{
-					TeleportLocation temp = locations.get(selected + selrctionOffset);
-					locations.set(selected + selrctionOffset, locations.get(selected + selrctionOffset + 1));
-					locations.set(selected + selrctionOffset + 1, temp);
+					TeleportLocation temp = getLocationSafely(selected + selectionOffset);
+					locations.set(selected + selectionOffset, getLocationSafely(selected + selectionOffset + 1));
+					locations.set(selected + selectionOffset + 1, temp);
 					selected++;
 				}
 			}
 
-			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.MOVELOCATION, selected+selrctionOffset, button.id == 3));
+			DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.MOVELOCATION, selected+ selectionOffset, button.id == 3));
 		}
 
 		if (button.id == 4 || button.id == 6 && !editingExisting){
@@ -499,7 +499,7 @@ public class GUITeleporter extends GuiScreen
 			this.mc.setIngameFocus();
 		}
 
-		if (tick % 5 == 0 && locations.size() > 0 && locations.get(selected + selrctionOffset).getDimensionName().equals("") && player.getHeldItem() != null && player.getHeldItem().getItem() == ModItems.teleporterMKII) readDataFromItem(player.getHeldItem());
+		if (tick % 5 == 0 && locations.size() > 0 && getLocationSafely(selected + selectionOffset).getDimensionName().equals("") && player.getHeldItem() != null && player.getHeldItem().getItem() == ModItems.teleporterMKII) readDataFromItem(player.getHeldItem());
 
 		tick++;
 		if (tick >= 10){
@@ -516,7 +516,7 @@ public class GUITeleporter extends GuiScreen
 
 	private void readDataFromItem(ItemStack teleporter){
 		this.selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
-		this.selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
+		this.selectionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
 		this.fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
 
 		locations.clear();
@@ -542,4 +542,9 @@ public class GUITeleporter extends GuiScreen
 		locations.add(currentLocation);
 	}
 
+	private TeleportLocation getLocationSafely(int index)
+	{
+		if (index < locations.size() && index >= 0) return locations.get(index);
+		return new TeleportLocation(0, 0, 0, 0, 0, 0, EnumChatFormatting.DARK_RED + "[Index Error]");
+	}
 }

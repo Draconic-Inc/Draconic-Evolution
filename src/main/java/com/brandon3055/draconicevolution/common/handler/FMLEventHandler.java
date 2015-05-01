@@ -86,18 +86,6 @@ public class FMLEventHandler {
 				player.moveFlying(0F, 1F, player.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
 
 			}
-			if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0)
-			{
-				if (DraconicEvolution.proxy.isSpaceDown() && !DraconicEvolution.proxy.isShiftDown())
-				{
-					player.motionY = 0.124D + (double)(percentIncrease * 3F);
-				}
-
-				if (DraconicEvolution.proxy.isShiftDown() && !DraconicEvolution.proxy.isSpaceDown())
-				{
-					player.motionY = -0.124D - (double)(percentIncrease * 3F);
-				}
-			}
 			player.jumpMovementFactor = 0.02F + (percentIncrease * 0.2F);
 		}
 
@@ -107,6 +95,21 @@ public class FMLEventHandler {
 			playersWithFlight.put(player, true);
 			player.capabilities.allowFlying = true;
 			if (ArmorEffectHandler.getFlightLock(player)) player.capabilities.isFlying = true;
+
+			if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && ((ArmorEffectHandler.getVAccSprint(player) && DraconicEvolution.proxy.isCtrlDown()) || (!ArmorEffectHandler.getVAccSprint(player))))
+			{
+				float percentIncrease = ArmorEffectHandler.getVAccel(player);
+
+				if (DraconicEvolution.proxy.isSpaceDown() && !DraconicEvolution.proxy.isShiftDown())
+				{
+					player.motionY =(double)(percentIncrease * 2F);
+				}
+
+				if (DraconicEvolution.proxy.isShiftDown() && !DraconicEvolution.proxy.isSpaceDown())
+				{
+					player.motionY = -(double)(percentIncrease * 2F);
+				}
+			}
 
 		} else {
 

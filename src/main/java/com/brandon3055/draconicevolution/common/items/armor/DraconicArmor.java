@@ -179,7 +179,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 			{
 				player.addPotionEffect(new PotionEffect(16, 419, 0, true));
 			}
-			else if ( ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false) && ItemNBTHelper.getBoolean(stack, "ArmorNVLock", false)) player.addPotionEffect(new PotionEffect(16, 419, 0, true));
+			else if ( ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false) && ItemNBTHelper.getBoolean(stack, "ArmorNVLock", true)) player.addPotionEffect(new PotionEffect(16, 419, 0, true));
 			else if (player.isPotionActive(16)) player.removePotionEffect(16);
 
 		}
@@ -276,10 +276,12 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		if (armorType == 0)
 		{
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack, false));
-			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVLock").readFromItem(stack, false));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVLock").readFromItem(stack, true));
 		}
 		else if (armorType == 1)
 		{
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "VerticalAcceleration").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 0.3F));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "EffectiveOnSprint").readFromItem(stack, false));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack, false));
 		}
 		else if (armorType == 2)

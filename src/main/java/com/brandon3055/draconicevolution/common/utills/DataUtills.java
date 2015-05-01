@@ -41,9 +41,9 @@ public class DataUtills {
 			case References.BOOLEAN_ID:
 				bytes.writeBoolean((Boolean) object);
 				break;
-			case References.TWO_INTS_ID:
-				bytes.writeInt(((TwoXInteger)object).i1);
-				bytes.writeInt(((TwoXInteger)object).i2);
+			case References.INT_PAIR_ID:
+				bytes.writeInt(((IntPair)object).i1);
+				bytes.writeInt(((IntPair)object).i2);
 				break;
 		}
 	}
@@ -68,8 +68,8 @@ public class DataUtills {
 				return ByteBufUtils.readUTF8String(bytes);
 			case References.BOOLEAN_ID:
 				return bytes.readBoolean();
-			case References.TWO_INTS_ID:
-				TwoXInteger tx = new TwoXInteger(0, 0);
+			case References.INT_PAIR_ID:
+				IntPair tx = new IntPair(0, 0);
 				tx.i1 = bytes.readInt();
 				tx.i2 = bytes.readInt();
 				return tx;
@@ -155,12 +155,12 @@ public class DataUtills {
 		return null;
 	}
 
-	public static class TwoXInteger
+	public static class IntPair
 	{
 		public int i1;
 		public int i2;
 
-		public TwoXInteger(int i1, int i2)
+		public IntPair(int i1, int i2)
 		{
 			this.i1 = i1;
 			this.i2 = i2;

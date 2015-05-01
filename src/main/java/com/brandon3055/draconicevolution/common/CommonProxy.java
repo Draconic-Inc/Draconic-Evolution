@@ -211,6 +211,11 @@ public class CommonProxy {
 		return false;
 	}
 
+	public boolean isCtrlDown()
+	{
+		return false;
+	}
+
 	public boolean isShiftDown()
 	{
 		return false;

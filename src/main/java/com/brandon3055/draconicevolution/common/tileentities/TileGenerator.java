@@ -176,7 +176,16 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUseableByPlayer(EntityPlayer player)
+	{
+		if (worldObj == null)
+		{
+			return true;
+		}
+		if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this)
+		{
+			return false;
+		}
 		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.4) < 64;
 	}
 

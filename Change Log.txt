@@ -1,3 +1,14 @@
+######## 1.0.1 ########
+-fixed advanced dislocator index out of bounds exceptions once and for all.
+-added option to adjust vertical acceleration on chestplate.
+-added option to only increase vertical acceleration while sprinting (using sprint key) 
+
+######## 1.0.1-Snapshot 11 (RC 6)########
+-fixed item dupe with draconic chest.
+-temp fix to reduce network lag from energy nodes (Transfer code needs a complete re write)
+-increased resistance for mob grinder.
+-fixed gui's not closing when the block they are attached to is destroyed.
+
 ######## 1.0.1-Snapshot 10 (RC 5)########
 -fixed mob grinder creating a tone of network traffic.
 -fixed tools not dropping xp on aoe mode.
