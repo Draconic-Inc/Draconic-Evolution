@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
@@ -259,11 +258,7 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 				block.onBlockDestroyedByPlayer(world, x,y,z, meta);
 				block.harvestBlock(world, player, x,y,z, meta);
 				player.addExhaustion(-0.025F);
-				if (block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)) > 0) {
-					EntityXPOrb xp = new EntityXPOrb(world, player.posX, player.posY, player.posZ, block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)));
-					xp.xpOrbAge = 5400;
-					world.spawnEntityInWorld(xp);
-				}
+				if (block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)) > 0) player.addExperience(block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)));
 			}
 
 			EntityPlayerMP mpPlayer = (EntityPlayerMP) player;

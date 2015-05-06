@@ -1,3 +1,7 @@
+######## 1.0.1a ########
+-fixed heart dupe bug.
+-AOE Mining tools now add xp from blocks directly to the player.
+
 ######## 1.0.1 ########
 -fixed advanced dislocator index out of bounds exceptions once and for all.
 -added option to adjust vertical acceleration on chestplate.

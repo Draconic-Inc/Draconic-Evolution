@@ -62,7 +62,6 @@ public class EntityDragonHeart extends Entity {
 
 	@Override
 	public boolean attackEntityFrom(DamageSource damageSource, float dmg) {
-
 		return false;
 	}
 

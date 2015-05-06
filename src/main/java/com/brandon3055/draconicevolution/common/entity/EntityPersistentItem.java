@@ -52,7 +52,7 @@ public class EntityPersistentItem extends EntityItem {
 	@Override
 	public boolean attackEntityFrom (DamageSource par1DamageSource, float par2)
 	{
-		if (getEntityItem().getItem() instanceof DragonHeart && par1DamageSource.isExplosion() && par2 > 10f){
+		if (getEntityItem().getItem() instanceof DragonHeart && par1DamageSource.isExplosion() && par2 > 10f && !this.isDead){
 			worldObj.spawnEntityInWorld(new EntityDragonHeart(worldObj, posX, posY, posZ));
 			this.setDead();
 		}

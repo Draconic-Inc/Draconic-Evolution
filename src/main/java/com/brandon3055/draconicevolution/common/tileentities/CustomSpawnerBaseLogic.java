@@ -154,6 +154,7 @@ public abstract class CustomSpawnerBaseLogic {
 	}
 
 	public Entity spawnEntity(Entity par1Entity) {
+
 		if (par1Entity instanceof EntityLivingBase && par1Entity.worldObj != null) {
 			if (par1Entity instanceof EntitySkeleton) {
 				((EntitySkeleton)par1Entity).setSkeletonType(skeletonType);
