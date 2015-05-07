@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.*;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -277,6 +278,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		{
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack, false));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVLock").readFromItem(stack, true));
+			if (Loader.isModLoaded("Thaumcraft"))list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "GogglesOfRevealing").readFromItem(stack, true));
 		}
 		else if (armorType == 1)
 		{
@@ -316,12 +318,12 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Optional.Method(modid = "Thaumcraft")
 	@Override
 	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
-		return true;
+		return ItemNBTHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
 	}
 
 	@Optional.Method(modid = "Thaumcraft")
 	@Override
 	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) {
-		return true;
+		return ItemNBTHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
 	}
 }

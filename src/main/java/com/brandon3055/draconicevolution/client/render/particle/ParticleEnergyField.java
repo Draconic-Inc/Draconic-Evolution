@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Brandon on 9/02/2015.
  */
-public class ParticleEnergyField extends EntityFX {//todo Fancy Animated Particle? Maby?
+public class ParticleEnergyField extends EntityFX {
 	/**
 	 * Particle Type 0 = Energy Ring, 1 = single particle
 	 */

@@ -30,7 +30,7 @@ public class InventoryTool implements IInventory {
 		this.player = player;
 		if (stack != null && stack.getItem() instanceof IInventoryTool){
 			this.size = ((IInventoryTool) stack.getItem()).getInventorySlots();
-			readFromNBT(ItemNBTHelper.getCompound(inventoryItem));
+			readFromNBT(ItemNBTHelper.getCompound(stack));
 		}
 		this.inventoryStacks = new ItemStack[size + 5];
 	}
@@ -126,10 +126,11 @@ public class InventoryTool implements IInventory {
 				inventoryStacks[i] = null;
 			}
 		}
-		if (player.getCommandSenderName().equals("brandon3055")) player.addChatComponentMessage(new ChatComponentText("markDirty " + inventoryItem + (player.worldObj.isRemote ? ":client" : ":server")));
-		if (inventoryItem != null) {
-			writeToNBT(ItemNBTHelper.getCompound(inventoryItem));
-			readFromNBT(ItemNBTHelper.getCompound(inventoryItem));
+		if (player.getCommandSenderName().equals("brandon3055")) player.addChatComponentMessage(new ChatComponentText("markDirty " + getItem() + (player.worldObj.isRemote ? ":client" : ":server")));
+
+		if (getItem() != null) {
+			writeToNBT(ItemNBTHelper.getCompound(getItem()));
+			readFromNBT(ItemNBTHelper.getCompound(getItem()));
 		}
 		else {
 			LogHelper.error("[InventoryItem] storage item == null This is not a good thing...");
@@ -144,6 +145,17 @@ public class InventoryTool implements IInventory {
 	public boolean isUseableByPlayer(EntityPlayer player)
 	{
 		return true;
+	}
+
+	private ItemStack getItem(){
+		if (slot != -1 && player.inventory.getStackInSlot(slot) != null && player.getHeldItem().getItem() == inventoryItem.getItem()){
+			return player.inventory.getStackInSlot(slot);
+		}
+		else {
+			LogHelper.error("Error getting inventory item [InventoryTool#getItem() - "+ slot +"]");
+			if (player.getCommandSenderName().equalsIgnoreCase("brandon3055")) player.addChatComponentMessage(new ChatComponentText("Error getting inventory item [InventoryTool#getItem() - "+ slot +"]"));
+			return null;
+		}
 	}
 
 	@Override

@@ -1,6 +1,7 @@
-######## 1.0.1a ########
+######## 1.0.1-Bugfix-a ########
 -fixed heart dupe bug.
 -AOE Mining tools now add xp from blocks directly to the player.
+-tweaked some code in the config gui to try to fix an illusive cauldron related bug.
 
 ######## 1.0.1 ########
 -fixed advanced dislocator index out of bounds exceptions once and for all.

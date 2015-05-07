@@ -51,7 +51,6 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 		GL11.glPushMatrix();
 		GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 		GL11.glScalef(0.5f, 0.5f, 0.5f);
-		//GL11.glDisable(GL11.GL_LIGHTING); //todo disable?
 		RenderHelper.disableStandardItemLighting();
 		GL11.glEnable(GL11.GL_BLEND);
 		float innerLight = 100f;
