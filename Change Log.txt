@@ -1,3 +1,6 @@
+######## 1.0.1-Bugfix-b ########
+-fixed a problem in the config gui that came from a change in bugfix a 
+
 ######## 1.0.1-Bugfix-a ########
 -fixed heart dupe bug.
 -AOE Mining tools now add xp from blocks directly to the player.

@@ -148,12 +148,12 @@ public class InventoryTool implements IInventory {
 	}
 
 	private ItemStack getItem(){
-		if (slot != -1 && player.inventory.getStackInSlot(slot) != null && player.getHeldItem().getItem() == inventoryItem.getItem()){
+		if (slot != -1 && player.inventory.getStackInSlot(slot) != null && inventoryItem != null && player.inventory.getStackInSlot(slot).getItem() == inventoryItem.getItem()){
 			return player.inventory.getStackInSlot(slot);
 		}
 		else {
 			LogHelper.error("Error getting inventory item [InventoryTool#getItem() - "+ slot +"]");
-			if (player.getCommandSenderName().equalsIgnoreCase("brandon3055")) player.addChatComponentMessage(new ChatComponentText("Error getting inventory item [InventoryTool#getItem() - "+ slot +"]"));
+			if (player.getCommandSenderName().equalsIgnoreCase("brandon3055")) player.addChatComponentMessage(new ChatComponentText("Error getting inventory item [InventoryTool#getItem() - "+ slot +"] server:" + !player.worldObj.isRemote));
 			return null;
 		}
 	}
