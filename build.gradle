@@ -26,35 +26,33 @@ repositories {
 
 apply plugin: 'forge'
 
-version = "1.7.10-v1.0.1b" //Version System A.B.CD A=Minecraft version (increments with each new minecraft version) B=Major mod change (Will break saves) C=Release Number (Increments with each public release) D=Bugfix version (a-z)
-group = "com.brandon3055.draconicevolution" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+// Define properties file
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+    // Load config.  It shall from now be referenced as simply config or project.config
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+version = "${config.minecraft_version}-${config.mod_version}"
+group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
 minecraft {
-    version = "1.7.10-10.13.3.1400-1.7.10"
+    version = config.minecraft_version + "-" + config.forge_version
     runDir = "run"
-    //assetDir = "run/assets"
 }
 
 
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile "codechicken:CodeChickenLib:1.7.10-1.1.1.99:dev"
-    compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
-    compile "codechicken:NotEnoughItems:1.7.10-1.0.3.74:dev"
-
+    compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
+    compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:dev"
+    compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
+	
+    if (file('../BrandonsLib/').exists()) compile project('../BrandonsLib')
 }
 
 processResources
@@ -69,7 +67,6 @@ processResources
                 
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
-
     }
         
     // copy everything else, thats not the mcmod.info

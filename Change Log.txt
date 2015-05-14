@@ -1,3 +1,6 @@
+######## 1.0.1-Bugfix-c ########
+-fixed crash when arrow from DE bow hits RFTools force field
+
 ######## 1.0.1-Bugfix-b ########
 -fixed a problem in the config gui that came from a change in bugfix a 
 

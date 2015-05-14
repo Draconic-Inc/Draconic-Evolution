@@ -24,10 +24,10 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class EntityDraconicArrow extends EntityArrow {
-	private int field_145791_d = -1;
-	private int field_145792_e = -1;
-	private int field_145789_f = -1;
-	private Block field_145790_g;
+	private int blockX = -1;
+	private int blockY = -1;
+	private int blockZ = -1;
+	private Block blockHit;
 	private int inData;
 	private boolean inGround;
 	private int ticksInGround;
@@ -125,7 +125,7 @@ public class EntityDraconicArrow extends EntityArrow {
 			this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
 		}
 
-		Block block = this.worldObj.getBlock(this.field_145791_d, this.field_145792_e, this.field_145789_f);
+		Block block = this.worldObj.getBlock(this.blockX, this.blockY, this.blockZ);
 
 		if (block.getMaterial() != Material.air) {
 			if (explosive) {
@@ -133,8 +133,8 @@ public class EntityDraconicArrow extends EntityArrow {
 				this.setDead();
 				return;
 			}
-			block.setBlockBoundsBasedOnState(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
-			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBoxFromPool(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
+			block.setBlockBoundsBasedOnState(this.worldObj, this.blockX, this.blockY, this.blockZ);
+			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBoxFromPool(this.worldObj, this.blockX, this.blockY, this.blockZ);
 
 			if (axisalignedbb != null && axisalignedbb.isVecInside(Vec3.createVectorHelper(this.posX, this.posY, this.posZ))) {
 				this.inGround = true;
@@ -146,9 +146,9 @@ public class EntityDraconicArrow extends EntityArrow {
 		}
 
 		if (this.inGround) {
-			int j = this.worldObj.getBlockMetadata(this.field_145791_d, this.field_145792_e, this.field_145789_f);
+			int j = this.worldObj.getBlockMetadata(this.blockX, this.blockY, this.blockZ);
 
-			if (block == this.field_145790_g && j == this.inData) {
+			if (block == this.blockHit && j == this.inData) {
 				++this.ticksInGround;
 
 				if (this.ticksInGround == 1200) {
@@ -299,11 +299,12 @@ public class EntityDraconicArrow extends EntityArrow {
 						this.ticksInAir = 0;
 					}
 				} else {
-					this.field_145791_d = movingobjectposition.blockX;
-					this.field_145792_e = movingobjectposition.blockY;
-					this.field_145789_f = movingobjectposition.blockZ;
-					this.field_145790_g = block;
-					this.inData = this.worldObj.getBlockMetadata(this.field_145791_d, this.field_145792_e, this.field_145789_f);
+					this.blockX = movingobjectposition.blockX;
+					this.blockY = movingobjectposition.blockY;
+					this.blockZ = movingobjectposition.blockZ;
+					block = this.worldObj.getBlock(this.blockX, this.blockY, this.blockZ);
+					this.blockHit = block;
+					this.inData = this.worldObj.getBlockMetadata(this.blockX, this.blockY, this.blockZ);
 					this.motionX = ((float) (movingobjectposition.hitVec.xCoord - this.posX));
 					this.motionY = ((float) (movingobjectposition.hitVec.yCoord - this.posY));
 					this.motionZ = ((float) (movingobjectposition.hitVec.zCoord - this.posZ));
@@ -315,8 +316,8 @@ public class EntityDraconicArrow extends EntityArrow {
 					this.inGround = true;
 					this.arrowShake = 7;
 
-					if (this.field_145790_g.getMaterial() != Material.air) {
-						this.field_145790_g.onEntityCollidedWithBlock(this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f, this);
+					if (this.blockHit.getMaterial() != Material.air) {
+						this.blockHit.onEntityCollidedWithBlock(this.worldObj, this.blockX, this.blockY, this.blockZ, this);
 					}
 				}
 			}
@@ -379,11 +380,11 @@ public class EntityDraconicArrow extends EntityArrow {
 	@Override
 	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
 	{
-		par1NBTTagCompound.setShort("xTile", (short) this.field_145791_d);
-		par1NBTTagCompound.setShort("yTile", (short) this.field_145792_e);
-		par1NBTTagCompound.setShort("zTile", (short) this.field_145789_f);
+		par1NBTTagCompound.setShort("xTile", (short) this.blockX);
+		par1NBTTagCompound.setShort("yTile", (short) this.blockY);
+		par1NBTTagCompound.setShort("zTile", (short) this.blockZ);
 		par1NBTTagCompound.setShort("life", (short) this.ticksInGround);
-		par1NBTTagCompound.setByte("inTile", (byte) Block.getIdFromBlock(this.field_145790_g));
+		par1NBTTagCompound.setByte("inTile", (byte) Block.getIdFromBlock(this.blockHit));
 		par1NBTTagCompound.setByte("inData", (byte) this.inData);
 		par1NBTTagCompound.setByte("shake", (byte) this.arrowShake);
 		par1NBTTagCompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
@@ -395,11 +396,11 @@ public class EntityDraconicArrow extends EntityArrow {
 	@Override
 	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
 	{
-		this.field_145791_d = par1NBTTagCompound.getShort("xTile");
-		this.field_145792_e = par1NBTTagCompound.getShort("yTile");
-		this.field_145789_f = par1NBTTagCompound.getShort("zTile");
+		this.blockX = par1NBTTagCompound.getShort("xTile");
+		this.blockY = par1NBTTagCompound.getShort("yTile");
+		this.blockZ = par1NBTTagCompound.getShort("zTile");
 		this.ticksInGround = par1NBTTagCompound.getShort("life");
-		this.field_145790_g = Block.getBlockById(par1NBTTagCompound.getByte("inTile") & 255);
+		this.blockHit = Block.getBlockById(par1NBTTagCompound.getByte("inTile") & 255);
 		this.inData = par1NBTTagCompound.getByte("inData") & 255;
 		this.arrowShake = par1NBTTagCompound.getByte("shake") & 255;
 		this.inGround = par1NBTTagCompound.getByte("inGround") == 1;
