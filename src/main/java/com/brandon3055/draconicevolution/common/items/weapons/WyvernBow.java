@@ -6,9 +6,9 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -108,8 +108,6 @@ public class WyvernBow extends ItemBow implements IInventoryTool {
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
 
-		System.out.println("curent mode:" + currentMode);
-		
 		if (currentMode.equals("rapidfire"))
 			ItemNBTHelper.setString(stack, "mode", "sharpshooter"); 
 		else

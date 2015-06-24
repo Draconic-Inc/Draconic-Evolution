@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.handler;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.utills.ShapedOreEnergyRecipe;
 import cpw.mods.fml.common.Loader;
@@ -74,11 +74,13 @@ public class CraftingHandler {
 
 		//aesthetic
 		add(ModBlocks.particleGenerator, "RBR", "BCB", "RBR", 'R', Blocks.redstone_block, 'B', Items.blaze_rod, 'C', ModItems.draconicCore);
+		add(ModBlocks.infusedObsidian, "BOB", "ODO", "BOB", 'B', Items.blaze_powder, 'O', Blocks.obsidian, 'D', ModItems.draconiumDust);
 
 		//machines
 		addOre(ModBlocks.potentiometer, "ITI", "QCQ", "IRI", 'I', "ingotIron", 'T', Blocks.redstone_torch, 'Q', "gemQuartz", 'C', Items.comparator, 'R', Blocks.redstone_block);
 		addOre(ModBlocks.rainSensor, "   ", "RBR", "SPS", 'R', "dustRedstone", 'B', Items.bucket, 'S', Blocks.stone_slab, 'P', Blocks.heavy_weighted_pressure_plate);
 		addOre(ModBlocks.teleporterStand, " P ", " S ", "HBH", 'P', Blocks.stone_pressure_plate, 'S', "stone", 'H', new ItemStack(Blocks.stone_slab, 1, 0), 'B', Items.blaze_powder);
+		addOre(ModBlocks.dislocatorReceptacle, "ICI", " O ", "ISI", 'I', "ingotIron", 'C', ModItems.draconicCore, 'O', ModBlocks.infusedObsidian, 'S', ModBlocks.teleporterStand);
 
 
 		//machines adv
@@ -94,7 +96,7 @@ public class CraftingHandler {
 		addOre(getStack(ModBlocks.generator, 1, 3), "NIN", "IFI", "NCN", 'N', Items.netherbrick, 'I', "ingotIron", 'F', Blocks.furnace, 'C', ModItems.draconicCore);
 		addOre(ModBlocks.dissEnchanter, "PIP", "ETE", "CBC", 'P', Items.ender_eye, 'I', Items.enchanted_book, 'E', "gemEmerald", 'T', Blocks.enchanting_table, 'C', ModItems.draconicCore, 'B', Items.book);
 		addOre(getStack(ModBlocks.energyCrystal, 4, 0), "IDI", "DCD", "IDI", 'I' , ModItems.draconiumIngot, 'D', "gemDiamond", 'C', ModItems.draconicCore);
-		addOre(getStack(ModBlocks.energyCrystal, 4, 1), "CRC", "RWR", "CRC", 'R' , ModBlocks.energyCrystal, 'W', ModItems.wyvernCore, 'C', ModItems.draconicCore);
+		addOre(getStack(ModBlocks.energyCrystal, 4, 1), "CRC", "RWR", "CRC", 'R' , getStack(ModBlocks.energyCrystal, 1, 0), 'W', ModItems.wyvernCore, 'C', ModItems.draconicCore);
 		addShaplessOre(getStack(ModBlocks.energyCrystal, 1, 0), getStack(ModBlocks.energyCrystal, 1, 2), getStack(ModBlocks.energyCrystal, 1, 2));
 		addShaplessOre(getStack(ModBlocks.energyCrystal, 2, 2), getStack(ModBlocks.energyCrystal, 1, 0));
 		addShaplessOre(getStack(ModBlocks.energyCrystal, 1, 1), getStack(ModBlocks.energyCrystal, 1, 3), getStack(ModBlocks.energyCrystal, 1, 3));

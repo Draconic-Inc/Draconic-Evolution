@@ -32,6 +32,29 @@ public class Tclogo extends ItemDE {
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5)
 	{
+//		if (entity instanceof EntityPlayerMP && !entity.onGround) {
+//			//for (int i = 0; i < 10; i++)
+//			EntityPlayer player = (EntityPlayer)entity;
+//			if (player.posX < 500){
+//
+//				((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(player.posX + 10, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+//				player.motionX += 10;
+//				if (player.posX > 128) {
+//
+//					((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(501, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+//
+//				}
+//
+//			}
+//			else player.motionX = 0;
+
+
+
+//			((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(entity.posX + 10, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+//			((EntityPlayerMP) entity).addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 10, 1000));
+//			if (entity.posX > 500) ((EntityPlayerMP) entity).destroyCurrentEquippedItem();
+//		}
+		/*
 		//if (entity.isCollidedHorizontally)// && !world.isRemote)
 			//entity.setLocationAndAngles(entity.posX+30D, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);;
 		/*
@@ -74,6 +97,13 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+		/*if (player instanceof EntityPlayerMP) {
+			for (int i = 0; i < 10; i++)
+			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(player.posX + 1, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+		}
+
+		if (1==1) return stack;*/
+
 		//Minecraft.getMinecraft().gameSettings.mouseSensitivity = -0.34F;
 
 //		if (world.isRemote)

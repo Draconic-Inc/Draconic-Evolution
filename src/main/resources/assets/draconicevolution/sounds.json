@@ -2,5 +2,6 @@
    "charge": {"category": "block","sounds": [{"name": "charge","stream": false}]},
    "discharge": {"category": "block","sounds": [{"name": "discharge","stream": false}]},
    "boom": {"category": "block","sounds": [{"name": "boom","stream": false}]},
-   "beam": {"category": "block","sounds": [{"name": "beam","stream": false}]}
+   "beam": {"category": "block","sounds": [{"name": "beam","stream": false}]},
+   "portal": {"category": "player","sounds": [{"name": "portal","stream": false}]}
 }

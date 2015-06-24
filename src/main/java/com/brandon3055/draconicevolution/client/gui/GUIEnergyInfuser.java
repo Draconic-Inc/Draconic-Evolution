@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.container.ContainerEnergyInfuser;
-import com.brandon3055.draconicevolution.common.utills.GuiHelper;
+import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import cpw.mods.fml.relauncher.Side;

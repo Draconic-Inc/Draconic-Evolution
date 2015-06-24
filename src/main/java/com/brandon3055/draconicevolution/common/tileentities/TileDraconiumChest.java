@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChes
 import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
-import com.brandon3055.draconicevolution.common.utills.InventoryUtils;
+import com.brandon3055.brandonscore.common.utills.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;

@@ -277,4 +277,9 @@ public class TileParticleGenerator extends TileEntity {
 		beam_length = compound.getFloat("beam_length");
 		beam_rotation = compound.getFloat("beam_rotation");
 	}
+
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 655360.0D;
+	}
 }

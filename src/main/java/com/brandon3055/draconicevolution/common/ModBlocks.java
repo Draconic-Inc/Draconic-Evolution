@@ -3,9 +3,7 @@ package com.brandon3055.draconicevolution.common;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.*;
 import com.brandon3055.draconicevolution.common.blocks.machine.*;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyPylon;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyStorageCore;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.InvisibleMultiblock;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -42,6 +40,10 @@ public class ModBlocks {
 	public static BlockDE draconiumChest;
 	public static BlockDE draconicBlock;
 	public static BlockDE energyCrystal;
+	public static BlockDE infusedObsidian;
+	public static BlockDE dislocatorReceptacle;
+	public static BlockDE portal;
+	public static BlockDE reactorCore;
 	public static Block safetyFlame;
 
 	public static ItemStack resurrectionStone;
@@ -73,6 +75,10 @@ public class ModBlocks {
 		draconiumChest = new DraconiumChest();
 		draconicBlock = new DraconicBlock();
 		energyCrystal = new EnergyCrystal();
+		infusedObsidian = new InfusedObsidian();
+		dislocatorReceptacle = new DislocatorReceptacle();
+		portal = new Portal();
+		reactorCore = new ReactorCore();
 
 		longRangeDislocator = new LongRangeDislocator();
 		

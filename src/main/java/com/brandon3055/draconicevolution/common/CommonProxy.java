@@ -20,10 +20,7 @@ import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileInvisibleMultiblock;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.*;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -34,7 +31,6 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
@@ -144,6 +140,9 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEnergyRelay.class, References.RESOURCESPREFIX + "TileEnergyRelay");
 		GameRegistry.registerTileEntity(TileEnergyTransceiver.class, References.RESOURCESPREFIX + "TileEnergyTransceiver");
 		GameRegistry.registerTileEntity(TileWirelessEnergyTransceiver.class, References.RESOURCESPREFIX + "TileWirelessEnergyTransceiver");
+		GameRegistry.registerTileEntity(TileDislocatorReceptacle.class, References.RESOURCESPREFIX + "TileDislocatorReceptacle");
+		GameRegistry.registerTileEntity(TilePortalBlock.class, References.RESOURCESPREFIX + "TilePortalBlock");
+		GameRegistry.registerTileEntity(TileReactorCore.class, References.RESOURCESPREFIX + "TileReactorCore");
 		if (DraconicEvolution.debug) {
 			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
@@ -174,12 +173,6 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityDragonHeart.class, "Dragon Heart Item", 5, DraconicEvolution.instance, 32, 5, true);
 	}
 
-	public boolean isDedicatedServer() {return true;}
-
-	public MinecraftServer getMCServer(){
-		return FMLCommonHandler.instance().getMinecraftServerInstance();
-	}
-
 	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render, int beamType)
 	{
 		return null;
@@ -189,36 +182,12 @@ public class CommonProxy {
 		return null;
 	}
 
-	public boolean isOp(String paramString)
-	{
-		MinecraftServer localMinecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-		paramString = paramString.trim();
-		for (String str : localMinecraftServer.getConfigurationManager().func_152606_n()) {
-			if (paramString.equalsIgnoreCase(str)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
-	public void spawnParticle(Object particle)
+
+	public void spawnParticle(Object particle, int range)
 	{
 
 	}
 
-	public boolean isSpaceDown()
-	{
-		return false;
-	}
-
-	public boolean isCtrlDown()
-	{
-		return false;
-	}
-
-	public boolean isShiftDown()
-	{
-		return false;
-	}
 
 }

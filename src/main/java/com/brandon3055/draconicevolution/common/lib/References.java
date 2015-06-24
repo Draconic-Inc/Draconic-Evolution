@@ -21,7 +21,7 @@ public final class References {
 
 	//======================Render IDs========================//
 	public static int idTeleporterStand	= -1;
-	public static int idDraconiumChest 	= -1;
+	public static int idPortal		 	= -1;
 
 	//======================Data Types========================//
 

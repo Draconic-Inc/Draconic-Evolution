@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.container;
 
 import com.brandon3055.draconicevolution.common.inventory.SlotOutput;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;

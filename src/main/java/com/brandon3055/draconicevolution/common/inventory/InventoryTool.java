@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.inventory;
 
 import com.brandon3055.draconicevolution.common.container.ContainerAdvTool;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;

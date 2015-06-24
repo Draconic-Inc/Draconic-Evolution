@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.*;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
@@ -207,7 +207,7 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 		IRemoteEnergyHandler tile = world.getTileEntity(x, y, z) instanceof IRemoteEnergyHandler ? (IRemoteEnergyHandler) world.getTileEntity(x, y, z) : null;
 		if (tile != null)
 		{
-			list.add(InfoHelper.HITC()+getLocalizedName());
+			list.add(InfoHelper.HITC()+StatCollector.translateToLocal(this.getUnlocalizedName() + world.getBlockMetadata(x, y, z) + ".name"));
 			list.add("RF: " + tile.getEnergyStored(ForgeDirection.DOWN));
 			list.add("Cap: " + tile.getCapacity() + "%");
 			if (tile instanceof TileEnergyTransceiver) {

@@ -26,6 +26,7 @@ public class NEIDraconicevolutionConfig implements IConfigureNEI
 		API.hideItem(new ItemStack(ModItems.creativeStructureSpawner));
 		API.hideItem(new ItemStack(ModItems.dezilsMarshmallow));
 		API.hideItem(new ItemStack(ModItems.creativeStructureSpawner, 1, 1));
+		API.hideItem(new ItemStack(ModBlocks.portal));
 		LogHelper.info("Added NEI integration");
 	}
 

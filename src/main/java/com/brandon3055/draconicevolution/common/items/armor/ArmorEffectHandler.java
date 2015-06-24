@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
 import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 

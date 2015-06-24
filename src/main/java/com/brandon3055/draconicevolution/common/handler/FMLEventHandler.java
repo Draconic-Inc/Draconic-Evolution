@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.handler;
 
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -96,16 +96,16 @@ public class FMLEventHandler {
 			player.capabilities.allowFlying = true;
 			if (ArmorEffectHandler.getFlightLock(player)) player.capabilities.isFlying = true;
 
-			if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && ((ArmorEffectHandler.getVAccSprint(player) && DraconicEvolution.proxy.isCtrlDown()) || (!ArmorEffectHandler.getVAccSprint(player))))
+			if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && ((ArmorEffectHandler.getVAccSprint(player) && BrandonsCore.proxy.isCtrlDown()) || (!ArmorEffectHandler.getVAccSprint(player))))
 			{
 				float percentIncrease = ArmorEffectHandler.getVAccel(player);
 
-				if (DraconicEvolution.proxy.isSpaceDown() && !DraconicEvolution.proxy.isShiftDown())
+				if (BrandonsCore.proxy.isSpaceDown() && !BrandonsCore.proxy.isShiftDown())
 				{
 					player.motionY =(double)(percentIncrease * 2F);
 				}
 
-				if (DraconicEvolution.proxy.isShiftDown() && !DraconicEvolution.proxy.isSpaceDown())
+				if (BrandonsCore.proxy.isShiftDown() && !BrandonsCore.proxy.isSpaceDown())
 				{
 					player.motionY = -(double)(percentIncrease * 2F);
 				}

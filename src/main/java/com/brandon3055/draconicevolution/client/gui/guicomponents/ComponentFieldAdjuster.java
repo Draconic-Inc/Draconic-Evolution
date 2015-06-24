@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
 import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.DataUtills;
-import com.brandon3055.draconicevolution.common.utills.GuiHelper;
+import com.brandon3055.brandonscore.common.utills.DataUtills;
+import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.client.Minecraft;

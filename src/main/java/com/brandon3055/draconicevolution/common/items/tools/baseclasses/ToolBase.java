@@ -1,5 +1,10 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
+import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.common.utills.DataUtills;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -159,11 +164,11 @@ public class ToolBase extends RFItemBase {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		if (!world.isRemote && !DraconicEvolution.proxy.isDedicatedServer())
+		if (!world.isRemote && !BrandonsCore.proxy.isDedicatedServer())
 		{
 			handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
 		}
-		else if (world.isRemote && DraconicEvolution.proxy.getMCServer() == null)
+		else if (world.isRemote && BrandonsCore.proxy.getMCServer() == null)
 		{
 			handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
 			DraconicEvolution.network.sendToServer(new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));

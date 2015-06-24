@@ -28,6 +28,7 @@ import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnerg
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileReactorCore;
 import com.brandon3055.draconicevolution.common.utills.UpdateChecker;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -138,6 +139,7 @@ public class ClientProxy extends CommonProxy {
 
 		//ISimpleBlockRendering
 		RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
+		RenderingRegistry.registerBlockHandler(new RenderPortal());
 
 		//TileEntitySpecialRenderers
 		ClientRegistry.bindTileEntitySpecialRenderer(TileParticleGenerator.class, new RenderTileParticleGen());
@@ -153,6 +155,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyRelay.class, new RenderTileCrystal());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyTransceiver.class, new RenderTileCrystal());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileWirelessEnergyTransceiver.class, new RenderTileCrystal());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileReactorCore.class, new RenderTileReactorCore());
 
 		//Entitys
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
@@ -161,11 +164,7 @@ public class ClientProxy extends CommonProxy {
 
 	public void registerRenderIDs (){
 		References.idTeleporterStand = RenderingRegistry.getNextAvailableRenderId();
-	}
-
-	@Override
-	public boolean isDedicatedServer() {
-		return false;
+		References.idPortal = RenderingRegistry.getNextAvailableRenderId();
 	}
 
 	@Override
@@ -228,22 +227,9 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void spawnParticle(Object particle) {
-		if (particle instanceof EntityFX) ParticleHandler.spawnCustomParticle((EntityFX)particle);
+	public void spawnParticle(Object particle, int range) {
+		if (particle instanceof EntityFX && ((EntityFX)particle).worldObj.isRemote) ParticleHandler.spawnCustomParticle((EntityFX)particle, range);
 	}
 
-	@Override
-	public boolean isSpaceDown() {
-		return Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed();
-	}
 
-	@Override
-	public boolean isShiftDown() {
-		return Minecraft.getMinecraft().gameSettings.keyBindSneak.getIsKeyPressed();
-	}
-
-	@Override
-	public boolean isCtrlDown() {
-		return Minecraft.getMinecraft().gameSettings.keyBindSprint.getIsKeyPressed();
-	}
 }

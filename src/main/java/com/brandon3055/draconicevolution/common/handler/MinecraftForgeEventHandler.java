@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.handler;
 
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -12,7 +13,6 @@ import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
 import com.brandon3055.draconicevolution.common.network.SpeedRequestPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -24,6 +24,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.IBossDisplayData;
@@ -53,6 +54,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -68,11 +70,40 @@ public class MinecraftForgeEventHandler {
 	public static int ticksSinceRequest = 0;
 	public static boolean speedNeedsUpdating = true;
 
+	private Field persistenceRequired = null;
+
+	public MinecraftForgeEventHandler(){
+		try {
+			persistenceRequired = ReflectionHelper.findField(EntityLiving.class, "field_82179_bU", "persistenceRequired");
+		} catch (Exception e) {
+			LogHelper.error("Unable to find field \"persistenceRequired\"");
+		}
+	}
+
 	@SubscribeEvent
 	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event)
 	{
+		EntityLivingBase entity = event.entityLiving;
+
+		if (entity.getEntityData().hasKey("SpawnedByDESpawner")){
+			long spawnTime = entity.getEntityData().getLong("SpawnedByDESpawner");
+			long livedFor = entity.worldObj.getTotalWorldTime() - spawnTime;
+
+			if (livedFor > 600 && persistenceRequired != null){
+				try {
+					persistenceRequired.setBoolean(entity, false);
+					entity.getEntityData().removeTag("SpawnedByDESpawner");
+					LogHelper.info("Tag Removed From " + entity);
+				} catch (Exception e) {
+					LogHelper.warn("Error occured while resetting entity persistence: " + e);
+					entity.getEntityData().removeTag("SpawnedByDESpawner");
+				}
+			}
+		}
+
+
 		if (!event.entityLiving.worldObj.isRemote || !(event.entityLiving instanceof EntityPlayerSP)) return;
-		EntityPlayerSP player = (EntityPlayerSP) event.entityLiving;
+		EntityPlayerSP player = (EntityPlayerSP) entity;
 
 		double motionX = player.motionX;
 		double motionZ = player.motionZ;

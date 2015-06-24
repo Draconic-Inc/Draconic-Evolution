@@ -1,10 +1,12 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -531,6 +533,96 @@ public final class Particles {
 			tesselator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
 
 			//tesselator.setColorRGBA(0, 255, 255, (int) (this.particleAlpha * 255F));
+
+			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ - par5 * drawScale - par7 * drawScale), (double) maxU, (double) maxV);
+			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ - par5 * drawScale + par7 * drawScale), (double) maxU, (double) minV);
+			tesselator.addVertexWithUV((double) (drawX + par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ + par5 * drawScale + par7 * drawScale), (double) minU, (double) minV);
+			tesselator.addVertexWithUV((double) (drawX + par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ + par5 * drawScale - par7 * drawScale), (double) minU, (double) maxV);
+
+			tesselator.draw();
+			ResourceHandler.bindDefaultParticles();
+			tesselator.startDrawingQuads();
+
+		}
+	}
+
+	public static class PortalParticle extends EntityFX
+	{
+		public double targetX;
+		public double targetY;
+		public double targetZ;
+		public double startX;
+		public double startY;
+		public double startZ;
+		public float baseScale;
+
+		public PortalParticle(World world, double x, double y, double z, double tx, double ty, double tz) {
+			super(world, x, y, z, 0.0D, 0.0D, 0.0D);
+			this.startX = x;
+			this.startY = y;
+			this.startZ = z;
+			this.targetX = tx;
+			this.targetY = ty;
+			this.targetZ = tz;
+			float speed = 0.12F + (rand.nextFloat() * 0.2F);
+			this.motionX = (targetX - startX) * speed;
+			this.motionY = (targetY - startY) * speed;
+			this.motionZ = (targetZ - startZ) * speed;
+			this.particleMaxAge = 100;
+			this.noClip = true;
+			this.particleRed = this.particleGreen = this.particleBlue = 1.0f;
+			float baseSize = 0.05F + ((float) RenderManager.instance.livingPlayer.getDistance(x, y, z)) * 0.007F;
+			if (RenderManager.instance.livingPlayer != null) this.baseScale = baseSize + (rand.nextFloat() * (baseSize * 2F));
+		}
+
+		@Override
+		public void onUpdate() {
+			//super.onUpdate();
+			if (particleAge >= particleMaxAge || this.getDistanceSq(targetX, targetY, targetZ) < 0.05) setDead();
+
+			double d1 = Utills.getDistanceAtoB(startX, startY, startZ, targetX, targetY, targetZ);
+			double d2 = Utills.getDistanceAtoB(posX, posY, posZ, targetX, targetY, targetZ);
+			particleScale = ((float) (d2 / d1)) * baseScale;
+
+			particleAge ++;
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+			moveEntity(motionX, motionY, motionZ);
+
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+
+			tesselator.draw();
+			ResourceHandler.bindParticles();
+			tesselator.startDrawingQuads();
+			tesselator.setBrightness(200);
+
+			int uIndex = 6;
+			int vIndex = 0;
+
+			float minU = uIndex * 0.125F;
+			float maxU = (uIndex+1) * 0.125F;
+			float minV = vIndex * 0.125F;
+			float maxV = (vIndex+1) * 0.125F;
+
+			float drawScale = 0.1F * this.particleScale;
+
+			if (this.particleIcon != null) {
+				minU = this.particleIcon.getMinU();
+				maxU = this.particleIcon.getMaxU();
+				minV = this.particleIcon.getMinV();
+				maxV = this.particleIcon.getMaxV();
+			}
+
+			float drawX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) par2 - interpPosX);
+			float drawY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) par2 - interpPosY);
+			float drawZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) par2 - interpPosZ);
+
+			tesselator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
 
 			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ - par5 * drawScale - par7 * drawScale), (double) maxU, (double) maxV);
 			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ - par5 * drawScale + par7 * drawScale), (double) maxU, (double) minV);

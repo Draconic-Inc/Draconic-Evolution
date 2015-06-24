@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -92,7 +93,7 @@ public class TeleporterMKI extends ItemDE {
 					ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
 					ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
 					ItemNBTHelper.setBoolean(stack, "IsSet", true);
-					ItemNBTHelper.setString(stack, "DimentionName", DraconicEvolution.proxy.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionName());
+					ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionName());
 				}
 				return stack;
 			} else if (world.isRemote)

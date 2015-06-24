@@ -754,15 +754,15 @@ public class GUIParticleGenerator extends GuiScreen {
 				packetValue = (short) beam_blue;
 				break;
 			case 103: //beam pitch +
-				beam_pitch = (beam_pitch + value_F) > 360F ? 360F : beam_pitch + value_F;
+				beam_pitch = (beam_pitch + value_F) > 180F ? 180F : beam_pitch + value_F;
 				packetValue = (short) (beam_pitch * 100F);
 				break;
 			case 104: //beam yaw +
-				beam_yaw = (beam_yaw + value_F) > 360F ? 360F : beam_yaw + value_F;
+				beam_yaw = (beam_yaw + value_F) > 180F ? 180F : beam_yaw + value_F;
 				packetValue = (short) (beam_yaw * 100F);
 				break;
 			case 105: //beam length +
-				beam_length = (beam_length + value_F) > 30F ? 30F : beam_length + value_F;
+				beam_length = (beam_length + value_F) > 320F ? 320F : beam_length + value_F;
 				packetValue = (short) (beam_length * 100F);
 				break;
 			case 106: //beam rotation +
@@ -786,11 +786,11 @@ public class GUIParticleGenerator extends GuiScreen {
 				packetValue = (short) beam_blue;
 				break;
 			case 111: //beam pitch -
-				beam_pitch = (beam_pitch - value_F) < -0F ? -0F : beam_pitch - value_F;
+				beam_pitch = (beam_pitch - value_F) < -180F ? -180F : beam_pitch - value_F;
 				packetValue = (short) (beam_pitch * 100F);
 				break;
 			case 112: //beam yaw -
-				beam_yaw = (beam_yaw - value_F) < -0F ? -0F : beam_yaw - value_F;
+				beam_yaw = (beam_yaw - value_F) < -180F ? -180F : beam_yaw - value_F;
 				packetValue = (short) (beam_yaw * 100F);
 				break;
 			case 113: //beam length -

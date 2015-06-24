@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChes
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.ButtonPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
-import com.brandon3055.draconicevolution.common.utills.GuiHelper;
+import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

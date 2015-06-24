@@ -17,7 +17,11 @@ import net.minecraft.enchantment.Enchantment;
 
 import java.util.Arrays;
 
-@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, canBeDeactivated = false, guiFactory = References.GUIFACTORY,  dependencies = "after:NotEnoughItems;after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;")
+@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, canBeDeactivated = false, guiFactory = References.GUIFACTORY,  dependencies = "after:NotEnoughItems;" +
+		"after:NotEnoughItems;" +
+		"after:ThermalExpansion;" +
+		"after:ThermalFoundation;" +
+		"required-after:BrandonsCore@[1.0.0.1,);")
 public class DraconicEvolution {
 
 	@Mod.Instance(References.MODID)

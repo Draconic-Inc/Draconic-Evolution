@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.network;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.handler.MinecraftForgeEventHandler;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
@@ -39,7 +39,7 @@ public class SpeedRequestPacket  implements IMessage
 		public IMessage onMessage(SpeedRequestPacket message, MessageContext ctx) {
 			if (ctx.side == Side.SERVER)
 			{
-				if (ConfigHandler.speedLimitDimList.contains(ctx.getServerHandler().playerEntity.dimension) || (DraconicEvolution.proxy.isOp(ctx.getServerHandler().playerEntity.getCommandSenderName()) && !ConfigHandler.speedLimitops)) return new SpeedRequestPacket(20F);
+				if (ConfigHandler.speedLimitDimList.contains(ctx.getServerHandler().playerEntity.dimension) || (BrandonsCore.proxy.isOp(ctx.getServerHandler().playerEntity.getCommandSenderName()) && !ConfigHandler.speedLimitops)) return new SpeedRequestPacket(20F);
 				LogHelper.info(ConfigHandler.speedLimitops);
 				return new SpeedRequestPacket(ConfigHandler.maxPlayerSpeed);
 			}

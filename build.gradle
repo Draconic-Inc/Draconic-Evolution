@@ -52,7 +52,7 @@ dependencies {
     compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:dev"
     compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
 	
-    if (file('../BrandonsLib/').exists()) compile project('../BrandonsLib')
+    if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
 }
 
 processResources

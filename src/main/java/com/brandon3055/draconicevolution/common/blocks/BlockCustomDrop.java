@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.common.utills.InventoryUtils;
+import com.brandon3055.brandonscore.common.utills.InventoryUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;

@@ -157,7 +157,6 @@ public class TileWeatherController extends TileEntity implements IInventory {
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
 	{
 		readFromNBT(pkt.func_148857_g());
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	//==============================================INVENTORY====================================================//

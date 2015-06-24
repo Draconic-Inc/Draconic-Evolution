@@ -166,7 +166,11 @@ public abstract class CustomSpawnerBaseLogic {
 				}
 			} else ((EntityLiving) par1Entity).onSpawnWithEgg(null);
 
-			if (!requiresPlayer)((EntityLiving)par1Entity).func_110163_bv();
+			if (!requiresPlayer) {
+				((EntityLiving)par1Entity).func_110163_bv();
+				par1Entity.getEntityData().setLong("SpawnedByDESpawner", getSpawnerWorld().getTotalWorldTime());
+			}
+
 			this.getSpawnerWorld().spawnEntityInWorld(par1Entity);
 		}
 
@@ -242,7 +246,7 @@ public abstract class CustomSpawnerBaseLogic {
 	@SideOnly(Side.CLIENT)
 	public Entity getEntityForRenderer() {
 		if (this.renderedEntity == null) {
-			Entity entity = EntityList.createEntityByName(this.getEntityNameToSpawn(), (World) null);
+			Entity entity = EntityList.createEntityByName(this.getEntityNameToSpawn(), getSpawnerWorld());
 			entity = this.spawnEntity(entity);
 			if (entity instanceof EntitySkeleton) ((EntitySkeleton)entity).setSkeletonType(skeletonType);
 			this.renderedEntity = entity;

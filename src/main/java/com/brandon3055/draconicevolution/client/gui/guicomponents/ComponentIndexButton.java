@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
 import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.utills.Utills;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

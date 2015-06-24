@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyFi
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.Utills;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -66,7 +66,7 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
 					receiver.particleEnergyCounter -= particleValue;
 
 					//todo detect box size
-					DraconicEvolution.proxy.spawnParticle(new Particles.TransceiverParticle(worldObj, xCoord + 0.5, yCoord + 0.3 + (worldObj.rand.nextDouble() * 0.4), zCoord + 0.5, receiver.xCoord + worldObj.rand.nextDouble(), receiver.yCoord + worldObj.rand.nextDouble(), receiver.zCoord + worldObj.rand.nextDouble()));
+					DraconicEvolution.proxy.spawnParticle(new Particles.TransceiverParticle(worldObj, xCoord + 0.5, yCoord + 0.3 + (worldObj.rand.nextDouble() * 0.4), zCoord + 0.5, receiver.xCoord + worldObj.rand.nextDouble(), receiver.yCoord + worldObj.rand.nextDouble(), receiver.zCoord + worldObj.rand.nextDouble()), 64);
 				}
 			}
 		}

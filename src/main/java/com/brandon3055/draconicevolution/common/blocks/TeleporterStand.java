@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKI;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileTeleporterStand;
-import com.brandon3055.draconicevolution.common.utills.Teleporter;
+import com.brandon3055.brandonscore.common.utills.Teleporter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
