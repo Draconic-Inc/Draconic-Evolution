@@ -15,6 +15,7 @@ You CAN
 
 -Write your own code that uses this code as a dependency. (addon mods)
 
+-Fork this project for the purpose of creating a pull request.
 
 You CANNOT
 

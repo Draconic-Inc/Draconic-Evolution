@@ -194,13 +194,16 @@ public class ToolHandler {
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
 		List list = world.getEntitiesWithinAABBExcludingEntity(player, box);
 		if (range == 0) return;
+		IEnergyContainerItem item = (IEnergyContainerItem)stack.getItem();
 
 		for (Object entityObject : list) {
+			if (item.getEnergyStored(stack) < References.ENERGYPERATTACK) break;
 			if (entityObject instanceof EntityLivingBase) {
 				EntityLivingBase entityLivingBase = (EntityLivingBase) entityObject;
 				if (entityLivingBase.getEntityId() == entity.getEntityId()) continue;
 
 				entityLivingBase.attackEntityFrom(DamageSource.causePlayerDamage(player), getDamageAgainstEntity(stack, entityLivingBase));
+				item.extractEnergy(stack, References.ENERGYPERATTACK, false);
 				if (EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) > 0) entityLivingBase.setFire(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) * 15);
 
 

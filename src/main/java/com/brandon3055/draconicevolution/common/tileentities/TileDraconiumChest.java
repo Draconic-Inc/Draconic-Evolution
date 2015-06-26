@@ -2,13 +2,13 @@ package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyReceiver;
+import com.brandon3055.brandonscore.common.utills.InventoryUtils;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.common.container.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.utills.ICustomItemData;
-import com.brandon3055.brandonscore.common.utills.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -61,7 +61,11 @@ public class TileDraconiumChest extends TileEntity implements ISidedInventory, I
 
 	@Override
 	public void updateEntity() {
-		super.updateEntity();
+
+		//int t = (tick/20) % 12;
+		//if (!worldObj.isRemote) LogHelper.info(t / 6 + " : " + t % 6 + " : " + t);
+
+
 		// Resynchronize clients with the server state
 		if (worldObj != null && !this.worldObj.isRemote && this.numUsingPlayers != 0 && (this.ticksSinceSync + this.xCoord + this.yCoord + this.zCoord) % 200 == 0) {
 			this.numUsingPlayers = 0;

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyReceiver;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
@@ -8,9 +9,9 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileRemoteEnergyBase;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ public class Wrench extends ItemDE implements IHudDisplayItem {
 		this.setUnlocalizedName(Strings.wrenchName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setMaxStackSize(1);
+
 		ModItems.register(this);
 	}
 
@@ -105,6 +108,9 @@ public class Wrench extends ItemDE implements IHudDisplayItem {
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return false;
+
+		Block clicked = world.getBlock(x, y, z);
+		if (clicked.rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side))) return true;
 
 		TileEntity tileClicked = world.getTileEntity(x, y, z);
 		if (tileClicked instanceof TileRemoteEnergyBase) return false;

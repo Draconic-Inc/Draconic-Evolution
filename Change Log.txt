@@ -3,10 +3,12 @@
 -mobs spawned by stabilized spawner are now allowed to despawn after 30 seconds.
 -increased the length and render distance of the particle generator beam.
 -shortened the teleport sound.
--added Draconium Infused Obsidian
--added Draconic Portal
--removed old debug code from bow
--fixed energy crystal name localisation in hud 
+-added Draconium Infused Obsidian.
+-added Draconic Portal.
+-removed old debug code from bow.
+-fixed energy crystal name localisation in hud.
+-crystal binder can now rotate blocks.
+-fixed weapon aoe not using power. 
 
 ######## 1.0.1-Bugfix-c ########
 -fixed crash when arrow from DE bow hits RFTools force field.
