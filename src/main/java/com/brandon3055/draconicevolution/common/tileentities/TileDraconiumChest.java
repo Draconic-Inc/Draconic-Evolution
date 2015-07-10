@@ -61,11 +61,6 @@ public class TileDraconiumChest extends TileEntity implements ISidedInventory, I
 
 	@Override
 	public void updateEntity() {
-
-		//int t = (tick/20) % 12;
-		//if (!worldObj.isRemote) LogHelper.info(t / 6 + " : " + t % 6 + " : " + t);
-
-
 		// Resynchronize clients with the server state
 		if (worldObj != null && !this.worldObj.isRemote && this.numUsingPlayers != 0 && (this.ticksSinceSync + this.xCoord + this.yCoord + this.zCoord) % 200 == 0) {
 			this.numUsingPlayers = 0;

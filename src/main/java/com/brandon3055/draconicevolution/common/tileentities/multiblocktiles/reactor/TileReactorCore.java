@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
+package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor;
 
 import net.minecraft.tileentity.TileEntity;
 

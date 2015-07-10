@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 /**
@@ -10,55 +12,53 @@ public class MultiblockHelper {
 
 
 
-	public static class TileLocation {
-		protected int xCoord;
-		protected int yCoord;
-		protected int zCoord;
-
+	public static class TileLocation extends ChunkCoordinates {
 		public TileLocation(){
 
 		}
 
 		public TileLocation(int x, int y, int z){
-			this.xCoord = x;
-			this.yCoord = y;
-			this.zCoord = z;
+			this.posX = x;
+			this.posY = y;
+			this.posZ = z;
 		}
 
 		public int getXCoord(){
-			return xCoord;
+			return posX;
 		}
 
 		public int getYCoord(){
-			return yCoord;
+			return posY;
 		}
 
 		public int getZCoord(){
-			return zCoord;
+			return posY;
 		}
 
 		public void setXCoord(int x){
-			xCoord = x;
+			posX = x;
 		}
 
 		public void setYCoord(int y){
-			yCoord = y;
+			posY = y;
 		}
 
 		public void setZCoord(int z){
-			zCoord = z;
+			posZ = z;
 		}
 
+		public TileEntity getTileEntity(World world) { return world.getTileEntity(posX, posY, posZ); }
+
 		public void writeToNBT(NBTTagCompound compound, String key) {
-			compound.setInteger("X_"+key, xCoord);
-			compound.setInteger("Y_"+key, yCoord);
-			compound.setInteger("Z_"+key, zCoord);
+			compound.setInteger("X_"+key, posX);
+			compound.setInteger("Y_"+key, posY);
+			compound.setInteger("Z_"+key, posZ);
 		}
 
 		public void readFromNBT(NBTTagCompound compound, String key) {
-			xCoord = compound.getInteger("X_"+key);
-			yCoord = compound.getInteger("Y_"+key);
-			zCoord = compound.getInteger("Z_"+key);
+			posX = compound.getInteger("X_"+key);
+			posY = compound.getInteger("Y_"+key);
+			posZ = compound.getInteger("Z_"+key);
 		}
 	}
 

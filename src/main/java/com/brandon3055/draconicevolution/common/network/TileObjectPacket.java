@@ -86,7 +86,7 @@ public class TileObjectPacket implements IMessage{
 				{
 					if (!(Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z) instanceof TileObjectSync))
 						return null;
-					((TileObjectSync) Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z)).receiveObject(message.index, message.object);
+					((TileObjectSync) Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z)).receiveObjectFromServer(message.index, message.object);
 				}
 			}
 			else
@@ -100,7 +100,7 @@ public class TileObjectPacket implements IMessage{
 				{
 					if (!(ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z) instanceof TileObjectSync))
 						return null;
-					((TileObjectSync) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z)).receiveObject(message.index, message.object);
+					((TileObjectSync) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z)).receiveObjectFromClient(message.index, message.object);
 				}
 			}
 			return null;

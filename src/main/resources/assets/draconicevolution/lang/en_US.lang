@@ -28,6 +28,8 @@ tile.draconicevolution:draconicBlock.name=Awakened Draconium Block
 tile.draconicevolution:infusedObsidian.name=Draconium Infused Obsidian
 tile.draconicevolution:dislocatorReceptacle.name=Dislocator Receptacle
 tile.draconicevolution:portal.name=Portal
+tile.draconicevolution:flowGateFlux.name=Flux Gate
+tile.draconicevolution:flowGateFluid.name=Fluid Gate
 
 tile.draconicevolution:energyCrystal0.name=Energy Relay
 tile.draconicevolution:energyCrystal1.name=Advanced Energy Relay
@@ -413,11 +415,16 @@ button.de.VerticalAcceleration.name=Vertical Acceleration
 button.de.EffectiveOnSprint.name=Effective while sprinting
 button.de.GogglesOfRevealing.name=Magical Sense
 
-//Manual Gui ----------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
+//Gui ----------------------------------------------------------------------------------------------------------------------------------------
+gui.de.flowGate.name=Flow Control
+gui.de.flowGatePartialSignal.name=The actual flow will vary between the two given values depending on the strength of the redstone signal being supplied to the block.
+gui.de.flowGateCurrentFlow.name=Flow
+gui.de.flowGateRSLow.name=Redstone Signal Low
+gui.de.flowGateRSHigh.name=Redstone Signal High
+gui.de.increment.name=Increment value by
+gui.de.decrement.name=Decrement value by
+gui.de.ctrlAndShift.name=You can use Ctrl and Shift to change the increment amount.
+gui.de.pressOrScroll.name=Press Or Scroll
 
 manual.de.pigmenBloodRage.description=Don't let the pigmen see you eating pork you wont like what happens..
 

@@ -384,7 +384,7 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		if (index == 0 && disabled != (Boolean) object) {
 			disabled = (Boolean) object;
 			worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
@@ -397,10 +397,10 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 	private void detectAndSendChanges(boolean sendAnyway){
 		if (disabledCach != disabled || sendAnyway) {
-			disabledCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, disabled);
+			disabledCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, disabled);
 		}
 		if (hasPowerCach != hasPower || sendAnyway) {
-			hasPowerCach = (Boolean)sendObject(References.BOOLEAN_ID, 1, hasPower);
+			hasPowerCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 1, hasPower);
 		}
 	}
 

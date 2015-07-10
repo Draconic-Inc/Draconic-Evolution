@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.common.container.*;
 import com.brandon3055.draconicevolution.common.inventory.InventoryTool;
 import com.brandon3055.draconicevolution.common.tileentities.*;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileGate;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +27,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int GUIID_DISSENCHANTER = 10;
 	public static final int GUIID_DRACONIC_CHEST = 11;
 	public static final int GUIID_TOOL_CONFIG = 12;
+	public static final int GUIID_FLOW_GATE = 13;
 	public static final int GUIID_CONTAINER_TEMPLATE = 100;
 
 	public GuiHandler() {
@@ -159,7 +161,8 @@ public class GuiHandler implements IGuiHandler {
 				break;
 			case GUIID_TOOL_CONFIG:
 				return new GUIToolConfig(player, new ContainerAdvTool(player.inventory, new InventoryTool(player, null)));
-
+			case GUIID_FLOW_GATE:
+				return world.getTileEntity(x, y, z) instanceof TileGate ? new GUIFlowGate((TileGate)world.getTileEntity(x, y, z)) : null;
 
 //			case GUIID_CONTAINER_TEMPLATE:
 //				TileEntity containerTemp = world.getTileEntity(x, y, z);

@@ -87,15 +87,15 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
 
 				if (sent > Short.MAX_VALUE) sent = Short.MAX_VALUE;
 
-				if (sent > 0) sendObject(References.SHORT_ID, 10 + receiverList.indexOf(receiver), (short)sent);
+				if (sent > 0) sendObjectToClient(References.SHORT_ID, 10 + receiverList.indexOf(receiver), (short) sent);
 			}
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
-		super.receiveObject(index, object);
+	public void receiveObjectFromServer(int index, Object object) {
+		super.receiveObjectFromServer(index, object);
 		if (index >= 10)
 		{
 

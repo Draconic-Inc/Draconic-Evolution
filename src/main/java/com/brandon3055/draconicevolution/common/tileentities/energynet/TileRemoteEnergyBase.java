@@ -152,17 +152,17 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		{
 			if (index >= 0 && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow || forceSend))
 			{
-				sendObject(References.INT_PAIR_ID, 0, new DataUtills.IntPair(index, (int) linkedDevices.get(index).energyFlow));
+				sendObjectToClient(References.INT_PAIR_ID, 0, new DataUtills.IntPair(index, (int) linkedDevices.get(index).energyFlow));
 				linkedDevices.get(index).lastTickEnergyFlow = linkedDevices.get(index).energyFlow;
 			}
 
-			if (storage.getEnergyStored() != lastTickEnergy || forceSend) sendObject(References.INT_ID, 1, storage.getEnergyStored());
+			if (storage.getEnergyStored() != lastTickEnergy || forceSend) sendObjectToClient(References.INT_ID, 1, storage.getEnergyStored());
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		if (index == 0 && object instanceof DataUtills.IntPair && linkedDevices.size() > ((DataUtills.IntPair) object).i1)
 		{
 			linkedDevices.get(((DataUtills.IntPair) object).i1).energyFlow = ((DataUtills.IntPair) object).i2;

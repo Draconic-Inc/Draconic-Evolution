@@ -20,7 +20,11 @@ import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluidGate;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluxGate;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.*;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -143,6 +147,9 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileDislocatorReceptacle.class, References.RESOURCESPREFIX + "TileDislocatorReceptacle");
 		GameRegistry.registerTileEntity(TilePortalBlock.class, References.RESOURCESPREFIX + "TilePortalBlock");
 		GameRegistry.registerTileEntity(TileReactorCore.class, References.RESOURCESPREFIX + "TileReactorCore");
+		GameRegistry.registerTileEntity(TileFluxGate.class, References.RESOURCESPREFIX + "TileFluxGate");
+		GameRegistry.registerTileEntity(TileFluidGate.class, References.RESOURCESPREFIX + "TileFluidGate");
+		GameRegistry.registerTileEntity(TileReactorStabilizer.class, References.RESOURCESPREFIX + "TileReactorStabilizer");
 		if (DraconicEvolution.debug) {
 			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");

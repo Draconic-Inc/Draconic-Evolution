@@ -255,12 +255,12 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 	}
 
 	private void detectAndSentChanges(boolean sendAnyway){
-		if (isBurning != isBurningCach || sendAnyway) isBurningCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, isBurning);
+		if (isBurning != isBurningCach || sendAnyway) isBurningCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, isBurning);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		if (isBurning != (Boolean) object){
 			isBurning = (Boolean) object;
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);

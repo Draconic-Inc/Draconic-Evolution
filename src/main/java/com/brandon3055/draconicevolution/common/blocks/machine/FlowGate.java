@@ -1,13 +1,19 @@
 package com.brandon3055.draconicevolution.common.blocks.machine;
 
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.gui.GuiHandler;
 import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.blocks.itemblocks.ItemBlockFrowGate;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluidGate;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluxGate;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileGate;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -47,8 +54,7 @@ public class FlowGate extends BlockDE {
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
-		LogHelper.info(metadata);
-		return super.createTileEntity(world, metadata);
+		return metadata < 6 ? new TileFluxGate() : new TileFluidGate();
 	}
 
 	@Override
@@ -100,6 +106,8 @@ public class FlowGate extends BlockDE {
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
 		int d = determineOrientation(world, x, y, z, entity) + stack.getItemDamage();
+		TileGate gate = (TileGate)world.getTileEntity(x, y, z);
+		gate.output = ForgeDirection.getOrientation(d % 6);
 		world.setBlockMetadataWithNotify(x, y, z, d, 2);
 	}
 
@@ -179,13 +187,43 @@ public class FlowGate extends BlockDE {
 			}
 		}
 
-
+		((TileGate)worldObj.getTileEntity(x, y, z)).output = facing;
 		worldObj.setBlockMetadataWithNotify(x, y, z, facing.ordinal() + (type * 6), 2);
-		return false;
+		Utills.updateNeabourBlocks(worldObj, x, y, z);
+		return true;
 	}
 
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
 		return new ItemStack(this, 1, (world.getBlockMetadata(x, y, z) / 6) * 6);
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+		if (world.isRemote && !(player.getHeldItem() != null && player.getHeldItem().getItem().equals(ModItems.wrench))) player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_FLOW_GATE, world, x, y, z);
+		return true;
+	}
+
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+		updateSignal(world, x, y, z);
+	}
+
+	@Override
+	public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ) {
+		updateSignal(world, x, y, z);
+	}
+
+	private void updateSignal(IBlockAccess world, int x, int y, int z){
+		TileGate gate = world.getTileEntity(x, y, z) instanceof TileGate ? (TileGate)world.getTileEntity(x, y, z) : null;
+		if (gate != null && world instanceof World) {
+			gate.signal = ((World) world).getStrongestIndirectPower(x, y, z);
+			((World) world).markBlockForUpdate(x, y, z);
+		}
+	}
+
+	@Override
+	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
+		return true;
 	}
 }

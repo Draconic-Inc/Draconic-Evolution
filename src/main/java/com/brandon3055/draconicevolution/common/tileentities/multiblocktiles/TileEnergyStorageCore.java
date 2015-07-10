@@ -786,11 +786,11 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 	private void detectAndRendChanges(){
 		int diff = (int)Math.abs(lastTickCapacity - energy);
-		if (diff > 1000) lastTickCapacity = (Double)sendObject(References.DOUBLE_ID, 0, energy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 20));
+		if (diff > 1000) lastTickCapacity = (Double) sendObjectToClient(References.DOUBLE_ID, 0, energy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 20));
 	}
 
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		energy = (Double) object;
 	}
 }

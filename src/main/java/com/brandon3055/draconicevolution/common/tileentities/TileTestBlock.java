@@ -75,7 +75,7 @@ public class TileTestBlock extends TileEntity implements IEnergyHandler {
 
 //		if (worldObj.isRemote) modelRotation += 0.5;
 
-		//LogHelper.info(modelRotation);
+		//LogHelper.info(modelCoreRotation);
 
 
 

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileReactorCore;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -47,7 +47,7 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
 		double a = ff < 0.1 ? (ff * 10) + 0.5 : 1;
 
 		ResourceHandler.bindResource("textures/models/reactorCore.png");
-		GL11.glScaled(2F, 2F, 2F);
+		//GL11.glScaled(2F, 2F, 2F);
 		GL11.glRotatef(rotation, 0.5F, 1F, 0.5F);
 		reactorModel.renderAll();
 

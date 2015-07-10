@@ -299,14 +299,14 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	}
 
 	private void detectAndSendChanges(){
-		if (lastTickActive != active) lastTickActive = (Boolean) sendObject(References.BOOLEAN_ID, 0, active,  new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
-		if (lastTickReciveEnergy != reciveEnergy) lastTickReciveEnergy = (Boolean) sendObject(References.BOOLEAN_ID, 1, reciveEnergy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
-		if (lastTickParticleRate != particleRate) lastTickParticleRate = (Byte) sendObject(References.BYTE_ID, 2, particleRate);
+		if (lastTickActive != active) lastTickActive = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, active, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
+		if (lastTickReciveEnergy != reciveEnergy) lastTickReciveEnergy = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 1, reciveEnergy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
+		if (lastTickParticleRate != particleRate) lastTickParticleRate = (Byte) sendObjectToClient(References.BYTE_ID, 2, particleRate);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		switch (index) {
 			case 0:
 				active = (Boolean) object;
