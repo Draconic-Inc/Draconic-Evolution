@@ -38,21 +38,12 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer
 		bindTexture(texture);
 
 		tessellator.setColorRGBA(255, 255, 255, 255);
-		//tessellator.setBrightness(200);
 
-		//tessellator.setColorOpaque_F(1f, 1f, 1f);
-		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)l1, (float)l2);
-//		GL11.glEnable(GL11.GL_CULL_FACE);
-//		GL11.glDisable(GL11.GL_ALPHA_TEST);
-//		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-//		GL11.glDepthMask(true);
 		drawBase(tessellator);
 		drawWings(tessellator, tile);
 		renderChargingItem(tile);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-//		GL11.glDepthMask(false);
 
 	}
 

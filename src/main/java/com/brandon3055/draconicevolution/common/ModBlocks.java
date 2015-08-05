@@ -46,6 +46,7 @@ public class ModBlocks {
 	public static BlockDE reactorCore;
 	public static BlockDE flowGate;
 	public static BlockDE reactorStabilizer;
+	public static BlockDE reactorEnergyInjector;
 	public static Block safetyFlame;
 
 	public static ItemStack resurrectionStone;
@@ -83,6 +84,7 @@ public class ModBlocks {
 		reactorCore = new ReactorCore();
 		flowGate = new FlowGate();
 		reactorStabilizer = new ReactorStabilizer();
+		reactorEnergyInjector = new ReactorEnergyInjector();
 
 		longRangeDislocator = new LongRangeDislocator();
 		

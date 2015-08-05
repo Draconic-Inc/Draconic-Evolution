@@ -2,11 +2,13 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.componentguis.GUIManual;
+import com.brandon3055.draconicevolution.client.gui.componentguis.GUIReactor;
 import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.common.container.*;
 import com.brandon3055.draconicevolution.common.inventory.InventoryTool;
 import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.gates.TileGate;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,6 +30,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int GUIID_DRACONIC_CHEST = 11;
 	public static final int GUIID_TOOL_CONFIG = 12;
 	public static final int GUIID_FLOW_GATE = 13;
+	public static final int GUIID_REACTOR = 14;
 	public static final int GUIID_CONTAINER_TEMPLATE = 100;
 
 	public GuiHandler() {
@@ -83,6 +86,12 @@ public class GuiHandler implements IGuiHandler {
 				TileEntity containerChest = world.getTileEntity(x, y, z);
 				if (containerChest != null && containerChest instanceof TileDraconiumChest) {
 					return new ContainerDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
+				}
+				break;
+			case GUIID_REACTOR:
+				TileEntity reactor = world.getTileEntity(x, y, z);
+				if (reactor != null && reactor instanceof TileReactorCore) {
+					return new ContainerReactor(player, (TileReactorCore) reactor);
 				}
 				break;
 			case GUIID_TOOL_CONFIG:
@@ -157,6 +166,12 @@ public class GuiHandler implements IGuiHandler {
 				TileEntity containerChest = world.getTileEntity(x, y, z);
 				if (containerChest != null && containerChest instanceof TileDraconiumChest) {
 					return new GUIDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
+				}
+				break;
+			case GUIID_REACTOR:
+				TileEntity reactor = world.getTileEntity(x, y, z);
+				if (reactor != null && reactor instanceof TileReactorCore) {
+					return new GUIReactor(player, (TileReactorCore) reactor, new ContainerReactor(player, (TileReactorCore) reactor));
 				}
 				break;
 			case GUIID_TOOL_CONFIG:

@@ -28,7 +28,7 @@ import java.util.*;
  * Created by Brandon on 8/02/2015.
  */
 public class ResourceHandler {
-	private static ResourceHandler instance = new ResourceHandler();
+	public static ResourceHandler instance = new ResourceHandler();
 	private static ResourceLocation defaultParticles;
 	private static ResourceLocation particles = new ResourceLocation(References.RESOURCESPREFIX + "textures/particle/particles.png");
 	private static Map<String, ResourceLocation> cachedResources = new HashMap<String, ResourceLocation>();
@@ -49,10 +49,11 @@ public class ResourceHandler {
 	{
 		if (downloadThread != null && downloadThread.isFinished)
 		{
-			LogHelper.info("Image Download Finished");
+			if (downloadThread.isReloadRequired()) LogHelper.info("Image Download Finished");
 			downloadStatus = downloadThread.wasSuccessful ? 1 : 2;
 			FMLCommonHandler.instance().bus().unregister(this);
-			addRSPack();
+			addRSPack(event != null);
+			downloadThread = null;
 		}
 	}
 
@@ -73,6 +74,7 @@ public class ResourceHandler {
 		private List<String> imageURLs;
 		private boolean isFinished = false;
 		private boolean wasSuccessful = true;
+		private boolean reloadRequired = false;
 
 		public DownloadThread(List<String> imageURLs)
 		{
@@ -85,8 +87,7 @@ public class ResourceHandler {
 			for (String s : imageURLs)
 			{
 				LogHelper.info("Checking Image: " + s);
-				boolean success = true;
-				if (!checkExistence(s)) downloadImage(s);
+				if (!checkExistence(s)) if (downloadImage(s)) reloadRequired = true;
 				if (checkExistence(s))
 				{
 					try
@@ -99,18 +100,15 @@ public class ResourceHandler {
 					}
 					catch (MalformedURLException e)
 					{
-						success = false;
 						LogHelper.error("Image Read Failed");
 						e.printStackTrace();
 					}
 					catch (IOException e)
 					{
-						success = false;
 						LogHelper.error("Image Read Failed");
 						e.printStackTrace();
 					}
 				}
-				else success = false;
 			}
 
 			isFinished = true;
@@ -165,10 +163,14 @@ public class ResourceHandler {
 		public boolean wasSuccessful() {
 			return wasSuccessful;
 		}
+
+		public boolean isReloadRequired() {
+			return reloadRequired;
+		}
 	}
 
 
-	private static void addRSPack()
+	private static void addRSPack(boolean refreash)
 	{
 		File rspack = new File(getConfigFolder(), "/resources");
 		if (!rspack.exists()) return;
@@ -202,7 +204,7 @@ public class ResourceHandler {
 
 			f.set(Minecraft.getMinecraft(), defaultResourcePacks);
 			LogHelper.info("RS Added");
-			Minecraft.getMinecraft().refreshResources();
+			if (refreash) Minecraft.getMinecraft().refreshResources();
 		}
 		catch (IllegalAccessException e) {
 			e.printStackTrace();

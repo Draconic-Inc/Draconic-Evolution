@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.blocks;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
@@ -26,6 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -52,6 +54,11 @@ public class CustomSpawner extends BlockDE implements IHudDisplayBlock {
 			if (item != null && item.getItem().equals(ModItems.mobSoul))
 			{
 				String name = ItemNBTHelper.getString(item, "Name", "Pig");
+				if ((!ConfigHandler.spawnerListType && Arrays.asList(ConfigHandler.spawnerList).contains(name)) || (ConfigHandler.spawnerListType && !Arrays.asList(ConfigHandler.spawnerList).contains(name))) {
+					if (!world.isRemote)player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[Error] soul disabled in config!"));
+					return false;
+				}
+
 				if (name.equals(spawner.getBaseLogic().entityName)){return false;}
 				spawner.getBaseLogic().entityName = name;
 				spawner.isSetToSpawn = true;

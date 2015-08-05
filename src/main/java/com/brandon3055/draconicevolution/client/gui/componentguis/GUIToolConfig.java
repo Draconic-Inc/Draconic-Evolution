@@ -151,8 +151,8 @@ public class GUIToolConfig extends GUIBase {
 	}
 
 	@Override
-	public void buttonClicked(int id) {
-		super.buttonClicked(id);
+	public void buttonClicked(int id, int button) {
+		super.buttonClicked(id, button);
 
 		if (id == 0 && screenLevel > 0){//button back
 			setLevel(screenLevel - 1);

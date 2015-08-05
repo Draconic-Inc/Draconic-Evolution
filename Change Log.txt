@@ -8,7 +8,14 @@
 -removed old debug code from bow.
 -fixed energy crystal name localisation in hud.
 -crystal binder can now rotate blocks.
--fixed weapon aoe not using power. 
+-fixed weapon aoe not using power.
+-fixed rendering error caused by the energy infuser.
+-fixed draconium dust not smeltable in TE redstone furnace. 
+-fixed game freezing for a few seconds on startup.
+-energy core now stores its energy value as a long (fixes potential issues)
+-added draconium and awakened draconium blocks to the ore dictionary.
+-implemented ore dictionary in recipes.
+-spawner blacklist config now actually works on the spawner as well as opposed to just preventing the soul drops.
 
 ######## 1.0.1-Bugfix-c ########
 -fixed crash when arrow from DE bow hits RFTools force field.
@@ -75,7 +82,7 @@
 -added support for other mods to add recipes to the draconium chest.
 -fixed arrows bouncing off of dragons... oops.
 -non fuel items such as empty buckets can now be extracted from the generator.
--fixed charging exployt with draconium blocks.
+-fixed charging exploit with draconium blocks.
 -added block break event to aoe mining tools.
 -added comparator output to the energy pylon. 
 -changed. Pylons can now be placed up to 16 blocks above and bellow the core.

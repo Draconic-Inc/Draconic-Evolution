@@ -14,10 +14,12 @@ import com.brandon3055.draconicevolution.client.render.item.RenderBow;
 import com.brandon3055.draconicevolution.client.render.item.RenderMobSoul;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.common.CommonProxy;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.IIsSlave;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
@@ -29,6 +31,7 @@ import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirel
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorEnergyInjector;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.common.utills.UpdateChecker;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -41,6 +44,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
@@ -118,13 +122,14 @@ public class ClientProxy extends CommonProxy {
 		KeyBindings.init();
 		registerRenderIDs();
 		registerRendering();
+		ResourceHandler.instance.tick(null);
 	}
 
 	@Override
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		super.postInit(event);
-
+		ResourceHandler.instance.tick(null);
 	}
 
 	public void registerRendering()
@@ -137,6 +142,9 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyCrystal), new RenderCrystal());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorStabilizer), new RenderReactorStabilizer());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorEnergyInjector), new RenderReactorEnergyInjector());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorCore), new RenderReactorCore());
 
 		//ISimpleBlockRendering
 		RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
@@ -158,6 +166,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileWirelessEnergyTransceiver.class, new RenderTileCrystal());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileReactorCore.class, new RenderTileReactorCore());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileReactorStabilizer.class, new RenderTileReactorStabilizer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileReactorEnergyInjector.class, new RenderTileReactorEnergyInjector());
 
 		//Entitys
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
@@ -222,6 +231,34 @@ public class ClientProxy extends CommonProxy {
 		}
 		return beam;
 	}
+
+	@Override
+	public ParticleReactorBeam reactorBeam(TileEntity tile, ParticleReactorBeam oldBeam, boolean render) {
+		if (!tile.getWorldObj().isRemote || !(tile instanceof IIsSlave)) return null;
+		ParticleReactorBeam beam = oldBeam;
+		boolean inRange = ParticleHandler.isInRange(tile.xCoord, tile.yCoord, tile.zCoord, 50);
+
+		if (beam == null || beam.isDead)
+		{
+			if (inRange)
+			{
+				beam = new ParticleReactorBeam(tile);
+
+				FMLClientHandler.instance().getClient().effectRenderer.addEffect(beam);
+			}
+		}
+		else if (!inRange)
+		{
+			beam.setDead();
+			return null;
+		}
+		else
+		{
+			beam.update(render);
+		}
+		return beam;
+	}
+
 
 	public boolean isOp(String paramString)
 	{

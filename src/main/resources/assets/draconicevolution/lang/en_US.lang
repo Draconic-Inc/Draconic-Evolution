@@ -414,6 +414,8 @@ button.de.BaseSafeAOE.name=AOE Safe Mode
 button.de.VerticalAcceleration.name=Vertical Acceleration
 button.de.EffectiveOnSprint.name=Effective while sprinting
 button.de.GogglesOfRevealing.name=Magical Sense
+button.de.reactorStart.txt=Initiate Startup
+button.de.reactorStop.txt=Initiate Shutdown
 
 //Gui ----------------------------------------------------------------------------------------------------------------------------------------
 gui.de.flowGate.name=Flow Control
@@ -425,6 +427,20 @@ gui.de.increment.name=Increment value by
 gui.de.decrement.name=Decrement value by
 gui.de.ctrlAndShift.name=You can use Ctrl and Shift to change the increment amount.
 gui.de.pressOrScroll.name=Press Or Scroll
+
+gui.de.insert.txt=Insert
+gui.de.extract.txt=Extract
+gui.de.fuel.txt=Fuel
+gui.de.coreMass.txt=Core Mass
+gui.de.reactionTemp.txt=Reaction Temperature
+gui.de.fieldStrength.txt=Containment Field Strength
+gui.de.energySaturation.txt=Energy Saturation
+gui.de.fuelConversion.txt=Fuel Conversion Level
+gui.de.status.txt=Status
+gui.de.status0.txt=OFFLINE
+gui.de.status1.txt=STARTING
+gui.de.status2.txt=RUNNING
+gui.de.status3.txt=STOPPING
 
 manual.de.pigmenBloodRage.description=Don't let the pigmen see you eating pork you wont like what happens..
 

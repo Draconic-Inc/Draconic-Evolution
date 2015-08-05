@@ -7,7 +7,9 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -52,5 +54,25 @@ public class ReactorCore extends BlockDE {
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
 		return new TileReactorCore();
+	}
+
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z) {
+		TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore) world.getTileEntity(x, y, z) : null;
+		if (tile != null) tile.onPlaced();
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+		TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore) world.getTileEntity(x, y, z) : null;
+		if (tile != null) return tile.onStructureRightClicked(player);
+		return false;
+	}
+
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int p_149749_6_) {
+		TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore) world.getTileEntity(x, y, z) : null;
+		if (tile != null) tile.onBroken();
+		super.breakBlock(world, x, y, z, p_149749_5_, p_149749_6_);
 	}
 }

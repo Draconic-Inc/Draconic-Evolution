@@ -115,8 +115,8 @@ public class GUIManual extends GUIScrollingBase {
 	}
 
 	@Override
-	public void buttonClicked(int id) {
-		super.buttonClicked(id);
+	public void buttonClicked(int id, int button) {
+		super.buttonClicked(id, button);
 		if (id == 0)
 		{
 			collection.setOnlyGroupEnabled(GR_BACKGROUND);

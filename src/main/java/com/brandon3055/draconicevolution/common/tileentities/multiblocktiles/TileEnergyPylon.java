@@ -329,4 +329,14 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	public double getMaxEnergyStored() {
 		return getMaster() != null ? getMaster().getMaxEnergyStored() : 0D;
 	}
+
+	@Override
+	public long getExtendedStorage() {
+		return getMaster() != null ? getMaster().getEnergyStored() : 0L;
+	}
+
+	@Override
+	public long getExtendedCapacity() {
+		return getMaster() != null ? getMaster().getMaxEnergyStored() : 0L;
+	}
 }

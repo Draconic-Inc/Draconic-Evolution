@@ -4,6 +4,7 @@ package com.brandon3055.draconicevolution.common.tileentities;
  * Created by Brandon on 5/07/2014.
  */
 
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
@@ -17,6 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import java.util.Arrays;
 
 public abstract class CustomSpawnerBaseLogic {
 	/**
@@ -191,6 +194,11 @@ public abstract class CustomSpawnerBaseLogic {
 	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
 		this.entityName = par1NBTTagCompound.getString("EntityId");
 		this.spawnDelay = par1NBTTagCompound.getShort("Delay");
+		if ((!ConfigHandler.spawnerListType && Arrays.asList(ConfigHandler.spawnerList).contains(this.entityName)) || (ConfigHandler.spawnerListType && !Arrays.asList(ConfigHandler.spawnerList).contains(this.entityName))) {
+			this.entityName = "Pig";
+			((TileCustomSpawner)getSpawnerWorld().getTileEntity(getSpawnerX(), getSpawnerY(), getSpawnerZ())).isSetToSpawn = false;
+		}
+
 		powered = par1NBTTagCompound.getBoolean("Powered");
 		spawnSpeed = par1NBTTagCompound.getShort("Speed");
 		requiresPlayer = par1NBTTagCompound.getBoolean("RequiresPlayer");

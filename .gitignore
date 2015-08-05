@@ -5,6 +5,7 @@
 
 ## ForgeGradle
 /run
+/runClean
 
 ## eclipse
 /eclipse

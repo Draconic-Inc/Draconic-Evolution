@@ -5,9 +5,11 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -60,8 +62,19 @@ public class ReactorStabilizer extends BlockDE {
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
 		int d = Utills.determineOrientation(x, y, z, entity);
-		TileReactorStabilizer tile = (TileReactorStabilizer)world.getTileEntity(x, y, z);
-		tile.facingDirection = ForgeDirection.getOrientation(d).getOpposite().ordinal();
-		tile.onPlaced();
+		TileReactorStabilizer tile = world.getTileEntity(x, y, z) instanceof TileReactorStabilizer ? (TileReactorStabilizer)world.getTileEntity(x, y, z) : null;
+		if (tile != null){
+			tile.facingDirection = ForgeDirection.getOrientation(d).getOpposite().ordinal();
+			tile.onPlaced();
+		}
+	}
+
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int p_149749_6_) {
+		TileReactorStabilizer tile = world.getTileEntity(x, y, z) instanceof TileReactorStabilizer ? (TileReactorStabilizer)world.getTileEntity(x, y, z) : null;
+		TileEntity core = null;
+		if (tile != null) core = tile.getMaster().getTileEntity(world);
+		super.breakBlock(world, x, y, z, p_149749_5_, p_149749_6_);
+		if (core instanceof TileReactorCore) ((TileReactorCore) core).validateStructure();
 	}
 }

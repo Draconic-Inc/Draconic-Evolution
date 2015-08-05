@@ -146,7 +146,7 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	@SuppressWarnings("unchecked")
 	public boolean killNextEntity() {
 		if (worldObj.isRemote) return false;
-		if (fakePlayer == null) fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.randomUUID(), "[Draconic-Evolution]"));
+		if (fakePlayer == null) fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
 		killBox = AxisAlignedBB.getBoundingBox(centreX - 4.5, centreY - 4.5, centreZ - 4.5, centreX + 4.5, centreY + 4.5, centreZ + 4.5);
 
 		killList = worldObj.getEntitiesWithinAABB(EntityLiving.class, killBox);

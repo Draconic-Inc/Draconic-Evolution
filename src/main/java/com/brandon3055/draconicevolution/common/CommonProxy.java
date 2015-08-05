@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
 import com.brandon3055.draconicevolution.common.achievements.Achievements;
 import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
@@ -24,6 +25,7 @@ import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluidGate
 import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluxGate;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.*;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorEnergyInjector;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
@@ -35,6 +37,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
@@ -52,6 +56,9 @@ public class CommonProxy {
 		initializeNetwork();
 
 		if (ModBlocks.isEnabled(ModBlocks.draconiumOre)) OreDictionary.registerOre("oreDraconium", ModBlocks.draconiumOre);
+		if (ModBlocks.isEnabled(ModBlocks.draconiumBlock)) OreDictionary.registerOre("blockDraconium", new ItemStack(ModBlocks.draconiumBlock));
+		if (ModBlocks.isEnabled(ModBlocks.draconicBlock)) OreDictionary.registerOre("blockDraconiumAwakened", new ItemStack(ModBlocks.draconicBlock));
+
 		if (ModItems.isEnabled(ModItems.draconiumIngot)) OreDictionary.registerOre("ingotDraconium", ModItems.draconiumIngot);
 		if (ModItems.isEnabled(ModItems.draconiumDust)) OreDictionary.registerOre("dustDraconium", ModItems.draconiumDust);
 		if (ModItems.isEnabled(ModItems.draconicIngot)) OreDictionary.registerOre("ingotDraconiumAwakened", ModItems.draconicIngot);
@@ -150,6 +157,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileFluxGate.class, References.RESOURCESPREFIX + "TileFluxGate");
 		GameRegistry.registerTileEntity(TileFluidGate.class, References.RESOURCESPREFIX + "TileFluidGate");
 		GameRegistry.registerTileEntity(TileReactorStabilizer.class, References.RESOURCESPREFIX + "TileReactorStabilizer");
+		GameRegistry.registerTileEntity(TileReactorEnergyInjector.class, References.RESOURCESPREFIX + "TileReactorEnergyInjector");
 		if (DraconicEvolution.debug) {
 			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
@@ -189,7 +197,9 @@ public class CommonProxy {
 		return null;
 	}
 
-
+	public ParticleReactorBeam reactorBeam(TileEntity tile, ParticleReactorBeam oldBeam, boolean render) {
+		return null;
+	}
 
 	public void spawnParticle(Object particle, int range)
 	{

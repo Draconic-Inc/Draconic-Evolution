@@ -226,4 +226,6 @@ public class ModelReactorStabilizerRing extends ModelBase {
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
+
+
 }
