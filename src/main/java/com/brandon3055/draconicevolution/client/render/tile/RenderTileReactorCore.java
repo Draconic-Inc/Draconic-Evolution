@@ -47,12 +47,12 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
 
 
 	public void renderReactorCore(TileReactorCore tile, float partialTick) {
-		float rotation = tile.renderRotation + (partialTick * 0.2F);
-		double ff = 1;
+		float rotation = (tile.renderRotation * 0.2F) + (partialTick * (tile.renderSpeed * 0.2F));
+		double ff = tile.maxFieldCharge > 0 ? tile.fieldCharge / tile.maxFieldCharge : 0;
 		double r = ff < 0.5 ? 1 - (ff*2) : 0;
 		double g = ff > 0.5 ? (ff-0.5)*2 : 0;
 		double b = ff * 2;
-		double a = ff < 0.1 ? (ff * 10) + 0.5 : 1;
+		double a = ff < 0.1 ? (ff * 10) : 1;
 
 		//Pre Render
 		GL11.glPushMatrix();
@@ -62,15 +62,15 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
 
 		//Render inner
-		ResourceHandler.bindResource("textures/models/reactorCore.png");
-		ResourceHandler.bindResource("textures/blocks/draconic_block_blank.png");
 		if (tile.reactorFuel + tile.convertedFuel < 144){
+			ResourceHandler.bindResource("textures/blocks/draconic_block_blank.png");
 			GL11.glPushMatrix();
 			GL11.glScaled(0.1, 0.1, 0.1);
 			reactorModel.renderAll();
 			GL11.glPopMatrix();
 		}
 
+		ResourceHandler.bindResource("textures/models/reactorCore.png");
 		GL11.glRotatef(rotation, 0.5F, 1F, 0.5F);
 		GL11.glScaled(0.5, 0.5, 0.5);
 		double r3 = tile.getCoreDiameter();
@@ -82,6 +82,13 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glAlphaFunc(GL11.GL_GREATER, 0F);
+
+		if (tile.reactionTemperature < 2000)
+		{
+			ResourceHandler.bindResource("textures/blocks/draconic_block_blank.png");
+			if (tile.reactionTemperature > 1000) GL11.glColor4d(1F, 1F, 1F, 1D - ((tile.reactionTemperature-1000) / 1000D));
+			reactorModel.renderAll();
+		}
 
 		//Render Outer
 		ResourceHandler.bindResource("textures/models/reactorShieldPlate.png");

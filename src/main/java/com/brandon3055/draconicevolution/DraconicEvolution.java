@@ -36,7 +36,7 @@ public class DraconicEvolution {
 	public static final String networkChannelName = "DEvolutionNC";
 	public static SimpleNetworkWrapper network;
 
-	public static boolean debug = false;//todo
+	public static boolean debug = true;//todo
 
 	public static Enchantment reaperEnchant;
 	

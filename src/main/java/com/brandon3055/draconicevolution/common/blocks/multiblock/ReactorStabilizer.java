@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -37,6 +38,18 @@ public class ReactorStabilizer extends BlockDE {
 	@Override
 	public int getRenderType() {
 		return -1;
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+		TileReactorStabilizer tile = world.getTileEntity(x, y, z) instanceof TileReactorStabilizer ? (TileReactorStabilizer)world.getTileEntity(x, y, z) : null;
+		TileEntity core = null;
+		if (tile != null) core = tile.getMaster().getTileEntity(world);
+		if (core instanceof TileReactorCore){
+			((TileReactorCore) core).onStructureRightClicked(player);
+			return true;
+		}
+		return false;
 	}
 
 	@Override

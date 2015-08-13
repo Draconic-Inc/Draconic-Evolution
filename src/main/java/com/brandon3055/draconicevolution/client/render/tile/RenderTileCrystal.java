@@ -23,11 +23,8 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 	private static ResourceLocation texrure = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalPurpleTransparent.png");
 	private static ResourceLocation crystalBlue = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalBlue.png");
 	private static ResourceLocation crystalBlueAlpha = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalBlueAlpha.png");
-	private static ResourceLocation crystalPurple = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalPurple.png");
-	private static ResourceLocation crystalPurpleAlpha = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalPurpleAlpha.png");
 	private static ResourceLocation crystalRed = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalRed.png");
 	private static ResourceLocation crystalRedAlpha = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalRedAlpha.png");
-	private static ResourceLocation beamTexture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyBeam.png");
 
 
 	private IModelCustom modelCrystal;
@@ -120,8 +117,8 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
 		GL11.glTranslated(0, -1, 0);
 
-		//GL11.glDisable(GL11.GL_LIGHTING); //todo disable?
-		RenderHelper.disableStandardItemLighting();
+		GL11.glDisable(GL11.GL_LIGHTING);
+//		RenderHelper.disableStandardItemLighting();
 		GL11.glEnable(GL11.GL_BLEND);
 		float innerLight = 100f;
 		float outerLight = 140f + ClientEventHandler.energyCrystalAlphaValue * 40F;
@@ -155,8 +152,9 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
 		//--- Post Render ---//
 		GL11.glDisable(GL11.GL_BLEND);
-		RenderHelper.enableStandardItemLighting();
-		GL11.glAlphaFunc(GL11.GL_GREATER, 0.0f);
+//		RenderHelper.enableStandardItemLighting();
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
 		GL11.glPopMatrix();
 	}
 }

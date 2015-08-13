@@ -105,11 +105,11 @@ public class GUIFlowGate extends GuiScreen {
 		boolean ctrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
 		int i = org.lwjgl.input.Mouse.getEventDWheel();
 
-		if (GuiHelper.isInRect(guiLeft + 20, guiTop + 20, 18, 18, x, y)){ }
-		if (GuiHelper.isInRect(guiLeft + 159, guiTop + 20, 18, 18, x, y)){ }
+		if (i != 0 && GuiHelper.isInRect(guiLeft + 20, guiTop + 20, 18, 18, x, y)){ tile.incrementFlow(1, ctrl, shift, i < 0, 0); }
+		if (i != 0 && GuiHelper.isInRect(guiLeft + 159, guiTop + 20, 18, 18, x, y)){ tile.incrementFlow(1, ctrl, shift, i > 0, 0); }
 
-		if (GuiHelper.isInRect(guiLeft + 20, guiTop + 50, 18, 18, x, y)){ }
-		if (GuiHelper.isInRect(guiLeft + 159, guiTop + 50, 18, 18, x, y)){ }
+		if (i != 0 && GuiHelper.isInRect(guiLeft + 20, guiTop + 50, 18, 18, x, y)){ tile.incrementFlow(0, ctrl, shift, i < 0, 0); }
+		if (i != 0 && GuiHelper.isInRect(guiLeft + 159, guiTop + 50, 18, 18, x, y)){ tile.incrementFlow(0, ctrl, shift, i > 0, 0); }
 
 		super.handleMouseInput();
 	}

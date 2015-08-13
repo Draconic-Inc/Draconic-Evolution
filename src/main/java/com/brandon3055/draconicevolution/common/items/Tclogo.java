@@ -1,8 +1,13 @@
 package com.brandon3055.draconicevolution.common.items;
 
+import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.ReactorExplosion;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
@@ -10,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -97,6 +103,21 @@ public class Tclogo extends ItemDE {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+
+		if (world.isRemote){
+			MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
+			LogHelper.info(mop);
+			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ, 100));
+			//if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 10F));
+		}
+		else {
+			MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
+			//LogHelper.info(mop);
+			//FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ));
+			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 10F));
+		}
+
+		if (1==1) return stack;
 		/*if (player instanceof EntityPlayerMP) {
 			for (int i = 0; i < 10; i++)
 			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(player.posX + 1, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);

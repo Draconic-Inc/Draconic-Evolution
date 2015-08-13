@@ -2,19 +2,24 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Brandon on 27/07/2014.
  */
 @SideOnly(Side.CLIENT)
-public final class Particles {
+public class Particles {
 
 	public static class EnergyBeamParticle extends EntityFX {
 
@@ -633,6 +638,142 @@ public final class Particles {
 			ResourceHandler.bindDefaultParticles();
 			tesselator.startDrawingQuads();
 
+		}
+	}
+
+	public static class ReactorExplosionParticle extends EntityFX
+	{
+		public static IModelCustom uvSphere;
+		public double size = 0;
+		public double maxSize;
+
+		public ReactorExplosionParticle(World world, double x, double y, double z, double maxSize) {
+			super(world, x, y, z, 0D, 0D, 0D);
+			uvSphere = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+			this.maxSize = maxSize;
+		}
+
+		@Override
+		public void onUpdate() {
+			//super.onUpdate();
+
+			size++;
+			if (size > maxSize * 1.2) setDead();
+
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void renderParticle(Tessellator tessellator, float partialTick, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+
+			tessellator.draw();
+			GL11.glPushMatrix();
+			float xx = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTick - interpPosX);
+			float yy = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTick - interpPosY);
+			float zz = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTick - interpPosZ);
+			GL11.glTranslated((double)xx + 0.5, (double)yy + 0.5, (double)zz + 0.5);
+
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
+			ResourceHandler.bindResource("textures/models/white.png");
+			double s = size + partialTick * 1F;
+			GL11.glScaled(s, s/4, s);
+
+
+			//Leading edge
+			GL11.glPushMatrix();
+			float a = (float)Math.max(0D, 0.3D - (size / (maxSize)));
+			GL11.glColor4f(1F, 0.4F, 0F, a);
+			GL11.glScaled(5, 10, 5);
+			if (a > 0)uvSphere.renderAll();
+			GL11.glPopMatrix();
+
+			//Disk
+			GL11.glPushMatrix();
+			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+			GL11.glColor4f(1F, 0.4F, 0F, a);
+			GL11.glScaled(2, 0.2, 2);
+			if (a > 0)uvSphere.renderAll();
+			GL11.glPopMatrix();
+
+			//Synced edge
+			GL11.glPushMatrix();
+			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+			GL11.glColor4f(1F, 0.4F, 0F, a);
+			if (a > 0)uvSphere.renderAll();
+			GL11.glPopMatrix();
+
+			GL11.glScalef(1.5F, 1.5F, 1.5F);
+
+			//Inner edges
+			GL11.glPushMatrix();
+			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+			GL11.glColor4f(1F, 0.4F, 0F, a);
+			GL11.glScaled(0.8, 0.6, 0.8);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glColor4f(1F, 0.5F, 0.1F, a);
+			GL11.glScaled(0.8, 0.7, 0.8);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glColor4f(1F, 0.6F, 0.25F, a);
+			GL11.glScaled(0.7, 0.9, 0.7);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glColor4f(1F, 0.7F, 0.4F, a);
+			GL11.glScaled(0.6, 0.9, 0.6);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glColor4f(1F, 0.8F, 0.55F, a);
+			GL11.glScaled(0.5, 0.9, 0.5);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glPopMatrix();
+
+			for (int i = 0; i < 10; i++)
+			{
+				GL11.glScalef(0.95F, 0.95F, 0.95F);
+				GL11.glPushMatrix();
+				a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+				GL11.glColor4f(1F, 0.4F, 0F, a);
+				GL11.glScaled(0.8, 0.6, 0.8);
+				if (a > 0)uvSphere.renderAll();
+
+				GL11.glColor4f(1F, 0.5F, 0.1F, a);
+				GL11.glScaled(0.8, 0.7, 0.8);
+				if (a > 0)uvSphere.renderAll();
+
+				GL11.glColor4f(1F, 0.6F, 0.25F, a);
+				GL11.glScaled(0.7, 0.9, 0.7);
+				if (a > 0)uvSphere.renderAll();
+
+				GL11.glColor4f(1F, 0.7F, 0.4F, a);
+				GL11.glScaled(0.6, 0.9, 0.6);
+				if (a > 0)uvSphere.renderAll();
+
+				GL11.glColor4f(1F, 0.8F, 0.55F, a);
+				GL11.glScaled(0.5, 0.9, 0.5);
+				if (a > 0)uvSphere.renderAll();
+				GL11.glPopMatrix();
+			}
+
+
+
+
+
+
+
+
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glPopMatrix();
+			ResourceHandler.bindDefaultParticles();
+			tessellator.startDrawingQuads();
 		}
 	}
 }

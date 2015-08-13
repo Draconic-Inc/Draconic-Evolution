@@ -158,7 +158,7 @@ public class ModelReactorEnergyInjector extends ModelBase {
     public void render(Entity entity, float brightness, float f1, float f2, float f3, float f4, float f5) {
 		this.support1.render(f5);
 		this.BasePlate.render(f5);
-		this.coreSupports.render(f5);
+		//this.coreSupports.render(f5);
 
 		float lastBrightnessX = OpenGlHelper.lastBrightnessX;
 		float lastBrightnessY = OpenGlHelper.lastBrightnessY;

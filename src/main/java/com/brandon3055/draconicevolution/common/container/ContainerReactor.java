@@ -4,6 +4,8 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.inventory.GenericInventory;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -32,7 +34,7 @@ public class ContainerReactor extends ContainerDataSync {
 
 		@Override
 		public int getInventoryStackLimit() {
-			return super.getInventoryStackLimit();
+			return 1;//super.getInventoryStackLimit();
 		}
 
 		@Override
@@ -47,10 +49,11 @@ public class ContainerReactor extends ContainerDataSync {
 	};
 
 	//Syncing		//todo sort out syncing
-	public int LTReactorFuel = -1;
+	public int LTConversionUnit = -1;
 	public int LTReactionIntensity = -1;
 	public int LTMaxReactIntensity = -1;
 	public int LTFieldStrength = -1;
+	public int LTMaxFieldStrength = -1;
 	public int LTEnergySaturation = -1;
 	public int LTMaxEnergySaturation = -1;
 	public int LTFuelConversion = -1;
@@ -71,9 +74,18 @@ public class ContainerReactor extends ContainerDataSync {
 		}
 
 		if (reactor.reactorState == TileReactorCore.STATE_OFFLINE){
-			addSlotToContainer(new SlotInsert(ioSlots, 0, 15, 140));
+			addSlotToContainer(new SlotInsert(ioSlots, 0, 15, 140, reactor));
 			addSlotToContainer(new SlotExtract(ioSlots, 1, 217, 140));
 		}
+	}
+
+	@Override
+	public void onContainerClosed(EntityPlayer entityPlayer) {
+		if (ioSlots.getStackInSlot(1) != null && !player.worldObj.isRemote) {
+			entityPlayer.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, entityPlayer.posX, player.posY, player.posZ, ioSlots.getStackInSlot(1)));
+			ioSlots.setInventorySlotContents(1, null);
+		}
+		super.onContainerClosed(entityPlayer);
 	}
 
 	@Override
@@ -83,28 +95,30 @@ public class ContainerReactor extends ContainerDataSync {
 
 	@Override
 	public void detectAndSendChanges() { //todo check what values are being synced by the tile and remove them from here
-		if (reactor.reactorFuel != LTReactorFuel)					LTReactorFuel = 		(Integer) sendObjectToClient(null, 0, reactor.reactorFuel);
-		if ((int)reactor.reactionTemperature != LTReactionIntensity)LTReactionIntensity = 	(Integer) sendObjectToClient(null, 1, (int) reactor.reactionTemperature);
-		if ((int)reactor.maxReactTemperature != LTMaxReactIntensity)LTMaxReactIntensity = 	(Integer) sendObjectToClient(null, 2, (int) reactor.maxReactTemperature);
-		if ((int)reactor.fieldCharge != LTFieldStrength) 			LTFieldStrength = 		(Integer) sendObjectToClient(null, 3, (int) reactor.fieldCharge);
-		if (reactor.energySaturation != LTEnergySaturation) 		LTEnergySaturation = 	(Integer) sendObjectToClient(null, 4, reactor.energySaturation);
-		if (reactor.maxEnergySaturation != LTMaxEnergySaturation)	LTMaxEnergySaturation = (Integer) sendObjectToClient(null, 5, reactor.maxEnergySaturation);
-		if (reactor.convertedFuel != LTFuelConversion) 				LTFuelConversion = 		(Integer) sendObjectToClient(null, 6, reactor.convertedFuel);
+		if (reactor.conversionUnit != LTConversionUnit)					LTConversionUnit = 		(Integer) sendObjectToClient(null, 0, (int)(reactor.conversionUnit*100));
+//		if ((int)reactor.reactionTemperature != LTReactionIntensity)LTReactionIntensity = 	(Integer) sendObjectToClient(null, 1, (int) reactor.reactionTemperature);
+//		if ((int)reactor.maxReactTemperature != LTMaxReactIntensity)LTMaxReactIntensity = 	(Integer) sendObjectToClient(null, 2, (int) reactor.maxReactTemperature);
+//		if ((int)reactor.fieldCharge != LTFieldStrength) 			LTFieldStrength = 		(Integer) sendObjectToClient(null, 3, (int) reactor.fieldCharge);
+//		if ((int)reactor.maxFieldCharge != LTMaxFieldStrength) 		LTMaxFieldStrength = 	(Integer) sendObjectToClient(null, 7, (int) reactor.maxFieldCharge);
+//		if (reactor.energySaturation != LTEnergySaturation) 		LTEnergySaturation = 	(Integer) sendObjectToClient(null, 4, reactor.energySaturation);
+//		if (reactor.maxEnergySaturation != LTMaxEnergySaturation)	LTMaxEnergySaturation = (Integer) sendObjectToClient(null, 5, reactor.maxEnergySaturation);
+//		if (reactor.convertedFuel != LTFuelConversion) 				LTFuelConversion = 		(Integer) sendObjectToClient(null, 6, reactor.convertedFuel);
 
 		super.detectAndSendChanges();
 	}
 
 	@Override
 	public void receiveSyncData(int index, int value) {
-		if (index == 0) reactor.reactorFuel = value;
-		else if (index == 1) reactor.reactionTemperature = value;
-		else if (index == 2) reactor.maxReactTemperature = value;
-		else if (index == 3) reactor.fieldCharge = value;
-		else if (index == 4) reactor.energySaturation = value;
-		else if (index == 5) reactor.maxEnergySaturation = value;
-		else if (index == 6) reactor.convertedFuel = value;
-		else if (index == 20){
-			reactor.processButtonPress(value == 0, value == 1);
+		if (index == 0) reactor.conversionUnit = (double)value/100D;
+//		else if (index == 1) reactor.reactionTemperature = value;
+//		else if (index == 2) reactor.maxReactTemperature = value;
+//		else if (index == 3) reactor.fieldCharge = value;
+//		else if (index == 4) reactor.energySaturation = value;
+//		else if (index == 5) reactor.maxEnergySaturation = value;
+//		else if (index == 6) reactor.convertedFuel = value;
+//		else if (index == 7) reactor.maxFieldCharge = value;
+		if (index == 20){
+			reactor.processButtonPress(value);
 		}
 	}
 
@@ -134,19 +148,28 @@ public class ContainerReactor extends ContainerDataSync {
 	}
 
 	public static class SlotInsert extends Slot {
+		private int numberAllowed = -1;
+		private TileReactorCore reactor;
 
-		public SlotInsert(IInventory iInventory, int iSlot, int x, int y) {
+		public SlotInsert(IInventory iInventory, int iSlot, int x, int y, TileReactorCore reactor) {
 			super(iInventory, iSlot, x, y);
+			this.reactor = reactor;
 		}
 
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			return stack != null && (stack.getItem() == ModItems.draconicIngot || stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock));
+			if (stack == null) return false;
+			else if (stack.getItem() == ModItems.draconicIngot) numberAllowed = (10368 - (reactor.reactorFuel + reactor.convertedFuel)) / 144;
+			else if (stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock)) numberAllowed = (10368 - (reactor.reactorFuel + reactor.convertedFuel)) / 1296;
+			//	(stack.getItem() == ModItems.draconicIngot || stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock));
+			LogHelper.info(numberAllowed);
+			return numberAllowed > 0;
 		}
 
 		@Override
 		public int getSlotStackLimit() {//todo add the fuel limit
-			return 64;
+			LogHelper.info(numberAllowed);
+			return numberAllowed;
 		}
 	}
 

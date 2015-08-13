@@ -235,7 +235,7 @@ public class ToolHandler {
 
 	}
 
-	public static MovingObjectPosition raytraceFromEntity(World world, Entity player, double range) {
+	public static MovingObjectPosition raytraceFromEntity(World world, Entity player, double range) {//todo move to core and make the range work as expected
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
@@ -251,7 +251,7 @@ public class ToolHandler {
 		float f7 = f4 * f5;
 		float f8 = f3 * f5;
 		double d3 = range;
-		if (player instanceof EntityPlayerMP) {
+		if (player instanceof EntityPlayerMP && range < 10) {
 			d3 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
 		}
 		Vec3 vec31 = vec3.addVector((double) f7 * d3, (double) f6 * d3, (double) f8 * d3);

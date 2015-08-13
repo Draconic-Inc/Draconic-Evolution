@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor;
 
 import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.IIsSlave;
@@ -33,13 +34,33 @@ public class TileReactorStabilizer extends TileEntity implements IIsSlave , IEne
 		tick++;
 
 		if (worldObj.isRemote) {
+			if (!(masterLocation.getTileEntity(worldObj) instanceof TileReactorCore)){
+				coreSpeed = 0;
+				ringSpeed = 0;
+				modelIllumination = 0;
+				return;
+			}
+			TileReactorCore core = (TileReactorCore)masterLocation.getTileEntity(worldObj);
 			coreRotation += coreSpeed;
 			ringRotation += ringSpeed;
-			coreSpeed = 30F;
-			ringSpeed = 5F;
-			modelIllumination = 1F;
+			coreSpeed = 30F * core.renderSpeed;
+			ringSpeed = 5F * core.renderSpeed;
+			modelIllumination = core.renderSpeed;
 			if (isValid) beam = DraconicEvolution.proxy.reactorBeam(this, beam, true);
+			return;
 		}
+
+		TileEntity master = masterLocation.getTileEntity(worldObj);
+		if (master instanceof TileReactorCore && ((TileReactorCore) master).reactorState == TileReactorCore.STATE_ONLINE){
+			ForgeDirection back = ForgeDirection.getOrientation(facingDirection).getOpposite();
+			TileEntity output = worldObj.getTileEntity(xCoord + back.offsetX, yCoord + back.offsetY, zCoord + back.offsetZ);
+			if (output instanceof IEnergyReceiver)
+			{
+				int sent = ((IEnergyReceiver) output).receiveEnergy(back.getOpposite(), Math.min(((TileReactorCore) master).energySaturation, ((TileReactorCore) master).maxEnergySaturation / 100), false);
+				((TileReactorCore) master).energySaturation -= sent;
+			}
+		}
+
 	}
 
 	public void onPlaced() {
@@ -148,6 +169,10 @@ public class TileReactorStabilizer extends TileEntity implements IIsSlave , IEne
 		return from == ForgeDirection.getOrientation(facingDirection).getOpposite();
 	}
 
+	@Override
+	public double getMaxRenderDistanceSquared() {
+		return 40960.0D;
+	}
 //	@SideOnly(Side.CLIENT)
 //	@Override
 //	public AxisAlignedBB getRenderBoundingBox() {
