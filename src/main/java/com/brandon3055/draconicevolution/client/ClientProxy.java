@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.block.*;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragon;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragonHeart;
+import com.brandon3055.draconicevolution.client.render.item.RenderArmor;
 import com.brandon3055.draconicevolution.client.render.item.RenderBow;
 import com.brandon3055.draconicevolution.client.render.item.RenderMobSoul;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
@@ -138,6 +139,16 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBow());
 		MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new RenderBow());
 		MinecraftForgeClient.registerItemRenderer(ModItems.mobSoul, new RenderMobSoul());
+
+		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernHelm, new RenderArmor(ModItems.wyvernHelm));
+		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernChest, new RenderArmor(ModItems.wyvernChest));
+		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernLeggs, new RenderArmor(ModItems.wyvernLeggs));
+		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBoots, new RenderArmor(ModItems.wyvernBoots));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicHelm, new RenderArmor(ModItems.draconicHelm));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicChest, new RenderArmor(ModItems.draconicChest));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicLeggs, new RenderArmor(ModItems.draconicLeggs));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicBoots, new RenderArmor(ModItems.draconicBoots));
+
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.draconiumChest), new RenderDraconiumChest());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser());

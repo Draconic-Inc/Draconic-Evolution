@@ -536,6 +536,19 @@
     ]
   },
   {
+    "name":"tile.draconicevolution:flowGate",
+    "nameL":"Flow Gates",
+    "images":[],
+    "content":
+    [
+      "Gates come in two different flavours flux and fluid. And what they do is simply allow you to control the maximum amount of Redstone Flux or Fluid that can pass through them each tick",
+      "These devices are very simple to use. They have an input face (blue) and an output face (orange). When you place them the input face will always point towards you similar to the way you place a piston. You can also rotate them with a wrench",
+      "The GUI is very simple with just 2 values for you to adjust. \"Redstone Signal High\" is the flow when a redstone signal of 15 is applied. \"Redstone Signal Low\" is the flow when a no redstone signal is applied. You can apply a partial signal to vary the actual flow rate between these two numbers. The \"Flow\" indicator at the bottom shows how much energy/fluid is currently able to flow through the device as determined by the received redstone signal.",
+      "[c]tile.draconicevolution:flowGate:0",
+      "[c]tile.draconicevolution:flowGate:6"
+    ]
+  },
+  {
     "name":"tile.draconicevolution:dissEnchanter",
     "images":[],
     "content":

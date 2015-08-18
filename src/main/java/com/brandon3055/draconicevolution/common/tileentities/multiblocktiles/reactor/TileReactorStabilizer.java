@@ -86,6 +86,7 @@ public class TileReactorStabilizer extends TileEntity implements IIsSlave , IEne
 					((TileReactorCore) tile).stabilizerLocations.add(new TileLocation(xCoord, yCoord, zCoord));
 					masterLocation.set(x, y, z);
 					isValid = true;
+					((TileReactorCore) tile).validateStructure();
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 					return true;
 				}else {

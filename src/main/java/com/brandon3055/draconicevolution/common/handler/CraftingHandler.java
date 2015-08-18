@@ -18,6 +18,8 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public class CraftingHandler {
 	public static void init()
 	{
+		//todo In 1.8-1.9 when the feature modals are implemented add a dependency system to automatically disable a recipe if a required component is disabled
+
 		ItemStack mobSoul = new ItemStack(ModItems.mobSoul);
 		ItemNBTHelper.setString(mobSoul, "Name", "Any");
 
@@ -104,8 +106,15 @@ public class CraftingHandler {
 		addOre(getStack(ModBlocks.energyCrystal, 1, 4), "PGP", "ECE", "PGP", 'P', Items.ender_pearl, 'G', ModBlocks.particleGenerator, 'E', Items.ender_eye, 'C', getStack(ModBlocks.energyCrystal, 1, 0));
 		addOre(getStack(ModBlocks.energyCrystal, 1, 5), "PGP", "ECE", "PGP", 'P', Items.ender_pearl, 'G', ModBlocks.particleGenerator, 'E', Items.ender_eye, 'C', getStack(ModBlocks.energyCrystal, 1, 1));
 
+		if (Loader.isModLoaded("ThermalDynamics")) {
+			addOre(getStack(ModBlocks.flowGate, 1, 0), "ICI", "RSR", "ICI", 'I', "ingotDraconium", 'C', getStack(ModItems.draconicCore, 1, 0), 'R', Items.comparator, 'S', new ItemStack(GameRegistry.findBlock("ThermalDynamics", "ThermalDynamics_0"), 1, 1));
+			addOre(getStack(ModBlocks.flowGate, 1, 6), "ICI", "RSR", "ICI", 'I', "ingotDraconium", 'C', getStack(ModItems.draconicCore, 1, 0), 'R', Items.comparator, 'S', new ItemStack(GameRegistry.findBlock("ThermalDynamics", "ThermalDynamics_16"), 1, 2));
+		}else {
+			addOre(getStack(ModBlocks.flowGate, 1, 0), "ICI", "RSR", "ICI", 'I', "ingotDraconium", 'C', getStack(ModItems.draconicCore, 1, 0), 'R', Items.comparator, 'S', getStack(ModItems.draconiumEnergyCore, 1, 0));
+			addOre(getStack(ModBlocks.flowGate, 1, 6), "ICI", "RSR", "ICI", 'I', "ingotDraconium", 'C', getStack(ModItems.draconicCore, 1, 0), 'R', Items.comparator, 'S', Items.bucket);
+		}
 
-	//Tools
+		//Tools
 		addOre(ModItems.teleporterMKII, "IEI", "ETE", "IWI", 'I', "ingotDraconium", 'E', Items.ender_pearl, 'T', ModItems.teleporterMKI, 'W', ModItems.wyvernCore);
 		addOre(ModItems.teleporterMKI, "CSC", "SMS", "CSC", 'C', Items.blaze_powder, 'S', "dustDraconium", 'M', Items.ender_eye);
 		addOre(getStack(ModItems.safetyMatch, 1, 1000), " O ", " S ", "   ", 'O', "dyeOrange", 'S', "stickWood");

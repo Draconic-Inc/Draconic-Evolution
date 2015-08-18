@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 /**
@@ -60,6 +61,12 @@ public class ReactorCore extends BlockDE {
 	public void onBlockAdded(World world, int x, int y, int z) {
 		TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore) world.getTileEntity(x, y, z) : null;
 		if (tile != null) tile.onPlaced();
+	}
+
+	@Override
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World p_149633_1_, int x, int y, int z) {
+
+		return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 1, 1);//super.getSelectedBoundingBoxFromPool(p_149633_1_, x, y, z);
 	}
 
 	@Override

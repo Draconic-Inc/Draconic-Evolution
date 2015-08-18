@@ -655,8 +655,8 @@ public class Particles {
 
 		@Override
 		public void onUpdate() {
-			//super.onUpdate();
-
+			if (particleAge == 3) worldObj.playSound(posX, posY, posZ, "DraconicEvolution:fusionExplosion", 100F, 1F, false);
+			particleAge++;
 			size++;
 			if (size > maxSize * 1.2) setDead();
 

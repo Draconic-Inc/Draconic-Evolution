@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.ReactorExplosion;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
@@ -100,21 +101,30 @@ public class Tclogo extends ItemDE {
         return par1ItemStack;
     }
 
+	@SideOnly(Side.CLIENT)
+	private void particle(World world, EntityPlayer player){
+		MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
+		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ, 100));
+
+	}
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 
+		//world.playSound(player.posX, player.posY, player.posZ, "DraconicEvolution:fusionExplosion", 1F, 1F, false);
+		LogHelper.info(GameRegistry.findBlock("ThermalDynamics", "ThermalDynamics_0"));
+		if (player.inventory.getStackInSlot(0) != null) LogHelper.info(GameRegistry.findUniqueIdentifierFor(player.inventory.getStackInSlot(0).getItem()));
+
 		if (world.isRemote){
-			MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
-			LogHelper.info(mop);
-			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ, 100));
-			//if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 10F));
+			particle(world, player);
+									//if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 10F));
 		}
 		else {
 			MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
 			//LogHelper.info(mop);
 			//FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ));
-			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 10F));
+			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 20F));
 		}
 
 		if (1==1) return stack;
@@ -256,26 +266,31 @@ public class Tclogo extends ItemDE {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
-		list.add(EnumChatFormatting.AQUA + "AQUA");
-		list.add(EnumChatFormatting.BLACK + "BLACK");
-		list.add(EnumChatFormatting.BLUE + "BLUE");
-		list.add(EnumChatFormatting.DARK_AQUA + "DARK_AQUA");
-		list.add(EnumChatFormatting.DARK_BLUE + "DARK_BLUE");
-		list.add(EnumChatFormatting.DARK_GRAY + "DARK_GRAY");
-		list.add(EnumChatFormatting.DARK_GREEN + "DARK_GREEN");
-		list.add(EnumChatFormatting.DARK_PURPLE + "DARK_PURPLE");
-		list.add(EnumChatFormatting.DARK_RED + "DARK_RED");
-		list.add(EnumChatFormatting.GOLD + "GOLD");
-		list.add(EnumChatFormatting.GRAY + "GRAY");
-		list.add(EnumChatFormatting.GREEN + "GREEN");
-		list.add(EnumChatFormatting.LIGHT_PURPLE + "LIGHT_PURPLE");
-		list.add(EnumChatFormatting.RED + "RED");
-		list.add(EnumChatFormatting.WHITE + "WHITE");
-		list.add(EnumChatFormatting.YELLOW + "YELLOW");
-		list.add(EnumChatFormatting.BOLD + "BOLD");
-		list.add(EnumChatFormatting.ITALIC + "ITALIC");
-		list.add(EnumChatFormatting.OBFUSCATED + "OBFUSCATED");
-		list.add(EnumChatFormatting.UNDERLINE + "UNDERLINE");
-		list.add(EnumChatFormatting.STRIKETHROUGH + "STRIKETHROUGH");
+		list.add(EnumChatFormatting.RED + "Warning! this is an item used to test random bits of code. You should not play with it");
+		list.add(EnumChatFormatting.RED + "because depending on what i used it for last it could do anything.");
+		list.add(EnumChatFormatting.RED + "It may even break your world");
+		list.add("At the time this warning was added it created a 200x200 block smoking creator");
+
+//		list.add(EnumChatFormatting.AQUA + "AQUA");
+//		list.add(EnumChatFormatting.BLACK + "BLACK");
+//		list.add(EnumChatFormatting.BLUE + "BLUE");
+//		list.add(EnumChatFormatting.DARK_AQUA + "DARK_AQUA");
+//		list.add(EnumChatFormatting.DARK_BLUE + "DARK_BLUE");
+//		list.add(EnumChatFormatting.DARK_GRAY + "DARK_GRAY");
+//		list.add(EnumChatFormatting.DARK_GREEN + "DARK_GREEN");
+//		list.add(EnumChatFormatting.DARK_PURPLE + "DARK_PURPLE");
+//		list.add(EnumChatFormatting.DARK_RED + "DARK_RED");
+//		list.add(EnumChatFormatting.GOLD + "GOLD");
+//		list.add(EnumChatFormatting.GRAY + "GRAY");
+//		list.add(EnumChatFormatting.GREEN + "GREEN");
+//		list.add(EnumChatFormatting.LIGHT_PURPLE + "LIGHT_PURPLE");
+//		list.add(EnumChatFormatting.RED + "RED");
+//		list.add(EnumChatFormatting.WHITE + "WHITE");
+//		list.add(EnumChatFormatting.YELLOW + "YELLOW");
+//		list.add(EnumChatFormatting.BOLD + "BOLD");
+//		list.add(EnumChatFormatting.ITALIC + "ITALIC");
+//		list.add(EnumChatFormatting.OBFUSCATED + "OBFUSCATED");
+//		list.add(EnumChatFormatting.UNDERLINE + "UNDERLINE");
+//		list.add(EnumChatFormatting.STRIKETHROUGH + "STRIKETHROUGH");
 	}
 }

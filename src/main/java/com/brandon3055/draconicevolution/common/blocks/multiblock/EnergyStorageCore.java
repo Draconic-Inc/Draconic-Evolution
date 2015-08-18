@@ -134,7 +134,6 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock{
 		list.add(InfoHelper.HITC()+getLocalizedName());
 		list.add("Tier: " + InfoHelper.ITC() + (tile.getTier() + 1));
 		String BN = String.valueOf(tile.getEnergyStored());
-		if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
 		list.add(StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.ITC() + Utills.formatNumber(tile.getEnergyStored()) + " / " + Utills.formatNumber(tile.getMaxEnergyStored()) + " [" + BN + " RF]");
 
 		return list;

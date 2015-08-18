@@ -77,7 +77,8 @@ public class ReactorStabilizer extends BlockDE {
 		int d = Utills.determineOrientation(x, y, z, entity);
 		TileReactorStabilizer tile = world.getTileEntity(x, y, z) instanceof TileReactorStabilizer ? (TileReactorStabilizer)world.getTileEntity(x, y, z) : null;
 		if (tile != null){
-			tile.facingDirection = ForgeDirection.getOrientation(d).getOpposite().ordinal();
+			if (entity.isSneaking()) tile.facingDirection = ForgeDirection.getOrientation(d).getOpposite().ordinal();
+			else tile.facingDirection = ForgeDirection.getOrientation(d).ordinal();
 			tile.onPlaced();
 		}
 	}

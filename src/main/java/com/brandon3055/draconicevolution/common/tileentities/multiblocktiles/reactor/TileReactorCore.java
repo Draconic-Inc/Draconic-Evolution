@@ -1,14 +1,16 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.IIsSlave;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -35,20 +37,19 @@ public class TileReactorCore extends TileObjectSync {
 	public static final int STATE_START = 1;
 	public static final int STATE_ONLINE = 2;
 	public static final int STATE_STOP = 3;
+	public static final int STATE_INVALID = 4;
 
 	public int reactorState = 0;
 	public float renderRotation = 0;
 	public float renderSpeed = 0;
-	public float renderMaxSpeed = 0;
-	public boolean isStructureValid = true;
-	public boolean isActive = true;
+	public boolean isStructureValid = false;
 	public float stabilizerRender = 0F;
 	private boolean startupInitialized = false;
 	public int tick = 0;
 
 	//Key operational figures
 	public int reactorFuel = 0;
-	public int convertedFuel = 0;			//The amount of fuel that has converted to chaos
+	public int convertedFuel = 0;			//The amount of fuel that has converted
 	public double conversionUnit = 0;		//used to smooth out the conversion between int and floating point. When >= 1 minus one and convert one int worth of fuel
 
 	public double reactionTemperature = 20;
@@ -63,14 +64,19 @@ public class TileReactorCore extends TileObjectSync {
 	//#######################
 
 	//TODO DONT FORGET TO ACTUALLY FINISH ALL THESE THINGS!!!!
-	//-Bounding box
-	//-Custom player collision
-	//-Finish stabilizer place and break mechanics
+//Check			//-Bounding box
+//Check			//-Custom player collision
+//Check			//-Finish stabilizer place and break mechanics
+//Check			//-Have the GUI tell you if the structure is invalid
+//Check			//-Config
+	//TODO things for later
 	//-GUI info (maby speed up gui sync via the container)
 	//-GUI warning red bars
 	//-Maby get around to setting the angle of the stabiliser elements
-	//-Have the GUI tell you if the structure is invalid
-	//Config
+	//-SOUND!!!!!
+	//-CC Integration
+	//-Redstone
+	//-Add reactor and gates to tablet
 
 
 	public List<TileLocation> stabilizerLocations = new ArrayList<TileLocation>();
@@ -83,6 +89,7 @@ public class TileReactorCore extends TileObjectSync {
 			stabilizerRender = (float)Math.min(fieldCharge / (maxFieldCharge * 0.1D), 1D);
 			renderRotation += renderSpeed;
 			//LogHelper.info(renderSpeed +" "+(reactionTemperature));
+			checkPlayerCollision();
 			return;
 		}
 
@@ -94,13 +101,28 @@ public class TileReactorCore extends TileObjectSync {
 			case STATE_START:
 				startingTick();
 				break;
-			default:
-				//reactionTemperature = ((1F + Math.sin((float)tick/50F)) / 2F) * maxReactTemperature;
+			case STATE_ONLINE:
+				runTick();
+				break;
+			case STATE_STOP:
 				runTick();
 				break;
 		}
 
 		detectAndSendChanges();
+	}
+
+	private void checkPlayerCollision(){
+		EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
+		double distance = Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, xCoord+0.5, yCoord+0.5, zCoord+0.5);
+		if (distance < (getCoreDiameter()/2) + 0.5){
+			double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter()/2) + 0.5));
+			double offsetX = player.posX - xCoord;
+			double offsetY = player.posY - yCoord;
+			double offsetZ = player.posZ - zCoord;
+			double m = 1D * dMod;
+			player.addVelocity(offsetX*m, offsetY*m, offsetZ*m);
+		}
 	}
 
 	private void offlineTick(){
@@ -113,7 +135,6 @@ public class TileReactorCore extends TileObjectSync {
 
 	private void startingTick(){
 		if (!startupInitialized){
-			LogHelper.info("init");
 			int totalFuel = reactorFuel + convertedFuel;
 			maxFieldCharge = totalFuel * 96.45061728395062 * 100;
 			maxEnergySaturation = (int)(totalFuel * 96.45061728395062 * 1000);
@@ -128,7 +149,6 @@ public class TileReactorCore extends TileObjectSync {
 		//Inverted core saturation (if multiplied by 100 this creates infinite numbers which breaks the code)
 		double saturation = ((double)energySaturation / (double)maxEnergySaturation);
 		double saturationI = (1D - ((double)energySaturation / (double)maxEnergySaturation)) * 99D;
-		double field = fieldCharge / maxFieldCharge;
 		double temp = ((reactionTemperature) / maxReactTemperature) * 50D;
 		//The conversion level. Ranges from -0.3 to 1.0
 		double conversion = (((double)convertedFuel + conversionUnit) / ((double)(convertedFuel + reactorFuel) - conversionUnit) * 1.3) - 0.3D;
@@ -156,7 +176,7 @@ public class TileReactorCore extends TileObjectSync {
 		//======================
 
 		//Energy Calculation
-		int baseMaxRFt = maxEnergySaturation / 1000; //todo multiply this by a config value (default 1.0) so the output can be adjusted
+		int baseMaxRFt = (int)((maxEnergySaturation / 1000D) * ConfigHandler.reactorOutputMultiplier);
 		int maxRFt = (int)(baseMaxRFt * (1D+(conversion*2)));
 		energySaturation += (1D - saturation) * maxRFt;
 
@@ -178,7 +198,7 @@ public class TileReactorCore extends TileObjectSync {
 		//======================
 
 		//Calculate Fuel Usage
-		double useRate = tempDrainFactor * (1D-saturation) * 0.001; //<Last number is base fuel usage rate//todo balance and add config multiplier
+		double useRate = tempDrainFactor * (1D-saturation) * (0.001 * ConfigHandler.reactorFuelUsageMultiplier); //<Last number is base fuel usage rate
 		conversionUnit += useRate;
 		if (conversionUnit >= 1 && reactorFuel > 0){
 			conversionUnit--;
@@ -190,12 +210,9 @@ public class TileReactorCore extends TileObjectSync {
 
 
 		//Make BOOM!!!
-		if ((fieldCharge <= 0 || reactorFuel <= 0) && !hasExploded) {
+		if ((fieldCharge <= 0) && !hasExploded) {
 			hasExploded = true;
-			float power = 10F + Math.min(10F, ((float)(convertedFuel + reactorFuel) / 10369F) * 10F);
-			ProcessHandler.addProcess(new ReactorExplosion(worldObj, xCoord, yCoord, zCoord, power));
-			LogHelper.info(power + " " + (int) (power * 100F));
-			sendObjectToClient(References.INT_ID, 100, (int) (power * 10F), new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 512));
+			goBoom();
 		}
 
 
@@ -203,8 +220,16 @@ public class TileReactorCore extends TileObjectSync {
 		//===========
 	}
 
-	private void stoppingTick(){
-
+	private void goBoom(){
+		if (!ConfigHandler.enableReactorBigBoom){
+			worldObj.createExplosion(null, xCoord, yCoord, zCoord, 5, true);
+		}else
+		{
+			//float power = 10F + Math.min(10F, ((float) (convertedFuel + reactorFuel) / 10369F) * 10F);
+			float power = 2F + (((float) (convertedFuel + reactorFuel) / 10369F) * 18F);
+			ProcessHandler.addProcess(new ReactorExplosion(worldObj, xCoord, yCoord, zCoord, power));
+			sendObjectToClient(References.INT_ID, 100, (int) (power * 10F), new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 512));
+		}
 	}
 
 
@@ -212,14 +237,50 @@ public class TileReactorCore extends TileObjectSync {
 		boolean updateRequired = false;
 		//Check that all of the stabilizers are still valid
 		Iterator<TileLocation> i = stabilizerLocations.iterator();
+		List<TileReactorStabilizer> stabilizers = new ArrayList<TileReactorStabilizer>();
 		while (i.hasNext())	{
 			TileLocation location = i.next();
 			if (!(location.getTileEntity(worldObj) instanceof TileReactorStabilizer) || !((TileReactorStabilizer) location.getTileEntity(worldObj)).masterLocation.isThisLocation(xCoord, yCoord, zCoord)) {
 				i.remove();
 				updateRequired = true;
 			}
+			else stabilizers.add((TileReactorStabilizer) location.getTileEntity(worldObj));
 		}
 
+		//Check that there are 4 stabilizers in the correct configuration
+		isStructureValid = false;
+		List<TileReactorStabilizer> checkList = new ArrayList<TileReactorStabilizer>();
+		for (TileReactorStabilizer stabilizer : stabilizers){
+			if (checkList.contains(stabilizer)) continue;
+
+			for (TileReactorStabilizer comp : stabilizers){
+				if (!(comp == stabilizer || checkList.contains(comp)) && ForgeDirection.getOrientation(comp.facingDirection) == ForgeDirection.getOrientation(stabilizer.facingDirection).getOpposite()){
+					checkList.add(comp);
+					checkList.add(stabilizer);
+					if (checkList.size() == 4){
+						isStructureValid = true;
+						if (reactorState == STATE_INVALID) reactorState = STATE_OFFLINE;
+						break;
+					}
+				}
+			}
+		}
+
+		for (TileReactorStabilizer stabilizer : stabilizers){
+			if (Utills.getDistanceAtoB(stabilizer.xCoord, stabilizer.yCoord, stabilizer.zCoord, xCoord, yCoord, zCoord) < (getMaxCoreDiameter()/2)+1) {
+				isStructureValid = false;
+				break;
+			}
+		}
+
+
+
+		if (!isStructureValid) {
+			reactorState = STATE_INVALID;
+			if (reactionTemperature >= 2000){
+				goBoom();
+			}
+		}
 
 		if (updateRequired) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
@@ -235,6 +296,7 @@ public class TileReactorCore extends TileObjectSync {
 				}
 			}
 		}
+		validateStructure();
 	}
 
 	public void onBroken(){
@@ -245,10 +307,10 @@ public class TileReactorCore extends TileObjectSync {
 			}
 		}
 
-//		for (TileLocation location : stabilizerLocations) {
-//			LogHelper.info(location.getTileEntity(worldObj));
-//			if (location.getTileEntity(worldObj) instanceof TileReactorStabilizer) ((TileReactorStabilizer) location.getTileEntity(worldObj)).shutDown();
-//		}
+		if (reactionTemperature >= 2000) {
+			goBoom();
+		}
+
 	}
 
 	public boolean onStructureRightClicked(EntityPlayer player){
@@ -284,20 +346,17 @@ public class TileReactorCore extends TileObjectSync {
 	}
 
 	public boolean canStart(){
-		return reactionTemperature >= 2000 && fieldCharge >= (maxFieldCharge / 2) && energySaturation >= (maxEnergySaturation / 2);
-	}
-
-	public boolean canStop(){
-		return reactionTemperature <= 2000;
+		validateStructure();
+		return reactionTemperature >= 2000 && fieldCharge >= (maxFieldCharge / 2) && energySaturation >= (maxEnergySaturation / 2) && isStructureValid;
 	}
 
 	public void processButtonPress(int button){
-		if (button == 0 && reactorState != STATE_ONLINE) reactorState = STATE_START;
-		else if (button == 1) reactorState = STATE_ONLINE;
+		validateStructure();
+		if (button == 0 && reactorState != STATE_ONLINE && isStructureValid) reactorState = STATE_START;
+		else if (button == 1 && isStructureValid) reactorState = STATE_ONLINE;
 		else if (button == 2 && reactorState != STATE_OFFLINE) reactorState = STATE_STOP;
 	}
 
-	//Getters
 	public double getCoreDiameter(){//todo adjust so the core dose not expand before 1000>2000c
 		//return (((1F + Math.sin((float)tick/50F)) / 2F) * 4) + 0.3;
 		double volume = (double)(reactorFuel + convertedFuel) / 1296D;
@@ -305,10 +364,15 @@ public class TileReactorCore extends TileObjectSync {
 		return Math.cbrt(volume / (4/3 * Math.PI)) * 2;
 	}
 
+	public double getMaxCoreDiameter(){
+		//return (((1F + Math.sin((float)tick/50F)) / 2F) * 4) + 0.3;
+		double volume = (double)(reactorFuel + convertedFuel) / 1296D;
+		volume *= 1 + 1 * 10D;
+		return Math.cbrt(volume / (4/3 * Math.PI)) * 2;
+	}
 
 
 	private boolean isStructureValidCach = false;
-	private boolean isActiveCach = false;
 	private boolean startupInitializedCach = false;
 	private int reactorStateCach = -1;
 	private int reactorFuelCach = -1;
@@ -325,7 +389,7 @@ public class TileReactorCore extends TileObjectSync {
 		if (reactionTemperatureCach != reactionTemperature) 	reactionTemperatureCach = 	(Double) sendObjectToClient(References.DOUBLE_ID, 8, reactionTemperature, tp);
 		if (tick % 10 != 0) return;
 		if (isStructureValidCach != isStructureValid)			isStructureValidCach = 		(Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, isStructureValid, tp);
-		if (isActiveCach != isActive) 							isActiveCach = 				(Boolean) sendObjectToClient(References.BOOLEAN_ID, 1, isActive, tp);
+		//if (isActiveCach != isActive) 							isActiveCach = 				(Boolean) sendObjectToClient(References.BOOLEAN_ID, 1, isActive, tp);
 		if (startupInitializedCach != startupInitialized) 		startupInitializedCach = 	(Boolean) sendObjectToClient(References.BOOLEAN_ID, 2, startupInitialized, tp);
 		if (reactorStateCach != reactorState) 					reactorStateCach = 			(Integer) sendObjectToClient(References.INT_ID, 3, reactorState, tp);
 		if (reactorFuelCach != reactorFuel) 					reactorFuelCach = 			(Integer) sendObjectToClient(References.INT_ID, 4, reactorFuel, tp);
@@ -342,7 +406,7 @@ public class TileReactorCore extends TileObjectSync {
 	public void receiveObjectFromServer(int index, Object object) {
 		switch (index){
 			case 0: isStructureValid = (Boolean) object; break;
-			case 1: isActive = (Boolean) object; break;
+			//case 1: isActive = (Boolean) object; break;
 			case 2: startupInitialized = (Boolean) object; break;
 			case 3: reactorState = (Integer) object; break;
 			case 4: reactorFuel = (Integer) object; break;
@@ -396,7 +460,7 @@ public class TileReactorCore extends TileObjectSync {
 		compound.setByte("State", (byte) reactorState);
 		compound.setBoolean("isStructureValid", isStructureValid);
 		compound.setBoolean("startupInitialized", startupInitialized);
-		compound.setBoolean("isActive", isActive);
+		//compound.setBoolean("isActive", isActive);
 		compound.setInteger("energySaturation", energySaturation);
 		compound.setInteger("maxEnergySaturation", maxEnergySaturation);
 		compound.setInteger("reactorFuel", reactorFuel);
@@ -424,7 +488,7 @@ public class TileReactorCore extends TileObjectSync {
 		reactorState = compound.getByte("State");
 		isStructureValid = compound.getBoolean("isStructureValid");
 		startupInitialized = compound.getBoolean("startupInitialized");
-		isActive = compound.getBoolean("isActive");
+		//isActive = compound.getBoolean("isActive");
 		energySaturation = compound.getInteger("energySaturation");
 		maxEnergySaturation = compound.getInteger("maxEnergySaturation");
 		reactorFuel = compound.getInteger("reactorFuel");

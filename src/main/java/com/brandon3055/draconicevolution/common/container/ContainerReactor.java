@@ -4,7 +4,6 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.inventory.GenericInventory;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -43,6 +42,7 @@ public class ContainerReactor extends ContainerDataSync {
 			{
 				if (stack.getItem() == ModItems.draconicIngot) reactor.reactorFuel += stack.stackSize * 144;
 				if (stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock)) reactor.reactorFuel += stack.stackSize * 1296;
+				reactor.validateStructure();
 			}
 			else getStorage()[i] = stack;
 		}
@@ -161,14 +161,11 @@ public class ContainerReactor extends ContainerDataSync {
 			if (stack == null) return false;
 			else if (stack.getItem() == ModItems.draconicIngot) numberAllowed = (10368 - (reactor.reactorFuel + reactor.convertedFuel)) / 144;
 			else if (stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock)) numberAllowed = (10368 - (reactor.reactorFuel + reactor.convertedFuel)) / 1296;
-			//	(stack.getItem() == ModItems.draconicIngot || stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock));
-			LogHelper.info(numberAllowed);
 			return numberAllowed > 0;
 		}
 
 		@Override
-		public int getSlotStackLimit() {//todo add the fuel limit
-			LogHelper.info(numberAllowed);
+		public int getSlotStackLimit() {
 			return numberAllowed;
 		}
 	}

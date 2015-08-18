@@ -21,7 +21,7 @@ import java.util.Arrays;
 		"after:NotEnoughItems;" +
 		"after:ThermalExpansion;" +
 		"after:ThermalFoundation;" +
-		"required-after:BrandonsCore@[1.0.0.1,);")
+		"required-after:BrandonsCore@[1.0.0.6,);")
 public class DraconicEvolution {
 
 	@Mod.Instance(References.MODID)
@@ -36,7 +36,7 @@ public class DraconicEvolution {
 	public static final String networkChannelName = "DEvolutionNC";
 	public static SimpleNetworkWrapper network;
 
-	public static boolean debug = true;//todo
+	public static boolean debug = false;//todo
 
 	public static Enchantment reaperEnchant;
 	

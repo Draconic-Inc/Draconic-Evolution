@@ -134,7 +134,7 @@ public class GUIReactor extends GUIBase {
 
 	@Override
 	public void updateScreen() {
-		if (reactor.reactorState == TileReactorCore.STATE_OFFLINE || reactor.reactorState == TileReactorCore.STATE_STOP) collection.getComponent("DEACTIVATE").setEnabled(false);
+		if (reactor.reactorState == TileReactorCore.STATE_INVALID || reactor.reactorState == TileReactorCore.STATE_OFFLINE || reactor.reactorState == TileReactorCore.STATE_STOP) collection.getComponent("DEACTIVATE").setEnabled(false);
 		else collection.getComponent("DEACTIVATE").setEnabled(true);
 		if ((reactor.reactorState == TileReactorCore.STATE_OFFLINE || (reactor.reactorState == TileReactorCore.STATE_STOP && !reactor.canStart())) && reactor.reactorFuel > 0) collection.getComponent("CHARGE").setEnabled(true);
 		else collection.getComponent("CHARGE").setEnabled(false);

@@ -56,6 +56,11 @@ public class ConfigHandler {
 	//Enchantments
 	public static int reaperEnchantID;
 
+	//Reactor
+	public static boolean enableReactorBigBoom;
+	public static double reactorOutputMultiplier;
+	public static double reactorFuelUsageMultiplier;
+
 
 	private static String[] defaultSpawnerList = new String[] {"ExampleMob1", "ExampleMob2", "ExampleMob3 (these examples can be deleted)"};
 
@@ -113,8 +118,12 @@ public class ConfigHandler {
 //			potionFlightID = config.get("magic id's", "potionFlightID", 50).getInt(50);
 
 			//Enchantments
-			reaperEnchantID = config.get("magic id's", "Reaper Enchant id", 180).getInt(180);
+			reaperEnchantID = config.get("magicId's", "Reaper Enchant id", 180).getInt(180);
 
+			//Reactor
+			enableReactorBigBoom = config.get("Draconic Reactor", "EnableBigExplosion", true, "Setting this to false will reduce the reactor explosion to little more then a tnt blast").getBoolean(true);
+			reactorFuelUsageMultiplier = config.get("Draconic Reactor", "FuelUsageMultiplier", 1, "Use this to adjust how quickly the reactor uses fuel", 0, 1000000).getDouble(1);
+			reactorOutputMultiplier = config.get("Draconic Reactor", "EnergyOutputMultiplier", 1, "Use this to adjust the output of the reactor", 0, 1000000).getDouble(1);
 
 			for (String s : disabledBlocksItems) disabledNamesList.add(s);
 			for (int i : speedDimBlackList) speedLimitDimList.add(i);

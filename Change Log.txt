@@ -1,4 +1,7 @@
-######## 1.0.2 ########
+######## 1.0.2-Snapshot 2 ########
+-fixed energy core crash when placed.
+
+######## 1.0.2-Snapshot 1 ########
 -stabilized spawner's will now keep their original mob type when created.  
 -mobs spawned by stabilized spawner are now allowed to despawn after 30 seconds.
 -increased the length and render distance of the particle generator beam.
@@ -14,8 +17,13 @@
 -fixed game freezing for a few seconds on startup.
 -energy core now stores its energy value as a long (fixes potential issues)
 -added draconium and awakened draconium blocks to the ore dictionary.
+-made some adjustments to the armor.
 -implemented ore dictionary in recipes.
+-added Flow Gates.
+-added Draconic Reactor (WIP)
 -spawner blacklist config now actually works on the spawner as well as opposed to just preventing the soul drops.
+-fixed energy relay recipe.
+-fixed minor rendering bug in energy infuser GUI.
 
 ######## 1.0.1-Bugfix-c ########
 -fixed crash when arrow from DE bow hits RFTools force field.

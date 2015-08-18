@@ -30,6 +30,9 @@ tile.draconicevolution:dislocatorReceptacle.name=Dislocator Receptacle
 tile.draconicevolution:portal.name=Portal
 tile.draconicevolution:flowGateFlux.name=Flux Gate
 tile.draconicevolution:flowGateFluid.name=Fluid Gate
+tile.draconicevolution:reactorCore.name=Draconic Reactor Core
+tile.draconicevolution:reactorStabilizer.name=Reactor Stabilizer
+tile.draconicevolution:reactorEnergyInjector.name=Reactor Energy Injector
 
 tile.draconicevolution:energyCrystal0.name=Energy Relay
 tile.draconicevolution:energyCrystal1.name=Advanced Energy Relay
@@ -442,8 +445,11 @@ gui.de.status.txt=Status
 gui.de.status0.txt=OFFLINE
 gui.de.status1.txt=CHARGING
 gui.de.status1_5.txt=CHARGED
-gui.de.status2.txt=RUNNING
+gui.de.status2.txt=ONLINE
 gui.de.status3.txt=STOPPING
+gui.de.status4.txt=INVALID SETUP
+gui.de.internalStorage.txt=Internal Storage
+gui.de.itemStorage.txt=Item Storage
 
 manual.de.pigmenBloodRage.description=Don't let the pigmen see you eating pork you wont like what happens..
 

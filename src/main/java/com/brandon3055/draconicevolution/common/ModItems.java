@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.EnumHelper;
@@ -32,20 +33,20 @@ public class ModItems {
 	public static Item draconicAxe;
 	public static Item draconicSword;
 	public static Item draconicBow;
-	public static Item draconicHelm;
-	public static Item draconicChest;
-	public static Item draconicLeggs;
-	public static Item draconicBoots;
+	public static ItemArmor draconicHelm;
+	public static ItemArmor draconicChest;
+	public static ItemArmor draconicLeggs;
+	public static ItemArmor draconicBoots;
 	public static Item draconicDestructionStaff;
 
 	public static Item wyvernPickaxe;
 	public static Item wyvernShovel;
 	public static Item wyvernSword;
 	public static Item wyvernBow;
-	public static Item wyvernHelm;
-	public static Item wyvernChest;
-	public static Item wyvernLeggs;
-	public static Item wyvernBoots;
+	public static ItemArmor wyvernHelm;
+	public static ItemArmor wyvernChest;
+	public static ItemArmor wyvernLeggs;
+	public static ItemArmor wyvernBoots;
 
 	public static Item dezilsMarshmallow;
 

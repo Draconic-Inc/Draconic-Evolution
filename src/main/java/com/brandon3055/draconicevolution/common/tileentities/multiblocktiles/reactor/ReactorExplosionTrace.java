@@ -46,17 +46,17 @@ public class ReactorExplosionTrace implements IProcess {
 			energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
 
 			boolean blockRemoved = false;
-			if (energy >= 0) {
+			if (energy >= 0 && block != Blocks.air) {
 				worldObj.setBlockToAir(xCoord, y, zCoord);
 				blockRemoved = true;
 			}
 			energy -= 0.5F + (0.1F * (yCoord - y));
 
-			if (energy <= 0 && random.nextInt(20) == 0) {
-				if (random.nextInt(3) > 0) worldObj.setBlock(xCoord, y + (blockRemoved ? 0 : 1), zCoord, Blocks.fire);
+			if (energy <= 0 && random.nextInt(20) == 0 && blockRemoved) {
+				if (random.nextInt(3) > 0) worldObj.setBlock(xCoord, y, zCoord, Blocks.fire);
 				else {
-					worldObj.setBlock(xCoord, y + (blockRemoved ? 0 : 1), zCoord, Blocks.lava);
-					worldObj.scheduleBlockUpdate(xCoord, y + (blockRemoved ? 0 : 1), zCoord, Blocks.lava, 100);
+					worldObj.setBlock(xCoord, y, zCoord, Blocks.flowing_lava);
+					//worldObj.scheduleBlockUpdate(xCoord, y, zCoord, Blocks.flowing_lava, 100);
 				}
 			}
 		}
