@@ -48,9 +48,13 @@ import java.util.List;
 	@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft")
 })
 public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IGoggles, IRevealer {//TODO Wings
+	@SideOnly(Side.CLIENT)
 	private IIcon helmIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon chestIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon leggsIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon bootsIcon;
 
 	private double totalAbsorption = 2; // 1=100%
@@ -333,7 +337,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	}
 
 	@SideOnly(Side.CLIENT)
-	ModelBiped model = null;
+	private ModelBiped model = null;
 
 	@SideOnly(Side.CLIENT)
 	@Override
