@@ -230,7 +230,7 @@
     "images":[],
     "content":
     [
-      "You have discovered that by combining one of the strongest blocks in existence with the power of draconium, You can create a block that mo creature can destroy.",
+      "You have discovered that by combining one of the strongest blocks in existence with the power of draconium, You can create a block that no creature can destroy.",
       "This block has twice the explosion and mining resistance of Obsidian. It also requires a stronger pickaxe.",
       "",
       "You wonder what other uses this block could have...",
@@ -864,7 +864,7 @@
     "images":[],
     "content":
     [
-      "Draconic Evolution adds the ability to place any item in the world as a block allowing you to do things like hang tools or other items on walls for display etc. To pla an item in the world simply look at a block with the item selected (as if you were about to place a block) and press the \"Place Item\" key (p by default) you can place items on the top bottom or sides of a block. You can left click to rotate the item clockwise and shift+left click to rotate the item counter-clockwise you can also shift+right click to rotate the item in very small increments counter-clockwise. Right click to pick the item up."
+      "Draconic Evolution adds the ability to place any item in the world as a block allowing you to do things like hang tools or other items on walls for display etc. To place an item in the world simply look at a block with the item selected (as if you were about to place a block) and press the \"Place Item\" key (p by default) you can place items on the top bottom or sides of a block. You can left click to rotate the item clockwise and shift+left click to rotate the item counter-clockwise you can also shift+right click to rotate the item in very small increments counter-clockwise. Right click to pick the item up."
     ]
   }
 ]
