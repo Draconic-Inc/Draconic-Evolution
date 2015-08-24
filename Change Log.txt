@@ -1,3 +1,10 @@
+######## 1.0.2-Snapshot 4 ########
+-crystal binder now only rotates blocks when set to the mode change function.
+-added config option to switch back to the old 2D armor model.
+
+######## 1.0.2-Snapshot 3 ########
+-fixed server crash
+
 ######## 1.0.2-Snapshot 2 ########
 -fixed energy core crash when placed.
 
@@ -17,7 +24,7 @@
 -fixed game freezing for a few seconds on startup.
 -energy core now stores its energy value as a long (fixes potential issues)
 -added draconium and awakened draconium blocks to the ore dictionary.
--made some adjustments to the armor.
+-added new armor model by @Skele_P.
 -implemented ore dictionary in recipes.
 -added Flow Gates.
 -added Draconic Reactor (WIP)

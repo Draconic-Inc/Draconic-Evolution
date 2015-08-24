@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.model.ModelDraconicArmor;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.*;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -103,12 +104,12 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-		return References.RESOURCESPREFIX + "textures/models/armor/armorWyvern.png";
-//		if (stack.getItem() == ModItems.wyvernHelm || stack.getItem() == ModItems.wyvernChest || stack.getItem() == ModItems.wyvernBoots) {
-//			return References.RESOURCESPREFIX + "textures/models/armor/wyvern_layer_1.png";
-//		} else {
-//			return References.RESOURCESPREFIX + "textures/models/armor/wyvern_layer_2.png";
-//		}
+		if (!ConfigHandler.useOldArmorModel)  return References.RESOURCESPREFIX + "textures/models/armor/armorWyvern.png";
+		if (stack.getItem() == ModItems.wyvernHelm || stack.getItem() == ModItems.wyvernChest || stack.getItem() == ModItems.wyvernBoots) {
+			return References.RESOURCESPREFIX + "textures/models/armor/wyvern_layer_1.png";
+		} else {
+			return References.RESOURCESPREFIX + "textures/models/armor/wyvern_layer_2.png";
+		}
 	}
 
 	@Override
@@ -263,13 +264,15 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 	}
 
 	@SideOnly(Side.CLIENT)
-	ModelBiped model = null;
+	private ModelBiped model;
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+		if (ConfigHandler.useOldArmorModel) return super.getArmorModel(entityLiving, itemStack, armorSlot);
+
 		if (model == null) {
-			if (armorType == 0) model = new ModelDraconicArmor(1F, true, false, false, false, false);
+			if (armorType == 0) model = new ModelDraconicArmor(1.0F, true, false, false, false, false);
 			else if (armorType == 1) model = new ModelDraconicArmor(1F, false, true, false, false, false);
 			else if (armorType == 2) model = new ModelDraconicArmor(1F, false, false, true, false, false);
 			else model = new ModelDraconicArmor(1F, false, false, false, true, false);

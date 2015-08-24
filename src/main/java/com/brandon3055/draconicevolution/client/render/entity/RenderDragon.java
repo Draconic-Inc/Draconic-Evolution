@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
-import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
+import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -40,7 +41,7 @@ public class RenderDragon extends RenderLiving
 		this.setRenderPassModel(this.mainModel);
 	}
 
-	protected void rotateCorpse(EntityCustomDragon p_77043_1_, float p_77043_2_, float p_77043_3_, float p_77043_4_)
+	protected void rotateCorpse(EntityDragon p_77043_1_, float p_77043_2_, float p_77043_3_, float p_77043_4_)
 	{
 		float f3 = (float)p_77043_1_.getMovementOffsets(7, p_77043_4_)[0];
 		float f4 = (float)(p_77043_1_.getMovementOffsets(5, p_77043_4_)[1] - p_77043_1_.getMovementOffsets(10, p_77043_4_)[1]);
@@ -65,7 +66,7 @@ public class RenderDragon extends RenderLiving
 	/**
 	 * Renders the model in RenderLiving
 	 */
-	protected void renderModel(EntityCustomDragon p_77036_1_, float p_77036_2_, float p_77036_3_, float p_77036_4_, float p_77036_5_, float p_77036_6_, float p_77036_7_)
+	protected void renderModel(EntityDragon p_77036_1_, float p_77036_2_, float p_77036_3_, float p_77036_4_, float p_77036_5_, float p_77036_6_, float p_77036_7_)
 	{
 		if (p_77036_1_.deathTicks > 0)
 		{
@@ -102,7 +103,7 @@ public class RenderDragon extends RenderLiving
 	 * (Render<T extends Entity) and this method has signature public void func_76986_a(T entity, double d, double d1,
 	 * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
 	 */
-	public void doRender(EntityCustomDragon p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+	public void doRender(EntityDragon p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
 	{
 		BossStatus.setBossStatus(p_76986_1_, false);
 		super.doRender((EntityLiving)p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
@@ -153,12 +154,12 @@ public class RenderDragon extends RenderLiving
 	/**
 	 * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
 	 */
-	protected ResourceLocation getEntityTexture(EntityCustomDragon dragon)
+	protected ResourceLocation getEntityTexture(EntityDragon dragon)
 	{
-		return dragon.getDataWatcher().getWatchableObjectByte(12) == 1 ? enderDragonTextures2 : enderDragonTextures;
+		return dragon instanceof EntityChaosGuardian ? enderDragonTextures2 : enderDragonTextures;
 	}
 
-	protected void renderEquippedItems(EntityCustomDragon p_77029_1_, float p_77029_2_)
+	protected void renderEquippedItems(EntityDragon p_77029_1_, float p_77029_2_)
 	{
 		super.renderEquippedItems(p_77029_1_, p_77029_2_);
 		Tessellator tessellator = Tessellator.instance;
@@ -221,7 +222,7 @@ public class RenderDragon extends RenderLiving
 	/**
 	 * Queries whether should renderBackground the specified pass or not.
 	 */
-	protected int shouldRenderPass(EntityCustomDragon p_77032_1_, int p_77032_2_, float p_77032_3_)
+	protected int shouldRenderPass(EntityDragon p_77032_1_, int p_77032_2_, float p_77032_3_)
 	{
 		if (p_77032_2_ == 1)
 		{
@@ -258,7 +259,7 @@ public class RenderDragon extends RenderLiving
 	 */
 	public void doRender(EntityLiving p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
 	{
-		this.doRender((EntityCustomDragon)p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+		this.doRender((EntityDragon)p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
 	}
 
 	/**
@@ -266,17 +267,17 @@ public class RenderDragon extends RenderLiving
 	 */
 	protected int shouldRenderPass(EntityLivingBase p_77032_1_, int p_77032_2_, float p_77032_3_)
 	{
-		return this.shouldRenderPass((EntityCustomDragon) p_77032_1_, p_77032_2_, p_77032_3_);
+		return this.shouldRenderPass((EntityDragon) p_77032_1_, p_77032_2_, p_77032_3_);
 	}
 
 	protected void renderEquippedItems(EntityLivingBase p_77029_1_, float p_77029_2_)
 	{
-		this.renderEquippedItems((EntityCustomDragon) p_77029_1_, p_77029_2_);
+		this.renderEquippedItems((EntityDragon) p_77029_1_, p_77029_2_);
 	}
 
 	protected void rotateCorpse(EntityLivingBase p_77043_1_, float p_77043_2_, float p_77043_3_, float p_77043_4_)
 	{
-		this.rotateCorpse((EntityCustomDragon) p_77043_1_, p_77043_2_, p_77043_3_, p_77043_4_);
+		this.rotateCorpse((EntityDragon) p_77043_1_, p_77043_2_, p_77043_3_, p_77043_4_);
 	}
 
 	/**
@@ -284,7 +285,7 @@ public class RenderDragon extends RenderLiving
 	 */
 	protected void renderModel(EntityLivingBase p_77036_1_, float p_77036_2_, float p_77036_3_, float p_77036_4_, float p_77036_5_, float p_77036_6_, float p_77036_7_)
 	{
-		this.renderModel((EntityCustomDragon) p_77036_1_, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, p_77036_7_);
+		this.renderModel((EntityDragon) p_77036_1_, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, p_77036_7_);
 	}
 
 	/**
@@ -295,7 +296,7 @@ public class RenderDragon extends RenderLiving
 	 */
 	public void doRender(EntityLivingBase p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
 	{
-		this.doRender((EntityCustomDragon) p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+		this.doRender((EntityDragon) p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
 	}
 
 	/**
@@ -303,7 +304,7 @@ public class RenderDragon extends RenderLiving
 	 */
 	protected ResourceLocation getEntityTexture(Entity p_110775_1_)
 	{
-		return this.getEntityTexture((EntityCustomDragon)p_110775_1_);
+		return this.getEntityTexture((EntityDragon)p_110775_1_);
 	}
 
 	/**
@@ -314,7 +315,7 @@ public class RenderDragon extends RenderLiving
 	 */
 	public void doRender(Entity p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
 	{
-		this.doRender((EntityCustomDragon) p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+		this.doRender((EntityDragon) p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
 	}
 }
 

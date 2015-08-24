@@ -40,6 +40,8 @@ public class ConfigHandler {
 	public static List<Integer> speedLimitDimList = new ArrayList<Integer>();
 	public static boolean speedLimitops;
 	public static boolean rapidlyDespawnMinedItems;
+	public static boolean useOldArmorModel;
+
 	//spawner
 	public static String[] spawnerList;
 	public static boolean spawnerListType;
@@ -104,6 +106,7 @@ public class ConfigHandler {
 			speedDimBlackList = config.get(Configuration.CATEGORY_GENERAL, "Speed limit Dim black lack list", new int[] {1}, "A list of dimensions the speed limit will not effect (speed limit is not so really required in the end)").getIntList();
 			speedLimitops = config.get(Configuration.CATEGORY_GENERAL, "Speed limit effects ops", false, "Dose the speed limit effect ops").getBoolean(false);
 			rapidlyDespawnMinedItems = config.get(Configuration.CATEGORY_GENERAL, "Rapidly despawn aoe mined items", false, "If true items dropped by a tool in aoe mode will despawn after 5 seconds").getBoolean(false);
+			useOldArmorModel = config.get(Configuration.CATEGORY_GENERAL, "Use old armor model", false, "If true the armor will use the original vanilla 2D model instead of the new 3D models").getBoolean(false);
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);

@@ -100,6 +100,7 @@ public class ModelDraconicArmor extends ModelBiped {
 	public ModelRenderer WyHelmPieceTop3;
 	public ModelRenderer WyHelmPieceTop4;
 	public ModelRenderer WyMainChestPieceMid;
+	public ModelRenderer WyMainChestPieceTop;
 	public ModelRenderer WyChestPieceTop1;
 	public ModelRenderer WyChestPieceTop2;
 	public ModelRenderer WyChestDecorationPiece3;
@@ -256,6 +257,11 @@ public class ModelDraconicArmor extends ModelBiped {
 			this.WyChestPieceTop3.setRotationPoint(-3.5F, 4.5F, -3.5F);
 			this.WyChestPieceTop3.addBox(1.0F, 0.0F, 0.0F, 4, 4, 1, 0.0F);
 			this.setRotateAngle(WyChestPieceTop3, 0.0879645943005142F, 0.08621926504851989F, -0.7890633548266364F);
+
+			this.WyMainChestPieceTop = new ModelRenderer(this, 250, 0);
+			this.WyMainChestPieceTop.setRotationPoint(-5.7F, 0.0F, -2.6F);
+			this.WyMainChestPieceTop.addBox(1.0F, 0.0F, 0.0F, 2, 4, 1, 0.0F);
+			this.setRotateAngle(WyMainChestPieceTop, 0.0F, 0.47123889803846897F, 0.0F);
 
 			this.MainChestPieceBottom = new ModelRenderer(this, 228, 27);
 			this.MainChestPieceBottom.setRotationPoint(-4.5F, 7.0F, -2.5F);
@@ -617,6 +623,7 @@ public class ModelDraconicArmor extends ModelBiped {
 				this.bipedBody.addChild(this.WyChestPieceTop1);
 				this.bipedBody.addChild(this.WyChestPieceTop3);
 				this.bipedBody.addChild(this.WyChestDecorationPiece3);
+				this.bipedBody.addChild(this.WyMainChestPieceTop);
 			}
 
 			this.bipedLeftArm.addChild(this.ShoulderPadLeft1);
@@ -633,7 +640,7 @@ public class ModelDraconicArmor extends ModelBiped {
 		this.bipedLeftLeg.cubeList.clear();
 		this.bipedRightLeg.cubeList.clear();
 		if (isLeggings){
-			//this.bipedBody.addChild(this.LeggsTop);
+			this.bipedBody.addChild(this.LeggsTop);
 
 			this.bipedLeftLeg.addChild(this.LegPieceLeft1);
 			this.bipedLeftLeg.addChild(this.MainKneePadLeft);
@@ -678,11 +685,11 @@ public class ModelDraconicArmor extends ModelBiped {
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
         this.bipedRightLeg.render(f5);
-        this.bipedBody.render(f5);
+        this.bipedBody.render(f5*1.05F);// * 1.1F);
         this.bipedLeftArm.render(f5);
 		this.bipedRightArm.render(f5);
         this.bipedLeftLeg.render(f5);
-        this.bipedHead.render(f5);
+        this.bipedHead.render(f5*1.05F);
     }
 
     /**

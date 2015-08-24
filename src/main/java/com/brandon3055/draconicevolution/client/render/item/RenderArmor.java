@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -34,8 +36,12 @@ public class RenderArmor implements IItemRenderer {
 
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack stack, Object... data) {
-		GL11.glPushMatrix();
+		if (ConfigHandler.useOldArmorModel){
+			LogHelper.error("You must restart the game for armor model change to effect the armor items!!!");
+			return;
+		}
 
+		GL11.glPushMatrix();
 		ResourceHandler.bindResource(armor.getArmorTexture(stack, null, 0, null).replace(References.RESOURCESPREFIX, ""));
 
 		if (type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.EQUIPPED)

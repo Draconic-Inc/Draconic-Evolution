@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.model.ModelDraconicArmor;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
@@ -121,13 +122,12 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-		return References.RESOURCESPREFIX + "textures/models/armor/armorDraconic.png";
-
-//		if (stack.getItem() == ModItems.draconicHelm || stack.getItem() == ModItems.draconicChest || stack.getItem() == ModItems.draconicBoots) {
-//			return References.RESOURCESPREFIX + "textures/models/armor/draconic_layer_1.png";
-//		} else {
-//			return References.RESOURCESPREFIX + "textures/models/armor/draconic_layer_2.png";
-//		}
+		if (!ConfigHandler.useOldArmorModel) return References.RESOURCESPREFIX + "textures/models/armor/armorDraconic.png";
+		if (stack.getItem() == ModItems.draconicHelm || stack.getItem() == ModItems.draconicChest || stack.getItem() == ModItems.draconicBoots) {
+			return References.RESOURCESPREFIX + "textures/models/armor/draconic_layer_1.png";
+		} else {
+			return References.RESOURCESPREFIX + "textures/models/armor/draconic_layer_2.png";
+		}
 	}
 
 	@Override
@@ -337,16 +337,18 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	}
 
 	@SideOnly(Side.CLIENT)
-	private ModelBiped model = null;
+	public ModelBiped model;
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+		if (ConfigHandler.useOldArmorModel) return super.getArmorModel(entityLiving, itemStack, armorSlot);
+
 		if (model == null) {
-			if (armorType == 0) model = new ModelDraconicArmor(1F, true, false, false, false, true);
-			else if (armorType == 1) model = new ModelDraconicArmor(1F, false, true, false, false, true);
-			else if (armorType == 2) model = new ModelDraconicArmor(1F, false, false, true, false, true);
-			else model = new ModelDraconicArmor(1F, false, false, false, true, true);
+			if (armorType == 0) model = new ModelDraconicArmor(1.1F, true, false, false, false, true);
+			else if (armorType == 1) model = new ModelDraconicArmor(1.1F, false, true, false, false, true);
+			else if (armorType == 2) model = new ModelDraconicArmor(1.1F, false, false, true, false, true);
+			else model = new ModelDraconicArmor(1.1F, false, false, false, true, true);
 
 			this.model.bipedHead.showModel = (armorType == 0);
 			this.model.bipedHeadwear.showModel = (armorType == 0);

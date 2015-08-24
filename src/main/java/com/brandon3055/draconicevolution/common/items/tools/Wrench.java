@@ -108,7 +108,7 @@ public class Wrench extends ItemDE implements IHudDisplayItem {
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		Block clicked = world.getBlock(x, y, z);
-		if (clicked.rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side)) && !world.isRemote) return true;
+		if (getMode(stack).equals(MODE_SWITCH) && clicked.rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side)) && !world.isRemote) return true;
 
 		if (world.isRemote) return false;
 
