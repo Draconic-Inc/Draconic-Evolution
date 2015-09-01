@@ -1,6 +1,7 @@
 ######## 1.0.2-Snapshot 4 ########
 -crystal binder now only rotates blocks when set to the mode change function.
 -added config option to switch back to the old 2D armor model.
+-infused obsidian recipe now makes 4 infused obsidian as opposed to 1.
 
 ######## 1.0.2-Snapshot 3 ########
 -fixed server crash

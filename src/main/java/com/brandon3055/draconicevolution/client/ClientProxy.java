@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.block.*;
+import com.brandon3055.draconicevolution.client.render.entity.RenderChaosCrystal;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragon;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragonHeart;
 import com.brandon3055.draconicevolution.client.render.entity.RenderDragonProjectile;
@@ -22,10 +23,7 @@ import com.brandon3055.draconicevolution.common.CommonProxy;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.IIsSlave;
-import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
-import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
-import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
-import com.brandon3055.draconicevolution.common.entity.EntityDragonProjectile;
+import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.*;
@@ -190,6 +188,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, new RenderDragon());
 		RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart());
 		RenderingRegistry.registerEntityRenderingHandler(EntityDragonProjectile.class, new RenderDragonProjectile());
+		RenderingRegistry.registerEntityRenderingHandler(EntityChaosCrystal.class, new RenderChaosCrystal());
 	}
 
 	public void registerRenderIDs (){

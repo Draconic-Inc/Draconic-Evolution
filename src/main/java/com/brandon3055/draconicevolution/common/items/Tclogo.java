@@ -1,20 +1,21 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosCrystal;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.ReactorExplosion;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -108,24 +109,61 @@ public class Tclogo extends ItemDE {
 
 	}
 
+	private static int lts = 0;
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-
+//		if ((int)System.currentTimeMillis() < lts + 10) return stack;
+//		else lts = (int)System.currentTimeMillis();
 		//world.playSound(player.posX, player.posY, player.posZ, "DraconicEvolution:fusionExplosion", 1F, 1F, false);
-		LogHelper.info(GameRegistry.findBlock("ThermalDynamics", "ThermalDynamics_0"));
-		if (player.inventory.getStackInSlot(0) != null) LogHelper.info(GameRegistry.findUniqueIdentifierFor(player.inventory.getStackInSlot(0).getItem()));
+//		LogHelper.info(GameRegistry.findBlock("ThermalDynamics", "ThermalDynamics_0"));
+//		if (player.inventory.getStackInSlot(0) != null) LogHelper.info(GameRegistry.findUniqueIdentifierFor(player.inventory.getStackInSlot(0).getItem()));
+//
+//		if (world.isRemote){
+//			particle(world, player);
+//									//if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 10F));
+//		}
+//		else {
+//			MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
+//			//LogHelper.info(mop);
+//			//FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ));
+//			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 20F));
+//		}
 
-		if (world.isRemote){
-			particle(world, player);
-									//if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 10F));
+		//EntityDragonProjectile projectile = new EntityDragonProjectile(world, 6, null, 10, player);
+		//projectile.setPosition(player.posX, player.posY, player.posZ);
+
+
+
+		if (!world.isRemote)
+		{
+			int x1 = (int)player.posX;
+			int y1 = (int)player.posY;
+			int z1 = (int)player.posZ;
+
+			world.setBlock(x1, y1 + 20, z1, ModBlocks.infusedObsidian, 0, 2);
+			if (!world.isRemote) {
+				EntityChaosCrystal crystal = new EntityChaosCrystal(world);
+				crystal.setPosition(x1 + 0.5, y1 + 21, z1 + 0.5);
+				world.spawnEntityInWorld(crystal);
+			}
+			for (int y = y1; y < y1 + 20; y++) {
+				world.setBlock(x1, y, z1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 + 1, y, z1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 - 1, y, z1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1, y, z1 + 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1, y, z1 - 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 + 1, y, z1 + 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 - 1, y, z1 - 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 + 1, y, z1 - 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 - 1, y, z1 + 1, Blocks.obsidian, 0, 2);
+			}
+			//world.spawnEntityInWorld(projectile);
 		}
-		else {
-			MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
-			//LogHelper.info(mop);
-			//FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ));
-			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 20F));
-		}
+
+		List<Entity> l = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ, player.posX, player.posY, player.posZ).expand(500, 500, 500));
+		//for (Entity e : l) if (!(e instanceof EntityPlayer)) e.setDead();
 
 		if (1==1) return stack;
 		/*if (player instanceof EntityPlayerMP) {

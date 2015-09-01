@@ -267,6 +267,12 @@ public class ResourceHandler {
 		return cachedResources.get(rs);
 	}
 
+	public static ResourceLocation getResourceWOP(String rs)
+	{
+		if (!cachedResources.containsKey(rs)) cachedResources.put(rs, new ResourceLocation(rs));
+		return cachedResources.get(rs);
+	}
+
 	public static void bindResource(String rs)
 	{
 		bindTexture(ResourceHandler.getResource(rs));

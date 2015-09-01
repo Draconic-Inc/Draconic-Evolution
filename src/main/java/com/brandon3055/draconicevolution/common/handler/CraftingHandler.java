@@ -76,7 +76,7 @@ public class CraftingHandler {
 
 		//aesthetic
 		add(ModBlocks.particleGenerator, "RBR", "BCB", "RBR", 'R', Blocks.redstone_block, 'B', Items.blaze_rod, 'C', ModItems.draconicCore);
-		addOre(ModBlocks.infusedObsidian, "BOB", "ODO", "BOB", 'B', Items.blaze_powder, 'O', Blocks.obsidian, 'D', "dustDraconium");
+		addOre(new ItemStack(ModBlocks.infusedObsidian, 4), "BOB", "ODO", "BOB", 'B', Items.blaze_powder, 'O', Blocks.obsidian, 'D', "dustDraconium");
 
 		//machines
 		addOre(ModBlocks.potentiometer, "ITI", "QCQ", "IRI", 'I', "ingotIron", 'T', Blocks.redstone_torch, 'Q', "gemQuartz", 'C', Items.comparator, 'R', Blocks.redstone_block);

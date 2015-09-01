@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.common.world;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import net.minecraft.entity.item.EntityEnderCrystal;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosCrystal;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -29,10 +28,10 @@ public class WorldGenEnderIsland extends WorldGenerator {
 
 	@Override
 	public boolean generate(World world, Random random, int x, int y, int z) {
-		LogHelper.info("Generate");
+		//LogHelper.info("Generate");
 		for (int y1 = y - 10; y1 < y + 10; y1++) {
 			if (world.getBlock(x, y1, z) == Blocks.end_stone) {
-				LogHelper.info("cancel");
+				//LogHelper.info("cancel");
 				return false;
 			}
 		}
@@ -40,15 +39,8 @@ public class WorldGenEnderIsland extends WorldGenerator {
 		generateCentre(world, random);
 		generateBelt(world, random, size + 50, size + 200);
 		generateObelisks(world, random);
-		EntityCustomDragon dragon = new EntityCustomDragon(world, 500F, 100F);
+		EntityChaosGuardian dragon = new EntityChaosGuardian(world);
 		dragon.setPositionAndUpdate(x, 180, z);
-		dragon.setUber(true);
-		dragon.portalX = x;
-		dragon.portalY = y+20;
-		dragon.portalZ = z;
-		dragon.setCustomNameTag("Chaos Guardian");
-		//two dragons?dragon.onSpawnWithEgg(null);
-		LogHelper.info("Spawn dragon");
 		world.spawnEntityInWorld(dragon);
 		return true;
 	}
@@ -150,9 +142,9 @@ public class WorldGenEnderIsland extends WorldGenerator {
 
 	private void generateObelisk(World world, int x1, int y1, int z1, boolean outer, Random rand) {
 		if (!outer) {
-			world.setBlock(x1, y1 + 20, z1, Blocks.bedrock, 0, 2);
+			world.setBlock(x1, y1 + 20, z1, ModBlocks.infusedObsidian, 0, 2);
 			if (!world.isRemote) {
-				EntityEnderCrystal crystal = new EntityEnderCrystal(world);
+				EntityChaosCrystal crystal = new EntityChaosCrystal(world);
 				crystal.setPosition(x1 + 0.5, y1 + 21, z1 + 0.5);
 				world.spawnEntityInWorld(crystal);
 			}
@@ -168,9 +160,9 @@ public class WorldGenEnderIsland extends WorldGenerator {
 				world.setBlock(x1 - 1, y, z1 + 1, Blocks.obsidian, 0, 2);
 			}
 		} else {
-			world.setBlock(x1, y1 + 40, z1, Blocks.bedrock, 0, 2);
+			world.setBlock(x1, y1 + 40, z1, ModBlocks.infusedObsidian, 0, 2);
 			if (!world.isRemote) {
-				EntityEnderCrystal crystal = new EntityEnderCrystal(world);
+				EntityChaosCrystal crystal = new EntityChaosCrystal(world);
 				crystal.setPosition(x1 + 0.5, y1 + 41, z1 + 0.5);
 				world.spawnEntityInWorld(crystal);
 			}
