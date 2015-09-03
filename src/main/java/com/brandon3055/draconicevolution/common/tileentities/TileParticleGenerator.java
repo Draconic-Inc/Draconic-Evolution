@@ -17,6 +17,8 @@ import net.minecraft.util.AxisAlignedBB;
 import java.util.Random;
 
 public class TileParticleGenerator extends TileEntity {
+	public boolean particles_enabled = true;
+
 	public int red = 0;
 	public int green = 0;
 	public int blue = 0;
@@ -52,15 +54,28 @@ public class TileParticleGenerator extends TileEntity {
 	public float rotation = 0;
 	public boolean stabalizerMode = false;
 
+	//beam
+	public boolean beam_enabled = false;
+	public boolean render_core = false;
+
+	public int beam_red = 0;
+	public int beam_green = 0;
+	public int beam_blue = 0;
+	public float beam_scale = 1F;
+	public float beam_pitch = 0F;
+	public float beam_yaw = 0F;
+	public float beam_length = 0F;
+	public float beam_rotation = 0F;
+
 	private int tick = 0;
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void updateEntity() {
 		if (!worldObj.isRemote) return;
-
+		rotation += 0.5F;
 		if (stabalizerMode) {
-			rotation += 0.5F;
+
 			spawnStabilizerParticle();
 		}
 		if (stabalizerMode) return;
@@ -69,7 +84,7 @@ public class TileParticleGenerator extends TileEntity {
 		else if (!signal && inverted) active = true;
 		else active = false;
 
-		if (tick >= spawn_rate && active) {
+		if (tick >= spawn_rate && active && particles_enabled) {
 			tick = 0;
 
 				Random rand = worldObj.rand;
@@ -141,6 +156,36 @@ public class TileParticleGenerator extends TileEntity {
 	public void writeToNBT(NBTTagCompound compound) {
 		master.writeToNBT(compound, "Key");
 		compound.setBoolean("StabalizerMode", stabalizerMode);
+		getBlockNBT(compound);
+
+		super.writeToNBT(compound);
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		master.readFromNBT(compound, "Key");
+		stabalizerMode = compound.getBoolean("StabalizerMode");
+		setBlockNBT(compound);
+		super.readFromNBT(compound);
+	}
+
+	public TileEnergyStorageCore getMaster() {
+		if (master == null) return null;
+		TileEnergyStorageCore tile = (worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) != null && worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) : null;
+		return tile;
+	}
+
+	public void setMaster(TileLocation master) {
+		this.master = master;
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		return INFINITE_EXTENT_AABB;
+	}
+
+	public void getBlockNBT(NBTTagCompound compound)
+	{
 		compound.setInteger("Red", red);
 		compound.setInteger("Green", green);
 		compound.setInteger("Blue", blue);
@@ -172,14 +217,22 @@ public class TileParticleGenerator extends TileEntity {
 		compound.setBoolean("Active", active);
 		compound.setBoolean("Signal", signal);
 		compound.setBoolean("Inverted", inverted);
+		compound.setBoolean("particles_enabled", particles_enabled);
 
-		super.writeToNBT(compound);
+		compound.setBoolean("beam_enabled", beam_enabled);
+		compound.setBoolean("render_core", render_core);
+		compound.setInteger("beam_red", beam_red);
+		compound.setInteger("beam_green", beam_green);
+		compound.setInteger("beam_blue", beam_blue);
+		compound.setFloat("beam_scale", beam_scale);
+		compound.setFloat("beam_pitch", beam_pitch);
+		compound.setFloat("beam_yaw", beam_yaw);
+		compound.setFloat("beam_length", beam_length);
+		compound.setFloat("beam_rotation", beam_rotation);
 	}
 
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		master.readFromNBT(compound, "Key");
-		stabalizerMode = compound.getBoolean("StabalizerMode");
+	public void setBlockNBT(NBTTagCompound compound)
+	{
 		red = compound.getInteger("Red");
 		green = compound.getInteger("Green");
 		blue = compound.getInteger("Blue");
@@ -211,22 +264,22 @@ public class TileParticleGenerator extends TileEntity {
 		active = compound.getBoolean("Active");
 		signal = compound.getBoolean("Signal");
 		inverted = compound.getBoolean("Inverted");
+		particles_enabled = compound.getBoolean("particles_enabled");
 
-		super.readFromNBT(compound);
+		beam_enabled = compound.getBoolean("beam_enabled");
+		render_core = compound.getBoolean("render_core");
+		beam_red = compound.getInteger("beam_red");
+		beam_green = compound.getInteger("beam_green");
+		beam_blue = compound.getInteger("beam_blue");
+		beam_scale = compound.getFloat("beam_scale");
+		beam_pitch = compound.getFloat("beam_pitch");
+		beam_yaw = compound.getFloat("beam_yaw");
+		beam_length = compound.getFloat("beam_length");
+		beam_rotation = compound.getFloat("beam_rotation");
 	}
 
-	public TileEnergyStorageCore getMaster() {
-		if (master == null) return null;
-		TileEnergyStorageCore tile = (worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) != null && worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) : null;
-		return tile;
-	}
-
-	public void setMaster(TileLocation master) {
-		this.master = master;
-	}
-
-	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return INFINITE_EXTENT_AABB;
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 655360.0D;
 	}
 }

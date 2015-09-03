@@ -118,10 +118,11 @@ public abstract class GUIBase extends GuiContainer {
 	public void updateScreen() {
 		super.updateScreen();
 		collection.removeScheduled();
+		collection.updateScreen();
 		buttonPressed = false;
 	}
 
-	public void buttonClicked(int id){buttonPressed = true;}
+	public void buttonClicked(int id, int button){buttonPressed = true;}
 
 	public int getXSize() { return xSize; }
 

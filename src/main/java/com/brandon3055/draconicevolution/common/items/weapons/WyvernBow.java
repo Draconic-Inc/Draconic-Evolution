@@ -6,14 +6,15 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +42,7 @@ public class WyvernBow extends ItemBow implements IInventoryTool {
 		this.setMaxDamage(-1);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		this.setUnlocalizedName(Strings.wyvernBowName);
-		GameRegistry.registerItem(this, Strings.wyvernBowName);
+		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.wyvernBowName);
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class WyvernBow extends ItemBow implements IInventoryTool {
 		return getUnlocalizedName();
 	}
 
-	/* ======================================== CUSTOMEBOW START =====================================*/
+	/* ======================================== CUSTOMEBOW START ===================================== */
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -71,7 +72,7 @@ public class WyvernBow extends ItemBow implements IInventoryTool {
 				return event.result;
 			}
 
-			if (player.capabilities.isCreativeMode || player.inventory.hasItem(Items.arrow) || player.inventory.hasItem(ModItems.enderArrow)) {
+			if (player.capabilities.isCreativeMode || player.inventory.hasItem(Items.arrow) || player.inventory.hasItem(ModItems.enderArrow) || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0) {
 				player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 			}
 		} else
@@ -107,8 +108,6 @@ public class WyvernBow extends ItemBow implements IInventoryTool {
 	{
 		String currentMode = ItemNBTHelper.getString(stack, "mode", "rapidfire");
 
-		System.out.println("curent mode:" + currentMode);
-		
 		if (currentMode.equals("rapidfire"))
 			ItemNBTHelper.setString(stack, "mode", "sharpshooter"); 
 		else

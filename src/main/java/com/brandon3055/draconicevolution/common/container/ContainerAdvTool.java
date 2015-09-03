@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.common.inventory.InventoryTool;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -185,7 +186,7 @@ public class ContainerAdvTool extends ContainerDataSync {
 			NBTTagList list = stack.getTagCompound().getTagList("StoredEnchantments", 10);
 			if (list.tagCount() != 1) return false;
 			Enchantment enchant = Enchantment.enchantmentsList[list.getCompoundTagAt(0).getInteger("id")];
-			if (inventoryTool.inventoryItem == null || !(inventoryTool.inventoryItem.getItem() instanceof IInventoryTool) || !((IInventoryTool) inventoryTool.inventoryItem.getItem()).isEnchantValid(enchant)) return false;
+			if (inventoryTool.inventoryItem == null || !(inventoryTool.inventoryItem.getItem() instanceof IInventoryTool) || (!((IInventoryTool) inventoryTool.inventoryItem.getItem()).isEnchantValid(enchant) && enchant.type != EnumEnchantmentType.all)) return false;
 			if (EnchantmentHelper.getEnchantments(inventoryTool.inventoryItem).containsKey(list.getCompoundTagAt(0).getInteger("id"))) return false;
 			return super.isItemValid(stack);
 		}

@@ -157,7 +157,6 @@ public class TileWeatherController extends TileEntity implements IInventory {
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
 	{
 		readFromNBT(pkt.func_148857_g());
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	//==============================================INVENTORY====================================================//
@@ -236,6 +235,14 @@ public class TileWeatherController extends TileEntity implements IInventory {
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player)
 	{
+		if (worldObj == null)
+		{
+			return true;
+		}
+		if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this)
+		{
+			return false;
+		}
 		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
 	}
 

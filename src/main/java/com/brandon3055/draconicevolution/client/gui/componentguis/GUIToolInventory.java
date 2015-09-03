@@ -50,8 +50,8 @@ public class GUIToolInventory extends GUIBase {
 	}
 
 	@Override
-	public void buttonClicked(int id) {
-		super.buttonClicked(id);
+	public void buttonClicked(int id, int button) {
+		super.buttonClicked(id, button);
 		if (guiToolConfig == null) guiToolConfig = new GUIToolConfig(player, container);
 		guiToolConfig.updateItemButtons();
 		Minecraft.getMinecraft().displayGuiScreen(guiToolConfig);

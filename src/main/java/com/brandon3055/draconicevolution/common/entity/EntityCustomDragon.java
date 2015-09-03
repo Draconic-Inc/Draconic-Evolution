@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.entity;
 
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.DamageSourceChaos;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEndPortal;
 import net.minecraft.entity.Entity;
@@ -72,7 +74,7 @@ public class EntityCustomDragon extends EntityDragon {
 		float f;
 		float f1;
 
-		if (!initialized){
+		if (!initialized && !worldObj.isRemote){
 			this.addPotionEffect(new PotionEffect(10, 600, 10, false));
 			initialized = true;
 		}
@@ -315,6 +317,12 @@ public class EntityCustomDragon extends EntityDragon {
 					}
 				}
 			}
+			if (ConfigHandler.dragonEggSpawnLocation[0] != 0 || ConfigHandler.dragonEggSpawnLocation[1] != 0 || ConfigHandler.dragonEggSpawnLocation[1] != 0) {
+				createPortal = false;
+				portalX = ConfigHandler.dragonEggSpawnLocation[0];
+				portalY = ConfigHandler.dragonEggSpawnLocation[1];
+				portalZ = ConfigHandler.dragonEggSpawnLocation[2];
+			}
 		}
 
 		++this.deathTicks;
@@ -345,14 +353,6 @@ public class EntityCustomDragon extends EntityDragon {
 					i -= j;
 					this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
 				}
-/*
-				float mm = 0.3F;
-				EntityItem item = new EntityItem(worldObj, posX, posY, posZ, new ItemStack(ModItems.draconiumDust, 3 + worldObj.rand.nextInt(3)));
-				item.motionX = mm * ((((float)worldObj.rand.nextInt(100))/100F) - 0.5F);
-				item.motionY = mm * ((((float)worldObj.rand.nextInt(100))/100F) - 0.5F);
-				item.motionZ = mm * ((((float)worldObj.rand.nextInt(100))/100F) - 0.5F);
-				worldObj.spawnEntityInWorld(item);
-*/
 			}
 
 			if (this.deathTicks == 1) {
@@ -389,7 +389,7 @@ public class EntityCustomDragon extends EntityDragon {
 				double d2 = entity.posX - d0;
 				double d3 = entity.posZ - d1;
 				double d4 = d2 * d2 + d3 * d3;
-				entity.addVelocity(d2 / d4 * 8.0D, 5.20000000298023224D, d3 / d4 * 8.0D);
+				if (rand.nextInt(isUber ? 3 : 10) == 0) entity.addVelocity(d2 / d4 * 8.0D, 5.20000000298023224D, d3 / d4 * 8.0D);
 				entity.velocityChanged = true;
 				((EntityLivingBase)entity).setLastAttacker(this);
 			}
@@ -479,6 +479,8 @@ public class EntityCustomDragon extends EntityDragon {
 	}
 
 	private boolean destroyBlocksInAABB(AxisAlignedBB par1AxisAlignedBB) {
+		if (!ConfigHandler.dragonBreaksBlocks) return false;
+
 		int i = MathHelper.floor_double(par1AxisAlignedBB.minX);
 		int j = MathHelper.floor_double(par1AxisAlignedBB.minY);
 		int k = MathHelper.floor_double(par1AxisAlignedBB.minZ);
@@ -516,17 +518,26 @@ public class EntityCustomDragon extends EntityDragon {
 
 	private void spawnEgg()
 	{
+		if (ConfigHandler.dragonEggSpawnLocation[0] != 0 || ConfigHandler.dragonEggSpawnLocation[1] != 0 || ConfigHandler.dragonEggSpawnLocation[1] != 0 && !isUber) {
+			portalX = ConfigHandler.dragonEggSpawnLocation[0];
+			portalY = ConfigHandler.dragonEggSpawnLocation[1];
+			portalZ = ConfigHandler.dragonEggSpawnLocation[2];
+		}
+
 		BlockEndPortal.field_149948_a = true;
 
 		if (createPortal || isUber) {
 			createEnderPortal(portalX, portalZ);
 		}
+		LogHelper.info("spawn egg");
 		if (worldObj.getBlock(portalX, portalY + 1, portalZ) == Blocks.air) {
 			worldObj.setBlock(portalX, portalY + 1, portalZ, Blocks.dragon_egg);
+			LogHelper.info("spawn egg2 " + portalX + " " + portalY + " " + portalZ);
 		}else {
 			for (int i = portalY + 1; i < 250; i++) {
 				if (worldObj.getBlock(portalX, i, portalZ) == Blocks.air) {
 					worldObj.setBlock(portalX, i, portalZ, Blocks.dragon_egg);
+					LogHelper.info("spawn egg3");
 					break;
 				}
 			}
@@ -603,9 +614,12 @@ public class EntityCustomDragon extends EntityDragon {
 		compound.setFloat("AttackDamage", attackDamage);
 		compound.setBoolean("IsUber", isUber);
 		compound.setBoolean("Initialized", initialized);
-		compound.setInteger("PortalX", portalX);
-		compound.setInteger("PortalY", portalY);
-		compound.setInteger("PortalZ", portalZ);
+		if (isUber)
+		{
+			compound.setInteger("PortalX", portalX);
+			compound.setInteger("PortalY", portalY);
+			compound.setInteger("PortalZ", portalZ);
+		}
 	}
 
 	@Override
@@ -615,9 +629,12 @@ public class EntityCustomDragon extends EntityDragon {
 		isUber = compound.getBoolean("IsUber");
 		initialized = compound.getBoolean("Initialized");
 		this.dataWatcher.updateObject(12, isUber ? (byte)1: (byte)0);
-		portalX = compound.getInteger("PortalX");
-		portalY = compound.getInteger("PortalY");
-		portalZ = compound.getInteger("PortalZ");
+		if (isUber)
+		{
+			portalX = compound.getInteger("PortalX");
+			portalY = compound.getInteger("PortalY");
+			portalZ = compound.getInteger("PortalZ");
+		}
 	}
 
 	@Override
@@ -656,4 +673,7 @@ public class EntityCustomDragon extends EntityDragon {
 //		}
 		return super.attackEntityFromPart(p_70965_1_, damageSource, p_70965_3_);
 	}
+
+	@Override
+	public void travelToDimension(int p_71027_1_) {}
 }

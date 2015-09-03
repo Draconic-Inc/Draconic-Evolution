@@ -1,9 +1,11 @@
 ## gradle
 /.gradle
 /build
+/libs
 
 ## ForgeGradle
 /run
+/runClean
 
 ## eclipse
 /eclipse

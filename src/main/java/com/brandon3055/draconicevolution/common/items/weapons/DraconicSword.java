@@ -8,9 +8,10 @@ import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHand
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,6 +26,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -40,7 +42,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 		super(ModItems.DRACONIUM_T2);
 		this.setUnlocalizedName(Strings.draconicSwordName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
-		GameRegistry.registerItem(this, Strings.draconicSwordName);
+		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.draconicSwordName);
 	}
 
 	@Override
@@ -76,8 +78,8 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
-		ToolHandler.AOEAttack(player, entity, stack, 15, 3);
-		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.3F);
+		ToolHandler.AOEAttack(player, entity, stack, 3);
+		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.2F);
 		return true;
 	}
 
@@ -90,6 +92,9 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.sword.txt"));
 			InfoHelper.addLore(stack, list);
 		}
+		list.add("");
+		list.add(EnumChatFormatting.BLUE + "+" + ToolHandler.getBaseAttackDamage(stack) + " " + StatCollector.translateToLocal("info.de.attackDamage.txt"));
+		list.add(EnumChatFormatting.BLUE + "+20%" + " " + StatCollector.translateToLocal("info.de.bonusHealthDamage.txt"));
 	}
 
 	@Override
@@ -181,5 +186,12 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		return new ArrayList<ItemConfigField>();
+	}
+
+	@Override
+	public Multimap getAttributeModifiers(ItemStack stack) {
+		Multimap map = super.getAttributeModifiers(stack);
+		map.clear();
+		return map;
 	}
 }

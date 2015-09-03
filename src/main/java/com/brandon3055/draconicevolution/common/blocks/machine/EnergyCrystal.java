@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.*;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
@@ -33,10 +33,12 @@ import java.util.List;
  */
 public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 {
-	public static final byte RELAY_TIER_1  			= 0;
-	public static final byte RELAY_TIER_2			= 1;
-	public static final byte TRANSCEIVER_TIER_1		= 2;
-	public static final byte TRANSCEIVER_TIER_2		= 3;
+	public static final byte RELAY_TIER_1  					= 0;
+	public static final byte RELAY_TIER_2					= 1;
+	public static final byte TRANSCEIVER_TIER_1				= 2;
+	public static final byte TRANSCEIVER_TIER_2				= 3;
+	public static final byte WIRELESS_TRANSCEIVER_TIER_1	= 3;
+	public static final byte WIRELESS_TRANSCEIVER_TIER_2	= 4;
 
 	public EnergyCrystal()
 	{
@@ -55,12 +57,14 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 		list.add(new ItemStack(item, 1, 1));
 		list.add(new ItemStack(item, 1, 2));
 		list.add(new ItemStack(item, 1, 3));
+		list.add(new ItemStack(item, 1, 4));
+		list.add(new ItemStack(item, 1, 5));
 	}
 
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
 		int meta = world.getBlockMetadata(x, y, z);
-		if (meta == 1 || meta == 0) setBlockBounds(0.37F, 0.135F, 0.37F, 0.63F, 0.865F, 0.63F);
+		if (meta == 1 || meta == 0 || meta == 4 || meta == 5) setBlockBounds(0.37F, 0.135F, 0.37F, 0.63F, 0.865F, 0.63F);
 		else if (meta == 2 || meta == 3)
 		{
 			TileEnergyTransceiver tile = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver ? (TileEnergyTransceiver) world.getTileEntity(x, y, z) : null;
@@ -94,7 +98,7 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
 		int meta = world.getBlockMetadata(x, y, z);
-		if (meta == 1 || meta == 0) return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.135F, z + 0.37F, x + 0.63F, y + 0.865F, z + 0.63F);
+		if (meta == 1 || meta == 0 || meta == 4 || meta == 5) return AxisAlignedBB.getBoundingBox(x + 0.37F, y + 0.135F, z + 0.37F, x + 0.63F, y + 0.865F, z + 0.63F);
 		else if (meta == 2 || meta == 3)
 		{
 			TileEnergyTransceiver tile = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver ? (TileEnergyTransceiver) world.getTileEntity(x, y, z) : null;
@@ -158,7 +162,7 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
-		return metadata == 0 || metadata == 1 ? new TileEnergyRelay(metadata) : metadata == 2 || metadata == 3 ? new TileEnergyTransceiver(metadata - 2) : null;
+		return metadata == 0 || metadata == 1 ? new TileEnergyRelay(metadata) : metadata == 2 || metadata == 3 ? new TileEnergyTransceiver(metadata - 2) : metadata == 4 || metadata == 5 ? new TileWirelessEnergyTransceiver(metadata - 4) : null;
 	}
 
 	@Override
@@ -198,12 +202,12 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 	}
 
 	@Override
-	public List<String> getDisplayData(World world, int x, int y, int z) {//todo Localization
+	public List<String> getDisplayData(World world, int x, int y, int z) {
 		List<String> list = new ArrayList<String>();
 		IRemoteEnergyHandler tile = world.getTileEntity(x, y, z) instanceof IRemoteEnergyHandler ? (IRemoteEnergyHandler) world.getTileEntity(x, y, z) : null;
 		if (tile != null)
 		{
-			list.add(InfoHelper.HITC()+getLocalizedName());
+			list.add(InfoHelper.HITC()+StatCollector.translateToLocal(this.getUnlocalizedName() + world.getBlockMetadata(x, y, z) + ".name"));
 			list.add("RF: " + tile.getEnergyStored(ForgeDirection.DOWN));
 			list.add("Cap: " + tile.getCapacity() + "%");
 			if (tile instanceof TileEnergyTransceiver) {
@@ -212,6 +216,9 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock
 			}
 			if (tile instanceof TileRemoteEnergyBase) {
 				list.add(StatCollector.translateToLocal("info.de.connections.txt") + ": " + ((TileRemoteEnergyBase) tile).linkedDevices.size() + "/" + tile.getMaxConnections());
+			}
+			if (tile instanceof TileWirelessEnergyTransceiver){
+				list.add(StatCollector.translateToLocal("info.de.wirelessConnections.txt") + ": " + ((TileWirelessEnergyTransceiver) tile).receiverList.size() + "/" + ((TileWirelessEnergyTransceiver) tile).getmaxWirelessConnections());
 			}
 
 			if (tile instanceof TileRemoteEnergyBase)

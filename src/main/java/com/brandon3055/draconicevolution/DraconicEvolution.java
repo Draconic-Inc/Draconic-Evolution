@@ -17,8 +17,12 @@ import net.minecraft.enchantment.Enchantment;
 
 import java.util.Arrays;
 
-@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, canBeDeactivated = false, guiFactory = References.GUIFACTORY,  dependencies = "after:NotEnoughItems;after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;")
-public class DraconicEvolution { // TODO Update Licence and add change log to github
+@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, canBeDeactivated = false, guiFactory = References.GUIFACTORY,  dependencies = "after:NotEnoughItems;" +
+		"after:NotEnoughItems;" +
+		"after:ThermalExpansion;" +
+		"after:ThermalFoundation;" +
+		"required-after:BrandonsCore@[1.0.0.6,);")
+public class DraconicEvolution {
 
 	@Mod.Instance(References.MODID)
 	public static DraconicEvolution instance;
@@ -72,7 +76,6 @@ public class DraconicEvolution { // TODO Update Licence and add change log to gi
 		System.out.println("postInit()");
 	
 		proxy.postInit(event);
-		
 	}
 
 	//FMLInterModComms.sendMessage("DraconicEvolution", "addChestRecipe:item.coal", new ItemStack(Items.diamond, 2));

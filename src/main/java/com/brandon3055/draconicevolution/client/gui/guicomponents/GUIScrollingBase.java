@@ -16,6 +16,7 @@ public abstract class GUIScrollingBase extends GUIBase {
 
 	@Override
 	public void handleMouseInput() {
+		super.handleMouseInput();
 		int i = org.lwjgl.input.Mouse.getEventDWheel();
 		if (i != 0) {
 			handleScrollInput(i > 0 ? -1 : 1);

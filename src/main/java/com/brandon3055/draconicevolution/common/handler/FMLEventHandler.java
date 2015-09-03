@@ -1,15 +1,21 @@
 package com.brandon3055.draconicevolution.common.handler;
 
 
+import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -19,6 +25,7 @@ public class FMLEventHandler {
 	public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
 	public static List<String> playersWithUphillStep = new ArrayList<String>();
 	public static Field walkSpeed;
+	private static boolean mmGiven = false;
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
@@ -32,7 +39,6 @@ public class FMLEventHandler {
 	public void onEntityUpdate(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.START) return;
 		EntityPlayer player = event.player;
-
 		//Reset Walk Speed----------------------------------------------------------------------------------------------
 
 		if (walkSpeed == null){
@@ -76,8 +82,11 @@ public class FMLEventHandler {
 			float percentIncrease = ArmorEffectHandler.getSwiftnessMultiplier(player) * ((i + 1) * 0.05f);
 
 			if ((player.onGround || player.capabilities.isFlying) && player.moveForward > 0F)
+			{
 				player.moveFlying(0F, 1F, player.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
 
+			}
+			player.jumpMovementFactor = 0.02F + (percentIncrease * 0.2F);
 		}
 
 		//Apply Flight--------------------------------------------------------------------------------------------------
@@ -86,6 +95,21 @@ public class FMLEventHandler {
 			playersWithFlight.put(player, true);
 			player.capabilities.allowFlying = true;
 			if (ArmorEffectHandler.getFlightLock(player)) player.capabilities.isFlying = true;
+
+			if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && ((ArmorEffectHandler.getVAccSprint(player) && BrandonsCore.proxy.isCtrlDown()) || (!ArmorEffectHandler.getVAccSprint(player))))
+			{
+				float percentIncrease = ArmorEffectHandler.getVAccel(player);
+
+				if (BrandonsCore.proxy.isSpaceDown() && !BrandonsCore.proxy.isShiftDown())
+				{
+					player.motionY =(double)(percentIncrease * 2F);
+				}
+
+				if (BrandonsCore.proxy.isShiftDown() && !BrandonsCore.proxy.isSpaceDown())
+				{
+					player.motionY = -(double)(percentIncrease * 2F);
+				}
+			}
 
 		} else {
 
@@ -102,6 +126,17 @@ public class FMLEventHandler {
 					player.sendPlayerAbilities();
 				}
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public void playerLogin(PlayerEvent.PlayerLoggedInEvent event)
+	{
+		if (!mmGiven && event.player.getCommandSenderName().toLowerCase().equals("dezil_nz"))
+		{
+			mmGiven = true;
+			event.player.addChatComponentMessage(new ChatComponentText("Hello Dez! Here have a Marshmallow"));
+			event.player.worldObj.spawnEntityInWorld(new EntityItem(event.player.worldObj, event.player.posX, event.player.posY, event.player.posZ, new ItemStack(ModItems.dezilsMarshmallow)));
 		}
 	}
 }

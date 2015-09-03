@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.common.network;
 
 import com.brandon3055.draconicevolution.common.container.ContainerDataSync;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
-import com.brandon3055.draconicevolution.common.utills.DataUtills;
+import com.brandon3055.brandonscore.common.utills.DataUtills;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -86,7 +86,7 @@ public class TileObjectPacket implements IMessage{
 				{
 					if (!(Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z) instanceof TileObjectSync))
 						return null;
-					((TileObjectSync) Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z)).receiveObject(message.index, message.object);
+					((TileObjectSync) Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z)).receiveObjectFromServer(message.index, message.object);
 				}
 			}
 			else
@@ -100,7 +100,7 @@ public class TileObjectPacket implements IMessage{
 				{
 					if (!(ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z) instanceof TileObjectSync))
 						return null;
-					((TileObjectSync) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z)).receiveObject(message.index, message.object);
+					((TileObjectSync) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z)).receiveObjectFromClient(message.index, message.object);
 				}
 			}
 			return null;

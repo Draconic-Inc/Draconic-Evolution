@@ -1,17 +1,23 @@
 package com.brandon3055.draconicevolution.common.items;
 
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosCrystal;
+import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -34,6 +40,29 @@ public class Tclogo extends ItemDE {
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5)
 	{
+//		if (entity instanceof EntityPlayerMP && !entity.onGround) {
+//			//for (int i = 0; i < 10; i++)
+//			EntityPlayer player = (EntityPlayer)entity;
+//			if (player.posX < 500){
+//
+//				((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(player.posX + 10, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+//				player.motionX += 10;
+//				if (player.posX > 128) {
+//
+//					((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(501, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+//
+//				}
+//
+//			}
+//			else player.motionX = 0;
+
+
+
+//			((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(entity.posX + 10, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+//			((EntityPlayerMP) entity).addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 10, 1000));
+//			if (entity.posX > 500) ((EntityPlayerMP) entity).destroyCurrentEquippedItem();
+//		}
+		/*
 		//if (entity.isCollidedHorizontally)// && !world.isRemote)
 			//entity.setLocationAndAngles(entity.posX+30D, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);;
 		/*
@@ -73,27 +102,97 @@ public class Tclogo extends ItemDE {
         return par1ItemStack;
     }
 
+	@SideOnly(Side.CLIENT)
+	private void particle(World world, EntityPlayer player){
+		MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
+		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ, 100));
+
+	}
+
+	private static int lts = 0;
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+//		if ((int)System.currentTimeMillis() < lts + 10) return stack;
+//		else lts = (int)System.currentTimeMillis();
+		//world.playSound(player.posX, player.posY, player.posZ, "DraconicEvolution:fusionExplosion", 1F, 1F, false);
+//		LogHelper.info(GameRegistry.findBlock("ThermalDynamics", "ThermalDynamics_0"));
+//		if (player.inventory.getStackInSlot(0) != null) LogHelper.info(GameRegistry.findUniqueIdentifierFor(player.inventory.getStackInSlot(0).getItem()));
+//
+//		if (world.isRemote){
+//			particle(world, player);
+//									//if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 10F));
+//		}
+//		else {
+//			MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
+//			//LogHelper.info(mop);
+//			//FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ));
+//			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 20F));
+//		}
 
-		if (world.isRemote)
+		//EntityDragonProjectile projectile = new EntityDragonProjectile(world, 6, null, 10, player);
+		//projectile.setPosition(player.posX, player.posY, player.posZ);
+
+
+
+		if (!world.isRemote)
 		{
-			String str = "A String";
-			IChatComponent localIChatComponent;
+			int x1 = (int)player.posX;
+			int y1 = (int)player.posY;
+			int z1 = (int)player.posZ;
 
-
-			localIChatComponent = IChatComponent.Serializer.func_150699_a("[{\"text\":\"" + str + "\",\"color\":\"aqua\"}," + "{\"text\":\" " + EnumChatFormatting.WHITE + "[" + EnumChatFormatting.GREEN +
-					"info.cofh.updater.download" + EnumChatFormatting.WHITE + "]\"," + "\"color\":\"green\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":" + "{\"text\":\"" +
-
-					"info.cofh.updater.tooltip" + ".\",\"color\":\"yellow\"}}," + "\"clickEvent\":{\"action\":\"open_url\",\"value\":\"" + "www.google.com" + "\"}}]");
-
-			//player.addChatMessage(localIChatComponent);
+			world.setBlock(x1, y1 + 20, z1, ModBlocks.infusedObsidian, 0, 2);
+			if (!world.isRemote) {
+				EntityChaosCrystal crystal = new EntityChaosCrystal(world);
+				crystal.setPosition(x1 + 0.5, y1 + 21, z1 + 0.5);
+				world.spawnEntityInWorld(crystal);
+			}
+			for (int y = y1; y < y1 + 20; y++) {
+				world.setBlock(x1, y, z1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 + 1, y, z1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 - 1, y, z1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1, y, z1 + 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1, y, z1 - 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 + 1, y, z1 + 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 - 1, y, z1 - 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 + 1, y, z1 - 1, Blocks.obsidian, 0, 2);
+				world.setBlock(x1 - 1, y, z1 + 1, Blocks.obsidian, 0, 2);
+			}
+			//world.spawnEntityInWorld(projectile);
 		}
-		else
-		{
-			for (Object o : EntityList.classToStringMapping.values()) LogHelper.info(o);
+
+		List<Entity> l = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ, player.posX, player.posY, player.posZ).expand(500, 500, 500));
+		//for (Entity e : l) if (!(e instanceof EntityPlayer)) e.setDead();
+
+		if (1==1) return stack;
+		/*if (player instanceof EntityPlayerMP) {
+			for (int i = 0; i < 10; i++)
+			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(player.posX + 1, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
 		}
+
+		if (1==1) return stack;*/
+
+		//Minecraft.getMinecraft().gameSettings.mouseSensitivity = -0.34F;
+
+//		if (world.isRemote)
+//		{
+//			ResourceHandler.init(null);
+//			String str = "A String";
+//			IChatComponent localIChatComponent;
+//
+//
+//			localIChatComponent = IChatComponent.Serializer.func_150699_a("[{\"text\":\"" + str + "\",\"color\":\"aqua\"}," + "{\"text\":\" " + EnumChatFormatting.WHITE + "[" + EnumChatFormatting.GREEN +
+//					"info.cofh.updater.download" + EnumChatFormatting.WHITE + "]\"," + "\"color\":\"green\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":" + "{\"text\":\"" +
+//
+//					"info.cofh.updater.tooltip" + ".\",\"color\":\"yellow\"}}," + "\"clickEvent\":{\"action\":\"open_url\",\"value\":\"" + "www.google.com" + "\"}}]");
+//
+//			//player.addChatMessage(localIChatComponent);
+//		}
+//		else
+//		{
+//			//for (Object o : EntityList.classToStringMapping.values()) LogHelper.info(o);
+//		}
 
 
 		if (!player.isSneaking())
@@ -205,26 +304,31 @@ public class Tclogo extends ItemDE {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
-		list.add(EnumChatFormatting.AQUA + "AQUA");
-		list.add(EnumChatFormatting.BLACK + "BLACK");
-		list.add(EnumChatFormatting.BLUE + "BLUE");
-		list.add(EnumChatFormatting.DARK_AQUA + "DARK_AQUA");
-		list.add(EnumChatFormatting.DARK_BLUE + "DARK_BLUE");
-		list.add(EnumChatFormatting.DARK_GRAY + "DARK_GRAY");
-		list.add(EnumChatFormatting.DARK_GREEN + "DARK_GREEN");
-		list.add(EnumChatFormatting.DARK_PURPLE + "DARK_PURPLE");
-		list.add(EnumChatFormatting.DARK_RED + "DARK_RED");
-		list.add(EnumChatFormatting.GOLD + "GOLD");
-		list.add(EnumChatFormatting.GRAY + "GRAY");
-		list.add(EnumChatFormatting.GREEN + "GREEN");
-		list.add(EnumChatFormatting.LIGHT_PURPLE + "LIGHT_PURPLE");
-		list.add(EnumChatFormatting.RED + "RED");
-		list.add(EnumChatFormatting.WHITE + "WHITE");
-		list.add(EnumChatFormatting.YELLOW + "YELLOW");
-		list.add(EnumChatFormatting.BOLD + "BOLD");
-		list.add(EnumChatFormatting.ITALIC + "ITALIC");
-		list.add(EnumChatFormatting.OBFUSCATED + "OBFUSCATED");
-		list.add(EnumChatFormatting.UNDERLINE + "UNDERLINE");
-		list.add(EnumChatFormatting.STRIKETHROUGH + "STRIKETHROUGH");
+		list.add(EnumChatFormatting.RED + "Warning! this is an item used to test random bits of code. You should not play with it");
+		list.add(EnumChatFormatting.RED + "because depending on what i used it for last it could do anything.");
+		list.add(EnumChatFormatting.RED + "It may even break your world");
+		list.add("At the time this warning was added it created a 200x200 block smoking creator");
+
+//		list.add(EnumChatFormatting.AQUA + "AQUA");
+//		list.add(EnumChatFormatting.BLACK + "BLACK");
+//		list.add(EnumChatFormatting.BLUE + "BLUE");
+//		list.add(EnumChatFormatting.DARK_AQUA + "DARK_AQUA");
+//		list.add(EnumChatFormatting.DARK_BLUE + "DARK_BLUE");
+//		list.add(EnumChatFormatting.DARK_GRAY + "DARK_GRAY");
+//		list.add(EnumChatFormatting.DARK_GREEN + "DARK_GREEN");
+//		list.add(EnumChatFormatting.DARK_PURPLE + "DARK_PURPLE");
+//		list.add(EnumChatFormatting.DARK_RED + "DARK_RED");
+//		list.add(EnumChatFormatting.GOLD + "GOLD");
+//		list.add(EnumChatFormatting.GRAY + "GRAY");
+//		list.add(EnumChatFormatting.GREEN + "GREEN");
+//		list.add(EnumChatFormatting.LIGHT_PURPLE + "LIGHT_PURPLE");
+//		list.add(EnumChatFormatting.RED + "RED");
+//		list.add(EnumChatFormatting.WHITE + "WHITE");
+//		list.add(EnumChatFormatting.YELLOW + "YELLOW");
+//		list.add(EnumChatFormatting.BOLD + "BOLD");
+//		list.add(EnumChatFormatting.ITALIC + "ITALIC");
+//		list.add(EnumChatFormatting.OBFUSCATED + "OBFUSCATED");
+//		list.add(EnumChatFormatting.UNDERLINE + "UNDERLINE");
+//		list.add(EnumChatFormatting.STRIKETHROUGH + "STRIKETHROUGH");
 	}
 }

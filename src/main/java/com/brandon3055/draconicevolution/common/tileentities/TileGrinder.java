@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -28,7 +29,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +52,6 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	public EnergyStorage internalGenBuffer = new EnergyStorage(20000, 32000, 0);
 	public EnergyStorage externalInputBuffer = new EnergyStorage(100000, 32000, 0);
 	public int energyPerKill = 1000;
-	private static Field recentlyHit;
 	public static FakePlayer fakePlayer;
 
 	public void updateVariables() {
@@ -81,7 +80,6 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 					break;
 			}
 		}
-		hasPower = getActiveBuffer().getEnergyStored() >= energyPerKill;
 	}
 	//##################################//
 
@@ -91,10 +89,11 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 	@Override
 	public void updateEntity() {
-
 		updateVariables();
+
 		if (worldObj.isRemote) return;
 
+		hasPower = getActiveBuffer().getEnergyStored() >= energyPerKill;
 
 		int burnSpeed = 2;
 		int EPBT = 10;
@@ -122,10 +121,6 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 		return isExternallyPowered() ? externalInputBuffer : internalGenBuffer;
 	}
 
-	public void checkSignal() {
-		disabled = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-	}
-
 	public boolean isExternallyPowered()
 	{
 		return externalInputBuffer.getEnergyStored() > energyPerKill;
@@ -151,10 +146,12 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	@SuppressWarnings("unchecked")
 	public boolean killNextEntity() {
 		if (worldObj.isRemote) return false;
-		if (fakePlayer == null) fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.randomUUID(), "[Draconic-Evolution]"));
+		if (fakePlayer == null) fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
 		killBox = AxisAlignedBB.getBoundingBox(centreX - 4.5, centreY - 4.5, centreZ - 4.5, centreX + 4.5, centreY + 4.5, centreZ + 4.5);
 
 		killList = worldObj.getEntitiesWithinAABB(EntityLiving.class, killBox);
+		List<EntityXPOrb> xp = worldObj.getEntitiesWithinAABB(EntityXPOrb.class, killBox.expand(4, 4, 4));
+		for (EntityXPOrb orb : xp) if (orb.xpOrbAge < 5400) orb.xpOrbAge = 5400;
 
 		if (killList.size() > 0) {
 			EntityLiving mob = killList.get(worldObj.rand.nextInt(killList.size()));
@@ -305,6 +302,14 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
+		if (worldObj == null)
+		{
+			return true;
+		}
+		if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this)
+		{
+			return false;
+		}
 		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.4) < 64;
 	}
 
@@ -379,23 +384,23 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		if (index == 0 && disabled != (Boolean) object) {
 			disabled = (Boolean) object;
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
 		}
 		else if (hasPower != (Boolean) object){
 			hasPower = (Boolean) object;
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
 		}
 	}
 
 	private void detectAndSendChanges(boolean sendAnyway){
 		if (disabledCach != disabled || sendAnyway) {
-			disabledCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, disabled);
+			disabledCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, disabled);
 		}
 		if (hasPowerCach != hasPower || sendAnyway) {
-			hasPowerCach = (Boolean)sendObject(References.BOOLEAN_ID, 1, hasPower);
+			hasPowerCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 1, hasPower);
 		}
 	}
 
@@ -419,7 +424,6 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return externalInputBuffer.receiveEnergy(maxReceive, simulate);
 	}
 

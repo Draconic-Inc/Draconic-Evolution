@@ -11,6 +11,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -24,7 +25,7 @@ public abstract class ComponentBase extends Gui {
 	protected int y;
 	protected boolean enabled = true;
 	public static Minecraft mc;
-	protected FontRenderer fontRendererObj;
+	public FontRenderer fontRendererObj;
 	private String group = "";
 	/** The width of the screen object. */
 	public int width;
@@ -175,7 +176,8 @@ public abstract class ComponentBase extends Gui {
 		GL11.glPushMatrix();
 		GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+
 
 		GL11.glTranslatef(0.0F, 0.0F, 32.0F);
 		this.zLevel = 200.0F;
@@ -189,8 +191,8 @@ public abstract class ComponentBase extends Gui {
 		this.zLevel = 0.0F;
 		itemRender.zLevel = 0.0F;
 
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		//GL11.glEnable(GL11.GL_LIGHTING);
+		//GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
@@ -226,4 +228,9 @@ public abstract class ComponentBase extends Gui {
 		this.width = width;
 		this.height = height;
 	}
+
+	/**Translate To Local*/
+	public String ttl(String unlocalizedName){return StatCollector.translateToLocal(unlocalizedName);}
+
+	public void updateScreen(){}
 }

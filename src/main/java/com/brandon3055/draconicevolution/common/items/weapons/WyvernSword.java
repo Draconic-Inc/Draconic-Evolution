@@ -8,9 +8,10 @@ import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHand
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -42,7 +44,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.wyvernSwordName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
-		GameRegistry.registerItem(this, Strings.wyvernSwordName);
+		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.wyvernSwordName);
 	}
 
 	@Override
@@ -81,8 +83,8 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
-		ToolHandler.AOEAttack(player, entity, stack, 8, 1);
-		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.2F);
+		ToolHandler.AOEAttack(player, entity, stack, 1);
+		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.1F);
 		return true;
 	}
 
@@ -95,6 +97,9 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.sword.txt"));
 			InfoHelper.addLore(stack, list);
 		}
+		list.add("");
+		list.add(EnumChatFormatting.BLUE + "+" + ToolHandler.getBaseAttackDamage(stack) + " " + StatCollector.translateToLocal("info.de.attackDamage.txt"));
+		list.add(EnumChatFormatting.BLUE + "+10%" + " " + StatCollector.translateToLocal("info.de.bonusHealthDamage.txt"));
 	}
 
 	@Override
@@ -194,6 +199,13 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		return new ArrayList<ItemConfigField>();
+	}
+
+	@Override
+	public Multimap getAttributeModifiers(ItemStack stack) {
+		Multimap map = super.getAttributeModifiers(stack);
+		map.clear();
+		return map;
 	}
 }
 

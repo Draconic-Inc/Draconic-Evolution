@@ -3,9 +3,7 @@ package com.brandon3055.draconicevolution.common;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.*;
 import com.brandon3055.draconicevolution.common.blocks.machine.*;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyPylon;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.EnergyStorageCore;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.InvisibleMultiblock;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -42,15 +40,22 @@ public class ModBlocks {
 	public static BlockDE draconiumChest;
 	public static BlockDE draconicBlock;
 	public static BlockDE energyCrystal;
+	public static BlockDE infusedObsidian;
+	public static BlockDE dislocatorReceptacle;
+	public static BlockDE portal;
+	public static BlockDE reactorCore;
+	public static BlockDE flowGate;
+	public static BlockDE reactorStabilizer;
+	public static BlockDE reactorEnergyInjector;
 	public static Block safetyFlame;
 
 	public static ItemStack resurrectionStone;
 
 	public static void init()
 	{
-		if(ConfigHandler.disableXrayBlock < 2) xRayBlock = new XRayBlock();
+		xRayBlock = new XRayBlock();
 		weatherController = new WeatherController();
-		if(ConfigHandler.disableSunDial < 2) sunDial = new SunDial();
+		sunDial = new SunDial();
 		draconiumOre = new DraconiumOre();
 		grinder = new Grinder();
 		potentiometer = new Potentiometer();
@@ -73,8 +78,15 @@ public class ModBlocks {
 		draconiumChest = new DraconiumChest();
 		draconicBlock = new DraconicBlock();
 		energyCrystal = new EnergyCrystal();
+		infusedObsidian = new InfusedObsidian();
+		dislocatorReceptacle = new DislocatorReceptacle();
+		portal = new Portal();
+		reactorCore = new ReactorCore();
+		flowGate = new FlowGate();
+		reactorStabilizer = new ReactorStabilizer();
+		reactorEnergyInjector = new ReactorEnergyInjector();
 
-		if(ConfigHandler.disable_LRD < 2) longRangeDislocator = new LongRangeDislocator();
+		longRangeDislocator = new LongRangeDislocator();
 		
 		if(DraconicEvolution.debug) {
 			testBlock = new TestBlock();
@@ -87,19 +99,23 @@ public class ModBlocks {
 	public static void register(BlockDE block)
 	{
 		String name = block.getUnwrappedUnlocalizedName(block.getUnlocalizedName());
-		GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
-		//GameRegistry.registerBlock(block, block.getUnwrappedUnlocalizedName(block.getUnlocalizedName()));
+		if (isEnabled(block))GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
 	}
 
 	public static void register(BlockDE block, Class<? extends ItemBlock> item)
 	{
 		String name = block.getUnwrappedUnlocalizedName(block.getUnlocalizedName());
-		GameRegistry.registerBlock(block, item, name.substring(name.indexOf(":") + 1));
+		if (isEnabled(block))GameRegistry.registerBlock(block, item, name.substring(name.indexOf(":") + 1));
 	}
 
 	public static void registerOther(Block block)
 	{
 		String name = block.getUnlocalizedName().substring(block.getUnlocalizedName().indexOf(".") + 1);
-		GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
+		if (isEnabled(block)) GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
+	}
+
+	public static boolean isEnabled(Block block)
+	{
+		return !ConfigHandler.disabledNamesList.contains(block.getUnlocalizedName());
 	}
 }

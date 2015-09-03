@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.container.ContainerEnergyInfuser;
-import com.brandon3055.draconicevolution.common.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import cpw.mods.fml.relauncher.Side;
@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -63,13 +64,19 @@ public class GUIEnergyInfuser extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
 		fontRendererObj.drawStringWithShadow("Energy Infuser", 49, -9, 0x00FFFF);
 
-		drawEnergyBarHoverText(x - guiLeft, y - guiTop);
+
 		//bindTexture(texture);
 
 		//fontRendererObj.drawString("Charges: " + charges, 90, 25, 0x000000);
 		//drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
 		//drawCenteredString(fontRendererObj, "Weather Controller", xSize/2, -15, 0x2a4ed0);
 
+	}
+
+	@Override
+	public void drawScreen(int x, int y, float p_73863_3_) {
+		super.drawScreen(x, y, p_73863_3_);
+		drawEnergyBarHoverText(x - guiLeft, y - guiTop);
 	}
 
 	@Override
@@ -95,17 +102,21 @@ public class GUIEnergyInfuser extends GuiContainer {
 	private void drawEnergyBarHoverText(int x, int y) {
 		if (GuiHelper.isInRect(48, 6, 9, 46, x, y)) {
 			ArrayList<String> internal = new ArrayList<String>();
-			internal.add("Internal Storage");
+			internal.add(StatCollector.translateToLocal("gui.de.internalStorage.txt"));
 			internal.add("" + EnumChatFormatting.DARK_BLUE + tile.energy.getEnergyStored() + "/" + tile.energy.getMaxEnergyStored());
-			drawHoveringText(internal, x, y, fontRendererObj);
+			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+			drawHoveringText(internal, x + guiLeft, y + guiTop, fontRendererObj);
+			GL11.glPopAttrib();
 		}
 
 		if (GuiHelper.isInRect(118, 6, 10, 46, x, y) && tile.running && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
 			IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
 			ArrayList<String> internal = new ArrayList<String>();
-			internal.add("Item Energy Storage");
+			internal.add(StatCollector.translateToLocal("gui.de.itemStorage.txt"));
 			internal.add("" + EnumChatFormatting.DARK_BLUE + item.getEnergyStored(tile.getStackInSlot(0)) + "/" + item.getMaxEnergyStored(tile.getStackInSlot(0)));
-			drawHoveringText(internal, x, y, fontRendererObj);
+			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+			drawHoveringText(internal, x + guiLeft, y + guiTop, fontRendererObj);
+			GL11.glPopAttrib();
 		}
 	}
 

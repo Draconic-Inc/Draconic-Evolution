@@ -81,7 +81,7 @@ public class UpdateChecker
 			LogHelper.info("[Update Checker] Thread Started");
 			try
 			{
-				URL versionURL = new URL("https://raw.githubusercontent.com/brandon3055/Draconic-Evolution/master/VERSION.json");
+				URL versionURL = new URL("https://raw.githubusercontent.com/brandon3055/Draconic-Evolution/master/VERSION.txt");
 
 				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((versionURL).openStream()));
 

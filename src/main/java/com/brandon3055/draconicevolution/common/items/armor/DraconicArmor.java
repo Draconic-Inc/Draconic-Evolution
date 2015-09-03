@@ -1,15 +1,24 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.model.ModelDraconicArmor;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.*;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -17,10 +26,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -28,6 +34,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import thaumcraft.api.IGoggles;
+import thaumcraft.api.nodes.IRevealer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,10 +44,18 @@ import java.util.List;
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool {//TODO Wings
+@Optional.InterfaceList(value = {
+	@Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
+	@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft")
+})
+public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IGoggles, IRevealer {//TODO Wings
+	@SideOnly(Side.CLIENT)
 	private IIcon helmIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon chestIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon leggsIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon bootsIcon;
 
 	private double totalAbsorption = 2; // 1=100%
@@ -51,7 +67,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		super(material, 0, armorType);
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
-		GameRegistry.registerItem(this, name);
+		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, name);
 	}
 
 	@Override
@@ -106,6 +122,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
+		if (!ConfigHandler.useOldArmorModel) return References.RESOURCESPREFIX + "textures/models/armor/armorDraconic.png";
 		if (stack.getItem() == ModItems.draconicHelm || stack.getItem() == ModItems.draconicChest || stack.getItem() == ModItems.draconicBoots) {
 			return References.RESOURCESPREFIX + "textures/models/armor/draconic_layer_1.png";
 		} else {
@@ -169,7 +186,10 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 			if (world.isRemote) return;
 			if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) this.extractEnergy(stack, 5000, false);
 			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY, (int)Math.floor(player.posZ)) < 5 && ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false))
+			{
 				player.addPotionEffect(new PotionEffect(16, 419, 0, true));
+			}
+			else if ( ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false) && ItemNBTHelper.getBoolean(stack, "ArmorNVLock", true)) player.addPotionEffect(new PotionEffect(16, 419, 0, true));
 			else if (player.isPotionActive(16)) player.removePotionEffect(16);
 
 		}
@@ -264,9 +284,15 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
 		if (armorType == 0)
+		{
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack, false));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVLock").readFromItem(stack, true));
+			if (Loader.isModLoaded("Thaumcraft"))list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "GogglesOfRevealing").readFromItem(stack, true));
+		}
 		else if (armorType == 1)
 		{
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "VerticalAcceleration").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 0.3F));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "EffectiveOnSprint").readFromItem(stack, false));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack, false));
 		}
 		else if (armorType == 2)
@@ -296,5 +322,67 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Override
 	public boolean isEnchantValid(Enchantment enchant) {
 		return enchant.type == EnumEnchantmentType.armor || (armorType == 0 && enchant.type == EnumEnchantmentType.armor_head) || (armorType == 1 && enchant.type == EnumEnchantmentType.armor_torso) || (armorType == 2 && enchant.type == EnumEnchantmentType.armor_legs) || (armorType == 3 && enchant.type == EnumEnchantmentType.armor_feet);
+	}
+
+	@Optional.Method(modid = "Thaumcraft")
+	@Override
+	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
+		return ItemNBTHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
+	}
+
+	@Optional.Method(modid = "Thaumcraft")
+	@Override
+	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) {
+		return ItemNBTHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public ModelBiped model;
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+		if (ConfigHandler.useOldArmorModel) return super.getArmorModel(entityLiving, itemStack, armorSlot);
+
+		if (model == null) {
+			if (armorType == 0) model = new ModelDraconicArmor(1.1F, true, false, false, false, true);
+			else if (armorType == 1) model = new ModelDraconicArmor(1.1F, false, true, false, false, true);
+			else if (armorType == 2) model = new ModelDraconicArmor(1.1F, false, false, true, false, true);
+			else model = new ModelDraconicArmor(1.1F, false, false, false, true, true);
+
+			this.model.bipedHead.showModel = (armorType == 0);
+			this.model.bipedHeadwear.showModel = (armorType == 0);
+			this.model.bipedBody.showModel = ((armorType == 1) || (armorType == 2));
+			this.model.bipedLeftArm.showModel = (armorType == 1);
+			this.model.bipedRightArm.showModel = (armorType == 1);
+			this.model.bipedLeftLeg.showModel = (armorType == 2 || armorType == 3);
+			this.model.bipedRightLeg.showModel = (armorType == 2 || armorType == 3);
+		}
+
+		if (entityLiving == null) return model;
+
+		this.model.isSneak = entityLiving.isSneaking();
+		this.model.isRiding = entityLiving.isRiding();
+		this.model.isChild = entityLiving.isChild();
+		this.model.aimedBow = false;
+		this.model.heldItemRight = (entityLiving.getHeldItem() != null ? 1 : 0);
+
+		if ((entityLiving instanceof EntityPlayer))
+		{
+			if (((EntityPlayer) entityLiving).getItemInUseDuration() > 0)
+			{
+				EnumAction enumaction = ((EntityPlayer) entityLiving).getItemInUse().getItemUseAction();
+				if (enumaction == EnumAction.block)
+				{
+					this.model.heldItemRight = 3;
+				} else if (enumaction == EnumAction.bow)
+				{
+					this.model.aimedBow = true;
+				}
+			}
+		}
+
+
+		return model;
 	}
 }

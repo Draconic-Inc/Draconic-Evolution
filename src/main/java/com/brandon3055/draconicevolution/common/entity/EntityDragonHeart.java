@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.blocks.DraconiumBlock;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.utills.Utills;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFX;
@@ -53,6 +53,7 @@ public class EntityDragonHeart extends Entity {
 
 	@Override
 	protected void entityInit() {
+		renderDistanceWeight = 10;
 		getDataWatcher().addObject(11, (float) yStop);
 		getDataWatcher().addObject(12, rotationInc);
 		getDataWatcher().addObject(13, coresConsumed);
@@ -61,12 +62,12 @@ public class EntityDragonHeart extends Entity {
 
 	@Override
 	public boolean attackEntityFrom(DamageSource damageSource, float dmg) {
-
 		return false;
 	}
 
 	@Override
 	public void onUpdate() {
+
 		if(!worldObj.isRemote)getDataWatcher().updateObject(14, opPhase);
 		if(!worldObj.isRemote)getDataWatcher().updateObject(13, coresConsumed);
 		if(!worldObj.isRemote)getDataWatcher().updateObject(12, rotationInc);
@@ -196,7 +197,7 @@ public class EntityDragonHeart extends Entity {
 				double offsetX = Math.sin(nextFloat);
 				double offsetZ = Math.cos(nextFloat);
 				EntityFX particle = new Particles.AdvancedSeekerParticle(worldObj, posX + offsetX, correctY, posZ + offsetZ, posX, correctY, posZ, 1, 1f, 1f, 1f, 10);
-				ParticleHandler.spawnCustomParticle(particle, 16);
+				ParticleHandler.spawnCustomParticle(particle, 64);
 			}
 		}
 		if (opPhase == 1){
@@ -206,7 +207,7 @@ public class EntityDragonHeart extends Entity {
 				double offsetX = Math.sin(nextFloat);
 				double offsetZ = Math.cos(nextFloat);
 				EntityFX particle = new Particles.AdvancedSeekerParticle(worldObj, posX + offsetX, correctY, posZ + offsetZ, posX, correctY, posZ, 3, 1f, 1f, 1f, 100, -100);
-				ParticleHandler.spawnCustomParticle(particle, 16);
+				ParticleHandler.spawnCustomParticle(particle, 64);
 			}
 		}
 		if (opPhase == 2){
@@ -216,7 +217,7 @@ public class EntityDragonHeart extends Entity {
 				double offsetX = Math.sin(nextFloat)*(rand.nextFloat()*10);
 				double offsetZ = Math.cos(nextFloat)*(rand.nextFloat()*10);
 				EntityFX particle = new Particles.AdvancedSeekerParticle(worldObj, posX + offsetX, correctY, posZ + offsetZ, posX, correctY, posZ, 3, 1f, 1f, 1f, 100, -100);
-				ParticleHandler.spawnCustomParticle(particle, 50);
+				ParticleHandler.spawnCustomParticle(particle, 64);
 			}
 		}
 		if (opPhase == 3){
@@ -227,11 +228,11 @@ public class EntityDragonHeart extends Entity {
 			double offsetX = Math.sin(nextFloat)*(rand.nextFloat()*10);
 			double offsetZ = Math.cos(nextFloat)*(rand.nextFloat()*10);
 			EntityFX particle = new Particles.AdvancedSeekerParticle(worldObj, posX, correctY, posZ, posX + offsetX, correctY, posZ + offsetZ, 3, 1f, 1f-colourMod, 1f-colourMod, 100, -100);
-			ParticleHandler.spawnCustomParticle(particle, 50);
+			ParticleHandler.spawnCustomParticle(particle, 64);
 
 			for (TileLocation tile : blocks){
 				particle = new Particles.AdvancedSeekerParticle(worldObj, posX, correctY, posZ, tile.getXCoord()+rand.nextDouble(), tile.getYCoord()+rand.nextDouble(), tile.getZCoord()+rand.nextDouble(), 3, 1f, 1f-(colourMod*0.5f), 1f-colourMod, 100, -100);
-				ParticleHandler.spawnCustomParticle(particle, 50);
+				ParticleHandler.spawnCustomParticle(particle, 64);
 			}
 
 		}

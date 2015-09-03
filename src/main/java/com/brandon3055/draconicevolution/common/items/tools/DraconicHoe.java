@@ -6,8 +6,8 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -40,7 +40,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem{
 		super(ModItems.DRACONIUM_T1);
 		this.setUnlocalizedName(Strings.draconicHoeName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
-		GameRegistry.registerItem(this, Strings.draconicHoeName);
+		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.draconicHoeName);
 	}
 
 	@Override

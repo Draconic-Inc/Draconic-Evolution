@@ -25,7 +25,7 @@ import java.util.Random;
 public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver, ISidedInventory {
 	ItemStack[] items = new ItemStack[1];
 	public EnergyStorage energy = new EnergyStorage(1000000);
-	public int maxInput = 81920;
+	public int maxInput = 1000000;
 	public boolean running = false;
 	public boolean runningCach = false;
 	private int tick = 0;
@@ -170,17 +170,17 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
 
 	public void detectAndSendChanges(boolean sendAnyway){
 		if (runningCach != running || sendAnyway) {
-			runningCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, running);
+			runningCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, running);
 		}
 		if (transferCach != transfer || sendAnyway) {
-			transferCach = (Boolean)sendObject(References.BOOLEAN_ID, 1, transfer);
+			transferCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 1, transfer);
 		}
 	}
 
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		if (index == 0) running = (Boolean)object;
 		if (index == 1) transfer = (Boolean)object;
 	}
@@ -247,6 +247,14 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
+		if (worldObj == null)
+		{
+			return true;
+		}
+		if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this)
+		{
+			return false;
+		}
 		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.4) < 64;
 	}
 
@@ -273,7 +281,9 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack item, int side) {
-		if (item != null && item.getItem() instanceof IEnergyContainerItem && (((IEnergyContainerItem)item.getItem()).getEnergyStored(item) >= ((IEnergyContainerItem)item.getItem()).getMaxEnergyStored(item)))
+		if (item == null || !(item.getItem() instanceof IEnergyContainerItem)) return true;
+
+		if ((((IEnergyContainerItem)item.getItem()).getEnergyStored(item) >= ((IEnergyContainerItem)item.getItem()).getMaxEnergyStored(item)) || ((IEnergyContainerItem)item.getItem()).receiveEnergy(item, 1, true) == 0)
 			return true;
 		else
 			return false;

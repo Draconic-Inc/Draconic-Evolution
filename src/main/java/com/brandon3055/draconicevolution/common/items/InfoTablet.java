@@ -21,6 +21,7 @@ public class InfoTablet extends ItemDE {
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setMaxStackSize(1);
 		ModItems.register(this);
+		//GameRegistry.registerItem(this, Strings.infoTabletName);
 	}
 
 	@Override

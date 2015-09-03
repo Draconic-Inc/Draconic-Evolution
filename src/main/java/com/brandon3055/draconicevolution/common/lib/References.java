@@ -21,7 +21,7 @@ public final class References {
 
 	//======================Render IDs========================//
 	public static int idTeleporterStand	= -1;
-	public static int idDraconiumChest 	= -1;
+	public static int idPortal		 	= -1;
 
 	//======================Data Types========================//
 
@@ -34,7 +34,7 @@ public final class References {
 	public static final byte BOOLEAN_ID	 = 6;
 	public static final byte CHAR_ID 	 = 7;
 	public static final byte STRING_ID	 = 8;
-	public static final byte TWO_INTS_ID = 9;
+	public static final byte INT_PAIR_ID = 9;
 
 	//======================Tags========================//
 
@@ -44,4 +44,6 @@ public final class References {
 	public static final String ATTACK_AOE = "WeaponAttackAOE";
 	public static final String OBLITERATE = "ToolVoidJunk";
 	public static final String TREE_MODE = "AxeTreeMode";
+	public static final String BASE_SAFE_AOE = "BaseSafeAOE";
+
 }

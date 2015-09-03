@@ -23,6 +23,7 @@ public class ButtonPacket implements IMessage
 	public static final byte ID_DRACONIUMCHEST2 = 4;
 	public static final byte ID_DRACONIUMCHEST3 = 5;
 	public static final byte ID_TOOLCONFIG = 7;
+	public static final byte ID_DRACONIUMCHEST4 = 8;
 	byte buttonId = 0;
 	boolean state = false;
 	
@@ -101,6 +102,15 @@ public class ButtonPacket implements IMessage
 					if (container != null && container instanceof ContainerDraconiumChest){
 						TileDraconiumChest tile = ((ContainerDraconiumChest) container).getTile();
 						tile.setAutoFeed(3);
+					}
+					break;
+				}
+				case ID_DRACONIUMCHEST4:
+				{
+					Container container = ctx.getServerHandler().playerEntity.openContainer;
+					if (container != null && container instanceof ContainerDraconiumChest){
+						TileDraconiumChest tile = ((ContainerDraconiumChest) container).getTile();
+						tile.lockOutputSlots = ! tile.lockOutputSlots;
 					}
 					break;
 				}

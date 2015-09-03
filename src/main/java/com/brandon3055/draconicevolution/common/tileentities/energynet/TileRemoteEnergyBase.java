@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
+import com.brandon3055.brandonscore.common.utills.DataUtills;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
@@ -94,14 +97,14 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 			if (worldObj.isRemote)
 			{
 				int rType = 0;
-				if (this instanceof TileEnergyRelay)
+				if (this instanceof TileEnergyRelay || this instanceof TileWirelessEnergyTransceiver)
 				{
 					if (remoteTile instanceof TileEnergyTransceiver) rType = 2;
 					else rType = 3;
 				}
 				else if (this instanceof TileEnergyTransceiver)
 				{
-					if (remoteTile instanceof TileEnergyRelay) rType = 1;
+					if (remoteTile instanceof TileEnergyRelay || remoteTile instanceof TileWirelessEnergyTransceiver) rType = 1;
 					else rType = 0;
 				}
 				if (inView) LogHelper.info(device.energyFlow);
@@ -141,21 +144,28 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 
 	protected void detectAndSendChanges(int index)
 	{
-		boolean forceSend = (tick + xCoord + yCoord + zCoord) % 100 == 0;
-		if (index >= 0 && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow || forceSend))	{
-			sendObject(References.TWO_INTS_ID, 0, new DataUtills.TwoXInteger(index, (int)linkedDevices.get(index).energyFlow));
-			linkedDevices.get(index).lastTickEnergyFlow = linkedDevices.get(index).energyFlow;
-		}
+		if (worldObj.isRemote) return;
 
-		if (storage.getEnergyStored() != lastTickEnergy || forceSend) sendObject(References.INT_ID, 1, storage.getEnergyStored());
+		boolean forceSend = (tick + xCoord + yCoord + zCoord) % 100 == 0;
+
+		if ((tick + xCoord + yCoord + zCoord) % 20 == 0 || forceSend)
+		{
+			if (index >= 0 && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow || forceSend))
+			{
+				sendObjectToClient(References.INT_PAIR_ID, 0, new DataUtills.IntPair(index, (int) linkedDevices.get(index).energyFlow));
+				linkedDevices.get(index).lastTickEnergyFlow = linkedDevices.get(index).energyFlow;
+			}
+
+			if (storage.getEnergyStored() != lastTickEnergy || forceSend) sendObjectToClient(References.INT_ID, 1, storage.getEnergyStored());
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
-		if (index == 0 && object instanceof DataUtills.TwoXInteger && linkedDevices.size() > ((DataUtills.TwoXInteger) object).i1)
+	public void receiveObjectFromServer(int index, Object object) {
+		if (index == 0 && object instanceof DataUtills.IntPair && linkedDevices.size() > ((DataUtills.IntPair) object).i1)
 		{
-			linkedDevices.get(((DataUtills.TwoXInteger) object).i1).energyFlow = ((DataUtills.TwoXInteger) object).i2;
+			linkedDevices.get(((DataUtills.IntPair) object).i1).energyFlow = ((DataUtills.IntPair) object).i2;
 		}
 		else if (index == 1) storage.setEnergyStored((Integer)object);
 	}
@@ -199,11 +209,13 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		{
 			if (linkDat != null && linkDat.hasKey("Bound") && linkDat.getBoolean("Bound"))
 			{
+				//LogHelper.info("Bind");
 				handleBinding(player, linkDat.getInteger("XCoord"), linkDat.getInteger("YCoord"), linkDat.getInteger("ZCoord"), true);
 				linkDat.setBoolean("Bound", false);
 			}
 			else
 			{
+				//LogHelper.info("Bind2");
 				linkDat = new NBTTagCompound();
 				linkDat.setInteger("XCoord", xCoord);
 				linkDat.setInteger("YCoord", yCoord);
@@ -257,6 +269,8 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 		}
 		else if (mode.equals(Wrench.CLEAR_BINDINGS))
 		{
+			if (this instanceof TileWirelessEnergyTransceiver) ((TileWirelessEnergyTransceiver)this).receiverList.clear();
+
 			for (LinkedEnergyDevice ld : linkedDevices)
 			{
 				if (!(ld.getTile(worldObj) instanceof TileRemoteEnergyBase))
@@ -308,7 +322,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 
 		if (callOther && !tile.handleBinding(player, xCoord, yCoord, zCoord, false))
 		{
-			LogHelper.info("other Invalid");
+			//LogHelper.info("other Invalid");
 			return false;
 		}
 

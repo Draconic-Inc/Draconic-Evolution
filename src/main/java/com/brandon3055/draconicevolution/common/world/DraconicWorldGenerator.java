@@ -25,6 +25,11 @@ public class DraconicWorldGenerator implements IWorldGenerator {
 				generateNether(random, chunkX * 16, chunkZ * 16, world);
 				break;
 			default:
+				for (Integer i : ConfigHandler.oreGenDimentionBlacklist)
+				{
+					if (i == world.provider.dimensionId) return;
+				}
+				addOreSpawn(ModBlocks.draconiumOre, world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
 				break;
 		}
 

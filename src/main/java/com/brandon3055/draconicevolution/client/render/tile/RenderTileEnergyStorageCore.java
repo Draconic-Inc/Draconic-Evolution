@@ -20,12 +20,10 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {//to
 	private static final ResourceLocation iner_model_texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_1.png");
 	private static final ResourceLocation outer_model_texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_2.png");
 	private IModelCustom iner_model;
-	private IModelCustom outer_model;
 
 	public RenderTileEnergyStorageCore()
 	{
 		iner_model = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/power_sphere_layer_1.obj"));
-		//outer_model = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/power_sphere_layer_2.obj"));
 	}
 	@Override
 	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
@@ -67,15 +65,10 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {//to
 		GL11.glTranslated(x+0.5, y+0.5, z+0.5);
 		FMLClientHandler.instance().getClient().getTextureManager().bindTexture(iner_model_texture);
 
-
-		//float colour = (float)(Minecraft.getSystemTime()%10000) / 10000f;
-		//double colour = Math.sin((float)Minecraft.getSystemTime() / 10000f);
 		double colour = ((TileEnergyStorageCore) tile).getEnergyStored() / ((TileEnergyStorageCore) tile).getMaxEnergyStored();
 		float brightness = (float)Math.abs(Math.sin((float) Minecraft.getSystemTime() / 3000f) * 100f);
 
 		colour = 1f - colour;
-		//LogHelper.info(colour + " " + ((TileEnergyStorageCore) tile).getEnergyStored() +" "+ ((TileEnergyStorageCore) tile).getMaxEnergyStored());
-		//GL11.glColor4d(1F, 0.3F, 0.7f, 1F);
 		GL11.glScalef(scale, scale, scale);
 		GL11.glPushMatrix();
 		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
@@ -102,14 +95,14 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {//to
 		GL11.glDepthMask(false);
 		FMLClientHandler.instance().getClient().getTextureManager().bindTexture(outer_model_texture);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glRotatef(rotation*0.5F, 0F, -1F, -0.5F);
 		GL11.glColor4f(0.5F, 2F, 2F, 0.7F);
 		iner_model.renderAll();
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDepthMask(true);
-
+		GL11.glEnable(GL11.GL_LIGHTING);
 
 		GL11.glPopMatrix();
 	}

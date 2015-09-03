@@ -33,6 +33,7 @@ public class ContainerDraconiumChest extends Container {
 	private int lastEnergyStored;
 	private int lastBurnSpeed;
 	private int lastTickFeedMode;
+	private boolean lastTickOutputLock;
 
 	public ContainerDraconiumChest(InventoryPlayer invPlayer, TileDraconiumChest tile) {
 		this.tile = tile;
@@ -102,8 +103,7 @@ public class ContainerDraconiumChest extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
-	{
+	public boolean canInteractWith(EntityPlayer player) {
 		return tile.isUseableByPlayer(player);
 	}
 	
@@ -116,15 +116,26 @@ public class ContainerDraconiumChest extends Container {
 		{
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-			if (i < tile.getSizeInventory()+10)//Transferring from container
+			if (i < tile.getSizeInventory()+16 && i != 240)//Transferring from container
 			{
-				if (!mergeItemStack(itemstack1, tile.getSizeInventory()+10, inventorySlots.size(), true))
+				if (!mergeItemStack(itemstack1, tile.getSizeInventory()+16, inventorySlots.size(), true))
 				{
 					return null;
 				}
 				slot.onSlotChange(itemstack1, itemstack);
 			}
-			else if (!mergeItemStack(itemstack1, 0, tile.getSizeInventory(), false))//Transferring from player
+			else if (i == 240)
+			{
+				if (!mergeItemStack(itemstack1, tile.getSizeInventory()+16, inventorySlots.size(), true))
+				{
+					if (!mergeItemStack(itemstack1, 0, tile.getSizeInventory(), false))
+					{
+						return null;
+					}
+				}
+				slot.onSlotChange(itemstack1, itemstack);
+			}
+			else if (!DraconiumChest.isStackValid(itemstack1) || !mergeItemStack(itemstack1, 0, tile.getSizeInventory(), false))//Transferring from player
 			{
 				return null;
 			}
@@ -196,8 +207,14 @@ public class ContainerDraconiumChest extends Container {
 			{
 				icrafting.sendProgressBarUpdate(this, 3, tile.smeltingAutoFeed);
 			}
+			if (lastTickOutputLock != tile.lockOutputSlots)
+			{
+				icrafting.sendProgressBarUpdate(this, 4, tile.lockOutputSlots ? 1 : 0);
+			}
+
 		}
 
+		lastTickOutputLock = tile.lockOutputSlots;
 		lastTickFeedMode = tile.smeltingAutoFeed;
 		lastBurnSpeed = tile.smeltingBurnSpeed;
 		lastProgressTime = tile.smeltingProgressTime;
@@ -211,6 +228,7 @@ public class ContainerDraconiumChest extends Container {
 		else if (id == 1) tile.energy.setEnergyStored(value*32);
 		else if (id == 2) tile.smeltingBurnSpeed = value;
 		else if (id == 3) tile.smeltingAutoFeed = value;
+		else if (id == 4) tile.lockOutputSlots = value == 1;
 	}
 
 	public TileDraconiumChest getTile(){return tile;}

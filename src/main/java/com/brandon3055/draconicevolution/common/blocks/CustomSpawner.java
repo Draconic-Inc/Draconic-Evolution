@@ -3,11 +3,12 @@ package com.brandon3055.draconicevolution.common.blocks;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,6 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -39,7 +41,7 @@ public class CustomSpawner extends BlockDE implements IHudDisplayBlock {
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setHardness(10F);
 		this.setResistance(2000F);
-		this.setHarvestLevel("pickaxe", 3);
+		this.setHarvestLevel("pickaxe", 1);
 		ModBlocks.register(this);
 	}
 
@@ -52,6 +54,11 @@ public class CustomSpawner extends BlockDE implements IHudDisplayBlock {
 			if (item != null && item.getItem().equals(ModItems.mobSoul))
 			{
 				String name = ItemNBTHelper.getString(item, "Name", "Pig");
+				if ((!ConfigHandler.spawnerListType && Arrays.asList(ConfigHandler.spawnerList).contains(name)) || (ConfigHandler.spawnerListType && !Arrays.asList(ConfigHandler.spawnerList).contains(name))) {
+					if (!world.isRemote)player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "[Error] soul disabled in config!"));
+					return false;
+				}
+
 				if (name.equals(spawner.getBaseLogic().entityName)){return false;}
 				spawner.getBaseLogic().entityName = name;
 				spawner.isSetToSpawn = true;
@@ -81,23 +88,23 @@ public class CustomSpawner extends BlockDE implements IHudDisplayBlock {
 				return true;
 			}else
 			{
-//				if (world.isRemote && !player.isSneaking()) {
-//					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo1.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().entityName));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo2.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().requiresPlayer));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo3.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().ignoreSpawnRequirements));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo4.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().spawnSpeed));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo5.txt"));
-//					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
-//				}else if (world.isRemote && player.isSneaking())
-//				{
-//					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo6.txt"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo7.txt"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo8.txt"));
-//					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo9.txt"));
-//					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
-//				}
+				if (world.isRemote && !player.isSneaking()) {
+					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo1.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().entityName));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo2.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().requiresPlayer));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo3.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().ignoreSpawnRequirements));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo4.txt").appendText(": " + EnumChatFormatting.DARK_AQUA + spawner.getBaseLogic().spawnSpeed));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo5.txt"));
+					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
+				}else if (world.isRemote && player.isSneaking())
+				{
+					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo6.txt"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo7.txt"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo8.txt"));
+					player.addChatMessage(new ChatComponentTranslation("msg.spawnerInfo9.txt"));
+					player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "#################################"));
+				}
 				return true;
 			}
 		}

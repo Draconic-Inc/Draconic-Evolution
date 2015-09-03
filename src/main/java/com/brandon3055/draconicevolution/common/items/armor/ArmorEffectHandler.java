@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
 import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -18,6 +18,14 @@ public class ArmorEffectHandler {
 	//Flight------------------------------------------------------------------------------------------------------------
 	public static boolean getHasFlight(EntityPlayer player){
 		return isDraconicArmor(player, 3);// && ((IEnergyContainerItem)player.getEquipmentInSlot(3).getItem()).extractEnergy(player.getEquipmentInSlot(3), 80, !player.capabilities.isFlying) == 80;
+	}
+
+	public static float getVAccel(EntityPlayer player){
+		return ItemNBTHelper.getFloat(player.getEquipmentInSlot(3), "VerticalAcceleration", 0.3F);
+	}
+
+	public static boolean getVAccSprint(EntityPlayer player){
+		return ItemNBTHelper.getBoolean(player.getEquipmentInSlot(3), "EffectiveOnSprint", false);
 	}
 
 	public static boolean getFlightLock(EntityPlayer player){

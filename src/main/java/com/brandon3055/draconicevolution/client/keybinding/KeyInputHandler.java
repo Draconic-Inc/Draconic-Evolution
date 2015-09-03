@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.GuiHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.network.ButtonPacket;
@@ -30,8 +29,8 @@ public class KeyInputHandler {
 		if(KeyBindings.placeItem.isPressed()) handlePlaceItemKey();
 		if(KeyBindings.toolConfig.isPressed()) {
 			DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOLCONFIG, false));
-			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-			player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, Minecraft.getMinecraft().theWorld, (int)player.posX, (int)player.posY, (int)player.posZ);
+			//EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+			//player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, Minecraft.getMinecraft().theWorld, (int)player.posX, (int)player.posY, (int)player.posZ);
 		}
 	}
 

@@ -170,7 +170,7 @@ public class DraconiumChest extends BlockCustomDrop {
 
 	@Override
 	public int getRenderType() {
-		return References.idDraconiumChest;
+		return -1;
 	}
 
 	@Override

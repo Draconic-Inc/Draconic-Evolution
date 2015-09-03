@@ -176,7 +176,16 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUseableByPlayer(EntityPlayer player)
+	{
+		if (worldObj == null)
+		{
+			return true;
+		}
+		if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this)
+		{
+			return false;
+		}
 		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.4) < 64;
 	}
 
@@ -205,7 +214,7 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 
 	@Override
 	public boolean canExtractItem(int var1, ItemStack var2, int var3) {
-		return false;
+		return getItemBurnTime(var2) == 0;
 	}
 
 	@Override
@@ -246,12 +255,12 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 	}
 
 	private void detectAndSentChanges(boolean sendAnyway){
-		if (isBurning != isBurningCach || sendAnyway) isBurningCach = (Boolean)sendObject(References.BOOLEAN_ID, 0, isBurning);
+		if (isBurning != isBurningCach || sendAnyway) isBurningCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, isBurning);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		if (isBurning != (Boolean) object){
 			isBurning = (Boolean) object;
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);

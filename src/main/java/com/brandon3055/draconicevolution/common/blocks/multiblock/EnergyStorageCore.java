@@ -7,9 +7,9 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
-import com.brandon3055.draconicevolution.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.utills.Utills;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -59,18 +60,17 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock{
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-//		TileEnergyStorageCore tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) world.getTileEntity(x, y, z) : null;
-//		if (tile == null)
-//		{
-//			LogHelper.error("Missing Tile Entity (EnergyStorageCore)");
-//			return false;
-//		}
-//
-//		if (!world.isRemote) {
-//			player.addChatComponentMessage(new ChatComponentText("Tier:" + tile.getTier()));
-//			String BN = String.valueOf(tile.getEnergyStored());
-//			if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
-//			player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(tile.getEnergyStored()) + " / " + Utills.formatNumber(tile.getMaxEnergyStored()) + " [" + BN + " RF]"));		}
+		TileEnergyStorageCore tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) world.getTileEntity(x, y, z) : null;
+		if (tile == null)
+		{
+			LogHelper.error("Missing Tile Entity (EnergyStorageCore)");
+			return false;
+		}
+
+		if (!world.isRemote) {
+			player.addChatComponentMessage(new ChatComponentText("Tier:" + (tile.getTier() + 1)));
+			String BN = String.valueOf(tile.getEnergyStored());
+			player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(tile.getEnergyStored()) + " / " + Utills.formatNumber(tile.getMaxEnergyStored()) + " [" + BN + " RF]"));		}
 		return true;
 	}
 
@@ -131,9 +131,8 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock{
 		}
 
 		list.add(InfoHelper.HITC()+getLocalizedName());
-		list.add("Tier: " + InfoHelper.ITC() + tile.getTier());
+		list.add("Tier: " + InfoHelper.ITC() + (tile.getTier() + 1));
 		String BN = String.valueOf(tile.getEnergyStored());
-		if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
 		list.add(StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.ITC() + Utills.formatNumber(tile.getEnergyStored()) + " / " + Utills.formatNumber(tile.getMaxEnergyStored()) + " [" + BN + " RF]");
 
 		return list;

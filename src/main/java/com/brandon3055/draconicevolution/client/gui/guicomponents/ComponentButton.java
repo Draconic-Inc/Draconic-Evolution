@@ -52,6 +52,11 @@ public class ComponentButton extends ComponentBase {
 
 	@Override
 	public void renderBackground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
+
+	}
+
+	@Override
+	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		GL11.glPushMatrix();
 		GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 		//FontRenderer fontrenderer = minecraft.fontRenderer;
@@ -89,11 +94,6 @@ public class ComponentButton extends ComponentBase {
 	}
 
 	@Override
-	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
-
-	}
-
-	@Override
 	public void renderFinal(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		if (isMouseOver(mouseX, mouseY) && hoverText != null){
 			List<String> list = new ArrayList<String>();
@@ -105,6 +105,6 @@ public class ComponentButton extends ComponentBase {
 	@Override
 	public void mouseClicked(int x, int y, int button) {
 		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-		gui.buttonClicked(buttonId);
+		gui.buttonClicked(buttonId, button);
 	}
 }

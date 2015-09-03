@@ -21,7 +21,7 @@ public class SunDial extends BlockDE {
 	public IIcon icon_front;
 	public IIcon icon_front_active;
 	public IIcon icon_side;
-	public boolean blockState = true;
+	//public boolean blockState = true;
 
 	public SunDial() {
 		this.setBlockName(Strings.blockSunDialName);
@@ -62,6 +62,7 @@ public class SunDial extends BlockDE {
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);

@@ -23,9 +23,9 @@ public class TileEnergyStorageCore extends TileObjectSync {
 	protected int tier = 0;
 	protected boolean online = false;
 	public float modelRotation = 0;
-	private double energy = 0;
-	private double capacity = 0;
-	private double lastTickCapacity = 0;
+	private long energy = 0;
+	private long capacity = 0;
+	private long lastTickCapacity = 0;
 	private int tick = 0;
 
 	public TileEnergyStorageCore(){
@@ -605,28 +605,28 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			tile.setMaster(new TileLocation(xCoord, yCoord, zCoord));
 			worldObj.setBlockMetadataWithNotify(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord(), 1, 2);
 		}
-		double capacity = 0;
+		long capacity = 0;
 		switch (tier){
 			case 0:
-				capacity = 45500000D;
+				capacity = 45500000L;
 				break;
 			case 1:
-				capacity = 273000000D;
+				capacity = 273000000L;
 				break;
 			case 2:
-				capacity = 1640000000D;
+				capacity = 1640000000L;
 				break;
 			case 3:
-				capacity = 9880000000D;
+				capacity = 9880000000L;
 				break;
 			case 4:
-				capacity = 59300000000D;
+				capacity = 59300000000L;
 				break;
 			case 5:
-				capacity = 356000000000D;
+				capacity = 356000000000L;
 				break;
 			case 6:
-				capacity = 2140000000000D;
+				capacity = 2140000000000L;
 				break;
 		}
 		this.capacity = capacity;
@@ -692,7 +692,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 		super.writeToNBT(compound);
 		compound.setBoolean("Online", online);
 		compound.setShort("Tier", (short)tier);
-		compound.setDouble("Energy", energy);
+		compound.setLong("EnergyL", energy);
 		for (int i = 0; i < stabilizers.length; i++){
 			if (stabilizers[i] != null)
 				stabilizers[i].writeToNBT(compound, String.valueOf(i));
@@ -703,33 +703,34 @@ public class TileEnergyStorageCore extends TileObjectSync {
 	public void readFromNBT(NBTTagCompound compound) {
 		online = compound.getBoolean("Online");
 		tier = (int)compound.getShort("Tier");
-		energy = compound.getDouble("Energy");
+		energy = compound.getLong("EnergyL");
+		if (compound.hasKey("Energy")) energy = (long) compound.getDouble("Energy");
 		for (int i = 0; i < stabilizers.length; i++){
 			if (stabilizers[i] != null)
 				stabilizers[i].readFromNBT(compound, String.valueOf(i));
 		}
-		double capacity = 0;
+		long capacity = 0;
 		switch (tier){
 			case 0:
-				capacity = 45500000D;//000
+				capacity = 45500000L;//000
 				break;
 			case 1:
-				capacity = 273000000D;//000
+				capacity = 273000000L;//000
 				break;
 			case 2:
-				capacity = 1640000000D;//000
+				capacity = 1640000000L;//000
 				break;
 			case 3:
-				capacity = 9880000000D;//000
+				capacity = 9880000000L;//000
 				break;
 			case 4:
-				capacity = 59300000000D;//000
+				capacity = 59300000000L;//000
 				break;
 			case 5:
-				capacity = 356000000000D;//000
+				capacity = 356000000000L;//000
 				break;
 			case 6:
-				capacity = 2140000000000D;//000
+				capacity = 2140000000000L;//000
 				break;
 		}
 		this.capacity = capacity;
@@ -753,7 +754,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		int maxReceive1 = Integer.MAX_VALUE;
-		double energyReceived = Math.min(capacity - energy, Math.min(maxReceive1, maxReceive));
+		long energyReceived = Math.min(capacity - energy, Math.min(maxReceive1, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
@@ -763,7 +764,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 	public int extractEnergy(int maxExtract, boolean simulate) {
 		int maxExtract1 = Integer.MAX_VALUE;
-		double energyExtracted = Math.min(energy, Math.min(maxExtract1, maxExtract));
+		long energyExtracted = Math.min(energy, Math.min(maxExtract1, maxExtract));
 
 		if (!simulate) {
 			energy -= energyExtracted;
@@ -771,11 +772,11 @@ public class TileEnergyStorageCore extends TileObjectSync {
 		return (int)energyExtracted;
 	}
 
-	public double getEnergyStored() {
+	public long getEnergyStored() {
 		return energy;
 	}
 
-	public double getMaxEnergyStored() {
+	public long getMaxEnergyStored() {
 		return capacity;
 	}
 
@@ -786,11 +787,11 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 	private void detectAndRendChanges(){
 		int diff = (int)Math.abs(lastTickCapacity - energy);
-		if (diff > 1000) lastTickCapacity = (Double)sendObject(References.DOUBLE_ID, 0, energy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 20));
+		if (diff > 1000) lastTickCapacity = (Long) sendObjectToClient(References.LONG_ID, 0, energy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 20));
 	}
 
 	@Override
-	public void receiveObject(int index, Object object) {
-		energy = (Double) object;
+	public void receiveObjectFromServer(int index, Object object) {
+		energy = (Long) object;
 	}
 }

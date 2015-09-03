@@ -146,4 +146,16 @@ public class EnergyPylon extends BlockDE {//todo fix sphere renderer
 		}
 		if (world.getBlockMetadata(x, y, z) == 0 && world.getTileEntity(x, y, z) != null) world.removeTileEntity(x, y, z);
 	}
+
+	@Override
+	public boolean hasComparatorInputOverride() {
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int meta) {
+		TileEnergyPylon tile = world.getTileEntity(x, y, z) instanceof TileEnergyPylon ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
+		if (tile != null) return (int)(tile.getEnergyStored() / tile.getMaxEnergyStored() * 15D);
+		return 0;
+	}
 }

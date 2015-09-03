@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Brandon on 9/02/2015.
  */
-public class ParticleEnergyField extends EntityFX {//todo Fancy Animated Particle? Maby?
+public class ParticleEnergyField extends EntityFX {
 	/**
 	 * Particle Type 0 = Energy Ring, 1 = single particle
 	 */
@@ -64,6 +64,11 @@ public class ParticleEnergyField extends EntityFX {//todo Fancy Animated Particl
 
 		float minU = 0.0F + 0.125F * (advanced ? 4 : 3);
 		float maxU = 0.0F + 0.125F * (advanced ? 5 : 4);//minU + 0.124F;
+		if (type == 2)
+		{
+			minU = 0.0F + 0.125F * 5;
+			maxU = 0.0F + 0.125F * 6;
+		}
 		float minV = 0F;//(float)this.particleTextureIndexY / 32.0F;
 		float maxV = 0.123F;//minV + 0.124F;
 		float drawScale = 0.2f;
@@ -81,7 +86,7 @@ public class ParticleEnergyField extends EntityFX {//todo Fancy Animated Particl
 		float drawZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTick - interpPosZ);
 
 
-		if (type == 0)
+		if (type == 0 || type == 2)
 		{
 			tessellator.startDrawingQuads();
 			tessellator.setBrightness(200);
@@ -106,7 +111,7 @@ public class ParticleEnergyField extends EntityFX {//todo Fancy Animated Particl
 
 			tessellator.draw();
 		}
-		else
+		else if (type == 1)
 		{
 
 			tessellator.startDrawingQuads();

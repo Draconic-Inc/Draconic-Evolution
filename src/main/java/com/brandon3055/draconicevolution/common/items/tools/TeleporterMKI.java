@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -22,7 +23,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 
 import java.util.List;
 
@@ -81,15 +81,20 @@ public class TeleporterMKI extends ItemDE {
 		{
 			if (getLocation(stack) == null)
 			{
-				ItemNBTHelper.setDouble(stack, "X", player.posX);
-				ItemNBTHelper.setDouble(stack, "Y", player.posY);
-				ItemNBTHelper.setDouble(stack, "Z", player.posZ);
-				ItemNBTHelper.setFloat(stack, "Yaw", player.rotationYaw);
-				ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
-				ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
-				ItemNBTHelper.setBoolean(stack, "IsSet", true);
 				if (world.isRemote)
+				{
 					player.addChatMessage(new ChatComponentText(new ChatComponentTranslation("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.worldObj.provider.getDimensionName() + "}"));
+				}else
+				{
+					ItemNBTHelper.setDouble(stack, "X", player.posX);
+					ItemNBTHelper.setDouble(stack, "Y", player.posY);
+					ItemNBTHelper.setDouble(stack, "Z", player.posZ);
+					ItemNBTHelper.setFloat(stack, "Yaw", player.rotationYaw);
+					ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
+					ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
+					ItemNBTHelper.setBoolean(stack, "IsSet", true);
+					ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionName());
+				}
 				return stack;
 			} else if (world.isRemote)
 				player.addChatMessage(new ChatComponentTranslation("msg.teleporterAlreadySet.txt"));
@@ -128,7 +133,7 @@ public class TeleporterMKI extends ItemDE {
 		} else
 		{
 			list.add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("info.teleporterInfSet1.txt"));
-			list.add(EnumChatFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + WorldProvider.getProviderForDimension(ItemNBTHelper.getInteger(stack, "Dimension", 0)).getDimensionName() + "}");
+			list.add(EnumChatFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + getLocation(stack).getDimensionName() + "}");
 			list.add(EnumChatFormatting.BLUE + String.valueOf(stack.getMaxDamage() - stack.getItemDamage() + 1) + " " + StatCollector.translateToLocal("info.teleporterInfSet2.txt"));
 		}
 	}
@@ -149,15 +154,11 @@ public class TeleporterMKI extends ItemDE {
 	}
 
 	public TeleportLocation getLocation(ItemStack stack) {
-		double x = ItemNBTHelper.getDouble(stack, "X", 0);
-		double y = ItemNBTHelper.getDouble(stack, "Y", 0);
-		double z = ItemNBTHelper.getDouble(stack, "Z", 0);
-		float yaw = ItemNBTHelper.getFloat(stack, "Yaw", 0);
-		float pitch = ItemNBTHelper.getFloat(stack, "Pitch", 0);
-		int dim = ItemNBTHelper.getInteger(stack, "Dimension", 0);
-
 		if (!ItemNBTHelper.getBoolean(stack, "IsSet", false)) return null;
 
-		return new TeleportLocation(x, y, z, dim, pitch, yaw);
+		TeleportLocation location = new TeleportLocation();
+		location.readFromNBT(stack.getTagCompound());
+
+		return location;
 	}
 }

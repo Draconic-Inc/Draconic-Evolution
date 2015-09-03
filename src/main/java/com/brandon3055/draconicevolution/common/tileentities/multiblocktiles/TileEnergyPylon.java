@@ -38,6 +38,8 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	private int selectedCore = 0;
 	private byte particleRate = 0;
 	private byte lastTickParticleRate = 0;
+	private int lastCheckCompOverride = 0;
+	private int tick = 0;
 
 
 	@Override
@@ -51,6 +53,23 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 		} else if (worldObj.isRemote) modelScale = 0.5F;
 
 		if (worldObj.isRemote) return;
+
+		tick++;
+		if (tick % 20 == 0)
+		{
+			int cOut = (int)(getEnergyStored() / getMaxEnergyStored() * 15D);
+			if (cOut != lastCheckCompOverride)
+			{
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord - 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord + 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord - 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord + 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord - 1, worldObj.getBlock(xCoord, yCoord, zCoord));
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord + 1, worldObj.getBlock(xCoord, yCoord, zCoord));
+				lastCheckCompOverride = cOut;
+			}
+		}
 
 		if (active && !reciveEnergy){
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {
@@ -81,11 +100,11 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	}
 
 	private void findCores(){
-		int yMod = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? 3 : -3;
+		int yMod = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? 15 : -15;
 		int range = 15;
 		List<TileLocation> locations = new ArrayList<TileLocation>();
 		for (int x = xCoord-range; x <= xCoord+range; x++){
-			for (int y = yCoord+yMod-(range/4); y <= yCoord+yMod+(range/4); y++){
+			for (int y = yCoord+yMod-range; y <= yCoord+yMod+range; y++){
 				for (int z = zCoord-range; z <= zCoord+range; z++){
 					if (worldObj.getBlock(x, y, z) == ModBlocks.energyStorageCore){
 						locations.add(new TileLocation(x, y, z));
@@ -256,7 +275,7 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		if (getMaster() == null) return 0;
+		if (getMaster() == null || !getMaster().isOnline()) return 0;
 		int extracted = reciveEnergy ? 0 : getMaster().extractEnergy(maxExtract, simulate);
 		if (!simulate && extracted > 0) particleRate = (byte)Math.min(20, extracted < 500 && extracted > 0 ? 1 : extracted/500);
 		return extracted;
@@ -280,14 +299,14 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	}
 
 	private void detectAndSendChanges(){
-		if (lastTickActive != active) lastTickActive = (Boolean) sendObject(References.BOOLEAN_ID, 0, active,  new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
-		if (lastTickReciveEnergy != reciveEnergy) lastTickReciveEnergy = (Boolean) sendObject(References.BOOLEAN_ID, 1, reciveEnergy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
-		if (lastTickParticleRate != particleRate) lastTickParticleRate = (Byte) sendObject(References.BYTE_ID, 2, particleRate);
+		if (lastTickActive != active) lastTickActive = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, active, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
+		if (lastTickReciveEnergy != reciveEnergy) lastTickReciveEnergy = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 1, reciveEnergy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
+		if (lastTickParticleRate != particleRate) lastTickParticleRate = (Byte) sendObjectToClient(References.BYTE_ID, 2, particleRate);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void receiveObject(int index, Object object) {
+	public void receiveObjectFromServer(int index, Object object) {
 		switch (index) {
 			case 0:
 				active = (Boolean) object;
@@ -309,5 +328,15 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	@Override
 	public double getMaxEnergyStored() {
 		return getMaster() != null ? getMaster().getMaxEnergyStored() : 0D;
+	}
+
+	@Override
+	public long getExtendedStorage() {
+		return getMaster() != null ? getMaster().getEnergyStored() : 0L;
+	}
+
+	@Override
+	public long getExtendedCapacity() {
+		return getMaster() != null ? getMaster().getMaxEnergyStored() : 0L;
 	}
 }

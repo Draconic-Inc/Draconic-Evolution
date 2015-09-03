@@ -3,11 +3,10 @@ package com.brandon3055.draconicevolution.common.blocks;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKI;
-import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKII;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileTeleporterStand;
-import com.brandon3055.draconicevolution.common.utills.Teleporter;
+import com.brandon3055.brandonscore.common.utills.Teleporter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -19,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -53,10 +53,11 @@ public class TeleporterStand extends BlockCustomDrop {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
 		TileTeleporterStand tile = world.getTileEntity(x, y, z) instanceof TileTeleporterStand ? (TileTeleporterStand)world.getTileEntity(x, y, z) : null;
 		if (tile == null) return false;
-		if (tile.getStackInSlot(0) == null && player.getHeldItem() != null && (player.getHeldItem().getItem() instanceof TeleporterMKI || player.getHeldItem().getItem() instanceof TeleporterMKII)) {
+		if (tile.getStackInSlot(0) == null && player.getHeldItem() != null && (player.getHeldItem().getItem() instanceof TeleporterMKI)) {
 			ItemStack stack = player.getHeldItem();
 			tile.setInventorySlotContents(0, stack.copy());
-			player.getHeldItem().stackSize--;
+			player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+			world.markBlockForUpdate(x, y, z);
 			return true;
 		}
 
@@ -123,5 +124,10 @@ public class TeleporterStand extends BlockCustomDrop {
 		TileTeleporterStand tile = world.getTileEntity(x, y, z) instanceof TileTeleporterStand ? (TileTeleporterStand)world.getTileEntity(x, y, z) : null;
 		if (tile == null) return;
 		tile.rotation = (int)entity.rotationYawHead;
+	}
+
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
+		return super.getPickBlock(target, world, x, y, z, player);
 	}
 }

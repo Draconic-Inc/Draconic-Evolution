@@ -164,7 +164,7 @@ public class PlacedItem extends BlockDE {
 			if (tile == null) {
 				world.setBlockToAir(x, y, z);
 			}
-			tile.rotation += 5;
+			tile.rotation += 5.625F;
 		}else {
 			if (!world.isRemote) breakBlock(world, x, y, z, this, world.getBlockMetadata(x, y, z));
 			world.setBlockToAir(x, y, z);
@@ -180,13 +180,13 @@ public class PlacedItem extends BlockDE {
 			if (tile == null) {
 				world.setBlockToAir(x, y, z);
 			}
-			tile.rotation += 25;
+			tile.rotation += 22.5F;
 		}else {
 			TilePlacedItem tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem) ? (TilePlacedItem) world.getTileEntity(x, y, z) : null;
 			if (tile == null) {
 				world.setBlockToAir(x, y, z);
 			}
-			tile.rotation -= 25;
+			tile.rotation -= 22.5F;
 		}
 		world.markBlockForUpdate(x, y, z);
 	}

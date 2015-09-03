@@ -25,7 +25,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties {
 	* Used to register these extended properties for the player during EntityConstructing event
 	* This method is for convenience only; it will make your code look nicer
 	*/
-	public static final void register(EntityPlayer player) {
+	public static void register(EntityPlayer player) {
 		player.registerExtendedProperties(ExtendedPlayer.EXT_PROP_NAME, new ExtendedPlayer(player));
 	}
 
@@ -33,7 +33,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties {
 	* Returns ExtendedPlayer properties for player
 	* This method is for convenience only; it will make your code look nicer
 	*/
-	public static final ExtendedPlayer get(EntityPlayer player) {
+	public static ExtendedPlayer get(EntityPlayer player) {
 		return (ExtendedPlayer) player.getExtendedProperties(EXT_PROP_NAME);
 	}
 

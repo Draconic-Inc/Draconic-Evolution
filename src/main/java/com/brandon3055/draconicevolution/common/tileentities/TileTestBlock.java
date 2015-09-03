@@ -1,11 +1,12 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.utills.Utills;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -37,7 +38,7 @@ public class TileTestBlock extends TileEntity implements IEnergyHandler {
 
 		if (worldObj.isRemote) return;
 		for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {
-			if (worldObj.getTileEntity(xCoord+d.offsetX, yCoord+d.offsetY, zCoord+d.offsetZ) instanceof IEnergyHandler) ((IEnergyHandler)worldObj.getTileEntity(xCoord+d.offsetX, yCoord+d.offsetY, zCoord+d.offsetZ)).receiveEnergy(ForgeDirection.DOWN, Integer.MAX_VALUE, false);
+			if (worldObj.getTileEntity(xCoord+d.offsetX, yCoord+d.offsetY, zCoord+d.offsetZ) instanceof IEnergyReceiver) ((IEnergyReceiver)worldObj.getTileEntity(xCoord+d.offsetX, yCoord+d.offsetY, zCoord+d.offsetZ)).receiveEnergy(d.getOpposite(), Integer.MAX_VALUE, false);
 		}
 //		LogHelper.info(Integer.MAX_VALUE);
 		//if (1==1)return;
@@ -75,7 +76,7 @@ public class TileTestBlock extends TileEntity implements IEnergyHandler {
 
 //		if (worldObj.isRemote) modelRotation += 0.5;
 
-		//LogHelper.info(modelRotation);
+		//LogHelper.info(modelCoreRotation);
 
 
 
