@@ -5,23 +5,4 @@ Draconic Evolution adds powerful new tools, Items, weapons and Armor. The premis
 
 Code Permissions:
 
-You CAN
-
--Fork and modify the code.
-
--Submit Pull Requests to this repository.
-
--Copy portions of this code for use in other projects.
-
--Write your own code that uses this code as a dependency. (addon mods)
-
--Fork this project for the purpose of creating a pull request.
-
-You CANNOT
-
--Redistribute this in its entirety as source or compiled code.
-
--Create or distribute code which contains 50% or more Functionally Equivalent Statements* from this repository.
-
-
-This is bassed on the CoFH "Don't Be a Jerk" License https://github.com/CoFH/CoFHCore/blob/master/README.md
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
