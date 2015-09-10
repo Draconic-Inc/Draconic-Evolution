@@ -148,7 +148,7 @@ public class TileTestBlock extends TileEntity implements IEnergyHandler {
 		super.readFromNBT(p_145839_1_);
 		EntityPlayer player = null;
 		if (worldObj != null) player = worldObj.getClosestPlayer(xCoord, yCoord, zCoord, -1);
-		if (player != null) LogHelper.info("Read: "+Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, xCoord, yCoord, zCoord));
+		if (player != null) LogHelper.info("Read: "+Utills.getDistance(player.posX, player.posY, player.posZ, xCoord, yCoord, zCoord));
 		LogHelper.info(worldObj+" "+player);
 	}
 
@@ -157,6 +157,6 @@ public class TileTestBlock extends TileEntity implements IEnergyHandler {
 		super.writeToNBT(p_145841_1_);
 		EntityPlayer player = null;
 		if (worldObj != null) player = worldObj.getClosestPlayer(xCoord, yCoord, zCoord, -1);
-		if (player != null) LogHelper.info("Write: "+Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, xCoord, yCoord, zCoord));
+		if (player != null) LogHelper.info("Write: "+Utills.getDistance(player.posX, player.posY, player.posZ, xCoord, yCoord, zCoord));
 	}
 }

@@ -110,8 +110,10 @@ public class EntityChaosCrystal extends EntityLivingBase {
 			{
 				setHealth(getHealth() - Math.min(getHealth(), dmg));
 				if (getHealth() <= 0) worldObj.createExplosion(null, this.posX, this.posY, this.posZ, 6.0F, false);
-				else shieldTime = 100 + rand.nextInt(100);
-				worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "mob.blaze.hit", 10.0F, rand.nextFloat() * 0.1F + 1.055F);
+				else {
+					shieldTime = 100 + rand.nextInt(100);
+					worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "draconicevolution:shieldUp", 10.0F, rand.nextFloat() * 0.1F + 1.055F);
+				}
 				if (getGuardian() != null) getGuardian().onCrystalTargeted((EntityPlayer)source.getEntity(), getHealth() <= 0);
 				return true;
 			}else if (shieldTime > 0) shieldTime = 100 + rand.nextInt(100);

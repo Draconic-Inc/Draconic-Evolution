@@ -309,7 +309,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.de.invalidTile.txt"));
 			return false;
 		}
-		else if (Utills.getDistanceAtoB(xCoord, yCoord, zCoord, x, y, z) > range)
+		else if (Utills.getDistance(xCoord, yCoord, zCoord, x, y, z) > range)
 		{
 			if (worldObj.isRemote) player.addChatComponentMessage(new ChatComponentTranslation("msg.de.outOfRange.txt"));
 			return false;

@@ -133,7 +133,7 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer{
 		double yDiff = player.posY - (tileentity.yCoord+0.5);
 		double zDiff = player.posZ - (tileentity.zCoord+0.5);
 		double yawAngle = Math.toDegrees(Math.atan2(zDiff, xDiff));
-		double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, tileentity.xCoord+0.5, tileentity.yCoord+0.5, tileentity.zCoord+0.5)));
+		double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utills.getDistance(player.posX, player.posY, player.posZ, tileentity.xCoord + 0.5, tileentity.yCoord + 0.5, tileentity.zCoord + 0.5)));
 
 		GL11.glRotated(yawAngle + 90 - rotation, 0, 1, 0);
 		GL11.glRotated(-pitchAngle, 1, 0, 0);

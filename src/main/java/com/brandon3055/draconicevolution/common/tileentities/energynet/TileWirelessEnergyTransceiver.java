@@ -126,7 +126,7 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
 			return;
 		}
 
-		if (Utills.getDistanceAtoB(xCoord, yCoord, zCoord, x, y, z) > (powerTier == 0 ? 15 : 30))
+		if (Utills.getDistance(xCoord, yCoord, zCoord, x, y, z) > (powerTier == 0 ? 15 : 30))
 		{
 			player.addChatComponentMessage(new ChatComponentTranslation("msg.de.outOfRange.txt"));
 			return;

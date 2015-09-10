@@ -1,7 +1,10 @@
 package com.brandon3055.draconicevolution.common.handler;
 
 
+import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
+import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -14,6 +17,7 @@ import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
 import com.brandon3055.draconicevolution.common.network.SpeedRequestPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.world.ChaosWorldGenHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -28,6 +32,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
@@ -406,6 +411,16 @@ public class MinecraftForgeEventHandler {
 				event.world.setBlockToAir(x, y, z);
 				event.world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "random.fizz", 1F, event.world.rand.nextFloat() * 0.1F + 2F);
 				event.setCanceled(true);
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void entityJoinWorld(EntityJoinWorldEvent event){
+		if (!event.world.isRemote && event.entity instanceof EntityEnderCrystal && event.entity.dimension == 1){
+			DataUtills.XZPair<Integer, Integer> location = ChaosWorldGenHandler.getClosestChaosSpawn((int)event.entity.posX/16, (int)event.entity.posZ/16);
+			if ((location.x != 0 || location.z != 0) && Utills.getDistance(event.entity.posX, event.entity.posZ, location.x, location.z) < 500){
+				ProcessHandler.addProcess(new ChaosWorldGenHandler.CrystalRemover(event.entity));
 			}
 		}
 	}

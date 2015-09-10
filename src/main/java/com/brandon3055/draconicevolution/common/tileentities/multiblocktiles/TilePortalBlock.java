@@ -28,7 +28,7 @@ public class TilePortalBlock extends TileEntity {
 	@SideOnly(Side.CLIENT)
 	public void updateEntity() {
 		if (!worldObj.isRemote) return;
-		double distanceMod = Utills.getDistanceAtoB(xCoord+0.5, yCoord+0.5, zCoord+0.5, RenderManager.renderPosX, RenderManager.renderPosY, RenderManager.renderPosZ);
+		double distanceMod = Utills.getDistance(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, RenderManager.renderPosX, RenderManager.renderPosY, RenderManager.renderPosZ);
 		if (worldObj.rand.nextInt(Math.max((int)(distanceMod * (distanceMod/5D)), 1)) == 0)
 		{
 			if (blockMetadata == -1) blockMetadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);

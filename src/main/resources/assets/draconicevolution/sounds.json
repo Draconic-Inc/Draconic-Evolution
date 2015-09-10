@@ -4,6 +4,7 @@
    "boom": {"category": "block","sounds": [{"name": "boom","stream": false}]},
    "beam": {"category": "block","sounds": [{"name": "beam","stream": false}]},
    "portal": {"category": "player","sounds": [{"name": "portal","stream": false}]},
+   "shieldUp": {"category": "master","sounds": [{"name": "shieldUp","stream": false}]},
    "fusionExplosion": {"category": "master","sounds": [{"name": "fusionExplosion","stream": false}]}
 }
 

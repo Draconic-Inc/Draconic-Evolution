@@ -44,14 +44,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class CommonProxy {
-	//private final static boolean debug = DraconicEvolution.debug;
 
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
 		registerEventListeners(event.getSide());
 		ModBlocks.init();
 		ModItems.init();
-		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 1);
 		registerTileEntities();
 		initializeNetwork();
 

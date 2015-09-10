@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
-import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.entity.EntityChaosCrystal;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
@@ -12,10 +10,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -138,31 +134,138 @@ public class Tclogo extends ItemDE {
 
 		if (!world.isRemote)
 		{
-			int x1 = (int)player.posX;
-			int y1 = (int)player.posY;
-			int z1 = (int)player.posZ;
 
-			world.setBlock(x1, y1 + 20, z1, ModBlocks.infusedObsidian, 0, 2);
-			if (!world.isRemote) {
-				EntityChaosCrystal crystal = new EntityChaosCrystal(world);
-				crystal.setPosition(x1 + 0.5, y1 + 21, z1 + 0.5);
-				world.spawnEntityInWorld(crystal);
-			}
-			for (int y = y1; y < y1 + 20; y++) {
-				world.setBlock(x1, y, z1, Blocks.obsidian, 0, 2);
-				world.setBlock(x1 + 1, y, z1, Blocks.obsidian, 0, 2);
-				world.setBlock(x1 - 1, y, z1, Blocks.obsidian, 0, 2);
-				world.setBlock(x1, y, z1 + 1, Blocks.obsidian, 0, 2);
-				world.setBlock(x1, y, z1 - 1, Blocks.obsidian, 0, 2);
-				world.setBlock(x1 + 1, y, z1 + 1, Blocks.obsidian, 0, 2);
-				world.setBlock(x1 - 1, y, z1 - 1, Blocks.obsidian, 0, 2);
-				world.setBlock(x1 + 1, y, z1 - 1, Blocks.obsidian, 0, 2);
-				world.setBlock(x1 - 1, y, z1 + 1, Blocks.obsidian, 0, 2);
-			}
-			//world.spawnEntityInWorld(projectile);
+//			LogHelper.info("#########################");
+//			Map<Integer, BlockCollection.BlockDat> blocks = new HashMap<Integer, BlockCollection.BlockDat>();
+//			List<Integer> l = new ArrayList<Integer>();
+
+
+//			int rand = itemRand.nextInt();
+//
+//			long u = System.nanoTime();
+//
+//			for (int i = 0; i < 100000; i++) blocks.containsKey(i+rand);
+//
+//			LogHelper.info("Time1:"+(System.nanoTime()-u)/1000000D);
+//			u = System.nanoTime();
+//
+//			for (int i = 0; i < 100000; i++) l.get(i + rand);
+//
+//			LogHelper.info("Time2:"+(System.nanoTime()-u)/1000000D);
+
+
+
+//			DraconicWorldGenerator.chaosIslandGen = new WorldGenChaosIsland();
+//			LogHelper.info("Reinitialized");
+//			long u = System.nanoTime();
+//			long m = System.currentTimeMillis();
+//			BlockCollection blocks = DraconicWorldGenerator.chaosIslandGen.getBlocks(world.rand);
+//			LogHelper.info(blocks.getIndex(30285000, 45, -30927500));
+////
+//			LogHelper.info("Generated in:"+(System.nanoTime()-u)+"ns, "+(System.currentTimeMillis()-m)+"ms");
+
+			//for (float f = 0; f < 1; f+=0.01) LogHelper.info((0.5D-Math.abs(f-0.5D))*2D);
+
+//			short id = (short)itemRand.nextInt(4000);
+//			byte meta = (byte)itemRand.nextInt(16);
+//			LogHelper.info("#########################");
+//			LogHelper.info("ID:"+id+" Meta:"+meta);
+//
+//			byte data1 = (byte)(id >> 4);
+//			byte data2 = (byte)(((id & 0xF) << 4) | meta);
+//
+//			int decodedID = (((data1 & 0xFF) << 4) | ((data2 & 0xF0) >> 4));
+//			int decodedMeta = (data2 & 0x0F);
+//			LogHelper.info("DecodedID:"+decodedID+" DecodedMeta:"+decodedMeta);
+
+
+
+//			LogHelper.info(Integer.toBinaryString(id) + " "+Integer.toBinaryString(meta));
+//			LogHelper.info(Integer.toBinaryString(id >> 4) +" " +Integer.toBinaryString(id & 0xF));
+//			LogHelper.info(id+" "+meta);
+////			LogHelper.info(b1+" "+b2);
+//			LogHelper.info(Integer.toBinaryString(b1 & 0xFF)+" "+Integer.toBinaryString(b2 & 0xFF));// +" " +Integer.toBinaryString(0xF0));
+////			LogHelper.info((((b1 & 0xF0) << 8) + (b2 & 0xFF)) +" "+meta);
+//			LogHelper.info("Id: "+Integer.toBinaryString(((b1 & 0xFF) << 4)) +" "+ Integer.toBinaryString(((b2 & 0xF0) >>> 4)));
+//			LogHelper.info("Id: "+Integer.toBinaryString(((b1 & 0xFF) << 4) | ((b2 & 0xF0) >> 4))+" "+(((b1 & 0xFF) << 4) | ((b2 & 0xF0) >> 4)));
+//			LogHelper.info("Meta: "+Integer.toBinaryString(b2 & 0x0F)+" "+(b2 & 0x0F));
+//			LogHelper.info("Meta: "+Integer.toBinaryString(4095));
+
+
+
+//			for (int index = 0; index < blockId.length; index++) {
+//				if ((index >> 1) >= addId.length) { // No corresponding AddBlocks index
+//					blocks[index] = (short) (blockId[index] & 0xFF);
+//				} else {
+//					if ((index & 1) != 0) {
+//						blocks[index] = (short) (((addId[index >> 1] & 0x0F) << 8) + (short) (blockId[index] & 0xFF));
+//					} else {
+//						blocks[index] = (short) (((addId[index >> 1] & 0xF0) << 4) + (short) (blockId[index] & 0xFF));
+//					}
+//				}
+//			}
+
+
+
+
+//			long s = (652800000L * 8L) + (652800000L * 8L);
+//			LogHelper.info((s / 1000000000D) / 8D);
+
+//			int posX = (int)player.posX;
+//			int posZ = (int)player.posZ;
+//
+//			BlockCollection blocks = DraconicWorldGenerator.chaosIslandGen.getBlocks(world.rand);
+//			LogHelper.info("Generated");
+//
+//			for (int x = -400; x < 400; x++){
+//				for (int y = 0; y < 255; y++){
+//					for (int z = -400; z < 400; z++){
+//						world.setBlock(posX+x, y, posZ+z, blocks.getBlock(x, y, z));
+//					}
+//				}
+//				System.out.print(x+", ");
+//			}
+
+
+//			int rand1 = itemRand.nextInt();
+//			int rand2 = itemRand.nextInt();
+//			int rand3 = itemRand.nextInt();
+//			int rand4 = itemRand.nextInt();
+//			int rand5 = itemRand.nextInt();
+//			int rand6 = itemRand.nextInt();
+//
+//			long l = System.currentTimeMillis();
+//			for (int i = 0; i < 2000000000; i++){
+//
+//				int x1 = rand1 + i;
+//				int x2 = rand2 + i;
+//				int y1 = rand3 + i;
+//				int y2 = rand4 + i;
+//				int z1 = rand5 + i;
+//				int z2 = rand6 + i;
+//
+//				double dx = x1-x2;
+//				double dy = y1-y2;
+//				double dz = z1-z2;
+//				double d = dx * dx + dy * dy + dz * dz;
+//				Math.sqrt(d+i);
+//			}
+//			LogHelper.info("Time 1:"+ (System.currentTimeMillis()-l));
+
+
+
+
+
+//			long l = System.currentTimeMillis();
+//			new WorldGenChaosIsland().initialize(world.rand);
+//			LogHelper.info(System.currentTimeMillis() - l);
+//
+//
+
+
 		}
 
-		List<Entity> l = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ, player.posX, player.posY, player.posZ).expand(500, 500, 500));
+		//List<Entity> l = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ, player.posX, player.posY, player.posZ).expand(500, 500, 500));
 		//for (Entity e : l) if (!(e instanceof EntityPlayer)) e.setDead();
 
 		if (1==1) return stack;

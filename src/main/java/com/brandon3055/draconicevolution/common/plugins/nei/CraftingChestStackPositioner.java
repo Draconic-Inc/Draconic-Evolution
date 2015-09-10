@@ -36,7 +36,6 @@ public class CraftingChestStackPositioner implements IStackPositioner
 
 			for (PositionedStack stack : stacks)
 			{
-				LogHelper.info(stack.relx + " " + stack.rely + " " + stack.item);
 				stack.relx += offsetX;
 				stack.rely += offsetY;
 			}

@@ -1,17 +1,12 @@
 package com.brandon3055.draconicevolution.common.plugins.nei;
 
-//import codechicken.lib.inventory.InventoryUtils;
-//import codechicken.nei.FastTransferManager;
-//import codechicken.nei.PositionedStack;
-//import codechicken.nei.api.IOverlayHandler;
-//import codechicken.nei.recipe.IRecipeHandler;
-
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.nei.FastTransferManager;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.recipe.IRecipeHandler;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -214,11 +209,12 @@ public class CraftingChestOverlayHandler implements IOverlayHandler
 			ItemStack permutation = null;
 			int biggestSize = 0;
 			for (ItemStack pstack : posstack.items) {
+				if (pstack.stackSize == 0) continue;
 				for (int j = 0; j < ingredStacks.size(); j++) {
 					DistributedIngred istack = ingredStacks.get(j);
 					if (!InventoryUtils.canStack(pstack, istack.stack) || istack.invAmount - istack.distributed < pstack.stackSize)
 						continue;
-
+					LogHelper.info(istack.invAmount - istack.invAmount + " " + istack.recipeAmount * istack.distributed + " " + pstack.stackSize);
 					int relsize = (istack.invAmount - istack.invAmount / istack.recipeAmount * istack.distributed) / pstack.stackSize;
 					if (relsize > biggestSize) {
 						biggestSize = relsize;

@@ -42,7 +42,7 @@ public class ReactorExplosion implements IProcess {
 
 		for (int x = xCoord - size; x < xCoord + size; x++){
 			for (int z = zCoord - size; z < zCoord + size; z++){
-				double dist = Utills.getDistanceAtoB(x, z, xCoord, zCoord);
+				double dist = Utills.getDistance(x, z, xCoord, zCoord);
 				if (dist < OD && dist >= ID)
 				{
 					float tracePower = power - (float)(expansion/10D);

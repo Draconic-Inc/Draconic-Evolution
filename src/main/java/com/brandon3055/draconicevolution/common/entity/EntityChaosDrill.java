@@ -74,7 +74,7 @@ public class EntityChaosDrill extends Entity {
 		for( int x = (int)posX-r ; x <= (int)posX+r; x++){
 			for( int z = (int)posZ-r ; z <= (int)posZ+r; z++) {
 				for (int y = (int)posY-r; y <= (int)posY+r; y++) {
-					int dist = (int) (Utills.getDistanceAtoB(x, y, z, (int) posX, (int) posY, (int) posZ));
+					int dist = (int) (Utills.getDistance(x, y, z, (int) posX, (int) posY, (int) posZ));
 					if (dist <= r) {
 						if (!worldObj.isAirBlock(x, y, z)) {
 							if (blocks.size() <= dist) {

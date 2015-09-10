@@ -114,7 +114,7 @@ public class TileReactorCore extends TileObjectSync {
 
 	private void checkPlayerCollision(){
 		EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
-		double distance = Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, xCoord+0.5, yCoord+0.5, zCoord+0.5);
+		double distance = Utills.getDistance(player.posX, player.posY, player.posZ, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
 		if (distance < (getCoreDiameter()/2) + 0.5){
 			double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter()/2) + 0.5));
 			double offsetX = player.posX - xCoord;
@@ -267,7 +267,7 @@ public class TileReactorCore extends TileObjectSync {
 		}
 
 		for (TileReactorStabilizer stabilizer : stabilizers){
-			if (Utills.getDistanceAtoB(stabilizer.xCoord, stabilizer.yCoord, stabilizer.zCoord, xCoord, yCoord, zCoord) < (getMaxCoreDiameter()/2)+1) {
+			if (Utills.getDistance(stabilizer.xCoord, stabilizer.yCoord, stabilizer.zCoord, xCoord, yCoord, zCoord) < (getMaxCoreDiameter()/2)+1) {
 				isStructureValid = false;
 				break;
 			}
