@@ -66,7 +66,7 @@ public class ParticleEnergyBeam extends EntityFX {
 
 		if (offsetMode > 0)
 		{
-			double dist = Utills.getDistance(x, z, tX, tZ);
+			double dist = Utills.getDistanceAtoB(x, z, tX, tZ);
 			if (dist == 0) dist = 0.1;
 			double xDist = x - tX;
 			double zDist = z - tZ;

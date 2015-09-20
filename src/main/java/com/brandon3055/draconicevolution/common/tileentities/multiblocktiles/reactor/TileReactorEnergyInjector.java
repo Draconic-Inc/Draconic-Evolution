@@ -1,9 +1,10 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor;
 
 import cofh.api.energy.IEnergyReceiver;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.IIsSlave;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -11,12 +12,13 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by Brandon on 23/7/2015.
  */
-public class TileReactorEnergyInjector extends TileEntity implements IIsSlave, IEnergyReceiver{
+public class TileReactorEnergyInjector extends TileEntity implements IReactorPart, IEnergyReceiver{
 
 	public float modelIllumination = 1F;
 	public int facingDirection = ForgeDirection.UP.ordinal();
@@ -25,11 +27,23 @@ public class TileReactorEnergyInjector extends TileEntity implements IIsSlave, I
 	public int tick = 0;
 	private ParticleReactorBeam beam = null;
 	private TileReactorCore core = null;
+	private int redstoneMode = 0;
+	private int rs = -1;
+	private int rsCach = -1;
 
 	@Override
 	public void updateEntity() {
 		if (worldObj.isRemote && isValid){
 			beam = DraconicEvolution.proxy.reactorBeam(this, beam, true);
+		}
+
+		TileEntity master = masterLocation.getTileEntity(worldObj);
+		if (!worldObj.isRemote && master instanceof TileReactorCore){
+			rs = ((TileReactorCore) master).getComparatorOutput(redstoneMode);
+			if (rs != rsCach){
+				rsCach = rs;
+				Utills.updateNeabourBlocks(worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 	}
 
@@ -65,6 +79,22 @@ public class TileReactorEnergyInjector extends TileEntity implements IIsSlave, I
 	@Override
 	public boolean isActive() {
 		return isValid;
+	}
+
+	@Override
+	public String getRedstoneModeString() {
+		return StatCollector.translateToLocal("msg.de.reactorRSMode."+redstoneMode+".txt");
+	}
+
+	@Override
+	public void changeRedstoneMode() {
+		if (redstoneMode == IReactorPart.RMODE_FUEL_INV) redstoneMode = 0;
+		else redstoneMode++;
+	}
+
+	@Override
+	public int getRedstoneMode() {
+		return redstoneMode;
 	}
 
 	@Override
@@ -106,6 +136,7 @@ public class TileReactorEnergyInjector extends TileEntity implements IIsSlave, I
 		masterLocation.writeToNBT(compound, "Master");
 		compound.setInteger("Facing", facingDirection);
 		compound.setBoolean("IsValid", isValid);
+		compound.setInteger("RedstoneMode", redstoneMode);
 	}
 
 	@Override
@@ -114,6 +145,7 @@ public class TileReactorEnergyInjector extends TileEntity implements IIsSlave, I
 		masterLocation.readFromNBT(compound, "Master");
 		facingDirection = compound.getInteger("Facing");
 		isValid = compound.getBoolean("IsValid");
+		redstoneMode = compound.getInteger("RedstoneMode");
 	}
 
 	@Override

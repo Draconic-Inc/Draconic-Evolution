@@ -107,7 +107,6 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 				player.addChatComponentMessage(new ChatComponentText("Tier:" + (master.getTier() + 1)));
 				String BN = String.valueOf(master.getEnergyStored());
-				if (BN.substring(BN.length() - 2).contentEquals(".0")) BN = BN.substring(0, BN.length() - 2);
 				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("info.de.charge.txt") + ": " + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored()) + " [" + BN + " RF]"));
 			}
 			return true;

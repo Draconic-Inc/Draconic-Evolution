@@ -667,7 +667,7 @@ public class EntityCustomDragon extends EntityDragon {
 
 	@Override
 	public boolean attackEntityFromPart(EntityDragonPart p_70965_1_, DamageSource damageSource, float p_70965_3_) {
-//		if (damageSource.getEntity() != null && Utills.getDistance(damageSource.getEntity().posX)getDistanceToEntity(damageSource.getEntity()) > 100) {
+//		if (damageSource.getEntity() != null && Utills.getDistanceAtoB(damageSource.getEntity().posX)getDistanceToEntity(damageSource.getEntity()) > 100) {
 //			LogHelper.info("cancel attack");
 //			return false;
 //		}

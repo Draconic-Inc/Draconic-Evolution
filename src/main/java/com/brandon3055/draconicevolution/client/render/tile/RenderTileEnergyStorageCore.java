@@ -65,7 +65,7 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {//to
 		GL11.glTranslated(x+0.5, y+0.5, z+0.5);
 		FMLClientHandler.instance().getClient().getTextureManager().bindTexture(iner_model_texture);
 
-		double colour = ((TileEnergyStorageCore) tile).getEnergyStored() / ((TileEnergyStorageCore) tile).getMaxEnergyStored();
+		double colour = (double)((TileEnergyStorageCore) tile).getEnergyStored() / (double)((TileEnergyStorageCore) tile).getMaxEnergyStored();
 		float brightness = (float)Math.abs(Math.sin((float) Minecraft.getSystemTime() / 3000f) * 100f);
 
 		colour = 1f - colour;

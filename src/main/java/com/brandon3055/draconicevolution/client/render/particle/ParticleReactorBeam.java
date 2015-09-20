@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.IIsSlave;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorEnergyInjector;
@@ -60,7 +60,7 @@ public class ParticleReactorBeam extends EntityFX {
 
 	@Override
 	public void renderParticle(Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ, float rotYZ, float rotXY) {
-		if (!((IIsSlave)tile).isActive()) return;
+		if (!((IReactorPart)tile).isActive()) return;
 		tessellator.draw();
 		GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_CULL_FACE);
@@ -72,7 +72,7 @@ public class ParticleReactorBeam extends EntityFX {
 		GL11.glTranslated((double)xx, (double)yy, (double)zz);
 
 		//Common Fields
-		MultiblockHelper.TileLocation master = ((IIsSlave)tile).getMaster();
+		MultiblockHelper.TileLocation master = ((IReactorPart)tile).getMaster();
 		float offsetX = (float)(master.posX - tile.xCoord);
 		float offsetY = (float)((double)master.posY - tile.yCoord);
 		float offsetZ = (float)(master.posZ - tile.zCoord);
@@ -84,7 +84,7 @@ public class ParticleReactorBeam extends EntityFX {
 		GL11.glRotatef((float) (-Math.atan2((double) offsetZ, (double) offsetX)) * 180.0F / (float) Math.PI - 90.0F, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef((float)(-Math.atan2((double)f7, (double)offsetY)) * 180.0F / (float)Math.PI - 90.0F, 1.0F, 0.0F, 0.0F);
 
-		TileReactorCore reactor = ((IIsSlave)tile).getMaster().getTileEntity(worldObj) instanceof TileReactorCore ? (TileReactorCore) ((IIsSlave)tile).getMaster().getTileEntity(worldObj) : null;
+		TileReactorCore reactor = ((IReactorPart)tile).getMaster().getTileEntity(worldObj) instanceof TileReactorCore ? (TileReactorCore) ((IReactorPart)tile).getMaster().getTileEntity(worldObj) : null;
 
 		if (tile instanceof TileReactorStabilizer && reactor != null) renderStabilizerEffect(tessellator, reactor, offsetX, offsetY, offsetZ, length, partialTick);
 		else if (reactor != null){

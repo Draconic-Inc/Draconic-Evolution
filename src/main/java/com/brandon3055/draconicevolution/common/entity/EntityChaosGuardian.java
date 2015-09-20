@@ -124,7 +124,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			dataWatcher.updateObject(20, connectedCrystalID);
 			updateTarget();
 			customAIUpdate();
-			if (behaviour == EnumBehaviour.FIREBOMB && Utills.getDistance(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) moveSpeedMultiplier = 0;
+			if (behaviour == EnumBehaviour.FIREBOMB && Utills.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) moveSpeedMultiplier = 0;
 		}
 
 		if (this.getHealth() <= 0.0F) {
@@ -188,7 +188,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 					if (behaviour == EnumBehaviour.CIRCLE_PLAYER){
 						this.targetX = this.target.posX + (int)(Math.cos(circlePosition) * 60);
 						this.targetZ = this.target.posZ + (int)(Math.sin(circlePosition) * 60);
-						moveSpeedMultiplier = 1F + Math.min(((float) Utills.getDistance(targetX, targetZ, posX, posZ) / 50) * 3F, 3F);
+						moveSpeedMultiplier = 1F + Math.min(((float) Utills.getDistanceAtoB(targetX, targetZ, posX, posZ) / 50) * 3F, 3F);
 					}else {
 						this.targetX = this.target.posX;
 						this.targetZ = this.target.posZ;
@@ -385,19 +385,19 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 				break;
 
 			case GO_HOME:
-				if (Utills.getDistance(posX, posZ, homeX, homeZ) < 70 ) selectNewBehaviour();
+				if (Utills.getDistanceAtoB(posX, posZ, homeX, homeZ) < 70 ) selectNewBehaviour();
 				break;
 
 			case GUARDING:
 				break;
 
 			case CHARGING:
-				if (Utills.getDistance(posX, posZ, homeX, homeZ) > 300) behaviour = EnumBehaviour.GO_HOME;
+				if (Utills.getDistanceAtoB(posX, posZ, homeX, homeZ) > 300) behaviour = EnumBehaviour.GO_HOME;
 				break;
 
 			case CIRCLE_PLAYER:
 				circlePosition += (0.02F * circleDirection);
-				if (Utills.getDistance(posX, posZ, homeX, homeZ) > 300) behaviour = EnumBehaviour.GO_HOME;
+				if (Utills.getDistanceAtoB(posX, posZ, homeX, homeZ) > 300) behaviour = EnumBehaviour.GO_HOME;
 				break;
 
 			case LOW_HEALTH_STRATEGY:
@@ -442,15 +442,15 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 	private void updateAttack(){
 		if (worldObj.isRemote || getHealth() <= 0) return;
 
-		if (behaviour == EnumBehaviour.FIREBOMB && Utills.getDistance(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3){
+		if (behaviour == EnumBehaviour.FIREBOMB && Utills.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3){
 			if (target == null || ticksExisted % 100 == 0) setNewTarget();
 			if (target != null){
-				double distance = Utills.getDistance(target.posX, target.posZ, dragonPartHead.posX, dragonPartHead.posZ);
-				if (Utills.getDistance(target.posX, target.posZ, posX, posZ) < 5) distance *= -1;
+				double distance = Utills.getDistanceAtoB(target.posX, target.posZ, dragonPartHead.posX, dragonPartHead.posZ);
+				if (Utills.getDistanceAtoB(target.posX, target.posZ, posX, posZ) < 5) distance *= -1;
 				float anglePitch = (float)Math.toDegrees(Math.atan2(target.posY - dragonPartHead.posY, distance)) * -1F;
 				float angleYaw = (float)Math.toDegrees(Math.atan2(target.posX - dragonPartHead.posX, target.posZ - posZ)) * -1F;
 				rotationPitch = anglePitch;
-				if (Utills.getDistance(target.posX, target.posZ, posX, posZ) > 8) rotationYaw = angleYaw + 180;
+				if (Utills.getDistanceAtoB(target.posX, target.posZ, posX, posZ) > 8) rotationYaw = angleYaw + 180;
 
 
 				if (ticksExisted % 2 == 0)
@@ -491,7 +491,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			switch (attackInProgress){
 				case ATTACK_FIREBALL_CHARGE:
 					if (target == null && behaviour == EnumBehaviour.CHARGING) target = attackTarget;
-					if (Utills.getDistance(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 10)
+					if (Utills.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 10)
 					{
 						if (attackTimer % 2 == 0)
 						{
@@ -500,7 +500,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 							worldObj.spawnEntityInWorld(projectile);
 						}
 
-						double distance = Utills.getDistance(attackTarget.posX, attackTarget.posZ, dragonPartHead.posX, dragonPartHead.posZ);
+						double distance = Utills.getDistanceAtoB(attackTarget.posX, attackTarget.posZ, dragonPartHead.posX, dragonPartHead.posZ);
 						float angle = (float)Math.toDegrees(Math.atan2(attackTarget.posY - dragonPartHead.posY, distance)) * -1F;
 						rotationPitch = angle;
 
@@ -533,7 +533,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 						attackInProgress = -1;
 						return;
 					}
-					if (Utills.getDistance(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 15)
+					if (Utills.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 15)
 					{
 						if (attackTimer % 2 == 0)
 						{
@@ -542,7 +542,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 							worldObj.spawnEntityInWorld(projectile);
 						}
 
-						double distance = Utills.getDistance(attackTarget.posX, attackTarget.posZ, dragonPartHead.posX, dragonPartHead.posZ);
+						double distance = Utills.getDistanceAtoB(attackTarget.posX, attackTarget.posZ, dragonPartHead.posX, dragonPartHead.posZ);
 						float angle = (float)Math.toDegrees(Math.atan2(attackTarget.posY - dragonPartHead.posY, distance)) * -1F;
 						rotationPitch = angle;
 
@@ -615,7 +615,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 				break;
 			case FIREBOMB:
-				if (Utills.getDistance(posX, posY, posZ, homeX, homeY + 30, homeZ) > 3){
+				if (Utills.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) > 3){
 					targetX = homeX;
 					targetY = homeY + 30;
 					targetZ = homeZ;
@@ -741,7 +741,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 				break;
 			case FIREBOMB:
-				if ((target == null && Utills.getDistance(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0) selectNewBehaviour();
+				if ((target == null && Utills.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0) selectNewBehaviour();
 				if (damageSource.getEntity() instanceof EntityPlayer && damageSource.getEntity() != target && worldObj.rayTraceBlocks(Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(damageSource.getEntity().posX, damageSource.getEntity().posY, damageSource.getEntity().posZ)) == null){
 					target = damageSource.getEntity();
 				}

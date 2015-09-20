@@ -22,7 +22,7 @@ import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.common.CommonProxy;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.IIsSlave;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
 import com.brandon3055.draconicevolution.common.entity.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -252,7 +252,7 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public ParticleReactorBeam reactorBeam(TileEntity tile, ParticleReactorBeam oldBeam, boolean render) {
-		if (!tile.getWorldObj().isRemote || !(tile instanceof IIsSlave)) return null;
+		if (!tile.getWorldObj().isRemote || !(tile instanceof IReactorPart)) return null;
 		ParticleReactorBeam beam = oldBeam;
 		boolean inRange = ParticleHandler.isInRange(tile.xCoord, tile.yCoord, tile.zCoord, 50);
 

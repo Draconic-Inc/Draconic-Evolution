@@ -92,7 +92,7 @@ public class ChaosWorldGenHandler {
 		//Gen Ring
 		for (int x = islandCenter.x - outerRadius; x <= islandCenter.x + outerRadius; x++) {
 			for (int z = islandCenter.z - outerRadius; z <= islandCenter.z + outerRadius; z++) {
-				int dist = (int) (Utills.getDistance(x, z, islandCenter.x, islandCenter.z));
+				int dist = (int) (Utills.getDistanceAtoB(x, z, islandCenter.x, islandCenter.z));
 				for (int i = 0; i < rings; i++)
 				{
 					//if (dist < outerRadius1 && dist >= innerRadius1 || dist < outerRadius2 && dist >= innerRadius2)
@@ -163,7 +163,7 @@ public class ChaosWorldGenHandler {
 				int r = 3;
 				for (int x = x1 - r; x <= x1 + r; x++) {
 					for (int z = z1 - r; z <= z1 + r; z++) {
-						if (Utills.getDistance(x, z, x1, z1) <= r) {
+						if (Utills.getDistanceAtoB(x, z, x1, z1) <= r) {
 							if (pct > rand.nextDouble()) world.setBlock(x, y, z, Blocks.obsidian, 0, 2);
 						}
 					}

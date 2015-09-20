@@ -118,7 +118,7 @@ public class EntityDragonHeart extends Entity {
 				List<EntityItem> items = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(posX-5, posY-5, posZ-5, posX+5, posY+5, posZ+5));
 				for (EntityItem item : items){
 					ItemStack stack = item.getEntityItem();
-					if (Utills.getDistance(posX, posY + 0.5, posZ, item.posX, item.posY, item.posZ) < 1) {
+					if (Utills.getDistanceAtoB(posX, posY + 0.5, posZ, item.posX, item.posY, item.posZ) < 1) {
 						if (coresConsumed == 16 || worldObj.isRemote) break;
 						if (stack.getItem() != ModItems.draconicCore) {
 							item.motionX=1;

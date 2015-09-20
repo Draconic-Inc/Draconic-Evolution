@@ -116,7 +116,7 @@ public class EntityDragonProjectile extends Entity {
 		}
 
 		if (isChaser && !worldObj.isRemote){
-			double tDist = Utills.getDistance(target.posX, target.posY, target.posZ, posX, posY, posZ);
+			double tDist = Utills.getDistanceAtoB(target.posX, target.posY, target.posZ, posX, posY, posZ);
 			if (tDist <= 0) tDist = 0.1;
 
 			double x = (target.posX - posX) / tDist;
@@ -139,7 +139,7 @@ public class EntityDragonProjectile extends Entity {
 	private boolean checkTargetCondition(){
 		if (worldObj.isRemote) return false;
 
-		double targetDistance = Utills.getDistance(posX, posY, posZ, target.posX, target.posY, target.posZ);
+		double targetDistance = Utills.getDistanceAtoB(posX, posY, posZ, target.posX, target.posY, target.posZ);
 
 		Entity entityHit = getHitEntity();
 		if (entityHit instanceof EntityDragonPart) entityHit = null;
@@ -270,7 +270,7 @@ public class EntityDragonProjectile extends Entity {
 		for (EntityLivingBase entityLivingBase : entities) {
 			if (entityLivingBase == shooter) continue;
 			entityLivingBase.hurtResistantTime = 0;
-			entityLivingBase.attackEntityFrom(source, damage / (float)(Utills.getDistance(entityLivingBase.posX, entityLivingBase.posY, entityLivingBase.posZ, posX, posY, posZ) / radius));
+			entityLivingBase.attackEntityFrom(source, damage / (float)(Utills.getDistanceAtoB(entityLivingBase.posX, entityLivingBase.posY, entityLivingBase.posZ, posX, posY, posZ) / radius));
 			if (source == damageChaos && entityLivingBase instanceof EntityPlayer){
 				for (ItemStack stack : ((EntityPlayer) entityLivingBase).inventory.armorInventory) {
 					if (stack != null && stack.getItem() instanceof IEnergyContainerItem){

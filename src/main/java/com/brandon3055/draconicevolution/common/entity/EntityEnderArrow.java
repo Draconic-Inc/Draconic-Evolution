@@ -414,7 +414,7 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 					int y = (int)Math.floor(posY);
 					int z = (int)Math.floor(posZ);
 
-					double travelDist = Utills.getDistance(startX, startY, startZ, x, y, z);
+					double travelDist = Utills.getDistanceAtoB(startX, startY, startZ, x, y, z);
 					float travelDmg = (float)(travelDist / 5D);
 					EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x+0.5, y+0.5, z+0.5, travelDmg);
 					if (!MinecraftForge.EVENT_BUS.post(event))

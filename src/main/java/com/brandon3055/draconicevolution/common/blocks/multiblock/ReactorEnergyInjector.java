@@ -5,14 +5,17 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.BlockDE;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorEnergyInjector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -88,6 +91,32 @@ public class ReactorEnergyInjector extends BlockDE {
 		tile.facingDirection = ForgeDirection.getOrientation(d).getOpposite().ordinal();
 		tile.onPlaced();
 	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+		IReactorPart tile = world.getTileEntity(x, y, z) instanceof IReactorPart ? (IReactorPart)world.getTileEntity(x, y, z) : null;
+		if (tile != null) {
+			tile.changeRedstoneMode();
+			if(!world.isRemote) player.addChatComponentMessage(new ChatComponentText(tile.getRedstoneModeString()));
+			return true;
+		}
+		return false;
+	}
+
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int p_149736_5_) {
+		IReactorPart tile = world.getTileEntity(x, y, z) instanceof IReactorPart ? (IReactorPart)world.getTileEntity(x, y, z) : null;
+		if (tile == null) return 0;
+		TileReactorCore core = tile.getMaster().getTileEntity(world) instanceof TileReactorCore ? (TileReactorCore) tile.getMaster().getTileEntity(world) : null;
+		if (core != null) return core.getComparatorOutput(tile.getRedstoneMode());
+		return 0;
+	}
+
 	@Override
 	public boolean hasTileEntity(int metadata) {
 		return true;

@@ -12,6 +12,9 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import java.util.Random;
 
 public class DraconicWorldGenerator implements IWorldGenerator {
+	public static boolean chaosIslandsEnabled = true;
+	public static boolean cometsEnabled = true;
+	public static boolean oreEnabledInEnd = true;
 
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
@@ -44,9 +47,9 @@ public class DraconicWorldGenerator implements IWorldGenerator {
 		int x1 = x + random.nextInt(16);
 		int y = 20 + random.nextInt(170);
 		int z1 = z + random.nextInt(16);
-		if (ConfigHandler.generateEnderComets && Math.sqrt(x*x + z*z) > 200 && random.nextInt(Math.max(1, ConfigHandler.cometRarity)) == 0) new WorldGenEnderComet().generate(world, random, x1, y , z1);
-		if (ConfigHandler.generateChaosIslands) ChaosWorldGenHandler.generateChunk(world, x/16, z/16, null, random);
-		if (!ConfigHandler.disableOreSpawnEnd) addOreSpawn(ModBlocks.draconiumOre, world, random, x, z, 4, 5, 10, 1, 70);
+		if (cometsEnabled && ConfigHandler.generateEnderComets && Math.sqrt(x*x + z*z) > 200 && random.nextInt(Math.max(1, ConfigHandler.cometRarity)) == 0) new WorldGenEnderComet().generate(world, random, x1, y , z1);
+		if (chaosIslandsEnabled && ConfigHandler.generateChaosIslands) ChaosWorldGenHandler.generateChunk(world, x/16, z/16, null, random);
+		if (oreEnabledInEnd && !ConfigHandler.disableOreSpawnEnd) addOreSpawn(ModBlocks.draconiumOre, world, random, x, z, 4, 5, 10, 1, 70);
 	}
 
 	public void generateNether(Random random, int chunkX, int chunkZ, World world) {

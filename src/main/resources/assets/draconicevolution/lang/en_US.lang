@@ -166,6 +166,15 @@ msg.de.linked.txt=Devices Linked
 msg.de.unLinked.txt=Devices Un-Linked
 msg.de.wrongSide.txt=Can not connect to that side of the target device
 
+//Reactor
+msg.de.reactorRSMode.0.txt=Comparator Mode: Temperature
+msg.de.reactorRSMode.1.txt=Comparator Mode: Temperature [Inverted]
+msg.de.reactorRSMode.2.txt=Comparator Mode: Containment Field
+msg.de.reactorRSMode.3.txt=Comparator Mode: Containment Field [Inverted]
+msg.de.reactorRSMode.4.txt=Comparator Mode: Energy Saturation
+msg.de.reactorRSMode.5.txt=Comparator Mode: Energy Saturation [Inverted]
+msg.de.reactorRSMode.6.txt=Comparator Mode: Fuel Conversion
+msg.de.reactorRSMode.7.txt=Comparator Mode: Fuel Conversion [Inverted]
 
 //Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=Unbound

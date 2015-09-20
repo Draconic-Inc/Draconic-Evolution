@@ -419,7 +419,7 @@ public class MinecraftForgeEventHandler {
 	public void entityJoinWorld(EntityJoinWorldEvent event){
 		if (!event.world.isRemote && event.entity instanceof EntityEnderCrystal && event.entity.dimension == 1){
 			DataUtills.XZPair<Integer, Integer> location = ChaosWorldGenHandler.getClosestChaosSpawn((int)event.entity.posX/16, (int)event.entity.posZ/16);
-			if ((location.x != 0 || location.z != 0) && Utills.getDistance(event.entity.posX, event.entity.posZ, location.x, location.z) < 500){
+			if ((location.x != 0 || location.z != 0) && Utills.getDistanceAtoB(event.entity.posX, event.entity.posZ, location.x, location.z) < 500){
 				ProcessHandler.addProcess(new ChaosWorldGenHandler.CrystalRemover(event.entity));
 			}
 		}

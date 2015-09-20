@@ -348,7 +348,7 @@ public class WorldGenChaosIsland {
 //		for (int x = spawnX - r; x <= spawnX + r; x++) {
 //			for (int z = spawnZ - r; z <= spawnZ + r; z++) {
 //				for (int y = spawnY - (r / 2); y <= spawnY + (r / 2); y++) {
-//					if ((int) (Utills.getDistance(x, y, z, spawnX, spawnY + offPoint + centreThikness, spawnZ)) >= offPoint && (int) (Utills.getDistance(x, y, z, spawnX, spawnY - offPoint - centreThikness, spawnZ)) >= offPoint && (int) (Utills.getDistance(x, y, z, spawnX, spawnY, spawnZ)) <= r) {
+//					if ((int) (Utills.getDistanceAtoB(x, y, z, spawnX, spawnY + offPoint + centreThikness, spawnZ)) >= offPoint && (int) (Utills.getDistanceAtoB(x, y, z, spawnX, spawnY - offPoint - centreThikness, spawnZ)) >= offPoint && (int) (Utills.getDistanceAtoB(x, y, z, spawnX, spawnY, spawnZ)) <= r) {
 //
 //						int dist = (int) Math.sqrt((x-spawnX)*(x-spawnX) + (y-spawnY)*(y-spawnY) + (z-spawnZ)*(z-spawnZ));
 //
@@ -498,7 +498,7 @@ public class WorldGenChaosIsland {
 //				int r = 3;
 //				for (int x = x1 - r; x <= x1 + r; x++) {
 //					for (int z = z1 - r; z <= z1 + r; z++) {
-//						if (Utills.getDistance(x, z, x1, z1) <= r) {
+//						if (Utills.getDistanceAtoB(x, z, x1, z1) <= r) {
 //							if (pct > rand.nextDouble()) world.setBlock(x, y, z, Blocks.obsidian, 0, 2);
 //						}
 //					}
@@ -532,7 +532,7 @@ public class WorldGenChaosIsland {
 //		int r = outerRadius;
 //		for (int x = spawnX - r; x <= spawnX + r; x++) {
 //			for (int z = spawnZ - r; z <= spawnZ + r; z++) {
-//				int dist = (int) (Utills.getDistance(x, z, spawnX, spawnZ));
+//				int dist = (int) (Utills.getDistanceAtoB(x, z, spawnX, spawnZ));
 //				if (dist < outerRadius && dist >= innerRadius) {
 //					int y = spawnY + (int) ((double) (spawnX - x) * 0.2D) + (random.nextInt(10) - 5);
 //					if (0.1F > random.nextFloat()) world.setBlock(x, y, z, Blocks.end_stone, 0, 2);

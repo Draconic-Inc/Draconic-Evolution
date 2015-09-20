@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.IIsSlave;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -114,7 +114,7 @@ public class TileReactorCore extends TileObjectSync {
 
 	private void checkPlayerCollision(){
 		EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
-		double distance = Utills.getDistance(player.posX, player.posY, player.posZ, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
+		double distance = Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
 		if (distance < (getCoreDiameter()/2) + 0.5){
 			double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter()/2) + 0.5));
 			double offsetX = player.posX - xCoord;
@@ -267,7 +267,7 @@ public class TileReactorCore extends TileObjectSync {
 		}
 
 		for (TileReactorStabilizer stabilizer : stabilizers){
-			if (Utills.getDistance(stabilizer.xCoord, stabilizer.yCoord, stabilizer.zCoord, xCoord, yCoord, zCoord) < (getMaxCoreDiameter()/2)+1) {
+			if (Utills.getDistanceAtoB(stabilizer.xCoord, stabilizer.yCoord, stabilizer.zCoord, xCoord, yCoord, zCoord) < (getMaxCoreDiameter()/2)+1) {
 				isStructureValid = false;
 				break;
 			}
@@ -291,7 +291,7 @@ public class TileReactorCore extends TileObjectSync {
 			for (int i = 1; i < MAX_SLAVE_RANGE && !flag; i++){
 				TileLocation location = new TileLocation(xCoord + direction.offsetX * i, yCoord + direction.offsetY * i, zCoord + direction.offsetZ * i);
 				if (location.getTileEntity(worldObj) != null){
-					if (location.getTileEntity(worldObj) instanceof IIsSlave && !((IIsSlave) location.getTileEntity(worldObj)).getMaster().initialized) ((IIsSlave) location.getTileEntity(worldObj)).checkForMaster();
+					if (location.getTileEntity(worldObj) instanceof IReactorPart && !((IReactorPart) location.getTileEntity(worldObj)).getMaster().initialized) ((IReactorPart) location.getTileEntity(worldObj)).checkForMaster();
 					flag = true;
 				}
 			}
@@ -303,7 +303,7 @@ public class TileReactorCore extends TileObjectSync {
 		for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
 			for (int i = 1; i < MAX_SLAVE_RANGE; i++){
 				TileLocation location = new TileLocation(xCoord + direction.offsetX * i, yCoord + direction.offsetY * i, zCoord + direction.offsetZ * i);
-				if (location.getTileEntity(worldObj) instanceof IIsSlave && ((IIsSlave) location.getTileEntity(worldObj)).getMaster().compareTo(new TileLocation(xCoord, yCoord, zCoord)) == 0) ((IIsSlave)location.getTileEntity(worldObj)).shutDown();
+				if (location.getTileEntity(worldObj) instanceof IReactorPart && ((IReactorPart) location.getTileEntity(worldObj)).getMaster().compareTo(new TileLocation(xCoord, yCoord, zCoord)) == 0) ((IReactorPart)location.getTileEntity(worldObj)).shutDown();
 			}
 		}
 
@@ -399,6 +399,41 @@ public class TileReactorCore extends TileObjectSync {
 		if (maxReactTemperatureCach != maxReactTemperature) 	maxReactTemperatureCach = 	(Double) sendObjectToClient(References.DOUBLE_ID, 9, maxReactTemperature, tp);
 		if (fieldChargeCach != fieldCharge) 					fieldChargeCach = 			(Double) sendObjectToClient(References.DOUBLE_ID, 10, fieldCharge, tp);
 		if (maxFieldChargeCach != maxFieldCharge) 				maxFieldChargeCach = 		(Double) sendObjectToClient(References.DOUBLE_ID, 11, maxFieldCharge, tp);
+	}
+
+	public int getComparatorOutput(int rsMode){
+		switch (rsMode){
+			case IReactorPart.RMODE_TEMP: return toRSStrength(reactionTemperature, maxReactTemperature, rsMode);
+			case IReactorPart.RMODE_TEMP_INV: return 15 - toRSStrength(reactionTemperature, maxReactTemperature, rsMode);
+			case IReactorPart.RMODE_FIELD: return toRSStrength(fieldCharge, maxFieldCharge, rsMode);
+			case IReactorPart.RMODE_FIELD_INV: return 15 - toRSStrength(fieldCharge, maxFieldCharge, rsMode);
+			case IReactorPart.RMODE_SAT: return toRSStrength(energySaturation, maxEnergySaturation, rsMode);
+			case IReactorPart.RMODE_SAT_INV: return 15 - toRSStrength(energySaturation, maxEnergySaturation, rsMode);
+			case IReactorPart.RMODE_FUEL: return toRSStrength(convertedFuel + conversionUnit, reactorFuel - conversionUnit, rsMode);
+			case IReactorPart.RMODE_FUEL_INV: return 15 - toRSStrength(convertedFuel + conversionUnit, reactorFuel - conversionUnit, rsMode);
+		}
+		return 0;
+	}
+
+	private int toRSStrength(double value, double maxValue, int mode){
+		if (maxValue == 0) return 0;
+		double d = value / maxValue;
+		int rs = (int)(d * 15D);
+		switch (mode){
+			case IReactorPart.RMODE_FIELD:
+			case IReactorPart.RMODE_FIELD_INV:
+			{
+				if (d < 0.1) rs = 0;
+				break;
+			}
+			case IReactorPart.RMODE_FUEL:
+			case IReactorPart.RMODE_FUEL_INV:
+			{
+				if (d > 0.9) rs = 15;
+				break;
+			}
+		}
+		return rs;
 	}
 
 	@Override

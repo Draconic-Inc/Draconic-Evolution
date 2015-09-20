@@ -586,8 +586,8 @@ public class Particles {
 			//super.onUpdate();
 			if (particleAge >= particleMaxAge || this.getDistanceSq(targetX, targetY, targetZ) < 0.05) setDead();
 
-			double d1 = Utills.getDistance(startX, startY, startZ, targetX, targetY, targetZ);
-			double d2 = Utills.getDistance(posX, posY, posZ, targetX, targetY, targetZ);
+			double d1 = Utills.getDistanceAtoB(startX, startY, startZ, targetX, targetY, targetZ);
+			double d2 = Utills.getDistanceAtoB(posX, posY, posZ, targetX, targetY, targetZ);
 			particleScale = ((float) (d2 / d1)) * baseScale;
 
 			particleAge ++;
@@ -805,8 +805,8 @@ public class Particles {
 				//super.onUpdate();
 			if (particleAge >= particleMaxAge) setDead();
 //
-//			double d1 = Utills.getDistance(startX, startY, startZ, targetX, targetY, targetZ);
-//			double d2 = Utills.getDistance(posX, posY, posZ, targetX, targetY, targetZ);
+//			double d1 = Utills.getDistanceAtoB(startX, startY, startZ, targetX, targetY, targetZ);
+//			double d2 = Utills.getDistanceAtoB(posX, posY, posZ, targetX, targetY, targetZ);
 				//particleScale = ((float) (d2 / d1)) * baseScale;
 
 			particleAlpha = (1F - (float)((double)particleAge / particleMaxAge));

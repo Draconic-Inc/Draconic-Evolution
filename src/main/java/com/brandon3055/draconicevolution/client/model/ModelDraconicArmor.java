@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
  * Draconic Armor.tcn - TechneToTabulaImporter
  * Created using Tabula 5.0.0
  */
-public class ModelDraconicArmor extends ModelBiped {
+public class ModelDraconicArmor extends ModelBiped {//
 //    public ModelRenderer bipedHead;
 //    public ModelRenderer bipedBody;
 //    public ModelRenderer bipedRightArm;
@@ -683,7 +683,6 @@ public class ModelDraconicArmor extends ModelBiped {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-
         this.bipedRightLeg.render(f5);
         this.bipedBody.render(f5*1.05F);// * 1.1F);
         this.bipedLeftArm.render(f5);
