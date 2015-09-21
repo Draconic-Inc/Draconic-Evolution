@@ -29,6 +29,7 @@ import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.rea
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
+import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -37,6 +38,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import li.cil.oc.api.machine.Callback;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -97,6 +99,7 @@ public class CommonProxy {
 		registerEntities();
 		DETab.initialize();
 		PotionHandler.init();
+		CCOCIntegration.init();
 
 		LogHelper.info("Finished Initialization");
 	}
@@ -178,6 +181,7 @@ public class CommonProxy {
 		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 0);
 	}
 
+	@Callback
 	public void registerEntities() {
 		EntityRegistry.registerModEntity(EntityCustomDragon.class, "EnderDragon", 0, DraconicEvolution.instance, 256, 3, true);
 		EntityRegistry.registerModEntity(EntityPersistentItem.class, "Persistent Item", 1, DraconicEvolution.instance, 32, 5, true);

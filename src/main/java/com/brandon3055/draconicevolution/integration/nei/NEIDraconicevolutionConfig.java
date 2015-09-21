@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.common.plugins.nei;
+package com.brandon3055.draconicevolution.integration.nei;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;

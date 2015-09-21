@@ -7,6 +7,8 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -15,10 +17,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.Arrays;
+
 /**
  * Created by brandon3055 on 5/7/2015.
  */
-public class TileReactorStabilizer extends TileEntity implements IReactorPart, IEnergyProvider{
+public class TileReactorStabilizer extends TileEntity implements IReactorPart, IEnergyProvider, IDEPeripheral {
 
 	public float coreRotation = 0F;
 	public float ringRotation = 0F;
@@ -205,9 +209,21 @@ public class TileReactorStabilizer extends TileEntity implements IReactorPart, I
 	public double getMaxRenderDistanceSquared() {
 		return 40960.0D;
 	}
-//	@SideOnly(Side.CLIENT)
-//	@Override
-//	public AxisAlignedBB getRenderBoundingBox() {
-//		return INFINITE_EXTENT_AABB;
-//	}
+
+	@Override
+	public String getName() {
+		LogHelper.info("name");
+		return "draconic_reactor";
+	}
+
+	@Override
+	public String[] getMethodNames() {
+		return new String[] {"test1", "test2"};
+	}
+
+	@Override
+	public Object[] callMethod(String method, Object... args) {
+		LogHelper.info(method+" "+ Arrays.asList(args));
+		return new Object[0];
+	}
 }

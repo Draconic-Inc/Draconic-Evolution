@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.common.plugins.nei;
+package com.brandon3055.draconicevolution.integration.nei;
 
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.nei.FastTransferManager;
