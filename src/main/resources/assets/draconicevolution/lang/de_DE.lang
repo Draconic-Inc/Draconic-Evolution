@@ -1,333 +1,268 @@
 //Description format \n=Force new line \% at start of line=add half line space above line
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:xRayBlock.name=Flamme der Verzerrung
-tile.draconicevolution:xRayBlock.description=Bestimmt hast du auch schon einmal einen Grafikfehler erlebt, der manchmal auftritt, wenn die Welt noch dabei ist zu laden. Hierbei ist es mÃ¶glich, durch die Welt zu blicken und alle HÃ¶hlen und Tunnel zu entdecken. Diese Flamme hat den selben Effekt. Wenn du sie neben einen anderen Block setzt, wird die Seite des Blocks, an dem die Flamme ihn berÃ¼hrt, durchsichtig, was dir ermÃ¶glicht, durch die Welt hindurch zu sehen. Dies kann zum Finden von HÃ¶hlensystemen, Verliesen oder Geheimverstecken anderer Spieler sehr hilfreich sein. So ein Block ist natÃ¼rlich nicht billig. Er besteht aus mehreren Nethersternen und ist so brÃ¼chig, dass er nicht abgebaut werden kann ohne dabei zu zerbrechen. (lÃ¤sst sich nicht einmal mit Behutsamkeit abbauen)
- 
 tile.draconicevolution:sunDial.name=Sonnenuhr
-tile.draconicevolution:sunDial.description=Dieser Ã¼beraus mÃ¤chtige Block ermÃ¶glicht es dir, die Zeit zu manipulieren. Setze ihn einfach in die Welt und fÃ¼ge ein anhaltendes Redstonesignal hinzu. Sobald das GerÃ¤t geladen ist wird es einen Teilchenstrahl zur Sonne schieÃŸen und ihre Umlaufgeschwindigkeit um das 30fache erhÃ¶hen. Schalte das Redstonesignal einfach wieder ab, sobald die Sonne an der gewÃ¼nschten Position angekommen ist.
- 
 tile.draconicevolution:weatherController.name=Wettermaschine
-tile.draconicevolution:weatherController.description=Dieser Block ermÃ¶glicht dir die Kontrolle Ã¼ber das Wetter. Plaziere einfach ein paar Smaragde in seinem Inventar und wÃ¤hle einen Modus aus. Drei Modi stehen zur VerfÃ¼gung: Regen an, Regen aus und Gewitter. Zum Aktivieren muss ein Redstonesignal angelegt werden.
- 
 tile.draconicevolution:draconiumOre.name=Drakonisches Erz
-tile.draconicevolution:draconiumOre.description=Die Grundlage aller drakonischen Forschung.
- 
 tile.draconicevolution:grinder.name=Fleischwolf
-tile.draconicevolution:grinder.description=Jeder braucht eine leistungsstarke Kreaturenfarm. Nur ein bisschen Feststofftreibstoff (Kohle, Holzkohle, ...) oder RF-Strom wird benÃ¶tigt und du kannst farmen was das Zeug hÃ¤lt! Der Fleischwolf arbeitet in einem 7x7 Gebiet vor sich. Er arbeitet deutlich besser, wenn er mit RF-Strom betrieben wird.
- 
 tile.draconicevolution:potentiometer.name=Regulierungsschalter
-tile.draconicevolution:potentiometer.description=Ein einfacher Redstonesender, der in der Lage ist, ein Redstonesignal zwischen 0 und 15 auszusenden.
- 
 tile.draconicevolution:rainSensor.name=Regensensor
-tile.draconicevolution:rainSensor.description=Dieses GerÃ¤t sendet ein Redstonesignal aus, wenn es regnet. Passt ideal mit der Wettermaschine zusammen.
- 
 tile.draconicevolution:particleGenerator.name=Teilchengenerator
-tile.draconicevolution:particleGenerator.description=Rein dekorativ! Dieser Block kann vollstÃ¤ndig anpassbare Teilcheneffekte erstellen. Lies das Handbuch in seinem GUI fÃ¼r mehr Informationen.
- 
-tile.draconicevolution:playerDetector.name=SpielersuchgerÃ¤t
-tile.draconicevolution:playerDetector.description=Einfache Spielererkennung, bis zu einer Reichweite von zehn BlÃ¶cken.
- 
-tile.draconicevolution:playerDetectorAdvanced.name=Verbessertes SpielersuchgerÃ¤t
-tile.draconicevolution:playerDetectorAdvanced.description=Dies ist eine verbesserte Variante des SpielersuchgerÃ¤tes, es hat folgende Funktionen. GrÃ¶ÃŸtmÃ¶gliche Reichweite von 20 BlÃ¶cken.  Whitelist/Blacklist fÃ¼r prÃ¤zises Einstellen zu erkennender Spieler. Tarnung â€“ Verstecke dein SuchgerÃ¤t so, dass es von niemandem aufgespÃ¼rt wird. Kehre Ausgabe um (Weniger Redstone wird benÃ¶tigt).
- 
-tile.draconicevolution:energyInfuser.name=Energetischer Infundierer
-tile.draconicevolution:energyInfuser.description=Durch das Verlangen immer grÃ¶ÃŸere Mengen Energie transferieren zu wollen hast du diesen Infundierer erdacht. Er kann deutlich mehr Strom als Ã¤hnliche GerÃ¤te anderer Mods Ã¼bertragen (Und er hat hÃ¼bsche Teilcheneffekte!)
- 
-tile.draconicevolution:customSpawner.name=Gefestigter Kreaturenspawner
-tile.draconicevolution:customSpawner.description=Klicke mit der rechten Maustaste auf einen gewÃ¶hnlichen Spawner, wÃ¤hrend du einen Drakonischen Kern in der Hand hÃ¤lst, um ihn zu festigen. Jetzt hast du einen leeren, aber immerhin transportablen Spawner (lÃ¤sst sich mit drakonischen Werkzeugen aufsammeln). Nutze die Seele irgendeiner Kreatur um sie fÃ¼r den Spawner festzulegen. Es gibt mehrere MÃ¶glichkeiten den Spawner zu verbessern:\n\%-Wyvernkern: Verbessert auf Stufe 2 (erhÃ¶ht Anzahl und Geschwindigkeit gespawnter Kreaturen)\n\%-Erwachter Kern: Verbessert auf Stufe 3 (weitere ErhÃ¶hung von Anzahl und Geschwindigkeit gespawnter Kreaturen)\n\%-Netherstern: Es muss sich nun kein Spieler mehr innerhalb von 16 BlÃ¶cken befinden, damit der Spawner funktioniert.\n\%-Notchapfel: Der Spawner missachtet jegliche Bedingungen, die die Kreatur normalerweise zum spawnen benÃ¶tigt, z.B. Monster spawnen sogar bei hohen Lichtlevel.\n\%Baust du den Spawner wieder ab bekommst du alles bis auf die Seele zurÃ¼ck (sie ist so zerbrechlich, dass sie beim Abbauen des Spawners verloren geht)
- 
+tile.draconicevolution:playerDetector.name=Spieler Detektor
+tile.draconicevolution:playerDetectorAdvanced.name=Verbesserter Spieler Detektor
+tile.draconicevolution:energyInfuser.name=nergetischer Infundierer
+tile.draconicevolution:customSpawner.name=Stabilisierter Kreaturenspawner
 tile.draconicevolution:longRangeDislocator1.name=Administrativer Versetzer
-tile.draconicevolution:longRangeDislocator1.description=Wenn du ein Serveradministartor oder ein Kartenbauer bist ist dieser Block fÃ¼r dich genau richtig! (Nur im Kreativemodus verfÃ¼gbar, da kein Rezept exisitiert) Auf GeheiÃŸ von GreatOrator entwickelt ist dieser Block in der Lage Ã¼ber eine einstellbare Distanz zu teleportieren. Der unterschied hierbei ist, dass der Teleport komplett zufÃ¤llig ist. Der erste Spieler in NÃ¤he des Blocks wird, solange dieser per Redstonesignal aktiviert ist, zu einem zufÃ¤lligen Ziel teleportiert (1.000 bis maximal 10.000 BlÃ¶cke vom Versetzer entfernt). Wenn das Ziel in Luft oder Wasser liegt wird unter dem Spieler ein Block gesetzt.
- 
 tile.draconicevolution:longRangeDislocator0.name=Langstreckenversetzer
-tile.draconicevolution:longRangeDislocator0.description=Beschreibung
- 
 tile.draconicevolution:generator.name=Generator
-tile.draconicevolution:generator.description=Dies ist ein einfacher Generator (produziert ungefÃ¤hr 80RF/t), der sehr nÃ¼tzlich sein kÃ¶nnte, wenn du keine andere Mod installiert hast, die in der Lage ist Strom zu erzeugen.
- 
 tile.draconicevolution:energyStorageCore.name=Energiekern
-tile.draconicevolution:energyStorageCore.description=Durch die Anwendung deines drakonischen Wissens ist es dir gelungen einen Weg zu finden einen Multiblock zu bauen, der in der Lage sein wird, mehr Energie zu speichern als alles jemals Dagewesene. Die hÃ¶chste Stufe ist in der Lage bis zu 2,14 Billionen RF zu speichern (Mehr Details im Energiekernmultiblock-Tutorial)
- 
 tile.draconicevolution:energyPylon.name=Hochspannungsmast
-tile.draconicevolution:energyPylon.description=Dieses GerÃ¤t wird zum HinzufÃ¼gen und Entfernen von Energie aus dem Energiespeichermultiblock benÃ¶tigt. Die hÃ¶chstmÃ¶gliche Ãœbetragungsrate liegt bei 2.147.483.647 RF/t
- 
 tile.draconicevolution:draconium0.name=Drakonischer Block
-tile.draconicevolution:draconium0.description=Ein Lagerblock fÃ¼r Drakonium.
- 
 tile.draconicevolution:draconium1.name=Stein der Auferstehung
-tile.draconicevolution:draconium1.description=Das SchlÃ¼sselstÃ¼ck um Ritual der Drakonischen Auferstehung.
- 
 tile.draconicevolution:draconium2.name=Geladener Drakonischer Block
-tile.draconicevolution:draconium2.description=Wird im Ritual der Drakonischen Auferstehung verwendet. Lege einen drakonischen Block in ein LadegerÃ¤t und nur 100 Millionen RF spÃ¤ter hast du schon einen Geladenen Drakonischen Block!
- 
-tile.draconicevolution:cKeyStone.name=Kreativmodus SchlÃ¼sselstein
-tile.draconicevolution:cKeyStone.description=Beschreibung
- 
+tile.draconicevolution:cKeyStone.name=Kreativmodus Schlüsselstein
 tile.draconicevolution:dissEnchanter.name=Entzauberer
-tile.draconicevolution:dissEnchanter.description=Dieses GerÃ¤t ermÃ¶glicht dir das Ãœbertragen von Verzauberungen von deinen GegenstÃ¤nden auf BÃ¼cher. HierfÃ¼r wird Erfahrung benÃ¶tigt. Die Kosten hÃ¤ngen von den Reparationskosten des Gegenstandes ab und steigen mit jeder Entzauberung. Lege einfach den verzauberten Gegenstand in den ersten Platz, ein gewÃ¶hnliches Buch in die Mitte und drÃ¼cke den Ãœbertragungsknopf. Nur die erste Verzauberung wird von dem Gegenstand entfernt und auf das Buch Ã¼betragen. Beim Entfernen einer Verzauberung wird der Gegenstand einen gewissen Prozentsatz sein gesamten Haltbarkeit verlieren, genaueres wird im GUI angezeigt. Durch das Umrunden des Entzauberers mit BÃ¼cherregalen oder anderen BlÃ¶cken, die sonst bei der Verzauberung helfen, wird der dem Gegenstand zugefÃ¼gte Schaden gesenkt (Durch insgesam 20 BÃ¼cherregale nimmt der Gegenstand gar keinen Schaden mehr). WARNUNG GegenstÃ¤nde, die Strom statt Haltbarkeit verwenden bekommen ebenfalls Schaden. Dieser wird zwar nicht angezeigt, kann die GegenstÃ¤nde denoch zerstÃ¶ren.
- 
 tile.draconicevolution:teleporterStand.name=Versetzersockel
-tile.draconicevolution:teleporterStand.description=Du hast heraus bekommen, wie man einen einfachen Sockel herstellt auf den du dein gewÃ¶hnliches oder dein verbessertes Amulett der Versetzung legen kannst. Klicke einfach mit der rechten Maustaste, solange du ein Amulett in der Hand hÃ¤lst, auf den Sockel und klicke noch einmal zum teleportieren. Der Vorteil hierbei besteht darin, dass das Amulett keinen Schaden nimmt und auÃŸerdem keinen Treibstoff verbraucht. Dass das Amulett nun nicht mehr mitgenommen werden kann stellt hingegen einen Nachteil dar. Um das Amulett wieder aufzunehmen Shift-Rechtsklicke mit einer leeren Hand.\n\nBei einem gewÃ¶hnlichen Versetzer, der in einem Amboss umbenannt wurde, oder einem verbesserten Versetzer, mit einem festgelegten Zielort, werden Name bzw. Zielort Ã¼ber dem Sockel angezeigt. Wenn du Shift hÃ¤lst werden alle Namen ausgeblendet, nur der den du anschast wird sichtbar sein. (Verhalten kann in der Config umgekehrt werden)
- 
 tile.draconicevolution:draconiumChest.name=Drakonische Kiste
-tile.draconicevolution:draconiumChest.description=Durch die Anwendung deines drakonischen Wissens ist es dir gelungen, die ultimative Kiste zu erschaffen. Mit einer gigantischen KapazitÃ¤t von 234 PlÃ¤tzen, einer eingebauten Werkbank, einem eingebauten Ofen mit fÃ¼nf PlÃ¤tzen samt FÃ¤higkeit, Erze zu verdoppeln ist diese Kiste das mit Abstand beste GerÃ¤t, dass jemals zur Aufbewahrung von GegenstÃ¤nden geschaffen wurde! ZusÃ¤tzlich behÃ¤lt die Kiste ihren Inhalt, wenn sie abgebaut wird und ist in der Lage eine jede Farbe anzunehmen, die du dir auch nur vorstellen kannst. Shift-Rechtsklick mit einer leeren Hand fÃ¼r ausfÃ¼hrlichere Informationen.
- 
 tile.draconicevolution:draconicBlock.name=Erwachter Drakonischer Block
-tile.draconicevolution:draconicBlock.description=Durch das studieren verschiedenster Verhaltensweisen von Drakonium mit unterschiedlichsten Materialien bist du zu der Erkenntnis gekommen, dass dies nur eine anfÃ¤ngliche Stufe ist. Du entdeckst eine neue Methode, um das volle Potenzial Drakoniums zu entfachen. ErmÃ¶glicht wird dies durch ein kompliziertes Ritual, durchgefÃ¼hrt mit einem Drachenherzen. (Lies die Drachenherzseite fÃ¼r mehr Informationen)
- 
- 
+tile.draconicevolution:infusedObsidian.name=Drakonium Durchzogenes Obsidian
+tile.draconicevolution:dislocatorReceptacle.name=Versetzer Empfänger
+tile.draconicevolution:portal.name=Portal
+tile.draconicevolution:flowGateFlux.name=Flux Tor
+tile.draconicevolution:flowGateFluid.name=Flüssigkeiten Toor
+tile.draconicevolution:reactorCore.name=Drakonischer Reaktorkern
+tile.draconicevolution:reactorStabilizer.name=Reaktorstabilisierer
+tile.draconicevolution:reactorEnergyInjector.name=Reaktorenergie Injektor
+
+tile.draconicevolution:energyCrystal0.name=Energie Relais
+tile.draconicevolution:energyCrystal1.name=Verbessertes Energie Relais
+tile.draconicevolution:energyCrystal2.name=Energie-Empfänger
+tile.draconicevolution:energyCrystal3.name=Verbesserter Energie-Empfänger
+tile.draconicevolution:energyCrystal4.name=Kabelloser Energie-Empfänger
+tile.draconicevolution:energyCrystal5.name=Verbessertes Funkempfänger
+
+
 //Item Information ----------------------------------------------------------------------------------------------------------------------------------------
 item.draconicevolution:awakenedCore.name=Erwachter Kern
-item.draconicevolution:awakenedCore.description=Dieser Bestandteil wird zur Herstellung der meisten fortgeschrittenen Drakonischen GegenstÃ¤nde verwendet
- 
 item.draconicevolution:draconiumIngot.name=Drakonischer Barren
-item.draconicevolution:draconiumIngot.description=Das Ergebnis aus geschmolzenem Drakonischem Gemisch. In vielen Rezepten verwendet.
- 
 item.draconicevolution:draconiumDust.name=Drakonischer Staub
-item.draconicevolution:draconiumDust.description=Das Ergebnis vom Abbau Drakonischen Erzes
- 
-item.draconicevolution:draconiumBlend.name=Drakonische Mischung
-item.draconicevolution:draconiumBlend.description=Gemix aus Drakonischem Staub und Eisen. Zur Herstellung von Drakonium benÃ¶tigt
- 
+item.draconicevolution:draconiumBlend.name=Drakonische Mischung (Veraltet)
 item.draconicevolution:dragonHeart.name=Drachenherz
-item.draconicevolution:dragonHeart.description=Vom Enderdrachen und Drakonischen Drachen fallen gelassen. Du glaubst, dass dieser unglaublich mÃ¤chtige Gegenstand der SchlÃ¼ssel zur Aufdeckung der wahren StÃ¤rke von Drakonium sein kÃ¶nnte. Durch ein uraltes Ritual, bekannt als Ritual des Erwachens. \n\nDas Ritual:\n1.Lasse ein Drachenherz auf den Boden fallen und aktiviere es durch eine Explosion.\n\n2.Lasse nun vier bis 16 Drakonische Kerne nahe dem aktivierten Herz auf den Boden fallen (vier pro Drakonischem Block). Ein paar Sekunden nach seiner ursprÃ¼nglichen Aktivierung werden alle nahen GegenstÃ¤nde zu ihm gezogen, alles was kein Kern ist wird zerstÃ¶rt.\n\n3.Setze jetzt schnell ein bis vier (abhÃ¤ngig von der Anzahl der Drakonischen Kerne) Geladene Drakonische BlÃ¶cke in die NÃ¤he des Herzens.\n\n4.Du weiÃŸt, dass alles funktioniert, wenn du die Energie des Herzens anfÃ¤ngt in die Geladenen Drakonischen BlÃ¶cke Ã¼berzugehen. Gehe nun ein paar Schritte zurÃ¼ck und erfreue dich am Zauber!\n\nDas Ritual kann pro Herz nur einmal ausgefÃ¼hrt werden, mache also das Beste daraus!
- 
 item.draconicevolution:wyvernCore.name=Wyvernkern
-item.draconicevolution:wyvernCore.description=Dieser Bestandteil wird zur Herstellung aller Wyvernwerkzeuge benÃ¶tigt
- 
-item.draconicevolution:sunFocus.name=Solarbrennpunkt
-item.draconicevolution:sunFocus.description=Mit der Macht von Drakonium entdeckst du eine MÃ¶glichkeit um Hitze und Licht der Sonne zu verwenden. (Herstellungsbestandteil)
- 
+item.draconicevolution:sunFocus.name=Sonnen-Fokus
 item.draconicevolution:tclogo.name=TCLogo
- 
 item.draconicevolution:draconicCore.name=Drakonischer Kern
-item.draconicevolution:draconicCore.description=Zur Herstellung aller Maschinen und Werkzeuge verwendet
- 
 item.draconicevolution:teleporterMKI.name=Amulett der Versetzung
-item.draconicevolution:teleporterMKI.description=Es ist dir gelungen, die MÃ¤chte des Endes mit deinem Wissen Ã¼ber das Drakonische zu vereinen, um einen einfachen Teleporter herzustellen. Aber alles hat seinen Preis. Die Verbindung dieser Energien ist nicht gerade stabil und halten nur zehn Verwendungen durch. Auch wird jedes Mal lebende Energie benÃ¶tigt (Deine!) und der Teleporter kann nur zu einem einzigen Zielort verbunden werden, funktioniert immerhin zwischen Dimensionen. Sobald der Teleporter aufgebraucht ist musst du einen neuen bauen.
- 
 item.draconicevolution:teleporterMKII.name=Verbessertes Amulett der Versetzung
-item.draconicevolution:teleporterMKII.description=Durch das Erlernen des Zusammenspiels von drakonischen KrÃ¤ften und den FÃ¤higkeiten der Endermen gelingt es dir den ultimativen Teleporter zu erschaffen. Bis zu 100 Zielorte kÃ¶nnen gespeichert und durch Enderperlen als Treibstoff erreicht werden. Sogar die rÃ¤umlichen Begrenzungen zwischen Dimensionen kÃ¶nnen damit Ã¼berschritten werden. Shift-Rechtsklick um den GUI zu Ã¶ffnen.Die meisten Funktionen sollten selbsterklÃ¤rend sein. Links ist die Liste der Zielorte. Jeder Zielort hat einen Sprerrknopf, der dich davon abhÃ¤lt ihn aus Versehen zu Ã¼berschreiben oder gar zu lÃ¶schen. Rechts, oben angefangen, hast du Informationen Ã¼ber den ausgewÃ¤hlten Zielort, eine Option um diesen umzubenennen, eine Option den Zielort zu den derzeitigen Koordinaten zu binden und schlussendlich eine weitere Option, um den Zielort zu lÃ¶schen. Darunter ist der Treibstoff, ein Knopf um zum ausgewÃ¤hlten Zielort teleportiert zu werden, eine Option, um einen neuen Zielort hinzuzufÃ¼gen (deine derzeitige Position) und eine letzte Option, um Treibstoff nachzufÃ¼llen (Enderperlen aus deinem Inventar). Shift-Klick um einen ganzen Stack hinzuzufÃ¼gen. Du kannst mit dem Item in deiner Hand Shift-Scrollen, um zwischen den Zielorten zu wechseln ohne den GUI Ã¶ffnen zu mÃ¼ssen. Klicke dann mit der rechten Maustaste um dich zu teleportieren. AuÃŸerdem kÃ¶nnen andere Spieler und Lebewesen teleportiert werden, indem sie mit der linken Maustaste anklickst. Jedoch mÃ¼ssen andere Spieler Shift gedrÃ¼ckt halten und Lebewesen sind nicht in der Lage, ihre derzeitige Dimension auf diese Art zu verlassen.
- 
-info.teleporterInfGUI.txt=Shift-Rechtsklick um den GUI zu Ã¶ffnen
-info.teleporterInfScroll.txt=Shift-Scrollen um zwischen Zielorten zu wechseln
- 
+
+info.teleporterInfGUI.txt=Shift + Rechtsklick um den GUI zu öffnen
+info.teleporterInfScroll.txt=Shift + Scrollen um zwischen Zielorten zu wechseln
+
 item.draconicevolution:wyvernPickaxe.name=Wyvernspitzhacke
-item.draconicevolution:wyvernPickaxe.description=Gelangweilt von gewÃ¶hnlichen Werkzeugen beginnst du Wege zu verstehen, Drakonische Energie zur LÃ¶sung dieses Problems zu nutzen. Modi: Shift-Rechtsklick um Modus zu Ã¤ndern: 1Ã—1 or 3Ã—3
- 
 item.draconicevolution:wyvernShovel.name=Wyvernschaufel
-item.draconicevolution:wyvernShovel.description=Gelangweilt von gewÃ¶hnlichen Werkzeugen beginnst du Wege zu verstehen, Drakonische Energie zur LÃ¶sung dieses Problems zu nutzen. Modi: Shift-Rechtsklick um Modus zu Ã¤ndern: 1Ã—1 oder 3Ã—3
- 
 item.draconicevolution:wyvernSword.name=Wyvernschwert
-item.draconicevolution:wyvernSword.description=Gelangweilt von gewÃ¶hnlichen Werkzeugen beginnst du Wege zu verstehen, Drakonische Energie zur LÃ¶sung dieses Problems zu nutzen. +15 Angriffsschaden bei Verwendung auf Lebewesen mit mehr als zehn Herzen (+20% der zusÃ¤tzlichen Gesundheit des Lebewesens) SchlÃ¤gt alle Lebewesen in einem 3x3 Gebiet (zusÃ¤tzlicher Schaden wird nur zum direkt geschlagenen Lebewesen hinzugefÃ¼gt)
- 
 item.draconicevolution:wyvernBow.name=Wyvernbogen
-item.draconicevolution:wyvernBow.description=Gelangweilt von gewÃ¶hnlichen Werkzeugen beginnst du Wege zu verstehen, Drakonische Energie zur LÃ¶sung dieses Problems zu nutzen. ScharfschÃ¼tze â€“ VergrÃ¶ÃŸere dein Ziel und fÃ¼ge zusÃ¤tzlichen Schaden mit hÃ¶chster PrÃ¤zision hinzu. Schnellfeuer â€“ Feuere auf deine Feinde mit einem regelrechten Pfeilregen.
- 
 item.draconicevolution:wyvernHelm.name=Wyvernhelm
-item.draconicevolution:wyvernHelm.description=Durch eine hÃ¶here StÃ¤rke als Diamant kannst du nun noch grÃ¶ÃŸere SchlÃ¤ge wegstecken.\n\n\nVollstÃ¤ndige RÃ¼stung gibt komplette FeuerimmunitÃ¤t
- 
 item.draconicevolution:wyvernChest.name=Wyvernbrustpanzer
-item.draconicevolution:wyvernChest.description=Durch das Kombinieren der RÃ¼stung mit Drakonium erhÃ¶hst du die WiederstandsfÃ¤higkeit erheblich.\n\n\nVollstÃ¤ndige RÃ¼stung gibt komplette FeuerimmunitÃ¤t
- 
 item.draconicevolution:wyvernLeggs.name=Wyvernbeinschutz
-item.draconicevolution:wyvernLeggs.description=PlÃ¶tzlich fÃ¼hlst du dich schneller und stÃ¤rker,\nnachdem du Diamantbeinschutz mit Drakonium verschmolzen hast.\n\%RÃ¼stungseffekte:\n\%-GeschwindigkeitsverstÃ¤rkung\n\n\nVollstÃ¤ndige RÃ¼stung gibt komplette FeuerimmunitÃ¤t
- 
 item.draconicevolution:wyvernBoots.name=Wyvernstiefel
-item.draconicevolution:wyvernBoots.description=Du hast einen Weg gefunden, die Stiefel zu verbessern. Drakonium scheint dir eine hÃ¶here Bewandheit zu liefern.\n\%RÃ¼stungseffekte:\n\%-Verringerter Fallschaden\n\%-SprungstÃ¤rke\n\n\nVollstÃ¤ndige RÃ¼stung gibt komplette FeuerimmunitÃ¤t
- 
 item.draconicevolution:draconicPickaxe.name=Drakonische Spitzhacke
-item.draconicevolution:draconicPickaxe.description=Weiter Forschung im Bereich des Drakonischen hat dir Wege zu noch grÃ¶ÃŸerer StÃ¤rke offenbart.. Modi: Shift-Rechtsklick um Modus zu Ã¤ndern: 1Ã—1, 3Ã—3, 5Ã—5 und 7Ã—7 Rechtsklick zum aktivieren: Vernichtungsmodus ZerstÃ¶rt Stein, Bruchstein und Netherstein.
- 
 item.draconicevolution:draconicAxe.name=Drakonische Axt
-item.draconicevolution:draconicAxe.description=Weiter Forschung im Bereich des Drakonischen hat dir Wege zu noch grÃ¶ÃŸerer StÃ¤rke offenbart.. Wird den ganzen Baum mitsamt BlÃ¤ttern fÃ¤llen.
- 
 item.draconicevolution:draconicShovel.name=Drakonische Schaufel
-item.draconicevolution:draconicShovel.description=Weiter Forschung im Bereich des Drakonischen hat dir Wege zu noch grÃ¶ÃŸerer StÃ¤rke offenbart.. Modi: Shift-Rechtsklick um Modus zu wechseln: 1Ã—1, 3Ã—3, 5Ã—5 und 7Ã—7 Rechtsklick zum Aktivieren: Vernichtungsmodus ZerstÃ¶rt Erde, Sand und Kies.
- 
 item.draconicevolution:draconicHoe.name=Drakonische Hacke
-item.draconicevolution:draconicHoe.description=Weiter Forschung im Bereich des Drakonischen hat dir Wege zu noch grÃ¶ÃŸerer StÃ¤rke offenbart.. Wird ein vollstÃ¤ndiges 9x9 Gebiet umgraben, geradezu perfekt fÃ¼r ein grÃ¶ÃŸtmÃ¶gliches Feld mit Wasserquelle in der Mitte. Wird Erde abbauen oder ersetzen (solange im Inventar vorhanden), um ein vollstÃ¤ndiges 9x9 Gebiet zu bereiten.
- 
 item.draconicevolution:draconicSword.name=Drakonisches Schwert
-item.draconicevolution:draconicSword.description=Weiter Forschung im Bereich des Drakonischen hat dir Wege zu noch grÃ¶ÃŸerer StÃ¤rke offenbart.. +19 Angriffsschaden gegen Lebewesen mit mehr als zehn HerzenAttack (+30% der zusÃ¤tzlichen Leben des Lebewesens) SchlÃ¤gt alle Lebewesen in einem 7x7 Gebiet (zusÃ¤tzlicher Schaden wird nur zum direkt geschlagenen Lebewesen hinzugefÃ¼gt)
- 
 item.draconicevolution:draconicBow.name=Drakonischer Bogen
-item.draconicevolution:draconicBow.description=Weiter Forschung im Bereich des Drakonischen hat dir Wege zu noch grÃ¶ÃŸerer StÃ¤rke offenbart.. ScharfschÃ¼tze â€“ VergrÃ¶ÃŸere dein Ziel und fÃ¼ge zusÃ¤tzlichen Schaden mit hÃ¶chster PrÃ¤zision hinzu. Schnellfeuer â€“ Feuere auf deine Feinde mit einem regelrechten Pfeilregen. Explosiv â€“ ZerstÃ¶re mit deinen Pfeilen ein etwas grÃ¶ÃŸeres Gebiet als mit TNT, wÃ¤hrend du Schwarzpulver in der Tasche hast. VerwÃ¼stung (Nur Kretivmodus) â€“ LÃ¤sst ein riesiges Gebiet im Schnellfeuermodus in die Luft gehen.
- 
 item.draconicevolution:draconicHelm.name=Drakonischer Helm
-item.draconicevolution:draconicHelm.description=Keine Sekunde lÃ¤nger musst du die Nacht fÃ¼rchten, jetzt kannst du jederzeit sehen, was dort drauÃŸen los ist.\n\%RÃ¼stungseffekte:\n\%-Nachtsicht (Schaltet sich bei Dunkelheit automatisch ein)\n\%-Bereinigt negative Zaubertrankeffekte\n\%-Umgehe Erstickungs- und Ertrinkungsschaden\n\%-Entfernt verringerte Abbaugeschwindigkeit unter Wasser
- 
 item.draconicevolution:draconicChest.name=Drakonischer Brustpanzer
-item.draconicevolution:draconicChest.description=Durch das Verwenden eines Drachenherzens wirst du stÃ¤rker und besitzt die Gabe des Fliegens.\n\%RÃ¼stungseffekte:\n\%-Flug\n\%-Entfernt verlangsamtes Abbauen wÃ¤hrend des Fliegens \n\%-FeuerimmunitÃ¤t
- 
 item.draconicevolution:draconicLeggs.name=Drakonischer Beinschutz
-item.draconicevolution:draconicLeggs.description=Die Seele eines Drachen beschÃ¼tzt dich und hilft dir bei noch schnellerer Fortzubewegung.\n\%RÃ¼stungseffekt:\n\%-GeschwindigkeitsverstÃ¤rkung
- 
 item.draconicevolution:draconicBoots.name=Drakonische Stiefel
-item.draconicevolution:draconicBoots.description=StÃ¤rker, schneller, hÃ¶her: besser als jemals zuvor! \n\%RÃ¼stungseffekte:\n\%-FallimmunitÃ¤t\n\%-SprungstÃ¤rke\n\%-GroÃŸe Schritte
- 
 item.draconicevolution:draconicDistructionStaff.name=Drakonischer Stab der Macht
-item.draconicevolution:draconicDistructionStaff.description=Nach groÃŸen Anstrengungen hast du endlich die drakonischen MÃ¤chte gemeistert! Abbauen â€“ Shift-Rechtsklick um Modus zu Ã¤ndern: 1Ã—1, 3Ã—3, 5Ã—5, 7Ã—7 und 9Ã—9 Abbauen â€“ Rechtsklick zum aktivieren: Vernichtungsmodus â€“ ZerstÃ¶rt alle wertlosen BlÃ¶cke. Kampf: +20 Angriffsschaden auf Lebewesen mit mehr als zehn Herzen  (+50% der zusÃ¤tzlichen Gesundheit des Lebewesens) Kampf: AOE â€“ in 1Ã—1 schlÃ¤gt 1Ã—1 Gebiet, 3Ã—3 schlÃ¤gt 5Ã—5 Gebiet, 5Ã—5 schlÃ¤gt 9Ã—9, 7Ã—7 schlÃ¤gt 13Ã—13, und 9Ã—9 schlÃ¤gt 17Ã—17 (zusÃ¤tzlicher Schaden wird nur zum direkt geschlagenen Lebewesen hinzugefÃ¼gt)
- 
 item.draconicevolution:mobSoul.name=Seele
-item.draconicevolution:mobSoul.description=Du bemerkst, dass du mit drakonischen Waffen vereinzelt die Seelen deiner Opfer stehlen kannst.
- 
 item.draconicevolution:enderArrow.name=Enderpfeil
-item.draconicevolution:enderArrow.description=Ein unglaublicher Pfeil, verstÃ¤rkt mit der Kraft von Enderperlen. Du wirst zu der Position teleportiert, an welcher der Pfeil auftrifftAwesome arrow infused with the power of ender pearls.  You will teleport to the location you hit.
- 
-item.draconicevolution:safetyMatch.name=SicherheitszÃ¼ndholz
-item.draconicevolution:safetyMatch.description=Hast du genug davon, dass jedes Mal, wenn du eine Feuerstelle machst, gleich alles niederbrennt?
- 
-item.draconicevolution:safetyMatchBox.name=ZÃ¼ndholzschachtel
-item.draconicevolution:safetyMatchBox.description=SicherheitszÃ¼nder!
- 
-item.draconicevolution:key.name=SchlÃ¼ssel
-item.draconicevolution:key.description=Geheimnisvoller SchlÃ¼ssel zum Ã–ffnen unterschiedlichtser SchlÃ¶sser.
- 
+item.draconicevolution:safetyMatch.name=Sicherheitszündholz
+item.draconicevolution:safetyMatchBox.name=Sichere Zündholzschachtel
+item.draconicevolution:key.name=Schlüssel
 item.draconicevolution:draconiumEnergyCore0.name=Wyvern Energiekern
-item.draconicevolution:draconiumEnergyCore0.description=Dieser Bestandteil wird in GerÃ¤ten verwendet, die in der Lage sind Strom zu speichern
- 
 item.draconicevolution:draconiumEnergyCore1.name=Drakonischer Energiekern
-item.draconicevolution:draconiumEnergyCore1.description=Eine noch besser Variante des Wyvern Energiekerns
- 
 item.draconicevolution:draconiumFluxCapacitor0.name=Wyvern Fluxkompensator
-item.draconicevolution:draconiumFluxCapacitor0.description=Geht deinen Werkzeugen und deiner RÃ¼stung einfach zu oft "Saft" aus?Genau dies hat dich dazu bewegt, einen Gegenstand zu erfinden, dass es dir ermÃ¶glicht, unvorstellbare Mengen von Energie zu speichern und an deine GegenstÃ¤nde weiterzuleiten, so wie es nÃ¶tig ist.
- 
 item.draconicevolution:draconiumFluxCapacitor1.name=Drakonischer Fluxkompensator
-item.draconicevolution:draconiumFluxCapacitor1.description=Mit dieser Verbesserung wirst du in der Lage sein, tagelang unterwegs zu sein ohne ein einziges Mal nachzuladen.
- 
 item.draconicevolution:draconicIngot.name=Erwachter Drakonischer Barren
-item.draconicevolution:draconicIngot.description=Durch das studieren verschiedenster Verhaltensweisen von Drakonium mit unterschiedlichsten Materialien bist du zu der Erkenntnis gekommen, dass dies nur eine anfÃ¤ngliche Stufe ist. Du entdeckst eine neue Methode, um das volle Potenzial Drakoniums zu entfachen. ErmÃ¶glicht wird dies durch ein kompliziertes Ritual, durchgefÃ¼hrt mit einem Drachenherzen. (Lies die Drachenherzseite fÃ¼r mehr Informationen)
- 
 item.draconicevolution:creativeStructureSpawnerComet.name=Erschaffe Kometen
- 
 item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Erschaffe Enderinsel
- 
 item.draconicevolution:infoTablet.name=Draconic Evolution Informationtafel
- 
+item.draconicevolution:wrench.name=Kristall Verbinder
+item.draconicevolution:dezilsMarshmallow.name=Dezil's Marshmallow
+
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Werkzeuge & Waffen
-itemGroup.blocksAndItems=Draconic Evolution BlÃ¶cke & GegenstÃ¤nde
- 
+itemGroup.blocksAndItems=Draconic Evolution Blöcke & Gegenstände
+
 //Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
-msg.size0.txt=Werkzeugmodus: 1x1
+msg.size0.txt=Werkzeugmodus: Einzelner Block
 msg.size1.txt=Werkzeugmodus: 3x3
 msg.size2.txt=Werkzeugmodus: 5x5
 msg.size3.txt=Werkzeugmodus: 7x7
 msg.size4.txt=Werkzeugmodus: 9x9
-msg.oblittrue.txt=Â§aVernichtungsmodus: Â§4Aktiv
-msg.oblitfalse.txt=Â§aVernichtungsmodus: Â§2Inaktiv
-msg.bowmoderapidfire.txt=Â§3Schussmodus: Â§6Schnellfeuer
-msg.bowmodesharpshooter.txt=Â§3Schussmodus: Â§6ScharfschÃ¼tze
-msg.bowmodeexplosive.txt=Â§3Schussmodus: Â§6Explosiv
-msg.bowmodedevistation.txt=Â§3Schussmodus: Â§6VerwÃ¼stung!!! (Nur Kreativmodus)
-msg.bowoutofgunpowder.txt=Â§4Du benÃ¶tigst vier Schwarzpulver um den Explosiven Modus zu verwenden
-msg.teleporterUnSet.txt=Â§cDu musst zuerst den Bestimmungsort festlegen bevor du teleportiert werden kannst (Shift + Rechtsklick)
-msg.teleporterBound.txt=Â§aTeleporter gebunden zu:
-msg.teleporterLowHealth.txt= Â§cDu bist gesundheitlich zu stark angeschlagen!
-msg.teleporterSentMob.txt=Das Objekt wurde gesendet zu
-msg.teleporterEntityDimensional.txt=Â§cDu kannst Lebewesen nicht zwischen Dimensionen hin und her schicken!
-msg.teleporterAlreadySet.txt=Â§cError! Dieses Amulett kann nur zu einer Stelle gebunden sein
-msg.teleporterOutOfFuel.txt=Â§cKEIN TREIBSTOFF MEHR!!!
-msg.teleporterOutOfPearls.txt=Â§cKeine Enderperlen mehr!!!
-msg.teleporterPlayerT1.txt=Du benÃ¶tigst einen stÃ¤rkeren Versetzer hierfÃ¼r
-msg.teleporterPlayerConsent.txt=Der Spieler muss seine Einwilligung durch Schleichen aufzeigen
+msg.oblittrue.txt=§aVernichtungsmodus: §4Aktiv
+msg.oblitfalse.txt=§aVernichtungsmodus: §2Inaktiv
+msg.bowmoderapidfire.txt=§3Schussmodus: §6Schnellfeuer
+msg.bowmodesharpshooter.txt=§3Schussmodus: §6Scharfschütze
+msg.bowmodeexplosive.txt=§3Schussmoduse: §6Explosiv
+msg.bowmodedevistation.txt=§3Schussmodus: §6Verwüstung!!! (Nur Kreativ)
+msg.bowoutofgunpowder.txt=§4Du benötigst 4 Schwarzpulver um den Explosiven Modus zu verwenden
+msg.teleporterUnSet.txt=§cDu musst zuerst den Bestimmungsort festlegen bevor du teleportiert werden kannst (Shift + Rechtsklick)
+msg.teleporterBound.txt=§aTeleporter verbunden mit:
+msg.teleporterLowHealth.txt= §cDu bist gesundheitlich zu stark angeschlagen!
+msg.teleporterSentMob.txt=Das Objekt wurde gesendet nach
+msg.teleporterEntityDimensional.txt=§cDu kannst Lebewesen nicht zwischen Dimensionen hin und her schicken!
+msg.teleporterAlreadySet.txt=§cFehler! Dieses Amulett kann nur mit einem Ort verbunden sein
+msg.teleporterOutOfFuel.txt=§cKEIN TREIBSTOFF MEHR!!!
+msg.teleporterOutOfPearls.txt=§cKeine Enderperlen mehr!!!
+msg.teleporterPlayerT1.txt=Dafür benötigst du einen stärkeren Versetzer
+msg.teleporterPlayerConsent.txt=Der Spieler muss seine Einwilligung durch Schleichen anzeigen
 msg.spawnerInfo1.txt=Kreaturenart
-msg.spawnerInfo2.txt=BenÃ¶tigt Spieler
-msg.spawnerInfo3.txt=VernachlÃ¤ssige Spawnbedingungen
+msg.spawnerInfo2.txt=Benötigt Spieler
+msg.spawnerInfo3.txt=Ignoriere Spawnbedingungen
 msg.spawnerInfo4.txt=Spawnerstufe
-msg.spawnerInfo5.txt=Shift-Rechtsklick fÃ¼r Verbesserungsinformationen
-msg.spawnerInfo6.txt=BenÃ¶tigt Spieler : Netherstern
-msg.spawnerInfo7.txt=VernachlÃ¤ssige Spawnbedingung : Notchapfel
-msg.spawnerInfo8.txt=Stufe 2 : Wyvernkern
-msg.spawnerInfo9.txt=Stufe 3 : Erwachter Kern
-msg.dislocatorUnsafe.txt=Unsicherer Bestimmungsort! Bitte versuche es erneut
-msg.dislocatorNoGround.txt=Error! Welt nicht gefunden
+msg.spawnerInfo5.txt=§3Halte Shift für Verbesserungsinformationen
+msg.spawnerInfo6.txt=Benötigt Spieler: §3Netherstern
+msg.spawnerInfo7.txt=Ignoriere Spawnbedingungen: §3Notchapfel
+msg.spawnerInfo8.txt=Level 2: §3Wyvernkern
+msg.spawnerInfo9.txt=Level 3: §3Erwachter Kern
+msg.dislocatorUnsafe.txt=Unsicherer Bestimmungsort! Bitte versuche es noch einmal
+msg.dislocatorNoGround.txt=Fehler! Welt nicht gefunden
 msg.range.txt=Weite:
-msg.energyStorageCoreUTA.txt=Aktivieren nicht mÃ¶glich (UngÃ¼ltige Einstellung)
-msg.SpawnDragonToFarFrom00.txt=[ERROR] Zu weit weg von 0,0
-msg.wrongKey.txt=Dieser SchlÃ¼ssel passt nicht in dieses Schloss
-msg.cKeyStoneType0.txt=Dauerhafte Aktivierung (Verbraucht SchlÃ¼ssel)
+msg.energyStorageCoreUTA.txt=Aktivieren nicht möglich (Ungültige Einstellung)
+msg.SpawnDragonToFarFrom00.txt=[FEHLER] Zu weit von 0,0 entfernt
+msg.wrongKey.txt=Dieser Schlüssel passt nicht in dieses Schloss
+msg.cKeyStoneType0.txt=Dauerhafte Aktivierung (Verbraucht Schlüssel)
 msg.cKeyStoneType1.txt=Knopfaktivierung
 msg.cKeyStoneType2.txt=Schalteraktivierung
-msg.cKeyStoneType3.txt=Knopaktivierung (Verbraucht SchlÃ¼ssel)
+msg.cKeyStoneType3.txt=Knopaktivierung (Verbraucht Schlüssel)
 msg.draconiumChestEditmode.txt=Farbbearbeitungsmodus =
 msg.draconiumChestRed.txt=Rot =
-msg.draconiumChestGreen.txt=GrÃ¼n =
+msg.draconiumChestGreen.txt=Grün =
 msg.draconiumChestBlue.txt=Blau =
-msg.draconiumChestEditL1.txt=Rechtsklicke mit rotem, grÃ¼nem oder blauem Farbstoff um die Farbe anzupassen
-msg.draconiumChestEditL2.txt=Klicke auf die obere HÃ¤lfte der Kiste um den Wert zu erhÃ¶hen
-msg.draconiumChestEditL3.txt=Oder auf die untere HÃ¤lfte der Kiste um den Wert zu verringern
-msg.draconiumChestEditL4.txt=Rechtsklicke mit Papier um die Farbe fÃ¼r andere Kisten zu kopieren
-msg.draconiumChestEdit2.txt=Verwende bitte ein einzelnes StÃ¼ck Papier
-msg.de.dragonDeath.txt=Â§5Das Herz ist kurzzeitig erwacht, durch den explosiven Tod des Drachens
- 
-//Tool Tips ----------------------------------------------------------------------------------------------------------------------------------------
+msg.draconiumChestEditL1.txt=Rechtsklicke mit rotem, grünem oder blauem Farbstoff um die Farbe anzupassen
+msg.draconiumChestEditL2.txt=Klicke auf die obere Hälfte der Kiste um den Wert zu erhöhen
+msg.draconiumChestEditL3.txt=Oder auf die untere Hälfte der Kiste um den Wert zu verringern
+msg.draconiumChestEditL4.txt=Rechtsklicke mit Papier um die Farbe für andere Kisten zu kopieren
+msg.draconiumChestEdit2.txt=Verwende bitte ein einzelnes Stück Papier
+msg.de.dragonDeath.txt=§5Das Herz ist kurzzeitig erwacht, durch den explosiven §5Tod des Drachens
+msg.de.baseSafeAOW.txt=§9(§aAOE §aSpeichermodus §aist §aaktiviert§9) §cVorgang §cabgebrochen, §ces §cwurde §ceine §candere §cEinheit §cerkannt
+
+//Energy Net
+msg.de.wrenchMode.bind.txt=Funktion: Verbunden
+msg.de.wrenchMode.unBind.txt=Funktion: Nicht Verbunden
+msg.de.wrenchMode.unBindAll.txt=Funktion: Alles Trennen
+msg.de.wrenchMode.modeSwitch.txt=Funktion: Modus wechseln
+msg.de.rightClickUnbind.txt=Rechtsklick in die Lust, um die Verbindung zu trennen
+msg.de.boundTo.txt=Verbunden mit
+msg.de.posSaved.txt=Position gespeichert
+msg.de.invalidTile.txt=Ungültiges Ziel
+msg.de.outOfRange.txt=Ziel ist außer Reichweite
+msg.de.maxConnections.txt=Verbindungslimit erreicht
+msg.de.linked.txt=Gerät verbunden
+msg.de.unLinked.txt=Gerät getrennt
+msg.de.wrongSide.txt=Kann nicht mit dieser Seite des Zielgeräts verbinden
+
+
+//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=Ungebunden
-info.teleporterInfUnset2.txt=Shift-Rechtsklick um zu deiner derzeitigen
-info.teleporterInfUnset3.txt=x, y, z Koordinaten
+info.teleporterInfUnset2.txt=Shift-Rechtsklick um mit den aktuellen
+info.teleporterInfUnset3.txt=x, y, z Koordinaten zu verbinden
 info.teleporterInfUnset4.txt=Genau so wie deine Blickrichtung
-info.teleporterInfUnset5.txt=Und deine derzeitige Dimension
+info.teleporterInfUnset5.txt=Und deine derzeitige Dimension am
 info.teleporterInfDest.txt=Bestimmungsort
 info.teleporterInfFuel.txt=Treibstoff:
-info.teleporterInfSet1.txt=Gebunden zu
-info.teleporterInfSet2.txt=Nutze verbleibende
- 
+info.teleporterInfSet1.txt=Verbunden mit
+info.teleporterInfSet2.txt=Verbleibende Benutzungen
+info.de.rightClickToTeleport.txt=Rechtsklick zum teleportieren
+
 info.draconicAxe1.txt=Bauholz!!!!!!
-info.draconicAxe2.txt=Wird einen gesamten Baum fÃ¤llen
-info.draconicAxe3.txt=oder ein 5x5x5 StÃ¼ck aus allem Holzartigen.
+info.draconicAxe2.txt=Wird einen gesamten Baum fällen
+info.draconicAxe3.txt=oder ein 5x5x5 Stück aus allen Holzarten.
 info.draconicAxe4.txt=Halte Shift um einen einzigen Block abzubauen.
- 
-info.draconicCore.txt=Der Hauptbestandteil zum Herstellen in Draconic Evolution
+
+info.draconicCore.txt=Der Hauptbestandteil für Herstellungen in Draconic Evolution
 info.draconicCore1.txt=Kann verwendet werden um Monsterspawner zu stabilisieren
- 
-info.mobSoul1.txt=Kann auf einen Stabilisierten Spawner verwendet werden um den Typ festzulegen
+
+info.mobSoul1.txt=Kann auf einen Stabilisierten Spawner angewendet werden um den Typ festzulegen
 info.mobSoul2.txt=Oder Shift-Rechtsklick um ein Lebewesen zu erschaffen
 info.mobSoul3.txt=(Einmalige Verwendung)
- 
+
 info.arrowInfo.txt=Ein schmerzvoller Ritt
-info.arrowInfo0.txt=Zu schwer fÃ¼r einen herkÃ¶mmlichen Bogen
- 
+info.arrowInfo0.txt=Zu schwer für einen herkömmlichen Bogen
+
 info.de.obliterationMode.txt=Vernichtungsmodus
 info.de.obliterationModetrue.txt=Aktiv
 info.de.obliterationModefalse.txt=Inaktiv
 info.de.miningMode.txt=Abbaumodus
-info.de.changeMiningMode.txt=Shift-Rechtsklick um Abbaumodus zu Ã¤ndern
-info.de.toggleOblit.txt=Rechtsklick um Vernichtungsmodus zu aktivieren/deaktivieren
-info.de.oblitInfo.txt=Vernichtungsmodus zerstÃ¶rt wertlose BlÃ¶cke
- 
-info.de.bowEnchants.txt=Verzauberungen sind doppelt nÃ¼tzlich auf diesem Bogen
- 
-info.de.sword.txt=Die StÃ¤rke deine Feindes lÃ¤sst diese Klinge erstarken!
- 
-info.de.safetyMatch.txt=EntzÃ¼nde ein Feuer, das NICHT dein Haus niederbrennen wird!
- 
+info.de.changeMiningMode.txt=Shift-Rechtsklick um Abbaumodus zu ändern
+info.de.toggleOblit.txt=Rechtsklick um ändern des Vernichtungsmodus
+info.de.oblitInfo.txt=Vernichtungsmodus zerstört wertlose Blöcke
+info.de.attackDamage.txt=Angriffsschaden
+info.de.bonusHealthDamage.txt=Mob Gesundheit
+info.de.press.txt=Drücke
+info.de.toOpenConfigGUI.txt=Um die GUI zu öffnen
+info.de.shiftToPause.txt=Shift drücken, um den Wechsel anzuhalten
+
+info.de.bowEnchants.txt=Verzauberungen sind doppelt nützlich auf diesem Bogen
+
+info.de.sword.txt=Die Stärke deine Feindes macht diese Klinge stärker!
+
+info.de.safetyMatch.txt=Entzünde ein Feuer, das NICHT dein Haus niederbrennen wird!
+
 info.draconiumChestInfo1.txt=Shift-Rechtsklick mit einer leeren Hand
-info.draconiumChestInfo2.txt=um auf die Farbeinstellungen zuzugreifen
- 
+info.draconiumChestInfo2.txt=um die Farbeinstellungen zu ändern
+
 info.de.capacitorMode.txt=Modus
 info.de.capacitorMode0.txt=Inaktiv
 info.de.capacitorMode1.txt=Lade Hotbar
-info.de.capacitorMode2.txt=Lade RÃ¼stung & Gehaltenen Gegenstand
-info.de.capacitorMode3.txt=Lade RÃ¼stung & Hotbar
-info.de.changwMode.txt=Shift-Rechtsklick um Modus zu Ã¤ndern
- 
-enchantment.draconicevolution.reaperEnchant=MÃ¶rder
- 
+info.de.capacitorMode2.txt=Lade Rüstung & Gehaltenen Gegenstand
+info.de.capacitorMode3.txt=Lade Rüstung & Hotbar
+info.de.changwMode.txt=Shift-Rechtsklick um den Modus umzuschalten
+
+info.de.toolInventoryOblit.txt=Filter & Verzauberung
+info.de.toolInventoryEnch.txt=Verzauberung
+
+info.de.hudDisplayConfigTxt1.txt=#### HUD Display ####
+info.de.hudDisplayConfigTxt2.txt=Klicken und Ziehen zum verschieben
+info.de.hudDisplayConfigTxt3.txt=###################
+info.de.hudDisplayConfigInfo1.txt=Klicken und Ziehen HUD
+info.de.hudDisplayConfigInfo2.txt=zum taschen der Porition
+
+
+info.de.manual.introTxt.txt=Alles, was Du wissen mußt. Alles an einem Ort.
+info.de.manual.indexButton.txt=Index
+info.de.manual.indexButtonTip.txt=ZUr Startseite gehen
+
+//Energy Net
+info.de.modeIn.txt=Modus: Eingang
+info.de.modeOut.txt=Modus: Ausgang
+info.de.5xTransfer.txt= (5x Transfer)
+info.de.connections.txt=Verbindungen
+info.de.wirelessConnections.txt=Funkverbindungen
+
+
+info.infusedObsidian.txt=Dieser Block ist Wither-Ressistent
+
+enchantment.draconicevolution.reaperEnchant=Mörder
+
 //Achievements ----------------------------------------------------------------------------------------------------------------------------------------
 draconicevolution.achievementPage.name=Draconic Evolution
- 
-achievement.draconicevolution.dust=Der Anfang von etwas GROÃŸEM!
+
+achievement.draconicevolution.dust=Der Anfang von etwas GROßEM!
 achievement.draconicevolution.dust.desc=Sammle Drakonischen Staub
 achievement.draconicevolution.ingot=Besser als Diamant!
-achievement.draconicevolution.ingot.desc=Veredle vier Drakonische Staube in zwei Drakonische Barren
+achievement.draconicevolution.ingot.desc=Veredle 4 Drakonische Stäube zu 2 Drakonischen Barren
 achievement.draconicevolution.core=Wo alles seinen Anfang nimmt
 achievement.draconicevolution.core.desc=Stelle einen Drakoischen Kern her
 achievement.draconicevolution.core2=Nicht gut genug!
-achievement.draconicevolution.core2.desc=Verbessere Drakonischen Kern zu Wyvern
- 
-achievement.draconicevolution.dislocator=Endermen haben keine Chan
-achievement.draconicevolution.dislocator.desc=Stelle einen Versetzer
+achievement.draconicevolution.core2.desc=Verbessere den Drakonischen Kern zu einem Wyvern Kern
+
+achievement.draconicevolution.dislocator=Endermen haben keine Chance
+achievement.draconicevolution.dislocator.desc=Baue einen Versetzer
 achievement.draconicevolution.chest=Niemals genug Lagerplatz!
 achievement.draconicevolution.chest.desc=Stelle eine Drakonische Kiste her
 achievement.draconicevolution.particles=OOOOH Glitzer!
@@ -335,16 +270,16 @@ achievement.draconicevolution.particles.desc=Baue einen Teilchengenerator
 achievement.draconicevolution.weather=Wer braucht Mutter Natur
 achievement.draconicevolution.weather.desc=Baue eine Wettermaschine
 achievement.draconicevolution.dissenchanter=Nur was ich will!
-achievement.draconicevolution.dissenchanter.desc=Baue einen Entzauberer
-achievement.draconicevolution.ecore=Es lÃ¤uft, und lÃ¤uft, und lÃ¤uft
+achievement.draconicevolution.dissenchanter.desc=Baue einen Entzauberer.
+achievement.draconicevolution.ecore=Es läuft, und läuft, und läuft
 achievement.draconicevolution.ecore.desc=Baue den Energiekern
-achievement.draconicevolution.wpick=Nichts wie Diamant
-achievement.draconicevolution.wpick.desc=Verbessere auf eine Wyvernspitzhacke
-achievement.draconicevolution.wshovel=ProfigrÃ¤ber!
+achievement.draconicevolution.wpick=Nicht wie Diamant
+achievement.draconicevolution.wpick.desc=Verbessere eine Wyvernspitzhacke
+achievement.draconicevolution.wshovel=Profigräber!
 achievement.draconicevolution.wshovel.desc=Stelle eine Wyvernschaufel her
 achievement.draconicevolution.wsword=Bessere Waffen
 achievement.draconicevolution.wsword.desc=Erschaffe ein Wyvernschwert
-achievement.draconicevolution.wbow=ScharfschÃ¼tzen im Anschlag!
+achievement.draconicevolution.wbow=Scharfschützen im Anschlag!
 achievement.draconicevolution.wbow.desc=Baue einen Wyvernbogen
 achievement.draconicevolution.whelm=Frei atmen!
 achievement.draconicevolution.whelm.desc=Baue einen Wyvernhelm
@@ -360,15 +295,15 @@ achievement.draconicevolution.dislocator2=Herrscher des Endes!
 achievement.draconicevolution.dislocator2.desc=Baue den Erweiterten Versetzer
 achievement.draconicevolution.flux=1,21 Kikkawatt!
 achievement.draconicevolution.flux.desc=Baue einen Wyvernfluxkompensator
- 
+
 achievement.draconicevolution.heart=Herz des Drachens!
-achievement.draconicevolution.heart.desc=TÃ¶te einen Drachen und nimm sein Herz in Anspruch.
-achievement.draconicevolution.awakenedblock=Alles hÃ¤ngt vom Ritual ab!
+achievement.draconicevolution.heart.desc=Töte einen Drachen und nimm sein Herz in Anspruch.
+achievement.draconicevolution.awakenedblock=Alles hängt vom Ritual ab!
 achievement.draconicevolution.awakenedblock.desc=Erschaffe Erwachtes Drakonium
-achievement.draconicevolution.core3=Kostenaufwand oder StÃ¤rke
-achievement.draconicevolution.core3.desc=Verbesser Wyvernkern zu Erwacht
- 
-achievement.draconicevolution.dhelm=Drch Wasser flutschen!
+achievement.draconicevolution.core3=Kostenaufwand oder Stärke
+achievement.draconicevolution.core3.desc=Verbesser Wyvernkern zu einem Erwachten
+
+achievement.draconicevolution.dhelm=Durch Wasser gleiten!
 achievement.draconicevolution.dhelm.desc=Verbesser auf den Drakonischen Helm
 achievement.draconicevolution.dChest=Fliege wie ein Adler!
 achievement.draconicevolution.dChest.desc=Baue einen Drakonischen Brustpanzer
@@ -376,123 +311,152 @@ achievement.draconicevolution.dleggs=Tanze wie ein Schmetterling!
 achievement.draconicevolution.dleggs.desc=Baue Drakonischen Beinschutz
 achievement.draconicevolution.dboots=Der Himmel ist keine Grenze!
 achievement.draconicevolution.dboots.desc=Verbessere auf Drakonische Stiefel
- 
+
 achievement.draconicevolution.dpick=Graben mit Kompetenz!
 achievement.draconicevolution.dpick.desc=Baue ein Drakonische Spitzhacke
 achievement.draconicevolution.dshovel=Berge versetzen
 achievement.draconicevolution.dshovel.desc=Verbessere deine Wyvernschaufel
-achievement.draconicevolution.daxe=Ein Riesenschlag fÃ¼r nur einen Baum!
+achievement.draconicevolution.daxe=Ein Riesenschlag für nur einen Baum!
 achievement.draconicevolution.daxe.desc=Stelle eine Drakonische Axt her
-achievement.draconicevolution.dsword=Pikse wie eine Biene!
-achievement.draconicevolution.dsword.desc=Verbessere auf das Drakonische Schwert
-achievement.draconicevolution.dbow=Jetzt wird mit StÃ¤rke gespielt!
+achievement.draconicevolution.dsword=Steche wie eine Biene!
+achievement.draconicevolution.dsword.desc=Verbessere das Drakonische Schwert
+achievement.draconicevolution.dbow=Jetzt wird mit Stärke gespielt!
 achievement.draconicevolution.dbow.desc=Baue den Drakonischen Bogen.
-achievement.draconicevolution.flux2=PhÃ¤nomenale kosmische Energie!
+achievement.draconicevolution.flux2=Phänomenale kosmische Energie! Winzig kleiner Raum.
 achievement.draconicevolution.flux2.desc=Baue den Drakonischen Fluxkompensator
 achievement.draconicevolution.dhoe=Komm her, Notch! -BAM-
 achievement.draconicevolution.dhoe.desc=Baue eine Drakonische Hacke
- 
-achievement.draconicevolution.dstaff=Mit vereinten KrÃ¤ften!
+
+achievement.draconicevolution.dstaff=Mit vereinten Kräften!
 achievement.draconicevolution.dstaff.desc=Erschaffe einen Drakonischen Stab
- 
-achievement.draconicevolution.soul=MÃ¶rder!!!!
-achievement.draconicevolution.soul.desc=Beschaffe die Seele eines ahnungslosen Tieres
-achievement.draconicevolution.sundial=ZeitwÃ¤chter
-achievement.draconicevolution.sundial.desc=Baue eine Sonnenuhr und Ã¼bernimm die Kontrolle Ã¼ber Tag und Nacht
-achievement.draconicevolution.manual=Allwissend!
+
+achievement.draconicevolution.soul=Mörder!!!!
+achievement.draconicevolution.soul.desc=Beschaffe die Seele eines ahnungslosen Tieres.
+achievement.draconicevolution.sundial=Zeitwächter
+achievement.draconicevolution.sundial.desc=Baue eine Sonnenuhr und übernimm die Kontrolle über Tag und Nacht
+achievement.draconicevolution.manual=Maximales Wissen!
 achievement.draconicevolution.manual.desc=Baue eine Drakonische Tafel
- 
+
 //InfoHelper ----------------------------------------------------------------------------------------------------------------------------------------
 info.de.charge.txt=Ladung
 info.de.hold.txt=Halte
 info.de.shift.txt=Shift
-info.de.forDetails.txt=fÃ¼r Einzelheiten
- 
+info.de.forDetails.txt=für Einzelheiten
+
 //Lore ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:wyvernPickaxe.lore=2Gelangweilt von gewÃ¶hnlichen Werkzeugen\nverwendest du Drakonium um schneller und mehr auf einmal abzubauen.
-item.draconicevolution:wyvernShovel.lore=2Nur ein einziger Block auf einmal? Nicht mit Drakonium!\nSchneller, grÃ¶ÃŸere Gebiete .. und das ist erst der Anfang!
-item.draconicevolution:wyvernSword.lore=2Durch Drakonium erkennst du die wahren FÃ¤higkeiten von Schwertern.\nAngriffflÃ¤che und StÃ¤rke verbessern sich
-item.draconicevolution:wyvernBow.lore=2Durch Kombination eines gewÃ¶hnlichen Bogens mit Drakonium\nbist du in der Lage, schneller und mit mehr Kraft zu schieÃŸen.
- 
-item.draconicevolution:wyvernHelm.lore=2Durch eine hÃ¶here StÃ¤rke als Diamant\nkannst du nun noch grÃ¶ÃŸere SchlÃ¤ge wegstecken.
-item.draconicevolution:wyvernChest.lore=2Durch das Kombinieren der RÃ¼stung mit Drakonium\nerhÃ¶hst du die WiederstandsfÃ¤higkeit erheblich.
-item.draconicevolution:wyvernLeggs.lore=2PlÃ¶tzlich fÃ¼hlst du dich schneller und stÃ¤rker,\nnachdem du Diamantbeinschutz mit Drakonium verschmolzen hast.
-item.draconicevolution:wyvernBoots.lore=2Du hast einen Weg gefunden, die Stiefel zu verbessern.\nDrakonium scheint dir eine hÃ¶here Bewandheit zu liefern ...
- 
-item.draconicevolution:draconicPickaxe.lore=2Viel MÃ¼he und Forschung haben\nes dir ermÃ¶glicht, grÃ¶ÃŸere Gebiete abzubauen.
-item.draconicevolution:draconicAxe.lore=2Nach vielen fehlgeschlagenen Versuchen\nkannst du nun endlich einen ganzen Baum mit einem einzigen Schlag fÃ¤llen.
-item.draconicevolution:draconicShovel.lore=2Noch leistungsfÃ¤higer!\nDu kannst endlich ein noch grÃ¶ÃŸeres Gebiet abbauen!
-item.draconicevolution:draconicHoe.lore=2Drakonium verbessert sogar die Landwirtschaft.\nMit einem einzigen Klick kÃ¶nnen ganze Gebiete gepflÃ¼gt werden.
-item.draconicevolution:draconicSword.lore=2Wyvern war ganz nett, aber drakonische Waffen\nsind einfach nur das Beste, wenn es um wahre StÃ¤rke geht.
-item.draconicevolution:draconicBow.lore=2Die Perfektion im Fernkampf!\nSchneller schieÃŸen, explosive Pfeile, noch irgendwelche WÃ¼nsche?
- 
-item.draconicevolution:draconicHelm.lore=Keine Sekunde lÃ¤nger musst du die Nacht fÃ¼rchten,\njetzt kannst du jederzeit sehen,\nwas dort drauÃŸen los ist.
-item.draconicevolution:draconicChest.lore=2Durch das Verwenden eines Drachenherzens\nwirst du stÃ¤rker und besitzt die Gabe des Fliegens.
-item.draconicevolution:draconicLeggs.lore=2Die Seele eines Drachen beschÃ¼tzt dich und hilft dir,\ndich noch schnell fortzubewegen.
-item.draconicevolution:draconicBoots.lore=2StÃ¤rker, schneller, hÃ¶her: besser als jemals zuvor!
- 
+item.draconicevolution:wyvernPickaxe.lore=2Gelangweilt von gewöhnlichen Werkzeugen\nverwendest du Drakonium um schneller und mehr auf einmal abzubauen.
+item.draconicevolution:wyvernShovel.lore=2Nur ein einziger Block auf einmal? Nicht mit Drakonium!\nSchneller, größere Gebiete .. und das ist erst der Anfang!
+item.draconicevolution:wyvernSword.lore=2Durch Drakonium erkennst du die wahren Fähigkeiten von Schwertern.\nAngriff und Stärke verbessern sich.
+item.draconicevolution:wyvernBow.lore=2Durch Kombination eines gewöhnlichen Bogens mit Drakonium\nbist du in der Lage, schneller und mit mehr Kraft zu schießen.
+
+item.draconicevolution:wyvernHelm.lore=2Durch eine höhere Stärke als Diamant\nkannst du nun noch größere Schläge wegstecken.
+item.draconicevolution:wyvernChest.lore=2Durch das Kombinieren der Rüstung mit Drakonium\nerhöhst du die Wiederstandsfähigkeit erheblich.
+item.draconicevolution:wyvernLeggs.lore=2Plötzlich fühlst du dich schneller und stärker,\nnachdem du Diamantbeinschutz mit Drakonium verschmolzen hast.
+item.draconicevolution:wyvernBoots.lore=2Du hast einen Weg gefunden, die Stiefel zu verbessern.\nDrakonium scheint dir eine höhere Bewandheit zu liefern ...
+
+item.draconicevolution:draconicPickaxe.lore=2Viel Mühe und Forschung haben\nes dir ermöglicht, größere Gebiete abzubauen.
+item.draconicevolution:draconicAxe.lore=2Nach vielen fehlgeschlagenen Versuchen\nkannst du nun endlich einen ganzen Baum mit einem einzigen Schlag fällen.
+item.draconicevolution:draconicShovel.lore=2Noch leistungsfähiger!\nDu kannst endlich ein noch größeres Gebiet abbauen!
+item.draconicevolution:draconicHoe.lore=2Drakonium verbessert sogar die Landwirtschaft.\nMit einem einzigen Klick können ganze Gebiete gepflügt werden.
+item.draconicevolution:draconicSword.lore=2Wyvern war ganz nett, aber drakonische Waffen\nsind einfach nur das Beste, wenn es um wahre Stärke geht.
+item.draconicevolution:draconicBow.lore=2Die Perfektion im Fernkampf!\nSchneller schießen, explosive Pfeile, noch irgendwelche Wünsche?
+
+item.draconicevolution:draconicHelm.lore=2Keine Sekunde länger musst du die Nacht fürchten,\njetzt kannst du jederzeit sehen,\nwas dort draußen los ist.
+item.draconicevolution:draconicChest.lore=2Durch das Verwenden eines Drachenherzens\nwirst du stärker und besitzt die Gabe des Fliegens.
+item.draconicevolution:draconicLeggs.lore=2Die Seele eines Drachen beschützt dich und hilft dir,\ndich noch schnell fortzubewegen.
+item.draconicevolution:draconicBoots.lore=2Stärker, schneller, höher: besser als jemals zuvor!\ndas Drachenherz ermöglich Dir\nviel höher zu springen
+
 item.draconicevolution:draconicDistructionStaff.lore=2Ein langer und beschwerlicher Weg, aber nun: Wahre Macht!\nEin Werkzeug sie zu knechten, sie alle zu finden, ins Dunkel zu treiben und ewig zu binden!
- 
+
 //Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.DraconicEvolution.EnderDragon.name=Enderdrache
- 
+
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
-key.placeItem=Plaziere Gegenstand in der Welt
- 
+key.placeItem=Plaziere einen Gegenstand in der Welt
+key.toolConfig=Tool & Rüstungs Config GUI
+
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
-death.attack.chaos=%1$s wurde durch den WÃ¤chter des Chaos zerfetzt
- 
+death.attack.chaos=%1$s wurde durch den Wächter des Chaos zerfetzt
+death.attack.damage.de.fusionExplode=%1$s wurde durch eine rießige Energiefusion Explosion verdampft
+
 //Buttons ----------------------------------------------------------------------------------------------------------------------------------------
-button.de.chestAutoFeed0.txt=OFF.Automatisches ErnÃ¤hren ausgeschaltet
-button.de.chestAutoFeed1.txt=FILL.Halte den derzeitigen Stapel voll
-button.de.chestAutoFeed2.txt=LOCK.Ziehe nur die bereits schmelzenden GegenstÃ¤nde aus dem Inventar heraus
-button.de.chestAutoFeed3.txt=ALL.Ziehe alle schmelzbaren GegenstÃ¤nde aus dem Inventar heraus
+button.de.chestAutoFeed0.txt=OFF.Automatische Aufnahme deaktiviert
+button.de.chestAutoFeed1.txt=FILL.Füllt den aktuellen Stapel voll
+button.de.chestAutoFeed2.txt=LOCK.Ziehe nur die bereits schmelzenden Gegenstände aus dem Inventar heraus
+button.de.chestAutoFeed3.txt=ALL.Ziehe alle schmelzbaren Gegenstände aus dem Inventar heraus
+button.de.chestLockOutput.txt=Ausgang sperren.Blöcke in den letzten 5 Slots
 button.de.previous.txt=<==
 button.de.next.txt===>
-button.de.backToIndex.txt=ZurÃ¼ck zum Verzeichnis
-button.de.back.txt=ZurÃ¼ck
-button.de.goToIndex.txt=Verzeichnisseite
- 
-//Manual Gui ----------------------------------------------------------------------------------------------------------------------------------------
- 
-manual.de.indexTitle.txt=Verzeichnisseite
-manual.de.userGuide.txt=Funktionsleitfaden der Mod
-manual.de.ecth.txt=Energiespeichermultiblock
-manual.de.roerth.txt=Ritual der Drakonischen Auferstehung
-manual.de.endercomet.txt=Enderkomet
-manual.de.enderisland.txt=Inseln des Chaos
-manual.de.placeditems.txt=GegenstÃ¤nde in der Welt plazieren
-manual.de.pigmenBloodRage.txt=Blutiger Pigmenzorn
-manual.de.ectdpage0a.txt=Der Energiekern ist eine Multiblockstruktur, die in der Lage ist unvorstellbare Mengen an RF-Strom zu speichern. Verwendet wird hierbei die elektrische KapazitÃ¤t von Drakonium und Redstone.
-manual.de.ectdpage0b.txt=Der Energiekern hat sieben Stufen, jede in der Lage deutlich mehr Energie als ihre VorgÃ¤ngerstufe zu speichern. Um sie zu bauen werden fÃ¼nf verschiedene Bestandteile benÃ¶tigt.\n â™¦  Energiekern x1\n â™¦ Teilchengenerator x4\n â™¦ Redstone-Block (Anzahl von Stufe abhÃ¤ngig)\n â™¦ Drakonischer Block (Anzahl von Stufe abhÃ¤ngig)\n â™¦  Hochspannungsmast x2+
-manual.de.ectdpage1a.txt=Der Energiekern setzt sich zusammen aus dem Energiekern (Block) in der Mitte, umrundet von vier Teilchengeneratoren, wie dargestellt.
-manual.de.ectdpage1b.txt=Der Kern wird dann von einer Kombination aus Redstone-BlÃ¶cken und Drakonischen BlÃ¶cken umrundet. Die folgenden Seiten zeigen die Konstruktion jeder einzelnen Stufe, genau so wie die Materialkosten und die elektrische KapazitÃ¤t.\n\nSobald die Anlage gebaut ist halte einfach Shift und klicke mit der rechten Maustaste auf einen der Teilchengeneratoren\n(mit einer leeren Hand).
-manual.de.ectdpage2.txt=Stufe 0:\nRedstone x0\nDraconium x0\nCapacity = 45.5Millionen RF\n\nTier  1:\nRedstone x0\nDrakonium x6\nCapacity = 273Millionen RF
-manual.de.ectdpage3.txt=Stufe 2:\nRedstone x0\nDrakonium x26\nCapacity = 1.64Milliarden RF
-manual.de.ectdpage4.txt=Stufe 3:\nRedstone x26\nDrakonium x54\nCapacity = 9.88Milliarden RF
-manual.de.ectdpage5.txt=Stufe 4:\nRedstone x80\nDrakonium x98\nCapacity = 59.3Milliarden RF
-manual.de.ectdpage6.txt=Stufe 5:\nRedstone x133\nDrakonium x150\nCapacity = 356Milliarden RF
-manual.de.ectdpage7.txt=Stufe 6:\nRedstone x328\nDrakonium x218\nCapacity = 2.14Billionen RF
-manual.de.ectdpage8a.txt=Um von dem Kern Energie zu nutzen oder wieder hinzuzufÃ¼gen mÃ¼ssen Hochspannungsmast mit einem maximalen Abstand von 15 BlÃ¶cken zum Kern plaziert werden. Ein Hochspannungspfeiler wird durch plazieren eines Glasblocks, unter oder Ã¼ber ihm aktiviert (abhÃ¤ngig davon, ob der Mast unter oder Ã¼ber dem Kern plaziert ist, z.B. wenn der Mast auf dem Dach plaziert ist muss der Glasblock unter ihn gesetzt werden). Der Hochspannungspfeiler kann bis zu sechs BlÃ¶cke unter oder Ã¼ber dem Zentrum des Energiekerns plaziert werden.
-manual.de.ectdpage8b.txt=Sobald der Glasblock gesetzt ist sollte der Mast sofort aktiv werden und sich mit einem nahe gelegenem Energiekern verbinden. Die Verbindung ist durch weiÃŸe Energieteilchen und eine VerÃ¤nderung des Glasblocks, wie in dem Bild oben gezeigt, erkennbar. Du kannst mit Shift-Rechtsklick Ã¤ndern mit welchem Kern der Hochspannungsmast verbunden ist (falls mehrere in Reichweite sein sollten).
-manual.de.ectdpage9a.txt=Klicke ienfach mit der rechten Maustaste auf den Kern um seine Stufe und gespeicherte Energie zu Ã¼berprÃ¼fen.
-manual.de.ectdpage9b.txt=Durch die Hochspannungsmasten kann Strom vom Energiekern hinzugefÃ¼gt oder entfernt werden. Um einen Hochspannungsmasten zwischen Eingang und Ausgang zu konfigurieren klicke einfach mit der rechten Maustaste auf die Kugel. Man erkennt den aktiven Modus durch die Farbe des Masten (Blau = Eingang, Orange = Ausgang) und des Verhaltens der Energieteilchen und der Kugel der Masten.
-manual.de.ectdpage10.txt=StromÃ¼bertragung zwischen dem Masten und dem Kern ist erkennbar durch einen Strahl blauer Energieteilchen, die zwischen der Kugel des Masten und dem Kern flieÃŸen. Die Menge der flieÃŸenden Energie wird durch die Dichte des Teilchenstrahls grob angezeigt.
-manual.de.ectdpage11.txt=Das obbige Bild zeigt alle mÃ¶glichen Y-HÃ¶he Plazierungen fÃ¼r Hochspannungsmasten, bezogen auf den Kern.
-manual.de.roertpage0a.txt=Das Ritual der Drakonischen Auferstehung ermÃ¶glicht dir den Enderdrachen neu zu beschwÃ¶ren. Um es durchzufÃ¼hren werden folgende GegenstÃ¤nde benÃ¶tigt.\n\n(1) Stein der Auferstehung\n(4) GlowstoneblÃ¶cke\n(4) Obsidian\n(4) DiamontblÃ¶cke\n(4) Geladene Drakonische BlÃ¶cke\n(12) QuartzsÃ¤ulen
-manual.de.roertpage0b.txt=Um einen Geladenen Drakonischen Block zu erhalten muss ein Drakonischer Block in einem LadegerÃ¤t plaziert werden (Dieser Vorgang benÃ¶tigt 100 Millionen RF!).
-manual.de.roertpage1a.txt=Die SÃ¤ulen mÃ¼ssen nicht an der genauen Position sein, solange sie sich innerhalb von fÃ¼nf BlÃ¶cken ausgehend vom Stein der Auferstehung befinden. AuÃŸerdem sieht es immer schÃ¶ner aus, wenn sie symmetrisch aufgebaut sind!
-manual.de.roertpage1b.txt=Sobald du alles aufgebaut hast klicke einfach mit der rechten Maustaste auf den Ritualstein und gehe lieber ein paar Schritte zurÃ¼ck! Das Ritual sollte sofort beginnen, falls nicht, ist dir wohl ein Fehler unterlaufen.
-manual.de.roertpage1c.txt=WÃ¤hrend des Rituals werden alle Enderkristalle erneut aktiviert. An dessen Ende hingegen wird es eine gigantische Explosion im Zentrum des Gebildes geben. Diese wird zwar dem GelÃ¤nde nicht viel Schaden hinzufÃ¼gen, jedoch wird jegliche Lebensform in der NÃ¤he ausgelÃ¶scht.
-manual.de.roertpage1d.txt=Der durch das Ritual entstandene Enderdrache ist fast identisch mit seinem Original. Beide unterscheiden sich nur in Textur (Von GreatOrator), einem Heilungseffekt fÃ¼r die ersten 25 Sekunden und StÃ¤rke. Der neue Drache ist deutlich schwieriger zu besiegen und fÃ¼gt jedes Mal mehr Schaden hinzu, wenn er erneut erschaffen wird (diese Steigerung der Schwierigkeit ist von Spieler zu Spieler unterschiedlich und erhÃ¶ht sich ab einem bestimmten Schwierigkeitslevel nicht mehr).
-manual.de.endercomet.description=Du hast bereits jegliches Drakonisches Erz im Ende abgebaut? Dann beschaffe dir eine MÃ¶glichkeit zum Fliegen und durchsuche das Ende! Wenn du GlÃ¼ck hast kÃ¶nntest du Ã¼ber einen Enderkometen stolpern. Diese Kometen setzen sich aus Endstein, Obsidian und einer annehmlichen Menge an Drakonischem Erz zusammen. StandartmÃ¤ÃŸig besteht eine Chance von 1 zu 10.000 fÃ¼r einen solchen Kometen in einem Chunk zu spawnen, es kÃ¶nnte also eine Weile dauern bis du einen findest. AuÃŸerdem kommen die Kometen in unterschiedlichen GrÃ¶ÃŸen vor.
-manual.de.chaosisland.description=Auf der Suche nach einer Herausforderung? Der Enderdrache war dir zu schwach? Dann bist du hier genau richtig! Wenn du zu einem Vielfachen von 10.000 im Ende reist (z.B. {x=0, z=10.000}, {x=0, z=20.000}, {x=10.000, z=0} etc) wirst du eine Insel des Chaos finden. Jede dieser Inseln wird von einem WÃ¤chter des Chaos bewacht, dieser ist im Prinzip ein sehr starker Enderdrache. Er lÃ¤sst beim Tod zwei Drachenherzen, ein bisschen Drakonischen Staub, sowie ein gewÃ¶hliches Endportal in der Mitte der Insel mit einem Drachenei obendrauf. Anmerkung: Die Insel des Chaos ist noch in Arbeit und wird zukÃ¼nftig noch Ã„nderungen durchlaufen.
-manual.de.placeditems.description=Draconic Evolution macht es mÃ¶glich, jeden Gegenstand in der Welt als Block zu plazieren. Dies ermÃ¶glicht dir unter anderem, Werkzeuge oder andere GegenstÃ¤nde an WÃ¤nde zu hÃ¤ngen um sie anzuzeigen. Um einen Gegenstand in der Welt zu plazieren. Schaue einfach auf einen Block mit dem Gegenstand in der Hand (so, als wÃ¼rdest du einen Block plazieren wollen). DrÃ¼cke dann die "Gegenstand plazieren" Taste (normalerweise p) um den Gegenstand auf oder an einer Seite des Blocks zu plazieren. Mit der linken Maustaste kannst du den Gegenstand anschlieÃŸen im Uhrzeigersinn drehen, mit Shift-Linksklick kannst du ihn gegen den Uhrzeigersinn drehen. Mit Shift-Rechtsklick ist es mÃ¶glich, den Gegenstand in sehr kleinen AbstÃ¤nden, entgegen dem Uhrzeigersinn, zu drehen. Mit der rchten Maustaste kannst du den Gegenstand wieder aufnehmen.
-manual.de.pigmenBloodRage.description=Pass auf, dass kein Pigman dich beim Verspeisen von Schweinefleisch entdeckt. Du willst nicht wissen was dann passiert ...
+button.de.backToIndex.txt=Zurück zum Index
+button.de.back.txt=Zurück
+button.de.goToIndex.txt=Index Seite
+button.de.addNew.txt=Neu
+button.de.rename.txt=Umbenennen
+button.de.commit.txt=Hinzufügen
+button.de.setHere.txt=Hier setzen
+button.de.remove.txt=Entfernen
+button.de.addFuel.txt=Treibstoff hinzufügen
+button.de.cancel.txt=Abbrechen
+button.de.UP.txt=HOCH
+button.de.DOWN.txt=RUNTER
+
+//Item Config Buttons
+button.de.ArmorNVActive.name=Nachtsicht
+button.de.ArmorNVLock.name=Sperre Nachtsicht
+button.de.ArmorFlightLock.name=Sperre Fliegen
+button.de.ArmorSpeedMult.name=Geschwindigkeit Multiplizierer
+button.de.ArmorJumpMult.name=Sprung Multiplizierer
+button.de.ArmorHillStep.name=Berglauf
+button.de.ArmorSprintOnly.name=Beschleunigung beim Sprinten
+button.de.ToolDigMultiplier.name=Abbau Multiplizierer
+button.de.ToolDigAOE.name=Größe
+button.de.ToolDigDepth.name=Abbautiefe
+button.de.WeaponAttackAOE.name=Angriff A.O.E
+button.de.ToolVoidJunk.name=Hohlraum
+button.de.AxeTreeMode.name=Baummodus
+button.de.BaseSafeAOE.name=AOE Sicherer Modus
+button.de.VerticalAcceleration.name=Vertikalbeschleunigung
+button.de.EffectiveOnSprint.name=Wirksam beim Sprinten
+button.de.GogglesOfRevealing.name=Magische Sense
+button.de.reactorCharge.txt=Reaktorladung
+button.de.reactorStart.txt=Aktivieren
+button.de.reactorStop.txt=Herunterfahren gestartet
+
+//Gui ----------------------------------------------------------------------------------------------------------------------------------------
+gui.de.flowGate.name=Flußkontrolle
+gui.de.flowGatePartialSignal.name=Der tatsächliche Fluss zwischen zwei vorgegebenen Werten variiert in Abhängigkeit von der Stärke des RedStone Signal am Block.
+gui.de.flowGateCurrentFlow.name=Fluss
+gui.de.flowGateRSLow.name=Redstone Signal Niedrig
+gui.de.flowGateRSHigh.name=Redstone Signal Hoch
+gui.de.increment.name=Erhöhe Wert mit
+gui.de.decrement.name=Verringere Wert mit
+gui.de.ctrlAndShift.name=Du kannst Strg und Shift nutzen, um den Wert zu ändern.
+gui.de.pressOrScroll.name=Drücken oder Scrollen
+
+gui.de.insert.txt=Einfügen
+gui.de.extract.txt=Herausgeben
+gui.de.fuel.txt=Treibstoff
+gui.de.coreMass.txt=Kernmasse
+gui.de.reactionTemp.txt=Kernthemperatur
+gui.de.fieldStrength.txt=Stärke des Eindämmungsfeldes
+gui.de.energySaturation.txt=Energie Sättigung
+gui.de.fuelConversion.txt=Kraftstoffumwandlungsgrad
+gui.de.status.txt=Status
+gui.de.status0.txt=OFFLINE
+gui.de.status1.txt=LADEN
+gui.de.status1_5.txt=GELADEN
+gui.de.status2.txt=ONLINE
+gui.de.status3.txt=GESTOPPT
+gui.de.status4.txt=UNGÜLTIGE EINSTELLUNG
+gui.de.internalStorage.txt=Interner Speicher
+gui.de.itemStorage.txt=Item Speicher
+
+manual.de.pigmenBloodRage.description=Lassen SIe keine Pigmen sehen, wie Du Scheinefleisch ißt, oder Du wirst sehe was passiert...
+
 //Potions ----------------------------------------------------------------------------------------------------------------------------------------
 potion.de.effect.txt=Wirkung
-potion.de.flight.txt=Flug
-potion.de.highStep.txt=GroÃŸe Schritte
+potion.de.flight.txt=Fliegen
+potion.de.highStep.txt=Große Schritte
 potion.de.swiftness.txt=Schnelligkeit
-potion.de.fireImmune.txt=FeuerimmunitÃ¤t
-potion.de.jumpBoost.txt=SprungstÃ¤rke
+potion.de.fireImmune.txt=Feuerimmunität
+potion.de.jumpBoost.txt=Sprungstärke
