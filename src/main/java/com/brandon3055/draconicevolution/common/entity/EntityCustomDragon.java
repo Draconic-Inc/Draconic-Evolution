@@ -354,10 +354,10 @@ public class EntityCustomDragon extends EntityDragon {
 					this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
 				}
 			}
-
-			if (this.deathTicks == 1) {
-				this.worldObj.playBroadcastSound(1018, (int) this.posX, (int) this.posY, (int) this.posZ, 0);
-			}
+		}
+		else if (this.deathTicks == 1) {
+			this.worldObj.playSound(this.posX, this.posY, this.posZ, "mob.enderdragon.end", 50.0F, 1F, false);
+			//this.worldObj.playBroadcastSound(1018, (int) this.posX, (int) this.posY, (int) this.posZ, 0);
 		}
 
 		this.moveEntity(0.0D, 0.10000000149011612D, 0.0D);

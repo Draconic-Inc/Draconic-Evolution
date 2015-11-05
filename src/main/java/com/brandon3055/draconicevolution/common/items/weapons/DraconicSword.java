@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.items.weapons;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
@@ -29,11 +30,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicSword extends ItemSword implements IEnergyContainerItem, IInventoryTool {
+public class DraconicSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak {
 	protected int capacity = References.DRACONICCAPACITY;
 	protected int maxReceive = References.DRACONICTRANSFER;
 	protected int maxExtract = References.DRACONICTRANSFER * 50;
@@ -193,5 +196,28 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 		Multimap map = super.getAttributeModifiers(stack);
 		map.clear();
 		return map;
+	}
+
+	@Override
+	public void tweakRender(IItemRenderer.ItemRenderType type) {
+
+		GL11.glTranslated(-0.01, 1.11, -0.15);
+		GL11.glRotatef(90, 1, 0, 0);
+		GL11.glRotatef(140, 0, -1, 0);
+		GL11.glScaled(0.7, 0.7, 0.7);
+
+		if (type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
+			GL11.glRotatef(180, 0, 0, 1);
+			GL11.glTranslated(0, -0.4, 0);
+		}
+		else if (type == IItemRenderer.ItemRenderType.INVENTORY){
+			GL11.glScalef(8, 8, 8);
+			GL11.glRotatef(180, 0, 1, 0);
+			GL11.glTranslated(1.9, 0, 0);
+		}
+		else if (type == IItemRenderer.ItemRenderType.ENTITY){
+			GL11.glRotatef(-90.5F, 0, 1, 0);
+			GL11.glTranslated(-0.8, 0, 0);
+		}
 	}
 }

@@ -19,7 +19,6 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Brandon on 27/07/2014.
  */
-@SideOnly(Side.CLIENT)
 public class Particles {
 
 	public static class EnergyBeamParticle extends EntityFX {
@@ -434,10 +433,18 @@ public class Particles {
 			tesselator.setBrightness(200);
 
 
-			float minU = 0.0F + 0F;//(float)this.particleTextureIndexX / 32.0F;
-			float maxU = 0.0F + 0.1245F;//minU + 0.124F;
-			float minV = 0F;//(float)this.particleTextureIndexY / 32.0F;
-			float maxV = 0.1245F;//minV + 0.124F;
+			int uIndex = 0;
+			int vIndex = 0;
+
+			float minU = uIndex * 0.125F;
+			float maxU = (uIndex+1) * 0.12F;
+			float minV = vIndex * 0.125F;
+			float maxV = (vIndex+1) * 0.125F;
+
+//			float minU = 0.0F + 0F;//(float)this.particleTextureIndexX / 32.0F;
+//			float maxU = 0.0F + 0.1245F;//minU + 0.124F;
+//			float minV = 0F;//(float)this.particleTextureIndexY / 32.0F;
+//			float maxV = 0.1245F;//minV + 0.124F;
 			float drawScale = 0.1F * this.particleScale;
 
 			if (this.particleIcon != null) {
@@ -650,7 +657,7 @@ public class Particles {
 
 		public ReactorExplosionParticle(World world, double x, double y, double z, double maxSize) {
 			super(world, x, y, z, 0D, 0D, 0D);
-			uvSphere = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+			if (uvSphere == null) uvSphere = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
 			this.maxSize = maxSize;
 		}
 
@@ -778,6 +785,142 @@ public class Particles {
 		}
 	}
 
+	public static class ChaosImplosionParticle extends EntityFX
+	{
+		public static IModelCustom uvSphere;
+		public double size = 0;
+		public double maxSize;
+
+		public ChaosImplosionParticle(World world, double x, double y, double z, double maxSize) {
+			super(world, x, y, z, 0D, 0D, 0D);
+			if (uvSphere == null) uvSphere = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+			this.maxSize = maxSize;
+		}
+
+		@Override
+		public void onUpdate() {
+			//if (particleAge == 3) worldObj.playSound(posX, posY, posZ, "DraconicEvolution:fusionExplosion", 100F, 1F, false);
+			particleAge++;
+			size++;
+			if (size > maxSize * 1.2) setDead();
+
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void renderParticle(Tessellator tessellator, float partialTick, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+
+			tessellator.draw();
+			GL11.glPushMatrix();
+			float xx = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTick - interpPosX);
+			float yy = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTick - interpPosY);
+			float zz = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTick - interpPosZ);
+			GL11.glTranslated((double)xx + 0.5, (double)yy + 0.5, (double)zz + 0.5);
+
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
+			ResourceHandler.bindResource("textures/models/white.png");
+			double s = size + partialTick * 1F;
+			GL11.glScaled(s, s/4, s);
+
+
+			//Leading edge
+			GL11.glPushMatrix();
+			float a = (float)Math.max(0D, 0.3D - (size / (maxSize)));
+			GL11.glColor4f(1F, 1F, 1F, a);
+			GL11.glScaled(5, 10, 5);
+			if (a > 0)uvSphere.renderAll();
+			GL11.glPopMatrix();
+
+//			//Disk
+//			GL11.glPushMatrix();
+//			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+//			GL11.glColor4f(1F, 1F, 1F, a);
+//			GL11.glScaled(2, 0.2, 2);
+//			if (a > 0)uvSphere.renderAll();
+//			GL11.glPopMatrix();
+
+			//Synced edge
+			GL11.glPushMatrix();
+			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+			GL11.glColor4f(1F, 1F, 1F, a);
+			if (a > 0)uvSphere.renderAll();
+			GL11.glPopMatrix();
+
+			GL11.glScalef(1.5F, 1.5F, 1.5F);
+
+			//Inner edges
+			GL11.glPushMatrix();
+			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+			GL11.glColor4f(1F, 1F, 1F, a);
+			GL11.glScaled(0.8, 0.6, 0.8);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glColor4f(1F, 1F, 1F, a);
+			GL11.glScaled(0.8, 0.7, 0.8);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glColor4f(1F, 1F, 1F, a);
+			GL11.glScaled(0.7, 0.9, 0.7);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glColor4f(1F, 1F, 1F, a);
+			GL11.glScaled(0.6, 0.9, 0.6);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glColor4f(1F, 1F, 1F, a);
+			GL11.glScaled(0.5, 0.9, 0.5);
+			if (a > 0)uvSphere.renderAll();
+
+			GL11.glPopMatrix();
+
+			for (int i = 0; i < 10; i++)
+			{
+				GL11.glScalef(0.95F, 0.95F, 0.95F);
+				GL11.glPushMatrix();
+				a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+				GL11.glColor4f(1F, 1F, 1F, a);
+				GL11.glScaled(0.8, 0.6, 0.8);
+				if (a > 0)uvSphere.renderAll();
+
+				GL11.glColor4f(1F, 1F, 1F, a);
+				GL11.glScaled(0.8, 0.7, 0.8);
+				if (a > 0)uvSphere.renderAll();
+
+				GL11.glColor4f(1F, 1F, 1F, a);
+				GL11.glScaled(0.7, 0.9, 0.7);
+				if (a > 0)uvSphere.renderAll();
+
+				GL11.glColor4f(1F, 1F, 1F, a);
+				GL11.glScaled(0.6, 0.9, 0.6);
+				if (a > 0)uvSphere.renderAll();
+
+				GL11.glColor4f(1F, 1F, 1F, a);
+				GL11.glScaled(0.5, 0.9, 0.5);
+				if (a > 0)uvSphere.renderAll();
+				GL11.glPopMatrix();
+			}
+
+
+
+
+
+
+
+
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glPopMatrix();
+			ResourceHandler.bindDefaultParticles();
+			tessellator.startDrawingQuads();
+		}
+	}
+
 	public static class DragonProjectileParticle extends EntityFX
 	{
 		private EntityDragonProjectile entity;
@@ -863,6 +1006,189 @@ public class Particles {
 
 		}
 	}
+
+	public static class ChaosBoltParticle extends EntityFX {
+
+		public int timer = 0;
+		public double focalX;
+		public double focalY;
+		public double focalZ;
+		public double shardX;
+		public double shardY;
+		public double shardZ;
+
+		private int mode;
+
+		public ChaosBoltParticle(World world, double x, double y, double z, double shardX, double shardY, double shardZ, int mode) {
+			super(world, x, y, z, 0.0D, 0.0D, 0.0D);
+			this.focalX = x;
+			this.focalY = y;
+			this.focalZ = z;
+			this.shardX = shardX;
+			this.shardY = 79 + rand.nextDouble() * 3;
+			this.shardZ = shardZ;
+			if (mode == 0){
+				this.motionX = (rand.nextFloat() - 0.5F) * 0.5F;
+				this.motionY = (rand.nextFloat() - 0.5F) * 0.5F;
+				this.motionZ = (rand.nextFloat() - 0.5F) * 0.5F;
+				this.shardY = 80.5;
+			}else
+			{
+				this.motionX = 0;
+				this.motionY = 0;
+				this.motionZ = 0;
+			}
+			this.mode = mode;
+			this.particleMaxAge = 100;
+			this.noClip = true;
+			this.particleRed = 0;
+			this.particleGreen = 0;
+			this.particleBlue = 0;
+		}
+
+
+		@Override
+		public void onUpdate() {
+			if (particleAge++ > particleMaxAge) setDead();
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+
+			if (mode == 0){
+				if (Utills.getDistanceAtoB(posX, posY, posZ, focalX, focalY, focalZ) < 0.2 && particleAge > 5) mode = 1;
+				double d = Utills.getDistanceAtoB(focalX, focalY, focalZ, shardX, shardY, shardZ);
+				float motionMod = 0.1F;
+				motionX += (focalX - posX)/d * motionMod;
+				motionY += (focalY - posY)/d * motionMod;
+				motionZ += (focalZ - posZ)/d * motionMod;
+			}
+			if (mode == 1){
+				if (Utills.getDistanceAtoB(posX, posY, posZ, shardX, shardY, shardZ) < 1) setDead();
+				double d = Utills.getDistanceAtoB(focalX, focalY, focalZ, shardX, shardY, shardZ);
+				particleScale = 1F - (float)d * 0.01F;
+				float motionMod = 1F;
+				motionX = (shardX - focalX)/d * motionMod;
+				motionY = (shardY - focalY)/d * motionMod;
+				motionZ = (shardZ - focalZ)/d * motionMod;
+			}
+
+			if (mode == 10){
+				if (Utills.getDistanceAtoB(posX, posY, posZ, shardX, shardY, shardZ) < 0.3) setDead();
+				double d = Utills.getDistanceAtoB(focalX, focalY, focalZ, shardX, shardY, shardZ);
+				float motionMod = 0.4F;
+				motionX = (shardX - focalX)/d * motionMod;
+				motionY = (shardY - focalY)/d * motionMod;
+				motionZ = (shardZ - focalZ)/d * motionMod;
+			}
+			moveEntity(motionX, motionY, motionZ);
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+
+			tesselator.draw();
+			ResourceHandler.bindParticles();
+
+			int uIndex = particleAge%5;
+			int vIndex = 1;
+
+			float minU = uIndex * 0.125F;
+			float maxU = (uIndex+1) * 0.125F;
+			float minV = vIndex * 0.125F;
+			float maxV = (vIndex+1) * 0.125F;
+
+			float drawScale = 0.2F * this.particleScale;
+
+			if (this.particleIcon != null) {
+				minU = this.particleIcon.getMinU();
+				maxU = this.particleIcon.getMaxU();
+				minV = this.particleIcon.getMinV();
+				maxV = this.particleIcon.getMaxV();
+			}
+
+			float drawX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) par2 - interpPosX);
+			float drawY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) par2 - interpPosY);
+			float drawZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) par2 - interpPosZ);
+
+			tesselator.startDrawingQuads();
+			tesselator.setBrightness(200);
+			tesselator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
+
+			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ - par5 * drawScale - par7 * drawScale), (double) maxU, (double) maxV);
+			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ - par5 * drawScale + par7 * drawScale), (double) maxU, (double) minV);
+			tesselator.addVertexWithUV((double) (drawX + par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ + par5 * drawScale + par7 * drawScale), (double) minU, (double) minV);
+			tesselator.addVertexWithUV((double) (drawX + par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ + par5 * drawScale - par7 * drawScale), (double) minU, (double) maxV);
+
+			tesselator.draw();
+
+			ResourceHandler.bindDefaultParticles();
+			tesselator.startDrawingQuads();
+
+		}
+
+	}
+
+	public static class ChaosExpansionParticle extends EntityFX
+	{
+		public static IModelCustom uvSphere;
+		private final boolean shrink;
+		public double size = 0;
+		public double maxSize = 20;
+
+		public ChaosExpansionParticle(World world, double x, double y, double z, boolean shrink) {
+			super(world, x, y, z, 0D, 0D, 0D);
+			this.shrink = shrink;
+			if (uvSphere == null) uvSphere = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+			if (shrink){
+				size = 20;
+			}
+		}
+
+		@Override
+		public void onUpdate() {
+			particleAge++;
+			if (shrink)size--;
+			else size++;
+			if (size > maxSize * 1 || size < 0) setDead();
+
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void renderParticle(Tessellator tessellator, float partialTick, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+
+			tessellator.draw();
+			GL11.glPushMatrix();
+			float xx = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTick - interpPosX);
+			float yy = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTick - interpPosY);
+			float zz = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTick - interpPosZ);
+			GL11.glTranslated((double)xx, (double)yy, (double)zz);
+
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
+			ResourceHandler.bindResource("textures/models/white.png");
+			double s = (size + (partialTick * (shrink ? -1F : 1F))) * 2D;
+			GL11.glScaled(s, s, s);
+
+			if (shrink) GL11.glColor4f(1F, 1F, 1F, 1F - ((float)size - partialTick) / (float)maxSize);
+			else GL11.glColor4f(0F, 0F, 0F, 1F - ((float) size - partialTick) / (float) maxSize);
+			//GL11.glScaled(5, 10, 5);
+			uvSphere.renderAll();
+
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glPopMatrix();
+			ResourceHandler.bindDefaultParticles();
+			tessellator.startDrawingQuads();
+		}
+	}
+
 }
 //int uIndex = 0;
 //int vIndex = 0;

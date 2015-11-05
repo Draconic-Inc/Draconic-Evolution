@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.common.utills.SimplexNoise;
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.entity.EntityChaosCrystal;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -77,7 +78,12 @@ public class ChaosWorldGenHandler {
 
 					density = centerFalloff * plateauFalloff * heightMapFalloff;
 
-					if (density > 0.1 && world.getBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z) == Blocks.air) world.setBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z, Blocks.end_stone);
+					if (density > 0.1 && world.getBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z) == Blocks.air) world.setBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z, (dist > 60 || dist > random.nextInt(60)) ? Blocks.end_stone : Blocks.obsidian);
+
+//					if (density > 0.1 && world.getBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z) == Blocks.air) {
+//						boolean b = dist > 60 || dist > random.nextInt(60);
+//						world.setBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z, (dist > 60 || dist > random.nextInt(60)) ? Blocks.end_stone : Blocks.obsidian);
+//					}
 				}
 			}
 		}
@@ -85,11 +91,35 @@ public class ChaosWorldGenHandler {
 
 	public static void generateStructures(World world, DataUtills.XZPair<Integer, Integer> islandCenter, Random random){
 		int outerRadius = 330;
+
+
+		//Gen Chaos Cavern
+		int shardY = 80;
+
+		int coreHeight = 10;
+		int coreWidth = 20;
+
+		for(int y = shardY-coreHeight; y <= shardY+coreHeight; y++){
+			int h = Math.abs(y-shardY);
+			int inRadius = h-3;
+			double yp = (coreHeight - h) / (double)coreHeight;
+			int outRadius = (int)(yp * coreWidth);
+			outRadius -= (outRadius * outRadius)/100;
+
+			genCoreSlice(world, islandCenter.x, y, islandCenter.z, inRadius, shardY, coreWidth, true, random);
+			genCoreSlice(world, islandCenter.x, y, islandCenter.z, outRadius, shardY, coreWidth, false, random);
+		}
+
+		world.setBlock(islandCenter.x, shardY, islandCenter.z, ModBlocks.chaosCrystal);
+		EntityChaosGuardian guardian = new EntityChaosGuardian(world);
+		guardian.setPositionAndUpdate(islandCenter.x, shardY, islandCenter.z);
+		world.spawnEntityInWorld(guardian);
+
+
+		//Gen Ring
 		int rings = 4;
 		int width = 20;
 		int spacing = 8;
-
-		//Gen Ring
 		for (int x = islandCenter.x - outerRadius; x <= islandCenter.x + outerRadius; x++) {
 			for (int z = islandCenter.z - outerRadius; z <= islandCenter.z + outerRadius; z++) {
 				int dist = (int) (Utills.getDistanceAtoB(x, z, islandCenter.x, islandCenter.z));
@@ -107,6 +137,35 @@ public class ChaosWorldGenHandler {
 		}
 		generateObelisks(world, islandCenter, random);
 	}
+
+	public static void genCoreSlice(World world, int xi, int yi, int zi, int ringRadius, int yc, int coreRadious, boolean fillIn, Random rand) {
+		for( int x = xi-coreRadious ; x<= xi+coreRadious; x++) {
+			for (int z = zi - coreRadious; z <= zi + coreRadious; z++) {
+				double dist = Utills.getDistanceAtoB(x, yi, z, xi, yc, zi);
+
+				double oRad = coreRadious - (Math.abs(yc-yi) * Math.abs(yc-yi))/10;
+				if (dist > oRad-3D && rand.nextDouble()*3D < dist-(oRad-3D)) continue;
+
+				if (fillIn && (int) (Utills.getDistanceAtoB(x, z, xi, zi)) <= ringRadius)
+				{
+					if ((int)dist < 9)world.setBlock(x, yi, z, ModBlocks.infusedObsidian);
+					else world.setBlock(x, yi, z, Blocks.obsidian);
+				}
+				else
+				if (!fillIn && (int) (Utills.getDistanceAtoB(x, z, xi, zi)) >= ringRadius)
+				{
+					world.setBlock(x, yi, z, Blocks.obsidian);
+				}
+				else if (!fillIn && (int) Utills.getDistanceAtoB(x, z, xi, zi) <= ringRadius)
+				{
+					Block b = world.getBlock(x, yi, z);
+					if (b == Blocks.air || b == Blocks.end_stone || b == Blocks.obsidian) world.setBlock(x, yi, z, ModBlocks.chaosShardAtmos);
+				}
+
+			}
+		}
+}
+
 
 	public static DataUtills.XZPair<Integer, Integer> getClosestChaosSpawn(int chunkX, int chunkZ){
 		return new DataUtills.XZPair<Integer, Integer>(Utills.getNearestMultiple(chunkX * 16, 10000), Utills.getNearestMultiple(chunkZ*16, 10000));

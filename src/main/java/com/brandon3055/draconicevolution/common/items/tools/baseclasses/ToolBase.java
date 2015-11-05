@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.ToolModePacket;
 import com.brandon3055.draconicevolution.common.utills.*;
@@ -146,7 +147,7 @@ public class ToolBase extends RFItemBase {
 		}
 
 		addAditionalInformation(stack, player, list, extended);
-		if (show) InfoHelper.addLore(stack, list, true);
+		if (show && !ConfigHandler.disableLore) InfoHelper.addLore(stack, list, true);
 		InfoHelper.addEnergyInfo(stack, list);
 	}
 

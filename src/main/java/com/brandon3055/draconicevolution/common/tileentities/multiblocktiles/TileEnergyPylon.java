@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,7 +28,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 28/07/2014.
  */
-public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, IExtendedRFStorage {
+public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, IExtendedRFStorage, IDEPeripheral {
 	public boolean active = false;
 	public boolean lastTickActive = false;
 	public boolean reciveEnergy = false; //Power Flow to system
@@ -338,5 +339,22 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	@Override
 	public long getExtendedCapacity() {
 		return getMaster() != null ? getMaster().getMaxEnergyStored() : 0L;
+	}
+
+	@Override
+	public String getName() {
+		return "draconic_rf_storage";
+	}
+
+	@Override
+	public String[] getMethodNames() {
+		return new String[] {"getEnergyStored", "getMaxEnergyStored"};
+	}
+
+	@Override
+	public Object[] callMethod(String method, Object... args) {
+		if (method.equals("getEnergyStored")) return new Object[] {getExtendedStorage()};
+		else if (method.equals("getMaxEnergyStored")) return new Object[] {getExtendedCapacity()};
+		return new Object[0];
 	}
 }

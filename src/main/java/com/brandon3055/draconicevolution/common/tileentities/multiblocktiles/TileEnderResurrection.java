@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.client.render.particle.Particles.Advanc
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
@@ -51,16 +52,16 @@ public class TileEnderResurrection extends TileEntity{
 	public void updateEntity() {
 		if (spawnInProgress){
 			//if (timer < 1800) timer = 2200;
-			if (timer % 10 == 0 && !arePillarsValid() || !isBaseValid()) spawnInProgress = false;
+			if (!arePillarsValid() || !isBaseValid()) spawnInProgress = false;
 			effectDrive();
 			findAndActivateChrystals(timer - 200, true);
 			if (timer > 2390 && arePillarsValid() && isBaseValid()) {
 				spawn();
 				spawnInProgress = false;
 			}
-			if (timer < 556 || timer > 2300)
-				timer++;
+			if (timer < 556 || timer > 2300) timer++;
 			else timer += 2;
+			if (ConfigHandler.sumonRitualAccelerated) timer += 20;
 		}
 	}
 

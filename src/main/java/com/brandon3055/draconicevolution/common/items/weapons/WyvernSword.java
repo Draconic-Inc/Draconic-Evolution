@@ -1,16 +1,17 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -30,11 +31,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInventoryTool {
+public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak {
 
 	protected int capacity = References.WYVERNCAPACITY;
 	protected int maxReceive = References.WYVERNTRANSFER;
@@ -206,6 +209,25 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 		Multimap map = super.getAttributeModifiers(stack);
 		map.clear();
 		return map;
+	}
+
+	@Override
+	public void tweakRender(IItemRenderer.ItemRenderType type) {
+		GL11.glTranslated(0.25, 0.8, 0.05);
+		GL11.glRotatef(90, 1, 0, 0);
+		GL11.glRotatef(140, 0, -1, 0);
+		GL11.glRotatef(180, 0, 0, 1);
+		GL11.glScaled(0.6, 0.6, 0.6);
+
+		if (type == IItemRenderer.ItemRenderType.INVENTORY){
+			GL11.glScalef(11.8F, 11.8F, 11.8F);
+			GL11.glRotatef(180, 0, 1, 0);
+			GL11.glTranslated(-1.5, 0, -0.1);
+		}
+		else if (type == IItemRenderer.ItemRenderType.ENTITY){
+			GL11.glRotatef(90.5F, 0, 1, 0);
+			GL11.glTranslated(0.2, 0, -0.8);
+		}
 	}
 }
 

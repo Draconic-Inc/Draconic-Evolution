@@ -33,6 +33,7 @@ tile.draconicevolution:flowGateFluid.name=Fluid Gate
 tile.draconicevolution:reactorCore.name=Draconic Reactor Core
 tile.draconicevolution:reactorStabilizer.name=Reactor Stabilizer
 tile.draconicevolution:reactorEnergyInjector.name=Reactor Energy Injector
+tile.draconicevolution:chaosCrystal.name=Chaos Crystal
 
 tile.draconicevolution:energyCrystal0.name=Energy Relay
 tile.draconicevolution:energyCrystal1.name=Advanced Energy Relay
@@ -92,6 +93,18 @@ item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Isla
 item.draconicevolution:infoTablet.name=Draconic Evolution Information Tablet
 item.draconicevolution:wrench.name=Crystal Binder
 item.draconicevolution:dezilsMarshmallow.name=Dezil's Marshmallow
+item.draconicevolution:reactorCraftingPart.frame.name=Reactor Stabilizer Frame
+item.draconicevolution:reactorCraftingPart.rotorInner.name=Reactor Stabilizer Inner Rotor
+item.draconicevolution:reactorCraftingPart.rotorOuter.name=Reactor Stabilizer Outer Rotor
+item.draconicevolution:reactorCraftingPart.rotorAssembly.name=Reactor Stabilizer Rotor Assembly
+item.draconicevolution:reactorCraftingPart.stabilizerRing.name=Reactor Stabilizer Focus Ring
+item.draconicevolution:chaoticCore.name=Chaotic Core
+item.draconicevolution:chaosShard.name=Chaos Shard
+item.draconicevolution:chaosFragment0.name=Tiny Chaos Fragment
+item.draconicevolution:chaosFragment1.name=Small Chaos Fragment
+item.draconicevolution:chaosFragment2.name=Large Chaos Fragment
+
+
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -379,6 +392,8 @@ item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, tr
 
 //Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.DraconicEvolution.EnderDragon.name=Ender Dragon
+entity.DraconicEvolution.ChaosGuardian.name=Chaos Guardian
+
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
 key.placeItem=Place Item in world
@@ -387,6 +402,8 @@ key.toolConfig=Tool & Armor Config GUI
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian
 death.attack.damage.de.fusionExplode=%1$s was vaporized by a high energy fusion explosion
+death.attack.chaosBurst=%1$s was destroyed by dark energy
+death.attack.chaosImplosion=%1$s was pulled into an energy vortex and crushed into oblivion
 
 //Buttons ----------------------------------------------------------------------------------------------------------------------------------------
 button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
@@ -430,6 +447,9 @@ button.de.GogglesOfRevealing.name=Magical Sense
 button.de.reactorCharge.txt=Charge Reactor
 button.de.reactorStart.txt=Activate
 button.de.reactorStop.txt=Initiate Shutdown
+button.de.stats.txt=Stats
+button.de.statsShow.txt=Show
+button.de.statsHide.txt=Hide
 
 //Gui ----------------------------------------------------------------------------------------------------------------------------------------
 gui.de.flowGate.name=Flow Control
@@ -437,10 +457,16 @@ gui.de.flowGatePartialSignal.name=The actual flow will vary between the two give
 gui.de.flowGateCurrentFlow.name=Flow
 gui.de.flowGateRSLow.name=Redstone Signal Low
 gui.de.flowGateRSHigh.name=Redstone Signal High
+gui.de.flowGateOverridden.txt=Computer Override Enabled
 gui.de.increment.name=Increment value by
 gui.de.decrement.name=Decrement value by
 gui.de.ctrlAndShift.name=You can use Ctrl and Shift to change the increment amount.
 gui.de.pressOrScroll.name=Press Or Scroll
+gui.de.tempLoad.name=Temperature Load Factor
+gui.de.mass.name=Core Mass
+gui.de.genRate.name=Generation Rate
+gui.de.fieldDrainRate.name=Field Drain Rate
+gui.de.fuelConversion.name=Fuel Conversion Rate
 
 gui.de.insert.txt=Insert
 gui.de.extract.txt=Extract
@@ -460,7 +486,7 @@ gui.de.status4.txt=INVALID SETUP
 gui.de.internalStorage.txt=Internal Storage
 gui.de.itemStorage.txt=Item Storage
 
-manual.de.pigmenBloodRage.description=Don't let the pigmen see you eating pork you wont like what happens..
+
 
 //Potions ----------------------------------------------------------------------------------------------------------------------------------------
 potion.de.effect.txt=Effect

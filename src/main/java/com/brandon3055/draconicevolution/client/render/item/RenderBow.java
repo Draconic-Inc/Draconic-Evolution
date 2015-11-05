@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.client.render.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -18,16 +17,12 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
-
 import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 public class RenderBow implements IItemRenderer {
-	//private RenderManager renderManager;
 	private Minecraft mc;
-
-	//private TextureManager texturemanager;
 
 	public RenderBow() {
 		//this.renderManager = RenderManager.instance;
@@ -44,15 +39,12 @@ public class RenderBow implements IItemRenderer {
 	}
 
 	@Override
-//RenderHelpers I don't fully understand, I'd assume they are modifiers, but I've never looked into it.
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
 	{
 		return false;
 	}
 
 	@Override
-//This function decides what to do in rendering an item, whether it's first or third person.
-//Credit to SanAndreasP on minecraftforge forums for this code.
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
 		EntityLivingBase entity = (EntityLivingBase) data[1];
@@ -86,8 +78,7 @@ public class RenderBow implements IItemRenderer {
 		GL11.glPopMatrix(); // prevents GL Underflow errors
 	}
 
-//This actually renders an Icon to be worked with.
-//All of this code is directly pulled from ItemRenderer.class
+
 	private void renderItem(EntityLivingBase par1EntityLivingBase, ItemStack par2ItemStack, int par3)
 	{
 		RenderBlocks renderBlocksIr = new RenderBlocks();

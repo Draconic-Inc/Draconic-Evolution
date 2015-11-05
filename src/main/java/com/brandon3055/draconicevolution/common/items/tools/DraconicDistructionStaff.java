@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
@@ -19,10 +20,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class DraconicDistructionStaff extends MiningTool implements IInventoryTool {
+public class DraconicDistructionStaff extends MiningTool implements IInventoryTool, IRenderTweak {
 
 
 	public DraconicDistructionStaff() {
@@ -90,5 +93,26 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 		list.add("");
 		list.add(EnumChatFormatting.BLUE + "+" + ToolHandler.getBaseAttackDamage(stack) + " " + StatCollector.translateToLocal("info.de.attackDamage.txt"));
 		list.add(EnumChatFormatting.BLUE + "+30%" + " " + StatCollector.translateToLocal("info.de.bonusHealthDamage.txt"));
+	}
+
+	@Override
+	public void tweakRender(IItemRenderer.ItemRenderType type) {
+		GL11.glTranslated(0.77, 0.19, -0.15);
+		GL11.glRotatef(90, 1, 0, 0);
+		GL11.glRotatef(-35, 0, -1, 0);
+		GL11.glScaled(0.7, 0.7, 0.7);
+
+		if (type == IItemRenderer.ItemRenderType.INVENTORY){
+			GL11.glScalef(6F, 6F, 6F);
+			GL11.glRotatef(145, 0, 1, 0);
+			GL11.glTranslated(-1.7, 0, 1.8);
+		}
+		else if (type == IItemRenderer.ItemRenderType.ENTITY){
+			GL11.glRotatef(-34.5F, 0, 1, 0);
+			GL11.glTranslated(-1.1, 0, -0.2);
+		}
+		else if (type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
+			GL11.glTranslated(0, 0.4, 0);
+		}
 	}
 }

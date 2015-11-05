@@ -168,7 +168,6 @@ public class MinecraftForgeEventHandler {
 
 	@SubscribeEvent
 	public void onDropEvent(LivingDropsEvent event) {
-
 		if (!event.entity.worldObj.isRemote && ((event.entity instanceof EntityDragon) || (EntityList.getEntityString(event.entity) != null && !EntityList.getEntityString(event.entity).isEmpty() && EntityList.getEntityString(event.entity).equals("HardcoreEnderExpansion.Dragon"))))
 		{
 			EntityItem item = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(ModItems.dragonHeart));

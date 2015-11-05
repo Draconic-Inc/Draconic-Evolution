@@ -99,7 +99,7 @@ public class ParticleReactorBeam extends EntityFX {
 			float sizeOrigin = 0.5F;
 
 			int color = 0xFF2200;
-			int alpha = 200;
+			int alpha = (int)(200D * reactor.renderSpeed);
 
 
 			float speed = 20F;

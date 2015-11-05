@@ -47,7 +47,9 @@ public class ModBlocks {
 	public static BlockDE flowGate;
 	public static BlockDE reactorStabilizer;
 	public static BlockDE reactorEnergyInjector;
+	public static BlockDE chaosCrystal;
 	public static Block safetyFlame;
+	public static Block chaosShardAtmos = new ChaosShardAtmos().setBlockName(References.RESOURCESPREFIX+"chaosShardAtmos").setBlockTextureName(References.RESOURCESPREFIX+"transparency");
 
 	public static ItemStack resurrectionStone;
 
@@ -85,8 +87,11 @@ public class ModBlocks {
 		flowGate = new FlowGate();
 		reactorStabilizer = new ReactorStabilizer();
 		reactorEnergyInjector = new ReactorEnergyInjector();
+		chaosCrystal = new ChaosCrystal();
 
 		longRangeDislocator = new LongRangeDislocator();
+
+		if (isEnabled(chaosShardAtmos))GameRegistry.registerBlock(chaosShardAtmos, "chaosShardAtmos");
 		
 		if(DraconicEvolution.debug) {
 			testBlock = new TestBlock();

@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
@@ -67,7 +67,7 @@ public class SafetyMatch extends ItemDE {
 
 	@Override
 	public boolean showDurabilityBar(ItemStack stack) {
-		return stack.getItemDamage() != 1000;
+		return stack.getItemDamage() != 1000 && stack.getItemDamage() != 0;
 	}
 
 	@Override

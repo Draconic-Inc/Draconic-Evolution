@@ -31,6 +31,7 @@ public class ConfigHandler {
 	public static boolean enableHudDisplay;
 	public static boolean enableVersionChecker;
 	public static boolean dragonBreaksBlocks;
+	public static boolean sumonRitualAccelerated;
 	public static int[] dragonEggSpawnLocation;
 	public static int[] oreGenDimentionBlacklist;
 	private static String[] disabledBlocksItems;
@@ -41,6 +42,7 @@ public class ConfigHandler {
 	public static boolean speedLimitops;
 	public static boolean rapidlyDespawnMinedItems;
 	public static boolean useOldArmorModel;
+	public static boolean useOldD2DToolTextures;
 
 	//spawner
 	public static String[] spawnerList;
@@ -107,6 +109,8 @@ public class ConfigHandler {
 			speedLimitops = config.get(Configuration.CATEGORY_GENERAL, "Speed limit effects ops", false, "Dose the speed limit effect ops").getBoolean(false);
 			rapidlyDespawnMinedItems = config.get(Configuration.CATEGORY_GENERAL, "Rapidly despawn aoe mined items", false, "If true items dropped by a tool in aoe mode will despawn after 5 seconds").getBoolean(false);
 			useOldArmorModel = config.get(Configuration.CATEGORY_GENERAL, "Use old armor model", false, "If true the armor will use the original vanilla 2D model instead of the new 3D models").getBoolean(false);
+			sumonRitualAccelerated = config.get(Configuration.CATEGORY_GENERAL, "Fast Summon Ritual", false, "If true the resurrection ritual will be a lot faster").getBoolean(false);
+			useOldD2DToolTextures = config.get(Configuration.CATEGORY_GENERAL, "Use old 2D tool textures", false, "If true the 3D tool models will be replaced with standard 2D textures").getBoolean(false);
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);

@@ -27,8 +27,10 @@ import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.*;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorEnergyInjector;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
+import com.brandon3055.draconicevolution.common.utills.DragonChunkLoader;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -39,6 +41,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import li.cil.oc.api.machine.Callback;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -54,14 +57,7 @@ public class CommonProxy {
 		ModItems.init();
 		registerTileEntities();
 		initializeNetwork();
-
-		if (ModBlocks.isEnabled(ModBlocks.draconiumOre)) OreDictionary.registerOre("oreDraconium", ModBlocks.draconiumOre);
-		if (ModBlocks.isEnabled(ModBlocks.draconiumBlock)) OreDictionary.registerOre("blockDraconium", new ItemStack(ModBlocks.draconiumBlock));
-		if (ModBlocks.isEnabled(ModBlocks.draconicBlock)) OreDictionary.registerOre("blockDraconiumAwakened", new ItemStack(ModBlocks.draconicBlock));
-
-		if (ModItems.isEnabled(ModItems.draconiumIngot)) OreDictionary.registerOre("ingotDraconium", ModItems.draconiumIngot);
-		if (ModItems.isEnabled(ModItems.draconiumDust)) OreDictionary.registerOre("dustDraconium", ModItems.draconiumDust);
-		if (ModItems.isEnabled(ModItems.draconicIngot)) OreDictionary.registerOre("ingotDraconiumAwakened", ModItems.draconicIngot);
+		registerOres();
 
 		DraconicEvolution.reaperEnchant = new EnchantmentReaper(ConfigHandler.reaperEnchantID);
 //
@@ -100,6 +96,8 @@ public class CommonProxy {
 		DETab.initialize();
 		PotionHandler.init();
 		CCOCIntegration.init();
+		ModHelper.init();
+		DragonChunkLoader.init();
 
 		LogHelper.info("Finished Initialization");
 	}
@@ -160,6 +158,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileFluidGate.class, References.RESOURCESPREFIX + "TileFluidGate");
 		GameRegistry.registerTileEntity(TileReactorStabilizer.class, References.RESOURCESPREFIX + "TileReactorStabilizer");
 		GameRegistry.registerTileEntity(TileReactorEnergyInjector.class, References.RESOURCESPREFIX + "TileReactorEnergyInjector");
+		GameRegistry.registerTileEntity(TileChaosShard.class, References.RESOURCESPREFIX + "TileChaosShard");
 		if (DraconicEvolution.debug) {
 			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
@@ -181,6 +180,20 @@ public class CommonProxy {
 		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 0);
 	}
 
+	public void registerOres(){
+		if (ModBlocks.isEnabled(ModBlocks.draconiumOre)) OreDictionary.registerOre("oreDraconium", ModBlocks.draconiumOre);
+		if (ModBlocks.isEnabled(ModBlocks.draconiumBlock)) OreDictionary.registerOre("blockDraconium", new ItemStack(ModBlocks.draconiumBlock));
+		if (ModBlocks.isEnabled(ModBlocks.draconicBlock)) OreDictionary.registerOre("blockDraconiumAwakened", new ItemStack(ModBlocks.draconicBlock));
+
+		if (ModItems.isEnabled(ModItems.draconiumIngot)) OreDictionary.registerOre("ingotDraconium", ModItems.draconiumIngot);
+		if (ModItems.isEnabled(ModItems.draconiumDust)) OreDictionary.registerOre("dustDraconium", ModItems.draconiumDust);
+		if (ModItems.isEnabled(ModItems.draconicIngot)) OreDictionary.registerOre("ingotDraconiumAwakened", ModItems.draconicIngot);
+		if (ModItems.isEnabled(ModItems.nugget)) {
+			OreDictionary.registerOre("nuggetDraconium", ModItems.nuggetDraconium.copy());
+			OreDictionary.registerOre("nuggetDraconiumAwakened", ModItems.nuggetAwakened.copy());
+		}
+	}
+
 	@Callback
 	public void registerEntities() {
 		EntityRegistry.registerModEntity(EntityCustomDragon.class, "EnderDragon", 0, DraconicEvolution.instance, 256, 3, true);
@@ -192,6 +205,8 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityChaosGuardian.class, "ChaosGuardian", 6, DraconicEvolution.instance, 256, 1, true);
 		EntityRegistry.registerModEntity(EntityDragonProjectile.class, "DragonProjectile", 7, DraconicEvolution.instance, 256, 1, true);
 		EntityRegistry.registerModEntity(EntityChaosCrystal.class, "ChaosCrystal", 8, DraconicEvolution.instance, 256, 5, false);
+		EntityRegistry.registerModEntity(EntityChaosBolt.class, "ChaosBolt", 9, DraconicEvolution.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityChaosVortex.class, "EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
 	}
 
 	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render, int beamType)
@@ -212,5 +227,8 @@ public class CommonProxy {
 
 	}
 
+	public ISound playISound(ISound sound){
+		return null;
+	}
 
 }

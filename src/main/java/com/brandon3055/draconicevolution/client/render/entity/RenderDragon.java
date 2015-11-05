@@ -199,21 +199,23 @@ public class RenderDragon extends RenderLiving
 		return dragon instanceof EntityChaosGuardian ? enderDragonTextures2 : enderDragonTextures;
 	}
 
-	protected void renderEquippedItems(EntityDragon p_77029_1_, float p_77029_2_)
+	protected void renderEquippedItems(EntityDragon dragon, float p_77029_2_)
 	{
-		super.renderEquippedItems(p_77029_1_, p_77029_2_);
+		super.renderEquippedItems(dragon, p_77029_2_);
 		Tessellator tessellator = Tessellator.instance;
 
-		if (p_77029_1_.deathTicks > 0)
+		if (dragon.deathTicks > 0)
 		{
 			RenderHelper.disableStandardItemLighting();
-			float f1 = ((float)p_77029_1_.deathTicks + p_77029_2_) / 200.0F;
+			float f1 = ((float)dragon.deathTicks + p_77029_2_) / 200.0F;
 			float f2 = 0.0F;
 
 			if (f1 > 0.8F)
 			{
 				f2 = (f1 - 0.8F) / 0.2F;
 			}
+
+			if (dragon instanceof EntityChaosGuardian) f2 = 0;
 
 			Random random = new Random(1L);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);

@@ -28,7 +28,14 @@ public class CCAdapter implements IPeripheral {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		return peripheral.callMethod(peripheral.getMethodNames()[method], arguments);
+		try
+		{
+			return peripheral.callMethod(peripheral.getMethodNames()[method], arguments);
+		}
+		catch (Exception e)
+		{
+			throw new LuaException(e.getMessage());
+		}
 	}
 
 	@Override

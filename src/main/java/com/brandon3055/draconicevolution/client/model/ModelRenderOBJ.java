@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.client.model;
 
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
@@ -13,7 +15,9 @@ import org.lwjgl.opengl.GL11;
 public class ModelRenderOBJ extends ModelRenderer {
 	private IModelCustom model;
 	private ResourceLocation texture;
-
+	private int displayList;
+	private boolean compiled = false;
+	public float scale = 0;
 
 	public ModelRenderOBJ(ModelBase baseModel, ResourceLocation customModel, ResourceLocation texture) {
 		super(baseModel);
@@ -24,29 +28,18 @@ public class ModelRenderOBJ extends ModelRenderer {
 	@Override
 	public void render(float scale) {
 		if(!this.isHidden && this.showModel) {
-//			if(!this.compiled) {
-//				this.compileDisplayList(scale);
-//			}
+			if(!this.compiled) {
+				this.compileDisplayList(scale);
+			}
 
 			GL11.glTranslatef(this.offsetX, this.offsetY, this.offsetZ);
-			int i;
+
 			if(this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
 				if(this.rotationPointX == 0.0F && this.rotationPointY == 0.0F && this.rotationPointZ == 0.0F) {
-//					GL11.glCallList(this.displayList);
-//					if(this.childModels != null) {
-//						for(i = 0; i < this.childModels.size(); ++i) {
-//							((ModelRenderer)this.childModels.get(i)).render(scale);
-//						}
-//					}
+					GL11.glCallList(this.displayList);
 				} else {
 					GL11.glTranslatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
-//					GL11.glCallList(this.displayList);
-//					if(this.childModels != null) {
-//						for(i = 0; i < this.childModels.size(); ++i) {
-//							((ModelRenderer)this.childModels.get(i)).render(scale);
-//						}
-//					}
-
+					GL11.glCallList(this.displayList);
 					GL11.glTranslatef(-this.rotationPointX * scale, -this.rotationPointY * scale, -this.rotationPointZ * scale);
 				}
 			} else {
@@ -64,15 +57,7 @@ public class ModelRenderOBJ extends ModelRenderer {
 					GL11.glRotatef(this.rotateAngleX * 57.295776F, 1.0F, 0.0F, 0.0F);
 				}
 
-
-
-//				GL11.glCallList(this.displayList);
-//				if(this.childModels != null) {
-//					for(i = 0; i < this.childModels.size(); ++i) {
-//						((ModelRenderer)this.childModels.get(i)).render(scale);
-//					}
-//				}
-
+				GL11.glCallList(this.displayList);
 				GL11.glPopMatrix();
 			}
 
@@ -81,12 +66,31 @@ public class ModelRenderOBJ extends ModelRenderer {
 
 	}
 
+	private void compileDisplayList(float scale)
+	{
+		if (this.scale == 0) this.scale = scale;
+		scale = this.scale;
+		this.displayList = GLAllocation.generateDisplayLists(1);
+		GL11.glNewList(this.displayList, GL11.GL_COMPILE);
+
+		GL11.glPushMatrix();
+		ResourceHandler.bindTexture(texture);
+		//scale = 1F/15F;
+		GL11.glScalef(scale, scale, scale);
+		GL11.glRotatef(180, -1, 0, 1);
+		model.renderAll();
+		GL11.glPopMatrix();
+
+		GL11.glEndList();
+		this.compiled = true;
+	}
+
 	@Override
 	public void renderWithRotation(float scale) {
 		if(!this.isHidden && this.showModel) {
-//			if(!this.compiled) {
-//				this.compileDisplayList(scale);
-//			}
+			if(!this.compiled) {
+				this.compileDisplayList(scale);
+			}
 
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
@@ -102,7 +106,7 @@ public class ModelRenderOBJ extends ModelRenderer {
 				GL11.glRotatef(this.rotateAngleZ * 57.295776F, 0.0F, 0.0F, 1.0F);
 			}
 
-//			GL11.glCallList(this.displayList);
+			GL11.glCallList(this.displayList);
 			GL11.glPopMatrix();
 		}
 

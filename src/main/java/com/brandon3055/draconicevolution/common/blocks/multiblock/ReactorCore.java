@@ -22,6 +22,8 @@ public class ReactorCore extends BlockDE {
 	public ReactorCore(){
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName("reactorCore");
+		this.setHardness(100F);
+
 
 		ModBlocks.register(this);
 	}

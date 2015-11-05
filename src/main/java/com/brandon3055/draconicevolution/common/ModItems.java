@@ -70,6 +70,11 @@ public class ModItems {
 	public static ItemDE draconiumEnergyCore;
 	public static ItemDE draconiumFluxCapacitor;
 	public static ItemDE wrench;
+	public static ItemDE chaosShard;
+	public static ItemDE reactorStabilizerParts;
+	public static ItemDE chaoticCore;
+	public static ItemDE nugget;
+	public static ItemDE chaosFragment;
 
 	public static ItemDE teleporterMKI;
 	public static ItemDE teleporterMKII;
@@ -78,6 +83,15 @@ public class ModItems {
 	public static ItemStack draconicFluxCapacitor;
 	public static ItemStack wyvernEnergyCore;
 	public static ItemStack draconicEnergyCore;
+
+	public static ItemStack partStabFrame;
+	public static ItemStack partStabRotorInner;
+	public static ItemStack partStabRotorOuter;
+	public static ItemStack partStabRotorAssembly;
+	public static ItemStack partStabRing;
+
+	public static ItemStack nuggetDraconium;
+	public static ItemStack nuggetAwakened;
 
 	public static void init()
 	{	
@@ -124,6 +138,11 @@ public class ModItems {
 		draconiumEnergyCore = new DraconiumEnergyCore();
 		draconiumFluxCapacitor = new DraconiumFluxCapacitor();
 		wrench = new Wrench();
+		chaosShard = new ChaosShard();
+		reactorStabilizerParts = new ReactorStabiliserPart();
+		chaoticCore = new ChaoticCore();
+		nugget = new Nugget();
+		chaosFragment = new ChaosFragment();
 
 		dezilsMarshmallow = new DezilsMarshmallow();
 
@@ -132,6 +151,15 @@ public class ModItems {
 		draconicEnergyCore = new ItemStack(ModItems.draconiumEnergyCore, 1, 1);
 		wyvernFluxCapacitor = new ItemStack(ModItems.draconiumFluxCapacitor, 1, 0);
 		draconicFluxCapacitor = new ItemStack(ModItems.draconiumFluxCapacitor, 1, 1);
+
+		partStabFrame = new ItemStack(reactorStabilizerParts, 1, 0);
+		partStabRotorInner = new ItemStack(reactorStabilizerParts, 1, 1);
+		partStabRotorOuter = new ItemStack(reactorStabilizerParts, 1, 2);
+		partStabRotorAssembly = new ItemStack(reactorStabilizerParts, 1, 3);
+		partStabRing = new ItemStack(reactorStabilizerParts, 1, 4);
+
+		nuggetDraconium = new ItemStack(nugget, 1, 0);
+		nuggetAwakened = new ItemStack(nugget, 1, 1);
 	}
 
 	public static void register(final ItemDE item)

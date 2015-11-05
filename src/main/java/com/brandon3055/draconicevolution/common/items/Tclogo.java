@@ -9,7 +9,9 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -105,11 +107,11 @@ public class Tclogo extends ItemDE {
 
 	}
 
-	private static int lts = 0;
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+
 //		if ((int)System.currentTimeMillis() < lts + 10) return stack;
 //		else lts = (int)System.currentTimeMillis();
 		//world.playSound(player.posX, player.posY, player.posZ, "DraconicEvolution:fusionExplosion", 1F, 1F, false);
@@ -134,6 +136,33 @@ public class Tclogo extends ItemDE {
 
 		if (!world.isRemote)
 		{
+
+
+			EntityFallingBlock fallingBlock = new EntityFallingBlock(world, (int)player.posX + 0.5, (int)player.posY + 0.5, (int)player.posZ + 0.5, Blocks.obsidian, 0);
+			fallingBlock.field_145812_b = 2;
+
+			float motion = 0.005F;
+			//fallingBlock.motionX = (rand.nextFloat()-0.5F) * motion;
+			//fallingBlock.motionY = (rand.nextFloat()-0.5F) * motion;
+			//fallingBlock.motionZ = (rand.nextFloat()-0.5F) * motion;
+			world.spawnEntityInWorld(fallingBlock);
+
+
+//			try
+//			{
+//				for (Object o : AchievementList.achievementList)
+//				{
+//					LogHelper.info(o);
+//					if (o instanceof Achievement)LogHelper.info(((EntityPlayerMP) player).func_147099_x().hasAchievementUnlocked((Achievement) o));
+//					if (o instanceof Achievement)LogHelper.info(((EntityPlayerMP) player).func_147099_x().canUnlockAchievement((Achievement) o));
+//					LogHelper.info(o instanceof Achievement);
+//				}
+//				//LogHelper.info(FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList);
+//			}
+//			catch (Exception e) {e.printStackTrace();}
+
+			//LogHelper.info();
+
 
 //			LogHelper.info("#########################");
 //			Map<Integer, BlockCollection.BlockDat> blocks = new HashMap<Integer, BlockCollection.BlockDat>();

@@ -647,6 +647,67 @@
     ]
   },
   {
+    "name":"tile.draconicevolution:reactorStabilizer",
+    "nameL":"Draconic Reactor",
+    "images":[],
+    "content":
+    [
+      "Unimpressed by the limited energy generated through manipulation of the mundane reagents of your world, and knowing the potential within the realm of Chaos, you exercise your extensive knowledge of the Power Draconic to create what is possibly the most dangerously concentrated energy source in the history of the Redstone Flux.",
+      "Power does not come without sacrifice, and great power does not come without great sacrifice.  This level of power will test your metal as you begin to conceptualize the means by which to make your vision of such power into a reality. You see the potential for untold destruction should you fail, but at this point, the life of mere mortal beings and the single world they populate is far beneath your immediate concern.  Be sure to consider well the blueprints you have devised as even a simple oversight could cost you more than you bargain for.  But such is the risk taken by those who seek to become like the gods.",
+
+      "Basic Explanation of Reactor Mechanic:",
+      "When Draconium Fuel is combined with Chaos Element, the catalytic reaction generates vast amounts of heat and RF energy.  The Draconium Fuel then converts into Chaos Element by this process.  This in turn causes heat to increase.  A Containment Field is necessary of course to prevent the dissipation of this energy, and a system must be put into place to prevent the heat from the Core Reaction from overwhelming the Containment Field.  A secondary system is then applied for the purpose of maintaining the Reaction as well as the Containment Field in a self-sustaining relationship.  A tertiary system is then recommended for the regulation of energy input and output to stabilize Reactor usage.",
+      "To expand upon  this, what ultimately forms is a super-dense and super-heated sphere of molten plasma.  That’s right, a sphere in a cuboid dimension!  Or at least such a densely compacted and vast number of cuboid molecules around a core of Chaos Fusion that appears to converse into a spherical shaping of otherwise-amorphous plasma.  And while generating millions of RF energy, the Reactor self-contains that energy with little to no RF escape once balance has been reached between the heat of the Reactor Core and energy consumption required by the Containment Field.  This balance is best achieved at operation temperature of 8,000 degrees and can be sustained by using Flux Gates and by occasional removal of converted fuel.",
+      "Stabilizers are required for you to extract the energy stored within the Reactor Core. As the energy drains from the core, the reaction will again accelerate, creating an unusual self-sustaining system that doesn’t lose energy even as it loses energy.",
+      "It should be noted that you cannot merely pull as much energy as you like from the Core. The more energy you drain, the more intense the reaction will become.  This increases the load on the containment field. Escape will then increase, reducing Reactor efficiency.  At a certain point, the containment field will weaken to a point of destabilization of the co-constitutive balance between it and the reaction within the core.  This will rapidly overwhelm the containment field and result in a catastrophic explosion of immeasurable impact.",
+
+      "Structural Setup:",
+      "The Reactor consists of 6 main components. Four Reactor Stabilizers, the Reactor Core and an Energy Injector.  You will also need at least two Flux Gates to regulate the reactor.",
+      "Place the Reactor Core at the intended center of the structure.",
+      "Place the four Stabilizers in a ring around the Core, each facing inwards. The Stabilizers do not need to be in a horizontal ring. You may place one Stabilizer above and one below the Core, all set they can be up to 8 blocks away. They must also be far enough away that they will not be consumed by the expansion of the Core as you continue to energize it.  The Core will expand to twice its original size when at full temperature. So, if you intend for the Core to reach maximum capacity, the Stabilizers will need to be placed a minimum of 4 blocks away. To test for adequate Stabilizer linkage to the Core, simply right click the Core and the Reactor GUI will open. If all 4 stabilizers are setup correctly the Reactor status should show as \"OFFLINE\".  Otherwise, status will read \"INVALID SETUP\" and require you to make changes in Stabilizer placement before continuing.",
+      "Once you have Stabilizers and the Core positioned accurately, place the Energy Injector on one of the remaining two sides of the Reactor Core.",
+
+      "Component Functions:",
+      "[c]tile.draconicevolution:reactorCore:0",
+      "The Core itself is a seed from which the Reaction can grow. It contains a Chaos Shard/Element and a small amount of Awakened Draconium to catalyze the Reaction.",
+      "[c]tile.draconicevolution:reactorEnergyInjector:0",
+      "The Energy Injector conducts a portion of that energy to the Stabilizers in order to create and maintain the Containment Field. The Containment Field will grow as the Reactor Core increases in heat and power output.  All four Stabilizers are required to maintain the field, so if one is destroyed while the reactor is active the field will fail and you will deal with the ramifications of negligence. The Stabilizers are also used to extract energy from the Core, but since there is no limit on how much you can extract at any given time through the Stabilizers, you should connect them via a Flux Gate to regulate energy Input/Output.  Without such a precaution, the danger of Reactor explosion increases dramatically.",
+      "The Energy Injector itself also serves a dual purpose.  First, it is used to supply the power required to spark the initial Chaos Element catalytic reaction that starts the Reactor.  The Containment Field will accept an unlimited amount of energy - far more than it will need under normal operational conditions - so applying another Flux Gate to the Energy Injector will regulate the energy required to maintain the Containment Field and the Core as they both escalate to a point of equilibrium.  Although this system is designed to be self-sustaining, without backup or alternative power to maintain the Containment Field, you put yourself and your world at risk.",
+      "[c]tile.draconicevolution:reactorStabilizer:0",
+      "[c]item.draconicevolution:reactorCraftingPart:0",
+      "[c]item.draconicevolution:reactorCraftingPart:1",
+      "[c]item.draconicevolution:reactorCraftingPart:2",
+      "[c]item.draconicevolution:reactorCraftingPart:3",
+      "[c]item.draconicevolution:reactorCraftingPart:4",
+
+      "Reactor Operational Guide:",
+      "The first thing you will need to do is open the Reactor GUI and insert up to 8 Blocks worth of Awakened Draconium into the Fuel Slot.  This can be injected in the form of Blocks, Ingots or Nuggets.  The Extraction will remove as much material as is feasible, though some will always remain within the reactor due to constant consumption.",
+      "Once the Reaction is begun, all matter within the Fuel Slot must be consumed before the Reactor can be reloaded, so make certain you add only as much Fuel as you are willing to commit.  The Reactor must be shut down in order to refuel and/or remove excess converted Chaos Element.",
+      "Once the Fuel Slot is adequately loaded with the required material, press the \"Charge Reactor\" button.  As long as you are feeding energy into the Reactor via an Energy Injector, the reactor will begin and then continue to charge.  The Containment Field and Core energy saturation need to be charged to 50% for the Reactor to safely start up and go “ONLINE” for serving out RF.  Temperature of the Core will then rise until it reaches a maximum of 2,000 degrees. ",
+      "After the Reactor has sufficient charge and temperature, press the \"Activate\" button to activate the reactor. The Reactor status should change to “ONLINE” and the Reactor should be producing energy.",
+      "The temperature gauge shows the Reactor Core’s temperature. The hotter it gets, the more energy will be drained for use by the Containment Field.  For maximum efficiency it is best to try to  maintain a Reactor temperature of approximately 8,000 degrees.  If Core temperature passes 8,000 degrees, the Containment Field will begin suffering increased power drainage, which reduces overall RF output efficiency. For instance, at 10,000 degrees the field will be suffering 10 times the load it was under at 8,000 degrees. At 11,000 degrees, the field will be under about 20 times the load it was under at 8,000 degrees. Eventually it will become impossible for the Containment Field to receive enough power quickly enough and explosion becomes imminent.",
+      "The gauge measuring the Containment Field shows the strength of the Field.  Remember, the Containment Field will accept an unlimited amount of energy so you will never be able to get its strength to 100%.  How much power you feed the containment field is up to you.  As long as you keep the gauge out of the red, you are safely operating the Reactor.  Feeding it more power than it needs gives you more room for making errors that would otherwise result in Reactor failure.  Consider a Containment Field receiving more than necessary amounts of power as running in Safe Mode.",
+      "It is also important to remember that as you drain more power from the Reactor, the Core gets hotter and will subsequently require more energy to power the Containment Field.  So if you keep the field at its lowest “safe” power level, you will need to make adjustments whenever your power demands change.",
+      "If the Field strength drops to 0% the Reactor will blow up and vaporize everything within a 10 - 200 block radius (depending on how much Draconium Fuel was in the Reactor).",
+      "The Energy Saturation gauge shows how much RF charge is in the Core.  As this fills up, energy production and fuel consumption go down.  This also increases the temperature of the Reactor and therefore increases the load on the Containment Field. You get a much higher total energy output at a lower saturation level.  If you run at a higher saturation level you will get less RF/t but the efficiency of the Reactor will increase. For example, running at 80% saturation you can get up to twice the total RF output you would get by running at 20% saturation.  In short, Saturation levels drop, the Reaction in the Core intensifies, Core temperature rises, the Containment Field reaches a point where not enough energy is available to contain the expanding Core as the Core approaches critical mass.  Kaboom!  ",
+      "The Fuel Conversion gauge shows how much of the fuel has been converted to Chaos Element. As the amount of Chaos within the Reactor increases, the catalytic reaction accelerates. This increases the energy output of the Reactor and increases its efficiency. This also increases the temperature of the Reactor which in turn increases the load on the Containment Field.  You may need to make adjustments to Containment Field power as the Reactor burns through its fuel.",
+      "BE WARNED!!!",
+      "It is not known why, but if 100% of the draconium is converted into the Chaos Element, the reaction does not simply stop. Instead, Core temperature begins to rise uncontrollably.  If this happens, there is no way to shutdown the Reactor.  The temperature will just continue to rise until the Containment Field collapses and the Reactor explodes.  It is thus highly recommended that you shut the Reactor down to refuel with Awoken Draconium once the Chaos Conversion gauge reaches 80 to 90%. ",
+      "Within the Reactor GUI, when you press the Shutdown button, the Reactor will enter Shutdown mode.  In this mode the Reactor will stop outputting energy (FIRST MAKE CERTAIN you have a large backlog of energy stored, or an alternate power source at hand to maintain the Containment Field during this process), saturation will start to increase allowing the reaction to slow.  Temperature will drop.  Once the temperature drops below 2,000, the Reactor will shut down completely.  At this point you are able to safely remove the converted matter and add fresh Awoken Draconium fuel.  There will always be some fuel in the Reactor as the partial Ingot being consumed at the time of Shutdown cannot be extracted.",
+
+      "System Failure:",
+      "So, you might be thinking it would be wise to surround your Reactor with obsidian or some other extremely strong material in case of explosion. Well, don't bother!  If this thing blows it will have about the same result as a tiny star going nova in your Minecraft base. The shock wave will cut through almost everything.  This wave will pass through what it cannot destroy, and continue to demolish whatever lies within its event horizon. There is absolutely nothing that can stop it.  This is why it is integral to setup the Reactor in a separate outpost far away from your main base of operations. The blast radius is directly proportional to the amount of fuel in the reactor. It scales from 20 blocks with just one ingot of fuel to 200 blocks when the reactor is fully loaded with 8 blocks of fuel.",
+      "Redstone Integration:",
+      "By attaching a Redstone Comparator to one of the Stabilizers or to the Energy Injector(s), you can maintain a visual external readout of the four Stabilizer gauges shown in the Core GUI.  The strength of each Comparator will change from 0 to 15 depending on the measurement of its attached gauge. You can Shift-Right-Click the Stabilizer/Energy Injector to change which gauge is being read to the connected Comparator and also invert the Redstone signal.",
+
+      "Instability:",
+      "[Not-Yet Implemented] (This may or may not be implemented in the future. Keep an eye out for this as it may or may not affect your reactors if/when it is implemented)",
+      "Computercraft and Open Computers Integration:",
+      "Simply attach a Computer to one of the Stabilizers or Energy Injectors and you will have access to all of the reactor information as well as the ability to turn the Reactor on and off remotely.  The methods for implementing this are pretty self-explanatory.",
+      "You can also use one of these Computers to control the Flux Gates."
+    ]
+  },
+  {
     "name":"tile.draconicevolution:particleGenerator",
     "images":[],
     "content":
@@ -923,6 +984,18 @@
       "To place an item in the world simply look at a block with the item selected (as if you were about to place a block) and press the \"Place Item\" key (p by default).",
       "You can place items on the top bottom or sides of a block. You can left-click to rotate the item clockwise and shift left-click to rotate the item counter-clockwise.",
       "You can also shift right-click to rotate the item counter-clockwise in very small increments. Right-click to pick the item up."
+    ]
+  },
+  {
+    "name":"info.Computercraft and Open Computers",
+    "images":[],
+    "content":
+    [
+      "Several blocks can now be connected to computers.",
+      "Currently the blocks that can be connected to computers are",
+      "-Energy Storage Core (Via Energy Pylons)",
+      "-Draconic Reactor (Via Stabilizers or Injectors)",
+      "-Flux and Fluid Gates"
     ]
   }
 ]

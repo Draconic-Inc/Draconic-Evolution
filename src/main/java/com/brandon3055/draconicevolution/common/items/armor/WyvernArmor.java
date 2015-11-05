@@ -4,12 +4,14 @@ import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.model.ModelDraconicArmor;
+import com.brandon3055.draconicevolution.client.model.ModelWyvernArmorOBJ;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.*;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -272,10 +274,10 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 		if (ConfigHandler.useOldArmorModel) return super.getArmorModel(entityLiving, itemStack, armorSlot);
 
 		if (model == null) {
-			if (armorType == 0) model = new ModelDraconicArmor(1.0F, true, false, false, false, false);
-			else if (armorType == 1) model = new ModelDraconicArmor(1F, false, true, false, false, false);
-			else if (armorType == 2) model = new ModelDraconicArmor(1F, false, false, true, false, false);
-			else model = new ModelDraconicArmor(1F, false, false, false, true, false);
+			if (armorType == 0) model = new ModelWyvernArmorOBJ(1.0F, true, false, false, false);
+			else if (armorType == 1) model = new ModelWyvernArmorOBJ(1F, false, true, false, false);
+			else if (armorType == 2) model = new ModelWyvernArmorOBJ(1F, false, false, true, false);
+			else model = new ModelWyvernArmorOBJ(1F, false, false, false, true);
 
 			this.model.bipedHead.showModel = (armorType == 0);
 			this.model.bipedHeadwear.showModel = (armorType == 0);
@@ -285,6 +287,21 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 			this.model.bipedLeftLeg.showModel = (armorType == 2 || armorType == 3);
 			this.model.bipedRightLeg.showModel = (armorType == 2 || armorType == 3);
 		}
+
+//		if (model == null) {
+//			if (armorType == 0) model = new ModelDraconicArmor(1.0F, true, false, false, false, false);
+//			else if (armorType == 1) model = new ModelDraconicArmor(1F, false, true, false, false, false);
+//			else if (armorType == 2) model = new ModelDraconicArmor(1F, false, false, true, false, false);
+//			else model = new ModelDraconicArmor(1F, false, false, false, true, false);
+//
+//			this.model.bipedHead.showModel = (armorType == 0);
+//			this.model.bipedHeadwear.showModel = (armorType == 0);
+//			this.model.bipedBody.showModel = ((armorType == 1) || (armorType == 2));
+//			this.model.bipedLeftArm.showModel = (armorType == 1);
+//			this.model.bipedRightArm.showModel = (armorType == 1);
+//			this.model.bipedLeftLeg.showModel = (armorType == 2 || armorType == 3);
+//			this.model.bipedRightLeg.showModel = (armorType == 2 || armorType == 3);
+//		}
 
 		if (entityLiving == null) return model;
 

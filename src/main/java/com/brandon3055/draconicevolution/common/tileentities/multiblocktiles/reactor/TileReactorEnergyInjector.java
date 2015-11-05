@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -15,10 +16,13 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Brandon on 23/7/2015.
  */
-public class TileReactorEnergyInjector extends TileEntity implements IReactorPart, IEnergyReceiver{
+public class TileReactorEnergyInjector extends TileEntity implements IReactorPart, IEnergyReceiver, IDEPeripheral{
 
 	public float modelIllumination = 1F;
 	public int facingDirection = ForgeDirection.UP.ordinal();
@@ -44,8 +48,7 @@ public class TileReactorEnergyInjector extends TileEntity implements IReactorPar
 				rsCach = rs;
 				Utills.updateNeabourBlocks(worldObj, xCoord, yCoord, zCoord);
 			}
-		}
-	}
+		}}
 
 	public void onPlaced() {
 		checkForMaster();
@@ -178,5 +181,58 @@ public class TileReactorEnergyInjector extends TileEntity implements IReactorPar
 	@Override
 	public boolean canConnectEnergy(ForgeDirection from) {
 		return from == ForgeDirection.getOrientation(facingDirection).getOpposite();
+	}
+
+	@Override
+	public String getName() {
+		return "draconic_reactor";
+	}
+
+	@Override
+	public String[] getMethodNames() {
+		return new String[] {"getReactorInfo", "chargeReactor", "activateReactor", "stopReactor"};
+	}
+
+	@Override
+	public Object[] callMethod(String method, Object... args) {
+		if (!(getMaster().getTileEntity(worldObj) instanceof TileReactorCore)) return null;
+		TileReactorCore reactor = (TileReactorCore)getMaster().getTileEntity(worldObj);
+
+		if (args.length > 0) throw new IllegalArgumentException("This method dose not accept arguments");
+
+		if (method.equals("getReactorInfo")){
+			Map<Object, Object> map = new HashMap<Object, Object>();
+			map.put("temperature", Utills.round(reactor.reactionTemperature, 100));
+			map.put("fieldStrength", Utills.round(reactor.fieldCharge, 100));
+			map.put("maxFieldStrength", Utills.round(reactor.maxFieldCharge, 100));
+			map.put("energySaturation", reactor.energySaturation);
+			map.put("maxEnergySaturation", reactor.maxEnergySaturation);
+			map.put("fuelConversion", Utills.round((double)reactor.convertedFuel + reactor.conversionUnit, 1000));
+			map.put("maxFuelConversion", reactor.reactorFuel + reactor.convertedFuel);
+			map.put("generationRate", (int)reactor.generationRate);
+			map.put("fieldDrainRate", reactor.fieldDrain);
+			map.put("fuelConversionRateN", (int)Math.round(reactor.fuelUseRate * 1000000D));
+			map.put("status", reactor.reactorState == 0 ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
+			return new Object[]{ map };
+		}
+		else if (method.equals("chargeReactor")){
+			if (reactor.canCharge()) {
+				reactor.reactorState = TileReactorCore.STATE_START;
+				return new Object[] { true };
+			} else return new Object[] { false };
+		}
+		else if (method.equals("activateReactor")){
+			if (reactor.canStart()) {
+				reactor.reactorState = TileReactorCore.STATE_ONLINE;
+				return new Object[] { true };
+			} else return new Object[] { false };
+		}
+		else if (method.equals("stopReactor")){
+			if (reactor.canStop()) {
+				reactor.reactorState = TileReactorCore.STATE_STOP;
+				return new Object[] { true };
+			} else return new Object[] { false };
+		}
+		return new Object[] {};
 	}
 }
