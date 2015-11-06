@@ -27,15 +27,34 @@ public class CraftingHandler {
 		addOre(ModItems.draconicCore, "CSC", "SMS", "CSC", 'C', "ingotGold", 'S', ModItems.draconiumIngot, 'M', "gemDiamond");
 		add(ModItems.wyvernCore, "CSC", "SMS", "CSC", 'C', ModItems.draconiumIngot, 'S', ModItems.draconicCore, 'M', Items.nether_star);
 		addOre(ModItems.awakenedCore, "CSC", "SCS", "CSC", 'C', "ingotDraconiumAwakened", 'S', ModItems.wyvernCore);
+		addOre(ModItems.chaoticCore, "ACA", "CSC", "ACA", 'A', "ingotDraconiumAwakened", 'C', ModItems.awakenedCore, 'S', ModItems.chaosShard);
 		add(ModItems.wyvernEnergyCore, "CSC", "SMS", "CSC", 'C', ModItems.draconiumIngot, 'S', Blocks.redstone_block, 'M', ModItems.draconicCore);
 		addOre(ModItems.draconicEnergyCore, "CSC", "SMS", "CSC", 'C', "ingotDraconiumAwakened", 'S', ModItems.wyvernEnergyCore, 'M', ModItems.wyvernCore);
 		//addOre(ModItems.draconiumBlend, " D ", "DID", " D ", 'I', "ingotIron", 'D', ModItems.draconiumDust);
 
 		addShaplessOre(getStack(ModItems.draconicIngot, 9, 0), "blockDraconiumAwakened");
 		addShaplessOre(getStack(ModItems.draconiumIngot, 9, 0), "blockDraconium");
+		addShaplessOre(getStack(ModItems.nugget, 9, 0), "ingotDraconium");
+		addShaplessOre(getStack(ModItems.nugget, 9, 1), "ingotDraconiumAwakened");
+		addOre(ModItems.draconiumIngot, "III", "III", "III", 'I', "nuggetDraconium");
+		addOre(ModItems.draconicIngot, "III", "III", "III", 'I', "nuggetDraconiumAwakened");
+
+		add(getStack(ModItems.chaosFragment, 1, 1), "III", "III", "III", 'I', getStack(ModItems.chaosFragment, 1, 0));
+		add(getStack(ModItems.chaosFragment, 1, 2), "III", "III", "III", 'I', getStack(ModItems.chaosFragment, 1, 1));
+		add(ModItems.chaosShard, "III", "III", "III", 'I', getStack(ModItems.chaosFragment, 1, 2));
+
 		if (ModItems.isEnabled(ModItems.draconiumIngot) && ModItems.isEnabled(ModItems.draconiumBlend)) GameRegistry.addSmelting(ModItems.draconiumBlend, getStack(ModItems.draconiumIngot, 2, 0), 1.0f);
 		if (ModItems.isEnabled(ModItems.draconiumIngot) && ModItems.isEnabled(ModItems.draconiumDust)) GameRegistry.addSmelting(new ItemStack(ModItems.draconiumDust), getStack(ModItems.draconiumIngot, 1, 0), 1.0f);
 
+		//Reactor
+		addOre(ModItems.partStabFrame, "III", "CD ", "III", 'I', "ingotIron", 'C', ModItems.wyvernCore, 'D', "ingotDraconiumAwakened");
+		addOre(ModItems.partStabRotorInner, "   ", "III", "CWW", 'I', "ingotDraconiumAwakened", 'W', "ingotDraconium", 'C', ModItems.draconicCore);
+		addOre(ModItems.partStabRotorOuter, "   ", "III", "CWW", 'I', "gemDiamond", 'W', "ingotDraconium", 'C', ModItems.draconicCore);
+		addOre(ModItems.partStabRotorAssembly, " IO", "CWW", " IO", 'I', ModItems.partStabRotorInner, 'O', ModItems.partStabRotorOuter, 'C', ModItems.wyvernCore, 'W', "ingotDraconium");
+		addOre(ModItems.partStabRing, "GDG", "DCD", "GDG", 'G', "ingotGold", 'D', "gemDiamond", 'C', ModItems.wyvernCore);
+		addOre(ModBlocks.reactorStabilizer, "ICI", "FSR", "IEI", 'I', "ingotDraconiumAwakened", 'C', ModItems.chaoticCore, 'F', ModItems.partStabFrame, 'S', ModItems.partStabRotorAssembly, 'R', ModItems.partStabRing, 'E', ModItems.draconicEnergyCore);
+		addOre(ModBlocks.reactorEnergyInjector, "IRI", "RCR", "IRI", 'I', "ingotDraconium", 'R', ModItems.partStabRotorInner, 'C', ModItems.wyvernCore);
+		addOre(ModBlocks.reactorCore, " I ", "ISI", " I ", 'I', "ingotDraconiumAwakened", 'S', ModItems.chaosShard);
 
 	//Wyvern tools
 		add(ModItems.wyvernFluxCapacitor, "CSC", "SMS", "CSC", 'C', ModItems.draconiumIngot, 'S', ModItems.wyvernEnergyCore, 'M', ModItems.wyvernCore);

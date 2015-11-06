@@ -43,11 +43,13 @@ public class GUIManual extends GUIScrollingBase {
 	@Override
 	public void initGui() {
 		super.initGui();
-
+		pageList.clear();
+loadPages();//todo remove
 	}
 
 	public static final String GR_BACKGROUND = "BACKGROUND";
 	public static final String GR_INTRO = "INTRO";
+	public static final String GR_SUPPORTERS = "SUPPORTERS";
 	public static final String GR_INDEX = "INDEX";
 	public static final String GR_PAGE = "PAGE";
 
@@ -61,6 +63,9 @@ public class GUIManual extends GUIScrollingBase {
 		collection.addComponent(new ComponentTexturedRect(7, 100, 0, 0, 255, 255, ResourceHandler.getResource("textures/gui/images/debanner.png"), true)).setGroup(GR_INTRO).setName("BANNER");
 
 		collection.addComponent(new ComponentButton(75, 260, 100, 20, 0, this, StatCollector.translateToLocal("info.de.manual.indexButton.txt"), StatCollector.translateToLocal("info.de.manual.indexButtonTip.txt"))).setGroup(GR_INTRO);
+		//TODO Localize
+		collection.addComponent(new ComponentButton(75, 285, 100, 20, 2, this, StatCollector.translateToLocal("info.de.manual.contributors.txt"), StatCollector.translateToLocal("info.de.manual.contributorsButtonInfo.txt"))).setGroup(GR_INTRO);
+
 
 		for (int i = 0; i < pageList.size(); i++)
 		{
@@ -88,12 +93,12 @@ public class GUIManual extends GUIScrollingBase {
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 		if (collection.getComponent("BANNER") != null && collection.getComponent("BANNER").isEnabled()) fontRendererObj.drawSplitString(StatCollector.translateToLocal("info.de.manual.introTxt.txt"), posX + 20, posY + 190, 150, 0x000000);
-		if (collection.getComponent("BANNER") != null && collection.getComponent("BANNER").isEnabled()) {
-			GL11.glPushMatrix();
-			GL11.glScalef(0.8F, 0.8F, 0.8F);
-			fontRendererObj.drawSplitString("I am still in the process of adding documentation to this manual. There is also some fine tuning that i still need to do.", posX + 110, posY + 380, 280, 0xFF0000);
-			GL11.glPopMatrix();
-		}
+//		if (collection.getComponent("BANNER") != null && collection.getComponent("BANNER").isEnabled()) {
+//			GL11.glPushMatrix();
+//			GL11.glScalef(0.8F, 0.8F, 0.8F);
+//			fontRendererObj.drawSplitString("I am still in the process of adding documentation to this manual. There is also some fine tuning that i still need to do.", posX + 110, posY + 380, 280, 0xFF0000);
+//			GL11.glPopMatrix();
+//		}
 	}
 
 	@Override

@@ -2,7 +2,9 @@ package com.brandon3055.draconicevolution.common.entity;
 
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.tileentities.TileChaosShard;
 import com.brandon3055.draconicevolution.common.utills.DamageSourceChaos;
+import com.brandon3055.draconicevolution.common.utills.DragonChunkLoader;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -87,7 +89,6 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 	@Override
 	public void onLivingUpdate() {
-
 		//Set home position when spawned
 		if (!homeSet) {
 			homeX = (int) posX;
@@ -113,7 +114,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			f1 = MathHelper.cos(this.prevAnimTime * (float) Math.PI * 2.0F);
 
 			if (f1 <= -0.3F && f >= -0.3F) {
-				this.worldObj.playSound(this.posX, this.posY, this.posZ, "mob.enderdragon.wings", 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
+				if (deathTicks <= 0) this.worldObj.playSound(this.posX, this.posY, this.posZ, "mob.enderdragon.wings", 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
 			}
 		}
 
@@ -123,16 +124,26 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 		if (!worldObj.isRemote) {
 			dataWatcher.updateObject(20, connectedCrystalID);
 			updateTarget();
+
+			if (worldObj.getClosestPlayer(posX, posY, posZ, 500) == null && getDistance(homeX, homeY, homeZ) < 100) DragonChunkLoader.stopLoading(this);
+			else {
+				if (getHealth() > 0) DragonChunkLoader.updateLoaded(this);
+			}
+
+			if (deathTicks > 0) DragonChunkLoader.stopLoading(this);
+
 			customAIUpdate();
 			if (behaviour == EnumBehaviour.FIREBOMB && Utills.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) moveSpeedMultiplier = 0;
 		}
 
 		if (this.getHealth() <= 0.0F) {
+			behaviour = EnumBehaviour.DEAD;
 			f = (this.rand.nextFloat() - 0.5F) * 8.0F;
 			f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
 			f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
 			this.worldObj.spawnParticle("largeexplode", this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
-		} else {
+		}
+		{
 			this.updateDragonEnderCrystal();
 			f = 0.2F / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F + 1.0F);
 			f *= moveSpeedMultiplier == 0 ? 1 : moveSpeedMultiplier;
@@ -345,6 +356,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 	}
 
 	public void onCrystalTargeted(EntityPlayer player, boolean destroyed) {
+		if (behaviour == EnumBehaviour.DEAD) return;
 		target = player;
 		if (destroyed || behaviour == EnumBehaviour.LOW_HEALTH_STRATEGY)
 		{
@@ -361,7 +373,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			nextAttackTimer = 20;
 			attackTimer = 1000;
 		}
-		this.worldObj.playSoundEffect(player.posX, player.posY, player.posZ, "mob.enderdragon.growl", 20.0F, 0.8F + this.rand.nextFloat() * 0.3F);
+		if (deathTicks <= 0) this.worldObj.playSoundEffect(player.posX, player.posY, player.posZ, "mob.enderdragon.growl", 20.0F, 0.8F + this.rand.nextFloat() * 0.3F);
 	}
 
 	public void updateCrystals(){
@@ -376,7 +388,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 	private void customAIUpdate(){
 
-		if (getHealth() < getMaxHealth() * 0.2F) behaviour = EnumBehaviour.LOW_HEALTH_STRATEGY;
+		if (getHealth() > 0 && getHealth() < getMaxHealth() * 0.2F) behaviour = EnumBehaviour.LOW_HEALTH_STRATEGY;
 
 
 		switch (behaviour){
@@ -415,11 +427,18 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 				}
 
 				break;
-//todo Death event
+
 			case DEAD:
+				target = null;
+				targetX = homeX;
+				targetY = homeY;
+				targetZ = homeZ;
 				break;
 		}
 //ignitionChargeTimer = 10;
+
+		if (behaviour == EnumBehaviour.DEAD) return;
+
 		if (ignitionChargeTimer > 1 || (ignitionChargeTimer == 1 && ticksExisted % 20 == 0))ignitionChargeTimer--;
 		if (ignitionChargeTimer <= 0 && !worldObj.isRemote){
 			if ((ticksExisted - 19) % 20 == 0) ignitionChargeTimer = (behaviour == EnumBehaviour.LOW_HEALTH_STRATEGY ? 1000 : 2000) + rand.nextInt(600);
@@ -440,7 +459,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 	}
 
 	private void updateAttack(){
-		if (worldObj.isRemote || getHealth() <= 0) return;
+		if (worldObj.isRemote || behaviour == EnumBehaviour.DEAD) return;
 
 		if (behaviour == EnumBehaviour.FIREBOMB && Utills.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3){
 			if (target == null || ticksExisted % 100 == 0) setNewTarget();
@@ -583,13 +602,14 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 	};
 
 	private void selectNewAttack(){
+		if (behaviour == EnumBehaviour.DEAD) return;
 		if (behaviour == EnumBehaviour.LOW_HEALTH_STRATEGY) attackInProgress = ((WeightedAttack)WeightedRandom.getRandomItem(rand, weightedLowHealthAttaxks)).attack;
 		else if (behaviour != EnumBehaviour.FIREBOMB) attackInProgress = ((WeightedAttack)WeightedRandom.getRandomItem(rand, weightedAttacks)).attack;
 		else attackInProgress = ATTACK_ENERGY_CHASER;
 	}
 
 	private void selectNewBehaviour(){
-		if (worldObj.isRemote) return;
+		if (worldObj.isRemote || behaviour == EnumBehaviour.DEAD) return;
 		EnumBehaviour newBehaviour = behaviour;
 		while (newBehaviour == behaviour) newBehaviour = ((WeightedBehaviour)WeightedRandom.getRandomItem(rand, weightedBehaviours)).randomBehaviour;
 		behaviour = newBehaviour;
@@ -640,6 +660,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 	}
 
 	private void setNewTarget() {
+		if (behaviour == EnumBehaviour.DEAD) return;
 		this.forceNewTarget = false;
 
 
@@ -701,6 +722,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 	@Override
 	public boolean attackEntityFromPart(EntityDragonPart part, DamageSource damageSource, float dmg) {
+		if (behaviour == EnumBehaviour.DEAD) return false;
 		if (part != this.dragonPartHead)
 		{
 			dmg = dmg / 4.0F + 1.0F;
@@ -758,8 +780,9 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 //		this.targetZ = this.posZ - (double)(f3 * 5.0F) + (double)((this.rand.nextFloat() - 0.5F) * 2.0F);
 //		this.target = null;
 
-		if ((damageSource.getEntity() instanceof EntityPlayer || damageSource.isExplosion()) && healingChaosCrystal == null)
+		if ((damageSource.getEntity() instanceof EntityPlayer || damageSource.isExplosion()) && healingChaosCrystal == null)//tod reanable this
 		{
+		//	if (getHealth() > 1F)setHealth(1F);//tod and remove this!
 			this.func_82195_e(damageSource, dmg);
 		}
 
@@ -782,7 +805,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 		/**Will try to avoid players, will try to teleport players, will try to relight crystals*/
 		LOW_HEALTH_STRATEGY(2F),
 		/**will die...*/
-		DEAD(2F);
+		DEAD(0.5F);
 		public float dragonSpeed;
 		private EnumBehaviour(float dragonSpeed) {this.dragonSpeed = dragonSpeed;}
 
@@ -825,15 +848,34 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 //				homeZ = ConfigHandler.dragonEggSpawnLocation[2];
 //			}
 //		}
+		if (deathTicks == 0){
+
+			if (worldObj.getTileEntity(homeX, homeY, homeZ) instanceof TileChaosShard) {
+				((TileChaosShard) worldObj.getTileEntity(homeX, homeY, homeZ)).setDefeated();
+			}
+			else {
+				for (int x = homeX - 100; x < homeX + 100; x++){
+					for (int y = homeY - 100; y < homeX + 100; y++){
+						if (y < 0 || y > 255) continue;
+						for (int z = homeX - 100; z < homeX + 100; z++){
+							if (worldObj.getTileEntity(x, y, z) instanceof TileChaosShard) {
+								((TileChaosShard) worldObj.getTileEntity(x, y, z)).setDefeated();
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
 
 		++this.deathTicks;
 
-		if (worldObj.rand.nextInt(5) == 2)
-		{
-			EntityLightningBolt bolt = new EntityLightningBolt(worldObj, homeX, homeY + 1, homeZ);
-			bolt.ignoreFrustumCheck = true;
-			worldObj.addWeatherEffect(bolt);
-		}
+//		if (worldObj.rand.nextInt(5) == 2)
+//		{
+//			EntityLightningBolt bolt = new EntityLightningBolt(worldObj, homeX, homeY + 1, homeZ);
+//			bolt.ignoreFrustumCheck = true;
+//			worldObj.addWeatherEffect(bolt);
+//		}
 
 		if (this.deathTicks >= 180 && this.deathTicks <= 200) {
 			float f = (this.rand.nextFloat() - 0.5F) * 8.0F;
@@ -845,27 +887,31 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 		int i;
 		int j;
 
-		if (!this.worldObj.isRemote) {
-			if (this.deathTicks > 150 && this.deathTicks % 5 == 0) {
-				i = 1000;
-
-				while (i > 0) {
-					j = EntityXPOrb.getXPSplit(i);
-					i -= j;
-					this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
-				}
-			}
-
-			if (this.deathTicks == 1) {
-				this.worldObj.playBroadcastSound(1018, (int) this.posX, (int) this.posY, (int) this.posZ, 0);
-			}
+//		if (!this.worldObj.isRemote) {
+//			if (this.deathTicks > 150 && this.deathTicks % 5 == 0) {
+//				i = 1000;
+//
+//				while (i > 0) {
+//					j = EntityXPOrb.getXPSplit(i);
+//					i -= j;
+//					this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
+//				}
+//			}
+//
+//		}else
+		if (this.deathTicks == 1) {
+			this.worldObj.playSound(this.posX, this.posY, this.posZ, "mob.enderdragon.end", 50.0F, 1F, false);
+			//this.worldObj.playBroadcastSound(1018, (int) this.posX, (int) this.posY, (int) this.posZ, 0);
 		}
 
-		this.moveEntity(0.0D, 0.10000000149011612D, 0.0D);
-		this.renderYawOffset = this.rotationYaw += 20.0F;
+		if(getDistance(homeX, homeY, homeZ) < 20 && deathTicks % 2 == 0){
+			EntityLightningBolt bolt = new EntityLightningBolt(worldObj, homeX, homeY + 1, homeZ);
+			bolt.ignoreFrustumCheck = true;
+			worldObj.addWeatherEffect(bolt);
+		}
 
-		if (this.deathTicks == 200 && !this.worldObj.isRemote) {
-			i = 2000;
+		if (getDistance(homeX, homeY, homeZ) < 5 && !this.worldObj.isRemote) {
+			i = 200000;
 
 			while (i > 0) {
 				j = EntityXPOrb.getXPSplit(i);
@@ -873,7 +919,9 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 				this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
 			}
 
-			spawnEgg();
+			//spawnEgg();
+			updateCrystals();
+			for (EntityChaosCrystal crystal : crystals) crystal.setDeathTimer();
 			setDead();
 		}
 	}
@@ -925,6 +973,13 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 	private void updateDragonEnderCrystal() {
 		if (worldObj.isRemote) return;
+
+		if (getHealth() <= 0) {
+			healingChaosCrystal = null;
+			connectedCrystalID = -1;
+			return;
+		}
+
 		if (this.healingChaosCrystal != null) {
 			if (!healingChaosCrystal.isAlive()){
 				this.attackEntityFromPart(this.dragonPartHead, DamageSource.setExplosionSource(null), 10.0F);

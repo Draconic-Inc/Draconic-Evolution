@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -14,10 +15,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class DraconicAxe extends MiningTool implements IInventoryTool {//todo axe & fields
+public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTweak {//todo axe & fields
 
 	public DraconicAxe() {
 		super(ModItems.DRACONIUM_T1);
@@ -160,6 +163,25 @@ public class DraconicAxe extends MiningTool implements IInventoryTool {//todo ax
 					}
 				}
 			}
+		}
+	}
+
+	@Override
+	public void tweakRender(IItemRenderer.ItemRenderType type) {
+		GL11.glTranslated(0.34, 0.69, 0.1);
+		GL11.glRotatef(90, 1, 0, 0);
+		GL11.glRotatef(140, 0, -1, 0);
+		GL11.glRotatef(180, 0, 0, 1);
+		GL11.glScaled(0.7, 0.7, 0.7);
+
+		if (type == IItemRenderer.ItemRenderType.INVENTORY){
+			GL11.glScalef(11, 11, 11);
+			GL11.glRotatef(180, 0, 1, 0);
+			GL11.glTranslated(-1.3, 0, -0.45);
+		}
+		else if (type == IItemRenderer.ItemRenderType.ENTITY){
+			GL11.glRotatef(90.5F, 0, 1, 0);
+			GL11.glTranslated(0, 0, -0.9);
 		}
 	}
 

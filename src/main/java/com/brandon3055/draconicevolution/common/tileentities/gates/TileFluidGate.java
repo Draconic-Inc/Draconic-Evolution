@@ -5,7 +5,10 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 /**
  * Created by Brandon on 29/6/2015.
@@ -84,4 +87,10 @@ public class TileFluidGate extends TileGate implements IFluidHandler {
 		int b2 = shift ? ctrl ? 100 : 50 : ctrl ? 10 : 1;
 		return b1 + "/" + b2 + " MB/t";
 	}
+
+	@Override
+	public String getName() {
+		return "fluid_gate";
+	}
+
 }

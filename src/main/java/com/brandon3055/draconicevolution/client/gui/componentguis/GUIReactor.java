@@ -2,10 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.componentguis;
 
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentCollection;
-import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentTextureButton;
-import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentTexturedRect;
-import com.brandon3055.draconicevolution.client.gui.guicomponents.GUIBase;
+import com.brandon3055.draconicevolution.client.gui.guicomponents.*;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.ContainerReactor;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
@@ -25,6 +22,7 @@ import java.util.List;
 public class GUIReactor extends GUIBase {
 	private TileReactorCore reactor;
 	private ContainerReactor container;
+	private static boolean showStats = false;
 
 	public GUIReactor(EntityPlayer player, TileReactorCore reactor, ContainerReactor container) {
 		super(container, 248, 222);
@@ -39,6 +37,7 @@ public class GUIReactor extends GUIBase {
 		collection.addComponent(new ComponentTextureButton(14, 190, 18, 162, 18, 18, 0, this, "", StatCollector.translateToLocal("button.de.reactorCharge.txt"), ResourceHandler.getResource("textures/gui/Widgets.png"))).setName("CHARGE");
 		collection.addComponent(new ComponentTextureButton(14, 190, 18, 54, 18, 18, 1, this, "", StatCollector.translateToLocal("button.de.reactorStart.txt"), ResourceHandler.getResource("textures/gui/Widgets.png"))).setName("ACTIVATE");
 		collection.addComponent(new ComponentTextureButton(216, 190, 18, 108, 18, 18, 2, this, "", StatCollector.translateToLocal("button.de.reactorStop.txt"), ResourceHandler.getResource("textures/gui/Widgets.png"))).setName("DEACTIVATE");
+		collection.addComponent(new ComponentButton(9, 120, 43, 15, 3, this, StatCollector.translateToLocal("button.de.stats.txt"), StatCollector.translateToLocal("button.de.statsShow.txt"))).setName("STATS");
 		return collection;
 	}
 
@@ -83,24 +82,31 @@ public class GUIReactor extends GUIBase {
 		pixOffset = (int)(value * 108);
 		drawTexturedModalRect(223, 112 - pixOffset, 0, 222, 14, 5);
 
-		double fuelM2 = Math.round(((double)(reactor.reactorFuel + reactor.convertedFuel) + reactor.conversionUnit) / 1296D * 1000D) / 1000D;
-		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.coreMass.txt") + ": " + fuelM2 + "m³", 5, 130, 0);
+		GL11.glColor4f(1F, 1F, 1F, 1F);
+		if (!showStats)
+		{
+
+			GL11.glPushMatrix();
+			GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+			GL11.glTranslated(124, 71, 100);
+			double scale = 100 / (reactor.getCoreDiameter());
+			GL11.glScaled(scale, scale, scale);
+			GL11.glColor4f(1F, 1F, 1F, 1F);
+			GL11.glDisable(GL11.GL_CULL_FACE);
+
+			TileEntityRendererDispatcher.instance.renderTileEntityAt(reactor, -0.5D, -0.5D, -0.5D, 0.0F);
+
+			GL11.glPopAttrib();
+			GL11.glPopMatrix();
+		}else {
+			ResourceHandler.bindResource("textures/gui/Reactor.png");
+			for (int i = 1; i <= 10; i++) drawTexturedModalRect(63, i * 12, 0, 240, 122, 16);
+			drawStats();
+		}
+
 		String status = StatCollector.translateToLocal("gui.de.status.txt")+": " + (reactor.reactorState == 0 ? EnumChatFormatting.DARK_GRAY : reactor.reactorState == 1 ? EnumChatFormatting.RED : reactor.reactorState == 2 ? EnumChatFormatting.DARK_GREEN : EnumChatFormatting.RED) + StatCollector.translateToLocal("gui.de.status"+reactor.reactorState+".txt");
 		if (reactor.reactorState == 1 && reactor.canStart()) status = StatCollector.translateToLocal("gui.de.status.txt")+": " + EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal("gui.de.status1_5.txt");
-		fontRendererObj.drawString(status, xSize - 5 - fontRendererObj.getStringWidth(status), 130, 0);
-
-		GL11.glPushMatrix();
-		GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-		GL11.glTranslated(124, 71, 100);
-		double scale = 100 / (reactor.getCoreDiameter());
-		GL11.glScaled(scale, scale, scale);
-		GL11.glColor4f(1F, 1F, 1F, 1F);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(reactor, -0.5D, -0.5D, -0.5D, 0.0F);
-
-		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		if (!showStats) fontRendererObj.drawString(status, xSize - 5 - fontRendererObj.getStringWidth(status), 125, 0);
 	}
 
 	@Override
@@ -132,21 +138,49 @@ public class GUIReactor extends GUIBase {
 		}
 	}
 
+	private void drawStats(){
+		/*
+		* Values To Add
+		* -tempDrainFactor (Temperature load factor?)
+		* -mass
+		* -generation rate
+		* -field drain rate
+		* -fuel conversion rate
+		* */
+
+		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.tempLoad.name"), 55, 16, 0x0000FF);
+		fontRendererObj.drawString(""+reactor.tempDrainFactor, 60, 2 + 24, 0);
+		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.mass.name"), 55, 16 + 24, 0x0000FF);
+		fontRendererObj.drawString(Utills.round((reactor.reactorFuel + reactor.convertedFuel)/1296D, 100)+"m³", 60, 2 + 2 * 24, 0);
+		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.genRate.name"), 55, 16 + 2 * 24, 0x0000FF);
+		fontRendererObj.drawString(Utills.addCommas((int)reactor.generationRate)+"RF/t", 60, 2 + 3 * 24, 0);
+		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.fieldDrainRate.name"), 55, 16 + 3 * 24, 0x0000FF);
+		fontRendererObj.drawString(Utills.addCommas(reactor.fieldDrain)+"RF/t", 60, 2 + 4 * 24, 0);
+		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.fuelConversion.name"), 55, 16 + 4 * 24, 0x0000FF);
+		fontRendererObj.drawString(Utills.addCommas((int)Math.round(reactor.fuelUseRate * 1000000D)) + "nb/t", 60, 2 + 5 * 24, 0);
+
+	}
+
 	@Override
 	public void updateScreen() {
+
 		if (reactor.reactorState == TileReactorCore.STATE_INVALID || reactor.reactorState == TileReactorCore.STATE_OFFLINE || reactor.reactorState == TileReactorCore.STATE_STOP) collection.getComponent("DEACTIVATE").setEnabled(false);
 		else collection.getComponent("DEACTIVATE").setEnabled(true);
-		if ((reactor.reactorState == TileReactorCore.STATE_OFFLINE || (reactor.reactorState == TileReactorCore.STATE_STOP && !reactor.canStart())) && reactor.reactorFuel > 0) collection.getComponent("CHARGE").setEnabled(true);
+		if ((reactor.reactorState == TileReactorCore.STATE_OFFLINE || (reactor.reactorState == TileReactorCore.STATE_STOP && !reactor.canStart())) && reactor.canCharge()) collection.getComponent("CHARGE").setEnabled(true);
 		else collection.getComponent("CHARGE").setEnabled(false);
 		if ((reactor.reactorState == TileReactorCore.STATE_START || reactor.reactorState == TileReactorCore.STATE_STOP) && reactor.canStart()) collection.getComponent("ACTIVATE").setEnabled(true);
 		else collection.getComponent("ACTIVATE").setEnabled(false);
-
 		super.updateScreen();
 	}
 
 	@Override
 	public void buttonClicked(int id, int button) {
-		container.sendObjectToServer(null, 20, id);
 		super.buttonClicked(id, button);
+		if (id < 3) container.sendObjectToServer(null, 20, id);
+		else if (id == 3){
+			showStats = !showStats;
+			((ComponentButton)collection.getComponent("STATS")).hoverText = showStats ? StatCollector.translateToLocal("button.de.statsHide.txt") : StatCollector.translateToLocal("button.de.statsShow.txt");
+		}
+
 	}
 }

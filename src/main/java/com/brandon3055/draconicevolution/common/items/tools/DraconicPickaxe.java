@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -10,10 +11,12 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class DraconicPickaxe extends MiningTool implements IInventoryTool {
+public class DraconicPickaxe extends MiningTool implements IInventoryTool, IRenderTweak {
 
 
 	public DraconicPickaxe() {
@@ -49,6 +52,25 @@ public class DraconicPickaxe extends MiningTool implements IInventoryTool {
 	@Override
 	public boolean isEnchantValid(Enchantment enchant) {
 		return enchant.type == EnumEnchantmentType.digger;
+	}
+
+	@Override
+	public void tweakRender(IItemRenderer.ItemRenderType type) {
+		GL11.glTranslated(0.34, 0.69, 0.1);
+		GL11.glRotatef(90, 1, 0, 0);
+		GL11.glRotatef(140, 0, -1, 0);
+		GL11.glRotatef(180, 0, 0, 1);
+		GL11.glScaled(0.7, 0.7, 0.7);
+
+		if (type == IItemRenderer.ItemRenderType.INVENTORY){
+			GL11.glScalef(11.8F, 11.8F, 11.8F);
+			GL11.glRotatef(180, 0, 1, 0);
+			GL11.glTranslated(-1.2, 0, -0.35);
+		}
+		else if (type == IItemRenderer.ItemRenderType.ENTITY){
+			GL11.glRotatef(90.5F, 0, 1, 0);
+			GL11.glTranslated(0, 0, -0.9);
+		}
 	}
 
 

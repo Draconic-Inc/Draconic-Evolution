@@ -69,4 +69,9 @@ public class TileFluxGate extends TileGate implements IEnergyReceiver {
 		int b2 = shift ? ctrl ? 1000 : 100 : ctrl ? 1 : 10;
 		return b1 + "/" + b2 + " RF/t";
 	}
+
+	@Override
+	public String getName() {
+		return "flux_gate";
+	}
 }

@@ -43,7 +43,7 @@ public class LongRangeDislocator extends BlockDE {
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(final IIconRegister iconRegister)
 	{
-		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "teteporter_front");
+		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "teleporter_front");
 		blockIconTop = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_top_0");
 	}
 

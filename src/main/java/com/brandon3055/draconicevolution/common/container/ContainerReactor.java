@@ -28,7 +28,8 @@ public class ContainerReactor extends ContainerDataSync {
 
 		@Override
 		public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-			return itemstack != null && (itemstack.getItem() == ModItems.draconicIngot || itemstack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock));
+			return true;
+			//return itemstack != null && (itemstack.getItem() == ModItems.draconicIngot || itemstack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock));
 		}
 
 		@Override
@@ -38,8 +39,9 @@ public class ContainerReactor extends ContainerDataSync {
 
 		@Override
 		public void setInventorySlotContents(int i, ItemStack stack) {
-			if (i == 0 && stack != null && (stack.getItem() == ModItems.draconicIngot || stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock)))
+			if (i == 0 && stack != null && (stack.getItem() == ModItems.draconicIngot || stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock) || (stack.getItem() == ModItems.nugget && stack.getItemDamage() == 1)))
 			{
+				if (stack.getItem() == ModItems.nugget) reactor.reactorFuel += stack.stackSize * 16;
 				if (stack.getItem() == ModItems.draconicIngot) reactor.reactorFuel += stack.stackSize * 144;
 				if (stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock)) reactor.reactorFuel += stack.stackSize * 1296;
 				reactor.validateStructure();
@@ -51,12 +53,17 @@ public class ContainerReactor extends ContainerDataSync {
 	//Syncing		//todo sort out syncing
 	public int LTConversionUnit = -1;
 	public int LTReactionIntensity = -1;
-	public int LTMaxReactIntensity = -1;
-	public int LTFieldStrength = -1;
-	public int LTMaxFieldStrength = -1;
-	public int LTEnergySaturation = -1;
-	public int LTMaxEnergySaturation = -1;
-	public int LTFuelConversion = -1;
+//	public int LTMaxReactIntensity = -1;
+//	public int LTFieldStrength = -1;
+//	public int LTMaxFieldStrength = -1;
+//	public int LTEnergySaturation = -1;
+//	public int LTMaxEnergySaturation = -1;
+//	public int LTFuelConversion = -1;
+
+	public double LTTempDrainFactor = -1;
+	public double LTGenerationRate = -1;
+	public int LTFieldDrain = -1;
+	public double LTFuelUseRate = -1;
 	//#######
 
 	public ContainerReactor(EntityPlayer player, TileReactorCore reactor){
@@ -95,7 +102,8 @@ public class ContainerReactor extends ContainerDataSync {
 
 	@Override
 	public void detectAndSendChanges() { //todo check what values are being synced by the tile and remove them from here
-		if (reactor.conversionUnit != LTConversionUnit)					LTConversionUnit = 		(Integer) sendObjectToClient(null, 0, (int)(reactor.conversionUnit*100));
+
+		if (reactor.conversionUnit != LTConversionUnit)				LTConversionUnit = 		(Integer) sendObjectToClient(null, 0, (int)(reactor.conversionUnit*100));
 //		if ((int)reactor.reactionTemperature != LTReactionIntensity)LTReactionIntensity = 	(Integer) sendObjectToClient(null, 1, (int) reactor.reactionTemperature);
 //		if ((int)reactor.maxReactTemperature != LTMaxReactIntensity)LTMaxReactIntensity = 	(Integer) sendObjectToClient(null, 2, (int) reactor.maxReactTemperature);
 //		if ((int)reactor.fieldCharge != LTFieldStrength) 			LTFieldStrength = 		(Integer) sendObjectToClient(null, 3, (int) reactor.fieldCharge);
@@ -103,6 +111,11 @@ public class ContainerReactor extends ContainerDataSync {
 //		if (reactor.energySaturation != LTEnergySaturation) 		LTEnergySaturation = 	(Integer) sendObjectToClient(null, 4, reactor.energySaturation);
 //		if (reactor.maxEnergySaturation != LTMaxEnergySaturation)	LTMaxEnergySaturation = (Integer) sendObjectToClient(null, 5, reactor.maxEnergySaturation);
 //		if (reactor.convertedFuel != LTFuelConversion) 				LTFuelConversion = 		(Integer) sendObjectToClient(null, 6, reactor.convertedFuel);
+		/*if (reactor.tempDrainFactor != LTTempDrainFactor)			LTTempDrainFactor =		(Integer) */sendObjectToClient(null, 8, (int)(reactor.tempDrainFactor*1000D));
+		if (reactor.generationRate != LTGenerationRate)				LTGenerationRate =		(Integer) sendObjectToClient(null, 9, (int)(reactor.generationRate));
+		if (reactor.fieldDrain != LTFieldDrain)						LTFieldDrain =			(Integer) sendObjectToClient(null, 10, reactor.fieldDrain);
+		/*if (reactor.fuelUseRate != LTFuelUseRate)					LTFuelUseRate =			(Integer) */sendObjectToClient(null, 11, (int)(reactor.fuelUseRate*1000000D));
+
 
 		super.detectAndSendChanges();
 	}
@@ -117,6 +130,10 @@ public class ContainerReactor extends ContainerDataSync {
 //		else if (index == 5) reactor.maxEnergySaturation = value;
 //		else if (index == 6) reactor.convertedFuel = value;
 //		else if (index == 7) reactor.maxFieldCharge = value;
+		else if (index == 8) reactor.tempDrainFactor = value/1000D;
+		else if (index == 9) reactor.generationRate = value;
+		else if (index == 10) reactor.fieldDrain = value;
+		else if (index == 11) reactor.fuelUseRate = value/1000000D;
 		if (index == 20){
 			reactor.processButtonPress(value);
 		}
@@ -136,6 +153,30 @@ public class ContainerReactor extends ContainerDataSync {
 				int i2 = Math.min(64, i);
 				ioSlots.getStorage()[1] = new ItemStack(ModItems.draconicIngot, i2);
 				reactor.reactorFuel -= i2 * 144;
+			}
+			else if (reactor.reactorFuel >= 16){
+				int i = reactor.reactorFuel / 16;
+				int i2 = Math.min(64, i);
+				ioSlots.getStorage()[1] = new ItemStack(ModItems.nugget, i2, 1);
+				reactor.reactorFuel -= i2 * 16;
+			}
+			else if (reactor.convertedFuel / 144 >= 64){
+				int i = reactor.convertedFuel / 1296;
+				int i2 = Math.min(64, i);
+				ioSlots.getStorage()[1] = new ItemStack(ModItems.chaosFragment, i2, 2);
+				reactor.convertedFuel -= i2 * 1296;
+			}
+			else if (reactor.convertedFuel >= 144){
+				int i = reactor.convertedFuel / 144;
+				int i2 = Math.min(64, i);
+				ioSlots.getStorage()[1] = new ItemStack(ModItems.chaosFragment, i2, 1);
+				reactor.convertedFuel -= i2 * 144;
+			}
+			else if (reactor.convertedFuel >= 16){
+				int i = reactor.convertedFuel / 16;
+				int i2 = Math.min(64, i);
+				ioSlots.getStorage()[1] = new ItemStack(ModItems.chaosFragment, i2, 0);
+				reactor.convertedFuel -= i2 * 16;
 			}
 
 		}
@@ -159,8 +200,11 @@ public class ContainerReactor extends ContainerDataSync {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
 			if (stack == null) return false;
+			else if (stack.getItem() == ModItems.nugget && stack.getItemDamage() == 1) numberAllowed = (10368 - (reactor.reactorFuel + reactor.convertedFuel)) / 16;
 			else if (stack.getItem() == ModItems.draconicIngot) numberAllowed = (10368 - (reactor.reactorFuel + reactor.convertedFuel)) / 144;
 			else if (stack.getItem() == Item.getItemFromBlock(ModBlocks.draconicBlock)) numberAllowed = (10368 - (reactor.reactorFuel + reactor.convertedFuel)) / 1296;
+			else return false;
+
 			return numberAllowed > 0;
 		}
 

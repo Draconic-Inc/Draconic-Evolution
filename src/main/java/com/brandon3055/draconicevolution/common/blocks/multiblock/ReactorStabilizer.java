@@ -22,10 +22,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by Brandon on 5/7/2015.
  */
-public class ReactorStabilizer extends BlockDE{
+public class ReactorStabilizer extends BlockDE {
 	public ReactorStabilizer() {
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName("reactorStabilizer");
+		this.setResistance(10000F);
 
 		ModBlocks.register(this);
 	}

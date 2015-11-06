@@ -1,9 +1,13 @@
 package com.brandon3055.draconicevolution.common.entity;
 
+import com.brandon3055.draconicevolution.common.ModBlocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -24,6 +28,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
 	public float deathAnimation = 1F;
 	public int shieldTime = 0;
 	public EntityChaosGuardian guardian;
+	private int timeTillDeath = -1;
 
 	public EntityChaosCrystal(World p_i1698_1_) {
 		super(p_i1698_1_);
@@ -70,12 +75,42 @@ public class EntityChaosCrystal extends EntityLivingBase {
 			int j = MathHelper.floor_double(this.posY);
 			int k = MathHelper.floor_double(this.posZ);
 
-			if (this.worldObj.provider instanceof WorldProviderEnd && this.worldObj.getBlock(i, j, k) != Blocks.fire)
-			{
-				this.worldObj.setBlock(i, j, k, Blocks.fire);
-			}
+			if (this.worldObj.provider instanceof WorldProviderEnd && this.worldObj.getBlock(i, j, k) != Blocks.fire) this.worldObj.setBlock(i, j, k, Blocks.fire);
+
 		}else if (deathAnimation > 0) deathAnimation -= 0.1F;
 
+		if (guardian != null && guardian.isDead) setDeathTimer();
+		if (timeTillDeath > 0) timeTillDeath--;
+		if (timeTillDeath == 0 && !worldObj.isRemote){
+			worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, posX, posY, posZ));
+			worldObj.createExplosion(this, posX, posY+2, posZ, 20, true);
+
+			for (int x = (int)posX - 5; x <= (int)posX + 5; x++){
+				for (int y = (int)posY - 25; y <= (int)posY + 5; y++){
+					for (int z = (int)posZ - 5; z <= (int)posZ + 5; z++){
+						Block block = worldObj.getBlock(x, y, z);
+
+						if (block == Blocks.obsidian || block == ModBlocks.infusedObsidian){
+							EntityFallingBlock fallingBlock = new EntityFallingBlock(worldObj, x, y, z, block);
+							fallingBlock.field_145812_b = 2;
+							fallingBlock.field_145813_c = false;
+							float motion = 2F;
+							fallingBlock.motionX = (rand.nextFloat()-0.5F) * motion;
+							fallingBlock.motionY = (rand.nextFloat()-0.5F) * motion;
+							fallingBlock.motionZ = (rand.nextFloat()-0.5F) * motion;
+							worldObj.setBlockToAir(x, y, z);
+							worldObj.spawnEntityInWorld(fallingBlock);
+						}
+					}
+				}
+			}
+			this.setDead();
+		}
+	}
+
+	public void setDeathTimer(){
+		if (timeTillDeath > 0) return;
+		timeTillDeath = rand.nextInt(400);
 	}
 
 	@Override
@@ -125,7 +160,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
 		if (guardian == null) {
 			@SuppressWarnings("unchecked") List<EntityChaosGuardian> list = worldObj.getEntitiesWithinAABB(EntityChaosGuardian.class, AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(512, 512, 512));
 			if (list.size() > 0) guardian = list.get(0);
-			if (guardian != null && !guardian.crystals.contains(this)) {
+			if (guardian != null && guardian.crystals != null && !guardian.crystals.contains(this)) {
 				guardian.crystals.add(this);
 				guardian.updateCrystals();
 			}

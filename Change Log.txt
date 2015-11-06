@@ -1,7 +1,23 @@
+######## 1.0.2-Snapshot 5 ########
+-fixed accidentally implemented a class from Computer Craft... oops.  
+-added some finishing touches to the chaos islands. 
+
 ######## 1.0.2-Snapshot 4 ########
 -crystal binder now only rotates blocks when set to the mode change function.
 -added config option to switch back to the old 2D armor model.
 -infused obsidian recipe now makes 4 infused obsidian as opposed to 1.
+-fixed crash when right clicking energy core.
+-rewrote chaos island and chaos guardian.
+-added CC and OC support to reactor, flow gates and energy core.
+-re implemented the ability to disable item lore.
+-fixed conflict with draconic helm and tcon cleaver mining fateige.
+-added draconium and awakened draconium nuggets.
+-added Chaos Crystal.
+-added Chaos Shard and Chaos Fragments.
+-semi finished draconic reactor (May tweak the balance a little)
+-added config option to speed up the resurrection ritual. 
+-disabled console spam for invalid item lore.
+-dragon and guardian death sound is nolonger server wide.
 
 ######## 1.0.2-Snapshot 3 ########
 -fixed server crash

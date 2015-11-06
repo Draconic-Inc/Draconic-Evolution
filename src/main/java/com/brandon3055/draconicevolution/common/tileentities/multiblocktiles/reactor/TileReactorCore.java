@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.ReactorSound;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
@@ -61,6 +62,9 @@ public class TileReactorCore extends TileObjectSync {
 	public int energySaturation = 0;
 	public int maxEnergySaturation = 0;
 
+	@SideOnly(Side.CLIENT)
+	private ReactorSound reactorSound;
+
 	//#######################
 
 	//TODO DONT FORGET TO ACTUALLY FINISH ALL THESE THINGS!!!!
@@ -73,9 +77,9 @@ public class TileReactorCore extends TileObjectSync {
 	//-GUI info (maby speed up gui sync via the container)
 	//-GUI warning red bars
 	//-Maby get around to setting the angle of the stabiliser elements
-	//-SOUND!!!!!
-	//-CC Integration
-	//-Redstone
+//Check				//-SOUND!!!!!
+//Check				//-CC Integration
+//Check				//-Redstone
 	//-Add reactor and gates to tablet
 
 
@@ -85,6 +89,8 @@ public class TileReactorCore extends TileObjectSync {
 	public void updateEntity() {
 		tick++;
 		if (worldObj.isRemote) {
+			updateSound();
+
 			renderSpeed = (float)Math.min((reactionTemperature-20) / 2000D, 1D);
 			stabilizerRender = (float)Math.min(fieldCharge / (maxFieldCharge * 0.1D), 1D);
 			renderRotation += renderSpeed;
@@ -112,14 +118,17 @@ public class TileReactorCore extends TileObjectSync {
 		detectAndSendChanges();
 	}
 
+	@SideOnly(Side.CLIENT)
+	private void updateSound(){if (reactorSound == null) reactorSound = (ReactorSound)DraconicEvolution.proxy.playISound(new ReactorSound(this));}
+
 	private void checkPlayerCollision(){
 		EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
 		double distance = Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
 		if (distance < (getCoreDiameter()/2) + 0.5){
 			double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter()/2) + 0.5));
-			double offsetX = player.posX - xCoord;
-			double offsetY = player.posY - yCoord;
-			double offsetZ = player.posZ - zCoord;
+			double offsetX = player.posX - xCoord + 0.5;
+			double offsetY = player.posY - yCoord + 0.5;
+			double offsetZ = player.posZ - zCoord + 0.5;
 			double m = 1D * dMod;
 			player.addVelocity(offsetX*m, offsetY*m, offsetZ*m);
 		}
@@ -145,6 +154,12 @@ public class TileReactorCore extends TileObjectSync {
 
 
 	private boolean hasExploded = false;
+
+	public double tempDrainFactor;
+	public double generationRate;
+	public int fieldDrain;
+	public double fuelUseRate;
+
 	private void runTick(){
 		//Inverted core saturation (if multiplied by 100 this creates infinite numbers which breaks the code)
 		double saturation = ((double)energySaturation / (double)maxEnergySaturation);
@@ -176,15 +191,16 @@ public class TileReactorCore extends TileObjectSync {
 		//======================
 
 		//Energy Calculation
-		int baseMaxRFt = (int)((maxEnergySaturation / 1000D) * ConfigHandler.reactorOutputMultiplier);
+		int baseMaxRFt = (int)((maxEnergySaturation / 1000D) * ConfigHandler.reactorOutputMultiplier * 1.5D);
 		int maxRFt = (int)(baseMaxRFt * (1D+(conversion*2)));
-		energySaturation += (1D - saturation) * maxRFt;
+		generationRate = (1D - saturation) * maxRFt;
+		energySaturation += generationRate;
 
 		//LogHelper.info((1D - saturation) * maxRFt);
 		//======================
 
 		//When temp < 1000 power drain is 0, when temp > 2000 power drain is 1, when temp > 8000 power drain increases exponentially
-		double tempDrainFactor = reactionTemperature > 8000 ? 1 + ((reactionTemperature-8000) * (reactionTemperature-8000) * 0.0000025) : reactionTemperature > 2000 ? 1 : reactionTemperature > 1000 ? (reactionTemperature-1000)/1000 : 0;
+		tempDrainFactor = reactionTemperature > 8000 ? 1 + ((reactionTemperature-8000) * (reactionTemperature-8000) * 0.0000025) : reactionTemperature > 2000 ? 1 : reactionTemperature > 1000 ? (reactionTemperature-1000)/1000 : 0;
 		//todo add to guiInfo
 		//-temp drain factor
 		//-mass
@@ -192,14 +208,14 @@ public class TileReactorCore extends TileObjectSync {
 		//-field drain
 
 		//Field Drain Calculation
-		int fieldDrain = (int)Math.min(tempDrainFactor * (1D-saturation) * (baseMaxRFt / 10.923556), (double) Integer.MAX_VALUE); //<(baseMaxRFt/make smaller to increase field power drain)
+		fieldDrain = (int)Math.min(tempDrainFactor * (1D-saturation) * (baseMaxRFt / 10.923556), (double) Integer.MAX_VALUE); //<(baseMaxRFt/make smaller to increase field power drain)
 //		LogHelper.info(fieldDrain+" "+tempDrainFactor+" "+(1D-saturation)+" "+tempDrainFactor * (1D-saturation) * (baseMaxRFt/10.923556));
 		fieldCharge -= fieldDrain;
 		//======================
 
 		//Calculate Fuel Usage
-		double useRate = tempDrainFactor * (1D-saturation) * (0.001 * ConfigHandler.reactorFuelUsageMultiplier); //<Last number is base fuel usage rate
-		conversionUnit += useRate;
+		fuelUseRate = tempDrainFactor * (1D-saturation) * (0.001 * ConfigHandler.reactorFuelUsageMultiplier); //<Last number is base fuel usage rate
+		conversionUnit += fuelUseRate;
 		if (conversionUnit >= 1 && reactorFuel > 0){
 			conversionUnit--;
 			reactorFuel--;
@@ -208,15 +224,11 @@ public class TileReactorCore extends TileObjectSync {
 
 		//====================
 
-
 		//Make BOOM!!!
 		if ((fieldCharge <= 0) && !hasExploded) {
 			hasExploded = true;
 			goBoom();
 		}
-
-
-
 		//===========
 	}
 
@@ -230,6 +242,7 @@ public class TileReactorCore extends TileObjectSync {
 			ProcessHandler.addProcess(new ReactorExplosion(worldObj, xCoord, yCoord, zCoord, power));
 			sendObjectToClient(References.INT_ID, 100, (int) (power * 10F), new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 512));
 		}
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	}
 
 
@@ -347,14 +360,24 @@ public class TileReactorCore extends TileObjectSync {
 
 	public boolean canStart(){
 		validateStructure();
-		return reactionTemperature >= 2000 && fieldCharge >= (maxFieldCharge / 2) && energySaturation >= (maxEnergySaturation / 2) && isStructureValid;
+		return reactionTemperature >= 2000 && fieldCharge >= (maxFieldCharge / 2) && energySaturation >= (maxEnergySaturation / 2) && isStructureValid && convertedFuel + reactorFuel + conversionUnit >= 144;
 	}
 
-	public void processButtonPress(int button){
+	public boolean canCharge() {
 		validateStructure();
-		if (button == 0 && reactorState != STATE_ONLINE && isStructureValid) reactorState = STATE_START;
-		else if (button == 1 && isStructureValid) reactorState = STATE_ONLINE;
-		else if (button == 2 && reactorState != STATE_OFFLINE) reactorState = STATE_STOP;
+		return reactorState != STATE_ONLINE && isStructureValid && convertedFuel + reactorFuel + conversionUnit >= 144;
+	}
+
+	public boolean canStop(){
+		validateStructure();
+		return reactorState != STATE_OFFLINE && isStructureValid;
+	}
+
+
+	public void processButtonPress(int button){
+		if (button == 0 && canCharge()) reactorState = STATE_START;
+		else if (button == 1 && canStart()) reactorState = STATE_ONLINE;
+		else if (button == 2 && canStop()) reactorState = STATE_STOP;
 	}
 
 	public double getCoreDiameter(){//todo adjust so the core dose not expand before 1000>2000c

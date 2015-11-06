@@ -95,7 +95,7 @@ public class ReactorEnergyInjector extends BlockDE {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		IReactorPart tile = world.getTileEntity(x, y, z) instanceof IReactorPart ? (IReactorPart)world.getTileEntity(x, y, z) : null;
-		if (tile != null) {
+		if (tile != null && player.isSneaking()) {
 			tile.changeRedstoneMode();
 			if(!world.isRemote) player.addChatComponentMessage(new ChatComponentText(tile.getRedstoneModeString()));
 			return true;

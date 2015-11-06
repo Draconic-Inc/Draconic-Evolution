@@ -29,11 +29,11 @@ public class DEManagedPeripheral extends ManagedEnvironment implements ManagedPe
 
 	@Override
 	public String preferredName() {
-		return "draconic_reactor";
+		return peripheral.getName();
 	}
 
 	@Override
 	public int priority() {
-		return 1;
+		return 10;
 	}
 }

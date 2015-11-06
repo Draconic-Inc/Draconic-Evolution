@@ -7,14 +7,11 @@ import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
+import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.client.render.block.*;
-import com.brandon3055.draconicevolution.client.render.entity.RenderChaosCrystal;
-import com.brandon3055.draconicevolution.client.render.entity.RenderDragon;
-import com.brandon3055.draconicevolution.client.render.entity.RenderDragonHeart;
-import com.brandon3055.draconicevolution.client.render.entity.RenderDragonProjectile;
-import com.brandon3055.draconicevolution.client.render.item.RenderArmor;
-import com.brandon3055.draconicevolution.client.render.item.RenderBow;
-import com.brandon3055.draconicevolution.client.render.item.RenderMobSoul;
+import com.brandon3055.draconicevolution.client.render.entity.*;
+import com.brandon3055.draconicevolution.client.render.item.*;
+import com.brandon3055.draconicevolution.client.render.item.RenderTool;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
@@ -44,6 +41,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -140,6 +138,9 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBow());
 		MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new RenderBow());
 		MinecraftForgeClient.registerItemRenderer(ModItems.mobSoul, new RenderMobSoul());
+		MinecraftForgeClient.registerItemRenderer(ModItems.chaosShard, new RenderChaosShard());
+		MinecraftForgeClient.registerItemRenderer(ModItems.reactorStabilizerParts, new RenderStabilizerPart());
+		MinecraftForgeClient.registerItemRenderer(ModItems.chaosFragment, new RenderChaosFragment());
 
 		if (!ConfigHandler.useOldArmorModel)
 		{
@@ -153,6 +154,16 @@ public class ClientProxy extends CommonProxy {
 			MinecraftForgeClient.registerItemRenderer(ModItems.draconicBoots, new RenderArmor(ModItems.draconicBoots));
 		}
 
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicSword, new RenderTool("models/tools/DraconicSword.obj", "textures/models/tools/DraconicSword.png", (IRenderTweak)ModItems.draconicSword));
+		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernPickaxe, new RenderTool("models/tools/Pickaxe.obj", "textures/models/tools/Pickaxe.png", (IRenderTweak)ModItems.wyvernPickaxe));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicPickaxe, new RenderTool("models/tools/DraconicPickaxe.obj", "textures/models/tools/DraconicPickaxe.png", (IRenderTweak)ModItems.draconicPickaxe));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicAxe, new RenderTool("models/tools/DraconicLumberAxe.obj", "textures/models/tools/DraconicLumberAxe.png", (IRenderTweak)ModItems.draconicAxe));
+		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernShovel, new RenderTool("models/tools/Shovel.obj", "textures/models/tools/Shovel.png", (IRenderTweak)ModItems.wyvernShovel));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicShovel, new RenderTool("models/tools/DraconicShovel.obj", "textures/models/tools/DraconicShovel.png", (IRenderTweak)ModItems.draconicShovel));
+		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernSword, new RenderTool("models/tools/Sword.obj", "textures/models/tools/Sword.png", (IRenderTweak)ModItems.wyvernSword));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicDestructionStaff, new RenderTool("models/tools/DraconicStaffOfPower.obj", "textures/models/tools/DraconicStaffOfPower.png", (IRenderTweak)ModItems.draconicDestructionStaff));
+		MinecraftForgeClient.registerItemRenderer(ModItems.draconicHoe, new RenderTool("models/tools/DraconicHoe.obj", "textures/models/tools/DraconicHoe.png", (IRenderTweak)ModItems.draconicHoe));
+
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.draconiumChest), new RenderDraconiumChest());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser());
@@ -160,6 +171,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorStabilizer), new RenderReactorStabilizer());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorEnergyInjector), new RenderReactorEnergyInjector());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorCore), new RenderReactorCore());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.chaosCrystal), new RenderChaosShard());
 
 		//ISimpleBlockRendering
 		RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
@@ -182,6 +194,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileReactorCore.class, new RenderTileReactorCore());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileReactorStabilizer.class, new RenderTileReactorStabilizer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileReactorEnergyInjector.class, new RenderTileReactorEnergyInjector());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileChaosShard.class, new RenderTileChaosShard());
 
 		//Entitys
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
@@ -189,6 +202,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart());
 		RenderingRegistry.registerEntityRenderingHandler(EntityDragonProjectile.class, new RenderDragonProjectile());
 		RenderingRegistry.registerEntityRenderingHandler(EntityChaosCrystal.class, new RenderChaosCrystal());
+		RenderingRegistry.registerEntityRenderingHandler(EntityChaosVortex.class, new RenderEntityChaosVortex());
 	}
 
 	public void registerRenderIDs (){
@@ -288,5 +302,9 @@ public class ClientProxy extends CommonProxy {
 		if (particle instanceof EntityFX && ((EntityFX)particle).worldObj.isRemote) ParticleHandler.spawnCustomParticle((EntityFX)particle, range);
 	}
 
-
+	@Override
+	public ISound playISound(ISound sound) {
+		FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
+		return sound;
+	}
 }

@@ -220,7 +220,7 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 			list.add(InfoHelper.HITC() + ModBlocks.energyStorageCore.getLocalizedName());
 			list.add("Tier: " + InfoHelper.ITC() + (master.getTier() + 1));
 			String BN = String.valueOf(master.getEnergyStored());
-			list.add(StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.ITC() + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored()) + " [" + BN + " RF]");
+			list.add(StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.ITC() + Utills.formatNumber(master.getEnergyStored()) + " / " + Utills.formatNumber(master.getMaxEnergyStored()) + " [" + Utills.addCommas(master.getEnergyStored()) + " RF]");
 
 			return list;
 		}
