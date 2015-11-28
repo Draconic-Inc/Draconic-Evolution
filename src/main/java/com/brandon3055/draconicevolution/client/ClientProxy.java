@@ -1,10 +1,7 @@
 package com.brandon3055.draconicevolution.client;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.handler.HudHandler;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.client.handler.*;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
@@ -60,6 +57,7 @@ public class ClientProxy extends CommonProxy {
 		super.preInit(event);
 
 		ResourceHandler.init(event);
+		ContributorHandler.init();
 
 //		downloadLocation = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/mods/derspack";
 //		downloadLocation = downloadLocation.replaceAll("\\\\", "/");
@@ -154,15 +152,20 @@ public class ClientProxy extends CommonProxy {
 			MinecraftForgeClient.registerItemRenderer(ModItems.draconicBoots, new RenderArmor(ModItems.draconicBoots));
 		}
 
-		MinecraftForgeClient.registerItemRenderer(ModItems.draconicSword, new RenderTool("models/tools/DraconicSword.obj", "textures/models/tools/DraconicSword.png", (IRenderTweak)ModItems.draconicSword));
-		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernPickaxe, new RenderTool("models/tools/Pickaxe.obj", "textures/models/tools/Pickaxe.png", (IRenderTweak)ModItems.wyvernPickaxe));
-		MinecraftForgeClient.registerItemRenderer(ModItems.draconicPickaxe, new RenderTool("models/tools/DraconicPickaxe.obj", "textures/models/tools/DraconicPickaxe.png", (IRenderTweak)ModItems.draconicPickaxe));
-		MinecraftForgeClient.registerItemRenderer(ModItems.draconicAxe, new RenderTool("models/tools/DraconicLumberAxe.obj", "textures/models/tools/DraconicLumberAxe.png", (IRenderTweak)ModItems.draconicAxe));
-		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernShovel, new RenderTool("models/tools/Shovel.obj", "textures/models/tools/Shovel.png", (IRenderTweak)ModItems.wyvernShovel));
-		MinecraftForgeClient.registerItemRenderer(ModItems.draconicShovel, new RenderTool("models/tools/DraconicShovel.obj", "textures/models/tools/DraconicShovel.png", (IRenderTweak)ModItems.draconicShovel));
-		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernSword, new RenderTool("models/tools/Sword.obj", "textures/models/tools/Sword.png", (IRenderTweak)ModItems.wyvernSword));
-		MinecraftForgeClient.registerItemRenderer(ModItems.draconicDestructionStaff, new RenderTool("models/tools/DraconicStaffOfPower.obj", "textures/models/tools/DraconicStaffOfPower.png", (IRenderTweak)ModItems.draconicDestructionStaff));
-		MinecraftForgeClient.registerItemRenderer(ModItems.draconicHoe, new RenderTool("models/tools/DraconicHoe.obj", "textures/models/tools/DraconicHoe.png", (IRenderTweak)ModItems.draconicHoe));
+		if (!ConfigHandler.useOldD2DToolTextures)
+		{
+			MinecraftForgeClient.registerItemRenderer(ModItems.draconicSword, new RenderTool("models/tools/DraconicSword.obj", "textures/models/tools/DraconicSword.png", (IRenderTweak) ModItems.draconicSword));
+			MinecraftForgeClient.registerItemRenderer(ModItems.wyvernPickaxe, new RenderTool("models/tools/Pickaxe.obj", "textures/models/tools/Pickaxe.png", (IRenderTweak) ModItems.wyvernPickaxe));
+			MinecraftForgeClient.registerItemRenderer(ModItems.draconicPickaxe, new RenderTool("models/tools/DraconicPickaxe.obj", "textures/models/tools/DraconicPickaxe.png", (IRenderTweak) ModItems.draconicPickaxe));
+			MinecraftForgeClient.registerItemRenderer(ModItems.draconicAxe, new RenderTool("models/tools/DraconicLumberAxe.obj", "textures/models/tools/DraconicLumberAxe.png", (IRenderTweak) ModItems.draconicAxe));
+			MinecraftForgeClient.registerItemRenderer(ModItems.wyvernShovel, new RenderTool("models/tools/Shovel.obj", "textures/models/tools/Shovel.png", (IRenderTweak) ModItems.wyvernShovel));
+			MinecraftForgeClient.registerItemRenderer(ModItems.draconicShovel, new RenderTool("models/tools/DraconicShovel.obj", "textures/models/tools/DraconicShovel.png", (IRenderTweak) ModItems.draconicShovel));
+			MinecraftForgeClient.registerItemRenderer(ModItems.wyvernSword, new RenderTool("models/tools/Sword.obj", "textures/models/tools/Sword.png", (IRenderTweak) ModItems.wyvernSword));
+			MinecraftForgeClient.registerItemRenderer(ModItems.draconicDestructionStaff, new RenderTool("models/tools/DraconicStaffOfPower.obj", "textures/models/tools/DraconicStaffOfPower.png", (IRenderTweak) ModItems.draconicDestructionStaff));
+			MinecraftForgeClient.registerItemRenderer(ModItems.draconicHoe, new RenderTool("models/tools/DraconicHoe.obj", "textures/models/tools/DraconicHoe.png", (IRenderTweak) ModItems.draconicHoe));
+			MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new RenderBowModel(true));
+			MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBowModel(false));
+		}
 
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.draconiumChest), new RenderDraconiumChest());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen());

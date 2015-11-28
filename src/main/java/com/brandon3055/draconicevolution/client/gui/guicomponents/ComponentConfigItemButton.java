@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
+import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentBase;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;

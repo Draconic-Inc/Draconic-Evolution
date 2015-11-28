@@ -21,7 +21,7 @@ import java.util.Arrays;
 		"after:NotEnoughItems;" +
 		"after:ThermalExpansion;" +
 		"after:ThermalFoundation;" +
-		"required-after:BrandonsCore@[1.0.0.8,);")
+		"required-after:BrandonsCore@[1.0.0.9,);")
 public class DraconicEvolution {
 
 	@Mod.Instance(References.MODID)

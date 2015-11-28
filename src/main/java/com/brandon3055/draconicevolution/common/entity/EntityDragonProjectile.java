@@ -7,7 +7,6 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.network.GenericParticlePacket;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -158,7 +157,7 @@ public class EntityDragonProjectile extends Entity {
 				if (genericHit){
 					setDead();
 					Entity hit = entityHit != null ? entityHit : target;
-					LogHelper.info(hit);
+					if (!(hit instanceof EntityPlayer)) break;
 					int r = rand.nextInt();
 					if (shooter != null) new Teleporter.TeleportLocation(shooter.posX + (Math.cos(r) * 600), rand.nextInt(255), shooter.posZ + (Math.sin(r) * 600), hit.dimension).sendEntityToCoords(hit);
 					else new Teleporter.TeleportLocation(posX + (Math.cos(r) * 600), rand.nextInt(255), posZ + (Math.sin(r) * 600), hit.dimension).sendEntityToCoords(hit);

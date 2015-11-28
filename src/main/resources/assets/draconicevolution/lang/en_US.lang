@@ -258,6 +258,16 @@ info.de.hudDisplayConfigInfo2.txt=to change location
 info.de.manual.introTxt.txt=Everything you need to know. All in one place.
 info.de.manual.indexButton.txt=Index
 info.de.manual.indexButtonTip.txt=Go to index page
+info.de.manual.contributors.txt=Draconic Evolution Contributors
+info.de.manual.name.txt=Name
+info.de.manual.contribution.txt=Contribution
+info.de.manual.clickToGoToSite.txt=(Click name to open website)
+info.de.manual.contributorsButton.txt=Contributors
+info.de.manual.contributorsButtonInfo.txt=A list of people who have contributed to Draconic Evolution
+
+info.de.manual.nav1.txt=Navigation Tips
+info.de.manual.nav2.txt=Press Backspace to go to the previous page.
+info.de.manual.nav3.txt=Hold shift to scroll faster.
 
 //Energy Net
 info.de.modeIn.txt=Mode: Input

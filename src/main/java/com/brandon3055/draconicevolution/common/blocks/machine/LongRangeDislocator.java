@@ -107,7 +107,6 @@ public class LongRangeDislocator extends BlockDE {
 			{
 				if (world.getBlock(randX, i, randZ) != Blocks.air)
 				{
-					//LogHelper.info(world.getBlock(randX, i, randZ));
 					y = i;
 					break;
 				}

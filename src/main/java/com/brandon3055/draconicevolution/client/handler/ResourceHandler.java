@@ -86,7 +86,6 @@ public class ResourceHandler {
 
 			for (String s : imageURLs)
 			{
-				LogHelper.info("Checking Image: " + s);
 				if (!checkExistence(s)) if (downloadImage(s)) reloadRequired = true;
 				if (checkExistence(s))
 				{
