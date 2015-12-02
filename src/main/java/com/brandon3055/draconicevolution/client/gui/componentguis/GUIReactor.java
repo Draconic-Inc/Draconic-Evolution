@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui.componentguis;
 
+import com.brandon3055.brandonscore.client.gui.guicomponents.*;
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.client.gui.guicomponents.*;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.ContainerReactor;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;

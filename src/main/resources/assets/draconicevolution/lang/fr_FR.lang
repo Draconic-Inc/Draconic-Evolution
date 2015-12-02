@@ -1,237 +1,224 @@
 //Description format \n=Force new line \% at start of line=add half line space above line
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
-tile.draconicevolution:xRayBlock.name=Distortion Flame
-tile.draconicevolution:sunDial.name=Sun Dial
-tile.draconicevolution:weatherController.name=Weather Controller
-tile.draconicevolution:draconiumOre.name=Draconium Ore
-tile.draconicevolution:grinder.name=Mob Grinder
-tile.draconicevolution:potentiometer.name=Potentiometer
-tile.draconicevolution:rainSensor.name=Rain Sensor
-tile.draconicevolution:particleGenerator.name=Particle Generator
-tile.draconicevolution:playerDetector.name=Player Detector
-tile.draconicevolution:playerDetectorAdvanced.name=Advanced Player Detector
-tile.draconicevolution:energyInfuser.name=Energy Infuser
-tile.draconicevolution:customSpawner.name=Stabilized Mob Spawner
-tile.draconicevolution:longRangeDislocator1.name=Admin Dislocator
-tile.draconicevolution:longRangeDislocator0.name=Long Range Dislocator
-tile.draconicevolution:generator.name=Generator
-tile.draconicevolution:energyStorageCore.name=Energy Core
-tile.draconicevolution:energyPylon.name=Energy Pylon
-tile.draconicevolution:draconium0.name=Draconium Block
-tile.draconicevolution:draconium1.name=Resurrection Stone
-tile.draconicevolution:draconium2.name=Charged Draconium Block
-tile.draconicevolution:cKeyStone.name=Creative Key Stone
-tile.draconicevolution:dissEnchanter.name=Disenchanter
-tile.draconicevolution:teleporterStand.name=Dislocator Pedestal
-tile.draconicevolution:draconiumChest.name=Draconic Chest
-tile.draconicevolution:draconicBlock.name=Awakened Draconium Block
-tile.draconicevolution:infusedObsidian.name=Draconium Infused Obsidian
-tile.draconicevolution:dislocatorReceptacle.name=Dislocator Receptacle
-tile.draconicevolution:portal.name=Portal
-tile.draconicevolution:flowGateFlux.name=Flux Gate
-tile.draconicevolution:flowGateFluid.name=Fluid Gate
-tile.draconicevolution:reactorCore.name=Draconic Reactor Core
-tile.draconicevolution:reactorStabilizer.name=Reactor Stabilizer
-tile.draconicevolution:reactorEnergyInjector.name=Reactor Energy Injector
-tile.draconicevolution:chaosCrystal.name=Chaos Crystal
+tile.draconicevolution:xRayBlock.name=Flamme d'altération
+tile.draconicevolution:sunDial.name=Cadran solaire
+tile.draconicevolution:weatherController.name=Contrôleur météorologique
+tile.draconicevolution:draconiumOre.name=Minerai de draconium
+tile.draconicevolution:grinder.name=Broyeur de créature
+tile.draconicevolution:potentiometer.name=Potentiomètre
+tile.draconicevolution:rainSensor.name=Capteur de pluie
+tile.draconicevolution:particleGenerator.name=Générateur de particules
+tile.draconicevolution:playerDetector.name=Détecteur de joueur
+tile.draconicevolution:playerDetectorAdvanced.name=Détecteur de joueur avancé
+tile.draconicevolution:energyInfuser.name=Infuseur d'énergie
+tile.draconicevolution:customSpawner.name=Cage de créature stabilisée
+tile.draconicevolution:longRangeDislocator1.name=Déplaceur admin
+tile.draconicevolution:longRangeDislocator0.name=Déplaceur longue portée
+tile.draconicevolution:generator.name=Générateur
+tile.draconicevolution:energyStorageCore.name=Coeur d'énergie
+tile.draconicevolution:energyPylon.name=Pylône d'énergie
+tile.draconicevolution:draconium0.name=Bloc de draconium 
+tile.draconicevolution:draconium1.name=Pierre de résurrection
+tile.draconicevolution:draconium2.name=Bloc de draconium chargé
+tile.draconicevolution:cKeyStone.name=Pierre clé créative
+tile.draconicevolution:dissEnchanter.name=Désenchanteur
+tile.draconicevolution:teleporterStand.name=Piédestal de déplaceur
+tile.draconicevolution:draconiumChest.name=Coffre draconique
+tile.draconicevolution:draconicBlock.name=Bloc de draconium éveillé
+tile.draconicevolution:infusedObsidian.name=obsidienne infusée de draconium
+tile.draconicevolution:dislocatorReceptacle.name=Réceptacle du déplaceur
+tile.draconicevolution:portal.name=Portail
+tile.draconicevolution:flowGateFlux.name=Porte de flux
+tile.draconicevolution:flowGateFluid.name=Porte de fluide
+tile.draconicevolution:reactorCore.name=Coeur du réacteur draconique
+tile.draconicevolution:reactorStabilizer.name=Stabilisateur de réacteur
+tile.draconicevolution:reactorEnergyInjector.name=Injecteur d'énergie du réacteur
 
-tile.draconicevolution:energyCrystal0.name=Energy Relay
-tile.draconicevolution:energyCrystal1.name=Advanced Energy Relay
-tile.draconicevolution:energyCrystal2.name=Energy Transceiver
-tile.draconicevolution:energyCrystal3.name=Advanced Energy Transceiver
-tile.draconicevolution:energyCrystal4.name=Wireless Energy Transceiver
-tile.draconicevolution:energyCrystal5.name=Advanced Wireless Transceiver
+tile.draconicevolution:energyCrystal0.name=Relais d'énergie
+tile.draconicevolution:energyCrystal1.name=Relais d'énergie avancé
+tile.draconicevolution:energyCrystal2.name=Émetteur-récepteur d'énergie
+tile.draconicevolution:energyCrystal3.name=Émetteur-récepteur d'énergie avancé
+tile.draconicevolution:energyCrystal4.name=Émetteur-récepteur d'énergie sans fil
+tile.draconicevolution:energyCrystal5.name=Émetteur-récepteur d'énergie sans fil avancé
 
 
 //Item Information ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:awakenedCore.name=Awakened Core
-item.draconicevolution:draconiumIngot.name=Draconium Ingot
-item.draconicevolution:draconiumDust.name=Draconium Dust
-item.draconicevolution:draconiumBlend.name=Draconium Blend (Depreciated)
-item.draconicevolution:dragonHeart.name=Dragon Heart
-item.draconicevolution:wyvernCore.name=Wyvern Core
-item.draconicevolution:sunFocus.name=Solar Focus
+item.draconicevolution:awakenedCore.name=Coeur éveillé
+item.draconicevolution:draconiumIngot.name=Lingot de draconium
+item.draconicevolution:draconiumDust.name=Poussière de draconium
+item.draconicevolution:draconiumBlend.name=mélange de draconium (Déprécié)
+item.draconicevolution:dragonHeart.name=Coeur de dragon
+item.draconicevolution:wyvernCore.name=Coeur de vouivre
+item.draconicevolution:sunFocus.name=Foyer solaire
 item.draconicevolution:tclogo.name=TCLogo
-item.draconicevolution:draconicCore.name=Draconic Core
-item.draconicevolution:teleporterMKI.name=Charm of Dislocation
-item.draconicevolution:teleporterMKII.name=Enhanced Charm of Dislocation
+item.draconicevolution:draconicCore.name=Coeur draconique
+item.draconicevolution:teleporterMKI.name=Charme de bouleversement
+item.draconicevolution:teleporterMKII.name=Charme de bouleversement avancé
 
-info.teleporterInfGUI.txt=Shift + Right click to open gui
-info.teleporterInfScroll.txt=Shift + scroll to cycle destinations
+info.teleporterInfGUI.txt=Maj + clic droit pour ouvrir l'interface
+info.teleporterInfScroll.txt=Maj + défiler pour choisir les destinations
 
-item.draconicevolution:wyvernPickaxe.name=Pickaxe of the Wyvern
-item.draconicevolution:wyvernShovel.name=Shovel of the Wyvern
-item.draconicevolution:wyvernSword.name=Sword of the Wyvern
-item.draconicevolution:wyvernBow.name=Bow of the Wyvern
-item.draconicevolution:wyvernHelm.name=Wyvern Helm
-item.draconicevolution:wyvernChest.name=Wyvern Chestplate
-item.draconicevolution:wyvernLeggs.name=Wyvern Leggings
-item.draconicevolution:wyvernBoots.name=Wyvern Boots
-item.draconicevolution:draconicPickaxe.name=Draconic Pickaxe
-item.draconicevolution:draconicAxe.name=Draconic Axe
-item.draconicevolution:draconicShovel.name=Draconic Shovel
-item.draconicevolution:draconicHoe.name=Draconic Hoe
-item.draconicevolution:draconicSword.name=Draconic Sword
-item.draconicevolution:draconicBow.name=Draconic Bow
-item.draconicevolution:draconicHelm.name=Draconic Helm
-item.draconicevolution:draconicChest.name=Draconic Chestplate
-item.draconicevolution:draconicLeggs.name=Draconic Leggings
-item.draconicevolution:draconicBoots.name=Draconic Boots
-item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
-item.draconicevolution:mobSoul.name=Mob Soul
-item.draconicevolution:enderArrow.name=Ender Arrow
-item.draconicevolution:safetyMatch.name=Safety Match
-item.draconicevolution:safetyMatchBox.name=Box of Safety Matches
-item.draconicevolution:key.name=Key
-item.draconicevolution:draconiumEnergyCore0.name=Wyvern Energy Core
-item.draconicevolution:draconiumEnergyCore1.name=Draconic Energy Core
-item.draconicevolution:draconiumFluxCapacitor0.name=Wyvern Flux Capacitor
-item.draconicevolution:draconiumFluxCapacitor1.name=Draconic Flux Capacitor
-item.draconicevolution:draconicIngot.name=Awakened Draconium Ingot
-item.draconicevolution:creativeStructureSpawnerComet.name=Spawn Comet
-item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Island
-item.draconicevolution:infoTablet.name=Draconic Evolution Information Tablet
-item.draconicevolution:wrench.name=Crystal Binder
-item.draconicevolution:dezilsMarshmallow.name=Dezil's Marshmallow
-item.draconicevolution:reactorCraftingPart.frame.name=Reactor Stabilizer Frame
-item.draconicevolution:reactorCraftingPart.rotorInner.name=Reactor Stabilizer Inner Rotor
-item.draconicevolution:reactorCraftingPart.rotorOuter.name=Reactor Stabilizer Outer Rotor
-item.draconicevolution:reactorCraftingPart.rotorAssembly.name=Reactor Stabilizer Rotor Assembly
-item.draconicevolution:reactorCraftingPart.stabilizerRing.name=Reactor Stabilizer Focus Ring
-item.draconicevolution:chaoticCore.name=Chaotic Core
-item.draconicevolution:chaosShard.name=Chaos Shard
-item.draconicevolution:chaosFragment0.name=Tiny Chaos Fragment
-item.draconicevolution:chaosFragment1.name=Small Chaos Fragment
-item.draconicevolution:chaosFragment2.name=Large Chaos Fragment
-
-
+item.draconicevolution:wyvernPickaxe.name=Pioche de la vouivre
+item.draconicevolution:wyvernShovel.name=Pelle de la vouivre
+item.draconicevolution:wyvernSword.name=Épée de la vouivre
+item.draconicevolution:wyvernBow.name=Arc de la vouivre
+item.draconicevolution:wyvernHelm.name=Casque de la vouivre
+item.draconicevolution:wyvernChest.name=Plastron de la vouivre
+item.draconicevolution:wyvernLeggs.name=Jambières de la vouivre
+item.draconicevolution:wyvernBoots.name=Bottes de la vouivre
+item.draconicevolution:draconicPickaxe.name=Pioche draconique
+item.draconicevolution:draconicAxe.name=Hache draconique
+item.draconicevolution:draconicShovel.name=pelle draconique
+item.draconicevolution:draconicHoe.name=Houe draconique
+item.draconicevolution:draconicSword.name=Épée draconique
+item.draconicevolution:draconicBow.name=Arc draconique
+item.draconicevolution:draconicHelm.name=Casque draconique
+item.draconicevolution:draconicChest.name=Plastron draconique
+item.draconicevolution:draconicLeggs.name=Jambières draconique
+item.draconicevolution:draconicBoots.name=Bottes draconique
+item.draconicevolution:draconicDistructionStaff.name=Bâton de pouvoir draconique
+item.draconicevolution:mobSoul.name=Âme de créature
+item.draconicevolution:enderArrow.name=Flèches du néant
+item.draconicevolution:safetyMatch.name=Allumette suédoise
+item.draconicevolution:safetyMatchBox.name=Boite d'allumettes suédoises
+item.draconicevolution:key.name=Clef
+item.draconicevolution:draconiumEnergyCore0.name=Coeur d'énergie de la vouivre
+item.draconicevolution:draconiumEnergyCore1.name=Coeur d'énergie draconique
+item.draconicevolution:draconiumFluxCapacitor0.name=Condensateur de flux de la vouivre
+item.draconicevolution:draconiumFluxCapacitor1.name=Condensateur de flux draconique
+item.draconicevolution:draconicIngot.name=Lingot de draconium éveillé
+item.draconicevolution:creativeStructureSpawnerComet.name=Foyer de comète
+item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Foyer de l'île du néant
+item.draconicevolution:infoTablet.name=Tablette d'information de Draconic Evolution
+item.draconicevolution:wrench.name=Liant de cristal
+item.draconicevolution:dezilsMarshmallow.name=Guimauve de Dezil
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
-itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
-itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
+itemGroup.toolsAndWeapons=Outils et armes Draconic Evolution 
+itemGroup.blocksAndItems=Blocs et éléments Draconic Evolution
 
 //Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
-msg.size0.txt=Tool Mode: Single Block
-msg.size1.txt=Tool Mode: 3x3
-msg.size2.txt=Tool Mode: 5x5
-msg.size3.txt=Tool Mode: 7x7
-msg.size4.txt=Tool Mode: 9x9
-msg.oblittrue.txt=§aObliteration Mode: §4Active
-msg.oblitfalse.txt=§aObliteration Mode: §2Inactive
-msg.bowmoderapidfire.txt=§3Fire Mode: §6Rapid Fire
-msg.bowmodesharpshooter.txt=§3Fire Mode: §6Sharp Shooter
-msg.bowmodeexplosive.txt=§3Fire Mode: §6Explosive
-msg.bowmodedevistation.txt=§3Fire Mode: §6Devastation!!! (Creative Only)
-msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
-msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
-msg.teleporterBound.txt=§aTeleporter bound to:
-msg.teleporterLowHealth.txt= §cYou are to low on health!
-msg.teleporterSentMob.txt=The entity has been sent to
-msg.teleporterEntityDimensional.txt=§cYou can not send mobs across dimensions!
-msg.teleporterAlreadySet.txt=§cError this charm can only be bound to one location
-msg.teleporterOutOfFuel.txt=§cOUT OF FUEL!!!
-msg.teleporterOutOfPearls.txt=§cOut of Ender Pearls!!!
-msg.teleporterPlayerT1.txt=You need a more powerful dislocator to do that
-msg.teleporterPlayerConsent.txt=The player must give their consent by sneaking
-msg.spawnerInfo1.txt=Mob Type
-msg.spawnerInfo2.txt=Requires Player
+msg.size0.txt=Mode de l'outil : Bloc unique
+msg.size1.txt=Mode de l'outil : 3x3
+msg.size2.txt=Mode de l'outil : 5x5
+msg.size3.txt=Mode de l'outil : 7x7
+msg.size4.txt=Mode de l'outil : 9x9
+msg.oblittrue.txt=§aMode de destruction : §4Actif
+msg.oblitfalse.txt=§aMode de destruction: §2Inactif
+msg.bowmoderapidfire.txt=§3Mode de tir : §6Tir rapide
+msg.bowmodesharpshooter.txt=§3Mode de tir: §6Tireur d'élite
+msg.bowmodeexplosive.txt=§3Mode de tir: §6Explosif
+msg.bowmodedevistation.txt=§3Mode de tir: §6Dévastation!!! (en créatif seulement)
+msg.bowoutofgunpowder.txt=§4Vous avez besoin de 4 poudre à canon pour utiliser le mode explosif
+msg.teleporterUnSet.txt=§cVous devez d'abord choisir la destination avant que vous ne puissiez téléporter (Maj + Clic droit)
+msg.teleporterBound.txt=§aTéléporteur lié à :
+msg.teleporterLowHealth.txt= §cVous êtes trop bas en santé !
+msg.teleporterSentMob.txt=L'entité a été envoyée vers
+msg.teleporterEntityDimensional.txt=§cVous ne pouvez pas envoyer des créatures à travers les dimensions !
+msg.teleporterAlreadySet.txt=§cErreur ce charme peut seulement être lié à une destination
+msg.teleporterOutOfFuel.txt=§cPLUS DE CARBURANT !!!
+msg.teleporterOutOfPearls.txt=§cPlus de perles du néant !!!
+msg.teleporterPlayerT1.txt=Vous avez besoin d'un déplaceur plus puissant pour faire celà
+msg.teleporterPlayerConsent.txt=Le joueur doit donner son consentement en s'accroupissant
+msg.spawnerInfo1.txt=Type de créature
+msg.spawnerInfo2.txt=Demande un joueur
 msg.spawnerInfo3.txt=Ignore Spawn Requirements
-msg.spawnerInfo4.txt=Spawner Tier
-msg.spawnerInfo5.txt=§3Hold shift for upgrade info
-msg.spawnerInfo6.txt=Requires players: §3Nether Star
-msg.spawnerInfo7.txt=Ignore Spawn Requirements: §3Notch Apple
-msg.spawnerInfo8.txt=Tier 2: §3Wyvern Core
-msg.spawnerInfo9.txt=Tier 3:§3 Awakened Core
-msg.dislocatorUnsafe.txt=Destination Unsafe Please Try Again
-msg.dislocatorNoGround.txt=Error world not found
-msg.range.txt=Range:
-msg.energyStorageCoreUTA.txt=Unable to activate (Invalid Configuration)
-msg.SpawnDragonToFarFrom00.txt=[ERROR] to far from 0,0
-msg.wrongKey.txt=This key dose not fit this lock
-msg.cKeyStoneType0.txt=Permanent Activation (Consume Key)
-msg.cKeyStoneType1.txt=Button Activation
-msg.cKeyStoneType2.txt=Toggle Activation
-msg.cKeyStoneType3.txt=Button Activation (Consume Key)
-msg.draconiumChestEditmode.txt=Colour edit mode =
-msg.draconiumChestRed.txt=Red =
-msg.draconiumChestGreen.txt=Green =
-msg.draconiumChestBlue.txt=Blue =
-msg.draconiumChestEditL1.txt=Right click with red green or blue dye to adjust the colour
-msg.draconiumChestEditL2.txt=Click the top half of the chest to increase the value
-msg.draconiumChestEditL3.txt=Or the bottom half of the chest to decrease the value
-msg.draconiumChestEditL4.txt=Right click with paper to copy the colour to other chests
-msg.draconiumChestEdit2.txt=Please use a single peace of paper
-msg.de.dragonDeath.txt=§5The heart is temporarily awakened by the dragons explosive §5death
+msg.spawnerInfo4.txt=Niveau de cage
+msg.spawnerInfo5.txt=§3Maintenez Maj pour les info d'amélioration
+msg.spawnerInfo6.txt=Demande des joueurs : §3Étoile du Tréfonds
+msg.spawnerInfo7.txt=Ignorez les exigences d'apparition : §3Pomme de Notch
+msg.spawnerInfo8.txt=Niveau 2 : §3Coeur de vouivre
+msg.spawnerInfo9.txt=Niveau 3 :§3 Coeur éveillé
+msg.dislocatorUnsafe.txt=Destination risquée veuillez réessayer
+msg.dislocatorNoGround.txt=Erreur monde introuvable
+msg.range.txt=Portée :
+msg.energyStorageCoreUTA.txt=impossible d'activer (Configuration non valide)
+msg.SpawnDragonToFarFrom00.txt=[ERREUR] trop loin de 0,0
+msg.wrongKey.txt=Cette clef ne rentre pas dans cette serrure
+msg.cKeyStoneType0.txt=Activation permanante (Consomme la clef)
+msg.cKeyStoneType1.txt=Bouton d'activation
+msg.cKeyStoneType2.txt=Levier d'activation
+msg.cKeyStoneType3.txt=Bouton d'activation (Consomme la clef)
+msg.draconiumChestEditmode.txt=Mode d'édition de couleur =
+msg.draconiumChestRed.txt=Rouge =
+msg.draconiumChestGreen.txt=Vert =
+msg.draconiumChestBlue.txt=Bleu =
+msg.draconiumChestEditL1.txt=Cliquez droit avec des teinture rouge verte ou bleue pour ajuster la couleur
+msg.draconiumChestEditL2.txt=Cliquez la moitié supérieure du coffre pour augmenter la valeur
+msg.draconiumChestEditL3.txt=Ou la moitié inférieur du coffre pour diminier la valeur
+msg.draconiumChestEditL4.txt=Cliquez droit avec un papier pour copier la couleur aux autres coffres
+msg.draconiumChestEdit2.txt=Veuillez utiliser une seule feuille de papier à la fois
+msg.de.dragonDeath.txt=§5Le coeur est temporairement éveillé par la mort explosive §5des dragons
 msg.de.baseSafeAOW.txt=§9(§aAOE §aSafe §aMode §ais §aenabled§9) §cOperation §cCanceled §cbecause §ca §ctile §centity §cwas §cdetected
 
 //Energy Net
-msg.de.wrenchMode.bind.txt=Function: Bind
-msg.de.wrenchMode.unBind.txt=Function: Un-Bind
-msg.de.wrenchMode.unBindAll.txt=Function: Un-Bind All
-msg.de.wrenchMode.modeSwitch.txt=Function: Mode Change
-msg.de.rightClickUnbind.txt=Right click air to un-bind
-msg.de.boundTo.txt=Bound To
-msg.de.posSaved.txt=Position Saved
-msg.de.invalidTile.txt=Target Invalid
-msg.de.outOfRange.txt=Target out of range
-msg.de.maxConnections.txt=Connection limit reached
-msg.de.linked.txt=Devices Linked
-msg.de.unLinked.txt=Devices Un-Linked
-msg.de.wrongSide.txt=Can not connect to that side of the target device
+msg.de.wrenchMode.bind.txt=Fonction : Lier
+msg.de.wrenchMode.unBind.txt=Fonction : Délier
+msg.de.wrenchMode.unBindAll.txt=Fonction : Tout délier
+msg.de.wrenchMode.modeSwitch.txt=Fonction : Changer de mode
+msg.de.rightClickUnbind.txt=Cliquez droit en l'air pour délier
+msg.de.boundTo.txt=lié à
+msg.de.posSaved.txt=Destination sauvegardée
+msg.de.invalidTile.txt=Cible non valide
+msg.de.outOfRange.txt=Cible hors de portée
+msg.de.maxConnections.txt=Limite de connexion atteinte
+msg.de.linked.txt=Dispositifs liés
+msg.de.unLinked.txt=Dispositifs non-liés
+msg.de.wrongSide.txt=Impossible de se connecter à cette face du dispositif ciblé
 
 //Reactor
-msg.de.reactorRSMode.0.txt=Comparator Mode: Temperature
-msg.de.reactorRSMode.1.txt=Comparator Mode: Temperature [Inverted]
-msg.de.reactorRSMode.2.txt=Comparator Mode: Containment Field
-msg.de.reactorRSMode.3.txt=Comparator Mode: Containment Field [Inverted]
-msg.de.reactorRSMode.4.txt=Comparator Mode: Energy Saturation
-msg.de.reactorRSMode.5.txt=Comparator Mode: Energy Saturation [Inverted]
-msg.de.reactorRSMode.6.txt=Comparator Mode: Fuel Conversion
-msg.de.reactorRSMode.7.txt=Comparator Mode: Fuel Conversion [Inverted]
+msg.de.reactorRSMode.0.txt=Mode de comparateur : Température
+msg.de.reactorRSMode.1.txt=Mode de comparateur : Température [Inversé]
+msg.de.reactorRSMode.2.txt=Mode de comparateur : Champ de confinement
+msg.de.reactorRSMode.3.txt=Mode de comparateur : Champ de confinement [Inversé]
+msg.de.reactorRSMode.4.txt=Mode de comparateur : Saturation d'énergie
+msg.de.reactorRSMode.5.txt=Mode de comparateur : Saturation d'énergie [Inversé]
+msg.de.reactorRSMode.6.txt=Mode de comparateur : Conversion de carburant
+msg.de.reactorRSMode.7.txt=Mode de comparateur : Conversion de carburant [Inversé]
 
 //Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
-info.teleporterInfUnset1.txt=Unbound
-info.teleporterInfUnset2.txt=Shift right click to bind your current
-info.teleporterInfUnset3.txt=x, y, z coordinates
-info.teleporterInfUnset4.txt=As well as the direction you are facing
-info.teleporterInfUnset5.txt=And the dimension you are currently in
+info.teleporterInfUnset1.txt=Non-lié
+info.teleporterInfUnset2.txt=Maj cliquez droit pour lier vos actuelles
+info.teleporterInfUnset3.txt=coordonnées x, y, z
+info.teleporterInfUnset4.txt=Ainsi que la direction que vous avez
+info.teleporterInfUnset5.txt=et la dimension où vous êtes
 info.teleporterInfDest.txt=Destination
-info.teleporterInfFuel.txt=Fuel:
-info.teleporterInfSet1.txt=Bound to
-info.teleporterInfSet2.txt=Uses remaining
-info.de.rightClickToTeleport.txt=Right click to teleport
+info.teleporterInfFuel.txt=Carburant :
+info.teleporterInfSet1.txt=Lié à
+info.teleporterInfSet2.txt=Utilisations restantes
+info.de.rightClickToTeleport.txt=Cliquez droit pour téléporter
 
 info.draconicAxe1.txt=Timber!!!!!!
-info.draconicAxe2.txt=Will fall an entire tree
-info.draconicAxe3.txt=or break out a 5x5x5 chunk of anything wood.
-info.draconicAxe4.txt=Hold shift to mine a single block.
+info.draconicAxe2.txt=Abattra un arbre entier
+info.draconicAxe3.txt=Ou cassera une parcelle de 5x5x5 de n'importe quel bois.
+info.draconicAxe4.txt=Maintenez Maj pour couper un seul bloc.
 
-info.draconicCore.txt=The core crafting component for Draconic Evolution
-info.draconicCore1.txt=Can be used to stabilize mob spawners
+info.draconicCore.txt=Le composant de fabrication central de Draconic Evolution
+info.draconicCore1.txt=Peut être utilisé pour stabilier les cages de créatures
 
-info.mobSoul1.txt=Can be used on a stabilized spawner to set the type
-info.mobSoul2.txt=Or shift right click to spawn a mob
-info.mobSoul3.txt=(Single Use)
+info.mobSoul1.txt=Peut être utilisé sur une cage stabilisée pour choisir le type
+info.mobSoul2.txt=Ou maj clic droit pour faire apparaitre une créature
+info.mobSoul3.txt=(Utilisation unique)
 
-info.arrowInfo.txt=A Painful Ride
-info.arrowInfo0.txt=Too heavy for a regular bow
+info.arrowInfo.txt=Une trajectoire douloureuse
+info.arrowInfo0.txt=Trop lourde pour un arc normal
 
-info.de.obliterationMode.txt=Obliteration Mode
-info.de.obliterationModetrue.txt=Active
-info.de.obliterationModefalse.txt=Inactive
-info.de.miningMode.txt=Mining Mode
-info.de.changeMiningMode.txt=Shift Right click to change mining mode
-info.de.toggleOblit.txt=Right-click to toggle Obliteration mode
-info.de.oblitInfo.txt=Obliteration mode destroys low value blocks
-info.de.attackDamage.txt=Attack Damage
-info.de.bonusHealthDamage.txt=Mob Health
-info.de.press.txt=Press
-info.de.toOpenConfigGUI.txt=To open config GUI
-info.de.shiftToPause.txt=Hold shift to pause slide
+info.de.obliterationMode.txt=Mode de destruction
+info.de.obliterationModetrue.txt=Actif
+info.de.obliterationModefalse.txt=Inactif
+info.de.miningMode.txt=Mode de minage
+info.de.changeMiningMode.txt=Maj cliquez droit pour changer de mode de minage
+info.de.toggleOblit.txt=Cliquez droit pour changer de mode de destruction
+info.de.oblitInfo.txt=Le mode de destruction détruit les blocs de valeur faible
+info.de.attackDamage.txt=Dégâts d'attaque
+info.de.bonusHealthDamage.txt=Santé de créature
+info.de.press.txt=Appuyez
+info.de.toOpenConfigGUI.txt=pour ouvrir l'interface de configuration
+info.de.shiftToPause.txt=maintenez Maj pour pauser le défilement
 
-info.de.bowEnchants.txt=Enchants are twice as effective on this bow
+info.de.bowEnchants.txt=Les enchantements sont doublement efficaces sur cet arc
 
-info.de.sword.txt=Your enemy's strength makes this blade stronger!
+info.de.sword.txt=La force de votre ennemi rend cette lame plus forte !
 
 info.de.safetyMatch.txt=Light a fire that will NOT burn your house down!
 
@@ -258,35 +245,25 @@ info.de.hudDisplayConfigInfo2.txt=to change location
 info.de.manual.introTxt.txt=Everything you need to know. All in one place.
 info.de.manual.indexButton.txt=Index
 info.de.manual.indexButtonTip.txt=Go to index page
-info.de.manual.contributors.txt=Draconic Evolution Contributors
-info.de.manual.name.txt=Name
-info.de.manual.contribution.txt=Contribution
-info.de.manual.clickToGoToSite.txt=(Click name to open website)
-info.de.manual.contributorsButton.txt=Contributors
-info.de.manual.contributorsButtonInfo.txt=A list of people who have contributed to Draconic Evolution
-
-info.de.manual.nav1.txt=Navigation Tips
-info.de.manual.nav2.txt=Press Backspace to go to the previous page.
-info.de.manual.nav3.txt=Hold shift to scroll faster.
 
 //Energy Net
-info.de.modeIn.txt=Mode: Input
-info.de.modeOut.txt=Mode: Output
+info.de.modeIn.txt=Mode : Entrée
+info.de.modeOut.txt=Mode : Sortie
 info.de.5xTransfer.txt= (5x Transfer)
 info.de.connections.txt=Connections
-info.de.wirelessConnections.txt=Wireless Connections
+info.de.wirelessConnections.txt=Connections sans fil
 
 
 info.infusedObsidian.txt=This block is wither resistant
 
-enchantment.draconicevolution.reaperEnchant=Reaper
+enchantment.draconicevolution.reaperEnchant=Moissonneuse
 
 //Achievements ----------------------------------------------------------------------------------------------------------------------------------------
 draconicevolution.achievementPage.name=Draconic Evolution
 
 achievement.draconicevolution.dust=The Start of something BIG!
 achievement.draconicevolution.dust.desc=Collect Draconium dust
-achievement.draconicevolution.ingot=Better than Diamond!
+achievement.draconicevolution.ingot=Better then Diamond!
 achievement.draconicevolution.ingot.desc=Refine 4 Draconium dust into 2 Draconium Ingots
 achievement.draconicevolution.core=This is where it begins
 achievement.draconicevolution.core.desc=Craft a Draconic Core
@@ -402,8 +379,6 @@ item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, tr
 
 //Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.DraconicEvolution.EnderDragon.name=Ender Dragon
-entity.DraconicEvolution.ChaosGuardian.name=Chaos Guardian
-
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
 key.placeItem=Place Item in world
@@ -412,8 +387,6 @@ key.toolConfig=Tool & Armor Config GUI
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian
 death.attack.damage.de.fusionExplode=%1$s was vaporized by a high energy fusion explosion
-death.attack.chaosBurst=%1$s was destroyed by dark energy
-death.attack.chaosImplosion=%1$s was pulled into an energy vortex and crushed into oblivion
 
 //Buttons ----------------------------------------------------------------------------------------------------------------------------------------
 button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
@@ -457,9 +430,6 @@ button.de.GogglesOfRevealing.name=Magical Sense
 button.de.reactorCharge.txt=Charge Reactor
 button.de.reactorStart.txt=Activate
 button.de.reactorStop.txt=Initiate Shutdown
-button.de.stats.txt=Stats
-button.de.statsShow.txt=Show
-button.de.statsHide.txt=Hide
 
 //Gui ----------------------------------------------------------------------------------------------------------------------------------------
 gui.de.flowGate.name=Flow Control
@@ -467,16 +437,10 @@ gui.de.flowGatePartialSignal.name=The actual flow will vary between the two give
 gui.de.flowGateCurrentFlow.name=Flow
 gui.de.flowGateRSLow.name=Redstone Signal Low
 gui.de.flowGateRSHigh.name=Redstone Signal High
-gui.de.flowGateOverridden.txt=Computer Override Enabled
 gui.de.increment.name=Increment value by
 gui.de.decrement.name=Decrement value by
 gui.de.ctrlAndShift.name=You can use Ctrl and Shift to change the increment amount.
 gui.de.pressOrScroll.name=Press Or Scroll
-gui.de.tempLoad.name=Temperature Load Factor
-gui.de.mass.name=Core Mass
-gui.de.genRate.name=Generation Rate
-gui.de.fieldDrainRate.name=Field Drain Rate
-gui.de.fuelConversion.name=Fuel Conversion Rate
 
 gui.de.insert.txt=Insert
 gui.de.extract.txt=Extract
@@ -496,7 +460,7 @@ gui.de.status4.txt=INVALID SETUP
 gui.de.internalStorage.txt=Internal Storage
 gui.de.itemStorage.txt=Item Storage
 
-
+manual.de.pigmenBloodRage.description=Don't let the pigmen see you eating pork you wont like what happens..
 
 //Potions ----------------------------------------------------------------------------------------------------------------------------------------
 potion.de.effect.txt=Effect

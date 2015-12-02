@@ -1,17 +1,17 @@
 package com.brandon3055.draconicevolution.common.items;
 
+import com.brandon3055.draconicevolution.client.handler.ContributorHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -136,16 +136,18 @@ public class Tclogo extends ItemDE {
 
 		if (!world.isRemote)
 		{
+			LogHelper.info(ContributorHandler.contributors);
+			ContributorHandler.init();
+			LogHelper.info(ContributorHandler.contributors);
 
-
-			EntityFallingBlock fallingBlock = new EntityFallingBlock(world, (int)player.posX + 0.5, (int)player.posY + 0.5, (int)player.posZ + 0.5, Blocks.obsidian, 0);
-			fallingBlock.field_145812_b = 2;
+			//EntityFallingBlock fallingBlock = new EntityFallingBlock(world, (int)player.posX + 0.5, (int)player.posY + 0.5, (int)player.posZ + 0.5, Blocks.obsidian, 0);
+			//fallingBlock.field_145812_b = 2;
 
 			float motion = 0.005F;
 			//fallingBlock.motionX = (rand.nextFloat()-0.5F) * motion;
 			//fallingBlock.motionY = (rand.nextFloat()-0.5F) * motion;
 			//fallingBlock.motionZ = (rand.nextFloat()-0.5F) * motion;
-			world.spawnEntityInWorld(fallingBlock);
+			//world.spawnEntityInWorld(fallingBlock);
 
 
 //			try
@@ -418,7 +420,8 @@ public class Tclogo extends ItemDE {
 	@Override
 	public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
 	{
-		LogHelper.info(player.worldObj.getBlock(X, Y, Z).getHarvestLevel(player.worldObj.getBlockMetadata(X, Y, Z)));
+		LogHelper.info(GameRegistry.findUniqueIdentifierFor(player.worldObj.getBlock(X, Y, Z)));
+
 		//player.worldObj.scheduleBlockUpdate(X, Y, Z, player.worldObj.getBlock(X, Y, Z), 10);
 
 		return false;

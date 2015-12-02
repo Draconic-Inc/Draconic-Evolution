@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
+import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentScrollingBase;
+import com.brandon3055.brandonscore.client.gui.guicomponents.GUIScrollingBase;
 import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.utill.CustomResourceLocation;
@@ -31,6 +33,9 @@ public class ComponentManualPage extends ComponentScrollingBase {
 	ItemStack stack = null;
 	private int slideTick = 0;
 
+	public int scrollOffset = 0;
+	public int scrollLimit = 0;
+
 	public ComponentManualPage(int x, int y, GUIScrollingBase gui, ManualPage page) {
 		super(x, y, gui);
 		this.page = page;
@@ -46,15 +51,17 @@ public class ComponentManualPage extends ComponentScrollingBase {
 			contentList.add(c);
 		}
 		pageLength += 25;
+
+		scrollLimit = pageLength - 325;
 	}
 
 	@Override
 	public void handleScrollInput(int direction) {
-	//	page.scrollOffset += direction * 10;
-		page.scrollOffset += direction * (InfoHelper.isShiftKeyDown() ? 30 : 10);
-		if (page.scrollOffset < 0) page.scrollOffset = 0;
-		if (page.scrollOffset > pageLength - getHeight()) page.scrollOffset = pageLength - getHeight();
-		if (pageLength <= getHeight()) page.scrollOffset = 0;
+	//	scrollOffset += direction * 10;
+		scrollOffset += direction * (InfoHelper.isShiftKeyDown() ? 30 : 10);
+		if (scrollOffset < 0) scrollOffset = 0;
+		if (scrollOffset > pageLength - getHeight()) scrollOffset = pageLength - getHeight();
+		if (pageLength <= getHeight()) scrollOffset = 0;
 	}
 
 	@Override
@@ -214,7 +221,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
 			}
 			else if (isTitle)
 			{
-				int y = yPos - page.page.scrollOffset;
+				int y = yPos - page.scrollOffset;
 				if (y > 310 || y < 5) return;
 				page.drawCenteredString(page.fontRendererObj, content.substring(content.indexOf("title.") + 6), 128, y, 0x00ffff);
 
@@ -230,7 +237,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
 			{
 				for (int i = 0; i < textLines.length; i++)
 				{
-					int y = (yPos + i * 10) - page.page.scrollOffset;
+					int y = (yPos + i * 10) - page.scrollOffset;
 					if (y > 310 || y < 5) continue;
 					page.fontRendererObj.drawString(textLines[i], 20, y, 0x000000);
 				}
@@ -256,18 +263,18 @@ public class ComponentManualPage extends ComponentScrollingBase {
 				double ySize = (double)image.getHeight() / (double)image.getWidth() * 220D;
 
 				double topS = 0;
-				if ((yPos - page.page.scrollOffset) < 0) {
-					topS = (yPos - 5 - page.page.scrollOffset);
+				if ((yPos - page.scrollOffset) < 0) {
+					topS = (yPos - 5 - page.scrollOffset);
 				}
 				double btmS = 0;
-				if ((yPos - page.page.scrollOffset) + ySize > 310) {
-					btmS = (yPos - 5 - page.page.scrollOffset) - 310 + ySize;
+				if ((yPos - page.scrollOffset) + ySize > 310) {
+					btmS = (yPos - 5 - page.scrollOffset) - 310 + ySize;
 				}
 
 				double xmin = 17.5D			;
 				double xmax = 17.5D	+ 220D	;
-				double ymin = yPos			- page.page.scrollOffset - topS;
-				double ymax = yPos	+ ySize	- page.page.scrollOffset - btmS;
+				double ymin = yPos			- page.scrollOffset - topS;
+				double ymax = yPos	+ ySize	- page.scrollOffset - btmS;
 
 				double vmin = Math.max(0D, topS / -ySize);
 				double vmax = Math.min(1D, 1D - btmS / ySize);
@@ -292,7 +299,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
 			ResourceHandler.bindResource("textures/gui/Widgets.png");
 			GL11.glColor4f(1f, 1f, 1f, 1f);
 			int posX = 70;
-			int posY = yPos - page.page.scrollOffset;
+			int posY = yPos - page.scrollOffset;
 
 			for (IRecipe recipe : recipes)
 			{

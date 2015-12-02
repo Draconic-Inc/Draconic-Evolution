@@ -74,7 +74,7 @@ public class ReactorCore extends BlockDE {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		//TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore) world.getTileEntity(x, y, z) : null;
-		//if (tile != null) return tile.onStructureRightClicked(player);//todo What happens when you stick your hand into an active fusion reaction?
+		//if (tile != null) return tile.onStructureRightClicked(player);
 		return false;
 	}
 

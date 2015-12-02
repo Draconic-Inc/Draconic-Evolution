@@ -114,8 +114,6 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 	@Override
 	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase)
 	{
-		System.out.println(par2EntityLivingBase.isEntityAlive());
-		System.out.println(par3EntityLivingBase.isEntityAlive());
 		return super.hitEntity(par1ItemStack, par2EntityLivingBase, par3EntityLivingBase);
 	}
 
