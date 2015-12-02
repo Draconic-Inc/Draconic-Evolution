@@ -149,7 +149,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 			barPosition = (int)(((double)page.scrollOffset/page.scrollLimit) * 247D);
 		}
 		else if (collection.getComponent("OPEN_PAGE") != null && collection.getComponent("OPEN_PAGE").isEnabled()) {
-			ComponentManualPage page = (ComponentManualPage)collection.getComponent("CONTRIBUTORS");
+			ComponentManualPage page = (ComponentManualPage)collection.getComponent("OPEN_PAGE");
 			barPosition = (int)(((double)page.scrollOffset/page.scrollLimit) * 247D);
 		}
 
@@ -193,7 +193,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 			barPosition = (int)(((double)page.scrollOffset/page.scrollLimit) * 247D);
 		}
 		else if (collection.getComponent("OPEN_PAGE") != null && collection.getComponent("OPEN_PAGE").isEnabled()) {
-			ComponentManualPage page = (ComponentManualPage)collection.getComponent("CONTRIBUTORS");
+			ComponentManualPage page = (ComponentManualPage)collection.getComponent("OPEN_PAGE");
 			barPosition = (int)(((double)page.scrollOffset/page.scrollLimit) * 247D);
 		}
 
@@ -407,7 +407,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 			page.scrollOffset = (int) (position * page.scrollLimit);
 		}
 		else if (collection.getComponent("OPEN_PAGE") != null && collection.getComponent("OPEN_PAGE").isEnabled()) {
-			ComponentManualPage page = (ComponentManualPage)collection.getComponent("CONTRIBUTORS");
+			ComponentManualPage page = (ComponentManualPage)collection.getComponent("OPEN_PAGE");
 			if (page.scrollLimit < 0) return;
 			page.scrollOffset = (int) (position * page.scrollLimit);
 		}
