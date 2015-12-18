@@ -5,7 +5,7 @@ tile.draconicevolution:sunDial.name=Sonnenuhr
 tile.draconicevolution:weatherController.name=Wettermaschine
 tile.draconicevolution:draconiumOre.name=Drakonisches Erz
 tile.draconicevolution:grinder.name=Fleischwolf
-tile.draconicevolution:potentiometer.name=Regulierungsschalter
+tile.draconicevolution:potentiometer.name=Potentiometer
 tile.draconicevolution:rainSensor.name=Regensensor
 tile.draconicevolution:particleGenerator.name=Teilchengenerator
 tile.draconicevolution:playerDetector.name=Spieler Detektor
@@ -201,7 +201,7 @@ info.teleporterInfSet1.txt=Verbunden mit
 info.teleporterInfSet2.txt=Verbleibende Benutzungen
 info.de.rightClickToTeleport.txt=Rechtsklick zum teleportieren
 
-info.draconicAxe1.txt=Bauholz!!!!!!
+info.draconicAxe1.txt=Baum fällt!!!!!!
 info.draconicAxe2.txt=Wird einen kompletten Baum fällen
 info.draconicAxe3.txt=oder ein 5x5x5 Stück aus allen Holzarten.
 info.draconicAxe4.txt=Halte Shift um einen einzigen Block abzubauen.
