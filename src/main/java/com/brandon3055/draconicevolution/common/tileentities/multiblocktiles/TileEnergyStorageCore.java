@@ -753,8 +753,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 	/* EnergyHandler */
 
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-		int maxReceive1 = Integer.MAX_VALUE;
-		long energyReceived = Math.min(capacity - energy, Math.min(maxReceive1, maxReceive));
+		long energyReceived = Math.min(capacity - energy, maxReceive);
 
 		if (!simulate) {
 			energy += energyReceived;
@@ -763,8 +762,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 	}
 
 	public int extractEnergy(int maxExtract, boolean simulate) {
-		int maxExtract1 = Integer.MAX_VALUE;
-		long energyExtracted = Math.min(energy, Math.min(maxExtract1, maxExtract));
+		long energyExtracted = Math.min(energy, maxExtract);
 
 		if (!simulate) {
 			energy -= energyExtracted;

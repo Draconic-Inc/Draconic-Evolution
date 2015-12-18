@@ -1,18 +1,24 @@
 package com.brandon3055.draconicevolution.client.handler;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
+import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemArmor;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.Random;
 
@@ -125,5 +131,20 @@ public class ClientEventHandler {
 		remountTicksRemaining = 500;
 		remountEntityID = id;
 		LogHelper.info("Started checking for player mount");
+	}
+
+	@SubscribeEvent
+	public void renderArmorEvent(RenderPlayerEvent.SetArmorModel event) {
+		if (ConfigHandler.useOriginal3DArmorModel) return;
+		if (event.stack != null && (event.stack.getItem() instanceof DraconicArmor || event.stack.getItem() instanceof WyvernArmor))
+		{
+			ItemArmor itemarmor = (ItemArmor)event.stack.getItem();
+			ModelBiped modelbiped = itemarmor.getArmorModel(event.entityPlayer, event.stack, event.slot);
+			event.renderer.setRenderPassModel(modelbiped);
+			modelbiped.onGround = event.renderer.modelBipedMain.onGround;
+			modelbiped.isRiding = event.renderer.modelBipedMain.isRiding;
+			modelbiped.isChild = event.renderer.modelBipedMain.isChild;
+			event.result = 1;
+		}
 	}
 }

@@ -25,13 +25,13 @@ public class RenderChaosCrystal extends Render {
 	}
 
 	public void doRender(EntityChaosCrystal crystal, double x, double y, double z, float f, float partialTick) {
-		float rotation = (float)crystal.innerRotation + (crystal.getHealth() > 0 ? partialTick : 0);
+		float rotation = (float)crystal.innerRotation + (crystal.health > 0 ? partialTick : 0);
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		ResourceHandler.bindResource("textures/entity/chaosCrystal.png");
 		float r2 = MathHelper.sin(rotation * 0.2F) / 2.0F + 0.5F;
 		r2 += r2 * r2;
-		this.model.render(crystal, 0.0F, rotation * 3.0F, r2 * 0.2F, crystal.deathAnimation, crystal.getHealth(), 0.0625F);
+		this.model.render(crystal, 0.0F, rotation * 3.0F, r2 * 0.2F, crystal.deathAnimation, crystal.health, 0.0625F);
 
 		GL11.glPopMatrix();
 

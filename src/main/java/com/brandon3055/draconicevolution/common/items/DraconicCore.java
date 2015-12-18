@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,6 +40,7 @@ public class DraconicCore extends ItemDE {
 			TileEntityMobSpawner oldSpawner = world.getTileEntity(x, y, z) instanceof TileEntityMobSpawner ? (TileEntityMobSpawner)world.getTileEntity(x, y, z) : null;
 			if (oldSpawner == null) return false;
 			String mobName = oldSpawner.func_145881_a().getEntityNameToSpawn();
+			LogHelper.info(mobName);
 
 			world.setBlock(x, y, z, ModBlocks.customSpawner);
 			TileCustomSpawner newSpawner = world.getTileEntity(x, y, z) instanceof TileCustomSpawner ? (TileCustomSpawner)world.getTileEntity(x, y, z) : null;
@@ -47,6 +49,7 @@ public class DraconicCore extends ItemDE {
 				newSpawner.isSetToSpawn = true;
 				world.markBlockForUpdate(x, y, z);
 			}
+			LogHelper.info(newSpawner.getBaseLogic().entityName);
 
 			stack.splitStack(1);
 			return true;

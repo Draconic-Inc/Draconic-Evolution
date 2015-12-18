@@ -196,7 +196,7 @@ public abstract class CustomSpawnerBaseLogic {
 		this.spawnDelay = par1NBTTagCompound.getShort("Delay");
 		if ((!ConfigHandler.spawnerListType && Arrays.asList(ConfigHandler.spawnerList).contains(this.entityName)) || (ConfigHandler.spawnerListType && !Arrays.asList(ConfigHandler.spawnerList).contains(this.entityName))) {
 			this.entityName = "Pig";
-			((TileCustomSpawner)getSpawnerWorld().getTileEntity(getSpawnerX(), getSpawnerY(), getSpawnerZ())).isSetToSpawn = false;
+			par1NBTTagCompound.setBoolean("Running", false);
 		}
 
 		powered = par1NBTTagCompound.getBoolean("Powered");

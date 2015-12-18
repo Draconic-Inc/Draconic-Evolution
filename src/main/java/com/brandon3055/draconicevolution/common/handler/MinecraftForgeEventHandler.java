@@ -98,7 +98,6 @@ public class MinecraftForgeEventHandler {
 				try {
 					persistenceRequired.setBoolean(entity, false);
 					entity.getEntityData().removeTag("SpawnedByDESpawner");
-					LogHelper.info("Tag Removed From " + entity);
 				} catch (Exception e) {
 					LogHelper.warn("Error occured while resetting entity persistence: " + e);
 					entity.getEntityData().removeTag("SpawnedByDESpawner");
@@ -401,7 +400,6 @@ public class MinecraftForgeEventHandler {
 	@SubscribeEvent
 	public void playerInteract(PlayerInteractEvent event){
 		if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK){
-
 			ForgeDirection face = ForgeDirection.getOrientation(event.face);
 			int x = event.x + face.offsetX;
 			int y = event.y + face.offsetY;

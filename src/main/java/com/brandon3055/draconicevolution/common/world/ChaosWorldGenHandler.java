@@ -7,6 +7,8 @@ import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.entity.EntityChaosCrystal;
 import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.tileentities.TileChaosShard;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -111,6 +113,9 @@ public class ChaosWorldGenHandler {
 		}
 
 		world.setBlock(islandCenter.x, shardY, islandCenter.z, ModBlocks.chaosCrystal);
+		TileChaosShard tileChaosShard = (TileChaosShard)world.getTileEntity(islandCenter.x, shardY, islandCenter.z);
+		tileChaosShard.locationHash = tileChaosShard.getLocationHash(islandCenter.x, shardY, islandCenter.z, world.provider.dimensionId);
+
 		EntityChaosGuardian guardian = new EntityChaosGuardian(world);
 		guardian.setPositionAndUpdate(islandCenter.x, shardY, islandCenter.z);
 		world.spawnEntityInWorld(guardian);
@@ -168,7 +173,7 @@ public class ChaosWorldGenHandler {
 
 
 	public static DataUtills.XZPair<Integer, Integer> getClosestChaosSpawn(int chunkX, int chunkZ){
-		return new DataUtills.XZPair<Integer, Integer>(Utills.getNearestMultiple(chunkX * 16, 10000), Utills.getNearestMultiple(chunkZ*16, 10000));
+		return new DataUtills.XZPair<Integer, Integer>(Utills.getNearestMultiple(chunkX * 16, ConfigHandler.chaosIslandSeparation), Utills.getNearestMultiple(chunkZ*16, ConfigHandler.chaosIslandSeparation));
 	}
 
 	private static void generateObelisks(World world, DataUtills.XZPair<Integer, Integer> islandCenter, Random rand) {

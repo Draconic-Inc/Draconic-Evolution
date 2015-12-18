@@ -1,3 +1,33 @@
+######## 1.0.2-Snapshot 9 ########
+-added config option to adjust the distance between chaos islands.
+-fixed infused obsidian and draconium blocks wither resistance.
+-nurfed crasy op weapons effectiveness against the chaos guardian a little. 
+-hopefully fixed the chaos guardian crystal syncing issue (cant reproduce this so not sure if its actually fixed)
+-fixed the damage bonus on draconic weapons (+X% mob health) now works on dragons including the chaos guardian.
+-addressed the issue of certain mod items being able to move the chaos crystal...
+-added some missing localization.
+-disabled enchant effect on armor.
+-fixed issue with particle gen view distance.
+-added config option to reanable the original 3D armor models by Skeletonpunk.
+-field drain rate (now called field input rate) in the reactor gui makes more sense now.
+-added hover text to values in the reactor stats page.
+-fixed some bugs in the reactor code.
+-fixed a minor bug in the custom spwner blacklist.
+-
+-
+-
+-
+
+######## 1.0.2-Snapshot 8-bugfix ########
+-fixed crash in information tablet.
+-removed console spam from entities spawned by the stabilized spawner. 
+-increased energy infuser buffer and transfer rate to 10m.
+-updated chaos island documentation.
+-added documentation for chaos shard and chaotic core.
+
+######## 1.0.2-Snapshot 7-bugfix ########
+-fixed some missing texture errors.
+
 ######## 1.0.2-Snapshot 6 ########
 -added new textures and models for ALL THE THINGS! Thanks to @Sn0wShepherd
 -added config option to disable custom tool models.
@@ -18,7 +48,7 @@
 -rewrote chaos island and chaos guardian.
 -added CC and OC support to reactor, flow gates and energy core.
 -re implemented the ability to disable item lore.
--fixed conflict with draconic helm and tcon cleaver mining fateige.
+-fixed conflict with draconic helm and tcon cleaver mining fatigue.
 -added draconium and awakened draconium nuggets.
 -added Chaos Crystal.
 -added Chaos Shard and Chaos Fragments.

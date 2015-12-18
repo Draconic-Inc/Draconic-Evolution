@@ -1,9 +1,10 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
@@ -11,6 +12,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.player.EntityPlayer;
@@ -146,6 +149,17 @@ public class ToolHandler {
 		{
 			float entHealth = ((EntityLivingBase) entity).getHealth();
 			baseAttack += (entHealth * dmgMult);
+		}
+
+		if (entity instanceof EntityDragonPart)
+		{
+			List <EntityDragon> list = player.worldObj.getEntitiesWithinAABB(EntityDragon.class, entity.boundingBox.expand(10, 10, 10));
+			if (!list.isEmpty() && list.get(0) instanceof EntityDragon){
+				EntityDragon dragon = list.get(0);
+				float entHealth = dragon.getHealth();
+				baseAttack += (entHealth * dmgMult);
+				LogHelper.info(baseAttack);
+			}
 		}
 
 		if (!player.capabilities.isCreativeMode && ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < (int)(baseAttack / 2) * References.ENERGYPERATTACK) return;

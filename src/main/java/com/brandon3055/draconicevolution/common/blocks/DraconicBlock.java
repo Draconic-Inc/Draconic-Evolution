@@ -7,7 +7,9 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 /**
  * Created by Brandon on 21/11/2014.
@@ -27,6 +29,9 @@ public class DraconicBlock extends BlockDE {
 	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
 		return false;
 	}
+
+	@Override
+	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {}
 
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister) {

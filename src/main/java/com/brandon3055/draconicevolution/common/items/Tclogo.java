@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import com.brandon3055.draconicevolution.client.handler.ContributorHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
@@ -112,6 +111,9 @@ public class Tclogo extends ItemDE {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 
+
+
+
 //		if ((int)System.currentTimeMillis() < lts + 10) return stack;
 //		else lts = (int)System.currentTimeMillis();
 		//world.playSound(player.posX, player.posY, player.posZ, "DraconicEvolution:fusionExplosion", 1F, 1F, false);
@@ -136,9 +138,35 @@ public class Tclogo extends ItemDE {
 
 		if (!world.isRemote)
 		{
-			LogHelper.info(ContributorHandler.contributors);
-			ContributorHandler.init();
-			LogHelper.info(ContributorHandler.contributors);
+			int x = 45622;
+			LogHelper.info("45622".hashCode());
+
+
+			int xCoord = 0;
+			int yCoord = 0;
+			int zCoord = 0;
+
+
+
+			int locationHash = (String.valueOf(xCoord)+String.valueOf(yCoord)+String.valueOf(zCoord)).hashCode();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//	LogHelper.info(ContributorHandler.contributors);
+		//	ContributorHandler.init();
+		//	LogHelper.info(ContributorHandler.contributors);
 
 			//EntityFallingBlock fallingBlock = new EntityFallingBlock(world, (int)player.posX + 0.5, (int)player.posY + 0.5, (int)player.posZ + 0.5, Blocks.obsidian, 0);
 			//fallingBlock.field_145812_b = 2;

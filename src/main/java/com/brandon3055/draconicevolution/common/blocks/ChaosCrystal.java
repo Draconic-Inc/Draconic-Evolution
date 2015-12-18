@@ -3,18 +3,23 @@ package com.brandon3055.draconicevolution.common.blocks;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.entity.EntityChaosVortex;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileChaosShard;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -75,11 +80,32 @@ public class ChaosCrystal extends BlockDE {
 
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int i) {
+		if (!world.isRemote && world.getTileEntity(x, y, z) instanceof TileChaosShard){
+			((TileChaosShard)world.getTileEntity(x, y, z)).detonate();
+		}
 		super.breakBlock(world, x, y, z, block, i);
-		if (!world.isRemote){
-			EntityChaosVortex vortex = new EntityChaosVortex(world);
-			vortex.setPosition(x+0.5, y+0.5, z+0.5);
-			world.spawnEntityInWorld(vortex);
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
+		entity.attackEntityFrom(punishment, Float.MAX_VALUE);
+	}
+
+	private static String[] naughtyList = new String[] {"item.blockMover", "tile.CardboardBox", "item.WandCasting"};
+	private static DamageSource punishment = new DamageSource("chrystalMoved").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
+
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z) {
+		List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(x, y, z, x, y, z).expand(15, 15, 15));
+
+		for (EntityPlayer player : players){
+			if (player.getHeldItem() != null){
+				for (String s : naughtyList){
+					if (player.getHeldItem().getUnlocalizedName().equals(s)){
+						player.attackEntityFrom(punishment, Float.MAX_VALUE);
+					}
+				}
+			}
 		}
 	}
 }

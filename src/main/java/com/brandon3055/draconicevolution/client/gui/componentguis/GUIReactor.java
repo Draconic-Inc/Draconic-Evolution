@@ -121,13 +121,13 @@ public class GUIReactor extends GUIBase {
 		else if (GuiHelper.isInRect(33, 4, 18, 114, mouseX-guiLeft, mouseY-guiTop)){
 			text.add(StatCollector.translateToLocal("gui.de.fieldStrength.txt"));
 			if (reactor.maxFieldCharge > 0) text.add(Utills.round(reactor.fieldCharge / reactor.maxFieldCharge * 100D, 100D) + "%");
-			text.add((int)reactor.fieldCharge + " / " + (int)reactor.maxFieldCharge); //todo refine or remove
+			text.add(Utills.addCommas((int)reactor.fieldCharge) + " / " + Utills.addCommas((int)reactor.maxFieldCharge)); //todo refine or remove
 			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
 		}
 		else if (GuiHelper.isInRect(197, 4, 18, 114, mouseX-guiLeft, mouseY-guiTop)){
 			text.add(StatCollector.translateToLocal("gui.de.energySaturation.txt"));
 			if (reactor.maxEnergySaturation > 0) text.add(Utills.round((double)reactor.energySaturation / (double)reactor.maxEnergySaturation * 100D, 100D) + "%");
-			text.add(reactor.energySaturation + " / " + reactor.maxEnergySaturation); //todo refine or remove
+			text.add(Utills.addCommas(reactor.energySaturation) + " / " + Utills.addCommas(reactor.maxEnergySaturation)); //todo refine or remove
 			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
 		}
 		else if (GuiHelper.isInRect(221, 4, 18, 114, mouseX-guiLeft, mouseY-guiTop)){
@@ -136,29 +136,41 @@ public class GUIReactor extends GUIBase {
 			text.add(reactor.convertedFuel + " / " + (reactor.convertedFuel + reactor.reactorFuel)); //todo refine or remove
 			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
 		}
+		else if (GuiHelper.isInRect(53, 15, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
+			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacTempLoadFactor.txt"), 200));
+			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+		}
+		else if (GuiHelper.isInRect(53, 40, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
+			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacCoreMass.txt"), 200));
+			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+		}
+		else if (GuiHelper.isInRect(53, 65, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
+			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacGenRate.txt"), 200));
+			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+		}
+		else if (GuiHelper.isInRect(53, 88, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
+			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacInputRate.txt"), 200));
+			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+		}
+		else if (GuiHelper.isInRect(53, 113, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
+			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacConversionRate.txt"), 200));
+			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+		}
 	}
 
 	private void drawStats(){
-		/*
-		* Values To Add
-		* -tempDrainFactor (Temperature load factor?)
-		* -mass
-		* -generation rate
-		* -field drain rate
-		* -fuel conversion rate
-		* */
 
+		double inputRate = reactor.fieldDrain / (1D - (reactor.fieldCharge / reactor.maxFieldCharge));
 		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.tempLoad.name"), 55, 16, 0x0000FF);
-		fontRendererObj.drawString(""+reactor.tempDrainFactor, 60, 2 + 24, 0);
+		fontRendererObj.drawString(Utills.round(reactor.tempDrainFactor * 100D, 1D) + "%", 60, 2 + 24, 0);
 		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.mass.name"), 55, 16 + 24, 0x0000FF);
-		fontRendererObj.drawString(Utills.round((reactor.reactorFuel + reactor.convertedFuel)/1296D, 100)+"m³", 60, 2 + 2 * 24, 0);
+		fontRendererObj.drawString(Utills.round((reactor.reactorFuel + reactor.convertedFuel)/1296D, 100)+"m^3", 60, 2 + 2 * 24, 0);
 		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.genRate.name"), 55, 16 + 2 * 24, 0x0000FF);
 		fontRendererObj.drawString(Utills.addCommas((int)reactor.generationRate)+"RF/t", 60, 2 + 3 * 24, 0);
-		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.fieldDrainRate.name"), 55, 16 + 3 * 24, 0x0000FF);
-		fontRendererObj.drawString(Utills.addCommas(reactor.fieldDrain)+"RF/t", 60, 2 + 4 * 24, 0);
+		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.fieldInputRate.name"), 55, 16 + 3 * 24, 0x0000FF);
+		fontRendererObj.drawString(Utills.addCommas((int)Math.min(inputRate, Integer.MAX_VALUE))+"RF/t", 60, 2 + 4 * 24, 0);
 		fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.fuelConversion.name"), 55, 16 + 4 * 24, 0x0000FF);
 		fontRendererObj.drawString(Utills.addCommas((int)Math.round(reactor.fuelUseRate * 1000000D)) + "nb/t", 60, 2 + 5 * 24, 0);
-
 	}
 
 	@Override

@@ -29,6 +29,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
 	public int shieldTime = 0;
 	public EntityChaosGuardian guardian;
 	private int timeTillDeath = -1;
+	public float health = 50;
 
 	public EntityChaosCrystal(World p_i1698_1_) {
 		super(p_i1698_1_);
@@ -55,6 +56,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
 	public void entityInit() {
 		super.entityInit();
 		dataWatcher.addObject(20, (short)shieldTime);
+		dataWatcher.addObject(21, health);
 	}
 
 	@Override
@@ -63,10 +65,17 @@ public class EntityChaosCrystal extends EntityLivingBase {
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 
-		if (!worldObj.isRemote)dataWatcher.updateObject(20, (short)shieldTime);
-		else shieldTime = (int)dataWatcher.getWatchableObjectShort(20);
+		if (!worldObj.isRemote){
+			health = getHealth();
+			dataWatcher.updateObject(20, (short)shieldTime);
+			dataWatcher.updateObject(21, health);
+		}
+		else {
+			shieldTime = (int)dataWatcher.getWatchableObjectShort(20);
+			health = dataWatcher.getWatchableObjectFloat(21);
+		}
 		//setHealth(0);
-		if (getHealth() > 0){
+		if (health > 0){
 			if (shieldTime > 0) shieldTime--;
 			if (deathAnimation < 1F) deathAnimation += 0.1F;
 			++this.innerRotation;
@@ -106,6 +115,11 @@ public class EntityChaosCrystal extends EntityLivingBase {
 			}
 			this.setDead();
 		}
+	}
+
+	@Override
+	public boolean isEntityAlive() {
+		return !isDead;
 	}
 
 	public void setDeathTimer(){
@@ -151,7 +165,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
 				}
 				if (getGuardian() != null) getGuardian().onCrystalTargeted((EntityPlayer)source.getEntity(), getHealth() <= 0);
 				return true;
-			}else if (shieldTime > 0) shieldTime = 100 + rand.nextInt(100);
+			}else if (shieldTime > 0 && !this.worldObj.isRemote) shieldTime = 100 + rand.nextInt(100);
 		}
 		return false;
 	}
@@ -175,7 +189,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
 		if (getGuardian() != null) getGuardian().updateCrystals();
 	}
 
-	public boolean isAlive() { return getHealth() > 0F; }
+	public boolean isAlive() { return health > 0F; }
 
 	@Override
 	public ItemStack getHeldItem() {

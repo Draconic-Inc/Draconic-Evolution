@@ -24,8 +24,8 @@ import java.util.Random;
  */
 public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver, ISidedInventory {
 	ItemStack[] items = new ItemStack[1];
-	public EnergyStorage energy = new EnergyStorage(1000000);
-	public int maxInput = 1000000;
+	public EnergyStorage energy = new EnergyStorage(10000000);
+	public int maxInput = 10000000;
 	public boolean running = false;
 	public boolean runningCach = false;
 	private int tick = 0;

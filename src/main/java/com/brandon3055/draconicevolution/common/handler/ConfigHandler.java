@@ -18,6 +18,7 @@ public class ConfigHandler {
 	public static int cometRarity;
 	public static int hudX;
 	public static int hudY;
+	public static int chaosIslandSeparation;
 	public static boolean generateEnderComets;
 	public static boolean generateChaosIslands;
 	public static boolean pigmenBloodRage;
@@ -42,6 +43,7 @@ public class ConfigHandler {
 	public static boolean speedLimitops;
 	public static boolean rapidlyDespawnMinedItems;
 	public static boolean useOldArmorModel;
+	public static boolean useOriginal3DArmorModel;
 	public static boolean useOldD2DToolTextures;
 
 	//spawner
@@ -111,6 +113,9 @@ public class ConfigHandler {
 			useOldArmorModel = config.get(Configuration.CATEGORY_GENERAL, "Use old armor model", false, "If true the armor will use the original vanilla 2D model instead of the new 3D models").getBoolean(false);
 			sumonRitualAccelerated = config.get(Configuration.CATEGORY_GENERAL, "Fast Summon Ritual", false, "If true the resurrection ritual will be a lot faster").getBoolean(false);
 			useOldD2DToolTextures = config.get(Configuration.CATEGORY_GENERAL, "Use old 2D tool textures", false, "If true the 3D tool models will be replaced with standard 2D textures").getBoolean(false);
+			chaosIslandSeparation = config.get(Configuration.CATEGORY_GENERAL, "Chaos Island Separation", 10000, "This sets how far apart the chaos islands will spawn. The islands spawn in a grid pattern.").getInt(10000);
+			useOriginal3DArmorModel = config.get(Configuration.CATEGORY_GENERAL, "Use the original 3D armor models", false, "If true the original 3D armor models created by Skeletonpunk will be used instead of the current ones").getBoolean(false);
+
 
 			//Spawner
 			spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);

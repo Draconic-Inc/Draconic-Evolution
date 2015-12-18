@@ -52,7 +52,10 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 	public int activeCrystals = 0;
 
 	public EntityChaosCrystal healingChaosCrystal;
-	public int connectedCrystalID = -1;
+//	public int connectedCrystalID = -1;
+	public int crystalX = 0;
+	public int crystalY = -1;
+	public int crystalZ = 0;
 
 	private static final int ATTACK_FIREBALL_CHARGE = 0;
 	private static final int ATTACK_FIREBALL_CHASER = 1;
@@ -72,7 +75,10 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		dataWatcher.addObject(20, connectedCrystalID);
+//		dataWatcher.addObject(20, connectedCrystalID);
+		dataWatcher.addObject(21, crystalX);
+		dataWatcher.addObject(22, crystalY);
+		dataWatcher.addObject(23, crystalZ);
 	}
 
 	@Override
@@ -106,9 +112,12 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 		float moveSpeedMultiplier = behaviour.dragonSpeed;
 
 		if (this.worldObj.isRemote) {
-			connectedCrystalID = dataWatcher.getWatchableObjectInt(20);
-			if (ticksExisted % 10 == 0 && connectedCrystalID != -1 && worldObj.getEntityByID(connectedCrystalID) instanceof EntityChaosCrystal) healingChaosCrystal = (EntityChaosCrystal)worldObj.getEntityByID(connectedCrystalID);
-			else if (connectedCrystalID == -1 && healingChaosCrystal != null) healingChaosCrystal = null;
+//			connectedCrystalID = dataWatcher.getWatchableObjectInt(20);
+			crystalX = dataWatcher.getWatchableObjectInt(21);
+			crystalY = dataWatcher.getWatchableObjectInt(22);
+			crystalZ = dataWatcher.getWatchableObjectInt(23);
+//			if (ticksExisted % 10 == 0 && connectedCrystalID != -1 && worldObj.getEntityByID(connectedCrystalID) instanceof EntityChaosCrystal) healingChaosCrystal = (EntityChaosCrystal)worldObj.getEntityByID(connectedCrystalID);
+//			else if (connectedCrystalID == -1 && healingChaosCrystal != null) healingChaosCrystal = null;
 
 			f = MathHelper.cos(this.animTime * (float) Math.PI * 2.0F);
 			f1 = MathHelper.cos(this.prevAnimTime * (float) Math.PI * 2.0F);
@@ -122,7 +131,10 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 		float f2;
 
 		if (!worldObj.isRemote) {
-			dataWatcher.updateObject(20, connectedCrystalID);
+//			dataWatcher.updateObject(20, connectedCrystalID);
+			dataWatcher.updateObject(21, crystalX);
+			dataWatcher.updateObject(22, crystalY);
+			dataWatcher.updateObject(23, crystalZ);
 			updateTarget();
 
 			if (worldObj.getClosestPlayer(posX, posY, posZ, 500) == null && getDistance(homeX, homeY, homeZ) < 100) DragonChunkLoader.stopLoading(this);
@@ -390,6 +402,15 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 		if (getHealth() > 0 && getHealth() < getMaxHealth() * 0.2F) behaviour = EnumBehaviour.LOW_HEALTH_STRATEGY;
 
+		if (ticksExisted % 200 == 0) {
+			crystals = null;
+			activeCrystals = 0;
+			crystalY = -1;
+//			connectedCrystalID = -1;
+			healingChaosCrystal = null;
+			updateCrystals();
+		}
+
 
 		switch (behaviour){
 			case ROAMING:
@@ -409,7 +430,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 			case CIRCLE_PLAYER:
 				circlePosition += (0.02F * circleDirection);
-				if (Utills.getDistanceAtoB(posX, posZ, homeX, homeZ) > 300) behaviour = EnumBehaviour.GO_HOME;
+				if (Utills.getDistanceAtoB(posX, posZ, homeX, homeZ) > 300 || posY > 250) behaviour = EnumBehaviour.GO_HOME;
 				break;
 
 			case LOW_HEALTH_STRATEGY:
@@ -438,6 +459,8 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 //ignitionChargeTimer = 10;
 
 		if (behaviour == EnumBehaviour.DEAD) return;
+
+		if (ticksExisted % 1000 == 0 && rand.nextBoolean()) selectNewBehaviour();
 
 		if (ignitionChargeTimer > 1 || (ignitionChargeTimer == 1 && ticksExisted % 20 == 0))ignitionChargeTimer--;
 		if (ignitionChargeTimer <= 0 && !worldObj.isRemote){
@@ -728,6 +751,8 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			dmg = dmg / 4.0F + 1.0F;
 		}
 
+		if (dmg > 50) dmg -= ((dmg-50)*0.7);
+
 		switch (behaviour){
 			case ROAMING:
 				break;
@@ -784,7 +809,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 		{
 		//	if (getHealth() > 1F)setHealth(1F);//tod and remove this!
 			this.func_82195_e(damageSource, dmg);
-		}
+		} else if (damageSource.getEntity() instanceof EntityPlayer) ((EntityPlayer)damageSource.getEntity()).addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_PURPLE+StatCollector.translateToLocal("msg.de.guardianAttackBlocked.txt")));
 
 		return true;
 	}
@@ -959,7 +984,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			{
 				Entity entity = (Entity) par1List.get(i);
 
-				if (entity instanceof EntityLivingBase)
+				if (entity instanceof EntityPlayer)
 				{
 					((EntityLivingBase) entity).setLastAttacker(this);
 					entity.attackEntityFrom(new DamageSourceChaos(this), 50F);
@@ -976,7 +1001,8 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 		if (getHealth() <= 0) {
 			healingChaosCrystal = null;
-			connectedCrystalID = -1;
+			crystalY = -1;
+//			connectedCrystalID = -1;
 			return;
 		}
 
@@ -994,8 +1020,16 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			EntityChaosCrystal closest = null;
 			for (EntityChaosCrystal crystal : crystals) if (crystal.isAlive() && (closest == null || getDistanceToEntity(crystal) < getDistanceToEntity(closest))) closest = crystal;
 			healingChaosCrystal = closest;
-			if (healingChaosCrystal != null) connectedCrystalID = healingChaosCrystal.getEntityId();
-			else connectedCrystalID = -1;
+			if (healingChaosCrystal != null) {
+//				connectedCrystalID = healingChaosCrystal.getEntityId();
+				crystalX = (int)Math.floor(healingChaosCrystal.posX);
+				crystalY = (int)Math.floor(healingChaosCrystal.posY);
+				crystalZ = (int)Math.floor(healingChaosCrystal.posZ);
+			}
+			else {
+				crystalY = -1;
+//				connectedCrystalID = -1;
+			}
 		}
 	}
 

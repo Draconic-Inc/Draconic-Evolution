@@ -98,6 +98,7 @@ public class TileReactorCore extends TileObjectSync {
 			checkPlayerCollision();
 			return;
 		}
+		//else injectEnergy(10000000);
 
 
 		switch (reactorState){
@@ -147,6 +148,8 @@ public class TileReactorCore extends TileObjectSync {
 			int totalFuel = reactorFuel + convertedFuel;
 			maxFieldCharge = totalFuel * 96.45061728395062 * 100;
 			maxEnergySaturation = (int)(totalFuel * 96.45061728395062 * 1000);
+			if (energySaturation > maxEnergySaturation) energySaturation = maxEnergySaturation;
+			if (fieldCharge > maxFieldCharge) fieldCharge = maxFieldCharge;
 			startupInitialized = true;
 		}
 	}
@@ -158,6 +161,7 @@ public class TileReactorCore extends TileObjectSync {
 	public double tempDrainFactor;
 	public double generationRate;
 	public int fieldDrain;
+	public double fieldInputRate;
 	public double fuelUseRate;
 
 	private void runTick(){
@@ -209,6 +213,10 @@ public class TileReactorCore extends TileObjectSync {
 
 		//Field Drain Calculation
 		fieldDrain = (int)Math.min(tempDrainFactor * (1D-saturation) * (baseMaxRFt / 10.923556), (double) Integer.MAX_VALUE); //<(baseMaxRFt/make smaller to increase field power drain)
+
+		double fieldNegPercent = 1D - (fieldCharge / maxFieldCharge);
+		fieldInputRate = fieldDrain / fieldNegPercent;
+
 //		LogHelper.info(fieldDrain+" "+tempDrainFactor+" "+(1D-saturation)+" "+tempDrainFactor * (1D-saturation) * (baseMaxRFt/10.923556));
 		fieldCharge -= fieldDrain;
 		//======================

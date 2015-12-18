@@ -106,7 +106,7 @@ public class TileParticleGenerator extends TileEntity {
 				particle.fadeLength = this.fade;
 				particle.gravity = this.gravity;
 
-				ParticleHandler.spawnCustomParticle(particle);
+				ParticleHandler.spawnCustomParticle(particle, 256);
 
 		} else tick++;
 	}

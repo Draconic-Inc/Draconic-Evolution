@@ -21,7 +21,7 @@ import java.util.Arrays;
 		"after:NotEnoughItems;" +
 		"after:ThermalExpansion;" +
 		"after:ThermalFoundation;" +
-		"required-after:BrandonsCore@[1.0.0.9,);")
+		"required-after:BrandonsCore@[1.0.0.10,);")
 public class DraconicEvolution {
 
 	@Mod.Instance(References.MODID)
@@ -66,7 +66,7 @@ public class DraconicEvolution {
 	public void init(final FMLInitializationEvent event)
 	{if(debug)
 		System.out.println("init()");
-		
+
 		proxy.init(event);
 	}
 

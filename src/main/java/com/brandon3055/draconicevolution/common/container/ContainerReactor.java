@@ -11,6 +11,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import java.util.Iterator;
+
 /**
  * Created by brandon3055 on 30/7/2015.
  */
@@ -64,11 +66,13 @@ public class ContainerReactor extends ContainerDataSync {
 	public double LTGenerationRate = -1;
 	public int LTFieldDrain = -1;
 	public double LTFuelUseRate = -1;
+	public boolean LTOffline;
 	//#######
 
 	public ContainerReactor(EntityPlayer player, TileReactorCore reactor){
 		this.reactor = reactor;
 		this.player = player;
+		this.LTOffline = reactor.reactorState == TileReactorCore.STATE_OFFLINE;
 
 		for (int x = 0; x < 9; x++) {
 			addSlotToContainer(new Slot(player.inventory, x, 44 + 18 * x, 198));
@@ -103,6 +107,23 @@ public class ContainerReactor extends ContainerDataSync {
 	@Override
 	public void detectAndSendChanges() { //todo check what values are being synced by the tile and remove them from here
 
+		if (LTOffline && reactor.reactorState != TileReactorCore.STATE_OFFLINE){
+			Iterator i = inventorySlots.iterator();
+			while (i.hasNext()) {
+				Object o = i.next();
+				if (o instanceof SlotExtract || o instanceof SlotInsert) i.remove();
+			}
+			sendObjectToClient(null, 99, 1);
+		}
+		else if(!LTOffline && reactor.reactorState == TileReactorCore.STATE_OFFLINE){
+			addSlotToContainer(new SlotInsert(ioSlots, 0, 15, 140, reactor));
+			addSlotToContainer(new SlotExtract(ioSlots, 1, 217, 140));
+			sendObjectToClient(null, 98, 1);
+		}
+		LTOffline = reactor.reactorState == TileReactorCore.STATE_OFFLINE;
+
+
+
 		if (reactor.conversionUnit != LTConversionUnit)				LTConversionUnit = 		(Integer) sendObjectToClient(null, 0, (int)(reactor.conversionUnit*100));
 //		if ((int)reactor.reactionTemperature != LTReactionIntensity)LTReactionIntensity = 	(Integer) sendObjectToClient(null, 1, (int) reactor.reactionTemperature);
 //		if ((int)reactor.maxReactTemperature != LTMaxReactIntensity)LTMaxReactIntensity = 	(Integer) sendObjectToClient(null, 2, (int) reactor.maxReactTemperature);
@@ -134,8 +155,19 @@ public class ContainerReactor extends ContainerDataSync {
 		else if (index == 9) reactor.generationRate = value;
 		else if (index == 10) reactor.fieldDrain = value;
 		else if (index == 11) reactor.fuelUseRate = value/1000000D;
-		if (index == 20){
-			reactor.processButtonPress(value);
+		if (index == 20)reactor.processButtonPress(value);
+		if (index == 99)
+		{
+			Iterator i = inventorySlots.iterator();
+			while (i.hasNext()) {
+				Object o = i.next();
+				if (o instanceof SlotExtract || o instanceof SlotInsert) i.remove();
+			}
+		}
+		else if (index == 98)
+		{
+			addSlotToContainer(new SlotInsert(ioSlots, 0, 15, 140, reactor));
+			addSlotToContainer(new SlotExtract(ioSlots, 1, 217, 140));
 		}
 	}
 
@@ -178,7 +210,6 @@ public class ContainerReactor extends ContainerDataSync {
 				ioSlots.getStorage()[1] = new ItemStack(ModItems.chaosFragment, i2, 0);
 				reactor.convertedFuel -= i2 * 16;
 			}
-
 		}
 		return super.slotClick(slot, button, p_75144_3_, player1);
 	}

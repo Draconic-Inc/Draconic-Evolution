@@ -4,7 +4,8 @@ import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.model.ModelDraconicArmorOBJ;
+import com.brandon3055.draconicevolution.client.model.ModelDraconicArmorOld;
+import com.brandon3055.draconicevolution.client.model.ModelDraconicArmor;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
@@ -346,35 +347,38 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
 		if (ConfigHandler.useOldArmorModel) return super.getArmorModel(entityLiving, itemStack, armorSlot);
 
-		if (model == null) {
-			if (armorType == 0) model = new ModelDraconicArmorOBJ(1.1F, true, false, false, false);
-			else if (armorType == 1) model = new ModelDraconicArmorOBJ(1.1F, false, true, false, false);
-			else if (armorType == 2) model = new ModelDraconicArmorOBJ(1.1F, false, false, true, false);
-			else model = new ModelDraconicArmorOBJ(1.1F, false, false, false, true);
-
-			this.model.bipedHead.showModel = (armorType == 0);
-			this.model.bipedHeadwear.showModel = (armorType == 0);
-			this.model.bipedBody.showModel = ((armorType == 1) || (armorType == 2));
-			this.model.bipedLeftArm.showModel = (armorType == 1);
-			this.model.bipedRightArm.showModel = (armorType == 1);
-			this.model.bipedLeftLeg.showModel = (armorType == 2 || armorType == 3);
-			this.model.bipedRightLeg.showModel = (armorType == 2 || armorType == 3);
+		if (!ConfigHandler.useOriginal3DArmorModel)
+		{
+			if (model == null) {
+				if (armorType == 0) model = new ModelDraconicArmor(1.1F, true, false, false, false);
+				else if (armorType == 1) model = new ModelDraconicArmor(1.1F, false, true, false, false);
+				else if (armorType == 2) model = new ModelDraconicArmor(1.1F, false, false, true, false);
+				else model = new ModelDraconicArmor(1.1F, false, false, false, true);
+				this.model.bipedHead.showModel = (armorType == 0);
+				this.model.bipedHeadwear.showModel = (armorType == 0);
+				this.model.bipedBody.showModel = ((armorType == 1) || (armorType == 2));
+				this.model.bipedLeftArm.showModel = (armorType == 1);
+				this.model.bipedRightArm.showModel = (armorType == 1);
+				this.model.bipedLeftLeg.showModel = (armorType == 2 || armorType == 3);
+				this.model.bipedRightLeg.showModel = (armorType == 2 || armorType == 3);
+			}
 		}
-
-//		if (model == null) {
-//			if (armorType == 0) model = new ModelDraconicArmor(1.1F, true, false, false, false, true);
-//			else if (armorType == 1) model = new ModelDraconicArmor(1.1F, false, true, false, false, true);
-//			else if (armorType == 2) model = new ModelDraconicArmor(1.1F, false, false, true, false, true);
-//			else model = new ModelDraconicArmor(1.1F, false, false, false, true, true);
-//
-//			this.model.bipedHead.showModel = (armorType == 0);
-//			this.model.bipedHeadwear.showModel = (armorType == 0);
-//			this.model.bipedBody.showModel = ((armorType == 1) || (armorType == 2));
-//			this.model.bipedLeftArm.showModel = (armorType == 1);
-//			this.model.bipedRightArm.showModel = (armorType == 1);
-//			this.model.bipedLeftLeg.showModel = (armorType == 2 || armorType == 3);
-//			this.model.bipedRightLeg.showModel = (armorType == 2 || armorType == 3);
-//		}
+		else
+		{
+			if (model == null) {
+				if (armorType == 0) model = new ModelDraconicArmorOld(1.1F, true, false, false, false, true);
+				else if (armorType == 1) model = new ModelDraconicArmorOld(1.1F, false, true, false, false, true);
+				else if (armorType == 2) model = new ModelDraconicArmorOld(1.1F, false, false, true, false, true);
+				else model = new ModelDraconicArmorOld(1.1F, false, false, false, true, true);
+				this.model.bipedHead.showModel = (armorType == 0);
+				this.model.bipedHeadwear.showModel = (armorType == 0);
+				this.model.bipedBody.showModel = ((armorType == 1) || (armorType == 2));
+				this.model.bipedLeftArm.showModel = (armorType == 1);
+				this.model.bipedRightArm.showModel = (armorType == 1);
+				this.model.bipedLeftLeg.showModel = (armorType == 2 || armorType == 3);
+				this.model.bipedRightLeg.showModel = (armorType == 2 || armorType == 3);
+			}
+		}
 
 		if (entityLiving == null) return model;
 
