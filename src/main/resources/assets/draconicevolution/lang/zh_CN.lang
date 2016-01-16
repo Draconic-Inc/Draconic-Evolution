@@ -1,0 +1,510 @@
+//Description format \n=Force new line \% at start of line=add half line space above line
+//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
+tile.draconicevolution:xRayBlock.name=影扭曲之焰
+tile.draconicevolution:sunDial.name=日晷
+tile.draconicevolution:weatherController.name=天气控制机
+tile.draconicevolution:draconiumOre.name=龙矿
+tile.draconicevolution:grinder.name=怪物磨床
+tile.draconicevolution:potentiometer.name=能量计
+tile.draconicevolution:rainSensor.name=降雨感应器
+tile.draconicevolution:particleGenerator.name=粒子发生机
+tile.draconicevolution:playerDetector.name=玩家探测器
+tile.draconicevolution:playerDetectorAdvanced.name=高级玩家探测器
+tile.draconicevolution:energyInfuser.name=能量注入器
+tile.draconicevolution:customSpawner.name=可控刷怪笼
+tile.draconicevolution:longRangeDislocator1.name=管理员级移位仪
+tile.draconicevolution:longRangeDislocator0.name=长距离级移位仪
+tile.draconicevolution:generator.name=发电机
+tile.draconicevolution:energyStorageCore.name=能量核心
+tile.draconicevolution:energyPylon.name=能量水晶柱
+tile.draconicevolution:draconium0.name=龙块
+tile.draconicevolution:draconium1.name=重生之石
+tile.draconicevolution:draconium2.name=充能龙块
+tile.draconicevolution:cKeyStone.name=创造钥匙孔
+tile.draconicevolution:dissEnchanter.name=祛魔台
+tile.draconicevolution:teleporterStand.name=移位仪基座石
+tile.draconicevolution:draconiumChest.name=龙箱
+tile.draconicevolution:draconicBlock.name=觉醒龙块
+tile.draconicevolution:infusedObsidian.name=混有龙之精华的黑曜石
+tile.draconicevolution:dislocatorReceptacle.name=移位收纳容器
+tile.draconicevolution:portal.name=传送门
+tile.draconicevolution:flowGateFlux.name=通量闸门
+tile.draconicevolution:flowGateFluid.name=流体闸门
+tile.draconicevolution:reactorCore.name=龙之反应核心
+tile.draconicevolution:reactorStabilizer.name=反应稳定装置
+tile.draconicevolution:reactorEnergyInjector.name=反应能量注入器
+tile.draconicevolution:chaosCrystal.name=混乱水晶
+
+tile.draconicevolution:energyCrystal0.name=能量中继水晶
+tile.draconicevolution:energyCrystal1.name=高级能量中继水晶
+tile.draconicevolution:energyCrystal2.name=能量传送水晶
+tile.draconicevolution:energyCrystal3.name=高级能量传送水晶
+tile.draconicevolution:energyCrystal4.name=无线能量传送水晶
+tile.draconicevolution:energyCrystal5.name=高级无线传送水晶
+
+//Item Information ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:awakenedCore.name=觉醒之核
+item.draconicevolution:draconiumIngot.name=龙锭
+item.draconicevolution:draconiumDust.name=龙尘
+item.draconicevolution:draconiumBlend.name=龙尘混合物(废弃)
+item.draconicevolution:dragonHeart.name=龙心
+item.draconicevolution:wyvernCore.name=毒龙核
+item.draconicevolution:sunFocus.name=日光焦点
+item.draconicevolution:tclogo.name=TCLogo
+item.draconicevolution:draconicCore.name=龙核
+item.draconicevolution:teleporterMKI.name=传送符咒
+item.draconicevolution:teleporterMKII.name=强化传送符咒
+
+info.teleporterInfGUI.txt=潜行时右击以打开GUI
+info.teleporterInfScroll.txt=潜行时用滚轮切换目的地
+
+item.draconicevolution:wyvernPickaxe.name=毒龙镐
+item.draconicevolution:wyvernShovel.name=毒龙铲
+item.draconicevolution:wyvernSword.name=毒龙剑
+item.draconicevolution:wyvernBow.name=毒龙弓
+item.draconicevolution:wyvernHelm.name=毒龙头盔
+item.draconicevolution:wyvernChest.name=毒龙胸甲
+item.draconicevolution:wyvernLeggs.name=毒龙护腿
+item.draconicevolution:wyvernBoots.name=毒龙靴子
+item.draconicevolution:draconicPickaxe.name=神龙镐
+item.draconicevolution:draconicAxe.name=神龙斧
+item.draconicevolution:draconicShovel.name=神龙铲
+item.draconicevolution:draconicHoe.name=神龙锄
+item.draconicevolution:draconicSword.name=神龙剑
+item.draconicevolution:draconicBow.name=神龙弓
+item.draconicevolution:draconicHelm.name=神龙头盔
+item.draconicevolution:draconicChest.name=神龙胸甲
+item.draconicevolution:draconicLeggs.name=神龙护腿
+item.draconicevolution:draconicBoots.name=神龙靴子
+item.draconicevolution:draconicDistructionStaff.name=恶龙之力权杖
+item.draconicevolution:mobSoul.name=生物灵魂
+item.draconicevolution:enderArrow.name=末影箭
+item.draconicevolution:safetyMatch.name=安全火柴
+item.draconicevolution:safetyMatchBox.name=安全火柴盒
+item.draconicevolution:key.name=钥匙
+item.draconicevolution:draconiumEnergyCore0.name=毒龙能量核心
+item.draconicevolution:draconiumEnergyCore1.name=龙能量核心
+item.draconicevolution:draconiumFluxCapacitor0.name=毒龙通量容器
+item.draconicevolution:draconiumFluxCapacitor1.name=神龙通量容器
+item.draconicevolution:draconicIngot.name=觉醒龙锭
+item.draconicevolution:creativeStructureSpawnerComet.name=生成彗星
+item.draconicevolution:creativeStructureSpawnerEnderIsland.name=生成末地岛
+item.draconicevolution:infoTablet.name=龙之平板
+item.draconicevolution:wrench.name=水晶绑定手杖
+item.draconicevolution:dezilsMarshmallow.name=Dezil的棉花糖
+item.draconicevolution:reactorCraftingPart.frame.name=反应稳定装置框架
+item.draconicevolution:reactorCraftingPart.rotorInner.name=反应稳定装置-内齿轮
+item.draconicevolution:reactorCraftingPart.rotorOuter.name=反应稳定装置-外齿轮
+item.draconicevolution:reactorCraftingPart.rotorAssembly.name=反应稳定装置-转轴
+item.draconicevolution:reactorCraftingPart.stabilizerRing.name=反应稳定装置-聚焦环
+item.draconicevolution:chaoticCore.name=混沌核心
+item.draconicevolution:chaosShard.name=混乱碎片
+item.draconicevolution:chaosFragment0.name=极小混乱碎片
+item.draconicevolution:chaosFragment1.name=小的混乱碎片
+item.draconicevolution:chaosFragment2.name=大的混乱碎片
+
+//Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
+itemGroup.toolsAndWeapons=龙之进化：工具&武器 
+itemGroup.blocksAndItems=龙之进化：方块&物品
+
+//Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
+msg.size0.txt=当前模式:单个方块
+msg.size1.txt=当前模式:3x3
+msg.size2.txt=当前模式:5x5
+msg.size3.txt=当前模式:7x7
+msg.size4.txt=当前模式:9x9
+msg.oblittrue.txt=§a销毁模式:§4开启
+msg.oblitfalse.txt=§a销毁模式:§2关闭
+msg.bowmoderapidfire.txt=§3射击模式:§6速射
+msg.bowmodesharpshooter.txt=§3射击模式:§6精准射击
+msg.bowmodeexplosive.txt=§3射击模式:§6爆炸
+msg.bowmodedevistation.txt=§3射击模式:§6毁灭!!!(创造模式专用)
+msg.bowoutofgunpowder.txt=§4你需要四份火药以开启爆炸模式
+msg.teleporterUnSet.txt=§c你需要设定目的地方可使用传送功能(潜行时右击)
+msg.teleporterBound.txt=§a绑定传送点至:
+msg.teleporterLowHealth.txt= §c你的生命值过低!
+msg.teleporterSentMob.txt=该生物被传送至
+msg.teleporterEntityDimensional.txt=§c你不能跨世界传送生物!
+msg.teleporterAlreadySet.txt=§c错误:该符咒最多只能绑定到一个位置
+msg.teleporterOutOfFuel.txt=§c燃料耗尽了!!!
+msg.teleporterOutOfPearls.txt=§c没有末影珍珠!!!
+msg.teleporterPlayerT1.txt=你需要一个更高级的移位器方可
+msg.teleporterPlayerConsent.txt=玩家必须处于潜行状态
+msg.spawnerInfo1.txt=生物类型
+msg.spawnerInfo2.txt=是否需要玩家
+msg.spawnerInfo3.txt=是否忽略生成条件
+msg.spawnerInfo4.txt=生成器等级
+msg.spawnerInfo5.txt=§3按下Shift查看等级信息
+msg.spawnerInfo6.txt=请求玩家: §3下界之星
+msg.spawnerInfo7.txt=忽略生成条件: §3Notch 的苹果
+msg.spawnerInfo8.txt=二阶:§3毒龙之核
+msg.spawnerInfo9.txt=三阶:§3觉醒之核
+msg.dislocatorUnsafe.txt=目的地不安全,请重试
+msg.dislocatorNoGround.txt=错误:找不到该世界
+msg.range.txt=范围:
+msg.energyStorageCoreUTA.txt=无法激活(无效配置)
+msg.SpawnDragonToFarFrom00.txt=错误:距离原点(0,0)太远
+msg.wrongKey.txt=这把钥匙和锁不对应
+msg.cKeyStoneType0.txt=永久激活(消耗要石)
+msg.cKeyStoneType1.txt=按钮激活
+msg.cKeyStoneType2.txt=开关激活
+msg.cKeyStoneType3.txt=按钮激活(消耗要石)
+msg.draconiumChestEditmode.txt=颜色编辑模式 =
+msg.draconiumChestRed.txt=红 =
+msg.draconiumChestGreen.txt=绿 =
+msg.draconiumChestBlue.txt=蓝 =
+msg.draconiumChestEditL1.txt=手持红,绿或蓝色染料右击以改变颜色
+msg.draconiumChestEditL2.txt=点击箱子上半部分增加数值
+msg.draconiumChestEditL3.txt=点击箱子下半部分减少数值
+msg.draconiumChestEditL4.txt=手持纸右击以记录颜色信息,供别的箱子使用
+msg.draconiumChestEdit2.txt=请手持一张纸而不是一堆纸
+msg.de.dragonDeath.txt=§5龙爆炸式的§5死亡§5暂时唤醒了这颗心
+msg.de.baseSafeAOW.txt=§9(§aAOE§a安全§a模式§a已§a开启§9)§c因§c检测到§ctile§centity§c操作§cC已被取消
+
+//Energy Net
+msg.de.wrenchMode.bind.txt=功能:绑定
+msg.de.wrenchMode.unBind.txt=功能:解绑
+msg.de.wrenchMode.unBindAll.txt=功能:全部解绑
+msg.de.wrenchMode.modeSwitch.txt=功能:切换模式
+msg.de.rightClickUnbind.txt=对着空气方块右击以解绑
+msg.de.boundTo.txt=绑定至
+msg.de.posSaved.txt=位置已经保存
+msg.de.invalidTile.txt=目标无效
+msg.de.outOfRange.txt=目标超出范围
+msg.de.maxConnections.txt=已达到连接上限
+msg.de.linked.txt=设备已连接
+msg.de.unLinked.txt=设备已断开
+msg.de.wrongSide.txt=无法连接到目标设备的这一面
+
++//Reactor
++msg.de.reactorRSMode.0.txt=比较器模式: 温度
++msg.de.reactorRSMode.1.txt=比较器模式: 温度 [反转]
++msg.de.reactorRSMode.2.txt=比较器模式: 控制场
++msg.de.reactorRSMode.3.txt=比较器模式: 控制场 [反转]
++msg.de.reactorRSMode.4.txt=比较器模式: 能源储量
++msg.de.reactorRSMode.5.txt=比较器模式: 能源储量 [反转]
++msg.de.reactorRSMode.6.txt=比较器模式: 燃料转换率
++msg.de.reactorRSMode.7.txt=比较器模式: 燃料转换率 [反转]
+
+//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
+info.teleporterInfUnset1.txt=解绑
+info.teleporterInfUnset2.txt=潜行时右击以绑定当前位置
+info.teleporterInfUnset3.txt=x,y,z坐标
+info.teleporterInfUnset4.txt=还有你的朝向
+info.teleporterInfUnset5.txt=添加你当前所在世界
+info.teleporterInfDest.txt=目的地
+info.teleporterInfFuel.txt=燃料:
+info.teleporterInfSet1.txt=绑定至
+info.teleporterInfSet2.txt=剩余可用次数
+info.de.rightClickToTeleport.txt=右击以传送
+
+info.draconicAxe1.txt=木材!!!!!!
+info.draconicAxe2.txt=将砍倒整棵树
+info.draconicAxe3.txt=或者破坏5x5x5范围内任何木制品.
+info.draconicAxe4.txt=潜行时只会破坏一个方块.
+
+info.draconicCore.txt=龙之进化的所有合成的核心物品
+info.draconicCore1.txt=还可用于固化生物生成器
+
+info.mobSoul1.txt=可用于稳定生成器设置的生物种类
+info.mobSoul2.txt=或者潜行时右击以生成生物
+info.mobSoul3.txt=(一次性)
+
+info.arrowInfo.txt=沉痛的负担
+info.arrowInfo0.txt=对于普通弓来说太重了
+
+info.de.obliterationMode.txt=销毁模式
+info.de.obliterationModetrue.txt=激活
+info.de.obliterationModefalse.txt=关闭
+info.de.miningMode.txt=采掘模式
+info.de.changeMiningMode.txt=潜行时右击改变采掘模式
+info.de.toggleOblit.txt=右击切换到销毁模式
+info.de.oblitInfo.txt=销毁模式将会销毁毫无价值的方块
+info.de.attackDamage.txt=攻击伤害
+info.de.bonusHealthDamage.txt=直击伤害加成
+info.de.press.txt=按下
+info.de.toOpenConfigGUI.txt=以打开配置界面
+info.de.shiftToPause.txt=潜行时暂停下落
+
+info.de.bowEnchants.txt=一层附魔,两层效果
+
+info.de.sword.txt=强大的敌人令你的剑刃更加锋利!
+
+info.de.safetyMatch.txt=点燃一团不会烧你房子的火焰!
+
+info.draconiumChestInfo1.txt=潜行时空手右击
+info.draconiumChestInfo2.txt=以打开颜色控制选项
+
+info.de.capacitorMode.txt=模式
+info.de.capacitorMode0.txt=关闭
+info.de.capacitorMode1.txt=充能快捷栏
+info.de.capacitorMode2.txt=充能装甲 & 背包
+info.de.capacitorMode3.txt=充能装甲 & 快捷栏
+info.de.changwMode.txt=潜行并右击以改变模式
+
+info.de.toolInventoryOblit.txt=垃圾过滤 & 附魔
+info.de.toolInventoryEnch.txt=附魔
+
+info.de.hudDisplayConfigTxt1.txt=#### HUD显示 ####
+info.de.hudDisplayConfigTxt2.txt=点击并拖拽移动
+info.de.hudDisplayConfigTxt3.txt=###################
+info.de.hudDisplayConfigInfo1.txt=点击并拖拽HUD
+info.de.hudDisplayConfigInfo2.txt=以改变位置
+
+
+info.de.manual.introTxt.txt=所有你需要知道的东西，尽在这薄薄一层之中.
+info.de.manual.indexButton.txt=索引
+info.de.manual.indexButtonTip.txt=返回索引页
+info.de.manual.contributors.txt=龙之进化-作者
+info.de.manual.name.txt=名字
+info.de.manual.contribution.txt=贡献
+info.de.manual.clickToGoToSite.txt=(点击名字打开相关网页)
+info.de.manual.contributorsButton.txt=作者
+info.de.manual.contributorsButtonInfo.txt=为龙之进化做出贡献的人们
+
+info.de.manual.nav1.txt=导航提示
+info.de.manual.nav2.txt=按 Backspace 返回上一页.
+info.de.manual.nav3.txt=按住 shift 快速滚动.
+
+//Energy Net
+info.de.modeIn.txt=模式：输入
+info.de.modeOut.txt=模式：输出
+info.de.5xTransfer.txt=(5倍转化)
+info.de.connections.txt=连接
+info.de.wirelessConnections.txt=无线连接
+
+
+info.infusedObsidian.txt=这个方块可以抵抗凋灵的破坏
+
+enchantment.draconicevolution.reaperEnchant=灵魂收割
+
+//Achievements ----------------------------------------------------------------------------------------------------------------------------------------
+draconicevolution.achievementPage.name=龙之进化
+
+achievement.draconicevolution.dust=万恶之源!
+achievement.draconicevolution.dust.desc=收集龙尘
+achievement.draconicevolution.ingot=比钻石更好!
+achievement.draconicevolution.ingot.desc=将四份龙尘精炼为两个龙锭
+achievement.draconicevolution.core=一切的起源
+achievement.draconicevolution.core.desc=合成龙核
+achievement.draconicevolution.core2=还不够好!
+achievement.draconicevolution.core2.desc=升级龙之核为毒龙核
+
+achievement.draconicevolution.dislocator=末影人什么也没有得...
+achievement.draconicevolution.dislocator.desc=制造一台移位仪
+achievement.draconicevolution.chest=永无止境的存储空间!
+achievement.draconicevolution.chest.desc=合成龙之箱
+achievement.draconicevolution.particles=OOOOH Sparkles!
+achievement.draconicevolution.particles.desc=制造一台粒子发生器
+achievement.draconicevolution.weather=谁还需要自然的恩惠
+achievement.draconicevolution.weather.desc=合成天气控制机
+achievement.draconicevolution.dissenchanter=只要我想要的!
+achievement.draconicevolution.dissenchanter.desc=合成褪魔台.
+achievement.draconicevolution.ecore=它不断前进,前进,前进
+achievement.draconicevolution.ecore.desc=建造一个能量核心
+achievement.draconicevolution.wpick=没什么像钻石
+achievement.draconicevolution.wpick.desc=升级到毒龙镐
+achievement.draconicevolution.wshovel=专业挖掘机!
+achievement.draconicevolution.wshovel.desc=合成毒龙铲
+achievement.draconicevolution.wsword=更好的武器
+achievement.draconicevolution.wsword.desc=合成毒龙剑
+achievement.draconicevolution.wbow=狙击手就绪!
+achievement.draconicevolution.wbow.desc=合成毒龙弓
+achievement.draconicevolution.whelm=自由呼吸!
+achievement.draconicevolution.whelm.desc=合成毒龙头盔
+achievement.draconicevolution.wchest=高级防暴
+achievement.draconicevolution.wchest.desc=合成毒龙胸甲
+achievement.draconicevolution.wleggs=迅如疾风
+achievement.draconicevolution.wleggs.desc=合成毒龙护腿
+achievement.draconicevolution.wboots=羽落秘术
+achievement.draconicevolution.wboots.desc=合成毒龙靴子
+achievement.draconicevolution.resurrection=Brimming with Antici-pation!
+achievement.draconicevolution.resurrection.desc=制造重生之石
+achievement.draconicevolution.dislocator2=末影界统治者!
+achievement.draconicevolution.dislocator2.desc=制造高级移位仪
+achievement.draconicevolution.flux=1.21 jiggawatts!
+achievement.draconicevolution.flux.desc=合成毒龙通量储存器
+
+achievement.draconicevolution.heart=龙心!
+achievement.draconicevolution.heart.desc=击杀龙并获取它的心.
+achievement.draconicevolution.awakenedblock=一切都在仪式之中!
+achievement.draconicevolution.awakenedblock.desc=制造觉醒龙锭
+achievement.draconicevolution.core3=成本vs力量
+achievement.draconicevolution.core3.desc=升级毒龙之核位觉醒之核
+
+achievement.draconicevolution.dhelm=若鸟一般于水面上滑行!
+achievement.draconicevolution.dhelm.desc=升级到神龙头盔
+achievement.draconicevolution.dChest=若鹰一般于天空中飞翔!
+achievement.draconicevolution.dChest.desc=合成神龙胸甲
+achievement.draconicevolution.dleggs=若蝶一般于树林间舞动!
+achievement.draconicevolution.dleggs.desc=合成神龙护腿
+achievement.draconicevolution.dboots=Higher and Higher!
+achievement.draconicevolution.dboots.desc=升级到神龙靴子
+
+achievement.draconicevolution.dpick=绝对矿工之王!
+achievement.draconicevolution.dpick.desc=合成一把神龙镐
+achievement.draconicevolution.dshovel=开山碎石
+achievement.draconicevolution.dshovel.desc=升级毒龙之镐
+achievement.draconicevolution.daxe=一把巨斧走遍天下!
+achievement.draconicevolution.daxe.desc=合成一把神龙斧
+achievement.draconicevolution.dsword=Sting Like a Bee!
+achievement.draconicevolution.dsword.desc=升级到神龙剑
+achievement.draconicevolution.dbow=现在你和真正的力量共舞!
+achievement.draconicevolution.dbow.desc=合成神龙弓.
+achievement.draconicevolution.flux2=惊人的宇宙之力! 小小的世界.
+achievement.draconicevolution.flux2.desc=合成龙之通量储存器
+achievement.draconicevolution.dhoe=Kick it up a Notch! -BAM-
+achievement.draconicevolution.dhoe.desc=合成一把神龙锄
+
+achievement.draconicevolution.dstaff=和你的力量融合!
+achievement.draconicevolution.dstaff.desc=制造神龙权杖
+
+achievement.draconicevolution.soul=收割!!!!
+achievement.draconicevolution.soul.desc=得到一个被动生物的灵魂.
+achievement.draconicevolution.sundial=时间守护者
+achievement.draconicevolution.sundial.desc=合成日晷,控制白昼更替!
+achievement.draconicevolution.manual=知识最大化!
+achievement.draconicevolution.manual.desc=合成龙之平板
+
+//InfoHelper ----------------------------------------------------------------------------------------------------------------------------------------
+info.de.charge.txt=充能
+info.de.hold.txt=按下
+info.de.shift.txt=Shift
+info.de.forDetails.txt=获取更多信息
+
+//Lore ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:wyvernPickaxe.lore=2一般的矿工弱爆了\n通过龙锭,你提升了挖矿的速度以及范围.
+item.draconicevolution:wyvernShovel.lore=2一次一个方块? 你没有龙锭吗!\n他能让你,挖的更快,范围更大,这仅仅是一个开始!
+item.draconicevolution:wyvernSword.lore=2龙锭,从挖掘剑的潜能开始\n提高剑的伤害及攻击范围.
+item.draconicevolution:wyvernBow.lore=2将龙锭应用到平凡的弓上\n能让弓更强劲,射速更快.
+
+item.draconicevolution:wyvernHelm.lore=2比钻石更坚硬\n你能承受更多的打击
+item.draconicevolution:wyvernChest.lore=2在装甲上注入龙之力\n极大地提高了抗性
+item.draconicevolution:wyvernLeggs.lore=2你感觉你现在更强、更快了\n你将龙锭注入到钻石护腿上
+item.draconicevolution:wyvernBoots.lore=2你知道了增强你的靴子的方式\n龙锭似乎给你带来了\n更加敏捷
+
+item.draconicevolution:draconicPickaxe.lore=2夜以继日的研究,挥洒汗水\n你现在能挖掘更大的范围
+item.draconicevolution:draconicAxe.lore=2无数次失败与挫折后\n你终于可以一次性砍倒一棵树了
+item.draconicevolution:draconicShovel.lore=2更高效率\n你现在可以铲平一座山
+item.draconicevolution:draconicHoe.lore=2龙锭甚至对农业有帮助\n大片的土地一次犁出,只要简单的点击一下
+item.draconicevolution:draconicSword.lore=2毒龙确实强大,然则龙锭\n更加强大,以其铸剑定将横扫千军
+item.draconicevolution:draconicBow.lore=2完美的巅峰\n更快射速,箭头爆炸,你还需要别的效果吗?
+
+item.draconicevolution:draconicHelm.lore=2不再惧怕黑暗\n不论身在何处\n你都可以看清一切
+item.draconicevolution:draconicChest.lore=2融入龙心\n不仅变得更强,还受赠与飞行秘法
+item.draconicevolution:draconicLeggs.lore=2更强装甲\n龙魂的庇护之下 我们快步前行
+item.draconicevolution:draconicBoots.lore=2更快,更强,比以往更好\n龙心的祝福\n跳得更高
+
+item.draconicevolution:draconicDistructionStaff.lore=2漫长而艰巨的路程,带来真正的力量!\n以往没有任何工具能够挖掘,战斗面面俱到!(原子分解机笑了)
+
+//Entity ----------------------------------------------------------------------------------------------------------------------------------------
+entity.DraconicEvolution.EnderDragon.name=末影龙
+entity.DraconicEvolution.ChaosGuardian.name=混沌守卫
+
+//KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
+key.placeItem=在世界中放置物品
+key.toolConfig=工具&护甲的配置界面
+
+//Damage ----------------------------------------------------------------------------------------------------------------------------------------
+death.attack.chaos=%1$s被混沌守卫撕了个粉碎
+death.attack.damage.de.fusionExplode=%1$s因聚变爆炸蒸发了
+death.attack.chaosBurst=%1$s被暗黑能量毁灭了
+death.attack.de.GuardianFireball=%1$s被混沌守卫用燃烧弹烧死了(谁叫你有女朋友)
+death.attack.de.GuardianEnergyBall=%1$s被混沌守卫如同虫子般活活打死
+death.attack.de.GuardianChaosBall=%1$s被混沌守卫用暗之能量击中,化为虚无.
+death.attack.chaosImplosion=%1$s被推入能量漩涡中,成为了被遗忘的历史
+death.attack.chrystalMoved=%1$s太淘气了,龙之进化作者小小的惩罚了一下他!
+
+//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
+button.de.chestAutoFeed0.txt=关闭.自动填充功能已禁用.
+button.de.chestAutoFeed1.txt=填充.将保持当前堆叠数量为最大值.
+button.de.chestAutoFeed2.txt=锁定.只烧制当前烧制的物品(会保留一个)
+button.de.chestAutoFeed3.txt=全部.将箱子中可烧炼物品全部送入熔炉.
+button.de.chestLockOutput.txt=锁定输出.预留5个格子以输出烧制的成品
+button.de.previous.txt=<==
+button.de.next.txt===>
+button.de.backToIndex.txt=返回首页
+button.de.back.txt=返回
+button.de.goToIndex.txt=首页
+button.de.addNew.txt=新建
+button.de.rename.txt=重命名
+button.de.commit.txt=完成
+button.de.setHere.txt=设定这个
+button.de.remove.txt=移除
+button.de.addFuel.txt=添加燃料
+button.de.cancel.txt=取消
+button.de.UP.txt=上
+button.de.DOWN.txt=下
+
+//Item Config Buttons
+button.de.ArmorNVActive.name=夜视
+button.de.ArmorNVLock.name=锁定夜视
+button.de.ArmorFlightLock.name=永久飞行
+button.de.ArmorSpeedMult.name=速度加成
+button.de.ArmorJumpMult.name=跳跃加成
+button.de.ArmorHillStep.name=自动跨越台阶
+button.de.ArmorSprintOnly.name=疾跑加成
+button.de.ToolDigMultiplier.name=挖掘速度加成
+button.de.ToolDigAOE.name=范围
+button.de.ToolDigDepth.name=挖掘深度
+button.de.WeaponAttackAOE.name=AOE
+button.de.ToolVoidJunk.name=垃圾处理
+button.de.AxeTreeMode.name=伐木模式
+button.de.BaseSafeAOE.name=AOE安全模式
+button.de.VerticalAcceleration.name=飞升加速度
+button.de.EffectiveOnSprint.name=仅在疾跑时有效
+button.de.GogglesOfRevealing.name=魔法视野
+button.de.reactorCharge.txt=反应充能
+button.de.reactorStart.txt=激活
+button.de.reactorStop.txt=主动停止
+button.de.stats.txt=属性
+button.de.statsShow.txt=显示
+button.de.statsHide.txt=隐藏
+
+//Gui ----------------------------------------------------------------------------------------------------------------------------------------
+gui.de.flowGate.name=流量控制
+gui.de.flowGatePartialSignal.name=实际流量将取决于两个方块之间给定的红石信号的强度.
+gui.de.flowGateCurrentFlow.name=流量
+gui.de.flowGateRSLow.name=红石信号-低
+gui.de.flowGateRSHigh.name=红石信号-高
+gui.de.flowGateOverridden.txt=启动计算机重写
+gui.de.increment.name=增加
+gui.de.decrement.name=减少
+gui.de.ctrlAndShift.name=你可以使用Ctrl和Shift来改变增加量.
+gui.de.pressOrScroll.name=按下或滚动
+gui.de.tempLoad.name=温度载荷系数
+gui.de.mass.name=核心质量
+gui.de.genRate.name=产率
+gui.de.fieldDrainRate.name=控制场输入率
+gui.de.fuelConversion.name=燃料转化率
+
+gui.de.insert.txt=插入
+gui.de.extract.txt=提取
+gui.de.fuel.txt=染料
+gui.de.coreMass.txt=核心质量
+gui.de.reactionTemp.txt=核心温度
+gui.de.fieldStrength.txt=控制场强度
+gui.de.energySaturation.txt=能量存储
+gui.de.fuelConversion.txt=染料转换等级
+gui.de.status.txt=状态
+gui.de.status0.txt=离线
+gui.de.status1.txt=充能中
+gui.de.status1_5.txt=已充能
+gui.de.status2.txt=运行
+gui.de.status3.txt=停止中
+gui.de.status4.txt=错误的安装
+gui.de.internalStorage.txt=内部存储
+gui.de.itemStorage.txt=物品存储
+
+gui.de.reacTempLoadFactor.txt=这里会显示反应温度所带来的控制场负荷,如果反应温度才超过8,000.它会翻倍
+gui.de.reacCoreMass.txt=This show the total amount of mass within the reactor in cubic metres. That's the draconium + chaos so this value will only change when you add or remove fuel.
+gui.de.reacGenRate.txt=这里显示反应堆的单位时间RF产量 .
+gui.de.reacInputRate.txt=这里会显示保证反应进行所需求的RF需求输入功率. 这会随着反应场大小呈指数增长
+gui.de.reacConversionRate.txt=这里显示反应堆燃料消耗速度. 如果反应堆达到饱和状态,它会下降..
+//Potions ----------------------------------------------------------------------------------------------------------------------------------------
+potion.de.effect.txt=效果
+potion.de.flight.txt=飞行
+potion.de.highStep.txt=特步
+potion.de.swiftness.txt=迅捷
+potion.de.fireImmune.txt=火焰免疫
+potion.de.jumpBoost.txt=跳跃增幅
