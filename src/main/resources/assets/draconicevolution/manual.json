@@ -548,7 +548,7 @@
     [
       "Everyone needs effective mob farms. For the cost of a bit of solid fuel (coal, charcoal, etc.) or RF power, you can kill to your heart's content knowing the forces of the Draconic have your back!",
       "The grinder will kill all mobs in a 7x7 area in front of it. It is much more efficient and faster when powered by RF.",
-      "In order to reduce lag, experience orbs dropped by the grinder will despawn after 30 seconds if not collected. It is recommended that you use something like the Extra Utilities Vacuum Hopper to collect the experience orbs (if available).",
+      "In order to reduce lag, experience orbs dropped by the grinder will despawn after 30 seconds if not collected. It is recommended that you use something like the OpenBlocks Vacuum Hopper to collect the experience orbs (if available).",
       "[c]tile.draconicevolution:grinder:3"
     ]
   },
@@ -640,7 +640,7 @@
       "- Wyvern Core: Upgrades to tier 2 which increases spawn count and speed.",
       "- Awakened Core: Upgrades to tier 3 further increases spawn count and speed.",
       "- Nether Star: Removes the requirement for a player to be within 16 blocks of the spawner to function.",
-      "- Notch Apple: Makes the spawner ignore spawn requirements for the mob it is spawning e.g. it will make monsters spawn even when the light level is to0 high.",
+      "- Notch Apple: Makes the spawner ignore spawn requirements for the mob it is spawning e.g. it will make monsters spawn even when the light level is too high.",
       "When breaking it you will get back everything except the Mob Soul since it is too fragile and is destroyed in the process.",
       "[c]tile.draconicevolution:customSpawner:0"
     ]
