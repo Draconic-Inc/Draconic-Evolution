@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.items;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -20,6 +21,7 @@ public class Nugget extends ItemDE {
 	public Nugget() {
 		this.setUnlocalizedName("nugget");
 		this.setHasSubtypes(true);
+		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 
 		ModItems.register(this);
 	}

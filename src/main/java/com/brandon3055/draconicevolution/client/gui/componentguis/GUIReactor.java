@@ -136,25 +136,24 @@ public class GUIReactor extends GUIBase {
 			text.add(reactor.convertedFuel + " / " + (reactor.convertedFuel + reactor.reactorFuel)); //todo refine or remove
 			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
 		}
-		else if (GuiHelper.isInRect(53, 15, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
-			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacTempLoadFactor.txt"), 200));
-			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
-		}
-		else if (GuiHelper.isInRect(53, 40, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
-			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacCoreMass.txt"), 200));
-			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
-		}
-		else if (GuiHelper.isInRect(53, 65, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
-			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacGenRate.txt"), 200));
-			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
-		}
-		else if (GuiHelper.isInRect(53, 88, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
-			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacInputRate.txt"), 200));
-			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
-		}
-		else if (GuiHelper.isInRect(53, 113, 140, 18, mouseX-guiLeft, mouseY-guiTop)){
-			text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacConversionRate.txt"), 200));
-			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+
+		if (showStats) {
+			if (GuiHelper.isInRect(53, 15, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
+				text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacTempLoadFactor.txt"), 200));
+				drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+			} else if (GuiHelper.isInRect(53, 40, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
+				text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacCoreMass.txt"), 200));
+				drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+			} else if (GuiHelper.isInRect(53, 65, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
+				text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacGenRate.txt"), 200));
+				drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+			} else if (GuiHelper.isInRect(53, 88, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
+				text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacInputRate.txt"), 200));
+				drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+			} else if (GuiHelper.isInRect(53, 113, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
+				text.addAll(fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("gui.de.reacConversionRate.txt"), 200));
+				drawHoveringText(text, mouseX, mouseY, fontRendererObj);
+			}
 		}
 	}
 

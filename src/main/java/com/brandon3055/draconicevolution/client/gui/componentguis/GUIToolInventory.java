@@ -72,4 +72,9 @@ public class GUIToolInventory extends GUIBase {
 		GL11.glColor3f(1f, 1f, 1f);
 		fontRendererObj.drawString(inventoryName, guiLeft + 5, guiTop + 5, 0x555555);
 	}
+
+	@Override
+	protected boolean checkHotbarKeys(int p_146983_1_) {
+		return false;
+	}
 }

@@ -49,6 +49,16 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock{
 	}
 
 	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
+
+	@Override
 	public boolean hasTileEntity(int metadata) {
 		return true;
 	}

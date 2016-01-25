@@ -1,8 +1,9 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.client.Minecraft;
@@ -24,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.world.BlockEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,7 @@ import java.util.Map;
 /**
  * Created by Brandon on 2/01/2015.
  */
-public abstract class MiningTool extends ToolBase {//todo add custom information to sub classes, Update documentation and add doc for hud
+public abstract class MiningTool extends ToolBase implements IUpgradableItem {//todo add custom information to sub classes, Update documentation and add doc for hud
 
 
 	public MiningTool(ToolMaterial material) {
@@ -274,6 +276,16 @@ public abstract class MiningTool extends ToolBase {//todo add custom information
 
 			Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C07PacketPlayerDigging(2, x,y,z, Minecraft.getMinecraft().objectMouseOver.sideHit));
 		}
+	}
+
+	@Override
+	public List<EnumUpgrade> getUpgrades() {
+		return new ArrayList<EnumUpgrade>(){{
+			add(EnumUpgrade.DIG_SPEED);
+			add(EnumUpgrade.DIG_AOE);
+			add(EnumUpgrade.DIG_DEPTH);
+			add(EnumUpgrade.RF_CAPACITY);
+		}};
 	}
 }
 

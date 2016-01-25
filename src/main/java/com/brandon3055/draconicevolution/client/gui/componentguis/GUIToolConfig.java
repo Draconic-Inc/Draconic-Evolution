@@ -208,4 +208,9 @@ public class GUIToolConfig extends GUIBase {
 		this.editingItem = stack;
 		container.updateInventoryStack(slot);
 	}
+
+	@Override
+	protected boolean checkHotbarKeys(int p_146983_1_) {
+		return false;
+	}
 }

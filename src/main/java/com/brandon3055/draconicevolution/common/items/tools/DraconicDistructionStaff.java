@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
@@ -8,7 +9,6 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -114,5 +114,24 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 		else if (type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
 			GL11.glTranslated(0, 0.4, 0);
 		}
+	}
+
+	@Override
+	public int getUpgradeCap() {
+		return References.MAX_STAFF_UPGRADES;
+	}
+
+	@Override
+	public int getMaxTier() {
+		return 3;
+	}
+
+	@Override
+	public List<EnumUpgrade> getUpgrades() {
+		List<EnumUpgrade> list = super.getUpgrades();
+		list.add(EnumUpgrade.ATTACK_AOE);
+		list.add(EnumUpgrade.ATTACK_DAMAGE);
+
+		return list;
 	}
 }

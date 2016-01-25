@@ -15,6 +15,8 @@ import net.minecraft.inventory.Container;
 /**This class is for syncing values to bug for ICrafting*/
 public abstract class ContainerDataSync extends Container {
 
+	//TODO WTF? Was i sleep coding when i wrote this? In 1.8 re write this as a common container class for all mod containers and use a dedicated sender/receiver method for each data type i want to send (Unless i think of something better between now and then)
+
 	/**
 	 * Sends two ints to the client-side Container. Normally the first int identifies which variable to update, and the second contains the new
 	 * value.

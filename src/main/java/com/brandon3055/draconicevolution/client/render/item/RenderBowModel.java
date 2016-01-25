@@ -129,8 +129,10 @@ public class RenderBowModel implements IItemRenderer
 			GL11.glTranslated(0, 0, 1.5);
 		}
 		else if (type == IItemRenderer.ItemRenderType.ENTITY){
-			GL11.glRotatef(-34.5F, 0, 1, 0);
-			GL11.glTranslated(-1.1, 0, -0.2);
+			GL11.glScaled(0.8, 0.8, 0.8);
+			GL11.glTranslated(0.25, 0.7, 0.2);
+			GL11.glRotatef(130, 0, 0, 1);
+			GL11.glRotatef(-90, 1, 0, 0);
 		}
 
 

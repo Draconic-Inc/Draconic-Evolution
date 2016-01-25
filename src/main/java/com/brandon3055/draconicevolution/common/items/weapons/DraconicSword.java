@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.google.common.collect.Multimap;
@@ -36,7 +37,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak {
+public class DraconicSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak, IUpgradableItem {
 	protected int capacity = References.DRACONICCAPACITY;
 	protected int maxReceive = References.DRACONICTRANSFER;
 	protected int maxExtract = References.DRACONICTRANSFER * 50;
@@ -219,5 +220,24 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 			GL11.glRotatef(-90.5F, 0, 1, 0);
 			GL11.glTranslated(-0.8, 0, 0);
 		}
+	}
+
+	@Override
+	public List<EnumUpgrade> getUpgrades() {
+		return new ArrayList<EnumUpgrade>(){{
+			add(EnumUpgrade.RF_CAPACITY);
+			add(EnumUpgrade.ATTACK_AOE);
+			add(EnumUpgrade.ATTACK_DAMAGE);
+		}};
+	}
+
+	@Override
+	public int getUpgradeCap() {
+		return References.MAX_DRACONIC_UPGRADES;
+	}
+
+	@Override
+	public int getMaxTier() {
+		return 2;
 	}
 }

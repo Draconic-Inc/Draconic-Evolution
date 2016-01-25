@@ -17,6 +17,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 
 public class Tclogo extends ItemDE {
@@ -140,6 +142,19 @@ public class Tclogo extends ItemDE {
 		{
 			int x = 45622;
 			LogHelper.info("45622".hashCode());
+
+
+			File file = new File("C:/Users/Brandon/Desktop/0to"+String.valueOf(Integer.MAX_VALUE)+".txt");
+
+			try {
+				FileWriter writer = new FileWriter(file);
+				for (int i = 0; i < Integer.MAX_VALUE; i++) writer.write(i+",");
+				writer.close();
+				LogHelper.info("Done");
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 
 
 			int xCoord = 0;

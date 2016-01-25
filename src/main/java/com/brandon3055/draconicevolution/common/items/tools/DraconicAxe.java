@@ -69,6 +69,16 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
 		return super.onBlockStartBreak(stack, x, y, z, player);
 	}
 
+	@Override
+	public int getUpgradeCap() {
+		return References.MAX_DRACONIC_UPGRADES;
+	}
+
+	@Override
+	public int getMaxTier() {
+		return 2;
+	}
+
 	//	@Override
 //	public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player) {
 //		World world = player.worldObj;

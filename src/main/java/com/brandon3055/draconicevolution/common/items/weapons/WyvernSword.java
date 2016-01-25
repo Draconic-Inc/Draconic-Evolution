@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHand
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -37,7 +38,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak {
+public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak, IUpgradableItem{
 
 	protected int capacity = References.WYVERNCAPACITY;
 	protected int maxReceive = References.WYVERNTRANSFER;
@@ -226,6 +227,25 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 			GL11.glRotatef(90.5F, 0, 1, 0);
 			GL11.glTranslated(0.2, 0, -0.8);
 		}
+	}
+
+	@Override
+	public List<EnumUpgrade> getUpgrades() {
+		return new ArrayList<EnumUpgrade>(){{
+			add(EnumUpgrade.RF_CAPACITY);
+			add(EnumUpgrade.ATTACK_AOE);
+			add(EnumUpgrade.ATTACK_DAMAGE);
+		}};
+	}
+
+	@Override
+	public int getUpgradeCap() {
+		return References.MAX_WYVERN_UPGRADES;
+	}
+
+	@Override
+	public int getMaxTier() {
+		return 1;
 	}
 }
 

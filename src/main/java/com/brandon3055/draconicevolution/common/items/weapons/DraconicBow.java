@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -31,7 +32,7 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicBow extends ItemBow implements IInventoryTool
+public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableItem
 {
 	public static final String[] bowPullIconNameArray = new String[] { "pulling_0", "pulling_1", "pulling_2" };
 	@SideOnly(Side.CLIENT)
@@ -241,5 +242,25 @@ public class DraconicBow extends ItemBow implements IInventoryTool
 	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		return new ArrayList<ItemConfigField>();
+	}
+
+	@Override
+	public List<EnumUpgrade> getUpgrades() {
+		return new ArrayList<EnumUpgrade>(){{
+			add(EnumUpgrade.DRAW_SPEED);
+			add(EnumUpgrade.ARROW_SPEED);
+			add(EnumUpgrade.ARROW_DAMAGE);
+			add(EnumUpgrade.RF_CAPACITY);
+		}};
+	}
+
+	@Override
+	public int getUpgradeCap() {
+		return References.MAX_DRACONIC_UPGRADES;
+	}
+
+	@Override
+	public int getMaxTier() {
+		return 2;
 	}
 }

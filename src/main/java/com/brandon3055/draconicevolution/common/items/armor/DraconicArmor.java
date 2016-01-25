@@ -187,7 +187,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		if (stack.getItem() == ModItems.draconicHelm) {
 			if (world.isRemote) return;
 			if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) this.extractEnergy(stack, 5000, false);
-			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY, (int)Math.floor(player.posZ)) < 5 && ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false))
+			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY + 1, (int)Math.floor(player.posZ)) < 5 && ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false))
 			{
 				player.addPotionEffect(new PotionEffect(16, 419, 0, true));
 			}

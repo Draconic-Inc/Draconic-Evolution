@@ -143,6 +143,11 @@ public class ToolHandler {
 
 	public static void damageEntityBasedOnHealth(Entity entity, EntityPlayer player, float dmgMult) {
 		ItemStack stack = player.getCurrentEquippedItem();
+		if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem)){
+			LogHelper.error("[ToolHandler.java:147] WTF? I don't get it... Player "+player.getCommandSenderName()+" whacked something with a DE weapon but that they are not holding? Ok someone is messing with my shit...");
+			return;
+		}
+
 		float baseAttack = getDamageAgainstEntity(stack, entity);
 
 		if (entity instanceof EntityLivingBase)

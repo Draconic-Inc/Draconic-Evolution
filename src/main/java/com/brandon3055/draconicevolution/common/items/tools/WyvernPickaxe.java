@@ -72,7 +72,15 @@ public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRender
 		}
 	}
 
+	@Override
+	public int getUpgradeCap() {
+		return References.MAX_WYVERN_UPGRADES;
+	}
 
+	@Override
+	public int getMaxTier() {
+		return 1;
+	}
 
 //	@Override
 //	public boolean isItemTool(ItemStack p_77616_1_) {

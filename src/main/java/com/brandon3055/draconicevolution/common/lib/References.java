@@ -19,6 +19,10 @@ public final class References {
 	public static final int ENERGYPERBLOCK 		= 80;
 	public static final int ENERGYPERATTACK 	= 250;
 
+	public static final int MAX_WYVERN_UPGRADES = 3;
+	public static final int MAX_DRACONIC_UPGRADES = 6;
+	public static final int MAX_STAFF_UPGRADES = 12;
+
 	//======================Render IDs========================//
 	public static int idTeleporterStand	= -1;
 	public static int idPortal		 	= -1;

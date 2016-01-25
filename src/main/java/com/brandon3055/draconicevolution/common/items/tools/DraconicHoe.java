@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -31,9 +32,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRenderTweak {
+public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRenderTweak, IUpgradableItem {
 
 	protected int capacity = References.DRACONICCAPACITY;
 	protected int maxReceive = References.DRACONICTRANSFER;
@@ -253,5 +255,21 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 			GL11.glRotatef(90F, 0, 0, -1);
 			GL11.glTranslated(0.35, -0.4, -1);
 		}
+	}
+
+
+	@Override
+	public List<EnumUpgrade> getUpgrades() {
+		return new ArrayList<EnumUpgrade>(){{add(EnumUpgrade.RF_CAPACITY); add(EnumUpgrade.DIG_AOE);}};
+	}
+
+	@Override
+	public int getUpgradeCap() {
+		return References.MAX_DRACONIC_UPGRADES;
+	}
+
+	@Override
+	public int getMaxTier() {
+		return 2;
 	}
 }

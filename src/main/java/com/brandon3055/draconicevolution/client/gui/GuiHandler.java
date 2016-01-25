@@ -31,6 +31,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int GUIID_TOOL_CONFIG = 12;
 	public static final int GUIID_FLOW_GATE = 13;
 	public static final int GUIID_REACTOR = 14;
+	public static final int GUIID_UPGRADE_MODIFIER = 15;
 	public static final int GUIID_CONTAINER_TEMPLATE = 100;
 
 	public GuiHandler() {
@@ -96,7 +97,12 @@ public class GuiHandler implements IGuiHandler {
 				break;
 			case GUIID_TOOL_CONFIG:
 				return new ContainerAdvTool(player.inventory, new InventoryTool(player, null));
-
+			case GUIID_UPGRADE_MODIFIER:
+				TileEntity containerTemp = world.getTileEntity(x, y, z);
+				if (containerTemp != null && containerTemp instanceof TileUpgradeModifier) {
+					return new ContainerUpgradeModifier(player.inventory, (TileUpgradeModifier) containerTemp);
+				}
+				break;
 
 
 //			case GUIID_CONTAINER_TEMPLATE:
@@ -178,6 +184,12 @@ public class GuiHandler implements IGuiHandler {
 				return new GUIToolConfig(player, new ContainerAdvTool(player.inventory, new InventoryTool(player, null)));
 			case GUIID_FLOW_GATE:
 				return world.getTileEntity(x, y, z) instanceof TileGate ? new GUIFlowGate((TileGate)world.getTileEntity(x, y, z)) : null;
+			case GUIID_UPGRADE_MODIFIER:
+				TileEntity containerTemp = world.getTileEntity(x, y, z);
+				if (containerTemp != null && containerTemp instanceof TileUpgradeModifier) {
+					return new GUIUpgradeModifier(player.inventory, (TileUpgradeModifier) containerTemp, new ContainerUpgradeModifier(player.inventory, (TileUpgradeModifier) containerTemp));
+				}
+				break;
 
 //			case GUIID_CONTAINER_TEMPLATE:
 //				TileEntity containerTemp = world.getTileEntity(x, y, z);

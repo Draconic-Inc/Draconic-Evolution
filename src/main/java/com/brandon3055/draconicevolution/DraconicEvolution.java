@@ -55,7 +55,7 @@ public class DraconicEvolution {
 		event.getModMetadata().description = "This is a mod originally made for the Tolkiencraft mod pack";
 		event.getModMetadata().authorList = Arrays.asList("brandon3055");
 		event.getModMetadata().logoFile = "banner.png";
-		event.getModMetadata().url = "http://www.tolkiencraft.com/draconic-evolution/";
+		event.getModMetadata().url = "http://www.brandon3055.com/";
 		event.getModMetadata().version = References.VERSION + "-MC1.7.10";
 
 		proxy.preInit(event);
@@ -66,8 +66,11 @@ public class DraconicEvolution {
 	public void init(final FMLInitializationEvent event)
 	{if(debug)
 		System.out.println("init()");
-
 		proxy.init(event);
+
+	//	===
+
+	//	===
 	}
 
 	@Mod.EventHandler

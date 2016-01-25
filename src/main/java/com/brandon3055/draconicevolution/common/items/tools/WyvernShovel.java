@@ -74,6 +74,15 @@ public class WyvernShovel extends MiningTool implements IInventoryTool, IRenderT
 		}
 	}
 
+	@Override
+	public int getUpgradeCap() {
+		return References.MAX_WYVERN_UPGRADES;
+	}
+
+	@Override
+	public int getMaxTier() {
+		return 1;
+	}
 
 
 //	@Override

@@ -1,3 +1,13 @@
+######## 1.0.2-Snapshot 10 ########
+-fixed hover text for stats in the reactor gui showing when the stats page is closed.
+-beacons can now pass through energy core.
+-fixed bug in old 2D armor models.
+-fixed Draconic helm night vision checking light value at your feet resulting wierd behavior like activating when walking on soul sand.
+-fixed rounding issue with energy core display so it will show decimals like 23.5M / 1.64B instead of just 23M / 1B.
+-fixed a dupe bug in the tool inventory gui
+-
+
+
 ######## 1.0.2-Snapshot 9 ########
 -added config option to adjust the distance between chaos islands.
 -fixed infused obsidian and draconium blocks wither resistance.
@@ -13,10 +23,6 @@
 -added hover text to values in the reactor stats page.
 -fixed some bugs in the reactor code.
 -fixed a minor bug in the custom spwner blacklist.
--
--
--
--
 
 ######## 1.0.2-Snapshot 8-bugfix ########
 -fixed crash in information tablet.

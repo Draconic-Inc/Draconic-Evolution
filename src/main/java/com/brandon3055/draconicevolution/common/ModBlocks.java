@@ -48,6 +48,7 @@ public class ModBlocks {
 	public static BlockDE reactorStabilizer;
 	public static BlockDE reactorEnergyInjector;
 	public static BlockDE chaosCrystal;
+	public static BlockDE enhancementModifier;
 	public static Block safetyFlame;
 	public static Block chaosShardAtmos = new ChaosShardAtmos().setBlockName(References.RESOURCESPREFIX+"chaosShardAtmos").setBlockTextureName(References.RESOURCESPREFIX+"transparency");
 
@@ -88,6 +89,7 @@ public class ModBlocks {
 		reactorStabilizer = new ReactorStabilizer();
 		reactorEnergyInjector = new ReactorEnergyInjector();
 		chaosCrystal = new ChaosCrystal();
+		enhancementModifier = new UpgradeModifier();
 
 		longRangeDislocator = new LongRangeDislocator();
 

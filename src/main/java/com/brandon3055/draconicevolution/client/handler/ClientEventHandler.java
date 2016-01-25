@@ -135,7 +135,7 @@ public class ClientEventHandler {
 
 	@SubscribeEvent
 	public void renderArmorEvent(RenderPlayerEvent.SetArmorModel event) {
-		if (ConfigHandler.useOriginal3DArmorModel) return;
+		if (ConfigHandler.useOriginal3DArmorModel || ConfigHandler.useOldArmorModel) return;
 		if (event.stack != null && (event.stack.getItem() instanceof DraconicArmor || event.stack.getItem() instanceof WyvernArmor))
 		{
 			ItemArmor itemarmor = (ItemArmor)event.stack.getItem();
