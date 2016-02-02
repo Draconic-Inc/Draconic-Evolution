@@ -30,10 +30,11 @@ tile.draconicevolution:dislocatorReceptacle.name=移位收纳容器
 tile.draconicevolution:portal.name=传送门
 tile.draconicevolution:flowGateFlux.name=通量闸门
 tile.draconicevolution:flowGateFluid.name=流体闸门
-tile.draconicevolution:reactorCore.name=龙之反应核心
+tile.draconicevolution:reactorCore.name=神龙反应核心
 tile.draconicevolution:reactorStabilizer.name=反应稳定装置
 tile.draconicevolution:reactorEnergyInjector.name=反应能量注入器
 tile.draconicevolution:chaosCrystal.name=混乱水晶
+tile.draconicevolution:upgradeModifier.name=升级改良设备
 
 tile.draconicevolution:energyCrystal0.name=能量中继水晶
 tile.draconicevolution:energyCrystal1.name=高级能量中继水晶
@@ -43,12 +44,12 @@ tile.draconicevolution:energyCrystal4.name=无线能量传送水晶
 tile.draconicevolution:energyCrystal5.name=高级无线传送水晶
 
 //Item Information ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:awakenedCore.name=觉醒之核
+item.draconicevolution:awakenedCore.name=觉醒核心
 item.draconicevolution:draconiumIngot.name=龙锭
 item.draconicevolution:draconiumDust.name=龙尘
 item.draconicevolution:draconiumBlend.name=龙尘混合物(废弃)
 item.draconicevolution:dragonHeart.name=龙心
-item.draconicevolution:wyvernCore.name=毒龙核
+item.draconicevolution:wyvernCore.name=毒龙核心
 item.draconicevolution:sunFocus.name=日光焦点
 item.draconicevolution:tclogo.name=TCLogo
 item.draconicevolution:draconicCore.name=龙核
@@ -83,7 +84,7 @@ item.draconicevolution:safetyMatch.name=安全火柴
 item.draconicevolution:safetyMatchBox.name=安全火柴盒
 item.draconicevolution:key.name=钥匙
 item.draconicevolution:draconiumEnergyCore0.name=毒龙能量核心
-item.draconicevolution:draconiumEnergyCore1.name=龙能量核心
+item.draconicevolution:draconiumEnergyCore1.name=神龙能量核心
 item.draconicevolution:draconiumFluxCapacitor0.name=毒龙通量容器
 item.draconicevolution:draconiumFluxCapacitor1.name=神龙通量容器
 item.draconicevolution:draconicIngot.name=觉醒龙锭
@@ -102,7 +103,8 @@ item.draconicevolution:chaosShard.name=混乱碎片
 item.draconicevolution:chaosFragment0.name=极小混乱碎片
 item.draconicevolution:chaosFragment1.name=小的混乱碎片
 item.draconicevolution:chaosFragment2.name=大的混乱碎片
-
+item.draconicevolution:nugget.draconium.name=龙粒
+item.draconicevolution:nugget.awakened.name=觉醒龙粒
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=龙之进化：工具&武器 
 itemGroup.blocksAndItems=龙之进化：方块&物品
@@ -136,13 +138,14 @@ msg.spawnerInfo3.txt=是否忽略生成条件
 msg.spawnerInfo4.txt=生成器等级
 msg.spawnerInfo5.txt=§3按下Shift查看等级信息
 msg.spawnerInfo6.txt=请求玩家: §3下界之星
-msg.spawnerInfo7.txt=忽略生成条件: §3Notch 的苹果
-msg.spawnerInfo8.txt=二阶:§3毒龙之核
-msg.spawnerInfo9.txt=三阶:§3觉醒之核
+msg.spawnerInfo7.txt=忽略生成条件: §3附魔金苹果
+msg.spawnerInfo8.txt=二阶:§3毒龙核心
+msg.spawnerInfo9.txt=三阶:§3觉醒核心
 msg.dislocatorUnsafe.txt=目的地不安全,请重试
 msg.dislocatorNoGround.txt=错误:找不到该世界
 msg.range.txt=范围:
 msg.energyStorageCoreUTA.txt=无法激活(无效配置)
+msg.SpawnDragonMustBeInTheEnd.txt=你必须在末地使用
 msg.SpawnDragonToFarFrom00.txt=错误:距离原点(0,0)太远
 msg.wrongKey.txt=这把钥匙和锁不对应
 msg.cKeyStoneType0.txt=永久激活(消耗要石)
@@ -153,13 +156,14 @@ msg.draconiumChestEditmode.txt=颜色编辑模式 =
 msg.draconiumChestRed.txt=红 =
 msg.draconiumChestGreen.txt=绿 =
 msg.draconiumChestBlue.txt=蓝 =
-msg.draconiumChestEditL1.txt=手持红,绿或蓝色染料右击以改变颜色
+msg.draconiumChestEditL1.txt=手持红,绿或蓝色燃料右击以改变颜色
 msg.draconiumChestEditL2.txt=点击箱子上半部分增加数值
 msg.draconiumChestEditL3.txt=点击箱子下半部分减少数值
 msg.draconiumChestEditL4.txt=手持纸右击以记录颜色信息,供别的箱子使用
 msg.draconiumChestEdit2.txt=请手持一张纸而不是一堆纸
-msg.de.dragonDeath.txt=§5龙爆炸式的§5死亡§5暂时唤醒了这颗心
+msg.de.dragonDeath.txt=§5龙爆炸时的§5死亡§5暂时唤醒了这颗心
 msg.de.baseSafeAOW.txt=§9(§aAOE§a安全§a模式§a已§a开启§9)§c因§c检测到§ctile§centity§c操作§cC已被取消
+msg.de.guardianAttackBlocked.txt=你的攻击被混沌水晶所阻挡
 
 //Energy Net
 msg.de.wrenchMode.bind.txt=功能:绑定
@@ -172,19 +176,19 @@ msg.de.posSaved.txt=位置已经保存
 msg.de.invalidTile.txt=目标无效
 msg.de.outOfRange.txt=目标超出范围
 msg.de.maxConnections.txt=已达到连接上限
-msg.de.linked.txt=设备已连接
-msg.de.unLinked.txt=设备已断开
+msg.de.linked.txt=已连接
+msg.de.unLinked.txt=已断开
 msg.de.wrongSide.txt=无法连接到目标设备的这一面
 
-+//Reactor
-+msg.de.reactorRSMode.0.txt=比较器模式: 温度
-+msg.de.reactorRSMode.1.txt=比较器模式: 温度 [反转]
-+msg.de.reactorRSMode.2.txt=比较器模式: 控制场
-+msg.de.reactorRSMode.3.txt=比较器模式: 控制场 [反转]
-+msg.de.reactorRSMode.4.txt=比较器模式: 能源储量
-+msg.de.reactorRSMode.5.txt=比较器模式: 能源储量 [反转]
-+msg.de.reactorRSMode.6.txt=比较器模式: 燃料转换率
-+msg.de.reactorRSMode.7.txt=比较器模式: 燃料转换率 [反转]
+//Reactor
+msg.de.reactorRSMode.0.txt=比较器模式: 温度
+msg.de.reactorRSMode.1.txt=比较器模式: 温度 [反转]
+msg.de.reactorRSMode.2.txt=比较器模式: 控制场
+msg.de.reactorRSMode.3.txt=比较器模式: 控制场 [反转]
+msg.de.reactorRSMode.4.txt=比较器模式: 能源储量
+msg.de.reactorRSMode.5.txt=比较器模式: 能源储量 [反转]
+msg.de.reactorRSMode.6.txt=比较器模式: 燃料消耗率
+msg.de.reactorRSMode.7.txt=比较器模式: 燃料消耗率 [反转]
 
 //Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=解绑
@@ -206,7 +210,7 @@ info.draconicAxe4.txt=潜行时只会破坏一个方块.
 info.draconicCore.txt=龙之进化的所有合成的核心物品
 info.draconicCore1.txt=还可用于固化生物生成器
 
-info.mobSoul1.txt=可用于稳定生成器设置的生物种类
+info.mobSoul1.txt=用于设置可控刷怪笼刷出的生物种类
 info.mobSoul2.txt=或者潜行时右击以生成生物
 info.mobSoul3.txt=(一次性)
 
@@ -288,7 +292,7 @@ achievement.draconicevolution.ingot.desc=将四份龙尘精炼为两个龙锭
 achievement.draconicevolution.core=一切的起源
 achievement.draconicevolution.core.desc=合成龙核
 achievement.draconicevolution.core2=还不够好!
-achievement.draconicevolution.core2.desc=升级龙之核为毒龙核
+achievement.draconicevolution.core2.desc=升级龙核为毒龙核
 
 achievement.draconicevolution.dislocator=末影人什么也没有得...
 achievement.draconicevolution.dislocator.desc=制造一台移位仪
@@ -330,7 +334,7 @@ achievement.draconicevolution.heart.desc=击杀龙并获取它的心.
 achievement.draconicevolution.awakenedblock=一切都在仪式之中!
 achievement.draconicevolution.awakenedblock.desc=制造觉醒龙锭
 achievement.draconicevolution.core3=成本vs力量
-achievement.draconicevolution.core3.desc=升级毒龙之核位觉醒之核
+achievement.draconicevolution.core3.desc=升级毒龙核心位觉醒核心
 
 achievement.draconicevolution.dhelm=若鸟一般于水面上滑行!
 achievement.draconicevolution.dhelm.desc=升级到神龙头盔
@@ -413,7 +417,7 @@ death.attack.de.GuardianFireball=%1$s被混沌守卫用燃烧弹烧死了(谁叫
 death.attack.de.GuardianEnergyBall=%1$s被混沌守卫如同虫子般活活打死
 death.attack.de.GuardianChaosBall=%1$s被混沌守卫用暗之能量击中,化为虚无.
 death.attack.chaosImplosion=%1$s被推入能量漩涡中,成为了被遗忘的历史
-death.attack.chrystalMoved=%1$s太淘气了,龙之进化作者小小的惩罚了一下他!
+death.attack.chrystalMoved=%1$s太淘气了,龙之进化作者小小地惩罚了一下他!
 
 //Buttons ----------------------------------------------------------------------------------------------------------------------------------------
 button.de.chestAutoFeed0.txt=关闭.自动填充功能已禁用.
@@ -475,17 +479,17 @@ gui.de.pressOrScroll.name=按下或滚动
 gui.de.tempLoad.name=温度载荷系数
 gui.de.mass.name=核心质量
 gui.de.genRate.name=产率
-gui.de.fieldDrainRate.name=控制场输入率
-gui.de.fuelConversion.name=燃料转化率
+gui.de.fieldInputRate.name=控制场能源需求
+gui.de.fuelConversion.name=燃料消耗率
 
 gui.de.insert.txt=插入
 gui.de.extract.txt=提取
-gui.de.fuel.txt=染料
+gui.de.fuel.txt=燃料
 gui.de.coreMass.txt=核心质量
 gui.de.reactionTemp.txt=核心温度
 gui.de.fieldStrength.txt=控制场强度
 gui.de.energySaturation.txt=能量存储
-gui.de.fuelConversion.txt=染料转换等级
+gui.de.fuelConversion.txt=燃料消耗进度
 gui.de.status.txt=状态
 gui.de.status0.txt=离线
 gui.de.status1.txt=充能中
@@ -495,12 +499,31 @@ gui.de.status3.txt=停止中
 gui.de.status4.txt=错误的安装
 gui.de.internalStorage.txt=内部存储
 gui.de.itemStorage.txt=物品存储
-
-gui.de.reacTempLoadFactor.txt=这里会显示反应温度所带来的控制场负荷,如果反应温度才超过8,000.它会翻倍
-gui.de.reacCoreMass.txt=This show the total amount of mass within the reactor in cubic metres. That's the draconium + chaos so this value will only change when you add or remove fuel.
+gui.de.reacTempLoadFactor.txt=这里会显示反应温度对控制场,只有当反应温度达到8000以上时才会提升
+gui.de.reacCoreMass.txt=这里显示核心质量所影响的反应核大小.会增加反应的强度,只能通过增减燃料的方式改变
 gui.de.reacGenRate.txt=这里显示反应堆的单位时间RF产量 .
-gui.de.reacInputRate.txt=这里会显示保证反应进行所需求的RF需求输入功率. 这会随着反应场大小呈指数增长
-gui.de.reacConversionRate.txt=这里显示反应堆燃料消耗速度. 如果反应堆达到饱和状态,它会下降..
+gui.de.reacInputRate.txt=这里会显示保证当前控制场大小所需求的RF输入功率,这一数值会随着控制场大小呈指数增长
+gui.de.reacConversionRate.txt=这里显示反应堆燃料消耗速度.当反应稳定后数值会慢慢下降
+gui.de.noCoresInInventory0.txt=你的背包里没有龙核
+gui.de.noCoresInInventory1.txt=你的背包里没有毒龙核心
+gui.de.noCoresInInventory2.txt=你的背包里没有觉醒核心
+gui.de.noCoresInInventory3.txt=Y你的背包里没有混乱核心
+gui.de.addCore.txt=增加核心
+gui.de.removeCore.txt=移除核心
+
+gui.de.RFCapacity.txt=RF 充能
+gui.de.DigSpeed.txt=挖掘速度
+gui.de.DigAOE.txt=挖掘范围
+gui.de.DigDepth.txt=挖掘深度
+gui.de.AttackDamage.txt=攻击伤害
+gui.de.AttackAOE.txt=攻击范围
+gui.de.ArrowDamage.txt=射击伤害
+gui.de.DrawSpeed.txt=拉弓速度
+gui.de.ArrowSpeed.txt=箭飞行速度
+gui.de.ShieldCapacity.txt=护盾充能
+gui.de.ShieldRecovery.txt=护盾恢复
+gui.de.MoveSpeed.txt=移动速度
+gui.de.JumpBoost.txt=跳跃强度
 //Potions ----------------------------------------------------------------------------------------------------------------------------------------
 potion.de.effect.txt=效果
 potion.de.flight.txt=飞行
