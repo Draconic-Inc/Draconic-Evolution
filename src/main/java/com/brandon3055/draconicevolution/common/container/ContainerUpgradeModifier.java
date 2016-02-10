@@ -34,7 +34,7 @@ public class ContainerUpgradeModifier extends ContainerDataSync
 			}
 		}
 
-		addSlotToContainer(new SlotUpgradable(tile, 0, 80, 48));
+		addSlotToContainer(new SlotUpgradable(tile, 0, 112, 48));
 
 	}
 
@@ -125,23 +125,25 @@ public class ContainerUpgradeModifier extends ContainerDataSync
 
 
 	private void handleCoreTransaction(EnumUpgrade upgrade, int coreTier, boolean addCoreElseRemove, IUpgradableItem upgradableItem, ItemStack stack) {
-		int coreSlots = upgradableItem.getUpgradeCap();
+		int coreSlots = upgradableItem.getUpgradeCap(stack);
 		int totalCores = 0;
 		int[] coresApplied = upgrade.getCoresApplied(stack);
-		for (EnumUpgrade u : upgradableItem.getUpgrades()) totalCores += u.getCoresApplied(stack)[coreTier];
+		for (EnumUpgrade u : upgradableItem.getUpgrades(stack)) totalCores += u.getCoresApplied(stack)[coreTier];
 
 		if (addCoreElseRemove)
 		{
-			if (!player.inventory.hasItem(CORES_INDEX[coreTier]) || totalCores >= coreSlots) return;
+			if (!player.inventory.hasItem(CORES_INDEX[coreTier]) || totalCores >= coreSlots || upgrade.getUpgradePoints(stack) >= upgradableItem.getMaxUpgradePoints(upgrade.index)) return;
 			coresApplied[coreTier]++;
 			player.inventory.consumeInventoryItem(CORES_INDEX[coreTier]);
 			upgrade.setCoresApplied(stack, coresApplied);
+			upgrade.onAppliedToItem(stack);
 		}
 		else
 		{
 			if (coresApplied[coreTier] <= 0) return;
 			coresApplied[coreTier]--;
 			upgrade.setCoresApplied(stack, coresApplied);
+			upgrade.onRemovedFromItem(stack);
 			if (!player.inventory.addItemStackToInventory(new ItemStack(CORES_INDEX[coreTier]))) {
 				EntityItem entityItem = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, new ItemStack(CORES_INDEX[coreTier]));
 				if (!player.worldObj.isRemote) player.worldObj.spawnEntityInWorld(entityItem);

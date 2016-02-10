@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.client.Minecraft;
@@ -21,6 +24,7 @@ import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.world.BlockEvent;
@@ -39,7 +43,6 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
 	public MiningTool(ToolMaterial material) {
 		super(0, material, null);
 	}
-
 
 	public Map<Block, Integer> getObliterationList(ItemStack stack){
 		Map<Block, Integer> blockMap = new HashMap<Block, Integer>();
@@ -64,7 +67,9 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
-		int radius = ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0);		int depth = ItemNBTHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
+		int radius = ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0);
+		int depth = ItemNBTHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
+
 		return getEnergyStored(stack) >= energyPerOperation && (radius > 0) ? breakAOEBlocks(stack, x, y, z, radius, depth, player) : super.onBlockStartBreak(stack, x, y, z, player);
 	}
 
@@ -279,13 +284,47 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
 	}
 
 	@Override
-	public List<EnumUpgrade> getUpgrades() {
+	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
 		return new ArrayList<EnumUpgrade>(){{
+			add(EnumUpgrade.RF_CAPACITY);
 			add(EnumUpgrade.DIG_SPEED);
 			add(EnumUpgrade.DIG_AOE);
 			add(EnumUpgrade.DIG_DEPTH);
-			add(EnumUpgrade.RF_CAPACITY);
 		}};
+	}
+
+	public int getCapacity(ItemStack stack){
+		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return i * 5000000;
+	}
+
+	@Override
+	public float getEfficiency(ItemStack stack) {
+		int i = EnumUpgrade.DIG_SPEED.getUpgradePoints(stack);
+		if (i == 0) return super.getEfficiency(stack);
+		else return (float) i * 3F;
+	}
+
+	@Override
+	public List<String> getUpgradeStats(ItemStack stack) {
+		List<ItemConfigField> fields = getFields(stack, 0);
+		List<String> strings = new ArrayList<String>();
+		int digaoe = 0;
+		int depth = 0;
+		int attackaoe = 0;
+		for (ItemConfigField field : getFields(stack, 0)){
+			if (field.name.equals(References.DIG_AOE)) digaoe = 1 + ((Integer) field.max * 2);
+			else if (field.name.equals(References.DIG_DEPTH)) depth = (Integer) field.max;
+			else if (field.name.equals(References.ATTACK_AOE)) attackaoe = 1 + ((Integer) field.max * 2);
+		}
+
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.RFCapacity.txt")+": "+InfoHelper.HITC()+Utills.formatNumber(getMaxEnergyStored(stack)));
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.max.txt")+" "+StatCollector.translateToLocal("gui.de.DigAOE.txt")+": "+InfoHelper.HITC()+digaoe+"x"+digaoe);
+		if (depth > 0) strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.max.txt")+" "+StatCollector.translateToLocal("gui.de.DigDepth.txt")+": "+InfoHelper.HITC()+depth);
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.max.txt")+" "+StatCollector.translateToLocal("gui.de.DigSpeed.txt")+": "+InfoHelper.HITC()+getEfficiency(stack));
+		if (attackaoe > 0) strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.max.txt")+" "+StatCollector.translateToLocal("gui.de.AttackAOE.txt")+": "+InfoHelper.HITC()+attackaoe+"x"+attackaoe);
+
+		return strings;
 	}
 }
 

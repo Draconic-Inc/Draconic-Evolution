@@ -71,6 +71,7 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
 		}
 
 		ResourceHandler.bindResource("textures/models/reactorCore.png");
+		GL11.glColor4d(1, 1, 1, 1);
 		GL11.glRotatef(rotation, 0.5F, 1F, 0.5F);
 		GL11.glScaled(0.5, 0.5, 0.5);
 		double r3 = tile.getCoreDiameter();

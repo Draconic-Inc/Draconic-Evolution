@@ -34,7 +34,8 @@ public class DraconicPickaxe extends MiningTool implements IInventoryTool, IRend
 	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = super.getFields(stack, slot);
-		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, 3, 1).readFromItem(stack, 0).setModifier("AOE"));
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH).setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1).readFromItem(stack, 1));
 		list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.OBLITERATE).readFromItem(stack, false));
 		return list;
 	}
@@ -74,13 +75,34 @@ public class DraconicPickaxe extends MiningTool implements IInventoryTool, IRend
 	}
 
 	@Override
-	public int getUpgradeCap() {
+	public int getUpgradeCap(ItemStack itemstack) {
 		return References.MAX_DRACONIC_UPGRADES;
 	}
 
 	@Override
-	public int getMaxTier() {
+	public int getMaxTier(ItemStack itemstack) {
 		return 2;
+	}
+
+	@Override
+	public List<String> getUpgradeStats(ItemStack stack) {//todo List Upgrades
+		return super.getUpgradeStats(stack);
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 4;
+		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 5;
+		return 50;
+	}
+
+	@Override
+	public int getBaseUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 1;
+		else if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) return 5;
+		return 0;
 	}
 
 //	@Override

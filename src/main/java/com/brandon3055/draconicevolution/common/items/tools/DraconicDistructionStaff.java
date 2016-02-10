@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -43,16 +44,16 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 
 	@Override
 	public float func_150893_a(ItemStack stack, Block block) {
-		return this.efficiencyOnProperMaterial;
+		return this.getEfficiency(stack);
 	}
 
 
 	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = super.getFields(stack, slot);
-		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, 4, 1).readFromItem(stack, 0).setModifier("AOE"));
-		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH).setMinMaxAndIncromente(1, 9, 1).readFromItem(stack, 1));
-		list.add(new ItemConfigField(References.INT_ID, slot, References.ATTACK_AOE).setMinMaxAndIncromente(0, 12, 1).readFromItem(stack, 1).setModifier("AOE"));
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH).setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1).readFromItem(stack, 1));
+		list.add(new ItemConfigField(References.INT_ID, slot, References.ATTACK_AOE).setMinMaxAndIncromente(0, EnumUpgrade.ATTACK_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 1).setModifier("AOE"));
 		list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.OBLITERATE).readFromItem(stack, false));
 		return list;
 	}
@@ -117,21 +118,47 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 	}
 
 	@Override
-	public int getUpgradeCap() {
+	public int getUpgradeCap(ItemStack itemstack) {
 		return References.MAX_STAFF_UPGRADES;
 	}
 
 	@Override
-	public int getMaxTier() {
-		return 3;
+	public int getMaxTier(ItemStack itemstack) {
+		return 2;
 	}
 
 	@Override
-	public List<EnumUpgrade> getUpgrades() {
-		List<EnumUpgrade> list = super.getUpgrades();
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 5;
+		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 11;
+		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 13;
+
+		return 50;
+	}
+
+	@Override
+	public int getBaseUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 5;
+		else if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 6;
+		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 3;
+
+		return 0;
+	}
+
+	@Override
+	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
+		List<EnumUpgrade> list = super.getUpgrades(itemstack);
 		list.add(EnumUpgrade.ATTACK_AOE);
 		list.add(EnumUpgrade.ATTACK_DAMAGE);
+		list.remove(EnumUpgrade.DIG_SPEED);
+		return list;
+	}
 
+	@Override
+	public List<String> getUpgradeStats(ItemStack stack) {
+		List<String> list = super.getUpgradeStats(stack);
+		list.add(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.attackDamage.txt")+": "+ InfoHelper.HITC()+ToolHandler.getBaseAttackDamage(stack));
 		return list;
 	}
 }

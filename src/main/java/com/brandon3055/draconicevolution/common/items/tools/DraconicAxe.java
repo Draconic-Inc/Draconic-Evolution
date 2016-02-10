@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -36,7 +37,9 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
 	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = super.getFields(stack, slot);
-		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, 3, 1).readFromItem(stack, 0).setModifier("AOE"));
+
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH).setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1).readFromItem(stack, 1));
 		list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.TREE_MODE).readFromItem(stack, false));
 		return list;
 	}
@@ -70,13 +73,40 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
 	}
 
 	@Override
-	public int getUpgradeCap() {
+	public int getUpgradeCap(ItemStack itemstack) {
 		return References.MAX_DRACONIC_UPGRADES;
 	}
 
 	@Override
-	public int getMaxTier() {
+	public int getMaxTier(ItemStack itemstack) {
 		return 2;
+	}
+
+	@Override
+	public List<String> getUpgradeStats(ItemStack stack) {//todo List Upgrades
+		return super.getUpgradeStats(stack);
+	}
+
+	public int getCapacity(ItemStack stack){
+		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return i * 5000000;
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 4;
+		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 7;
+		return 50;
+	}
+
+	@Override
+	public int getBaseUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 1;
+		else if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) return 5;
+
+		return 0;
 	}
 
 	//	@Override

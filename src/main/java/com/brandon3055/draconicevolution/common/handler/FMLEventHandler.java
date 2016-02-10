@@ -80,13 +80,26 @@ public class FMLEventHandler {
 			int i = ArmorEffectHandler.getSwiftnessLevel(player);
 
 			float percentIncrease = ArmorEffectHandler.getSwiftnessMultiplier(player) * ((i + 1) * 0.05f);
+			//LogHelper.info(player.capabilities.getWalkSpeed()+" "+percentIncrease);
 
-			if ((player.onGround || player.capabilities.isFlying) && player.moveForward > 0F)
+			if (player.capabilities.isFlying && player.moveForward > 0F)
 			{
-				player.moveFlying(0F, 1F, player.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
-
+				player.moveFlying(0F, 1F, percentIncrease / 2F);
 			}
+
 			player.jumpMovementFactor = 0.02F + (percentIncrease * 0.2F);
+
+			if (walkSpeed != null) {
+				try {
+					walkSpeed.setFloat(player.capabilities, 0.1f + percentIncrease);
+				}
+				catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				catch (ConcurrentModificationException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		//Apply Flight--------------------------------------------------------------------------------------------------

@@ -1,16 +1,17 @@
 package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
 import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentBase;
+import com.brandon3055.brandonscore.client.utills.GuiHelper;
+import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.brandonscore.common.utills.DataUtills;
-import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 /**
  * Created by Brandon on 1/01/2015.
@@ -62,20 +63,20 @@ public class ComponentFieldAdjuster extends ComponentBase {
 	public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		if (field == null) return;
 		String fieldName = field.getLocalizedName();
-		String fieldValue = field.getFormatedValue();
+		String fieldValue = field.getFormattedValue();
 		if (field.datatype == References.DOUBLE_ID) {
 			double d = (Double)field.value;
 			fieldValue = String.valueOf((double)Math.round(d*100f) / 100D);
 		}
-		if (field.datatype == References.FLOAT_ID) {
-			float d = (Float)field.value;
-			fieldValue = String.valueOf((double)Math.round((double)(d*100f)) / 100D);
-		}
+		//if (field.datatype == References.FLOAT_ID) {
+		//	float d = (Float)field.value;
+		//	fieldValue = String.valueOf((double)Math.round((double)(d*100f)) / 100D);
+		//}
 
 		int centre = fontRendererObj.getStringWidth(fieldName) / 2;
-		int centre2 = fontRendererObj.getStringWidth(fieldValue) / 2;
 		fontRendererObj.drawString(fieldName, x + getWidth() / 2 - centre, y - 12, 0x00000);
-		fontRendererObj.drawStringWithShadow(fieldValue, x + getWidth() / 2 - centre2, y + 6, 0xffffff);
+		drawCenteredString(fontRendererObj, fieldValue, x + getWidth() / 2, y + 6, 0xffffff);
+		if (field.modifier == null || field.modifier.equals("AOE"))drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.max.txt") + " " + field.getMaxFormattedValue(), x + getWidth() / 2, y + 20, 0xFFFFFF);
 
 		if (isDecimal() || isNonDecimal())
 		{

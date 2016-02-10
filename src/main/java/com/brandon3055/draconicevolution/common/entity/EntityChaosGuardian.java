@@ -20,6 +20,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -414,7 +415,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 		switch (behaviour){
 			case ROAMING:
-				if (worldObj.getClosestPlayer(homeX, homeY, homeZ, 200) != null) selectNewBehaviour();
+				if (worldObj.getClosestVulnerablePlayer(homeX, homeY, homeZ, 200) != null) selectNewBehaviour();
 				break;
 
 			case GO_HOME:
@@ -434,14 +435,14 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 				break;
 
 			case LOW_HEALTH_STRATEGY:
-				if (worldObj.getClosestPlayer(targetX, targetY, targetZ, 60) != null && attackInProgress != ATTACK_TELEPORT){
+				if (worldObj.getClosestVulnerablePlayer(targetX, targetY, targetZ, 60) != null && attackInProgress != ATTACK_TELEPORT){
 					int escape = 0;
 					boolean flag = false;
 					while (!flag && escape < 50){
 						targetX = homeX + ((rand.nextDouble() - 0.5D) * 220D);
 						targetY = homeY + 20 + rand.nextDouble() * 20D;
 						targetZ = homeZ + ((rand.nextDouble() - 0.5D) * 220D);
-						if (worldObj.getClosestPlayer(targetX, targetY, targetZ, 60D) == null) flag = true;
+						if (worldObj.getClosestVulnerablePlayer(targetX, targetY, targetZ, 60D) == null) flag = true;
 						escape++;
 					}
 					target = null;
@@ -511,8 +512,17 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			Entity attackTarget = target;
 			@SuppressWarnings("unchecked")
 			List<EntityPlayer> targets = attackTarget == null ? worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(100, 100, 100)) : null;
-			if (attackTarget == null && targets.size() > 0) attackTarget = targets.get(rand.nextInt(targets.size()));
+
+			if (targets != null && targets.size() > 0){
+				Iterator<EntityPlayer> i = targets.iterator();
+				while (i.hasNext()) {
+					if (i.next().capabilities.isCreativeMode) i.remove();
+				}
+			}
+
+			if (attackTarget == null && targets != null && targets.size() > 0) attackTarget = targets.get(rand.nextInt(targets.size()));
 			if (attackTarget == null) return;
+
 
 			//Select an attack
 			if (attackInProgress == -1){
@@ -570,7 +580,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 					}
 					break;
 				case ATTACK_TELEPORT:
-					if (target == null) target = worldObj.getClosestPlayerToEntity(this, 100);
+					if (target == null) target = worldObj.getClosestVulnerablePlayerToEntity(this, 100);
 					if (target == null){
 						attackInProgress = -1;
 						return;
@@ -717,7 +727,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 			case CHARGING:
 			case CIRCLE_PLAYER:
 
-				if (worldObj.getClosestPlayer(homeX, homeY, homeZ, 200) != null) this.target = worldObj.getClosestPlayer(homeX, homeY, homeZ, 200);
+				if (worldObj.getClosestVulnerablePlayer(homeX, homeY, homeZ, 200) != null) this.target = worldObj.getClosestVulnerablePlayer(homeX, homeY, homeZ, 200);
 
 				break;
 			case LOW_HEALTH_STRATEGY:

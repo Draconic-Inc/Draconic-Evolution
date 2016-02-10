@@ -5,7 +5,7 @@
 -fixed Draconic helm night vision checking light value at your feet resulting wierd behavior like activating when walking on soul sand.
 -fixed rounding issue with energy core display so it will show decimals like 23.5M / 1.64B instead of just 23M / 1B.
 -fixed a dupe bug in the tool inventory gui
--
+-chaos guardian will nolonger attack creative players unless they do something to piss him off.
 
 
 ######## 1.0.2-Snapshot 9 ########

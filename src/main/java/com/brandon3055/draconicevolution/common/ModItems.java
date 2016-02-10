@@ -116,16 +116,17 @@ public class ModItems {
 		wyvernLeggs = new WyvernArmor(DRACONIUMARMOR_T1, 2, Strings.wyvernLeggsName);
 		wyvernBoots = new WyvernArmor(DRACONIUMARMOR_T1, 3, Strings.wyvernBootsName);
 
+		draconicCore = new DraconicCore();
 		wyvernCore = new WyvernCore();
+		awakenedCore = new AwakenedCore();
+		chaoticCore = new ChaoticCore();
 		draconiumDust = new DraconiumDust();
 		draconiumIngot = new DraconiumIngot();
 		draconiumBlend = new DraconiumBlend();
 		dragonHeart = new DragonHeart();
-		awakenedCore = new AwakenedCore();
 		teleporterMKI = new TeleporterMKI();
 		teleporterMKII = new TeleporterMKII();
 		tclogo = new Tclogo();
-		draconicCore = new DraconicCore();
 		sunFocus = new SunFocus();
 		mobSoul = new MobSoul();
 		enderArrow = new EnderArrow();
@@ -140,7 +141,6 @@ public class ModItems {
 		wrench = new Wrench();
 		chaosShard = new ChaosShard();
 		reactorStabilizerParts = new ReactorStabiliserPart();
-		chaoticCore = new ChaoticCore();
 		nugget = new Nugget();
 		chaosFragment = new ChaosFragment();
 

@@ -79,7 +79,7 @@ public class ComponentFieldButton extends ComponentBase {
 	public void renderFinal(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
 		if (isMouseOver(mouseX, mouseY)) {
 			List list = new ArrayList();
-			list.add(field.getFormatedValue());
+			list.add(field.getFormattedValue());
 			drawHoveringText(list, mouseX + offsetX, mouseY + offsetY + 10, fontRendererObj);
 		}
 	}

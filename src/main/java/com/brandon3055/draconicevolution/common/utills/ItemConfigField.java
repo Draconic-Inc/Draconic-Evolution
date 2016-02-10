@@ -61,11 +61,17 @@ public class ItemConfigField {
 		return this;
 	}
 
-	public String getFormatedValue(){
+	public String getFormattedValue(){
 		if (datatype == References.INT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("AOE")){
 			int i = (Integer) value;
 			i *= 2;
 			return String.valueOf((i + 1) + "x" + (i + 1));
+		}
+		else if (datatype == References.BOOLEAN_ID){
+			return (Boolean) value ? StatCollector.translateToLocal("gui.de.on.txt") : StatCollector.translateToLocal("gui.de.off.txt");
+		}
+		else if (datatype == References.FLOAT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("PERCENT")){
+			return Math.round((Float)value * 100D) + "%";
 		}
 		else
 		{
@@ -73,9 +79,21 @@ public class ItemConfigField {
 		}
 	}
 
+	public String getMaxFormattedValue(){
+		if (datatype == References.INT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("AOE")){
+			int i = (Integer) max;
+			i *= 2;
+			return String.valueOf((i + 1) + "x" + (i + 1));
+		}
+		else
+		{
+			return String.valueOf(max);
+		}
+	}
+
 	public String getTooltipInfo()
 	{
-		return InfoHelper.ITC() + getLocalizedName() + ": " + InfoHelper.HITC() + getFormatedValue();
+		return InfoHelper.ITC() + getLocalizedName() + ": " + InfoHelper.HITC() + getFormattedValue();
 	}
 
 	public void sendChanges(){
@@ -127,9 +145,47 @@ public class ItemConfigField {
 		return 0D;
 	}
 
+	public double castMinToDouble(){
+		switch (datatype){
+			case References.BYTE_ID:
+				return (double) (Byte) min;
+			case References.SHORT_ID:
+				return (double) (Short) min;
+			case References.INT_ID:
+				return (double) (Integer) min;
+			case References.LONG_ID:
+				long l = (Long) min;
+				return (double) l;
+			case References.FLOAT_ID:
+				float f = (Float) min;
+				return (double) f;
+			case References.DOUBLE_ID:
+				return (Double) min;
+			case References.BOOLEAN_ID:
+				return 0D;
+		}
+		return 0D;
+	}
 
-//	public static int getTypeFromItem(ItemStack stack, String name) {
-//		if (stack != null && stack.getItem() instanceof IConfigurableItem) return ((IConfigurableItem) stack.getItem()).getDataType(name);
-//		return 0;
-//	}
+	public double castMaxToDouble(){
+		switch (datatype){
+			case References.BYTE_ID:
+				return (double) (Byte) max;
+			case References.SHORT_ID:
+				return (double) (Short) max;
+			case References.INT_ID:
+				return (double) (Integer) max;
+			case References.LONG_ID:
+				long l = (Long) max;
+				return (double) l;
+			case References.FLOAT_ID:
+				float f = (Float) max;
+				return (double) f;
+			case References.DOUBLE_ID:
+				return (Double) max;
+			case References.BOOLEAN_ID:
+				return 1D;
+		}
+		return 0D;
+	}
 }

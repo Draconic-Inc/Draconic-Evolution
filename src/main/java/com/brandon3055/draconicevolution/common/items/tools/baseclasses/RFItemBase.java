@@ -55,7 +55,9 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 
 	public void setMaxExtract(int maxExtract){ this.maxExtract = maxExtract;}
 
-	public int getCapacity(ItemStack stack){ return capacity; }
+	public int getCapacity(ItemStack stack){
+		return capacity;
+	}
 
 	public int getMaxExtract(ItemStack stack){ return maxExtract; }
 
@@ -130,7 +132,7 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 	@Override
 	public List<String> getDisplayData(ItemStack stack) {
 		List<String> list = new ArrayList<String>();
-		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormatedValue());
+		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
 		if (capacity > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
 
 		return list;

@@ -378,6 +378,9 @@ info.de.charge.txt=Charge
 info.de.hold.txt=Hold
 info.de.shift.txt=Shift
 info.de.forDetails.txt=for Details
+info.de.ctrl.txt=CTRL
+info.de.forUpgrades.txt=for Stats
+info.de.useUpgradeModifier.txt=Use an Upgrade Modifier to boost these stats!
 
 //Lore ----------------------------------------------------------------------------------------------------------------------------------------
 item.draconicevolution:wyvernPickaxe.lore=2Mundane picks are so weak\nthrough Draconium, you increase the area and speed to mine.
@@ -450,11 +453,11 @@ button.de.DOWN.txt=DOWN
 button.de.ArmorNVActive.name=Night Vision
 button.de.ArmorNVLock.name=Lock Night Vision
 button.de.ArmorFlightLock.name=Lock Flight
-button.de.ArmorSpeedMult.name=Speed Multiplier
-button.de.ArmorJumpMult.name=Jump Multiplier
+button.de.ArmorSpeedMult.name=Move Speed
+button.de.ArmorJumpMult.name=Jump Height
 button.de.ArmorHillStep.name=Hill Step
-button.de.ArmorSprintOnly.name=Boost while sprinting
-button.de.ToolDigMultiplier.name=Dig Speed Multiplier
+button.de.ArmorSprintOnly.name=Reduce When Walking
+button.de.ToolDigMultiplier.name=Dig Speed
 button.de.ToolDigAOE.name=Size
 button.de.ToolDigDepth.name=Dig Depth
 button.de.WeaponAttackAOE.name=Attack A.O.E
@@ -516,6 +519,19 @@ gui.de.noCoresInInventory2.txt=You have no Awakened Cores in your inventory
 gui.de.noCoresInInventory3.txt=You have no Chaotic Cores in your inventory
 gui.de.addCore.txt=Add Core
 gui.de.removeCore.txt=Remove Core
+gui.de.cores.txt=Cores
+gui.de.cap.txt=Cap
+gui.de.installed.txt=Installed
+gui.de.free.txt=Free
+gui.de.max.txt=Max
+gui.de.on.txt=On
+gui.de.off.txt=Off
+gui.de.basePoints.txt=Base Points
+gui.de.maxPoints.txt=Max Points
+gui.de.pointCost.txt=Point Cost
+gui.de.value.txt=Value
+gui.de.points.txt=Points
+gui.de.point.txt=Point
 
 gui.de.RFCapacity.txt=RF Capacity
 gui.de.DigSpeed.txt=Dig Speed
@@ -530,6 +546,7 @@ gui.de.ShieldCapacity.txt=Shield Capacity
 gui.de.ShieldRecovery.txt=Shield Recovery
 gui.de.MoveSpeed.txt=Move Speed
 gui.de.JumpBoost.txt=Jump Boost
+
 
 //Potions ----------------------------------------------------------------------------------------------------------------------------------------
 potion.de.effect.txt=Effect

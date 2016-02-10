@@ -1,15 +1,19 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -26,6 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,7 +40,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRenderTweak, IUpgradableItem {
+public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRenderTweak, IUpgradableItem, IConfigurableItem {
 
 	protected int capacity = References.DRACONICCAPACITY;
 	protected int maxReceive = References.DRACONICTRANSFER;
@@ -46,6 +51,13 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 		this.setUnlocalizedName(Strings.draconicHoeName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.draconicHoeName);
+	}
+
+	@Override
+	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
+		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
+		return list;
 	}
 
 	@Override
@@ -168,7 +180,9 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
-		InfoHelper.addEnergyAndLore(stack, list);
+		InfoHelper.addEnergyInfo(stack, list);
+		ToolBase.holdCTRLForUpgrades(list, stack);
+		InfoHelper.addLore(stack, list);
 	}
 
 	@Override
@@ -213,7 +227,8 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
 	@Override
 	public int getMaxEnergyStored(ItemStack container) {
-		return capacity;
+		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
+		return i * 5000000;
 	}
 
 	@Override
@@ -259,17 +274,49 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
 
 	@Override
-	public List<EnumUpgrade> getUpgrades() {
-		return new ArrayList<EnumUpgrade>(){{add(EnumUpgrade.RF_CAPACITY); add(EnumUpgrade.DIG_AOE);}};
+	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
+		return new ArrayList<EnumUpgrade>(){{
+			add(EnumUpgrade.RF_CAPACITY);
+			add(EnumUpgrade.DIG_AOE);
+		}};
 	}
 
 	@Override
-	public int getUpgradeCap() {
+	public int getUpgradeCap(ItemStack itemstack) {
 		return References.MAX_DRACONIC_UPGRADES;
 	}
 
 	@Override
-	public int getMaxTier() {
+	public int getMaxTier(ItemStack itemstack) {
 		return 2;
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 5;
+
+		return 50;
+	}
+
+	@Override
+	public int getBaseUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 3;
+
+		return 0;
+	}
+
+	@Override
+	public List<String> getUpgradeStats(ItemStack itemstack) {
+		List<String> strings = new ArrayList<String>();
+
+		int digaoe = 0;
+		for (ItemConfigField field : getFields(itemstack, 0)) if (field.name.equals(References.DIG_AOE)) digaoe = 1 + ((Integer) field.max * 2);
+
+
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.RFCapacity.txt")+": "+InfoHelper.HITC()+Utills.formatNumber(getMaxEnergyStored(itemstack)));
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.max.txt")+" "+StatCollector.translateToLocal("gui.de.DigAOE.txt")+": "+InfoHelper.HITC()+digaoe+"x"+digaoe);
+
+ 		return strings;
 	}
 }

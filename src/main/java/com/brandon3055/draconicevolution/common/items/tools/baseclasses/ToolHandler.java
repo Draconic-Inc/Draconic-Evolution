@@ -4,6 +4,7 @@ import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -148,6 +149,7 @@ public class ToolHandler {
 			return;
 		}
 
+		IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
 		float baseAttack = getDamageAgainstEntity(stack, entity);
 
 		if (entity instanceof EntityLivingBase)
@@ -163,17 +165,19 @@ public class ToolHandler {
 				EntityDragon dragon = list.get(0);
 				float entHealth = dragon.getHealth();
 				baseAttack += (entHealth * dmgMult);
-				LogHelper.info(baseAttack);
 			}
 		}
 
-		if (!player.capabilities.isCreativeMode && ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < (int)(baseAttack / 2) * References.ENERGYPERATTACK) return;
+		int rf = (int)baseAttack * References.ENERGYPERATTACK;
+		if (rf > item.getEnergyStored(stack)) baseAttack = item.getEnergyStored(stack) / References.ENERGYPERATTACK;
+		if (baseAttack <= 0) baseAttack = 1;
+
+		LogHelper.info(baseAttack * References.ENERGYPERATTACK);
 
 		entity.attackEntityFrom(DamageSource.causePlayerDamage(player), baseAttack);
 		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) > 0) entity.setFire(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) * 15);
 
-
-		if (!player.capabilities.isCreativeMode) ((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, (int)(baseAttack / 2) * References.ENERGYPERATTACK, false);
+		if (!player.capabilities.isCreativeMode) item.extractEnergy(stack, (int)baseAttack * References.ENERGYPERATTACK, false);
 
 
 		if (entity instanceof EntityLivingBase) {
@@ -221,8 +225,12 @@ public class ToolHandler {
 				EntityLivingBase entityLivingBase = (EntityLivingBase) entityObject;
 				if (entityLivingBase.getEntityId() == entity.getEntityId()) continue;
 
-				entityLivingBase.attackEntityFrom(DamageSource.causePlayerDamage(player), getDamageAgainstEntity(stack, entityLivingBase));
-				item.extractEnergy(stack, References.ENERGYPERATTACK, false);
+				float dmg = getDamageAgainstEntity(stack, entityLivingBase);
+				int rf = (int)dmg * References.ENERGYPERATTACK;
+				if (rf > item.getEnergyStored(stack)) dmg = item.getEnergyStored(stack) / References.ENERGYPERATTACK;
+
+				entityLivingBase.attackEntityFrom(DamageSource.causePlayerDamage(player), dmg);
+				item.extractEnergy(stack, ((int) dmg) * References.ENERGYPERATTACK, false);
 				if (EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) > 0) entityLivingBase.setFire(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) * 15);
 
 
@@ -295,11 +303,17 @@ public class ToolHandler {
 
 	public static float getBaseAttackDamage(ItemStack stack)
 	{
-		if (stack == null) return 0;
+		float dmg = 0;
+		if (stack == null) return 1;
+
 		float sharpMod = (float)EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack) * 4F;
-		if (stack.getItem() == ModItems.draconicDestructionStaff) return (ModItems.DRACONIUM_T3.getDamageVsEntity()) + sharpMod;
-		else if (stack.getItem() instanceof ItemSword) return (((ItemSword)stack.getItem()).func_150931_i()) + sharpMod;
-		return 0;
+
+		if (stack.getItem() == ModItems.draconicDestructionStaff) dmg = (ModItems.DRACONIUM_T3.getDamageVsEntity()) + sharpMod;
+		else if (stack.getItem() instanceof ItemSword) dmg = (((ItemSword)stack.getItem()).func_150931_i()) + sharpMod;
+
+		dmg += (IUpgradableItem.EnumUpgrade.ATTACK_DAMAGE.getUpgradePoints(stack) * 5);
+
+		return dmg;
 	}
 
 	public static float getDamageAgainstEntity(ItemStack stack, Entity entity)

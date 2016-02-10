@@ -35,7 +35,7 @@ public class UpgradeModifier extends BlockCustomDrop {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister) {
-//		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
+		//blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
 	}
 
 	@Override
@@ -90,6 +90,6 @@ public class UpgradeModifier extends BlockCustomDrop {
 
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
-		return true;
+		return side == ForgeDirection.DOWN;
 	}
 }

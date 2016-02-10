@@ -11,6 +11,8 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import java.util.List;
+
 public class ItemConfigPacket implements IMessage
 {
 	public byte datatype;
@@ -50,7 +52,20 @@ public class ItemConfigPacket implements IMessage
 			EntityPlayer player = ctx.getServerHandler().playerEntity;
 			if (message.slot >= player.inventory.getSizeInventory() || message.slot < 0) return null;
 			ItemStack stack = player.inventory.getStackInSlot(message.slot);
-			if (stack != null && stack.getItem() instanceof IConfigurableItem) DataUtills.writeObjectToItem(stack, message.value, message.datatype, message.name);
+			if (stack != null && stack.getItem() instanceof IConfigurableItem) {
+				IConfigurableItem item = (IConfigurableItem) stack.getItem();
+				List<ItemConfigField> fields = item.getFields(stack, message.slot);
+
+				for (ItemConfigField field : fields){
+					if (field.name.equals(message.name) && message.datatype == field.datatype){
+						ItemConfigField newValue = new ItemConfigField(message.datatype, message.value, message.slot, message.name);
+
+						if (newValue.castToDouble() <= field.castMaxToDouble() && newValue.castToDouble() >= field.castMinToDouble()){
+							DataUtills.writeObjectToItem(stack, message.value, message.datatype, message.name);
+						}
+					}
+				}
+			}
 			return null;
 		}
 	}

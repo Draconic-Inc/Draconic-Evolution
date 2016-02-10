@@ -15,11 +15,21 @@ import net.minecraft.tileentity.TileEntity;
 public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
 	ItemStack[] items = new ItemStack[1];
 
+	public float rotation = 0;
+	public float rotationSpeed = 0;
+	private float targetSpeed = 0;
+
 	//==============================================LOGIC=======================================================//
 
 	@Override
 	public void updateEntity() {
+		if (items[0] != null) targetSpeed = 5F;
+		else targetSpeed = 0F;
 
+		if (rotationSpeed < targetSpeed) rotationSpeed += 0.05F;
+		else if (rotationSpeed > targetSpeed) rotationSpeed -= 0.05F;
+		if (targetSpeed == 0 && rotationSpeed < 0) rotationSpeed = 0;
+		rotation += rotationSpeed;
 	}
 
 

@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
@@ -212,6 +213,7 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.bowEnchants.txt"));
 			InfoHelper.addLore(stack, list);
 		}
+		ToolBase.holdCTRLForUpgrades(list, stack);
 	}
 
 	@Override
@@ -245,22 +247,42 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 	}
 
 	@Override
-	public List<EnumUpgrade> getUpgrades() {
+	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
 		return new ArrayList<EnumUpgrade>(){{
+		//	add(EnumUpgrade.RF_CAPACITY);
 			add(EnumUpgrade.DRAW_SPEED);
 			add(EnumUpgrade.ARROW_SPEED);
 			add(EnumUpgrade.ARROW_DAMAGE);
-			add(EnumUpgrade.RF_CAPACITY);
 		}};
 	}
 
 	@Override
-	public int getUpgradeCap() {
+	public int getUpgradeCap(ItemStack itemstack) {
 		return References.MAX_DRACONIC_UPGRADES;
 	}
 
 	@Override
-	public int getMaxTier() {
+	public int getMaxTier(ItemStack itemstack) {
 		return 2;
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		return 50;
+	}
+
+	@Override
+	public int getBaseUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		return 0;
+	}
+
+	@Override
+	public List<String> getUpgradeStats(ItemStack itemstack) {
+		List<String> strings = new ArrayList<String>();
+
+	//	strings.add(StatCollector.translateToLocal("gui.de.RFCapacity.txt")+": "+ Utills.formatNumber(getMaxEnergyStored(itemstack)));
+
+		return strings;
 	}
 }

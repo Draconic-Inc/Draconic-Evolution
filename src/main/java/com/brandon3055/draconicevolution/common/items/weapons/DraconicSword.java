@@ -1,18 +1,23 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.network.ToolModePacket;
+import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -37,7 +42,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak, IUpgradableItem {
+public class DraconicSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak, IUpgradableItem, IHudDisplayItem {
 	protected int capacity = References.DRACONICCAPACITY;
 	protected int maxReceive = References.DRACONICTRANSFER;
 	protected int maxExtract = References.DRACONICTRANSFER * 50;
@@ -92,10 +97,13 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
 		if (InfoHelper.holdShiftForDetails(list)) {
-			InfoHelper.addEnergyInfo(stack, list);
+			List<ItemConfigField> l = getFields(stack, 0);
+			for (ItemConfigField f : l) list.add(f.getTooltipInfo());
 			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.sword.txt"));
 			InfoHelper.addLore(stack, list);
 		}
+		ToolBase.holdCTRLForUpgrades(list, stack);
+		InfoHelper.addEnergyInfo(stack, list);
 		list.add("");
 		list.add(EnumChatFormatting.BLUE + "+" + ToolHandler.getBaseAttackDamage(stack) + " " + StatCollector.translateToLocal("info.de.attackDamage.txt"));
 		list.add(EnumChatFormatting.BLUE + "+20%" + " " + StatCollector.translateToLocal("info.de.bonusHealthDamage.txt"));
@@ -149,7 +157,8 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 
 	@Override
 	public int getMaxEnergyStored(ItemStack container) {
-		return capacity;
+		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
+		return i * 5000000;
 	}
 
 	@Override
@@ -189,7 +198,9 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 
 	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
-		return new ArrayList<ItemConfigField>();
+		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
+		list.add(new ItemConfigField(References.INT_ID, slot, References.ATTACK_AOE).setMinMaxAndIncromente(0, EnumUpgrade.ATTACK_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 1).setModifier("AOE"));
+		return list;
 	}
 
 	@Override
@@ -223,7 +234,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	}
 
 	@Override
-	public List<EnumUpgrade> getUpgrades() {
+	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
 		return new ArrayList<EnumUpgrade>(){{
 			add(EnumUpgrade.RF_CAPACITY);
 			add(EnumUpgrade.ATTACK_AOE);
@@ -232,12 +243,62 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	}
 
 	@Override
-	public int getUpgradeCap() {
+	public int getUpgradeCap(ItemStack itemstack) {
 		return References.MAX_DRACONIC_UPGRADES;
 	}
 
 	@Override
-	public int getMaxTier() {
+	public int getMaxTier(ItemStack itemstack) {
 		return 2;
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 5;
+
+		return 50;
+	}
+
+	@Override
+	public int getBaseUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 2;
+		return 0;
+	}
+
+	@Override
+	public List<String> getUpgradeStats(ItemStack stack) {
+		List<String> strings = new ArrayList<String>();
+
+		int attackaoe = 0;
+		for (ItemConfigField field : getFields(stack, 0)) if (field.name.equals(References.ATTACK_AOE)) attackaoe = 1 + ((Integer) field.max * 2);
+
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.RFCapacity.txt")+": "+InfoHelper.HITC()+Utills.formatNumber(getMaxEnergyStored(stack)));
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.attackDamage.txt")+": "+ InfoHelper.HITC()+ToolHandler.getBaseAttackDamage(stack));
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.max.txt")+" "+StatCollector.translateToLocal("gui.de.AttackAOE.txt")+": "+InfoHelper.HITC()+attackaoe+"x"+attackaoe);
+
+
+		return strings;
+	}
+
+	@Override
+	public List<String> getDisplayData(ItemStack stack) {
+		List<String> list = new ArrayList<String>();
+		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
+		return list;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		if (!world.isRemote && !BrandonsCore.proxy.isDedicatedServer())
+		{
+			ToolBase.handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
+		}
+		else if (world.isRemote && BrandonsCore.proxy.getMCServer() == null)
+		{
+			ToolBase.handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
+			DraconicEvolution.network.sendToServer(new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));
+		}
+		return super.onItemRightClick(stack, world, player);
 	}
 }

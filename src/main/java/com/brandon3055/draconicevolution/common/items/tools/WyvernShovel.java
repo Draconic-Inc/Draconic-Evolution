@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTo
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -33,7 +34,7 @@ public class WyvernShovel extends MiningTool implements IInventoryTool, IRenderT
 	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = super.getFields(stack, slot);
-		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, 1, 1).readFromItem(stack, 0).setModifier("AOE"));
+		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
 		return list;
 	}
 
@@ -75,15 +76,46 @@ public class WyvernShovel extends MiningTool implements IInventoryTool, IRenderT
 	}
 
 	@Override
-	public int getUpgradeCap() {
+	public int getUpgradeCap(ItemStack itemstack) {
 		return References.MAX_WYVERN_UPGRADES;
 	}
 
 	@Override
-	public int getMaxTier() {
+	public int getMaxTier(ItemStack itemstack) {
 		return 1;
 	}
 
+	@Override
+	public List<String> getUpgradeStats(ItemStack stack) {//todo List Upgrades
+		return super.getUpgradeStats(stack);
+	}
+
+	public int getCapacity(ItemStack stack){
+		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return i * 500000;
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
+		return 50;
+	}
+
+	@Override
+	public int getBaseUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 1;
+		else if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) return 4;
+
+		return 0;
+	}
+
+	@Override
+	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
+		List<EnumUpgrade> list = super.getUpgrades(itemstack);
+		list.remove(EnumUpgrade.DIG_DEPTH);
+		return list;
+	}
 
 //	@Override
 //	public boolean isItemTool(ItemStack p_77616_1_) {

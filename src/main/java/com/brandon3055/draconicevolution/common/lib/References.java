@@ -13,9 +13,9 @@ public final class References {
 
 	//======================Tools & Weapons========================//
 	public static final int WYVERNCAPACITY 		= 1000000;
-	public static final int WYVERNTRANSFER 		= 5000;
+	public static final int WYVERNTRANSFER 		= 50000;
 	public static final int DRACONICCAPACITY 	= 10000000;
-	public static final int DRACONICTRANSFER 	= 50000;
+	public static final int DRACONICTRANSFER 	= 500000;
 	public static final int ENERGYPERBLOCK 		= 80;
 	public static final int ENERGYPERATTACK 	= 250;
 
