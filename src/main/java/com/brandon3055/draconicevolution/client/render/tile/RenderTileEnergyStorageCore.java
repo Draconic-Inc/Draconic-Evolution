@@ -77,19 +77,19 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer {
 		iner_model.renderAll();
 		GL11.glPopMatrix();
 
-		GL11.glPushMatrix();
-		GL11.glScalef(0.8F, 0.8F, 0.8F);
-		GL11.glColor4d(1F, 1f, 0.2f, 1F);
-		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
-		iner_model.renderAll();
-		GL11.glPopMatrix();
-
-		GL11.glPushMatrix();
-		GL11.glScalef(0.9F, 0.9F, 0.9F);
-		GL11.glColor4d(1F, 0f, 0.2f, 1F);
-		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
-		iner_model.renderAll();
-		GL11.glPopMatrix();
+//		GL11.glPushMatrix();
+//		GL11.glScalef(0.8F, 0.8F, 0.8F);
+//		GL11.glColor4d(1F, 1f, 0.2f, 1F);
+//		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
+//		//iner_model.renderAll();
+//		GL11.glPopMatrix();
+//
+//		GL11.glPushMatrix();
+//		GL11.glScalef(0.9F, 0.9F, 0.9F);
+//		GL11.glColor4d(1F, 0f, 0.2f, 1F);
+//		GL11.glRotatef(rotation, 0F, 1F, 0.5F);
+//		//iner_model.renderAll();
+//		GL11.glPopMatrix();
 
 		GL11.glScalef(1.1F, 1.1F, 1.1F);
 		GL11.glDepthMask(false);

@@ -52,7 +52,7 @@ import java.util.List;
 	@Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
 	@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft")
 })
-public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IGoggles, IRevealer, IUpgradableItem {//TODO Wings
+public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IGoggles, IRevealer, IUpgradableItem, IShieldedArmor {//TODO Wings
 	@SideOnly(Side.CLIENT)
 	private IIcon helmIcon;
 	@SideOnly(Side.CLIENT)
@@ -445,5 +445,15 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
 		return 0;
+	}
+
+	@Override
+	public int getProtectionPoints(ItemStack stack) {
+		return 10;
+	}
+
+	@Override
+	public int getRecoveryPoints(ItemStack stack) {
+		return 10;
 	}
 }

@@ -1,14 +1,13 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import com.brandon3055.brandonscore.client.utills.GuiHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.manual.GuiButtonAHeight;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.TeleporterPacket;
-import com.brandon3055.brandonscore.client.utills.GuiHelper;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;

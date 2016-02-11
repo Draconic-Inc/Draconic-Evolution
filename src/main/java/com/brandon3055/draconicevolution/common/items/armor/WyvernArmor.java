@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IUpgradableItem {
+public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IUpgradableItem, IShieldedArmor {
 	private IIcon helmIcon;
 	private IIcon chestIcon;
 	private IIcon leggsIcon;
@@ -371,5 +371,15 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
 		return 0;
+	}
+
+	@Override
+	public int getProtectionPoints(ItemStack stack) {
+		return 10;
+	}
+
+	@Override
+	public int getRecoveryPoints(ItemStack stack) {
+		return 10;
 	}
 }

@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.client.gui.manual;
+package com.brandon3055.draconicevolution.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

@@ -241,6 +241,7 @@ public class GUIUpgradeModifier extends GuiContainer {
 	public void drawScreen(int x, int y, float f) {
 		super.drawScreen(x, y, f);
 
+		if (!inUse) return;
 		//Second Draw
 		for (EnumUpgrade upgrade : itemUpgrades)
 		{

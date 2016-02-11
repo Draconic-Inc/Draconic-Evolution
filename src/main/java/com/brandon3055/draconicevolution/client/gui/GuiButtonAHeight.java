@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.client.gui.manual;
+package com.brandon3055.draconicevolution.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -27,12 +27,12 @@ public class GuiButtonAHeight extends GuiButton{
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + k * 20, this.width / 2, this.height);
-			this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + k * 20, this.width / 2, this.height);
+			this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + k * 20, width % 2 + this.width / 2, this.height);
+			this.drawTexturedModalRect(width % 2 + this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + k * 20, this.width / 2, this.height);
 			if (this.height < 20){
 
-				this.drawTexturedModalRect(xPosition, yPosition+3, 0, (46 + k * 20)+20-height+3, width / 2, height-3);
-				this.drawTexturedModalRect(xPosition + width / 2, yPosition+3, 200 - width / 2, (46 + k * 20)+20-height+3, width / 2, height-3);
+				this.drawTexturedModalRect(xPosition, yPosition+3, 0, (46 + k * 20)+20-height+3, width % 2 + width / 2, height-3);
+				this.drawTexturedModalRect(width % 2 + xPosition + width / 2, yPosition+3, 200 - width / 2, (46 + k * 20)+20-height+3, width / 2, height-3);
 			}
 			this.mouseDragged(minecraft, mouseX, mouseY);
 			int l = 14737632;

@@ -16,8 +16,6 @@ public class ConfigHandler {
 	public static int soulDropChance;
 	public static int passiveSoulDropChance;
 	public static int cometRarity;
-	public static int hudX;
-	public static int hudY;
 	public static int chaosIslandSeparation;
 	public static boolean generateEnderComets;
 	public static boolean generateChaosIslands;
@@ -29,12 +27,12 @@ public class ConfigHandler {
 	public static boolean disableOreSpawnEnd;
 	public static boolean disableOreSpawnOverworld;
 	public static boolean disableOreSpawnNether;
-	public static boolean enableHudDisplay;
 	public static boolean enableVersionChecker;
 	public static boolean dragonBreaksBlocks;
 	public static boolean sumonRitualAccelerated;
 	public static int[] dragonEggSpawnLocation;
 	public static int[] oreGenDimentionBlacklist;
+	public static int[] hudSettings;
 	private static String[] disabledBlocksItems;
 	public static List<String> disabledNamesList = new ArrayList<String>();
 	public static double maxPlayerSpeed;
@@ -95,12 +93,12 @@ public class ConfigHandler {
 			pigmenBloodRage = config.get(Configuration.CATEGORY_GENERAL, "Pigmen Blood Rage", true, "Is Pigmen blood rage active").getBoolean(true);
 			disableLore = config.get(Configuration.CATEGORY_GENERAL, "Disable Item Lore", false, "Set to true to disable all item lore").getBoolean(false);
 			invertDPDSB = config.get(Configuration.CATEGORY_GENERAL, "InvertDPDSB", false, "Invert Dislocator Pedestal display name shift behavior").getBoolean(false);
-			hudX = config.get(Configuration.CATEGORY_GENERAL, "Hud Display X pos", 7).getInt(7);
-			hudY = config.get(Configuration.CATEGORY_GENERAL, "Hud Display Y pos", 874).getInt(874);
+			//First is tool hud second is armor hud
+			//x, y, x, y, scale, scale, fademode, fademode, rotateArmor, armorText, hudEnabled, shieldEnabled
+			hudSettings = config.get("Gui Stuff", "HUD Settings", new int[] {7, 874, 100, 100, 100, 100, 0, 0, 0, 0, 1, 1}, "Used to store the position of the armor ant tool HUD's. This should not be modified", Integer.MIN_VALUE, Integer.MAX_VALUE, true, 12).getIntList();
 			disableOreSpawnEnd = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (End)", false, "Set to true to prevent draconium ore from spawning in the end").getBoolean(false);
 			disableOreSpawnNether = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Nether)", false, "Set to true to prevent draconium ore from spawning in the nether").getBoolean(false);
 			disableOreSpawnOverworld = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Overworld)", false, "Set to true to prevent draconium ore from spawning in the overworld").getBoolean(false);
-			enableHudDisplay = config.get(Configuration.CATEGORY_GENERAL, "Enable HUD info", true, "Set to false to disable the HUD info for tools and blocks").getBoolean(true);
 			enableVersionChecker = config.get(Configuration.CATEGORY_GENERAL, "Enable version checker", true, "Set to false to disable the version checker").getBoolean(true);
 			dragonBreaksBlocks = config.get(Configuration.CATEGORY_GENERAL, "Can dragon break blocks", true, "Set to false to disable the DE dragons ability to break blocks (dose not effect vanilla dragon)").getBoolean(true);
 			dragonEggSpawnLocation = config.get(Configuration.CATEGORY_GENERAL, "Dragon egg spawn location", new int[] {0, 0, 0}, "Sets the exact location to spawn the dragon egg and disables the portal spawn (dose not effect vanilla dragon)").getIntList();

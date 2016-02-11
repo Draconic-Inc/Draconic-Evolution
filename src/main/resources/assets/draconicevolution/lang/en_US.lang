@@ -448,6 +448,7 @@ button.de.addFuel.txt=Add Fuel
 button.de.cancel.txt=Cancel
 button.de.UP.txt=UP
 button.de.DOWN.txt=DOWN
+button.de.toggleHidden.txt=Toggle Hidden
 
 //Item Config Buttons
 button.de.ArmorNVActive.name=Night Vision
@@ -473,6 +474,15 @@ button.de.reactorStop.txt=Initiate Shutdown
 button.de.stats.txt=Stats
 button.de.statsShow.txt=Show
 button.de.statsHide.txt=Hide
+button.de.scaleUp.txt=Scale +
+button.de.scaleDown.txt=Scale -
+button.de.fadeMode0.txt=Fade Out: Off
+button.de.fadeMode1.txt=Fade Out: 25%
+button.de.fadeMode2.txt=Fade Out: 50%
+button.de.fadeMode3.txt=Fade Out: 75%
+button.de.fadeMode4.txt=Fade Out: Full
+button.de.rotate.txt=Rotate
+button.de.numeric.txt=Numeric:
 
 //Gui ----------------------------------------------------------------------------------------------------------------------------------------
 gui.de.flowGate.name=Flow Control
@@ -532,6 +542,10 @@ gui.de.pointCost.txt=Point Cost
 gui.de.value.txt=Value
 gui.de.points.txt=Points
 gui.de.point.txt=Point
+gui.de.itemInventory.txt=Item Inventory
+gui.de.configureGuiElements.txt=Configure HUD Elements
+gui.de.hudDisplaySettings.txt=HUD Display Settings
+gui.de.shieldDisplaySettings.txt=Shield Display Settings
 
 gui.de.RFCapacity.txt=RF Capacity
 gui.de.DigSpeed.txt=Dig Speed

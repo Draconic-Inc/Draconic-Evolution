@@ -1,21 +1,21 @@
 package com.brandon3055.draconicevolution.client.gui.componentguis;
 
 import com.brandon3055.brandonscore.client.gui.guicomponents.*;
-import com.brandon3055.draconicevolution.client.gui.guicomponents.*;
+import com.brandon3055.draconicevolution.client.gui.GuiHudConfig;
+import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentConfigItemButton;
+import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentFieldAdjuster;
+import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentFieldButton;
 import com.brandon3055.draconicevolution.common.container.ContainerAdvTool;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.config.Configuration;
 
 /**
  * Created by Brandon on 26/12/2014.
@@ -27,7 +27,6 @@ public class GUIToolConfig extends GUIBase {
 	private int screenLevel = 0;
 	private ItemStack editingItem;
 	private ContainerAdvTool container;
-	private boolean draggingHud = false;
 
 	public GUIToolConfig(EntityPlayer player, ContainerAdvTool container) {
 		super(container, 198, 89);
@@ -50,11 +49,12 @@ public class GUIToolConfig extends GUIBase {
 
 	@Override
 	protected ComponentCollection assembleComponents() {
-		ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize, this);
+		ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize+14, this);
 		c.addComponent(new ComponentTexturedRect(0, 0, 198, 89, inventoryTexture)).setGroup("BACKGROUND");
-		c.addComponent(new ComponentButton(3, 26, 20, 12, 0, this, "<=", "Back")).setGroup("BUTTONS").setName("BACK_BUTTON");
-		c.addComponent(new ComponentButton(3, 39, 20, 12, 1, this, "Inv", "Item Inventory")).setGroup("BUTTONS").setName("INVENTORY_BUTTON");
+		c.addComponent(new ComponentButton(3, 26, 20, 12, 0, this, "<=", StatCollector.translateToLocal("gui.back"))).setGroup("BUTTONS").setName("BACK_BUTTON");
+		c.addComponent(new ComponentButton(3, 39, 20, 12, 1, this, "Inv", StatCollector.translateToLocal("gui.de.itemInventory.txt"))).setGroup("BUTTONS").setName("INVENTORY_BUTTON");
 		c.addComponent(new ComponentFieldAdjuster(4, 34, null, this)).setGroup("FIELD_BUTTONS").setName("FIELD_CONFIG_BUTTON_ARRAY");
+		c.addComponent(new ComponentButton(0, ySize, xSize, 14, 2, this, StatCollector.translateToLocal("gui.de.configureGuiElements.txt")).setGroup("INV_SCREEN"));
 		return c;
 	}
 
@@ -78,7 +78,6 @@ public class GUIToolConfig extends GUIBase {
 
 	public void updateItemButtons()
 	{
-		LogHelper.info("Update Buttons");
 		for (ComponentBase component : collection.getComponents())
 		{
 			if (component instanceof ComponentConfigItemButton)
@@ -91,15 +90,6 @@ public class GUIToolConfig extends GUIBase {
 	@Override
 	protected void mouseClicked(int x, int y, int button) {
 		super.mouseClicked(x, y, button);
-
-		if (!collection.isMouseOver(x - guiLeft, y - guiTop)) {
-			draggingHud = true;
-			int x1 = (int) (((float) x / (float) width) * 1000f);
-			int y1 = (int) (((float) y / (float) height) * 1000f);
-
-			ConfigHandler.hudX = x1;
-			ConfigHandler.hudY = y1;
-		}
 
 		if (buttonPressed) return;
 
@@ -127,29 +117,6 @@ public class GUIToolConfig extends GUIBase {
 		}
 	}
 
-	@Override
-	protected void mouseClickMove(int x, int y, int button, long time) {
-		super.mouseClickMove(x, y, button, time);
-		if (draggingHud)
-		{
-			int x1 = (int) (((float) x / (float) width) * 1000f);
-			int y1 = (int) (((float) y / (float) height) * 1000f);
-
-			ConfigHandler.hudX = x1;
-			ConfigHandler.hudY = y1;
-		}
-	}
-
-	@Override
-	protected void mouseMovedOrUp(int x, int y, int button) {
-		super.mouseMovedOrUp(x, y, button);
-		if (draggingHud) {
-			draggingHud = false;
-			ConfigHandler.config.get(Configuration.CATEGORY_GENERAL, "Hud Display X pos", 7).set(ConfigHandler.hudX);
-			ConfigHandler.config.get(Configuration.CATEGORY_GENERAL, "Hud Display Y pos", 874).set(ConfigHandler.hudY);
-			ConfigHandler.config.save();
-		}
-	}
 
 	@Override
 	public void buttonClicked(int id, int button) {
@@ -164,12 +131,9 @@ public class GUIToolConfig extends GUIBase {
 //			LogHelper.info("Pre send container " + Minecraft.getMinecraft().thePlayer.openContainer);
 //			DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOLINVENTORY, false));
 		}
-	}
-
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-		fontRendererObj.drawString(StatCollector.translateToLocal("info.de.hudDisplayConfigInfo1.txt") + " " + StatCollector.translateToLocal("info.de.hudDisplayConfigInfo2.txt"), 0, 91, 0xffffff);
+		else if (id == 2) {
+			Minecraft.getMinecraft().displayGuiScreen(new GuiHudConfig(this));
+		}
 	}
 
 	public void setLevel(int level){

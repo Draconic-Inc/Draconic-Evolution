@@ -87,7 +87,7 @@ public class FMLEventHandler {
 				player.moveFlying(0F, 1F, percentIncrease / 2F);
 			}
 
-			player.jumpMovementFactor = 0.02F + (percentIncrease * 0.2F);
+			if (!player.onGround && player.ridingEntity == null) player.jumpMovementFactor = 0.02F + (percentIncrease * 0.2F);
 
 			if (walkSpeed != null) {
 				try {
