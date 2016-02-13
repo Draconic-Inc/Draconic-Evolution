@@ -5,17 +5,15 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by brandon3055 on 5/2/2016.
  */
-public interface IShieldedArmor {
+public interface ICustomArmor {
 
 	/**Returns the max number of protection points this armor piece can provide
 	 * 1 protection point equals 1 half heart of protection.
 	 * */
-	public int getProtectionPoints(ItemStack stack);
+	public float getProtectionPoints(ItemStack stack);
 
 	/**Reruns the number of Upgrade points applied to shield recovery*/
 	public int getRecoveryPoints(ItemStack stack);
-
-
 
 	/*
 	TODO

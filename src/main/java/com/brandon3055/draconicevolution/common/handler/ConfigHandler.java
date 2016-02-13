@@ -95,7 +95,7 @@ public class ConfigHandler {
 			invertDPDSB = config.get(Configuration.CATEGORY_GENERAL, "InvertDPDSB", false, "Invert Dislocator Pedestal display name shift behavior").getBoolean(false);
 			//First is tool hud second is armor hud
 			//x, y, x, y, scale, scale, fademode, fademode, rotateArmor, armorText, hudEnabled, shieldEnabled
-			hudSettings = config.get("Gui Stuff", "HUD Settings", new int[] {7, 874, 100, 100, 100, 100, 0, 0, 0, 0, 1, 1}, "Used to store the position of the armor ant tool HUD's. This should not be modified", Integer.MIN_VALUE, Integer.MAX_VALUE, true, 12).getIntList();
+			hudSettings = config.get("Gui Stuff", "HUD Settings", new int[] { 996, 825, 69, 907, 90, 100, 3, 0, 1, 1, 1, 1}, "Used to store the position of the armor ant tool HUD's. This should not be modified", Integer.MIN_VALUE, Integer.MAX_VALUE, true, 12).getIntList();
 			disableOreSpawnEnd = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (End)", false, "Set to true to prevent draconium ore from spawning in the end").getBoolean(false);
 			disableOreSpawnNether = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Nether)", false, "Set to true to prevent draconium ore from spawning in the nether").getBoolean(false);
 			disableOreSpawnOverworld = config.get(Configuration.CATEGORY_GENERAL, "Disable Ore Spawn (Overworld)", false, "Set to true to prevent draconium ore from spawning in the overworld").getBoolean(false);

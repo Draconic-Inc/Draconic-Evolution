@@ -119,6 +119,7 @@ public class GuiHudConfig extends GuiScreen {
 		drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.configureGuiElements.txt"), width/2, height/2-90, 0x00FFFF);
 		drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.hudDisplaySettings.txt"), width/2, height/2-77, 0xFFFFFF);
 		drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.shieldDisplaySettings.txt"), width/2, height/2-15, 0xFFFFFF);
+		drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.clickAndDragPurpleBoxes.txt"), width/2, height/2+85, 0xFFFFFF);
 
 		drawCenteredString(fontRendererObj, ConfigHandler.hudSettings[4]+"%", width/2 + 97, height/2-63, 0xFFFFFF);
 		drawCenteredString(fontRendererObj, ConfigHandler.hudSettings[5]+"%", width/2 + 97, height/2-1, 0xFFFFFF);

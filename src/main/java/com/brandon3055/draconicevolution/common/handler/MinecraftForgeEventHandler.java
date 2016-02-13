@@ -12,12 +12,13 @@ import com.brandon3055.draconicevolution.common.achievements.Achievements;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
-import com.brandon3055.draconicevolution.common.items.armor.ArmorEffectHandler;
+import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
 import com.brandon3055.draconicevolution.common.network.SpeedRequestPacket;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.world.ChaosWorldGenHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -50,9 +51,7 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -132,34 +131,51 @@ public class MinecraftForgeEventHandler {
 	}
 
 	@SubscribeEvent
-	public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
-		if (!(event.entityLiving instanceof EntityPlayer)) return;
-		EntityPlayer player = (EntityPlayer) event.entityLiving;
+	public void onLivingHurt(LivingHurtEvent event){
+		if (event.entityLiving instanceof EntityPlayer){
+			CustomArmorHandler.onPlayerHurt(event);
+		}
+	}
 
-		if (ArmorEffectHandler.getHasJumpBoost(player))
-		{
-			int i = ArmorEffectHandler.getJumpLevel(player);
-			event.entityLiving.motionY += ArmorEffectHandler.getJumpMultiplier(player) * ((0.1f) * (2 + i));
+	@SubscribeEvent(priority = EventPriority.LOW)
+	public void onLivingDeath(LivingDeathEvent event){
+		if (event.entityLiving instanceof EntityPlayer){
+			CustomArmorHandler.onPlayerDeath(event);
 		}
 	}
 
 	@SubscribeEvent
-	public void onEntityDamaged(LivingAttackEvent event) {
+	public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
+		if (!(event.entityLiving instanceof EntityPlayer)) return;
+		EntityPlayer player = (EntityPlayer) event.entityLiving;
+
+		if (CustomArmorHandler.getHasJumpBoost(player))
+		{
+			int i = CustomArmorHandler.getJumpLevel(player);
+			event.entityLiving.motionY += CustomArmorHandler.getJumpMultiplier(player) * ((0.1f) * (2 + i));
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOW)
+	public void onLivingAttack(LivingAttackEvent event) {
 		if (!(event.entityLiving instanceof EntityPlayer)) return;
 
+		CustomArmorHandler.onPlayerAttacked(event);
+
 		EntityPlayer player = (EntityPlayer) event.entityLiving;
-		if (event.source.isFireDamage() && ArmorEffectHandler.getFireImunity(player))
+
+		if (event.source.isFireDamage() && CustomArmorHandler.getFireImunity(player))
 		{
 			event.setCanceled(true);
 			event.entityLiving.extinguish();
 		}
 
-		if (event.source.damageType.equals("fall") && ArmorEffectHandler.getHasJumpBoost(player))
+		if (event.source.damageType.equals("fall") && CustomArmorHandler.getHasJumpBoost(player))
 		{
-			if (event.ammount < (ArmorEffectHandler.getJumpLevel(player) + 1) * 2) event.setCanceled(true);
+			if (event.ammount < (CustomArmorHandler.getJumpLevel(player) + 1) * 2) event.setCanceled(true);
 		}
 
-		if ((event.source.damageType.equals("inWall") || event.source.damageType.equals("drown")) && (ArmorEffectHandler.isWyvernArmor(player, 4) || ArmorEffectHandler.isDraconicArmor(player, 4)))
+		if ((event.source.damageType.equals("inWall") || event.source.damageType.equals("drown")) && (CustomArmorHandler.isWyvernArmor(player, 4) || CustomArmorHandler.isDraconicArmor(player, 4)))
 		{
 			if (event.ammount <= 2f) event.setCanceled(true);
 		}
@@ -176,10 +192,7 @@ public class MinecraftForgeEventHandler {
 
 			for (Object o : event.entity.worldObj.playerEntities)
 			{
-				LogHelper.info(o);
-				if (o instanceof EntityPlayer)
-					((EntityPlayer) o).addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
-
+				if (o instanceof EntityPlayer) ((EntityPlayer) o).addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
 			}
 
 			int count = 30 + event.entity.worldObj.rand.nextInt(30);
@@ -382,11 +395,11 @@ public class MinecraftForgeEventHandler {
 			float newDigSpeed = event.originalSpeed;
 			if (event.entityPlayer.isInsideOfMaterial(Material.water))
 			{
-				if (ArmorEffectHandler.isDraconicArmor(event.entityPlayer, 4)) newDigSpeed *= 5f;
+				if (CustomArmorHandler.isDraconicArmor(event.entityPlayer, 4)) newDigSpeed *= 5f;
 			}
 			if (!event.entityPlayer.onGround)
 			{
-				if (ArmorEffectHandler.isDraconicArmor(event.entityPlayer, 3)) newDigSpeed *= 5f;
+				if (CustomArmorHandler.isDraconicArmor(event.entityPlayer, 3)) newDigSpeed *= 5f;
 			}
 			event.newSpeed = newDigSpeed;
 		}

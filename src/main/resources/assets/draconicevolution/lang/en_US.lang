@@ -167,6 +167,7 @@ msg.draconiumChestEdit2.txt=Please use a single peace of paper
 msg.de.dragonDeath.txt=§5The heart is temporarily awakened by the dragons explosive §5death
 msg.de.baseSafeAOW.txt=§9(§aAOE §aSafe §aMode §ais §aenabled§9) §cOperation §cCanceled §cbecause §ca §ctile §centity §cwas §cdetected
 msg.de.guardianAttackBlocked.txt=Your attack is blocked by the guardians crystals!
+msg.de.shieldDepleted.txt=Warning Critical Damage!!!
 
 //Energy Net
 msg.de.wrenchMode.bind.txt=Function: Bind
@@ -428,6 +429,8 @@ death.attack.de.GuardianChaosBall=%1$s was annihilated by a Chaos Guardian using
 death.attack.chaosImplosion=%1$s was pulled into an energy vortex and crushed into oblivion
 death.attack.chrystalMoved=%1$s was naughty and has been punished by Draconic Evolution!
 
+death.attack.administrative.kill=%1$s was struck down by an unsurvivable force
+
 //Buttons ----------------------------------------------------------------------------------------------------------------------------------------
 button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
 button.de.chestAutoFeed1.txt=FILL.Keep the current stacks full
@@ -546,6 +549,7 @@ gui.de.itemInventory.txt=Item Inventory
 gui.de.configureGuiElements.txt=Configure HUD Elements
 gui.de.hudDisplaySettings.txt=HUD Display Settings
 gui.de.shieldDisplaySettings.txt=Shield Display Settings
+gui.de.clickAndDragPurpleBoxes.txt=Click and drag the purple boxes to move the displays
 
 gui.de.RFCapacity.txt=RF Capacity
 gui.de.DigSpeed.txt=Dig Speed

@@ -52,7 +52,7 @@ import java.util.List;
 	@Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
 	@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft")
 })
-public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IGoggles, IRevealer, IUpgradableItem, IShieldedArmor {//TODO Wings
+public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IGoggles, IRevealer, IUpgradableItem, ICustomArmor {//TODO Wings
 	@SideOnly(Side.CLIENT)
 	private IIcon helmIcon;
 	@SideOnly(Side.CLIENT)
@@ -149,16 +149,16 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		return getEnergyStored(stack) < getMaxEnergyStored(stack);
 	}
 
-	protected double getAbsorptionPercent() {
+	protected float getProtectionShare() {
 		switch (armorType) {
 			case 0:
-				return 0.15D;
+				return 0.15F;
 			case 1:
-				return 0.40D;
+				return 0.40F;
 			case 2:
-				return 0.30D;
+				return 0.30F;
 			case 3:
-				return 0.15D;
+				return 0.15F;
 		}
 		return 0;
 	}
@@ -167,20 +167,20 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
-		int maxAbsorption = 25 * getEnergyStored(armor) / energyPerDamage;
+		int maxAbsorption = 0;//25 * getEnergyStored(armor) / energyPerDamage;
 		if (source.damageType.equals(DamageSource.fall.damageType) && armor.getItem() == ModItems.draconicBoots) return new ArmorProperties(0, 1D, maxAbsorption);
-		if (source.isUnblockable()) return new ArmorProperties(0, (getAbsorptionPercent()*totalAbsorption)/2, maxAbsorption);
-		return new ArmorProperties(0, getAbsorptionPercent()*totalAbsorption, maxAbsorption);
+		if (source.isUnblockable()) return new ArmorProperties(0, (getProtectionShare()*totalAbsorption)/2, maxAbsorption);
+		return new ArmorProperties(0, getProtectionShare()*totalAbsorption, maxAbsorption);
 	}
 
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
-		return this.getEnergyStored(armor) > 10000 ? (int)(getAbsorptionPercent() * 20D) : (int) ((float)this.getEnergyStored(armor) / 10000F * (float)(getAbsorptionPercent() * 20D));
+		return this.getEnergyStored(armor) > 10000 ? (int)(getProtectionShare() * 20D) : (int) ((float)this.getEnergyStored(armor) / 10000F * (float)(getProtectionShare() * 20D));
 	}
 
 	@Override
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
-		extractEnergy(stack, damage * energyPerDamage, false);
+		//extractEnergy(stack, damage * energyPerDamage, false);
 	}
 
 	@Override
@@ -444,16 +444,18 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		else if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) return (int)(getProtectionShare() * 25) + (armorType == 2 ? 2 : 0);
+		else if (upgradeIndex == EnumUpgrade.SHIELD_RECOVERY.index) return 5;
 		return 0;
 	}
 
 	@Override
-	public int getProtectionPoints(ItemStack stack) {
-		return 10;
+	public float getProtectionPoints(ItemStack stack) {
+		return EnumUpgrade.SHIELD_CAPACITY.getUpgradePoints(stack) * 20;
 	}
 
 	@Override
 	public int getRecoveryPoints(ItemStack stack) {
-		return 10;
+		return EnumUpgrade.SHIELD_RECOVERY.getUpgradePoints(stack);
 	}
 }

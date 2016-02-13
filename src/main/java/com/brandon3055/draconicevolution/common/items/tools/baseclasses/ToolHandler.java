@@ -135,7 +135,7 @@ public class ToolHandler {
 			world.setBlockToAir(x, y, z);
 
 			if (!world.isRemote && !player.capabilities.isCreativeMode && world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
-				for (final ItemStack item : items) {
+				for (ItemStack item : items) {
 					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, item));
 				}
 			}
@@ -171,8 +171,6 @@ public class ToolHandler {
 		int rf = (int)baseAttack * References.ENERGYPERATTACK;
 		if (rf > item.getEnergyStored(stack)) baseAttack = item.getEnergyStored(stack) / References.ENERGYPERATTACK;
 		if (baseAttack <= 0) baseAttack = 1;
-
-		LogHelper.info(baseAttack * References.ENERGYPERATTACK);
 
 		entity.attackEntityFrom(DamageSource.causePlayerDamage(player), baseAttack);
 		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) > 0) entity.setFire(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) * 15);

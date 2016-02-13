@@ -4,7 +4,7 @@ import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.client.gui.GuiHudConfig;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.items.armor.IShieldedArmor;
+import com.brandon3055.draconicevolution.common.items.armor.ICustomArmor;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -31,14 +31,13 @@ public class HudHandler {
 	private static List<String> ltHudList = null;
 	private static float toolTipFadeOut = 0F;
 	private static float armorStatsFadeOut = 0F;
-	public static boolean fadeHud = false;
-	public static boolean fadeArmorStats = false;
-	private static boolean showArmorHud = false;
-	private static int armorPoints = 0;
-	private static int maxArmorPoints = 0;
-	private static int armorFatigue = 0;
-	private static int ltProtPoints = 0;
-	private static int ltFatigue = 0;
+	private static boolean showShieldHud = false;
+	private static int shieldPercentCharge = 0;
+	private static float shieldPoints = 0F;
+	private static float maxShieldPoints = 0F;
+	private static float shieldEntropy = 0F;
+	private static float ltShieldPoints = 0F;
+	private static float ltEntropy = 0F;
 
 	int width;
 	int height;
@@ -47,13 +46,13 @@ public class HudHandler {
 	@SideOnly(Side.CLIENT)
 	public void drawHUD(RenderGameOverlayEvent.Post event) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (event.type != RenderGameOverlayEvent.ElementType.ALL || mc.gameSettings.showDebugInfo) return;
+		if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR || mc.gameSettings.showDebugInfo) return;// || (mc.currentScreen != null && !(mc.currentScreen instanceof GuiHudConfig))) return;
 		ScaledResolution resolution = event.resolution;
 		width = resolution.getScaledWidth();
 		height = resolution.getScaledHeight();
 		FontRenderer fontRenderer = mc.fontRenderer;
 
-		if (ConfigHandler.hudSettings[10] == 1 && hudList != null) {
+		if (ConfigHandler.hudSettings[10] == 1 && hudList != null && toolTipFadeOut > 0) {
 			int x = (int) (((float)ConfigHandler.hudSettings[0] / 1000F) * (float) width);
 			int y = (int) (((float)ConfigHandler.hudSettings[1] / 1000F) * (float) height);
 
@@ -64,7 +63,7 @@ public class HudHandler {
 			GL11.glPopMatrix();
 		}
 
-		if (ConfigHandler.hudSettings[11] == 1 && showArmorHud) {
+		if (ConfigHandler.hudSettings[11] == 1 && showShieldHud) {
 			int x = (int) (((float)ConfigHandler.hudSettings[2] / 1000F) * (float) width);
 			int y = (int) (((float)ConfigHandler.hudSettings[3] / 1000F) * (float) height);
 
@@ -74,9 +73,12 @@ public class HudHandler {
 	//x, y, x, y, scale, scale, fademode, fademode, rotateArmor, armorText
 	@SideOnly(Side.CLIENT)
 	public static void clientTick() {
-		if (toolTipFadeOut > 0 && fadeHud) toolTipFadeOut-=0.1F;
-		if (hudList != null && (ltHudList == null || !hudList.equals(ltHudList))) toolTipFadeOut = 10F;
-		if (armorStatsFadeOut > 0 && fadeArmorStats) armorStatsFadeOut-=0.1F;
+		if (ConfigHandler.hudSettings[6] > 0 && toolTipFadeOut > 1F - ((float)ConfigHandler.hudSettings[6] * 0.25F)) {
+
+			toolTipFadeOut-=0.1F;
+		}
+		if (hudList != null && (ltHudList == null || !hudList.equals(ltHudList))) toolTipFadeOut = 5F;
+		//if (armorStatsFadeOut > 0 && fadeArmorStats) armorStatsFadeOut-=0.1F;
 		//if (hudList != null && (ltHudList == null || !hudList.equals(ltHudList))) armorStatsFadeOut = 10F;todo armor refresh condition
 
 		ltHudList = hudList;
@@ -97,6 +99,8 @@ public class HudHandler {
 				hudList.add("");
 				hudList.add("");
 				hudList.add(StatCollector.translateToLocal("info.de.hudDisplayConfigTxt3.txt"));
+				toolTipFadeOut = 1F;
+				armorStatsFadeOut = 1F;
 			}
 		}
 		else if (mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof IHudDisplayItem) {
@@ -109,22 +113,23 @@ public class HudHandler {
 			hudList = ((IHudDisplayBlock)mc.theWorld.getBlock(mop.blockX, mop.blockY, mop.blockZ)).getDisplayData(mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
 		}
 
-		showArmorHud = false;
-		maxArmorPoints = 0;
-		armorPoints = 0;
-		armorFatigue = 0;
+		showShieldHud = false;
+		maxShieldPoints = 0;
+		shieldPoints = 0;
+		shieldEntropy = 0;
 		int peaces = 0;
 		for (ItemStack stack : armorSlots){
-			if (stack == null || !(stack.getItem() instanceof IShieldedArmor)) continue;
+			if (stack == null || !(stack.getItem() instanceof ICustomArmor)) continue;
 			peaces++;
-			showArmorHud = true;
-			IShieldedArmor armor = (IShieldedArmor) stack.getItem();
-			maxArmorPoints += armor.getProtectionPoints(stack);
-			armorPoints += ItemNBTHelper.getInteger(stack, "ProtectionPoints", 0);
-			armorFatigue += ItemNBTHelper.getInteger(stack, "ArmorFatigue", 0);
+			showShieldHud = true;
+			ICustomArmor armor = (ICustomArmor) stack.getItem();
+			maxShieldPoints += armor.getProtectionPoints(stack);
+			shieldPoints += ItemNBTHelper.getFloat(stack, "ProtectionPoints", 0);
+			shieldEntropy += ItemNBTHelper.getFloat(stack, "ShieldEntropy", 0);
 		}
-		if (armorPoints > 0 && maxArmorPoints > 0) armorPoints = (int)((armorPoints / (double)maxArmorPoints) * 100D);
-		if (armorFatigue > 0 && peaces > 0) armorFatigue /= peaces;
+		if (shieldPoints > 0 && maxShieldPoints > 0) shieldPercentCharge = Math.round((shieldPoints / maxShieldPoints) * 100F);
+		else shieldPercentCharge = 0;
+		if (shieldEntropy > 0 && peaces > 0) shieldEntropy /= peaces;
 
 	}
 
@@ -144,8 +149,8 @@ public class HudHandler {
 		else GuiHelper.drawTexturedRect(x+(1*scale), y+(104*scale)+1, (int)(13*scale), (int)(15*scale), 2, 0, 11, 13, 0, GuiHelper.PXL128);
 
 		GuiHelper.drawTexturedRect(x, y, (int)(15*scale), (int)(104*scale), 0, 14, 15, 104, 0, GuiHelper.PXL128);
-		GuiHelper.drawTexturedRect(x+2, y+2+(100- armorPoints), (int)(8*scale), (int)(armorPoints *scale), 15, 100- armorPoints, 8, armorPoints, 0, GuiHelper.PXL128);
-		GuiHelper.drawTexturedRect(x+11, y+2+(100- armorFatigue), (int)(2*scale), (int)(armorFatigue *scale), 24, 100- armorFatigue, 2, armorFatigue, 0, GuiHelper.PXL128);
+		GuiHelper.drawTexturedRect(x+2, y+2+(100- shieldPercentCharge), (int)(8*scale), shieldPercentCharge *scale, 15, 100-shieldPercentCharge, 8, shieldPercentCharge, 0, GuiHelper.PXL128);
+		GuiHelper.drawTexturedRect(x+11, y+2+(100-(int)shieldEntropy), (int)(2*scale), (int)shieldEntropy * scale, 24, 100-(int)shieldEntropy, 2, (int)shieldEntropy, 0, GuiHelper.PXL128);
 
 		if (ConfigHandler.hudSettings[9] == 1) {
 			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
@@ -154,11 +159,11 @@ public class HudHandler {
 			if (rotated) GL11.glRotated(90, 0, 0, -1);
 			GL11.glTranslated(-x, -y, 0);
 			if (!rotated) {
-				fontRenderer.drawStringWithShadow(armorPoints + "/" + maxArmorPoints, x + 16, y + 84, 0xFFFFFF);
-				fontRenderer.drawStringWithShadow(armorFatigue + "%", x + 16, y + 94, 0xFFFFFF);
+				fontRenderer.drawStringWithShadow(Math.round(shieldPoints) + "/" + (int)maxShieldPoints, x + 16, y + 84, 0xFFFFFF);
+				fontRenderer.drawStringWithShadow((int)shieldEntropy + "%", x + 16, y + 94, 0xFFFFFF);
 			}else {
-				fontRenderer.drawStringWithShadow(armorPoints + "/" + maxArmorPoints, x - 102, y + 16, 0xFFFFFF);
-				fontRenderer.drawStringWithShadow(armorFatigue + "%", x - fontRenderer.getStringWidth(armorFatigue + "%"), y + 16, 0xFFFFFF);
+				fontRenderer.drawStringWithShadow(Math.round(shieldPoints) + "/" + (int)maxShieldPoints, x - 102, y + 16, 0xFFFFFF);
+				fontRenderer.drawStringWithShadow((int)shieldEntropy + "%", x - fontRenderer.getStringWidth((int)shieldEntropy + "%"), y + 16, 0xFFFFFF);
 			}
 		}
 
