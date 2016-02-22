@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.network;
 
+import com.brandon3055.brandonscore.common.lib.References;
 import com.brandon3055.brandonscore.common.utills.DataUtills;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -19,6 +21,7 @@ public class ItemConfigPacket implements IMessage
 	public int slot;
 	public Object value;
 	public String name;
+	public boolean renameProfile = false;
 
 	public ItemConfigPacket() {}
 
@@ -29,12 +32,21 @@ public class ItemConfigPacket implements IMessage
 		this.name = field.name;
 	}
 
+	public ItemConfigPacket(int slot, String name) {
+		this.datatype = References.BOOLEAN_ID;
+		this.slot = slot;
+		this.value = false;
+		this.name = name;
+		this.renameProfile = true;
+	}
+
 	@Override
 	public void fromBytes(ByteBuf bytes){
 		this.datatype = bytes.readByte();
 		this.slot = bytes.readInt();
 		this.name = ByteBufUtils.readUTF8String(bytes);
 		this.value = DataUtills.instance.readObjectFromBytes(bytes, datatype);
+		this.renameProfile = bytes.readBoolean();
 	}
 
 	@Override
@@ -43,6 +55,7 @@ public class ItemConfigPacket implements IMessage
 		bytes.writeInt(slot);
 		ByteBufUtils.writeUTF8String(bytes, name);
 		DataUtills.instance.writeObjectToBytes(bytes, datatype, value);
+		bytes.writeBoolean(renameProfile);
 	}
 
 	public static class Handler implements IMessageHandler<ItemConfigPacket, IMessage> {
@@ -50,9 +63,18 @@ public class ItemConfigPacket implements IMessage
 		@Override
 		public IMessage onMessage(ItemConfigPacket message, MessageContext ctx) {
 			EntityPlayer player = ctx.getServerHandler().playerEntity;
+
 			if (message.slot >= player.inventory.getSizeInventory() || message.slot < 0) return null;
+
 			ItemStack stack = player.inventory.getStackInSlot(message.slot);
+
 			if (stack != null && stack.getItem() instanceof IConfigurableItem) {
+
+				if (message.renameProfile){
+					ItemNBTHelper.setString(stack, "ProfileName" + ItemNBTHelper.getInteger(stack, "ConfigProfile", 0), message.name);
+					return null;
+				}
+
 				IConfigurableItem item = (IConfigurableItem) stack.getItem();
 				List<ItemConfigField> fields = item.getFields(stack, message.slot);
 
@@ -61,7 +83,7 @@ public class ItemConfigPacket implements IMessage
 						ItemConfigField newValue = new ItemConfigField(message.datatype, message.value, message.slot, message.name);
 
 						if (newValue.castToDouble() <= field.castMaxToDouble() && newValue.castToDouble() >= field.castMinToDouble()){
-							DataUtills.writeObjectToItem(stack, message.value, message.datatype, message.name);
+							DataUtills.writeObjectToCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), message.value, message.datatype, message.name);
 						}
 					}
 				}

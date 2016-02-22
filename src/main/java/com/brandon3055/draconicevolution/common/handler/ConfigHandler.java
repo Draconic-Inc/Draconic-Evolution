@@ -43,6 +43,7 @@ public class ConfigHandler {
 	public static boolean useOldArmorModel;
 	public static boolean useOriginal3DArmorModel;
 	public static boolean useOldD2DToolTextures;
+	public static boolean disableGuardianCrystalRespawn;
 
 	//spawner
 	public static String[] spawnerList;
@@ -113,6 +114,7 @@ public class ConfigHandler {
 			useOldD2DToolTextures = config.get(Configuration.CATEGORY_GENERAL, "Use old 2D tool textures", false, "If true the 3D tool models will be replaced with standard 2D textures").getBoolean(false);
 			chaosIslandSeparation = config.get(Configuration.CATEGORY_GENERAL, "Chaos Island Separation", 10000, "This sets how far apart the chaos islands will spawn. The islands spawn in a grid pattern.").getInt(10000);
 			useOriginal3DArmorModel = config.get(Configuration.CATEGORY_GENERAL, "Use the original 3D armor models", false, "If true the original 3D armor models created by Skeletonpunk will be used instead of the current ones").getBoolean(false);
+			disableGuardianCrystalRespawn = config.get(Configuration.CATEGORY_GENERAL, "Disable Guardian Crystal Respawn", false, "(Wuss mode) Setting this to true will disable the chaos guardians ability to respawn healing crystals. Under certain circumstances such as on a Spigot server where entity render distance is significantly lower this may be required.").getBoolean(false);
 
 
 			//Spawner

@@ -48,6 +48,11 @@ public class DraconiumBlock extends BlockDE {
 	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {}
 
 	@Override
+	public boolean canDropFromExplosion(Explosion p_149659_1_) {
+		return false;
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister) {
 		for (int i = 0; i < 3; i++) {

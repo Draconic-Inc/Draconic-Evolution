@@ -11,9 +11,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
-import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import com.brandon3055.draconicevolution.common.utills.*;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -40,14 +38,14 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRenderTweak, IUpgradableItem, IConfigurableItem {
+public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRenderTweak, IUpgradableItem, IConfigurableItem, IHudDisplayItem {
 
 	protected int capacity = References.DRACONICCAPACITY;
 	protected int maxReceive = References.DRACONICTRANSFER;
 	protected int maxExtract = References.DRACONICTRANSFER;
 
 	public DraconicHoe() {
-		super(ModItems.DRACONIUM_T1);
+		super(ModItems.WYVERN);
 		this.setUnlocalizedName(Strings.draconicHoeName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.draconicHoeName);
@@ -95,7 +93,8 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 		boolean successfull = false;
 		Block clicked = world.getBlock(x, y, z);
 		if (!player.isSneaking() && player.canPlayerEdit(x, y, z, par7, stack) && (clicked == Blocks.dirt || clicked == Blocks.grass || clicked == Blocks.farmland) && par7 == 1) {
-			int size = 4;
+			int size = IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_AOE, 0);
+			LogHelper.info(size);
 			for (int x1 = -size; x1 <= size; x1++) {
 				for (int z1 = -size; z1 <= size; z1++) {
 					if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
@@ -318,5 +317,20 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.max.txt")+" "+StatCollector.translateToLocal("gui.de.DigAOE.txt")+": "+InfoHelper.HITC()+digaoe+"x"+digaoe);
 
  		return strings;
+	}
+
+	@Override
+	public boolean hasProfiles() {
+		return false;
+	}
+
+	@Override
+	public List<String> getDisplayData(ItemStack stack) {
+		List<String> list = new ArrayList<String>();
+
+		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
+		if (capacity > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
+
+		return list;
 	}
 }

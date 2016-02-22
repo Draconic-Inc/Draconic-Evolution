@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
+import cofh.api.energy.IEnergyContainerItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 /**
  * Created by brandon3055 on 5/2/2016.
  */
-public interface ICustomArmor {
+public interface ICustomArmor extends IEnergyContainerItem {
 
 	/**Returns the max number of protection points this armor piece can provide
 	 * 1 protection point equals 1 half heart of protection.
@@ -15,16 +17,27 @@ public interface ICustomArmor {
 	/**Reruns the number of Upgrade points applied to shield recovery*/
 	public int getRecoveryPoints(ItemStack stack);
 
-	/*
-	TODO
-\
-	Create a damage event handler
-	Handle all the damage calculations and save the current remaining protection points directly to the item from the damage handler
-	When player is hit save the ticks till regen can start and the new entropy value directly to the armor
-	Work out overall recovery by averaging the recovery points
-	use a player tick handler to regen the armor and save tick down the entropy
+	/**Returns the movement speed modifier for this armor*/
+	public float getSpeedModifier(ItemStack stack, EntityPlayer player);
 
-	*/
+	/**Returns the jump height modifier for this armor*/
+	public float getJumpModifier(ItemStack stack, EntityPlayer player);
 
+	/**Returns true if this armor has up-hill step enabled*/
+	public boolean hasHillStep(ItemStack stack, EntityPlayer player);
 
+	/**Returns the fire resistance modifier for this armor
+	 * This is the percentage of fire damage this armor should absorb
+	 * If the total resistance for all armor peaces the player is wearing is >= 1 the player will not be damaged by fire.
+	 * Should return a number between 0 and 1*/
+	public float getFireResistance(ItemStack stack);
+
+	/**Returns {true, false} if this armor gives the player flight
+	 * Returns {true, true} if flight lock is also enables on this armor*/
+	public boolean[] hasFlight(ItemStack stack);
+
+	public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player);
+
+	/**Returns the vertical acceleration speed*/
+	public float getFlightVModifier(ItemStack stack, EntityPlayer player);
 }

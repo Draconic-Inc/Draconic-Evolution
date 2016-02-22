@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution.client.handler;
 
+import com.brandon3055.brandonscore.common.utills.DataUtills.XZPair;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
 import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
@@ -16,16 +18,26 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
+import org.lwjgl.opengl.GL11;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 /**
  * Created by Brandon on 28/10/2014.
  */
 public class ClientEventHandler {
+	public static Map<EntityPlayer, XZPair<Float, Integer>> playerShieldStatus = new HashMap<EntityPlayer, XZPair<Float, Integer>>();
 
 	public static int elapsedTicks;
 	private static float previousFOB = 0f;
@@ -40,16 +52,25 @@ public class ClientEventHandler {
 	public static boolean playerHoldingWrench = false;
 	public static Minecraft mc;
 	private static Random rand = new Random();
+	private static IModelCustom shieldSphere;
+
+	public ClientEventHandler(){
+		shieldSphere = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/shieldSphere.obj"));
+	}
 
 	@SubscribeEvent
 	public void tickEnd(TickEvent event) {
 		if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT) return;
 
+		for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = playerShieldStatus.entrySet().iterator(); i.hasNext(); ){
+			Map.Entry<EntityPlayer, XZPair<Float, Integer>> entry = i.next();
+			if (elapsedTicks - entry.getValue().getValue() > 5) i.remove();
+		}
+
+
 		if (mc == null) mc = Minecraft.getMinecraft();
 		else if (mc.theWorld != null)
 		{
-			mc.theWorld.theProfiler.startSection("DE Client Tick Handler");
-
 			elapsedTicks++;
 			HudHandler.clientTick();
 
@@ -73,13 +94,13 @@ public class ClientEventHandler {
 			playerHoldingWrench = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == ModItems.wrench;
 
 			searchForPlayerMount();
-
-			mc.theWorld.theProfiler.endSection();
 		}
 	}
 
 	@SubscribeEvent
 	public void fovUpdate(FOVUpdateEvent event){
+
+		//region Bow FOV Update
 		if (event.entity.getItemInUse() != null && (event.entity.getItemInUse().getItem() instanceof WyvernBow || event.entity.getItemInUse().getItem() instanceof DraconicBow)){
 			float f = 1f;
 			int i = event.entity.getItemInUseDuration();
@@ -106,6 +127,18 @@ public class ClientEventHandler {
 			f *= 1.0F - f1 * 0.15F;
 			event.newfov = f;
 		}
+		//endregion
+
+		//region Armor move speed FOV effect cancellation
+		CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.entity);
+
+		if (summery != null && summery.speedModifier > 0){
+			IAttributeInstance iattributeinstance = event.entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
+			float f = (float)((iattributeinstance.getAttributeValue() / (double)event.entity.capabilities.getWalkSpeed() + 1.0D) / 2.0D);
+			event.newfov /= f;
+		}
+
+		//endregion
 	}
 
 
@@ -145,6 +178,53 @@ public class ClientEventHandler {
 			modelbiped.isRiding = event.renderer.modelBipedMain.isRiding;
 			modelbiped.isChild = event.renderer.modelBipedMain.isChild;
 			event.result = 1;
+		}
+	}
+
+	@SubscribeEvent
+	public void renderPlayerEvent(RenderPlayerEvent.Post event) {
+		if (playerShieldStatus.containsKey(event.entityPlayer)) {
+			GL11.glPushMatrix();
+			GL11.glDepthMask(false);
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			ResourceHandler.bindResource("textures/models/shieldSphere.png");
+
+			float p = playerShieldStatus.get(event.entityPlayer).getKey();
+
+			EntityPlayer viewingPlayer = Minecraft.getMinecraft().thePlayer;
+
+			int i = 5 - (elapsedTicks - playerShieldStatus.get(event.entityPlayer).getValue());
+
+			GL11.glColor4f(1F - p, 0F, p, i / 5F);
+
+			if (viewingPlayer != event.entityPlayer){
+				double translationXLT = event.entityPlayer.prevPosX - viewingPlayer.prevPosX;
+				double translationYLT = event.entityPlayer.prevPosY - viewingPlayer.prevPosY;
+				double translationZLT = event.entityPlayer.prevPosZ - viewingPlayer.prevPosZ;
+
+				double translationX = translationXLT + (((event.entityPlayer.posX - viewingPlayer.posX) - translationXLT) * event.partialRenderTick);
+				double translationY = translationYLT + (((event.entityPlayer.posY - viewingPlayer.posY) - translationYLT) * event.partialRenderTick);
+				double translationZ = translationZLT + (((event.entityPlayer.posZ - viewingPlayer.posZ) - translationZLT) * event.partialRenderTick);
+
+				GL11.glTranslated(translationX, translationY + 1.1, translationZ);
+			}
+			else{
+				GL11.glTranslated(0, -0.5, 0);
+			}
+
+			GL11.glScaled(1, 1.5, 1);
+
+			shieldSphere.renderAll();
+
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
+			GL11.glDisable(GL11.GL_BLEND);
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glDepthMask(true);
+			GL11.glPopMatrix();
 		}
 	}
 }

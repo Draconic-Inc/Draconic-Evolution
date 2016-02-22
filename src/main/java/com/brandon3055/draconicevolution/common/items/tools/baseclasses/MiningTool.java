@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.block.Block;
@@ -67,15 +68,15 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
-		int radius = ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0);
-		int depth = ItemNBTHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
+		int radius = IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_AOE, 0);
+		int depth = IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
 
 		return getEnergyStored(stack) >= energyPerOperation && (radius > 0) ? breakAOEBlocks(stack, x, y, z, radius, depth, player) : super.onBlockStartBreak(stack, x, y, z, player);
 	}
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World p_150894_2_, Block p_150894_3_, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase p_150894_7_) {
-		if (ItemNBTHelper.getInteger(stack, References.DIG_AOE, 0) == 0) extractEnergy(stack, References.ENERGYPERBLOCK, false);
+		if (IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_AOE, 0) == 0) extractEnergy(stack, References.ENERGYPERBLOCK, false);
 		return super.onBlockDestroyed(stack, p_150894_2_, p_150894_3_, p_150894_4_, p_150894_5_, p_150894_6_, p_150894_7_);
 	}
 
@@ -85,10 +86,9 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
  		return super.onItemRightClick(stack, world, player);
 	}
 
-	//todo attack, hoe, textures
 	public boolean breakAOEBlocks(ItemStack stack, int x, int y, int z, int breakRadius, int breakDepth, EntityPlayer player)
 	{
-		Map<Block, Integer> blockMap = ItemNBTHelper.getBoolean(stack, References.OBLITERATE, false) ? getObliterationList(stack) : new HashMap<Block, Integer>();
+		Map<Block, Integer> blockMap = IConfigurableItem.ProfileHelper.getBoolean(stack, References.OBLITERATE, false) ? getObliterationList(stack) : new HashMap<Block, Integer>();
 		Block block = player.worldObj.getBlock(x,y,z);
 		int meta = player.worldObj.getBlockMetadata(x,y,z);
 		boolean effective = false;
@@ -159,7 +159,7 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
 				break;
 		}
 
-		if (ItemNBTHelper.getBoolean(stack, References.BASE_SAFE_AOE, false))
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, References.BASE_SAFE_AOE, false))
 		{
 			for (int xPos = x - xMin; xPos <= x + xMax; xPos++)
 			{
@@ -225,6 +225,9 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
 
 		float strength = ForgeHooks.blockStrength(block, player, world, x,y,z);
 
+		if (!player.canHarvestBlock(block) || !ForgeHooks.canHarvestBlock(block, player, meta) || refStrength/strength > 10f && !player.capabilities.isCreativeMode)
+			return;
+
 		if (!world.isRemote)
 		{
 			BlockEvent.BreakEvent event = ForgeHooks.onBlockBreakEvent(world, world.getWorldInfo().getGameType(), (EntityPlayerMP) player, x, y, z);
@@ -233,9 +236,6 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
 				return;
 			}
 		}
-
-		if (!player.canHarvestBlock(block) || !ForgeHooks.canHarvestBlock(block, player, meta) || refStrength/strength > 10f && !player.capabilities.isCreativeMode)
-			return;
 
 		int scaledPower = energyPerOperation + (totalSize * (energyPerOperation / 10));
 
@@ -307,7 +307,6 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {//
 
 	@Override
 	public List<String> getUpgradeStats(ItemStack stack) {
-		List<ItemConfigField> fields = getFields(stack, 0);
 		List<String> strings = new ArrayList<String>();
 		int digaoe = 0;
 		int depth = 0;

@@ -148,11 +148,11 @@ public class MinecraftForgeEventHandler {
 	public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
 		if (!(event.entityLiving instanceof EntityPlayer)) return;
 		EntityPlayer player = (EntityPlayer) event.entityLiving;
+		CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(player);
 
-		if (CustomArmorHandler.getHasJumpBoost(player))
+		if (summery != null && summery.jumpModifier > 0)
 		{
-			int i = CustomArmorHandler.getJumpLevel(player);
-			event.entityLiving.motionY += CustomArmorHandler.getJumpMultiplier(player) * ((0.1f) * (2 + i));
+			player.motionY += (double)(summery.jumpModifier * 0.1F);
 		}
 	}
 
@@ -161,24 +161,6 @@ public class MinecraftForgeEventHandler {
 		if (!(event.entityLiving instanceof EntityPlayer)) return;
 
 		CustomArmorHandler.onPlayerAttacked(event);
-
-		EntityPlayer player = (EntityPlayer) event.entityLiving;
-
-		if (event.source.isFireDamage() && CustomArmorHandler.getFireImunity(player))
-		{
-			event.setCanceled(true);
-			event.entityLiving.extinguish();
-		}
-
-		if (event.source.damageType.equals("fall") && CustomArmorHandler.getHasJumpBoost(player))
-		{
-			if (event.ammount < (CustomArmorHandler.getJumpLevel(player) + 1) * 2) event.setCanceled(true);
-		}
-
-		if ((event.source.damageType.equals("inWall") || event.source.damageType.equals("drown")) && (CustomArmorHandler.isWyvernArmor(player, 4) || CustomArmorHandler.isDraconicArmor(player, 4)))
-		{
-			if (event.ammount <= 2f) event.setCanceled(true);
-		}
 	}
 
 	@SubscribeEvent
@@ -388,18 +370,22 @@ public class MinecraftForgeEventHandler {
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOW)
 	public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
 		if (event.entityPlayer != null)
 		{
 			float newDigSpeed = event.originalSpeed;
+			CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.entityPlayer);
+			if (summery == null) return;
+
 			if (event.entityPlayer.isInsideOfMaterial(Material.water))
 			{
-				if (CustomArmorHandler.isDraconicArmor(event.entityPlayer, 4)) newDigSpeed *= 5f;
+				if (summery.flight[0]) newDigSpeed *= 5f;
 			}
+
 			if (!event.entityPlayer.onGround)
 			{
-				if (CustomArmorHandler.isDraconicArmor(event.entityPlayer, 3)) newDigSpeed *= 5f;
+				if (summery.flight[0]) newDigSpeed *= 5f;
 			}
 			event.newSpeed = newDigSpeed;
 		}

@@ -285,4 +285,9 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 
 		return strings;
 	}
+
+	@Override
+	public boolean hasProfiles() {
+		return true;
+	}
 }

@@ -21,7 +21,7 @@ public class WyvernShovel extends MiningTool implements IInventoryTool, IRenderT
 
 
 	public WyvernShovel() {
-		super(ModItems.DRACONIUM_T1);
+		super(ModItems.WYVERN);
 		this.setHarvestLevel("shovel", 10);
 		this.setUnlocalizedName(Strings.wyvernShovelName);
 		this.setCapacity(References.WYVERNCAPACITY);

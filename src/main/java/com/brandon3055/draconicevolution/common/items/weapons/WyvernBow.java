@@ -213,6 +213,11 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 	}
 
 	@Override
+	public boolean hasProfiles() {
+		return true;
+	}
+
+	@Override
 	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
 		return new ArrayList<EnumUpgrade>(){{
 		//	add(EnumUpgrade.RF_CAPACITY);

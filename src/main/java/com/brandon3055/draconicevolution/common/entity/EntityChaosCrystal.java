@@ -84,7 +84,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
 			int j = MathHelper.floor_double(this.posY);
 			int k = MathHelper.floor_double(this.posZ);
 
-			if (this.worldObj.provider instanceof WorldProviderEnd && this.worldObj.getBlock(i, j, k) != Blocks.fire) this.worldObj.setBlock(i, j, k, Blocks.fire);
+			if (this.worldObj.provider instanceof WorldProviderEnd && this.worldObj.getBlock(i, j, k).isBlockSolid(this.worldObj, i, j, k, 0) && this.worldObj.getBlock(i, j, k) != Blocks.fire) this.worldObj.setBlock(i, j, k, Blocks.fire);
 
 		}else if (deathAnimation > 0) deathAnimation -= 0.1F;
 
@@ -189,7 +189,9 @@ public class EntityChaosCrystal extends EntityLivingBase {
 		if (getGuardian() != null) getGuardian().updateCrystals();
 	}
 
-	public boolean isAlive() { return health > 0F; }
+	public boolean isAlive() {
+		return getHealth() > 0F;
+	}
 
 	@Override
 	public ItemStack getHeldItem() {

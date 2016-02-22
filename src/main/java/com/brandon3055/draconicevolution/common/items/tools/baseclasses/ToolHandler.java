@@ -1,13 +1,11 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
 import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityDragonProjectile;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -15,132 +13,128 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ToolHandler {
-	public static Block[] destroyList = {Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand, Blocks.grass, Blocks.netherrack};
-
-	public static boolean isRightMaterial(final Material material, final Material[] materialsListing) {
-		for (final Material mat : materialsListing) {
-			if (material == mat) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static boolean checkDestroyList(Block curBlock) {
-		for (Block block : destroyList) {
-			if (curBlock == block) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static boolean disSquare(int x, int y, int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
-		int size = stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0);
-		MovingObjectPosition mop = raytraceFromEntity(world, player, 4.5D);
-		if (mop == null) {
-			updateGhostBlocks(player, world);
-			return false;
-		}
-
-		int sizeX = size;
-		int sizeY = size;
-		int sizeZ = size;
-		int yOff = (size * -1);
-		Block targetBlock = world.getBlock(x, y, z);
-		if (size > 0) yOff++;
-		//if (size == 0) return false;
-		int side = (stack.getItem().equals(ModItems.draconicAxe)) ? 6 : mop.sideHit;
-		switch (side) {
-			case 0:
-			case 1:
-				sizeY = 0;
-				yOff = 0;
-				break;
-			case 2:
-			case 3:
-				sizeZ = 0;
-				break;
-			case 4:
-			case 5:
-				sizeX = 0;
-				break;
-		}
-
-		for (int x1 = x - sizeX; x1 <= x + sizeX; x1++) {
-			for (int y1 = y - (sizeY + yOff); y1 <= y + (sizeY - yOff); y1++) {
-				for (int z1 = z - sizeZ; z1 <= z + sizeZ; z1++) {
-					mineBlock(x1, y1, z1, player, world, silk, fortune, materialsListing, stack);
-					//player.worldObj.scheduleBlockUpdate(x1, y1, z1, Blocks.stone, 100);
-				}
-			}
-		}
-		world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, targetBlock.stepSound.getStepResourcePath(), (targetBlock.stepSound.getVolume() + 1.0F) / 2.0F, targetBlock.stepSound.getPitch() * 0.8F);
-		return true;
-	}
-
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static void mineBlock(final int x, final int y, final int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
-		Block block = world.getBlock(x, y, z);
-		int meta = world.getBlockMetadata(x, y, z);
-		Material mat = block.getMaterial();
-		if ((block != null) && (!block.isAir(world, x, y, z)) && (block.getPlayerRelativeBlockHardness(player, world, x, y, z) != 0.0F)) {
-			List<ItemStack> items = new ArrayList();
-
-			if ((!block.canHarvestBlock(player, meta)) || (!isRightMaterial(mat, materialsListing))) {
-				return;
-			}
-
-			if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
-				if (!player.capabilities.isCreativeMode) return;
-			} else {
-				if (!player.capabilities.isCreativeMode)
-					((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
-			}
-
-			if (checkDestroyList(block) && (ItemNBTHelper.getBoolean(stack, "obliterate", false))) {
-				world.setBlockToAir(x, y, z);
-				return;
-			}
-
-			if ((stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0)) == 0) return;
-
-			if ((silk) && (block.canSilkHarvest(world, player, x, y, z, meta))) {
-				if (block == Blocks.lit_redstone_ore)
-					items.add(new ItemStack(Item.getItemFromBlock(Blocks.redstone_ore)));
-				else items.add(new ItemStack(block, 1, meta));
-			} else {
-				items.addAll(block.getDrops(world, x, y, z, meta, fortune));
-				//block.dropXpOnBlockBreak(world, (int)player.posX, (int)player.posY, (int)player.posZ, block.getExpDrop(world, meta, fortune));
-				int xp = block.getExpDrop(world, meta, fortune);
-				player.addExperience(xp);
-			}
-
-			world.setBlockToAir(x, y, z);
-
-			if (!world.isRemote && !player.capabilities.isCreativeMode && world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
-				for (ItemStack item : items) {
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, item));
-				}
-			}
-		}
-	}
+//	public static Block[] destroyList = {Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand, Blocks.grass, Blocks.netherrack};
+//
+//	public static boolean isRightMaterial(final Material material, final Material[] materialsListing) {
+//		for (final Material mat : materialsListing) {
+//			if (material == mat) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//
+//	public static boolean checkDestroyList(Block curBlock) {
+//		for (Block block : destroyList) {
+//			if (curBlock == block) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//
+//	public static boolean disSquare(int x, int y, int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
+//		int size = stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0);
+//		MovingObjectPosition mop = raytraceFromEntity(world, player, 4.5D);
+//		if (mop == null) {
+//			updateGhostBlocks(player, world);
+//			return false;
+//		}
+//
+//		int sizeX = size;
+//		int sizeY = size;
+//		int sizeZ = size;
+//		int yOff = (size * -1);
+//		Block targetBlock = world.getBlock(x, y, z);
+//		if (size > 0) yOff++;
+//		//if (size == 0) return false;
+//		int side = (stack.getItem().equals(ModItems.draconicAxe)) ? 6 : mop.sideHit;
+//		switch (side) {
+//			case 0:
+//			case 1:
+//				sizeY = 0;
+//				yOff = 0;
+//				break;
+//			case 2:
+//			case 3:
+//				sizeZ = 0;
+//				break;
+//			case 4:
+//			case 5:
+//				sizeX = 0;
+//				break;
+//		}
+//
+//		for (int x1 = x - sizeX; x1 <= x + sizeX; x1++) {
+//			for (int y1 = y - (sizeY + yOff); y1 <= y + (sizeY - yOff); y1++) {
+//				for (int z1 = z - sizeZ; z1 <= z + sizeZ; z1++) {
+//					mineBlock(x1, y1, z1, player, world, silk, fortune, materialsListing, stack);
+//					//player.worldObj.scheduleBlockUpdate(x1, y1, z1, Blocks.stone, 100);
+//				}
+//			}
+//		}
+//		world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, targetBlock.stepSound.getStepResourcePath(), (targetBlock.stepSound.getVolume() + 1.0F) / 2.0F, targetBlock.stepSound.getPitch() * 0.8F);
+//		return true;
+//	}
+//
+//	@SuppressWarnings({"rawtypes", "unchecked"})
+//	public static void mineBlock(final int x, final int y, final int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
+//		Block block = world.getBlock(x, y, z);
+//		int meta = world.getBlockMetadata(x, y, z);
+//		Material mat = block.getMaterial();
+//		if ((block != null) && (!block.isAir(world, x, y, z)) && (block.getPlayerRelativeBlockHardness(player, world, x, y, z) != 0.0F)) {
+//			List<ItemStack> items = new ArrayList();
+//
+//			if ((!block.canHarvestBlock(player, meta)) || (!isRightMaterial(mat, materialsListing))) {
+//				return;
+//			}
+//
+//			if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+//				if (!player.capabilities.isCreativeMode) return;
+//			} else {
+//				if (!player.capabilities.isCreativeMode)
+//					((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
+//			}
+//
+//			if (checkDestroyList(block) && (IConfigurableItem.ProfileHelper.getBoolean(stack, "obliterate", false))) {
+//				world.setBlockToAir(x, y, z);
+//				return;
+//			}
+//
+//			if ((stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0)) == 0) return;
+//
+//			if ((silk) && (block.canSilkHarvest(world, player, x, y, z, meta))) {
+//				if (block == Blocks.lit_redstone_ore)
+//					items.add(new ItemStack(Item.getItemFromBlock(Blocks.redstone_ore)));
+//				else items.add(new ItemStack(block, 1, meta));
+//			} else {
+//				items.addAll(block.getDrops(world, x, y, z, meta, fortune));
+//				//block.dropXpOnBlockBreak(world, (int)player.posX, (int)player.posY, (int)player.posZ, block.getExpDrop(world, meta, fortune));
+//				int xp = block.getExpDrop(world, meta, fortune);
+//				player.addExperience(xp);
+//			}
+//
+//			world.setBlockToAir(x, y, z);
+//
+//			if (!world.isRemote && !player.capabilities.isCreativeMode && world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
+//				for (ItemStack item : items) {
+//					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, item));
+//				}
+//			}
+//		}
+//	}
 
 	public static void damageEntityBasedOnHealth(Entity entity, EntityPlayer player, float dmgMult) {
 		ItemStack stack = player.getCurrentEquippedItem();
@@ -256,6 +250,13 @@ public class ToolHandler {
 				}
 				entityLivingBase.attackTime = 0;
 			}
+			else if (entityObject instanceof EntityDragonProjectile) {
+				float dmg = getDamageAgainstEntity(stack, ((Entity)entityObject));
+				int rf = (int)dmg * References.ENERGYPERATTACK;
+				if (rf > item.getEnergyStored(stack)) dmg = item.getEnergyStored(stack) / References.ENERGYPERATTACK;
+
+				((Entity)entityObject).attackEntityFrom(DamageSource.causePlayerDamage(player), dmg);
+			}
 		}
 
 	}
@@ -306,7 +307,7 @@ public class ToolHandler {
 
 		float sharpMod = (float)EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack) * 4F;
 
-		if (stack.getItem() == ModItems.draconicDestructionStaff) dmg = (ModItems.DRACONIUM_T3.getDamageVsEntity()) + sharpMod;
+		if (stack.getItem() == ModItems.draconicDestructionStaff) dmg = (ModItems.CHAOTIC.getDamageVsEntity()) + sharpMod;
 		else if (stack.getItem() instanceof ItemSword) dmg = (((ItemSword)stack.getItem()).func_150931_i()) + sharpMod;
 
 		dmg += (IUpgradableItem.EnumUpgrade.ATTACK_DAMAGE.getUpgradePoints(stack) * 5);

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.network;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
 import com.brandon3055.draconicevolution.common.container.ContainerDissEnchanter;
@@ -8,11 +9,13 @@ import com.brandon3055.draconicevolution.common.container.ContainerWeatherContro
 import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 
 public class ButtonPacket implements IMessage
 {
@@ -24,6 +27,7 @@ public class ButtonPacket implements IMessage
 	public static final byte ID_DRACONIUMCHEST3 = 5;
 	public static final byte ID_TOOLCONFIG = 7;
 	public static final byte ID_DRACONIUMCHEST4 = 8;
+	public static final byte ID_TOOL_PROFILE_CHANGE = 9;
 	byte buttonId = 0;
 	boolean state = false;
 	
@@ -117,6 +121,17 @@ public class ButtonPacket implements IMessage
 				case ID_TOOLCONFIG:
 				{
 					ctx.getServerHandler().playerEntity.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().playerEntity.worldObj, (int)ctx.getServerHandler().playerEntity.posX, (int)ctx.getServerHandler().playerEntity.posY, (int)ctx.getServerHandler().playerEntity.posZ);
+					break;
+				}
+				case ID_TOOL_PROFILE_CHANGE:
+				{
+					ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
+					if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem)stack.getItem()).hasProfiles()){
+						int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
+						if (++preset >= 5) preset = 0;
+						ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);
+					}
+					break;
 				}
 
 				default:

@@ -52,7 +52,7 @@ public class ItemConfigField {
 //	}
 
 	public ItemConfigField readFromItem(ItemStack stack, Object defaultExpected){
-		value = DataUtills.readObjectFromItem(stack, datatype, name, defaultExpected);
+		value = DataUtills.readObjectFromCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), datatype, name, defaultExpected);
 		return this;
 	}
 
@@ -72,6 +72,9 @@ public class ItemConfigField {
 		}
 		else if (datatype == References.FLOAT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("PERCENT")){
 			return Math.round((Float)value * 100D) + "%";
+		}
+		else if (datatype == References.FLOAT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("PLUSPERCENT")) {
+			return "+"+Math.round((Float)value * 100D) + "%";
 		}
 		else
 		{

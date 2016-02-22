@@ -21,11 +21,11 @@ import net.minecraftforge.common.util.EnumHelper;
 
 @GameRegistry.ObjectHolder(References.MODID)
 public class ModItems {
-	public static ArmorMaterial DRACONIUMARMOR_T1 = EnumHelper.addArmorMaterial("DRACONIUMARMOR_T1", -1, new int[] { 3, 8, 6, 3 }, 30);
-	public static ArmorMaterial DRACONIUMARMOR_T2 = EnumHelper.addArmorMaterial("DRACONIUMARMOR_T2", -1, new int[] { 3, 8, 6, 3 }, 30);
-	public static ToolMaterial DRACONIUM_T1 = EnumHelper.addToolMaterial("DRACONIUM_T1", 10, -1, 12.0F, 20.0F, 35);
-	public static ToolMaterial DRACONIUM_T2 = EnumHelper.addToolMaterial("DRACONIUM_T2", 10, -1, 16.0F, 40.0F, 40);
-	public static ToolMaterial DRACONIUM_T3 = EnumHelper.addToolMaterial("DRACONIUM_T3", 10, -1, 400.0F, 60.0F, 45);
+	public static ArmorMaterial WYVERN_ARMOR = EnumHelper.addArmorMaterial("WYVERN_ARMOR", -1, new int[] { 3, 8, 6, 3 }, 30);
+	public static ArmorMaterial DRACONIC_ARMOR = EnumHelper.addArmorMaterial("DRACONIC_ARMOR", -1, new int[] { 3, 8, 6, 3 }, 30);
+	public static ToolMaterial WYVERN = EnumHelper.addToolMaterial("WYVERN", 10, -1, 12.0F, 20.0F, 35);
+	public static ToolMaterial AWAKENED = EnumHelper.addToolMaterial("AWAKENED", 10, -1, 16.0F, 40.0F, 40);
+	public static ToolMaterial CHAOTIC = EnumHelper.addToolMaterial("CHAOTIC", 10, -1, 400.0F, 60.0F, 45);
 
 	public static Item draconicPickaxe;
 	public static Item draconicShovel;
@@ -102,19 +102,19 @@ public class ModItems {
 		draconicHoe = new DraconicHoe();
 		draconicSword = new DraconicSword();
 		draconicBow = new DraconicBow();
-		draconicHelm = new DraconicArmor(DRACONIUMARMOR_T2, 0, Strings.draconicHelmName);
-		draconicChest = new DraconicArmor(DRACONIUMARMOR_T2, 1, Strings.draconicChestName);
-		draconicLeggs = new DraconicArmor(DRACONIUMARMOR_T2, 2, Strings.draconicLeggsName);
-		draconicBoots = new DraconicArmor(DRACONIUMARMOR_T2, 3, Strings.draconicBootsName);
+		draconicHelm = new DraconicArmor(DRACONIC_ARMOR, 0, Strings.draconicHelmName);
+		draconicChest = new DraconicArmor(DRACONIC_ARMOR, 1, Strings.draconicChestName);
+		draconicLeggs = new DraconicArmor(DRACONIC_ARMOR, 2, Strings.draconicLeggsName);
+		draconicBoots = new DraconicArmor(DRACONIC_ARMOR, 3, Strings.draconicBootsName);
 		
 		wyvernPickaxe = new WyvernPickaxe();
 		wyvernShovel = new WyvernShovel();
 		wyvernSword = new WyvernSword();
 		wyvernBow = new WyvernBow();
-		wyvernHelm = new WyvernArmor(DRACONIUMARMOR_T1, 0, Strings.wyvernHelmName);
-		wyvernChest = new WyvernArmor(DRACONIUMARMOR_T1, 1, Strings.wyvernChestName);
-		wyvernLeggs = new WyvernArmor(DRACONIUMARMOR_T1, 2, Strings.wyvernLeggsName);
-		wyvernBoots = new WyvernArmor(DRACONIUMARMOR_T1, 3, Strings.wyvernBootsName);
+		wyvernHelm = new WyvernArmor(WYVERN_ARMOR, 0, Strings.wyvernHelmName);
+		wyvernChest = new WyvernArmor(WYVERN_ARMOR, 1, Strings.wyvernChestName);
+		wyvernLeggs = new WyvernArmor(WYVERN_ARMOR, 2, Strings.wyvernLeggsName);
+		wyvernBoots = new WyvernArmor(WYVERN_ARMOR, 3, Strings.wyvernBootsName);
 
 		draconicCore = new DraconicCore();
 		wyvernCore = new WyvernCore();

@@ -102,7 +102,7 @@ public class CraftingHandler {
 		addOre(ModBlocks.rainSensor, "   ", "RBR", "SPS", 'R', "dustRedstone", 'B', Items.bucket, 'S', Blocks.stone_slab, 'P', Blocks.heavy_weighted_pressure_plate);
 		addOre(ModBlocks.teleporterStand, " P ", " S ", "HBH", 'P', Blocks.stone_pressure_plate, 'S', "stone", 'H', new ItemStack(Blocks.stone_slab, 1, 0), 'B', Items.blaze_powder);
 		addOre(ModBlocks.dislocatorReceptacle, "ICI", " O ", "ISI", 'I', "ingotIron", 'C', ModItems.draconicCore, 'O', ModBlocks.infusedObsidian, 'S', ModBlocks.teleporterStand);
-
+		addOre(ModBlocks.upgradeModifier, "   ", "DCD", "III", 'I', "ingotIron", 'D', "ingotDraconium", 'C', ModItems.draconicCore);
 
 		//machines adv
 		addOre(ModBlocks.resurrectionStone, "CSC", "SMS", "CSC", 'C', mobSoul, 'S', ModItems.wyvernCore, 'M', "blockDraconium");

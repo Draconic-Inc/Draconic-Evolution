@@ -463,7 +463,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
 		if (ticksExisted % 1000 == 0 && rand.nextBoolean()) selectNewBehaviour();
 
-		if (ignitionChargeTimer > 1 || (ignitionChargeTimer == 1 && ticksExisted % 20 == 0))ignitionChargeTimer--;
+		if (ignitionChargeTimer > 1 || (ignitionChargeTimer == 1 && ticksExisted % 20 == 0) && !ConfigHandler.disableGuardianCrystalRespawn)ignitionChargeTimer--;
 		if (ignitionChargeTimer <= 0 && !worldObj.isRemote){
 			if ((ticksExisted - 19) % 20 == 0) ignitionChargeTimer = (behaviour == EnumBehaviour.LOW_HEALTH_STRATEGY ? 1000 : 2000) + rand.nextInt(600);
 
@@ -477,7 +477,6 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 				}
 			}
 		}
-
 
 		updateAttack();
 	}
@@ -560,7 +559,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 					break;
 				case ATTACK_FIREBALL_CHASER:
 					if (attackTimer % 10 == 0) {
-						EntityDragonProjectile projectile = new EntityDragonProjectile(worldObj, EntityDragonProjectile.FIRE_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase)attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
+						EntityDragonProjectile projectile = new EntityDragonProjectile(worldObj, EntityDragonProjectile.FIRE_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase)attackTarget : null, 5F + (rand.nextFloat() * 2F), this);
 						projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
 						worldObj.spawnEntityInWorld(projectile);
 					}
@@ -574,7 +573,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 					break;
 				case ATTACK_CHAOS_CHASER:
 					if (attackTimer % 10 == 0) {
-						EntityDragonProjectile projectile = new EntityDragonProjectile(worldObj, EntityDragonProjectile.CHAOS_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase)attackTarget : null, 5F + (rand.nextFloat() * 12F), this);
+						EntityDragonProjectile projectile = new EntityDragonProjectile(worldObj, EntityDragonProjectile.CHAOS_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase)attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
 						projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
 						worldObj.spawnEntityInWorld(projectile);
 					}

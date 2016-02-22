@@ -34,6 +34,11 @@ public class DraconicBlock extends BlockDE {
 	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {}
 
 	@Override
+	public boolean canDropFromExplosion(Explosion p_149659_1_) {
+		return false;
+	}
+
+	@Override
 	public void registerBlockIcons(IIconRegister iconRegister) {
 		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_block");
 		top = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_block_blank");

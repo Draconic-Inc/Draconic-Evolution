@@ -11,11 +11,44 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class TileFluxGate extends TileGate implements IEnergyReceiver {
 
+	private int transferredThisTick = 0;
+
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+
+		transferredThisTick = 0;
+	}
+
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
 		IEnergyReceiver target = getOutputTarget();
-		return target == null ? 0 : target.receiveEnergy(from, Math.min(getActualFlow(), target.receiveEnergy(from, maxReceive, true)), simulate);
+//		int i = buffer.receiveEnergy(Math.max(0, Math.min(maxReceive, Math.min(getActualFlow(), getActualFlow() - buffer.getEnergyStored()))), simulate);
+//		return i;
+		int transfer = target == null ? 0 : target.receiveEnergy(from, Math.min(Math.max(0, getActualFlow()-transferredThisTick), target.receiveEnergy(from, maxReceive, true)), simulate);
+		transferredThisTick += transfer;
+		return transfer;
 	}
+
+//	private EnergyStorage buffer = new EnergyStorage(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+//
+//	@Override
+//	public void updateEntity() {
+//		super.updateEntity();
+//
+//		IEnergyReceiver receiver = getOutputTarget();
+//		if (receiver != null && !worldObj.isRemote){
+//			buffer.extractEnergy(receiver.receiveEnergy(output.getOpposite(), getActualFlow(), false), false);
+//		}
+//	}
+//
+//	@Override
+//	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+//		if (buffer.getEnergyStored() > 0) return 0;
+//		int i = buffer.receiveEnergy(Math.max(0, Math.min(maxReceive, Math.min(getActualFlow(), getActualFlow() - buffer.getEnergyStored()))), simulate);
+//		return i;
+//	}
+
 
 	@Override
 	public int getEnergyStored(ForgeDirection from) {

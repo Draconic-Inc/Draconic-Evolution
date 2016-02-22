@@ -273,7 +273,7 @@ public class EntityDragonProjectile extends Entity {
 			if (source == damageChaos && entityLivingBase instanceof EntityPlayer){
 				for (ItemStack stack : ((EntityPlayer) entityLivingBase).inventory.armorInventory) {
 					if (stack != null && stack.getItem() instanceof IEnergyContainerItem){
-						((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, ((IEnergyContainerItem) stack.getItem()).getMaxEnergyStored(stack) / (50 + rand.nextInt(50)), false);
+						((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, 30000 + rand.nextInt(10000), false);
 					}
 				}
 			}

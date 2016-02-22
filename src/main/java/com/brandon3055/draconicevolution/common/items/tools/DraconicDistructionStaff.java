@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.relauncher.Side;
@@ -30,7 +30,7 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 
 
 	public DraconicDistructionStaff() {
-		super(ModItems.DRACONIUM_T3);
+		super(ModItems.CHAOTIC);
 		this.setUnlocalizedName(Strings.draconicDStaffName);
 		this.setHarvestLevel("pickaxe", 10);
 		this.setHarvestLevel("shovel", 10);
@@ -76,7 +76,7 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
 		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.3F);
-		ToolHandler.AOEAttack(player, entity, stack, ItemNBTHelper.getInteger(stack, References.ATTACK_AOE, 0));
+		ToolHandler.AOEAttack(player, entity, stack, IConfigurableItem.ProfileHelper.getInteger(stack, References.ATTACK_AOE, 0));
 		return true;
 	}
 

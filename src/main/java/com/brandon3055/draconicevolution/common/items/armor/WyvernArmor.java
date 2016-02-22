@@ -1,8 +1,9 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
-import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.model.ModelDraconicArmorOld;
 import com.brandon3055.draconicevolution.client.model.ModelWyvernArmor;
@@ -11,10 +12,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
-import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import com.brandon3055.draconicevolution.common.utills.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,16 +37,14 @@ import java.util.List;
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IUpgradableItem, ICustomArmor {
+public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurableItem, IInventoryTool, IUpgradableItem, ICustomArmor {
 	private IIcon helmIcon;
 	private IIcon chestIcon;
 	private IIcon leggsIcon;
 	private IIcon bootsIcon;
 
-	private double totalAbsorption = 1; // 1=100%
 	private int maxTransfer = References.WYVERNTRANSFER;
 	private int maxEnergy = References.WYVERNCAPACITY;
-	private int energyPerDamage = 80;
 
 	public WyvernArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
@@ -146,27 +142,22 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 		return 0;
 	}
 
-		/* ISpecialArmor */
-
+	//region ISpecialArmor
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
-		int maxAbsorption = 0;//25 * getEnergyStored(armor) / energyPerDamage;
-		if (source.damageType.equals(DamageSource.fall.damageType) && armor.getItem() == ModItems.wyvernBoots) return new ArmorProperties(0, 0.8D, maxAbsorption);
-		if (source.isUnblockable()) return new ArmorProperties(0, (getProtectionShare()*totalAbsorption)/4, maxAbsorption);
-		return new ArmorProperties(0, getProtectionShare()*totalAbsorption, maxAbsorption);
+		if (source.isUnblockable() || source.isDamageAbsolute() || source.isMagicDamage()) return new ArmorProperties(0, damageReduceAmount / 100D, 15);
+		return new ArmorProperties(0, damageReduceAmount / 25D, 1000);
 	}
 
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
-		return this.getEnergyStored(armor) > 10000 ? (int)(getProtectionShare() * 20D) : (int) ((float)this.getEnergyStored(armor) / 10000F * (float)(getProtectionShare() * 20D));
-
-		//	return (int)(getProtectionShare() * 20D);
+		return (int)(getProtectionShare() * 20D);
 	}
 
 	@Override
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
-		//extractEnergy(stack, damage * energyPerDamage, false);
 	}
+	//endregion
 
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
@@ -243,12 +234,12 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
 		if (armorType == 2)
 		{
-			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorSpeedMult").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1F).setModifier("PERCENT"));
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorSpeedMult").setMinMaxAndIncromente(0f, 5f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
 		}
 		else if (armorType == 3)
 		{
-			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorJumpMult").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1f).setModifier("PERCENT"));
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorJumpMult").setMinMaxAndIncromente(0f, 5f, 0.1f).readFromItem(stack, 0f).setModifier("PLUSPERCENT"));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
 		}
 		return list;
@@ -358,8 +349,14 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 	}
 
 	@Override
-	public List<String> getUpgradeStats(ItemStack itemstack) {//todo List Upgrades
-		return new ArrayList<String>();
+	public List<String> getUpgradeStats(ItemStack stack) {
+		List<String> strings = new ArrayList<String>();
+
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.RFCapacity.txt")+": "+InfoHelper.HITC()+ Utills.formatNumber(getMaxEnergyStored(stack)));
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.ShieldCapacity.txt")+": "+InfoHelper.HITC()+ (int)getProtectionPoints(stack));
+		strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.ShieldRecovery.txt") + ": " + InfoHelper.HITC() + Utills.round(getRecoveryPoints(stack) * 0.2D, 10)+" EPS");
+
+		return strings;
 	}
 
 	@Override
@@ -375,6 +372,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 		return 0;
 	}
 
+	//region//----------------- ICustomArmor Start -----------------//
 	@Override
 	public float getProtectionPoints(ItemStack stack) {
 		return EnumUpgrade.SHIELD_CAPACITY.getUpgradePoints(stack) * 20F;
@@ -383,5 +381,53 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IEnergyCont
 	@Override
 	public int getRecoveryPoints(ItemStack stack) {
 		return EnumUpgrade.SHIELD_RECOVERY.getUpgradePoints(stack);
+	}
+
+	@Override
+	public float getSpeedModifier(ItemStack stack, EntityPlayer player) {
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorSprintOnly", false)){
+			return player.isSprinting() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f) : IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f) / 5F;
+		}
+		else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f);
+	}
+
+	@Override
+	public float getJumpModifier(ItemStack stack, EntityPlayer player) {
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorSprintOnly", false)){
+			return player.isSprinting() || BrandonsCore.proxy.isCtrlDown() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f) : IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f) / 5F;
+		}
+		else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f);
+	}
+
+	@Override
+	public boolean hasHillStep(ItemStack stack, EntityPlayer player) {
+		return false;
+	}
+
+	@Override
+	public float getFireResistance(ItemStack stack) {
+		return getProtectionShare();
+	}
+
+	@Override
+	public boolean[] hasFlight(ItemStack stack) {
+		return new boolean[] {false, false};
+	}
+
+	@Override
+	public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player) {
+		return 0;
+	}
+
+	@Override
+	public float getFlightVModifier(ItemStack stack, EntityPlayer player) {
+		return 0;
+	}
+
+	//endregion
+
+	@Override
+	public boolean hasProfiles() {
+		return false;
 	}
 }

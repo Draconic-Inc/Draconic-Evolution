@@ -1,11 +1,12 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
-import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.model.ModelDraconicArmorOld;
 import com.brandon3055.draconicevolution.client.model.ModelDraconicArmor;
+import com.brandon3055.draconicevolution.client.model.ModelDraconicArmorOld;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
@@ -52,7 +53,7 @@ import java.util.List;
 	@Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
 	@Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft")
 })
-public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyContainerItem, IConfigurableItem, IInventoryTool, IGoggles, IRevealer, IUpgradableItem, ICustomArmor {//TODO Wings
+public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigurableItem, IInventoryTool, IGoggles, IRevealer, IUpgradableItem, ICustomArmor {//TODO Wings
 	@SideOnly(Side.CLIENT)
 	private IIcon helmIcon;
 	@SideOnly(Side.CLIENT)
@@ -62,10 +63,8 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@SideOnly(Side.CLIENT)
 	private IIcon bootsIcon;
 
-	private double totalAbsorption = 2; // 1=100%
 	private int maxTransfer = References.DRACONICTRANSFER;
 	private int maxEnergy = References.DRACONICCAPACITY;
-	private int energyPerDamage = 80;
 
 	public DraconicArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
@@ -163,25 +162,22 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		return 0;
 	}
 
-	/* ISpecialArmor */
-
+	//region ISpecialArmor
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
-		int maxAbsorption = 0;//25 * getEnergyStored(armor) / energyPerDamage;
-		if (source.damageType.equals(DamageSource.fall.damageType) && armor.getItem() == ModItems.draconicBoots) return new ArmorProperties(0, 1D, maxAbsorption);
-		if (source.isUnblockable()) return new ArmorProperties(0, (getProtectionShare()*totalAbsorption)/2, maxAbsorption);
-		return new ArmorProperties(0, getProtectionShare()*totalAbsorption, maxAbsorption);
+		if (source.isUnblockable() || source.isDamageAbsolute() || source.isMagicDamage()) return new ArmorProperties(0, damageReduceAmount / 100D, 15);
+		return new ArmorProperties(0, damageReduceAmount / 24.5D, 1000);
 	}
 
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
-		return this.getEnergyStored(armor) > 10000 ? (int)(getProtectionShare() * 20D) : (int) ((float)this.getEnergyStored(armor) / 10000F * (float)(getProtectionShare() * 20D));
+		return (int)(getProtectionShare() * 20D);
 	}
 
 	@Override
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
-		//extractEnergy(stack, damage * energyPerDamage, false);
 	}
+	//endregion
 
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
@@ -189,16 +185,13 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		if (stack.getItem() == ModItems.draconicHelm) {
 			if (world.isRemote) return;
 			if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) this.extractEnergy(stack, 5000, false);
-			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY + 1, (int)Math.floor(player.posZ)) < 5 && ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false))
+			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY + 1, (int)Math.floor(player.posZ)) < 5 && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false))
 			{
 				player.addPotionEffect(new PotionEffect(16, 419, 0, true));
 			}
-			else if ( ItemNBTHelper.getBoolean(stack, "ArmorNVActive", false) && ItemNBTHelper.getBoolean(stack, "ArmorNVLock", true)) player.addPotionEffect(new PotionEffect(16, 419, 0, true));
+			else if ( IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false) && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVLock", true)) player.addPotionEffect(new PotionEffect(16, 419, 0, true));
 			else if (player.isPotionActive(16)) player.removePotionEffect(16);
 
-		}
-		if (stack.getItem() == ModItems.draconicLeggs && player.isSprinting() && !player.capabilities.isCreativeMode) {
-			this.extractEnergy(stack, player.capabilities.isFlying ? 160 : 80, false);
 		}
 	}
 
@@ -297,18 +290,19 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		}
 		else if (armorType == 1)
 		{
-			list.add(new ItemConfigField(References.FLOAT_ID, slot, "VerticalAcceleration").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 0.3F).setModifier("PERCENT"));
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "VerticalAcceleration").setMinMaxAndIncromente(0f, 8f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorFlightSpeedMult").setMinMaxAndIncromente(0f, 6f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "EffectiveOnSprint").readFromItem(stack, false));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack, false));
 		}
 		else if (armorType == 2)
 		{
-			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorSpeedMult").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1F).setModifier("PERCENT"));
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorSpeedMult").setMinMaxAndIncromente(0f, 8f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
 		}
 		else if (armorType == 3)
 		{
-			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorJumpMult").setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1f).setModifier("PERCENT"));
+			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorJumpMult").setMinMaxAndIncromente(0f, 15f, 0.1f).readFromItem(stack, 0f).setModifier("PLUSPERCENT"));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorHillStep").readFromItem(stack, true));
 		}
@@ -333,13 +327,13 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Optional.Method(modid = "Thaumcraft")
 	@Override
 	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
-		return ItemNBTHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
+		return IConfigurableItem.ProfileHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
 	}
 
 	@Optional.Method(modid = "Thaumcraft")
 	@Override
 	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) {
-		return ItemNBTHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
+		return IConfigurableItem.ProfileHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -432,8 +426,14 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	}
 
 	@Override
-	public List<String> getUpgradeStats(ItemStack itemstack) {//todo List Upgrades
-		return new ArrayList<String>();
+	public List<String> getUpgradeStats(ItemStack stack) {
+		List<String> strings = new ArrayList<String>();
+
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.RFCapacity.txt")+": "+InfoHelper.HITC()+ Utills.formatNumber(getMaxEnergyStored(stack)));
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.ShieldCapacity.txt")+": "+InfoHelper.HITC()+ (int)getProtectionPoints(stack));
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.ShieldRecovery.txt") + ": " + InfoHelper.HITC() + Utills.round(getRecoveryPoints(stack) * 0.2D, 10)+" EPS");
+
+		return strings;
 	}
 
 	@Override
@@ -449,6 +449,8 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 		return 0;
 	}
 
+	//region//----------------- ICustomArmor Start -----------------//
+
 	@Override
 	public float getProtectionPoints(ItemStack stack) {
 		return EnumUpgrade.SHIELD_CAPACITY.getUpgradePoints(stack) * 20;
@@ -457,5 +459,62 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IEnergyCo
 	@Override
 	public int getRecoveryPoints(ItemStack stack) {
 		return EnumUpgrade.SHIELD_RECOVERY.getUpgradePoints(stack);
+	}
+
+	@Override
+	public float getSpeedModifier(ItemStack stack, EntityPlayer player) {
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorSprintOnly", false)){
+			return player.isSprinting() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f) :  IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f) / 5F;
+		}
+		else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f);
+	}
+
+	@Override
+	public float getJumpModifier(ItemStack stack, EntityPlayer player) {
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorSprintOnly", false)){
+			return player.isSprinting() || BrandonsCore.proxy.isCtrlDown() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f) : IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f) / 5F;
+		}
+		else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f);
+	}
+
+	@Override
+	public boolean hasHillStep(ItemStack stack, EntityPlayer player) {
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorSprintOnly", false)){
+			return (player.isSprinting() || BrandonsCore.proxy.isCtrlDown()) && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorHillStep", true);
+		}
+		else return IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorHillStep", true);
+	}
+
+	@Override
+	public float getFireResistance(ItemStack stack) {
+		return 1F;
+	}
+
+	@Override
+	public boolean[] hasFlight(ItemStack stack) {
+		return new boolean[] {true, IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorFlightLock", false)};
+	}
+
+	@Override
+	public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player) {
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, "EffectiveOnSprint", false)){
+			return player.isSprinting() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorFlightSpeedMult", 0f) : 0F;
+		}
+		else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorFlightSpeedMult", 0f);
+	}
+
+	@Override
+	public float getFlightVModifier(ItemStack stack, EntityPlayer player) {
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, "EffectiveOnSprint", false)){
+			return BrandonsCore.proxy.isCtrlDown() ? IConfigurableItem.ProfileHelper.getFloat(stack, "VerticalAcceleration", 0F) : 0F;
+		}
+		else return IConfigurableItem.ProfileHelper.getFloat(stack, "VerticalAcceleration", 0F);
+	}
+
+	//endregion
+
+	@Override
+	public boolean hasProfiles() {
+		return false;
 	}
 }

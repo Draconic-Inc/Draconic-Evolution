@@ -209,4 +209,12 @@ public class GuiHudConfig extends GuiScreen {
 	public boolean doesGuiPauseGame() {
 		return false;
 	}
+
+	@Override
+	protected void keyTyped(char keyChar, int keyInt) {
+		if (keyInt == 1) {
+			Minecraft.getMinecraft().displayGuiScreen(parent);
+			return;
+		}
+	}
 }

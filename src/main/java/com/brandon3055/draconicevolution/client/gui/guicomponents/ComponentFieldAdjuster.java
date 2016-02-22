@@ -49,13 +49,13 @@ public class ComponentFieldAdjuster extends ComponentBase {
 			renderButton((getWidth() / 2) - 30, 0, 60, 20, GuiHelper.isInRect(x + (getWidth() / 2) - 30, y, 60, 20, mouseX - offsetX, mouseY - offsetY));
 		}else if (isDecimal() || isNonDecimal())
 		{
-			renderButton((getWidth() / 2) - 39, 3, 26, 14, GuiHelper.isInRect(x + (getWidth() / 2) - 39, y + 3, 26, 14, mouseX - offsetX, mouseY - offsetY));
-			renderButton((getWidth() / 2) - 67, 3, 26, 14, GuiHelper.isInRect(x + (getWidth() / 2) - 67, y + 3, 26, 14, mouseX - offsetX, mouseY - offsetY));
-			renderButton((getWidth() / 2) - 95, 3, 26, 14, GuiHelper.isInRect(x + (getWidth() / 2) - 95, y + 3, 26, 14, mouseX - offsetX, mouseY - offsetY));
+			renderButton((getWidth() / 2) - 43, 3, 24, 14, GuiHelper.isInRect(x + (getWidth() / 2) - 43, y + 3, 24, 14, mouseX - offsetX, mouseY - offsetY));
+			renderButton((getWidth() / 2) - 69, 3, 24, 14, GuiHelper.isInRect(x + (getWidth() / 2) - 69, y + 3, 24, 14, mouseX - offsetX, mouseY - offsetY));
+			renderButton((getWidth() / 2) - 95, 3, 24, 14, GuiHelper.isInRect(x + (getWidth() / 2) - 95, y + 3, 24, 14, mouseX - offsetX, mouseY - offsetY));
 
-			renderButton((getWidth() / 2) + 12, 3, 26, 14, GuiHelper.isInRect(x + (getWidth() / 2) + 12, y + 3, 26, 14, mouseX - offsetX, mouseY - offsetY));
-			renderButton((getWidth() / 2) + 40, 3, 26, 14, GuiHelper.isInRect(x + (getWidth() / 2) + 40, y + 3, 26, 14, mouseX - offsetX, mouseY - offsetY));
-			renderButton((getWidth() / 2) + 68, 3, 26, 14, GuiHelper.isInRect(x + (getWidth() / 2) + 68, y + 3, 26, 14, mouseX - offsetX, mouseY - offsetY));
+			renderButton((getWidth() / 2) + 19, 3, 24, 14, GuiHelper.isInRect(x + (getWidth() / 2) + 19, y + 3, 24, 14, mouseX - offsetX, mouseY - offsetY));
+			renderButton((getWidth() / 2) + 45, 3, 24, 14, GuiHelper.isInRect(x + (getWidth() / 2) + 45, y + 3, 24, 14, mouseX - offsetX, mouseY - offsetY));
+			renderButton((getWidth() / 2) + 71, 3, 24, 14, GuiHelper.isInRect(x + (getWidth() / 2) + 71, y + 3, 24, 14, mouseX - offsetX, mouseY - offsetY));
 		}
 	}
 
@@ -80,12 +80,12 @@ public class ComponentFieldAdjuster extends ComponentBase {
 
 		if (isDecimal() || isNonDecimal())
 		{
-			fontRendererObj.drawString("---", 8, y + 6, 0x000000);
-			fontRendererObj.drawString("--", 40, y + 6, 0x000000);
-			fontRendererObj.drawString("-", 70, y + 6, 0x000000);
-			fontRendererObj.drawString("+", 121, y + 6, 0x000000);
-			fontRendererObj.drawString("++", 147, y + 6, 0x000000);
-			fontRendererObj.drawString("+++", 172, y + 6, 0x000000);
+			fontRendererObj.drawString("---", 7, y + 6, 0x000000);
+			fontRendererObj.drawString("--", 37, y + 6, 0x000000);
+			fontRendererObj.drawString("-", 66, y + 6, 0x000000);
+			fontRendererObj.drawString("+", 127, y + 6, 0x000000);
+			fontRendererObj.drawString("++", 151, y + 6, 0x000000);
+			fontRendererObj.drawString("+++", 174, y + 6, 0x000000);
 
 		}
 	}
@@ -101,22 +101,22 @@ public class ComponentFieldAdjuster extends ComponentBase {
 
 		if (!isBoolean())
 		{
-			if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 39, this.y + 3, 26, 14, x, y))
+			if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 43, this.y + 3, 26, 14, x, y))
 			{//-
 				incroment(-1);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 67, this.y + 3, 26, 14, x, y))
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 69, this.y + 3, 26, 14, x, y))
 			{//--
 				incroment(-10);
 			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) - 95, this.y + 3, 26, 14, x, y))
 			{//---
 				incroment(-100);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 12, this.y + 3, 26, 14, x, y))
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 19, this.y + 3, 26, 14, x, y))
 			{//+
 				incroment(1);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 40, this.y + 3, 26, 14, x, y))
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 45, this.y + 3, 26, 14, x, y))
 			{//++
 				incroment(10);
-			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 68, this.y + 3, 26, 14, x, y))
+			} else if (GuiHelper.isInRect(this.x + (getWidth() / 2) + 71, this.y + 3, 26, 14, x, y))
 			{//+++
 				incroment(100);
 			}
@@ -180,7 +180,7 @@ public class ComponentFieldAdjuster extends ComponentBase {
 		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 		ItemStack stack = gui.player.inventory.getStackInSlot(field.slot);
 		if (stack != null && stack.getItem() instanceof IConfigurableItem){
-			DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+			DataUtills.writeObjectToCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), field.value, field.datatype, field.name);
 		}
 		field.sendChanges();
 	}

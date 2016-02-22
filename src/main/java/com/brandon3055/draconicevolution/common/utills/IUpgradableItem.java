@@ -49,20 +49,41 @@ public interface IUpgradableItem {
 		DIG_AOE			(2,  4, "DigAOE"){
 			@Override
 			public void onRemovedFromItem(ItemStack itemStack) {
-				if (ItemNBTHelper.getInteger(itemStack, References.DIG_AOE, 0) > getUpgradePoints(itemStack)) ItemNBTHelper.setInteger(itemStack, References.DIG_AOE, getUpgradePoints(itemStack));
+				int profile = ItemNBTHelper.getInteger(itemStack, "ConfigProfile", 0);
+
+				for (int i = 0; i < 5; i++){
+					ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
+					if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.DIG_AOE, 0) > getUpgradePoints(itemStack)) IConfigurableItem.ProfileHelper.setInteger(itemStack, References.DIG_AOE, getUpgradePoints(itemStack));
+				}
+
+				ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
 			}
 		},
 		DIG_DEPTH		(3,  2, "DigDepth"){
 			@Override
 			public void onRemovedFromItem(ItemStack itemStack) {
-				if (ItemNBTHelper.getInteger(itemStack, References.DIG_DEPTH, 0) > getUpgradePoints(itemStack)) ItemNBTHelper.setInteger(itemStack, References.DIG_DEPTH, getUpgradePoints(itemStack));
+				int profile = ItemNBTHelper.getInteger(itemStack, "ConfigProfile", 0);
+
+				for (int i = 0; i < 5; i++){
+					ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
+					if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.DIG_DEPTH, 0) > getUpgradePoints(itemStack)) IConfigurableItem.ProfileHelper.setInteger(itemStack, References.DIG_DEPTH, getUpgradePoints(itemStack));
+				}
+
+				ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
 			}
 		},
 		ATTACK_DAMAGE	(4,  1, "AttackDamage"),
 		ATTACK_AOE		(5,  2, "AttackAOE"){
 			@Override
 			public void onRemovedFromItem(ItemStack itemStack) {
-				if (ItemNBTHelper.getInteger(itemStack, References.ATTACK_AOE, 0) > getUpgradePoints(itemStack)) ItemNBTHelper.setInteger(itemStack, References.ATTACK_AOE, getUpgradePoints(itemStack));
+				int profile = ItemNBTHelper.getInteger(itemStack, "ConfigProfile", 0);
+
+				for (int i = 0; i < 5; i++){
+					ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
+					if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.ATTACK_AOE, 0) > getUpgradePoints(itemStack)) IConfigurableItem.ProfileHelper.setInteger(itemStack, References.ATTACK_AOE, getUpgradePoints(itemStack));
+				}
+
+				ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
 			}
 		},
 		ARROW_DAMAGE	(6,  1, "ArrowDamage"),

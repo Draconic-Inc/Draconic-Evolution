@@ -72,12 +72,12 @@ public class DraconiumFluxCapacitor extends RFItemBase {
 
 	@Override
 	 public int getMaxExtract(ItemStack stack){
-		return stack.getItemDamage() == 0 ? 100000 : stack.getItemDamage() == 1 ? 1000000 : 0;
+		return stack.getItemDamage() == 0 ? 100000 : stack.getItemDamage() == 1 ? 100000000 : 0;
 	}
 
 	@Override
 	public int getMaxReceive(ItemStack stack){
-		return stack.getItemDamage() == 0 ? 100000 : stack.getItemDamage() == 1 ? 1000000 : 0;
+		return stack.getItemDamage() == 0 ? 100000 : stack.getItemDamage() == 1 ? 10000000 : 0;
 	}
 
 	@Override
@@ -204,4 +204,10 @@ public class DraconiumFluxCapacitor extends RFItemBase {
 //	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
 //		return new EntityPersistentItem(world, location, itemstack);
 //	}
+
+
+	@Override
+	public boolean hasProfiles() {
+		return false;
+	}
 }

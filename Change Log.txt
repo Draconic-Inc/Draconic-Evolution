@@ -6,7 +6,12 @@
 -fixed rounding issue with energy core display so it will show decimals like 23.5M / 1.64B instead of just 23M / 1B.
 -fixed a dupe bug in the tool inventory gui
 -chaos guardian will nolonger attack creative players unless they do something to piss him off.
-
+-added a better config gui for the HUD (Still accessible via the tool config gui)
+-completely re-wrote the armor and added a shield mechanic instead of the old "Just block ALL the damage" mechanic.
+-added an upgrade system for the tools and armor.  
+-change: If you logout while flying you will be flying when you login again.
+-added tool config profiles.
+-fixed chaos guardian crystals in unloaded chunks showing as alive then they are not.
 
 ######## 1.0.2-Snapshot 9 ########
 -added config option to adjust the distance between chaos islands.
@@ -23,6 +28,12 @@
 -added hover text to values in the reactor stats page.
 -fixed some bugs in the reactor code.
 -fixed a minor bug in the custom spwner blacklist.
+-fixed flux gate allowing more then the specified RF/t to pass under certain conditions when used with Cryo-Ducts
+-fixed rendering bug with the portal.
+-fixed pickaxe AOE mode creating ghost blocks when blocks with a higher hardness then the block you are mining are within the AOE.
+-made a change that will hopefully fix the issue with the energy core HUD display not updating properly.
+-fixed dragging the scroll bare in the Info Tablet not working properly on some pages. 
+-added support for language localization to the information tablet.
 
 ######## 1.0.2-Snapshot 8-bugfix ########
 -fixed crash in information tablet.

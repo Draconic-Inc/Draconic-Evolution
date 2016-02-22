@@ -10,7 +10,9 @@ import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.ToolModePacket;
-import com.brandon3055.draconicevolution.common.utills.*;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,6 +28,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.util.HashSet;
 import java.util.List;
@@ -123,7 +126,7 @@ public class ToolBase extends RFItemBase {
 
 		if (getEnergyStored(stack) >= energyPerOperation)
 		{
-			float f = ItemNBTHelper.getFloat(stack, References.DIG_SPEED_MULTIPLIER, 1f);
+			float f = IConfigurableItem.ProfileHelper.getFloat(stack, References.DIG_SPEED_MULTIPLIER, 1f);
 			if (speed > 50f) f *= f;
 			return f * speed;
 		}
@@ -146,6 +149,10 @@ public class ToolBase extends RFItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {
 		boolean show = InfoHelper.holdShiftForDetails(list);
 		if (show){
+			if (hasProfiles()) {
+				int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
+				list.add(EnumChatFormatting.DARK_PURPLE+StatCollector.translateToLocal("info.de.capacitorMode.txt")+": "+ItemNBTHelper.getString(stack, "ProfileName"+preset, "Profile "+preset));
+			}
 			List<ItemConfigField> l = getFields(stack, 0);
 			for (ItemConfigField f : l) list.add(f.getTooltipInfo());
 			if (getCapacity(stack) > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(getCapacity(stack)));
@@ -159,7 +166,11 @@ public class ToolBase extends RFItemBase {
 
 	@SideOnly(Side.CLIENT)
 	public void addAditionalInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {
-		list.add(StatCollector.translateToLocal("info.de.press.txt") + " " + Keyboard.getKeyName(KeyBindings.toolConfig.getKeyCode()) + " " + StatCollector.translateToLocal("info.de.toOpenConfigGUI.txt"));
+		String key;
+		if (KeyBindings.toolConfig.getKeyCode() >= 0 && KeyBindings.toolConfig.getKeyCode() < Keyboard.KEYBOARD_SIZE) key = Keyboard.getKeyName(KeyBindings.toolConfig.getKeyCode());
+		else key = Mouse.getButtonName(KeyBindings.toolConfig.getKeyCode()+101);
+
+		list.add(StatCollector.translateToLocal("info.de.press.txt") + " " + key + " " + StatCollector.translateToLocal("info.de.toOpenConfigGUI.txt"));
 	}
 
 	@Override
@@ -200,7 +211,7 @@ public class ToolBase extends RFItemBase {
 					aoe++;
 					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
 					field.value = aoe;
-					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+					DataUtills.writeObjectToCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), field.value, field.datatype, field.name);
 				}
 			}
 		}
@@ -214,7 +225,7 @@ public class ToolBase extends RFItemBase {
 					aoe++;
 					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
 					field.value = aoe;
-					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+					DataUtills.writeObjectToCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), field.value, field.datatype, field.name);
 				}
 			}
 		}
@@ -228,7 +239,7 @@ public class ToolBase extends RFItemBase {
 					aoe++;
 					if (aoe > (Integer) field.max) aoe = (Integer) field.min;
 					field.value = aoe;
-					DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+					DataUtills.writeObjectToCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), field.value, field.datatype, field.name);
 				}
 			}
 		}

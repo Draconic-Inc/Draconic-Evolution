@@ -3,22 +3,24 @@ package com.brandon3055.draconicevolution.common.items;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class Tclogo extends ItemDE {
@@ -113,7 +115,16 @@ public class Tclogo extends ItemDE {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 
+		LogHelper.info(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode());
 
+		ResourceLocation rs = new ResourceLocation(References.RESOURCESPREFIX + "manual-en_US.json");
+
+		try {
+			LogHelper.info(Minecraft.getMinecraft().getResourceManager().getResource(rs));
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 
 
 //		if ((int)System.currentTimeMillis() < lts + 10) return stack;
@@ -137,35 +148,35 @@ public class Tclogo extends ItemDE {
 		//projectile.setPosition(player.posX, player.posY, player.posZ);
 
 
-
-		if (!world.isRemote)
-		{
-			int x = 45622;
-			LogHelper.info("45622".hashCode());
-
-
-			File file = new File("C:/Users/Brandon/Desktop/0to"+String.valueOf(Integer.MAX_VALUE)+".txt");
-
-			try {
-				FileWriter writer = new FileWriter(file);
-				for (int i = 0; i < Integer.MAX_VALUE; i++) writer.write(i+",");
-				writer.close();
-				LogHelper.info("Done");
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-
-
-			int xCoord = 0;
-			int yCoord = 0;
-			int zCoord = 0;
-
-
-
-			int locationHash = (String.valueOf(xCoord)+String.valueOf(yCoord)+String.valueOf(zCoord)).hashCode();
-
-
+//
+//		if (!world.isRemote)
+//		{
+//			int x = 45622;
+//			LogHelper.info("45622".hashCode());
+//
+//
+//			File file = new File("C:/Users/Brandon/Desktop/0to"+String.valueOf(Integer.MAX_VALUE)+".txt");
+//
+//			try {
+//				FileWriter writer = new FileWriter(file);
+//				for (int i = 0; i < Integer.MAX_VALUE; i++) writer.write(i+",");
+//				writer.close();
+//				LogHelper.info("Done");
+//			}
+//			catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//
+//
+//			int xCoord = 0;
+//			int yCoord = 0;
+//			int zCoord = 0;
+//
+//
+//
+//			int locationHash = (String.valueOf(xCoord)+String.valueOf(yCoord)+String.valueOf(zCoord)).hashCode();
+//
+//
 
 
 
@@ -337,12 +348,12 @@ public class Tclogo extends ItemDE {
 //
 
 
-		}
+	//	}
 
 		//List<Entity> l = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ, player.posX, player.posY, player.posZ).expand(500, 500, 500));
 		//for (Entity e : l) if (!(e instanceof EntityPlayer)) e.setDead();
 
-		if (1==1) return stack;
+		//if (1==1) return stack;
 		/*if (player instanceof EntityPlayerMP) {
 			for (int i = 0; i < 10; i++)
 			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(player.posX + 1, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);

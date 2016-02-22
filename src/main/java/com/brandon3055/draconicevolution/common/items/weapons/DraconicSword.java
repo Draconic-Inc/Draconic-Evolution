@@ -14,10 +14,7 @@ import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHand
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.network.ToolModePacket;
-import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
-import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import com.brandon3055.draconicevolution.common.utills.*;
 import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -48,7 +45,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	protected int maxExtract = References.DRACONICTRANSFER * 50;
 
 	public DraconicSword() {
-		super(ModItems.DRACONIUM_T2);
+		super(ModItems.AWAKENED);
 		this.setUnlocalizedName(Strings.draconicSwordName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.draconicSwordName);
@@ -87,7 +84,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
-		ToolHandler.AOEAttack(player, entity, stack, ItemNBTHelper.getInteger(stack, References.ATTACK_AOE, 0));
+		ToolHandler.AOEAttack(player, entity, stack, IConfigurableItem.ProfileHelper.getInteger(stack, References.ATTACK_AOE, 0));
 		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.2F);
 		return true;
 	}
@@ -300,5 +297,10 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 			DraconicEvolution.network.sendToServer(new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));
 		}
 		return super.onItemRightClick(stack, world, player);
+	}
+
+	@Override
+	public boolean hasProfiles() {
+		return true;
 	}
 }

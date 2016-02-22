@@ -55,6 +55,11 @@ public class InfusedObsidian extends BlockDE {
 		return super.getExplosionResistance(par1Entity, world, x, y, z, explosionX, explosionY, explosionZ);
 	}
 
+	@Override
+	public boolean canDropFromExplosion(Explosion p_149659_1_) {
+		return false;
+	}
+
 	public static class InfusedObsidianItemBlock extends ItemBlock {
 
 		public InfusedObsidianItemBlock(Block p_i45328_1_) {

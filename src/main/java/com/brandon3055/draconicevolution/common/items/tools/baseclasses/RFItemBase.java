@@ -14,6 +14,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -132,10 +133,18 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 	@Override
 	public List<String> getDisplayData(ItemStack stack) {
 		List<String> list = new ArrayList<String>();
+		if (hasProfiles()) {
+			int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
+			list.add(EnumChatFormatting.DARK_PURPLE+StatCollector.translateToLocal("info.de.capacitorMode.txt")+": "+ItemNBTHelper.getString(stack, "ProfileName"+preset, "Profile "+preset));
+		}
 		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
 		if (capacity > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
 
 		return list;
 	}
 
+	@Override
+	public boolean hasProfiles() {
+		return true;
+	}
 }

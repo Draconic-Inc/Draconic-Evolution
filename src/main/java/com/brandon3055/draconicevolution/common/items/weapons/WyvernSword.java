@@ -14,10 +14,7 @@ import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHand
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.network.ToolModePacket;
-import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
-import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
-import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import com.brandon3055.draconicevolution.common.utills.*;
 import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -50,7 +47,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 	protected int maxExtract = References.WYVERNTRANSFER;
 
 	public WyvernSword() {
-		super(ModItems.DRACONIUM_T1);
+		super(ModItems.WYVERN);
 		this.setUnlocalizedName(Strings.wyvernSwordName);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 		if (ModItems.isEnabled(this)) GameRegistry.registerItem(this, Strings.wyvernSwordName);
@@ -91,7 +88,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
 	{
-		ToolHandler.AOEAttack(player, entity, stack, ItemNBTHelper.getInteger(stack, References.ATTACK_AOE, 0));
+		ToolHandler.AOEAttack(player, entity, stack, IConfigurableItem.ProfileHelper.getInteger(stack, References.ATTACK_AOE, 0));
 		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.1F);
 		return true;
 	}
@@ -307,6 +304,11 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 			DraconicEvolution.network.sendToServer(new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));
 		}
 		return super.onItemRightClick(stack, world, player);
+	}
+
+	@Override
+	public boolean hasProfiles() {
+		return true;
 	}
 }
 

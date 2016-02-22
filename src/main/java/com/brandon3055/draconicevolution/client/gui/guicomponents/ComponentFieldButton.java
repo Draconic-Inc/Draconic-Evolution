@@ -92,7 +92,7 @@ public class ComponentFieldButton extends ComponentBase {
 			field.sendChanges();
 			ItemStack stack = gui.player.inventory.getStackInSlot(field.slot);
 			if (stack != null && stack.getItem() instanceof IConfigurableItem){
-				DataUtills.writeObjectToItem(stack, field.value, field.datatype, field.name);
+				DataUtills.writeObjectToCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), field.value, field.datatype, field.name);
 			}
 			return;
 		}

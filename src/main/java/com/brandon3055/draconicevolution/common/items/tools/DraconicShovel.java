@@ -25,7 +25,7 @@ public class DraconicShovel extends MiningTool implements IInventoryTool, IRende
 	protected int maxExtract = References.DRACONICTRANSFER;
 
 	public DraconicShovel() {
-		super(ModItems.DRACONIUM_T2);
+		super(ModItems.AWAKENED);
 		this.setHarvestLevel("shovel", 10);
 		this.setUnlocalizedName(Strings.draconicShovelName);
 		this.setCapacity(References.DRACONICCAPACITY);

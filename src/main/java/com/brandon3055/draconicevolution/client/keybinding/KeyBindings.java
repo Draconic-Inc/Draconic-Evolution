@@ -14,11 +14,14 @@ import org.lwjgl.input.Keyboard;
 public class KeyBindings {
 	public static KeyBinding placeItem;
 	public static KeyBinding toolConfig;
+	public static KeyBinding toolProfileChange;
 
 	public static void init() {
 		placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_P, References.MODNAME);
 		toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_C, References.MODNAME);
+		toolProfileChange = new KeyBinding("key.toolProfileChange", Keyboard.KEY_BACKSLASH, References.MODNAME);
 		ClientRegistry.registerKeyBinding(placeItem);
 		ClientRegistry.registerKeyBinding(toolConfig);
+		ClientRegistry.registerKeyBinding(toolProfileChange);
 	}
 }

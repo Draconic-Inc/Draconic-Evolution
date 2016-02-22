@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
@@ -24,7 +24,7 @@ import java.util.List;
 public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTweak {//todo axe & fields
 
 	public DraconicAxe() {
-		super(ModItems.DRACONIUM_T1);
+		super(ModItems.WYVERN);
 		this.setHarvestLevel("axe", 10);
 		this.setUnlocalizedName(Strings.draconicAxeName);
 		this.setCapacity(References.DRACONICCAPACITY);
@@ -62,7 +62,7 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
-		if (ItemNBTHelper.getBoolean(stack, References.TREE_MODE, false) && isTree(player.worldObj, x, y, z)) {
+		if (IConfigurableItem.ProfileHelper.getBoolean(stack, References.TREE_MODE, false) && isTree(player.worldObj, x, y, z)) {
 			trimLeavs(x, y, z, player, player.worldObj, stack);
 			for (int i = 0; i < 9; i++) player.worldObj.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(player.worldObj.getBlock(x, y, z)) + (player.worldObj.getBlockMetadata(x, y, z) << 12));
 			chopTree(x, y, z, player, player.worldObj, stack);

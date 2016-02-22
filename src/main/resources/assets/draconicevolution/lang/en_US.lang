@@ -416,6 +416,7 @@ entity.DraconicEvolution.ChaosGuardian.name=Chaos Guardian
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
 key.placeItem=Place Item in world
 key.toolConfig=Tool & Armor Config GUI
+key.toolProfileChange=Change Tool Config Profile
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian
@@ -457,10 +458,11 @@ button.de.toggleHidden.txt=Toggle Hidden
 button.de.ArmorNVActive.name=Night Vision
 button.de.ArmorNVLock.name=Lock Night Vision
 button.de.ArmorFlightLock.name=Lock Flight
-button.de.ArmorSpeedMult.name=Move Speed
-button.de.ArmorJumpMult.name=Jump Height
+button.de.ArmorSpeedMult.name=Move Speed Modifier
+button.de.ArmorJumpMult.name=Jump Height Modifier
 button.de.ArmorHillStep.name=Hill Step
 button.de.ArmorSprintOnly.name=Reduce When Walking
+button.de.ArmorFlightSpeedMult.name=Flight Speed Modifier
 button.de.ToolDigMultiplier.name=Dig Speed
 button.de.ToolDigAOE.name=Size
 button.de.ToolDigDepth.name=Dig Depth
@@ -550,6 +552,7 @@ gui.de.configureGuiElements.txt=Configure HUD Elements
 gui.de.hudDisplaySettings.txt=HUD Display Settings
 gui.de.shieldDisplaySettings.txt=Shield Display Settings
 gui.de.clickAndDragPurpleBoxes.txt=Click and drag the purple boxes to move the displays
+gui.de.profile.txt=Profile
 
 gui.de.RFCapacity.txt=RF Capacity
 gui.de.DigSpeed.txt=Dig Speed

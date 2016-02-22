@@ -20,7 +20,7 @@ public class DraconicPickaxe extends MiningTool implements IInventoryTool, IRend
 
 
 	public DraconicPickaxe() {
-		super(ModItems.DRACONIUM_T2);
+		super(ModItems.AWAKENED);
 		this.setHarvestLevel("pickaxe", 10);
 		this.setUnlocalizedName(Strings.draconicPickaxeName);
 		this.setCapacity(References.DRACONICCAPACITY);

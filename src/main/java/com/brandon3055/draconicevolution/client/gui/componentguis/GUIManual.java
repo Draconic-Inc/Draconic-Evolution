@@ -3,17 +3,21 @@ package com.brandon3055.draconicevolution.client.gui.componentguis;
 import com.brandon3055.brandonscore.client.gui.guicomponents.*;
 import com.brandon3055.brandonscore.client.utills.ClientUtills;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.client.gui.guicomponents.*;
+import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentContributorsPage;
+import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentIndexButton;
+import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentManualPage;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.DummyContainer;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -35,6 +39,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 	private static ManualPage currentPage = null;
 	private int previousScale = -1;
 	private int worldUpdateIn = -1;
+	private static String lang;
 
 
 	public GUIManual() {
@@ -54,6 +59,8 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 	public void initGui() {
 		super.initGui();
 		if (previousScale == -1) adjustGuiScale();
+
+		if (!Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().equals(lang)) loadPages();
 	}
 
 	private void adjustGuiScale(){
@@ -192,7 +199,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 			ComponentContributorsPage page = (ComponentContributorsPage)collection.getComponent("CONTRIBUTORS");
 			barPosition = (int)(((double)page.scrollOffset/page.scrollLimit) * 247D);
 		}
-		else if (collection.getComponent("OPEN_PAGE") != null && collection.getComponent("OPEN_PAGE").isEnabled()) {
+		else if (!scrollPressed && collection.getComponent("OPEN_PAGE") != null && collection.getComponent("OPEN_PAGE").isEnabled()) {
 			ComponentManualPage page = (ComponentManualPage)collection.getComponent("OPEN_PAGE");
 			barPosition = (int)(((double)page.scrollOffset/page.scrollLimit) * 247D);
 		}
@@ -284,11 +291,43 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 
 	public static void loadPages()
 	{
+		lang = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
+
+		ResourceLocation rsLocation = new ResourceLocation(References.RESOURCESPREFIX + "manual-"+lang+".json");
+		IResource resource = null;
+
+		try {
+			resource = Minecraft.getMinecraft().getResourceManager().getResource(rsLocation);
+		}
+		catch (IOException e) {
+			LogHelper.warn("##################################################################################");
+			LogHelper.warn("");
+			LogHelper.warn("Info Tablet language localisation is not available for the selected language: "+lang);
+			LogHelper.warn("The default language (en_US) will be loaded instead");
+			LogHelper.warn("");
+			LogHelper.warn("##################################################################################");
+
+			rsLocation = new ResourceLocation(References.RESOURCESPREFIX + "manual-en_US.json");
+			try {
+				resource = Minecraft.getMinecraft().getResourceManager().getResource(rsLocation);
+			}
+			catch (IOException e1) {
+				LogHelper.error("Well that didn't work... ");
+				e1.printStackTrace();
+			}
+		}
+
+		if (resource == null){
+			LogHelper.error("Something went wrong while loading the Info Tablet json file");
+			return;
+		}
+
+
 		try
 		{
 			File manualJSON = new File(ResourceHandler.getConfigFolder(), "manual.json");
 
-			InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(References.RESOURCESPREFIX + "manual.json")).getInputStream();
+			InputStream is = resource.getInputStream();
 			OutputStream os = new FileOutputStream(manualJSON);
 			IOUtils.copy(is, os);
 			is.close();

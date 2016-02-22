@@ -20,7 +20,7 @@ import java.util.List;
 public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRenderTweak {
 
 	public WyvernPickaxe() {
-		super(ModItems.DRACONIUM_T1);
+		super(ModItems.WYVERN);
 		this.setUnlocalizedName(Strings.wyvernPickaxeName);
 		this.setHarvestLevel("pickaxe", 10);
 		this.setCapacity(References.WYVERNCAPACITY);
