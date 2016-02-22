@@ -293,7 +293,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 	{
 		lang = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
 
-		ResourceLocation rsLocation = new ResourceLocation(References.RESOURCESPREFIX + "manual-"+lang+".json");
+		ResourceLocation rsLocation = new ResourceLocation(References.RESOURCESPREFIX + "manual/manual-"+lang+".json");
 		IResource resource = null;
 
 		try {
@@ -307,7 +307,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 			LogHelper.warn("");
 			LogHelper.warn("##################################################################################");
 
-			rsLocation = new ResourceLocation(References.RESOURCESPREFIX + "manual-en_US.json");
+			rsLocation = new ResourceLocation(References.RESOURCESPREFIX + "manual/manual-en_US.json");
 			try {
 				resource = Minecraft.getMinecraft().getResourceManager().getResource(rsLocation);
 			}
