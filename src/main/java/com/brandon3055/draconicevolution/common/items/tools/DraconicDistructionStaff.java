@@ -138,8 +138,8 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 5;
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 3;
+		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 7;
 		else if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 6;
 		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 3;
 

@@ -34,6 +34,7 @@
 -made a change that will hopefully fix the issue with the energy core HUD display not updating properly.
 -fixed dragging the scroll bare in the Info Tablet not working properly on some pages. 
 -added support for language localization to the information tablet.
+-updated Documentation
 
 ######## 1.0.2-Snapshot 8-bugfix ########
 -fixed crash in information tablet.

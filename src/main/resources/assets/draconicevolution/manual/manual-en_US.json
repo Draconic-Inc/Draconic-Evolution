@@ -95,7 +95,7 @@
     [
       "Tired of your slow, old diamond pick? Maybe it's time to upgrade! Wyvern tools run on RF and never break.",
       "All mining tools have an option to adjust mining speed, Dig AoE and AoE safe mode.",
-      "Dig AoE: Allows you to adjust the mining AoE of the tool. Wyvern AoE: 1x1 and 3x3.",
+      "Dig AoE: Allows you to adjust the mining AoE of the tool. Wyvern AoE: 1x1 and 3x3 (Upgradable)",
       "AoE Safe mode: If enabled the tool will check for any tile entities in the AoE and if it finds any the tool will not mine.",
       "[c]item.draconicevolution:wyvernPickaxe:0"
     ]
@@ -107,7 +107,7 @@
     [
       "Tired of your slow, old diamond shovel? Maybe it's time to upgrade! Wyvern tools run on RF and never break.",
       "All mining tools have an option to adjust mining speed, Dig AoE and AoE safe mode.",
-      "Dig AoE: Allows you to adjust the digging area of the tool. Wyvern AoE: 1x1 and 3x3.",
+      "Dig AoE: Allows you to adjust the digging area of the tool. Wyvern AoE: 1x1 and 3x3 (Upgradable)",
       "AoE Safe mode: If enabled the shovel will check for any tile entities in the AoE and if it finds any it will not dig.",
       "[c]item.draconicevolution:wyvernShovel:0"
     ]
@@ -118,9 +118,9 @@
     "content":
     [
       "Ordinary weaponry not good enough anymore? Using draconic knowledge you have found a way to imbue an ordinary diamond sword with the power of Draconium.",
-      "+20 Attack damage",
+      "+20 Attack damage (Upgradable)",
       "+10% Mob Health (Adds 10% of the mob's own health to the attack damage)",
-      "3x3 AoE Attack",
+      "3x3 AoE Attack (Upgradable)",
       "[c]item.draconicevolution:wyvernSword:0"
     ]
   },
@@ -165,6 +165,7 @@
     [
       "Stronger than diamond - you can now withstand even greater blows.",
       "A full set gives total fire immunity.",
+      "+20 Base Shield Capacity",
       "[c]item.draconicevolution:wyvernHelm:0"
     ]
   },
@@ -175,6 +176,7 @@
     [
       "Infusing the armor with Draconium, you vastly improve its resistance.",
       "A full set gives total fire immunity.",
+      "+80 Base Shield Capacity",
       "[c]item.draconicevolution:wyvernChest:0"
     ]
   },
@@ -186,6 +188,7 @@
       "You feel even stronger and faster now that you have infused diamond leggings with Draconium.",
       "A full set gives total fire immunity.",
       "+ Speed boost",
+      "+80 Base Shield Capacity",
       "[c]item.draconicevolution:wyvernLeggs:0"
     ]
   },
@@ -198,6 +201,7 @@
       "A full set gives total fire immunity.",
       "+ Reduced fall damage",
       "+ Jump boost",
+      "+20 Base Shield Capacity",
       "[c]item.draconicevolution:wyvernBoots:0"
     ]
   },
@@ -364,8 +368,10 @@
     "content":
     [
       "Further Draconic research has shown you ways to even greater power...",
-      "Modes: Shift + right-click to switch modes: 1×1, 3×3, 5×5 and 7×7",
-      "Right-click to activate: Obliteration Mode – Destroys blocks that you specify.",
+      "Mining:",
+      "  1x1x1 to 5x5x1 Base AoE with depth independently adjustable (Upgradable)",
+      "  Junk filter",
+      "  AoE safe mode to ensure you don't accidentally mine your entire base",
       "[c]item.draconicevolution:draconicPickaxe:0"
     ]
   },
@@ -375,8 +381,10 @@
     "content":
     [
       "Further Draconic research has shown you ways to even greater power...",
-      "Modes: Shift + right-click to switch modes: 1×1, 3×3, 5×5 and 7×7",
-      "Right-click to activate: Obliteration Mode – Destroys blocks that you specify.",
+      "Mining:",
+      "  1x1x1 to 5x5x1 Base AoE with depth independently adjustable (Upgradable)",
+      "  Junk filter",
+      "  AoE safe mode to ensure you don't accidentally mine your entire base",
       "[c]item.draconicevolution:draconicShovel:0"
     ]
   },
@@ -386,7 +394,10 @@
     "content":
     [
       "Further Draconic research has shown you ways to even greater power...",
-      "This tool will harvest the entire tree and its leaves above.",
+      "Chopping:",
+      "  1x1x1 to 5x5x1 Base AoE with depth independently adjustable (Upgradable)",
+      "  Tree Mode (Chop down an entire tree in one swing)",
+      "  AoE safe mode to ensure you don't accidentally mine your entire base",
       "[c]item.draconicevolution:draconicAxe:0"
     ]
   },
@@ -396,8 +407,10 @@
     "content":
     [
       "Further Draconic research has shown you ways to even greater power...",
-      "This tool will till an entire 9×9 area - perfect for a full-size farm with water source.",
-      "It will also will dig or replace dirt (if you have dirt in your inventory) to make the full 9×9.",
+      "Further Draconic research has shown you ways to even greater power...",
+      "Tilling:",
+      "  1x1 to 7x7 Base AoE (Upgradable)",
+      "  will dig or replace dirt (if you have dirt in your inventory).",
       "[c]item.draconicevolution:draconicHoe:0"
     ]
   },
@@ -407,9 +420,9 @@
     "content":
     [
       "Seeking an even more powerful weapon you combine your Wyvern sword with Awakened Draconium to make the ultimate sword.",
-      "+40 Attack damage",
+      "+40 Attack damage (Upgradable)",
       "+20% Mob Health (Adds 20% of the mob's own health to the attack damage)",
-      "7x7 AoE Attack",
+      "5x5 AoE Attack (Upgradable)",
       "[c]item.draconicevolution:draconicSword:0"
     ]
   },
@@ -434,13 +447,13 @@
       "After great pains you have mastered the powers of the Draconic and created the ultimate weapon and destructive tool!",
       "Mining:",
       "  Extreme mining speed",
-      "  1x1x1 to 9x9x9 AoE with depth independently adjustable",
+      "  1x1x1 to 7x7x7 Base AoE with depth independently adjustable (Upgradable)",
       "  Junk filter",
       "  AoE safe mode to ensure you don't accidentally mine your entire base",
       "Attack:",
-      "  +60 Attack damage",
+      "  +60 Attack damage (Upgradable)",
       "  +30% Mob Health (Adds 30% of the mob's own health to the attack damage)",
-      "  1x1 to 25x25 AOE Attack",
+      "  1x1 to 7x7 AOE Attack (Upgradable)",
       "[c]item.draconicevolution:draconicDistructionStaff:0"
     ]
   },
@@ -465,6 +478,7 @@
       "- Cures negative potion effects",
       "- Bypass suffocation and drowning damage",
       "- Removes mining slowdown under water (Aqua Affinity)",
+      "+60 Base Shield Capacity",
       "[c]item.draconicevolution:draconicHelm:0"
     ]
   },
@@ -477,6 +491,7 @@
       "- Flight",
       "- Removes mining slowdown while in the air",
       "- Fire immunity",
+      "+200 Base Shield Capacity",
       "[c]item.draconicevolution:draconicChest:0"
     ]
   },
@@ -487,6 +502,7 @@
     [
       "The soul of a dragon protects you and moves you even faster. Improved speed boost.",
       "- Speed boost",
+      "+180 Base Shield Capacity",
       "[c]item.draconicevolution:draconicLeggs:0"
     ]
   },
@@ -499,6 +515,7 @@
       "- Fall protection",
       "- Jump boost",
       "- Up Hill Step",
+      "+60 Base Shield Capacity",
       "[c]item.draconicevolution:draconicBoots:0"
     ]
   },
@@ -518,6 +535,20 @@
     [
       "Researching the dark energy of the chaos shards has lead you to the creation of an even more powerful core. But what could possibly utilize such a dark and powerful item?.",
       "[c]item.draconicevolution:chaoticCore:0"
+    ]
+  },
+  {
+    "name":"tile.draconicevolution:upgradeModifier",
+    "images":[],
+    "content":
+    [
+      "The upgrade modifier is a block that allows you to upgrade your tools and items.",
+      "When you place an upgradable item in the upgrade slot you will see a list of upgrade options in the bottom half of the gui. You will also see the tools current stats to the right of the gui.",
+      "Upgrading the items stats requires cores. You will see a list of core tiers that can be applied under each upgrade option. At the top left of teh gui you will see the Core \"Cap\" This is the maximum number of cores that can be installed on this item as well as the number of cores installed and the number of slots remaining",
+      "To add a core you just have to have it in your inventory and you can press the + button under the upgrade you want to apply the core or the - button to remove a core. The numbers on the cores under the upgrades show how many of that core tier are applied to that upgrade. If you hover your mouse over that number it will show how many points that core tier is worth",
+      "The number above each upgrade is the number of upgrade points currently applied. Each upgrade will have a base number of points that you can add to and this determines the base value for that stat. If you hover your cursor over the number you will see the base points, Max points and point cost.",
+      "Using higher tier cores to upgrade the items stats means you can achieve a better upgrade then you could with lower tier cores.",
+      "[c]tile.draconicevolution:upgradeModifier:0"
     ]
   },
   {
@@ -890,6 +921,20 @@
     "content":
     [
       "The Reaper enchantment increases the drop chance of souls from mobs. It has a maximum level of 5 and makes it possible for regular weapons to drop souls from mobs."
+    ]
+  },
+  {
+    "name":"info.Draconic Shield",
+    "images":[],
+    "content":
+    [
+      "Both Wyvern and Draconic armor have a shield which is capable of absorbing damage. ",
+      "Wearing any peace of Draconic or Wyvern armor will give you this shield but the more peaces you have the more damage the shield will be able to absorb and Draconic armor peaces give more absorption then Wyvern.",
+      "When your shield is active you will see its stats in a HUD that will by default be displayed to the left of your hot-bar (This can be configured in the HUD config screen which is accessed via the tool config gui)",
+      "The HUD shows three stats. Shield points (Large Red-Green bar), Entropy (Small Green bar) and the total remaining RF stored in your armor (Small Blue bar). The Numerical values for these stats will also be shown if enabled in the HUD config.",
+      "The Shield Points or Capacity is the number of damage points (Half a heart) the armor can absorb and this will drop when you take damage. As long as any peace of armor has power your shield points will regenerate at the cost of RF. The base regeneration rate is the equivalent of the entire capacity every 3 seconds.",
+      "Entropy ranges from 0 to 100%. It will increase each time toy receive damage and will slowly decrease when you are not taking damage. Entropy reduces the rate at which your shield points regenerate. If your entropy reaches 100% your shield will not regenerate at all.",
+      "The shield can by upgraded using an Upgrade Modifier. Upgrading Shield Capacity will increase your shield points and upgrading Shield Recovery will increase the rate at which Entropy recovers. Note that the recovery rate is calculated by averaging the Recovery Points of all equipped armor peaces."
     ]
   },
   {

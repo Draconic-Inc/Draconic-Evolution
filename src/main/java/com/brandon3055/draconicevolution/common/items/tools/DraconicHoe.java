@@ -52,6 +52,11 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 	}
 
 	@Override
+	public int getItemEnchantability() {
+		return theToolMaterial.getEnchantability();
+	}
+
+	@Override
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
 		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
