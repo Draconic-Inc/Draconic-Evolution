@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTweak {//todo axe & fields
+public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTweak {
 
 	public DraconicAxe() {
 		super(ModItems.WYVERN);
@@ -83,7 +83,7 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
 	}
 
 	@Override
-	public List<String> getUpgradeStats(ItemStack stack) {//todo List Upgrades
+	public List<String> getUpgradeStats(ItemStack stack) {
 		return super.getUpgradeStats(stack);
 	}
 

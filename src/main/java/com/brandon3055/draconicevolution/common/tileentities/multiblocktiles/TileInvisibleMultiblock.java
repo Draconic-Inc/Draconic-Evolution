@@ -16,6 +16,11 @@ import net.minecraft.tileentity.TileEntity;
 public class TileInvisibleMultiblock extends TileEntity {
 	public TileLocation master = new TileLocation();
 
+	@Override
+	public boolean canUpdate() {
+		return false;
+	}
+
 	public boolean isMasterOnline() {
 		TileEnergyStorageCore tile = (worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) != null && worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) : null;
 		if (tile == null) {

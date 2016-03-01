@@ -86,7 +86,7 @@ public class WyvernShovel extends MiningTool implements IInventoryTool, IRenderT
 	}
 
 	@Override
-	public List<String> getUpgradeStats(ItemStack stack) {//todo List Upgrades
+	public List<String> getUpgradeStats(ItemStack stack) {
 		return super.getUpgradeStats(stack);
 	}
 

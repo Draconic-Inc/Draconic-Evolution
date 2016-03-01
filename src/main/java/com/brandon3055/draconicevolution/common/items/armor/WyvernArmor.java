@@ -411,7 +411,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 
 	@Override
 	public boolean[] hasFlight(ItemStack stack) {
-		return new boolean[] {false, false};
+		return new boolean[] {false, false, false};
 	}
 
 	@Override

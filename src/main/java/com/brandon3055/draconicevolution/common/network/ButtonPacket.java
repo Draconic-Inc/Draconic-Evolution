@@ -126,7 +126,7 @@ public class ButtonPacket implements IMessage
 				case ID_TOOL_PROFILE_CHANGE:
 				{
 					ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
-					if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem)stack.getItem()).hasProfiles()){
+					if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem)stack.getItem()).hasProfiles() && ctx.getServerHandler().playerEntity.getItemInUse() == null){
 						int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
 						if (++preset >= 5) preset = 0;
 						ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);

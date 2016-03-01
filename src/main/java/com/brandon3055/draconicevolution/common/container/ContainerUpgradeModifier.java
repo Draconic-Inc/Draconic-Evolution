@@ -56,13 +56,13 @@ public class ContainerUpgradeModifier extends ContainerDataSync
 	}
 
 	private void updateSlotState(){
-		if (tile.getStackInSlot(0) != null && slotsActive) {
+		if (tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IUpgradableItem && slotsActive) {
 			for (Object o : inventorySlots) {
 				if (o instanceof Slot && !(o instanceof SlotUpgradable)) ((Slot)o).xDisplayPosition += 1000;
 			}
 			slotsActive = false;
 		}
-		else if (tile.getStackInSlot(0) == null && !slotsActive) {
+		else if ((tile.getStackInSlot(0) == null || !(tile.getStackInSlot(0).getItem() instanceof IUpgradableItem)) && !slotsActive) {
 			for (Object o : inventorySlots) {
 				if (o instanceof Slot && !(o instanceof SlotUpgradable)) ((Slot)o).xDisplayPosition -= 1000;
 			}
@@ -157,9 +157,11 @@ public class ContainerUpgradeModifier extends ContainerDataSync
 			super(inventory1, slot, x, y);
 		}
 
+		//Some people think this block makes a nice display stand... And i cant disagree.
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			return stack != null && stack.getItem() instanceof IUpgradableItem;
+			return super.isItemValid(stack);
+			//return stack != null && stack.getItem() instanceof IUpgradableItem;
 		}
 	}
 }

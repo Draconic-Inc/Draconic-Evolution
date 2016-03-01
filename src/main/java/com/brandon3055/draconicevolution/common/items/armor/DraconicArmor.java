@@ -187,10 +187,10 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 			if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) this.extractEnergy(stack, 5000, false);
 			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY + 1, (int)Math.floor(player.posZ)) < 5 && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false))
 			{
-				player.addPotionEffect(new PotionEffect(16, 419, 0, true));
+				player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 419, 0, true));
 			}
-			else if ( IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false) && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVLock", true)) player.addPotionEffect(new PotionEffect(16, 419, 0, true));
-			else if (player.isPotionActive(16)) player.removePotionEffect(16);
+			else if ( IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false) && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVLock", true)) player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 419, 0, true));
+			else if (player.isPotionActive(Potion.nightVision.id)) player.removePotionEffect(Potion.nightVision.id);
 
 		}
 	}
@@ -294,6 +294,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 			list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorFlightSpeedMult").setMinMaxAndIncromente(0f, 6f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "EffectiveOnSprint").readFromItem(stack, false));
 			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack, false));
+			list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorInertiaCancellation").readFromItem(stack, false));
 		}
 		else if (armorType == 2)
 		{
@@ -492,7 +493,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
 	@Override
 	public boolean[] hasFlight(ItemStack stack) {
-		return new boolean[] {true, IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorFlightLock", false)};
+		return new boolean[] {true, IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorFlightLock", false), IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorInertiaCancellation", false)};
 	}
 
 	@Override

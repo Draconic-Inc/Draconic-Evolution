@@ -32,7 +32,7 @@ public class KeyInputHandler {
 		else if(KeyBindings.toolConfig.isPressed()) {
 			DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOLCONFIG, false));
 		}
-		else if (KeyBindings.toolProfileChange.isPressed() && Minecraft.getMinecraft().thePlayer != null){
+		else if (KeyBindings.toolProfileChange.isPressed() && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.getItemInUse() == null){
 			DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
 
 			ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();

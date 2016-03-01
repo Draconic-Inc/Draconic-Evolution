@@ -84,7 +84,7 @@ public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRender
 	}
 
 	@Override
-	public List<String> getUpgradeStats(ItemStack stack) {//todo List Upgrades
+	public List<String> getUpgradeStats(ItemStack stack) {
 		return super.getUpgradeStats(stack);
 	}
 

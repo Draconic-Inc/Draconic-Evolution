@@ -108,24 +108,27 @@ public class ClientEventHandler {
 
 			float zMax = 1f;
 
+
 			if (ItemNBTHelper.getString(event.entity.getItemInUse(), "mode", "").equals("sharpshooter")){
 				if (event.entity.getItemInUse().getItem() instanceof WyvernBow) zMax = 1.35f;
 				else if (event.entity.getItemInUse().getItem() instanceof DraconicBow) zMax = 2.5f;
 				bowZoom = true;
 				tickSet = elapsedTicks;
+
+
 			}
 
 
-			if (f1 < zMax)
-			{
-				f1 *= (f1*(zMax*2));
-			}
-			else f1 = previousFOB;
-
-			previousFOB = f1;
-
-			f *= 1.0F - f1 * 0.15F;
-			event.newfov = f;
+//			if (f1 < zMax)
+//			{
+//				f1 *= (f1*(zMax*2));
+//			}
+//			else f1 = previousFOB;
+//
+//			previousFOB = f1;
+//
+//			f *= 1.0F - f1 * 0.15F;
+//			event.newfov = f;
 		}
 		//endregion
 

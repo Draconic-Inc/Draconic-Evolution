@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.client.model.special.ModelStaffOfTheGreatOne;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.AdvancedModelLoader;
@@ -12,6 +13,8 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderChaosFragment implements IItemRenderer {
 	private static IModelCustom model = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
+
+	private static ModelStaffOfTheGreatOne staff = new ModelStaffOfTheGreatOne();
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {

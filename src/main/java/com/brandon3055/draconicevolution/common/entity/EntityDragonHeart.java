@@ -108,6 +108,7 @@ public class EntityDragonHeart extends Entity {
 						item.motionX = 0;
 						item.motionY = 0;
 						item.motionZ = 0;
+						item.delayBeforeCanPickup = 0;
 						if (!worldObj.isRemote) worldObj.spawnEntityInWorld(item);
 						this.worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 						this.setDead();
@@ -166,7 +167,14 @@ public class EntityDragonHeart extends Entity {
 			}
 			case 4:{
 				if (blocks.size() == 0){
-					if (!worldObj.isRemote) worldObj.spawnEntityInWorld(new EntityItem(worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart)));
+					if (!worldObj.isRemote) {
+						EntityPersistentItem item = new EntityPersistentItem(worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart));
+						item.motionX = 0;
+						item.motionY = 0;
+						item.motionZ = 0;
+						item.delayBeforeCanPickup = 0;
+						worldObj.spawnEntityInWorld(item);
+					}
 					this.worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 					this.setDead();
 					break;
@@ -240,6 +248,10 @@ public class EntityDragonHeart extends Entity {
 
 	@Override
 	public void onCollideWithPlayer(EntityPlayer player) {
+		if (age < 2000) {
+			age = 2000;
+			opPhase = 2;
+		}
 	}
 
 

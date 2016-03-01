@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class CustomArmorHandler {
 	public static final UUID WALK_SPEED_UUID = UUID.fromString("0ea6ce8e-d2e8-11e5-ab30-625662870761");
-	private static final DamageSource ADMIN_KILL = new DamageSource("administrative.kill");
+	private static final DamageSource ADMIN_KILL = new DamageSource("administrative.kill").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
 	public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
 	public static List<String> playersWithUphillStep = new ArrayList<String>();
 	public static Field walkSpeed;
@@ -161,6 +161,7 @@ public class CustomArmorHandler {
 	}
 
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+
 		EntityPlayer player = event.player;
 		ArmorSummery summery = new ArmorSummery().getSummery(player);
 
@@ -201,11 +202,11 @@ public class CustomArmorHandler {
 			player.capabilities.allowFlying = true;
 			if (summery.flight[1]) player.capabilities.isFlying = true;
 
-			player.capabilities.setFlySpeed(0.05F + (0.05F * summery.flightSpeedModifier));
+			if (player.worldObj.isRemote) setPlayerFlySpeed(player, 0.05F + (0.05F * summery.flightSpeedModifier));
 
 			if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && summery.flightVModifier > 0)
 			{
-				float percentIncrease = summery.flightVModifier;
+//				float percentIncrease = summery.flightVModifier;
 
 				if (BrandonsCore.proxy.isSpaceDown() && !BrandonsCore.proxy.isShiftDown())
 				{
@@ -217,6 +218,11 @@ public class CustomArmorHandler {
 				{
 					player.motionY = -0.225F * summery.flightVModifier;
 				}
+			}
+
+			if (summery.flight[2] && player.moveForward == 0 && player.moveStrafing == 0 && player.capabilities.isFlying){
+				player.motionX *= 0.5;
+				player.motionZ *= 0.5;
 			}
 
 		} else {
@@ -280,7 +286,9 @@ public class CustomArmorHandler {
 		//endregion
 	}
 
-
+	private static void setPlayerFlySpeed(EntityPlayer player, float speed) {
+		player.capabilities.setFlySpeed(speed);
+	}
 
 	private static boolean applyArmorDamageBlocking(LivingAttackEvent event, ArmorSummery summery){
 		if (summery == null) return false;
@@ -332,7 +340,7 @@ public class CustomArmorHandler {
 		/**RF stored in each armor peace*/
 		public int[] energyAllocation;
 		/*---- Effects ----*/
-		public boolean[] flight = new boolean[] {false, false};
+		public boolean[] flight = new boolean[] {false, false, false};
 		public float flightVModifier = 0F;
 		public float speedModifier = 0F;
 		public float jumpModifier = 0F;
@@ -381,9 +389,9 @@ public class CustomArmorHandler {
 						break;
 					case 1:
 						speedModifier = armor.getSpeedModifier(stack, player);
-						hasHillStep = armor.hasHillStep(stack, player);
 						break;
 					case 0:
+						hasHillStep = armor.hasHillStep(stack, player);
 						jumpModifier = armor.getJumpModifier(stack, player);
 						break;
 				}

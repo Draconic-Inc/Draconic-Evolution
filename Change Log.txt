@@ -1,4 +1,12 @@
-######## 1.0.2-Snapshot 10 ########
+######## 1.0.2-Snapshot 11 ########
+-the upgrade modifier can now hold any item FOR DISPLAY PURPOSES ONLY (this was requested by a user)
+-added inertia cancellation to the draconic chestplate.
+-change: an active dragon heart will now immediately drop as an item if a player comes into contact with it. 
+
+######## 1.0.2-Snapshot 10-beta2 ########
+-fixed client unable to connect to a server while wearing draconic armor.
+
+######## 1.0.2-Snapshot 10-beta ########
 -fixed hover text for stats in the reactor gui showing when the stats page is closed.
 -beacons can now pass through energy core.
 -fixed bug in old 2D armor models.
@@ -12,6 +20,7 @@
 -change: If you logout while flying you will be flying when you login again.
 -added tool config profiles.
 -fixed chaos guardian crystals in unloaded chunks showing as alive then they are not.
+-updated documentation.
 
 ######## 1.0.2-Snapshot 9 ########
 -added config option to adjust the distance between chaos islands.

@@ -69,6 +69,12 @@ public class TileParticleGenerator extends TileEntity {
 
 	private int tick = 0;
 
+	@SideOnly(Side.SERVER)
+	@Override
+	public boolean canUpdate() {
+		return false;
+	}
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void updateEntity() {

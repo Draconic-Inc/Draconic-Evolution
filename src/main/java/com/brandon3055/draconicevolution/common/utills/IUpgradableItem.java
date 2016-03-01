@@ -87,8 +87,20 @@ public interface IUpgradableItem {
 			}
 		},
 		ARROW_DAMAGE	(6,  1, "ArrowDamage"),
-		DRAW_SPEED		(7,  1, "DrawSpeed"),
-		ARROW_SPEED		(8,  1, "ArrowSpeed"),
+		DRAW_SPEED		(7,  2, "DrawSpeed"),
+		ARROW_SPEED		(8,  2, "ArrowSpeed"){
+			@Override
+			public void onRemovedFromItem(ItemStack itemStack) {
+				int profile = ItemNBTHelper.getInteger(itemStack, "ConfigProfile", 0);
+
+				for (int i = 0; i < 5; i++){
+					ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
+					if (IConfigurableItem.ProfileHelper.getInteger(itemStack, "BowArrowSpeedModifier", 0) > getUpgradePoints(itemStack)) IConfigurableItem.ProfileHelper.setInteger(itemStack, "BowArrowSpeedModifier", getUpgradePoints(itemStack));
+				}
+
+				ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
+			}
+		},
 		SHIELD_CAPACITY	(9,  1, "ShieldCapacity"),
 		SHIELD_RECOVERY	(10, 1, "ShieldRecovery"),
 		MOVE_SPEED		(11, 1, "MoveSpeed"),

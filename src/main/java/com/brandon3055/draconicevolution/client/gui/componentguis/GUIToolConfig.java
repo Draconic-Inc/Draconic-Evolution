@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentConfi
 import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentFieldAdjuster;
 import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentFieldButton;
 import com.brandon3055.draconicevolution.common.container.ContainerAdvTool;
+import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.ItemConfigPacket;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
@@ -20,6 +21,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Brandon on 26/12/2014.
@@ -175,7 +179,7 @@ public class GUIToolConfig extends GUIBase {
 			collection.setGroupEnabled("BACKGROUND", true);
 			collection.setComponentEnabled("BACK_BUTTON", true);
 			if (collection.getComponent("BACK_BUTTON") != null) collection.getComponent("BACK_BUTTON").setY(3);
-			slot = -1;
+//			slot = -1;
 		}
 		else if (level == 3){//inventory screen
 
@@ -214,6 +218,22 @@ public class GUIToolConfig extends GUIBase {
 			if (!StringUtils.isNullOrEmpty(textField.textField.getText())){
 				DraconicEvolution.network.sendToServer(new ItemConfigPacket(slot, textField.textField.getText()));
 			}
+		}
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(f, mouseX, mouseY);
+
+		if (slot > -1) editingItem = player.inventory.getStackInSlot(slot);
+		if (slot > -1 && editingItem != null && editingItem.getUnlocalizedName().toLowerCase().contains("bow")){
+			BowHandler.BowProperties properties = new BowHandler.BowProperties(editingItem, player);
+
+			List<String> list = new ArrayList<String>();
+			list.add("RF/Shot: "+properties.calculateEnergyCost());
+			drawHoveringText(list, guiLeft + xSize - 8, guiTop, fontRendererObj);
+
+			if (!properties.canFire() && properties.cantFireMessage != null && !properties.cantFireMessage.equals("msg.de.outOfArrows.name")) fontRendererObj.drawSplitString(StatCollector.translateToLocal(properties.cantFireMessage), guiLeft, guiTop+ySize, xSize, 0xFF0000);
 		}
 	}
 }

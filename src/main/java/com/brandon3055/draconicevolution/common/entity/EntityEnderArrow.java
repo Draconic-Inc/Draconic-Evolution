@@ -5,14 +5,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.S2BPacketChangeGameState;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -178,9 +175,12 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 				}
 			}
 
+			if (entity == shootingEntity) entity = null;
+
 			if (entity != null) {
 				movingobjectposition = new MovingObjectPosition(entity);
 			}
+
 
 			if (movingobjectposition != null && movingobjectposition.entityHit != null && movingobjectposition.entityHit instanceof EntityPlayer) {
 				EntityPlayer entityplayer = (EntityPlayer) movingobjectposition.entityHit;
@@ -194,80 +194,81 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 			float f4;
 
 			if (movingobjectposition != null) {
-				if (movingobjectposition.entityHit != null) {
-					onImpact(movingobjectposition.entityHit);
-					int k;
-					if (!ignorSpeed) {
-						f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
-						k = MathHelper.ceiling_double_int(f2 * this.damage);
-
-						if (this.getIsCritical()) {
-							k += this.rand.nextInt(k / 2 + 2);
-						}
-					} else {
-						k = (int) this.damage;
-						if (this.getIsCritical()) {
-							k += this.rand.nextInt(k / 2 + 2);
-						}
-					}
-
-					DamageSource damagesource = null;
-
-					if (this.shootingEntity == null) {
-						damagesource = DamageSource.causeArrowDamage(this, this);
-					} else {
-						damagesource = DamageSource.causeArrowDamage(this, this.shootingEntity);
-					}
-					if (movingobjectposition.entityHit instanceof EntityEnderman)
-						damagesource = DamageSource.magic;
-
-					if (this.isBurning() && !(movingobjectposition.entityHit instanceof EntityEnderman)) {
-						movingobjectposition.entityHit.setFire(5);
-					}
-
-					movingobjectposition.entityHit.hurtResistantTime = 0;
-						
-					if (movingobjectposition.entityHit.attackEntityFrom(damagesource, k)) {
-						if (movingobjectposition.entityHit instanceof EntityLivingBase) {
-							EntityLivingBase entitylivingbase = (EntityLivingBase) movingobjectposition.entityHit;
-
-							if (!this.worldObj.isRemote) {
-								entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
-							}
-
-							if (this.knockbackStrength > 0) {
-								f4 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-
-								if (f4 > 0.0F) {
-									movingobjectposition.entityHit.addVelocity(this.motionX * this.knockbackStrength * 0.6000000238418579D / f4, 0.1D, this.motionZ * this.knockbackStrength * 0.6000000238418579D / f4);
-								}
-							}
-
-							if (this.shootingEntity != null && this.shootingEntity instanceof EntityLivingBase) {
-								EnchantmentHelper.func_151384_a(entitylivingbase, this.shootingEntity);
-								EnchantmentHelper.func_151385_b((EntityLivingBase) this.shootingEntity, entitylivingbase);
-							}
-
-							if (this.shootingEntity != null && movingobjectposition.entityHit != this.shootingEntity && movingobjectposition.entityHit instanceof EntityPlayer && this.shootingEntity instanceof EntityPlayerMP) {
-								((EntityPlayerMP) this.shootingEntity).playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(6, 0.0F));
-							}
-						}
-
-						this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-
-						// if (!(movingobjectposition.entityHit instanceof EntityEnderman))
-						//{
-						this.setDead();
-						//}
-					} else {
-						this.motionX *= -0.10000000149011612D;
-						this.motionY *= -0.10000000149011612D;
-						this.motionZ *= -0.10000000149011612D;
-						this.rotationYaw += 180.0F;
-						this.prevRotationYaw += 180.0F;
-						this.ticksInAir = 0;
-					}
-				} else {
+//				if (movingobjectposition.entityHit != null && movingobjectposition.entityHit != shootingEntity) {
+//					onImpact(movingobjectposition.entityHit);
+//					int k;
+//					if (!ignorSpeed) {
+//						f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+//						k = MathHelper.ceiling_double_int(f2 * this.damage);
+//
+//						if (this.getIsCritical()) {
+//							k += this.rand.nextInt(k / 2 + 2);
+//						}
+//					} else {
+//						k = (int) this.damage;
+//						if (this.getIsCritical()) {
+//							k += this.rand.nextInt(k / 2 + 2);
+//						}
+//					}
+//
+//					DamageSource damagesource = null;
+//
+//					if (this.shootingEntity == null) {
+//						damagesource = DamageSource.causeArrowDamage(this, this);
+//					} else {
+//						damagesource = DamageSource.causeArrowDamage(this, this.shootingEntity);
+//					}
+//					if (movingobjectposition.entityHit instanceof EntityEnderman)
+//						damagesource = DamageSource.magic;
+//
+//					if (this.isBurning() && !(movingobjectposition.entityHit instanceof EntityEnderman)) {
+//						movingobjectposition.entityHit.setFire(5);
+//					}
+//
+//					movingobjectposition.entityHit.hurtResistantTime = 0;
+//
+//					if (movingobjectposition.entityHit.attackEntityFrom(damagesource, k)) {
+//						if (movingobjectposition.entityHit instanceof EntityLivingBase) {
+//							EntityLivingBase entitylivingbase = (EntityLivingBase) movingobjectposition.entityHit;
+//
+//							if (!this.worldObj.isRemote) {
+//								entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
+//							}
+//
+//							if (this.knockbackStrength > 0) {
+//								f4 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+//
+//								if (f4 > 0.0F) {
+//									movingobjectposition.entityHit.addVelocity(this.motionX * this.knockbackStrength * 0.6000000238418579D / f4, 0.1D, this.motionZ * this.knockbackStrength * 0.6000000238418579D / f4);
+//								}
+//							}
+//
+//							if (this.shootingEntity != null && this.shootingEntity instanceof EntityLivingBase) {
+//								EnchantmentHelper.func_151384_a(entitylivingbase, this.shootingEntity);
+//								EnchantmentHelper.func_151385_b((EntityLivingBase) this.shootingEntity, entitylivingbase);
+//							}
+//
+//							if (this.shootingEntity != null && movingobjectposition.entityHit != this.shootingEntity && movingobjectposition.entityHit instanceof EntityPlayer && this.shootingEntity instanceof EntityPlayerMP) {
+//								((EntityPlayerMP) this.shootingEntity).playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(6, 0.0F));
+//							}
+//						}
+//
+//						this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+//
+//						// if (!(movingobjectposition.entityHit instanceof EntityEnderman))
+//						//{
+//						this.setDead();
+//						//}
+//					} else {
+//						this.motionX *= -0.10000000149011612D;
+//						this.motionY *= -0.10000000149011612D;
+//						this.motionZ *= -0.10000000149011612D;
+//						this.rotationYaw += 180.0F;
+//						this.prevRotationYaw += 180.0F;
+//						this.ticksInAir = 0;
+//					}
+//				} else
+				if (movingobjectposition.entityHit == null){
 					this.field_145791_d = movingobjectposition.blockX;
 					this.field_145792_e = movingobjectposition.blockY;
 					this.field_145789_f = movingobjectposition.blockZ;

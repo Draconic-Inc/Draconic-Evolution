@@ -152,6 +152,7 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 		list.add(EnumUpgrade.ATTACK_AOE);
 		list.add(EnumUpgrade.ATTACK_DAMAGE);
 		list.remove(EnumUpgrade.DIG_SPEED);
+
 		return list;
 	}
 

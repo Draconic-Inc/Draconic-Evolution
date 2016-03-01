@@ -1,8 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -42,64 +41,38 @@ public class RenderBowModel implements IItemRenderer
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 		GL11.glPushMatrix();
 
-		String currentMode = ItemNBTHelper.getString(item, "mode", "rapidfire");
-		int j = 0;
+		//String currentMode = ItemNBTHelper.getString(item, "mode", "rapidfire");
+		float j = 0F;
+		int selection = 0;
 
 		if (data.length >= 2 && (data[1] instanceof EntityPlayer)) {
 			EntityPlayer player = (EntityPlayer) data[1];
-			if (player.inventory.hasItem(ModItems.enderArrow)) currentMode = "sharpshooter";
-			j = player.getItemInUseDuration();
+			j = (float)player.getItemInUseDuration();
+			if (j > 0) {
+				BowHandler.BowProperties properties = new BowHandler.BowProperties(item, player);
+				if (j > properties.getDrawTicks()) j = properties.getDrawTicks();
+				j /= (float) properties.getDrawTicks();
+				int j2 = (int) (j * 3F);
+
+				if (j2 < 0) j2 = 0;
+				else if (j2 > 3) j2 = 3;
+
+				selection = j2;
+			}
 		}
 
-		IModelCustom activeModel = null;
-		int selection = 0;
+		IModelCustom activeModel;
+
 
 		if (draconic)
 		{
-
-			if (currentMode.equals("rapidfire"))
-			{
-				if (j >= 4) selection = 3;
-				else if (j > 2) selection = 2;
-				else if (j > 0) selection = 1;
-			} else if (currentMode.equals("devistation"))
-			{
-				if (j >= 2) selection = 3;
-				else if (j > 1) selection = 2;
-				else if (j > 0) selection = 1;
-			} else if (currentMode.equals("sharpshooter"))
-			{
-				if (j >= 20) selection = 3;
-				else if (j > 10) selection = 2;
-				else if (j > 0) selection = 1;
-			} else
-			{
-				if (j >= 80) selection = 3;
-				else if (j > 40) selection = 2;
-				else if (j > 0) selection = 1;
-			}
-
 			activeModel = draconicModels[selection];
 			ResourceHandler.bindResource("textures/models/tools/DraconicBow0" + selection + ".png");
 		}else
 		{
-
-			if (currentMode.equals("rapidfire"))
-			{
-				if (j >= 13) selection = 2;
-				else if (j > 7) selection = 1;
-				else if (j > 0) selection = 0;
-			} else if (currentMode.equals("sharpshooter"))
-			{
-				if (j >= 30) selection = 2;
-				else if (j > 15) selection = 1;
-				else if (j > 0) selection = 0;
-			}
-
 			activeModel = draconicModels[selection];
 			ResourceHandler.bindResource("textures/models/tools/WyvernBow0"+selection+".png");
 		}
-
 
 
 		if (activeModel != null) doRender(activeModel, type, j > 0 ? selection : -1);

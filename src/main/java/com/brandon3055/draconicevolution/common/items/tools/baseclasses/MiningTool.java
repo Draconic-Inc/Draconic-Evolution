@@ -38,7 +38,7 @@ import java.util.Map;
 /**
  * Created by Brandon on 2/01/2015.
  */
-public abstract class MiningTool extends ToolBase implements IUpgradableItem {//todo add custom information to sub classes, Update documentation and add doc for hud
+public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 
 
 	public MiningTool(ToolMaterial material) {

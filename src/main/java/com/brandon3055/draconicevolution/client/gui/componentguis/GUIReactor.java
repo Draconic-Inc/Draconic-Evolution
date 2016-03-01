@@ -42,7 +42,7 @@ public class GUIReactor extends GUIBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {//todo tool tips
+	protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(f, mouseX, mouseY);
 		//Draw I/O Slots
 		if (reactor.reactorState == TileReactorCore.STATE_OFFLINE){
@@ -115,7 +115,7 @@ public class GUIReactor extends GUIBase {
 		List<String> text = new ArrayList<String>();
 		if (GuiHelper.isInRect(9, 4, 18, 114, mouseX - guiLeft, mouseY - guiTop)){
 			text.add(StatCollector.translateToLocal("gui.de.reactionTemp.txt"));
-			text.add((int)reactor.reactionTemperature + "°C");
+			text.add((int)reactor.reactionTemperature + "C");
 			drawHoveringText(text, mouseX, mouseY, fontRendererObj);
 		}
 		else if (GuiHelper.isInRect(33, 4, 18, 114, mouseX-guiLeft, mouseY-guiTop)){
