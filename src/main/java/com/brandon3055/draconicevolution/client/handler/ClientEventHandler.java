@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 import com.brandon3055.brandonscore.common.utills.DataUtills.XZPair;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
 import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
+import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
 import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
@@ -101,34 +101,19 @@ public class ClientEventHandler {
 	public void fovUpdate(FOVUpdateEvent event){
 
 		//region Bow FOV Update
-		if (event.entity.getItemInUse() != null && (event.entity.getItemInUse().getItem() instanceof WyvernBow || event.entity.getItemInUse().getItem() instanceof DraconicBow)){
-			float f = 1f;
-			int i = event.entity.getItemInUseDuration();
-			float f1 = (float)i / 20.0F;
+		if (event.entity.getHeldItem()!= null && (event.entity.getHeldItem().getItem() instanceof WyvernBow || event.entity.getHeldItem().getItem() instanceof DraconicBow) && Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed()){
 
-			float zMax = 1f;
+			BowHandler.BowProperties properties = new BowHandler.BowProperties(event.entity.getHeldItem(), event.entity);
 
+			event.newfov = ((6 - properties.zoomModifier) / 6) * event.fov;
 
-			if (ItemNBTHelper.getString(event.entity.getItemInUse(), "mode", "").equals("sharpshooter")){
-				if (event.entity.getItemInUse().getItem() instanceof WyvernBow) zMax = 1.35f;
-				else if (event.entity.getItemInUse().getItem() instanceof DraconicBow) zMax = 2.5f;
-				bowZoom = true;
-				tickSet = elapsedTicks;
-
-
-			}
-
-
-//			if (f1 < zMax)
-//			{
-//				f1 *= (f1*(zMax*2));
+//			if (ItemNBTHelper.getString(event.entity.getItemInUse(), "mode", "").equals("sharpshooter")){
+//				if (event.entity.getItemInUse().getItem() instanceof WyvernBow) zMax = 1.35f;
+//				else if (event.entity.getItemInUse().getItem() instanceof DraconicBow) zMax = 2.5f;
+//				bowZoom = true;
+//				tickSet = elapsedTicks;
 //			}
-//			else f1 = previousFOB;
-//
-//			previousFOB = f1;
-//
-//			f *= 1.0F - f1 * 0.15F;
-//			event.newfov = f;
+
 		}
 		//endregion
 

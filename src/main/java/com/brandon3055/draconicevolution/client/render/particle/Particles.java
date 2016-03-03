@@ -1189,6 +1189,215 @@ public class Particles {
 		}
 	}
 
+	public static class ArrowParticle extends EntityFX
+	{
+		private int particleColour;
+		private float setScale;
+
+		public ArrowParticle(World world, double x, double y, double z, int colour, float scale) {
+			super(world, x, y, z);
+			this.particleMaxAge = 30;
+			if (scale > 5) particleMaxAge = 10;
+			this.noClip = true;
+			this.particleColour = colour;
+			this.particleRed = this.particleGreen = this.particleBlue = 1.0f;
+			this.setScale = scale;
+		}
+
+		@Override
+		public void onUpdate() {
+			if (particleAge >= particleMaxAge) setDead();
+
+			particleAlpha = (1F - (float)((double)particleAge / particleMaxAge));
+			particleScale = setScale * (1F - (float)((double)particleAge / particleMaxAge));
+
+			particleAge ++;
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+			moveEntity(motionX, motionY, motionZ);
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+			tesselator.draw();
+			ResourceHandler.bindParticles();
+			tesselator.startDrawingQuads();
+			tesselator.setBrightness(200);
+			//GL11.glDepthMask(true);
+
+			int uIndex = 3;
+			int vIndex = 1;
+
+			float minU = uIndex * 0.125F;
+			float maxU = (uIndex+1) * 0.125F;
+			float minV = vIndex * 0.125F;
+			float maxV = (vIndex+1) * 0.125F;
+
+			float drawScale = 0.1F * this.particleScale;
+
+			if (this.particleIcon != null) {
+				minU = this.particleIcon.getMinU();
+				maxU = this.particleIcon.getMaxU();
+				minV = this.particleIcon.getMinV();
+				maxV = this.particleIcon.getMaxV();
+			}
+
+			float drawX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) par2 - interpPosX);
+			float drawY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) par2 - interpPosY);
+			float drawZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) par2 - interpPosZ);
+
+			//tesselator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
+			tesselator.setColorRGBA_I(particleColour, 0xFF);
+
+			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ - par5 * drawScale - par7 * drawScale), (double) maxU, (double) maxV);
+			tesselator.addVertexWithUV((double) (drawX - par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ - par5 * drawScale + par7 * drawScale), (double) maxU, (double) minV);
+			tesselator.addVertexWithUV((double) (drawX + par3 * drawScale + par6 * drawScale), (double) (drawY + par4 * drawScale), (double) (drawZ + par5 * drawScale + par7 * drawScale), (double) minU, (double) minV);
+			tesselator.addVertexWithUV((double) (drawX + par3 * drawScale - par6 * drawScale), (double) (drawY - par4 * drawScale), (double) (drawZ + par5 * drawScale - par7 * drawScale), (double) minU, (double) maxV);
+
+			tesselator.draw();
+			ResourceHandler.bindDefaultParticles();
+			tesselator.startDrawingQuads();
+
+		}
+	}
+
+	public static class ArrowShockParticle extends EntityFX
+	{
+		public static IModelCustom uvSphere;
+		public double size = 0;
+		public double maxSize;
+
+		public ArrowShockParticle(World world, double x, double y, double z, int maxSize) {
+			super(world, x, y, z, 0D, 0D, 0D);
+			if (uvSphere == null) uvSphere = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+			this.maxSize = maxSize / 100D;
+		}
+
+		@Override
+		public void onUpdate() {
+			//if (particleAge == 3) worldObj.playSound(posX, posY, posZ, "DraconicEvolution:fusionExplosion", 100F, 1F, false);
+			particleAge++;
+			size+=1.2;
+			if (size > maxSize * 1.2) setDead();
+
+			prevPosX = posX;
+			prevPosY = posY;
+			prevPosZ = posZ;
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void renderParticle(Tessellator tessellator, float partialTick, float par3, float par4, float par5, float par6, float par7) {//Note U=X V=Y
+
+			tessellator.draw();
+			GL11.glPushMatrix();
+			float xx = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTick - interpPosX);
+			float yy = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTick - interpPosY);
+			float zz = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTick - interpPosZ);
+			GL11.glTranslated((double)xx + 0.5, (double)yy + 0.5, (double)zz + 0.5);
+
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
+			ResourceHandler.bindResource("textures/models/white.png");
+			double s = size + partialTick * 1F;
+			GL11.glScaled(s, s/3, s);
+
+
+			//Leading edge
+			GL11.glPushMatrix();
+			float a = (float)Math.max(0D, 0.3D - (size / (maxSize)));
+			GL11.glScaled(5, 5, 5);
+			//if (a > 0)uvSphere.renderAll();
+			GL11.glPopMatrix();
+
+//			//Disk
+//			GL11.glPushMatrix();
+//			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+//			GL11.glColor4f(1F, 1F, 1F, a);
+//			GL11.glScaled(2, 0.2, 2);
+//			if (a > 0)uvSphere.renderAll();
+//			GL11.glPopMatrix();
+
+			//Synced edge
+			GL11.glPushMatrix();
+			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+			GL11.glColor4f(1F, 0.1F, 0F, a);
+			if (a > 0)uvSphere.renderAll();
+			GL11.glPopMatrix();
+
+//			GL11.glScalef(1.5F, 1.5F, 1.5F);
+//
+//			//Inner edges
+//			GL11.glPushMatrix();
+//			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+////			GL11.glColor4f(1F, 0.3F, 0F, a);
+//			GL11.glScaled(0.8, 0.8, 0.8);
+////			if (a > 0)uvSphere.renderAll();
+//
+////			GL11.glColor4f(1F, 0.3F, 0F, a);
+//			GL11.glScaled(0.8, 0.8, 0.8);
+////			if (a > 0)uvSphere.renderAll();
+//
+////			GL11.glColor4f(1F, 0.3F, 0F, a);
+//			GL11.glScaled(0.7, 0.7, 0.7);
+////			if (a > 0)uvSphere.renderAll();
+//
+////			GL11.glColor4f(1F, 0.3F, 0F, a);
+//			GL11.glScaled(0.6, 0.6, 0.6);
+////			if (a > 0)uvSphere.renderAll();
+//
+////			GL11.glColor4f(1F, 0.3F, 0F, a);
+//			GL11.glScaled(0.5, 0.5, 0.5);
+////			if (a > 0)uvSphere.renderAll();
+//
+//			GL11.glPopMatrix();
+
+//			for (int i = 0; i < 10; i++)
+//			{
+//				GL11.glScalef(0.95F, 0.95F, 0.95F);
+//				GL11.glPushMatrix();
+//				a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+//				GL11.glColor4f(1F, 1F, 1F, a);
+//				GL11.glScaled(0.8, 0.6, 0.8);
+//				if (a > 0)uvSphere.renderAll();
+//
+//				GL11.glColor4f(1F, 1F, 1F, a);
+//				GL11.glScaled(0.8, 0.7, 0.8);
+//				if (a > 0)uvSphere.renderAll();
+//
+//				GL11.glColor4f(1F, 1F, 1F, a);
+//				GL11.glScaled(0.7, 0.9, 0.7);
+//				if (a > 0)uvSphere.renderAll();
+//
+//				GL11.glColor4f(1F, 1F, 1F, a);
+//				GL11.glScaled(0.6, 0.9, 0.6);
+//				if (a > 0)uvSphere.renderAll();
+//
+//				GL11.glColor4f(1F, 1F, 1F, a);
+//				GL11.glScaled(0.5, 0.9, 0.5);
+//				if (a > 0)uvSphere.renderAll();
+//				GL11.glPopMatrix();
+//			}
+
+
+
+
+
+
+
+
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glPopMatrix();
+			ResourceHandler.bindDefaultParticles();
+			tessellator.startDrawingQuads();
+		}
+	}
+
 }
 //int uIndex = 0;
 //int vIndex = 0;

@@ -252,6 +252,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 5;
+		else if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) return 12;
 
 		return 50;
 	}

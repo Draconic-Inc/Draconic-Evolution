@@ -1,12 +1,16 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.RFItemBase;
+import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -20,12 +24,13 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Brandon on 24/11/2014.
  */
-public class DraconiumFluxCapacitor extends RFItemBase {
+public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableItem {
 	IIcon[] icons = new IIcon[2];
 
 	public DraconiumFluxCapacitor()
@@ -67,17 +72,18 @@ public class DraconiumFluxCapacitor extends RFItemBase {
 
 	@Override
 	public int getCapacity(ItemStack stack){
-		return stack.getItemDamage() == 0 ? 80000000 : stack.getItemDamage() == 1 ? 250000000 : 0;
+		int points = EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return stack.getItemDamage() == 0 ? 80000000 + points * 50000000 : stack.getItemDamage() == 1 ? 250000000 + points * 50000000 : 0;
  	}
 
 	@Override
 	 public int getMaxExtract(ItemStack stack){
-		return stack.getItemDamage() == 0 ? 100000 : stack.getItemDamage() == 1 ? 100000000 : 0;
+		return stack.getItemDamage() == 0 ? 10000000 : stack.getItemDamage() == 1 ? 100000000 : 0;
 	}
 
 	@Override
 	public int getMaxReceive(ItemStack stack){
-		return stack.getItemDamage() == 0 ? 100000 : stack.getItemDamage() == 1 ? 10000000 : 0;
+		return stack.getItemDamage() == 0 ? 1000000 : stack.getItemDamage() == 1 ? 10000000 : 0;
 	}
 
 	@Override
@@ -128,61 +134,6 @@ public class DraconiumFluxCapacitor extends RFItemBase {
 		return stack;
 	}
 
-//	@Override
-//	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-//
-//		if (container.stackTagCompound == null) {
-//			container.stackTagCompound = new NBTTagCompound();
-//		}
-//		int energy = container.stackTagCompound.getInteger("Energy");
-//		int energyReceived = Math.min(getCapacity(container.getItemDamage()) - energy, Math.min(getTransfer(container.getItemDamage()), maxReceive));
-//
-//		if (!simulate) {
-//			energy += energyReceived;
-//			container.stackTagCompound.setInteger("Energy", energy);
-//		}
-//		return energyReceived;
-//	}
-//
-//	@Override
-//	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-//
-//		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-//			return 0;
-//		}
-//		int energy = container.stackTagCompound.getInteger("Energy");
-//		int energyExtracted = Math.min(energy, Math.min(getTransfer(container.getItemDamage()), maxExtract));
-//
-//		if (!simulate) {
-//			energy -= energyExtracted;
-//			container.stackTagCompound.setInteger("Energy", energy);
-//		}
-//		return energyExtracted;
-//	}
-//
-//	@Override
-//	public int getEnergyStored(ItemStack container) {
-//		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-//			return 0;
-//		}
-//		return container.stackTagCompound.getInteger("Energy");
-//	}
-//
-//	@Override
-//	public int getMaxEnergyStored(ItemStack container) {
-//		return getCapacity(container.getItemDamage());
-//	}
-//
-//	@Override
-//	public boolean showDurabilityBar(ItemStack stack) {
-//		return !(getEnergyStored(stack) == getMaxEnergyStored(stack));
-//	}
-//
-//	@Override
-//	public double getDurabilityForDisplay(ItemStack stack) {
-//		return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
-//	}
-
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
@@ -193,21 +144,46 @@ public class DraconiumFluxCapacitor extends RFItemBase {
 			list.add(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.capacitorMode.txt")+": "+InfoHelper.HITC()+StatCollector.translateToLocal("info.de.capacitorMode"+ItemNBTHelper.getShort(stack, "Mode", (short)0)+".txt"));
 			//InfoHelper.addLore(stack, list);
 		}
+		ToolBase.holdCTRLForUpgrades(list, stack);
 	}
-
-//	@Override
-//	public boolean hasCustomEntity(ItemStack stack) {
-//		return true;
-//	}
-//
-//	@Override
-//	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-//		return new EntityPersistentItem(world, location, itemstack);
-//	}
-
 
 	@Override
 	public boolean hasProfiles() {
 		return false;
+	}
+
+	@Override
+	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
+		return new ArrayList<EnumUpgrade>(){{
+			add(EnumUpgrade.RF_CAPACITY);
+		}};
+	}
+
+
+	@Override
+	public int getUpgradeCap(ItemStack stack) {
+		return stack.getItemDamage() == 0 ? References.MAX_WYVERN_UPGRADES : References.MAX_DRACONIC_UPGRADES;
+	}
+
+	@Override
+	public int getMaxTier(ItemStack stack) {
+		return stack.getItemDamage() == 0 ? 1 : 2;
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		return 50;
+	}
+
+	@Override
+	public int getBaseUpgradePoints(int upgradeIndex) {
+		return 0;
+	}
+
+	@Override
+	public List<String> getUpgradeStats(ItemStack stack) {
+		List<String> strings = new ArrayList<String>();
+		strings.add(InfoHelper.ITC()+StatCollector.translateToLocal("gui.de.RFCapacity.txt")+": "+InfoHelper.HITC()+ Utills.formatNumber(getMaxEnergyStored(stack)));
+		return strings;
 	}
 }

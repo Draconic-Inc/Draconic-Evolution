@@ -108,8 +108,15 @@ public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.4) < 64;
-	}
+		if (worldObj == null)
+		{
+			return true;
+		}
+		if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this)
+		{
+			return false;
+		}
+		return player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.4) < 64;	}
 
 	@Override
 	public void openInventory() {}

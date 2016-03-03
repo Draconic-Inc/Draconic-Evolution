@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
@@ -10,6 +11,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
@@ -25,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -32,7 +35,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableItem, IEnergyContainerItem
+public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableItem, IEnergyContainerItem, IHudDisplayItem
 {
 	public static final String[] bowPullIconNameArray = new String[] { "pulling_0", "pulling_1", "pulling_2" };
 	@SideOnly(Side.CLIENT)
@@ -193,12 +196,13 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 	public List<ItemConfigField> getFields(ItemStack stack, int slot) {//todo balance floaty upgrade things
 		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
 
+		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowArrowDamage").setMinMaxAndIncromente((float)getBaseUpgradePoints(EnumUpgrade.ARROW_DAMAGE.index), (float)EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack), 0.1F).readFromItem(stack, (float) EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack)));
 		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowArrowSpeedModifier").setMinMaxAndIncromente(0F, (float)EnumUpgrade.ARROW_SPEED.getUpgradePoints(stack), 0.01F).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
 		list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "BowAutoFire").readFromItem(stack, false));
-		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowExplosionPower").setMinMaxAndIncromente(0F, 4F, 0.1F).readFromItem(stack, 0F));
-		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowShockWavePower").setMinMaxAndIncromente(0F, 4F, 0.1F).readFromItem(stack, 0F));
+		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowExplosionPower").setMinMaxAndIncromente(0F, 6F, 0.1F).readFromItem(stack, 0F));
+		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowShockWavePower").setMinMaxAndIncromente(0F, 10F, 0.1F).readFromItem(stack, 0F));
 		list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "BowEnergyBolt").readFromItem(stack, false));
-		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowZoomModifier").setMinMaxAndIncromente(0F, 3F, 0.01F).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
+		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowZoomModifier").setMinMaxAndIncromente(0F, 6F, 0.01F).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
 
 		return list;
 	}
@@ -234,8 +238,8 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
 		else if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) return 4;
-		else if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) return 1;
+		else if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) return 3;
+		else if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) return 3;
 		return 0;
 	}
 
@@ -245,7 +249,7 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 		List<String> list = new ArrayList<String>();
 		list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getMaxEnergyStored(stack)));
 		list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " " + StatCollector.translateToLocal("gui.de.ArrowSpeed.txt") + ": " + InfoHelper.HITC() + "+"+EnumUpgrade.ARROW_SPEED.getUpgradePoints(stack)*100+"%");
-		list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.ArrowDamage.txt") + ": " + InfoHelper.HITC() + properties.arrowDamage + "");
+		list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " " + StatCollector.translateToLocal("gui.de.ArrowDamage.txt") + ": " + InfoHelper.HITC() + EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack) + "");
 		list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.DrawSpeed.txt") + ": " + InfoHelper.HITC() + properties.getDrawTicks()/20D + "s");
 
 		return list;
@@ -260,7 +264,7 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
 
 		int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
-		int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(References.WYVERNTRANSFER, maxReceive));
+		int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(References.DRACONICTRANSFER, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
@@ -273,7 +277,7 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
 
 		int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
-		int energyExtracted = Math.min(energy, Math.min(References.WYVERNTRANSFER, maxExtract));
+		int energyExtracted = Math.min(energy, maxExtract);
 
 		if (!simulate) {
 			energy -= energyExtracted;
@@ -291,6 +295,35 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 	public int getMaxEnergyStored(ItemStack stack) {
 		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
 		return i * 5000000;
+	}
+
+	@Override
+	public List<String> getDisplayData(ItemStack stack) {
+		List<String> list = new ArrayList<String>();
+
+		if (BrandonsCore.proxy.getClientPlayer() != null && BrandonsCore.proxy.getClientPlayer().getItemInUse() != null && BrandonsCore.proxy.getClientPlayer().getItemInUseDuration() > 2){
+			EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
+			BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, player);
+			int power = (int)Math.min(((float) player.getItemInUseDuration() / (float)properties.getDrawTicks() * 100F), 100F);
+			list.add(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.power.txt")+": "+InfoHelper.HITC()+power+"%");
+		}
+		else {
+			int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
+			list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt") + ": " + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
+
+			for (ItemConfigField field : getFields(stack, 0)) {
+				if ((field.datatype == References.FLOAT_ID && (Float)field.value > 0) || (field.datatype == References.BOOLEAN_ID && (Boolean)field.value)) list.add(field.getTooltipInfo());
+			}
+
+			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(getMaxEnergyStored(stack)));
+
+			if (BrandonsCore.proxy.getClientPlayer() != null) {
+				BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, BrandonsCore.proxy.getClientPlayer());
+				list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.rfPerShot.txt") + ": " + InfoHelper.HITC() + Utills.addCommas(properties.calculateEnergyCost()));
+				if (!properties.canFire() && properties.cantFireMessage != null) list.add(EnumChatFormatting.DARK_RED+StatCollector.translateToLocal(properties.cantFireMessage));
+			}
+		}
+		return list;
 	}
 
 	//endregion

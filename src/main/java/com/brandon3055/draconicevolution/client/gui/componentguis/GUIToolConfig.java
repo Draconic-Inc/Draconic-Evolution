@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.componentguis;
 
 import com.brandon3055.brandonscore.client.gui.guicomponents.*;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHudConfig;
 import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentConfigItemButton;
@@ -61,6 +62,7 @@ public class GUIToolConfig extends GUIBase {
 		ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize, this).setOpenBoarders();
 		c.addComponent(new ComponentTexturedRect(0, -15, 198, 20, inventoryTexture)).setGroup("TEXT_TAB");
 		c.addComponent(new ComponentTexturedRect(0, 0, 198, 89, inventoryTexture)).setGroup("BACKGROUND");
+		c.addComponent(new ComponentTexturedRect(0, 13, 0, 9, 198, 80, inventoryTexture, false)).setGroup("BACKGROUND_EXTENSION");
 		c.addComponent(new ComponentButton(3, 26, 20, 12, 0, this, "<=", StatCollector.translateToLocal("gui.back"))).setGroup("BUTTONS").setName("BACK_BUTTON");
 		c.addComponent(new ComponentButton(3, 39, 20, 12, 1, this, "Inv", StatCollector.translateToLocal("gui.de.itemInventory.txt"))).setGroup("BUTTONS").setName("INVENTORY_BUTTON");
 		c.addComponent(new ComponentFieldAdjuster(4, 34, null, this)).setGroup("FIELD_BUTTONS").setName("FIELD_CONFIG_BUTTON_ARRAY");
@@ -169,6 +171,7 @@ public class GUIToolConfig extends GUIBase {
 		else if (level == 1){//list screen
 			collection.setOnlyGroupEnabled("LIST_SCREEN");
 			collection.setGroupEnabled("BACKGROUND", true);
+			collection.setGroupEnabled("BACKGROUND_EXTENSION", true);
 			if (editingItem != null && editingItem.getItem() instanceof IConfigurableItem && ((IConfigurableItem)editingItem.getItem()).hasProfiles()) collection.setGroupEnabled("TEXT_TAB", true);
 			collection.setComponentEnabled("BACK_BUTTON", true);
 			if (editingItem != null && editingItem.getItem() instanceof IInventoryTool) collection.setComponentEnabled("INVENTORY_BUTTON", true);
@@ -222,18 +225,21 @@ public class GUIToolConfig extends GUIBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(f, mouseX, mouseY);
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
 		if (slot > -1) editingItem = player.inventory.getStackInSlot(slot);
 		if (slot > -1 && editingItem != null && editingItem.getUnlocalizedName().toLowerCase().contains("bow")){
 			BowHandler.BowProperties properties = new BowHandler.BowProperties(editingItem, player);
 
-			List<String> list = new ArrayList<String>();
-			list.add("RF/Shot: "+properties.calculateEnergyCost());
-			drawHoveringText(list, guiLeft + xSize - 8, guiTop, fontRendererObj);
+			if (!properties.canFire() && properties.cantFireMessage != null && !properties.cantFireMessage.equals("msg.de.outOfArrows.name")) {
+				fontRendererObj.drawSplitString(StatCollector.translateToLocal(properties.cantFireMessage), 0, ySize+5, xSize, 0xFF0000);
+			}
 
-			if (!properties.canFire() && properties.cantFireMessage != null && !properties.cantFireMessage.equals("msg.de.outOfArrows.name")) fontRendererObj.drawSplitString(StatCollector.translateToLocal(properties.cantFireMessage), guiLeft, guiTop+ySize, xSize, 0xFF0000);
+			List<String> list = new ArrayList<String>();
+			list.add(StatCollector.translateToLocal("gui.de.rfPerShot.txt")+": "+ Utills.addCommas(properties.calculateEnergyCost()));
+			list.add(StatCollector.translateToLocal("gui.de.maxDamage.txt")+": "+properties.arrowDamage * (properties.arrowSpeed * 3));
+			drawHoveringText(list, xSize - 8, 0, fontRendererObj);
 		}
 	}
 }

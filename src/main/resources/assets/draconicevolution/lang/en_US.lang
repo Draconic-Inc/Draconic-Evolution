@@ -168,6 +168,10 @@ msg.de.dragonDeath.txt=§5The heart is temporarily awakened by the dragons explo
 msg.de.baseSafeAOW.txt=§9(§aAOE §aSafe §aMode §ais §aenabled§9) §cOperation §cCanceled §cbecause §ca §ctile §centity §cwas §cdetected
 msg.de.guardianAttackBlocked.txt=Your attack is blocked by the guardians crystals!
 msg.de.shieldDepleted.txt=Warning Critical Damage!!!
+msg.de.shockWaveForEnergyBoltsOnly.txt=Shock Wave is only possible with Arrow of Draconic Fire
+msg.de.explosiveNotForEnergyBolts.txt=Explosive is not possible with Arrow of Draconic Fire
+msg.de.insufficientPowerToFire.txt=Insufficient Power to Fire
+msg.de.outOfArrows.txt=Out of Arrows!!!
 
 //Energy Net
 msg.de.wrenchMode.bind.txt=Function: Bind
@@ -233,8 +237,9 @@ info.de.bonusHealthDamage.txt=Mob Health
 info.de.press.txt=Press
 info.de.toOpenConfigGUI.txt=To open config GUI
 info.de.shiftToPause.txt=Hold shift to pause slide
+info.de.power.txt=Power
 
-info.de.bowEnchants.txt=Enchants are twice as effective on this bow
+info.de.bowEnchants.txt=10x more accurate then a vanilla bow!
 
 info.de.sword.txt=Your enemy's strength makes this blade stronger!
 
@@ -292,7 +297,7 @@ draconicevolution.achievementPage.name=Draconic Evolution
 achievement.draconicevolution.dust=The Start of something BIG!
 achievement.draconicevolution.dust.desc=Collect Draconium dust
 achievement.draconicevolution.ingot=Better than Diamond!
-achievement.draconicevolution.ingot.desc=Refine 4 Draconium dust into 2 Draconium Ingots
+achievement.draconicevolution.ingot.desc=Smelt a Draconium Dust into a Draconium Ingot
 achievement.draconicevolution.core=This is where it begins
 achievement.draconicevolution.core.desc=Craft a Draconic Core
 achievement.draconicevolution.core2=Not Good Enough!
@@ -476,6 +481,7 @@ button.de.EffectiveOnSprint.name=Effective while sprinting
 button.de.GogglesOfRevealing.name=Magical Sense
 button.de.BowArrowSpeedModifier.name=Arrow Velocity Modifier
 button.de.BowAutoFire.name=Auto Fire
+button.de.BowArrowDamage.name=Base Damage
 button.de.BowExplosionPower.name=Explosive Power
 button.de.BowShockWavePower.name=Shock Wave Power
 button.de.BowEnergyBolt.name=Arrow of Draconic Fire
@@ -561,6 +567,8 @@ gui.de.hudDisplaySettings.txt=HUD Display Settings
 gui.de.shieldDisplaySettings.txt=Shield Display Settings
 gui.de.clickAndDragPurpleBoxes.txt=Click and drag the purple boxes to move the displays
 gui.de.profile.txt=Profile
+gui.de.maxDamage.txt=Max Damage
+gui.de.rfPerShot.txt=RF/Shot
 
 gui.de.RFCapacity.txt=RF Capacity
 gui.de.DigSpeed.txt=Dig Speed
@@ -568,7 +576,7 @@ gui.de.DigAOE.txt=Dig A.O.E
 gui.de.DigDepth.txt=Dig Depth
 gui.de.AttackDamage.txt=Attack Damage
 gui.de.AttackAOE.txt=Attack A.O.E
-gui.de.ArrowDamage.txt=Arrow Damage
+gui.de.ArrowDamage.txt=Base Damage
 gui.de.DrawSpeed.txt=Draw Speed
 gui.de.ArrowSpeed.txt=Arrow Velocity
 gui.de.ShieldCapacity.txt=Shield Capacity

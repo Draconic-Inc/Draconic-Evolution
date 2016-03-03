@@ -44,12 +44,13 @@ public class RenderBowModel implements IItemRenderer
 		//String currentMode = ItemNBTHelper.getString(item, "mode", "rapidfire");
 		float j = 0F;
 		int selection = 0;
+		BowHandler.BowProperties properties = null;
 
 		if (data.length >= 2 && (data[1] instanceof EntityPlayer)) {
 			EntityPlayer player = (EntityPlayer) data[1];
 			j = (float)player.getItemInUseDuration();
 			if (j > 0) {
-				BowHandler.BowProperties properties = new BowHandler.BowProperties(item, player);
+				properties = new BowHandler.BowProperties(item, player);
 				if (j > properties.getDrawTicks()) j = properties.getDrawTicks();
 				j /= (float) properties.getDrawTicks();
 				int j2 = (int) (j * 3F);
@@ -75,12 +76,12 @@ public class RenderBowModel implements IItemRenderer
 		}
 
 
-		if (activeModel != null) doRender(activeModel, type, j > 0 ? selection : -1);
+		if (activeModel != null) doRender(activeModel, type, j > 0 ? selection : -1, properties);
 
 		GL11.glPopMatrix();
 	}
 
-	private void doRender(IModelCustom modelCustom, ItemRenderType type, int drawState){
+	private void doRender(IModelCustom modelCustom, ItemRenderType type, int drawState, BowHandler.BowProperties properties){
 
 		if (type == ItemRenderType.EQUIPPED)
 		{
@@ -110,9 +111,31 @@ public class RenderBowModel implements IItemRenderer
 
 
 		modelCustom.renderAll();
-		GL11.glTranslated(0.3, 0.151, -0.2 + (drawState == 1 ? 0 : drawState == 2 ? 0.55 : drawState == 3 ? 1 : -0.7));
-		GL11.glRotatef(90, 0, 0, 1);
-		if (drawState != -1)arrow.renderAll();
 
+		if (drawState != -1)
+		{
+			GL11.glTranslated(0.3, 0.151, -0.2 + (drawState == 1 ? 0 : drawState == 2 ? 0.55 : drawState == 3 ? 1 : -0.7));
+			GL11.glRotatef(90, 0, 0, 1);
+
+			if (properties != null && properties.energyBolt)
+			{
+				ResourceHandler.bindResource("textures/models/reactorCore.png");
+				arrow.renderAll();
+
+				GL11.glTranslated(0, -0.025, 0);
+				GL11.glEnable(GL11.GL_BLEND);
+				GL11.glColor4f(1F, 1F, 1F, 0.6F);
+				GL11.glScaled(1.05, 1.05, 1.05);
+
+				GL11.glColor4f(1F, 1F, 1F, 0.4F);
+				GL11.glScaled(1.05, 1.05, 1.05);
+				arrow.renderAll();
+			}
+			else
+			{
+				ResourceHandler.bindResource("textures/models/tools/ArrowCommon.png");
+				arrow.renderAll();
+			}
+		}
 	}
 }
