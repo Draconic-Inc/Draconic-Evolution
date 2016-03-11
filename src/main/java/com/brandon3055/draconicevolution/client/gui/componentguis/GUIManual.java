@@ -58,6 +58,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 	@Override
 	public void initGui() {
 		super.initGui();
+		loadPages();
 		if (previousScale == -1) adjustGuiScale();
 
 		if (!Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().equals(lang)) loadPages();

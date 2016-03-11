@@ -26,8 +26,8 @@ public class ReactorStabilizer extends BlockDE {
 	public ReactorStabilizer() {
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 		this.setBlockName("reactorStabilizer");
-		this.setResistance(10000F);
-
+		this.setResistance(10F);
+		this.setHardness(10F);
 		ModBlocks.register(this);
 	}
 

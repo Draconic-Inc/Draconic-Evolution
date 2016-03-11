@@ -9,8 +9,10 @@ import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentConfi
 import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentFieldAdjuster;
 import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentFieldButton;
 import com.brandon3055.draconicevolution.common.container.ContainerAdvTool;
+import com.brandon3055.draconicevolution.common.handler.ContributorHandler;
 import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.ContributorPacket;
 import com.brandon3055.draconicevolution.common.network.ItemConfigPacket;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
@@ -50,11 +52,35 @@ public class GUIToolConfig extends GUIBase {
 	@Override
 	public void initGui() {
 		super.initGui();
+		if (ContributorHandler.contributors.containsKey(player.getCommandSenderName())){
+			ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(player.getCommandSenderName());
+			if (!contributor.isUserValid(player)) return;
+
+			buttonList.clear();
+
+			if (contributor.contributionLevel >= 1) buttonList.add(new GuiButton(0, guiLeft - 150, guiTop, 150, 20, "Contributor Wings: " + (contributor.contributorWingsEnabled ? "Enabled" : "Disabled")));
+			if (contributor.contribution.toLowerCase().contains("patreon")) buttonList.add(new GuiButton(1, guiLeft - 150, guiTop + 22, 150, 20, "Patreon Badge: " + (contributor.patreonBadgeEnabled ? "Enabled" : "Disabled")));
+		}
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		super.actionPerformed(button);
+		if (ContributorHandler.contributors.containsKey(player.getCommandSenderName())) {
+			ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(player.getCommandSenderName());
+			if (!contributor.isUserValid(player)) return;
+
+			if (button.id == 0) {
+				contributor.contributorWingsEnabled = !contributor.contributorWingsEnabled;
+				button.displayString = "Contributor Wings: " + (contributor.contributorWingsEnabled ? "Enabled" : "Disabled");
+			} else if (button.id == 1) {
+				contributor.patreonBadgeEnabled = !contributor.patreonBadgeEnabled;
+				button.displayString = "Patreon Badge: " + (contributor.patreonBadgeEnabled ? "Enabled" : "Disabled");
+			}
+
+			DraconicEvolution.network.sendToServer(new ContributorPacket(player.getCommandSenderName(), contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled));
+		}
+
 	}
 
 	@Override

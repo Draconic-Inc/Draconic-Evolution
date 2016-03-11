@@ -1,14 +1,16 @@
 package com.brandon3055.draconicevolution.client;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.handler.*;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.handler.HudHandler;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.client.render.block.*;
 import com.brandon3055.draconicevolution.client.render.entity.*;
 import com.brandon3055.draconicevolution.client.render.item.*;
-import com.brandon3055.draconicevolution.client.render.item.RenderTool;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
@@ -57,7 +59,6 @@ public class ClientProxy extends CommonProxy {
 		super.preInit(event);
 
 		ResourceHandler.init(event);
-		ContributorHandler.init();
 
 //		downloadLocation = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/mods/derspack";
 //		downloadLocation = downloadLocation.replaceAll("\\\\", "/");

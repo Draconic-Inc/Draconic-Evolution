@@ -184,7 +184,7 @@ public class BowHandler {
 				cantFireMessage = "msg.de.explosiveNotForEnergyBolts.txt";
 				return false;
 			}
-			else if (calculateEnergyCost() > ((IEnergyContainerItem)bow.getItem()).getEnergyStored(bow)){
+			else if (calculateEnergyCost() > ((IEnergyContainerItem)bow.getItem()).getEnergyStored(bow) && !player.capabilities.isCreativeMode){
 				cantFireMessage = "msg.de.insufficientPowerToFire.txt";
 				return false;
 			}
@@ -215,7 +215,7 @@ public class BowHandler {
 
 		public boolean consumeArrowAndEnergy(){
 
-			((IEnergyContainerItem)bow.getItem()).extractEnergy(bow, calculateEnergyCost(), false);
+			if (!player.capabilities.isCreativeMode)((IEnergyContainerItem)bow.getItem()).extractEnergy(bow, calculateEnergyCost(), false);
 
 			if (!energyBolt && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0 && !player.capabilities.isCreativeMode) {
 				player.inventory.consumeInventoryItem(Items.arrow);

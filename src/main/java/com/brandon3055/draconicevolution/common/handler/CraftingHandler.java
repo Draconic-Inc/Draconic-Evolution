@@ -63,6 +63,8 @@ public class CraftingHandler {
 		add(ModItems.wyvernShovel, " W ", "ITI", " E ", 'W', ModItems.wyvernCore, 'I', ModItems.draconiumIngot, 'T', Items.diamond_shovel, 'E', ModItems.wyvernEnergyCore);
 		add(ModItems.wyvernSword, " W ", "ITI", " E ", 'W', ModItems.wyvernCore, 'I', ModItems.draconiumIngot, 'T', Items.diamond_sword, 'E', ModItems.wyvernEnergyCore);
 		add(ModItems.wyvernBow, " W ", "ITI", " E ", 'W', ModItems.wyvernCore, 'I', ModItems.draconiumIngot, 'T', Items.bow, 'E', ModItems.wyvernEnergyCore);
+		addOre(new ItemStack(ModItems.magnet, 1, 0), "RII", "  C", "RII", 'R', Blocks.redstone_block, 'I', "ingotIron", 'C', ModItems.teleporterMKI);
+
 		//armor
 		add(ModItems.wyvernHelm, "IWI", "IAI", "IEI", 'W', ModItems.wyvernCore, 'I', ModItems.draconiumIngot, 'A', Items.diamond_helmet, 'E', ModItems.wyvernEnergyCore);
 		add(ModItems.wyvernChest, "IWI", "IAI", "IEI", 'W', ModItems.wyvernCore, 'I', ModItems.draconiumIngot, 'A', Items.diamond_chestplate, 'E', ModItems.wyvernEnergyCore);
@@ -80,6 +82,8 @@ public class CraftingHandler {
 		addEnergy(ModItems.draconicSword, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', "ingotDraconiumAwakened", 'T', ModItems.wyvernSword, 'E', ModItems.draconicEnergyCore);
 		addOre(ModItems.draconicBow, " C ", "ITI", " E ", 'C', ModItems.awakenedCore, 'I', "ingotDraconiumAwakened", 'T', ModItems.wyvernBow, 'E', ModItems.draconicEnergyCore);
 		addEnergy(ModItems.draconicDestructionStaff, "IAI", "PIS", "IWI", 'I', "ingotDraconiumAwakened", 'A', ModItems.awakenedCore, 'P', ModItems.draconicPickaxe, 'S', ModItems.draconicShovel, 'W', ModItems.draconicSword);
+		addOre(new ItemStack(ModItems.magnet, 1, 1), "RII", "  C", "RII", 'R', new ItemStack(ModBlocks.draconiumBlock, 1, 2), 'I', "ingotDraconiumAwakened", 'C', new ItemStack(ModItems.magnet, 1, 0));
+
 		//armor
 		addEnergy(ModItems.draconicHelm, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', "ingotDraconiumAwakened", 'A', ModItems.wyvernHelm, 'E', ModItems.draconicEnergyCore);
 		addEnergy(ModItems.draconicChest, "IWI", "IAI", "IEI", 'W', ModItems.awakenedCore, 'I', "ingotDraconiumAwakened", 'A', ModItems.wyvernChest, 'E', ModItems.draconicEnergyCore);

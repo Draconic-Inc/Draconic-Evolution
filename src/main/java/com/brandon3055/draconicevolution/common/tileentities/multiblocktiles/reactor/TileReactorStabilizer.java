@@ -55,6 +55,7 @@ public class TileReactorStabilizer extends TileEntity implements IReactorPart, I
 			coreSpeed = 30F * core.renderSpeed;
 			ringSpeed = 5F * core.renderSpeed;
 			modelIllumination = core.renderSpeed;
+			if (tick % 100 == 0) beam = null;
 			if (isValid) beam = DraconicEvolution.proxy.reactorBeam(this, beam, true);
 			return;
 		}
@@ -238,7 +239,7 @@ public class TileReactorStabilizer extends TileEntity implements IReactorPart, I
 			map.put("maxFuelConversion", reactor.reactorFuel + reactor.convertedFuel);
 			map.put("generationRate", (int)reactor.generationRate);
 			map.put("fieldDrainRate", reactor.fieldDrain);
-			map.put("fuelConversionRateN", (int)Math.round(reactor.fuelUseRate * 1000000D));
+			map.put("fuelConversionRate", (int)Math.round(reactor.fuelUseRate * 1000000D));
 			map.put("status", reactor.reactorState == 0 ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
 			return new Object[]{ map };
 		}

@@ -8,10 +8,7 @@ import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyFi
 import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
 import com.brandon3055.draconicevolution.common.achievements.Achievements;
 import com.brandon3055.draconicevolution.common.entity.*;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.handler.CraftingHandler;
-import com.brandon3055.draconicevolution.common.handler.FMLEventHandler;
-import com.brandon3055.draconicevolution.common.handler.MinecraftForgeEventHandler;
+import com.brandon3055.draconicevolution.common.handler.*;
 import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.magic.EnchantmentReaper;
@@ -54,6 +51,7 @@ public class CommonProxy {
 		registerEventListeners(event.getSide());
 		ModBlocks.init();
 		ModItems.init();
+		ContributorHandler.init();
 		registerTileEntities();
 		initializeNetwork();
 		registerOres();
@@ -126,6 +124,9 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(ToolModePacket.Handler.class, ToolModePacket.class, 14, Side.SERVER);
 		DraconicEvolution.network.registerMessage(GenericParticlePacket.Handler.class, GenericParticlePacket.class, 15, Side.CLIENT);
 		DraconicEvolution.network.registerMessage(ShieldHitPacket.Handler.class, ShieldHitPacket.class, 16, Side.CLIENT);
+		DraconicEvolution.network.registerMessage(ContributorPacket.Handler.class, ContributorPacket.class, 17, Side.CLIENT);
+		DraconicEvolution.network.registerMessage(ContributorPacket.Handler.class, ContributorPacket.class, 18, Side.SERVER);
+
 	}
 
 	public void registerTileEntities() {

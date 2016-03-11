@@ -6,6 +6,8 @@ import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
 import com.brandon3055.draconicevolution.common.network.GenericParticlePacket;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -290,15 +292,10 @@ public class EntityCustomArrow extends EntityArrow {
 			//endregion
 
 			//region Motion
-			if (this.getIsCritical() || bowProperties.energyBolt) {
+			if ((this.getIsCritical() || bowProperties.energyBolt) && worldObj.isRemote) {
 				for (i = 0; i < 4; ++i) {
 					if (bowProperties.energyBolt) {
-						Particles.ArrowParticle particle = new Particles.ArrowParticle(worldObj, posX - 0.25 + rand.nextDouble() * 0.5, posY + rand.nextDouble() * 0.5, posZ - 0.25 + rand.nextDouble() * 0.5, 0xff6000, 0.2F+rand.nextFloat()*0.5f);
-						double mm = 0.2;
-						particle.motionX = (rand.nextDouble() - 0.5) * mm;
-						particle.motionY = (rand.nextDouble() - 0.5) * mm;
-						particle.motionZ = (rand.nextDouble() - 0.5) * mm;
-						ParticleHandler.spawnCustomParticle(particle, 64);
+						spawnArrowParticles();
 					}
 					else {
 						this.worldObj.spawnParticle("crit", this.posX + this.motionX * i / 4.0D, this.posY + this.motionY * i / 4.0D, this.posZ + this.motionZ * i / 4.0D, -this.motionX, -this.motionY + 0.2D, -this.motionZ);
@@ -354,6 +351,16 @@ public class EntityCustomArrow extends EntityArrow {
 			this.func_145775_I();
 			//endregion
 		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void spawnArrowParticles(){
+		Particles.ArrowParticle particle = new Particles.ArrowParticle(worldObj, posX - 0.25 + rand.nextDouble() * 0.5, posY + rand.nextDouble() * 0.5, posZ - 0.25 + rand.nextDouble() * 0.5, 0xff6000, 0.2F+rand.nextFloat()*0.5f);
+		double mm = 0.2;
+		particle.motionX = (rand.nextDouble() - 0.5) * mm;
+		particle.motionY = (rand.nextDouble() - 0.5) * mm;
+		particle.motionZ = (rand.nextDouble() - 0.5) * mm;
+		ParticleHandler.spawnCustomParticle(particle, 64);
 	}
 
 	@Override
@@ -425,7 +432,7 @@ public class EntityCustomArrow extends EntityArrow {
 			double range = (double)bowProperties.shockWavePower + 5;
 			List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, boundingBox.expand(range, range, range));
 
-			float damage = 20F * bowProperties.shockWavePower;
+			float damage = 40F * bowProperties.shockWavePower;
 
 			for (Entity e : list) {
 				if (e instanceof EntityLivingBase) {

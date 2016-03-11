@@ -2,25 +2,24 @@ package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
-import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import java.io.IOException;
 import java.util.List;
 
 public class Tclogo extends ItemDE {
@@ -115,16 +114,36 @@ public class Tclogo extends ItemDE {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 
-		LogHelper.info(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode());
-
-		ResourceLocation rs = new ResourceLocation(References.RESOURCESPREFIX + "manual-en_US.json");
-
-		try {
-			LogHelper.info(Minecraft.getMinecraft().getResourceManager().getResource(rs));
+		try
+		{
+			if (!world.isRemote) {
+				//ExtendedPlayer.get(player).setSpawnCount(6);
+				LogHelper.info(ExtendedPlayer.get(player).getSpawnCount());
+			//	player.getEntityData().setTag("Tag", new NBTTagCompound());
+			} else LogHelper.info(ExtendedPlayer.get(player).getSpawnCount());
+			//LogHelper.info(FMLCommonHandler.instance().getMinecraftServerInstance().func_152358_ax().func_152655_a(player.getCommandSenderName()).getId());
+			//LogHelper.info(player.getUniqueID());
+			//LogHelper.info(UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8)));
+			//LogHelper.info(UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8)).equals(player.getUniqueID()));
+			if (FMLCommonHandler.instance().getMinecraftServerInstance() instanceof IntegratedServer){
+			//	LogHelper.info(FMLClientHandler.instance().getClient().getSession().getToken());
+			//	LogHelper.info(((YggdrasilMinecraftSessionService)FMLCommonHandler.instance().getMinecraftServerInstance().func_147130_as()).getAuthenticationService().);
+			}
 		}
-		catch (IOException e) {
+		catch (Exception e){
 			e.printStackTrace();
 		}
+
+//		LogHelper.info(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode());
+//
+//		ResourceLocation rs = new ResourceLocation(References.RESOURCESPREFIX + "manual-en_US.json");
+//
+//		try {
+//			LogHelper.info(Minecraft.getMinecraft().getResourceManager().getResource(rs));
+//		}
+//		catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 
 //		if ((int)System.currentTimeMillis() < lts + 10) return stack;

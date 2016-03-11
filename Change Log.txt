@@ -1,9 +1,16 @@
-######## 1.0.2-Snapshot 11 ########
+######## 1.0.2-Snapshot 12 (RC2) ########
+-fixed issue with the different tier Item Dislocators stacking ant reverting to ether the Wyvern or Draconic tier.
+
+######## 1.0.2-Snapshot 11 (RC1) ########
 -the upgrade modifier can now hold any item FOR DISPLAY PURPOSES ONLY (this was requested by a user)
 -added inertia cancellation to the draconic chestplate.
 -change: an active dragon heart will now immediately drop as an item if a player comes into contact with it.
 -rewrote the bows from the ground up. 
 -the capacitors can now be upgraded.
+-improved ComputerCraft/Open Computers documentation.
+-fixed info tablet image sizes and moved images to github.
+-added shiny things for contributors! 
+-added Item Dislocators! Because someone felt modded minecraft needed more magnets... 
 
 ######## 1.0.2-Snapshot 10-beta2 ########
 -fixed client unable to connect to a server while wearing draconic armor.

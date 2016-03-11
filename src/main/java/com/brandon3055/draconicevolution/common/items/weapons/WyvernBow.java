@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -123,11 +124,16 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
-		if (InfoHelper.holdShiftForDetails(list)) {
-			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.bowEnchants.txt"));
-			InfoHelper.addLore(stack, list);
+		boolean show = InfoHelper.holdShiftForDetails(list);
+		if (show){
+			int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
+			list.add(EnumChatFormatting.DARK_PURPLE+StatCollector.translateToLocal("info.de.capacitorMode.txt")+": "+ItemNBTHelper.getString(stack, "ProfileName"+preset, "Profile "+preset));
+			List<ItemConfigField> l = getFields(stack, 0);
+			for (ItemConfigField f : l) list.add(f.getTooltipInfo());
 		}
 		ToolBase.holdCTRLForUpgrades(list, stack);
+		InfoHelper.addEnergyInfo(stack, list);
+		if (show && !ConfigHandler.disableLore) InfoHelper.addLore(stack, list, true);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -210,8 +216,8 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
 	@Override
 	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
-		return new ArrayList<EnumUpgrade>(){{
-			//	add(EnumUpgrade.RF_CAPACITY);
+		return new ArrayList<EnumUpgrade>() {{
+			add(EnumUpgrade.RF_CAPACITY);
 			add(EnumUpgrade.DRAW_SPEED);
 			add(EnumUpgrade.ARROW_SPEED);
 			add(EnumUpgrade.ARROW_DAMAGE);

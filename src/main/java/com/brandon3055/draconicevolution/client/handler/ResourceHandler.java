@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.resources.FolderResourcePack;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -94,8 +95,8 @@ public class ResourceHandler {
 						URL url = new URL(s);
 						String fileName = url.getFile();
 
-						BufferedImage bi = ImageIO.read(new File(getImagesFolder(), fileName));
-						downloadedImages.put(s, new CustomResourceLocation(fileName.substring(fileName.indexOf("/") + 1), bi.getWidth(), bi.getHeight()));
+						BufferedImage bi = ImageIO.read(new File(getImagesFolder(), FilenameUtils.getName(fileName)));
+						downloadedImages.put(FilenameUtils.getName(fileName), new CustomResourceLocation(FilenameUtils.getName(fileName), bi.getWidth(), bi.getHeight()));
 					}
 					catch (MalformedURLException e)
 					{
@@ -119,9 +120,9 @@ public class ResourceHandler {
 				URL url = new URL(urlString);
 				String fileName = url.getFile();
 
-				LogHelper.info("Downloading Image " + fileName);
+				LogHelper.info("Downloading Image " + FilenameUtils.getName(fileName));
 
-				File dll = new File(getImagesFolder(), fileName);
+				File dll = new File(getImagesFolder(), FilenameUtils.getName(fileName));
 
 				InputStream is = url.openStream();
 				OutputStream os = new FileOutputStream(dll);
@@ -145,7 +146,7 @@ public class ResourceHandler {
 			{
 				URL url = new URL(urlS);
 				String fileName = url.getFile();
-				return Arrays.asList(getImagesFolder().list()).contains(fileName.substring(fileName.indexOf("/") + 1));
+				return Arrays.asList(getImagesFolder().list()).contains(FilenameUtils.getName(fileName));
 			}
 			catch (MalformedURLException e)
 			{

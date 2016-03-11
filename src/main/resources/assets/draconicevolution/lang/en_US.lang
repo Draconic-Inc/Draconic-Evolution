@@ -1,4 +1,3 @@
-//Description format \n=Force new line \% at start of line=add half line space above line
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:xRayBlock.name=Distortion Flame
 tile.draconicevolution:sunDial.name=Sun Dial
@@ -106,7 +105,8 @@ item.draconicevolution:chaosFragment1.name=Small Chaos Fragment
 item.draconicevolution:chaosFragment2.name=Large Chaos Fragment
 item.draconicevolution:nugget.draconium.name=Draconium Nugget
 item.draconicevolution:nugget.awakened.name=Awakened Draconium Nugget
-
+item.draconicevolution:magnet.wyvern.name=Item Dislocator
+item.draconicevolution:magnet.draconic.name=Awakened Item Dislocator
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -239,8 +239,6 @@ info.de.toOpenConfigGUI.txt=To open config GUI
 info.de.shiftToPause.txt=Hold shift to pause slide
 info.de.power.txt=Power
 
-info.de.bowEnchants.txt=10x more accurate then a vanilla bow!
-
 info.de.sword.txt=Your enemy's strength makes this blade stronger!
 
 info.de.safetyMatch.txt=Light a fire that will NOT burn your house down!
@@ -274,6 +272,8 @@ info.de.manual.contribution.txt=Contribution
 info.de.manual.clickToGoToSite.txt=(Click name to open website)
 info.de.manual.contributorsButton.txt=Contributors
 info.de.manual.contributorsButtonInfo.txt=A list of people who have contributed to Draconic Evolution
+info.de.shiftRightClickToActivate.txt=Shift-Right click to activate.
+info.de.blockRange.txt=Block Range.
 
 info.de.manual.nav1.txt=Navigation Tips
 info.de.manual.nav2.txt=Press Backspace to go to the previous page.
@@ -404,7 +404,7 @@ item.draconicevolution:draconicAxe.lore=2After lots of trial and error\nyou can 
 item.draconicevolution:draconicShovel.lore=2Even more efficient\nyou can dig an even larger area
 item.draconicevolution:draconicHoe.lore=2Draconium even improves farming\nentire areas can be tilled and placed in a single click
 item.draconicevolution:draconicSword.lore=2Wyvern was good, but draconic weapons\nare even more powerful and hit more enemies
-item.draconicevolution:draconicBow.lore=2The peak of ranged perfection\nfaster shooting, explosive arrows, what more could you want?
+item.draconicevolution:draconicBow.lore=2The peak of ranged perfection faster shooting,\nexplosive arrows, what more could you want?
 
 item.draconicevolution:draconicHelm.lore=2No longer do you fear the night\nyou now can see all the time regardless\nof what is out there
 item.draconicevolution:draconicChest.lore=2Using the heart of a dragon\nyou are stronger and have the gift of flight

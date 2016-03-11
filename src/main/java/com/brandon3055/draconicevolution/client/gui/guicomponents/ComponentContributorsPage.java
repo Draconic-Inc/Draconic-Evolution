@@ -4,8 +4,8 @@ import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentScrollingB
 import com.brandon3055.brandonscore.client.gui.guicomponents.GUIScrollingBase;
 import com.brandon3055.brandonscore.client.utills.ClientUtills;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.client.handler.ContributorHandler;
-import com.brandon3055.draconicevolution.client.handler.ContributorHandler.Contributor;
+import com.brandon3055.draconicevolution.common.handler.ContributorHandler;
+import com.brandon3055.draconicevolution.common.handler.ContributorHandler.Contributor;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -73,7 +73,8 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 
 		boolean patreonButtonHighlighted = mouseX >= 140 && mouseY >= 290;
 
-		for (Contributor contributor : ContributorHandler.contributors){
+		for (Contributor contributor : ContributorHandler.contributors.values()){
+			if (!StringUtils.isNullOrEmpty(contributor.details) && contributor.details.contains("[UNLISTED]")) continue;
 			yOffset += 30;
 
 			if (!(yOffset > 25 && yOffset < 324)) continue;
@@ -103,7 +104,8 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 
 		boolean patreonButtonHighlighted = mouseX >= 140 && mouseY >= 290;
 
-		for (Contributor contributor : ContributorHandler.contributors){
+		for (Contributor contributor : ContributorHandler.contributors.values()){
+			if (!StringUtils.isNullOrEmpty(contributor.details) && contributor.details.contains("[UNLISTED]")) continue;
 			yOffset += 30;
 
 			if (!(yOffset > 20 && yOffset < 330)) continue;
@@ -152,7 +154,8 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 
 		boolean patreonButtonHighlighted = x >= 140 && y >= 290;
 
-		for (Contributor contributor : ContributorHandler.contributors){
+		for (Contributor contributor : ContributorHandler.contributors.values()){
+			if (!StringUtils.isNullOrEmpty(contributor.details) && contributor.details.contains("[UNLISTED]")) continue;
 			yOffset += 30;
 
 			if (!(yOffset > 20 && yOffset < 330) || patreonButtonHighlighted) continue;
@@ -182,8 +185,9 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 
 	private static ResourceLocation getSkin(String username){
 		if (!skinCashInitialized){
-			for (Contributor contributor : ContributorHandler.contributors)
+			for (Contributor contributor : ContributorHandler.contributors.values())
 			{
+				if (!StringUtils.isNullOrEmpty(contributor.details) && contributor.details.contains("[UNLISTED]")) continue;
 				ResourceLocation skin = AbstractClientPlayer.getLocationSkin(contributor.ign);
 				AbstractClientPlayer.getDownloadImageSkin(skin, contributor.ign);
 				skinCache.put(contributor.ign, skin);

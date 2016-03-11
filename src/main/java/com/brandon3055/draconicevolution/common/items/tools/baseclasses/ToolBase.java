@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
@@ -155,13 +154,13 @@ public class ToolBase extends RFItemBase {
 			}
 			List<ItemConfigField> l = getFields(stack, 0);
 			for (ItemConfigField f : l) list.add(f.getTooltipInfo());
-			if (getCapacity(stack) > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(getCapacity(stack)));
+		//	if (getCapacity(stack) > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(getCapacity(stack)));
 		}
 		holdCTRLForUpgrades(list, stack);
 
 		addAditionalInformation(stack, player, list, extended);
-		if (show && !ConfigHandler.disableLore) InfoHelper.addLore(stack, list, true);
 		InfoHelper.addEnergyInfo(stack, list);
+		if (show && !ConfigHandler.disableLore) InfoHelper.addLore(stack, list, true);
 	}
 
 	@SideOnly(Side.CLIENT)

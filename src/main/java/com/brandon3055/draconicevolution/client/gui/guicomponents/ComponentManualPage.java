@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
 import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentScrollingBase;
 import com.brandon3055.brandonscore.client.gui.guicomponents.GUIScrollingBase;
-import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.client.utill.CustomResourceLocation;
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.client.utill.CustomResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -15,6 +15,7 @@ import net.minecraft.item.crafting.*;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import org.apache.commons.io.FilenameUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
@@ -125,7 +126,8 @@ public class ComponentManualPage extends ComponentScrollingBase {
 		{
 			isTitle = content != null && content.contains("title.");
 
-			type = content.contains("http://") ? 1 : content.contains("[c]") ? 2 : 0;
+			type = content.contains(".png") ? 1 : content.contains("[c]") ? 2 : 0;
+
 			slide = (type == 1) && content.contains("[>]");
 			if (slide)
 			{
@@ -195,9 +197,9 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
 		public int getHeight()
 		{
-			if (type == 1 && (ResourceHandler.downloadedImages.containsKey(content) || (slide && ResourceHandler.downloadedImages.containsKey(content.substring(0, content.indexOf("[>]"))))))
+			if (type == 1 && (ResourceHandler.downloadedImages.containsKey(FilenameUtils.getName(content)) || (slide && ResourceHandler.downloadedImages.containsKey(FilenameUtils.getName(content)))))
 			{
-				CustomResourceLocation texture = slide ? ResourceHandler.downloadedImages.get(content.substring(0, content.indexOf("[>]"))) : ResourceHandler.downloadedImages.get(content);
+				CustomResourceLocation texture = slide ? ResourceHandler.downloadedImages.get(FilenameUtils.getName(content)) : ResourceHandler.downloadedImages.get(FilenameUtils.getName(content));
 				return (int)((double)texture.getHeight() / (double)texture.getWidth() * 220D) + 5;
 			}
 			else if (type == 2)
@@ -250,9 +252,12 @@ public class ComponentManualPage extends ComponentScrollingBase {
 			if (slide)
 			{
 				int index = (page.slideTick / 20) % (slides.size());
-				image = (slides.size() > index) ? ResourceHandler.downloadedImages.get(slides.get(index)) : null;
+				image = (slides.size() > index) ? ResourceHandler.downloadedImages.get(FilenameUtils.getName(slides.get(index))) : null;
 			}
-			else if (ResourceHandler.downloadedImages.containsKey(content)) image = ResourceHandler.downloadedImages.get(content);
+			else if (ResourceHandler.downloadedImages.containsKey(FilenameUtils.getName(content))) {
+				image = ResourceHandler.downloadedImages.get(FilenameUtils.getName(content));
+			}
+
 
 			if (image != null)
 			{

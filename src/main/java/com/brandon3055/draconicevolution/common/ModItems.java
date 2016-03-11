@@ -75,6 +75,7 @@ public class ModItems {
 	public static ItemDE chaoticCore;
 	public static ItemDE nugget;
 	public static ItemDE chaosFragment;
+	public static ItemDE magnet;
 
 	public static ItemDE teleporterMKI;
 	public static ItemDE teleporterMKII;
@@ -143,6 +144,7 @@ public class ModItems {
 		reactorStabilizerParts = new ReactorStabiliserPart();
 		nugget = new Nugget();
 		chaosFragment = new ChaosFragment();
+		magnet = new Magnet();
 
 		dezilsMarshmallow = new DezilsMarshmallow();
 

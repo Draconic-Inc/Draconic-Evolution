@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.common.utills.DataUtills.XZPair;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.handler.ContributorHandler;
 import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
 import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.common.items.armor.WyvernArmor;
@@ -59,7 +60,7 @@ public class ClientEventHandler {
 	}
 
 	@SubscribeEvent
-	public void tickEnd(TickEvent event) {
+	public void tickEnd(TickEvent.ClientTickEvent event) {
 		if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT) return;
 
 		for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = playerShieldStatus.entrySet().iterator(); i.hasNext(); ){
@@ -152,6 +153,11 @@ public class ClientEventHandler {
 		remountTicksRemaining = 500;
 		remountEntityID = id;
 		LogHelper.info("Started checking for player mount");
+	}
+
+	@SubscribeEvent
+	public void renderPlayerEvent(RenderPlayerEvent.Specials.Post event) {
+		ContributorHandler.render(event);
 	}
 
 	@SubscribeEvent

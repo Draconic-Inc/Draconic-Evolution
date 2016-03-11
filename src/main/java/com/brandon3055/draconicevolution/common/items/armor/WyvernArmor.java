@@ -161,18 +161,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
-//		if(stack != null && stack.getItem() == ModItems.wyvernLeggs) {
-//			if (player.isSprinting())
-//				player.addPotionEffect(new PotionEffect(PotionHandler.potionSpeed.id, 10, 1, true));
-//			else
-//				player.addPotionEffect(new PotionEffect(PotionHandler.potionSpeed.id, 10, 0, true));
-//		}
-//		if(stack != null && stack.getItem() == ModItems.wyvernBoots) {
-//			if (player.isSprinting())
-//				player.addPotionEffect(new PotionEffect(PotionHandler.potionJumpBoost.id, 10, 1, true));
-//			else
-//				player.addPotionEffect(new PotionEffect(PotionHandler.potionJumpBoost.id, 10, 0, true));
-//		}
+
 	}
 
 	@Override

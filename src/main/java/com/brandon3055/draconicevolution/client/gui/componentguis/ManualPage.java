@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui.componentguis;
 
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.util.StatCollector;
-
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Created by Brandon on 7/03/2015.
@@ -33,16 +32,18 @@ public class ManualPage {
 
 	public String getImageResourceName(String url)
 	{
-		try
-		{
-			String fileName = new URL(url).getFile();
-			return fileName.substring(fileName.indexOf("/") + 1);
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-			return "";
-		}
+//		try
+//		{
+		LogHelper.info(url);
+			return FilenameUtils.getName(url);
+			//String fileName = new URL(url).getFile();
+			//return fileName.substring(fileName.indexOf("/") + 1);
+//		}
+//		catch (MalformedURLException e)
+//		{
+//			e.printStackTrace();
+//			return "";
+//		}
 	}
 
 	public String getLocalizedName()

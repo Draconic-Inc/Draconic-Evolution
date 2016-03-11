@@ -139,12 +139,13 @@ public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableIte
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
 		if (InfoHelper.holdShiftForDetails(list)){
-			InfoHelper.addEnergyInfo(stack, list);
+
 			list.add(StatCollector.translateToLocal("info.de.changwMode.txt"));
 			list.add(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.capacitorMode.txt")+": "+InfoHelper.HITC()+StatCollector.translateToLocal("info.de.capacitorMode"+ItemNBTHelper.getShort(stack, "Mode", (short)0)+".txt"));
 			//InfoHelper.addLore(stack, list);
 		}
 		ToolBase.holdCTRLForUpgrades(list, stack);
+		InfoHelper.addEnergyInfo(stack, list);
 	}
 
 	@Override

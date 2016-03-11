@@ -129,10 +129,16 @@
     "images":[],
     "content":
     [
-      "Looking for a more powerful bow with some fancy features? This is the one for you. The Wyvern bow has 2 operating modes. Selectable with shift + right click.",
-      "Rapid Fire: As the name suggests, it fires arrows at a rather high rate and does moderate damage.",
-      "Sharp Shooter: Allows you to zoom in on your target and deal extremely high damage with pin point accuracy.",
-      "Enchantments are also twice as effective on this bow.",
+      "Looking for a more powerful bow with some fancy features? This is the one for you.",
+      "Adjustable Settings:",
+      "-[Base Damage] This multiplied by the arrows velocity on impact determines the inflicted damage",
+      "-[Arrow Velocity Modifier] +0 is equivalent to a vanilla bow.",
+      "-[Auto Fire] The bow will automatically fire when it reaches full draw.",
+      "-[Explosive Power] Exactly what it sounds like!",
+      "-[Magnification] Allows you to zoom in on your target for better accuracy.",
+      "The RF cost per shot if determined by multiplying the settings for Damage Velocity and Explosion power. This means that simply setting everything to Max requires exponentially more power then setting say damage to maximum.",
+      "Energy Capacity, Draw Speed, Arrow Velocity and Base Damage can all be upgraded",
+      "This bow is 10X more accurate then a vanilla bow. Meaning the arrow will land closer to where you were actually aiming and wont drift as much in flight",
       "[c]item.draconicevolution:wyvernBow:0"
     ]
   },
@@ -156,6 +162,22 @@
     [
       "This component is used in devices that need to be able to store energy.",
       "[c]item.draconicevolution:draconiumFluxCapacitor:0"
+    ]
+  },
+  {
+    "name":"item.draconicevolution:magnet",
+    "nameL":"Item Dislocator",
+    "meta":1,
+    "images":[],
+    "content":
+    [
+      "Item Dislocator",
+      "You have found by combining the unique powers of the Dislocator and a simple magnet you can create a way to easily pick up items dropped on the ground.",
+      "[c]item.draconicevolution:magnet:0",
+      "",
+      "Awakened Item Dislocator",
+      "Further testing has revealed that upgrading the Item dislocator with a bit of power and Awakened Draconium can greatly increase the range and effectiveness.",
+      "[c]item.draconicevolution:magnet:1"
     ]
   },
   {
@@ -262,7 +284,7 @@
   {
     "name":"tile.draconicevolution:dislocatorReceptacle",
     "nameL":"Draconic Portal",
-    "images":["http://i.imgur.com/hTLS3UK.png"],
+    "images":["https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/dislocatorReceptical.png"],
     "content":
     [
       "Like Obsidian, Infused Obsidian can be used to create a magical portal, but with some big differences. This portal can be any size between 1x1 and 150x150 blocks and using a dislocator to set the destination this portal can send you to any location.",
@@ -270,7 +292,7 @@
       "To activate the portal simply right-click the Receptacle with a Basic or Advanced Charm of Dislocation that is bound to a location.",
       "You can also pipe Dislocators in and out of the Receptacle with hoppers or other methods of automation.",
       "The portal can be either horizontal or vertical.",
-      "http://i.imgur.com/hTLS3UK.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/dislocatorReceptical.png",
       "[c]tile.draconicevolution:dislocatorReceptacle:0"
     ]
   },
@@ -432,10 +454,17 @@
     "content":
     [
       "Further Draconic research has shown you ways to even greater power...",
-      "Sharpshooter – Zoom in on your target and deal extreme damage with pin point accuracy.",
-      "Rapid Fire – Barrage your enemies in a rain of arrows.",
-      "Explosive – With gunpowder in your inventory destroy an area slightly larger than TNT with your arrows.",
-      "Devastation (Creative Mode only) – Explosive + Double rapid fire",
+      "Adjustable Settings:",
+      "-[Base Damage] This multiplied by the arrows velocity on impact determines the inflicted damage",
+      "-[Arrow Velocity Modifier] +0 is equivalent to a vanilla bow.",
+      "-[Auto Fire] The bow will automatically fire when it reaches full draw.",
+      "-[Explosive Power] Exactly what it sounds like!",
+      "-[Shock Wave Power] The arrow will generate an extremely powerful shock wave on impact that will deal a large amount of damage to entities within the blast radius. This will not destroy blocks and is only possible with Arrow Of Draconic Fire enabled.",
+      "-[Arrow of Draconic Fire] Similar to Infinity this allows you to fire without needing arrows in your inventory. But it also increases inflicted damage by 10% allows you to use the Shock Wave effect and is 50% lighter meaning it is less effected by gravity in flight.",
+      "-[Magnification] Allows you to zoom in on your target for better accuracy.",
+      "The RF cost per shot if determined by multiplying the settings for Damage Velocity and Explosion power. This means that simply setting everything to Max requires exponentially more power then setting say damage to maximum.",
+      "Energy Capacity, Draw Speed, Arrow Velocity and Base Damage can all be upgraded",
+      "This bow is 10X more accurate then a vanilla bow. Meaning the arrow will land closer to where you were actually aiming and wont drift as much in flight",
       "[c]item.draconicevolution:draconicBow:0"
     ]
   },
@@ -633,7 +662,16 @@
       "These devices are very simple to use. They have an input face (blue) and an output face (orange). When you place them the input face will always point towards you, similar to the way you place a piston. You can also rotate them with a wrench.",
       "The GUI is very simple with only 2 values for you to adjust. \"Redstone Signal High\" is the flow when a redstone signal of 15 is applied. \"Redstone Signal Low\" is the flow when no redstone signal is applied. You can apply a partial signal to vary the actual flow rate between these two numbers. The \"Flow\" indicator at the bottom shows how much energy or fluid is currently able to flow through the device as determined by the received redstone signal.",
       "[c]tile.draconicevolution:flowGate:0",
-      "[c]tile.draconicevolution:flowGate:6"
+      "[c]tile.draconicevolution:flowGate:6",
+      "ComputerCraft/Open Commuters methods:",
+      "getFlow() - Returns the current flow",
+      "setSignalHighFlow(integer)",
+      "getSignalHighFlow()",
+      "setSignalLowFlow(integer)",
+      "getSignalLowFlow()",
+      "setOverrideEnabled(boolean) - Setting this to true allows you to directly control the flow rate without any influence from redstone input",
+      "getOverrideEnabled()",
+      "setFlowOverride(integer) - If setOverrideEnabled is set to true this method allows you to set the flow rate. This rate can not be modified from within the gate's gui or by a redstone signal."
     ]
   },
   {
@@ -751,9 +789,14 @@
 
       "Instability:",
       "[Not-Yet Implemented] (This may or may not be implemented in the future. Keep an eye out for this as it may or may not affect your reactors if/when it is implemented)",
+
       "Computercraft and Open Computers Integration:",
       "Simply attach a Computer to one of the Stabilizers or Energy Injectors and you will have access to all of the reactor information as well as the ability to turn the Reactor on and off remotely.  The methods for implementing this are pretty self-explanatory.",
-      "You can also use one of these Computers to control the Flux Gates."
+      "Methods:",
+      "getReactorInfo() - Returns and array containing [temperature, fieldStrength, maxFieldStrength, energySaturation, maxEnergySaturation, fuelConversion, maxFuelConversion, generationRate, fieldDrainRate, fuelConversionRate, status]",
+      "chargeReactor() - Dose exactly what the charge reactor button in the gui dose.",
+      "activateReactor() - Dose exactly what the activate reactor button in the gui dose.",
+      "stopReactor() - Dose exactly what the stop reactor button in the gui dose."
     ]
   },
   {
@@ -940,25 +983,25 @@
   {
     "name":"info.Energy Storage Multiblock",
     "images":[
-      "http://i.imgur.com/BXl1x7e.png",
-      "http://i.imgur.com/gmgDwH8.png",
-      "http://i.imgur.com/DyYw9Tr.png",
-      "http://i.imgur.com/46X3Kqd.png",
-      "http://i.imgur.com/SoAY47W.png",
-      "http://i.imgur.com/tmL6ot4.png",
-      "http://i.imgur.com/7rtdJV2.png",
-      "http://i.imgur.com/x4IxV9F.png",
-      "http://i.imgur.com/4FxoUvf.png",
-      "http://i.imgur.com/IagzpKW.png",
-      "http://i.imgur.com/1S6h9Po.png",
-      "http://i.imgur.com/MTmGhLv.png",
-      "http://i.imgur.com/crmnC6v.png",
-      "http://i.imgur.com/eH3OvhW.png",
-      "http://i.imgur.com/oEBI4lj.png",
-      "http://i.imgur.com/KSpFook.png",
-      "http://i.imgur.com/C7WwlAu.png",
-      "http://i.imgur.com/uC4b8AC.png",
-      "http://i.imgur.com/rS9rOoF.png"
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore1.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore2.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore3.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore4.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore5.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore6.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore7.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore8.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore9.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore10.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore11.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore12.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore13.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore14.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore15.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore16.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore17.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore18.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore19.png"
     ],
     "content":
     [
@@ -968,28 +1011,28 @@
       "The Energy core consists of the Energy Core (Block) at the centre surrounded by 4 Particle Generators. The generators must be directly in line with the core as shown in the following images. \nThe generators must be placed within 10 blocks of the core.",
       "The Core is then surrounded by a combination of Redstone Blocks and Draconium Blocks. The following images show the configuration of each tier as well as the material cost and storage capacity. Once the structure is built, simply shift right-click one of the particle generators with a empty hand to activate the core.",
       "Tier 1",
-      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/gmgDwH8.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore1.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore2.png",
       "Redstone x0\nDraconium x0\nCapacity = 45.5Million RF",
       "Tier 2",
-      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/DyYw9Tr.png[>]http://i.imgur.com/46X3Kqd.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore1.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore3.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore4.png",
       "Redstone x0\nDraconium x6\nCapacity = 273Million RF",
       "Tier 3",
-      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/SoAY47W.png[>]http://i.imgur.com/tmL6ot4.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore1.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore5.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore6.png",
       "Redstone x0\nDraconium x26\nCapacity = 1.64Billion RF",
       "Tier 4",
-      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/7rtdJV2.png[>]http://i.imgur.com/x4IxV9F.png[>]http://i.imgur.com/4FxoUvf.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore1.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore7.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore8.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore9.png",
       "Redstone x26\nDraconium x54\nCapacity = 9.88Billion RF",
       "Tier 5",
-      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/7rtdJV2.png[>]http://i.imgur.com/IagzpKW.png[>]http://i.imgur.com/1S6h9Po.png[>]http://i.imgur.com/MTmGhLv.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore1.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore7.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore10.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore11.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore12.png",
       "Redstone x80\nDraconium x98\nCapacity = 59.3Billion RF",
       "Tier 6",
-      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/7rtdJV2.png[>]http://i.imgur.com/IagzpKW.png[>]http://i.imgur.com/crmnC6v.png[>]http://i.imgur.com/eH3OvhW.png[>]http://i.imgur.com/oEBI4lj.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore1.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore7.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore10.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore13.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore14.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore15.png",
       "Redstone 133\nDraconium 150\nCapacity = 356Billion RF",
       "Tier 7",
-      "http://i.imgur.com/BXl1x7e.png[>]http://i.imgur.com/7rtdJV2.png[>]http://i.imgur.com/IagzpKW.png[>]http://i.imgur.com/crmnC6v.png[>]http://i.imgur.com/KSpFook.png[>]http://i.imgur.com/C7WwlAu.png[>]http://i.imgur.com/uC4b8AC.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore1.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore7.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore10.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore13.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore16.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore17.png[>]https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore18.png",
       "Redstone x328\nDraconium x218\nCapacity = 2.14Trillion RF",
       "To add and remove energy from the core you need to place energy pylons within 15 blocks of the core. To activate a pylon place a glass block either above or below it – depending on whether the pylon is placed below or above the core e.g. if you place the pylon on your roof you would place the glass block under it.",
-      "http://i.imgur.com/rS9rOoF.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/ECore/ECore19.png",
       "When the glass block is placed the pylon should immediately activate and link with a nearby Energy Core. The link is indicated by white energy particles and the glass should change to the renderer shown in the image above. You can shift right-click the pylon to change which core it is linked to if there is more than one within range.",
       "Energy is added and removed from the core using Energy Pylons. To toggle a Pylon between input and output mode simply right-click the sphere. The mode is identified by the colour of the Pylon (blue for input and orange for output).",
       "Energy Transfer between the pylon and the core is indicated by a stream of blue energy particles flowing between the Pylon sphere and the core. The amount of energy flowing is roughly indicated by the density of the particle stream.",
@@ -998,11 +1041,11 @@
   },
   {
     "name":"info.Ritual of Draconic Resurrection",
-    "images":["http://i.imgur.com/j2Hm0Am.png"],
+    "images":["https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/resurrectionRitual.png"],
     "content":
     [
       "The Ritual of Draconic Resurrection allows you to summon the Ender Dragon. To set it up you will need the following items.\n\n(1) Resurrection Stone\n(4) Glowstone Blocks\n(4) Obsidian\n(4) Diamond Blocks\n(4) Charged Draconium Blocks\n(12) Quartz Pillars\nset up in the following configuration.",
-      "http://i.imgur.com/j2Hm0Am.png",
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/resurrectionRitual.png",
       "The pillars dont have to be in that exact configuration as long as they are within 5 blocks of the Resurrection Stone. It also looks better if they are symmetrical. The ritual must be set up within 150 blocks of 0,0.",
       "Once you have that set up, simply right-click the Ritual stone and stand back. The ritual should start immediately. If it doesn't you have done something wrong.",
       "Right-clicking the Ritual Stone again will stop the ritual and drain the charge from the draconium blocks.",
@@ -1020,16 +1063,16 @@
   },
   {
     "name":"info.Comets",
-    "images":["http://i.imgur.com/894RVmP.png"],
+    "images":["https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/comet.png"],
     "content":
     [
       "Mined out all of the Draconium Ore in The End? Get yourself some form of flight and go search the end. If you're lucky, you may come across an Ender Comet. These comets are comprised of End Stone, Obsidian and a significant amount of Draconium Ore. By default they have a 1 in 10000 chance to spawn in each chunk so you may need to search for a while. They come in various sizes.",
-      "http://i.imgur.com/894RVmP.png"
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/comet.png"
     ]
   },
   {
     "name":"info.Chaos Islands",
-    "images":["http://i.imgur.com/gL4T6dG.png"],
+    "images":["https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/chaosIsland.png"],
     "content":
     [
       "Looking for a challenge? The fight of your life! The Ender Dragon wasn't hard enough? Maby try 100 ender dragons all at once plus maby a few dosen withers. And if thats still not hard enough then maby this is for you! If you travel to any multiple of 10,000 in The End (e.g. {x=0, z=10000}, {x=0, z=20000}, {x=10000, z=0} etc.) you will find a Chaos Island.",
@@ -1040,9 +1083,7 @@
       "Be aware that when low on health the guardian will occasionally try to re ignite some of the disabled crystals.",
       "Once the guardian is defeated you can claim your reward. At the centre of the island several blocks below the surface you will find a chaos chamber containing a chaos crystal. When broken the chaos crystal will drop 5 chaos shards.",
       "§4Be Warned!§r When you destroy the crystal the energy field it was generating will collapse. This will result in the total animation of the island within a matter of seconds. Unless you are wearing full draconic armor you will only have a few seconds to collect the shards and escape the island before you are obliterated along with the island.",
-
-      "This image needs to be updated. The islands look very different now.",
-      "http://i.imgur.com/gL4T6dG.png"
+      "https://raw.githubusercontent.com/brandon3055/Random-Bits/master/DE%20Tablet%20Images/chaosIsland.png"
     ]
   },
   {
