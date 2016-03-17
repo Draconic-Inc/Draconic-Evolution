@@ -75,4 +75,9 @@ processResources
     }
 }
 
-sourceSets { main { output.resourcesDir = output.classesDir } }
+apply plugin: 'idea'
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
