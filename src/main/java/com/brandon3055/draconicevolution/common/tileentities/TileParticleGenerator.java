@@ -5,6 +5,8 @@ import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,9 +16,11 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
-public class TileParticleGenerator extends TileEntity {
+public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
 	public boolean particles_enabled = true;
 
 	public int red = 0;
@@ -46,6 +50,7 @@ public class TileParticleGenerator extends TileEntity {
 	public int spawn_rate = 1;
 	public boolean collide = false;
 	public int selected_particle = 1;
+	public int selected_max = 3;
 	public float gravity = 0F;
 	public boolean active = true;
 	public boolean signal = false;
@@ -287,5 +292,254 @@ public class TileParticleGenerator extends TileEntity {
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 655360.0D;
+	}
+
+	public static double limit(double value, double min, double max) {
+	    return Math.max(min, Math.min(value, max));
+	}
+
+	public static int limit(int value, int min, int max) {
+	    return Math.max(min, Math.min(value, max));
+	}
+
+	@Override
+	public String getName() {
+		return "particle_generator";
+	}
+
+	@Override
+	public String[] getMethodNames() {
+		return new String[] {
+				"setGeneratorProperty",
+				"getGeneratorState",
+				"resetGeneratorState"
+		};
+	}
+
+	@Override
+	public Object[] callMethod(String method, Object... args) {
+		if (method.startsWith("setGeneratorProperty")) {
+			if (args.length != 2) return new Object[] { false };
+			else if (!(args[0] instanceof String)) return new Object[] { false };
+
+			/* Particles */
+			if (args[0].equals("particles_enabled") && args[1] instanceof Boolean) {
+				particles_enabled = (Boolean) args[1];
+			}
+			else if (args[0].equals("red") && args[1] instanceof Double) {
+				red = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("green") && args[1] instanceof Double) {
+				green = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("blue") && args[1] instanceof Double) {
+				blue = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("random_red") && args[1] instanceof Double) {
+				random_red = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("random_green") && args[1] instanceof Double) {
+				random_green = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("random_blue") && args[1] instanceof Double) {
+				random_blue = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("motion_x") && args[1] instanceof Double) {
+				motion_x = (float) limit((Double) args[1], -5F, 5F);
+			}
+			else if (args[0].equals("motion_y") && args[1] instanceof Double) {
+				motion_y = (float) limit((Double) args[1], -5F, 5F);
+			}
+			else if (args[0].equals("motion_z") && args[1] instanceof Double) {
+				motion_z = (float) limit((Double) args[1], -5F, 5F);
+			}
+			else if (args[0].equals("random_motion_x") && args[1] instanceof Double) {
+				random_motion_x = (float) limit((Double) args[1], -5F, 5F);
+			}
+			else if (args[0].equals("random_motion_y") && args[1] instanceof Double) {
+				random_motion_y = (float) limit((Double) args[1], -5F, 5F);
+			}
+			else if (args[0].equals("random_motion_z") && args[1] instanceof Double) {
+				random_motion_z = (float) limit((Double) args[1], -5F, 5F);
+			}
+			else if (args[0].equals("scale") && args[1] instanceof Double) {
+				scale = (float) limit((Double) args[1], 0.01F, 50F);
+			}
+			else if (args[0].equals("random_scale") && args[1] instanceof Double) {
+				random_scale = (float) limit((Double) args[1], 0.01F, 50F);
+			}
+			else if (args[0].equals("life") && args[1] instanceof Double) {
+				life = limit(((Double) args[1]).intValue(), 0, 1000);
+			}
+			else if (args[0].equals("random_life") && args[1] instanceof Double) {
+				random_life = limit(((Double) args[1]).intValue(), 0, 1000);
+			}
+			else if (args[0].equals("spawn_x") && args[1] instanceof Double) {
+				spawn_x = (float) limit((Double) args[1], -50F, 50F);
+			}
+			else if (args[0].equals("spawn_y") && args[1] instanceof Double) {
+				spawn_y = (float) limit((Double) args[1], -50F, 50F);
+			}
+			else if (args[0].equals("spawn_z") && args[1] instanceof Double) {
+				spawn_z = (float) limit((Double) args[1], -50F, 50F);
+			}
+			else if (args[0].equals("random_spawn_x") && args[1] instanceof Double) {
+				random_spawn_x = (float) limit((Double) args[1], -50F, 50F);
+			}
+			else if (args[0].equals("random_spawn_y") && args[1] instanceof Double) {
+				random_spawn_y = (float) limit((Double) args[1], -50F, 50F);
+			}
+			else if (args[0].equals("random_spawn_z") && args[1] instanceof Double) {
+				random_spawn_z = (float) limit((Double) args[1], -50F, 50F);
+			}
+			else if (args[0].equals("fade") && args[1] instanceof Double) {
+				fade = limit(((Double) args[1]).intValue(), 0, 100);
+			}
+			else if (args[0].equals("spawn_rate") && args[1] instanceof Double) {
+				spawn_rate = limit(((Double) args[1]).intValue(), 1, 200);
+			}
+			else if (args[0].equals("collide") && args[1] instanceof Double) {
+				collide = (Boolean) args[1];
+			}
+			else if (args[0].equals("selected_particle") && args[1] instanceof Double) {
+				selected_particle = limit(((Double) args[1]).intValue(), 1, selected_max);
+			}
+			else if (args[0].equals("gravity") && args[1] instanceof Double) {
+				gravity = (float) limit((Double) args[1], -5F, 5F);
+			}
+			/* Beam */
+			else if (args[0].equals("beam_enabled") && args[1] instanceof Boolean) {
+				beam_enabled = (Boolean) args[1];
+			}
+			else if (args[0].equals("render_core") && args[1] instanceof Boolean) {
+				render_core = (Boolean) args[1];
+			}
+			else if (args[0].equals("beam_red") && args[1] instanceof Double) {
+				beam_red = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("beam_green") && args[1] instanceof Double) {
+				beam_green = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("beam_blue") && args[1] instanceof Double) {
+				beam_blue = limit(((Double) args[1]).intValue(), 0, 255);
+			}
+			else if (args[0].equals("beam_scale") && args[1] instanceof Double) {
+				beam_scale = (float) limit((Double) args[1], -0F, 5F);
+			}
+			else if (args[0].equals("beam_pitch") && args[1] instanceof Double) {
+				beam_pitch = (float) limit((Double) args[1], -180F, 180F);
+			}
+			else if (args[0].equals("beam_yaw") && args[1] instanceof Double) {
+				beam_yaw = (float) limit((Double) args[1], -180F, 180F);
+			}
+			else if (args[0].equals("beam_length") && args[1] instanceof Double) {
+				beam_length = (float) limit((Double) args[1], -0F, 320F);
+			}
+			else if (args[0].equals("beam_rotation") && args[1] instanceof Double) {
+				beam_rotation = (float) limit((Double) args[1], -1F, 1F);
+			}
+			else {
+				return new Object[] { false };
+			}
+
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			return new Object[] { true };
+		}
+		else if (method.startsWith("getGeneratorState")) {
+			Map<Object, Object> map = new HashMap<Object, Object>();
+
+			/* Particles */
+			map.put("particles_enabled", particles_enabled);
+			map.put("red", red);
+			map.put("green", green);
+			map.put("blue", blue);
+			map.put("random_red", random_red);
+			map.put("random_green", random_green);
+			map.put("random_blue", random_blue);
+			map.put("motion_x", motion_x);
+			map.put("motion_y", motion_y);
+			map.put("motion_z", motion_z);
+			map.put("random_motion_x", random_motion_x);
+			map.put("random_motion_y", random_motion_y);
+			map.put("random_motion_z", random_motion_z);
+			map.put("scale", scale);
+			map.put("random_scale", random_scale);
+			map.put("life", life);
+			map.put("random_life", random_life);
+			map.put("spawn_x", spawn_x);
+			map.put("spawn_y", spawn_y);
+			map.put("spawn_z", spawn_z);
+			map.put("random_spawn_x", random_spawn_x);
+			map.put("random_spawn_y", random_spawn_y);
+			map.put("random_spawn_z", random_spawn_z);
+			map.put("fade", fade);
+			map.put("spawn_rate", spawn_rate);
+			map.put("collide", collide);
+			map.put("selected_particle", selected_particle);
+			map.put("gravity", gravity);
+
+			/* Beam */
+			map.put("beam_enabled", beam_enabled);
+			map.put("render_core", render_core);
+			map.put("beam_red", beam_red);
+			map.put("beam_green", beam_green);
+			map.put("beam_blue", beam_blue);
+			map.put("beam_scale", beam_scale);
+			map.put("beam_pitch", beam_pitch);
+			map.put("beam_yaw", beam_yaw);
+			map.put("beam_length", beam_length);
+			map.put("beam_rotation", beam_rotation);
+
+			return new Object[]{ map };
+		}
+		else if (method.startsWith("resetGeneratorState")) {
+			particles_enabled = true;
+			red = 0;
+			green = 0;
+			blue = 0;
+			random_red = 0;
+			random_green = 0;
+			random_blue = 0;
+			motion_x = 0.0F;
+			motion_y = 0.0F;
+			motion_z = 0.0F;
+			random_motion_x = 0.0F;
+			random_motion_y = 0.0F;
+			random_motion_z = 0.0F;
+			scale = 1F;
+			random_scale = 0F;
+			life = 100;
+			random_life = 0;
+			spawn_x = 0;
+			spawn_y = 0;
+			spawn_z = 0;
+			random_spawn_x = 0;
+			random_spawn_y = 0;
+			random_spawn_z = 0;
+			page = 1;
+			fade = 0;
+			spawn_rate = 1;
+			collide = false;
+			selected_particle = 1;
+			gravity = 0F;
+
+			//beam
+			beam_enabled = false;
+			render_core = false;
+
+			beam_red = 0;
+			beam_green = 0;
+			beam_blue = 0;
+			beam_scale = 1F;
+			beam_pitch = 0F;
+			beam_yaw = 0F;
+			beam_length = 0F;
+			beam_rotation = 0F;
+
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			return new Object[] { true };
+		}
+
+		return new Object[] {0};
 	}
 }
