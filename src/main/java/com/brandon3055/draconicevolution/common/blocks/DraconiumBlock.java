@@ -1,118 +1,69 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.itemblocks.DraconiumItemBlock;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import com.brandon3055.brandonscore.common.blocks.BlockMobSafe;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.Explosion;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
 
 /**
- * Created by Brandon on 25/07/2014.
+ * Created by brandon3055 on 18/3/2016.
  */
-public class DraconiumBlock extends BlockDE {
-	private final int DRACONIUM_META = 0;
-	private final int SUMMON_BLOCK_META = 1;
-	private final int CHARGED_DRACONIUM_META = 2;
-	IIcon icons[] = new IIcon[3];
+public class DraconiumBlock extends BlockMobSafe {
+	public static PropertyBool CHARGED = PropertyBool.create("charged");
+
 	public DraconiumBlock() {
-		this.setHardness(10F);
-		this.setResistance(500F);
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		this.setBlockName(Strings.draconiumBlockName);
-		this.setHarvestLevel("pickaxe", 4);
-		ModBlocks.register(this, DraconiumItemBlock.class);
+		super(Material.iron);
+		this.setHarvestLevel("pickaxe", 3);
+		this.setDefaultState(blockState.getBaseState().withProperty(CHARGED, false));
 	}
 
 	@Override
-	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
-		return false;
-	}
-
-	@Override
-	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {}
-
-	@Override
-	public boolean canDropFromExplosion(Explosion p_149659_1_) {
-		return false;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister) {
-		for (int i = 0; i < 3; i++) {
-			icons[i] = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconium_block_" + i);
-		}
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		if (meta >= icons.length) return icons[0];
-		return icons[meta];
-	}
-
-	@SuppressWarnings("unchecked")
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void getSubBlocks(Item item, CreativeTabs p_149666_2_, List list) {
+	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
 		list.add(new ItemStack(item, 1, 0));
 		list.add(new ItemStack(item, 1, 1));
-		list.add(new ItemStack(item, 1, 2));
+	}
+
+	//region BlockState
+	@Override
+	protected BlockState createBlockState() {
+		return new BlockState(this, CHARGED);
 	}
 
 	@Override
-	public boolean isBeaconBase(IBlockAccess worldObj, int x, int y, int z, int beaconX, int beaconY, int beaconZ) {
-		return true;
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(CHARGED) ? 1 : 0;
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-		int meta = world.getBlockMetadata(x, y, z);
-		if (meta == 0) return false;
-		if (meta == 1){
-			TileEnderResurrection tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnderResurrection) ? (TileEnderResurrection) world.getTileEntity(x, y, z) : null;
-			if (tile != null) return tile.onActivated(player);
-		}
-		return false;
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(CHARGED, meta == 1);
 	}
 
 	@Override
-	public boolean hasTileEntity(int metadata) {
-		if (metadata == 1) return true;
-		return false;
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		return super.getActualState(state, worldIn, pos);
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata) {
-		if (metadata == 1) return new TileEnderResurrection();
-		return null;
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		world.setBlockState(pos, state.withProperty(CHARGED, stack.getItemDamage() == 1));
 	}
 
 	@Override
-	public int damageDropped(int meta) {
-		return meta;
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
+		return new ItemStack(this, 1, world.getBlockState(pos).getValue(CHARGED) ? 1 : 0);
 	}
-
-	@Override
-	public float getEnchantPowerBonus(World world, int x, int y, int z) {
-		if (world.getBlockMetadata(x, y, z) == 0) return 4f;
-		if (world.getBlockMetadata(x, y, z) == 2) return 12f;
-		return 0;
-	}
+	//endregion
 }

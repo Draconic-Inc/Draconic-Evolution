@@ -1,90 +1,128 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.brandon3055.brandonscore.common.blocks.BlockBCore;
+import com.brandon3055.draconicevolution.common.DEFeatures;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.util.IIcon;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.Random;
 
-public class DraconiumOre extends BlockDE {
-	public IIcon icon;
-	public IIcon iconEnd;
-	public IIcon iconNether;
+/**
+ * Created by brandon3055 on 18/3/2016.
+ */
+public class DraconiumOre extends BlockBCore {
+	public static PropertyEnum<EnumType> ORE_TYPE = PropertyEnum.create("type", EnumType.class);
 
 	public DraconiumOre() {
 		super(Material.rock);
-		this.setBlockName(Strings.draconiumOreName);
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		this.setHardness(10f);
-		this.setResistance(20.0f);
-
 		this.setHarvestLevel("pickaxe", 3);
-		ModBlocks.register(this);
-	}
-
-    @Override
-    public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
-        return false;
-    }
-
-    @Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister)
-	{
-		icon = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/draconium_ore");
-		iconEnd = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/draconium_ore_end");
-		iconNether = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/draconium_ore_nether");
+		this.setDefaultState(blockState.getBaseState().withProperty(ORE_TYPE, EnumType.NORMAL));
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		World world = Minecraft.getMinecraft().theWorld;
-		int dim = world != null && world.provider != null ? world.provider.dimensionId : 0;
+	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+		for (EnumType enumType : EnumType.values())
+		{
+			list.add(new ItemStack(item, 1, enumType.getMeta()));
+		}
+	}
 
-		if (dim == -1)
-			return iconNether;
-		else if (dim == 1)
-			return iconEnd;
-		else
-			return icon;
+	//region BlockState
+	@Override
+	protected BlockState createBlockState() {
+		return new BlockState(this, ORE_TYPE);
 	}
 
 	@Override
-	public int quantityDropped(Random random)
-	{
-		return 1 + random.nextInt(2);
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(ORE_TYPE).getMeta();
 	}
 
 	@Override
-	public int quantityDroppedWithBonus(int fortune, Random random)
-	{
-		return fortune == 0 ? this.quantityDropped(random) : this.quantityDropped(random) + fortune + random.nextInt(fortune * 2);
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(ORE_TYPE, EnumType.byMetadata(meta));
 	}
 
 	@Override
-	protected boolean canSilkHarvest()
-	{
-		return true;
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		return super.getActualState(state, worldIn, pos);
 	}
 
 	@Override
-	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
-	{
-		return ModItems.draconiumDust;
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		world.setBlockState(pos, state.withProperty(ORE_TYPE, EnumType.byMetadata(stack.getItemDamage())));
 	}
 
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
+		return new ItemStack(this, 1, world.getBlockState(pos).getValue(ORE_TYPE).getMeta());
+	}
+	//endregion
+
+	//region Drops
+	@Override
+	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+		return DEFeatures.draconiumDust;
+	}
+
+	@Override
+	public int quantityDropped(IBlockState state, int fortune, Random random) {
+		return 4 - state.getValue(ORE_TYPE).getMeta() + random.nextInt(2 + (fortune * 2));
+	}
+	//endregion
+
+	public static enum EnumType implements IStringSerializable {
+		NORMAL(0, "normal"),
+		NETHER(1, "nether"),
+		END(2, "end");
+
+		private static final EnumType[] META_LOOKUP = new EnumType[values().length];
+		private final int meta;
+		private final String name;
+
+		private EnumType(int meta, String name){
+			this.meta = meta;
+			this.name = name;
+		}
+
+		public int getMeta() {
+			return meta;
+		}
+
+		public static EnumType byMetadata(int meta)
+		{
+			if (meta < 0 || meta >= META_LOOKUP.length)
+			{
+				meta = 0;
+			}
+
+			return META_LOOKUP[meta];
+		}
+
+		@Override
+		public String getName() {
+			return this.name;
+		}
+
+		static
+		{
+			for (EnumType type : values())
+			{
+				META_LOOKUP[type.getMeta()] = type;
+			}
+		}
+	}
 }

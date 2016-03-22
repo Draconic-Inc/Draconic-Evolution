@@ -8,7 +8,9 @@ import net.minecraft.enchantment.EnumEnchantmentType;
  */
 public class EnchantmentReaper extends Enchantment {
 	public EnchantmentReaper(int id) {
-		super(id, 2, EnumEnchantmentType.weapon);
+		super(id, null, 0, EnumEnchantmentType.WEAPON);
+
+		//super(id, 2, EnumEnchantmentType.WEAPON);
 		setName("draconicevolution.reaperEnchant");
 	}
 

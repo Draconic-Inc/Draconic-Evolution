@@ -1,0 +1,93 @@
+{
+  "charge": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "charge",
+        "stream": false
+      }
+    ]
+  },
+  "discharge": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "discharge",
+        "stream": false
+      }
+    ]
+  },
+  "boom": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "boom",
+        "stream": false
+      }
+    ]
+  },
+  "beam": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "beam",
+        "stream": false
+      }
+    ]
+  },
+  "portal": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "portal",
+        "stream": false
+      }
+    ]
+  },
+  "shieldUp": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "shieldUp",
+        "stream": false
+      }
+    ]
+  },
+  "fusionExplosion": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "fusionExplosion",
+        "stream": false
+      }
+    ]
+  },
+  "chaosChamberAmbient": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "chaosChamberAmbient",
+        "stream": true
+      }
+    ]
+  },
+  "coreSound": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "coreSound",
+        "stream": false
+      }
+    ]
+  },
+  "shieldStrike": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "shieldStrike",
+        "stream": false
+      }
+    ]
+  }
+}
+

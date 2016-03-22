@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube_all",
+    "textures": {"all": "draconicevolution:blocks/animated/draconiumOre"},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "type=normal": [{}],
+    "type=nether": [{ "textures": {"all": "draconicevolution:blocks/animated/draconiumOreNether"} }],
+    "type=end": [{ "textures": {"all": "draconicevolution:blocks/animated/draconiumOreEnd"} }]
+  }
+}

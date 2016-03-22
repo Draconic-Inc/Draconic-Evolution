@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.utills;
 
-import com.brandon3055.draconicevolution.common.lib.References;
-import cpw.mods.fml.common.FMLLog;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 
 /**
@@ -11,7 +11,7 @@ public class LogHelper {
 
 	public static void log(Level logLevel, Object object)
 	{
-		FMLLog.log(References.MODNAME, logLevel, String.valueOf(object));
+		FMLLog.log(DraconicEvolution.MODNAME, logLevel, String.valueOf(object));
 	}
 
 	public static void all(Object object){ log(Level.ALL, object); }
