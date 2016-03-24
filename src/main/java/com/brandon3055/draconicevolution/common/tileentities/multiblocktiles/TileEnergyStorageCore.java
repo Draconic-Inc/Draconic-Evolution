@@ -37,6 +37,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 
 	@Override
 	public void updateEntity() {
+		//energy = 200000000;
 		if (!online) return;
 		if (worldObj.isRemote) modelRotation += 0.5;
 		if (!worldObj.isRemote) detectAndRendChanges();

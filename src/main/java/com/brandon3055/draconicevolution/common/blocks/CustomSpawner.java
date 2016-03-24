@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -7,8 +9,6 @@ import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileCustomSpawner;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -164,8 +164,11 @@ public class CustomSpawner extends BlockDE implements IHudDisplayBlock {
 		if (spawner != null)
 		{
 			spawner.getBaseLogic().powered = world.isBlockIndirectlyGettingPowered(x, y, z);
-			world.markBlockForUpdate(x, y, z);
-			spawner.getBaseLogic().setSpawnRate(spawner.getBaseLogic().spawnSpeed);
+			if (spawner.getBaseLogic().powered != spawner.getBaseLogic().ltPowered){
+				spawner.getBaseLogic().ltPowered = spawner.getBaseLogic().powered;
+				world.markBlockForUpdate(x, y, z);
+				spawner.getBaseLogic().setSpawnRate(spawner.getBaseLogic().spawnSpeed);
+			}
 		}
 	}
 

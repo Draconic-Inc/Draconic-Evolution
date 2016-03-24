@@ -46,7 +46,8 @@ public class HudHandler {
 	@SideOnly(Side.CLIENT)
 	public void drawHUD(RenderGameOverlayEvent.Post event) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR || mc.gameSettings.showDebugInfo) return;// || (mc.currentScreen != null && !(mc.currentScreen instanceof GuiHudConfig))) return;
+		if (event.type != RenderGameOverlayEvent.ElementType.ALL || mc.gameSettings.showDebugInfo) return;
+
 		ScaledResolution resolution = event.resolution;
 		width = resolution.getScaledWidth();
 		height = resolution.getScaledHeight();

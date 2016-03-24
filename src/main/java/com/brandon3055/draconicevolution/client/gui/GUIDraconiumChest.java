@@ -42,8 +42,8 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler
 	public GUIDraconiumChest(InventoryPlayer invPlayer, TileDraconiumChest tile) {
 		super(new ContainerDraconiumChest(invPlayer, tile));
 
-		xSize = 481;
-		ySize = 256;
+		this.xSize = 481;
+		this.ySize = 256;
 
 		this.tile = tile;
 		this.player = invPlayer.player;

@@ -45,6 +45,7 @@ public abstract class CustomSpawnerBaseLogic {
 	 * Is receiving a redstone signal
 	 */
 	public boolean powered = false;
+	public boolean ltPowered = false;
 	/**
 	 * Dose the spawner require a player nearby
 	 */
@@ -174,7 +175,7 @@ public abstract class CustomSpawnerBaseLogic {
 				par1Entity.getEntityData().setLong("SpawnedByDESpawner", getSpawnerWorld().getTotalWorldTime());
 			}
 
-			this.getSpawnerWorld().spawnEntityInWorld(par1Entity);
+			if (!getSpawnerWorld().isRemote) this.getSpawnerWorld().spawnEntityInWorld(par1Entity);
 		}
 
 		return par1Entity;

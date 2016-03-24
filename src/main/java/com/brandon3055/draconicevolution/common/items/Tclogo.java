@@ -114,6 +114,9 @@ public class Tclogo extends ItemDE {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 
+		//int meta = Integer.parseInt());
+		LogHelper.info("21=vserfegz".substring(0, "21=vserfegz".indexOf("=")));
+
 		try
 		{
 			if (!world.isRemote) {

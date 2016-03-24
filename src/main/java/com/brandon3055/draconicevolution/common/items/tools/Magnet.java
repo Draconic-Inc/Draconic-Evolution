@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 
 import java.util.List;
 
@@ -32,6 +35,7 @@ public class Magnet extends ItemDE {
 	public Magnet(){
 		this.setUnlocalizedName("magnet");
 		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+		this.setMaxStackSize(1);
 		ModItems.register(this);
 	}
 
@@ -73,7 +77,7 @@ public class Magnet extends ItemDE {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int damage, boolean hotbar) {
-		if (!entity.isSneaking() && entity.ticksExisted % 5 == 0 && ItemNBTHelper.getBoolean(stack, "MagnetEnabled", false)){
+		if (!entity.isSneaking() && entity.ticksExisted % 5 == 0 && ItemNBTHelper.getBoolean(stack, "MagnetEnabled", false) && entity instanceof EntityPlayer){
 			int range = damage == 0 ? 8 : 32;
 
 			List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).expand(range, range, range));
@@ -87,6 +91,24 @@ public class Magnet extends ItemDE {
 				item.setPosition(entity.posX-0.2+(world.rand.nextDouble()*0.4), entity.posY-0.6, entity.posZ-0.2+(world.rand.nextDouble()*0.4));
 			}
 			if (flag) world.playSoundAtEntity(entity, "random.orb", 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
+
+			List<EntityXPOrb> xp = world.getEntitiesWithinAABB(EntityXPOrb.class, AxisAlignedBB.getBoundingBox(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).expand(4, 4, 4));
+
+			EntityPlayer player = (EntityPlayer)entity;
+
+			for (EntityXPOrb orb : xp){
+				if (!world.isRemote)
+				{
+					if (orb.field_70532_c == 0)
+					{
+						if (MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, orb))) continue;
+						world.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
+						player.onItemPickup(orb, 1);
+						player.addExperience(orb.xpValue);
+						orb.setDead();
+					}
+				}
+			}
 		}
 	}
 

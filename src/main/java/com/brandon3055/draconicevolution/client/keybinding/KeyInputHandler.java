@@ -42,6 +42,22 @@ public class KeyInputHandler {
 				ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);
 			}
 		}
+		else if (KeyBindings.toggleFlight.isPressed()){
+			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+			if (player.capabilities.allowFlying){
+				if (player.capabilities.isFlying){
+					player.capabilities.isFlying = false;
+					player.sendPlayerAbilities();
+				}else {
+					player.capabilities.isFlying = true;
+					if (player.onGround) {
+						player.setPosition(player.posX, player.posY+0.05D, player.posZ);
+						player.motionY = 0;
+					}
+					player.sendPlayerAbilities();
+				}
+			}
+		}
 	}
 
 

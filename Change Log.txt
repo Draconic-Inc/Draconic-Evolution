@@ -1,3 +1,12 @@
+######## 1.0.2 ########
+-fixed HUD not working with Dual Hotbars installed.   
+-draconic magnet now also accelerates the collection of XP orbs.
+-added computer support to particle generator (Added by https://github.com/wlhlm)
+-fixed player getting kicked from server when changing tool modes.
+-fixed Wyvern sword, Draconic sword and Draconic hoe RF capacity upgrade not working.
+-fixed FPS lag when you combine a custom spawner with rednet cable.
+-fixed "fake" mobs spawning at 0, 0, 0 when using the custom spawner. This was actually a bug i caught from vanilla! 
+
 ######## 1.0.2-Snapshot 12 (RC2) ########
 -fixed issue with the different tier Item Dislocators stacking ant reverting to ether the Wyvern or Draconic tier.
 

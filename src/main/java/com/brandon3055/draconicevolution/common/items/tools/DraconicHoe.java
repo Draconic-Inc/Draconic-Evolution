@@ -196,7 +196,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 			container.stackTagCompound = new NBTTagCompound();
 		}
 		int energy = container.stackTagCompound.getInteger("Energy");
-		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+		int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(this.maxReceive, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
@@ -334,7 +334,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 		List<String> list = new ArrayList<String>();
 
 		for (ItemConfigField field : getFields(stack, 0)) list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
-		if (capacity > 0) list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
+		list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
 
 		return list;
 	}

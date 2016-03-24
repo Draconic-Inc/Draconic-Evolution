@@ -119,7 +119,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 			container.stackTagCompound = new NBTTagCompound();
 		}
 		int energy = container.stackTagCompound.getInteger("Energy");
-		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+		int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(this.maxReceive, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
