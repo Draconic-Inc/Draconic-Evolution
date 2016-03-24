@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
 import com.brandon3055.brandonscore.common.blocks.BlockBCore;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.DEFeatures;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -9,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
@@ -83,6 +85,22 @@ public class DraconiumOre extends BlockBCore {
 		return 4 - state.getValue(ORE_TYPE).getMeta() + random.nextInt(2 + (fortune * 2));
 	}
 	//endregion
+
+	public static IBlockState getEnd(){
+		if (DraconicEvolution.featureParser.isEnabled(DEFeatures.draconiumOre)){
+			return DEFeatures.draconiumOre.getDefaultState().withProperty(ORE_TYPE, EnumType.END);
+		}else {
+			return Blocks.end_stone.getDefaultState();
+		}
+	}
+
+	public static IBlockState getNether(){
+		if (DraconicEvolution.featureParser.isEnabled(DEFeatures.draconiumOre)){
+			return DEFeatures.draconiumOre.getDefaultState().withProperty(ORE_TYPE, EnumType.NETHER);
+		}else {
+			return Blocks.netherrack.getDefaultState();
+		}
+	}
 
 	public static enum EnumType implements IStringSerializable {
 		NORMAL(0, "normal"),

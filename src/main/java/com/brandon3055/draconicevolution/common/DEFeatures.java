@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.common.blocks.BlockBCore;
 import com.brandon3055.brandonscore.common.blocks.BlockMobSafe;
 import com.brandon3055.brandonscore.common.blocks.ItemBlockBasic;
 import com.brandon3055.brandonscore.common.config.Feature;
-import com.brandon3055.brandonscore.common.config.FeatureCollection;
 import com.brandon3055.brandonscore.common.items.ItemSimpleSubs;
 import com.brandon3055.draconicevolution.common.blocks.DraconiumBlock;
 import com.brandon3055.draconicevolution.common.blocks.DraconiumOre;
@@ -16,7 +15,7 @@ import net.minecraft.item.Item;
  * Created by brandon3055 on 18/3/2016.
  * This class contains a reference to all blocks and items in Draconic Evolution
  */
-public class DEFeatures implements FeatureCollection {
+public class DEFeatures {
 
 	//Blocks
 

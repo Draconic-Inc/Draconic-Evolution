@@ -1,10 +1,13 @@
 package com.brandon3055.draconicevolution;
 
+import com.brandon3055.brandonscore.common.config.ModConfigProcessor;
 import com.brandon3055.brandonscore.common.config.ModFeatureParser;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.common.CommonProxy;
+import com.brandon3055.draconicevolution.common.DEConfig;
 import com.brandon3055.draconicevolution.common.DEFeatures;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.world.DEWorldGenHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.Configuration;
@@ -46,6 +49,7 @@ public class DraconicEvolution {
 	public static CommonProxy proxy;
 
 	public static ModFeatureParser featureParser = new ModFeatureParser(MODID, new CreativeTabs[]{tabBlocksItems, tabToolsWeapons});
+	public static ModConfigProcessor configProcessor = new ModConfigProcessor();
 
 	public DraconicEvolution()
 	{
@@ -56,7 +60,7 @@ public class DraconicEvolution {
 	public static void preInit(FMLPreInitializationEvent event)
 	{
 		configuration = new Configuration(event.getSuggestedConfigurationFile());
-
+		configProcessor.processConfig(DEConfig.class, configuration);
 		featureParser.loadFeatures(DEFeatures.class);
 		featureParser.loadFeatureConfig(configuration);
 		featureParser.registerFeatures();
@@ -67,6 +71,8 @@ public class DraconicEvolution {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
+		DEWorldGenHandler.initialize();
+
 		proxy.init(event);
 	}
 

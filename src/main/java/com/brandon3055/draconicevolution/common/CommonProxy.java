@@ -35,7 +35,6 @@ public class CommonProxy {
 	public void init(FMLInitializationEvent event) {
 //		CraftingHandler.init();
 		registerGuiHandeler();
-		registerWorldGen();
 		registerEntities();
 		DETab.initialize();
 //		PotionHandler.init();
@@ -123,10 +122,6 @@ public class CommonProxy {
 
 	public void registerGuiHandeler() {
 //		new GuiHandler();
-	}
-
-	public void registerWorldGen() {
-//		GameRegistry.registerWorldGenerator(new DraconicWorldGenerator(), 0);
 	}
 
 	public void registerOres(){
