@@ -1,0 +1,30 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube",
+    "textures": {
+      "particle": "draconicevolution:blocks/machineSide",
+      "down": "draconicevolution:blocks/machineSide",
+      "up":   "draconicevolution:blocks/machineTop",
+      "north":"draconicevolution:blocks/generatorFront",
+      "south":"draconicevolution:blocks/machineSide",
+      "east": "draconicevolution:blocks/machineSide",
+      "west": "draconicevolution:blocks/machineSide"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "active":{
+      "true":{ "textures": {"north":"draconicevolution:blocks/animated/generatorFrontActive"} },
+      "false":{}
+    },
+    "facing":{
+      "north":{},
+      "south":{ "y": 180 },
+      "west": { "y": 270 },
+      "east": { "y": 90 }
+    },
+    "inventory": [{ "textures": {"north":"draconicevolution:blocks/animated/generatorFrontActive"} }],
+    "normal":    [{ "textures": {"north":"draconicevolution:blocks/animated/generatorFrontActive"} }]
+  }
+}

@@ -1,13 +1,10 @@
 package com.brandon3055.draconicevolution;
 
-import com.brandon3055.brandonscore.common.config.ModConfigProcessor;
-import com.brandon3055.brandonscore.common.config.ModFeatureParser;
+import com.brandon3055.brandonscore.config.ModConfigProcessor;
+import com.brandon3055.brandonscore.config.ModFeatureParser;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
-import com.brandon3055.draconicevolution.common.CommonProxy;
-import com.brandon3055.draconicevolution.common.DEConfig;
-import com.brandon3055.draconicevolution.common.DEFeatures;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.world.DEWorldGenHandler;
+import com.brandon3055.draconicevolution.utills.LogHelper;
+import com.brandon3055.draconicevolution.world.DEWorldGenHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.Configuration;
@@ -25,7 +22,7 @@ public class DraconicEvolution {
 	public static final String MODNAME	= "Draconic Evolution";
 	public static final String VERSION	= "2.0.0";//todo Automate version
 	public static final String PROXY_CLIENT = "com.brandon3055.draconicevolution.client.ClientProxy";
-	public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.common.CommonProxy";
+	public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.CommonProxy";
 	public static final String DEPENDENCIES = "after:NotEnoughItems;after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:BrandonsCore@[1.0.0.11,);"; //todo Automate version
 	public static final String GUI_FACTORY 	= "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
 	public static final String networkChannelName = "DEvolutionNC";
@@ -61,9 +58,12 @@ public class DraconicEvolution {
 	{
 		configuration = new Configuration(event.getSuggestedConfigurationFile());
 		configProcessor.processConfig(DEConfig.class, configuration);
+
 		featureParser.loadFeatures(DEFeatures.class);
 		featureParser.loadFeatureConfig(configuration);
 		featureParser.registerFeatures();
+
+		OreHandler.initialize();
 
 		proxy.preInit(event);
 	}
@@ -72,6 +72,7 @@ public class DraconicEvolution {
 	public void init(FMLInitializationEvent event)
 	{
 		DEWorldGenHandler.initialize();
+		GuiHandler.initialize();
 
 		proxy.init(event);
 	}

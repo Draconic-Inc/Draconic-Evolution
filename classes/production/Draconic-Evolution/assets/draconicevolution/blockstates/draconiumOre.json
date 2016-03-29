@@ -6,8 +6,10 @@
     "transform": "forge:default-block"
   },
   "variants": {
-    "type=normal": [{}],
-    "type=nether": [{ "textures": {"all": "draconicevolution:blocks/animated/draconiumOreNether"} }],
-    "type=end": [{ "textures": {"all": "draconicevolution:blocks/animated/draconiumOreEnd"} }]
+    "type":{
+      "normal":{},
+      "nether":{ "textures": {"all": "draconicevolution:blocks/animated/draconiumOreNether"} },
+      "end":{ "textures": {"all": "draconicevolution:blocks/animated/draconiumOreEnd"}  }
+    }
   }
 }

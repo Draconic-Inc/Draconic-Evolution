@@ -276,6 +276,8 @@ info.de.manual.contributorsButton.txt=Contributors
 info.de.manual.contributorsButtonInfo.txt=A list of people who have contributed to Draconic Evolution
 info.de.shiftRightClickToActivate.txt=Shift-Right click to activate.
 info.de.blockRange.txt=Block Range.
+info.de.hasSavedData.txt=Has Saved Data
+info.de.energyBuffer.txt=Energy Buffer
 
 info.de.manual.nav1.txt=Navigation Tips
 info.de.manual.nav2.txt=Press Backspace to go to the previous page.

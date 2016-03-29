@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.integration;
 
+import com.brandon3055.brandonscore.handlers.HandHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 
@@ -20,7 +21,7 @@ public class ModHelper {
 		if (!isTConInstalled) return false;
 //		else if (cleaver == null) cleaver = GameRegistry.findItem("TConstruct", "cleaver");
 
-		return cleaver != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(cleaver);
+		return cleaver != null && HandHelper.getInstanceOf(player, cleaver.getClass()) != null;
 	}
 
 

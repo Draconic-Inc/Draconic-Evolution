@@ -36,17 +36,18 @@ archivesBaseName = "Draconic-Evolution"
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
     runDir = "run"
-	mappings = "stable_22"
+	mappings = "${config.mappings}"
 }
 
 
 
 dependencies {
-    compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
-    compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:dev"
-    compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
+    compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:deobf"
+    compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:deobf"
+    compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:deobf"
 
-    if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
+    //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
+    compile project(path: ':BrandonsCore')
 }
 
 processResources

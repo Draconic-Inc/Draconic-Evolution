@@ -1,1 +1,3 @@
-if(file('../BrandonsCore/').exists()) { include '../BrandonsCore' }
+include ':BrandonsCore'
+
+project(':BrandonsCore').projectDir = "$rootDir/../BrandonsCore" as File

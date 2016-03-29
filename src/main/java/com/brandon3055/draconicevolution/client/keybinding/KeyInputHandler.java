@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
+import com.brandon3055.brandonscore.handlers.HandHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -15,14 +17,15 @@ public class KeyInputHandler {
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
+		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		if(KeyBindings.placeItem.isPressed()) handlePlaceItemKey();
 		else if(KeyBindings.toolConfig.isPressed()) {
 //			DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOLCONFIG, false));todo stuff... Keys
 		}
-		else if (KeyBindings.toolProfileChange.isPressed() && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.getItemInUse() == null){
+		else if (KeyBindings.toolProfileChange.isPressed() && player != null && HandHelper.getMainFirst(player) == null){
 //			DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
 
-			ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
+			ItemStack stack = HandHelper.getMainFirst(player);
 //			if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem)stack.getItem()).hasProfiles()){
 //				int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
 //				if (++preset >= 5) preset = 0;
@@ -35,7 +38,7 @@ public class KeyInputHandler {
 	private void handlePlaceItemKey(){
 //		EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
 //		WorldClient world = Minecraft.getMinecraft().theWorld;
-//		MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 4.5D);
+//		RayTraceResult mop = ToolHandler.raytraceFromEntity(world, player, 4.5D);
 //		if (mop != null) DraconicEvolution.network.sendToServer(new PlacedItemPacket((byte) mop.sideHit, mop.blockX, mop.blockY, mop.blockZ));
 	}
 
