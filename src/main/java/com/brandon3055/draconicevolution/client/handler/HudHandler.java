@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -46,7 +47,7 @@ public class HudHandler {
 	@SideOnly(Side.CLIENT)
 	public void drawHUD(RenderGameOverlayEvent.Post event) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (event.type != RenderGameOverlayEvent.ElementType.ALL || mc.gameSettings.showDebugInfo) return;
+		if (event.type != RenderGameOverlayEvent.ElementType.ALL || mc.gameSettings.showDebugInfo || mc.currentScreen instanceof GuiChat) return;
 
 		ScaledResolution resolution = event.resolution;
 		width = resolution.getScaledWidth();

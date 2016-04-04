@@ -75,6 +75,7 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+        entity.hurtResistantTime = 0;
 		ToolHandler.damageEntityBasedOnHealth(entity, player, 0.3F);
 		ToolHandler.AOEAttack(player, entity, stack, IConfigurableItem.ProfileHelper.getInteger(stack, References.ATTACK_AOE, 0));
 		return true;

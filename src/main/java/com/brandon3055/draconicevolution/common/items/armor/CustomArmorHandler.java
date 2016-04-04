@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.network.ShieldHitPacket;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -76,7 +77,9 @@ public class CustomArmorHandler {
 	}
 
 	public static void onPlayerAttacked(LivingAttackEvent event){
-		EntityPlayer player = (EntityPlayer)event.entityLiving;
+        float hitAmount = ModHelper.applyModDamageAdjustments(event);
+
+        EntityPlayer player = (EntityPlayer)event.entityLiving;
 		ArmorSummery summery = new ArmorSummery().getSummery(player);
 
 		if (applyArmorDamageBlocking(event, summery)) return;
@@ -84,13 +87,15 @@ public class CustomArmorHandler {
 		if (summery == null || summery.protectionPoints <= 0 || event.source == ADMIN_KILL) return;
 		event.setCanceled(true);
 		//Ensure that the /kill command can still kill the player
-		if (event.ammount == Float.MAX_VALUE && !event.source.damageType.equals(ADMIN_KILL.damageType)){
+		if (hitAmount == Float.MAX_VALUE && !event.source.damageType.equals(ADMIN_KILL.damageType)){
 			player.attackEntityFrom(ADMIN_KILL, Float.MAX_VALUE);
 			return;
 		}
 		if ((float)player.hurtResistantTime > (float)player.maxHurtResistantTime / 2.0F) return;
 
-		float newEntropy = Math.min(summery.entropy + Math.min(2, event.ammount/5) + player.worldObj.rand.nextFloat(), 100F);
+        com.brandon3055.brandonscore.common.utills.LogHelper.info(1 + (hitAmount / 10));
+
+		float newEntropy = Math.min(summery.entropy + 1 + (hitAmount / 20), 100F);
 
 		//Divide the damage between the armor peaces based on how many of the protection points each peace has
 		float totalAbsorbed = 0;
@@ -100,7 +105,7 @@ public class CustomArmorHandler {
 			ItemStack armorPeace = summery.armorStacks[i];
 
 			float dmgShear = summery.allocation[i] / summery.protectionPoints;
-			float dmg = dmgShear * event.ammount;
+			float dmg = dmgShear * hitAmount;
 
 			float absorbed = Math.min(dmg, summery.allocation[i]);
 			totalAbsorbed += absorbed;
@@ -118,8 +123,8 @@ public class CustomArmorHandler {
 		if (remainingPoints > 0) {
 			player.hurtResistantTime = 20;
 		}
-		else if (event.ammount-totalAbsorbed > 0){
-			player.attackEntityFrom(event.source, event.ammount-totalAbsorbed);
+		else if (hitAmount-totalAbsorbed > 0){
+			player.attackEntityFrom(event.source, hitAmount-totalAbsorbed);
 		}
 	}
 
@@ -147,11 +152,11 @@ public class CustomArmorHandler {
 			}
 		}
 
-		if (totalCharge < 5000000) return;
+		if (totalCharge < 10000000) return;
 
 		for (int i = 0; i < summery.armorStacks.length; i++){
 			if (summery.armorStacks[i] != null) {
-				((IEnergyContainerItem)summery.armorStacks[i].getItem()).extractEnergy(summery.armorStacks[i], (int) ((charge[i] / (double) totalCharge) * 5000000D), false);
+				((IEnergyContainerItem)summery.armorStacks[i].getItem()).extractEnergy(summery.armorStacks[i], (int) ((charge[i] / (double) totalCharge) * 10000000), false);
 			}
 		}
 
