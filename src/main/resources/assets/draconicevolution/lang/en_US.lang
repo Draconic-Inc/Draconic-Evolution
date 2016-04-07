@@ -15,6 +15,7 @@ tile.draconicevolution:longRangeDislocator1.name=Admin Dislocator
 tile.draconicevolution:longRangeDislocator0.name=Long Range Dislocator
 tile.draconicevolution:generator.name=Generator
 tile.draconicevolution:energyStorageCore.name=Energy Core
+tile.draconicevolution:invisibleMultiblock.name=Energy Core
 tile.draconicevolution:energyPylon.name=Energy Pylon
 tile.draconicevolution:draconium0.name=Draconium Block
 tile.draconicevolution:draconium1.name=Resurrection Stone

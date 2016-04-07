@@ -74,11 +74,11 @@ public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
 
 	private int tick = 0;
 
-	@SideOnly(Side.SERVER)
-	@Override
-	public boolean canUpdate() {
-		return false;
-	}
+    @SideOnly(Side.SERVER)
+    @Override
+    public boolean canUpdate() {
+        return false;
+    }
 
 	@SideOnly(Side.CLIENT)
 	@Override

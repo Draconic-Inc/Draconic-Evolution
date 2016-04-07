@@ -3,7 +3,8 @@
 -draconic sword and staff of power now have an unlimited hit rate. (that was supposed to be a thing from the beginning)
 -increased the energy cost of the shields last stand ability from 5M RF to 10M RF.
 -added support for Avaritia's "Sword of the Cosmos" It will now deal a significant amount of damage to the draconic shield. As it should. 
--Note to devs. Please try to avoid bypassing the vanilla damage system. If you want your extremely expensive op weapon to deal a lot of damage then just make it deal a lot of damage.  
+-Note to devs. Please try to avoid bypassing the vanilla damage system. If you want your extremely expensive op weapon to deal a lot of damage then just make it deal a lot of damage. 
+-fixed WAILA localization for the energy core.
 
 ######## 1.0.2 ########
 -fixed HUD not working with Dual Hotbars installed.   

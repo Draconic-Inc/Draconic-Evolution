@@ -499,7 +499,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 	@Override
 	public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player) {
 		if (IConfigurableItem.ProfileHelper.getBoolean(stack, "EffectiveOnSprint", false)){
-			return player.isSprinting() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorFlightSpeedMult", 0f) : 0F;
+			return BrandonsCore.proxy.isCtrlDown() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorFlightSpeedMult", 0f) : 0F;
 		}
 		else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorFlightSpeedMult", 0f);
 	}

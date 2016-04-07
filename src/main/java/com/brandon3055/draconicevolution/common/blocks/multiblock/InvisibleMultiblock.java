@@ -227,4 +227,9 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 
 		return list;
 	}
+
+    @Override
+    public String getUnlocalizedName() {
+        return super.getUnlocalizedName();
+    }
 }
