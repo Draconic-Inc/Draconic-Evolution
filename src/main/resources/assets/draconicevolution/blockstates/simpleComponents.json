@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "textures": {
+      "layer0": "blocks/dirt"
+    },
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type":{
+      "draconiumdust": { "textures": { "layer0": "draconicevolution:items/draconiumDust"  } },
+      "draconiumingot":{ "textures": { "layer0": "draconicevolution:items/draconiumIngot" } },
+      "draconicingot": { "textures": { "layer0": "draconicevolution:items/draconicIngot"  } },
+      "draconiccore":  { "textures": { "layer0": "draconicevolution:items/draconicCore"   } },
+      "wyverncore":    { "textures": { "layer0": "draconicevolution:items/wyvernCore"     } },
+      "awakenedcore":  { "textures": { "layer0": "draconicevolution:items/awakenedCore"   } },
+      "chaoticcore":   { "textures": { "layer0": "draconicevolution:items/chaoticCore"    } }
+    }
+  }
+}

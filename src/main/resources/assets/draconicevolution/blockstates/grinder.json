@@ -6,7 +6,7 @@
       "particle": "draconicevolution:blocks/machineSide",
       "down": "draconicevolution:blocks/machineSide",
       "up": "draconicevolution:blocks/machineTop",
-      "north": "draconicevolution:blocks/generatorFront",
+      "north": "draconicevolution:blocks/grinderFront",
       "south": "draconicevolution:blocks/machineFan",
       "east": "draconicevolution:blocks/machineSide",
       "west": "draconicevolution:blocks/machineSide"
@@ -17,7 +17,7 @@
     "active": {
       "true": {
         "textures": {
-          "north": "draconicevolution:blocks/animated/generatorFrontActive",
+          "north": "draconicevolution:blocks/animated/grinderFrontActive",
           "south": "draconicevolution:blocks/animated/machineFanActive"
         }
       },
@@ -29,13 +29,11 @@
       "west": {"y": 270},
       "east": {"y": 90}
     },
-    "normal": [
-      {
-        "textures": {
-          "north": "draconicevolution:blocks/animated/generatorFrontActive",
-          "south": "draconicevolution:blocks/animated/machineFanActive"
-        }
+    "normal": [{
+      "textures": {
+        "north": "draconicevolution:blocks/animated/grinderFrontActive",
+        "south": "draconicevolution:blocks/animated/machineFanActive"
       }
-    ]
+    }]
   }
 }

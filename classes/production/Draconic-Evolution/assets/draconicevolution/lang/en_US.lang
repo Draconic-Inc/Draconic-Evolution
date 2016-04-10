@@ -8,7 +8,9 @@ tile.draconicevolution:draconiumOre.type.end.name=Ender Draconium Ore
 tile.draconicevolution:grinder.name=Mob Grinder
 tile.draconicevolution:potentiometer.name=Potentiometer
 tile.draconicevolution:rainSensor.name=Rain Sensor
-tile.draconicevolution:particleGenerator.name=Particle Generator
+tile.draconicevolution:particleGenerator.type.normal.name=Particle Generator
+tile.draconicevolution:particleGenerator.type.inverted.name=Particle Generator
+tile.draconicevolution:particleGenerator.type.stabilizer.name=Reactor Stabilizer
 tile.draconicevolution:playerDetector.name=Player Detector
 tile.draconicevolution:playerDetectorAdvanced.name=Advanced Player Detector
 tile.draconicevolution:energyInfuser.name=Energy Infuser
@@ -174,6 +176,7 @@ msg.de.shockWaveForEnergyBoltsOnly.txt=Shock Wave is only possible with Arrow of
 msg.de.explosiveNotForEnergyBolts.txt=Explosive is not possible with Arrow of Draconic Fire
 msg.de.insufficientPowerToFire.txt=Insufficient Power to Fire
 msg.de.outOfArrows.txt=Out of Arrows!!!
+msg.de.coreNotFound.txt=[Error: 404] Core Not Found!
 
 //Energy Net
 msg.de.wrenchMode.bind.txt=Function: Bind
@@ -276,7 +279,7 @@ info.de.manual.contributorsButton.txt=Contributors
 info.de.manual.contributorsButtonInfo.txt=A list of people who have contributed to Draconic Evolution
 info.de.shiftRightClickToActivate.txt=Shift-Right click to activate.
 info.de.blockRange.txt=Block Range.
-info.de.hasSavedData.txt=Has Saved Data
+info.de.hasSavedData.txt=Contents Saved!
 info.de.energyBuffer.txt=Energy Buffer
 
 info.de.manual.nav1.txt=Navigation Tips
@@ -573,6 +576,11 @@ gui.de.clickAndDragPurpleBoxes.txt=Click and drag the purple boxes to move the d
 gui.de.profile.txt=Profile
 gui.de.maxDamage.txt=Max Damage
 gui.de.rfPerShot.txt=RF/Shot
+gui.de.tier.txt=Tier
+gui.de.inactive.txt=Inactive
+gui.de.energyStorage.txt=Energy Storage
+gui.de.capacity.txt=Capacity
+gui.de.maxStorage.txt=>> Max Storage <<
 
 gui.de.RFCapacity.txt=RF Capacity
 gui.de.DigSpeed.txt=Dig Speed

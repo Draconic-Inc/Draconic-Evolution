@@ -162,9 +162,7 @@ public class DEImageHandler {
 		}
 	}
 
-
-	private static void addRSPack(boolean refreash)
-	{
+	private static void addRSPack(boolean refreash) {
 		File rspack = new File(getConfigFolder(), "/resources");
 		if (!rspack.exists()) return;
 
@@ -204,16 +202,14 @@ public class DEImageHandler {
 		}
 	}
 
-	public static File getConfigFolder()
-	{
+	public static File getConfigFolder() {
 		if (saveFolder == null) { saveFolder = new File(savePath); }
 		if (!saveFolder.exists()) saveFolder.mkdir();
 
 		return saveFolder;
 	}
 
-	public static File getImagesFolder()
-	{
+	public static File getImagesFolder() {
 		if (imagesFolder == null) { imagesFolder = new File(getConfigFolder(), "/resources/assets/draconicevolution/textures/gui/manualimages"); }
 		if (!imagesFolder.exists()) imagesFolder.mkdirs();
 

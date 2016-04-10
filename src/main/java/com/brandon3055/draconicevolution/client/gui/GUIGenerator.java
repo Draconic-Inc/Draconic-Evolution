@@ -37,7 +37,7 @@ public class GUIGenerator extends GuiContainer {
 	protected void drawGuiContainerBackgroundLayer(float f, int X, int Y) {
 		GL11.glColor4f(1, 1, 1, 1);
 
-		ResourceHelperDE.bindTexture("textures/gui/Grinder.png");
+		ResourceHelperDE.bindTexture("textures/gui/Generator.png");
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		drawTexturedModalRect(guiLeft + 63, guiTop + 34, 0, ySize, 18, 18);//fuel box
 		drawTexturedModalRect(guiLeft + 97, guiTop + 34, 18, ySize, 18, 18);//flame box
@@ -50,7 +50,7 @@ public class GUIGenerator extends GuiContainer {
 		drawTexturedModalRect(guiLeft + 83, guiTop + 11 + (int) (power * 40), xSize, (int) (power * 40), 12, 40 - (int) (power * 40));//Power bar
 		drawTexturedModalRect(guiLeft + 100, guiTop + 37 + (int) (fuel * 13), xSize, 40 + (int) (fuel * 13), 18, 18 - (int) (fuel * 13));//Power bar
 
-		fontRendererObj.drawStringWithShadow(I18n.translateToLocal(DEFeatures.generator.getUnlocalizedName()+".name"), guiLeft + 64, guiTop, 0x00FFFF);
+		fontRendererObj.drawStringWithShadow(I18n.translateToLocal(DEFeatures.generator.getUnlocalizedName() + ".name"), guiLeft + 64, guiTop, 0x00FFFF);
 
 		int x = X - guiLeft;
 		int y = Y - guiTop;
@@ -72,4 +72,5 @@ public class GUIGenerator extends GuiContainer {
 		super.updateScreen();
 
 	}
+
 }

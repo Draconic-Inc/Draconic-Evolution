@@ -29,7 +29,7 @@ public class CCOCIntegration {
 //
 //		@Override
 //		public ManagedEnvironment createEnvironment(World world, int x, int y, int z) {
-//			return new DEManagedPeripheral((IDEPeripheral)world.getTileEntity(x, y, z));
+//			return new DEManagedPeripheral((IDEPeripheral)world.tileEntity(x, y, z));
 //		}
 //	}
 //
@@ -37,7 +37,7 @@ public class CCOCIntegration {
 //
 //		@Override
 //		public IPeripheral getPeripheral(World world, int x, int y, int z, int i3) {
-//			TileEntity tile = world.getTileEntity(x, y, z);
+//			TileEntity tile = world.tileEntity(x, y, z);
 //			if (tile instanceof IDEPeripheral) {
 //				return new CCAdapter((IDEPeripheral)tile);
 //			}

@@ -108,7 +108,7 @@ public class ChaosWorldGenHandler {
 		}
 
 		//world.setBlockState(islandCenter.x, shardY, islandCenter.z, DEFeatures.chaosCrystal);
-		//TileChaosShard tileChaosShard = (TileChaosShard)world.getTileEntity(islandCenter.x, shardY, islandCenter.z);
+		//TileChaosShard tileChaosShard = (TileChaosShard)world.tileEntity(islandCenter.x, shardY, islandCenter.z);
 		//tileChaosShard.locationHash = tileChaosShard.getLocationHash(islandCenter.x, shardY, islandCenter.z, world.provider.dimensionId); todo Chaos island stuff
 
 		//EntityChaosGuardian guardian = new EntityChaosGuardian(world);

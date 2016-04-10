@@ -1,0 +1,31 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "draconicevolution:blocks/particleGen/normal",
+      "all": "draconicevolution:blocks/particleGen/normal"
+    },
+    "model": "draconicevolution:particleGenerator",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "type": {
+      "normal": {
+        "textures": {
+          "all": "draconicevolution:blocks/particleGen/normal"
+        }
+      },
+      "inverted": {
+        "textures": {
+          "all": "draconicevolution:blocks/particleGen/inverted"
+        }
+      },
+      "stabilizer": {
+        "textures": {
+          "all": "draconicevolution:blocks/particleGen/stabilizer"
+        }
+      }
+    },
+    "normal": [{}]
+  }
+}

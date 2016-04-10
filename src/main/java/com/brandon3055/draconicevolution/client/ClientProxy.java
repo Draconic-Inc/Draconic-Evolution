@@ -1,9 +1,10 @@
 package com.brandon3055.draconicevolution.client;
 
+import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
-import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -32,7 +33,7 @@ public class ClientProxy extends CommonProxy {
 
 		super.init(event);
 		MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
-//		FMLCommonHandler.instance().bus().register(new ClientEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 //		if (ConfigHandler.enableVersionChecker) FMLCommonHandler.instance().bus().register(new UpdateChecker());
 //		MinecraftForge.EVENT_BUS.register(new HudHandler());
 //		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());

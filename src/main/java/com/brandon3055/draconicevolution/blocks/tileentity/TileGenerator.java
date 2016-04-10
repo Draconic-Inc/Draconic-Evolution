@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import cofh.api.energy.IEnergyProvider;
-import com.brandon3055.brandonscore.blocks.TileBCEnergyBase;
+import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.brandonscore.network.wrappers.SyncableInt;
 import net.minecraft.item.ItemStack;
@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 
-public class TileGenerator extends TileBCEnergyBase implements IEnergyProvider, ITickable {
+public class TileGenerator extends TileEnergyInventoryBase implements IEnergyProvider, ITickable {
 
 	private int burnSpeed = 6;
 	/**
@@ -21,15 +21,14 @@ public class TileGenerator extends TileBCEnergyBase implements IEnergyProvider, 
 	//Synced Fields
 	public final SyncableInt burnTime = new SyncableInt(1, false, true);
 	public final SyncableInt burnTimeRemaining = new SyncableInt(0, false, true);
-	public final SyncableInt energyStored = new SyncableInt(0, false, true);
 	public final SyncableBool active = new SyncableBool(false, true, false, true);
 
 	public TileGenerator() {
 		setInventorySize(1);
-		registerSyncableObject(burnTime);
-		registerSyncableObject(burnTimeRemaining);
-		registerSyncableObject(energyStored);
-		registerSyncableObject(active);
+		registerSyncableObject(burnTime, false);
+		registerSyncableObject(burnTimeRemaining, false);
+		registerSyncableObject(active, false);
+		registerSyncableObject(energyStored, false);
 		setCapacityAndTransfer(100000, 0, 1000);
 	}
 
@@ -47,7 +46,6 @@ public class TileGenerator extends TileBCEnergyBase implements IEnergyProvider, 
 		if (burnTimeRemaining.value <= 0 && getEnergyStored() < getMaxEnergyStored()) tryRefuel();
 
 		sendEnergyToAll();
-		energyStored.value = getEnergyStored();
 	}
 
 	public void tryRefuel() {
