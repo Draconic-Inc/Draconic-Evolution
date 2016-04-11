@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution;
 
-import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.achievements.Achievements;
-import com.brandon3055.draconicevolution.utills.LogHelper;
+import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
+import com.brandon3055.draconicevolution.utills.LogHelper;
 import net.minecraft.client.audio.ISound;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -115,7 +115,7 @@ public class CommonProxy {
 	public void registerEventListeners(Side s) {
 //		MinecraftForge.EVENT_BUS.register(new MinecraftForgeEventHandler());
 //		MinecraftForge.EVENT_BUS.register(new Achievements());
-		FMLCommonHandler.instance().bus().register(new Achievements());
+        MinecraftForge.EVENT_BUS.register(new Achievements());
 //		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
 	}
 

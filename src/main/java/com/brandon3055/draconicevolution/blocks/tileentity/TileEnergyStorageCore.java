@@ -75,29 +75,38 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 	@Override
 	public void update() {
         detectAndSendChanges();
+        //tier.value = 5; buildGuide.value = true;
+        //updateBlock();
+        //if (!worldObj.isRemote) buildGuide.value = true;
        // coreStructure.initialize(this);
-
 	}
 
 
     //region Activation
 
     public void onStructureClicked(World world, BlockPos stabilizerPos, IBlockState state, EntityPlayer player) {
-        validateStructure();
+        //validateStructure();
         if (!world.isRemote) {
             FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CORE, world, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 
     private void activateCore(){
-        if (!coreStructure.checkTier(tier.value)){
+        if (!validateStructure()){
             return;
         }
 
         updateCapacity();
 
+        LogHelper.info("Activate Core");//todo remove
         buildGuide.value = false;
         coreStructure.formTier(tier.value);
+        active.value = true;
+    }
+
+    private void deactivateCore(){
+        LogHelper.info("Deactivate Core");//todo remove
+        active.value = false;
     }
 
     private void updateCapacity(){
@@ -140,23 +149,31 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 
     @Override
     public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
-        if (packet.getIndex() == 0){ //Activate
-
-        }
-        else if (packet.getIndex() == 1){ //Tier Up
-
-        }
-        else if (packet.getIndex() == 2){ //Tier Down
-
-        }
-        else if (packet.getIndex() == 3){ //Toggle Guide
-            if (!active.value){
-                buildGuide.value = !buildGuide.value;
-                LogHelper.info(buildGuide);
+        if (packet.getIndex() == (byte)0){ //Activate
+            if (active.value){
+                deactivateCore();
+            }
+            else {
+                activateCore();
             }
         }
-
-        LogHelper.info(packet.getIndex());
+        else if (packet.getIndex() == (byte)1){ //Tier Up
+            if (!active.value && tier.value < 8) {
+                tier.value++;
+                validateStructure();
+            }
+        }
+        else if (packet.getIndex() == (byte)2){ //Tier Down
+            if (!active.value && tier.value > 1) {
+                tier.value--;
+                validateStructure();
+            }
+        }
+        else if (packet.getIndex() == (byte)3){ //Toggle Guide
+            if (!active.value){
+                buildGuide.value = !buildGuide.value;
+            }
+        }
     }
 
     //endregion

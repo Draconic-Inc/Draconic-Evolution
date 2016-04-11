@@ -156,12 +156,14 @@ public class EnergyCoreStructure extends MultiBlockHelper {
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GlStateManager.scale(0.9, 0.9, 0.9);
             GlStateManager.translate(0.05, 0.05, 0.05);
+            float brightnessX = OpenGlHelper.lastBrightnessX;
+            float brightnessY = OpenGlHelper.lastBrightnessY;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 150f, 150f);
-
 
             List<BakedQuad> blockQuads = ModelUtills.getModelQuads(state);
             ModelUtills.renderQuadsARGB(tessellator, blockQuads, 0x80FFFFFF);
 
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
             GlStateManager.disableBlend();
             GlStateManager.popMatrix();
         }

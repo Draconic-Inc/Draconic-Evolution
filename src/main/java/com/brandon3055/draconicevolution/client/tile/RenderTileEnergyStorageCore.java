@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer<TileE
 
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
         GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.translate(innerTrans, innerTrans, innerTrans);
         GlStateManager.rotate(rotation, 0F, -1F, -0.5F);
         GlStateManager.translate(-innerTrans, -innerTrans, -innerTrans);

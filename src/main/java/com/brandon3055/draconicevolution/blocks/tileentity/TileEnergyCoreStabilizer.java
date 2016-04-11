@@ -50,7 +50,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable{
             core.onStructureClicked(world, pos, state, player);
         }
         else {
-            player.addChatComponentMessage(new TextComponentTranslation("msg.de.coreNotFound.txt").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
+            player.addChatComponentMessage(new TextComponentTranslation("msg.de.coreNotFound.txt").setChatStyle(new Style().setColor(TextFormatting.DARK_RED)));
         }
     }
 

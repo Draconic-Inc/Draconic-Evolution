@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.client.tile.RenderTileEnergyStorageCore;
@@ -15,6 +17,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -27,6 +30,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  *  Created by brandon3055 on 30/3/2016.
@@ -74,6 +79,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
         return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getSelectedBoundingBox(state, worldIn, pos);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         return !state.getValue(ACTIVE);
@@ -98,9 +104,13 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEnergyStorageCore core = TileBCBase.getCastTileAt(world, pos, TileEnergyStorageCore.class);
 
+        if (core != null && !world.isRemote){
+            core.receivePacketFromClient(new PacketTileMessage(core, (byte) 1, false, true), (EntityPlayerMP)playerIn);
+        }
 
-        return false;
+        return true;
     }
 
 
@@ -111,6 +121,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
         return new TileEnergyStorageCore();
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
         OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);

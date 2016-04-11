@@ -35,6 +35,7 @@ public class GuiEnergyCore extends GuiContainer {
         this.tile = tile;
         this.xSize = 180;
         this.ySize = 200;
+        this.player = player;
     }
 
     @Override
@@ -80,10 +81,12 @@ public class GuiEnergyCore extends GuiContainer {
     @Override
     public void updateScreen() {
         super.updateScreen();
+        tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.value;
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
+
         if (button.id == activete.id){
             tile.sendPacketToServer(new PacketTileMessage(tile, (byte)0, true, false));
         }
