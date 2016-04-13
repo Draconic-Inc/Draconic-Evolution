@@ -4,10 +4,7 @@ import com.brandon3055.brandonscore.blocks.IDataRetainerTile;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
-import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
-import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
-import com.brandon3055.brandonscore.network.wrappers.SyncableLong;
-import com.brandon3055.brandonscore.network.wrappers.SyncableVec3I;
+import com.brandon3055.brandonscore.network.wrappers.*;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
@@ -45,6 +42,8 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
             {EnumFacing.UP, EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.SOUTH}    // ORIENT_EAST_WEST
     };
 
+    public static final long[] CAPACITY = new long[] {45500000L, 273000000L, 1640000000L, 9880000000L, 59300000000L, 356000000000L, 2140000000000L, Long.MAX_VALUE};
+
     //endregion
 
 	public final EnergyCoreStructure coreStructure = new EnergyCoreStructure().initialize(this);
@@ -56,7 +55,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
     public final SyncableByte stabOrient = new SyncableByte((byte)0, false, false, false);
     public final SyncableVec3I[] stabOffsets = new SyncableVec3I[4];
     public final SyncableLong energy = new SyncableLong(0, true, false, false);
-    public final SyncableLong capacity = new SyncableLong(1, true, false, false);
+    public final SyncableInt averageTransfer = new SyncableInt(0, true, false, false);
 
     public TileEnergyStorageCore() {
         registerSyncableObject(active, true);
@@ -65,6 +64,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
         registerSyncableObject(stabilizersOK, true);
         registerSyncableObject(tier, true);
         registerSyncableObject(stabOrient, true);
+        registerSyncableObject(averageTransfer, false);
         for (int i = 0; i < stabOffsets.length; i++){
             stabOffsets[i] = new SyncableVec3I(new Vec3I(0, -1, 0), true, false, false);
             registerSyncableObject(stabOffsets[i], true);
@@ -81,11 +81,10 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
        // coreStructure.initialize(this);
 	}
 
-
     //region Activation
 
-    public void onStructureClicked(World world, BlockPos stabilizerPos, IBlockState state, EntityPlayer player) {
-        //validateStructure();
+    public void onStructureClicked(World world, BlockPos blockClicked, IBlockState state, EntityPlayer player) {
+        validateStructure();
         if (!world.isRemote) {
             FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CORE, world, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -96,7 +95,9 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
             return;
         }
 
-        updateCapacity();
+        if (energy.value > getCapacity()) {
+            energy.value = getCapacity();
+        }
 
         LogHelper.info("Activate Core");//todo remove
         buildGuide.value = false;
@@ -106,45 +107,16 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 
     private void deactivateCore(){
         LogHelper.info("Deactivate Core");//todo remove
+        coreStructure.revertTier(tier.value);
         active.value = false;
     }
 
-    private void updateCapacity(){
-        long cap = 1;
-
-        //region Cap Switch
-        switch (tier.value){
-            case 1:
-                cap = 45500000L;
-                break;
-            case 2:
-                cap = 273000000L;
-                break;
-            case 3:
-                cap = 1640000000L;
-                break;
-            case 4:
-                cap = 9880000000L;
-                break;
-            case 5:
-                cap = 59300000000L;
-                break;
-            case 6:
-                cap = 356000000000L;
-                break;
-            case 7:
-                cap = 2140000000000L;
-                break;
-            case 8:
-                cap = Long.MAX_VALUE;
-                break;
+    private long getCapacity(){
+        if (tier.value <= 0 || tier.value > 8){
+            LogHelper.error("Tier not valid! WTF!!!");
+            return 0;
         }
-        //endregion
-
-        capacity.value = cap;
-        if (energy.value > cap) {
-            energy.value = cap;
-        }
+        return CAPACITY[tier.value-1];
     }
 
     @Override
@@ -172,6 +144,11 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
         else if (packet.getIndex() == (byte)3){ //Toggle Guide
             if (!active.value){
                 buildGuide.value = !buildGuide.value;
+            }
+        }
+        else if (packet.getIndex() == (byte)4){ //Toggle Guide
+            if (!active.value && client.capabilities.isCreativeMode){
+                coreStructure.placeTier(tier.value);
             }
         }
     }
@@ -271,7 +248,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 
             if (tile != null){
                 tile.hasCoreLock.value = false;
-                tile.coreYOffset.value = 0;
+                tile.coreOffset.vec.y = 0;
             }
 
             offset.vec = new Vec3I(0, -1, 0);
@@ -307,7 +284,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 
     @Override
     public long getExtendedCapacity() {
-        return capacity.value;
+        return getCapacity();
     }
 
     //endregion

@@ -819,4 +819,11 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 		int offset = tier == 1 ? 0 : tier == 2 || tier == 3 ? -1 : -(tier - 2);
 		return new BlockPos(offset, offset, offset);
 	}
+
+    @Override
+    public void setBlock(String name, World world, BlockPos pos) {
+        if (!name.equals("draconicevolution:energyStorageCore")) {
+            super.setBlock(name, world, pos);
+        }
+    }
 }

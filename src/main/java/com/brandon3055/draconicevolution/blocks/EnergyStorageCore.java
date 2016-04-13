@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.client.tile.RenderTileEnergyStorageCore;
@@ -17,7 +16,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -107,7 +105,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
         TileEnergyStorageCore core = TileBCBase.getCastTileAt(world, pos, TileEnergyStorageCore.class);
 
         if (core != null && !world.isRemote){
-            core.receivePacketFromClient(new PacketTileMessage(core, (byte) 1, false, true), (EntityPlayerMP)playerIn);
+            core.onStructureClicked(world, pos, state, playerIn);
         }
 
         return true;

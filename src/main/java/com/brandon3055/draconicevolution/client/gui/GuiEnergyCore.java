@@ -25,10 +25,11 @@ public class GuiEnergyCore extends GuiContainer {
 
     public EntityPlayer player;
     public TileEnergyStorageCore tile;
-    private GuiButton activete;
+    private GuiButton activate;
     private GuiButton tierUp;
     private GuiButton tierDown;
     private GuiButton toggleGuide;
+    private GuiButton creativeBuild;
 
     public GuiEnergyCore(EntityPlayer player, TileEnergyStorageCore tile){
         super(new ContainerBCBase<TileEnergyStorageCore>(player, tile).addPlayerSlots(10, 116));
@@ -42,10 +43,11 @@ public class GuiEnergyCore extends GuiContainer {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(activete    = new GuiButton(0, guiLeft + 100, 0, 80, 20, "Activate-L"));
-        buttonList.add(tierUp      = new GuiButton(1, guiLeft + 100, 20, 80, 20, "tierUp-L"));
-        buttonList.add(tierDown    = new GuiButton(2, guiLeft + 100, 40, 80, 20, "tierDown-L"));
-        buttonList.add(toggleGuide = new GuiButton(3, guiLeft + 100, 60, 80, 20, "toggleGuide-L"));
+        buttonList.add(activate      = new GuiButton(0, guiLeft + 150, 0, 80, 20, "Activate-L"));
+        buttonList.add(tierUp        = new GuiButton(1, guiLeft + 150, 20, 80, 20, "tierUp-L"));
+        buttonList.add(tierDown      = new GuiButton(2, guiLeft + 150, 40, 80, 20, "tierDown-L"));
+        buttonList.add(toggleGuide   = new GuiButton(3, guiLeft + 150, 60, 80, 20, "toggleGuide-L"));
+        buttonList.add(creativeBuild = new GuiButton(4, guiLeft + 150, 80, 80, 20, "creativeBuild-L"));
     }
 
     @Override
@@ -82,22 +84,11 @@ public class GuiEnergyCore extends GuiContainer {
     public void updateScreen() {
         super.updateScreen();
         tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.value;
+        creativeBuild.visible = player.capabilities.isCreativeMode && !tile.active.value;
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-
-        if (button.id == activete.id){
-            tile.sendPacketToServer(new PacketTileMessage(tile, (byte)0, true, false));
-        }
-        else if (button.id == tierUp.id){
-            tile.sendPacketToServer(new PacketTileMessage(tile, (byte)1, true, false));
-        }
-        else if (button.id == tierDown.id){
-            tile.sendPacketToServer(new PacketTileMessage(tile, (byte)2, true, false));
-        }
-        else if (button.id == toggleGuide.id){
-            tile.sendPacketToServer(new PacketTileMessage(tile, (byte)3, true, false));
-        }
+        tile.sendPacketToServer(new PacketTileMessage(tile, (byte)button.id, true, false));
     }
 }
