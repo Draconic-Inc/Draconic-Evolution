@@ -243,4 +243,3 @@ public class BowHandler {
 		}
 	}
 }
-//lot, "BowArrowSpeedModifier").setMinMaxAndIncromente(0F, (float)EnumUpgrade.ARROW_SPEED.getUpgradePoints(stack), 0.01F).readFromItem(stack, 0F)todo dont forget the speed needs to be "Calibrated" for the upgrade system

@@ -75,10 +75,10 @@ public class CustomArmorHandler {
 	}
 
 	public static void onPlayerAttacked(LivingAttackEvent event){
-        float hitAmount = ModHelper.applyModDamageAdjustments(event);
-
         EntityPlayer player = (EntityPlayer)event.entityLiving;
 		ArmorSummery summery = new ArmorSummery().getSummery(player);
+
+        float hitAmount = ModHelper.applyModDamageAdjustments(summery, event);
 
 		if (applyArmorDamageBlocking(event, summery)) return;
 
@@ -91,7 +91,9 @@ public class CustomArmorHandler {
 		}
 		if ((float)player.hurtResistantTime > (float)player.maxHurtResistantTime / 2.0F) return;
 
-		float newEntropy = Math.min(summery.entropy + 1 + (hitAmount / 20), 100F);
+        if (summery.protectionPoints <= 0) return;
+
+        float newEntropy = Math.min(summery.entropy + 1 + (hitAmount / 20), 100F);
 
 		//Divide the damage between the armor peaces based on how many of the protection points each peace has
 		float totalAbsorbed = 0;

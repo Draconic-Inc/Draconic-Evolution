@@ -16,6 +16,7 @@ public class EntityChaosBolt extends Entity {
 	public double shardY;
 	public double shardZ;
 	public boolean burst;
+    public int ticks = 0;
 	private static DamageSource chaosBurst = new DamageSource("chaosBurst").setDamageBypassesArmor().setDamageIsAbsolute();
 
 	public EntityChaosBolt(World world) {
@@ -47,7 +48,6 @@ public class EntityChaosBolt extends Entity {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		burst = true;
 		if (worldObj.isRemote) {
 			shardX = dataWatcher.getWatchableObjectFloat(20);
 			shardZ = dataWatcher.getWatchableObjectFloat(21);
@@ -58,18 +58,20 @@ public class EntityChaosBolt extends Entity {
 			dataWatcher.updateObject(22, burst ? (byte)1 : (byte)0);
 		}
 
-		if (ticksExisted == 10 && !burst) {
-			if (worldObj.isRemote) DraconicEvolution.proxy.spawnParticle(new Particles.ChaosBoltParticle(worldObj, posX, posY, posZ, shardX, shardY, shardZ, 10), 32);
+		if (ticks == 10 && !burst) {
+			if (worldObj.isRemote) {
+                DraconicEvolution.proxy.spawnParticle(new Particles.ChaosBoltParticle(worldObj, posX, posY, posZ, shardX, shardY, shardZ, 10), 32);
+            }
 			setDead();
 		}
-		else if (ticksExisted > 10){
-			if (ticksExisted < 25){
+		else if (ticks > 10){
+			if (ticks < 25){
 				for (int i = 0; i < 20; i++){
 					if (worldObj.isRemote) DraconicEvolution.proxy.spawnParticle(new Particles.ChaosBoltParticle(worldObj, posX, posY, posZ, shardX, shardY, shardZ, 0), 32);
 				}
 			}
-			if (ticksExisted > 40 && !worldObj.isRemote) {
-//				if (ticksExisted % 5 == 0)
+			if (ticks > 40 && !worldObj.isRemote) {
+//				if (ticks % 5 == 0)
 //				{
 //					double dist = Utills.getDistanceAtoB(posX, posY, posZ, shardX, shardY, shardZ);
 //					Vec3 dir = Vec3.createVectorHelper((shardX - posX) / dist, (shardY - posY) / dist, (shardZ - posZ) / dist);
@@ -82,9 +84,14 @@ public class EntityChaosBolt extends Entity {
 //						entity.attackEntityFrom(chaosBurst, 50F);
 //					}
 //				}
-				if (ticksExisted > 60)setDead();
 			}
 		}
+
+        if (ticks > 60) {
+            setDead();
+        }
+
+        ticks++;
 	}
 
 	@Override

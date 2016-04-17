@@ -76,9 +76,9 @@ public class Magnet extends ItemDE {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int damage, boolean hotbar) {
+	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean hotbar) {
 		if (!entity.isSneaking() && entity.ticksExisted % 5 == 0 && ItemNBTHelper.getBoolean(stack, "MagnetEnabled", false) && entity instanceof EntityPlayer){
-			int range = damage == 0 ? 8 : 32;
+			int range = stack.getItemDamage() == 0 ? 8 : 32;
 
 			List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).expand(range, range, range));
 

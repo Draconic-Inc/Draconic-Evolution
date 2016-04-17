@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.integration;
 
+import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler.ArmorSummery;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,12 +14,15 @@ public class ModHelper {
 
     public static boolean isTConInstalled;
     public static boolean isAvaritiaInstalled;
+    public static boolean isRotaryCraftInstalled;
     private static Item cleaver;
     private static Item avaritiaSword;
+    private static Item bedrockSword;
 
 	public static void init(){
 		isTConInstalled = Loader.isModLoaded("TConstruct");
         isAvaritiaInstalled = Loader.isModLoaded("Avaritia");
+        isRotaryCraftInstalled = Loader.isModLoaded("RotaryCraft");
 	}
 
 	public static boolean isHoldingCleaver(EntityPlayer player){
@@ -35,12 +39,33 @@ public class ModHelper {
         return avaritiaSword != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(avaritiaSword);
     }
 
-    public static float applyModDamageAdjustments(LivingAttackEvent event){
+    public static boolean isHoldingBedrockSword(EntityPlayer player){
+        if (!isRotaryCraftInstalled) return false;
+        else if (bedrockSword == null) bedrockSword = GameRegistry.findItem("RotaryCraft", "rotarycraft_item_bedsword");
+
+        return bedrockSword != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(bedrockSword);
+    }
+
+    public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event){
         EntityPlayer attacker = event.source.getEntity() instanceof EntityPlayer ? (EntityPlayer) event.source.getEntity() : null;
 
-        if (attacker != null && isHoldingAvaritiaSword(attacker)){
+        if (attacker == null){
+            return event.ammount;
+        }
+
+        if (isHoldingAvaritiaSword(attacker)){
             event.entityLiving.hurtResistantTime = 0;
             return 300F;
+        }
+
+        if (isHoldingBedrockSword(attacker)){
+            summery.entropy += 10;
+
+            if (summery.entropy > 100){
+                summery.entropy = 100;
+            }
+
+            return Math.max(event.ammount, Math.min(50F, summery.protectionPoints));
         }
 
         return event.ammount;

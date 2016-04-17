@@ -177,7 +177,8 @@
       "",
       "Awakened Item Dislocator",
       "Further testing has revealed that upgrading the Item dislocator with a bit of power and Awakened Draconium can greatly increase the range and effectiveness.",
-      "[c]item.draconicevolution:magnet:1"
+      "[c]item.draconicevolution:magnet:1",
+      "Sneaking will temporarily disable ether Item Dislocator."
     ]
   },
   {

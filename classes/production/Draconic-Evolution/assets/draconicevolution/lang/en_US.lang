@@ -1,0 +1,596 @@
+//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
+tile.draconicevolution:xRayBlock.name=Distortion Flame
+tile.draconicevolution:sunDial.name=Sun Dial
+tile.draconicevolution:weatherController.name=Weather Controller
+tile.draconicevolution:draconiumOre.name=Draconium Ore
+tile.draconicevolution:grinder.name=Mob Grinder
+tile.draconicevolution:potentiometer.name=Potentiometer
+tile.draconicevolution:rainSensor.name=Rain Sensor
+tile.draconicevolution:particleGenerator.name=Particle Generator
+tile.draconicevolution:playerDetector.name=Player Detector
+tile.draconicevolution:playerDetectorAdvanced.name=Advanced Player Detector
+tile.draconicevolution:energyInfuser.name=Energy Infuser
+tile.draconicevolution:customSpawner.name=Stabilized Mob Spawner
+tile.draconicevolution:longRangeDislocator1.name=Admin Dislocator
+tile.draconicevolution:longRangeDislocator0.name=Long Range Dislocator
+tile.draconicevolution:generator.name=Generator
+tile.draconicevolution:energyStorageCore.name=Energy Core
+tile.draconicevolution:invisibleMultiblock.name=Energy Core
+tile.draconicevolution:energyPylon.name=Energy Pylon
+tile.draconicevolution:draconium0.name=Draconium Block
+tile.draconicevolution:draconium1.name=Resurrection Stone
+tile.draconicevolution:draconium2.name=Charged Draconium Block
+tile.draconicevolution:cKeyStone.name=Creative Key Stone
+tile.draconicevolution:dissEnchanter.name=Disenchanter
+tile.draconicevolution:teleporterStand.name=Dislocator Pedestal
+tile.draconicevolution:draconiumChest.name=Draconic Chest
+tile.draconicevolution:draconicBlock.name=Awakened Draconium Block
+tile.draconicevolution:infusedObsidian.name=Draconium Infused Obsidian
+tile.draconicevolution:dislocatorReceptacle.name=Dislocator Receptacle
+tile.draconicevolution:portal.name=Portal
+tile.draconicevolution:flowGateFlux.name=Flux Gate
+tile.draconicevolution:flowGateFluid.name=Fluid Gate
+tile.draconicevolution:reactorCore.name=Draconic Reactor Core
+tile.draconicevolution:reactorStabilizer.name=Reactor Stabilizer
+tile.draconicevolution:reactorEnergyInjector.name=Reactor Energy Injector
+tile.draconicevolution:chaosCrystal.name=Chaos Crystal
+tile.draconicevolution:upgradeModifier.name=Upgrade Modifier
+
+tile.draconicevolution:energyCrystal0.name=Energy Relay
+tile.draconicevolution:energyCrystal1.name=Advanced Energy Relay
+tile.draconicevolution:energyCrystal2.name=Energy Transceiver
+tile.draconicevolution:energyCrystal3.name=Advanced Energy Transceiver
+tile.draconicevolution:energyCrystal4.name=Wireless Energy Transceiver
+tile.draconicevolution:energyCrystal5.name=Advanced Wireless Transceiver
+
+
+//Item Information ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:awakenedCore.name=Awakened Core
+item.draconicevolution:draconiumIngot.name=Draconium Ingot
+item.draconicevolution:draconiumDust.name=Draconium Dust
+item.draconicevolution:draconiumBlend.name=Draconium Blend (Depreciated)
+item.draconicevolution:dragonHeart.name=Dragon Heart
+item.draconicevolution:wyvernCore.name=Wyvern Core
+item.draconicevolution:sunFocus.name=Solar Focus
+item.draconicevolution:tclogo.name=TCLogo
+item.draconicevolution:draconicCore.name=Draconic Core
+item.draconicevolution:teleporterMKI.name=Charm of Dislocation
+item.draconicevolution:teleporterMKII.name=Enhanced Charm of Dislocation
+
+info.teleporterInfGUI.txt=Shift + Right click to open gui
+info.teleporterInfScroll.txt=Shift + scroll to cycle destinations
+
+item.draconicevolution:wyvernPickaxe.name=Pickaxe of the Wyvern
+item.draconicevolution:wyvernShovel.name=Shovel of the Wyvern
+item.draconicevolution:wyvernSword.name=Sword of the Wyvern
+item.draconicevolution:wyvernBow.name=Bow of the Wyvern
+item.draconicevolution:wyvernHelm.name=Wyvern Helm
+item.draconicevolution:wyvernChest.name=Wyvern Chestplate
+item.draconicevolution:wyvernLeggs.name=Wyvern Leggings
+item.draconicevolution:wyvernBoots.name=Wyvern Boots
+item.draconicevolution:draconicPickaxe.name=Draconic Pickaxe
+item.draconicevolution:draconicAxe.name=Draconic Axe
+item.draconicevolution:draconicShovel.name=Draconic Shovel
+item.draconicevolution:draconicHoe.name=Draconic Hoe
+item.draconicevolution:draconicSword.name=Draconic Sword
+item.draconicevolution:draconicBow.name=Draconic Bow
+item.draconicevolution:draconicHelm.name=Draconic Helm
+item.draconicevolution:draconicChest.name=Draconic Chestplate
+item.draconicevolution:draconicLeggs.name=Draconic Leggings
+item.draconicevolution:draconicBoots.name=Draconic Boots
+item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
+item.draconicevolution:mobSoul.name=Mob Soul
+item.draconicevolution:enderArrow.name=Ender Arrow
+item.draconicevolution:safetyMatch.name=Safety Match
+item.draconicevolution:safetyMatchBox.name=Box of Safety Matches
+item.draconicevolution:key.name=Key
+item.draconicevolution:draconiumEnergyCore0.name=Wyvern Energy Core
+item.draconicevolution:draconiumEnergyCore1.name=Draconic Energy Core
+item.draconicevolution:draconiumFluxCapacitor0.name=Wyvern Flux Capacitor
+item.draconicevolution:draconiumFluxCapacitor1.name=Draconic Flux Capacitor
+item.draconicevolution:draconicIngot.name=Awakened Draconium Ingot
+item.draconicevolution:creativeStructureSpawnerComet.name=Spawn Comet
+item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Island
+item.draconicevolution:infoTablet.name=Draconic Evolution Information Tablet
+item.draconicevolution:wrench.name=Crystal Binder
+item.draconicevolution:dezilsMarshmallow.name=Dezil's Marshmallow
+item.draconicevolution:reactorCraftingPart.frame.name=Reactor Stabilizer Frame
+item.draconicevolution:reactorCraftingPart.rotorInner.name=Reactor Stabilizer Inner Rotor
+item.draconicevolution:reactorCraftingPart.rotorOuter.name=Reactor Stabilizer Outer Rotor
+item.draconicevolution:reactorCraftingPart.rotorAssembly.name=Reactor Stabilizer Rotor Assembly
+item.draconicevolution:reactorCraftingPart.stabilizerRing.name=Reactor Stabilizer Focus Ring
+item.draconicevolution:chaoticCore.name=Chaotic Core
+item.draconicevolution:chaosShard.name=Chaos Shard
+item.draconicevolution:chaosFragment0.name=Tiny Chaos Fragment
+item.draconicevolution:chaosFragment1.name=Small Chaos Fragment
+item.draconicevolution:chaosFragment2.name=Large Chaos Fragment
+item.draconicevolution:nugget.draconium.name=Draconium Nugget
+item.draconicevolution:nugget.awakened.name=Awakened Draconium Nugget
+item.draconicevolution:magnet.wyvern.name=Item Dislocator
+item.draconicevolution:magnet.draconic.name=Awakened Item Dislocator
+
+//Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
+itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
+itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
+
+//Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
+msg.size0.txt=Tool Mode: Single Block
+msg.size1.txt=Tool Mode: 3x3
+msg.size2.txt=Tool Mode: 5x5
+msg.size3.txt=Tool Mode: 7x7
+msg.size4.txt=Tool Mode: 9x9
+msg.oblittrue.txt=§aObliteration Mode: §4Active
+msg.oblitfalse.txt=§aObliteration Mode: §2Inactive
+msg.bowmoderapidfire.txt=§3Fire Mode: §6Rapid Fire
+msg.bowmodesharpshooter.txt=§3Fire Mode: §6Sharp Shooter
+msg.bowmodeexplosive.txt=§3Fire Mode: §6Explosive
+msg.bowmodedevistation.txt=§3Fire Mode: §6Devastation!!! (Creative Only)
+msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
+msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
+msg.teleporterBound.txt=§aTeleporter bound to:
+msg.teleporterLowHealth.txt= §cYou are to low on health!
+msg.teleporterSentMob.txt=The entity has been sent to
+msg.teleporterEntityDimensional.txt=§cYou can not send mobs across dimensions!
+msg.teleporterAlreadySet.txt=§cError this charm can only be bound to one location
+msg.teleporterOutOfFuel.txt=§cOUT OF FUEL!!!
+msg.teleporterOutOfPearls.txt=§cOut of Ender Pearls!!!
+msg.teleporterPlayerT1.txt=You need a more powerful dislocator to do that
+msg.teleporterPlayerConsent.txt=The player must give their consent by sneaking
+msg.spawnerInfo1.txt=Mob Type
+msg.spawnerInfo2.txt=Requires Player
+msg.spawnerInfo3.txt=Ignore Spawn Requirements
+msg.spawnerInfo4.txt=Spawner Tier
+msg.spawnerInfo5.txt=§3Hold shift for upgrade info
+msg.spawnerInfo6.txt=Requires players: §3Nether Star
+msg.spawnerInfo7.txt=Ignore Spawn Requirements: §3Notch Apple
+msg.spawnerInfo8.txt=Tier 2: §3Wyvern Core
+msg.spawnerInfo9.txt=Tier 3:§3 Awakened Core
+msg.dislocatorUnsafe.txt=Destination Unsafe Please Try Again
+msg.dislocatorNoGround.txt=Error world not found
+msg.range.txt=Range:
+msg.energyStorageCoreUTA.txt=Unable to activate (Invalid Configuration)
+msg.SpawnDragonToFarFrom00.txt=[ERROR] to far from 0,0
+msg.SpawnDragonMustBeInTheEnd.txt=You must perform this ritual in the End dimension!
+msg.wrongKey.txt=This key dose not fit this lock
+msg.cKeyStoneType0.txt=Permanent Activation (Consume Key)
+msg.cKeyStoneType1.txt=Button Activation
+msg.cKeyStoneType2.txt=Toggle Activation
+msg.cKeyStoneType3.txt=Button Activation (Consume Key)
+msg.draconiumChestEditmode.txt=Colour edit mode =
+msg.draconiumChestRed.txt=Red =
+msg.draconiumChestGreen.txt=Green =
+msg.draconiumChestBlue.txt=Blue =
+msg.draconiumChestEditL1.txt=Right click with red green or blue dye to adjust the colour
+msg.draconiumChestEditL2.txt=Click the top half of the chest to increase the value
+msg.draconiumChestEditL3.txt=Or the bottom half of the chest to decrease the value
+msg.draconiumChestEditL4.txt=Right click with paper to copy the colour to other chests
+msg.draconiumChestEdit2.txt=Please use a single peace of paper
+msg.de.dragonDeath.txt=§5The heart is temporarily awakened by the dragons explosive §5death
+msg.de.baseSafeAOW.txt=§9(§aAOE §aSafe §aMode §ais §aenabled§9) §cOperation §cCanceled §cbecause §ca §ctile §centity §cwas §cdetected
+msg.de.guardianAttackBlocked.txt=Your attack is blocked by the guardians crystals!
+msg.de.shieldDepleted.txt=Warning Critical Damage!!!
+msg.de.shockWaveForEnergyBoltsOnly.txt=Shock Wave is only possible with Arrow of Draconic Fire
+msg.de.explosiveNotForEnergyBolts.txt=Explosive is not possible with Arrow of Draconic Fire
+msg.de.insufficientPowerToFire.txt=Insufficient Power to Fire
+msg.de.outOfArrows.txt=Out of Arrows!!!
+
+//Energy Net
+msg.de.wrenchMode.bind.txt=Function: Bind
+msg.de.wrenchMode.unBind.txt=Function: Un-Bind
+msg.de.wrenchMode.unBindAll.txt=Function: Un-Bind All
+msg.de.wrenchMode.modeSwitch.txt=Function: Mode Change
+msg.de.rightClickUnbind.txt=Right click air to un-bind
+msg.de.boundTo.txt=Bound To
+msg.de.posSaved.txt=Position Saved
+msg.de.invalidTile.txt=Target Invalid
+msg.de.outOfRange.txt=Target out of range
+msg.de.maxConnections.txt=Connection limit reached
+msg.de.linked.txt=Devices Linked
+msg.de.unLinked.txt=Devices Un-Linked
+msg.de.wrongSide.txt=Can not connect to that side of the target device
+
+//Reactor
+msg.de.reactorRSMode.0.txt=Comparator Mode: Temperature
+msg.de.reactorRSMode.1.txt=Comparator Mode: Temperature [Inverted]
+msg.de.reactorRSMode.2.txt=Comparator Mode: Containment Field
+msg.de.reactorRSMode.3.txt=Comparator Mode: Containment Field [Inverted]
+msg.de.reactorRSMode.4.txt=Comparator Mode: Energy Saturation
+msg.de.reactorRSMode.5.txt=Comparator Mode: Energy Saturation [Inverted]
+msg.de.reactorRSMode.6.txt=Comparator Mode: Fuel Conversion
+msg.de.reactorRSMode.7.txt=Comparator Mode: Fuel Conversion [Inverted]
+
+//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
+info.teleporterInfUnset1.txt=Unbound
+info.teleporterInfUnset2.txt=Shift right click to bind your current
+info.teleporterInfUnset3.txt=x, y, z coordinates
+info.teleporterInfUnset4.txt=As well as the direction you are facing
+info.teleporterInfUnset5.txt=And the dimension you are currently in
+info.teleporterInfDest.txt=Destination
+info.teleporterInfFuel.txt=Fuel:
+info.teleporterInfSet1.txt=Bound to
+info.teleporterInfSet2.txt=Uses remaining
+info.de.rightClickToTeleport.txt=Right click to teleport
+
+info.draconicAxe1.txt=Timber!!!!!!
+info.draconicAxe2.txt=Will fall an entire tree
+info.draconicAxe3.txt=or break out a 5x5x5 chunk of anything wood.
+info.draconicAxe4.txt=Hold shift to mine a single block.
+
+info.draconicCore.txt=The core crafting component for Draconic Evolution
+info.draconicCore1.txt=Can be used to stabilize mob spawners
+
+info.mobSoul1.txt=Can be used on a stabilized spawner to set the type
+info.mobSoul2.txt=Or shift right click to spawn a mob
+info.mobSoul3.txt=(Single Use)
+
+info.arrowInfo.txt=A Painful Ride
+info.arrowInfo0.txt=Too heavy for a regular bow
+
+info.de.obliterationMode.txt=Obliteration Mode
+info.de.obliterationModetrue.txt=Active
+info.de.obliterationModefalse.txt=Inactive
+info.de.miningMode.txt=Mining Mode
+info.de.changeMiningMode.txt=Shift Right click to change mining mode
+info.de.toggleOblit.txt=Right-click to toggle Obliteration mode
+info.de.oblitInfo.txt=Obliteration mode destroys low value blocks
+info.de.attackDamage.txt=Attack Damage
+info.de.bonusHealthDamage.txt=Mob Health
+info.de.press.txt=Press
+info.de.toOpenConfigGUI.txt=To open config GUI
+info.de.shiftToPause.txt=Hold shift to pause slide
+info.de.power.txt=Power
+
+info.de.sword.txt=Your enemy's strength makes this blade stronger!
+
+info.de.safetyMatch.txt=Light a fire that will NOT burn your house down!
+
+info.draconiumChestInfo1.txt=Shift right click with an empty hand
+info.draconiumChestInfo2.txt=to access colour options
+
+info.de.capacitorMode.txt=Mode
+info.de.capacitorMode0.txt=Inactive
+info.de.capacitorMode1.txt=Charge Hotbar
+info.de.capacitorMode2.txt=Charge Armor & Held Item
+info.de.capacitorMode3.txt=Charge Armor & Hotbar
+info.de.changwMode.txt=Shift Right click to change mode
+
+info.de.toolInventoryOblit.txt=Junk filter & Enchants
+info.de.toolInventoryEnch.txt=Enchants
+
+info.de.hudDisplayConfigTxt1.txt=#### HUD Display ####
+info.de.hudDisplayConfigTxt2.txt=Click and drag to move
+info.de.hudDisplayConfigTxt3.txt=###################
+info.de.hudDisplayConfigInfo1.txt=Click and drag HUD
+info.de.hudDisplayConfigInfo2.txt=to change location
+
+
+info.de.manual.introTxt.txt=Everything you need to know. All in one place.
+info.de.manual.indexButton.txt=Index
+info.de.manual.indexButtonTip.txt=Go to index page
+info.de.manual.contributors.txt=Draconic Evolution Contributors
+info.de.manual.name.txt=Name
+info.de.manual.contribution.txt=Contribution
+info.de.manual.clickToGoToSite.txt=(Click name to open website)
+info.de.manual.contributorsButton.txt=Contributors
+info.de.manual.contributorsButtonInfo.txt=A list of people who have contributed to Draconic Evolution
+info.de.shiftRightClickToActivate.txt=Shift-Right click to activate.
+info.de.blockRange.txt=Block Range.
+
+info.de.manual.nav1.txt=Navigation Tips
+info.de.manual.nav2.txt=Press Backspace to go to the previous page.
+info.de.manual.nav3.txt=Hold shift to scroll faster.
+
+//Energy Net
+info.de.modeIn.txt=Mode: Input
+info.de.modeOut.txt=Mode: Output
+info.de.5xTransfer.txt= (5x Transfer)
+info.de.connections.txt=Connections
+info.de.wirelessConnections.txt=Wireless Connections
+
+
+info.infusedObsidian.txt=This block is wither resistant
+
+enchantment.draconicevolution.reaperEnchant=Reaper
+
+//Achievements ----------------------------------------------------------------------------------------------------------------------------------------
+draconicevolution.achievementPage.name=Draconic Evolution
+
+achievement.draconicevolution.dust=The Start of something BIG!
+achievement.draconicevolution.dust.desc=Collect Draconium dust
+achievement.draconicevolution.ingot=Better than Diamond!
+achievement.draconicevolution.ingot.desc=Smelt a Draconium Dust into a Draconium Ingot
+achievement.draconicevolution.core=This is where it begins
+achievement.draconicevolution.core.desc=Craft a Draconic Core
+achievement.draconicevolution.core2=Not Good Enough!
+achievement.draconicevolution.core2.desc=Upgrade Draconic Core to Wyvern
+
+achievement.draconicevolution.dislocator=Endermen got nothin’
+achievement.draconicevolution.dislocator.desc=Create a dislocator
+achievement.draconicevolution.chest=Never enough Storage!
+achievement.draconicevolution.chest.desc=Craft a Draconic Chest
+achievement.draconicevolution.particles=OOOOH Sparkles!
+achievement.draconicevolution.particles.desc=Create a particle generator
+achievement.draconicevolution.weather=Who Needs Mother Nature
+achievement.draconicevolution.weather.desc=Craft a weather controller
+achievement.draconicevolution.dissenchanter=Only What I Want!
+achievement.draconicevolution.dissenchanter.desc=Create a disenchanter.
+achievement.draconicevolution.ecore=It keeps going, and going, and going
+achievement.draconicevolution.ecore.desc=Build the Energy Core
+achievement.draconicevolution.wpick=Nothing like Diamond
+achievement.draconicevolution.wpick.desc=Upgrade to a wyvern pick
+achievement.draconicevolution.wshovel=Pro Digger!
+achievement.draconicevolution.wshovel.desc=Craft a Wyvern shovel
+achievement.draconicevolution.wsword=Better Weaponry
+achievement.draconicevolution.wsword.desc=Craft a Wyvern sword
+achievement.draconicevolution.wbow=Snipers at the Ready!
+achievement.draconicevolution.wbow.desc=Craft the Wyvern Bow
+achievement.draconicevolution.whelm=Free Breathing!
+achievement.draconicevolution.whelm.desc=Craft the Wyvern Helm
+achievement.draconicevolution.wchest=High Resistance
+achievement.draconicevolution.wchest.desc=Craft a Wyvern Chestplate
+achievement.draconicevolution.wleggs=Run like the wind
+achievement.draconicevolution.wleggs.desc=Craft Wyvern leggings
+achievement.draconicevolution.wboots=Feather Fall
+achievement.draconicevolution.wboots.desc=Craft Wyvern boots
+achievement.draconicevolution.resurrection=Brimming with Antici-pation!
+achievement.draconicevolution.resurrection.desc=Craft the Resurrection Stone
+achievement.draconicevolution.dislocator2=Ender-ruler!
+achievement.draconicevolution.dislocator2.desc=Craft the Advanced Dislocator
+achievement.draconicevolution.flux=1.21 jiggawatts!
+achievement.draconicevolution.flux.desc=Craft the Wyvern Flux Capacitor
+
+achievement.draconicevolution.heart=Heart of the Dragon!
+achievement.draconicevolution.heart.desc=Kill a Dragon and claim it’s heart.
+achievement.draconicevolution.awakenedblock=It’s all in the ritual!
+achievement.draconicevolution.awakenedblock.desc=Create Awakened Draconium
+achievement.draconicevolution.core3=Expense vs. Power
+achievement.draconicevolution.core3.desc=Upgrade Wyvern Core to Awakened
+
+achievement.draconicevolution.dhelm=Gliding through water!
+achievement.draconicevolution.dhelm.desc=Upgrade to the Draconic Helm
+achievement.draconicevolution.dChest=Fly like an eagle!
+achievement.draconicevolution.dChest.desc=Craft the Draconic Chest Plate
+achievement.draconicevolution.dleggs=Dance like a Butterfly!
+achievement.draconicevolution.dleggs.desc=Craft Draconic Leggings
+achievement.draconicevolution.dboots=Higher and Higher!
+achievement.draconicevolution.dboots.desc=Upgrade to Draconic Boots.
+
+achievement.draconicevolution.dpick=Mine With Authority!
+achievement.draconicevolution.dpick.desc=Craft a Draconic Pick
+achievement.draconicevolution.dshovel=Moving Mountains
+achievement.draconicevolution.dshovel.desc=Upgrade Wyvern Shovel
+achievement.draconicevolution.daxe=One giant Chop for tree Kind!
+achievement.draconicevolution.daxe.desc=Craft the Draconic Axe
+achievement.draconicevolution.dsword=Sting Like a Bee!
+achievement.draconicevolution.dsword.desc=Upgrade to the Draconic Sword
+achievement.draconicevolution.dbow=Now you’re playing with Power!
+achievement.draconicevolution.dbow.desc=Craft the Draconic Bow.
+achievement.draconicevolution.flux2=Phenomenal Cosmic Power! itty bitty living space.
+achievement.draconicevolution.flux2.desc=Craft the Draconic Flux Capacitor
+achievement.draconicevolution.dhoe=Kick it up a Notch! -BAM-
+achievement.draconicevolution.dhoe.desc=Craft the Draconic Hoe
+
+achievement.draconicevolution.dstaff=With your powers combined!
+achievement.draconicevolution.dstaff.desc=Create the Draconic Staff
+
+achievement.draconicevolution.soul=Reaper!!!!
+achievement.draconicevolution.soul.desc=Acquire the soul of an unsuspecting mob.
+achievement.draconicevolution.sundial=Timekeeper
+achievement.draconicevolution.sundial.desc=Craft a sun dial and take control of night and day
+achievement.draconicevolution.manual=Knowledge to the Max!
+achievement.draconicevolution.manual.desc=Craft the Draconic Tablet
+
+//InfoHelper ----------------------------------------------------------------------------------------------------------------------------------------
+info.de.charge.txt=Charge
+info.de.hold.txt=Hold
+info.de.shift.txt=Shift
+info.de.forDetails.txt=for Details
+info.de.ctrl.txt=CTRL
+info.de.forUpgrades.txt=for Stats
+info.de.useUpgradeModifier.txt=Use an Upgrade Modifier to boost these stats!
+
+//Lore ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:wyvernPickaxe.lore=2Mundane picks are so weak\nthrough Draconium, you increase the area and speed to mine.
+item.draconicevolution:wyvernShovel.lore=2One block at a time? Not with Draconium!\nfaster, larger area, this is a start!
+item.draconicevolution:wyvernSword.lore=2Draconium begins to unlock the sword’s potential\nthe area and strength of the sword improves.
+item.draconicevolution:wyvernBow.lore=2Infusing Draconium in a mundane bow\nallows you to shoot faster and with more power.
+
+item.draconicevolution:wyvernHelm.lore=2Stronger than diamond\nyou can now withstand even greater blows
+item.draconicevolution:wyvernChest.lore=2Infusing the armor with Draconium\nyou vastly improve its resistance
+item.draconicevolution:wyvernLeggs.lore=2You feel even stronger and faster now\nthat you have infused diamond legs with Draconium
+item.draconicevolution:wyvernBoots.lore=2You learn to improve the boots\nDraconium seems to have given you greater\nagility
+
+item.draconicevolution:draconicPickaxe.lore=2Great care and research has\nallowed you to mine even larger areas
+item.draconicevolution:draconicAxe.lore=2After lots of trial and error\nyou can now feel an entire tree with one try
+item.draconicevolution:draconicShovel.lore=2Even more efficient\nyou can dig an even larger area
+item.draconicevolution:draconicHoe.lore=2Draconium even improves farming\nentire areas can be tilled and placed in a single click
+item.draconicevolution:draconicSword.lore=2Wyvern was good, but draconic weapons\nare even more powerful and hit more enemies
+item.draconicevolution:draconicBow.lore=2The peak of ranged perfection faster shooting,\nexplosive arrows, what more could you want?
+
+item.draconicevolution:draconicHelm.lore=2No longer do you fear the night\nyou now can see all the time regardless\nof what is out there
+item.draconicevolution:draconicChest.lore=2Using the heart of a dragon\nyou are stronger and have the gift of flight
+item.draconicevolution:draconicLeggs.lore=2Even stronger armor\nthe soul of a dragon protects you and moves you even faster
+item.draconicevolution:draconicBoots.lore=2Stronger, faster, better than before\nthe heart of a dragon grants you\nhigher jumping
+
+item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, true power!\none tool to do it all, mine, battle, and death!
+
+//Entity ----------------------------------------------------------------------------------------------------------------------------------------
+entity.DraconicEvolution.EnderDragon.name=Ender Dragon
+entity.DraconicEvolution.ChaosGuardian.name=Chaos Guardian
+
+
+//KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
+key.placeItem=Place Item in world
+key.toolConfig=Tool & Armor Config GUI
+key.toolProfileChange=Change Tool Config Profile
+key.toggleFlight=Toggle Creative Flight
+
+//Damage ----------------------------------------------------------------------------------------------------------------------------------------
+death.attack.chaos=%1$s was torn apart by a Chaos Guardian
+death.attack.damage.de.fusionExplode=%1$s was vaporized by a high energy fusion explosion
+death.attack.chaosBurst=%1$s was destroyed by dark energy
+
+death.attack.de.GuardianFireball=%1$s was firebombed by a Chaos Guardian
+death.attack.de.GuardianEnergyBall=%1$s was zapped like a bug by a Chaos Guardian
+death.attack.de.GuardianChaosBall=%1$s was annihilated by a Chaos Guardian using dark energy
+
+death.attack.chaosImplosion=%1$s was pulled into an energy vortex and crushed into oblivion
+death.attack.chrystalMoved=%1$s was naughty and has been punished by Draconic Evolution!
+
+death.attack.administrative.kill=%1$s was struck down by an unsurvivable force
+
+//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
+button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
+button.de.chestAutoFeed1.txt=FILL.Keep the current stacks full
+button.de.chestAutoFeed2.txt=LOCK.Only pull the currently smelting items from the inventory
+button.de.chestAutoFeed3.txt=ALL.Pull any smeltable items from the inventory
+button.de.chestLockOutput.txt=Lock Output.Blocks items being inserted into the last 5 slots
+button.de.previous.txt=<==
+button.de.next.txt===>
+button.de.backToIndex.txt=Back to Index
+button.de.back.txt=Back
+button.de.goToIndex.txt=Index Page
+button.de.addNew.txt=Add New
+button.de.rename.txt=Rename
+button.de.commit.txt=Commit
+button.de.setHere.txt=Set Here
+button.de.remove.txt=Remove
+button.de.addFuel.txt=Add Fuel
+button.de.cancel.txt=Cancel
+button.de.UP.txt=UP
+button.de.DOWN.txt=DOWN
+button.de.toggleHidden.txt=Toggle Hidden
+
+//Item Config Buttons
+button.de.ArmorNVActive.name=Night Vision
+button.de.ArmorNVLock.name=Lock Night Vision
+button.de.ArmorFlightLock.name=Lock Flight
+button.de.ArmorInertiaCancellation.name=Inertia Cancellation
+button.de.ArmorSpeedMult.name=Move Speed Modifier
+button.de.ArmorJumpMult.name=Jump Height Modifier
+button.de.ArmorHillStep.name=Hill Step
+button.de.ArmorSprintOnly.name=Reduce When Walking
+button.de.ArmorFlightSpeedMult.name=Flight Speed Modifier
+button.de.ToolDigMultiplier.name=Dig Speed
+button.de.ToolDigAOE.name=Size
+button.de.ToolDigDepth.name=Dig Depth
+button.de.WeaponAttackAOE.name=Attack A.O.E
+button.de.ToolVoidJunk.name=Void Junk
+button.de.AxeTreeMode.name=Tree Mode
+button.de.BaseSafeAOE.name=AOE Safe Mode
+button.de.VerticalAcceleration.name=Vertical Acceleration
+button.de.EffectiveOnSprint.name=Effective while sprinting
+button.de.GogglesOfRevealing.name=Magical Sense
+button.de.BowArrowSpeedModifier.name=Arrow Velocity Modifier
+button.de.BowAutoFire.name=Auto Fire
+button.de.BowArrowDamage.name=Base Damage
+button.de.BowExplosionPower.name=Explosive Power
+button.de.BowShockWavePower.name=Shock Wave Power
+button.de.BowEnergyBolt.name=Arrow of Draconic Fire
+button.de.BowZoomModifier.name=Magnification
+
+button.de.reactorCharge.txt=Charge Reactor
+button.de.reactorStart.txt=Activate
+button.de.reactorStop.txt=Initiate Shutdown
+button.de.stats.txt=Stats
+button.de.statsShow.txt=Show
+button.de.statsHide.txt=Hide
+button.de.scaleUp.txt=Scale +
+button.de.scaleDown.txt=Scale -
+button.de.fadeMode0.txt=Fade Out: Off
+button.de.fadeMode1.txt=Fade Out: 25%
+button.de.fadeMode2.txt=Fade Out: 50%
+button.de.fadeMode3.txt=Fade Out: 75%
+button.de.fadeMode4.txt=Fade Out: Full
+button.de.rotate.txt=Rotate
+button.de.numeric.txt=Numeric:
+
+//Gui ----------------------------------------------------------------------------------------------------------------------------------------
+gui.de.flowGate.name=Flow Control
+gui.de.flowGatePartialSignal.name=The actual flow will vary between the two given values depending on the strength of the redstone signal being supplied to the block.
+gui.de.flowGateCurrentFlow.name=Flow
+gui.de.flowGateRSLow.name=Redstone Signal Low
+gui.de.flowGateRSHigh.name=Redstone Signal High
+gui.de.flowGateOverridden.txt=Computer Override Enabled
+gui.de.increment.name=Increment value by
+gui.de.decrement.name=Decrement value by
+gui.de.ctrlAndShift.name=You can use Ctrl and Shift to change the increment amount.
+gui.de.pressOrScroll.name=Press Or Scroll
+gui.de.tempLoad.name=Temperature Load Factor
+gui.de.mass.name=Core Mass
+gui.de.genRate.name=Generation Rate
+gui.de.fieldInputRate.name=Field Input Rate
+gui.de.fuelConversion.name=Fuel Conversion Rate
+
+gui.de.insert.txt=Insert
+gui.de.extract.txt=Extract
+gui.de.fuel.txt=Fuel
+gui.de.coreMass.txt=Core Mass
+gui.de.reactionTemp.txt=Core Temperature
+gui.de.fieldStrength.txt=Containment Field Strength
+gui.de.energySaturation.txt=Energy Saturation
+gui.de.fuelConversion.txt=Fuel Conversion Level
+gui.de.status.txt=Status
+gui.de.status0.txt=OFFLINE
+gui.de.status1.txt=CHARGING
+gui.de.status1_5.txt=CHARGED
+gui.de.status2.txt=ONLINE
+gui.de.status3.txt=STOPPING
+gui.de.status4.txt=INVALID SETUP
+gui.de.internalStorage.txt=Internal Storage
+gui.de.itemStorage.txt=Item Storage
+gui.de.reacTempLoadFactor.txt=This shows how much load is being placed on the containment field by the reactors temperature. If the reactor temp passes 8,000 this will increase exponentially.
+gui.de.reacCoreMass.txt=This show the total amount of mass within the reactor in cubic metres. That's the draconium + chaos so this value will only change when you add or remove fuel.
+gui.de.reacGenRate.txt=This is the current RF/t being generated by the reactor.
+gui.de.reacInputRate.txt=This is the exact RF/t input required to maintain the current field strength. As field strength increases this will increase exponentially.
+gui.de.reacConversionRate.txt=This is how fast the reactor is currently using fuel. As the reactor saturation increases this will go down.
+gui.de.noCoresInInventory0.txt=You have no Draconic Cores in your inventory
+gui.de.noCoresInInventory1.txt=You have no Wyvern Cores in your inventory
+gui.de.noCoresInInventory2.txt=You have no Awakened Cores in your inventory
+gui.de.noCoresInInventory3.txt=You have no Chaotic Cores in your inventory
+gui.de.addCore.txt=Add Core
+gui.de.removeCore.txt=Remove Core
+gui.de.cores.txt=Cores
+gui.de.cap.txt=Cap
+gui.de.installed.txt=Installed
+gui.de.free.txt=Free
+gui.de.max.txt=Max
+gui.de.on.txt=On
+gui.de.off.txt=Off
+gui.de.basePoints.txt=Base Points
+gui.de.maxPoints.txt=Max Points
+gui.de.pointCost.txt=Point Cost
+gui.de.value.txt=Value
+gui.de.points.txt=Points
+gui.de.point.txt=Point
+gui.de.itemInventory.txt=Item Inventory
+gui.de.configureGuiElements.txt=Configure HUD Elements
+gui.de.hudDisplaySettings.txt=HUD Display Settings
+gui.de.shieldDisplaySettings.txt=Shield Display Settings
+gui.de.clickAndDragPurpleBoxes.txt=Click and drag the purple boxes to move the displays
+gui.de.profile.txt=Profile
+gui.de.maxDamage.txt=Max Damage
+gui.de.rfPerShot.txt=RF/Shot
+
+gui.de.RFCapacity.txt=RF Capacity
+gui.de.DigSpeed.txt=Dig Speed
+gui.de.DigAOE.txt=Dig A.O.E
+gui.de.DigDepth.txt=Dig Depth
+gui.de.AttackDamage.txt=Attack Damage
+gui.de.AttackAOE.txt=Attack A.O.E
+gui.de.ArrowDamage.txt=Base Damage
+gui.de.DrawSpeed.txt=Draw Speed
+gui.de.ArrowSpeed.txt=Arrow Velocity
+gui.de.ShieldCapacity.txt=Shield Capacity
+gui.de.ShieldRecovery.txt=Shield Recovery
+gui.de.MoveSpeed.txt=Move Speed
+gui.de.JumpBoost.txt=Jump Boost
+
+
+//Potions ----------------------------------------------------------------------------------------------------------------------------------------
+potion.de.effect.txt=Effect
+potion.de.flight.txt=Flight
+potion.de.highStep.txt=High Step
+potion.de.swiftness.txt=Swiftness
+potion.de.fireImmune.txt=Fire Immunity
+potion.de.jumpBoost.txt=Jump Boost

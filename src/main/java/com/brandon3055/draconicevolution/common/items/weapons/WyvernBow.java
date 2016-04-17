@@ -195,7 +195,7 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 	}
 
 	@Override
-	public List<ItemConfigField> getFields(ItemStack stack, int slot) {//todo balance floaty upgrade things
+	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
 		List<ItemConfigField> list = new ArrayList<ItemConfigField>();
 
 		list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowArrowDamage").setMinMaxAndIncromente((float)getBaseUpgradePoints(EnumUpgrade.ARROW_DAMAGE.index), (float)EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack), 0.1F).readFromItem(stack, (float)EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack)));

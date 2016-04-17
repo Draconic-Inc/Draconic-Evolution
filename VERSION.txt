@@ -1,3 +1,3 @@
 Version:1.0.2b
 Snapshot:0
-ReleaseNote:Some more minor bug fixes.
+ReleaseNote:Fixed more bugs... No matter how many i squash more seem to show up. Will they ever stop coming?.
