@@ -1,3 +1,8 @@
+######## 1.0.2b ########
+-fixed not being able to close the flow gate gui's by pressing the inventory key.
+-fixed inability to pick up arrows fired by the bows.
+-fixed conflict with the travellers gloves from Tinkers Construct (And other mods that do something similar)
+
 ######## 1.0.2a ########
 -updated manual-zh_CN.json (Thankyou https://github.com/sfmiyuki for that)
 -draconic sword and staff of power now have an unlimited hit rate. (that was supposed to be a thing from the beginning)

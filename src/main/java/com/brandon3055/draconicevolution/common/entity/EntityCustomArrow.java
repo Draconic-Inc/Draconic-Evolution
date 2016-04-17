@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.entity;
 
+import com.brandon3055.brandonscore.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
@@ -19,6 +20,8 @@ import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S2BPacketChangeGameState;
 import net.minecraft.util.*;
@@ -402,19 +405,21 @@ public class EntityCustomArrow extends EntityArrow {
 	@Override
 	public void onCollideWithPlayer(EntityPlayer par1EntityPlayer)
 	{
-//		if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
-//			boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
-//
-//			if (this.canBePickedUp == 1 && !par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1))) {
-//				flag = false;
-//			}
-//
-//			if (flag) {
-//				this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-//				par1EntityPlayer.onItemPickup(this, 1);
-//				this.setDead();
-//			}
-//		}
+
+		if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
+            LogHelper.info("collide "+ canBePickedUp);
+			boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
+
+			if (this.canBePickedUp == 1 && !par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1))) {
+				flag = false;
+			}
+
+			if (flag) {
+				this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+				par1EntityPlayer.onItemPickup(this, 1);
+				this.setDead();
+			}
+		}
 	}
 
 	public void onHitEntityLiving(EntityLivingBase entityLivingBase){

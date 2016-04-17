@@ -387,6 +387,11 @@ public class MinecraftForgeEventHandler {
 			{
 				if (summery.flight[0]) newDigSpeed *= 5f;
 			}
+
+            if (event.newSpeed > 1){
+                newDigSpeed += event.newSpeed-1;
+            }
+
 			event.newSpeed = newDigSpeed;
 		}
 	}

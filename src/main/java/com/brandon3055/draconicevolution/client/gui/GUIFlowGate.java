@@ -138,4 +138,12 @@ public class GUIFlowGate extends GuiScreen {
 	public boolean doesGuiPauseGame() {
 		return false;
 	}
+
+    protected void keyTyped(char p_73869_1_, int key) {
+        if (key == 1 || key == this.mc.gameSettings.keyBindInventory.getKeyCode()){
+            this.mc.displayGuiScreen(null);
+            this.mc.setIngameFocus();
+        }
+    }
+
 }

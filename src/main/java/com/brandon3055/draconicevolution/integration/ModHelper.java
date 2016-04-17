@@ -43,7 +43,6 @@ public class ModHelper {
             return 300F;
         }
 
-
         return event.ammount;
     }
 

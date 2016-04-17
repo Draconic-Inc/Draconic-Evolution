@@ -23,7 +23,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -34,7 +33,6 @@ public class CustomArmorHandler {
 	private static final DamageSource ADMIN_KILL = new DamageSource("administrative.kill").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
 	public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
 	public static List<String> playersWithUphillStep = new ArrayList<String>();
-	public static Field walkSpeed;
 
 	public static void onPlayerHurt(LivingHurtEvent event) {
 //		EntityPlayer player = (EntityPlayer) event.entityLiving;
@@ -92,8 +90,6 @@ public class CustomArmorHandler {
 			return;
 		}
 		if ((float)player.hurtResistantTime > (float)player.maxHurtResistantTime / 2.0F) return;
-
-        com.brandon3055.brandonscore.common.utills.LogHelper.info(1 + (hitAmount / 10));
 
 		float newEntropy = Math.min(summery.entropy + 1 + (hitAmount / 20), 100F);
 

@@ -89,7 +89,6 @@ public class BowHandler {
 		world.playSoundAtEntity(player, "random.bow", 1.0F, (1.0F / (world.rand.nextFloat() * 0.4F + 1.2F) + (drawArrowSpeedModifier + (velocity / 40F)) * 0.5F));
 	}
 
-
 	public static void enderShot(ItemStack stack, World world, EntityPlayer player, int count, Random itemRand, float pullSpeedModifier, float speedModifier, float soundPitchModifier, int minRelease)
 	{
 		int j = 72000 - count;
@@ -213,6 +212,10 @@ public class BowHandler {
 			return Math.max(62 - (drawTimeReduction * 10), 1);
 		}
 
+        /**
+         * Consumes energy for the shot and also consumes an arrow if the bow dose not have infinity
+         * Returns true if an arrow was consumed.
+         * */
 		public boolean consumeArrowAndEnergy(){
 
 			if (!player.capabilities.isCreativeMode)((IEnergyContainerItem)bow.getItem()).extractEnergy(bow, calculateEnergyCost(), false);
