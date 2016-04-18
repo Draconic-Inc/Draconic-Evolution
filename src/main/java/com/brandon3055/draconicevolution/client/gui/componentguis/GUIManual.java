@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.client.gui.guicomponents.ComponentManua
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.DummyContainer;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.handler.ContributorHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.google.gson.stream.JsonReader;
@@ -62,6 +63,8 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 		if (previousScale == -1) adjustGuiScale();
 
 		if (!Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().equals(lang)) loadPages();
+
+        LogHelper.info(ContributorHandler.contributors);
 	}
 
 	private void adjustGuiScale(){

@@ -94,7 +94,8 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 			renderPlayer(contributor.ign);
 			GL11.glPopMatrix();
 
-			fontRendererObj.drawStringWithShadow(EnumChatFormatting.GOLD + contributor.name, 50, yOffset-15, 0x000000);
+			fontRendererObj.drawStringWithShadow(EnumChatFormatting.GOLD + contributor.name, 50, yOffset-20, 0x000000);
+            fontRendererObj.drawString(EnumChatFormatting.DARK_BLUE + contributor.contribution, 50, yOffset-10, 0x000000);
 		}
 	}
 

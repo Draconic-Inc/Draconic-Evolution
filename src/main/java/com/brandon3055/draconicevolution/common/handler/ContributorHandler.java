@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ import java.util.UUID;
  */
 public class ContributorHandler {
 
-	public static Map<String, Contributor> contributors = new HashMap<String, Contributor>();
+	public static Map<String, Contributor> contributors = new LinkedHashMap<String, Contributor>();
 	public static boolean successfulLoad = false;
 	private static DLThread thread;
 	private static ModelContributorWings wings = new ModelContributorWings();
@@ -269,7 +269,6 @@ public class ContributorHandler {
 		public boolean isUserValid(EntityPlayer player){
 			if (!validated){
 				isValid = !UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8)).equals(player.getUniqueID());
-				validated = true;
 			}
 			return isValid;
 		}
