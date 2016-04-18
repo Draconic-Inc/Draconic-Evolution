@@ -48,6 +48,7 @@ public class GuiEnergyCore extends GuiContainer {
         buttonList.add(tierDown      = new GuiButton(2, guiLeft + 150, 40, 80, 20, "tierDown-L"));
         buttonList.add(toggleGuide   = new GuiButton(3, guiLeft + 150, 60, 80, 20, "toggleGuide-L"));
         buttonList.add(creativeBuild = new GuiButton(4, guiLeft + 150, 80, 80, 20, "creativeBuild-L"));
+        updateButtonStates();
     }
 
     @Override
@@ -83,6 +84,10 @@ public class GuiEnergyCore extends GuiContainer {
     @Override
     public void updateScreen() {
         super.updateScreen();
+        updateButtonStates();
+    }
+
+    private void updateButtonStates(){
         tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.value;
         creativeBuild.visible = player.capabilities.isCreativeMode && !tile.active.value;
     }

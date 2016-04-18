@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
 import com.brandon3055.draconicevolution.items.Debugger;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
@@ -20,8 +21,9 @@ import net.minecraft.item.Item;
  */
 public class DEFeatures {
 
-	//Blocks
+	/* ------------------ Blocks ------------------ */
 
+    //Simple Blocks
 	@Feature(name = "draconiumOre", variantMap = {"0:type=normal", "1:type=nether", "2:type=end"}, itemBlock = ItemBlockBasic.class)
 	public static DraconiumOre draconiumOre = (DraconiumOre) new DraconiumOre().setHardness(10f).setResistance(20.0f);
 
@@ -34,6 +36,7 @@ public class DEFeatures {
 	@Feature(name = "infusedObsidian")
 	public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.rock).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
 
+    //Machines
 	@Feature(name = "generator", tileEntity = TileGenerator.class, itemBlock = ItemBlockBCore.class, cTab = 1)
 	public static Generator generator = new Generator();
 
@@ -43,11 +46,16 @@ public class DEFeatures {
 	@Feature(name = "particleGenerator", variantMap = {"0:type=normal", "1:type=inverted", "2:type=stabilizer"}, cTab = 1, itemBlock = ItemBlockBasic.class)
 	public static ParticleGenerator particleGenerator = new ParticleGenerator();
 
+    //Advanced Machines
 	@Feature(name = "energyStorageCore", tileEntity = TileEnergyStorageCore.class, cTab = 1)
 	public static EnergyStorageCore energyStorageCore = new EnergyStorageCore();
 
-	//items
+    @Feature(name = "invisECoreBlock", tileEntity = TileInvisECoreBlock.class, cTab = -1)
+    public static InvisECoreBlock invisECoreBlock = new InvisECoreBlock();
 
+	/* ------------------ Items ------------------ */
+
+    //Crafting Components / Base items
 	@Feature(name = "draconiumDust", stateOverride = "simpleComponents#type=draconiumDust")
 	public static Item draconiumDust = new Item();
 

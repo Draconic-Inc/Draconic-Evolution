@@ -30,8 +30,9 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 	public final SyncableBool active = new SyncableBool(false, true, false, true);
 	public static FakePlayer fakePlayer;
 	private AxisAlignedBB killBox;
+    public boolean powered = false;
 
-	public TileGrinder() {
+    public TileGrinder() {
 		setInventorySize(1);
 		registerSyncableObject(energyStored, false);
 		registerSyncableObject(active, false);
@@ -42,10 +43,12 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 	public void update() {
 		super.detectAndSendChanges();
 		if (worldObj.isRemote) return;
-		updateGrinding();
 
+		active.value = energyStored.value > 0 && !powered;
 
-		active.value = energyStored.value > 0;
+        if (active.value){
+            updateGrinding();
+        }
 
 		if (getEnergyStored() < getMaxEnergyStored() && getStackInSlot(0) != null) {
 			energyStorage.receiveEnergy(extractEnergyFromItem(getStackInSlot(0), energyStorage.receiveEnergy(32000, true), false), false);

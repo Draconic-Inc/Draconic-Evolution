@@ -22,17 +22,11 @@ import net.minecraft.world.World;
 public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable{
 
     public final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, -1, 0), true, false, true);
-    //public final SyncableInt coreXOffset = new SyncableInt(0, true, false, true);
-    //public final SyncableInt coreYOffset = new SyncableInt(-1, true, false, true);
-    //public final SyncableInt coreZOffset = new SyncableInt(0, true, false, true);
     public final SyncableBool hasCoreLock = new SyncableBool(false, true, false, true);
     //public EnumFacing coreDirection = EnumFacing.DOWN;
 
     public TileEnergyCoreStabilizer(){
         registerSyncableObject(coreOffset, true);
-        //registerSyncableObject(coreXOffset, true);
-        //registerSyncableObject(coreYOffset, true);
-        //registerSyncableObject(coreZOffset, true);
         registerSyncableObject(hasCoreLock, true);
     }
 
@@ -94,16 +88,10 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable{
 
     private BlockPos getCorePos(){
         return pos.subtract(coreOffset.vec.getPos());
-        //return pos.add(-coreOffset.vec.x, -coreOffset.vec.y, -coreOffset.vec.z);
     }
 
     public void setCore(TileEnergyStorageCore core) {
         coreOffset.vec = new Vec3I(pos.subtract(core.getPos()));
-    //    coreOffset.vec = new Vec3I(pos.getX() - core.getPos().getX(), pos.getY() - core.getPos().getY(), pos.getZ() - core.getPos().getZ());
-
-    //    coreXOffset.value = pos.getX() - core.getPos().getX();
-    //    coreYOffset.value = pos.getY() - core.getPos().getY();
-    //    coreZOffset.value = pos.getZ() - core.getPos().getZ();
         hasCoreLock.value = true;
     }
 
@@ -114,21 +102,11 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable{
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-    //    coreXOffset.toNBT(compound);
-    //    coreYOffset.toNBT(compound);
-    //    coreZOffset.toNBT(compound);
-    //    hasCoreLock.toNBT(compound);
-    //    compound.setShort("CoreDIR", (short) coreDirection.getIndex());
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-    //    coreXOffset.fromNBT(compound);
-    //    coreYOffset.fromNBT(compound);
-    //    coreZOffset.fromNBT(compound);
-    //    hasCoreLock.fromNBT(compound);
-    //    coreDirection = EnumFacing.getFront(compound.getInteger("CoreDIR"));
     }
 
 }

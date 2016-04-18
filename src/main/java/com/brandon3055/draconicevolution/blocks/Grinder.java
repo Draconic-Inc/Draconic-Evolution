@@ -108,11 +108,17 @@ public class Grinder extends BlockBCore implements ITileEntityProvider {
 		return true;
 	}
 
-	@Override
+    @Override
+    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return true;
+    }
+
+    @Override
 	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		if (tileEntity instanceof TileGrinder){
 			((TileGrinder)tileEntity).updateKillBox();
+            ((TileGrinder)tileEntity).powered = worldIn.isBlockPowered(pos);
 		}
 	}
 

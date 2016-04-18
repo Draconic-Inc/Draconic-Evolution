@@ -1,10 +1,13 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.blocks.properties.PropertyString;
 import com.brandon3055.brandonscore.config.IRegisterMyOwnTiles;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileParticleGenerator;
+import com.brandon3055.draconicevolution.utills.LogHelper;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -93,11 +96,12 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (state.getValue(TYPE).equals("normal") || state.getValue(TYPE).equals("inverted")){
+        if (state.getValue(TYPE).equals("normal") || state.getValue(TYPE).equals("inverted")){
 			world.setBlockState(pos, state.withProperty(TYPE, state.getValue(TYPE).equals("normal") ? "inverted" : "normal"));
 		}
         else if (state.getValue(TYPE).equals("stabilizer")){
             TileEntity tile = world.getTileEntity(pos);
+
             if (tile instanceof TileEnergyCoreStabilizer){
                 ((TileEnergyCoreStabilizer)tile).onTileClicked(world, pos, state, player);
             }
@@ -116,4 +120,23 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
 		GameRegistry.registerTileEntity(TileParticleGenerator.class, modidPrefix + blockName + ".particle");
 		GameRegistry.registerTileEntity(TileEnergyCoreStabilizer.class, modidPrefix + blockName + ".stabilize");
 	}
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        if (state.getValue(TYPE).equals("stabilizer")){
+            TileEnergyCoreStabilizer tile = TileBCBase.getCastTileAt(world, pos, TileEnergyCoreStabilizer.class);
+
+            if (tile != null){
+                TileEnergyStorageCore core = tile.getCore();
+
+                if (core != null){
+                    LogHelper.info("Validate");
+                    world.removeTileEntity(pos);
+                    core.validateStructure();
+                }
+            }
+
+        }
+        super.breakBlock(world, pos, state);
+    }
 }

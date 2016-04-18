@@ -19,12 +19,16 @@ import java.util.List;
  *  Created by brandon3055 on 2/4/2016.
  */
 public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer<TileEnergyStorageCore> {
+    private static final double[] scales = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
     public RenderTileEnergyStorageCore() {
     }
 
     @Override
     public void renderTileEntityAt(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage) {
+
+        //region Build Guide
+
         if (te.buildGuide.value){
             GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
             GlStateManager.pushMatrix();
@@ -32,15 +36,26 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer<TileE
             te.coreStructure.renderTier(te.tier.value);
             GlStateManager.popMatrix();
         }
-
         if (!te.active.value) return;
 
-        List<BakedQuad> innerQuads = ModelUtills.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().withProperty(EnergyStorageCore.RENDER_TYPE, 1));
-        List<BakedQuad> outerQuads = ModelUtills.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().withProperty(EnergyStorageCore.RENDER_TYPE, 2));
-
+        //endregion
 
         float rotation = (ClientEventHandler.elapsedTicks + (partialTicks)) / 2F;
         float brightness = (float) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
+        double scale = scales[te.tier.value-1];
+
+        double colour = 1D - ((double)te.getExtendedStorage() / (double)te.getExtendedCapacity());
+        float red = 1F;
+        float green = (float)colour * 0.3f;
+        float blue = (float)colour * 0.7f;
+
+        if (te.tier.value == 8){
+            red = 1F;
+            green = 0.28F;
+            blue = 0.05F;
+        }
+
+        //region Render Core
 
         Tessellator tessellator = Tessellator.getInstance();
 
@@ -50,7 +65,6 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer<TileE
         GlStateManager.disableLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 150f, 150f);
 
-        double scale = 4D;
         double innerTrans = 0.5D;
 
         GlStateManager.translate(innerTrans, innerTrans, innerTrans);
@@ -63,7 +77,8 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer<TileE
         GlStateManager.rotate(rotation, 0F, 1F, 0.5F);
         GlStateManager.translate(-innerTrans, -innerTrans, -innerTrans);
 
-        ModelUtills.renderQuadsRGB(tessellator, innerQuads, 1F, 0, 0);
+        List<BakedQuad> innerQuads = ModelUtills.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().withProperty(EnergyStorageCore.RENDER_TYPE, 1));
+        ModelUtills.renderQuadsRGB(tessellator, innerQuads, red, green, blue);
 
         GlStateManager.popMatrix();
 
@@ -74,10 +89,18 @@ public class RenderTileEnergyStorageCore extends TileEntitySpecialRenderer<TileE
         GlStateManager.rotate(rotation, 0F, -1F, -0.5F);
         GlStateManager.translate(-innerTrans, -innerTrans, -innerTrans);
 
-        ModelUtills.renderQuadsRGB(tessellator, outerQuads, 0.2F, 1F, 1F);
+        List<BakedQuad> outerQuads = ModelUtills.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().withProperty(EnergyStorageCore.RENDER_TYPE, 2));
+        if (te.tier.value == 8){
+            ModelUtills.renderQuadsRGB(tessellator, outerQuads, 0.95F, 0.45F, 0F);
+        }
+        else{
+            ModelUtills.renderQuadsRGB(tessellator, outerQuads, 0.2F, 1F, 1F);
+        }
 
         GlStateManager.disableBlend();
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
+
+        //endregion
     }
 }

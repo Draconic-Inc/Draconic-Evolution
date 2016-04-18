@@ -22,6 +22,7 @@
       },
       "stabilizer": {
         "textures": {
+          "particle": "draconicevolution:blocks/particleGen/stabilizer",
           "all": "draconicevolution:blocks/particleGen/stabilizer"
         }
       }

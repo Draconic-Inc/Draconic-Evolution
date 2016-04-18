@@ -73,8 +73,8 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     //region Render Stuff
 
     @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
-        return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getSelectedBoundingBox(state, worldIn, pos);
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getBoundingBox(state, worldIn, pos);
     }
 
     @SideOnly(Side.CLIENT)
@@ -110,7 +110,6 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
 
         return true;
     }
-
 
     //region Interfaces
 

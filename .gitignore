@@ -1,25 +1,25 @@
-## gradle
-/.gradle
-/build
-/libs
+# Exclude Everything!!!
 
-## ForgeGradle
-/run
-/runClean
+/*
 
-## eclipse
-/eclipse
-/.settings
-/.metadata
-/.classpath
-/.project
-/bin
+# Except the stuff i want to keep
 
-## intellij
-/out
-/.idea
-/*.iml
-/*.ipr
-/*.iws
-/atlassian-ide-plugin.xml
-/classes
+# Gradle Stuff
+!gradle/
+!gradlew
+!gradlew.bat
+!build.gradle
+!build.properties
+!settings.gradle
+
+# Git Stuff
+!.gitignore
+
+# Other Important Files
+!LICENSE
+!README.md
+!Change Log.txt
+!VERSION.txt
+
+# Other Important Folders
+!src/
