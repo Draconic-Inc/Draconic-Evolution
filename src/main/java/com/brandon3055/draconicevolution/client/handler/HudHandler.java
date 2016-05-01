@@ -59,9 +59,8 @@ public class HudHandler {
 			int y = (int) (((float)ConfigHandler.hudSettings[1] / 1000F) * (float) height);
 
 			GL11.glPushMatrix();
-			GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 			GuiHelper.drawHoveringText(hudList, x, y, fontRenderer, toolTipFadeOut > 1 ? 1 : toolTipFadeOut, ConfigHandler.hudSettings[4] / 100D, width, height);
-			GL11.glPopAttrib();
+            GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
 

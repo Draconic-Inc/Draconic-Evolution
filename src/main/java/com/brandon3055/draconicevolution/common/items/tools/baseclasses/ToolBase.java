@@ -93,7 +93,7 @@ public class ToolBase extends RFItemBase {
 	public boolean func_150897_b(Block block)
 	{
 		if (getToolClasses(null).contains("pickaxe")) return true;
-		return blockOverrides.contains(block);
+		return blockOverrides.contains(block) || blockOverrides.contains(block.getMaterial());
 	}
 
 	@SideOnly(Side.CLIENT)

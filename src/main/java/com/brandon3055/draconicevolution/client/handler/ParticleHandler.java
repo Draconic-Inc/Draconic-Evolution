@@ -79,7 +79,6 @@ public class ParticleHandler
 	{
 		if (mc == null || mc.renderViewEntity == null || mc.effectRenderer == null) return false;
 
-
 		double var15 = mc.renderViewEntity.posX - x;
 		double var17 = mc.renderViewEntity.posY - y;
 		double var19 = mc.renderViewEntity.posZ - z;

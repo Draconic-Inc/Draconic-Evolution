@@ -1,5 +1,7 @@
 ######## 1.0.2c ########
--
+-fixed shovels unable to harvest some blocks in AOE mode (Any block that requires a shovel but can not be harvested by hand)
+-added config blacklist for the Item Dislocator.
+-fixed armor still draining power when another mod cancels a damage event.
 
 ######## 1.0.2b ########
 -fixed not being able to close the flow gate gui's by pressing the inventory key.
@@ -401,12 +403,12 @@ All mobs killed by the mob grinder now drop loot and player only loot.
 
 Fixed Armor Crash
 All tool and armor item entities are now Persistent and can not be killed except if they fall out of the world
-All items in the game can be placed in the world using the “Place Item” key (default P)
+All items in the game can be placed in the world using the ï¿½Place Itemï¿½ key (default P)
 Added ender arrow
 Improved Draconic Helm night vision effect (effect now stops immediately when you enter a lit area)
 Fixed Mob grinder crash
 Update Fix is now disabled by default
-Fixed Buggy gui’s for grinder and generator
+Fixed Buggy guiï¿½s for grinder and generator
 
 ######## 0.9.32-beta (Bug Fix) ######## 
 
@@ -444,7 +446,7 @@ Fixed Advanced charm of dislocation server crash
 Draconium ore can no longer be destroyed by the Enderdragon
 Weapons now work on the Enderdragon
 Fixed Draconic Hoe use animation
-Draconic Hoe now checks “isReplacable”
+Draconic Hoe now checks ï¿½isReplacableï¿½
 Reduced the teleport sound effect volume
 Fixed Mining AOE bugginess
 Added AOE to the Draconic Axe

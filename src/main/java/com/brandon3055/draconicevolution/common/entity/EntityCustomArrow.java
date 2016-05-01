@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.brandonscore.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
@@ -405,9 +404,8 @@ public class EntityCustomArrow extends EntityArrow {
 	@Override
 	public void onCollideWithPlayer(EntityPlayer par1EntityPlayer)
 	{
-
 		if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
-            LogHelper.info("collide "+ canBePickedUp);
+
 			boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
 
 			if (this.canBePickedUp == 1 && !par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1))) {

@@ -81,3 +81,21 @@ idea {
         inheritOutputDirs = true
     }
 }
+
+task deobfJar(type: Jar) { // Generate deobfuscated
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+task sourceJar(type: Jar) { // Generate sources
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+tasks.build.dependsOn('sourceJar', 'deobfJar')
+
+artifacts {
+   archives deobfJar
+   archives sourceJar
+   archives jar
+}

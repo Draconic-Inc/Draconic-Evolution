@@ -31,12 +31,10 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 	/**Max Extract*/
 	private int maxExtract = 0;
 
-
 	public RFItemBase(){
 		this.setMaxStackSize(1);
 		this.setCreativeTab(DraconicEvolution.tabToolsWeapons);
 	}
-
 
 	@Override
 	public boolean hasCustomEntity(ItemStack stack) {
@@ -56,9 +54,7 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 
 	public void setMaxExtract(int maxExtract){ this.maxExtract = maxExtract;}
 
-	public int getCapacity(ItemStack stack){
-		return capacity;
-	}
+	public int getCapacity(ItemStack stack){ return capacity; }
 
 	public int getMaxExtract(ItemStack stack){ return maxExtract; }
 
@@ -66,7 +62,6 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 
 	@Override
 	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-
 		int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
 		int energyReceived = Math.min(getCapacity(container) - energy, Math.min(getMaxReceive(container), maxReceive));
 
@@ -79,7 +74,6 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 
 	@Override
 	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-
 		int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
 		int energyExtracted = Math.min(energy, Math.min(getMaxExtract(container), maxExtract));
 

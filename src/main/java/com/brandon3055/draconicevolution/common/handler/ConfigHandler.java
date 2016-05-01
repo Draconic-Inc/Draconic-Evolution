@@ -5,7 +5,9 @@ import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfigHandler {
 
@@ -44,6 +46,8 @@ public class ConfigHandler {
 	public static boolean useOriginal3DArmorModel;
 	public static boolean useOldD2DToolTextures;
 	public static boolean disableGuardianCrystalRespawn;
+    private static String[] itemDislocatorBlacklist;
+    public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 
 	//spawner
 	public static String[] spawnerList;
@@ -115,6 +119,7 @@ public class ConfigHandler {
 			chaosIslandSeparation = config.get(Configuration.CATEGORY_GENERAL, "Chaos Island Separation", 10000, "This sets how far apart the chaos islands will spawn. The islands spawn in a grid pattern.").getInt(10000);
 			useOriginal3DArmorModel = config.get(Configuration.CATEGORY_GENERAL, "Use the original 3D armor models", false, "If true the original 3D armor models created by Skeletonpunk will be used instead of the current ones").getBoolean(false);
 			disableGuardianCrystalRespawn = config.get(Configuration.CATEGORY_GENERAL, "Disable Guardian Crystal Respawn", false, "(Wuss mode) Setting this to true will disable the chaos guardians ability to respawn healing crystals. Under certain circumstances such as on a Spigot server where entity render distance is significantly lower this may be required.").getBoolean(false);
+            itemDislocatorBlacklist = config.getStringList("Item Dislocator Blacklist", Configuration.CATEGORY_GENERAL, new String[] {"appliedenergistics2:item.ItemCrystalSeed"}, "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4");
 
 
 			//Spawner
@@ -137,8 +142,25 @@ public class ConfigHandler {
 			reactorFuelUsageMultiplier = config.get("Draconic Reactor", "FuelUsageMultiplier", 1, "Use this to adjust how quickly the reactor uses fuel", 0, 1000000).getDouble(1);
 			reactorOutputMultiplier = config.get("Draconic Reactor", "EnergyOutputMultiplier", 1, "Use this to adjust the output of the reactor", 0, 1000000).getDouble(1);
 
-			for (String s : disabledBlocksItems) disabledNamesList.add(s);
-			for (int i : speedDimBlackList) speedLimitDimList.add(i);
+            disabledNamesList.clear();
+			for (String s : disabledBlocksItems) {
+                disabledNamesList.add(s);
+            }
+
+            speedLimitDimList.clear();
+            for (int i : speedDimBlackList) {
+                speedLimitDimList.add(i);
+            }
+
+            itemDislocatorBlacklistMap.clear();
+            for (String s : itemDislocatorBlacklist){
+                if (s.contains("|")){
+                    itemDislocatorBlacklistMap.put(s.substring(0, s.indexOf("|")), Integer.parseInt(s.substring(s.indexOf("|")+1)));
+                }
+                else{
+                    itemDislocatorBlacklistMap.put(s, -1);
+                }
+            }
 		}
 		catch (Exception e) {
 			LogHelper.error("Unable to load Config");

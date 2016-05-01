@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.relauncher.Side;
@@ -85,7 +86,16 @@ public class Magnet extends ItemDE {
 			boolean flag = false;
 
 			for (EntityItem item : items) {
-				flag = true;
+                if (item.getEntityItem() == null) {
+                    continue;
+                }
+
+                String name = Item.itemRegistry.getNameForObject(item.getEntityItem().getItem());
+                if (ConfigHandler.itemDislocatorBlacklistMap.containsKey(name) && (ConfigHandler.itemDislocatorBlacklistMap.get(name) == -1 || ConfigHandler.itemDislocatorBlacklistMap.get(name) == item.getEntityItem().getItemDamage())) {
+                    continue;
+                }
+                flag = true;
+
 				if (item.delayBeforeCanPickup > 0) item.delayBeforeCanPickup = 0;
 				item.motionX = item.motionY = item.motionZ = 0;
 				item.setPosition(entity.posX-0.2+(world.rand.nextDouble()*0.4), entity.posY-0.6, entity.posZ-0.2+(world.rand.nextDouble()*0.4));

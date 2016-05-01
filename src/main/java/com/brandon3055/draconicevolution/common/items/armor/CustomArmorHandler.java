@@ -75,6 +75,10 @@ public class CustomArmorHandler {
 	}
 
 	public static void onPlayerAttacked(LivingAttackEvent event){
+        if (event.isCanceled()){
+            return;
+        }
+
         EntityPlayer player = (EntityPlayer)event.entityLiving;
 		ArmorSummery summery = new ArmorSummery().getSummery(player);
 
@@ -127,6 +131,10 @@ public class CustomArmorHandler {
 	}
 
 	public static void onPlayerDeath(LivingDeathEvent event) {
+        if (event.isCanceled()){
+            return;
+        }
+
 		EntityPlayer player = (EntityPlayer)event.entityLiving;
 		ArmorSummery summery = new ArmorSummery().getSummery(player);
 
