@@ -1,7 +1,14 @@
+######## 1.0.2d ########
+-added config option to disable all log output
+-stopped potential console spam from chaos guardian.
+-fixed draconic armor flight speed boost not being removed when the armor is removed.
+-reduced potential FPS hit from the HUD. (may also fix some other random issues)
+
 ######## 1.0.2c ########
 -fixed shovels unable to harvest some blocks in AOE mode (Any block that requires a shovel but can not be harvested by hand)
 -added config blacklist for the Item Dislocator.
 -fixed armor still draining power when another mod cancels a damage event.
+-removed some debug code that got left in last update.
 
 ######## 1.0.2b ########
 -fixed not being able to close the flow gate gui's by pressing the inventory key.

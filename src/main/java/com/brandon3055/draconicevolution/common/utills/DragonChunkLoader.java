@@ -17,6 +17,7 @@ import java.util.*;
 public class DragonChunkLoader implements LoadingCallback {
 	public static DragonChunkLoader instance;
 	public static Map<EntityChaosGuardian, Ticket> ticketList = new HashMap<EntityChaosGuardian, Ticket>();
+    public static boolean hasReportedIssue = false;
 
 	public static void init(){
 		instance = new DragonChunkLoader();
@@ -38,9 +39,18 @@ public class DragonChunkLoader implements LoadingCallback {
 				ticket.bindEntity(guardian);
 				ticket.setChunkListDepth(9);
 				ticketList.put(guardian, ticket);
+
 			}
 			else {
-				LogHelper.error("Could not get ticket for dragon");
+				if (!hasReportedIssue){
+                    LogHelper.error("##########################################################################################");
+                    LogHelper.error("Could not get ticket for dragon");
+                    LogHelper.error("Fore some reason forge has denied DE's request for a loader ticket for the chaos guardian");
+                    LogHelper.error("This means the chaos guardian may not behave as indented");
+                    LogHelper.error("This error will not show again.");
+                    LogHelper.error("##########################################################################################");
+                    hasReportedIssue = true;
+                }
 				return;
 			}
 		}

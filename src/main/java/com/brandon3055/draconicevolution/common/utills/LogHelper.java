@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.utills;
 
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
@@ -11,6 +12,9 @@ public class LogHelper {
 
 	public static void log(Level logLevel, Object object)
 	{
+        if (ConfigHandler.disableLog){
+            return;
+        }
 		FMLLog.log(References.MODNAME, logLevel, String.valueOf(object));
 	}
 

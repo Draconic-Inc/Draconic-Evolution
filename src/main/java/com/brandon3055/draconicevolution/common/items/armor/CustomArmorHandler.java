@@ -250,9 +250,12 @@ public class CustomArmorHandler {
 					player.capabilities.isFlying = false;
 					player.sendPlayerAbilities();
 				}
-
-				if (player.worldObj.isRemote)setPlayerFlySpeed(player, 0.05F);
 			}
+
+            if (player.worldObj.isRemote && playersWithFlight.get(player)){
+                playersWithFlight.put(player, false);
+                setPlayerFlySpeed(player, 0.05F);
+            }
 		}
 		//endregion
 
