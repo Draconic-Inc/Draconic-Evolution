@@ -11,11 +11,17 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 repositories {
     maven {
-        name 'CB Maven FS'
+        name 'Covers1624 maven'
         url "http://adel.podgeweb.com:1616/maven/"
+    }
+	maven {
+        name 'CB Maven'
+        url "http://chickenbones.net/maven/"
     }
 }
 
@@ -40,14 +46,19 @@ minecraft {
     replace '${mod_version}', project.config.mod_version
 }
 
-
+String buildNo = "1"
+if(System.getenv("BUILD_NUMBER") != null){
+	buildNo = System.getenv("BUILD_NUMBER")
+	version = version + ".${buildNo}"
+}
 
 dependencies {
     //compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:deobf"
     //compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:deobf"
+	compile "com.brandon3055.brandonscore:BrandonsCore:${config.minecraft_version}-${config.bcore_version}:deobf"
 
     //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
-    compile project(path: ':BrandonsCore')
+    //compile project(path: ':BrandonsCore')
 }
 
 processResources
@@ -70,4 +81,65 @@ processResources
     }
 }
 
-//sourceSets { main { output.resourcesDir = output.classesDir } }
+jar {
+    classifier = 'universal'
+    //manifest commonManifest
+}
+
+task srcJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    //manifest commonManifest
+}
+
+// Tell the artifact system about our extra jars
+artifacts {
+    archives srcJar, deobfJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file:///var/www/maven")
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
+                project {
+                    name project.archivesBaseName
+                    packaging 'jar'
+                    description 'DraconicEvolution'
+                    url 'https://github.com/brandon3055/Draconic-Evolution'
+                    scm {
+                        url 'https://github.com/brandon3055/Draconic-Evolution'
+                        connection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
+                        developerConnection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
+                    }
+                    issueManagement {
+                        system 'github'
+                        url 'https://github.com/brandon3055/Draconic-Evolution/issues'
+                    }
+                    licenses {
+                        license {
+                            name 'License'
+                            url 'https://raw.githubusercontent.com/brandon3055/Draconic-Evolution/master/LICENSE.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'brandon3055'
+                            name 'brandon3055'
+                            roles { role 'developer' }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
