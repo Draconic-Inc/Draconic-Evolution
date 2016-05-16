@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.blocks.IDataRetainerTile;
+import com.brandon3055.brandonscore.api.IDataRetainerTile;
+import com.brandon3055.brandonscore.api.IMultiBlock;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
@@ -8,7 +9,7 @@ import com.brandon3055.brandonscore.network.wrappers.*;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
-import com.brandon3055.draconicevolution.utills.LogHelper;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.EnergyCoreStructure;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,14 +21,17 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  *  Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTile, ITickable, IExtendedRFStorage{
+public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTile, ITickable, IExtendedRFStorage, IMultiBlock{
 
     //region Constant Fields
 
@@ -93,7 +97,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
                     player.moveEntity(-player.motionX*1.5, -player.motionY*1.5, -player.motionZ*1.5);
                 }
 
-                player.motionX = player.motionY = player.motionZ = 0;
+                //  player.motionX = player.motionY = player.motionZ = 0;
 
                 double multiplier = (threshold - dist) * 0.05;
 
@@ -115,7 +119,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
         }
     }
 
-    private void activateCore(){
+    public void activateCore(){
         if (worldObj.isRemote || !validateStructure()){
             return;
         }
@@ -124,19 +128,21 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
             energy.value = getCapacity();
         }
 
-        LogHelper.info("Activate Core");//todo remove
+        LogHelper.info("Activate Core-");//todo remove
         buildGuide.value = false;
         coreStructure.formTier(tier.value);
         active.value = true;
+        updateStabilizers(true);
     }
 
-    private void deactivateCore(){
+    public void deactivateCore(){
         if (worldObj.isRemote){
             return;
         }
-        LogHelper.info("Deactivate Core");//todo remove
+        LogHelper.info("Deactivate Core-");//todo remove
         coreStructure.revertTier(tier.value);
         active.value = false;
+        updateStabilizers(false);
     }
 
     private long getCapacity(){
@@ -182,6 +188,20 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
         }
     }
 
+    /**
+     * Sets the "isCoreActive" value in each of the stabilizers
+     * */
+    private void updateStabilizers(boolean coreActive){
+        for (SyncableVec3I offset : stabOffsets){
+            BlockPos tilePos = pos.add(-offset.vec.x, -offset.vec.y, -offset.vec.z);
+            TileEnergyCoreStabilizer tile = TileBCBase.getCastTileAt(worldObj, tilePos, TileEnergyCoreStabilizer.class);
+
+            if (tile != null){
+                tile.isCoreActive.value = coreActive;
+            }
+        }
+    }
+
     //endregion
 
     //region Structure
@@ -190,7 +210,8 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
      * If the structure has already been validated this method will check that it is still valit.
      * Otherwise it will check if the structure is valid.
      * */
-    public boolean validateStructure() {
+    @Override
+     public boolean validateStructure() {
         boolean valid = checkStabilizers();
 
         if (!coreStructure.checkTier(tier.value)){
@@ -214,18 +235,15 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
     public boolean checkStabilizers() {
         boolean flag = true;
         if (stabilizersOK.value){
-
             for (SyncableVec3I offset : stabOffsets){
                 BlockPos tilePos = pos.add(-offset.vec.x, -offset.vec.y, -offset.vec.z);
                 TileEnergyCoreStabilizer tile = TileBCBase.getCastTileAt(worldObj, tilePos, TileEnergyCoreStabilizer.class);
 
-
-                if (tile == null || !tile.hasCoreLock.value || tile.getCore() != this || !tile.isStabilizerValid(tier.value) /*|| tile.coreDirection != dir.getOpposite()todo Do i really deed this?*/){
+                if (tile == null || !tile.hasCoreLock.value || tile.getCore() != this || !tile.isStabilizerValid(tier.value, this) /*|| tile.coreDirection != dir.getOpposite()todo Do i really deed this?*/){
                     flag = false;
                     break;
                 }
             }
-
 
             if (!flag){
                 stabilizersOK.value = false;
@@ -246,7 +264,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
                     for (int dist = 0; dist < 16; dist++){
                         BlockPos pos1 = pos.add(facing.getFrontOffsetX() * dist, facing.getFrontOffsetY() * dist, facing.getFrontOffsetZ() * dist);
                         TileEnergyCoreStabilizer stabilizer = TileBCBase.getCastTileAt(worldObj, pos1, TileEnergyCoreStabilizer.class);
-                        if (stabilizer != null && (!stabilizer.hasCoreLock.value || stabilizer.getCore().equals(this)) && stabilizer.isStabilizerValid(tier.value)){
+                        if (stabilizer != null && (!stabilizer.hasCoreLock.value || stabilizer.getCore().equals(this)) && stabilizer.isStabilizerValid(tier.value, this)){
                             stabsFound.add(stabilizer);
                             break;
                         }
@@ -273,7 +291,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
     /**Frees any stabilizers that are still linked to the core and clears the offset list*/
     private void releaseStabilizers(){
         for (SyncableVec3I offset : stabOffsets){
-            BlockPos tilePos = pos.add(offset.vec.x, offset.vec.y, offset.vec.z);
+            BlockPos tilePos = pos.add(-offset.vec.x, -offset.vec.y, -offset.vec.z);
             TileEnergyCoreStabilizer tile = TileBCBase.getCastTileAt(worldObj, tilePos, TileEnergyCoreStabilizer.class);
 
             if (tile != null){
@@ -333,9 +351,46 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 
     //endregion
 
+    //region IMultiBlock todo Actually implement this
 
     @Override
+    public boolean isStructureValid() {
+        return structureValid.value;
+    }
+
+    @Override
+    public boolean isController() {
+        return true;
+    }
+
+    @Override
+    public boolean hasSatelliteStructures() {
+        return false;
+    }
+
+    @Override
+    public IMultiBlock getController() {
+        return this;
+    }
+
+    @Override
+    public LinkedList<IMultiBlock> getSatelliteControllers() {
+        return null;
+    }
+
+
+    //endregion
+
+    @Override
+    @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    {
+        return 65536.0D;
     }
 }

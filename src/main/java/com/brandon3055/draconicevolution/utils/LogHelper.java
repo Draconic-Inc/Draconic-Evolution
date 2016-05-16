@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.utills;
+package com.brandon3055.draconicevolution.utils;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import org.apache.logging.log4j.Level;

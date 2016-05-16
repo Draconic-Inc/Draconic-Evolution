@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -22,6 +23,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		super.preInit(event);
+        OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);
 		DraconicEvolution.featureParser.registerRendering();
 		DEImageHandler.init(event);
 	}
@@ -52,6 +54,7 @@ public class ClientProxy extends CommonProxy {
 
 	public void registerRendering()
 	{
+
 //		//Item Renderers
 //		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBow());
 //		MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new RenderBow());

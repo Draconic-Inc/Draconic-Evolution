@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.world;
 
-import com.brandon3055.brandonscore.utills.LinkedHashList;
+import com.brandon3055.brandonscore.utils.LinkedHashList;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.DraconiumOre;
@@ -54,7 +54,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
 		switch (world.provider.getDimension()){
 			case 0:
 				if (!DEConfig.disableOreSpawnOverworld) {
-					addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.stone.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
+					addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.STONE.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
 				}
 				break;
 			case 1:
@@ -65,12 +65,12 @@ public class DEWorldGenHandler implements IWorldGenerator {
 				int z1 = actualZ + random.nextInt(16);
 				if (DEConfig.generateEnderComets && Math.sqrt(actualX*actualX + actualZ*actualZ) > 200 && random.nextInt(Math.max(1, DEConfig.cometRarity)) == 0) new WorldGenEnderComet().generate(world, random, new BlockPos(x1, y , z1));
 				if (DEConfig.generateChaosIslands) ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, null, random);
-				if (!DEConfig.disableOreSpawnEnd)addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.END), Blocks.end_stone.getDefaultState(), world, random, actualX, actualZ, 4, 5, 10, 1, 70);
+				if (!DEConfig.disableOreSpawnEnd)addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.END), Blocks.END_STONE.getDefaultState(), world, random, actualX, actualZ, 4, 5, 10, 1, 70);
 
 				break;
 			case -1:
 				if (!DEConfig.disableOreSpawnNether){
-					addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NETHER), Blocks.netherrack.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 5, 1, 125);
+					addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NETHER), Blocks.NETHERRACK.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 5, 1, 125);
 				}
 				break;
 			default:
@@ -78,7 +78,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
 				{
 					if (i == world.provider.getDimension()) return;
 				}
-				addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.stone.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
+				addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.STONE.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
 				break;
 		}
 	}

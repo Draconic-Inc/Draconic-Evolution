@@ -1,6 +1,6 @@
-# Blender v2.70 (sub 0) OBJ File: 'stabilizer_sphere.blend'
+# Blender v2.70 (sub 0) OBJ File: 'stabilizerSphere.blend'
 # www.blender.org
-mtllib stabilizer_sphere.mtl
+mtllib stabilizerSphere.mtl
 o Icosphere
 v 0.000000 -1.000000 0.000000
 v 0.723600 -0.447215 0.525720
@@ -17,7 +17,7 @@ v 0.000000 1.000000 0.000000
 vt 0.000000 0.000000
 vt 1.000000 0.000000
 vt 1.000000 1.000000
-usemtl None
+usemtl textureMat
 s off
 f 1/1 2/2 3/3
 f 2/1 1/2 6/3

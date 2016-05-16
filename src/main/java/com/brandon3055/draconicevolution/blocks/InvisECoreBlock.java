@@ -1,10 +1,11 @@
 package com.brandon3055.draconicevolution.blocks;
 
+import com.brandon3055.brandonscore.api.IMultiBlock;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -15,6 +16,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -42,6 +45,24 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
         return new TileInvisECoreBlock();
     }
 
+    @Override
+    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
+        TileInvisECoreBlock tile = TileBCBase.getCastTileAt(world, pos, TileInvisECoreBlock.class);
+        if (tile != null && tile.getController() == null){
+            tile.revert();
+        }
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileInvisECoreBlock tile = TileBCBase.getCastTileAt(world, pos, TileInvisECoreBlock.class);
+
+        if (tile != null){
+            return tile.onTileClicked(playerIn, state);
+        }
+
+        return super.onBlockActivated(world, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
+    }
 
     //region Drops
 
@@ -57,17 +78,21 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
         if (tile != null) {
 
             if (!tile.blockName.isEmpty() && !player.capabilities.isCreativeMode) {
-                Block block = Block.blockRegistry.getObject(new ResourceLocation(tile.blockName));
+                Block block = Block.REGISTRY.getObject(new ResourceLocation(tile.blockName));
 
                 if (block != null) {
-                    spawnAsEntity(world, pos, new ItemStack(block));
+                    if (tile.blockName.equals("draconicevolution:particleGenerator")){
+                        spawnAsEntity(world, pos, new ItemStack(block, 1, 2));
+                    }else {
+                        spawnAsEntity(world, pos, new ItemStack(block));
+                    }
                 }
             }
 
-            TileEnergyStorageCore core = tile.getCore();
-            if (core != null) {
+            IMultiBlock master = tile.getController();
+            if (master != null) {
                 world.setBlockToAir(pos);
-                core.validateStructure();
+                master.validateStructure();
             }
         }
     }
@@ -76,14 +101,51 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
 
     //region Rendering
 
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return super.getBoundingBox(state, source, pos);//new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+    }
+
+    @Override
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World world, BlockPos pos) {
+        TileInvisECoreBlock tile = TileBCBase.getCastTileAt(world, pos, TileInvisECoreBlock.class);
+
+        if (tile != null && tile.blockName.equals("draconicevolution:particleGenerator")){
+            IMultiBlock controller = tile.getController();
+
+            if (controller instanceof TileEnergyCoreStabilizer){
+                TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer)controller;
+                if (stabilizer.isValidMultiBlock.value){
+                    AxisAlignedBB bb = new AxisAlignedBB(stabilizer.getPos());
+
+                    if (stabilizer.multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL){
+                        if (stabilizer.multiBlockAxis == EnumFacing.Axis.X){
+                            bb = bb.expand(0, 1, 1);
+                        }
+                        else {
+                            bb = bb.expand(1, 1, 0);
+                        }
+                    }
+                    else {
+                        bb = bb.expand(1, 0, 1);
+                    }
+                    return bb;
+                }
+            }
+
+            return super.getSelectedBoundingBox(blockState, world, pos);
+        }
         return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
     }
 
     @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
-        return NULL_AABB;
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState worldIn, World pos, BlockPos state) {
+        return super.getCollisionBoundingBox(worldIn, pos, state);
     }
 
     @Override

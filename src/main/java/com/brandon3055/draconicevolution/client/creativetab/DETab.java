@@ -16,7 +16,7 @@ public class DETab extends CreativeTabs {
 
 	public static void initialize() {
 	/*	if (ModItems.isEnabled(ModItems.draconicDestructionStaff)) iconStackStaff = ItemNBTHelper.setInteger(new ItemStack(ModItems.draconicDestructionStaff), "Energy", 30000000);
-		else */iconStackStaff = new ItemStack(Items.stick);
+		else */iconStackStaff = new ItemStack(Items.STICK);
 	}
 
 	public DETab(int id, String modid, String label, int tab) {
@@ -31,7 +31,7 @@ public class DETab extends CreativeTabs {
 
 //		if (tab == 0) return iconStackStaff;
 //		else if (ModBlocks.isEnabled(ModBlocks.energyInfuser)) return new ItemStack(ModBlocks.energyInfuser);
-		return new ItemStack(Items.ender_eye);
+		return new ItemStack(Items.ENDER_EYE);
 	}
 
 	@Override

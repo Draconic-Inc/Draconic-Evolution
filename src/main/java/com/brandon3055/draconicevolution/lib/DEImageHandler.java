@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.lib;
 
-import com.brandon3055.brandonscore.utills.LogHelper;
+import com.brandon3055.brandonscore.utils.LogHelper;
 import com.google.common.io.ByteStreams;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.client.Minecraft;

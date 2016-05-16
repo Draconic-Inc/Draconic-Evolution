@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.config.ModConfigProcessor;
 import com.brandon3055.brandonscore.config.ModFeatureParser;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
-import com.brandon3055.draconicevolution.utills.LogHelper;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.DEWorldGenHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -20,10 +22,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 public class DraconicEvolution {
 	public static final String MODID	= "DraconicEvolution";
 	public static final String MODNAME	= "Draconic Evolution";
-	public static final String VERSION	= "2.0.0";//todo Automate version
+	public static final String VERSION	= "${mod_version}";//todo Test
 	public static final String PROXY_CLIENT = "com.brandon3055.draconicevolution.client.ClientProxy";
 	public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.CommonProxy";
-	public static final String DEPENDENCIES = "after:NotEnoughItems;after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:BrandonsCore@[1.0.0.11,);"; //todo Automate version
+	public static final String DEPENDENCIES = "after:NotEnoughItems;after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:BrandonsCore@["+ BrandonsCore.VERSION +",);"; //todo Automate version 1.0.0.11
 	public static final String GUI_FACTORY 	= "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
 	public static final String networkChannelName = "DEvolutionNC";
 	//region Misc Fields
@@ -48,6 +50,8 @@ public class DraconicEvolution {
 	public static ModFeatureParser featureParser = new ModFeatureParser(MODID, new CreativeTabs[]{tabBlocksItems, tabToolsWeapons});
 	public static ModConfigProcessor configProcessor = new ModConfigProcessor();
 
+   // Still need to finish particle updating and ofcoarse rendering
+
 	public DraconicEvolution()
 	{
 		LogHelper.info("Hello Minecraft!!!");
@@ -64,6 +68,7 @@ public class DraconicEvolution {
 		featureParser.registerFeatures();
 
 		OreHandler.initialize();
+        DEParticles.register();
 
 		proxy.preInit(event);
 	}

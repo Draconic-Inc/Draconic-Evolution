@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.MultiBlockStorage;
-import com.brandon3055.brandonscore.utills.ModelUtills;
-import com.brandon3055.brandonscore.utills.MultiBlockHelper;
+import com.brandon3055.brandonscore.utils.ModelUtils;
+import com.brandon3055.brandonscore.utils.MultiBlockHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
-import com.brandon3055.draconicevolution.utills.LogHelper;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -141,7 +141,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Render Build Guide
 
         if (flag == FLAG_RENDER) {//todo find a way to render these from the center out (Maby try rendering them relative to haw far from the player they are)
-            Block block = Block.blockRegistry.getObject(new ResourceLocation(name));
+            Block block = Block.REGISTRY.getObject(new ResourceLocation(name));
 
             if (block == null || name.equals("") || name.equals("air")) {
                 return;
@@ -163,8 +163,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
             float brightnessY = OpenGlHelper.lastBrightnessY;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 150f, 150f);
 
-            List<BakedQuad> blockQuads = ModelUtills.getModelQuads(state);
-            ModelUtills.renderQuadsARGB(tessellator, blockQuads, 0x80FFFFFF);
+            List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
+            ModelUtils.renderQuadsARGB(blockQuads, 0x80FFFFFF);
 
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
             GlStateManager.disableBlend();
@@ -180,7 +180,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
             TileInvisECoreBlock tile = TileBCBase.getCastTileAt(world, pos, TileInvisECoreBlock.class);
             if (tile != null) {
                 tile.blockName = name;
-                tile.setCore(core);
+                tile.setController(core);
             }
         }
 

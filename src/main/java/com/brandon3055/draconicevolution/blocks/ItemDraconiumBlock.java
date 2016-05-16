@@ -3,8 +3,8 @@ package com.brandon3055.draconicevolution.blocks;
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.blocks.ItemBlockBasic;
 import com.brandon3055.brandonscore.config.FeatureWrapper;
-import com.brandon3055.brandonscore.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.utills.Utills;
+import com.brandon3055.brandonscore.utils.ItemNBTHelper;
+import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -76,7 +76,7 @@ public class ItemDraconiumBlock extends ItemBlockBasic implements IEnergyContain
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
-		if (stack.hasTagCompound()) list.add(Utills.addCommas(getEnergyStored(stack)) + " / " + Utills.addCommas(getMaxEnergyStored(stack)) + "RF");
+		if (stack.hasTagCompound()) list.add(Utils.addCommas(getEnergyStored(stack)) + " / " + Utils.addCommas(getMaxEnergyStored(stack)) + "RF");
 	}
 
 	//endregion

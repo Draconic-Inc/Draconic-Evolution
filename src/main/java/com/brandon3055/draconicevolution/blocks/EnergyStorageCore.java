@@ -4,9 +4,8 @@ import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
-import com.brandon3055.draconicevolution.client.tile.RenderTileEnergyStorageCore;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyStorageCore;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -26,7 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,7 +38,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
     public EnergyStorageCore(){
-        super(Material.iron);
+        super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, false));
     }
 
@@ -73,8 +71,8 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     //region Render Stuff
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getBoundingBox(state, worldIn, pos);
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
+        return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getSelectedBoundingBox(state, worldIn, pos);
     }
 
     @SideOnly(Side.CLIENT)
@@ -121,7 +119,6 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
-        OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);
         Item item = Item.getItemFromBlock(this);
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(ResourceHelperDE.RESOURCE_PREFIX + feature.name(), "inventory"));
 

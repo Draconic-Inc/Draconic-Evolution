@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.world;
 
-import com.brandon3055.draconicevolution.utills.LogHelper;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;

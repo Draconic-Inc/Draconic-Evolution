@@ -31,10 +31,10 @@ public class DEFeatures {
 	public static DraconiumBlock draconiumBlock = (DraconiumBlock) new DraconiumBlock().setHardness(10f).setResistance(20.0f);
 
 	@Feature(name = "draconicBlock")
-	public static BlockMobSafe draconicBlock = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.iron).setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
+	public static BlockMobSafe draconicBlock = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
 
 	@Feature(name = "infusedObsidian")
-	public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.rock).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
+	public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.ROCK).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
 
     //Machines
 	@Feature(name = "generator", tileEntity = TileGenerator.class, itemBlock = ItemBlockBCore.class, cTab = 1)

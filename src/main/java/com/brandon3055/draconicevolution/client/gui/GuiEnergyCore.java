@@ -3,8 +3,8 @@ package com.brandon3055.draconicevolution.client.gui;
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
-import com.brandon3055.brandonscore.utills.InfoHelper;
-import com.brandon3055.brandonscore.utills.Utills;
+import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
@@ -75,10 +75,11 @@ public class GuiEnergyCore extends GuiContainer {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         if (GuiHelper.isInRect(guiLeft + 40, guiTop + 102, xSize - 80, 20, mouseX, mouseY)){
             List<String> list = new ArrayList<String>();
-            list.add(InfoHelper.HITC() + Utills.formatNumber(Long.MAX_VALUE));
-            list.add(TextFormatting.GRAY +"["+ Utills.addCommas(Long.MAX_VALUE) + " RF]");
+            list.add(InfoHelper.HITC() + Utils.formatNumber(Long.MAX_VALUE));
+            list.add(TextFormatting.GRAY +"["+ Utils.addCommas(Long.MAX_VALUE) + " RF]");
             drawHoveringText(list, mouseX - guiLeft, mouseY - guiTop);
         }
+
     }
 
     @Override
