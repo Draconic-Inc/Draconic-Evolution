@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -36,7 +37,7 @@ public class DraconiumOre extends BlockDE {
 
     @Override
     public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
-        return false;
+        return entity instanceof EntityPlayer;
     }
 
     @Override

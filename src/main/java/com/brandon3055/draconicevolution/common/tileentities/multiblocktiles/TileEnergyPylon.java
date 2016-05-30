@@ -252,7 +252,7 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 	public Packet getDescriptionPacket(){
 		NBTTagCompound nbttagcompound = new NBTTagCompound();
 		writeToNBT(nbttagcompound);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbttagcompound);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbttagcompound);
 	}
 
 	@Override

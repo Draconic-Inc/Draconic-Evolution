@@ -1,3 +1,14 @@
+######## 1.0.2f ########
+-fixed shield sound effect being too loud.
+
+######## 1.0.2e ########
+-damage that bypasses armor now deals double damage and increased entropy to the shield.
+-fake players should now be able to mine draconium ore, infused obsidian and both draconium blocks.
+-fixed crash involving the bedrock sword compatibility code.
+-attempted to fix a rendering bug with the energy transceivers (may or may not be fixed now).
+-hopefully fixed issue with Armourers-Workshop not being able to make the draconic armor invisible.
+-fixed flight sometimes not being disabled when draconic chestplate is removed.
+
 ######## 1.0.2d ########
 -added config option to disable all log output
 -stopped potential console spam from chaos guardian.

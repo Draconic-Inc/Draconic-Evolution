@@ -119,7 +119,7 @@ public class CustomArmorHandler {
 
 		if (summery.protectionPoints > 0){
 			DraconicEvolution.network.sendToAllAround(new ShieldHitPacket(player, summery.protectionPoints / summery.maxProtectionPoints), new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 64));
-			player.worldObj.playSoundEffect(player.posX + 0.5D, player.posY + 0.5D, player.posZ + 0.5D, "draconicevolution:shieldStrike", 10.0F, player.worldObj.rand.nextFloat() * 0.1F + 1.055F);
+			player.worldObj.playSoundEffect(player.posX + 0.5D, player.posY + 0.5D, player.posZ + 0.5D, "draconicevolution:shieldStrike", 0.9F, player.worldObj.rand.nextFloat() * 0.1F + 1.055F);
 		}
 
 		if (remainingPoints > 0) {
@@ -140,10 +140,10 @@ public class CustomArmorHandler {
 
 		if (summery == null || event.source == ADMIN_KILL) return;
 
-		if (summery.protectionPoints > 20){
+		if (summery.protectionPoints > 500){
 			event.setCanceled(true);
 			event.entityLiving.setHealth(10);
-			LogHelper.warn("Something is trying to bypass the draconic shield. [Culprit: {Damage Type=" + event.source.damageType + ", Damage Class=" + event.source.toString() + "]");
+	//		LogHelper.warn("Something is trying to bypass the draconic shield. [Culprit: {Damage Type=" + event.source.damageType + ", Damage Class=" + event.source.toString() + "]");
 			return;
 		}
 
@@ -237,7 +237,6 @@ public class CustomArmorHandler {
 			}
 
 		} else {
-
 			if (!playersWithFlight.containsKey(player)) {
 				playersWithFlight.put(player, false);
 			}
@@ -249,11 +248,15 @@ public class CustomArmorHandler {
 					player.capabilities.allowFlying = false;
 					player.capabilities.isFlying = false;
 					player.sendPlayerAbilities();
+                    LogHelper.info("Send Disable");
 				}
 			}
 
             if (player.worldObj.isRemote && playersWithFlight.get(player)){
                 playersWithFlight.put(player, false);
+                player.capabilities.allowFlying = false;
+                player.capabilities.isFlying = false;
+                LogHelper.info("Put Client");
                 setPlayerFlySpeed(player, 0.05F);
             }
 		}

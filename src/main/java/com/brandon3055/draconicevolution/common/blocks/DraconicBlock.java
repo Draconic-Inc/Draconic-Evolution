@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
@@ -27,7 +28,7 @@ public class DraconicBlock extends BlockDE {
 
 	@Override
 	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
-		return false;
+        return entity instanceof EntityPlayer;
 	}
 
 	@Override

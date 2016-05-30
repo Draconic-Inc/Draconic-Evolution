@@ -47,6 +47,7 @@ public class ModHelper {
     }
 
     public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event){
+        if (summery == null) return event.ammount;
         EntityPlayer attacker = event.source.getEntity() instanceof EntityPlayer ? (EntityPlayer) event.source.getEntity() : null;
 
         if (attacker == null){
@@ -57,8 +58,7 @@ public class ModHelper {
             event.entityLiving.hurtResistantTime = 0;
             return 300F;
         }
-
-        if (isHoldingBedrockSword(attacker)){
+        else if (isHoldingBedrockSword(attacker)){
             summery.entropy += 10;
 
             if (summery.entropy > 100){
@@ -66,6 +66,15 @@ public class ModHelper {
             }
 
             return Math.max(event.ammount, Math.min(50F, summery.protectionPoints));
+        }
+        else if (event.source.isUnblockable() || event.source.canHarmInCreative()){
+            summery.entropy += 3;
+
+            if (summery.entropy > 100){
+                summery.entropy = 100;
+            }
+
+            return event.ammount * 2;
         }
 
         return event.ammount;

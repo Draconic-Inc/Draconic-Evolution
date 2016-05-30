@@ -41,7 +41,7 @@ public class DraconiumBlock extends BlockDE {
 
 	@Override
 	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
-		return false;
+        return entity instanceof EntityPlayer;
 	}
 
 	@Override
