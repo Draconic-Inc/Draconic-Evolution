@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.blocks.properties.PropertyString;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
@@ -41,7 +40,7 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
     public static final PropertyString TYPE = new PropertyString("type", "normal", "inverted", "stabilizer", "stabilizer2");
 
     public ParticleGenerator() {
-        super(Material.IRON);
+        super(Material.iron);
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "normal"));
     }
 
@@ -87,6 +86,11 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
     }
 
     @Override
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
     public int damageDropped(IBlockState state) {
         return Math.min(getMetaFromState(state), 2);
     }
@@ -113,14 +117,14 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
-        TileEnergyCoreStabilizer tile = TileBCBase.getCastTileAt(world, pos, TileEnergyCoreStabilizer.class);
+        TileEntity tile = world.getTileEntity(pos);
 
-        if (tile != null) {
-            if (tile.isValidMultiBlock.value) {
+        if (tile instanceof TileEnergyCoreStabilizer) {
+            if (((TileEnergyCoreStabilizer)tile).isValidMultiBlock.value) {
                 AxisAlignedBB bb = new AxisAlignedBB(tile.getPos());
 
-                if (tile.multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {
-                    if (tile.multiBlockAxis == EnumFacing.Axis.X) {
+                if (((TileEnergyCoreStabilizer)tile).multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {
+                    if (((TileEnergyCoreStabilizer)tile).multiBlockAxis == EnumFacing.Axis.X) {
                         bb = bb.expand(0, 1, 1);
                     } else {
                         bb = bb.expand(1, 1, 0);
@@ -158,26 +162,26 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         world.setBlockState(pos, state.withProperty(TYPE, TYPE.fromMeta(stack.getItemDamage())));
 
-        TileEnergyCoreStabilizer tile = TileBCBase.getCastTileAt(world, pos, TileEnergyCoreStabilizer.class);
+        TileEntity tile = world.getTileEntity(pos);
 
-        if (tile != null) {
-            tile.onPlaced();
+        if (tile instanceof TileEnergyCoreStabilizer) {
+            ((TileEnergyCoreStabilizer)tile).onPlaced();
         }
     }
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        TileEnergyCoreStabilizer tile = TileBCBase.getCastTileAt(world, pos, TileEnergyCoreStabilizer.class);
+        TileEntity tile = world.getTileEntity(pos);
 
-        if (tile != null) {
-            if (tile.isValidMultiBlock.value) {
-                tile.deFormStructure();
+        if (tile instanceof TileEnergyCoreStabilizer) {
+            if (((TileEnergyCoreStabilizer)tile).isValidMultiBlock.value) {
+                ((TileEnergyCoreStabilizer)tile).deFormStructure();
             }
-            TileEnergyStorageCore core = tile.getCore();
+            TileEnergyStorageCore core = ((TileEnergyCoreStabilizer)tile).getCore();
 
             if (core != null) {
                 world.removeTileEntity(pos);
-                core.validateStructure();
+                ((TileEnergyCoreStabilizer)tile).validateStructure();
             }
 
         }

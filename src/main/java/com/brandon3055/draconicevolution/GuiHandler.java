@@ -1,12 +1,15 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import com.brandon3055.draconicevolution.client.gui.GUIGenerator;
 import com.brandon3055.draconicevolution.client.gui.GUIGrinder;
 import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
+import com.brandon3055.draconicevolution.client.gui.GuiEnergyinfuser;
+import com.brandon3055.draconicevolution.inventory.ContainerEnergyInfuser;
 import com.brandon3055.draconicevolution.inventory.ContainerGenerator;
 import com.brandon3055.draconicevolution.inventory.ContainerGrinder;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,11 +70,11 @@ public class GuiHandler implements IGuiHandler {
 //					return new ContainerPlayerDetector(player.inventory, (TilePlayerDetectorAdvanced) detector);
 //				}
 //				break;
-//			case GUIID_ENERGY_INFUSER:
-//				if (infuser != null && infuser instanceof TileEnergyInfuser) {
-//					return new ContainerEnergyInfuser(player.inventory, (TileEnergyInfuser) infuser);
-//				}
-//				break;
+			case GUIID_ENERGY_INFUSER:
+				if (tileEntity != null && tileEntity instanceof TileEnergyInfuser) {
+					return new ContainerEnergyInfuser(player, (TileEnergyInfuser) tileEntity);
+				}
+				break;
 			case GUIID_GENERATOR:
 				if (tileEntity != null && tileEntity instanceof TileGenerator) {
 					return new ContainerGenerator(player, (TileGenerator) tileEntity);
@@ -144,11 +147,11 @@ public class GuiHandler implements IGuiHandler {
 //					return new GUIPlayerDetector(player.inventory, (TilePlayerDetectorAdvanced) detector);
 //				}
 //				break;
-//			case GUIID_ENERGY_INFUSER:
-//				if (infuser != null && infuser instanceof TileEnergyInfuser) {
-//					return new GUIEnergyInfuser(player.inventory, (TileEnergyInfuser) infuser);
-//				}
-//				break;
+			case GUIID_ENERGY_INFUSER:
+				if (tileEntity != null && tileEntity instanceof TileEnergyInfuser) {
+					return new GuiEnergyinfuser(player, (TileEnergyInfuser) tileEntity);
+				}
+				break;
 			case GUIID_GENERATOR:
 				if (tileEntity != null && tileEntity instanceof TileGenerator) {
 					return new GUIGenerator(player, (TileGenerator) tileEntity);

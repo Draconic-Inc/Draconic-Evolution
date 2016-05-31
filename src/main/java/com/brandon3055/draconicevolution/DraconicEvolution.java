@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.config.ModConfigProcessor;
 import com.brandon3055.brandonscore.config.ModFeatureParser;
-import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.DEWorldGenHandler;
@@ -25,7 +24,7 @@ public class DraconicEvolution {
 	public static final String VERSION	= "${mod_version}";//todo Test
 	public static final String PROXY_CLIENT = "com.brandon3055.draconicevolution.client.ClientProxy";
 	public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.CommonProxy";
-	public static final String DEPENDENCIES = "after:NotEnoughItems;after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:BrandonsCore@["+ BrandonsCore.VERSION +",);"; //todo Automate version 1.0.0.11
+	public static final String DEPENDENCIES = "after:NotEnoughItems;after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:BrandonsCore@["+ BrandonsCore.VERSION +",);";
 	public static final String GUI_FACTORY 	= "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
 	public static final String networkChannelName = "DEvolutionNC";
 	//region Misc Fields
@@ -68,9 +67,9 @@ public class DraconicEvolution {
 		featureParser.registerFeatures();
 
 		OreHandler.initialize();
-        DEParticles.register();
 
 		proxy.preInit(event);
+        proxy.registerParticles();
 	}
 
 	@Mod.EventHandler

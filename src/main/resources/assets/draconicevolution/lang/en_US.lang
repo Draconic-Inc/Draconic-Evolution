@@ -89,8 +89,11 @@ item.draconicevolution:safetyMatchBox.name=Box of Safety Matches
 item.draconicevolution:key.name=Key
 item.draconicevolution:draconiumEnergyCore0.name=Wyvern Energy Core
 item.draconicevolution:draconiumEnergyCore1.name=Draconic Energy Core
-item.draconicevolution:draconiumFluxCapacitor0.name=Wyvern Flux Capacitor
-item.draconicevolution:draconiumFluxCapacitor1.name=Draconic Flux Capacitor
+
+item.draconicevolution:draconiumCapacitor.wyvern.name=Wyvern Flux Capacitor
+item.draconicevolution:draconiumCapacitor.draconic.name=Draconic Flux Capacitor
+item.draconicevolution:draconiumCapacitor.creative.name=Creative Flux Capacitor
+
 item.draconicevolution:draconicIngot.name=Awakened Draconium Ingot
 item.draconicevolution:creativeStructureSpawnerComet.name=Spawn Comet
 item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Island
@@ -214,6 +217,8 @@ info.teleporterInfFuel.txt=Fuel:
 info.teleporterInfSet1.txt=Bound to
 info.teleporterInfSet2.txt=Uses remaining
 info.de.rightClickToTeleport.txt=Right click to teleport
+info.de.draconiumBlockCapacitorCharge.txt=Hold item and sneak to charge from capacitor.
+info.creativeCapacitor.txt=Can source or sink
 
 info.draconicAxe1.txt=Timber!!!!!!
 info.draconicAxe2.txt=Will fall an entire tree
@@ -253,9 +258,9 @@ info.draconiumChestInfo2.txt=to access colour options
 
 info.de.capacitorMode.txt=Mode
 info.de.capacitorMode0.txt=Inactive
-info.de.capacitorMode1.txt=Charge Hotbar
-info.de.capacitorMode2.txt=Charge Armor & Held Item
-info.de.capacitorMode3.txt=Charge Armor & Hotbar
+info.de.capacitorMode1.txt=Charge Armor
+info.de.capacitorMode2.txt=Charge Held Items
+info.de.capacitorMode3.txt=Charge Armor & Held Items
 info.de.changwMode.txt=Shift Right click to change mode
 
 info.de.toolInventoryOblit.txt=Junk filter & Enchants
@@ -509,8 +514,17 @@ button.de.fadeMode3.txt=Fade Out: 75%
 button.de.fadeMode4.txt=Fade Out: Full
 button.de.rotate.txt=Rotate
 button.de.numeric.txt=Numeric:
+button.de.buildGuide.txt=Build Guide:
+button.de.tierUp.txt=Tier Up
+button.de.tierDown.txt=Tier Down
+
+button.de.activate.txt=Activate
+button.de.deactivate.txt=Deactivate
 
 //Gui ----------------------------------------------------------------------------------------------------------------------------------------
+//Titles
+gui.de.energyStorageCore.name=Tier %s Energy Core
+
 gui.de.flowGate.name=Flow Control
 gui.de.flowGatePartialSignal.name=The actual flow will vary between the two given values depending on the strength of the redstone signal being supplied to the block.
 gui.de.flowGateCurrentFlow.name=Flow
@@ -578,9 +592,17 @@ gui.de.maxDamage.txt=Max Damage
 gui.de.rfPerShot.txt=RF/Shot
 gui.de.tier.txt=Tier
 gui.de.inactive.txt=Inactive
+gui.de.active.txt=Active
 gui.de.energyStorage.txt=Energy Storage
 gui.de.capacity.txt=Capacity
 gui.de.maxStorage.txt=>> Max Storage <<
+gui.de.stabilizers.txt=Stabilizers
+gui.de.invalid.txt=Invalid
+gui.de.valid.txt=Valid
+gui.de.advancedStabilizersRequired.txt=Advanced Stabilizers Required
+gui.de.core.txt=Core
+gui.de.almostInfinite.txt=Almost Infinite!
+gui.de.transfer.txt=Transfer
 
 gui.de.RFCapacity.txt=RF Capacity
 gui.de.DigSpeed.txt=Dig Speed

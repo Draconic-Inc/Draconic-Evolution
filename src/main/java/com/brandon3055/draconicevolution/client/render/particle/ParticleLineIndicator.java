@@ -3,38 +3,29 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import com.brandon3055.brandonscore.client.particle.BCEntityFX;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 /**
  * Created by brandon3055 on 2/5/2016.
  * The particle used to render the beams on the Energy Core
  */
-public class ParticleEnergyCoreFX extends BCEntityFX {
+public class ParticleLineIndicator extends BCEntityFX {
 
-    public Vec3D targetPos;
-    public boolean toCore = false;
-    public int startRotation = 0;
-    private EnumFacing.Axis direction;
-    public boolean isLargeStabilizer = false;
-
-    public ParticleEnergyCoreFX(World worldIn, Vec3D pos) {
+    protected ParticleLineIndicator(World worldIn, Vec3D pos) {
         super(worldIn, pos);
     }
 
-    public ParticleEnergyCoreFX(World worldIn, Vec3D pos, Vec3D targetPos) {
-        super(worldIn, pos, new Vec3D(0, 0, 0));
-        this.targetPos = targetPos;
-        this.particleMaxAge = 3000;
+    public ParticleLineIndicator(World worldIn, Vec3D pos, Vec3D speed) {
+        super(worldIn, pos, speed);
+        this.xSpeed = speed.x;
+        this.ySpeed = speed.y;
+        this.zSpeed = speed.z;
+        this.particleMaxAge = 60;
         this.particleScale = 1F;
-        this.particleTextureIndexY = 1;
-        Vec3D dir = Vec3D.getDirectionVec(pos, targetPos);
-        this.direction = EnumFacing.getFacingFromVector((float)dir.x, (float)dir.y, (float)dir.z).getAxis();
+        this.particleTextureIndexY = 0;
     }
 
     @Override
@@ -44,40 +35,8 @@ public class ParticleEnergyCoreFX extends BCEntityFX {
 
     @Override
     public void onUpdate() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-
-        Vec3D tPos = this.targetPos.copy();
-        particleTextureIndexX = rand.nextInt(5);
-
-        if (toCore){
-            double rotation = ClientEventHandler.elapsedTicks;
-            double offsetX = Math.sin((rotation / 180D * Math.PI) + (startRotation / 100D));
-            double offsetY = Math.cos((rotation / 180D * Math.PI) + (startRotation / 100D));
-
-            double d = isLargeStabilizer ? 1.8 : 0.2;
-            if (direction == EnumFacing.Axis.Z){
-                tPos.add(offsetX * d, offsetY * d, 0);
-            }
-            else if (direction == EnumFacing.Axis.Y){
-                tPos.add(offsetX * d, 0, offsetY * d);
-            }
-            else if (direction == EnumFacing.Axis.X){
-                tPos.add(0, offsetY * d, offsetX * d);
-            }
-        }
-
-        Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), tPos);
-        double speed = toCore ? 0.5D : 0.25D;
-        xSpeed = dir.x * speed;
-        ySpeed = dir.y * speed;
-        zSpeed = dir.z * speed;
-        moveEntityNoClip(xSpeed, ySpeed, zSpeed);
-
-        if (particleAge++ > particleMaxAge || Utils.getDistanceAtoB(posX, posY, posZ, tPos.x, tPos.y, tPos.z) < 0.2) {
-            setExpired();
-        }
+        super.onUpdate();
+        particleScale = 1F - ((float)particleAge / (float)particleMaxAge);
     }
 
     @Override
@@ -103,12 +62,12 @@ public class ParticleEnergyCoreFX extends BCEntityFX {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public EntityFX getEntityFX(int particleID, World world, Vec3D pos, Vec3D targetPos, int... args) {
-            ParticleEnergyCoreFX particle = new ParticleEnergyCoreFX(world, pos, targetPos);
-            particle.toCore = args.length >= 1 && args[0] == 1;
-            particle.startRotation = args.length >= 2 ? args[1] : 0;
-            particle.isLargeStabilizer = args.length >= 3 && args[2] == 1;
-            particle.multipleParticleScaleBy(particle.isLargeStabilizer ? 2 : 1);
+        public EntityFX getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
+            ParticleLineIndicator particle = new ParticleLineIndicator(world, pos, speed);
+            if (args.length >= 3){
+                particle.setRBGColorF(args[0] / 255F, args[1] / 255F, args[2] / 255F);
+            }
+
             return particle;
         }
     }

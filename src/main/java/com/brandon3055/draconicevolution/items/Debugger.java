@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.BlockVine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumFacing;
@@ -174,10 +175,10 @@ public class Debugger extends ItemBCore {
         //}
 
         for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, -1, -1), position.add(1, -1, 1))) {
-            worldIn.setBlockState(pos, Blocks.DIRT.getDefaultState());
+            worldIn.setBlockState(pos, Blocks.dirt.getDefaultState());
         }
         for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, trunkHeight, 1))) {
-            worldIn.setBlockState(pos, Blocks.LOG.getDefaultState());
+            worldIn.setBlockState(pos, Blocks.log.getDefaultState());
         }
         for (EnumFacing dir : EnumFacing.HORIZONTALS) {
             BlockPos edgePos = position.offset(dir, 2);
@@ -256,7 +257,7 @@ public class Debugger extends ItemBCore {
             for (int rayD = 0; rayD < rayDist; rayD++) {
                 double dpc = 1D - (rayD / (double) rayDist);
 
-                double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
+                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
                 x += Math.cos(d2);
                 z += Math.sin(d2);
 
@@ -295,7 +296,7 @@ public class Debugger extends ItemBCore {
             for (int rayD = 0; rayD < rayDist; rayD++) {
                 double dpc = 1D - (rayD / (double) rayDist);
 
-                double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
+                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
                 x += Math.cos(d2);
                 z += Math.sin(d2);
 
@@ -321,8 +322,8 @@ public class Debugger extends ItemBCore {
 
     private void generateVines(World world, Random rand, EnumFacing dir, BlockPos from, BlockPos to) {
         for (BlockPos pos : BlockPos.getAllInBox(from, to)) {
-            if (rand.nextInt(5) == 1 && world.getBlockState(pos).getBlock() == Blocks.AIR) {
-                world.setBlockState(pos, Blocks.VINE.getDefaultState().withProperty(BlockVine.getPropertyFor(dir.getOpposite()), true));
+            if (rand.nextInt(5) == 1 && world.getBlockState(pos).getBlock() == Blocks.air) {
+                world.setBlockState(pos, Blocks.vine.getDefaultState().withProperty(BlockVine.getPropertyFor(dir.getOpposite()), true));
             }
         }
     }
@@ -331,11 +332,11 @@ public class Debugger extends ItemBCore {
         //Iterable<BlockPos> l = BlockPos.getAllInBox(sPos, sPos.add(itemRand.nextInt(2), itemRand.nextInt(2), itemRand.nextInt(2)));
 
         //for (BlockPos pos : l) {
-            world.setBlockState(pos, Blocks.LOG.getDefaultState());
+            world.setBlockState(pos, Blocks.log.getDefaultState());
             for (EnumFacing side : EnumFacing.VALUES) {
                 BlockPos leavesPos = pos.offset(side);
                 if (world.isAirBlock(leavesPos)) {
-                    world.setBlockState(leavesPos, Blocks.LEAVES.getDefaultState());
+                    world.setBlockState(leavesPos, Blocks.leaves.getDefaultState());
                 }
             }
         //}
@@ -345,6 +346,44 @@ public class Debugger extends ItemBCore {
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
         if (world.isRemote) return super.onItemRightClick(itemStack, world, player, hand);
 //
+        //BODMAS
+
+        //LogHelper.info(7 + 36 / 9 + 9 * 1 + 4 + 3 + 7 / 2 * 6 - 14 + Math.pow(2.6, 5));
+        //LogHelper.info(Math.pow((((((((((((7 + 36) / 9) + 9) * 1) + 4) + 3) + 7) / 2) * 6) - 14) + 2.6), 5));
+
+//        Object[] array = new Object[] {1, 2, 3, 4, 5, 6};
+//        LogHelper.info(Arrays.asList(array));
+//
+//        array = ArrayUtils.arrayShift(array, -4527035);
+//
+//        LogHelper.info(Arrays.asList(array));
+//        LogHelper.info("");
+
+        //LogHelper.info(-6 % 5);
+
+
+//        byte value = (byte)itemRand.nextInt(16);
+//        LogHelper.info(value);
+//
+//        boolean[] booleans = new boolean[8];
+//
+//        booleans[0] = (value & 0x01) != 0;
+//        booleans[1] = (value & 0x02) != 0;
+//        booleans[2] = (value & 0x04) != 0;
+//        booleans[3] = (value & 0x08) != 0;
+//        booleans[4] = (value & 0x10) != 0;
+//        booleans[5] = (value & 0x32) != 0;
+//        booleans[6] = (value & 0x64) != 0;
+//        booleans[7] = (value & 0x128) != 0;
+//
+//
+//        String s = "";
+//        for (boolean b : booleans) s+=b+",";
+//        //LogHelper.info(Integer.toBinaryString(value));
+//        //LogHelper.info(s);
+//       // LogHelper.info(Integer.parseInt("011010", 2));
+
+
 
       //  LogHelper.info();
 
@@ -476,6 +515,9 @@ public class Debugger extends ItemBCore {
 
 
         return super.onItemRightClick(itemStack, world, player, hand);
+    }
+
+    private void debug(Item item){
     }
 }
 

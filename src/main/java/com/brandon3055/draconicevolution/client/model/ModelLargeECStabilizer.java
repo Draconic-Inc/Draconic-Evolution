@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.client.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 
 /**
@@ -368,7 +367,6 @@ public class ModelLargeECStabilizer extends ModelBase {
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200f, 200f);
         this.cubeRightF.render(f5);
         this.cubeBottomF.render(f5);
         this.cubeLeftB.render(f5);

@@ -1,0 +1,47 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube",
+    "textures": {
+      "particle": "draconicevolution:blocks/energy_pylon/energyPylonInput",
+      "down": "draconicevolution:blocks/energy_pylon/energyPylonInput",
+      "up": "draconicevolution:blocks/energy_pylon/energyPylonInput",
+      "north": "draconicevolution:blocks/energy_pylon/energyPylonInput",
+      "south": "draconicevolution:blocks/energy_pylon/energyPylonInput",
+      "east": "draconicevolution:blocks/energy_pylon/energyPylonInput",
+      "west": "draconicevolution:blocks/energy_pylon/energyPylonInput"
+    },
+    "uvlock": true,
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "output": {
+      "true": {
+        "textures": {
+          "particle": "draconicevolution:blocks/energy_pylon/energyPylonOutput",
+          "down": "draconicevolution:blocks/energy_pylon/energyPylonOutput",
+          "up": "draconicevolution:blocks/energy_pylon/energyPylonOutput",
+          "north": "draconicevolution:blocks/energy_pylon/energyPylonOutput",
+          "south": "draconicevolution:blocks/energy_pylon/energyPylonOutput",
+          "east": "draconicevolution:blocks/energy_pylon/energyPylonOutput",
+          "west": "draconicevolution:blocks/energy_pylon/energyPylonOutput"
+        }
+      },
+      "false": {}
+    },
+    "facing":{
+      "unknown":{},
+      "up":{
+        "textures": {
+          "up": "draconicevolution:blocks/energy_pylon/energyPylonActiveFace"
+        }
+      },
+      "down":{
+        "textures": {
+          "down": "draconicevolution:blocks/energy_pylon/energyPylonActiveFace"
+        }
+      }
+    },
+    "normal": [{}]
+  }
+}

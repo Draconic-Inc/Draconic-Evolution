@@ -7,10 +7,10 @@
   "variants": {
     "type": {
       "draconium": {
-        "textures": { "layer0": "draconicevolution:items/nuggetDraconium" }
+        "textures": { "layer0": "draconicevolution:items/components/nuggetDraconium" }
       },
       "awakened": {
-        "textures": { "layer0": "draconicevolution:items/nuggetAwakened" }
+        "textures": { "layer0": "draconicevolution:items/components/nuggetAwakened" }
       }
     }
   }

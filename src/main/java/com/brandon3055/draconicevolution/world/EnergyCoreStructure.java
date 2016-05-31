@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.world;
 
-import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.MultiBlockStorage;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.MultiBlockHelper;
@@ -12,8 +11,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -141,7 +140,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Render Build Guide
 
         if (flag == FLAG_RENDER) {//todo find a way to render these from the center out (Maby try rendering them relative to haw far from the player they are)
-            Block block = Block.REGISTRY.getObject(new ResourceLocation(name));
+            Block block = Block.blockRegistry.getObject(new ResourceLocation(name));
 
             if (block == null || name.equals("") || name.equals("air")) {
                 return;
@@ -151,7 +150,6 @@ public class EnergyCoreStructure extends MultiBlockHelper {
             translation = translation.add(getCoreOffset(core.tier.value));
 
             IBlockState state = block.getDefaultState();
-            Tessellator tessellator = Tessellator.getInstance();
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(translation.getX(), translation.getY(), translation.getZ());
@@ -177,10 +175,10 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         else if (flag == FLAG_FORME) {
             world.setBlockState(pos, DEFeatures.invisECoreBlock.getDefaultState());
-            TileInvisECoreBlock tile = TileBCBase.getCastTileAt(world, pos, TileInvisECoreBlock.class);
-            if (tile != null) {
-                tile.blockName = name;
-                tile.setController(core);
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileInvisECoreBlock) {
+                ((TileInvisECoreBlock)tile).blockName = name;
+                ((TileInvisECoreBlock)tile).setController(core);
             }
         }
 
@@ -189,9 +187,9 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Deactivate
 
         else if (flag == FLAG_REVERT) {
-            TileInvisECoreBlock tile = TileBCBase.getCastTileAt(world, pos, TileInvisECoreBlock.class);
-            if (tile != null) {
-                tile.revert();
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileInvisECoreBlock) {
+                ((TileInvisECoreBlock)tile).revert();
             }
         }
 
@@ -841,11 +839,11 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     @Override
     public boolean checkBlock(String name, World world, BlockPos pos) {
-        TileInvisECoreBlock tile = TileBCBase.getCastTileAt(world, pos, TileInvisECoreBlock.class);
-        if (tile != null && tile.blockName.equals(name)) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock)tile).blockName.equals(name)) {
             return true;
         } else {
-            return super.checkBlock(name, world, pos); //TODO check for the "place holder" blocks when core is active
+            return super.checkBlock(name, world, pos);
         }
     }
 

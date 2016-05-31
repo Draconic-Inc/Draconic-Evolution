@@ -1,14 +1,18 @@
-package com.brandon3055.draconicevolution.blocks;
+package com.brandon3055.draconicevolution.blocks.itemblock;
 
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.blocks.ItemBlockBasic;
 import com.brandon3055.brandonscore.config.FeatureWrapper;
+import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.api.IInvCharge;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,7 +22,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 22/3/2016.
  */
-public class ItemDraconiumBlock extends ItemBlockBasic implements IEnergyContainerItem{
+public class ItemDraconiumBlock extends ItemBlockBasic implements IEnergyContainerItem, IInvCharge{
 
 	public ItemDraconiumBlock(Block block) {
 		super(block);
@@ -72,12 +76,24 @@ public class ItemDraconiumBlock extends ItemBlockBasic implements IEnergyContain
 		super.onUpdate(stack, p_77663_2_, p_77663_3_, p_77663_4_, p_77663_5_);
 	}
 
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("unchecked")
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
-		if (stack.hasTagCompound()) list.add(Utils.addCommas(getEnergyStored(stack)) + " / " + Utils.addCommas(getMaxEnergyStored(stack)) + "RF");
-	}
+    //endregion
 
-	//endregion
+    @Override
+    public boolean canCharge(ItemStack stack, EntityPlayer player) {
+        return HandHelper.getItemStack(player, stack) != null && player.isSneaking();
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SuppressWarnings("unchecked")
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_) {
+        if (stack.hasTagCompound()) {
+            list.add(Utils.addCommas(getEnergyStored(stack)) + " / " + Utils.addCommas(getMaxEnergyStored(stack)) + "RF");
+        }
+
+        if (player.inventory.hasItemStack(DEFeatures.wyvernCapacitor) || player.inventory.hasItemStack(DEFeatures.draconicCapacitor) || player.inventory.hasItemStack(DEFeatures.creativeCapacitor)){
+            list.add(I18n.translateToLocal("info.de.draconiumBlockCapacitorCharge.txt"));
+        }
+    }
+
 }

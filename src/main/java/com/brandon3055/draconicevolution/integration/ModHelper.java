@@ -21,7 +21,7 @@ public class ModHelper {
 		if (!isTConInstalled) return false;
 //		else if (cleaver == null) cleaver = GameRegistry.findItem("TConstruct", "cleaver");
 
-		return cleaver != null && HandHelper.getInstanceOf(player, cleaver.getClass()) != null;
+		return cleaver != null && HandHelper.getItem(player, cleaver) != null;
 	}
 
 

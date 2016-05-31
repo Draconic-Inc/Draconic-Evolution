@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.draconicevolution.achievements.Achievements;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
@@ -152,6 +153,10 @@ public class CommonProxy {
 //		EntityRegistry.registerModEntity(EntityCustomArrow.class, "CustomArrow", 11, DraconicEvolution.instance, 128, 1, true);
 
 	}
+
+    public void registerParticles() {
+        DEParticles.registerServer();
+    }
 
 //	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render, int beamType)
 //	{

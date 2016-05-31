@@ -22,6 +22,8 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
     public void renderTileEntityAt(TileEnergyCoreStabilizer te, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
+        GlStateManager.disableBlend();
+        setLighting(200F);
 
         //region Rotate Renderer
         EnumFacing facing;
@@ -41,6 +43,7 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
 
         renderRing(te, partialTicks);
 
+        resetLighting();
         GlStateManager.popMatrix();
     }
 
@@ -54,35 +57,5 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
         GlStateManager.rotate(te.rotation + (te.isCoreActive.value ? partialTicks : 0), 0, 0, 1);
         largeModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F / 16F);
         GlStateManager.popMatrix();
-
-
-//        TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry("texture");
-//
-//        //X and Y size of the hole texture in pixels
-//        int holeTextureXSize = 64;
-//        int holeTextureYSize = 64;
-//
-//        //Position and size of the sub texture in pixels (Just some example values)
-//        int xPosOfTexture = 16;
-//        int yPosOfTexture = 16;
-//        int xSizeOfTexture = 20;
-//        int ySizeOfTexture = 20;
-//
-//
-//        double pixelXSize = (sprite.getMaxU() - sprite.getMinU()) / holeTextureXSize;
-//        double pixelYSize = (sprite.getMaxV() - sprite.getMinV()) / holeTextureYSize;
-//
-//
-//        double texU = sprite.getMinU() + (pixelXSize * xPosOfTexture);
-//        double texV = sprite.getMinV() + (pixelYSize * yPosOfTexture);
-//
-//        double texMaxU = texU + (pixelXSize * xSizeOfTexture);
-//        double texMaxV = texV + (pixelYSize * ySizeOfTexture);
-
-
-
-
-
-
     }
 }

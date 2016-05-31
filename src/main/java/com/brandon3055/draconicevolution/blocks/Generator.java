@@ -35,7 +35,7 @@ public class Generator extends BlockBCore implements ITileEntityProvider {
 	public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
 	public Generator(){
-		super(Material.IRON);
+		super(Material.iron);
 		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
 
@@ -129,7 +129,7 @@ public class Generator extends BlockBCore implements ITileEntityProvider {
 
 			if (rand.nextDouble() < 0.1D)
 			{
-				worldIn.playSound((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+				worldIn.playSound((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, SoundEvents.block_fire_ambient, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
 			}
 
 			switch (enumfacing)

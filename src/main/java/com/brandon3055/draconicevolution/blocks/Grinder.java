@@ -34,7 +34,7 @@ public class Grinder extends BlockBCore implements ITileEntityProvider {
 	public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
 	public Grinder(){
-		super(Material.IRON);
+		super(Material.iron);
 		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
 

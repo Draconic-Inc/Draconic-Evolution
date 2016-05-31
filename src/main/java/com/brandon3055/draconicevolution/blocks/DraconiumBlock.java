@@ -24,7 +24,7 @@ public class DraconiumBlock extends BlockMobSafe {
 	public static PropertyBool CHARGED = PropertyBool.create("charged");
 
 	public DraconiumBlock() {
-		super(Material.IRON);
+		super(Material.iron);
 		this.setHarvestLevel("pickaxe", 3);
 		this.setDefaultState(blockState.getBaseState().withProperty(CHARGED, false));
 	}

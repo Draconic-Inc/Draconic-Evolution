@@ -9,20 +9,20 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-public class ParticleEnergy extends BCEntityFX {
+public class ParticleInfuser extends BCEntityFX {
 
     public Vec3D targetPos;
+    public int type = 0;
 
-    public ParticleEnergy(World worldIn, Vec3D pos) {
+    public ParticleInfuser(World worldIn, Vec3D pos) {
         super(worldIn, pos);
     }
 
-    public ParticleEnergy(World worldIn, Vec3D pos, Vec3D targetPos) {
+    public ParticleInfuser(World worldIn, Vec3D pos, Vec3D targetPos) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.targetPos = targetPos;
-        this.particleMaxAge = 3000;
-        this.particleScale = 1F;
-        this.particleTextureIndexY = 1;
+        this.particleMaxAge = 60;
+
     }
 
     @Override
@@ -36,16 +36,46 @@ public class ParticleEnergy extends BCEntityFX {
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
 
-        particleTextureIndexX = rand.nextInt(5);
+        if (particleTextureIndexY == 1){
+            particleTextureIndexX = rand.nextInt(5);
+        }
 
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), targetPos);
-        double speed = 0.5D;
+        double speed = 0.01D;
         xSpeed = dir.x * speed;
         ySpeed = dir.y * speed;
         zSpeed = dir.z * speed;
         moveEntityNoClip(xSpeed, ySpeed, zSpeed);
 
-        if (particleAge++ > particleMaxAge || Utils.getDistanceAtoB(posX, posY, posZ, targetPos.x, targetPos.y, targetPos.z) < 0.5) {
+        if (type == 0){
+            particleScale -= 0.01F;
+            if (Utils.getDistanceAtoB(posX, posY, posZ, targetPos.x, targetPos.y, targetPos.z) < 0.01) {
+                setExpired();
+            }
+        }
+        else {
+            if (particleAge < 1){
+                particleScale = 2F;
+                particleAlpha = 0.2F;
+                particleTextureIndexY = 0;
+                particleTextureIndexX = 0;
+            }
+            else if (particleAge == 3){
+                particleTextureIndexY = 1;
+                setScale(0.5F);
+                particleAlpha = 1F;
+            }
+
+            particleScale -= 0.01F;
+            if (Utils.getDistanceAtoB(posX, posY, posZ, targetPos.x, targetPos.y, targetPos.z) < 0.01) {
+                particleScale = 2F;
+                particleAlpha = 0.2F;
+                particleTextureIndexY = 0;
+                particleTextureIndexX = 0;
+            }
+        }
+
+        if (particleAge++ > particleMaxAge) {
             setExpired();
         }
 	}
@@ -105,14 +135,21 @@ public class ParticleEnergy extends BCEntityFX {
 
         @Override
         public EntityFX getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleEnergy particleEnergy = new ParticleEnergy(world, pos, speed);
+            ParticleInfuser particleEnergy = new ParticleInfuser(world, pos, speed);
 
-            if (args.length >= 3){
-                particleEnergy.setRBGColorF(args[0] / 255F, args[1] / 255F, args[2] / 255F);
-            }
+            if (args.length >= 1) {
+                if (args[0] == 0) {
+                    particleEnergy.type = 0;
+                    particleEnergy.setRBGColorF(1, 0.2F, 0);
+                    particleEnergy.setScale(0.5F);
+                }
+                else {
+                    particleEnergy.type = 1;
+                    particleEnergy.setRBGColorF(0, 1, 1);
+                    particleEnergy.setScale(0.5F);
+                }
 
-            if (args.length >= 4){
-                particleEnergy.multipleParticleScaleBy(args[3] / 100F);
+
             }
 
             return particleEnergy;

@@ -87,6 +87,9 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlock {
         else if (controller instanceof TileEnergyStorageCore){
             ((TileEnergyStorageCore)controller).onStructureClicked(worldObj, pos, state, player);
         }
+        else if (controller instanceof TileEnergyPylon){
+            ((TileEnergyPylon)controller).isOutputMode.value = !((TileEnergyPylon)controller).isOutputMode.value;
+        }
 
         return true;
     }
@@ -97,7 +100,7 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlock {
             return;
         }
 
-        Block block = Block.REGISTRY.getObject(new ResourceLocation(blockName));
+        Block block = Block.blockRegistry.getObject(new ResourceLocation(blockName));
         if (block != null) {
             worldObj.setBlockState(pos, block.getDefaultState());
         }

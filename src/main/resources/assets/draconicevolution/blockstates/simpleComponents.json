@@ -9,13 +9,15 @@
   },
   "variants": {
     "type":{
-      "draconiumdust": { "textures": { "layer0": "draconicevolution:items/draconiumDust"  } },
-      "draconiumingot":{ "textures": { "layer0": "draconicevolution:items/draconiumIngot" } },
-      "draconicingot": { "textures": { "layer0": "draconicevolution:items/draconicIngot"  } },
-      "draconiccore":  { "textures": { "layer0": "draconicevolution:items/draconicCore"   } },
-      "wyverncore":    { "textures": { "layer0": "draconicevolution:items/wyvernCore"     } },
-      "awakenedcore":  { "textures": { "layer0": "draconicevolution:items/awakenedCore"   } },
-      "chaoticcore":   { "textures": { "layer0": "draconicevolution:items/chaoticCore"    } }
+      "draconiumdust": { "textures": { "layer0": "draconicevolution:items/components/draconiumDust"  } },
+      "draconiumingot":{ "textures": { "layer0": "draconicevolution:items/components/draconiumIngot" } },
+      "draconicingot": { "textures": { "layer0": "draconicevolution:items/components/draconicIngot"  } },
+      "draconiccore":  { "textures": { "layer0": "draconicevolution:items/components/draconicCore"   } },
+      "wyverncore":    { "textures": { "layer0": "draconicevolution:items/components/wyvernCore"     } },
+      "awakenedcore":  { "textures": { "layer0": "draconicevolution:items/components/awakenedCore"   } },
+      "chaoticcore":   { "textures": { "layer0": "draconicevolution:items/components/chaoticCore"    } },
+      "wyvernecore":  { "textures": { "layer0": "draconicevolution:items/components/wyvernEnergyCore"   } },
+      "draconicecore":   { "textures": { "layer0": "draconicevolution:items/components/draconicEnergyCore"    } }
     }
   }
 }

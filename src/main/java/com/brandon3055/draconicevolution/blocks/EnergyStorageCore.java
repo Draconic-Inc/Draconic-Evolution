@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
@@ -38,7 +37,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
     public EnergyStorageCore(){
-        super(Material.IRON);
+        super(Material.iron);
         this.setDefaultState(blockState.getBaseState().withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, false));
     }
 
@@ -71,8 +70,8 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     //region Render Stuff
 
     @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
-        return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getSelectedBoundingBox(state, worldIn, pos);
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
+        return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getCollisionBoundingBox(state, worldIn, pos);
     }
 
     @SideOnly(Side.CLIENT)
@@ -100,10 +99,10 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        TileEnergyStorageCore core = TileBCBase.getCastTileAt(world, pos, TileEnergyStorageCore.class);
+        TileEntity core = world.getTileEntity(pos);
 
-        if (core != null && !world.isRemote){
-            core.onStructureClicked(world, pos, state, playerIn);
+        if (core instanceof TileEnergyStorageCore && !world.isRemote){
+            ((TileEnergyStorageCore)core).onStructureClicked(world, pos, state, playerIn);
         }
 
         return true;

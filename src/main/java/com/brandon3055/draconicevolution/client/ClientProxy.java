@@ -139,7 +139,12 @@ public class ClientProxy extends CommonProxy {
 //		References.idPortal = RenderingRegistry.getNextAvailableRenderId();
 	}
 
-//	@Override
+    @Override
+    public void registerParticles() {
+        DEParticles.registerClient();
+    }
+
+    //	@Override
 //	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render, int beamType) {
 //		if (!worldObj.isRemote) return null;
 //		ParticleEnergyBeam beam = oldBeam;

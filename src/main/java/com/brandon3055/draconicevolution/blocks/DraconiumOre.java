@@ -29,7 +29,7 @@ public class DraconiumOre extends BlockBCore {
 	public static PropertyEnum<EnumType> ORE_TYPE = PropertyEnum.create("type", EnumType.class);
 
 	public DraconiumOre() {
-		super(Material.ROCK);
+		super(Material.rock);
 		this.setHarvestLevel("pickaxe", 3);
 		this.setDefaultState(blockState.getBaseState().withProperty(ORE_TYPE, EnumType.NORMAL));
 	}
@@ -90,7 +90,7 @@ public class DraconiumOre extends BlockBCore {
 		if (DraconicEvolution.featureParser.isEnabled(DEFeatures.draconiumOre)){
 			return DEFeatures.draconiumOre.getDefaultState().withProperty(ORE_TYPE, EnumType.END);
 		}else {
-			return Blocks.END_STONE.getDefaultState();
+			return Blocks.end_stone.getDefaultState();
 		}
 	}
 
@@ -98,7 +98,7 @@ public class DraconiumOre extends BlockBCore {
 		if (DraconicEvolution.featureParser.isEnabled(DEFeatures.draconiumOre)){
 			return DEFeatures.draconiumOre.getDefaultState().withProperty(ORE_TYPE, EnumType.NETHER);
 		}else {
-			return Blocks.NETHERRACK.getDefaultState();
+			return Blocks.netherrack.getDefaultState();
 		}
 	}
 
