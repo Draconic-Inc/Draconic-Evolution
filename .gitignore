@@ -2,6 +2,10 @@
 
 /*
 
+# Linux temporary files
+
+/*~
+
 # Except the stuff i want to keep
 
 # Gradle Stuff
@@ -23,3 +27,4 @@
 
 # Other Important Folders
 !src/
+
