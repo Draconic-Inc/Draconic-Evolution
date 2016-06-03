@@ -48,6 +48,7 @@ public class CommonProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
+		BalanceConfigHandler.init(event.getModConfigurationDirectory());
 		registerEventListeners(event.getSide());
 		ModBlocks.init();
 		ModItems.init();
