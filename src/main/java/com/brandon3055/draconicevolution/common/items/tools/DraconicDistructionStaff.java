@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
+import com.brandon3055.draconicevolution.common.items.weapons.IEnergyContainerWeaponItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
@@ -28,8 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-public class DraconicDistructionStaff extends MiningTool implements IInventoryTool, IRenderTweak {
-
+public class DraconicDistructionStaff extends MiningTool implements IInventoryTool, IRenderTweak, IEnergyContainerWeaponItem {
 
 	public DraconicDistructionStaff() {
 		super(ModItems.CHAOTIC);
@@ -37,9 +37,9 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 		this.setHarvestLevel("pickaxe", 10);
 		this.setHarvestLevel("shovel", 10);
 		this.setHarvestLevel("axe", 10);
-		this.setCapacity(BalanceConfigHandler.draconicToolsBaseStorage * 3);
-		this.setMaxExtract(BalanceConfigHandler.draconicToolsMaxTransfer * 3);
-		this.setMaxReceive(BalanceConfigHandler.draconicToolsMaxTransfer * 3);
+		this.setCapacity(BalanceConfigHandler.draconicToolsBaseStorage * 2 + BalanceConfigHandler.draconicWeaponsBaseStorage);
+		this.setMaxExtract(BalanceConfigHandler.draconicToolsMaxTransfer * 2 + BalanceConfigHandler.draconicWeaponsMaxTransfer);
+		this.setMaxReceive(BalanceConfigHandler.draconicToolsMaxTransfer * 2 + BalanceConfigHandler.draconicWeaponsMaxTransfer);
 		this.energyPerOperation = BalanceConfigHandler.draconicToolsEnergyPerAction;
 		ModItems.register(this);
 	}
@@ -152,7 +152,8 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 	@Override
 	public int getCapacity(ItemStack stack) {
 		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return BalanceConfigHandler.draconicToolsBaseStorage * 3 + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
+		return BalanceConfigHandler.draconicToolsBaseStorage * 2 + BalanceConfigHandler.draconicWeaponsBaseStorage +
+			   points * (BalanceConfigHandler.draconicToolsStoragePerUpgrade + BalanceConfigHandler.draconicWeaponsStoragePerUpgrade);
 	}
 
 	@Override
@@ -170,5 +171,10 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 		List<String> list = super.getUpgradeStats(stack);
 		list.add(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.attackDamage.txt")+": "+ InfoHelper.HITC()+ToolHandler.getBaseAttackDamage(stack));
 		return list;
+	}
+	@Override
+	public int getEnergyPerAttack()
+	{
+		return BalanceConfigHandler.draconicWeaponsEnergyPerAttack;
 	}
 }

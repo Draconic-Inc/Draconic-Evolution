@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
-import cofh.api.energy.IEnergyContainerItem;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -9,6 +11,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -37,14 +40,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
+public class WyvernSword extends ItemSword implements IEnergyContainerWeaponItem, IInventoryTool, IRenderTweak, IUpgradableItem, IHudDisplayItem{
 
-public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak, IUpgradableItem, IHudDisplayItem{
-
-	protected int capacity = References.WYVERNCAPACITY;
-	protected int maxReceive = References.WYVERNTRANSFER;
-	protected int maxExtract = References.WYVERNTRANSFER;
+	protected int capacity = BalanceConfigHandler.wyvernWeaponsBaseStorage;
+	protected int maxReceive = BalanceConfigHandler.wyvernWeaponsMaxTransfer;
+	protected int maxExtract = BalanceConfigHandler.wyvernWeaponsMaxTransfer;
 
 	public WyvernSword() {
 		super(ModItems.WYVERN);
@@ -164,8 +164,8 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 
 	@Override
 	public int getMaxEnergyStored(ItemStack container) {
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
-		return i * 500000;
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
+		return BalanceConfigHandler.wyvernWeaponsBaseStorage + points * BalanceConfigHandler.wyvernWeaponsStoragePerUpgrade;
 	}
 
 	@Override
@@ -264,7 +264,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
 		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 1;
 
 		return 0;
@@ -309,6 +309,11 @@ public class WyvernSword extends ItemSword implements IEnergyContainerItem, IInv
 	@Override
 	public boolean hasProfiles() {
 		return true;
+	}
+	@Override
+	public int getEnergyPerAttack()
+	{
+		return BalanceConfigHandler.wyvernWeaponsEnergyPerAttack;
 	}
 }
 

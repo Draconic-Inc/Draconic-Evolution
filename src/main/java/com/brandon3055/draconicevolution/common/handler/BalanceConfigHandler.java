@@ -22,6 +22,15 @@ public class BalanceConfigHandler
     public static int draconicCapacitorStoragePerUpgrade = 50000000;
     public static int draconicCapacitorMaxReceive = 10000000;
     public static int draconicCapacitorMaxExtract = 100000000;
+    public static int wyvernWeaponsBaseStorage = 1000000;
+    public static int wyvernWeaponsStoragePerUpgrade = 500000;
+    public static int wyvernWeaponsMaxTransfer = 50000;
+    public static int wyvernWeaponsEnergyPerAttack = 250;
+    public static int draconicWeaponsBaseStorage = 10000000;
+    public static int draconicWeaponsStoragePerUpgrade = 5000000;
+    public static int draconicWeaponsMaxTransfer = 500000;
+    public static int draconicWeaponsEnergyPerAttack = 250;
+    public static int draconicFireEnergyCostMultiptier = 30;
     private static Configuration config;
     public static void init(File modConfigurationDirectory)
     {
@@ -76,6 +85,30 @@ public class BalanceConfigHandler
         draconicCapacitorMaxExtract =
             getInteger("energy.tools", "Draconic Flux Capacitor: Maximum energy extraction rate (RF/t)",
                        draconicCapacitorMaxExtract);
+        wyvernWeaponsBaseStorage =
+            getInteger("energy.weapons", "Wyvern Weapons: Base energy storage (RF)", wyvernWeaponsBaseStorage);
+        wyvernWeaponsStoragePerUpgrade =
+            getInteger("energy.weapons", "Wyvern Weapons: Additional energy storage per upgrade installed (RF)",
+                       wyvernWeaponsStoragePerUpgrade);
+        wyvernWeaponsMaxTransfer = getInteger("energy.weapons", "Wyvern Weapons: Maximum energy transfer rate (RF/t)",
+                                              wyvernWeaponsMaxTransfer);
+        wyvernWeaponsEnergyPerAttack =
+            getInteger("energy.weapons", "Wyvern Weapons: Amount of energy required to perform attack (RF)",
+                       wyvernWeaponsEnergyPerAttack);
+        draconicWeaponsBaseStorage =
+            getInteger("energy.weapons", "Draconic Weapons: Base energy storage (RF)", draconicWeaponsBaseStorage);
+        draconicWeaponsStoragePerUpgrade =
+            getInteger("energy.weapons", "Draconic Weapons: Additional energy storage per upgrade installed (RF)",
+                       draconicWeaponsStoragePerUpgrade);
+        draconicWeaponsMaxTransfer =
+            getInteger("energy.weapons", "Draconic Weapons: Maximum energy transfer rate (RF/t)",
+                       draconicWeaponsMaxTransfer);
+        draconicWeaponsEnergyPerAttack =
+            getInteger("energy.weapons", "Draconic Weapons: Amount of energy required to perform attack (RF)",
+                       draconicWeaponsEnergyPerAttack);
+        draconicFireEnergyCostMultiptier =
+            getInteger("energy.weapons", "Arrow of Draconic Fire: Energy cost multiplier",
+                       draconicFireEnergyCostMultiptier);
         if (config.hasChanged())
         {
             config.save();

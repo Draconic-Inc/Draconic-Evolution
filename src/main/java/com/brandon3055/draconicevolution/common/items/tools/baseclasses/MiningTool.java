@@ -293,11 +293,6 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 		}};
 	}
 
-	public int getCapacity(ItemStack stack){
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return i * 5000000;
-	}
-
 	@Override
 	public float getEfficiency(ItemStack stack) {
 		int i = EnumUpgrade.DIG_SPEED.getUpgradePoints(stack);

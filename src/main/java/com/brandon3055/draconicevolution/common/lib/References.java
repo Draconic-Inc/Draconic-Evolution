@@ -16,7 +16,6 @@ public final class References {
 	public static final int WYVERNTRANSFER 		= 50000;
 	public static final int DRACONICCAPACITY 	= 10000000;
 	public static final int DRACONICTRANSFER 	= 500000;
-	public static final int ENERGYPERATTACK 	= 250;
 
 	public static final int MAX_WYVERN_UPGRADES = 3;
 	public static final int MAX_DRACONIC_UPGRADES = 6;
