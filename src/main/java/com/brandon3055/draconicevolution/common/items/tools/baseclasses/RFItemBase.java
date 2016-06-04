@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -7,7 +10,9 @@ import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.items.ItemDE;
-import com.brandon3055.draconicevolution.common.utills.*;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
@@ -18,18 +23,15 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Brandon on 8/01/2015.
  */
 public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigurableItem, IHudDisplayItem {
-	private int capacity = 0;
+	protected int capacity = 0;
 	/**Max Receive*/
-	private int maxReceive = 0;
+	protected int maxReceive = 0;
 	/**Max Extract*/
-	private int maxExtract = 0;
+	protected int maxExtract = 0;
 
 	public RFItemBase(){
 		this.setMaxStackSize(1);

@@ -148,8 +148,9 @@ public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableIte
 		return stack;
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
+	@SideOnly(Side.CLIENT)
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
 	{
 		if (InfoHelper.holdShiftForDetails(list)){
