@@ -10,6 +10,10 @@ public class BalanceConfigHandler
     public static int wyvernToolsStoragePerUpgrade = 500000;
     public static int wyvernToolsMaxTransfer = 50000;
     public static int wyvernToolsEnergyPerAction = 80;
+    public static int draconicToolsBaseStorage = 10000000;
+    public static int draconicToolsStoragePerUpgrade = 5000000;
+    public static int draconicToolsMaxTransfer = 500000;
+    public static int draconicToolsEnergyPerAction = 80;
     public static int wyvernCapacitorBaseStorage = 80000000;
     public static int wyvernCapacitorStoragePerUpgrade = 50000000;
     public static int wyvernCapacitorMaxReceive = 1000000;
@@ -40,6 +44,16 @@ public class BalanceConfigHandler
         wyvernToolsEnergyPerAction =
             getInteger("energy.tools", "Wyvern Tools: Amount of energy required to perform action (RF)",
                        wyvernToolsEnergyPerAction);
+        draconicToolsBaseStorage =
+            getInteger("energy.tools", "Draconic Tools: Base energy storage (RF)", draconicToolsBaseStorage);
+        draconicToolsStoragePerUpgrade =
+            getInteger("energy.tools", "Draconic Tools: Additional energy storage per upgrade installed (RF)",
+                       draconicToolsStoragePerUpgrade);
+        draconicToolsMaxTransfer =
+            getInteger("energy.tools", "Draconic Tools: Maximum energy transfer rate (RF/t)", draconicToolsMaxTransfer);
+        draconicToolsEnergyPerAction =
+            getInteger("energy.tools", "Draconic Tools: Amount of energy required to perform action (RF)",
+                       draconicToolsEnergyPerAction);
         wyvernCapacitorBaseStorage =
             getInteger("energy.tools", "Wyvern Flux Capacitor: Base energy storage (RF)", wyvernCapacitorBaseStorage);
         wyvernCapacitorStoragePerUpgrade =

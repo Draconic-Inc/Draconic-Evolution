@@ -1,14 +1,18 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import java.util.List;
+
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,8 +28,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-import java.util.List;
-
 public class DraconicDistructionStaff extends MiningTool implements IInventoryTool, IRenderTweak {
 
 
@@ -35,10 +37,10 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 		this.setHarvestLevel("pickaxe", 10);
 		this.setHarvestLevel("shovel", 10);
 		this.setHarvestLevel("axe", 10);
-		this.setCapacity(References.DRACONICCAPACITY * 3);
-		this.setMaxExtract(References.DRACONICTRANSFER * 3);
-		this.setMaxReceive(References.DRACONICTRANSFER * 3);
-		this.energyPerOperation = References.ENERGYPERBLOCK;
+		this.setCapacity(BalanceConfigHandler.draconicToolsBaseStorage * 3);
+		this.setMaxExtract(BalanceConfigHandler.draconicToolsMaxTransfer * 3);
+		this.setMaxReceive(BalanceConfigHandler.draconicToolsMaxTransfer * 3);
+		this.energyPerOperation = BalanceConfigHandler.draconicToolsEnergyPerAction;
 		ModItems.register(this);
 	}
 
@@ -141,10 +143,16 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 3;
 		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 7;
-		else if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 6;
+		else if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
 		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 3;
 
 		return 0;
+	}
+
+	@Override
+	public int getCapacity(ItemStack stack) {
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return BalanceConfigHandler.draconicToolsBaseStorage * 3 + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
 	}
 
 	@Override

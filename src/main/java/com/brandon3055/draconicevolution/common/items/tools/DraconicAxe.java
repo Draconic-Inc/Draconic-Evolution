@@ -1,7 +1,10 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import java.util.List;
+
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -19,18 +22,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-import java.util.List;
-
 public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTweak {
 
 	public DraconicAxe() {
 		super(ModItems.WYVERN);
 		this.setHarvestLevel("axe", 10);
 		this.setUnlocalizedName(Strings.draconicAxeName);
-		this.setCapacity(References.DRACONICCAPACITY);
-		this.setMaxExtract(References.DRACONICTRANSFER);
-		this.setMaxReceive(References.DRACONICTRANSFER);
-		this.energyPerOperation = References.ENERGYPERBLOCK;
+		this.setCapacity(BalanceConfigHandler.draconicToolsBaseStorage);
+		this.setMaxExtract(BalanceConfigHandler.draconicToolsMaxTransfer);
+		this.setMaxReceive(BalanceConfigHandler.draconicToolsMaxTransfer);
+		this.energyPerOperation = BalanceConfigHandler.draconicToolsEnergyPerAction;
 		ModItems.register(this);
 	}
 
@@ -87,9 +88,10 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
 		return super.getUpgradeStats(stack);
 	}
 
+	@Override
 	public int getCapacity(ItemStack stack){
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return i * 5000000;
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return BalanceConfigHandler.draconicToolsBaseStorage + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
 	}
 
 	@Override
@@ -101,7 +103,7 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
 		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
 		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 1;
 		else if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) return 5;

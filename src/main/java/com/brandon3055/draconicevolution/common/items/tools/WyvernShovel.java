@@ -91,7 +91,7 @@ public class WyvernShovel extends MiningTool implements IInventoryTool, IRenderT
 		return super.getUpgradeStats(stack);
 	}
 
-	public int getCapacity(ItemStack stack){
+	public int getCapacity(ItemStack stack) {
 		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
 		return BalanceConfigHandler.wyvernToolsBaseStorage + points * BalanceConfigHandler.wyvernToolsStoragePerUpgrade;
 	}

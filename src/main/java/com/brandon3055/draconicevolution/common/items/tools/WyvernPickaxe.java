@@ -90,7 +90,7 @@ public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRender
 	}
 
 	@Override
-	public int getCapacity(ItemStack stack){
+	public int getCapacity(ItemStack stack) {
 		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
 		return BalanceConfigHandler.wyvernToolsBaseStorage + points * BalanceConfigHandler.wyvernToolsStoragePerUpgrade;
 	}

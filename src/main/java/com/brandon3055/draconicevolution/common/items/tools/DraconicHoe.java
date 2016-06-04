@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -8,6 +11,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -35,14 +39,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRenderTweak, IUpgradableItem, IConfigurableItem, IHudDisplayItem {
 
-	protected int capacity = References.DRACONICCAPACITY;
-	protected int maxReceive = References.DRACONICTRANSFER;
-	protected int maxExtract = References.DRACONICTRANSFER;
+	protected int capacity = BalanceConfigHandler.draconicToolsBaseStorage;
+	protected int maxReceive = BalanceConfigHandler.draconicToolsMaxTransfer;
+	protected int maxExtract = BalanceConfigHandler.draconicToolsMaxTransfer;
 
 	public DraconicHoe() {
 		super(ModItems.WYVERN);
@@ -102,7 +103,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 			LogHelper.info(size);
 			for (int x1 = -size; x1 <= size; x1++) {
 				for (int z1 = -size; z1 <= size; z1++) {
-					if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+					if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < BalanceConfigHandler.draconicToolsEnergyPerAction) {
 						if (!player.capabilities.isCreativeMode)
 							return false;
 					}
@@ -143,12 +144,12 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 	}
 
 	private boolean hoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7) {
-		if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+		if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) < BalanceConfigHandler.draconicToolsEnergyPerAction) {
 			if (!player.capabilities.isCreativeMode)
 				return false;
 		} else {
 			if (!player.capabilities.isCreativeMode)
-				((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
+				((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, BalanceConfigHandler.draconicToolsEnergyPerAction, false);
 		}
 		if (!player.canPlayerEdit(x, y, z, par7, stack)) {
 			return false;
@@ -231,8 +232,8 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
 	@Override
 	public int getMaxEnergyStored(ItemStack container) {
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
-		return i * 5000000;
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
+		return BalanceConfigHandler.draconicToolsBaseStorage + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
 	}
 
 	@Override
@@ -304,7 +305,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
 		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 3;
 
 		return 0;
