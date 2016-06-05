@@ -40,6 +40,11 @@ public class BalanceConfigHandler
     public static int draconicWeaponsMaxTransfer = 500000;
     public static int draconicWeaponsEnergyPerAttack = 250;
     public static int draconicFireEnergyCostMultiptier = 30;
+    public static int grinderInternalEnergyBufferSize = 20000;
+    public static int grinderExternalEnergyBufferSize = 100000;
+    public static int grinderMaxReceive = 32000;
+    public static int grinderEnergyPerKill = 1000;
+    public static boolean grinderShouldUseLooting = false;
     private static Configuration config;
     public static void init(File modConfigurationDirectory)
     {
@@ -141,10 +146,25 @@ public class BalanceConfigHandler
         draconicFireEnergyCostMultiptier =
             getInteger("energy.weapons", "Arrow of Draconic Fire: Energy cost multiplier",
                        draconicFireEnergyCostMultiptier);
+        grinderInternalEnergyBufferSize = getInteger("energy.machines", "Mob Grinder: Internal energy buffer size (RF)",
+                                                     grinderInternalEnergyBufferSize);
+        grinderExternalEnergyBufferSize =
+            getInteger("energy.machines", "Mob Grinder: Main energy buffer size (RF)", grinderExternalEnergyBufferSize);
+        grinderMaxReceive =
+            getInteger("energy.machines", "Mob Grinder: Maximum energy reception rate (RF/t)", grinderMaxReceive);
+        grinderEnergyPerKill =
+            getInteger("energy.machines", "Mob Grinder: Amount of energy required to kill entity (RF)",
+                       grinderEnergyPerKill);
+        grinderShouldUseLooting =
+            getBoolean("tweaks.machines", "Mob Grinder: Use Looting enchantment", grinderShouldUseLooting);
         if (config.hasChanged())
         {
             config.save();
         }
+    }
+    private static boolean getBoolean(String category, String propertyName, boolean defaultValue)
+    {
+        return config.get(category, propertyName, defaultValue).getBoolean(defaultValue);
     }
     private static int getInteger(String categoty, String propertyName, int defaultValue)
     {
