@@ -6,6 +6,15 @@ import net.minecraftforge.common.config.Configuration;
 
 public class BalanceConfigHandler
 {
+    public static int wyvernArmorBaseStorage = 1000000;
+    public static int wyvernArmorStoragePerUpgrade = 500000;
+    public static int wyvernArmorMaxTransfer = 50000;
+    public static int wyvernArmorEnergyPerProtectionPoint = 1000;
+    public static int draconicArmorBaseStorage = 10000000;
+    public static int draconicArmorStoragePerUpgrade = 5000000;
+    public static int draconicArmorMaxTransfer = 500000;
+    public static int draconicArmorEnergyPerProtectionPoint = 1000;
+    public static int draconicArmorEnergyToRemoveEffects = 5000;
     public static int wyvernToolsBaseStorage = 1000000;
     public static int wyvernToolsStoragePerUpgrade = 500000;
     public static int wyvernToolsMaxTransfer = 50000;
@@ -43,6 +52,29 @@ public class BalanceConfigHandler
     }
     private static void syncConfig()
     {
+        wyvernArmorBaseStorage =
+            getInteger("energy.armor", "Wyvern Armor: Base energy storage (RF)", wyvernArmorBaseStorage);
+        wyvernArmorStoragePerUpgrade =
+            getInteger("energy.armor", "Wyvern Armor: Additional energy storage per upgrade installed (RF)",
+                       wyvernArmorStoragePerUpgrade);
+        wyvernArmorMaxTransfer =
+            getInteger("energy.armor", "Wyvern Armor: Maximum energy transfer rate (RF/t)", wyvernArmorMaxTransfer);
+        wyvernArmorEnergyPerProtectionPoint =
+            getInteger("energy.armor", "Wyvern Armor: Amount of energy required to restore protection point (RF)",
+                       wyvernArmorEnergyPerProtectionPoint);
+        draconicArmorBaseStorage =
+            getInteger("energy.armor", "Draconic Armor: Base energy storage (RF)", draconicArmorBaseStorage);
+        draconicArmorStoragePerUpgrade =
+            getInteger("energy.armor", "Draconic Armor: Additional energy storage per upgrade installed (RF)",
+                       draconicArmorStoragePerUpgrade);
+        draconicArmorMaxTransfer =
+            getInteger("energy.armor", "Draconic Armor: Maximum energy transfer rate (RF/t)", draconicArmorMaxTransfer);
+        draconicArmorEnergyPerProtectionPoint =
+            getInteger("energy.armor", "Draconic Armor: Amount of energy required to restore protection point (RF)",
+                       draconicArmorEnergyPerProtectionPoint);
+        draconicArmorEnergyToRemoveEffects =
+            getInteger("energy.armor", "Draconic Armor: Amount of energy required to remove negative effects (RF)",
+                       draconicArmorEnergyToRemoveEffects);
         wyvernToolsBaseStorage =
             getInteger("energy.tools", "Wyvern Tools: Base energy storage (RF)", wyvernToolsBaseStorage);
         wyvernToolsStoragePerUpgrade =

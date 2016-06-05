@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -9,10 +12,14 @@ import com.brandon3055.draconicevolution.client.model.ModelDraconicArmorOld;
 import com.brandon3055.draconicevolution.client.model.ModelWyvernArmor;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.*;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,20 +38,21 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Brandon on 3/07/2014.
  */
 public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurableItem, IInventoryTool, IUpgradableItem, ICustomArmor {
+	@SideOnly(Side.CLIENT)
 	private IIcon helmIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon chestIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon leggsIcon;
+	@SideOnly(Side.CLIENT)
 	private IIcon bootsIcon;
 
-	private int maxTransfer = References.WYVERNTRANSFER;
-	private int maxEnergy = References.WYVERNCAPACITY;
+	private int maxEnergy = BalanceConfigHandler.wyvernArmorBaseStorage;
+	private int maxTransfer = BalanceConfigHandler.wyvernArmorMaxTransfer;
 
 	public WyvernArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
@@ -95,6 +103,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIconIndex(ItemStack stack) {
 		if (stack.getItem() == ModItems.wyvernHelm) return helmIcon;
 		else if (stack.getItem() == ModItems.wyvernChest) return chestIcon;
@@ -198,7 +207,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
 
 		int stored = ItemNBTHelper.getInteger(container, "Energy", 0);
-		int extract = Math.min(maxExtract, stored);
+		int extract = Math.min(maxExtract, Math.min(maxTransfer, stored));
 
 		if (!simulate) {
 			stored -= extract;
@@ -214,8 +223,8 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 
 	@Override
 	public int getMaxEnergyStored(ItemStack container) {
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
-		return i * 500000;
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
+		return BalanceConfigHandler.wyvernArmorBaseStorage + points * BalanceConfigHandler.wyvernArmorStoragePerUpgrade;
 	}
 
 	@Override
@@ -355,7 +364,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
 		else if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) return (int)(getProtectionShare() * 10) + (armorType == 2 ? 1 : 0);
 		else if (upgradeIndex == EnumUpgrade.SHIELD_RECOVERY.index) return 5;
 		return 0;
@@ -411,6 +420,11 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 	@Override
 	public float getFlightVModifier(ItemStack stack, EntityPlayer player) {
 		return 0;
+	}
+	@Override
+	public int getEnergyPerProtectionPoint()
+	{
+		return BalanceConfigHandler.wyvernArmorEnergyPerProtectionPoint;
 	}
 
 	//endregion
