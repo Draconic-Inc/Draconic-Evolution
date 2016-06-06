@@ -46,6 +46,13 @@ public class BalanceConfigHandler
     public static int draconiumBlockChargingSpeed = 10000000;
     public static int energyInfuserStorage = 10000000;
     public static int energyInfuserMaxTransfer = 10000000;
+    public static long energyStorageTier1Storage = 45500000L;
+    public static long energyStorageTier2Storage = 273000000L;
+    public static long energyStorageTier3Storage = 1640000000L;
+    public static long energyStorageTier4Storage = 9880000000L;
+    public static long energyStorageTier5Storage = 59300000000L;
+    public static long energyStorageTier6Storage = 356000000000L;
+    public static long energyStorageTier7Storage = 2140000000000L;
     public static int grinderInternalEnergyBufferSize = 20000;
     public static int grinderExternalEnergyBufferSize = 100000;
     public static int grinderMaxReceive = 32000;
@@ -165,6 +172,27 @@ public class BalanceConfigHandler
             getInteger("energy.machines", "Energy Infuser: Energy buffer size (RF)", energyInfuserStorage);
         energyInfuserMaxTransfer = getInteger("energy.machines", "Energy Infuser: Maximum energy transfer rate (RF/t)",
                                               energyInfuserMaxTransfer);
+        energyStorageTier1Storage =
+            getLong("energy.machines", "Multiblock Energy Storage Tier 1: Energy buffer size (RF)",
+                    energyStorageTier1Storage);
+        energyStorageTier2Storage =
+            getLong("energy.machines", "Multiblock Energy Storage Tier 2: Energy buffer size (RF)",
+                    energyStorageTier2Storage);
+        energyStorageTier3Storage =
+            getLong("energy.machines", "Multiblock Energy Storage Tier 3: Energy buffer size (RF)",
+                    energyStorageTier3Storage);
+        energyStorageTier4Storage =
+            getLong("energy.machines", "Multiblock Energy Storage Tier 4: Energy buffer size (RF)",
+                    energyStorageTier4Storage);
+        energyStorageTier5Storage =
+            getLong("energy.machines", "Multiblock Energy Storage Tier 5: Energy buffer size (RF)",
+                    energyStorageTier5Storage);
+        energyStorageTier6Storage =
+            getLong("energy.machines", "Multiblock Energy Storage Tier 6: Energy buffer size (RF)",
+                    energyStorageTier6Storage);
+        energyStorageTier7Storage =
+            getLong("energy.machines", "Multiblock Energy Storage Tier 7: Energy buffer size (RF)",
+                    energyStorageTier7Storage);
         grinderInternalEnergyBufferSize = getInteger("energy.machines", "Mob Grinder: Internal energy buffer size (RF)",
                                                      grinderInternalEnergyBufferSize);
         grinderExternalEnergyBufferSize =
@@ -188,5 +216,10 @@ public class BalanceConfigHandler
     private static int getInteger(String categoty, String propertyName, int defaultValue)
     {
         return config.get(categoty, propertyName, defaultValue).getInt(defaultValue);
+    }
+    private static long getLong(String category, String propertyName, long defaultValue)
+    {
+        return (long) config.get(category, propertyName, (double) defaultValue, "", 0D, (double) Long.MAX_VALUE)
+                            .getDouble((long) defaultValue);
     }
 }
