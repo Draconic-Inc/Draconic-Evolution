@@ -42,6 +42,8 @@ public class BalanceConfigHandler
     public static int draconicFireEnergyCostMultiptier = 30;
     public static int draconiumBlockEnergyToChange = 100000000;
     public static int draconiumBlockChargingSpeed = 10000000;
+    public static int energyInfuserStorage = 10000000;
+    public static int energyInfuserMaxTransfer = 10000000;
     public static int grinderInternalEnergyBufferSize = 20000;
     public static int grinderExternalEnergyBufferSize = 100000;
     public static int grinderMaxReceive = 32000;
@@ -153,6 +155,10 @@ public class BalanceConfigHandler
                        draconiumBlockEnergyToChange);
         draconiumBlockChargingSpeed =
             getInteger("energy.misc", "Draconium Block: Maximum charging speed (RF/t)", draconiumBlockChargingSpeed);
+        energyInfuserStorage =
+            getInteger("energy.machines", "Energy Infuser: Energy buffer size (RF)", energyInfuserStorage);
+        energyInfuserMaxTransfer = getInteger("energy.machines", "Energy Infuser: Maximum energy transfer rate (RF/t)",
+                                              energyInfuserMaxTransfer);
         grinderInternalEnergyBufferSize = getInteger("energy.machines", "Mob Grinder: Internal energy buffer size (RF)",
                                                      grinderInternalEnergyBufferSize);
         grinderExternalEnergyBufferSize =

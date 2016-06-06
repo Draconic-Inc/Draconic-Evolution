@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
+import java.util.Random;
+
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import cpw.mods.fml.relauncher.Side;
@@ -17,15 +20,12 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.Random;
-
 /**
  * Created by Brandon on 27/06/2014.
  */
 public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver, ISidedInventory {
 	ItemStack[] items = new ItemStack[1];
-	public EnergyStorage energy = new EnergyStorage(10000000);
-	public int maxInput = 10000000;
+	public EnergyStorage energy = new EnergyStorage(BalanceConfigHandler.energyInfuserStorage, BalanceConfigHandler.energyInfuserMaxTransfer);
 	public boolean running = false;
 	public boolean runningCach = false;
 	private int tick = 0;
@@ -38,14 +38,16 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
 
 	@Override
 	public void updateEntity() {
-		if (worldObj.isRemote && running) {
-			rotation += 0.5F;
-			if (rotation > 360F) rotation = 0;
-			spawnParticles();
+		if (worldObj.isRemote) {
+			if (running) {
+				rotation += 0.5F;
+				if (rotation > 360F) {
+					rotation = 0;
+				}
+				spawnParticles();
+			}
 			return;
 		}
-
-		if(worldObj.isRemote) return;
 
 		if (tick % 100 == 0) tryStartOrStop();
 		if (tick % 400 == 0) detectAndSendChanges(true);
@@ -136,7 +138,7 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		return this.energy.receiveEnergy(Math.min(maxInput, maxReceive), simulate);
+		return this.energy.receiveEnergy(maxReceive, simulate);
 	}
 
 	@Override
