@@ -87,6 +87,7 @@ public class CommonProxy {
 	}
 
 	public void init(FMLInitializationEvent event) {
+		BalanceConfigHandler.finishLoading();
 		CraftingHandler.init();
 		registerGuiHandeler();
 		registerWorldGen();

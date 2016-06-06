@@ -1,9 +1,14 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
@@ -26,10 +31,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Brandon on 25/07/2014.
@@ -84,11 +85,19 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 		if (meta == 0)
 			return Item.getItemFromBlock(ModBlocks.draconiumBlock);
 		else if (meta == 1)
-			return Item.getItemFromBlock(Blocks.redstone_block);
+			return Item.getItemFromBlock(BalanceConfigHandler.energyStorageStructureBlock);
 		else
 			return null;
 	}
-
+	@Override
+	public int damageDropped(int metadata)
+	{
+		if (metadata == 1)
+		{
+			return BalanceConfigHandler.energyStorageStructureBlockMetadata;
+		}
+		return super.damageDropped(metadata);
+	}
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		int meta = world.getBlockMetadata(x, y, z);
@@ -149,7 +158,7 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 		if (meta == 0)
 			world.setBlock(x, y, z, ModBlocks.draconiumBlock);
 		else if (meta == 1)
-			world.setBlock(x, y, z, Blocks.redstone_block);
+			world.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureBlock, BalanceConfigHandler.energyStorageStructureBlockMetadata, 3);
 	}
 
 	@Override
@@ -179,10 +188,10 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 		}
 		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
 	}
-	
+
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-		
+
 		int meta = world.getBlockMetadata(x, y, z);
 		if(meta == 2){
 			return AxisAlignedBB.getBoundingBox(x, y, z, x, y, z);
@@ -195,7 +204,7 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 		if (world.getBlockMetadata(x, y, z) == 0)
 			return new ItemStack(ModBlocks.draconiumBlock);
 		else if (world.getBlockMetadata(x, y, z) == 1)
-			return new ItemStack(Blocks.redstone_block);
+			return new ItemStack(BalanceConfigHandler.energyStorageStructureBlock, 1, BalanceConfigHandler.energyStorageStructureBlockMetadata);
 		else
 			return new ItemStack(Blocks.glass);
 	}

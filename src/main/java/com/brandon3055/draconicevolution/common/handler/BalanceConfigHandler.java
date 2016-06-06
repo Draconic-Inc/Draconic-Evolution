@@ -2,7 +2,12 @@ package com.brandon3055.draconicevolution.common.handler;
 
 import java.io.File;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 public class BalanceConfigHandler
 {
@@ -57,6 +62,8 @@ public class BalanceConfigHandler
     public static int grinderExternalEnergyBufferSize = 100000;
     public static int grinderMaxReceive = 32000;
     public static int grinderEnergyPerKill = 1000;
+    public static Block energyStorageStructureBlock = null;
+    public static int energyStorageStructureBlockMetadata = 0;
     public static boolean grinderShouldUseLooting = false;
     private static Configuration config;
     public static void init(File modConfigurationDirectory)
@@ -65,7 +72,28 @@ public class BalanceConfigHandler
         {
             config = new Configuration(new File(modConfigurationDirectory, "DraconicEvolution.Balance.cfg"));
             config.load();
+            config.setCategoryRequiresMcRestart("tweaks", true);
             syncConfig();
+        }
+    }
+    // This method should be loaded after all mods add blocks => after pre-init
+    public static void finishLoading()
+    {
+        if (config == null)
+        {
+            return;
+        }
+        energyStorageStructureBlock =
+            getBlock("tweaks.machines", "Multiblock Energy Storage: Main block of structure", Blocks.redstone_block,
+                     "WARNING! Changing of this value will replace blocks of all existing Energy Storage Multiblocks!");
+        energyStorageStructureBlockMetadata =
+            getInteger("tweaks.machines", "Multiblock Energy Storage: Metadata of main block of structure",
+                       energyStorageStructureBlockMetadata,
+                       "WARNING! Changing of this value will replace blocks of all existing Energy Storage " +
+                       "Multiblocks!");
+        if (config.hasChanged())
+        {
+            config.save();
         }
     }
     private static void syncConfig()
@@ -209,6 +237,26 @@ public class BalanceConfigHandler
             config.save();
         }
     }
+    private static Block getBlock(String category, String propertyName, Block defaultValue, String comment)
+    {
+        String defaultName = Block.blockRegistry.getNameForObject(defaultValue);
+        Property property = config.get(category, propertyName, defaultName, comment);
+        String value = property.getString();
+        if (value == null || !value.contains(":"))
+        {
+            property.set(defaultName);
+            return defaultValue;
+        }
+        String modId = value.split(":")[0];
+        String name = value.split(":")[1];
+        Block block = GameRegistry.findBlock(modId, name);
+        if (block == null || block instanceof ITileEntityProvider)
+        {
+            property.set(defaultName);
+            return defaultValue;
+        }
+        return block;
+    }
     private static boolean getBoolean(String category, String propertyName, boolean defaultValue)
     {
         return config.get(category, propertyName, defaultValue).getBoolean(defaultValue);
@@ -217,9 +265,13 @@ public class BalanceConfigHandler
     {
         return config.get(categoty, propertyName, defaultValue).getInt(defaultValue);
     }
+    private static int getInteger(String categoty, String propertyName, int defaultValue, String comment)
+    {
+        return config.get(categoty, propertyName, defaultValue, comment).getInt(defaultValue);
+    }
     private static long getLong(String category, String propertyName, long defaultValue)
     {
         return (long) config.get(category, propertyName, (double) defaultValue, "", 0D, (double) Long.MAX_VALUE)
-                            .getDouble((long) defaultValue);
+                            .getDouble((double) defaultValue);
     }
 }
