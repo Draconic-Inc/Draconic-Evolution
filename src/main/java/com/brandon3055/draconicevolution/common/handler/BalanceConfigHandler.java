@@ -35,10 +35,12 @@ public class BalanceConfigHandler
     public static int wyvernWeaponsStoragePerUpgrade = 500000;
     public static int wyvernWeaponsMaxTransfer = 50000;
     public static int wyvernWeaponsEnergyPerAttack = 250;
+    public static int wyvernBowEnergyPerShot = 80;
     public static int draconicWeaponsBaseStorage = 10000000;
     public static int draconicWeaponsStoragePerUpgrade = 5000000;
     public static int draconicWeaponsMaxTransfer = 500000;
     public static int draconicWeaponsEnergyPerAttack = 250;
+    public static int draconicBowEnergyPerShot = 80;
     public static int draconicFireEnergyCostMultiptier = 30;
     public static int draconiumBlockEnergyToChange = 100000000;
     public static int draconiumBlockChargingSpeed = 10000000;
@@ -136,6 +138,8 @@ public class BalanceConfigHandler
         wyvernWeaponsEnergyPerAttack =
             getInteger("energy.weapons", "Wyvern Weapons: Amount of energy required to perform attack (RF)",
                        wyvernWeaponsEnergyPerAttack);
+        wyvernBowEnergyPerShot =
+            getInteger("energy.weapons", "Wyvern Bow: Amount of energy required to shoot (RF)", wyvernBowEnergyPerShot);
         draconicWeaponsBaseStorage =
             getInteger("energy.weapons", "Draconic Weapons: Base energy storage (RF)", draconicWeaponsBaseStorage);
         draconicWeaponsStoragePerUpgrade =
@@ -147,6 +151,8 @@ public class BalanceConfigHandler
         draconicWeaponsEnergyPerAttack =
             getInteger("energy.weapons", "Draconic Weapons: Amount of energy required to perform attack (RF)",
                        draconicWeaponsEnergyPerAttack);
+        draconicBowEnergyPerShot = getInteger("energy.weapons", "Draconic Bow: Amount of energy required to shoot (RF)",
+                                              draconicBowEnergyPerShot);
         draconicFireEnergyCostMultiptier =
             getInteger("energy.weapons", "Arrow of Draconic Fire: Energy cost multiplier",
                        draconicFireEnergyCostMultiptier);

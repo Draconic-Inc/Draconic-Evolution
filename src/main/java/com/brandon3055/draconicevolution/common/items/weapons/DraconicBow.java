@@ -344,7 +344,7 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 	@Override
 	public int getEnergyPerAttack()
 	{
-		return BalanceConfigHandler.draconicWeaponsEnergyPerAttack;
+		return BalanceConfigHandler.draconicBowEnergyPerShot;
 	}
 
 	//endregion

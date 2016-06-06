@@ -341,7 +341,7 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 	@Override
 	public int getEnergyPerAttack()
 	{
-		return BalanceConfigHandler.wyvernWeaponsEnergyPerAttack;
+		return BalanceConfigHandler.wyvernBowEnergyPerShot;
 	}
 	//endregion
 }
