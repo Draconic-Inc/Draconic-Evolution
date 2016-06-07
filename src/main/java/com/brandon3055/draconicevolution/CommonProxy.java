@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
+import com.brandon3055.draconicevolution.network.PacketSimpleBoolean;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.audio.ISound;
 import net.minecraftforge.common.MinecraftForge;
@@ -53,7 +54,7 @@ public class CommonProxy {
 
 	public void initializeNetwork() {
 		DraconicEvolution.network = NetworkRegistry.INSTANCE.newSimpleChannel(DraconicEvolution.networkChannelName);
-//		DraconicEvolution.network.registerMessage(ButtonPacket.Handler.class, ButtonPacket.class, 0, Side.SERVER);
+		DraconicEvolution.network.registerMessage(PacketSimpleBoolean.Handler.class, PacketSimpleBoolean.class, 0, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlacedItemPacket.Handler.class, PlacedItemPacket.class, 2, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);

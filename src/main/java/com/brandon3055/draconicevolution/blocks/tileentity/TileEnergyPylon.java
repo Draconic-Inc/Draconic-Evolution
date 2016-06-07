@@ -138,7 +138,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     @Override
     public boolean validateStructure() {
         if (!structureValid.value) {
-            if (worldObj.getBlockState(pos.add(0, 1, 0)).getBlock() == Blocks.glass) {
+            if (worldObj.getBlockState(pos.add(0, 1, 0)).getBlock() == Blocks.GLASS) {
                 worldObj.setBlockState(pos.add(0, 1, 0), DEFeatures.invisECoreBlock.getDefaultState());
                 TileEntity tile = worldObj.getTileEntity(pos.add(0, 1, 0));
                 if (tile instanceof TileInvisECoreBlock) {
@@ -147,7 +147,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
                 }
                 sphereOnTop.value = true;
                 worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(EnergyPylon.FACING, CCDirection.UP));
-            } else if (worldObj.getBlockState(pos.add(0, -1, 0)).getBlock() == Blocks.glass) {
+            } else if (worldObj.getBlockState(pos.add(0, -1, 0)).getBlock() == Blocks.GLASS) {
                 worldObj.setBlockState(pos.add(0, -1, 0), DEFeatures.invisECoreBlock.getDefaultState());
                 TileEntity tile = worldObj.getTileEntity(pos.add(0, -1, 0));
                 if (tile instanceof TileInvisECoreBlock) {

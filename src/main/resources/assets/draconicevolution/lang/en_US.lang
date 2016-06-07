@@ -63,7 +63,8 @@ item.draconicevolution:teleporterMKII.name=Enhanced Charm of Dislocation
 info.teleporterInfGUI.txt=Shift + Right click to open gui
 info.teleporterInfScroll.txt=Shift + scroll to cycle destinations
 
-item.draconicevolution:wyvernPickaxe.name=Pickaxe of the Wyvern
+item.draconicevolution:wyvernPick.name=Pickaxe of the Wyvern
+item.draconicevolution:wyvernAxe.name=Axe of the Wyvern
 item.draconicevolution:wyvernShovel.name=Shovel of the Wyvern
 item.draconicevolution:wyvernSword.name=Sword of the Wyvern
 item.draconicevolution:wyvernBow.name=Bow of the Wyvern
@@ -71,7 +72,7 @@ item.draconicevolution:wyvernHelm.name=Wyvern Helm
 item.draconicevolution:wyvernChest.name=Wyvern Chestplate
 item.draconicevolution:wyvernLeggs.name=Wyvern Leggings
 item.draconicevolution:wyvernBoots.name=Wyvern Boots
-item.draconicevolution:draconicPickaxe.name=Draconic Pickaxe
+item.draconicevolution:draconicPick.name=Draconic Pickaxe
 item.draconicevolution:draconicAxe.name=Draconic Axe
 item.draconicevolution:draconicShovel.name=Draconic Shovel
 item.draconicevolution:draconicHoe.name=Draconic Hoe
@@ -81,7 +82,7 @@ item.draconicevolution:draconicHelm.name=Draconic Helm
 item.draconicevolution:draconicChest.name=Draconic Chestplate
 item.draconicevolution:draconicLeggs.name=Draconic Leggings
 item.draconicevolution:draconicBoots.name=Draconic Boots
-item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
+item.draconicevolution:draconicStaffOfPower.name=Draconic Staff of Power
 item.draconicevolution:mobSoul.name=Mob Soul
 item.draconicevolution:enderArrow.name=Ender Arrow
 item.draconicevolution:safetyMatch.name=Safety Match
@@ -401,7 +402,7 @@ info.de.forUpgrades.txt=for Stats
 info.de.useUpgradeModifier.txt=Use an Upgrade Modifier to boost these stats!
 
 //Lore ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:wyvernPickaxe.lore=2Mundane picks are so weak\nthrough Draconium, you increase the area and speed to mine.
+item.draconicevolution:wyvernPick.lore=2Mundane picks are so weak\nthrough Draconium, you increase the area and speed to mine.
 item.draconicevolution:wyvernShovel.lore=2One block at a time? Not with Draconium!\nfaster, larger area, this is a start!
 item.draconicevolution:wyvernSword.lore=2Draconium begins to unlock the sword’s potential\nthe area and strength of the sword improves.
 item.draconicevolution:wyvernBow.lore=2Infusing Draconium in a mundane bow\nallows you to shoot faster and with more power.
@@ -411,7 +412,7 @@ item.draconicevolution:wyvernChest.lore=2Infusing the armor with Draconium\nyou 
 item.draconicevolution:wyvernLeggs.lore=2You feel even stronger and faster now\nthat you have infused diamond legs with Draconium
 item.draconicevolution:wyvernBoots.lore=2You learn to improve the boots\nDraconium seems to have given you greater\nagility
 
-item.draconicevolution:draconicPickaxe.lore=2Great care and research has\nallowed you to mine even larger areas
+item.draconicevolution:draconicPick.lore=2Great care and research has\nallowed you to mine even larger areas
 item.draconicevolution:draconicAxe.lore=2After lots of trial and error\nyou can now feel an entire tree with one try
 item.draconicevolution:draconicShovel.lore=2Even more efficient\nyou can dig an even larger area
 item.draconicevolution:draconicHoe.lore=2Draconium even improves farming\nentire areas can be tilled and placed in a single click
@@ -540,6 +541,7 @@ gui.de.mass.name=Core Mass
 gui.de.genRate.name=Generation Rate
 gui.de.fieldInputRate.name=Field Input Rate
 gui.de.fuelConversion.name=Fuel Conversion Rate
+gui.de.configureItem.txt=Configure Item
 
 gui.de.insert.txt=Insert
 gui.de.extract.txt=Extract

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import gnu.trove.map.hash.TIntObjectHashMap;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,7 +17,7 @@ import java.util.Random;
  * Handles World Ticks!
  */
 public class WorldTickHandler {
-	public static TIntObjectHashMap<ArrayDeque<ChunkCoordIntPair>> chunksToGen = new TIntObjectHashMap<ArrayDeque<ChunkCoordIntPair>>();
+	public static TIntObjectHashMap<ArrayDeque<ChunkPos>> chunksToGen = new TIntObjectHashMap<ArrayDeque<ChunkPos>>();
 
 	@SubscribeEvent
 	public void tickEnd(TickEvent.WorldTickEvent event) {
@@ -27,10 +27,10 @@ public class WorldTickHandler {
 		int dimension = event.world.provider.getDimension();
 
 		if (event.phase == TickEvent.Phase.END){
-			ArrayDeque<ChunkCoordIntPair> chunks = chunksToGen.get(dimension);
+			ArrayDeque<ChunkPos> chunks = chunksToGen.get(dimension);
 
 			if (chunks != null && chunks.size() > 0){
-				ChunkCoordIntPair chunkPos = chunks.pollFirst();
+                ChunkPos chunkPos = chunks.pollFirst();
 
 				LogHelper.info("Retroactively adding ore to {dim: "+dimension+", chunkPos: "+chunkPos.toString()+", chunksToGo: "+chunks.size()+"}");
 

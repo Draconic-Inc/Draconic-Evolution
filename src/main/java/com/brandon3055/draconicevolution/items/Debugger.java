@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.block.BlockVine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -175,10 +174,10 @@ public class Debugger extends ItemBCore {
         //}
 
         for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, -1, -1), position.add(1, -1, 1))) {
-            worldIn.setBlockState(pos, Blocks.dirt.getDefaultState());
+            worldIn.setBlockState(pos, Blocks.DIRT.getDefaultState());
         }
         for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, trunkHeight, 1))) {
-            worldIn.setBlockState(pos, Blocks.log.getDefaultState());
+            worldIn.setBlockState(pos, Blocks.LOG.getDefaultState());
         }
         for (EnumFacing dir : EnumFacing.HORIZONTALS) {
             BlockPos edgePos = position.offset(dir, 2);
@@ -242,78 +241,78 @@ public class Debugger extends ItemBCore {
 
         //region Long Rays
 
-        for (int ray = rayCount; ray > 0; ray--) {
-
-            double pc = ray / (double) rayCount;
-            double direction = Math.PI * 2 * pc;
-            int rayDist = 35 + rand.nextInt(10);
-
-            double x = posX + itemRand.nextGaussian() * 3;
-            double y = posY + itemRand.nextGaussian() * 2;
-            double z = posZ + itemRand.nextGaussian() * 3;
-
-            double r = 1 + rand.nextDouble();
-
-            for (int rayD = 0; rayD < rayDist; rayD++) {
-                double dpc = 1D - (rayD / (double) rayDist);
-
-                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
-                x += Math.cos(d2);
-                z += Math.sin(d2);
-
-                int prevY = (int) y;
-                y += rand.nextGaussian() + (dpc);
-                if ((int) y - prevY > 1) {
-                    y--;
-                }
-                if ((int) y - prevY < -1) {
-                    y++;
-                }
-
-                BlockPos vec = new BlockPos(x, y, z);
-
-                placeRayPart(worldIn, vec);
-            }
-        }
+//        for (int ray = rayCount; ray > 0; ray--) {
+//
+//            double pc = ray / (double) rayCount;
+//            double direction = Math.PI * 2 * pc;
+//            int rayDist = 35 + rand.nextInt(10);
+//
+//            double x = posX + itemRand.nextGaussian() * 3;
+//            double y = posY + itemRand.nextGaussian() * 2;
+//            double z = posZ + itemRand.nextGaussian() * 3;
+//
+//            double r = 1 + rand.nextDouble();
+//
+//            for (int rayD = 0; rayD < rayDist; rayD++) {
+//                double dpc = 1D - (rayD / (double) rayDist);
+//
+//                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
+//                x += Math.cos(d2);
+//                z += Math.sin(d2);
+//
+//                int prevY = (int) y;
+//                y += rand.nextGaussian() + (dpc);
+//                if ((int) y - prevY > 1) {
+//                    y--;
+//                }
+//                if ((int) y - prevY < -1) {
+//                    y++;
+//                }
+//
+//                BlockPos vec = new BlockPos(x, y, z);
+//
+//                placeRayPart(worldIn, vec);
+//            }
+//        }
         //endregion
 
         //region Short Rays
 
         rayCount = 100;
 
-        for (int ray = rayCount; ray > 0; ray--) {
-
-            double pc = ray / (double) rayCount;
-            double direction = Math.PI * 2 * pc;
-            int rayDist = 15 + rand.nextInt(5);
-
-            double x = posX + itemRand.nextGaussian() * 3;
-            double y = posY + itemRand.nextGaussian() * 2;
-            double z = posZ + itemRand.nextGaussian() * 3;
-
-            double r = 1 + rand.nextDouble();
-
-            for (int rayD = 0; rayD < rayDist; rayD++) {
-                double dpc = 1D - (rayD / (double) rayDist);
-
-                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
-                x += Math.cos(d2);
-                z += Math.sin(d2);
-
-                int prevY = (int) y;
-                y += rand.nextGaussian() + (dpc);
-                if ((int) y - prevY > 1) {
-                    y--;
-                }
-                if ((int) y - prevY < -1) {
-                    y++;
-                }
-
-                BlockPos vec = new BlockPos(x, y, z);
-
-                placeRayPart(worldIn, vec);
-            }
-        }
+//        for (int ray = rayCount; ray > 0; ray--) {
+//
+//            double pc = ray / (double) rayCount;
+//            double direction = Math.PI * 2 * pc;
+//            int rayDist = 15 + rand.nextInt(5);
+//
+//            double x = posX + itemRand.nextGaussian() * 3;
+//            double y = posY + itemRand.nextGaussian() * 2;
+//            double z = posZ + itemRand.nextGaussian() * 3;
+//
+//            double r = 1 + rand.nextDouble();
+//
+//            for (int rayD = 0; rayD < rayDist; rayD++) {
+//                double dpc = 1D - (rayD / (double) rayDist);
+//
+//                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
+//                x += Math.cos(d2);
+//                z += Math.sin(d2);
+//
+//                int prevY = (int) y;
+//                y += rand.nextGaussian() + (dpc);
+//                if ((int) y - prevY > 1) {
+//                    y--;
+//                }
+//                if ((int) y - prevY < -1) {
+//                    y++;
+//                }
+//
+//                BlockPos vec = new BlockPos(x, y, z);
+//
+//                placeRayPart(worldIn, vec);
+//            }
+//        }
 
         //endregion
 
@@ -322,24 +321,24 @@ public class Debugger extends ItemBCore {
 
     private void generateVines(World world, Random rand, EnumFacing dir, BlockPos from, BlockPos to) {
         for (BlockPos pos : BlockPos.getAllInBox(from, to)) {
-            if (rand.nextInt(5) == 1 && world.getBlockState(pos).getBlock() == Blocks.air) {
-                world.setBlockState(pos, Blocks.vine.getDefaultState().withProperty(BlockVine.getPropertyFor(dir.getOpposite()), true));
-            }
+//            if (rand.nextInt(5) == 1 && world.getBlockState(pos).getBlock() == Blocks.air) {
+//                world.setBlockState(pos, Blocks.vine.getDefaultState().withProperty(BlockVine.getPropertyFor(dir.getOpposite()), true));
+//  /          }
         }
     }
 
     private void placeRayPart(World world, BlockPos pos) {
         //Iterable<BlockPos> l = BlockPos.getAllInBox(sPos, sPos.add(itemRand.nextInt(2), itemRand.nextInt(2), itemRand.nextInt(2)));
 
-        //for (BlockPos pos : l) {
-            world.setBlockState(pos, Blocks.log.getDefaultState());
-            for (EnumFacing side : EnumFacing.VALUES) {
-                BlockPos leavesPos = pos.offset(side);
-                if (world.isAirBlock(leavesPos)) {
-                    world.setBlockState(leavesPos, Blocks.leaves.getDefaultState());
-                }
-            }
-        //}
+//        //for (BlockPos pos : l) {
+//            world.setBlockState(pos, Blocks.log.getDefaultState());
+//            for (EnumFacing side : EnumFacing.VALUES) {
+//                BlockPos leavesPos = pos.offset(side);
+//                if (world.isAirBlock(leavesPos)) {
+//                    world.setBlockState(leavesPos, Blocks.leaves.getDefaultState());
+//                }
+//            }
+//        //}
     }
 
     @Override

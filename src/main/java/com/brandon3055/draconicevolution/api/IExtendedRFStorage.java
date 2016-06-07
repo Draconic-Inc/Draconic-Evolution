@@ -6,7 +6,7 @@ package com.brandon3055.draconicevolution.api;
  */
 public interface IExtendedRFStorage
 {
-	public long getExtendedStorage();
+	long getExtendedStorage();
 
-	public long getExtendedCapacity();
+	long getExtendedCapacity();
 }

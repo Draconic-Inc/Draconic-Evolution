@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.particle.BCEntityFX;
+import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
  * Created by brandon3055 on 2/5/2016.
  * The particle used to render the beams on the Energy Core
  */
-public class ParticleLineIndicator extends BCEntityFX {
+public class ParticleLineIndicator extends BCParticle {
 
     protected ParticleLineIndicator(World worldIn, Vec3D pos) {
         super(worldIn, pos);
@@ -20,16 +20,16 @@ public class ParticleLineIndicator extends BCEntityFX {
 
     public ParticleLineIndicator(World worldIn, Vec3D pos, Vec3D speed) {
         super(worldIn, pos, speed);
-        this.xSpeed = speed.x;
-        this.ySpeed = speed.y;
-        this.zSpeed = speed.z;
+        this.motionX = speed.x;
+        this.motionY = speed.y;
+        this.motionZ = speed.z;
         this.particleMaxAge = 60;
         this.particleScale = 1F;
         this.particleTextureIndexY = 0;
     }
 
     @Override
-    public boolean func_187111_c() {
+    public boolean isTransparent() {
         return true;
     }
 
@@ -62,7 +62,7 @@ public class ParticleLineIndicator extends BCEntityFX {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public EntityFX getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
+        public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
             ParticleLineIndicator particle = new ParticleLineIndicator(world, pos, speed);
             if (args.length >= 3){
                 particle.setRBGColorF(args[0] / 255F, args[1] / 255F, args[2] / 255F);

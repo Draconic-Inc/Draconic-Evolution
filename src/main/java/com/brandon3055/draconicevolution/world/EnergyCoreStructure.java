@@ -140,7 +140,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Render Build Guide
 
         if (flag == FLAG_RENDER) {//todo find a way to render these from the center out (Maby try rendering them relative to haw far from the player they are)
-            Block block = Block.blockRegistry.getObject(new ResourceLocation(name));
+            Block block = Block.REGISTRY.getObject(new ResourceLocation(name));
 
             if (block == null || name.equals("") || name.equals("air")) {
                 return;

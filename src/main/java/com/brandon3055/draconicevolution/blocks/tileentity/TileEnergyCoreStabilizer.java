@@ -16,7 +16,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -339,8 +338,8 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     //region Save
 
     @Override
-    public Packet<?> getDescriptionPacket() {
-        SPacketUpdateTileEntity packet = (SPacketUpdateTileEntity)super.getDescriptionPacket();
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        SPacketUpdateTileEntity packet = (SPacketUpdateTileEntity)super.getUpdatePacket();
         NBTTagCompound compound = packet.nbt;
         compound.setByte("StructureAxis", (byte) multiBlockAxis.ordinal());
         compound.setByte("CoreDirection", (byte) coreDirection.getIndex());
@@ -371,8 +370,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
+    public void writeExtraNBT(NBTTagCompound compound) {
         if (multiBlockAxis != null){
             compound.setByte("StructureAxis", (byte) multiBlockAxis.ordinal());
             compound.setByte("CoreDirection", (byte) coreDirection.getIndex());
@@ -380,8 +378,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
+    public void readExtraNBT(NBTTagCompound compound) {
         EnumFacing.Axis[] values = EnumFacing.Axis.values();
         int i = compound.getByte("StructureAxis");
         multiBlockAxis = i >= 0 && i < values.length ? values[i] : EnumFacing.Axis.Y;

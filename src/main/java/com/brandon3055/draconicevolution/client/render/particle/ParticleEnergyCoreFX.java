@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.particle.BCEntityFX;
+import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +15,7 @@ import net.minecraft.world.World;
  * Created by brandon3055 on 2/5/2016.
  * The particle used to render the beams on the Energy Core
  */
-public class ParticleEnergyCoreFX extends BCEntityFX {
+public class ParticleEnergyCoreFX extends BCParticle {
 
     public Vec3D targetPos;
     public boolean toCore = false;
@@ -38,7 +38,7 @@ public class ParticleEnergyCoreFX extends BCEntityFX {
     }
 
     @Override
-    public boolean func_187111_c() {
+    public boolean isTransparent() {
         return true;
     }
 
@@ -70,10 +70,10 @@ public class ParticleEnergyCoreFX extends BCEntityFX {
 
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), tPos);
         double speed = toCore ? 0.5D : 0.25D;
-        xSpeed = dir.x * speed;
-        ySpeed = dir.y * speed;
-        zSpeed = dir.z * speed;
-        moveEntityNoClip(xSpeed, ySpeed, zSpeed);
+        motionX = dir.x * speed;
+        motionY = dir.y * speed;
+        motionZ = dir.z * speed;
+        moveEntityNoClip(motionX, motionY, motionZ);
 
         if (particleAge++ > particleMaxAge || Utils.getDistanceAtoB(posX, posY, posZ, tPos.x, tPos.y, tPos.z) < 0.2) {
             setExpired();
@@ -103,7 +103,7 @@ public class ParticleEnergyCoreFX extends BCEntityFX {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public EntityFX getEntityFX(int particleID, World world, Vec3D pos, Vec3D targetPos, int... args) {
+        public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D targetPos, int... args) {
             ParticleEnergyCoreFX particle = new ParticleEnergyCoreFX(world, pos, targetPos);
             particle.toCore = args.length >= 1 && args[0] == 1;
             particle.startRotation = args.length >= 2 ? args[1] : 0;

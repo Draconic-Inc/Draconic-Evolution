@@ -34,7 +34,7 @@ public class Grinder extends BlockBCore implements ITileEntityProvider {
 	public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
 	public Grinder(){
-		super(Material.iron);
+		super(Material.IRON);
 		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
 
@@ -113,16 +113,31 @@ public class Grinder extends BlockBCore implements ITileEntityProvider {
         return true;
     }
 
+//    @Override
+//    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
+//        super.neighborChanged(state, worldIn, pos, blockIn);
+//    }
+//
+//    @Override
+//	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+//		TileEntity tileEntity = worldIn.getTileEntity(pos);
+//		if (tileEntity instanceof TileGrinder){
+//			((TileGrinder)tileEntity).updateKillBox();
+//            ((TileGrinder)tileEntity).powered = worldIn.isBlockPowered(pos);
+//		}
+//	}
+
+
     @Override
-	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
 		if (tileEntity instanceof TileGrinder){
 			((TileGrinder)tileEntity).updateKillBox();
             ((TileGrinder)tileEntity).powered = worldIn.isBlockPowered(pos);
 		}
-	}
+    }
 
-	@Override
+    @Override
 	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if (tileEntity instanceof TileGrinder){

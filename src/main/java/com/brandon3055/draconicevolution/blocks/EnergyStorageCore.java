@@ -37,7 +37,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
     public EnergyStorageCore(){
-        super(Material.iron);
+        super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, false));
     }
 

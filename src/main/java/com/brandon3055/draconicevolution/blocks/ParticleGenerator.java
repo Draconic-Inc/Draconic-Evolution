@@ -40,7 +40,7 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
     public static final PropertyString TYPE = new PropertyString("type", "normal", "inverted", "stabilizer", "stabilizer2");
 
     public ParticleGenerator() {
-        super(Material.iron);
+        super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "normal"));
     }
 

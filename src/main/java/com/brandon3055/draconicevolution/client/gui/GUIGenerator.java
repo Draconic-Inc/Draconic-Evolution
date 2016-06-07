@@ -17,13 +17,13 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
-public class GUIGenerator extends GuiContainer {
+public class GuiGenerator extends GuiContainer {
 
 	public EntityPlayer player;
 	private TileGenerator tile;
 	private int guiUpdateTick;
 
-	public GUIGenerator(EntityPlayer player, TileGenerator tile) {
+	public GuiGenerator(EntityPlayer player, TileGenerator tile) {
 		super(new ContainerGenerator(player, tile));
 
 		xSize = 176;

@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 public class EnergyInfuser extends BlockBCore implements ITileEntityProvider, ICustomRender {
 
     public EnergyInfuser(){
-        super(Material.iron);
+        super(Material.IRON);
     }
 
     //region Block

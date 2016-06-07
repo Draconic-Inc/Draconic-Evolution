@@ -1,15 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.particle.BCEntityFX;
+import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-public class ParticleEnergy extends BCEntityFX {
+public class ParticleEnergy extends BCParticle {
 
     public Vec3D targetPos;
 
@@ -26,7 +26,7 @@ public class ParticleEnergy extends BCEntityFX {
     }
 
     @Override
-    public boolean func_187111_c() {
+    public boolean isTransparent() {
         return true;
     }
 
@@ -40,10 +40,10 @@ public class ParticleEnergy extends BCEntityFX {
 
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), targetPos);
         double speed = 0.5D;
-        xSpeed = dir.x * speed;
-        ySpeed = dir.y * speed;
-        zSpeed = dir.z * speed;
-        moveEntityNoClip(xSpeed, ySpeed, zSpeed);
+        motionX = dir.x * speed;
+        motionY = dir.y * speed;
+        motionZ = dir.z * speed;
+        moveEntityNoClip(motionX, motionY, motionZ);
 
         if (particleAge++ > particleMaxAge || Utils.getDistanceAtoB(posX, posY, posZ, targetPos.x, targetPos.y, targetPos.z) < 0.5) {
             setExpired();
@@ -104,7 +104,7 @@ public class ParticleEnergy extends BCEntityFX {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public EntityFX getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
+        public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
             ParticleEnergy particleEnergy = new ParticleEnergy(world, pos, speed);
 
             if (args.length >= 3){

@@ -35,7 +35,7 @@ public class EnergyPylon extends BlockBCore implements ITileEntityProvider, ICus
     public static final PropertyEnum FACING = PropertyEnum.create("facing", CCDirection.class, CCDirection.UP, CCDirection.DOWN, CCDirection.UNKNOWN);
 
     public EnergyPylon(){
-        super(Material.iron);
+        super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(OUTPUT, false).withProperty(FACING, CCDirection.UNKNOWN));
     }
 
@@ -91,13 +91,25 @@ public class EnergyPylon extends BlockBCore implements ITileEntityProvider, ICus
     }
 
     @Override
-    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
-        TileEntity tile = worldIn.getTileEntity(pos);
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
+        TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileEnergyPylon){
             ((TileEnergyPylon)tile).validateStructure();
         }
     }
+
+    @Override
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {}
+
+//    @Override
+//    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+//        TileEntity tile = worldIn.getTileEntity(pos);
+//
+//        if (tile instanceof TileEnergyPylon){
+//            ((TileEnergyPylon)tile).validateStructure();
+//        }
+//    }
 
     //endregion
 

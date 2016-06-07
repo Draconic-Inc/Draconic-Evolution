@@ -1,13 +1,16 @@
 package com.brandon3055.draconicevolution.client;
 
+import codechicken.lib.render.TextureUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
+import com.brandon3055.draconicevolution.client.model.ToolModelLoader;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -24,8 +27,17 @@ public class ClientProxy extends CommonProxy {
 	{
 		super.preInit(event);
         OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);
+//        ModelLoaderRegistry.registerLoader(new CustomModelLoader());
 		DraconicEvolution.featureParser.registerRendering();
 		DEImageHandler.init(event);
+
+        ToolModelLoader.buildItemMap();
+
+        ToolModelLoader loader = new ToolModelLoader();
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(loader);
+        TextureUtils.addIconRegister(loader);
+
+        ToolModelLoader.registerModels();
 	}
 
 	@Override
@@ -53,7 +65,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	public void registerRendering()
-	{
+    {
 
 //		//Item Renderers
 //		MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBow());

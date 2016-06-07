@@ -11,7 +11,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -100,7 +99,7 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlock {
             return;
         }
 
-        Block block = Block.blockRegistry.getObject(new ResourceLocation(blockName));
+        Block block = Block.REGISTRY.getObject(new ResourceLocation(blockName));
         if (block != null) {
             worldObj.setBlockState(pos, block.getDefaultState());
         }
@@ -120,7 +119,7 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlock {
     }
 
     @Override
-    public Packet<?> getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setString("BlockName", blockName);
         coreOffset.toNBT(compound);
@@ -134,14 +133,12 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlock {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
+    public void writeExtraNBT(NBTTagCompound compound) {
         compound.setString("BlockName", blockName);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
+    public void readExtraNBT(NBTTagCompound compound) {
         blockName = compound.getString("BlockName");
     }
 

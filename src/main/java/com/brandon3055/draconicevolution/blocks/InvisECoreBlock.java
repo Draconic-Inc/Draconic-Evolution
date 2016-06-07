@@ -47,13 +47,23 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
         return new TileInvisECoreBlock();
     }
 
+
     @Override
-    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock)tile).getController() == null){
             ((TileInvisECoreBlock)tile).revert();
         }
     }
+
+
+//    @Override TODO Confirm this is correct
+//    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
+//        TileEntity tile = world.getTileEntity(pos);
+//        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock)tile).getController() == null){
+//            ((TileInvisECoreBlock)tile).revert();
+//        }
+//    }
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
@@ -80,7 +90,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
         if (tile instanceof TileInvisECoreBlock) {
 
             if (!((TileInvisECoreBlock)tile).blockName.isEmpty() && !player.capabilities.isCreativeMode) {
-                Block block = Block.blockRegistry.getObject(new ResourceLocation(((TileInvisECoreBlock)tile).blockName));
+                Block block = Block.REGISTRY.getObject(new ResourceLocation(((TileInvisECoreBlock)tile).blockName));
 
                 if (block != null) {
                     if (((TileInvisECoreBlock)tile).blockName.equals("draconicevolution:particleGenerator")){
@@ -111,9 +121,9 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
             } else if (((TileInvisECoreBlock)tile).blockName.equals("draconicevolution:particleGenerator")){
                 return new ItemStack(DEFeatures.particleGenerator, 1, 2);
             } else if (((TileInvisECoreBlock)tile).blockName.equals("minecraft:glass")){
-                return new ItemStack(Blocks.glass);
+                return new ItemStack(Blocks.GLASS);
             } else if (((TileInvisECoreBlock)tile).blockName.equals("minecraft:redstone_block")){
-                return new ItemStack(Blocks.redstone_block);
+                return new ItemStack(Blocks.REDSTONE_BLOCK);
             }
         }
 

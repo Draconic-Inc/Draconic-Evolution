@@ -55,9 +55,9 @@ public class WorldGenEnderComet extends WorldGenerator {
 						if (0.1F > genP){
 							world.setBlockState(pos, DraconiumOre.getEnd());
 						}else if (0.4F > genP){
-							world.setBlockState(pos, Blocks.obsidian.getDefaultState());
+							world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
 						}else {
-							world.setBlockState(pos, Blocks.obsidian.getDefaultState());
+							world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
 						}
 					}
 				}
@@ -94,8 +94,8 @@ public class WorldGenEnderComet extends WorldGenerator {
 				for (int y = yi-r; y <= yi + r; y++) {
 					BlockPos pos = new BlockPos(x, y, z);
 					if ((density >= rand.nextInt(10000)) && world.isAirBlock(pos) && (int) (getDistance(x, y, z, xi, yi, zi)) == r) {
-						if (0.9F >= rand.nextFloat()) world.setBlockState(pos, Blocks.end_stone.getDefaultState());
-						else if (rand.nextBoolean()) world.setBlockState(pos, Blocks.obsidian.getDefaultState());
+						if (0.9F >= rand.nextFloat()) world.setBlockState(pos, Blocks.END_STONE.getDefaultState());
+						else if (rand.nextBoolean()) world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
 						else world.setBlockState(pos, DraconiumOre.getEnd());
 					}
 				}

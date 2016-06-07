@@ -10,9 +10,13 @@ import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.items.Debugger;
-import com.brandon3055.draconicevolution.items.tools.DraconiumCapacitor;
+import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
+import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
+import com.brandon3055.draconicevolution.items.tools.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -31,10 +35,10 @@ public class DEFeatures {
 	public static DraconiumBlock draconiumBlock = (DraconiumBlock) new DraconiumBlock().setHardness(10f).setResistance(20.0f);
 
 	@Feature(name = "draconicBlock")
-	public static BlockMobSafe draconicBlock = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.iron).setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
+	public static BlockMobSafe draconicBlock = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
 
 	@Feature(name = "infusedObsidian")
-	public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.rock).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
+	public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
     //endregion
 
     //region Machines
@@ -86,10 +90,10 @@ public class DEFeatures {
 	@Feature(name = "chaoticCore", stateOverride = "simpleComponents#type=chaoticCore")
 	public static Item chaoticCore = new Item();
 
-    @Feature(name = "wyvernEnergyCore", stateOverride = "simpleComponents#type=wyvernecore")
+    @Feature(name = "wyvernEnergyCore", stateOverride = "simpleComponents#type=wyvernECore")
     public static Item wyvernEnergyCore = new Item();
 
-    @Feature(name = "draconicEnergyCore", stateOverride = "simpleComponents#type=draconicecore")
+    @Feature(name = "draconicEnergyCore", stateOverride = "simpleComponents#type=draconicECore")
     public static Item draconicEnergyCore = new Item();
 
     @Feature(name = "debugger", stateOverride = "simpleComponents#type=draconicIngot")
@@ -107,5 +111,106 @@ public class DEFeatures {
     public static ItemStack draconicCapacitor = new ItemStack(draconiumCapacitor, 1, 1);
     public static ItemStack creativeCapacitor = new ItemStack(draconiumCapacitor, 1, 2);
 
+    @Feature(name = "wyvernAxe", cTab = 1)
+    public static WyvernAxe wyvernAxe = new WyvernAxe();
+
+    @Feature(name = "wyvernBow", cTab = 1)
+    public static WyvernBow wyvernBow = new WyvernBow();
+
+    @Feature(name = "wyvernPick", cTab = 1)
+    public static WyvernPick wyvernPick = new WyvernPick();
+
+    @Feature(name = "wyvernShovel", cTab = 1)
+    public static WyvernShovel wyvernShovel = new WyvernShovel();
+
+    @Feature(name = "wyvernSword", cTab = 1)
+    public static WyvernSword wyvernSword = new WyvernSword();
+
+
+    @Feature(name = "draconicAxe", cTab = 1)
+    public static DraconicAxe draconicAxe = new DraconicAxe();
+
+    @Feature(name = "draconicBow", cTab = 1)
+    public static DraconicBow draconicBow = new DraconicBow();
+
+    @Feature(name = "draconicHoe", cTab = 1)
+    public static DraconicHoe draconicHoe = new DraconicHoe();
+
+    @Feature(name = "draconicPick", cTab = 1)
+    public static DraconicPick draconicPick = new DraconicPick();
+
+    @Feature(name = "draconicShovel", cTab = 1)
+    public static DraconicShovel draconicShovel = new DraconicShovel();
+
+    @Feature(name = "draconicStaffOfPower", cTab = 1)
+    public static DraconicStaffOfPower draconicStaffOfPower = new DraconicStaffOfPower();
+
+    @Feature(name = "draconicSword", cTab = 1)
+    public static DraconicSword draconicSword = new DraconicSword();
+
+    //endregion
+
+    //region Armor
+    @Feature(name = "wyvernHelm", cTab = 1)
+    public static WyvernArmor wyvernHelm = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.HEAD);
+
+    @Feature(name = "wyvernChest", cTab = 1)
+    public static WyvernArmor wyvernChest = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.CHEST);
+
+    @Feature(name = "wyvernLegs", cTab = 1)
+    public static WyvernArmor wyvernLegs = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.LEGS);
+
+    @Feature(name = "wyvernBoots", cTab = 1)
+    public static WyvernArmor wyvernBoots = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.FEET);
+
+    @Feature(name = "draconicHelm", cTab = 1)
+    public static DraconicArmor draconicHelm = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.HEAD);
+
+    @Feature(name = "draconicChest", cTab = 1)
+    public static DraconicArmor draconicChest = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.CHEST);
+
+    @Feature(name = "draconicLegs", cTab = 1)
+    public static DraconicArmor draconicLegs = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.LEGS);
+
+    @Feature(name = "draconicBoots", cTab = 1)
+    public static DraconicArmor draconicBoots = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.FEET);
+
     //endregion
 }
+
+//@Feature(name = "wyvernAxe", stateOverride = "tools#type=wyvernAxe")
+//public static WyvernAxe wyvernAxe = new WyvernAxe();
+//
+//@Feature(name = "wyvernBow", stateOverride = "tools#type=wyvernBow")
+//public static WyvernBow wyvernBow = new WyvernBow();
+//
+//@Feature(name = "wyvernPick", stateOverride = "tools#type=wyvernPick")
+//public static WyvernPick wyvernPick = new WyvernPick();
+//
+//@Feature(name = "wyvernShovel", stateOverride = "tools#type=wyvernShovel")
+//public static WyvernShovel wyvernShovel = new WyvernShovel();
+//
+//@Feature(name = "wyvernSword", stateOverride = "tools#type=wyvernSword")
+//public static WyvernSword wyvernSword = new WyvernSword();
+//
+//
+//@Feature(name = "draconicAxe", stateOverride = "tools#type=draconicAxe")
+//public static DraconicAxe draconicAxe = new DraconicAxe();
+//
+//@Feature(name = "draconicBow", stateOverride = "tools#type=draconicBow")
+//public static DraconicBow draconicBow = new DraconicBow();
+//
+//@Feature(name = "draconicHoe", stateOverride = "tools#type=draconicHoe")
+//public static DraconicHoe draconicHoe = new DraconicHoe();
+//
+//@Feature(name = "draconicPick", stateOverride = "tools#type=draconicPick")
+//public static DraconicPick draconicPick = new DraconicPick();
+//
+//@Feature(name = "draconicShovel", stateOverride = "tools#type=draconicShovel")
+//public static DraconicShovel draconicShovel = new DraconicShovel();
+//
+//@Feature(name = "draconicStaffOfPower", stateOverride = "tools#type=draconicStaffOfPower")
+//public static DraconicStaffOfPower draconicStaffOfPower = new DraconicStaffOfPower();
+//
+//@Feature(name = "draconicSword", stateOverride = "tools#type=draconicSword")
+//public static DraconicSword draconicSword = new DraconicSword();
