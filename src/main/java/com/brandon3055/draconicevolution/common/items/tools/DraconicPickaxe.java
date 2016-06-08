@@ -78,7 +78,7 @@ public class DraconicPickaxe extends MiningTool implements IInventoryTool, IRend
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_DRACONIC_UPGRADES;
+		return BalanceConfigHandler.draconicToolsMaxUpgrades;
 	}
 
 	@Override
@@ -99,17 +99,32 @@ public class DraconicPickaxe extends MiningTool implements IInventoryTool, IRend
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 4;
-		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 5;
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicToolsMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.draconicToolsMaxDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
+			return BalanceConfigHandler.draconicToolsMaxDigDepthUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+			return BalanceConfigHandler.draconicToolsMaxDigSpeedUpgradePoints;
+		}
+		return BalanceConfigHandler.draconicToolsMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 1;
-		else if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) return 5;
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.draconicToolsMinDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
+			return BalanceConfigHandler.draconicToolsMinDigDepthUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+			return BalanceConfigHandler.draconicToolsMinDigSpeedUpgradePoints;
+		}
 		return 0;
 	}
 

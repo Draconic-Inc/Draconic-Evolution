@@ -288,7 +288,7 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_DRACONIC_UPGRADES;
+		return BalanceConfigHandler.draconicToolsMaxUpgrades;
 	}
 
 	@Override
@@ -298,16 +298,20 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 5;
-
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicToolsMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.draconicToolsMaxDigAOEUpgradePoints + 1;
+		}
+		return BalanceConfigHandler.draconicToolsMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 3;
-
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.draconicToolsMinDigAOEUpgradePoints + 1;
+		}
 		return 0;
 	}
 

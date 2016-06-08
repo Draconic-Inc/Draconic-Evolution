@@ -15,6 +15,12 @@ public class BalanceConfigHandler
     public static final int wyvernToolsMaxDigAOEUpgradePoints = 2;
     public static final int wyvernToolsMinDigSpeedUpgradePoints = 4;
     public static final int wyvernToolsMaxDigSpeedUpgradePoints = 16;
+    public static final int draconicToolsMinDigAOEUpgradePoints = 2;
+    public static final int draconicToolsMaxDigAOEUpgradePoints = 4;
+    public static final int draconicToolsMinDigSpeedUpgradePoints = 5;
+    public static final int draconicToolsMaxDigSpeedUpgradePoints = 32;
+    public static final int draconicToolsMinDigDepthUpgradePoints = 1;
+    public static final int draconicToolsMaxDigDepthUpgradePoints = 5;
     public static int wyvernArmorBaseStorage = 1000000;
     public static int wyvernArmorStoragePerUpgrade = 500000;
     public static int wyvernArmorMaxTransfer = 50000;
@@ -69,6 +75,9 @@ public class BalanceConfigHandler
     public static int wyvernToolsMaxCapacityUpgradePoints = 50;
     public static int wyvernToolsMaxUpgrades = 3;
     public static int wyvernToolsMaxUpgradePoints = 50;
+    public static int draconicToolsMaxCapacityUpgradePoints = 50;
+    public static int draconicToolsMaxUpgrades = 6;
+    public static int draconicToolsMaxUpgradePoints = 50;
     public static int wyvernCapacitorMaxUpgrades = 3;
     public static int draconicCapacitorMaxUpgrades = 6;
     public static int fluxCapacitorMaxUpgradePoints = 50;
@@ -237,6 +246,27 @@ public class BalanceConfigHandler
             wyvernToolsMaxUpgradePoints - (wyvernToolsMaxDigAOEUpgradePoints - wyvernToolsMinDigAOEUpgradePoints) -
             (wyvernToolsMaxDigSpeedUpgradePoints - wyvernToolsMinDigSpeedUpgradePoints),
             wyvernToolsMaxCapacityUpgradePoints), 0);
+        draconicToolsMaxCapacityUpgradePoints = (int) Math.floor(
+            (double) (Integer.MAX_VALUE - draconicToolsBaseStorage) /
+            (double) Math.max(draconicToolsStoragePerUpgrade, 1));
+        draconicToolsMaxUpgrades =
+            getInteger("tweaks.tools", "Draconic Tools: Maximum amount of upgrades", draconicToolsMaxUpgrades, 0,
+                       (int) Math.ceil(
+                           (double) ((draconicToolsMaxDigAOEUpgradePoints - draconicToolsMinDigAOEUpgradePoints) +
+                                     (draconicToolsMaxDigSpeedUpgradePoints - draconicToolsMinDigSpeedUpgradePoints) +
+                                     (draconicToolsMaxDigDepthUpgradePoints - draconicToolsMinDigDepthUpgradePoints) +
+                                     draconicToolsMaxCapacityUpgradePoints) / 4D));
+        draconicToolsMaxUpgradePoints = getInteger("tweaks.tools", "Draconic Tools: Maximum amount of upgrade points",
+                                                   draconicToolsMaxUpgradePoints, draconicToolsMaxUpgrades * 4,
+                                                   Integer.MAX_VALUE);
+        draconicToolsMaxCapacityUpgradePoints = Math.max(Math.min(draconicToolsMaxUpgradePoints -
+                                                                  (draconicToolsMaxDigAOEUpgradePoints -
+                                                                   draconicToolsMinDigAOEUpgradePoints) -
+                                                                  (draconicToolsMaxDigSpeedUpgradePoints -
+                                                                   draconicToolsMinDigSpeedUpgradePoints) -
+                                                                  (draconicToolsMaxDigDepthUpgradePoints -
+                                                                   draconicToolsMinDigDepthUpgradePoints),
+                                                                  draconicToolsMaxCapacityUpgradePoints), 0);
         int wyvernCapacitorUpgradesLimit = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernCapacitorBaseStorage) /
                                                             (double) Math.max(wyvernCapacitorStoragePerUpgrade, 1) /
                                                             2D);
