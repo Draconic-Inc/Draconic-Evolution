@@ -78,7 +78,7 @@ public class WyvernShovel extends MiningTool implements IInventoryTool, IRenderT
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_WYVERN_UPGRADES;
+		return BalanceConfigHandler.wyvernToolsMaxUpgrades;
 	}
 
 	@Override
@@ -98,16 +98,26 @@ public class WyvernShovel extends MiningTool implements IInventoryTool, IRenderT
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.wyvernToolsMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.wyvernToolsMaxDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+			return BalanceConfigHandler.wyvernToolsMaxDigSpeedUpgradePoints;
+		}
+		return BalanceConfigHandler.wyvernToolsMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 1;
-		else if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) return 4;
-
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.wyvernToolsMinDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+			return BalanceConfigHandler.wyvernToolsMinDigSpeedUpgradePoints;
+		}
 		return 0;
 	}
 

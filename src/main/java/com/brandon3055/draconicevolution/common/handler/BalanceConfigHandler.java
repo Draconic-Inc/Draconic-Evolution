@@ -11,6 +11,10 @@ import net.minecraftforge.common.config.Property;
 
 public class BalanceConfigHandler
 {
+    public static final int wyvernToolsMinDigAOEUpgradePoints = 1;
+    public static final int wyvernToolsMaxDigAOEUpgradePoints = 2;
+    public static final int wyvernToolsMinDigSpeedUpgradePoints = 4;
+    public static final int wyvernToolsMaxDigSpeedUpgradePoints = 16;
     public static int wyvernArmorBaseStorage = 1000000;
     public static int wyvernArmorStoragePerUpgrade = 500000;
     public static int wyvernArmorMaxTransfer = 50000;
@@ -62,6 +66,9 @@ public class BalanceConfigHandler
     public static int grinderExternalEnergyBufferSize = 100000;
     public static int grinderMaxReceive = 32000;
     public static int grinderEnergyPerKill = 1000;
+    public static int wyvernToolsMaxCapacityUpgradePoints = 50;
+    public static int wyvernToolsMaxUpgrades = 3;
+    public static int wyvernToolsMaxUpgradePoints = 50;
     public static int wyvernCapacitorMaxUpgrades = 3;
     public static int draconicCapacitorMaxUpgrades = 6;
     public static int fluxCapacitorMaxUpgradePoints = 50;
@@ -76,6 +83,8 @@ public class BalanceConfigHandler
             config = new Configuration(new File(modConfigurationDirectory, "DraconicEvolution.Balance.cfg"));
             config.load();
             config.setCategoryRequiresMcRestart("tweaks", true);
+            config.setCategoryComment("tweaks.tools",
+                                      "Values in this category may be replaced automatically to prevent problems");
             syncConfig();
         }
     }
@@ -213,24 +222,36 @@ public class BalanceConfigHandler
         grinderEnergyPerKill =
             getInteger("energy.machines", "Mob Grinder: Amount of energy required to kill entity (RF)",
                        grinderEnergyPerKill);
-        int wyvernCapacitorUpgradesLimit =
-            (int) Math.floor(((double) Integer.MAX_VALUE - (double) wyvernCapacitorBaseStorage) /
-                             (double) Math.max(wyvernCapacitorStoragePerUpgrade, 1) / 2D);
+        wyvernToolsMaxCapacityUpgradePoints = (int) Math.floor(
+            (double) (Integer.MAX_VALUE - wyvernToolsBaseStorage) / (double) Math.max(wyvernToolsStoragePerUpgrade, 1));
+        wyvernToolsMaxUpgrades =
+            getInteger("tweaks.tools", "Wyvern Tools: Maximum amount of upgrades", wyvernToolsMaxUpgrades, 0,
+                       (int) Math.ceil(
+                           (double) ((wyvernToolsMaxDigAOEUpgradePoints - wyvernToolsMinDigAOEUpgradePoints) +
+                                     (wyvernToolsMaxDigSpeedUpgradePoints - wyvernToolsMinDigSpeedUpgradePoints) +
+                                     wyvernToolsMaxCapacityUpgradePoints) / 2D));
+        wyvernToolsMaxUpgradePoints =
+            getInteger("tweaks.tools", "Wyvern Tools: Maximum amount of upgrade points", wyvernToolsMaxUpgradePoints,
+                       wyvernToolsMaxUpgrades * 2, Integer.MAX_VALUE);
+        wyvernToolsMaxCapacityUpgradePoints = Math.max(Math.min(
+            wyvernToolsMaxUpgradePoints - (wyvernToolsMaxDigAOEUpgradePoints - wyvernToolsMinDigAOEUpgradePoints) -
+            (wyvernToolsMaxDigSpeedUpgradePoints - wyvernToolsMinDigSpeedUpgradePoints),
+            wyvernToolsMaxCapacityUpgradePoints), 0);
+        int wyvernCapacitorUpgradesLimit = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernCapacitorBaseStorage) /
+                                                            (double) Math.max(wyvernCapacitorStoragePerUpgrade, 1) /
+                                                            2D);
+        int draconicCapacitorUpgradesLimit =
+            (int) Math.floor((double) (Integer.MAX_VALUE - draconicCapacitorBaseStorage) /
+                             (double) Math.max(draconicCapacitorStoragePerUpgrade, 1) / 4D);
         wyvernCapacitorMaxUpgrades =
             getInteger("tweaks.tools", "Wyvern Flux Capacitor: Maximum amount of upgrades", wyvernCapacitorMaxUpgrades,
-                       "Value may be replaced automatically to prevent problems", 0, wyvernCapacitorUpgradesLimit);
-        int draconicCapacitorUpgradesLimit =
-            (int) Math.floor(((double) Integer.MAX_VALUE - (double) draconicCapacitorBaseStorage) /
-                             (double) Math.max(draconicCapacitorStoragePerUpgrade, 1) / 4D);
+                       0, wyvernCapacitorUpgradesLimit);
         draconicCapacitorMaxUpgrades = getInteger("tweaks.tools", "Draconic Flux Capacitor: Maximum amount of upgrades",
-                                                  draconicCapacitorMaxUpgrades,
-                                                  "Value may be replaced automatically to prevent problems", 0,
-                                                  draconicCapacitorUpgradesLimit);
-        int fluxCapacitorUpgradePointsLimit = Math.max(wyvernCapacitorMaxUpgrades, draconicCapacitorMaxUpgrades) * 4;
+                                                  draconicCapacitorMaxUpgrades, 0, draconicCapacitorUpgradesLimit);
         fluxCapacitorMaxUpgradePoints = getInteger("tweaks.tools", "Flux Capacitor: Maximum amount of upgrade points",
                                                    fluxCapacitorMaxUpgradePoints,
-                                                   "Value may be replaced automatically to prevent problems",
-                                                   fluxCapacitorUpgradePointsLimit, Integer.MAX_VALUE);
+                                                   Math.max(wyvernCapacitorMaxUpgrades, draconicCapacitorMaxUpgrades) *
+                                                   4, Integer.MAX_VALUE);
         grinderShouldUseLooting =
             getBoolean("tweaks.machines", "Mob Grinder: Use Looting enchantment", grinderShouldUseLooting);
         if (config.hasChanged())
@@ -290,10 +311,9 @@ public class BalanceConfigHandler
     {
         return config.get(categoty, propertyName, defaultValue, comment).getInt(defaultValue);
     }
-    private static int getInteger(String category, String propertyName, int defaultValue, String comment, int minValue,
-                                  int maxValue)
+    private static int getInteger(String category, String propertyName, int defaultValue, int minValue, int maxValue)
     {
-        Property property = config.get(category, propertyName, defaultValue, comment, minValue, maxValue);
+        Property property = config.get(category, propertyName, defaultValue, "", minValue, maxValue);
         int value = property.getInt(defaultValue);
         if (value < minValue)
         {
