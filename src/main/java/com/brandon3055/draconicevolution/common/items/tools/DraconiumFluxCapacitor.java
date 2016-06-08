@@ -12,7 +12,6 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.RFItemBase;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
-import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import cpw.mods.fml.relauncher.Side;
@@ -178,7 +177,10 @@ public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableIte
 
 	@Override
 	public int getUpgradeCap(ItemStack stack) {
-		return stack.getItemDamage() == 0 ? References.MAX_WYVERN_UPGRADES : References.MAX_DRACONIC_UPGRADES;
+		return stack.getItemDamage() == 0 ?
+			   BalanceConfigHandler.wyvernCapacitorMaxUpgrades :
+			   stack.getItemDamage() == 1 ?
+			   BalanceConfigHandler.draconicCapacitorMaxUpgrades : 0;
 	}
 
 	@Override
@@ -188,7 +190,7 @@ public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableIte
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		return 50;
+		return BalanceConfigHandler.fluxCapacitorMaxUpgradePoints;
 	}
 
 	@Override

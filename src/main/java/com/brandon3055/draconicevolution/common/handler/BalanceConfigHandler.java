@@ -62,6 +62,9 @@ public class BalanceConfigHandler
     public static int grinderExternalEnergyBufferSize = 100000;
     public static int grinderMaxReceive = 32000;
     public static int grinderEnergyPerKill = 1000;
+    public static int wyvernCapacitorMaxUpgrades = 3;
+    public static int draconicCapacitorMaxUpgrades = 6;
+    public static int fluxCapacitorMaxUpgradePoints = 50;
     public static Block energyStorageStructureBlock = null;
     public static int energyStorageStructureBlockMetadata = 0;
     public static boolean grinderShouldUseLooting = false;
@@ -74,26 +77,6 @@ public class BalanceConfigHandler
             config.load();
             config.setCategoryRequiresMcRestart("tweaks", true);
             syncConfig();
-        }
-    }
-    // This method should be loaded after all mods add blocks => after pre-init
-    public static void finishLoading()
-    {
-        if (config == null)
-        {
-            return;
-        }
-        energyStorageStructureBlock =
-            getBlock("tweaks.machines", "Multiblock Energy Storage: Main block of structure", Blocks.redstone_block,
-                     "WARNING! Changing of this value will replace blocks of all existing Energy Storage Multiblocks!");
-        energyStorageStructureBlockMetadata =
-            getInteger("tweaks.machines", "Multiblock Energy Storage: Metadata of main block of structure",
-                       energyStorageStructureBlockMetadata,
-                       "WARNING! Changing of this value will replace blocks of all existing Energy Storage " +
-                       "Multiblocks!");
-        if (config.hasChanged())
-        {
-            config.save();
         }
     }
     private static void syncConfig()
@@ -230,8 +213,46 @@ public class BalanceConfigHandler
         grinderEnergyPerKill =
             getInteger("energy.machines", "Mob Grinder: Amount of energy required to kill entity (RF)",
                        grinderEnergyPerKill);
+        int wyvernCapacitorUpgradesLimit =
+            (int) Math.floor(((double) Integer.MAX_VALUE - (double) wyvernCapacitorBaseStorage) /
+                             (double) Math.max(wyvernCapacitorStoragePerUpgrade, 1) / 2D);
+        wyvernCapacitorMaxUpgrades =
+            getInteger("tweaks.tools", "Wyvern Flux Capacitor: Maximum amount of upgrades", wyvernCapacitorMaxUpgrades,
+                       "Value may be replaced automatically to prevent problems", 0, wyvernCapacitorUpgradesLimit);
+        int draconicCapacitorUpgradesLimit =
+            (int) Math.floor(((double) Integer.MAX_VALUE - (double) draconicCapacitorBaseStorage) /
+                             (double) Math.max(draconicCapacitorStoragePerUpgrade, 1) / 4D);
+        draconicCapacitorMaxUpgrades = getInteger("tweaks.tools", "Draconic Flux Capacitor: Maximum amount of upgrades",
+                                                  draconicCapacitorMaxUpgrades,
+                                                  "Value may be replaced automatically to prevent problems", 0,
+                                                  draconicCapacitorUpgradesLimit);
+        int fluxCapacitorUpgradePointsLimit = Math.max(wyvernCapacitorMaxUpgrades, draconicCapacitorMaxUpgrades) * 4;
+        fluxCapacitorMaxUpgradePoints = getInteger("tweaks.tools", "Flux Capacitor: Maximum amount of upgrade points",
+                                                   fluxCapacitorMaxUpgradePoints,
+                                                   "Value may be replaced automatically to prevent problems",
+                                                   fluxCapacitorUpgradePointsLimit, Integer.MAX_VALUE);
         grinderShouldUseLooting =
             getBoolean("tweaks.machines", "Mob Grinder: Use Looting enchantment", grinderShouldUseLooting);
+        if (config.hasChanged())
+        {
+            config.save();
+        }
+    }
+    // This method should be loaded after all mods add blocks => after pre-init
+    public static void finishLoading()
+    {
+        if (config == null)
+        {
+            return;
+        }
+        energyStorageStructureBlock =
+            getBlock("tweaks.machines", "Multiblock Energy Storage: Main block of structure", Blocks.redstone_block,
+                     "WARNING! Changing of this value will replace blocks of all existing Energy Storage Multiblocks!");
+        energyStorageStructureBlockMetadata =
+            getInteger("tweaks.machines", "Multiblock Energy Storage: Metadata of main block of structure",
+                       energyStorageStructureBlockMetadata,
+                       "WARNING! Changing of this value will replace blocks of all existing Energy Storage " +
+                       "Multiblocks!");
         if (config.hasChanged())
         {
             config.save();
@@ -247,8 +268,8 @@ public class BalanceConfigHandler
             property.set(defaultName);
             return defaultValue;
         }
-        String modId = value.split(":")[0];
-        String name = value.split(":")[1];
+        String modId = value.substring(0, value.indexOf(":"));
+        String name = value.substring(value.indexOf(":") + 1);
         Block block = GameRegistry.findBlock(modId, name);
         if (block == null || block instanceof ITileEntityProvider)
         {
@@ -268,6 +289,23 @@ public class BalanceConfigHandler
     private static int getInteger(String categoty, String propertyName, int defaultValue, String comment)
     {
         return config.get(categoty, propertyName, defaultValue, comment).getInt(defaultValue);
+    }
+    private static int getInteger(String category, String propertyName, int defaultValue, String comment, int minValue,
+                                  int maxValue)
+    {
+        Property property = config.get(category, propertyName, defaultValue, comment, minValue, maxValue);
+        int value = property.getInt(defaultValue);
+        if (value < minValue)
+        {
+            property.set(minValue);
+            return minValue;
+        }
+        if (value > maxValue)
+        {
+            property.set(maxValue);
+            return maxValue;
+        }
+        return value;
     }
     private static long getLong(String category, String propertyName, long defaultValue)
     {

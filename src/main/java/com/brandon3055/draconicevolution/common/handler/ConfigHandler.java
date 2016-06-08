@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.common.handler;
 
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import net.minecraftforge.common.config.Configuration;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import net.minecraftforge.common.config.Configuration;
 
 public class ConfigHandler {
 
@@ -77,6 +77,7 @@ public class ConfigHandler {
 	public static void init(File confFile) {
 		if (config == null) {
 			config = new Configuration(confFile);
+			config.load();
 			syncConfig();
 		}
 	}
