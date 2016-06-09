@@ -5,8 +5,8 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
-import com.brandon3055.draconicevolution.client.gui.GuiGenerator;
-import com.brandon3055.draconicevolution.client.gui.GuiGrinder;
+import com.brandon3055.draconicevolution.client.gui.GuiGeneratord;
+import com.brandon3055.draconicevolution.client.gui.GuiGrinderd;
 import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
 import com.brandon3055.draconicevolution.client.gui.GuiEnergyinfuser;
 import com.brandon3055.draconicevolution.inventory.ContainerEnergyInfuser;
@@ -138,7 +138,7 @@ public class GuiHandler implements IGuiHandler {
 //				return new GUITeleporter(player);
 			case GUIID_GRINDER:
 				if (tileEntity != null && tileEntity instanceof TileGrinder) {
-					return new GuiGrinder(player.inventory, (TileGrinder) tileEntity);
+					return new GuiGrinderd(player.inventory, (TileGrinder) tileEntity);
 				}
 				break;
 //			case GUIID_PARTICLEGEN:
@@ -155,7 +155,7 @@ public class GuiHandler implements IGuiHandler {
 				break;
 			case GUIID_GENERATOR:
 				if (tileEntity != null && tileEntity instanceof TileGenerator) {
-					return new GuiGenerator(player, (TileGenerator) tileEntity);
+					return new GuiGeneratord(player, (TileGenerator) tileEntity);
 				}
 				break;
 //			case GUIID_MANUAL:
