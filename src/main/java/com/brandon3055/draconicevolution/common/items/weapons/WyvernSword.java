@@ -247,7 +247,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerWeaponItem
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_WYVERN_UPGRADES;
+		return BalanceConfigHandler.wyvernWeaponsMaxUpgrades;
 	}
 
 	@Override
@@ -257,16 +257,27 @@ public class WyvernSword extends ItemSword implements IEnergyContainerWeaponItem
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 3;
-
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.wyvernWeaponsMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
+			return BalanceConfigHandler.wyvernWeaponsMaxAttackAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index)
+		{
+			return BalanceConfigHandler.wyvernWeaponsMaxAttackDamageUpgradePoints;
+		}
+		return BalanceConfigHandler.wyvernWeaponsMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 1;
-
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
+			return BalanceConfigHandler.wyvernWeaponsMinAttackAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+			return BalanceConfigHandler.wyvernWeaponsMinAttackDamageUpgradePoints;
+		}
 		return 0;
 	}
 

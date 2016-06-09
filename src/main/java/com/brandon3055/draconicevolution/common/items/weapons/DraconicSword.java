@@ -242,7 +242,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerWeaponIt
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_DRACONIC_UPGRADES;
+		return BalanceConfigHandler.draconicWeaponsMaxUpgrades;
 	}
 
 	@Override
@@ -252,16 +252,27 @@ public class DraconicSword extends ItemSword implements IEnergyContainerWeaponIt
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 5;
-		else if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) return 12;
-
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicWeaponsMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
+			return BalanceConfigHandler.draconicWeaponsMaxAttackAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) {
+			return BalanceConfigHandler.draconicWeaponsMaxAttackDamageUpgradePoints;
+		}
+		return BalanceConfigHandler.draconicWeaponsMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 2;
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
+			return BalanceConfigHandler.draconicWeaponsMinAttackAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index)
+		{
+			return BalanceConfigHandler.draconicWeaponsMinAttackDamageUpgradePoints;
+		}
 		return 0;
 	}
 

@@ -87,7 +87,6 @@ public class CommonProxy {
 	}
 
 	public void init(FMLInitializationEvent event) {
-		BalanceConfigHandler.finishLoading();
 		CraftingHandler.init();
 		registerGuiHandeler();
 		registerWorldGen();
@@ -102,6 +101,7 @@ public class CommonProxy {
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
+		BalanceConfigHandler.finishLoading();
 		OreDoublingRegistry.init();
 		Achievements.registerAchievementPane();
 		LogHelper.info("Finished PostInitialization");
