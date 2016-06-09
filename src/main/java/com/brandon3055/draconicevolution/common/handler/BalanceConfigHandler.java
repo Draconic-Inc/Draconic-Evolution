@@ -26,10 +26,22 @@ public class BalanceConfigHandler
     public static final int wyvernWeaponsMaxAttackAOEUpgradePoints = 3;
     public static final int wyvernWeaponsMinAttackDamageUpgradePoints = 0;
     public static final int wyvernWeaponsMaxAttackDamageUpgradePoints = 8;
+    public static final int wyvernBowMinDrawSpeedUpgradePoints = 3;
+    public static final int wyvernBowMaxDrawSpeedUpgradePoints = 5;
+    public static final int wyvernBowMinArrowSpeedUpgradePoints = 1;
+    public static final int wyvernBowMaxArrowSpeedUpgradePoints = 10;
+    public static final int wyvernBowMinArrowDamageUpgradePoints = 2;
+    public static final int wyvernBowMaxArrowDamageUpgradePoints = 10;
     public static final int draconicWeaponsMinAttackAOEUpgradePoints = 2;
     public static final int draconicWeaponsMaxAttackAOEUpgradePoints = 5;
     public static final int draconicWeaponsMinAttackDamageUpgradePoints = 0;
     public static final int draconicWeaponsMaxAttackDamageUpgradePoints = 16;
+    public static final int draconicBowMinDrawSpeedUpgradePoints = 4;
+    public static final int draconicBowMaxDrawSpeedUpgradePoints = 6;
+    public static final int draconicBowMinArrowSpeedUpgradePoints = 3;
+    public static final int draconicBowMaxArrowSpeedUpgradePoints = 10;
+    public static final int draconicBowMinArrowDamageUpgradePoints = 3;
+    public static final int draconicBowMaxArrowDamageUpgradePoints = 20;
     public static int wyvernArmorBaseStorage = 1000000;
     public static int wyvernArmorStoragePerUpgrade = 500000;
     public static int wyvernArmorMaxTransfer = 50000;
@@ -93,6 +105,12 @@ public class BalanceConfigHandler
     public static int draconicWeaponsMaxCapacityUpgradePoints = 50;
     public static int draconicWeaponsMaxUpgrades = 6;
     public static int draconicWeaponsMaxUpgradePoints = 50;
+    public static int wyvernBowMaxCapacityUpgradePoints = 50;
+    public static int wyvernBowMaxUpgrades = 3;
+    public static int wyvernBowMaxUpgradePoints = 50;
+    public static int draconicBowMaxCapacityUpgradePoints = 50;
+    public static int draconicBowMaxUpgrades = 6;
+    public static int draconicBowMaxUpgradePoints = 50;
     public static int wyvernCapacitorMaxUpgrades = 3;
     public static int draconicCapacitorMaxUpgrades = 6;
     public static int fluxCapacitorMaxUpgradePoints = 50;
@@ -333,6 +351,56 @@ public class BalanceConfigHandler
                                                                      draconicWeaponsMinAttackDamageUpgradePoints) *
                                                                     EnumUpgrade.ARROW_DAMAGE.pointConversion,
                                                                     draconicWeaponsMaxCapacityUpgradePoints), 0);
+        wyvernBowMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernWeaponsBaseStorage) /
+                                                             (double) Math.max(wyvernWeaponsStoragePerUpgrade, 1)) *
+                                            EnumUpgrade.RF_CAPACITY.pointConversion;
+        wyvernBowMaxUpgrades =
+            getInteger("tweaks.weapons", "Wyvern Bow: Maximum amount of upgrades", wyvernBowMaxUpgrades, 0,
+                       (wyvernBowMaxDrawSpeedUpgradePoints - wyvernBowMinDrawSpeedUpgradePoints) *
+                       EnumUpgrade.DRAW_SPEED.pointConversion +
+                       (wyvernBowMaxArrowSpeedUpgradePoints - wyvernBowMinArrowSpeedUpgradePoints) *
+                       EnumUpgrade.ARROW_SPEED.pointConversion +
+                       (wyvernBowMaxArrowDamageUpgradePoints - wyvernBowMinArrowDamageUpgradePoints) *
+                       EnumUpgrade.ARROW_DAMAGE.pointConversion + wyvernBowMaxCapacityUpgradePoints);
+        wyvernBowMaxUpgradePoints =
+            getInteger("tweaks.weapons", "Wyvern Bow: Maximum amount of upgrade points", wyvernBowMaxUpgradePoints,
+                       wyvernBowMaxUpgrades, Integer.MAX_VALUE);
+        wyvernBowMaxCapacityUpgradePoints = Math.max(Math.min(wyvernBowMaxUpgradePoints -
+                                                              (wyvernBowMaxDrawSpeedUpgradePoints -
+                                                               wyvernBowMinDrawSpeedUpgradePoints) *
+                                                              EnumUpgrade.DRAW_SPEED.pointConversion -
+                                                              (wyvernBowMaxArrowSpeedUpgradePoints -
+                                                               wyvernBowMinArrowSpeedUpgradePoints) *
+                                                              EnumUpgrade.ARROW_SPEED.pointConversion -
+                                                              (wyvernBowMaxArrowDamageUpgradePoints -
+                                                               wyvernBowMinArrowDamageUpgradePoints) *
+                                                              EnumUpgrade.ARROW_DAMAGE.pointConversion,
+                                                              wyvernBowMaxCapacityUpgradePoints), 0);
+        draconicBowMaxCapacityUpgradePoints = (int) Math.floor(
+            (double) (Integer.MAX_VALUE - draconicWeaponsBaseStorage) /
+            (double) Math.max(draconicWeaponsStoragePerUpgrade, 1)) * EnumUpgrade.RF_CAPACITY.pointConversion;
+        draconicBowMaxUpgrades =
+            getInteger("tweaks.weapons", "Draconic Bow: Maximum amount of upgrades", draconicBowMaxUpgrades, 0,
+                       (draconicBowMaxDrawSpeedUpgradePoints - draconicBowMinDrawSpeedUpgradePoints) *
+                       EnumUpgrade.DIG_SPEED.pointConversion +
+                       (draconicBowMaxArrowSpeedUpgradePoints - draconicBowMinArrowSpeedUpgradePoints) *
+                       EnumUpgrade.ARROW_SPEED.pointConversion +
+                       (draconicBowMaxArrowDamageUpgradePoints - draconicBowMinArrowDamageUpgradePoints) *
+                       EnumUpgrade.ARROW_DAMAGE.pointConversion + draconicBowMaxCapacityUpgradePoints);
+        draconicBowMaxUpgradePoints =
+            getInteger("tweaks.weapons", "Draconic Bow: Maximum amount of upgrade points", draconicBowMaxUpgradePoints,
+                       draconicBowMaxUpgrades, Integer.MAX_VALUE);
+        draconicBowMaxCapacityUpgradePoints = Math.max(Math.min(draconicBowMaxUpgradePoints -
+                                                                (draconicBowMaxDrawSpeedUpgradePoints -
+                                                                 draconicBowMinDrawSpeedUpgradePoints) *
+                                                                EnumUpgrade.DIG_SPEED.pointConversion -
+                                                                (draconicBowMaxArrowSpeedUpgradePoints -
+                                                                 draconicBowMinArrowSpeedUpgradePoints) *
+                                                                EnumUpgrade.ARROW_SPEED.pointConversion -
+                                                                (draconicBowMaxArrowDamageUpgradePoints -
+                                                                 draconicBowMinArrowDamageUpgradePoints) *
+                                                                EnumUpgrade.ARROW_DAMAGE.pointConversion,
+                                                                draconicBowMaxCapacityUpgradePoints), 0);
         int wyvernCapacitorUpgradesLimit = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernCapacitorBaseStorage) /
                                                             (double) Math.max(wyvernCapacitorStoragePerUpgrade, 1) /
                                                             2D);

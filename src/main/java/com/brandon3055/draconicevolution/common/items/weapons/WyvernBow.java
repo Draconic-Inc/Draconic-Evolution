@@ -230,7 +230,7 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_WYVERN_UPGRADES;
+		return BalanceConfigHandler.wyvernBowMaxUpgrades;
 	}
 
 	@Override
@@ -240,17 +240,32 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) return 5;
-		else if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) return 10;
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.wyvernBowMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) {
+			return BalanceConfigHandler.wyvernBowMaxDrawSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) {
+			return BalanceConfigHandler.wyvernBowMaxArrowSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+			return BalanceConfigHandler.wyvernBowMaxArrowDamageUpgradePoints;
+		}
+		return BalanceConfigHandler.wyvernBowMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) return 3;
-		else if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) return 1;
-		else if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) return 2;
+		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) {
+			return BalanceConfigHandler.wyvernBowMinDrawSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) {
+			return BalanceConfigHandler.wyvernBowMinArrowSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+			return BalanceConfigHandler.wyvernBowMinArrowDamageUpgradePoints;
+		}
 		return 0;
 	}
 

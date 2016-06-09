@@ -229,7 +229,7 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_DRACONIC_UPGRADES;
+		return BalanceConfigHandler.draconicBowMaxUpgrades;
 	}
 
 	@Override
@@ -239,17 +239,32 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) return 6;
-		else if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) return 10;
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicBowMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) {
+			return BalanceConfigHandler.draconicBowMaxDrawSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) {
+			return BalanceConfigHandler.draconicBowMaxArrowSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+			return BalanceConfigHandler.draconicBowMaxArrowDamageUpgradePoints;
+		}
+		return BalanceConfigHandler.draconicBowMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) return 4;
-		else if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) return 3;
-		else if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) return 3;
+		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) {
+			return BalanceConfigHandler.draconicBowMinDrawSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) {
+			return BalanceConfigHandler.draconicBowMinArrowSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+			return BalanceConfigHandler.draconicBowMinArrowDamageUpgradePoints;
+		}
 		return 0;
 	}
 
