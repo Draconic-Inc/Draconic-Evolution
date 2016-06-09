@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.api.itemupgrade;
 
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -41,7 +40,11 @@ public class UpgradeRegistry
     }
 
     public static void addUpgrade(IUpgrade upgrade, int level, ItemStack stack){
-        NBTTagCompound itemCompound = ItemNBTHelper.getCompound(stack);
+        if (stack.getTagCompound() == null){
+            stack.setTagCompound(new NBTTagCompound());
+        }
+
+        NBTTagCompound itemCompound = stack.getTagCompound();
 
         if (!itemCompound.hasKey("Upgrades")){
             itemCompound.setTag("Upgrades", new NBTTagList());
@@ -55,7 +58,11 @@ public class UpgradeRegistry
     }
 
     public static int getTotalSlotsUsed(ItemStack stack){
-        NBTTagCompound itemCompound = ItemNBTHelper.getCompound(stack);
+        if (stack.getTagCompound() == null){
+            stack.setTagCompound(new NBTTagCompound());
+        }
+
+        NBTTagCompound itemCompound = stack.getTagCompound();
 
         if (!itemCompound.hasKey("Upgrades")){
             return 0;
@@ -78,7 +85,11 @@ public class UpgradeRegistry
     }
 
     public static int getUpgradeLevel(IUpgrade upgrade, ItemStack stack) {
-        NBTTagCompound itemCompound = ItemNBTHelper.getCompound(stack);
+        if (stack.getTagCompound() == null){
+            stack.setTagCompound(new NBTTagCompound());
+        }
+
+        NBTTagCompound itemCompound = stack.getTagCompound();
 
         if (!itemCompound.hasKey("Upgrades")){
             return 0;

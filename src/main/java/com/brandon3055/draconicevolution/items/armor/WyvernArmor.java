@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.items.armor;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
-import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgrade;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeRegistry;
@@ -33,8 +33,8 @@ public class WyvernArmor extends ItemArmor implements ICustomRender, IDualModel,
     }
 
     @Override
-    public Map<String, IItemConfigField> getFields(ItemStack stack, Map<String, IItemConfigField> fieldMap) {
-        return fieldMap;
+    public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry fieldRegistry) {
+        return fieldRegistry;
     }
 
 

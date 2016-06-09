@@ -1,12 +1,7 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.api.itemconfig.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by brandon3055 on 1/06/2016.
@@ -17,7 +12,10 @@ public class ToolConfigHelper {
      * Returns the current selected config profile.
      * */
     public static int getProfile(ItemStack stack){
-        return ItemNBTHelper.getByte(stack, "ToolProfile", (byte)0);
+        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey("ToolProfile")){
+            return 0;
+        }
+        return stack.getTagCompound().getByte("ToolProfile");
     }
 
     /**
@@ -36,19 +34,19 @@ public class ToolConfigHelper {
             profile = 0;
         }
 
-        ItemNBTHelper.setByte(stack, "ToolProfile", (byte)profile);
+        if (stack.getTagCompound() == null){
+            stack.setTagCompound(new NBTTagCompound());
+        }
+
+        stack.getTagCompound().setByte("ToolProfile", (byte) profile);
     }
 
     /**
      * Returns the compound to which the fields for the currently selected profile are saved.
      * */
-    public static NBTTagCompound getFieldTag(ItemStack stack){
+    public static NBTTagCompound getFieldStorage(ItemStack stack){
         String tag = "Profile_"+getProfile(stack);
-        NBTTagCompound stackCompound = ItemNBTHelper.getCompound(stack);
-        if (!stackCompound.hasKey(tag)){
-            stackCompound.setTag(tag, new NBTTagCompound());
-        }
-        return stackCompound.getCompoundTag(tag);
+        return stack.getSubCompound(tag, true);
     }
 
     /**
@@ -61,16 +59,16 @@ public class ToolConfigHelper {
             return false;
         }
 
-        Map<String, IItemConfigField> fieldMap = item.getFields(stack, new HashMap<String, IItemConfigField>());
+        ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
 
-        if (!fieldMap.containsKey(fieldName)){
+        if (fieldRegistry.getField(fieldName) == null){
             return false;
         }
 
-        IItemConfigField field = fieldMap.get(fieldName);
+        IItemConfigField field = fieldRegistry.getField(fieldName);
 
         if (field instanceof BooleanConfigField){
-            field.readFromNBT(getFieldTag(stack));
+            field.readFromNBT(getFieldStorage(stack));
             return (Integer)field.getValue() == 1;
         }
 
@@ -87,22 +85,21 @@ public class ToolConfigHelper {
             return 0;
         }
 
-        Map<String, IItemConfigField> fieldMap = item.getFields(stack, new HashMap<String, IItemConfigField>());
+        ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
 
-        if (!fieldMap.containsKey(fieldName)){
+        if (fieldRegistry.getField(fieldName) == null){
             return 0;
         }
 
-        IItemConfigField field = fieldMap.get(fieldName);
+        IItemConfigField field = fieldRegistry.getField(fieldName);
 
         if (field instanceof IntegerConfigField){
-            field.readFromNBT(getFieldTag(stack));
+            field.readFromNBT(getFieldStorage(stack));
             return (Integer) field.getValue();
         }
 
         return 0;
     }
-
 
     /**
      * Returns the value of the specified double field.
@@ -114,23 +111,23 @@ public class ToolConfigHelper {
             return 0;
         }
 
-        Map<String, IItemConfigField> fieldMap = item.getFields(stack, new HashMap<String, IItemConfigField>());
+        ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
 
-        if (!fieldMap.containsKey(fieldName)){
+        if (fieldRegistry.getField(fieldName) == null){
             return 0;
         }
 
-        IItemConfigField field = fieldMap.get(fieldName);
+        IItemConfigField field = fieldRegistry.getField(fieldName);
 
         if (field instanceof DoubleConfigField){
-            field.readFromNBT(getFieldTag(stack));
+            field.readFromNBT(getFieldStorage(stack));
             return (Double) field.getValue();
         }
 
         return 0;
     }
 
-    private static IConfigurableItem getTool(ItemStack stack){
+    private static IConfigurableItem getTool(ItemStack stack) {
         if (stack == null || !(stack.getItem() instanceof IConfigurableItem)){
             return null;
         }

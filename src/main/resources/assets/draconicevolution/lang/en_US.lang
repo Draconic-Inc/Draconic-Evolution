@@ -542,6 +542,8 @@ gui.de.genRate.name=Generation Rate
 gui.de.fieldInputRate.name=Field Input Rate
 gui.de.fuelConversion.name=Fuel Conversion Rate
 gui.de.configureItem.txt=Configure Item
+gui.de.min.txt=Min
+gui.de.max.txt=Max
 
 gui.de.insert.txt=Insert
 gui.de.extract.txt=Extract

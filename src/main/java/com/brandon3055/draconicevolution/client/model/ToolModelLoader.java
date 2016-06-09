@@ -24,7 +24,7 @@ import static com.brandon3055.draconicevolution.DEFeatures.*;
 public class ToolModelLoader implements TextureUtils.IIconRegister, IResourceManagerReloadListener {
 
     public static Map<IDualModel, PairKV<ResourceLocation, ResourceLocation>> itemMap = new HashMap<IDualModel, PairKV<ResourceLocation, ResourceLocation>>();
-    public static Map<ResourceLocation, IBakedModel> modelCache = new HashMap<ResourceLocation, IBakedModel>();
+    public static Map<IDualModel, IBakedModel> modelCache = new HashMap<IDualModel, IBakedModel>();
 
     public static void buildItemMap() {
         itemMap.clear();
@@ -77,80 +77,24 @@ public class ToolModelLoader implements TextureUtils.IIconRegister, IResourceMan
             throw new IllegalArgumentException("Invalid item something stuff "+item);
         }
 
-        PairKV<ResourceLocation, ResourceLocation> itemPair = itemMap.get(item);
+        if (!modelCache.containsKey(item)){
+            PairKV<ResourceLocation, ResourceLocation> itemPair = itemMap.get(item);
 
-        try {
-            return ToolModelBakery.bake(TransformUtils.DEFAULT_TOOL, itemPair.getKey(), itemPair.getValue());
+            try {
+                modelCache.put(item, ToolModelBakery.bake(TransformUtils.DEFAULT_TOOL, itemPair.getKey(), itemPair.getValue()));
+            }
+            catch (Exception e) {
+                LogHelper.error("Something went wrong when loading model for item: "+item);
+                e.printStackTrace();
+                return null;
+            }
         }
-        catch (Exception e) {
-            LogHelper.error("Something went wrong when loading model for item: "+item);
-            e.printStackTrace();
-            return null;
-        }
+
+        return modelCache.get(item);
     }
 
-
-
-//    @Override
-//    public boolean accepts(ResourceLocation modelLocation) {
-//        if (modelLocation.toString().contains(".DETOOLMODEL")){
-//            LogHelper.info("Accepts " + modelLocation);
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public IModel loadModel(ResourceLocation modelLocation) throws Exception {
-//        if (!modelCache.containsKey(modelLocation)){
-//            modelCache.put(modelLocation, new ToolModel(modelLocation.toString().replace(".DETOOLMODEL", "")));
-//        }
-//        LogHelper.info("Load Model "+modelLocation);
-//        return modelCache.get(modelLocation);
-//    }
-//
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
         modelCache.clear();
     }
-
-
-//    "type": {
-//        "wyvernaxe": {
-//            "model": "draconicevolution:tools/wyvernAxe.obj"
-//        },
-//        "wyvernbow": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "wyvernpick": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "wyvernshovel": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "wyvernsword": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "draconicaxe": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "draconicbow": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "draconichoe": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "draconicpick": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "draconicshovel": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "draconicstaffofpower": {
-//            "model": "draconicevolution:tools/.obj"
-//        },
-//        "draconicsword": {
-//            "model": "draconicevolution:tools/.obj"
-//        }
-//    }
 }

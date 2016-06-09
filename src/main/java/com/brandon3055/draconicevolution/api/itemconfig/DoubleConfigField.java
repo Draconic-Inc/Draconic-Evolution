@@ -1,11 +1,9 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
-import com.brandon3055.brandonscore.lib.PairKV;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 1/06/2016.
@@ -14,16 +12,30 @@ import java.util.List;
 public class DoubleConfigField implements IItemConfigField {
     protected final String name;
     protected String description;
+    private EnumControlType controlType;
     protected double minValue;
     protected double maxValue;
     protected double value;
+    private String extension = "";
 
-    public DoubleConfigField(String name, double value, double minValue, double maxValue, String description) {
+    /**
+     * @param name the name of the field
+     * @param defaultValue the default defaultValue of the field
+     * @param description a description for this field. This will be passed through I18n so it can be a localization key.
+     * @param controlType Valid control types are PLUS_MINUS 1, 2 or 3 and SLIDER
+     */
+    public DoubleConfigField(String name, double defaultValue, double minValue, double maxValue, String description, EnumControlType controlType) {
         this.name = name;
-        this.value = value;
+        this.value = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.description = description;
+        this.controlType = controlType;
+    }
+
+    public DoubleConfigField setExtension(String extension) {
+        this.extension = extension;
+        return this;
     }
 
     @Override
@@ -33,12 +45,17 @@ public class DoubleConfigField implements IItemConfigField {
 
     @Override
     public String getUnlocalizedName() {
-        return "field.de." + getName() + ".txt";
+        return "gui.config.field." + getName() + ".entry";
     }
 
     @Override
     public String getReadableValue() {
-        return String.valueOf(value);
+        return String.valueOf(Math.round(value * 100) / 100D) + extension;
+    }
+
+    @Override
+    public String getValueFraction(double percent) {
+        return String.valueOf(Math.round(minValue + (percent * (maxValue - minValue)) * 100) / 100D) + extension;
     }
 
     @Override
@@ -62,17 +79,48 @@ public class DoubleConfigField implements IItemConfigField {
     }
 
     @Override
-    public void increment(int multiplier) {//TODO Multiplier
-        value++;
-        if (value > maxValue){
-            value = maxValue;
-        }
+    public double getFractionalValue() {
+        return (value - minValue) / (maxValue - minValue);
     }
 
     @Override
-    public void decrement(int multiplier) {//TODO Multiplier
-        value--;
-        if (value < minValue){
+    public void handleButton(EnumButton button, int data) {
+        switch (button){
+            case MINUS1:
+                value -= 0.01;
+                break;
+            case MINUS2:
+                value -= 0.1;
+                break;
+            case MINUS3:
+                value -= 1;
+                break;
+            case PLUS1:
+                value += 0.01;
+                break;
+            case PLUS2:
+                value += 0.1;
+                break;
+            case PLUS3:
+                value += 1;
+                break;
+            case MIN:
+                value = minValue;
+                break;
+            case MAX:
+                value = maxValue;
+                break;
+            case SLIDER:
+                double range = maxValue - minValue;
+                double pos = (data / 10000D) * range;
+                value = minValue + pos;
+                break;
+        }
+
+        if (value > maxValue) {
+            value = maxValue;
+        }
+        else if (value < minValue){
             value = minValue;
         }
     }
@@ -85,20 +133,23 @@ public class DoubleConfigField implements IItemConfigField {
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         value = compound.getDouble(name);
+        if (value > maxValue){
+            value = maxValue;
+            writeToNBT(compound);
+        }
+        else if (value < minValue){
+            value = minValue;
+            writeToNBT(compound);
+        }
     }
 
     @Override
-    public ControlType getType() {
-        return ControlType.PPP_MMM;
+    public EnumControlType getType() {
+        return controlType;
     }
 
     @Override
-    public Collection<PairKV<String, Number>> getValues() {
-        List<PairKV<String, Number>> list = new ArrayList<PairKV<String, Number>>();
-        return list;
-    }
-
-    @Override
-    public void setValue(PairKV<String, Number> value) {
+    public Map<Integer, String> getValues() {
+        return new HashMap<Integer, String>();
     }
 }
