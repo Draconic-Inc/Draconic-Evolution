@@ -12,6 +12,8 @@ import net.minecraftforge.common.config.Property;
 
 public class BalanceConfigHandler
 {
+    public static final int wyvernArmorMinShieldRecovery = 5;
+    public static final int draconicArmorMinShieldRecovery = 5;
     public static final int wyvernToolsMinDigAOEUpgradePoints = 1;
     public static final int wyvernToolsMaxDigAOEUpgradePoints = 2;
     public static final int wyvernToolsMinDigSpeedUpgradePoints = 4;
@@ -101,6 +103,12 @@ public class BalanceConfigHandler
     public static int grinderExternalEnergyBufferSize = 100000;
     public static int grinderMaxReceive = 32000;
     public static int grinderEnergyPerKill = 1000;
+    public static int wyvernArmorMaxCapacityUpgradePoints = 50;
+    public static int wyvernArmorMaxUpgrades = 3;
+    public static int wyvernArmorMaxUpgradePoints = 50;
+    public static int draconicArmorMaxCapacityUpgradePoints = 50;
+    public static int draconicArmorMaxUpgrades = 6;
+    public static int draconicArmorMaxUpgradePoints = 50;
     public static int wyvernToolsMaxCapacityUpgradePoints = 50;
     public static int wyvernToolsMaxUpgrades = 3;
     public static int wyvernToolsMaxUpgradePoints = 50;
@@ -136,6 +144,8 @@ public class BalanceConfigHandler
             config = new Configuration(new File(modConfigurationDirectory, "DraconicEvolution.Balance.cfg"));
             config.load();
             config.setCategoryRequiresMcRestart("tweaks", true);
+            config.setCategoryComment("tweaks.armor",
+                                      "Values in this category may be replaced automatically to prevent problems");
             config.setCategoryComment("tweaks.tools",
                                       "Values in this category may be replaced automatically to prevent problems");
             config.setCategoryComment("tweaks.weapons",
@@ -277,6 +287,26 @@ public class BalanceConfigHandler
         grinderEnergyPerKill =
             getInteger("energy.machines", "Mob Grinder: Amount of energy required to kill entity (RF)",
                        grinderEnergyPerKill);
+        wyvernArmorMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernArmorBaseStorage) /
+                                                               (double) Math.max(wyvernArmorStoragePerUpgrade, 1)) *
+                                              EnumUpgrade.RF_CAPACITY.pointConversion;
+        wyvernArmorMaxUpgrades =
+            getInteger("tweaks.armor", "Wyvern Armor: Maximum amount of upgrades", wyvernArmorMaxUpgrades);
+        wyvernArmorMaxUpgradePoints =
+            getInteger("tweaks.armor", "Wyvern Armor: Maximum amount of upgrade points", wyvernArmorMaxUpgradePoints,
+                       wyvernArmorMaxUpgrades, Integer.MAX_VALUE);
+        wyvernArmorMaxCapacityUpgradePoints =
+            Math.max(Math.min(wyvernArmorMaxUpgradePoints, wyvernArmorMaxCapacityUpgradePoints), 0);
+        draconicArmorMaxCapacityUpgradePoints = (int) Math.floor(
+            (double) (Integer.MAX_VALUE - draconicArmorBaseStorage) / Math.max(draconicArmorStoragePerUpgrade, 1)) *
+                                                EnumUpgrade.RF_CAPACITY.pointConversion;
+        draconicArmorMaxUpgrades =
+            getInteger("tweaks.armor", "Draconic Armor: Maximum amount of upgrades", draconicArmorMaxUpgrades);
+        draconicArmorMaxUpgradePoints = getInteger("tweaks.armor", "Draconic Armor: Maximum amount of upgrade points",
+                                                   draconicArmorMaxUpgradePoints, draconicArmorMaxUpgrades,
+                                                   Integer.MAX_VALUE);
+        draconicArmorMaxCapacityUpgradePoints =
+            Math.max(Math.min(draconicArmorMaxUpgradePoints, draconicArmorMaxCapacityUpgradePoints), 0);
         wyvernToolsMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernToolsBaseStorage) /
                                                                (double) Math.max(wyvernToolsStoragePerUpgrade, 1)) *
                                               EnumUpgrade.RF_CAPACITY.pointConversion;

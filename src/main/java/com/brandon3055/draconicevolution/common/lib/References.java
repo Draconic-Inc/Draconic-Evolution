@@ -10,12 +10,6 @@ public final class References {
 	public static final String GUIFACTORY 			= "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
 	public static final String RESOURCESPREFIX 		= MODID.toLowerCase() + ":";
 
-
-	//======================Tools & Weapons========================//
-
-	public static final int MAX_WYVERN_UPGRADES = 3;
-	public static final int MAX_DRACONIC_UPGRADES = 6;
-
 	//======================Render IDs========================//
 	public static int idTeleporterStand	= -1;
 	public static int idPortal		 	= -1;

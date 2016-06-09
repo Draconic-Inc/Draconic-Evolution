@@ -428,7 +428,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_DRACONIC_UPGRADES;
+		return BalanceConfigHandler.draconicArmorMaxUpgrades;
 	}
 
 	@Override
@@ -449,14 +449,20 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicArmorMaxCapacityUpgradePoints;
+		}
+		return BalanceConfigHandler.draconicArmorMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) return (int)(getProtectionShare() * 25) + (armorType == 2 ? 2 : 0);
-		else if (upgradeIndex == EnumUpgrade.SHIELD_RECOVERY.index) return 5;
+		if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) {
+			return (int)(getProtectionShare() * 25) + (armorType == 2 ? 2 : 0);
+		}
+		if (upgradeIndex == EnumUpgrade.SHIELD_RECOVERY.index) {
+			return BalanceConfigHandler.draconicArmorMinShieldRecovery;
+		}
 		return 0;
 	}
 

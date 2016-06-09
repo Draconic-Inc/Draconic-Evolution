@@ -338,7 +338,7 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_WYVERN_UPGRADES;
+		return BalanceConfigHandler.wyvernArmorMaxUpgrades;
 	}
 
 	@Override
@@ -359,14 +359,20 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.wyvernArmorMaxCapacityUpgradePoints;
+		}
+		return BalanceConfigHandler.wyvernArmorMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) return (int)(getProtectionShare() * 10) + (armorType == 2 ? 1 : 0);
-		else if (upgradeIndex == EnumUpgrade.SHIELD_RECOVERY.index) return 5;
+		if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) {
+			return (int)(getProtectionShare() * 10) + (armorType == 2 ? 1 : 0);
+		}
+		if (upgradeIndex == EnumUpgrade.SHIELD_RECOVERY.index) {
+			return BalanceConfigHandler.wyvernArmorMinShieldRecovery;
+		}
 		return 0;
 	}
 
