@@ -122,7 +122,7 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_STAFF_UPGRADES;
+		return BalanceConfigHandler.draconicStaffMaxUpgrades;
 	}
 
 	@Override
@@ -132,20 +132,38 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 5;
-		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 11;
-		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 13;
-
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicStaffMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.draconicStaffMaxDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
+			return BalanceConfigHandler.draconicStaffMaxDigDepthUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
+			return BalanceConfigHandler.draconicStaffMaxAttackAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) {
+			return BalanceConfigHandler.draconicStaffMaxAttackDamageUpgradePoints;
+		}
+		return BalanceConfigHandler.draconicStaffMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 3;
-		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 7;
-		else if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 0;
-		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 3;
-
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.draconicStaffMinDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
+			return BalanceConfigHandler.draconicStaffMinDigDepthUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
+			return BalanceConfigHandler.draconicStaffMinAttackAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) {
+			return BalanceConfigHandler.draconicStaffMinAttackDamageUpgradePoints;
+		}
 		return 0;
 	}
 

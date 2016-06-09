@@ -42,6 +42,14 @@ public class BalanceConfigHandler
     public static final int draconicBowMaxArrowSpeedUpgradePoints = 10;
     public static final int draconicBowMinArrowDamageUpgradePoints = 3;
     public static final int draconicBowMaxArrowDamageUpgradePoints = 20;
+    public static final int draconicStaffMinDigAOEUpgradePoints = 3;
+    public static final int draconicStaffMaxDigAOEUpgradePoints = 5;
+    public static final int draconicStaffMinDigDepthUpgradePoints = 7;
+    public static final int draconicStaffMaxDigDepthUpgradePoints = 11;
+    public static final int draconicStaffMinAttackAOEUpgradePoints = 3;
+    public static final int draconicStaffMaxAttackAOEUpgradePoints = 13;
+    public static final int draconicStaffMinAttackDamageUpgradePoints = 0;
+    public static final int draconicStaffMaxAttackDamageUpgradePoints = 64;
     public static int wyvernArmorBaseStorage = 1000000;
     public static int wyvernArmorStoragePerUpgrade = 500000;
     public static int wyvernArmorMaxTransfer = 50000;
@@ -111,6 +119,9 @@ public class BalanceConfigHandler
     public static int draconicBowMaxCapacityUpgradePoints = 50;
     public static int draconicBowMaxUpgrades = 6;
     public static int draconicBowMaxUpgradePoints = 50;
+    public static int draconicStaffMaxCapacityUpgradePoints = 50;
+    public static int draconicStaffMaxUpgrades = 12;
+    public static int draconicStaffMaxUpgradePoints = 50;
     public static int wyvernCapacitorMaxUpgrades = 3;
     public static int draconicCapacitorMaxUpgrades = 6;
     public static int fluxCapacitorMaxUpgradePoints = 50;
@@ -401,6 +412,26 @@ public class BalanceConfigHandler
                                                                  draconicBowMinArrowDamageUpgradePoints) *
                                                                 EnumUpgrade.ARROW_DAMAGE.pointConversion,
                                                                 draconicBowMaxCapacityUpgradePoints), 0);
+        draconicStaffMaxCapacityUpgradePoints = (int) Math.floor(
+            (double) (Integer.MAX_VALUE - draconicToolsBaseStorage * 2 - draconicWeaponsBaseStorage) /
+            (double) Math.max(draconicToolsStoragePerUpgrade + draconicWeaponsStoragePerUpgrade, 1)) *
+                                                EnumUpgrade.RF_CAPACITY.pointConversion;
+        draconicStaffMaxUpgrades = draconicToolsMaxUpgrades + draconicWeaponsMaxUpgrades;
+        draconicStaffMaxUpgradePoints = draconicToolsMaxUpgradePoints + draconicWeaponsMaxUpgradePoints;
+        draconicStaffMaxCapacityUpgradePoints = Math.max(Math.min(draconicStaffMaxUpgradePoints -
+                                                                  (draconicStaffMaxDigAOEUpgradePoints -
+                                                                   draconicStaffMinDigAOEUpgradePoints) *
+                                                                  EnumUpgrade.DIG_AOE.pointConversion -
+                                                                  (draconicStaffMaxDigDepthUpgradePoints -
+                                                                   draconicStaffMinDigDepthUpgradePoints) *
+                                                                  EnumUpgrade.DIG_DEPTH.pointConversion -
+                                                                  (draconicStaffMaxAttackAOEUpgradePoints -
+                                                                   draconicStaffMinAttackAOEUpgradePoints) *
+                                                                  EnumUpgrade.ATTACK_AOE.pointConversion -
+                                                                  (draconicStaffMaxAttackDamageUpgradePoints -
+                                                                   draconicStaffMinAttackDamageUpgradePoints) *
+                                                                  EnumUpgrade.ATTACK_DAMAGE.pointConversion,
+                                                                  draconicStaffMaxCapacityUpgradePoints), 0);
         int wyvernCapacitorUpgradesLimit = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernCapacitorBaseStorage) /
                                                             (double) Math.max(wyvernCapacitorStoragePerUpgrade, 1) /
                                                             2D);
