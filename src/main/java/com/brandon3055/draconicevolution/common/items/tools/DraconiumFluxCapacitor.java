@@ -190,7 +190,28 @@ public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableIte
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		return BalanceConfigHandler.fluxCapacitorMaxUpgradePoints;
+		return Math.max(BalanceConfigHandler.wyvernCapacitorMaxUpgradePoints, BalanceConfigHandler.draconicCapacitorMaxUpgradePoints);
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		if (stack == null)
+		{
+			return getMaxUpgradePoints(upgradeIndex);
+		}
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return stack.getItemDamage() == 0 ?
+				   BalanceConfigHandler.wyvernCapacitorMaxCapacityUpgradePoints :
+				   stack.getItemDamage() == 1 ?
+				   BalanceConfigHandler.draconicCapacitorMaxCapacityUpgradePoints :
+				   getMaxUpgradePoints(upgradeIndex);
+		}
+		return stack.getItemDamage() == 0 ?
+			   BalanceConfigHandler.wyvernCapacitorMaxUpgradePoints :
+			   stack.getItemDamage() == 1 ?
+			   BalanceConfigHandler.draconicCapacitorMaxUpgradePoints :
+			   getMaxUpgradePoints(upgradeIndex);
 	}
 
 	@Override

@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.common.utills;
 
+import java.util.List;
+
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
-
-import java.util.List;
 
 /**
  * Created by brandon3055 on 23/12/2015.
@@ -28,6 +28,8 @@ public interface IUpgradableItem {
 	public int getMaxTier(ItemStack itemstack);
 
 	public int getMaxUpgradePoints(int upgradeIndex);
+
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack);
 
 	public int getBaseUpgradePoints(int upgradeIndex);
 
@@ -174,7 +176,7 @@ public interface IUpgradableItem {
 			int totalPoints = applied[0] + (applied[1] * 2) + (applied[2] * 4) + (applied[3] * 8);
 			if (itemStack != null && itemStack.getItem() instanceof IUpgradableItem){
 				int points = ((IUpgradableItem)itemStack.getItem()).getBaseUpgradePoints(index) + (totalPoints / pointConversion);
-				return Math.min(points, ((IUpgradableItem)itemStack.getItem()).getMaxUpgradePoints(index));
+				return Math.min(points, ((IUpgradableItem)itemStack.getItem()).getMaxUpgradePoints(index, itemStack));
 			}
 			return 0;
 		}

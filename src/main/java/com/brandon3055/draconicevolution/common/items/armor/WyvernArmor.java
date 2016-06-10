@@ -366,6 +366,12 @@ public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurab
 	}
 
 	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
+	}
+
+	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) {
 			return (int)(getProtectionShare() * 10) + (armorType == 2 ? 1 : 0);

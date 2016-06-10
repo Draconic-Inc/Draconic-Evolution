@@ -456,6 +456,12 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 	}
 
 	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
+	}
+
+	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) {
 			return (int)(getProtectionShare() * 25) + (armorType == 2 ? 2 : 0);

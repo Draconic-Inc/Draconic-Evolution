@@ -265,6 +265,12 @@ public class DraconicSword extends ItemSword implements IEnergyContainerWeaponIt
 	}
 
 	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
+	}
+
+	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
 			return BalanceConfigHandler.draconicWeaponsMinAttackAOEUpgradePoints;

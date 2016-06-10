@@ -75,7 +75,7 @@ public class ContainerUpgradeModifier extends ContainerDataSync
 	{
 		return tile.isUseableByPlayer(player);
 	}
-	
+
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int i)
 	{
@@ -132,7 +132,7 @@ public class ContainerUpgradeModifier extends ContainerDataSync
 
 		if (addCoreElseRemove)
 		{
-			if (!player.inventory.hasItem(CORES_INDEX[coreTier]) || totalCores >= coreSlots || upgrade.getUpgradePoints(stack) >= upgradableItem.getMaxUpgradePoints(upgrade.index)) return;
+			if (!player.inventory.hasItem(CORES_INDEX[coreTier]) || totalCores >= coreSlots || upgrade.getUpgradePoints(stack) >= upgradableItem.getMaxUpgradePoints(upgrade.index, stack)) return;
 			coresApplied[coreTier]++;
 			player.inventory.consumeInventoryItem(CORES_INDEX[coreTier]);
 			upgrade.setCoresApplied(stack, coresApplied);

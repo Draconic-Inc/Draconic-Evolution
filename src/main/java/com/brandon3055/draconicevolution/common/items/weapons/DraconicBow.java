@@ -255,6 +255,12 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 	}
 
 	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
+	}
+
+	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) {
 			return BalanceConfigHandler.draconicBowMinDrawSpeedUpgradePoints;

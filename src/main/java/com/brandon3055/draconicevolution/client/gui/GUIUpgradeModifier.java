@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -19,9 +22,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GUIUpgradeModifier extends GuiContainer {
@@ -159,13 +159,12 @@ public class GUIUpgradeModifier extends GuiContainer {
 			int xPos = guiLeft + (xIndex * spacing) + ((spacing - 23) / 2) + 4;
 			int yPos = guiTop + 90;
 
-
 			int[] appliedCores = upgrade.getCoresApplied(tile.getStackInSlot(0));
 
 			for (int i = 0; i <= coreTier; i++)
 			{
 				//Check + buttons
-				if (coreInInventory[i] && coreSlots > usedSlots && GuiHelper.isInRect(xPos, yPos+33 + i*18, 8, 8, x, y) && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index)){
+				if (coreInInventory[i] && coreSlots > usedSlots && GuiHelper.isInRect(xPos, yPos+33 + i*18, 8, 8, x, y) && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index, stack)){
 					containerEM.sendObjectToServer(null, upgrade.index, i*2);
 					Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
 				}
@@ -209,7 +208,7 @@ public class GUIUpgradeModifier extends GuiContainer {
 				GL11.glDisable(GL11.GL_BLEND);
 
 				//Draw + buttons
-				if (coreSlots > usedSlots && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index)){
+				if (coreSlots > usedSlots && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index, stack)){
 					boolean hovering = GuiHelper.isInRect(xPos, yPos+33 + i*18, 8, 8, x, y);
 					if (!coreInInventory[i]) drawTexturedModalRect(xPos, yPos+33 + i*18, 24, 208, 8, 8);
 					else drawTexturedModalRect(xPos, yPos+33 + i*18, 32 + (hovering ? 8 : 0), 208, 8, 8);
@@ -260,7 +259,7 @@ public class GUIUpgradeModifier extends GuiContainer {
 			if (GuiHelper.isInRect(xPos+3, yPos-9, 18, 8, x, y)){
 				List list = new ArrayList();
 				list.add(StatCollector.translateToLocal("gui.de.basePoints.txt")+": "+upgradableItem.getBaseUpgradePoints(upgrade.index));
-				list.add(StatCollector.translateToLocal("gui.de.maxPoints.txt")+": "+upgradableItem.getMaxUpgradePoints(upgrade.index));
+				list.add(StatCollector.translateToLocal("gui.de.maxPoints.txt")+": "+upgradableItem.getMaxUpgradePoints(upgrade.index, stack));
 				list.add(StatCollector.translateToLocal("gui.de.pointCost.txt")+": "+upgrade.pointConversion);
 				drawHoveringText(list, x, y, fontRendererObj);
 			}

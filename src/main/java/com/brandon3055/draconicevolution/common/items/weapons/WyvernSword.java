@@ -271,6 +271,12 @@ public class WyvernSword extends ItemSword implements IEnergyContainerWeaponItem
 	}
 
 	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
+	}
+
+	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
 		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
 			return BalanceConfigHandler.wyvernWeaponsMinAttackAOEUpgradePoints;

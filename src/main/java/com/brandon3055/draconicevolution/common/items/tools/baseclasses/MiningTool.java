@@ -294,6 +294,12 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 	}
 
 	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
+	}
+
+	@Override
 	public float getEfficiency(ItemStack stack) {
 		int i = EnumUpgrade.DIG_SPEED.getUpgradePoints(stack);
 		if (i == 0) return super.getEfficiency(stack);
