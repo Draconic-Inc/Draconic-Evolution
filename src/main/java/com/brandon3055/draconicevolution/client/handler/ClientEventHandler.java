@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -98,7 +99,7 @@ public class ClientEventHandler {
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOW)
 	public void fovUpdate(FOVUpdateEvent event){
 
 		//region Bow FOV Update

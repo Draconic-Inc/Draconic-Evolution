@@ -6,6 +6,8 @@ import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelp
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorEnergyInjector;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
@@ -15,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Brandon on 17/7/2015.
  */
+@SideOnly(Side.CLIENT)
 public class ParticleReactorBeam extends EntityFX {
 	/**
 	 * Particle Type 0 = Energy Ring, 1 = single particle

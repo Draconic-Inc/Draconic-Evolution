@@ -23,7 +23,9 @@ import java.util.List;
  * Created by Brandon on 10/02/2015.
  */
 public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
-	private ParticleEnergyField ring;
+
+    @SideOnly(Side.CLIENT)
+    private ParticleEnergyField ring;
 
 	public List<LinkedReceiver> receiverList = new ArrayList<LinkedReceiver>();
 

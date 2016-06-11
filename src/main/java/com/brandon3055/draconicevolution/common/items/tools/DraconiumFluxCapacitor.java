@@ -124,15 +124,15 @@ public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableIte
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		if (player.isSneaking()){
-			int mode = ItemNBTHelper.getShort(stack, "Mode", (short)0);
-			int newMode = mode == 3 ? 0 : mode + 1;
-			ItemNBTHelper.setShort(stack, "Mode", (short) newMode);
-			if (world.isRemote) player.addChatComponentMessage(new ChatComponentTranslation(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.capacitorMode.txt")+": "+InfoHelper.HITC()+StatCollector.translateToLocal("info.de.capacitorMode"+ItemNBTHelper.getShort(stack, "Mode", (short)0)+".txt")));
-		}
-		return stack;
-	}
+     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (player.isSneaking()){
+            int mode = ItemNBTHelper.getShort(stack, "Mode", (short)0);
+            int newMode = mode == 3 ? 0 : mode + 1;
+            ItemNBTHelper.setShort(stack, "Mode", (short) newMode);
+            if (world.isRemote) player.addChatComponentMessage(new ChatComponentTranslation(InfoHelper.ITC()+StatCollector.translateToLocal("info.de.capacitorMode.txt")+": "+InfoHelper.HITC()+StatCollector.translateToLocal("info.de.capacitorMode"+ItemNBTHelper.getShort(stack, "Mode", (short)0)+".txt")));
+        }
+        return stack;
+    }
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
