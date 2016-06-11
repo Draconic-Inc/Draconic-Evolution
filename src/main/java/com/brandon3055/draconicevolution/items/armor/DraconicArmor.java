@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.armor;
 
+import com.brandon3055.draconicevolution.api.itemupgrade.ItemUpgradeRegistry;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
@@ -16,13 +17,17 @@ public class DraconicArmor extends WyvernArmor {
     //region Upgrade
 
     @Override
-    public int getUpgradeSlots(ItemStack stack) {
+    public int getUpgradeCapacity(ItemStack stack) {
         return 6;
     }
 
     @Override
-    public int getMaxUpgradeTier(ItemStack stack) {
-        return 2;
+    public ItemUpgradeRegistry getValidUpgrades(ItemStack stack, ItemUpgradeRegistry upgradeRegistry) {
+        super.getValidUpgrades(stack, upgradeRegistry);
+
+        //todo modify max tier somehow. Maby just re add everything. Or get them from the registry and modify them
+
+        return upgradeRegistry;
     }
 
     //endregion

@@ -1,0 +1,49 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:craftingPedestal",
+    "textures": {
+      "base":"draconicevolution:blocks/crafting_altar/pedestalBase",
+      "core":"draconicevolution:blocks/crafting_altar/pedestalCoreBasic",
+      "ring":"draconicevolution:blocks/crafting_altar/pedestalRing",
+      "particle": "draconicevolution:blocks/crafting_altar/pedestalBase"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "facing": {
+      "north": {"x": 90},
+      "south": {"x": -90},
+      "east": {
+        "x": 90,
+        "y": 90
+      },
+      "west": {
+        "x": 90,
+        "y": -90
+      },
+      "up": {},
+      "down": {"x": 180 }
+    },
+    "tier":{
+      "basic":{},
+      "wyvern":{
+        "textures": {
+          "core":"draconicevolution:blocks/crafting_altar/pedestalCoreWyvern"
+        }
+      },
+      "draconic":{
+        "textures": {
+          "core":"draconicevolution:blocks/crafting_altar/pedestalCoreDraconic"
+        }
+      },
+      "chaotic":{
+        "textures": {
+          "core":"draconicevolution:blocks/crafting_altar/pedestalCoreChaotic"
+        }
+      }
+    },
+    "inventory":[{}],
+    "normal":[{}]
+  }
+}

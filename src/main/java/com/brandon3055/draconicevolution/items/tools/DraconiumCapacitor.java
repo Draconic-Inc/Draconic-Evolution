@@ -7,9 +7,7 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IInvCharge;
-import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
-import com.brandon3055.draconicevolution.api.itemupgrade.IUpgrade;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeRegistry;
+import com.brandon3055.draconicevolution.api.itemupgrade.*;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +21,6 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by brandon3055 on 31/05/2016.
@@ -64,9 +61,9 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
         switch (tier) {
             case 0:
-                return wyvernBaseCap + (UpgradeRegistry.RF_CAPACITY.getLevel(stack) * 8000000);
+                return wyvernBaseCap + (UpgradeHelper.getUpgradeLevel(stack, UpgradeHelper.RF_CAPACITY) * 8000000);
             case 1:
-                return draconicBaseCap + (UpgradeRegistry.RF_CAPACITY.getLevel(stack) * 16000000);
+                return draconicBaseCap + (UpgradeHelper.getUpgradeLevel(stack, UpgradeHelper.RF_CAPACITY) * 16000000);
             case 2:
                 return Integer.MAX_VALUE;
         }
@@ -213,23 +210,16 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
     //region IUpgradable
 
-
     @Override
-    public Map<IUpgrade, Integer> getValidUpgrades(ItemStack stack, Map<IUpgrade, Integer> upgrades) {
-        upgrades.put(UpgradeRegistry.RF_CAPACITY, -1);
-        return upgrades;
+    public ItemUpgradeRegistry getValidUpgrades(ItemStack stack, ItemUpgradeRegistry upgradeRegistry) {
+        upgradeRegistry.register(stack, new SimpleUpgrade(UpgradeHelper.RF_CAPACITY));
+        return upgradeRegistry;
     }
 
     @Override
-    public int getUpgradeSlots(ItemStack stack) {
+    public int getUpgradeCapacity(ItemStack stack) {
         return stack.getItemDamage() == 0 ? 3 :
                stack.getItemDamage() == 1 ? 6 : 0;
-    }
-
-    @Override
-    public int getMaxUpgradeTier(ItemStack stack) {
-        return stack.getItemDamage() == 0 ? 1 :
-               stack.getItemDamage() == 1 ? 2 : 0;
     }
 
     //endregion

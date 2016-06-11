@@ -492,7 +492,9 @@ public class GuiConfigureTool extends GuiScreen {
                 case SLIDER:
                     int pos = (int)((width - 14) * activeButton.field.getFractionalValue());
                     isDragging = GuiHelper.isInRect(xPosition + 3 + pos, yPosition + 3, 6, 12, mouseX, mouseY);
-                    mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    if (isDragging){
+                        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    }
                     break;
                 case SELECTIONS:
                     if (GuiHelper.isInRect(xPosition, yPosition, width, 18, mouseX, mouseY)) {

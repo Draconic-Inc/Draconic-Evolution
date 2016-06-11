@@ -5,17 +5,15 @@ import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
-import com.brandon3055.draconicevolution.api.itemupgrade.IUpgrade;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeRegistry;
+import com.brandon3055.draconicevolution.api.itemupgrade.ItemUpgradeRegistry;
+import com.brandon3055.draconicevolution.api.itemupgrade.SimpleUpgrade;
+import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.IDualModel;
-import com.brandon3055.draconicevolution.api.itemconfig.AOEConfigField;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.Map;
 
 import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.EnumControlType.*;
 
@@ -55,6 +53,7 @@ public class ToolBase extends ItemEnergyBase implements ICustomRender, IDualMode
         registry.register(stack, new BooleanConfigField("Test13", true, s));
         registry.register(stack, new AOEConfigField("TestAOE", 1, 0, 50, s));
         registry.register(stack, new IntegerConfigField("TestSI", 43, 0, 150, "This is a description!", SELECTIONS));
+        registry.register(stack, new IntegerConfigField("Test.", 43, 0, 150, s, PLUS3_MINUS3));
 //        fieldMap.put("Test14", new BooleanConfigField("Test14", true));
 
 //        fieldMap.put("Test15", new BooleanConfigField("Test11", true));
@@ -75,19 +74,14 @@ public class ToolBase extends ItemEnergyBase implements ICustomRender, IDualMode
 
 
     @Override
-    public Map<IUpgrade, Integer> getValidUpgrades(ItemStack stack, Map<IUpgrade, Integer> upgrades) {
-        upgrades.put(UpgradeRegistry.RF_CAPACITY, -1);
-        return upgrades;
+    public ItemUpgradeRegistry getValidUpgrades(ItemStack stack, ItemUpgradeRegistry upgradeRegistry) {
+        upgradeRegistry.register(stack, new SimpleUpgrade(UpgradeHelper.RF_CAPACITY));
+        return upgradeRegistry;
     }
 
     @Override
-    public int getUpgradeSlots(ItemStack stack) {
+    public int getUpgradeCapacity(ItemStack stack) {
         return 3;
-    }
-
-    @Override
-    public int getMaxUpgradeTier(ItemStack stack) {
-        return 1;
     }
 
     //endregion

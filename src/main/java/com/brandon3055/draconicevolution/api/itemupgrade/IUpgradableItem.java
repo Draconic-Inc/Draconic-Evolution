@@ -2,8 +2,6 @@ package com.brandon3055.draconicevolution.api.itemupgrade;
 
 import net.minecraft.item.ItemStack;
 
-import java.util.Map;
-
 /**
  * Created by brandon3055 on 31/05/2016.
  */
@@ -14,20 +12,10 @@ public interface IUpgradableItem {
      * Or -1 if the upgrade has no cap.
      * @return upgrades
      */
-    Map<IUpgrade, Integer> getValidUpgrades(ItemStack stack, Map<IUpgrade, Integer> upgrades);
+    ItemUpgradeRegistry getValidUpgrades(ItemStack stack, ItemUpgradeRegistry upgradeRegistry);
 
     /**
      * @return the maximum number of upgrades for this item
      */
-    int getUpgradeSlots(ItemStack stack);
-
-    /**
-     * @return the max upgrade tier allowed for this item
-     * 0 = Basic
-     * 1 = Wyvern
-     * 2 = Awakened
-     * 3 = Chaotic
-     */
-    int getMaxUpgradeTier(ItemStack stack);
-
+    int getUpgradeCapacity(ItemStack stack);
 }

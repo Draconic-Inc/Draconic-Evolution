@@ -42,7 +42,8 @@ public class DEFeatures {
     //endregion
 
     //region Machines
-	@Feature(name = "generator", tileEntity = TileGenerator.class, itemBlock = ItemBlockBCore.class, cTab = 1)
+
+    @Feature(name = "generator", tileEntity = TileGenerator.class, itemBlock = ItemBlockBCore.class, cTab = 1)
 	public static Generator generator = new Generator();
 
 	@Feature(name = "grinder", tileEntity = TileGrinder.class, itemBlock = ItemBlockBCore.class, cTab = 1)
@@ -53,6 +54,13 @@ public class DEFeatures {
 
     @Feature(name = "energyInfuser", tileEntity = TileEnergyInfuser.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static EnergyInfuser energyInfuser = new EnergyInfuser();
+
+    @Feature(name = "upgradeModifier", tileEntity = TileUpgradeModifier.class, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static UpgradeModifier upgradeModifier = new UpgradeModifier();
+
+    @Feature(name = "craftingPedestal", variantMap = {"0:facing=up,tier=basic", "1:facing=up,tier=wyvern", "2:facing=up,tier=draconic", "3:facing=up,tier=chaotic"}, tileEntity = TileCraftingPedestal.class, itemBlock = ItemBlockBasic.class, cTab = 1)
+    public static CraftingPedestal craftingPedestal = new CraftingPedestal();
+
     //endregion
 
     //region Advanced Machines

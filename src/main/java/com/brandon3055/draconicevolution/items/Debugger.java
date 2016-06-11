@@ -13,6 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -344,6 +346,33 @@ public class Debugger extends ItemBCore {
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
         if (world.isRemote) return super.onItemRightClick(itemStack, world, player, hand);
+
+
+        try {
+            List<String> list = new ArrayList<String>();
+            list.add("a");
+            list.add("b");
+            list.add("c");
+            list.add("d");
+            list.add("e");
+            list.add("f");
+
+            for (int i = 0; i < 5; i++) {
+                for (String s : list) {
+                    if (s.equals("d")) {
+                        list.remove(s);
+                        LogHelper.info("Removed S");
+                        break;
+                    }
+                }
+                LogHelper.info("Loop");
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 //
         //BODMAS
 

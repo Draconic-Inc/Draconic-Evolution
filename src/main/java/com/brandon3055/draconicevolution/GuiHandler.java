@@ -1,17 +1,12 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
-import com.brandon3055.draconicevolution.client.gui.GuiGenerator;
-import com.brandon3055.draconicevolution.client.gui.GuiGrinder;
-import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
-import com.brandon3055.draconicevolution.client.gui.GuiEnergyinfuser;
+import com.brandon3055.draconicevolution.blocks.tileentity.*;
+import com.brandon3055.draconicevolution.client.gui.*;
 import com.brandon3055.draconicevolution.inventory.ContainerEnergyInfuser;
 import com.brandon3055.draconicevolution.inventory.ContainerGenerator;
 import com.brandon3055.draconicevolution.inventory.ContainerGrinder;
+import com.brandon3055.draconicevolution.inventory.ContainerUpgradeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -98,11 +93,11 @@ public class GuiHandler implements IGuiHandler {
 //			case GUIID_TOOL_CONFIG:
 //				return new ContainerAdvTool(player.inventory, new InventoryTool(player, null));
 
-//			case GUIID_UPGRADE_MODIFIER:
-//				if (containerTemp != null && containerTemp instanceof TileUpgradeModifier) {
-//					return new ContainerUpgradeModifier(player.inventory, (TileUpgradeModifier) containerTemp);
-//				}
-//				break;
+			case GUIID_UPGRADE_MODIFIER:
+				if (tileEntity != null && tileEntity instanceof TileUpgradeModifier) {
+					return new ContainerUpgradeModifier(player, (TileUpgradeModifier) tileEntity);
+				}
+				break;
 			case GUIID_ENERGY_CORE:
 				if (tileEntity != null && tileEntity instanceof TileEnergyStorageCore) {
 					return new ContainerBCBase<TileEnergyStorageCore>(player, (TileEnergyStorageCore) tileEntity).addPlayerSlots(10, 116);
@@ -179,11 +174,11 @@ public class GuiHandler implements IGuiHandler {
 //				return new GUIToolConfig(player, new ContainerAdvTool(player.inventory, new InventoryTool(player, null)));
 //			case GUIID_FLOW_GATE:
 //				return world.tileEntity(x, y, z) instanceof TileGate ? new GUIFlowGate((TileGate)world.tileEntity(x, y, z)) : null;
-//			case GUIID_UPGRADE_MODIFIER:
-//				if (containerTemp != null && containerTemp instanceof TileUpgradeModifier) {
-//					return new GUIUpgradeModifier(player.inventory, (TileUpgradeModifier) containerTemp, new ContainerUpgradeModifier(player.inventory, (TileUpgradeModifier) containerTemp));
-//				}
-//				break;
+			case GUIID_UPGRADE_MODIFIER:
+				if (tileEntity != null && tileEntity instanceof TileUpgradeModifier) {
+					return new GuiUpgradeModifier(player, (TileUpgradeModifier) tileEntity, new ContainerUpgradeModifier(player, (TileUpgradeModifier) tileEntity));
+				}
+				break;
             case GUIID_ENERGY_CORE:
                 if (tileEntity != null && tileEntity instanceof TileEnergyStorageCore) {
                     return new GuiEnergyCore(player, (TileEnergyStorageCore) tileEntity);

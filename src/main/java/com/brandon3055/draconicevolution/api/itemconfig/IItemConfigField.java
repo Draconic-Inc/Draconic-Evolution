@@ -24,7 +24,7 @@ public interface IItemConfigField {
     /**
      * Returns the field value formatted for display to the user.
      * */
-    String getReadableValue();
+    String getReadableValue();//TODO add support for number formatting and stuff (Probably to the actual integer/double fields)
 
     /**
      * Used for the slider control type to display the current value while sliding.
