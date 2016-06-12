@@ -1,9 +1,10 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
-import cofh.api.energy.IEnergyContainerItem;
+import java.util.List;
+
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityDragonProjectile;
-import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.items.weapons.IEnergyContainerWeaponItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.enchantment.Enchantment;
@@ -21,8 +22,6 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class ToolHandler {
 //	public static Block[] destroyList = {Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand, Blocks.grass, Blocks.netherrack};
@@ -138,12 +137,12 @@ public class ToolHandler {
 
 	public static void damageEntityBasedOnHealth(Entity entity, EntityPlayer player, float dmgMult) {
 		ItemStack stack = player.getCurrentEquippedItem();
-		if (stack == null || !(stack.getItem() instanceof IEnergyContainerItem)){
+		if (stack == null || !(stack.getItem() instanceof IEnergyContainerWeaponItem)){
 			LogHelper.error("[ToolHandler.java:147] WTF? I don't get it... Player "+player.getCommandSenderName()+" whacked something with a DE weapon but that they are not holding? Ok someone is messing with my shit...");
 			return;
 		}
 
-		IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
+		IEnergyContainerWeaponItem item = (IEnergyContainerWeaponItem) stack.getItem();
 		float baseAttack = getDamageAgainstEntity(stack, entity);
 
 		if (entity instanceof EntityLivingBase)
@@ -162,14 +161,17 @@ public class ToolHandler {
 			}
 		}
 
-		int rf = (int)baseAttack * References.ENERGYPERATTACK;
-		if (rf > item.getEnergyStored(stack)) baseAttack = item.getEnergyStored(stack) / References.ENERGYPERATTACK;
+		int rf = (int)baseAttack * item.getEnergyPerAttack();
+		if (rf > item.getEnergyStored(stack)) {
+			baseAttack = item.getEnergyStored(stack) / item.getEnergyPerAttack();
+			rf = item.getEnergyStored(stack);
+		}
 		if (baseAttack <= 0) baseAttack = 1;
 
 		entity.attackEntityFrom(DamageSource.causePlayerDamage(player), baseAttack);
 		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) > 0) entity.setFire(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) * 15);
 
-		if (!player.capabilities.isCreativeMode) item.extractEnergy(stack, (int)baseAttack * References.ENERGYPERATTACK, false);
+		if (!player.capabilities.isCreativeMode) item.extractEnergy(stack, rf, false);
 
 
 		if (entity instanceof EntityLivingBase) {
@@ -209,20 +211,23 @@ public class ToolHandler {
 		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
 		List list = world.getEntitiesWithinAABBExcludingEntity(player, box);
 		if (range == 0) return;
-		IEnergyContainerItem item = (IEnergyContainerItem)stack.getItem();
+		IEnergyContainerWeaponItem item = (IEnergyContainerWeaponItem)stack.getItem();
 
 		for (Object entityObject : list) {
-			if (item.getEnergyStored(stack) < References.ENERGYPERATTACK) break;
+			if (item.getEnergyStored(stack) < item.getEnergyPerAttack()) break;
 			if (entityObject instanceof EntityLivingBase) {
 				EntityLivingBase entityLivingBase = (EntityLivingBase) entityObject;
 				if (entityLivingBase.getEntityId() == entity.getEntityId()) continue;
 
 				float dmg = getDamageAgainstEntity(stack, entityLivingBase);
-				int rf = (int)dmg * References.ENERGYPERATTACK;
-				if (rf > item.getEnergyStored(stack)) dmg = item.getEnergyStored(stack) / References.ENERGYPERATTACK;
+				int rf = (int)dmg * item.getEnergyPerAttack();
+				if (rf > item.getEnergyStored(stack)) {
+					dmg = item.getEnergyStored(stack) / item.getEnergyPerAttack();
+					rf = item.getEnergyStored(stack);
+				}
 
 				entityLivingBase.attackEntityFrom(DamageSource.causePlayerDamage(player), dmg);
-				item.extractEnergy(stack, ((int) dmg) * References.ENERGYPERATTACK, false);
+				item.extractEnergy(stack, rf, false);
 				if (EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) > 0) entityLivingBase.setFire(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) * 15);
 
 
@@ -252,10 +257,14 @@ public class ToolHandler {
 			}
 			else if (entityObject instanceof EntityDragonProjectile) {
 				float dmg = getDamageAgainstEntity(stack, ((Entity)entityObject));
-				int rf = (int)dmg * References.ENERGYPERATTACK;
-				if (rf > item.getEnergyStored(stack)) dmg = item.getEnergyStored(stack) / References.ENERGYPERATTACK;
+				int rf = (int)dmg * item.getEnergyPerAttack();
+				if (rf > item.getEnergyStored(stack)) {
+					dmg = item.getEnergyStored(stack) / item.getEnergyPerAttack();
+					rf = item.getEnergyStored(stack);
+				}
 
 				((Entity)entityObject).attackEntityFrom(DamageSource.causePlayerDamage(player), dmg);
+				item.extractEnergy(stack, rf, false);
 			}
 		}
 

@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
+import java.util.Random;
+
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomArrow;
 import com.brandon3055.draconicevolution.common.entity.EntityEnderArrow;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import net.minecraft.enchantment.Enchantment;
@@ -17,8 +20,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
-
-import java.util.Random;
 
 public class BowHandler {
 
@@ -156,13 +157,14 @@ public class BowHandler {
 
 		public int calculateEnergyCost(){
 			updateValues();
-			double rfCost = 80;
+			double rfCost = (bow.getItem() instanceof IEnergyContainerWeaponItem) ?
+							((IEnergyContainerWeaponItem) bow.getItem()).getEnergyPerAttack() : 80;
 
 			rfCost *= 1 + arrowDamage;
 			rfCost *= (1 + arrowSpeed) * (1 + arrowSpeed) * (1 + arrowSpeed);
 			rfCost *= 1 + explosionPower * 20;
 			rfCost *= 1 + shockWavePower * 10;
-			if (energyBolt) rfCost *= 30;
+			if (energyBolt) rfCost *= BalanceConfigHandler.draconicFireEnergyCostMultiptier;
 
 			return (int)rfCost;
 		}
@@ -171,7 +173,7 @@ public class BowHandler {
 			updateValues();
 
 			if (player == null) return false;
-			if (!(bow.getItem() instanceof IEnergyContainerItem)){
+			if (!(bow.getItem() instanceof IEnergyContainerWeaponItem)){
 				cantFireMessage = "[Error] This bow is not a valid energy container (This is a bug, Please report on the Draconic Evolution github)";
 				return false;
 			}
@@ -183,7 +185,7 @@ public class BowHandler {
 				cantFireMessage = "msg.de.explosiveNotForEnergyBolts.txt";
 				return false;
 			}
-			else if (calculateEnergyCost() > ((IEnergyContainerItem)bow.getItem()).getEnergyStored(bow) && !player.capabilities.isCreativeMode){
+			else if (calculateEnergyCost() > ((IEnergyContainerWeaponItem)bow.getItem()).getEnergyStored(bow) && !player.capabilities.isCreativeMode){
 				cantFireMessage = "msg.de.insufficientPowerToFire.txt";
 				return false;
 			}
@@ -198,7 +200,7 @@ public class BowHandler {
 		}
 
 		private void updateValues(){
-			arrowDamage = (float)IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
+			arrowDamage = IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
 			arrowSpeed = 1F + IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowSpeedModifier", 0F);
 			explosionPower = IConfigurableItem.ProfileHelper.getFloat(bow, "BowExplosionPower", 0F);
 			shockWavePower = IConfigurableItem.ProfileHelper.getFloat(bow, "BowShockWavePower", 0F);
@@ -218,7 +220,7 @@ public class BowHandler {
          * */
 		public boolean consumeArrowAndEnergy(){
 
-			if (!player.capabilities.isCreativeMode)((IEnergyContainerItem)bow.getItem()).extractEnergy(bow, calculateEnergyCost(), false);
+			if (!player.capabilities.isCreativeMode)((IEnergyContainerWeaponItem)bow.getItem()).extractEnergy(bow, calculateEnergyCost(), false);
 
 			if (!energyBolt && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0 && !player.capabilities.isCreativeMode) {
 				player.inventory.consumeInventoryItem(Items.arrow);

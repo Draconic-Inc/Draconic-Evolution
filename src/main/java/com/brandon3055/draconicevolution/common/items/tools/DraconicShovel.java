@@ -1,11 +1,15 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import java.util.List;
+
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -14,24 +18,19 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-import java.util.List;
-
 public class DraconicShovel extends MiningTool implements IInventoryTool, IRenderTweak {
 //	public IIcon itemIcon0;
 //	public IIcon itemIcon1;
 //	public IIcon itemIcon2;
-	protected int capacity = References.DRACONICCAPACITY;
-	protected int maxReceive = References.DRACONICTRANSFER;
-	protected int maxExtract = References.DRACONICTRANSFER;
 
 	public DraconicShovel() {
 		super(ModItems.AWAKENED);
 		this.setHarvestLevel("shovel", 10);
 		this.setUnlocalizedName(Strings.draconicShovelName);
-		this.setCapacity(References.DRACONICCAPACITY);
-		this.setMaxExtract(References.DRACONICTRANSFER);
-		this.setMaxReceive(References.DRACONICTRANSFER);
-		this.energyPerOperation = References.ENERGYPERBLOCK;
+		this.setCapacity(BalanceConfigHandler.draconicToolsBaseStorage);
+		this.setMaxExtract(BalanceConfigHandler.draconicToolsMaxTransfer);
+		this.setMaxReceive(BalanceConfigHandler.draconicToolsMaxTransfer);
+		this.energyPerOperation = BalanceConfigHandler.draconicToolsEnergyPerAction;
 		ModItems.register(this);
 	}
 
@@ -83,7 +82,7 @@ public class DraconicShovel extends MiningTool implements IInventoryTool, IRende
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_DRACONIC_UPGRADES;
+		return BalanceConfigHandler.draconicToolsMaxUpgrades;
 	}
 
 	@Override
@@ -97,20 +96,39 @@ public class DraconicShovel extends MiningTool implements IInventoryTool, IRende
 	}
 
 	@Override
-	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 4;
-		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 5;
+	public int getCapacity(ItemStack stack) {
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return BalanceConfigHandler.draconicToolsBaseStorage + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
+	}
 
-		return 50;
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex) {
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicToolsMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.draconicToolsMaxDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
+			return BalanceConfigHandler.draconicToolsMaxDigDepthUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+			return BalanceConfigHandler.draconicToolsMaxDigSpeedUpgradePoints;
+		}
+		return BalanceConfigHandler.draconicToolsMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) return 1;
-		else if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) return 5;
-
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.draconicToolsMinDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
+			return BalanceConfigHandler.draconicToolsMinDigDepthUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+			return BalanceConfigHandler.draconicToolsMinDigSpeedUpgradePoints;
+		}
 		return 0;
 	}
 //	@Override
