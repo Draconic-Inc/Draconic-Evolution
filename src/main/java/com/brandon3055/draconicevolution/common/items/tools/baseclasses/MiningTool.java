@@ -1,5 +1,10 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
@@ -29,11 +34,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.world.BlockEvent;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Brandon on 2/01/2015.
@@ -76,7 +76,7 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World p_150894_2_, Block p_150894_3_, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase p_150894_7_) {
-		if (IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_AOE, 0) == 0) extractEnergy(stack, References.ENERGYPERBLOCK, false);
+		if (IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_AOE, 0) == 0) extractEnergy(stack, energyPerOperation, false);
 		return super.onBlockDestroyed(stack, p_150894_2_, p_150894_3_, p_150894_4_, p_150894_5_, p_150894_6_, p_150894_7_);
 	}
 
@@ -293,9 +293,10 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 		}};
 	}
 
-	public int getCapacity(ItemStack stack){
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return i * 5000000;
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
 	}
 
 	@Override

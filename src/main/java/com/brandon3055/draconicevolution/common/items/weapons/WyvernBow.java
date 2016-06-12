@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
-import cofh.api.energy.IEnergyContainerItem;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -8,6 +10,7 @@ import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -33,12 +36,13 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableItem, IEnergyContainerItem, IHudDisplayItem {
+public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableItem, IEnergyContainerWeaponItem, IHudDisplayItem {
 
 	public static final String[] bowPullIconNameArray = new String[] { "pulling_0", "pulling_1", "pulling_2" };
+
+	protected int capacity = BalanceConfigHandler.wyvernWeaponsBaseStorage;
+	protected int maxReceive = BalanceConfigHandler.wyvernWeaponsMaxTransfer;
+	protected int maxExtract = BalanceConfigHandler.wyvernWeaponsMaxTransfer;
 	@SideOnly(Side.CLIENT)
 	private IIcon[] iconArray;
 
@@ -141,7 +145,7 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));
-		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 1000000));
+		list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", capacity));
 	}
 
 	@Override
@@ -226,7 +230,7 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_WYVERN_UPGRADES;
+		return BalanceConfigHandler.wyvernBowMaxUpgrades;
 	}
 
 	@Override
@@ -236,17 +240,38 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) return 5;
-		else if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) return 10;
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.wyvernBowMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) {
+			return BalanceConfigHandler.wyvernBowMaxDrawSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) {
+			return BalanceConfigHandler.wyvernBowMaxArrowSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+			return BalanceConfigHandler.wyvernBowMaxArrowDamageUpgradePoints;
+		}
+		return BalanceConfigHandler.wyvernBowMaxUpgradePoints;
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) return 3;
-		else if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) return 1;
-		else if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) return 2;
+		if (upgradeIndex == EnumUpgrade.DRAW_SPEED.index) {
+			return BalanceConfigHandler.wyvernBowMinDrawSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_SPEED.index) {
+			return BalanceConfigHandler.wyvernBowMinArrowSpeedUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+			return BalanceConfigHandler.wyvernBowMinArrowDamageUpgradePoints;
+		}
 		return 0;
 	}
 
@@ -265,8 +290,11 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 	@Override
 	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
 
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
+			return 0;
+		}
 		int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
-		int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(References.WYVERNTRANSFER, maxReceive));
+		int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(this.maxReceive, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
@@ -278,8 +306,11 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 	@Override
 	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
 
+		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
+			return 0;
+		}
 		int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
-		int energyExtracted = Math.min(energy, maxExtract);
+		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
 
 		if (!simulate) {
 			energy -= energyExtracted;
@@ -295,8 +326,8 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
 	@Override
 	public int getMaxEnergyStored(ItemStack stack) {
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return i * 500000;
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return BalanceConfigHandler.wyvernWeaponsBaseStorage + points * BalanceConfigHandler.wyvernWeaponsStoragePerUpgrade;
 	}
 
 	@Override
@@ -327,6 +358,11 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
 		}
 		return list;
+	}
+	@Override
+	public int getEnergyPerAttack()
+	{
+		return BalanceConfigHandler.wyvernBowEnergyPerShot;
 	}
 	//endregion
 }

@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
-import cofh.api.energy.IEnergyContainerItem;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -9,6 +11,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -36,13 +39,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class DraconicSword extends ItemSword implements IEnergyContainerItem, IInventoryTool, IRenderTweak, IUpgradableItem, IHudDisplayItem {
-	protected int capacity = References.DRACONICCAPACITY;
-	protected int maxReceive = References.DRACONICTRANSFER;
-	protected int maxExtract = References.DRACONICTRANSFER * 50;
+public class DraconicSword extends ItemSword implements IEnergyContainerWeaponItem, IInventoryTool, IRenderTweak, IUpgradableItem, IHudDisplayItem {
+	protected int capacity = BalanceConfigHandler.draconicWeaponsBaseStorage;
+	protected int maxReceive = BalanceConfigHandler.draconicWeaponsMaxTransfer;
+	protected int maxExtract = BalanceConfigHandler.draconicWeaponsMaxTransfer;
 
 	public DraconicSword() {
 		super(ModItems.AWAKENED);
@@ -155,8 +155,8 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 
 	@Override
 	public int getMaxEnergyStored(ItemStack container) {
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
-		return i * 5000000;
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
+		return BalanceConfigHandler.draconicWeaponsBaseStorage + points * BalanceConfigHandler.draconicWeaponsStoragePerUpgrade;
 	}
 
 	@Override
@@ -242,7 +242,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_DRACONIC_UPGRADES;
+		return BalanceConfigHandler.draconicWeaponsMaxUpgrades;
 	}
 
 	@Override
@@ -252,16 +252,33 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 5;
-		else if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) return 12;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicWeaponsMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
+			return BalanceConfigHandler.draconicWeaponsMaxAttackAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) {
+			return BalanceConfigHandler.draconicWeaponsMaxAttackDamageUpgradePoints;
+		}
+		return BalanceConfigHandler.draconicWeaponsMaxUpgradePoints;
+	}
 
-		return 50;
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) return 2;
+		if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
+			return BalanceConfigHandler.draconicWeaponsMinAttackAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index)
+		{
+			return BalanceConfigHandler.draconicWeaponsMinAttackDamageUpgradePoints;
+		}
 		return 0;
 	}
 
@@ -304,5 +321,10 @@ public class DraconicSword extends ItemSword implements IEnergyContainerItem, II
 	@Override
 	public boolean hasProfiles() {
 		return true;
+	}
+	@Override
+	public int getEnergyPerAttack()
+	{
+		return BalanceConfigHandler.draconicWeaponsEnergyPerAttack;
 	}
 }

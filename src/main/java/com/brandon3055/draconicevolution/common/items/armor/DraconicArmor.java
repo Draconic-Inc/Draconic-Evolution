@@ -1,5 +1,9 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -9,6 +13,7 @@ import com.brandon3055.draconicevolution.client.model.ModelDraconicArmor;
 import com.brandon3055.draconicevolution.client.model.ModelDraconicArmorOld;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -42,10 +47,6 @@ import net.minecraftforge.common.ISpecialArmor;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 /**
  * Created by Brandon on 3/07/2014.
  */
@@ -63,8 +64,8 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 	@SideOnly(Side.CLIENT)
 	private IIcon bootsIcon;
 
-	private int maxTransfer = References.DRACONICTRANSFER;
-	private int maxEnergy = References.DRACONICCAPACITY;
+	private int maxEnergy = BalanceConfigHandler.draconicArmorBaseStorage;
+	private int maxTransfer = BalanceConfigHandler.draconicArmorMaxTransfer;
 
 	public DraconicArmor(ArmorMaterial material, int armorType, String name) {
 		super(material, 0, armorType);
@@ -115,6 +116,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIconIndex(ItemStack stack) {
 		if (stack.getItem() == ModItems.draconicHelm) return helmIcon;
 		else if (stack.getItem() == ModItems.draconicChest) return chestIcon;
@@ -184,7 +186,10 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 		if (stack == null) return;
 		if (stack.getItem() == ModItems.draconicHelm) {
 			if (world.isRemote) return;
-			if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) this.extractEnergy(stack, 5000, false);
+			if (this.getEnergyStored(stack) >= BalanceConfigHandler.draconicArmorEnergyToRemoveEffects && clearNegativeEffects(player))
+			{
+				this.extractEnergy(stack, BalanceConfigHandler.draconicArmorEnergyToRemoveEffects, false);
+			}
 			if (player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int) player.posY + 1, (int)Math.floor(player.posZ)) < 5 && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false))
 			{
 				player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 419, 0, true));
@@ -214,8 +219,13 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
 				if (player.isBurning()) {
 					player.extinguish();
-					flag = true;
-				} else for (PotionEffect potion : potions) {
+					/*
+					* Wyvern Armor doesn't require energy to extinguish player => Draconic Armor shouldn't require.
+					* See CustomArmorHandler.applyArmorDamageBlocking
+					* */
+					//flag = false;
+				}
+				for (PotionEffect potion : potions) {
 					int id = potion.getPotionID();
 					if (ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[id], new String[]{"isBadEffect", "field_76418_K", "J"})) {
 						if (potion.getPotionID() == Potion.digSlowdown.id && ModHelper.isHoldingCleaver(player)) break;
@@ -248,7 +258,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
 
 		int stored = ItemNBTHelper.getInteger(container, "Energy", 0);
-		int extract = Math.min(maxExtract, stored);
+		int extract = Math.min(maxExtract, Math.min(maxTransfer, stored));
 
 		if (!simulate) {
 			stored -= extract;
@@ -264,8 +274,8 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
 	@Override
 	public int getMaxEnergyStored(ItemStack container) {
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
-		return i * 5000000;
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
+		return BalanceConfigHandler.draconicArmorBaseStorage + points * BalanceConfigHandler.draconicArmorStoragePerUpgrade;
 	}
 
 	/* Misc */
@@ -418,7 +428,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_DRACONIC_UPGRADES;
+		return BalanceConfigHandler.draconicArmorMaxUpgrades;
 	}
 
 	@Override
@@ -439,14 +449,26 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.draconicArmorMaxCapacityUpgradePoints;
+		}
+		return BalanceConfigHandler.draconicArmorMaxUpgradePoints;
+	}
+
+	@Override
+	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack)
+	{
+		return getMaxUpgradePoints(upgradeIndex);
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) return (int)(getProtectionShare() * 25) + (armorType == 2 ? 2 : 0);
-		else if (upgradeIndex == EnumUpgrade.SHIELD_RECOVERY.index) return 5;
+		if (upgradeIndex == EnumUpgrade.SHIELD_CAPACITY.index) {
+			return (int)(getProtectionShare() * 25) + (armorType == 2 ? 2 : 0);
+		}
+		if (upgradeIndex == EnumUpgrade.SHIELD_RECOVERY.index) {
+			return BalanceConfigHandler.draconicArmorMinShieldRecovery;
+		}
 		return 0;
 	}
 
@@ -510,6 +532,11 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 			return BrandonsCore.proxy.isCtrlDown() ? IConfigurableItem.ProfileHelper.getFloat(stack, "VerticalAcceleration", 0F) : 0F;
 		}
 		else return IConfigurableItem.ProfileHelper.getFloat(stack, "VerticalAcceleration", 0F);
+	}
+	@Override
+	public int getEnergyPerProtectionPoint()
+	{
+		return BalanceConfigHandler.draconicArmorEnergyPerProtectionPoint;
 	}
 
 	//endregion

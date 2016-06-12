@@ -1,7 +1,10 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import java.util.List;
+
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.MiningTool;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
@@ -15,18 +18,16 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-import java.util.List;
-
 public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRenderTweak {
 
 	public WyvernPickaxe() {
 		super(ModItems.WYVERN);
 		this.setUnlocalizedName(Strings.wyvernPickaxeName);
 		this.setHarvestLevel("pickaxe", 10);
-		this.setCapacity(References.WYVERNCAPACITY);
-		this.setMaxExtract(References.WYVERNTRANSFER);
-		this.setMaxReceive(References.WYVERNTRANSFER);
-		this.energyPerOperation = References.ENERGYPERBLOCK;
+		this.setCapacity(BalanceConfigHandler.wyvernToolsBaseStorage);
+		this.setMaxExtract(BalanceConfigHandler.wyvernToolsMaxTransfer);
+		this.setMaxReceive(BalanceConfigHandler.wyvernToolsMaxTransfer);
+		this.energyPerOperation = BalanceConfigHandler.wyvernToolsEnergyPerAction;
 		ModItems.register(this);
 	}
 
@@ -75,7 +76,7 @@ public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRender
 
 	@Override
 	public int getUpgradeCap(ItemStack itemstack) {
-		return References.MAX_WYVERN_UPGRADES;
+		return BalanceConfigHandler.wyvernToolsMaxUpgrades;
 	}
 
 	@Override
@@ -89,23 +90,33 @@ public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRender
 	}
 
 	@Override
-	public int getCapacity(ItemStack stack){
-		int i = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return i * 500000;
+	public int getCapacity(ItemStack stack) {
+		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+		return BalanceConfigHandler.wyvernToolsBaseStorage + points * BalanceConfigHandler.wyvernToolsStoragePerUpgrade;
 	}
 
 	@Override
 	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 2;
-		return 50;
+		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+			return BalanceConfigHandler.wyvernToolsMaxCapacityUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.wyvernToolsMaxDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+			return BalanceConfigHandler.wyvernToolsMaxDigSpeedUpgradePoints;
+		}
+		return BalanceConfigHandler.wyvernToolsMaxUpgradePoints;
 	}
 
 	@Override
 	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) return 2;
-		else if (upgradeIndex == EnumUpgrade.DIG_AOE.index) return 1;
-		else if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) return 4;
-
+		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+			return BalanceConfigHandler.wyvernToolsMinDigAOEUpgradePoints;
+		}
+		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+			return BalanceConfigHandler.wyvernToolsMinDigSpeedUpgradePoints;
+		}
 		return 0;
 	}
 
@@ -268,7 +279,7 @@ public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRender
 //
 //	@Override
 //	public float getDigSpeed(ItemStack stack, Block block, int meta) {
-//		if ((stack.getItem() instanceof IEnergyContainerItem) && ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) >= References.ENERGYPERBLOCK)
+//		if ((stack.getItem() instanceof IEnergyContainerItem) && ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack) >= energyPerOperation)
 //			return super.getDigSpeed(stack, block, meta);
 //		else
 //			return 1F;
