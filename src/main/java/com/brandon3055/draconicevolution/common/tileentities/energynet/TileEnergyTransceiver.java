@@ -5,6 +5,8 @@ import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,7 +21,8 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase{
 	public int facing = 0;//0=up, 1=down, 3=north, 2=south, 4=east, 5=west
 	private boolean input = false;
 	public boolean transferBoost = false;
-	private ParticleEnergyField particle;
+    @SideOnly(Side.CLIENT)
+    private ParticleEnergyField particle;
 
 	public TileEnergyTransceiver() {}
 

@@ -169,8 +169,9 @@ public class MinecraftForgeEventHandler {
 		{
 			EntityItem item = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(ModItems.dragonHeart));
 			event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, ((int) event.entity.posX) + 0.5, event.entity.posY, ((int) event.entity.posZ) + 0.5));
-			if (event.entity instanceof EntityCustomDragon && ((EntityCustomDragon) event.entity).getIsUber())
-				event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, event.entity.posX, event.entity.posY + 2, event.entity.posZ));
+			if (event.entity instanceof EntityCustomDragon && ((EntityCustomDragon) event.entity).getIsUber()){
+                event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, event.entity.posX, event.entity.posY + 2, event.entity.posZ));
+            }
 
 			for (Object o : event.entity.worldObj.playerEntities)
 			{
@@ -216,8 +217,9 @@ public class MinecraftForgeEventHandler {
 			ItemStack soul = new ItemStack(ModItems.mobSoul);
 			String name = EntityList.getEntityString(entity);
 			ItemNBTHelper.setString(soul, "Name", name);
-			if (entity instanceof EntitySkeleton)
-				ItemNBTHelper.setInteger(soul, "SkeletonType", ((EntitySkeleton) entity).getSkeletonType());
+			if (entity instanceof EntitySkeleton){
+                ItemNBTHelper.setInteger(soul, "SkeletonType", ((EntitySkeleton) entity).getSkeletonType());
+            }
 			world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
 			Achievements.triggerAchievement((EntityPlayer) attacker, "draconicevolution.soul");
 		}

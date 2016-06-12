@@ -9,7 +9,10 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.world.BlockEvent;
 
 /**
  * Created by Brandon on 14/08/2014.
@@ -56,7 +59,16 @@ public class PlacedItemPacket implements IMessage
 			int z = message.blockZ+dir.offsetZ;
 			World world = ctx.getServerHandler().playerEntity.worldObj;
 			EntityPlayer player = ctx.getServerHandler().playerEntity;
-			if (!world.isAirBlock(x, y, z) || player.getHeldItem() == null) return null;
+
+			if (!world.isAirBlock(x, y, z) || player.getHeldItem() == null || !ModBlocks.isEnabled(ModBlocks.placedItem)) return null;
+
+            BlockEvent.PlaceEvent event = new BlockEvent.PlaceEvent(new BlockSnapshot(world, x, y, z, ModBlocks.placedItem, 0), world.getBlock(message.blockX, message.blockY, message.blockZ), player);
+            MinecraftForge.EVENT_BUS.post(event);
+
+            if (event.isCanceled()){
+                return null;
+            }
+
 			ItemStack stack = player.getHeldItem();
 
 			world.setBlock(x, y, z, ModBlocks.placedItem, message.side, 2);

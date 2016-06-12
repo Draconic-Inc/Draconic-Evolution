@@ -7,6 +7,8 @@ import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorB
 import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -29,8 +31,11 @@ public class TileReactorEnergyInjector extends TileEntity implements IReactorPar
 	public MultiblockHelper.TileLocation masterLocation = new MultiblockHelper.TileLocation();
 	public boolean isValid = false;
 	public int tick = 0;
-	private ParticleReactorBeam beam = null;
-	private TileReactorCore core = null;
+
+    @SideOnly(Side.CLIENT)
+    private ParticleReactorBeam beam;
+
+    private TileReactorCore core = null;
 	private int redstoneMode = 0;
 	private int rs = -1;
 	private int rsCach = -1;
@@ -38,7 +43,7 @@ public class TileReactorEnergyInjector extends TileEntity implements IReactorPar
 	@Override
 	public void updateEntity() {
 		if (worldObj.isRemote && isValid){
-			beam = DraconicEvolution.proxy.reactorBeam(this, beam, true);
+			updateBeam();
 		}
 
 		TileEntity master = masterLocation.getTileEntity(worldObj);
@@ -48,7 +53,13 @@ public class TileReactorEnergyInjector extends TileEntity implements IReactorPar
 				rsCach = rs;
 				Utills.updateNeabourBlocks(worldObj, xCoord, yCoord, zCoord);
 			}
-		}}
+		}
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void updateBeam(){
+        beam = DraconicEvolution.proxy.reactorBeam(this, beam, true);
+    }
 
 	public void onPlaced() {
 		checkForMaster();
