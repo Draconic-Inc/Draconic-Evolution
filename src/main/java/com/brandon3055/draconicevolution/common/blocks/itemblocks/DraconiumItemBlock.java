@@ -1,6 +1,9 @@
 package com.brandon3055.draconicevolution.common.blocks.itemblocks;
 
+import java.util.List;
+
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -13,8 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import java.util.List;
-
 /**
  * Created by Brandon on 8/08/2014.
  */
@@ -24,9 +25,9 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
 		setHasSubtypes(true);
 	}
 
-	protected int capacity = 100000000;
-	protected int maxReceive = 10000000;
-	protected int maxExtract = 10000000;
+	protected int capacity = BalanceConfigHandler.draconiumBlockEnergyToChange;
+	protected int maxReceive = BalanceConfigHandler.draconiumBlockChargingSpeed;
+	protected int maxExtract = BalanceConfigHandler.draconiumBlockChargingSpeed;
 
 	@SuppressWarnings("unchecked")
 	@Override

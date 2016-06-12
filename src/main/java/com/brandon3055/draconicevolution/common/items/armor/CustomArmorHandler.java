@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
+import java.util.*;
+
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.network.ShieldHitPacket;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
@@ -22,8 +25,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-
-import java.util.*;
 
 /**
  * Created by Brandon on 13/11/2014.
@@ -84,9 +85,12 @@ public class CustomArmorHandler {
 
         float hitAmount = ModHelper.applyModDamageAdjustments(summery, event);
 
-		if (applyArmorDamageBlocking(event, summery)) return;
-
-		if (summery == null || summery.protectionPoints <= 0 || event.source == ADMIN_KILL) return;
+		if (applyArmorDamageBlocking(event, summery)) {
+			return;
+		}
+		if (summery == null || summery.protectionPoints <= 0 || event.source == ADMIN_KILL) {
+			return;
+		}
 		event.setCanceled(true);
 		//Ensure that the /kill command can still kill the player
 		if (hitAmount == Float.MAX_VALUE && !event.source.damageType.equals(ADMIN_KILL.damageType)){
@@ -94,8 +98,6 @@ public class CustomArmorHandler {
 			return;
 		}
 		if ((float)player.hurtResistantTime > (float)player.maxHurtResistantTime / 2.0F) return;
-
-        if (summery.protectionPoints <= 0) return;
 
         float newEntropy = Math.min(summery.entropy + 1 + (hitAmount / 20), 100F);
 
@@ -158,11 +160,11 @@ public class CustomArmorHandler {
 			}
 		}
 
-		if (totalCharge < 10000000) return;
+		if (totalCharge < BalanceConfigHandler.draconicArmorBaseStorage) return;
 
 		for (int i = 0; i < summery.armorStacks.length; i++){
 			if (summery.armorStacks[i] != null) {
-				((IEnergyContainerItem)summery.armorStacks[i].getItem()).extractEnergy(summery.armorStacks[i], (int) ((charge[i] / (double) totalCharge) * 10000000), false);
+				((IEnergyContainerItem)summery.armorStacks[i].getItem()).extractEnergy(summery.armorStacks[i], (int) ((charge[i] / (double) totalCharge) * BalanceConfigHandler.draconicArmorBaseStorage), false);
 			}
 		}
 
@@ -185,7 +187,7 @@ public class CustomArmorHandler {
 
 		float totalPointsToAdd = Math.min(summery.maxProtectionPoints - summery.protectionPoints, summery.maxProtectionPoints / 60F);
 		totalPointsToAdd *= (1F - (summery.entropy / 100F));
-		totalPointsToAdd = Math.min(totalPointsToAdd, summery.totalEnergyStored / 1000);
+		totalPointsToAdd = Math.min(totalPointsToAdd, summery.totalEnergyStored / (summery.hasDraconic ? BalanceConfigHandler.draconicArmorEnergyPerProtectionPoint : BalanceConfigHandler.wyvernArmorEnergyPerProtectionPoint));
 		if (totalPointsToAdd < 0F) totalPointsToAdd = 0F;
 
 		summery.entropy -= (summery.meanRecoveryPoints * 0.01F);
@@ -195,7 +197,8 @@ public class CustomArmorHandler {
 			ItemStack stack = summery.armorStacks[i];
 			if (stack == null || summery.totalEnergyStored <= 0) continue;
 			float maxForPeace = ((ICustomArmor)stack.getItem()).getProtectionPoints(stack);
-			((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, (int)((summery.energyAllocation[i] / (double)summery.totalEnergyStored) * (totalPointsToAdd * 1000)), false);
+			int energyAmount = ((ICustomArmor)summery.armorStacks[i].getItem()).getEnergyPerProtectionPoint();
+			((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, (int)((summery.energyAllocation[i] / (double)summery.totalEnergyStored) * (totalPointsToAdd * energyAmount)), false);
 			float pointsForPeace = (summery.pointsDown[i] / Math.max(1, summery.maxProtectionPoints - summery.protectionPoints)) * totalPointsToAdd;
 			summery.allocation[i] += pointsForPeace;
 			if (summery.allocation[i] > maxForPeace || maxForPeace - summery.allocation[i] < 0.1F) summery.allocation[i] = maxForPeace;
@@ -310,14 +313,14 @@ public class CustomArmorHandler {
 	private static boolean applyArmorDamageBlocking(LivingAttackEvent event, ArmorSummery summery){
 		if (summery == null) return false;
 
-		if (event.source.isFireDamage() && summery.fireResistance >= 1)
+		if (event.source.isFireDamage() && summery.fireResistance >= 1F)
 		{
 			event.setCanceled(true);
 			event.entityLiving.extinguish();
 			return true;
 		}
 
-		if (event.source.damageType.equals("fall") && summery.jumpModifier > 0)
+		if (event.source.damageType.equals("fall") && summery.jumpModifier > 0F)
 		{
 			if (event.ammount < summery.jumpModifier * 5F) event.setCanceled(true);
 			return true;

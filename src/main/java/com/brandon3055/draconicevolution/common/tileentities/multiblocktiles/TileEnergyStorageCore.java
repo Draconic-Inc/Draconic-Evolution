@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
@@ -96,8 +97,12 @@ public class TileEnergyStorageCore extends TileObjectSync {
 				for (int z = zCoord - 1; z <= zCoord + 1; z++) {
 					if (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock)
 					{
-						if (worldObj.getBlockMetadata(x, y, z) == 0) worldObj.setBlock(x, y, z, ModBlocks.draconiumBlock);
-						else if (worldObj.getBlockMetadata(x, y, z) == 1) worldObj.setBlock(x, y, z, Blocks.redstone_block);
+						if (worldObj.getBlockMetadata(x, y, z) == 0) {
+							worldObj.setBlock(x, y, z, ModBlocks.draconiumBlock);
+						}
+						else if (worldObj.getBlockMetadata(x, y, z) == 1) {
+							worldObj.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureBlock, BalanceConfigHandler.energyStorageStructureBlockMetadata, 3);
+						}
 					}
 				}
 			}
@@ -543,9 +548,12 @@ public class TileEnergyStorageCore extends TileObjectSync {
 	private boolean testForOrActivateRedstone(int x, int y, int z, boolean set, boolean activate){
 		if (!activate) {
 			if (set) {
-				worldObj.setBlock(x, y, z, Blocks.redstone_block);
+				worldObj.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureBlock, BalanceConfigHandler.energyStorageStructureBlockMetadata, 3);
 				return true;
-			} else return worldObj.getBlock(x, y, z) == Blocks.redstone_block || (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock && worldObj.getBlockMetadata(x, y, z) == 1);
+			} else {
+				return (worldObj.getBlock(x, y, z) == BalanceConfigHandler.energyStorageStructureBlock && worldObj.getBlockMetadata(x, y, z) == BalanceConfigHandler.energyStorageStructureBlockMetadata) ||
+					   (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock && worldObj.getBlockMetadata(x, y, z) == 1);
+			}
 		}else{
 			return activateRedstone(x, y, z);
 		}
@@ -606,28 +614,33 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			tile.setMaster(new TileLocation(xCoord, yCoord, zCoord));
 			worldObj.setBlockMetadataWithNotify(stabilizers[i].getXCoord(), stabilizers[i].getYCoord(), stabilizers[i].getZCoord(), 1, 2);
 		}
+		initializeCapacity();
+	}
+
+	private void initializeCapacity()
+	{
 		long capacity = 0;
 		switch (tier){
 			case 0:
-				capacity = 45500000L;
+				capacity = BalanceConfigHandler.energyStorageTier1Storage;
 				break;
 			case 1:
-				capacity = 273000000L;
+				capacity = BalanceConfigHandler.energyStorageTier2Storage;
 				break;
 			case 2:
-				capacity = 1640000000L;
+				capacity = BalanceConfigHandler.energyStorageTier3Storage;
 				break;
 			case 3:
-				capacity = 9880000000L;
+				capacity = BalanceConfigHandler.energyStorageTier4Storage;
 				break;
 			case 4:
-				capacity = 59300000000L;
+				capacity = BalanceConfigHandler.energyStorageTier5Storage;
 				break;
 			case 5:
-				capacity = 356000000000L;
+				capacity = BalanceConfigHandler.energyStorageTier6Storage;
 				break;
 			case 6:
-				capacity = 2140000000000L;
+				capacity = BalanceConfigHandler.energyStorageTier7Storage;
 				break;
 		}
 		this.capacity = capacity;
@@ -710,32 +723,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
 			if (stabilizers[i] != null)
 				stabilizers[i].readFromNBT(compound, String.valueOf(i));
 		}
-		long capacity = 0;
-		switch (tier){
-			case 0:
-				capacity = 45500000L;//000
-				break;
-			case 1:
-				capacity = 273000000L;//000
-				break;
-			case 2:
-				capacity = 1640000000L;//000
-				break;
-			case 3:
-				capacity = 9880000000L;//000
-				break;
-			case 4:
-				capacity = 59300000000L;//000
-				break;
-			case 5:
-				capacity = 356000000000L;//000
-				break;
-			case 6:
-				capacity = 2140000000000L;//000
-				break;
-		}
-		this.capacity = capacity;
-		if (energy > capacity) energy = capacity;
+		initializeCapacity();
 		super.readFromNBT(compound);
 	}
 

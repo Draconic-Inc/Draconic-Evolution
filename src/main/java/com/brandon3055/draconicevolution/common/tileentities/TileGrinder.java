@@ -1,6 +1,10 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
+import java.util.List;
+import java.util.UUID;
+
 import cofh.api.energy.IEnergyReceiver;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
 import com.mojang.authlib.GameProfile;
@@ -9,10 +13,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -28,9 +31,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.List;
-import java.util.UUID;
 
 public class TileGrinder extends TileObjectSync implements ISidedInventory, IEnergyReceiver {
 	//########### variables #############//
@@ -49,9 +49,10 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	public boolean hasPower = false;
 	public boolean hasPowerCach = false;
 	private boolean readyNext = false;
-	public EnergyStorage internalGenBuffer = new EnergyStorage(20000, 32000, 0);
-	public EnergyStorage externalInputBuffer = new EnergyStorage(100000, 32000, 0);
-	public int energyPerKill = 1000;
+	public EnergyStorage internalGenBuffer = new EnergyStorage(BalanceConfigHandler.grinderInternalEnergyBufferSize, BalanceConfigHandler.grinderMaxReceive, 0);
+	public EnergyStorage externalInputBuffer = new EnergyStorage(BalanceConfigHandler.grinderExternalEnergyBufferSize, BalanceConfigHandler.grinderMaxReceive, 0);
+	public int energyPerKill = BalanceConfigHandler.grinderEnergyPerKill;
+	private ItemStack diamondSword;
 	public static FakePlayer fakePlayer;
 
 	public void updateVariables() {
@@ -85,6 +86,11 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 	public TileGrinder() {
 		items = new ItemStack[1];
+		diamondSword = new ItemStack(Items.diamond_sword);
+		if (BalanceConfigHandler.grinderShouldUseLooting)
+		{
+			diamondSword.addEnchantment(Enchantment.looting, 3);
+		}
 	}
 
 	@Override
@@ -146,7 +152,14 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 	@SuppressWarnings("unchecked")
 	public boolean killNextEntity() {
 		if (worldObj.isRemote) return false;
-		if (fakePlayer == null) fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
+		if (fakePlayer == null)
+		{
+			fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
+		}
+		if (fakePlayer.getHeldItem() == null || !ItemStack.areItemStacksEqual(fakePlayer.getHeldItem(), diamondSword))
+		{
+			fakePlayer.setCurrentItemOrArmor(0, diamondSword);
+		}
 		killBox = AxisAlignedBB.getBoundingBox(centreX - 4.5, centreY - 4.5, centreZ - 4.5, centreX + 4.5, centreY + 4.5, centreZ + 4.5);
 
 		killList = worldObj.getEntitiesWithinAABB(EntityLiving.class, killBox);
@@ -155,55 +168,13 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
 		if (killList.size() > 0) {
 			EntityLiving mob = killList.get(worldObj.rand.nextInt(killList.size()));
-			if (mob instanceof EntityCreature) {
-				if (mob.isEntityAlive()) {
-					if (mob instanceof EntitySkeleton && ((EntitySkeleton) mob).getSkeletonType() == 1)
-					{
-						if (worldObj.rand.nextInt(200) < 5) mob.entityDropItem(new ItemStack(Items.skull, 1, 1), 0);
-					}
-					mob.attackEntityFrom(DamageSource.causePlayerDamage(fakePlayer), 50000F);
-					//mob.attackEntityFrom(DamageSource.causePlayerDamage(FakePlayerFactory.getMinecraft((WorldServer)worldObj)), 50000F);
-
-//					if (recentlyHit == null) {
-//						recentlyHit = ReflectionHelper.findField(EntityLivingBase.class, "recentlyHit", "field_70718_bc");
-//						recentlyHit.setAccessible(true);
-//					}
-//					try {
-//						recentlyHit.setInt(mob, 0);
-//					}
-//					catch (IllegalAccessException e)
-//					{
-//						LogHelper.error(e);
-//					}
-
-//					mob.attackEntityFrom(DamageSource.generic, 50000F);
-					readyNext = true;
-					return true;
-				}
+			if (mob.isEntityAlive()) {
+				mob.attackEntityFrom(DamageSource.causePlayerDamage(fakePlayer), 50000F);
 				readyNext = true;
-				return false;
-			} else {
-				if (mob.isEntityAlive()) {
-					mob.attackEntityFrom(DamageSource.causePlayerDamage(fakePlayer), 50000F);
-//					if (recentlyHit == null) {
-//						recentlyHit = ReflectionHelper.findField(EntityLivingBase.class,  "recentlyHit", "field_70718_bc");
-//						recentlyHit.setAccessible(true);
-//					}
-//					try {
-//						recentlyHit.setInt(mob, 60);
-//						LogHelper.info(recentlyHit.getInt(mob));
-//					}
-//					catch (IllegalAccessException e) {
-//						LogHelper.error(e);
-//					}
-//
-//					mob.attackEntityFrom(DamageSource.generic, 50000F);
-//					readyNext = true;
-//					return true;
-				}
-				readyNext = true;
-				return false;
+				return true;
 			}
+			readyNext = true;
+			return false;
 		}
 		readyNext = false;
 		return false;
