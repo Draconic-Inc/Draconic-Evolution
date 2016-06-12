@@ -198,7 +198,7 @@ public class CustomArmorHandler {
 			if (stack == null || summery.totalEnergyStored <= 0) continue;
 			float maxForPeace = ((ICustomArmor)stack.getItem()).getProtectionPoints(stack);
 			int energyAmount = ((ICustomArmor)summery.armorStacks[i].getItem()).getEnergyPerProtectionPoint();
-			((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, (int)((summery.energyAllocation[i] / (double)summery.totalEnergyStored) * (totalPointsToAdd * energyAmount)), false);
+			((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, (int)(((double)summery.energyAllocation[i] / (double)summery.totalEnergyStored) * (totalPointsToAdd * energyAmount)), false);
 			float pointsForPeace = (summery.pointsDown[i] / Math.max(1, summery.maxProtectionPoints - summery.protectionPoints)) * totalPointsToAdd;
 			summery.allocation[i] += pointsForPeace;
 			if (summery.allocation[i] > maxForPeace || maxForPeace - summery.allocation[i] < 0.1F) summery.allocation[i] = maxForPeace;
@@ -354,9 +354,9 @@ public class CustomArmorHandler {
 		/**Mean Recovery Points*/
 		public int meanRecoveryPoints = 0;
 		/**Total RF stored in the armor*/
-		public int totalEnergyStored = 0;
+		public long totalEnergyStored = 0;
 		/**Total Max RF storage for the armor*/
-		public int maxTotalEnergyStorage = 0;
+		public long maxTotalEnergyStorage = 0;
 		/**RF stored in each armor peace*/
 		public int[] energyAllocation;
 		/*---- Effects ----*/

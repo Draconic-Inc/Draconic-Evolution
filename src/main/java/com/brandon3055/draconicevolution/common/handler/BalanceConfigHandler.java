@@ -390,7 +390,7 @@ public class BalanceConfigHandler
         draconicBowMaxUpgrades =
             getInteger("tweaks.weapons", "Draconic Bow: Maximum amount of upgrades", draconicBowMaxUpgrades, 0,
                        (draconicBowMaxDrawSpeedUpgradePoints - draconicBowMinDrawSpeedUpgradePoints) *
-                       EnumUpgrade.DIG_SPEED.pointConversion +
+                       EnumUpgrade.DRAW_SPEED.pointConversion +
                        (draconicBowMaxArrowSpeedUpgradePoints - draconicBowMinArrowSpeedUpgradePoints) *
                        EnumUpgrade.ARROW_SPEED.pointConversion +
                        (draconicBowMaxArrowDamageUpgradePoints - draconicBowMinArrowDamageUpgradePoints) *
