@@ -2,13 +2,16 @@ package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created by Brandon on 10/02/2015.
  */
 public class TileEnergyRelay extends TileRemoteEnergyBase {
-	private ParticleEnergyField ring;
+    @SideOnly(Side.CLIENT)
+    private ParticleEnergyField ring;
 
 	public TileEnergyRelay(){}
 
