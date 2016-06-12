@@ -34,7 +34,7 @@ public interface IUpgradableItem {
 
     public int getMaxUpgradePoints(int upgradeIndex);
 
-	public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack);
+    public int getMaxUpgradePoints(int upgradeIndex, ItemStack stack);
 
     public int getBaseUpgradePoints(int upgradeIndex);
 
