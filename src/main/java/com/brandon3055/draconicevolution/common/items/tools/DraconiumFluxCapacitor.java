@@ -72,16 +72,16 @@ public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableIte
 		return super.getUnlocalizedName(itemStack)+itemStack.getItemDamage();
 	}
 
-	@Override
-	public int getCapacity(ItemStack stack){
-		int points = EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return stack.getItemDamage() == 0 ?
-			   BalanceConfigHandler.wyvernCapacitorBaseStorage +
-			   points * BalanceConfigHandler.wyvernCapacitorStoragePerUpgrade :
-			   stack.getItemDamage() == 1 ?
-			   BalanceConfigHandler.draconicCapacitorBaseStorage +
-			   points * BalanceConfigHandler.draconicCapacitorStoragePerUpgrade : 0;
- 	}
+    @Override
+    public int getCapacity(ItemStack stack){
+        int points = EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+        return stack.getItemDamage() == 0 ?
+               BalanceConfigHandler.wyvernCapacitorBaseStorage +
+               points * BalanceConfigHandler.wyvernCapacitorStoragePerUpgrade :
+               stack.getItemDamage() == 1 ?
+               BalanceConfigHandler.draconicCapacitorBaseStorage +
+               points * BalanceConfigHandler.draconicCapacitorStoragePerUpgrade : 0;
+    }
 
 	@Override
 	 public int getMaxExtract(ItemStack stack){
@@ -136,8 +136,8 @@ public class DraconiumFluxCapacitor extends RFItemBase implements IUpgradableIte
 		return ItemNBTHelper.getShort(stack, "Mode", (short)0) > 0;
 	}
 
-	@Override
-     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (player.isSneaking()){
             int mode = ItemNBTHelper.getShort(stack, "Mode", (short)0);
             int newMode = mode == 3 ? 0 : mode + 1;
