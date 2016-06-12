@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.client.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.client.gui.GuiHudConfig;
@@ -20,9 +23,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Brandon on 26/01/2015.
  */
@@ -38,7 +38,7 @@ public class HudHandler {
 	private static float maxShieldPoints = 0F;
 	private static float shieldEntropy = 0F;
 	private static int rfCharge = 0;
-	private static int rfTotal = 0;
+	private static long rfTotal = 0;
 
 	int width;
 	int height;
