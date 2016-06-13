@@ -1,6 +1,7 @@
 ######## 1.0.2f ########
 -fixed shield sound effect being too loud.
 -fixed rare edge case where reflection by another mod causes certain tiles to crash servers. 
+-merged pull to add lots of config options for all the things! https://github.com/brandon3055/Draconic-Evolution/pull/332
 
 ######## 1.0.2e ########
 -damage that bypasses armor now deals double damage and increased entropy to the shield.

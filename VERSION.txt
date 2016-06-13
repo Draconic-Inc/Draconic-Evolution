@@ -1,3 +1,3 @@
-Version:1.0.2e
+Version:1.0.2f
 Snapshot:0
-ReleaseNote:
+ReleaseNote:Merged pull to add more config options
