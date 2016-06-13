@@ -13,42 +13,41 @@ import io.netty.buffer.ByteBuf;
 /**
  * Created by Brandon on 26/03/2015.
  */
-public class SpeedRequestPacket  implements IMessage
-{
-	double speed = 0F;
+public class SpeedRequestPacket implements IMessage {
+    double speed = 0F;
 
-	public SpeedRequestPacket() {}
+    public SpeedRequestPacket() {
+    }
 
-	public SpeedRequestPacket(double speed) {
-		this.speed = speed;
-	}
+    public SpeedRequestPacket(double speed) {
+        this.speed = speed;
+    }
 
-	@Override
-	public void toBytes(ByteBuf bytes){
-		bytes.writeDouble(speed);
-	}
+    @Override
+    public void toBytes(ByteBuf bytes) {
+        bytes.writeDouble(speed);
+    }
 
-	@Override
-	public void fromBytes(ByteBuf bytes){
-		this.speed = bytes.readDouble();
-	}
+    @Override
+    public void fromBytes(ByteBuf bytes) {
+        this.speed = bytes.readDouble();
+    }
 
-	public static class Handler implements IMessageHandler<SpeedRequestPacket, IMessage> {
+    public static class Handler implements IMessageHandler<SpeedRequestPacket, IMessage> {
 
-		@Override
-		public IMessage onMessage(SpeedRequestPacket message, MessageContext ctx) {
-			if (ctx.side == Side.SERVER)
-			{
-				if (ConfigHandler.speedLimitDimList.contains(ctx.getServerHandler().playerEntity.dimension) || (BrandonsCore.proxy.isOp(ctx.getServerHandler().playerEntity.getCommandSenderName()) && !ConfigHandler.speedLimitops)) return new SpeedRequestPacket(20F);
-				return new SpeedRequestPacket(ConfigHandler.maxPlayerSpeed);
-			}
-			else {
-				MinecraftForgeEventHandler.maxSpeed = message.speed;
-				MinecraftForgeEventHandler.ticksSinceRequest = 0;
-				MinecraftForgeEventHandler.speedNeedsUpdating = false;
-				LogHelper.info("Server speed is set to " + message.speed);
-			}
-			return null;
-		}
-	}
+        @Override
+        public IMessage onMessage(SpeedRequestPacket message, MessageContext ctx) {
+            if (ctx.side == Side.SERVER) {
+                if (ConfigHandler.speedLimitDimList.contains(ctx.getServerHandler().playerEntity.dimension) || (BrandonsCore.proxy.isOp(ctx.getServerHandler().playerEntity.getCommandSenderName()) && !ConfigHandler.speedLimitops))
+                    return new SpeedRequestPacket(20F);
+                return new SpeedRequestPacket(ConfigHandler.maxPlayerSpeed);
+            } else {
+                MinecraftForgeEventHandler.maxSpeed = message.speed;
+                MinecraftForgeEventHandler.ticksSinceRequest = 0;
+                MinecraftForgeEventHandler.speedNeedsUpdating = false;
+                LogHelper.info("Server speed is set to " + message.speed);
+            }
+            return null;
+        }
+    }
 }

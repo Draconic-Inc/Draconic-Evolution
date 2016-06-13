@@ -14,41 +14,41 @@ import java.util.List;
  */
 public class CKeyStoneItemBlock extends ItemBlock {
 
-	public CKeyStoneItemBlock(Block block) {
-		super(block);
-		setHasSubtypes(true);
-	}
+    public CKeyStoneItemBlock(Block block) {
+        super(block);
+        setHasSubtypes(true);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
-		list.add(new ItemStack(item, 1, 0));
-		list.add(new ItemStack(item, 1, 1));
-		list.add(new ItemStack(item, 1, 2));
-		list.add(new ItemStack(item, 1, 3));
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
+        list.add(new ItemStack(item, 1, 0));
+        list.add(new ItemStack(item, 1, 1));
+        list.add(new ItemStack(item, 1, 2));
+        list.add(new ItemStack(item, 1, 3));
+    }
 
-	@Override
-	public int getMetadata(int par1) {
-		return par1;
-	}
+    @Override
+    public int getMetadata(int par1) {
+        return par1;
+    }
 
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
-		int meta = stack.getItemDamage();
-		switch (meta){
-			case 0:
-				list.add("Permanent Activation (Consume Key)");
-				break;
-			case 1:
-				list.add("Button Activation");
-				break;
-			case 2:
-				list.add("Toggle Activation");
-				break;
-			case 3:
-				list.add("Button Activation (Consume Key)");
-				break;
-		}
-	}
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
+        int meta = stack.getItemDamage();
+        switch (meta) {
+            case 0:
+                list.add("Permanent Activation (Consume Key)");
+                break;
+            case 1:
+                list.add("Button Activation");
+                break;
+            case 2:
+                list.add("Toggle Activation");
+                break;
+            case 3:
+                list.add("Button Activation (Consume Key)");
+                break;
+        }
+    }
 }

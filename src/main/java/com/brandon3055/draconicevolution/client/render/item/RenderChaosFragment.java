@@ -12,35 +12,36 @@ import org.lwjgl.opengl.GL11;
  * Created by brandon3055 on 1/10/2015.
  */
 public class RenderChaosFragment implements IItemRenderer {
-	private static IModelCustom model = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
+    private static IModelCustom model = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
 
-	private static ModelStaffOfTheGreatOne staff = new ModelStaffOfTheGreatOne();
+    private static ModelStaffOfTheGreatOne staff = new ModelStaffOfTheGreatOne();
 
-	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return true;
-	}
+    @Override
+    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
+        return true;
+    }
 
-	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-		return true;
-	}
+    @Override
+    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
+        return true;
+    }
 
-	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-		GL11.glPushMatrix();
+    @Override
+    public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
+        GL11.glPushMatrix();
 
-		if (type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON) GL11.glTranslated(0.5, 0.5, 0.5);
-		if (type != ItemRenderType.ENTITY) GL11.glRotatef(45, -1, 0, -1);
-		else GL11.glRotatef(45, -1, 0, 0);
+        if (type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+            GL11.glTranslated(0.5, 0.5, 0.5);
+        if (type != ItemRenderType.ENTITY) GL11.glRotatef(45, -1, 0, -1);
+        else GL11.glRotatef(45, -1, 0, 0);
 
-		GL11.glScalef(0.4F, 0.4F, 0.4F);
-		float size = 1f / (4 - item.getItemDamage());
-		GL11.glScalef(size, size, size);
+        GL11.glScalef(0.4F, 0.4F, 0.4F);
+        float size = 1f / (4 - item.getItemDamage());
+        GL11.glScalef(size, size, size);
 
-		ResourceHandler.bindResource("textures/models/chaosCrystal.png");
-		model.renderAll();
+        ResourceHandler.bindResource("textures/models/chaosCrystal.png");
+        model.renderAll();
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 }

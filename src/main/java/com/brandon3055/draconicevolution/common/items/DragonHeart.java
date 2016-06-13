@@ -10,20 +10,20 @@ import net.minecraft.world.World;
 
 public class DragonHeart extends ItemDE {
 
-	public DragonHeart() {
-		this.setUnlocalizedName(Strings.dragonHeartName);
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		this.setMaxStackSize(1);
-		ModItems.register(this);
-	}
+    public DragonHeart() {
+        this.setUnlocalizedName(Strings.dragonHeartName);
+        this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+        this.setMaxStackSize(1);
+        ModItems.register(this);
+    }
 
-	@Override
-	public boolean hasCustomEntity(ItemStack stack) {
-		return true;
-	}
+    @Override
+    public boolean hasCustomEntity(ItemStack stack) {
+        return true;
+    }
 
-	@Override
-	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-		return new EntityPersistentItem(world, location, itemstack);
-	}
+    @Override
+    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+        return new EntityPersistentItem(world, location, itemstack);
+    }
 }

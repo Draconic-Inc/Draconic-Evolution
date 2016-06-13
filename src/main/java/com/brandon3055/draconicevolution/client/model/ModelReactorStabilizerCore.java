@@ -253,34 +253,34 @@ public class ModelReactorStabilizerCore extends ModelBase {
 
     @Override
     public void render(Entity entity, float rotation, float brightness, float f2, float f3, float f4, float f5) {
-		GL11.glPushMatrix();
+        GL11.glPushMatrix();
 
-		this.basePlate.render(f5);
+        this.basePlate.render(f5);
 
-		GL11.glRotatef(rotation, 0F, 0F, 1F);
-		this.hub1.render(f5);
-		GL11.glRotatef(rotation * 2F, 0F, 0F, -1F);
-		this.hub2.render(f5);
+        GL11.glRotatef(rotation, 0F, 0F, 1F);
+        this.hub1.render(f5);
+        GL11.glRotatef(rotation * 2F, 0F, 0F, -1F);
+        this.hub2.render(f5);
 
-		float lastBrightnessX = OpenGlHelper.lastBrightnessX;
-		float lastBrightnessY = OpenGlHelper.lastBrightnessY;
+        float lastBrightnessX = OpenGlHelper.lastBrightnessX;
+        float lastBrightnessY = OpenGlHelper.lastBrightnessY;
 
-		float b = brightness * 200F;
-		float colour = Math.min(2F, (brightness*2F) + 0.1F);
-		if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
+        float b = brightness * 200F;
+        float colour = Math.min(2F, (brightness * 2F) + 0.1F);
+        if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
 
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
-		GL11.glColor4f(colour, colour, colour, 1F);
-		this.rotor2R.render(f5);
-		GL11.glRotatef(rotation * 2F, 0F, 0F, 1F);
-		this.rotor1R.render(f5);
-		GL11.glColor4f(1F, 1F, 1F, 1F);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
+        GL11.glColor4f(colour, colour, colour, 1F);
+        this.rotor2R.render(f5);
+        GL11.glRotatef(rotation * 2F, 0F, 0F, 1F);
+        this.rotor1R.render(f5);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
 
-		if (brightness > 0F) GL11.glEnable(GL11.GL_LIGHTING);
+        if (brightness > 0F) GL11.glEnable(GL11.GL_LIGHTING);
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

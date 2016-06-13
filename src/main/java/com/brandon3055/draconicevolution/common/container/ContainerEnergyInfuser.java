@@ -12,78 +12,75 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerEnergyInfuser extends ContainerDataSync {
 
-	private TileEnergyInfuser tile;
-	private EntityPlayer player;
-	private int lastTickEnergyStorage = -1;
+    private TileEnergyInfuser tile;
+    private EntityPlayer player;
+    private int lastTickEnergyStorage = -1;
 
-	public ContainerEnergyInfuser(InventoryPlayer invPlayer, TileEnergyInfuser tile) {
-		this.tile = tile;
-		this.player = invPlayer.player;
+    public ContainerEnergyInfuser(InventoryPlayer invPlayer, TileEnergyInfuser tile) {
+        this.tile = tile;
+        this.player = invPlayer.player;
 
-		for (int x = 0; x < 9; x++) {
-			addSlotToContainer(new Slot(invPlayer, x, 8 + 18 * x, 116));
-		}
+        for (int x = 0; x < 9; x++) {
+            addSlotToContainer(new Slot(invPlayer, x, 8 + 18 * x, 116));
+        }
 
-		for (int y = 0; y < 3; y++) {
-			for (int x = 0; x < 9; x++) {
-				addSlotToContainer(new Slot(invPlayer, x + y * 9 + 9, 8 + 18 * x, 58 + y * 18));
-			}
-		}
-		
-		addSlotToContainer(new SlotChargable(tile, 0, 80, 22));
-	}
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < 9; x++) {
+                addSlotToContainer(new Slot(invPlayer, x + y * 9 + 9, 8 + 18 * x, 58 + y * 18));
+            }
+        }
 
-	@Override
-	public boolean canInteractWith(EntityPlayer player)
-	{
-		return tile.isUseableByPlayer(player);
-	}
-	
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int i)
-	{
-		Slot slot = getSlot(i);
+        addSlotToContainer(new SlotChargable(tile, 0, 80, 22));
+    }
 
-		if (slot != null && slot.getHasStack())
-		{
-			ItemStack stack = slot.getStack();
-			ItemStack result = stack.copy();
+    @Override
+    public boolean canInteractWith(EntityPlayer player) {
+        return tile.isUseableByPlayer(player);
+    }
 
-			if (i >= 36){ //To player
-				if (!mergeItemStack(stack, 0, 36, false)){
-					return null;
-				}
-			}else if (stack.stackSize != 1 || !(stack.getItem() instanceof IEnergyContainerItem) || !mergeItemStack(stack, 36, 37, false)){
-				return null;
-			}
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int i) {
+        Slot slot = getSlot(i);
 
-			if (stack.stackSize == 0) {
-				slot.putStack(null);
-			}else{
-				slot.onSlotChanged();
-			}
+        if (slot != null && slot.getHasStack()) {
+            ItemStack stack = slot.getStack();
+            ItemStack result = stack.copy();
 
-			slot.onPickupFromSlot(player, stack);
+            if (i >= 36) { //To player
+                if (!mergeItemStack(stack, 0, 36, false)) {
+                    return null;
+                }
+            } else if (stack.stackSize != 1 || !(stack.getItem() instanceof IEnergyContainerItem) || !mergeItemStack(stack, 36, 37, false)) {
+                return null;
+            }
 
-			return result;
-		}
+            if (stack.stackSize == 0) {
+                slot.putStack(null);
+            } else {
+                slot.onSlotChanged();
+            }
 
-		return null;
-	}
+            slot.onPickupFromSlot(player, stack);
+
+            return result;
+        }
+
+        return null;
+    }
 
 
-	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
-		if (tile.energy.getEnergyStored() != lastTickEnergyStorage){
-			sendObjectToClient(null, 0, tile.energy.getEnergyStored());
-			lastTickEnergyStorage = tile.energy.getEnergyStored();
-		}
-	}
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        if (tile.energy.getEnergyStored() != lastTickEnergyStorage) {
+            sendObjectToClient(null, 0, tile.energy.getEnergyStored());
+            lastTickEnergyStorage = tile.energy.getEnergyStored();
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void receiveSyncData(int index, int value) {
-		tile.energy.setEnergyStored(value);
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void receiveSyncData(int index, int value) {
+        tile.energy.setEnergyStored(value);
+    }
 }

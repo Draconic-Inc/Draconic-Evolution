@@ -19,58 +19,56 @@ public class ModHelper {
     private static Item avaritiaSword;
     private static Item bedrockSword;
 
-	public static void init(){
-		isTConInstalled = Loader.isModLoaded("TConstruct");
+    public static void init() {
+        isTConInstalled = Loader.isModLoaded("TConstruct");
         isAvaritiaInstalled = Loader.isModLoaded("Avaritia");
         isRotaryCraftInstalled = Loader.isModLoaded("RotaryCraft");
-	}
+    }
 
-	public static boolean isHoldingCleaver(EntityPlayer player){
-		if (!isTConInstalled) return false;
-		else if (cleaver == null) cleaver = GameRegistry.findItem("TConstruct", "cleaver");
+    public static boolean isHoldingCleaver(EntityPlayer player) {
+        if (!isTConInstalled) return false;
+        else if (cleaver == null) cleaver = GameRegistry.findItem("TConstruct", "cleaver");
 
-		return cleaver != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(cleaver);
-	}
+        return cleaver != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(cleaver);
+    }
 
-    public static boolean isHoldingAvaritiaSword(EntityPlayer player){
+    public static boolean isHoldingAvaritiaSword(EntityPlayer player) {
         if (!isAvaritiaInstalled) return false;
         else if (avaritiaSword == null) avaritiaSword = GameRegistry.findItem("Avaritia", "Infinity_Sword");
 
         return avaritiaSword != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(avaritiaSword);
     }
 
-    public static boolean isHoldingBedrockSword(EntityPlayer player){
+    public static boolean isHoldingBedrockSword(EntityPlayer player) {
         if (!isRotaryCraftInstalled) return false;
         else if (bedrockSword == null) bedrockSword = GameRegistry.findItem("RotaryCraft", "rotarycraft_item_bedsword");
 
         return bedrockSword != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(bedrockSword);
     }
 
-    public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event){
+    public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event) {
         if (summery == null) return event.ammount;
         EntityPlayer attacker = event.source.getEntity() instanceof EntityPlayer ? (EntityPlayer) event.source.getEntity() : null;
 
-        if (attacker == null){
+        if (attacker == null) {
             return event.ammount;
         }
 
-        if (isHoldingAvaritiaSword(attacker)){
+        if (isHoldingAvaritiaSword(attacker)) {
             event.entityLiving.hurtResistantTime = 0;
             return 300F;
-        }
-        else if (isHoldingBedrockSword(attacker)){
+        } else if (isHoldingBedrockSword(attacker)) {
             summery.entropy += 10;
 
-            if (summery.entropy > 100){
+            if (summery.entropy > 100) {
                 summery.entropy = 100;
             }
 
             return Math.max(event.ammount, Math.min(50F, summery.protectionPoints));
-        }
-        else if (event.source.isUnblockable() || event.source.canHarmInCreative()){
+        } else if (event.source.isUnblockable() || event.source.canHarmInCreative()) {
             summery.entropy += 3;
 
-            if (summery.entropy > 100){
+            if (summery.entropy > 100) {
                 summery.entropy = 100;
             }
 

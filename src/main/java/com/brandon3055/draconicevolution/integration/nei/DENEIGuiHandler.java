@@ -17,25 +17,25 @@ import java.util.List;
  */
 public class DENEIGuiHandler implements INEIGuiHandler {
 
-	public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
-		if (gui instanceof GUIUpgradeModifier && ((GUIUpgradeModifier)gui).inUse) currentVisibility.showNEI = false;
-		else if (gui instanceof GUIToolConfig || gui instanceof GUIManual) currentVisibility.showNEI = false;
-		return currentVisibility;
-	}
+    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+        if (gui instanceof GUIUpgradeModifier && ((GUIUpgradeModifier) gui).inUse) currentVisibility.showNEI = false;
+        else if (gui instanceof GUIToolConfig || gui instanceof GUIManual) currentVisibility.showNEI = false;
+        return currentVisibility;
+    }
 
-	public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
-		return Collections.emptyList();
-	}
+    public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
+        return Collections.emptyList();
+    }
 
-	public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
-		return null;
-	}
+    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
+        return null;
+    }
 
-	public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
-		return false;
-	}
+    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+        return false;
+    }
 
-	public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
-		return false;
-	}
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
+        return false;
+    }
 }

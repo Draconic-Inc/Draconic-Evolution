@@ -12,26 +12,26 @@ import net.minecraft.world.World;
  */
 public class EnergyCrystalItemBlock extends ItemBlock {
 
-	public EnergyCrystalItemBlock(Block block) {
-		super(block);
-		this.setHasSubtypes(true);
-	}
+    public EnergyCrystalItemBlock(Block block) {
+        super(block);
+        this.setHasSubtypes(true);
+    }
 
-	@Override
-	public int getMetadata(int par1) {
-		return par1;
-	}
+    @Override
+    public int getMetadata(int par1) {
+        return par1;
+    }
 
-	@Override
-	public String getUnlocalizedName(ItemStack stack) {
-		return super.getUnlocalizedName(stack) + stack.getItemDamage();
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        return super.getUnlocalizedName(stack) + stack.getItemDamage();
+    }
 
-	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-		boolean b = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
-		TileEnergyTransceiver transceiver = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver ? (TileEnergyTransceiver) world.getTileEntity(x, y, z) : null;
-		if (transceiver != null) transceiver.facing = side;
-		return b;
-	}
+    @Override
+    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
+        boolean b = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+        TileEnergyTransceiver transceiver = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver ? (TileEnergyTransceiver) world.getTileEntity(x, y, z) : null;
+        if (transceiver != null) transceiver.facing = side;
+        return b;
+    }
 }

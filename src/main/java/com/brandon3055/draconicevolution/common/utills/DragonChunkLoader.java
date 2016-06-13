@@ -15,34 +15,31 @@ import java.util.*;
  * Created by brandon3055 on 21/10/2015.
  */
 public class DragonChunkLoader implements LoadingCallback {
-	public static DragonChunkLoader instance;
-	public static Map<EntityChaosGuardian, Ticket> ticketList = new HashMap<EntityChaosGuardian, Ticket>();
+    public static DragonChunkLoader instance;
+    public static Map<EntityChaosGuardian, Ticket> ticketList = new HashMap<EntityChaosGuardian, Ticket>();
     public static boolean hasReportedIssue = false;
 
-	public static void init(){
-		instance = new DragonChunkLoader();
-		MinecraftForge.EVENT_BUS.register(instance);
-		ForgeChunkManager.setForcedChunkLoadingCallback(DraconicEvolution.instance, instance);
-	}
+    public static void init() {
+        instance = new DragonChunkLoader();
+        MinecraftForge.EVENT_BUS.register(instance);
+        ForgeChunkManager.setForcedChunkLoadingCallback(DraconicEvolution.instance, instance);
+    }
 
-	public static void updateLoaded(EntityChaosGuardian guardian){
-		Ticket ticket;
+    public static void updateLoaded(EntityChaosGuardian guardian) {
+        Ticket ticket;
 
-		if (ticketList.containsKey(guardian)) {
-			ticket = ticketList.get(guardian);
-		}
-		else
-		{
-			ticket = ForgeChunkManager.requestTicket(DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
+        if (ticketList.containsKey(guardian)) {
+            ticket = ticketList.get(guardian);
+        } else {
+            ticket = ForgeChunkManager.requestTicket(DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
 
-			if (ticket != null) {
-				ticket.bindEntity(guardian);
-				ticket.setChunkListDepth(9);
-				ticketList.put(guardian, ticket);
+            if (ticket != null) {
+                ticket.bindEntity(guardian);
+                ticket.setChunkListDepth(9);
+                ticketList.put(guardian, ticket);
 
-			}
-			else {
-				if (!hasReportedIssue){
+            } else {
+                if (!hasReportedIssue) {
                     LogHelper.error("##########################################################################################");
                     LogHelper.error("Could not get ticket for dragon");
                     LogHelper.error("Fore some reason forge has denied DE's request for a loader ticket for the chaos guardian");
@@ -51,54 +48,54 @@ public class DragonChunkLoader implements LoadingCallback {
                     LogHelper.error("##########################################################################################");
                     hasReportedIssue = true;
                 }
-				return;
-			}
-		}
+                return;
+            }
+        }
 
-		if (ticket == null || guardian.ticksExisted % 4 != 0) return;
+        if (ticket == null || guardian.ticksExisted % 4 != 0) return;
 
-		Set<ChunkCoordIntPair> dragonChunks = new HashSet<ChunkCoordIntPair>();
+        Set<ChunkCoordIntPair> dragonChunks = new HashSet<ChunkCoordIntPair>();
 
-		for(int xx = guardian.chunkCoordX-1; xx <= guardian.chunkCoordX+1; xx++){
-			for(int zz = guardian.chunkCoordZ-1; zz <= guardian.chunkCoordZ+1; zz++){
-				dragonChunks.add(new ChunkCoordIntPair(xx,zz));
-			}
-		}
+        for (int xx = guardian.chunkCoordX - 1; xx <= guardian.chunkCoordX + 1; xx++) {
+            for (int zz = guardian.chunkCoordZ - 1; zz <= guardian.chunkCoordZ + 1; zz++) {
+                dragonChunks.add(new ChunkCoordIntPair(xx, zz));
+            }
+        }
 
-		Set<ChunkCoordIntPair> toLoad = new HashSet<ChunkCoordIntPair>();
-		Set<ChunkCoordIntPair> toUnload = new HashSet<ChunkCoordIntPair>();
+        Set<ChunkCoordIntPair> toLoad = new HashSet<ChunkCoordIntPair>();
+        Set<ChunkCoordIntPair> toUnload = new HashSet<ChunkCoordIntPair>();
 
-		for (ChunkCoordIntPair pair : ticket.getChunkList()){
-			if (!contains(dragonChunks, pair)) toUnload.add(pair);
-		}
+        for (ChunkCoordIntPair pair : ticket.getChunkList()) {
+            if (!contains(dragonChunks, pair)) toUnload.add(pair);
+        }
 
-		for (ChunkCoordIntPair pair : dragonChunks){
-			if (!contains(ticket.getChunkList(), pair)) toLoad.add(pair);
-		}
+        for (ChunkCoordIntPair pair : dragonChunks) {
+            if (!contains(ticket.getChunkList(), pair)) toLoad.add(pair);
+        }
 
-		for(ChunkCoordIntPair unload : toUnload) ForgeChunkManager.unforceChunk(ticket, unload);
-		for(ChunkCoordIntPair load : toLoad) ForgeChunkManager.forceChunk(ticket, load);
-	}
+        for (ChunkCoordIntPair unload : toUnload) ForgeChunkManager.unforceChunk(ticket, unload);
+        for (ChunkCoordIntPair load : toLoad) ForgeChunkManager.forceChunk(ticket, load);
+    }
 
-	private static boolean contains(Set<ChunkCoordIntPair> set, ChunkCoordIntPair pair){
-		for (ChunkCoordIntPair pair1 : set) if (pair1.equals(pair)) return true;
-		return false;
-	}
+    private static boolean contains(Set<ChunkCoordIntPair> set, ChunkCoordIntPair pair) {
+        for (ChunkCoordIntPair pair1 : set) if (pair1.equals(pair)) return true;
+        return false;
+    }
 
-	public static void stopLoading(EntityChaosGuardian guardian){
-		if (!ticketList.containsKey(guardian)) return;
-		ForgeChunkManager.releaseTicket(ticketList.get(guardian));
-		ticketList.remove(guardian);
-	}
+    public static void stopLoading(EntityChaosGuardian guardian) {
+        if (!ticketList.containsKey(guardian)) return;
+        ForgeChunkManager.releaseTicket(ticketList.get(guardian));
+        ticketList.remove(guardian);
+    }
 
-	@Override
-	public void ticketsLoaded(List<ForgeChunkManager.Ticket> tickets, World world) {
-		if (!tickets.isEmpty()){
-			for (Ticket ticket : tickets){
-				if (ticket.getType() == ForgeChunkManager.Type.ENTITY && ticket.getEntity() instanceof EntityChaosGuardian){
-					updateLoaded((EntityChaosGuardian) ticket.getEntity());
-				}
-			}
-		}
-	}
+    @Override
+    public void ticketsLoaded(List<ForgeChunkManager.Ticket> tickets, World world) {
+        if (!tickets.isEmpty()) {
+            for (Ticket ticket : tickets) {
+                if (ticket.getType() == ForgeChunkManager.Type.ENTITY && ticket.getEntity() instanceof EntityChaosGuardian) {
+                    updateLoaded((EntityChaosGuardian) ticket.getEntity());
+                }
+            }
+        }
+    }
 }

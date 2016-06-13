@@ -13,82 +13,82 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
     @SideOnly(Side.CLIENT)
     private ParticleEnergyField ring;
 
-	public TileEnergyRelay(){}
+    public TileEnergyRelay() {
+    }
 
-	public TileEnergyRelay(int powerTier){
-		this.powerTier = powerTier;
-		this.updateStorage();
-	}
-
-
-	@Override
-	public int getCap() {
-		return 50000 + (powerTier * 4500000);
-	}
-
-	@Override
-	public int getRec() {
-		return  50000 + (powerTier * 4500000);
-	}
-
-	@Override
-	public int getExt() {
-		return  50000 + (powerTier * 4500000);
-	}
-
-	@Override
-	public void updateEntity() {
-		super.updateEntity();
-
-		if (worldObj.isRemote)
-		{
-			ring = DraconicEvolution.proxy.energyField(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0, powerTier == 1, ring, inView > 0);
-			return;
-		}
-	}
+    public TileEnergyRelay(int powerTier) {
+        this.powerTier = powerTier;
+        this.updateStorage();
+    }
 
 
+    @Override
+    public int getCap() {
+        return 50000 + (powerTier * 4500000);
+    }
 
-	@Override
-	public void writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
-	}
+    @Override
+    public int getRec() {
+        return 50000 + (powerTier * 4500000);
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-	}
+    @Override
+    public int getExt() {
+        return 50000 + (powerTier * 4500000);
+    }
+
+    @Override
+    public void updateEntity() {
+        super.updateEntity();
+
+        if (worldObj.isRemote) {
+            ring = DraconicEvolution.proxy.energyField(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0, powerTier == 1, ring, inView > 0);
+            return;
+        }
+    }
+
+
+    @Override
+    public void writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+    }
 
 //	@Override
 //	public double getCapacity() {
 //		return ((double) getEnergyStored(ForgeDirection.UNKNOWN) / (double) getMaxEnergyStored(ForgeDirection.UNKNOWN)) * 100D;
 //	}
 
-	/**Calculates the energy flow based on the local buffer
-	 * and the remote buffer
-	 *return double between 0 to 100*/
-	public double getFlow(double localCap, double remoteCap)
-	{
-		return  Math.max(0, Math.min(100, (localCap - remoteCap) * 100D/*Flow Multiplier*/));
-	}
+    /**
+     * Calculates the energy flow based on the local buffer
+     * and the remote buffer
+     * return double between 0 to 100
+     */
+    public double getFlow(double localCap, double remoteCap) {
+        return Math.max(0, Math.min(100, (localCap - remoteCap) * 100D/*Flow Multiplier*/));
+    }
 
-	@Override
-	public double getBeamX() {
-		return xCoord + 0.5D;
-	}
+    @Override
+    public double getBeamX() {
+        return xCoord + 0.5D;
+    }
 
-	@Override
-	public double getBeamY() {
-		return yCoord + 0.5D;
-	}
+    @Override
+    public double getBeamY() {
+        return yCoord + 0.5D;
+    }
 
-	@Override
-	public double getBeamZ() {
-		return zCoord + 0.5D;
-	}
+    @Override
+    public double getBeamZ() {
+        return zCoord + 0.5D;
+    }
 
-	@Override
-	public int getMaxConnections() {
-		return powerTier == 0 ? 10 : 20;
-	}
+    @Override
+    public int getMaxConnections() {
+        return powerTier == 0 ? 10 : 20;
+    }
 }

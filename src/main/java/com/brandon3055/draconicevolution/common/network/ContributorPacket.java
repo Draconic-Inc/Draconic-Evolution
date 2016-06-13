@@ -11,59 +11,59 @@ import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class ContributorPacket implements IMessage
-{
-	public String contributor;
-	public boolean wings;
-	public boolean badge;
+public class ContributorPacket implements IMessage {
+    public String contributor;
+    public boolean wings;
+    public boolean badge;
 
-	public ContributorPacket() {}
+    public ContributorPacket() {
+    }
 
-	public ContributorPacket(String contributor, boolean wings, boolean badge) {
-		this.contributor = contributor;
-		this.wings = wings;
-		this.badge = badge;
-	}
+    public ContributorPacket(String contributor, boolean wings, boolean badge) {
+        this.contributor = contributor;
+        this.wings = wings;
+        this.badge = badge;
+    }
 
-	@Override
-	public void fromBytes(ByteBuf bytes){
-		this.contributor = ByteBufUtils.readUTF8String(bytes);
-		this.wings = bytes.readBoolean();
-		this.badge = bytes.readBoolean();
-	}
+    @Override
+    public void fromBytes(ByteBuf bytes) {
+        this.contributor = ByteBufUtils.readUTF8String(bytes);
+        this.wings = bytes.readBoolean();
+        this.badge = bytes.readBoolean();
+    }
 
-	@Override
-	public void toBytes(ByteBuf bytes){
-		ByteBufUtils.writeUTF8String(bytes, contributor);
-		bytes.writeBoolean(wings);
-		bytes.writeBoolean(badge);
-	}
+    @Override
+    public void toBytes(ByteBuf bytes) {
+        ByteBufUtils.writeUTF8String(bytes, contributor);
+        bytes.writeBoolean(wings);
+        bytes.writeBoolean(badge);
+    }
 
-	public static class Handler implements IMessageHandler<ContributorPacket, IMessage> {
+    public static class Handler implements IMessageHandler<ContributorPacket, IMessage> {
 
-		@Override
-		public IMessage onMessage(ContributorPacket message, MessageContext ctx) {
-			if (ContributorHandler.contributors.containsKey(message.contributor)){
-				ContributorHandler.Contributor contributor1 = ContributorHandler.contributors.get(message.contributor);
+        @Override
+        public IMessage onMessage(ContributorPacket message, MessageContext ctx) {
+            if (ContributorHandler.contributors.containsKey(message.contributor)) {
+                ContributorHandler.Contributor contributor1 = ContributorHandler.contributors.get(message.contributor);
 
-				if (ctx.side == Side.SERVER){
-					if (!contributor1.isUserValid(ctx.getServerHandler().playerEntity)) return null;
+                if (ctx.side == Side.SERVER) {
+                    if (!contributor1.isUserValid(ctx.getServerHandler().playerEntity)) return null;
 
-					contributor1.contributorWingsEnabled = message.wings;
-					contributor1.patreonBadgeEnabled = message.badge;
+                    contributor1.contributorWingsEnabled = message.wings;
+                    contributor1.patreonBadgeEnabled = message.badge;
 
-					DraconicEvolution.network.sendToAll(message);
-				}
-				else {
-					EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
-					if (!contributor1.isUserValid(player) || message.contributor.equals(player.getCommandSenderName())) return null;
+                    DraconicEvolution.network.sendToAll(message);
+                } else {
+                    EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
+                    if (!contributor1.isUserValid(player) || message.contributor.equals(player.getCommandSenderName()))
+                        return null;
 
-					contributor1.contributorWingsEnabled = message.wings;
-					contributor1.patreonBadgeEnabled = message.badge;
-				}
-			}
+                    contributor1.contributorWingsEnabled = message.wings;
+                    contributor1.patreonBadgeEnabled = message.badge;
+                }
+            }
 
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 }

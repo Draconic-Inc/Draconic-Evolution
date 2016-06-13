@@ -156,23 +156,23 @@ public class ModelReactorEnergyInjector extends ModelBase {
 
     @Override
     public void render(Entity entity, float brightness, float f1, float f2, float f3, float f4, float f5) {
-		this.support1.render(f5);
-		this.BasePlate.render(f5);
-		//this.coreSupports.render(f5);
+        this.support1.render(f5);
+        this.BasePlate.render(f5);
+        //this.coreSupports.render(f5);
 
-		float lastBrightnessX = OpenGlHelper.lastBrightnessX;
-		float lastBrightnessY = OpenGlHelper.lastBrightnessY;
+        float lastBrightnessX = OpenGlHelper.lastBrightnessX;
+        float lastBrightnessY = OpenGlHelper.lastBrightnessY;
 
-		float b = brightness * 200F;
-		float colour = Math.min(2F, (brightness*2F) + 0.5F);
-		if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
-		GL11.glColor4f(colour, colour, colour, 1F);
-		this.element1.render(f5);
-		GL11.glColor4f(1F, 1F, 1F, 1F);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
-		if (brightness > 0F) GL11.glEnable(GL11.GL_LIGHTING);
-	}
+        float b = brightness * 200F;
+        float colour = Math.min(2F, (brightness * 2F) + 0.5F);
+        if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
+        GL11.glColor4f(colour, colour, colour, 1F);
+        this.element1.render(f5);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
+        if (brightness > 0F) GL11.glEnable(GL11.GL_LIGHTING);
+    }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

@@ -13,45 +13,54 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderTileReactorStabilizer extends TileEntitySpecialRenderer {
 
-	public static ModelReactorStabilizerRing modelStabilizerRing = new ModelReactorStabilizerRing();
-	public static ModelReactorStabilizerCore modelStabilizerCore = new ModelReactorStabilizerCore();
+    public static ModelReactorStabilizerRing modelStabilizerRing = new ModelReactorStabilizerRing();
+    public static ModelReactorStabilizerCore modelStabilizerCore = new ModelReactorStabilizerCore();
 
-	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick) {
-		GL11.glPushMatrix();
-		GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+    @Override
+    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick) {
+        GL11.glPushMatrix();
+        GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 
-		renderCore((TileReactorStabilizer) tileEntity, partialTick);
-		//renderEffects((TileReactorStabilizer) tileEntity, partialTick);
+        renderCore((TileReactorStabilizer) tileEntity, partialTick);
+        //renderEffects((TileReactorStabilizer) tileEntity, partialTick);
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
-	public static void renderCore(TileReactorStabilizer tile, float partialTick) {
-		GL11.glPushMatrix();
-		float scale = (1F / 16F);
-		float coreRotation = tile.coreRotation + (partialTick * tile.coreSpeed);
-		float ringRotation = tile.ringRotation + (partialTick * tile.ringSpeed);
+    public static void renderCore(TileReactorStabilizer tile, float partialTick) {
+        GL11.glPushMatrix();
+        float scale = (1F / 16F);
+        float coreRotation = tile.coreRotation + (partialTick * tile.coreSpeed);
+        float ringRotation = tile.ringRotation + (partialTick * tile.ringSpeed);
 
-		switch (tile.facingDirection){
-			case 0:	GL11.glRotated(90, -1, 0, 0); break;
-			case 1:	GL11.glRotated(90, 1, 0, 0); break;
-			case 3:	GL11.glRotated(180, 1, 0, 0); break;
-			case 4: GL11.glRotated(90, 0, 1, 0); break;
-			case 5:	GL11.glRotated(90, 0, -1, 0);
-		}
+        switch (tile.facingDirection) {
+            case 0:
+                GL11.glRotated(90, -1, 0, 0);
+                break;
+            case 1:
+                GL11.glRotated(90, 1, 0, 0);
+                break;
+            case 3:
+                GL11.glRotated(180, 1, 0, 0);
+                break;
+            case 4:
+                GL11.glRotated(90, 0, 1, 0);
+                break;
+            case 5:
+                GL11.glRotated(90, 0, -1, 0);
+        }
 
-		ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
-		modelStabilizerCore.render(null, coreRotation, tile.modelIllumination, 0F, 0F, 0F, scale);
+        ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
+        modelStabilizerCore.render(null, coreRotation, tile.modelIllumination, 0F, 0F, 0F, scale);
 
-		ResourceHandler.bindResource("textures/models/reactorStabilizerRing.png");
-		GL11.glRotated(90, 1, 0, 0);
-		GL11.glTranslated(0, -0.58, 0);
-		GL11.glScaled(0.95, 0.95, 0.95);
-		GL11.glRotatef(ringRotation, 0, 1, 0);
-		modelStabilizerRing.render(null, -70F, tile.modelIllumination, 0F, 0F, 0F, scale);
-		GL11.glPopMatrix();
-	}
+        ResourceHandler.bindResource("textures/models/reactorStabilizerRing.png");
+        GL11.glRotated(90, 1, 0, 0);
+        GL11.glTranslated(0, -0.58, 0);
+        GL11.glScaled(0.95, 0.95, 0.95);
+        GL11.glRotatef(ringRotation, 0, 1, 0);
+        modelStabilizerRing.render(null, -70F, tile.modelIllumination, 0F, 0F, 0F, scale);
+        GL11.glPopMatrix();
+    }
 
 //	public static void renderEffects(TileReactorStabilizer tile, float partialTick) {
 //		if (tile.isValid)

@@ -82,39 +82,38 @@ public class ModelChaosCrystal extends ModelBase {
         this.ringBase2.addChild(this.RingSegment1_1);
     }
 
-	public void render(Entity entity, float f1, float f2, float f3, float deathAnimation, float health, float scale) {
-		GL11.glPushMatrix();
-		GL11.glScalef(2.0F, 2.0F, 2.0F);
-		GL11.glTranslatef(0.0F, -0.5F, 0.0F);
+    public void render(Entity entity, float f1, float f2, float f3, float deathAnimation, float health, float scale) {
+        GL11.glPushMatrix();
+        GL11.glScalef(2.0F, 2.0F, 2.0F);
+        GL11.glTranslatef(0.0F, -0.5F, 0.0F);
 
-		if (this.base != null)
-		{
-			this.base.render(scale);
-		}
+        if (this.base != null) {
+            this.base.render(scale);
+        }
 
-		GL11.glPushMatrix();
-		float s = 1.1F + (float) Math.sin(f2 / 20) * 0.1F;
-		GL11.glTranslatef(0.0F, 0.1F + deathAnimation * 0.9F, 0.0F);
-		GL11.glRotatef(f2 * 2, 0.0F, 1.0F, 0.1F);
-		GL11.glScalef(s, s, s);
-		this.ringBase1.render(scale);
-		GL11.glPopMatrix();
+        GL11.glPushMatrix();
+        float s = 1.1F + (float) Math.sin(f2 / 20) * 0.1F;
+        GL11.glTranslatef(0.0F, 0.1F + deathAnimation * 0.9F, 0.0F);
+        GL11.glRotatef(f2 * 2, 0.0F, 1.0F, 0.1F);
+        GL11.glScalef(s, s, s);
+        this.ringBase1.render(scale);
+        GL11.glPopMatrix();
 
-		GL11.glRotatef(f2, 0.0F, 1.0F, 0.0F);
-		GL11.glTranslatef(0.0F, 0.7F + deathAnimation * (0.1F + f3), 0.0F);
-		GL11.glRotatef(60.0F, 0.7071F, 0.0F, 0.7071F);
-		this.glass.render(scale);
-		float f6 = 0.875F;
-		GL11.glScalef(f6, f6, f6);
-		GL11.glRotatef(60.0F, 0.7071F, 0.0F, 0.7071F);
-		GL11.glRotatef(f2, 0.0F, 1.0F, 0.0F);
-		this.glass.render(scale);
-		GL11.glScalef(f6, f6, f6);
-		GL11.glRotatef(60.0F, 0.7071F, 0.0F, 0.7071F);
-		GL11.glRotatef(f2, 0.0F, 1.0F, 0.0F);
-		this.cube.render(scale);
-		GL11.glPopMatrix();
-	}
+        GL11.glRotatef(f2, 0.0F, 1.0F, 0.0F);
+        GL11.glTranslatef(0.0F, 0.7F + deathAnimation * (0.1F + f3), 0.0F);
+        GL11.glRotatef(60.0F, 0.7071F, 0.0F, 0.7071F);
+        this.glass.render(scale);
+        float f6 = 0.875F;
+        GL11.glScalef(f6, f6, f6);
+        GL11.glRotatef(60.0F, 0.7071F, 0.0F, 0.7071F);
+        GL11.glRotatef(f2, 0.0F, 1.0F, 0.0F);
+        this.glass.render(scale);
+        GL11.glScalef(f6, f6, f6);
+        GL11.glRotatef(60.0F, 0.7071F, 0.0F, 0.7071F);
+        GL11.glRotatef(f2, 0.0F, 1.0F, 0.0F);
+        this.cube.render(scale);
+        GL11.glPopMatrix();
+    }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

@@ -9,39 +9,37 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class TileCustomSpawner extends TileEntity
-{
-	public boolean isSetToSpawn = false;
-	public EntityPlayer owner;
+public class TileCustomSpawner extends TileEntity {
+    public boolean isSetToSpawn = false;
+    public EntityPlayer owner;
 
-	private final CustomSpawnerBaseLogic spawnerBaseLogic = new CustomSpawnerBaseLogic(){
-		public void blockEvent(int par1)
-		{
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, Blocks.mob_spawner, par1, 0);
-		}
-		public World getSpawnerWorld()
-		{
-			return worldObj;
-		}
-		public int getSpawnerX()
-		{
-			return xCoord;
-		}
-		public int getSpawnerY()
-		{
-			return yCoord;
-		}
-		public int getSpawnerZ()
-		{
-			return zCoord;
-		}
-	};
+    private final CustomSpawnerBaseLogic spawnerBaseLogic = new CustomSpawnerBaseLogic() {
+        public void blockEvent(int par1) {
+            worldObj.addBlockEvent(xCoord, yCoord, zCoord, Blocks.mob_spawner, par1, 0);
+        }
 
-	public void updateEntity(){
-		if (isSetToSpawn) {
-			spawnerBaseLogic.updateSpawner();
-		}
-		/*
+        public World getSpawnerWorld() {
+            return worldObj;
+        }
+
+        public int getSpawnerX() {
+            return xCoord;
+        }
+
+        public int getSpawnerY() {
+            return yCoord;
+        }
+
+        public int getSpawnerZ() {
+            return zCoord;
+        }
+    };
+
+    public void updateEntity() {
+        if (isSetToSpawn) {
+            spawnerBaseLogic.updateSpawner();
+        }
+        /*
 		else if (trySet && owner != null){
 
 			if (worldObj.isRemote) spawnParticles(false);
@@ -81,34 +79,33 @@ public class TileCustomSpawner extends TileEntity
 			trySet = false;
 		}
 		*/
-	}
+    }
 
-	public void writeToNBT(NBTTagCompound tagCompound){
-		super.writeToNBT(tagCompound);
-		spawnerBaseLogic.writeToNBT(tagCompound);
-		tagCompound.setBoolean("Running", isSetToSpawn);
-	}
+    public void writeToNBT(NBTTagCompound tagCompound) {
+        super.writeToNBT(tagCompound);
+        spawnerBaseLogic.writeToNBT(tagCompound);
+        tagCompound.setBoolean("Running", isSetToSpawn);
+    }
 
-	public void readFromNBT(NBTTagCompound tagCompound){
-		super.readFromNBT(tagCompound);
-		spawnerBaseLogic.readFromNBT(tagCompound);
-		isSetToSpawn = tagCompound.getBoolean("Running");
-	}
+    public void readFromNBT(NBTTagCompound tagCompound) {
+        super.readFromNBT(tagCompound);
+        spawnerBaseLogic.readFromNBT(tagCompound);
+        isSetToSpawn = tagCompound.getBoolean("Running");
+    }
 
-	@Override
-	public Packet getDescriptionPacket(){
-		NBTTagCompound nbttagcompound = new NBTTagCompound();
-		writeToNBT(nbttagcompound);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbttagcompound);
-	}
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        writeToNBT(nbttagcompound);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbttagcompound);
+    }
 
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-		readFromNBT(pkt.func_148857_g());
-	}
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.func_148857_g());
+    }
 
-	public CustomSpawnerBaseLogic getBaseLogic()
-	{
-		return spawnerBaseLogic;
-	}
+    public CustomSpawnerBaseLogic getBaseLogic() {
+        return spawnerBaseLogic;
+    }
 }

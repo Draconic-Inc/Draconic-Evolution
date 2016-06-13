@@ -23,73 +23,73 @@ import java.util.List;
  * Created by brandon3055 on 23/12/2015.
  */
 public class UpgradeModifier extends BlockCustomDrop {
-	public UpgradeModifier() {
-		super(Material.iron);
-		this.setBlockName("upgradeModifier");
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		this.setStepSound(soundTypeStone);
-		this.setBlockBounds(0f, 0f, 0f, 1f, 0.375f, 1f);
-		ModBlocks.register(this);
-	}
+    public UpgradeModifier() {
+        super(Material.iron);
+        this.setBlockName("upgradeModifier");
+        this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+        this.setStepSound(soundTypeStone);
+        this.setBlockBounds(0f, 0f, 0f, 1f, 0.375f, 1f);
+        ModBlocks.register(this);
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister iconRegister) {
-		//blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        //blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
+    }
 
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		return new TileUpgradeModifier();
-	}
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta) {
+        return new TileUpgradeModifier();
+    }
 
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
-		if (!world.isRemote) {
-			FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_UPGRADE_MODIFIER, world, x, y, z);
-		}
-		world.markBlockForUpdate(x, y, z);
-		return true;
-	}
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
+        if (!world.isRemote) {
+            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_UPGRADE_MODIFIER, world, x, y, z);
+        }
+        world.markBlockForUpdate(x, y, z);
+        return true;
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public int getRenderType() {
-		return -1;
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
 
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
-	}
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
 
-	@Override
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
 
-	@Override
-	protected boolean dropInventory() {
-		return true;
-	}
+    @Override
+    protected boolean dropInventory() {
+        return true;
+    }
 
-	@Override
-	protected boolean hasCustomDropps() {
-		return false;
-	}
+    @Override
+    protected boolean hasCustomDropps() {
+        return false;
+    }
 
-	@Override
-	protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
+    @Override
+    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
 
-	}
+    }
 
-	@Override
-	public boolean shouldSideBeRendered(IBlockAccess access, int x, int y, int z, int side) {
-		return false;
-	}
+    @Override
+    public boolean shouldSideBeRendered(IBlockAccess access, int x, int y, int z, int side) {
+        return false;
+    }
 
-	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
-		return side == ForgeDirection.DOWN;
-	}
+    @Override
+    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+        return side == ForgeDirection.DOWN;
+    }
 }

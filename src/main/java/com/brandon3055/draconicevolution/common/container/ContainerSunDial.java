@@ -8,28 +8,26 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerSunDial extends Container {
 
-	private TileSunDial tile;
+    private TileSunDial tile;
 
-	public ContainerSunDial(InventoryPlayer invPlayer, TileSunDial tile) {
-		this.tile = tile;
+    public ContainerSunDial(InventoryPlayer invPlayer, TileSunDial tile) {
+        this.tile = tile;
 
-	}
+    }
 
-	@Override
-	public boolean canInteractWith(EntityPlayer player)
-	{
-		return tile.isUseableByPlayer(player);
-	}
+    @Override
+    public boolean canInteractWith(EntityPlayer player) {
+        return tile.isUseableByPlayer(player);
+    }
 
-	
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
-	{
-		return null;
-	}
 
-	public TileSunDial getTile(){
-		return tile;
-	}
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
+        return null;
+    }
+
+    public TileSunDial getTile() {
+        return tile;
+    }
 
 }

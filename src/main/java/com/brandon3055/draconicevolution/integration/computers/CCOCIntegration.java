@@ -18,44 +18,43 @@ import net.minecraft.world.World;
  */
 public class CCOCIntegration {
 
-	public static void init() {
-		if (Loader.isModLoaded("ComputerCraft")) initCC();
-		if (Loader.isModLoaded("OpenComputers")) initOC();
-	}
+    public static void init() {
+        if (Loader.isModLoaded("ComputerCraft")) initCC();
+        if (Loader.isModLoaded("OpenComputers")) initOC();
+    }
 
-	@Optional.Method(modid = "ComputerCraft")
-	public static void initCC() {
-		ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
-	}
+    @Optional.Method(modid = "ComputerCraft")
+    public static void initCC() {
+        ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
+    }
 
-	@Optional.Method(modid = "OpenComputers")
-	public static void initOC() {
-		Driver.add(new OCAdapter());
-	}
+    @Optional.Method(modid = "OpenComputers")
+    public static void initOC() {
+        Driver.add(new OCAdapter());
+    }
 
-	public static class OCAdapter extends DriverTileEntity {
+    public static class OCAdapter extends DriverTileEntity {
 
-		@Override
-		public Class<?> getTileEntityClass() {
-			return IDEPeripheral.class;
-		}
+        @Override
+        public Class<?> getTileEntityClass() {
+            return IDEPeripheral.class;
+        }
 
-		@Override
-		public ManagedEnvironment createEnvironment(World world, int x, int y, int z) {
-			return new DEManagedPeripheral((IDEPeripheral)world.getTileEntity(x, y, z));
-		}
-	}
+        @Override
+        public ManagedEnvironment createEnvironment(World world, int x, int y, int z) {
+            return new DEManagedPeripheral((IDEPeripheral) world.getTileEntity(x, y, z));
+        }
+    }
 
-	public static class DEPeripheralProvider implements IPeripheralProvider {
+    public static class DEPeripheralProvider implements IPeripheralProvider {
 
-		@Override
-		public IPeripheral getPeripheral(World world, int x, int y, int z, int i3) {
-			TileEntity tile = world.getTileEntity(x, y, z);
-			if (tile instanceof IDEPeripheral) {
-				return new CCAdapter((IDEPeripheral)tile);
-			}
-			else return null;
-		}
-	}
+        @Override
+        public IPeripheral getPeripheral(World world, int x, int y, int z, int i3) {
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof IDEPeripheral) {
+                return new CCAdapter((IDEPeripheral) tile);
+            } else return null;
+        }
+    }
 
 }

@@ -25,53 +25,54 @@ import java.util.List;
  */
 public class InfusedObsidian extends BlockDE {
 
-	public InfusedObsidian(){
-		super(Material.rock);
-		this.setHardness(100.0F);
-		this.setResistance(4000.0F);
-		this.setBlockName("infusedObsidian");
-		this.setHarvestLevel("pickaxe", 4);
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+    public InfusedObsidian() {
+        super(Material.rock);
+        this.setHardness(100.0F);
+        this.setResistance(4000.0F);
+        this.setBlockName("infusedObsidian");
+        this.setHarvestLevel("pickaxe", 4);
+        this.setCreativeTab(DraconicEvolution.tabBlocksItems);
 
-		ModBlocks.register(this, InfusedObsidianItemBlock.class);
-	}
+        ModBlocks.register(this, InfusedObsidianItemBlock.class);
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister iconRegister) {
-		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/infusedObsidian");
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/infusedObsidian");
+    }
 
-	@Override
-	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
-		return entity instanceof EntityPlayer;
-	}
+    @Override
+    public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
+        return entity instanceof EntityPlayer;
+    }
 
-	@Override
-	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {}
+    @Override
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
+    }
 
-	@Override
-	public float getExplosionResistance(Entity par1Entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ) {
-		return super.getExplosionResistance(par1Entity, world, x, y, z, explosionX, explosionY, explosionZ);
-	}
+    @Override
+    public float getExplosionResistance(Entity par1Entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ) {
+        return super.getExplosionResistance(par1Entity, world, x, y, z, explosionX, explosionY, explosionZ);
+    }
 
-	@Override
-	public boolean canDropFromExplosion(Explosion p_149659_1_) {
-		return false;
-	}
+    @Override
+    public boolean canDropFromExplosion(Explosion p_149659_1_) {
+        return false;
+    }
 
-	public static class InfusedObsidianItemBlock extends ItemBlock {
+    public static class InfusedObsidianItemBlock extends ItemBlock {
 
-		public InfusedObsidianItemBlock(Block p_i45328_1_) {
-			super(p_i45328_1_);
-		}
+        public InfusedObsidianItemBlock(Block p_i45328_1_) {
+            super(p_i45328_1_);
+        }
 
-		@SideOnly(Side.CLIENT)
-		@SuppressWarnings("unchecked")
-		@Override
-		public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
-			list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("info.infusedObsidian.txt"));
-			super.addInformation(p_77624_1_, p_77624_2_, list, p_77624_4_);
-		}
-	}
+        @SideOnly(Side.CLIENT)
+        @SuppressWarnings("unchecked")
+        @Override
+        public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
+            list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("info.infusedObsidian.txt"));
+            super.addInformation(p_77624_1_, p_77624_2_, list, p_77624_4_);
+        }
+    }
 }

@@ -23,114 +23,112 @@ public class DraconicShovel extends MiningTool implements IInventoryTool, IRende
 //	public IIcon itemIcon1;
 //	public IIcon itemIcon2;
 
-	public DraconicShovel() {
-		super(ModItems.AWAKENED);
-		this.setHarvestLevel("shovel", 10);
-		this.setUnlocalizedName(Strings.draconicShovelName);
-		this.setCapacity(BalanceConfigHandler.draconicToolsBaseStorage);
-		this.setMaxExtract(BalanceConfigHandler.draconicToolsMaxTransfer);
-		this.setMaxReceive(BalanceConfigHandler.draconicToolsMaxTransfer);
-		this.energyPerOperation = BalanceConfigHandler.draconicToolsEnergyPerAction;
-		ModItems.register(this);
-	}
+    public DraconicShovel() {
+        super(ModItems.AWAKENED);
+        this.setHarvestLevel("shovel", 10);
+        this.setUnlocalizedName(Strings.draconicShovelName);
+        this.setCapacity(BalanceConfigHandler.draconicToolsBaseStorage);
+        this.setMaxExtract(BalanceConfigHandler.draconicToolsMaxTransfer);
+        this.setMaxReceive(BalanceConfigHandler.draconicToolsMaxTransfer);
+        this.energyPerOperation = BalanceConfigHandler.draconicToolsEnergyPerAction;
+        ModItems.register(this);
+    }
 
-	@Override
-	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
-		List<ItemConfigField> list = super.getFields(stack, slot);
-		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
-		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH).setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1).readFromItem(stack, 1));
-		list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.OBLITERATE).readFromItem(stack, false));
-		return list;
-	}
+    @Override
+    public List<ItemConfigField> getFields(ItemStack stack, int slot) {
+        List<ItemConfigField> list = super.getFields(stack, slot);
+        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
+        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH).setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1).readFromItem(stack, 1));
+        list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.OBLITERATE).readFromItem(stack, false));
+        return list;
+    }
 
-	@Override
-	public String getInventoryName() {
-		return StatCollector.translateToLocal("info.de.toolInventoryOblit.txt");
-	}
+    @Override
+    public String getInventoryName() {
+        return StatCollector.translateToLocal("info.de.toolInventoryOblit.txt");
+    }
 
-	@Override
-	public int getInventorySlots() {
-		return 9;
-	}
+    @Override
+    public int getInventorySlots() {
+        return 9;
+    }
 
-	@Override
-	public boolean isEnchantValid(Enchantment enchant) {
-		return enchant.type == EnumEnchantmentType.digger;
-	}
+    @Override
+    public boolean isEnchantValid(Enchantment enchant) {
+        return enchant.type == EnumEnchantmentType.digger;
+    }
 
-	@Override
-	public void tweakRender(IItemRenderer.ItemRenderType type) {
-		GL11.glTranslated(0.15, 0.9, -0.12);
-		GL11.glRotatef(90, 1, 0, 0);
-		GL11.glRotatef(140, 0, -1, 0);
-		GL11.glScaled(0.7, 0.7, 0.7);
-		if (type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
-			GL11.glRotatef(180, 0, 0, 1);
-			GL11.glTranslated(0, -0.4, 0);
-		}
-		else if (type == IItemRenderer.ItemRenderType.INVENTORY){
-			GL11.glRotatef(180, 0, 0, 1);
-			GL11.glScalef(10, 10, 10);
-			GL11.glRotatef(180, 0, 1, 0);
-			GL11.glTranslated(-1.45, 0, -0.15);
-		}
-		else if (type == IItemRenderer.ItemRenderType.ENTITY){
-			GL11.glRotatef(-90.5F, 0, 1, 0);
-			GL11.glTranslated(-0.38, 0, -0.6);
-		}
-	}
+    @Override
+    public void tweakRender(IItemRenderer.ItemRenderType type) {
+        GL11.glTranslated(0.15, 0.9, -0.12);
+        GL11.glRotatef(90, 1, 0, 0);
+        GL11.glRotatef(140, 0, -1, 0);
+        GL11.glScaled(0.7, 0.7, 0.7);
+        if (type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
+            GL11.glRotatef(180, 0, 0, 1);
+            GL11.glTranslated(0, -0.4, 0);
+        } else if (type == IItemRenderer.ItemRenderType.INVENTORY) {
+            GL11.glRotatef(180, 0, 0, 1);
+            GL11.glScalef(10, 10, 10);
+            GL11.glRotatef(180, 0, 1, 0);
+            GL11.glTranslated(-1.45, 0, -0.15);
+        } else if (type == IItemRenderer.ItemRenderType.ENTITY) {
+            GL11.glRotatef(-90.5F, 0, 1, 0);
+            GL11.glTranslated(-0.38, 0, -0.6);
+        }
+    }
 
-	@Override
-	public int getUpgradeCap(ItemStack itemstack) {
-		return BalanceConfigHandler.draconicToolsMaxUpgrades;
-	}
+    @Override
+    public int getUpgradeCap(ItemStack itemstack) {
+        return BalanceConfigHandler.draconicToolsMaxUpgrades;
+    }
 
-	@Override
-	public int getMaxTier(ItemStack itemstack) {
-		return 2;
-	}
+    @Override
+    public int getMaxTier(ItemStack itemstack) {
+        return 2;
+    }
 
-	@Override
-	public List<String> getUpgradeStats(ItemStack stack) {
-		return super.getUpgradeStats(stack);
-	}
+    @Override
+    public List<String> getUpgradeStats(ItemStack stack) {
+        return super.getUpgradeStats(stack);
+    }
 
-	@Override
-	public int getCapacity(ItemStack stack) {
-		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return BalanceConfigHandler.draconicToolsBaseStorage + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
-	}
+    @Override
+    public int getCapacity(ItemStack stack) {
+        int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+        return BalanceConfigHandler.draconicToolsBaseStorage + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
+    }
 
-	@Override
-	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
-			return BalanceConfigHandler.draconicToolsMaxCapacityUpgradePoints;
-		}
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
-			return BalanceConfigHandler.draconicToolsMaxDigAOEUpgradePoints;
-		}
-		if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
-			return BalanceConfigHandler.draconicToolsMaxDigDepthUpgradePoints;
-		}
-		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
-			return BalanceConfigHandler.draconicToolsMaxDigSpeedUpgradePoints;
-		}
-		return BalanceConfigHandler.draconicToolsMaxUpgradePoints;
-	}
+    @Override
+    public int getMaxUpgradePoints(int upgradeIndex) {
+        if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+            return BalanceConfigHandler.draconicToolsMaxCapacityUpgradePoints;
+        }
+        if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+            return BalanceConfigHandler.draconicToolsMaxDigAOEUpgradePoints;
+        }
+        if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
+            return BalanceConfigHandler.draconicToolsMaxDigDepthUpgradePoints;
+        }
+        if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+            return BalanceConfigHandler.draconicToolsMaxDigSpeedUpgradePoints;
+        }
+        return BalanceConfigHandler.draconicToolsMaxUpgradePoints;
+    }
 
-	@Override
-	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
-			return BalanceConfigHandler.draconicToolsMinDigAOEUpgradePoints;
-		}
-		if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
-			return BalanceConfigHandler.draconicToolsMinDigDepthUpgradePoints;
-		}
-		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
-			return BalanceConfigHandler.draconicToolsMinDigSpeedUpgradePoints;
-		}
-		return 0;
-	}
+    @Override
+    public int getBaseUpgradePoints(int upgradeIndex) {
+        if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+            return BalanceConfigHandler.draconicToolsMinDigAOEUpgradePoints;
+        }
+        if (upgradeIndex == EnumUpgrade.DIG_DEPTH.index) {
+            return BalanceConfigHandler.draconicToolsMinDigDepthUpgradePoints;
+        }
+        if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+            return BalanceConfigHandler.draconicToolsMinDigSpeedUpgradePoints;
+        }
+        return 0;
+    }
 //	@Override
 //	public boolean isItemTool(ItemStack p_77616_1_) {
 //		return true;

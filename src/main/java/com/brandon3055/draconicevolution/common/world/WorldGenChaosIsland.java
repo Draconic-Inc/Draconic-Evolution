@@ -16,116 +16,100 @@ import java.util.Random;
  */
 public class WorldGenChaosIsland {
 
-	private int spawnHeight = 128;
-	private int size;
-	private BlockCollection blockCollection;
-	public boolean initialized = false;
+    private int spawnHeight = 128;
+    private int size;
+    private BlockCollection blockCollection;
+    public boolean initialized = false;
 
-	public void initialize(Random random) {
-		generate(blockCollection, random);
-		initialized = true;
-	}
+    public void initialize(Random random) {
+        generate(blockCollection, random);
+        initialized = true;
+    }
 
-	public BlockCollection getBlocks(Random random){
-		if (!initialized) initialize(random);
-		return blockCollection;
-	}
+    public BlockCollection getBlocks(Random random) {
+        if (!initialized) initialize(random);
+        return blockCollection;
+    }
 
-	public boolean generate(BlockCollection world, Random random) {
-		//LogHelper.info("Generate");
+    public boolean generate(BlockCollection world, Random random) {
+        //LogHelper.info("Generate");
 //		for (int y1 = y - 10; y1 < y + 10; y1++) {
 //			if (world.getBlock(x, y1, z) == Blocks.end_stone) {
 //				//LogHelper.info("cancel");
 //				return false;
 //			}
 //		}
-		size = 400;
+        size = 400;
 
-		generateCentre(world, random);
+        generateCentre(world, random);
 //		generateBelt(world, random, size + 50, size + 200);
 //		generateObelisks(world, random);
 //		EntityChaosGuardian dragon = new EntityChaosGuardian(world);
 //		dragon.setPositionAndUpdate(x, 180, z);
 //		world.spawnEntityInWorld(dragon);
-		return true;
-	}
+        return true;
+    }
 
-	double[] noiseData;
+    double[] noiseData;
 
-	private void generateCentre(BlockCollection blocks, Random rand) {
-		//int centreThikness = 10; //multiplied by 2 and + 1
-		int curve = 2;
-		int diffStart = 20;//(int)((double)size * 0.1D);
-		//int offPoint = size * curve;
+    private void generateCentre(BlockCollection blocks, Random rand) {
+        //int centreThikness = 10; //multiplied by 2 and + 1
+        int curve = 2;
+        int diffStart = 20;//(int)((double)size * 0.1D);
+        //int offPoint = size * curve;
 
-		int coreDiameter = 90;
+        int coreDiameter = 90;
 
-		NoiseGeneratorSimplex simX = new NoiseGeneratorSimplex(rand);
-		NoiseGeneratorSimplex simY = new NoiseGeneratorSimplex(rand);
-		NoiseGeneratorSimplex simZ = new NoiseGeneratorSimplex(rand);
-		NoiseGeneratorImproved generatorImproved = new NoiseGeneratorImproved(rand);
-		generatorImproved.populateNoiseArray(new double[size * 255 * size], 0, 0, 0, size, 255, size, 10, 10, 10, 500);
-		NoiseGeneratorOctaves generatorOctaves = new NoiseGeneratorOctaves(rand, 8);
+        NoiseGeneratorSimplex simX = new NoiseGeneratorSimplex(rand);
+        NoiseGeneratorSimplex simY = new NoiseGeneratorSimplex(rand);
+        NoiseGeneratorSimplex simZ = new NoiseGeneratorSimplex(rand);
+        NoiseGeneratorImproved generatorImproved = new NoiseGeneratorImproved(rand);
+        generatorImproved.populateNoiseArray(new double[size * 255 * size], 0, 0, 0, size, 255, size, 10, 10, 10, 500);
+        NoiseGeneratorOctaves generatorOctaves = new NoiseGeneratorOctaves(rand, 8);
 
-		boolean f = true;
+        boolean f = true;
 
-		int randOffset = rand.nextInt(10000);
+        int randOffset = rand.nextInt(10000);
 
-		for (int x = 0; x <= size; x++) {
-			f = true;
-			for (int z = 0; z <= size; z++) {
-				for (int y = 0; y <= (size / 2); y++) {
+        for (int x = 0; x <= size; x++) {
+            f = true;
+            for (int z = 0; z <= size; z++) {
+                for (int y = 0; y <= (size / 2); y++) {
 
-					double dist = Math.sqrt(x*x + (y-spawnHeight)*(y-spawnHeight) + z*z);
+                    double dist = Math.sqrt(x * x + (y - spawnHeight) * (y - spawnHeight) + z * z);
 
-					double xf, yf, zf;
-					xf=(double)x/size;
-					yf=(double)y/(size/2);
-					zf=(double)z/size;
+                    double xf, yf, zf;
+                    xf = (double) x / size;
+                    yf = (double) y / (size / 2);
+                    zf = (double) z / size;
 
-					double density, center_falloff, plateau_falloff, densityZ;
-
-
-					center_falloff = 0.1;///(Math.pow((xf - 0.5) * 1.5, 2) + Math.pow((yf - 1.0) * 0.8, 2) + Math.pow((zf - 0.5) * 1.5, 2));
-
-					double diameterScale = 100D;
-					//center_falloff = 1;//(1D - (dist / diameterScale)) * 4D;
-					if (center_falloff < 0) center_falloff = 0;
-
-					if(yf <= 0.8){
-						plateau_falloff = 1.0;
-					}
-					else if(0.8 < yf && yf < 0.9){
-						plateau_falloff = 1.0-(yf-0.8)*10.0;
-					}
-					else{
-						plateau_falloff = 0.0;
-					}
-
-					density = 0.1;
-					for (int octave = 0; octave < 4; octave++)
-					{
-						//density += Math.abs(SimplexNoise.noise(xf*Math.pow(2, octave), yf*Math.pow(2, octave), zf*Math.pow(2, octave)));
-					}
-
-					density *= center_falloff * plateau_falloff;
-
-					//if (y % 50 == 0) LogHelper.info((density) + " " + center_falloff + " " + yf);
-					//LogHelper.info(yf);
-					f = false;
+                    double density, center_falloff, plateau_falloff, densityZ;
 
 
+                    center_falloff = 0.1;///(Math.pow((xf - 0.5) * 1.5, 2) + Math.pow((yf - 1.0) * 0.8, 2) + Math.pow((zf - 0.5) * 1.5, 2));
 
+                    double diameterScale = 100D;
+                    //center_falloff = 1;//(1D - (dist / diameterScale)) * 4D;
+                    if (center_falloff < 0) center_falloff = 0;
 
+                    if (yf <= 0.8) {
+                        plateau_falloff = 1.0;
+                    } else if (0.8 < yf && yf < 0.9) {
+                        plateau_falloff = 1.0 - (yf - 0.8) * 10.0;
+                    } else {
+                        plateau_falloff = 0.0;
+                    }
 
+                    density = 0.1;
+                    for (int octave = 0; octave < 4; octave++) {
+                        //density += Math.abs(SimplexNoise.noise(xf*Math.pow(2, octave), yf*Math.pow(2, octave), zf*Math.pow(2, octave)));
+                    }
 
+                    density *= center_falloff * plateau_falloff;
 
-
-
-
-
-
-
+                    //if (y % 50 == 0) LogHelper.info((density) + " " + center_falloff + " " + yf);
+                    //LogHelper.info(yf);
+                    f = false;
 
 
 //					//setup fields
@@ -140,59 +124,56 @@ public class WorldGenChaosIsland {
 //					}
 //
 
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
-	public static void generate(World world, int trueX, int y, int trueZ, int offsetX, int offsetZ){
-		int x = trueX - offsetX;
-		int z = trueZ - offsetZ;
+    public static void generate(World world, int trueX, int y, int trueZ, int offsetX, int offsetZ) {
+        int x = trueX - offsetX;
+        int z = trueZ - offsetZ;
 
-		int size = 300;
+        int size = 300;
 
-		//double dist = Math.sqrt(x*x + (y-spawnHeight)*(y-spawnHeight) + z*z);
+        //double dist = Math.sqrt(x*x + (y-spawnHeight)*(y-spawnHeight) + z*z);
 
-		double xf, yf, zf;
-		xf=(double)x/size;
-		yf=(double)y/(256);
-		zf=(double)z/size;
+        double xf, yf, zf;
+        xf = (double) x / size;
+        yf = (double) y / (256);
+        zf = (double) z / size;
 
-		double density, center_falloff, plateau_falloff, densityZ;
+        double density, center_falloff, plateau_falloff, densityZ;
 
 
-		center_falloff = 0.1;///(Math.pow((xf - 0.5) * 1.5, 2) + Math.pow((yf - 1.0) * 0.8, 2) + Math.pow((zf - 0.5) * 1.5, 2));
+        center_falloff = 0.1;///(Math.pow((xf - 0.5) * 1.5, 2) + Math.pow((yf - 1.0) * 0.8, 2) + Math.pow((zf - 0.5) * 1.5, 2));
 
-		double diameterScale = 100D;
-		//center_falloff = 1;//(1D - (dist / diameterScale)) * 4D;
-		if (center_falloff < 0) center_falloff = 0;
+        double diameterScale = 100D;
+        //center_falloff = 1;//(1D - (dist / diameterScale)) * 4D;
+        if (center_falloff < 0) center_falloff = 0;
 
-		if(yf <= 0.8){
-			plateau_falloff = 1.0;
-		}
-		else if(0.8 < yf && yf < 0.9){
-			plateau_falloff = 1.0-(yf-0.8)*10.0;
-		}
-		else{
-			plateau_falloff = 0.0;
-		}
+        if (yf <= 0.8) {
+            plateau_falloff = 1.0;
+        } else if (0.8 < yf && yf < 0.9) {
+            plateau_falloff = 1.0 - (yf - 0.8) * 10.0;
+        } else {
+            plateau_falloff = 0.0;
+        }
 
-		density = 0.1;
-		for (int octave = 0; octave < 4; octave++)
-		{
-			density += Math.abs(SimplexNoise.noise(xf * Math.pow(2, octave), yf * Math.pow(2, octave), zf * Math.pow(2, octave)));
-		}
+        density = 0.1;
+        for (int octave = 0; octave < 4; octave++) {
+            density += Math.abs(SimplexNoise.noise(xf * Math.pow(2, octave), yf * Math.pow(2, octave), zf * Math.pow(2, octave)));
+        }
 
-		//density *= center_falloff * plateau_falloff;
+        //density *= center_falloff * plateau_falloff;
 
-		if (y % 50 == 0) LogHelper.info((density) + " " + center_falloff + " " + yf);
-		//LogHelper.info(yf);
+        if (y % 50 == 0) LogHelper.info((density) + " " + center_falloff + " " + yf);
+        //LogHelper.info(yf);
 
-		if (density > 1) world.setBlock(x + offsetX, y, z + offsetZ, Blocks.end_stone);
+        if (density > 1) world.setBlock(x + offsetX, y, z + offsetZ, Blocks.end_stone);
 
-	}
+    }
 
-	//					if(yf <= 0.8){
+    //					if(yf <= 0.8){
 //						plateau_falloff = 1.0F;
 //					}
 //					else if(0.8 < yf && yf < 0.9){
@@ -208,15 +189,15 @@ public class WorldGenChaosIsland {
 //									Math.pow((zf - 0.5F) * 1.5F, 2F)
 //					);
 //					caves = (float)Math.pow(simplex_noise(1, xf * 5, yf * 5, zf * 5), 3);
-	//density = ( simplex_noise(5, xf, yf * 0.5F, zf));// * center_falloff * plateau_falloff);
+    //density = ( simplex_noise(5, xf, yf * 0.5F, zf));// * center_falloff * plateau_falloff);
 
-	//density *= Math.pow( noise((xf+1)*3.0F, (yf+1)*3.0F, (zf+1)*3.0F)+0.4, 1.8F);
+    //density *= Math.pow( noise((xf+1)*3.0F, (yf+1)*3.0F, (zf+1)*3.0F)+0.4, 1.8F);
 //					if(caves<0.5){
 //						density = 0;
 //					}
 
-	//put(x, y, z, density>3.1 ? ROCK : 0);
-	//endfor
+    //put(x, y, z, density>3.1 ? ROCK : 0);
+    //endfor
 
 //	public float dot(float x, float y, float z, float... g){
 //		return x*g[0] + y*g[1] + z*g[2];
@@ -436,18 +417,18 @@ public class WorldGenChaosIsland {
 //		}
 //	}
 
-	private int getDiffusionPct(int dist, int maxDist) {
-		double d = (double) dist / (double) maxDist;
-		int i = Math.max(1, (int) (d * 1000D));
-		return 1000 - i;
-	}
+    private int getDiffusionPct(int dist, int maxDist) {
+        double d = (double) dist / (double) maxDist;
+        int i = Math.max(1, (int) (d * 1000D));
+        return 1000 - i;
+    }
 
-	private double getDiffusionPctD(int dist, int maxDist) {
-		double d = (double) dist / (double) maxDist;
-		return d;
-	}
+    private double getDiffusionPctD(int dist, int maxDist) {
+        double d = (double) dist / (double) maxDist;
+        return d;
+    }
 
-	private void generateObelisks(BlockCollection world, Random rand) {
+    private void generateObelisks(BlockCollection world, Random rand) {
 
 //		for (int i = 0; i < 7; i++) {
 //			double rotation = i * 0.9D;
@@ -463,9 +444,9 @@ public class WorldGenChaosIsland {
 //			generateObelisk(world, sX, spawnY + 10, sZ, true, rand);
 //		}
 
-	}
+    }
 
-	private void generateObelisk(BlockCollection world, int x1, int y1, int z1, boolean outer, Random rand) {
+    private void generateObelisk(BlockCollection world, int x1, int y1, int z1, boolean outer, Random rand) {
 //		if (!outer) {
 //			world.setBlock(x1, y1 + 20, z1, ModBlocks.infusedObsidian, 0, 2);
 ////			if (!world.isRemote) {
@@ -526,9 +507,9 @@ public class WorldGenChaosIsland {
 //			}
 //
 //		}
-	}
+    }
 
-	private void generateBelt(BlockCollection world, Random random, int innerRadius, int outerRadius) {
+    private void generateBelt(BlockCollection world, Random random, int innerRadius, int outerRadius) {
 //		int r = outerRadius;
 //		for (int x = spawnX - r; x <= spawnX + r; x++) {
 //			for (int z = spawnZ - r; z <= spawnZ + r; z++) {
@@ -540,5 +521,5 @@ public class WorldGenChaosIsland {
 //				}
 //			}
 //		}
-	}
+    }
 }

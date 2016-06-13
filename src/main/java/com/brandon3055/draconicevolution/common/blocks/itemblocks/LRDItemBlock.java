@@ -12,19 +12,19 @@ import java.util.List;
  * Created by Brandon on 23/06/2014.
  */
 public class LRDItemBlock extends ItemBlock {
-	public LRDItemBlock(Block block) {
-		super(block);
-		setHasSubtypes(true);
-	}
+    public LRDItemBlock(Block block) {
+        super(block);
+        setHasSubtypes(true);
+    }
 
-	@Override
-	public int getMetadata(int par1) {
-		return par1;
-	}
+    @Override
+    public int getMetadata(int par1) {
+        return par1;
+    }
 
-	@Override
-	public String getUnlocalizedName(ItemStack stack) {
-		return super.getUnlocalizedName(stack) + stack.getItemDamage();
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        return super.getUnlocalizedName(stack) + stack.getItemDamage();
+    }
 
 }

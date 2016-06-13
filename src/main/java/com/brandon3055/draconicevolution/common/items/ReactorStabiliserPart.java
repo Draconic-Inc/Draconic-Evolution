@@ -16,32 +16,34 @@ import java.util.Map;
  */
 public class ReactorStabiliserPart extends ItemDE {
 
-	public static final Map<Integer, String> parts = new HashMap<Integer, String>(){{
-		put(0, "frame");
-		put(1, "rotorInner");
-		put(2, "rotorOuter");
-		put(3, "rotorAssembly");
-		put(4, "stabilizerRing");
-	}};
+    public static final Map<Integer, String> parts = new HashMap<Integer, String>() {{
+        put(0, "frame");
+        put(1, "rotorInner");
+        put(2, "rotorOuter");
+        put(3, "rotorAssembly");
+        put(4, "stabilizerRing");
+    }};
 
-	public ReactorStabiliserPart(){
-		this.setUnlocalizedName("reactorCraftingPart");
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		this.setHasSubtypes(true);
-		ModItems.register(this);
-	}
+    public ReactorStabiliserPart() {
+        this.setUnlocalizedName("reactorCraftingPart");
+        this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+        this.setHasSubtypes(true);
+        ModItems.register(this);
+    }
 
-	@Override
-	public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
-		for (Integer i : parts.keySet()) list.add(new ItemStack(item, 1, i));
-	}
+    @Override
+    public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
+        for (Integer i : parts.keySet()) list.add(new ItemStack(item, 1, i));
+    }
 
-	@Override
-	public String getUnlocalizedName(ItemStack itemStack) {
-		if (parts.containsKey(itemStack.getItemDamage())) return super.getUnlocalizedName(itemStack) + "." + parts.get(itemStack.getItemDamage());
-		else return super.getUnlocalizedName(itemStack);
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack itemStack) {
+        if (parts.containsKey(itemStack.getItemDamage()))
+            return super.getUnlocalizedName(itemStack) + "." + parts.get(itemStack.getItemDamage());
+        else return super.getUnlocalizedName(itemStack);
+    }
 
-	@Override
-	public void registerIcons(IIconRegister iconRegister) {}
+    @Override
+    public void registerIcons(IIconRegister iconRegister) {
+    }
 }
