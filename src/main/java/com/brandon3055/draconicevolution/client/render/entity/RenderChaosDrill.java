@@ -12,13 +12,13 @@ import net.minecraft.util.ResourceLocation;
 @SideOnly(Side.CLIENT)
 public class RenderChaosDrill extends Render {
 
-	@Override
-	public void doRender(Entity entity, double x, double y, double z, float p_76986_8_, float p_76986_9_) {
+    @Override
+    public void doRender(Entity entity, double x, double y, double z, float p_76986_8_, float p_76986_9_) {
 
-	}
+    }
 
-	@Override
-	protected ResourceLocation getEntityTexture(Entity p_110775_1_) {
-		return null;
-	}
+    @Override
+    protected ResourceLocation getEntityTexture(Entity p_110775_1_) {
+        return null;
+    }
 }

@@ -15,46 +15,44 @@ import net.minecraft.util.ChatComponentText;
 
 public class FMLEventHandler {
 
-	private static boolean mmGiven = false;
+    private static boolean mmGiven = false;
 
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equalsIgnoreCase(References.MODID)) {
-			ConfigHandler.syncConfig();
-			LogHelper.info("Config Changed");
-		}
-	}
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+        if (eventArgs.modID.equalsIgnoreCase(References.MODID)) {
+            ConfigHandler.syncConfig();
+            LogHelper.info("Config Changed");
+        }
+    }
 
-	@SubscribeEvent
-	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if (event.phase != TickEvent.Phase.START) return;
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
 
-		CustomArmorHandler.onPlayerTick(event);
-	}
+        CustomArmorHandler.onPlayerTick(event);
+    }
 
-	@SubscribeEvent
-	public void serverTickEvent(TickEvent event){
-		ContributorHandler.tick();
-	}
+    @SubscribeEvent
+    public void serverTickEvent(TickEvent event) {
+        ContributorHandler.tick();
+    }
 
-	@SubscribeEvent
-	public void playerLogin(PlayerEvent.PlayerLoggedInEvent event)
-	{
-		if (!event.player.onGround){
-			CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.player);
-			if (summery != null && summery.flight[0]) {
-				event.player.capabilities.isFlying = true;
-				event.player.sendPlayerAbilities();
-			}
-		}
+    @SubscribeEvent
+    public void playerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (!event.player.onGround) {
+            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.player);
+            if (summery != null && summery.flight[0]) {
+                event.player.capabilities.isFlying = true;
+                event.player.sendPlayerAbilities();
+            }
+        }
 
-		if (!mmGiven && event.player.getCommandSenderName().toLowerCase().equals("dezil_nz"))
-		{
-			mmGiven = true;
-			event.player.addChatComponentMessage(new ChatComponentText("Hello Dez! Here have a Marshmallow"));
-			event.player.worldObj.spawnEntityInWorld(new EntityItem(event.player.worldObj, event.player.posX, event.player.posY, event.player.posZ, new ItemStack(ModItems.dezilsMarshmallow)));
-		}
+        if (!mmGiven && event.player.getCommandSenderName().toLowerCase().equals("dezil_nz")) {
+            mmGiven = true;
+            event.player.addChatComponentMessage(new ChatComponentText("Hello Dez! Here have a Marshmallow"));
+            event.player.worldObj.spawnEntityInWorld(new EntityItem(event.player.worldObj, event.player.posX, event.player.posY, event.player.posZ, new ItemStack(ModItems.dezilsMarshmallow)));
+        }
 
-		ContributorHandler.onPlayerLogin(event);
-	}
+        ContributorHandler.onPlayerLogin(event);
+    }
 }

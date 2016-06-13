@@ -16,22 +16,22 @@ import net.minecraft.world.World;
  */
 public class InfoTablet extends ItemDE {
 
-	public InfoTablet() {
-		this.setUnlocalizedName(Strings.infoTabletName);
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		this.setMaxStackSize(1);
-		ModItems.register(this);
-		//GameRegistry.registerItem(this, Strings.infoTabletName);
-	}
+    public InfoTablet() {
+        this.setUnlocalizedName(Strings.infoTabletName);
+        this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+        this.setMaxStackSize(1);
+        ModItems.register(this);
+        //GameRegistry.registerItem(this, Strings.infoTabletName);
+    }
 
-	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX+"stone_tablet");
-	}
+    @Override
+    public void registerIcons(IIconRegister iconRegister) {
+        itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "stone_tablet");
+    }
 
-	@Override
-	public ItemStack onItemRightClick(ItemStack p_77659_1_, World world, EntityPlayer player) {
-		FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_MANUAL, world, (int) player.posX, (int) player.posY, (int) player.posZ);
-		return super.onItemRightClick(p_77659_1_, world, player);
-	}
+    @Override
+    public ItemStack onItemRightClick(ItemStack p_77659_1_, World world, EntityPlayer player) {
+        FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_MANUAL, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+        return super.onItemRightClick(p_77659_1_, world, player);
+    }
 }

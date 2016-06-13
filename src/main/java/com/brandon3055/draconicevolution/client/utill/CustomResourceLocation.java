@@ -9,22 +9,24 @@ import net.minecraft.util.ResourceLocation;
  */
 public class CustomResourceLocation extends ResourceLocation {
 
-	private int width;
-	private int height;
+    private int width;
+    private int height;
 
-	public CustomResourceLocation(String texturePath, int width, int height) {
-		super(References.MODID.toLowerCase() , "textures/gui/manualimages/" + texturePath);
-		this.width = width;
-		this.height = height;
-	}
+    public CustomResourceLocation(String texturePath, int width, int height) {
+        super(References.MODID.toLowerCase(), "textures/gui/manualimages/" + texturePath);
+        this.width = width;
+        this.height = height;
+    }
 
-	public void bind() { ResourceHandler.bindTexture(this); }
+    public void bind() {
+        ResourceHandler.bindTexture(this);
+    }
 
-	public int getWidth() {
-		return width;
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public int getHeight() {
+        return height;
+    }
 }

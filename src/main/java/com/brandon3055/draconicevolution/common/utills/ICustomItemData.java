@@ -8,9 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public interface ICustomItemData {
 
-	public static final String tagName = "TileCompound";
+    public static final String tagName = "TileCompound";
 
-	void writeDataToItem(NBTTagCompound compound, ItemStack stack);
+    void writeDataToItem(NBTTagCompound compound, ItemStack stack);
 
-	void readDataFromItem(NBTTagCompound compound, ItemStack stack);
+    void readDataFromItem(NBTTagCompound compound, ItemStack stack);
 }

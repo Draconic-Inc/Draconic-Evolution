@@ -23,23 +23,20 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class Tclogo extends ItemDE {
-	public Tclogo() {
-		this.setUnlocalizedName(Strings.tclogoName);
-		//this.setCreativeTab(draconicevolution.getCreativeTab());
-		ModItems.register(this);
-	}
+    public Tclogo() {
+        this.setUnlocalizedName(Strings.tclogoName);
+        //this.setCreativeTab(draconicevolution.getCreativeTab());
+        ModItems.register(this);
+    }
 
 
+    @Override
+    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+        return 100;
+    }
 
-	@Override
-	public int getMaxItemUseDuration(ItemStack par1ItemStack)
-	{
-		return 100;
-	}
-
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5)
-	{
+    @Override
+    public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
 //		if (entity instanceof EntityPlayerMP && !entity.onGround) {
 //			//for (int i = 0; i < 10; i++)
 //			EntityPlayer player = (EntityPlayer)entity;
@@ -57,12 +54,11 @@ public class Tclogo extends ItemDE {
 //			else player.motionX = 0;
 
 
-
 //			((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(entity.posX + 10, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
 //			((EntityPlayerMP) entity).addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 10, 1000));
 //			if (entity.posX > 500) ((EntityPlayerMP) entity).destroyCurrentEquippedItem();
 //		}
-		/*
+        /*
 		//if (entity.isCollidedHorizontally)// && !world.isRemote)
 			//entity.setLocationAndAngles(entity.posX+30D, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);;
 		/*
@@ -88,54 +84,51 @@ public class Tclogo extends ItemDE {
 				}
 			}
 		}*/
-	}
-	
-	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack)
-	{
-		return EnumAction.block;
-	}
-	
-	@Override
-	public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
-    {
+    }
+
+    @Override
+    public EnumAction getItemUseAction(ItemStack par1ItemStack) {
+        return EnumAction.block;
+    }
+
+    @Override
+    public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         return par1ItemStack;
     }
 
-	@SideOnly(Side.CLIENT)
-	private void particle(World world, EntityPlayer player){
-		MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
-		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ, 100));
+    @SideOnly(Side.CLIENT)
+    private void particle(World world, EntityPlayer player) {
+        MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 10000);
+        if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new Particles.ReactorExplosionParticle(world, mop.blockX, mop.blockY, mop.blockZ, 100));
 
-	}
+    }
 
 
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 
-		//int meta = Integer.parseInt());
-		LogHelper.info("21=vserfegz".substring(0, "21=vserfegz".indexOf("=")));
+        //int meta = Integer.parseInt());
+        LogHelper.info("21=vserfegz".substring(0, "21=vserfegz".indexOf("=")));
 
-		try
-		{
-			if (!world.isRemote) {
-				//ExtendedPlayer.get(player).setSpawnCount(6);
-				LogHelper.info(ExtendedPlayer.get(player).getSpawnCount());
-			//	player.getEntityData().setTag("Tag", new NBTTagCompound());
-			} else LogHelper.info(ExtendedPlayer.get(player).getSpawnCount());
-			//LogHelper.info(FMLCommonHandler.instance().getMinecraftServerInstance().func_152358_ax().func_152655_a(player.getCommandSenderName()).getId());
-			//LogHelper.info(player.getUniqueID());
-			//LogHelper.info(UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8)));
-			//LogHelper.info(UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8)).equals(player.getUniqueID()));
-			if (FMLCommonHandler.instance().getMinecraftServerInstance() instanceof IntegratedServer){
-			//	LogHelper.info(FMLClientHandler.instance().getClient().getSession().getToken());
-			//	LogHelper.info(((YggdrasilMinecraftSessionService)FMLCommonHandler.instance().getMinecraftServerInstance().func_147130_as()).getAuthenticationService().);
-			}
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
+        try {
+            if (!world.isRemote) {
+                //ExtendedPlayer.get(player).setSpawnCount(6);
+                LogHelper.info(ExtendedPlayer.get(player).getSpawnCount());
+                //	player.getEntityData().setTag("Tag", new NBTTagCompound());
+            } else LogHelper.info(ExtendedPlayer.get(player).getSpawnCount());
+            //LogHelper.info(FMLCommonHandler.instance().getMinecraftServerInstance().func_152358_ax().func_152655_a(player.getCommandSenderName()).getId());
+            //LogHelper.info(player.getUniqueID());
+            //LogHelper.info(UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8)));
+            //LogHelper.info(UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8)).equals(player.getUniqueID()));
+            if (FMLCommonHandler.instance().getMinecraftServerInstance() instanceof IntegratedServer) {
+                //	LogHelper.info(FMLClientHandler.instance().getClient().getSession().getToken());
+                //	LogHelper.info(((YggdrasilMinecraftSessionService)FMLCommonHandler.instance().getMinecraftServerInstance().func_147130_as()).getAuthenticationService().);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
 //		LogHelper.info(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode());
 //
@@ -151,7 +144,7 @@ public class Tclogo extends ItemDE {
 
 //		if ((int)System.currentTimeMillis() < lts + 10) return stack;
 //		else lts = (int)System.currentTimeMillis();
-		//world.playSound(player.posX, player.posY, player.posZ, "DraconicEvolution:fusionExplosion", 1F, 1F, false);
+        //world.playSound(player.posX, player.posY, player.posZ, "DraconicEvolution:fusionExplosion", 1F, 1F, false);
 //		LogHelper.info(GameRegistry.findBlock("ThermalDynamics", "ThermalDynamics_0"));
 //		if (player.inventory.getStackInSlot(0) != null) LogHelper.info(GameRegistry.findUniqueIdentifierFor(player.inventory.getStackInSlot(0).getItem()));
 //
@@ -166,8 +159,8 @@ public class Tclogo extends ItemDE {
 //			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) ProcessHandler.addProcess(new ReactorExplosion(world, mop.blockX, mop.blockY, mop.blockZ, 20F));
 //		}
 
-		//EntityDragonProjectile projectile = new EntityDragonProjectile(world, 6, null, 10, player);
-		//projectile.setPosition(player.posX, player.posY, player.posZ);
+        //EntityDragonProjectile projectile = new EntityDragonProjectile(world, 6, null, 10, player);
+        //projectile.setPosition(player.posX, player.posY, player.posZ);
 
 
 //
@@ -201,29 +194,18 @@ public class Tclogo extends ItemDE {
 //
 
 
+        //	LogHelper.info(ContributorHandler.contributors);
+        //	ContributorHandler.init();
+        //	LogHelper.info(ContributorHandler.contributors);
 
+        //EntityFallingBlock fallingBlock = new EntityFallingBlock(world, (int)player.posX + 0.5, (int)player.posY + 0.5, (int)player.posZ + 0.5, Blocks.obsidian, 0);
+        //fallingBlock.field_145812_b = 2;
 
-
-
-
-
-
-
-
-
-
-		//	LogHelper.info(ContributorHandler.contributors);
-		//	ContributorHandler.init();
-		//	LogHelper.info(ContributorHandler.contributors);
-
-			//EntityFallingBlock fallingBlock = new EntityFallingBlock(world, (int)player.posX + 0.5, (int)player.posY + 0.5, (int)player.posZ + 0.5, Blocks.obsidian, 0);
-			//fallingBlock.field_145812_b = 2;
-
-			float motion = 0.005F;
-			//fallingBlock.motionX = (rand.nextFloat()-0.5F) * motion;
-			//fallingBlock.motionY = (rand.nextFloat()-0.5F) * motion;
-			//fallingBlock.motionZ = (rand.nextFloat()-0.5F) * motion;
-			//world.spawnEntityInWorld(fallingBlock);
+        float motion = 0.005F;
+        //fallingBlock.motionX = (rand.nextFloat()-0.5F) * motion;
+        //fallingBlock.motionY = (rand.nextFloat()-0.5F) * motion;
+        //fallingBlock.motionZ = (rand.nextFloat()-0.5F) * motion;
+        //world.spawnEntityInWorld(fallingBlock);
 
 
 //			try
@@ -239,7 +221,7 @@ public class Tclogo extends ItemDE {
 //			}
 //			catch (Exception e) {e.printStackTrace();}
 
-			//LogHelper.info();
+        //LogHelper.info();
 
 
 //			LogHelper.info("#########################");
@@ -261,7 +243,6 @@ public class Tclogo extends ItemDE {
 //			LogHelper.info("Time2:"+(System.nanoTime()-u)/1000000D);
 
 
-
 //			DraconicWorldGenerator.chaosIslandGen = new WorldGenChaosIsland();
 //			LogHelper.info("Reinitialized");
 //			long u = System.nanoTime();
@@ -271,7 +252,7 @@ public class Tclogo extends ItemDE {
 ////
 //			LogHelper.info("Generated in:"+(System.nanoTime()-u)+"ns, "+(System.currentTimeMillis()-m)+"ms");
 
-			//for (float f = 0; f < 1; f+=0.01) LogHelper.info((0.5D-Math.abs(f-0.5D))*2D);
+        //for (float f = 0; f < 1; f+=0.01) LogHelper.info((0.5D-Math.abs(f-0.5D))*2D);
 
 //			short id = (short)itemRand.nextInt(4000);
 //			byte meta = (byte)itemRand.nextInt(16);
@@ -286,7 +267,6 @@ public class Tclogo extends ItemDE {
 //			LogHelper.info("DecodedID:"+decodedID+" DecodedMeta:"+decodedMeta);
 
 
-
 //			LogHelper.info(Integer.toBinaryString(id) + " "+Integer.toBinaryString(meta));
 //			LogHelper.info(Integer.toBinaryString(id >> 4) +" " +Integer.toBinaryString(id & 0xF));
 //			LogHelper.info(id+" "+meta);
@@ -297,7 +277,6 @@ public class Tclogo extends ItemDE {
 //			LogHelper.info("Id: "+Integer.toBinaryString(((b1 & 0xFF) << 4) | ((b2 & 0xF0) >> 4))+" "+(((b1 & 0xFF) << 4) | ((b2 & 0xF0) >> 4)));
 //			LogHelper.info("Meta: "+Integer.toBinaryString(b2 & 0x0F)+" "+(b2 & 0x0F));
 //			LogHelper.info("Meta: "+Integer.toBinaryString(4095));
-
 
 
 //			for (int index = 0; index < blockId.length; index++) {
@@ -311,8 +290,6 @@ public class Tclogo extends ItemDE {
 //					}
 //				}
 //			}
-
-
 
 
 //			long s = (652800000L * 8L) + (652800000L * 8L);
@@ -360,9 +337,6 @@ public class Tclogo extends ItemDE {
 //			LogHelper.info("Time 1:"+ (System.currentTimeMillis()-l));
 
 
-
-
-
 //			long l = System.currentTimeMillis();
 //			new WorldGenChaosIsland().initialize(world.rand);
 //			LogHelper.info(System.currentTimeMillis() - l);
@@ -370,12 +344,12 @@ public class Tclogo extends ItemDE {
 //
 
 
-	//	}
+        //	}
 
-		//List<Entity> l = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ, player.posX, player.posY, player.posZ).expand(500, 500, 500));
-		//for (Entity e : l) if (!(e instanceof EntityPlayer)) e.setDead();
+        //List<Entity> l = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ, player.posX, player.posY, player.posZ).expand(500, 500, 500));
+        //for (Entity e : l) if (!(e instanceof EntityPlayer)) e.setDead();
 
-		//if (1==1) return stack;
+        //if (1==1) return stack;
 		/*if (player instanceof EntityPlayerMP) {
 			for (int i = 0; i < 10; i++)
 			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(player.posX + 1, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
@@ -383,7 +357,7 @@ public class Tclogo extends ItemDE {
 
 		if (1==1) return stack;*/
 
-		//Minecraft.getMinecraft().gameSettings.mouseSensitivity = -0.34F;
+        //Minecraft.getMinecraft().gameSettings.mouseSensitivity = -0.34F;
 
 //		if (world.isRemote)
 //		{
@@ -405,33 +379,30 @@ public class Tclogo extends ItemDE {
 //		}
 
 
-		if (!player.isSneaking())
-		{
-			player.capabilities.allowFlying = true;
-			//player.setPosition(player.posX, player.posY+1, player.posZ);
-			player.onGround = false;
-			player.capabilities.isFlying = true;
-			player.noClip = !player.noClip;
+        if (!player.isSneaking()) {
+            player.capabilities.allowFlying = true;
+            //player.setPosition(player.posX, player.posY+1, player.posZ);
+            player.onGround = false;
+            player.capabilities.isFlying = true;
+            player.noClip = !player.noClip;
 
-		}
-		else
-		{
-			int xi = (int)player.posX;
-			int yi = (int)player.posY;
-			int zi = (int)player.posZ;
-			int rad = 100;
+        } else {
+            int xi = (int) player.posX;
+            int yi = (int) player.posY;
+            int zi = (int) player.posZ;
+            int rad = 100;
 
-			for (int x = xi-rad; x < xi+rad; x++){
-				for (int y = yi-10; y < yi+30; y++){
-					for (int z = zi-rad; z < zi+rad; z++){
-						world.markBlockForUpdate(x, y, z);
-					}
-				}
-			}
+            for (int x = xi - rad; x < xi + rad; x++) {
+                for (int y = yi - 10; y < yi + 30; y++) {
+                    for (int z = zi - rad; z < zi + rad; z++) {
+                        world.markBlockForUpdate(x, y, z);
+                    }
+                }
+            }
 
 
-			world.markBlockRangeForRenderUpdate(xi-rad, yi-20, zi-rad, xi+rad, yi+20, zi+rad);
-		}
+            world.markBlockRangeForRenderUpdate(xi - rad, yi - 20, zi - rad, xi + rad, yi + 20, zi + rad);
+        }
 //
 //		LogHelper.info("Downloading Image");
 //
@@ -458,16 +429,14 @@ public class Tclogo extends ItemDE {
 //		}
 
 
-
-
 //		player.addPotionEffect(new PotionEffect(PotionHandler.potionFlight.id, 100, 0));
 //		player.addPotionEffect(new PotionEffect(PotionHandler.potionFireResist.id, 100, 1));
 //		player.addPotionEffect(new PotionEffect(PotionHandler.potionSpeed.id, 100, 1));
 //		player.addPotionEffect(new PotionEffect(PotionHandler.potionUpHillStep.id, 100, 1));
-		int xi = (int)player.posX;
-		int yi = (int)player.posY;
-		int zi = (int)player.posZ;
-		int rad = 1000;
+        int xi = (int) player.posX;
+        int yi = (int) player.posY;
+        int zi = (int) player.posZ;
+        int rad = 1000;
 
 //		Block block;
 //		for (int x = xi-rad; x < xi+rad; x++){
@@ -484,41 +453,38 @@ public class Tclogo extends ItemDE {
 //		}
 
 
-		//world.markBlockRangeForRenderUpdate(xi-rad, yi-rad, zi-rad, xi+rad, yi+rad, zi+rad);
-		//if (world.isRemote)player.displayGUIWorkbench((int)player.posX, (int)player.posY, (int)player.posZ);
-		//world.setBlock(0, 0, 0, Blocks.crafting_table);
-		//if (!world.isRemote)player.displayGUIWorkbench(0, 0, 0);
+        //world.markBlockRangeForRenderUpdate(xi-rad, yi-rad, zi-rad, xi+rad, yi+rad, zi+rad);
+        //if (world.isRemote)player.displayGUIWorkbench((int)player.posX, (int)player.posY, (int)player.posZ);
+        //world.setBlock(0, 0, 0, Blocks.crafting_table);
+        //if (!world.isRemote)player.displayGUIWorkbench(0, 0, 0);
 
 
-		return stack;
-	}
-	
-	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
-	{
-		LogHelper.info(GameRegistry.findUniqueIdentifierFor(player.worldObj.getBlock(X, Y, Z)));
+        return stack;
+    }
 
-		//player.worldObj.scheduleBlockUpdate(X, Y, Z, player.worldObj.getBlock(X, Y, Z), 10);
+    @Override
+    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player) {
+        LogHelper.info(GameRegistry.findUniqueIdentifierFor(player.worldObj.getBlock(X, Y, Z)));
 
-		return false;
-	}
-	
-	@Override
-	public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
-	{
-		System.out.println("Use Tick");
-		super.onUsingTick(stack, player, count);
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation)
-	{
-		list.add(EnumChatFormatting.RED + "Warning! this is an item used to test random bits of code. You should not play with it");
-		list.add(EnumChatFormatting.RED + "because depending on what i used it for last it could do anything.");
-		list.add(EnumChatFormatting.RED + "It may even break your world");
-		list.add("At the time this warning was added it created a 200x200 block smoking creator");
+        //player.worldObj.scheduleBlockUpdate(X, Y, Z, player.worldObj.getBlock(X, Y, Z), 10);
+
+        return false;
+    }
+
+    @Override
+    public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
+        System.out.println("Use Tick");
+        super.onUsingTick(stack, player, count);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
+        list.add(EnumChatFormatting.RED + "Warning! this is an item used to test random bits of code. You should not play with it");
+        list.add(EnumChatFormatting.RED + "because depending on what i used it for last it could do anything.");
+        list.add(EnumChatFormatting.RED + "It may even break your world");
+        list.add("At the time this warning was added it created a 200x200 block smoking creator");
 
 //		list.add(EnumChatFormatting.AQUA + "AQUA");
 //		list.add(EnumChatFormatting.BLACK + "BLACK");
@@ -541,5 +507,5 @@ public class Tclogo extends ItemDE {
 //		list.add(EnumChatFormatting.OBFUSCATED + "OBFUSCATED");
 //		list.add(EnumChatFormatting.UNDERLINE + "UNDERLINE");
 //		list.add(EnumChatFormatting.STRIKETHROUGH + "STRIKETHROUGH");
-	}
+    }
 }

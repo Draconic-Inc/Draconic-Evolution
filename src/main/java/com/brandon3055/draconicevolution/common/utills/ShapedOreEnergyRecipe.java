@@ -13,24 +13,33 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
  */
 public class ShapedOreEnergyRecipe extends ShapedOreRecipe {
 
-	public ShapedOreEnergyRecipe(Block result, Object... recipe){ this(new ItemStack(result), recipe); }
-	public ShapedOreEnergyRecipe(Item result, Object... recipe){ this(new ItemStack(result), recipe); }
-	public ShapedOreEnergyRecipe(ItemStack result, Object... recipe) {super(result, recipe);}
+    public ShapedOreEnergyRecipe(Block result, Object... recipe) {
+        this(new ItemStack(result), recipe);
+    }
 
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting var1) {
-		ItemStack result = super.getCraftingResult(var1);
+    public ShapedOreEnergyRecipe(Item result, Object... recipe) {
+        this(new ItemStack(result), recipe);
+    }
 
-		int energy = 0;
-		for (int i = 0; i < var1.getSizeInventory(); i++) {
-			ItemStack stack = var1.getStackInSlot(i);
-			if (stack != null && stack.getItem() instanceof IEnergyContainerItem) {
-				energy += ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack);
-			}
-		}
+    public ShapedOreEnergyRecipe(ItemStack result, Object... recipe) {
+        super(result, recipe);
+    }
 
-		if (energy > 0 && result != null && result.getItem() instanceof IEnergyContainerItem) ItemNBTHelper.setInteger(result, "Energy", energy);
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting var1) {
+        ItemStack result = super.getCraftingResult(var1);
 
-		return result;
-	}
+        int energy = 0;
+        for (int i = 0; i < var1.getSizeInventory(); i++) {
+            ItemStack stack = var1.getStackInSlot(i);
+            if (stack != null && stack.getItem() instanceof IEnergyContainerItem) {
+                energy += ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack);
+            }
+        }
+
+        if (energy > 0 && result != null && result.getItem() instanceof IEnergyContainerItem)
+            ItemNBTHelper.setInteger(result, "Energy", energy);
+
+        return result;
+    }
 }

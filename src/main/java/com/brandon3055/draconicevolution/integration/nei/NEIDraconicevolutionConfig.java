@@ -12,37 +12,36 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by Brandon on 30/10/2014.
  */
-public class NEIDraconicevolutionConfig implements IConfigureNEI
-{
-	@Override
-	public void loadConfig() {
+public class NEIDraconicevolutionConfig implements IConfigureNEI {
+    @Override
+    public void loadConfig() {
 
-		API.registerGuiOverlay(GUIDraconiumChest.class, "crafting", new CraftingChestStackPositioner());
-		API.registerGuiOverlayHandler(GUIDraconiumChest.class, new CraftingChestOverlayHandler(), "crafting");
-		API.hideItem(new ItemStack(ModBlocks.placedItem));
-		API.hideItem(new ItemStack(ModBlocks.invisibleMultiblock));
-		API.hideItem(new ItemStack(ModBlocks.safetyFlame));
-		API.hideItem(new ItemStack(ModItems.tclogo));
-		API.hideItem(new ItemStack(ModItems.creativeStructureSpawner));
-		API.hideItem(new ItemStack(ModItems.dezilsMarshmallow));
-		API.hideItem(new ItemStack(ModItems.creativeStructureSpawner, 1, 1));
-		API.hideItem(new ItemStack(ModItems.sunFocus));
-		API.hideItem(new ItemStack(ModBlocks.portal));
-		API.hideItem(new ItemStack(ModBlocks.chaosShardAtmos));
-		API.hideItem(new ItemStack(ModBlocks.chaosCrystal));
-		API.registerNEIGuiHandler(new DENEIGuiHandler());
+        API.registerGuiOverlay(GUIDraconiumChest.class, "crafting", new CraftingChestStackPositioner());
+        API.registerGuiOverlayHandler(GUIDraconiumChest.class, new CraftingChestOverlayHandler(), "crafting");
+        API.hideItem(new ItemStack(ModBlocks.placedItem));
+        API.hideItem(new ItemStack(ModBlocks.invisibleMultiblock));
+        API.hideItem(new ItemStack(ModBlocks.safetyFlame));
+        API.hideItem(new ItemStack(ModItems.tclogo));
+        API.hideItem(new ItemStack(ModItems.creativeStructureSpawner));
+        API.hideItem(new ItemStack(ModItems.dezilsMarshmallow));
+        API.hideItem(new ItemStack(ModItems.creativeStructureSpawner, 1, 1));
+        API.hideItem(new ItemStack(ModItems.sunFocus));
+        API.hideItem(new ItemStack(ModBlocks.portal));
+        API.hideItem(new ItemStack(ModBlocks.chaosShardAtmos));
+        API.hideItem(new ItemStack(ModBlocks.chaosCrystal));
+        API.registerNEIGuiHandler(new DENEIGuiHandler());
 
-		LogHelper.info("Added NEI integration");
-	}
+        LogHelper.info("Added NEI integration");
+    }
 
-	@Override
-	public String getName() {
-		return "DraconicEvolution-NEIConfig";
-	}
+    @Override
+    public String getName() {
+        return "DraconicEvolution-NEIConfig";
+    }
 
-	@Override
-	public String getVersion() {
-		return References.VERSION;
-	}
+    @Override
+    public String getVersion() {
+        return References.VERSION;
+    }
 
 }

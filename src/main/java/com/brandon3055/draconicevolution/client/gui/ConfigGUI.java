@@ -10,12 +10,12 @@ import net.minecraftforge.common.config.Configuration;
 /**
  * Created by Brandon on 6/08/2014.
  */
-public class ConfigGUI  extends GuiConfig {
-	public ConfigGUI(GuiScreen parent) {
-		super(parent, new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements() , References.MODID, false, false, GuiConfig.getAbridgedConfigPath(ConfigHandler.config.toString()));
-		configElements.addAll(new ConfigElement(ConfigHandler.config.getCategory("spawner")).getChildElements());
-		configElements.addAll(new ConfigElement(ConfigHandler.config.getCategory("long range dislocator")).getChildElements());
-	}
+public class ConfigGUI extends GuiConfig {
+    public ConfigGUI(GuiScreen parent) {
+        super(parent, new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), References.MODID, false, false, GuiConfig.getAbridgedConfigPath(ConfigHandler.config.toString()));
+        configElements.addAll(new ConfigElement(ConfigHandler.config.getCategory("spawner")).getChildElements());
+        configElements.addAll(new ConfigElement(ConfigHandler.config.getCategory("long range dislocator")).getChildElements());
+    }
 
 
 }

@@ -12,22 +12,23 @@ import net.minecraft.world.World;
  * Created by brandon3055 on 1/10/2015.
  */
 public class ChaosShard extends ItemDE {
-	public ChaosShard(){
-		this.setUnlocalizedName("chaosShard");
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		ModItems.register(this);
-	}
+    public ChaosShard() {
+        this.setUnlocalizedName("chaosShard");
+        this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+        ModItems.register(this);
+    }
 
-	@Override
-	public void registerIcons(IIconRegister iconRegister) {}
+    @Override
+    public void registerIcons(IIconRegister iconRegister) {
+    }
 
-	@Override
-	public boolean hasCustomEntity(ItemStack stack) {
-		return true;
-	}
+    @Override
+    public boolean hasCustomEntity(ItemStack stack) {
+        return true;
+    }
 
-	@Override
-	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-		return new EntityPersistentItem(world, location, itemstack);
-	}
+    @Override
+    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+        return new EntityPersistentItem(world, location, itemstack);
+    }
 }

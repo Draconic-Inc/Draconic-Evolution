@@ -7,5 +7,5 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
  */
 public interface IRenderTweak {
 
-	public void tweakRender(ItemRenderType type);
+    public void tweakRender(ItemRenderType type);
 }

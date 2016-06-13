@@ -63,32 +63,31 @@ public class ModelContributorWings extends ModelBase {
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float partialTick, float scale) {
-		GL11.glPushMatrix();
+        GL11.glPushMatrix();
 
-		float baseRot = 0.45906584F;
-		float outerRot = 0.61086524F;
+        float baseRot = 0.45906584F;
+        float outerRot = 0.61086524F;
 
-		float animation = (float)Math.sin(((float)ClientEventHandler.elapsedTicks + partialTick) / 20);
+        float animation = (float) Math.sin(((float) ClientEventHandler.elapsedTicks + partialTick) / 20);
 
-		if (entity.isSneaking()){
-			this.leftBaseStem.rotateAngleX = 0.5F;
-			this.rightBaseStem.rotateAngleX = 0.5F;
-		}
-		else {
-			this.leftBaseStem.rotateAngleX = 0F;
-			this.rightBaseStem.rotateAngleX = 0F;
-		}
+        if (entity.isSneaking()) {
+            this.leftBaseStem.rotateAngleX = 0.5F;
+            this.rightBaseStem.rotateAngleX = 0.5F;
+        } else {
+            this.leftBaseStem.rotateAngleX = 0F;
+            this.rightBaseStem.rotateAngleX = 0F;
+        }
 
-		this.leftBaseStem.rotateAngleY = -baseRot + (animation * 0.15F);
-		this.leftOuterStem.rotateAngleY = outerRot + (animation * 0.3F);
-		this.rightBaseStem.rotateAngleY = baseRot - (animation * 0.15F);
-		this.rightOuterStem.rotateAngleY = -outerRot - (animation * 0.3F);
+        this.leftBaseStem.rotateAngleY = -baseRot + (animation * 0.15F);
+        this.leftOuterStem.rotateAngleY = outerRot + (animation * 0.3F);
+        this.rightBaseStem.rotateAngleY = baseRot - (animation * 0.15F);
+        this.rightOuterStem.rotateAngleY = -outerRot - (animation * 0.3F);
 
         this.leftBaseStem.render(scale);
         this.rightBaseStem.render(scale);
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

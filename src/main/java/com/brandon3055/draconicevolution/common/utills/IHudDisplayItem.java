@@ -8,5 +8,5 @@ import java.util.List;
  * Created by Brandon on 26/01/2015.
  */
 public interface IHudDisplayItem {
-	List<String> getDisplayData(ItemStack stack);
+    List<String> getDisplayData(ItemStack stack);
 }

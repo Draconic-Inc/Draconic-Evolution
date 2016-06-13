@@ -20,114 +20,113 @@ import org.lwjgl.opengl.GL11;
 
 public class WyvernPickaxe extends MiningTool implements IInventoryTool, IRenderTweak {
 
-	public WyvernPickaxe() {
-		super(ModItems.WYVERN);
-		this.setUnlocalizedName(Strings.wyvernPickaxeName);
-		this.setHarvestLevel("pickaxe", 10);
-		this.setCapacity(BalanceConfigHandler.wyvernToolsBaseStorage);
-		this.setMaxExtract(BalanceConfigHandler.wyvernToolsMaxTransfer);
-		this.setMaxReceive(BalanceConfigHandler.wyvernToolsMaxTransfer);
-		this.energyPerOperation = BalanceConfigHandler.wyvernToolsEnergyPerAction;
-		ModItems.register(this);
-	}
+    public WyvernPickaxe() {
+        super(ModItems.WYVERN);
+        this.setUnlocalizedName(Strings.wyvernPickaxeName);
+        this.setHarvestLevel("pickaxe", 10);
+        this.setCapacity(BalanceConfigHandler.wyvernToolsBaseStorage);
+        this.setMaxExtract(BalanceConfigHandler.wyvernToolsMaxTransfer);
+        this.setMaxReceive(BalanceConfigHandler.wyvernToolsMaxTransfer);
+        this.energyPerOperation = BalanceConfigHandler.wyvernToolsEnergyPerAction;
+        ModItems.register(this);
+    }
 
-	@Override
-	public List<ItemConfigField> getFields(ItemStack stack, int slot) {
-		List<ItemConfigField> list = super.getFields(stack, slot);
-		list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
-		return list;
-	}
+    @Override
+    public List<ItemConfigField> getFields(ItemStack stack, int slot) {
+        List<ItemConfigField> list = super.getFields(stack, slot);
+        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
+        return list;
+    }
 
-	@Override
-	public String getInventoryName() {
-		return StatCollector.translateToLocal("info.de.toolInventoryEnch.txt");
-	}
+    @Override
+    public String getInventoryName() {
+        return StatCollector.translateToLocal("info.de.toolInventoryEnch.txt");
+    }
 
-	@Override
-	public int getInventorySlots() {
-		return 0;
-	}
+    @Override
+    public int getInventorySlots() {
+        return 0;
+    }
 
-	@Override
-	public boolean isEnchantValid(Enchantment enchant) {
-		return enchant.type == EnumEnchantmentType.digger;
-	}
+    @Override
+    public boolean isEnchantValid(Enchantment enchant) {
+        return enchant.type == EnumEnchantmentType.digger;
+    }
 
-	@Override
-	public void tweakRender(IItemRenderer.ItemRenderType type) {
+    @Override
+    public void tweakRender(IItemRenderer.ItemRenderType type) {
 
-		GL11.glTranslated(0.4, 0.65, 0.1);
+        GL11.glTranslated(0.4, 0.65, 0.1);
 
-		GL11.glRotatef(90, 1, 0, 0);
-		GL11.glRotatef(140, 0, -1, 0);
-		GL11.glRotatef(180, 0, 0, 1);
-		GL11.glScaled(0.6, 0.6, 0.6);
+        GL11.glRotatef(90, 1, 0, 0);
+        GL11.glRotatef(140, 0, -1, 0);
+        GL11.glRotatef(180, 0, 0, 1);
+        GL11.glScaled(0.6, 0.6, 0.6);
 
-		if (type == IItemRenderer.ItemRenderType.INVENTORY){
-			GL11.glScalef(13.8F, 13.8F, 13.8F);
-			GL11.glRotatef(180, 0, 1, 0);
-			GL11.glTranslated(-1.2, 0, -0.35);
-		}
-		else if (type == IItemRenderer.ItemRenderType.ENTITY){
-			GL11.glRotatef(90.5F, 0, 1, 0);
-			GL11.glTranslated(-0.1, 0, -0.9);
-		}
-	}
+        if (type == IItemRenderer.ItemRenderType.INVENTORY) {
+            GL11.glScalef(13.8F, 13.8F, 13.8F);
+            GL11.glRotatef(180, 0, 1, 0);
+            GL11.glTranslated(-1.2, 0, -0.35);
+        } else if (type == IItemRenderer.ItemRenderType.ENTITY) {
+            GL11.glRotatef(90.5F, 0, 1, 0);
+            GL11.glTranslated(-0.1, 0, -0.9);
+        }
+    }
 
-	@Override
-	public int getUpgradeCap(ItemStack itemstack) {
-		return BalanceConfigHandler.wyvernToolsMaxUpgrades;
-	}
+    @Override
+    public int getUpgradeCap(ItemStack itemstack) {
+        return BalanceConfigHandler.wyvernToolsMaxUpgrades;
+    }
 
-	@Override
-	public int getMaxTier(ItemStack itemstack) {
-		return 1;
-	}
+    @Override
+    public int getMaxTier(ItemStack itemstack) {
+        return 1;
+    }
 
-	@Override
-	public List<String> getUpgradeStats(ItemStack stack) {
-		return super.getUpgradeStats(stack);
-	}
+    @Override
+    public List<String> getUpgradeStats(ItemStack stack) {
+        return super.getUpgradeStats(stack);
+    }
 
-	@Override
-	public int getCapacity(ItemStack stack) {
-		int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-		return BalanceConfigHandler.wyvernToolsBaseStorage + points * BalanceConfigHandler.wyvernToolsStoragePerUpgrade;
-	}
+    @Override
+    public int getCapacity(ItemStack stack) {
+        int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
+        return BalanceConfigHandler.wyvernToolsBaseStorage + points * BalanceConfigHandler.wyvernToolsStoragePerUpgrade;
+    }
 
-	@Override
-	public int getMaxUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
-			return BalanceConfigHandler.wyvernToolsMaxCapacityUpgradePoints;
-		}
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
-			return BalanceConfigHandler.wyvernToolsMaxDigAOEUpgradePoints;
-		}
-		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
-			return BalanceConfigHandler.wyvernToolsMaxDigSpeedUpgradePoints;
-		}
-		return BalanceConfigHandler.wyvernToolsMaxUpgradePoints;
-	}
+    @Override
+    public int getMaxUpgradePoints(int upgradeIndex) {
+        if (upgradeIndex == EnumUpgrade.RF_CAPACITY.index) {
+            return BalanceConfigHandler.wyvernToolsMaxCapacityUpgradePoints;
+        }
+        if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+            return BalanceConfigHandler.wyvernToolsMaxDigAOEUpgradePoints;
+        }
+        if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+            return BalanceConfigHandler.wyvernToolsMaxDigSpeedUpgradePoints;
+        }
+        return BalanceConfigHandler.wyvernToolsMaxUpgradePoints;
+    }
 
-	@Override
-	public int getBaseUpgradePoints(int upgradeIndex) {
-		if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
-			return BalanceConfigHandler.wyvernToolsMinDigAOEUpgradePoints;
-		}
-		if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
-			return BalanceConfigHandler.wyvernToolsMinDigSpeedUpgradePoints;
-		}
-		return 0;
-	}
+    @Override
+    public int getBaseUpgradePoints(int upgradeIndex) {
+        if (upgradeIndex == EnumUpgrade.DIG_AOE.index) {
+            return BalanceConfigHandler.wyvernToolsMinDigAOEUpgradePoints;
+        }
+        if (upgradeIndex == EnumUpgrade.DIG_SPEED.index) {
+            return BalanceConfigHandler.wyvernToolsMinDigSpeedUpgradePoints;
+        }
+        return 0;
+    }
 
-	@Override
-	public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
-		List<EnumUpgrade> list = super.getUpgrades(itemstack);
-		list.remove(EnumUpgrade.DIG_DEPTH);
-		return list;
-	}
+    @Override
+    public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
+        List<EnumUpgrade> list = super.getUpgrades(itemstack);
+        list.remove(EnumUpgrade.DIG_DEPTH);
+        return list;
+    }
 
-	//	@Override
+    //	@Override
 //	public boolean isItemTool(ItemStack p_77616_1_) {
 //		return true;
 //	}

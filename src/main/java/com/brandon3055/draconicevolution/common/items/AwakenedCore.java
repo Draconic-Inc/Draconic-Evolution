@@ -6,14 +6,14 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import net.minecraft.item.ItemStack;
 
 public class AwakenedCore extends ItemDE {
-	public AwakenedCore() {
-		this.setUnlocalizedName(Strings.draconicCompoundName);
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		ModItems.register(this);
-	}
+    public AwakenedCore() {
+        this.setUnlocalizedName(Strings.draconicCompoundName);
+        this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+        ModItems.register(this);
+    }
 
-	@Override
-	public boolean hasEffect(ItemStack par1ItemStack, int pass) {
-		return true;
-	}
+    @Override
+    public boolean hasEffect(ItemStack par1ItemStack, int pass) {
+        return true;
+    }
 }

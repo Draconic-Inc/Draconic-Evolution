@@ -16,38 +16,40 @@ import net.minecraft.world.World;
  * Created by Brandon on 21/11/2014.
  */
 public class DraconicBlock extends BlockDE {
-	IIcon top;
-	public DraconicBlock() {
-		this.setHardness(20F);
-		this.setResistance(1000F);
-		this.setCreativeTab(DraconicEvolution.tabBlocksItems);
-		this.setBlockName(Strings.draconicBlockName);
-		this.setHarvestLevel("pickaxe", 4);
-		ModBlocks.register(this);
-	}
+    IIcon top;
 
-	@Override
-	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
+    public DraconicBlock() {
+        this.setHardness(20F);
+        this.setResistance(1000F);
+        this.setCreativeTab(DraconicEvolution.tabBlocksItems);
+        this.setBlockName(Strings.draconicBlockName);
+        this.setHarvestLevel("pickaxe", 4);
+        ModBlocks.register(this);
+    }
+
+    @Override
+    public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
         return entity instanceof EntityPlayer;
-	}
+    }
 
-	@Override
-	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {}
+    @Override
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
+    }
 
-	@Override
-	public boolean canDropFromExplosion(Explosion p_149659_1_) {
-		return false;
-	}
+    @Override
+    public boolean canDropFromExplosion(Explosion p_149659_1_) {
+        return false;
+    }
 
-	@Override
-	public void registerBlockIcons(IIconRegister iconRegister) {
-		blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_block");
-		top = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_block_blank");
-	}
+    @Override
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_block");
+        top = iconRegister.registerIcon(References.RESOURCESPREFIX + "draconic_block_blank");
+    }
 
-	@Override
-	public IIcon getIcon(int side, int p_149691_2_) {
-		if (side == 0 || side == 1) return top;
-		else return blockIcon;
-	}
+    @Override
+    public IIcon getIcon(int side, int p_149691_2_) {
+        if (side == 0 || side == 1) return top;
+        else return blockIcon;
+    }
 }

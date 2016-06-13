@@ -12,41 +12,41 @@ import io.netty.buffer.ByteBuf;
  */
 public class MountUpdatePacket implements IMessage {
 
-	public int entityID;
+    public int entityID;
 
-	public MountUpdatePacket(){}
+    public MountUpdatePacket() {
+    }
 
-	public MountUpdatePacket(int id){
-		this.entityID = id;
-	}
+    public MountUpdatePacket(int id) {
+        this.entityID = id;
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(entityID);
-	}
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeInt(entityID);
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		entityID = buf.readInt();
-	}
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        entityID = buf.readInt();
+    }
 
-	public static class Handler implements IMessageHandler<MountUpdatePacket, IMessage> {
+    public static class Handler implements IMessageHandler<MountUpdatePacket, IMessage> {
 
-		@Override
-		public IMessage onMessage(MountUpdatePacket message, MessageContext ctx) {
-			if (ctx.side.equals(Side.SERVER)){
-				if (message.entityID == -1){
-					ctx.getServerHandler().playerEntity.mountEntity(null);
-					return null;
-				}
-				else if (ctx.getServerHandler().playerEntity.ridingEntity != null){
-					return new MountUpdatePacket(ctx.getServerHandler().playerEntity.ridingEntity.getEntityId());
-				}
-				return null;
-			}
+        @Override
+        public IMessage onMessage(MountUpdatePacket message, MessageContext ctx) {
+            if (ctx.side.equals(Side.SERVER)) {
+                if (message.entityID == -1) {
+                    ctx.getServerHandler().playerEntity.mountEntity(null);
+                    return null;
+                } else if (ctx.getServerHandler().playerEntity.ridingEntity != null) {
+                    return new MountUpdatePacket(ctx.getServerHandler().playerEntity.ridingEntity.getEntityId());
+                }
+                return null;
+            }
 
-			ClientEventHandler.tryRepositionPlayerOnMount(message.entityID);
-			return null;
-		}
-	}
+            ClientEventHandler.tryRepositionPlayerOnMount(message.entityID);
+            return null;
+        }
+    }
 }

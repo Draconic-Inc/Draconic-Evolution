@@ -12,22 +12,22 @@ import java.util.List;
  */
 public class ChaosFragment extends ItemDE {
 
-	public ChaosFragment() {
-		this.setUnlocalizedName("chaosFragment");
-		this.setHasSubtypes(true);
+    public ChaosFragment() {
+        this.setUnlocalizedName("chaosFragment");
+        this.setHasSubtypes(true);
 
-		ModItems.register(this);
-	}
+        ModItems.register(this);
+    }
 
-	@Override
-	public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
-		list.add(new ItemStack(item, 1, 0));
-		list.add(new ItemStack(item, 1, 1));
-		list.add(new ItemStack(item, 1, 2));
-	}
+    @Override
+    public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
+        list.add(new ItemStack(item, 1, 0));
+        list.add(new ItemStack(item, 1, 1));
+        list.add(new ItemStack(item, 1, 2));
+    }
 
-	@Override
-	public String getUnlocalizedName(ItemStack itemStack) {
-		return super.getUnlocalizedName(itemStack)+itemStack.getItemDamage();
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack itemStack) {
+        return super.getUnlocalizedName(itemStack) + itemStack.getItemDamage();
+    }
 }

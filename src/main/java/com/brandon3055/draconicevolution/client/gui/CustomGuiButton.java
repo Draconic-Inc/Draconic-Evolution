@@ -7,17 +7,14 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 
-public class CustomGuiButton extends GuiButton
-{
+public class CustomGuiButton extends GuiButton {
 
-	public CustomGuiButton(int id, int left, int top, int width, int hight, String text) {
-		super(id, left, top, width, hight, text);
-	}
-	
-    public void drawButton(Minecraft minecraft, int p_146112_2_, int p_146112_3_)
-    {
-        if (this.visible)
-        {
+    public CustomGuiButton(int id, int left, int top, int width, int hight, String text) {
+        super(id, left, top, width, hight, text);
+    }
+
+    public void drawButton(Minecraft minecraft, int p_146112_2_, int p_146112_3_) {
+        if (this.visible) {
             FontRenderer fontrenderer = minecraft.fontRenderer;
             minecraft.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -31,16 +28,11 @@ public class CustomGuiButton extends GuiButton
             this.mouseDragged(minecraft, p_146112_2_, p_146112_3_);
             int l = 14737632;
 
-            if (packedFGColour != 0)
-            {
+            if (packedFGColour != 0) {
                 l = packedFGColour;
-            }
-            else if (!this.enabled)
-            {
+            } else if (!this.enabled) {
                 l = 10526880;
-            }
-            else if (this.field_146123_n)
-            {
+            } else if (this.field_146123_n) {
                 l = 16777120;
             }
 

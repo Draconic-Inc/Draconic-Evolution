@@ -15,83 +15,84 @@ import java.util.ArrayList;
  */
 public class EntityChaosDrill extends Entity {
 
-	public int MAX_AGE = 300;
-	private int ENTITY_AGE = 0;
-	private EntityPlayer PLAYER;
-	public EntityChaosDrill(World world) {
-		super(world);
-	}
+    public int MAX_AGE = 300;
+    private int ENTITY_AGE = 0;
+    private EntityPlayer PLAYER;
 
-	public EntityChaosDrill(World world, EntityPlayer player){
-		super(world);
-		this.PLAYER = player;
-		this.setSize(0.1F, 0.1F);
-		this.setPosition(player.posX, player.posY, player.posZ);
-	}
+    public EntityChaosDrill(World world) {
+        super(world);
+    }
 
-	@Override
-	public boolean canBePushed() {
-		return false;
-	}
+    public EntityChaosDrill(World world, EntityPlayer player) {
+        super(world);
+        this.PLAYER = player;
+        this.setSize(0.1F, 0.1F);
+        this.setPosition(player.posX, player.posY, player.posZ);
+    }
 
-	@Override
-	protected void entityInit() {
-		LogHelper.info("entityInit");
-	}
+    @Override
+    public boolean canBePushed() {
+        return false;
+    }
 
-	@Override
-	public void onUpdate() {
-		//LogHelper.info("onUpdate");
-		mineNextBlockInPattern();
-		entityTick();
-	}
+    @Override
+    protected void entityInit() {
+        LogHelper.info("entityInit");
+    }
 
-	@Override
-	protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
+    @Override
+    public void onUpdate() {
+        //LogHelper.info("onUpdate");
+        mineNextBlockInPattern();
+        entityTick();
+    }
 
-	}
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
 
-	@Override
-	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
+    }
 
-	}
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
 
-	private void entityTick(){
-		if (ENTITY_AGE >= MAX_AGE) setDead();
-		ENTITY_AGE++;
-	}
+    }
 
-	private void mineNextBlockInPattern(){
-		ArrayList<MultiblockHelper.TileLocation> blocks = getBlocksInSphere(5);
-		LogHelper.info(blocks.size());
-		if (blocks.size() > 0) worldObj.setBlockToAir(blocks.get(1).getXCoord(), blocks.get(1).getYCoord(), blocks.get(1).getZCoord());
-	}
+    private void entityTick() {
+        if (ENTITY_AGE >= MAX_AGE) setDead();
+        ENTITY_AGE++;
+    }
 
-	private ArrayList<MultiblockHelper.TileLocation> getBlocksInSphere(int r){
-		ArrayList<MultiblockHelper.TileLocation> blocks = new ArrayList<MultiblockHelper.TileLocation>();
-		int minDist = 100;
+    private void mineNextBlockInPattern() {
+        ArrayList<MultiblockHelper.TileLocation> blocks = getBlocksInSphere(5);
+        LogHelper.info(blocks.size());
+        if (blocks.size() > 0)
+            worldObj.setBlockToAir(blocks.get(1).getXCoord(), blocks.get(1).getYCoord(), blocks.get(1).getZCoord());
+    }
 
-		for( int x = (int)posX-r ; x <= (int)posX+r; x++){
-			for( int z = (int)posZ-r ; z <= (int)posZ+r; z++) {
-				for (int y = (int)posY-r; y <= (int)posY+r; y++) {
-					int dist = (int) (Utills.getDistanceAtoB(x, y, z, (int) posX, (int) posY, (int) posZ));
-					if (dist <= r) {
-						if (!worldObj.isAirBlock(x, y, z)) {
-							if (blocks.size() <= dist) {
-								blocks.add(new MultiblockHelper.TileLocation(x, y, z));
-							}
-							else {
-								blocks.set(dist, new MultiblockHelper.TileLocation(x, y, z));
-							}
-							if (dist < minDist) minDist = dist;
-						}
-					}
-				}
-			}
-		}
-		LogHelper.info("dist: " + minDist);
+    private ArrayList<MultiblockHelper.TileLocation> getBlocksInSphere(int r) {
+        ArrayList<MultiblockHelper.TileLocation> blocks = new ArrayList<MultiblockHelper.TileLocation>();
+        int minDist = 100;
 
-		return blocks;
-	}
+        for (int x = (int) posX - r; x <= (int) posX + r; x++) {
+            for (int z = (int) posZ - r; z <= (int) posZ + r; z++) {
+                for (int y = (int) posY - r; y <= (int) posY + r; y++) {
+                    int dist = (int) (Utills.getDistanceAtoB(x, y, z, (int) posX, (int) posY, (int) posZ));
+                    if (dist <= r) {
+                        if (!worldObj.isAirBlock(x, y, z)) {
+                            if (blocks.size() <= dist) {
+                                blocks.add(new MultiblockHelper.TileLocation(x, y, z));
+                            } else {
+                                blocks.set(dist, new MultiblockHelper.TileLocation(x, y, z));
+                            }
+                            if (dist < minDist) minDist = dist;
+                        }
+                    }
+                }
+            }
+        }
+        LogHelper.info("dist: " + minDist);
+
+        return blocks;
+    }
 
 }
