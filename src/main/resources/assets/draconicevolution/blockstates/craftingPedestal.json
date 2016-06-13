@@ -3,10 +3,10 @@
   "defaults": {
     "model": "draconicevolution:craftingPedestal",
     "textures": {
-      "base":"draconicevolution:blocks/crafting_altar/pedestalBase",
-      "core":"draconicevolution:blocks/crafting_altar/pedestalCoreBasic",
-      "ring":"draconicevolution:blocks/crafting_altar/pedestalRing",
-      "particle": "draconicevolution:blocks/crafting_altar/pedestalBase"
+      "base":"draconicevolution:blocks/fusion_crafting/pedestalBase",
+      "core":"draconicevolution:blocks/fusion_crafting/pedestalCoreBasic",
+      "ring":"draconicevolution:blocks/fusion_crafting/pedestalRing",
+      "particle": "draconicevolution:blocks/fusion_crafting/pedestalBase"
     },
     "transform": "forge:default-block"
   },
@@ -29,17 +29,17 @@
       "basic":{},
       "wyvern":{
         "textures": {
-          "core":"draconicevolution:blocks/crafting_altar/pedestalCoreWyvern"
+          "core":"draconicevolution:blocks/fusion_crafting/pedestalCoreWyvern"
         }
       },
       "draconic":{
         "textures": {
-          "core":"draconicevolution:blocks/crafting_altar/pedestalCoreDraconic"
+          "core":"draconicevolution:blocks/fusion_crafting/pedestalCoreDraconic"
         }
       },
       "chaotic":{
         "textures": {
-          "core":"draconicevolution:blocks/crafting_altar/pedestalCoreChaotic"
+          "core":"draconicevolution:blocks/fusion_crafting/pedestalCoreChaotic"
         }
       }
     },

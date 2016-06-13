@@ -14,6 +14,7 @@ public interface IFusionRecipe {
      * @param world The world
      * @param pos The position of the Fusion Crafting Core
      * @return true if the items in the IFusionCraftingInventory inventory match this recipe.
+     *
      * For the sake of sanity do not just return true if the required items are present. Also make sure there are no extra
      * stacks that are not part of the recipe.
      * Also remember to check that the tier of the crafting pedestals is high enough for your recipe because there

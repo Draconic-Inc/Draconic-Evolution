@@ -29,6 +29,7 @@ public class EnergyInfuser extends BlockBCore implements ITileEntityProvider, IC
 
     public EnergyInfuser(){
         super(Material.IRON);
+        setIsFullCube(false);
     }
 
     //region Block
@@ -55,15 +56,6 @@ public class EnergyInfuser extends BlockBCore implements ITileEntityProvider, IC
         return new AxisAlignedBB(0, 0, 0, 1, 0.375, 1);
     }
 
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    public boolean isFullCube(IBlockState state)
-    {
-        return false;
-    }
 
     @Override
     public void registerRenderer(Feature feature) {

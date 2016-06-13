@@ -7,7 +7,7 @@ import java.util.List;
  * Created by brandon3055 on 11/06/2016.
  */
 public class FusionRecipeRegistry {
-    private static List<IFusionRecipe> recipeRegistry = new ArrayList<IFusionRecipe>();
+    public static List<IFusionRecipe> recipeRegistry = new ArrayList<IFusionRecipe>();//todo make private
 
     public static void registerRecipe(IFusionRecipe recipe){
         recipeRegistry.add(recipe);

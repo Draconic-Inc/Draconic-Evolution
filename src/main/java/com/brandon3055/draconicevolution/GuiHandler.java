@@ -3,10 +3,7 @@ package com.brandon3055.draconicevolution;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.client.gui.*;
-import com.brandon3055.draconicevolution.inventory.ContainerEnergyInfuser;
-import com.brandon3055.draconicevolution.inventory.ContainerGenerator;
-import com.brandon3055.draconicevolution.inventory.ContainerGrinder;
-import com.brandon3055.draconicevolution.inventory.ContainerUpgradeModifier;
+import com.brandon3055.draconicevolution.inventory.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -34,9 +31,11 @@ public class GuiHandler implements IGuiHandler {
 	public static final int GUIID_REACTOR = 14;
 	public static final int GUIID_UPGRADE_MODIFIER = 15;
     public static final int GUIID_ENERGY_CORE = 16;
+    public static final int GUIID_FUSION_CRAFTING = 17;
+
 	public static final int GUIID_CONTAINER_TEMPLATE = 100;
 
-	public static void initialize(){
+    public static void initialize(){
 		NetworkRegistry.INSTANCE.registerGuiHandler(DraconicEvolution.instance, instance);
 	}
 
@@ -103,6 +102,11 @@ public class GuiHandler implements IGuiHandler {
 					return new ContainerBCBase<TileEnergyStorageCore>(player, (TileEnergyStorageCore) tileEntity).addPlayerSlots(10, 116);
 				}
 				break;
+            case GUIID_FUSION_CRAFTING:
+                if (tileEntity != null && tileEntity instanceof TileFusionCraftingCore) {
+                    return new ContainerFusionCraftingCore(player, (TileFusionCraftingCore) tileEntity);
+                }
+                break;
 
 //			case GUIID_CONTAINER_TEMPLATE:
 //				if (containerTemp != null && containerTemp instanceof TileContainerTemplate) {
@@ -182,6 +186,11 @@ public class GuiHandler implements IGuiHandler {
             case GUIID_ENERGY_CORE:
                 if (tileEntity != null && tileEntity instanceof TileEnergyStorageCore) {
                     return new GuiEnergyCore(player, (TileEnergyStorageCore) tileEntity);
+                }
+                break;
+            case GUIID_FUSION_CRAFTING:
+                if (tileEntity != null && tileEntity instanceof TileFusionCraftingCore) {
+                    return new GuiFusionCraftingCore(player, (TileFusionCraftingCore) tileEntity);
                 }
                 break;
 //			case GUIID_CONTAINER_TEMPLATE:

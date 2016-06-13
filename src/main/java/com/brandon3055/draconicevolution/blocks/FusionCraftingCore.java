@@ -5,8 +5,8 @@ import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileUpgradeModifier;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileUpgradeModifier;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileFusionCraftingCore;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -22,43 +22,34 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
-/**
- * Created by brandon3055 on 9/06/2016.
- */
-public class UpgradeModifier extends BlockBCore implements ITileEntityProvider, ICustomRender {
+import javax.annotation.Nullable;
 
-    public UpgradeModifier(){
+/**
+ * Created by brandon3055 on 11/06/2016.
+ */
+public class FusionCraftingCore extends BlockBCore implements ICustomRender, ITileEntityProvider {
+
+    public FusionCraftingCore(){
         super(Material.IRON);
         setIsFullCube(false);
     }
 
-    //region Block
-
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileUpgradeModifier();
+        return new TileFusionCraftingCore();
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_UPGRADE_MODIFIER, world, pos.getX(), pos.getY(), pos.getZ());
+            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_FUSION_CRAFTING, world, pos.getX(), pos.getY(), pos.getZ());
         }
         return true;
     }
 
-    //endregion
-
-    //region Rendering
-
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return new AxisAlignedBB(0, 0, 0, 1, 0.375, 1);
-    }
-
     @Override
     public void registerRenderer(Feature feature) {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileUpgradeModifier.class, new RenderTileUpgradeModifier());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileFusionCraftingCore.class, new RenderTileFusionCraftingCore());
     }
 
     @Override
@@ -66,5 +57,8 @@ public class UpgradeModifier extends BlockBCore implements ITileEntityProvider, 
         return true;
     }
 
-    //endregion
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return new AxisAlignedBB(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
+    }
 }

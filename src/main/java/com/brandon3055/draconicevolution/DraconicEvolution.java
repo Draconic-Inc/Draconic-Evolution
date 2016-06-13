@@ -67,6 +67,7 @@ public class DraconicEvolution {
 		featureParser.registerFeatures();
 
 		OreHandler.initialize();
+        FusionRecipes.registerRecipes();
 
 		proxy.preInit(event);
         proxy.registerParticles();

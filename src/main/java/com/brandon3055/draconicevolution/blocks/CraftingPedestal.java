@@ -41,6 +41,7 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
     public CraftingPedestal(){
         super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(TIER, "basic").withProperty(FACING, EnumFacing.UP));
+        setIsFullCube(false);
     }
 
     //region BlockState
@@ -149,16 +150,6 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
         }
 
         return super.getBoundingBox(state, source, pos);
-    }
-
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    public boolean isFullCube(IBlockState state)
-    {
-        return false;
     }
 
     @Override

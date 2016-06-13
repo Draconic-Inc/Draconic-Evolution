@@ -36,6 +36,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
 
     public InvisECoreBlock() {
         this.setHardness(10F);
+        setIsFullCube(false);
     }
 
     @Override
@@ -190,21 +191,6 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.INVISIBLE;
-    }
-
-    @Override
-    public boolean isBlockNormalCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    public boolean isVisuallyOpaque() {
-        return false;
     }
 
     @Override

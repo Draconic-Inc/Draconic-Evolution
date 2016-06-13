@@ -31,4 +31,11 @@ public interface ICraftingPedestal {
      * Sets the stack in the pedestal.
      */
     void setStackInPedestal(ItemStack stack);
+
+    /**
+     * @param craftingInventory The crafting inventory.
+     * @return true if the pedestal accepts the inventory and can craft. false if the pedestal dose not accept the inventory.
+     * Will return false if the pedestal is already working with a different core.
+     */
+    boolean setCraftingInventory(IFusionCraftingInventory craftingInventory);
 }

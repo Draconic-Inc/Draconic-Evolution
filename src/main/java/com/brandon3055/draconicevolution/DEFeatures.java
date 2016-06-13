@@ -72,6 +72,9 @@ public class DEFeatures {
 
     @Feature(name = "invisECoreBlock", tileEntity = TileInvisECoreBlock.class, cTab = -1)
     public static InvisECoreBlock invisECoreBlock = new InvisECoreBlock();
+
+    @Feature(name = "fusionCraftingCore", tileEntity = TileFusionCraftingCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static FusionCraftingCore fusionCraftingCore = new FusionCraftingCore();
     //endregion
 
 	/* ------------------ Items ------------------ */

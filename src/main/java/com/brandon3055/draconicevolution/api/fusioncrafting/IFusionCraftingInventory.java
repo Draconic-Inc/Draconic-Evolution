@@ -24,4 +24,14 @@ public interface IFusionCraftingInventory {
      * Returns a list of all valid crafting pedestals.
      * */
     List<ICraftingPedestal> getPedestals();
+
+    /**
+     * Receive energy from a pedestal. Should return the amount that was accepted.
+     * */
+    int receiveEnergyFromPedestal(int max, ICraftingPedestal pedestal);
+
+    /**
+     * @return true if currently crafting an item.
+     */
+    boolean craftingInProgress();
 }
