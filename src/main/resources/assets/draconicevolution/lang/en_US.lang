@@ -110,7 +110,7 @@ item.draconicevolution:magnet.wyvern.name=Item Dislocator
 item.draconicevolution:magnet.draconic.name=Awakened Item Dislocator
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
-itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
+itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons
 itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
 
 //Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
@@ -481,6 +481,8 @@ button.de.BaseSafeAOE.name=AOE Safe Mode
 button.de.VerticalAcceleration.name=Vertical Acceleration
 button.de.EffectiveOnSprint.name=Effective while sprinting
 button.de.GogglesOfRevealing.name=Magical Sense
+button.de.ApiaristArmor.name=Apiarist's Protection
+button.de.NaturalistArmor.name=Naturalist's Vision
 button.de.BowArrowSpeedModifier.name=Arrow Velocity Modifier
 button.de.BowAutoFire.name=Auto Fire
 button.de.BowArrowDamage.name=Base Damage
