@@ -96,7 +96,7 @@ public class TileEnergyStorageCore extends TileObjectSync {
                 for (int z = zCoord - 1; z <= zCoord + 1; z++) {
                     if (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock) {
                         if (worldObj.getBlockMetadata(x, y, z) == 0) {
-                            worldObj.setBlock(x, y, z, ModBlocks.draconiumBlock);
+                            worldObj.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureOuterBlock, BalanceConfigHandler.energyStorageStructureOuterBlockMetadata, 3);
                         } else if (worldObj.getBlockMetadata(x, y, z) == 1) {
                             worldObj.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureBlock, BalanceConfigHandler.energyStorageStructureBlockMetadata, 3);
                         }
@@ -536,10 +536,11 @@ public class TileEnergyStorageCore extends TileObjectSync {
     private boolean testForOrActivateDraconium(int x, int y, int z, boolean set, boolean activate) {
         if (!activate) {
             if (set) {
-                worldObj.setBlock(x, y, z, ModBlocks.draconiumBlock);
+                worldObj.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureOuterBlock, BalanceConfigHandler.energyStorageStructureOuterBlockMetadata, 3);
                 return true;
             } else
-                return worldObj.getBlock(x, y, z) == ModBlocks.draconiumBlock || (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock && worldObj.getBlockMetadata(x, y, z) == 0);
+                return (worldObj.getBlock(x, y, z) == BalanceConfigHandler.energyStorageStructureOuterBlock && worldObj.getBlockMetadata(x, y, z) == BalanceConfigHandler.energyStorageStructureOuterBlockMetadata) ||
+                       (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock && worldObj.getBlockMetadata(x, y, z) == 0);
         } else {
             return activateDraconium(x, y, z);
         }
@@ -551,7 +552,8 @@ public class TileEnergyStorageCore extends TileObjectSync {
                 worldObj.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureBlock, BalanceConfigHandler.energyStorageStructureBlockMetadata, 3);
                 return true;
             } else {
-                return (worldObj.getBlock(x, y, z) == BalanceConfigHandler.energyStorageStructureBlock && worldObj.getBlockMetadata(x, y, z) == BalanceConfigHandler.energyStorageStructureBlockMetadata) || (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock && worldObj.getBlockMetadata(x, y, z) == 1);
+                return (worldObj.getBlock(x, y, z) == BalanceConfigHandler.energyStorageStructureBlock && worldObj.getBlockMetadata(x, y, z) == BalanceConfigHandler.energyStorageStructureBlockMetadata) ||
+                       (worldObj.getBlock(x, y, z) == ModBlocks.invisibleMultiblock && worldObj.getBlockMetadata(x, y, z) == 1);
             }
         } else {
             return activateRedstone(x, y, z);
