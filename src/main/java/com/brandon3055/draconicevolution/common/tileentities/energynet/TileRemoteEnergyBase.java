@@ -1,14 +1,19 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
-import com.brandon3055.draconicevolution.common.utills.*;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +26,6 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Brandon on 10/02/2015.
@@ -56,27 +58,18 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
     @Override
     public void updateEntity() {
         tick++;
-        //worldObj.theProfiler.startSection("DE REB");
         updateLinkedDevices();
-        if (linkedDevices.size() == 0) detectAndSendChanges(-1);
-
-        if (worldObj.isRemote && inView > 0) --inView;
-        //worldObj.theProfiler.endSection();
+        if (linkedDevices.size() == 0) {
+            detectAndSendChanges(-1);
+        }
+        if (worldObj.isRemote && inView > 0) {
+            --inView;
+        }
     }
 
     //**********Distribution Logic**********
 
     private void updateLinkedDevices() {
-        boolean inView = false;
-//		if (worldObj.isRemote)
-//		{
-//			MovingObjectPosition mop = Minecraft.getMinecraft().thePlayer.rayTrace(5, 0);
-//			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mop.blockX == xCoord && mop.blockY == yCoord && mop.blockZ == zCoord) inView = true;//todo remove
-//		}
-
-
-        if (inView) LogHelper.info("######Start#######");
-
         for (LinkedEnergyDevice device : linkedDevices) {
             if (!device.isValid(worldObj)) {
                 if (worldObj.getChunkFromBlockCoords(device.xCoord, device.zCoord).isChunkLoaded) {
@@ -100,37 +93,21 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
                         rType = 1;
                     else rType = 0;
                 }
-                if (inView) LogHelper.info(device.energyFlow);
                 device.beam = DraconicEvolution.proxy.energyBeam(worldObj, getBeamX(), getBeamY(), getBeamZ(), remoteTile.getBeamX(), remoteTile.getBeamY(), remoteTile.getBeamZ(), (int) device.energyFlow, getPowerTier() == 1, device.beam, true, rType);
             } else {
-                int transferCap = storage.getMaxExtract();
-
                 double difference = getCapacity() - remoteTile.getCapacity();
-
-
-                int energyToEqual = (int) (((difference / 100D) * (double) remoteTile.getStorage().getMaxEnergyStored()) / 2.1D);
-
-                double maxFlow = Math.min(energyToEqual, Math.min(transferCap, remoteTile.getStorage().getMaxEnergyStored() - remoteTile.getStorage().getEnergyStored()));
+                double energyToEqual = Math.round(difference / 100D * (double) remoteTile.getStorage().getMaxEnergyStored() / 2.01D);
+                double maxFlow = Math.min(energyToEqual, (double) Math.min(storage.getMaxExtract(), remoteTile.getStorage().getMaxEnergyStored() - remoteTile.getStorage().getEnergyStored()));
 
                 device.energyFlow = getFlow(getCapacity(), remoteTile.getCapacity());
                 int flow = (int) ((device.energyFlow / 100D) * maxFlow);
-
-
                 int transfered = storage.extractEnergy(remoteTile.getStorage().receiveEnergy(storage.extractEnergy(flow, true), false), false);
 
-                if (inView) LogHelper.info(transfered);
                 device.energyFlow = Math.min(((double) transfered / 10000D) * 100D, 100D);
 
-                //LogHelper.info("dif:" + difference + " flow:" + getFlow(getCapacity(), remoteTile.getCapacity()) + " EtoE:" + energyToEqual + " tfrd:" + transfered + " X:" + xCoord + " lCap:" + getCapacity() + " rCap:" + remoteTile.getCapacity() + " strd:" + storage.getEnergyStored() + " T:" + type + " mxflw:" + maxFlow);
-
-                //LogHelper.info(flow + " " + transfered + " " + getEnergyStored(ForgeDirection.UNKNOWN));
-                //if (device.energyFlow > 0)LogHelper.info(device.energyFlow + " " + transfered);
-                //if (device.energyFlow == 0) LogHelper.info(device.getEnergyTile(worldObj));//todo clean up
                 detectAndSendChanges(linkedDevices.indexOf(device));
-                if (inView) LogHelper.info(device.energyFlow);
             }
         }
-        if (inView) LogHelper.info("#######END########");
     }
 
     protected void detectAndSendChanges(int index) {
@@ -267,7 +244,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
 
     @Override
     public boolean handleBinding(EntityPlayer player, int x, int y, int z, boolean callOther) {
-        int range = (powerTier + 1) * 25;
+        int range = powerTier == 0 ? BalanceConfigHandler.energyDeviceBasicLinkingRange : BalanceConfigHandler.energyDeviceAdvancedLinkingRange;
         IRemoteEnergyHandler tile = worldObj.getTileEntity(x, y, z) instanceof IRemoteEnergyHandler ? (IRemoteEnergyHandler) worldObj.getTileEntity(x, y, z) : null;
 
         if (tile == null || (x == xCoord && y == yCoord && z == zCoord)) {

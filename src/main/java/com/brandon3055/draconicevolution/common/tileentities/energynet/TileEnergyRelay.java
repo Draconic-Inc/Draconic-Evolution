@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,17 +25,23 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
 
     @Override
     public int getCap() {
-        return 50000 + (powerTier * 4500000);
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyRelayBasicStorage :
+               BalanceConfigHandler.energyRelayAdvancedStorage;
     }
 
     @Override
     public int getRec() {
-        return 50000 + (powerTier * 4500000);
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyRelayBasicMaxReceive :
+               BalanceConfigHandler.energyRelayAdvancedMaxReceive;
     }
 
     @Override
     public int getExt() {
-        return 50000 + (powerTier * 4500000);
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyRelayBasicMaxExtract :
+               BalanceConfigHandler.energyRelayAdvancedMaxExtract;
     }
 
     @Override
