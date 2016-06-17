@@ -4,6 +4,7 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -48,6 +49,7 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase {
                 }
             } else if (input && adjacentTile instanceof IEnergyProvider) {
                 IEnergyProvider handler = (IEnergyProvider) adjacentTile;
+                storage.receiveEnergy(handler.extractEnergy(direction.getOpposite(), storage.receiveEnergy(storage.getMaxExtract(), true), false), false);
                 if (transferBoost) {
                     for (int i = 0; i < 4; i++)
                         storage.receiveEnergy(handler.extractEnergy(direction.getOpposite(), storage.receiveEnergy(storage.getMaxExtract(), true), false), false);
@@ -104,17 +106,23 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase {
 
     @Override
     public int getCap() {
-        return powerTier == 0 ? 50000 : 10000000;
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyTransceiverBasicStorage :
+               BalanceConfigHandler.energyTransceiverAdvancedStorage;
     }
 
     @Override
     public int getRec() {
-        return powerTier == 0 ? 50000 : 10000000;
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyTransceiverBasicMaxReceive :
+               BalanceConfigHandler.energyTransceiverAdvancedMaxReceive;
     }
 
     @Override
     public int getExt() {
-        return powerTier == 0 ? 50000 : 10000000;
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyTransceiverBasicMaxExtract :
+               BalanceConfigHandler.energyTransceiverAdvancedMaxExtract;
     }
 
     @Override

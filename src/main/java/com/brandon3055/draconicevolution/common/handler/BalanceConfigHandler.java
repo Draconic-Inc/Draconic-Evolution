@@ -104,6 +104,26 @@ public class BalanceConfigHandler
     public static int grinderExternalEnergyBufferSize = 100000;
     public static int grinderMaxReceive = 32000;
     public static int grinderEnergyPerKill = 1000;
+    public static int energyRelayBasicStorage = 50000;
+    public static int energyRelayAdvancedStorage = 4550000;
+    public static int energyRelayBasicMaxReceive = 50000;
+    public static int energyRelayAdvancedMaxReceive = 4550000;
+    public static int energyRelayBasicMaxExtract = 50000;
+    public static int energyRelayAdvancedMaxExtract = 4550000;
+    public static int energyTransceiverBasicStorage = 50000;
+    public static int energyTransceiverAdvancedStorage = 10000000;
+    public static int energyTransceiverBasicMaxReceive = 50000;
+    public static int energyTransceiverAdvancedMaxReceive = 10000000;
+    public static int energyTransceiverBasicMaxExtract = 50000;
+    public static int energyTransceiverAdvancedMaxExtract = 10000000;
+    public static int energyWirelessTransceiverBasicStorage = 50000;
+    public static int energyWirelessTransceiverAdvancedStorage = 4550000;
+    public static int energyWirelessTransceiverBasicMaxReceive = 50000;
+    public static int energyWirelessTransceiverAdvancedMaxReceive = 4550000;
+    public static int energyWirelessTransceiverBasicMaxExtract = 50000;
+    public static int energyWirelessTransceiverAdvancedMaxExtract = 4550000;
+    public static int energyWirelessTransceiverBasicMaxSend = 5000;
+    public static int energyWirelessTransceiverAdvancedMaxSend = 50000;
     public static int wyvernArmorMaxCapacityUpgradePoints = 50;
     public static int wyvernArmorMaxUpgrades = 3;
     public static int wyvernArmorMaxUpgradePoints = 50;
@@ -142,6 +162,8 @@ public class BalanceConfigHandler
     public static Block energyStorageStructureOuterBlock = null;
     public static int energyStorageStructureOuterBlockMetadata = 0;
     public static boolean grinderShouldUseLooting = false;
+    public static int energyDeviceBasicLinkingRange = 25;
+    public static int energyDeviceAdvancedLinkingRange = 50;
     private static Configuration config;
 
     public static void init(File modConfigurationDirectory)
@@ -295,6 +317,64 @@ public class BalanceConfigHandler
         grinderEnergyPerKill =
             getInteger("energy.machines", "Mob Grinder: Amount of energy required to kill entity (RF)",
                        grinderEnergyPerKill);
+        energyRelayBasicStorage =
+            getInteger("energy.machines", "Energy Relay: Energy buffer size (RF)", energyRelayBasicStorage);
+        energyRelayAdvancedStorage =
+            getInteger("energy.machines", "Advanced Energy Relay: Energy buffer size (RF)", energyRelayAdvancedStorage);
+        energyRelayBasicMaxReceive = getInteger("energy.machines", "Energy Relay: Maximum energy reception rate (RF/t)",
+                                                energyRelayBasicMaxReceive);
+        energyRelayAdvancedMaxReceive =
+            getInteger("energy.machines", "Advanced Energy Relay: Maximum energy reception rate (RF/t)",
+                       energyRelayAdvancedMaxReceive);
+        energyRelayBasicMaxExtract =
+            getInteger("energy.machines", "Energy Relay: Maximum energy extraction rate (RF/t)",
+                       energyRelayBasicMaxExtract);
+        energyRelayAdvancedMaxExtract =
+            getInteger("energy.machines", "Advanced Energy Relay: Maximum energy extraction rate (RF/t)",
+                       energyRelayAdvancedMaxExtract);
+        energyTransceiverBasicStorage =
+            getInteger("energy.machines", "Energy Transceiver: Energy buffer size (RF)", energyTransceiverBasicStorage);
+        energyTransceiverAdvancedStorage =
+            getInteger("energy.machines", "Advanced Energy Transceiver: Energy buffer size (RF)",
+                       energyTransceiverAdvancedStorage);
+        energyTransceiverBasicMaxReceive =
+            getInteger("energy.machines", "Energy Transceiver: Maximum energy reception rate (RF/t)",
+                       energyTransceiverBasicMaxReceive);
+        energyTransceiverAdvancedMaxReceive =
+            getInteger("energy.machines", "Advanced Energy Transceiver: Maximum energy reception rate (RF/t)",
+                       energyTransceiverAdvancedMaxReceive);
+        energyTransceiverBasicMaxExtract =
+            getInteger("energy.machines", "Energy Transceiver: Maximum energy extraction rate (RF/t)",
+                       energyTransceiverBasicMaxExtract);
+        energyTransceiverAdvancedMaxExtract =
+            getInteger("energy.machines", "Advanced Energy Transceiver: Maximum energy extraction rate (RF/t)",
+                       energyTransceiverAdvancedMaxExtract);
+        energyWirelessTransceiverBasicStorage =
+            getInteger("energy.machines", "Wireless Energy Transceiver: Energy buffer size (RF)",
+                       energyWirelessTransceiverBasicStorage);
+        energyWirelessTransceiverAdvancedStorage =
+            getInteger("energy.machines", "Advanced Wireless Energy Transceiver: Energy buffer size (RF)",
+                       energyWirelessTransceiverAdvancedStorage);
+        energyWirelessTransceiverBasicMaxReceive =
+            getInteger("energy.machines", "Wireless Energy Transceiver: Maximum energy reception rate (RF/t)",
+                       energyWirelessTransceiverBasicMaxReceive);
+        energyWirelessTransceiverAdvancedMaxReceive =
+            getInteger("energy.machines", "Advanced Wireless Energy Transceiver: Maximum energy reception rate (RF/t)",
+                       energyWirelessTransceiverAdvancedMaxReceive);
+        energyWirelessTransceiverBasicMaxExtract =
+            getInteger("energy.machines", "Wireless Energy Transceiver: Maximum energy extraction rate (RF/t)",
+                       energyWirelessTransceiverBasicMaxExtract);
+        energyWirelessTransceiverAdvancedMaxExtract =
+            getInteger("energy.machines", "Advanced Wireless Energy Transceiver: Maximum energy extraction rate (RF/t)",
+                       energyWirelessTransceiverAdvancedMaxExtract);
+        energyWirelessTransceiverBasicMaxSend = getInteger("energy.machines",
+                                                           "Wireless Energy Transceiver: Maximum energy sending rate " +
+                                                           "for each linked device (RF/t)",
+                                                           energyWirelessTransceiverBasicMaxSend);
+        energyWirelessTransceiverAdvancedMaxSend = getInteger("energy.machines",
+                                                              "Advanced Wireless Energy Transceiver: Maximum energy " +
+                                                              "sending rate for each linked device (RF/t)",
+                                                              energyWirelessTransceiverAdvancedMaxSend);
         wyvernArmorMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernArmorBaseStorage) /
                                                                (double) Math.max(wyvernArmorStoragePerUpgrade, 1)) *
                                               EnumUpgrade.RF_CAPACITY.pointConversion;
@@ -437,6 +517,12 @@ public class BalanceConfigHandler
             Math.max(Math.min(draconicCapacitorMaxUpgradePoints, draconicCapacitorMaxCapacityUpgradePoints), 0);
         grinderShouldUseLooting =
             getBoolean("tweaks.machines", "Mob Grinder: Use Looting enchantment", grinderShouldUseLooting);
+        energyDeviceBasicLinkingRange =
+            getInteger("tweaks.machines", "Energy Device (Relay/Transceiver): Linking range",
+                       energyDeviceBasicLinkingRange, 8, 32);
+        energyDeviceAdvancedLinkingRange =
+            getInteger("tweaks.machines", "Advanced Energy Device (Relay/Transceiver): Linking range",
+                       energyDeviceAdvancedLinkingRange, 16, 64);
         if (config.hasChanged())
         {
             config.save();
@@ -456,14 +542,16 @@ public class BalanceConfigHandler
         energyStorageStructureBlockMetadata =
             getInteger("tweaks.machines", "Multiblock Energy Storage: Metadata of main block of structure",
                        energyStorageStructureBlockMetadata,
-                       "WARNING! Changing of this value will replace blocks of all existing Energy Storage Multiblocks!");
+                       "WARNING! Changing of this value will replace blocks of all existing Energy Storage " +
+                       "Multiblocks!");
         energyStorageStructureOuterBlock =
             getBlock("tweaks.machines", "Multiblock Energy Storage: Outer block of structure", ModBlocks.draconiumBlock,
                      "WARNING! Changing of this value will replace blocks of all existing Energy Storage Multiblocks!");
         energyStorageStructureOuterBlockMetadata =
             getInteger("tweaks.machines", "Multiblock Energy Storage: Metadata of outer block of structure",
                        energyStorageStructureBlockMetadata,
-                       "WARNING! Changing of this value will replace blocks of all existing Energy Storage Multiblocks!");
+                       "WARNING! Changing of this value will replace blocks of all existing Energy Storage " +
+                       "Multiblocks!");
         if (config.hasChanged())
         {
             config.save();
