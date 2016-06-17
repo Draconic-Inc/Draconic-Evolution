@@ -268,7 +268,7 @@ public class DraconicSword extends ItemSword implements IEnergyContainerWeaponIt
         if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
             return BalanceConfigHandler.draconicWeaponsMinAttackAOEUpgradePoints;
         }
-        if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+        if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) {
             return BalanceConfigHandler.draconicWeaponsMinAttackDamageUpgradePoints;
         }
         return 0;
