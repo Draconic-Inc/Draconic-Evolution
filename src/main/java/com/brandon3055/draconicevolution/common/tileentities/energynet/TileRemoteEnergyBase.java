@@ -296,7 +296,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRe
             if (ld.xCoord == x && ld.yCoord == y && ld.zCoord == z) return true;
         }
 
-        linkedDevices.add(new LinkedEnergyDevice(x, y, z, null));
+        linkedDevices.add(new LinkedEnergyDevice(x, y, z));
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
         return true;

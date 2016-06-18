@@ -20,7 +20,7 @@ public class ChaosShardAtmos extends BlockAir {
 
     @Override
     public void updateTick(World world, int x, int y, int z, Random random) {
-        if (world.isRemote) {
+        if (world.isRemote || world.getClosestPlayer(x, y, z, 24) == null) {
             return;
         }
 
