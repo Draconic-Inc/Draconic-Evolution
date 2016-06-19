@@ -25,12 +25,18 @@ public class LinkedEnergyDevice {
     public LinkedEnergyDevice() {
     }
 
-    public LinkedEnergyDevice(int xCoord, int yCoord, int zCoord, ParticleEnergyBeam beam) {
+    public LinkedEnergyDevice(int xCoord, int yCoord, int zCoord) {
         this.xCoord = xCoord;
         this.yCoord = yCoord;
         this.zCoord = zCoord;
-        this.beam = beam;
     }
+
+//    public LinkedEnergyDevice(int xCoord, int yCoord, int zCoord, ParticleEnergyBeam beam) {
+//        this.xCoord = xCoord;
+//        this.yCoord = yCoord;
+//        this.zCoord = zCoord;
+//        this.beam = beam;
+//    }
 
     public TileEntity getTile(World world) {
         return world.getTileEntity(xCoord, yCoord, zCoord);
