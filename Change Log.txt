@@ -1,3 +1,6 @@
+######## 1.0.2g ########
+-fixed server crash
+
 ######## 1.0.2f ########
 -fixed shield sound effect being too loud.
 -fixed rare edge case where reflection by another mod causes certain tiles to crash servers. 
