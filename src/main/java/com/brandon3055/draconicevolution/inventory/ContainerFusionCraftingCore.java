@@ -3,8 +3,11 @@ package com.brandon3055.draconicevolution.inventory;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 30/3/2016.
@@ -25,7 +28,8 @@ public class ContainerFusionCraftingCore extends ContainerBCBase<TileFusionCraft
 //		}
 
         addPlayerSlots(10, 116);
-		addSlotToContainer(new Slot(tile, 0, 97, 36));
+		addSlotToContainer(new Slot(tile, 0, 82, 26));
+        addSlotToContainer(new OutputSlot(tile, 1, 82, 70));
 	}
 
 	@Override
@@ -35,8 +39,7 @@ public class ContainerFusionCraftingCore extends ContainerBCBase<TileFusionCraft
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int i)
-	{
+	public ItemStack transferStackInSlot(EntityPlayer player, int i) {
 		Slot slot = getSlot(i);
 
 		if (slot != null && slot.getHasStack())
@@ -65,4 +68,16 @@ public class ContainerFusionCraftingCore extends ContainerBCBase<TileFusionCraft
 
 		return null;
 	}
+
+    public class OutputSlot extends Slot {
+
+        public OutputSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+            super(inventoryIn, index, xPosition, yPosition);
+        }
+
+        @Override
+        public boolean isItemValid(@Nullable ItemStack stack) {
+            return false;
+        }
+    }
 }

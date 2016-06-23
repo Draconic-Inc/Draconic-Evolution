@@ -41,6 +41,12 @@ public class FusionCraftingCore extends BlockBCore implements ICustomRender, ITi
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntity tile = world.getTileEntity(pos);
+
+        if (tile instanceof TileFusionCraftingCore){
+            ((TileFusionCraftingCore) tile).updatePedestals();
+        }
+
         if (!world.isRemote) {
             FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_FUSION_CRAFTING, world, pos.getX(), pos.getY(), pos.getZ());
         }

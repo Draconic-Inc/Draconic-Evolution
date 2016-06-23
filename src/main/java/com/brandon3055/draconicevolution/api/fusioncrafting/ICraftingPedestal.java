@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.fusioncrafting;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Created by brandon3055 on 11/06/2016.
@@ -38,4 +39,19 @@ public interface ICraftingPedestal {
      * Will return false if the pedestal is already working with a different core.
      */
     boolean setCraftingInventory(IFusionCraftingInventory craftingInventory);
+
+    /**
+     * Return the direction this pedestal is facing.
+     * */
+    EnumFacing getDirection();
+
+    /**
+     * @return the current charge stored in this pedestal.
+     */
+    int getCharge();
+
+    /**
+     * Called when crafting occurs. Use this event to clear the pedestals energy buffer.
+     */
+    void onCraft();
 }

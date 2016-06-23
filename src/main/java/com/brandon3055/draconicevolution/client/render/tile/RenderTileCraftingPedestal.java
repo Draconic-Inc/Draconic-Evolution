@@ -10,6 +10,10 @@ public class RenderTileCraftingPedestal extends TESRBase<TileCraftingPedestal>//
 {
     @Override
     public void renderTileEntityAt(TileCraftingPedestal te, double x, double y, double z, float partialTicks, int destroyStage) {
+        if (te.currentCraftingInventory != null && te.currentCraftingInventory.getCraftingStage() > 1000){
+            return;
+        }
+
         if (te.getStackInSlot(0) != null) {
             GlStateManager.pushMatrix();
 

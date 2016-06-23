@@ -1,7 +1,14 @@
 package com.brandon3055.draconicevolution.items;
 
+import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.draconicevolution.FusionRecipes;
+import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeRegistry;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleFusionCrafting;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -9,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
@@ -345,8 +353,16 @@ public class Debugger extends ItemBCore {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
-        if (world.isRemote) return super.onItemRightClick(itemStack, world, player, hand);
+        FusionRecipeRegistry.recipeRegistry.clear();
+        FusionRecipes.registerRecipes();
 
+        if (world.isRemote && BCEffectHandler.effectRenderer != null) {
+            BCEffectHandler.effectRenderer.addEffect(new ResourceLocation("textures/particle/particles2.png"), new ParticleFusionCrafting(world, new Vec3D(player.posX, player.posY, player.posZ + 3), new Vec3D(), new TileFusionCraftingCore()));
+
+            return super.onItemRightClick(itemStack, world, player, hand);
+        }
+
+        world.addWeatherEffect(new EntityLightningBolt(world, player.posX, player.posY + 0, player.posZ+ 20, true));
 
         try {
             List<String> list = new ArrayList<String>();
@@ -373,6 +389,14 @@ public class Debugger extends ItemBCore {
             e.printStackTrace();
         }
 
+
+//        int range = 1;
+//        for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player.posX-range, player.posY-range + (range * 2) + 5, player.posZ-range), new BlockPos(player.posX+range, player.posY+range + (range * 2) + 5, player.posZ+range))){
+//            world.setBlockState(pos, Blocks.TNT.getDefaultState());
+//           // world.setBlockToAir(pos);
+//        }
+
+        LogHelper.info("Doom");
 //
         //BODMAS
 

@@ -127,9 +127,6 @@ public class GuiToolConfig extends GuiScreen {
         }
     }
 
-
-
-
     //endregion
 
     //region Interaction

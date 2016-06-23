@@ -523,8 +523,6 @@ button.de.activate.txt=Activate
 button.de.deactivate.txt=Deactivate
 
 //Gui ----------------------------------------------------------------------------------------------------------------------------------------
-//Titles
-gui.de.energyStorageCore.name=Tier %s Energy Core
 
 gui.de.flowGate.name=Flow Control
 gui.de.flowGatePartialSignal.name=The actual flow will vary between the two given values depending on the strength of the redstone signal being supplied to the block.
@@ -630,3 +628,22 @@ potion.de.highStep.txt=High Step
 potion.de.swiftness.txt=Swiftness
 potion.de.fireImmune.txt=Fire Immunity
 potion.de.jumpBoost.txt=Jump Boost
+
+
+
+
+//##################   Start of refactored config   ##################
+
+//---- Gui Names ----//
+gui.de.energyStorageCore.name=Tier %s Energy Core
+gui.de.fusionCraftingCore.name=Fusion Crafting
+
+//---- Gui Buttons ----//
+gui.de.button.start=Start
+
+//---- Gui Fusion Crafting Info ----//
+gui.fusionCrafting.tierLow.info=Pedestal Tier Too Low
+gui.fusionCrafting.outputObstructed.info=Output Obstructed
+gui.fusionCrafting.crafting.info=Crafting
+gui.fusionCrafting.charging.info=Charging
+

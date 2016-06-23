@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
  * A list of all of DE's particles
  */
 public class DEParticles {
-    private static ResourceLocation DE_SHEET = ResourceHelperDE.getResource("textures/particle/particles.png");
+    public static final ResourceLocation DE_SHEET = ResourceHelperDE.getResource("textures/particle/particles.png");
 
     public static int ENERGY_PARTICLE;
     public static int ENERGY_CORE_FX;

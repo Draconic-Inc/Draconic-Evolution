@@ -70,35 +70,6 @@ public class ParticleEnergy extends BCParticle {
         vertexbuffer.pos((double)(renderX - rotationX * scale + rotationXY * scale), (double)(renderY + rotationZ * scale), (double)(renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double)maxU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         vertexbuffer.pos((double)(renderX + rotationX * scale + rotationXY * scale), (double)(renderY + rotationZ * scale), (double)(renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double)minU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         vertexbuffer.pos((double)(renderX + rotationX * scale - rotationXY * scale), (double)(renderY - rotationZ * scale), (double)(renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double)minU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-//		float minU = 0.0F + 0F;//(float)this.particleTextureIndexX / 32.0F;
-//		float maxU = 0.0F + 0.1245F;//minU + 0.124F;
-//		float minV = 0F;//(float)this.particleTextureIndexY / 32.0F;
-//		float maxV = 0.1245F;//minV + 0.124F;
-//		float drawScale = 0.1F * this.particleScale;
-////        float minU = (float)this.particleTextureIndexX / 16.0F;
-////        float maxU = minU + 0.0624375F;
-////        float minV = (float)this.particleTextureIndexY / 16.0F;
-////        float maxV = minV + 0.0624375F;
-////        float drawScale = 0.1F * this.particleScale;
-//
-//        if (this.particleTexture != null)
-//        {
-//            minU = this.particleTexture.getMinU();
-//            maxU = this.particleTexture.getMaxU();
-//            minV = this.particleTexture.getMinV();
-//            maxV = this.particleTexture.getMaxV();
-//        }
-//
-//        float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
-//        float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
-//        float f7 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
-//        int i = 1;//this.getBrightnessForRender(partialTicks);
-//        int j = i >> 16 & 65535;
-//        int k = i & 65535;
-//        worldRendererIn.pos((double)(f5 - rotationX * drawScale - rotationXY * drawScale), (double)(f6 - rotationZ * drawScale), (double)(f7 - rotationYZ * drawScale - rotationXZ * drawScale)).tex((double)maxU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-//        worldRendererIn.pos((double)(f5 - rotationX * drawScale + rotationXY * drawScale), (double)(f6 + rotationZ * drawScale), (double)(f7 - rotationYZ * drawScale + rotationXZ * drawScale)).tex((double)maxU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-//        worldRendererIn.pos((double)(f5 + rotationX * drawScale + rotationXY * drawScale), (double)(f6 + rotationZ * drawScale), (double)(f7 + rotationYZ * drawScale + rotationXZ * drawScale)).tex((double)minU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-//        worldRendererIn.pos((double)(f5 + rotationX * drawScale - rotationXY * drawScale), (double)(f6 - rotationZ * drawScale), (double)(f7 + rotationYZ * drawScale - rotationXZ * drawScale)).tex((double)minU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
 
 	}
 

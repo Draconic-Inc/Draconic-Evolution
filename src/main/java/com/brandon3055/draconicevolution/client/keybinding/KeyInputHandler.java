@@ -69,13 +69,13 @@ public class KeyInputHandler {
 //		if (change == 0 || !player.isSneaking()) return;
 //
 //		if (change > 0){
-//			ItemStack item = player.inventory.getStackInSlot(previouseSlot(1, player.inventory.currentItem));
+//			ItemStack item = player.inventory.getStackInCore(previouseSlot(1, player.inventory.currentItem));
 //			if (item != null && item.getItem().equals(ModItems.teleporterMKII)){
 //				player.inventory.currentItem = previouseSlot(1, player.inventory.currentItem);
 //				DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.SCROLL, -1, false));
 //			}
 //		}else if (change < 0){
-//			ItemStack item = player.inventory.getStackInSlot(previouseSlot(-1, player.inventory.currentItem));
+//			ItemStack item = player.inventory.getStackInCore(previouseSlot(-1, player.inventory.currentItem));
 //			if (item != null && item.getItem().equals(ModItems.teleporterMKII)){
 //				player.inventory.currentItem = previouseSlot(-1, player.inventory.currentItem);
 //				DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.SCROLL, 1, false));

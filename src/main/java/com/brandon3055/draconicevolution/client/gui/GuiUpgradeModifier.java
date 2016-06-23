@@ -111,7 +111,7 @@ public class GuiUpgradeModifier extends GuiContainer {
     private boolean[] coreInInventory = new boolean[4];
 
     @SuppressWarnings("ConstantConditions")
-    //"tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem()" May produce null pointer? Really intellij?
+    //"tile.getStackInCore(0) != null && tile.getStackInCore(0).getItem()" May produce null pointer? Really intellij?
     @Override
     public void updateScreen() {
         super.updateScreen();
@@ -166,7 +166,7 @@ public class GuiUpgradeModifier extends GuiContainer {
 //			int yPos = guiTop + 90;
 //
 //
-//			int[] appliedCores = upgrade.getCoresApplied(tile.getStackInSlot(0));
+//			int[] appliedCores = upgrade.getCoresApplied(tile.getStackInCore(0));
 //
 //			for (int i = 0; i <= coreTier; i++)
 //			{
@@ -264,7 +264,7 @@ public class GuiUpgradeModifier extends GuiContainer {
             int spacing = (xSize - 6) / upgradeRegistry.size();
             int xPos = guiLeft + (xIndex * spacing) + ((spacing - 23) / 2) + 4;
             int yPos = guiTop + 90;
-            int[] appliedCores = new int[]{1, 2, 3, 4};//upgrade.getCoresApplied(tile.getStackInSlot(0));
+            int[] appliedCores = new int[]{1, 2, 3, 4};//upgrade.getCoresApplied(tile.getStackInCore(0));
 
             if (GuiHelper.isInRect(xPos, yPos, 24, 24, x, y)) {
                 List list = new ArrayList();
