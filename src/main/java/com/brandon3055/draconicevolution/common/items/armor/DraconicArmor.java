@@ -41,6 +41,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -257,9 +258,11 @@ public class DraconicArmor
     /* IEnergyContainerItem */
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
+        }
         int stored = ItemNBTHelper.getInteger(container, "Energy", 0);
         int receive = Math.min(maxReceive, Math.min(getMaxEnergyStored(container) - stored, maxTransfer));
-
         if (!simulate) {
             stored += receive;
             ItemNBTHelper.setInteger(container, "Energy", stored);
@@ -269,10 +272,11 @@ public class DraconicArmor
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
+        }
         int stored = ItemNBTHelper.getInteger(container, "Energy", 0);
         int extract = Math.min(maxExtract, Math.min(maxTransfer, stored));
-
         if (!simulate) {
             stored -= extract;
             ItemNBTHelper.setInteger(container, "Energy", stored);
