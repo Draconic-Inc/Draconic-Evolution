@@ -111,32 +111,28 @@ public class DraconicSword extends ItemSword implements IEnergyContainerWeaponIt
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-
-        if (container.stackTagCompound == null) {
-            container.stackTagCompound = new NBTTagCompound();
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
         }
-        int energy = container.stackTagCompound.getInteger("Energy");
+        int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(this.maxReceive, maxReceive));
-
         if (!simulate) {
             energy += energyReceived;
-            container.stackTagCompound.setInteger("Energy", energy);
+            ItemNBTHelper.setInteger(container, "Energy", energy);
         }
         return energyReceived;
     }
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-
-        if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-            return 0;
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
         }
-        int energy = container.stackTagCompound.getInteger("Energy");
+        int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
-
         if (!simulate) {
             energy -= energyExtracted;
-            container.stackTagCompound.setInteger("Energy", energy);
+            ItemNBTHelper.setInteger(container, "Energy", energy);
         }
         return energyExtracted;
     }

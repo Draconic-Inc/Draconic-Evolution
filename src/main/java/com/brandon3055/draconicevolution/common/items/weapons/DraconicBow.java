@@ -31,6 +31,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -283,13 +284,11 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-
-        if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-            return 0;
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
         }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(this.maxReceive, maxReceive));
-
         if (!simulate) {
             energy += energyReceived;
             ItemNBTHelper.setInteger(container, "Energy", energy);
@@ -299,13 +298,11 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-
-        if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-            return 0;
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
         }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
-
         if (!simulate) {
             energy -= energyExtracted;
             ItemNBTHelper.setInteger(container, "Energy", energy);

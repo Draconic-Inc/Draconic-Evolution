@@ -23,11 +23,15 @@ import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import forestry.api.apiculture.IArmorApiarist;
+import forestry.api.core.IArmorNaturalist;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -37,6 +41,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -45,13 +50,25 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import thaumcraft.api.IGoggles;
+import thaumcraft.api.IVisDiscountGear;
+import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.nodes.IRevealer;
 
 /**
  * Created by Brandon on 3/07/2014.
  */
-@Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft")})
-public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigurableItem, IInventoryTool, IGoggles, IRevealer, IUpgradableItem, ICustomArmor {//TODO Wings
+@InterfaceList(value = {
+    @Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
+    @Interface(iface = "thaumcraft.api.IVisDiscountGear", modid = "Thaumcraft"),
+    @Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),
+    @Interface(iface = "forestry.api.apiculture.IArmorApiarist", modid = "Forestry"),
+    @Interface(iface = "forestry.api.core.IArmorNaturalist", modid = "Forestry")
+})
+public class DraconicArmor
+    extends ItemArmor
+    implements ISpecialArmor, IConfigurableItem, IInventoryTool, IGoggles, IVisDiscountGear, IRevealer, IUpgradableItem, ICustomArmor, IArmorNaturalist, IArmorApiarist {
+
+    //TODO Wings
     @SideOnly(Side.CLIENT)
     private IIcon helmIcon;
     @SideOnly(Side.CLIENT)
@@ -241,9 +258,11 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
     /* IEnergyContainerItem */
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
+        }
         int stored = ItemNBTHelper.getInteger(container, "Energy", 0);
         int receive = Math.min(maxReceive, Math.min(getMaxEnergyStored(container) - stored, maxTransfer));
-
         if (!simulate) {
             stored += receive;
             ItemNBTHelper.setInteger(container, "Energy", stored);
@@ -253,10 +272,11 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
+        }
         int stored = ItemNBTHelper.getInteger(container, "Energy", 0);
         int extract = Math.min(maxExtract, Math.min(maxTransfer, stored));
-
         if (!simulate) {
             stored -= extract;
             ItemNBTHelper.setInteger(container, "Energy", stored);
@@ -292,21 +312,35 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
         if (armorType == 0) {
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack, false));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVLock").readFromItem(stack, true));
-            if (Loader.isModLoaded("Thaumcraft"))
+            if (Loader.isModLoaded("Thaumcraft")) {
                 list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "GogglesOfRevealing").readFromItem(stack, true));
+            }
+            if (Loader.isModLoaded("Forestry")) {
+                list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ApiaristArmor").readFromItem(stack, true));
+                list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "NaturalistArmor").readFromItem(stack, true));
+            }
         } else if (armorType == 1) {
             list.add(new ItemConfigField(References.FLOAT_ID, slot, "VerticalAcceleration").setMinMaxAndIncromente(0f, 8f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
             list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorFlightSpeedMult").setMinMaxAndIncromente(0f, 6f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "EffectiveOnSprint").readFromItem(stack, false));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack, false));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorInertiaCancellation").readFromItem(stack, false));
+            if (Loader.isModLoaded("Forestry")) {
+                list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ApiaristArmor").readFromItem(stack, true));
+            }
         } else if (armorType == 2) {
             list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorSpeedMult").setMinMaxAndIncromente(0f, 8f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
+            if (Loader.isModLoaded("Forestry")) {
+                list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ApiaristArmor").readFromItem(stack, true));
+            }
         } else if (armorType == 3) {
             list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorJumpMult").setMinMaxAndIncromente(0f, 15f, 0.1f).readFromItem(stack, 0f).setModifier("PLUSPERCENT"));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorHillStep").readFromItem(stack, true));
+            if (Loader.isModLoaded("Forestry")) {
+                list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ApiaristArmor").readFromItem(stack, true));
+            }
         }
         return list;
     }
@@ -326,18 +360,27 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
         return enchant.type == EnumEnchantmentType.armor || (armorType == 0 && enchant.type == EnumEnchantmentType.armor_head) || (armorType == 1 && enchant.type == EnumEnchantmentType.armor_torso) || (armorType == 2 && enchant.type == EnumEnchantmentType.armor_legs) || (armorType == 3 && enchant.type == EnumEnchantmentType.armor_feet);
     }
 
-    @Optional.Method(modid = "Thaumcraft")
     @Override
+    @Method(modid = "Thaumcraft")
     public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
         return IConfigurableItem.ProfileHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
     }
 
-    @Optional.Method(modid = "Thaumcraft")
     @Override
+    @Method(modid = "Thaumcraft")
     public boolean showNodes(ItemStack itemstack, EntityLivingBase player) {
         return IConfigurableItem.ProfileHelper.getBoolean(itemstack, "GogglesOfRevealing", true);
     }
 
+    @Override
+    @Method(modid = "Thaumcraft")
+    public int getVisDiscount(ItemStack itemStack, EntityPlayer entityPlayer, Aspect aspect) {
+        if (itemStack == null || itemStack.getItem() != ModItems.draconicHelm)
+        {
+            return 0;
+        }
+        return IConfigurableItem.ProfileHelper.getBoolean(itemStack, "GogglesOfRevealing", true) ? 5 : 0;
+    }
     @SideOnly(Side.CLIENT)
     public ModelBiped model;
 
@@ -522,5 +565,29 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
     @Override
     public boolean hasProfiles() {
         return false;
+    }
+
+    @Override
+    @Method(modid = "Forestry")
+    public boolean canSeePollination(EntityPlayer entityPlayer, ItemStack itemStack, boolean flag)
+    {
+        if (itemStack == null || itemStack.getItem() != ModItems.draconicHelm)
+        {
+            return false;
+        }
+        return IConfigurableItem.ProfileHelper.getBoolean(itemStack, "NaturalistArmor", true) ||
+               IConfigurableItem.ProfileHelper.getBoolean(itemStack, "ApiaristArmor", true);
+    }
+    @Override
+    @Method(modid = "Forestry")
+    public boolean protectEntity(EntityLivingBase entityLivingBase, ItemStack itemStack, String s, boolean b)
+    {
+        return IConfigurableItem.ProfileHelper.getBoolean(itemStack, "ApiaristArmor", true);
+    }
+    @Override
+    @Method(modid = "Forestry")
+    public boolean protectPlayer(EntityPlayer entityPlayer, ItemStack itemStack, String s, boolean b)
+    {
+        return protectEntity(entityPlayer, itemStack, s, b);
     }
 }

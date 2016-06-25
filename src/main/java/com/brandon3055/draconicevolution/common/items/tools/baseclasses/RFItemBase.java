@@ -19,6 +19,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -80,9 +81,11 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
+        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyReceived = Math.min(getCapacity(container) - energy, Math.min(getMaxReceive(container), maxReceive));
-
         if (!simulate) {
             energy += energyReceived;
             ItemNBTHelper.setInteger(container, "Energy", energy);
@@ -92,9 +95,11 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+        if (container.getTagCompound() == null) {
+            container.setTagCompound(new NBTTagCompound());
+        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyExtracted = Math.min(energy, Math.min(getMaxExtract(container), maxExtract));
-
         if (!simulate) {
             energy -= energyExtracted;
             ItemNBTHelper.setInteger(container, "Energy", energy);
