@@ -81,9 +81,6 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-        if (container.getTagCompound() == null) {
-            container.setTagCompound(new NBTTagCompound());
-        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyReceived = Math.min(getCapacity(container) - energy, Math.min(getMaxReceive(container), maxReceive));
         if (!simulate) {
