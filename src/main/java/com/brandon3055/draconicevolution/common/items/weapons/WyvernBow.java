@@ -31,7 +31,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -282,9 +281,6 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-        if (container.getTagCompound() == null) {
-            container.setTagCompound(new NBTTagCompound());
-        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(this.maxReceive, maxReceive));
         if (!simulate) {
@@ -296,9 +292,6 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-        if (container.getTagCompound() == null) {
-            container.setTagCompound(new NBTTagCompound());
-        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
         if (!simulate) {

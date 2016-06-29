@@ -31,7 +31,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
@@ -190,9 +189,6 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-        if (container.getTagCompound() == null) {
-            container.setTagCompound(new NBTTagCompound());
-        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(this.maxReceive, maxReceive));
         if (!simulate) {
@@ -204,9 +200,6 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-        if (container.getTagCompound() == null) {
-            container.setTagCompound(new NBTTagCompound());
-        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
         if (!simulate) {
