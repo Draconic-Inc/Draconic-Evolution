@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
-import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
@@ -72,8 +71,11 @@ public class TileInvisibleMultiblock extends TileEntity {
 
     private void revert() {
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        if (meta == 0) worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.draconiumBlock);
-        else if (meta == 1)
+        if (meta == 0) {
+            worldObj.setBlock(xCoord, yCoord, zCoord, BalanceConfigHandler.energyStorageStructureOuterBlock, BalanceConfigHandler.energyStorageStructureOuterBlockMetadata, 3);
+        }
+        else if (meta == 1) {
             worldObj.setBlock(xCoord, yCoord, zCoord, BalanceConfigHandler.energyStorageStructureBlock, BalanceConfigHandler.energyStorageStructureBlockMetadata, 3);
+        }
     }
 }

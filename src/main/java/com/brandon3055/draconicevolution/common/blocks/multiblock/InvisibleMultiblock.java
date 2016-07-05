@@ -81,13 +81,21 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 
     @Override
     public Item getItemDropped(int meta, Random p_149650_2_, int var2) {
-        if (meta == 0) return Item.getItemFromBlock(ModBlocks.draconiumBlock);
-        else if (meta == 1) return Item.getItemFromBlock(BalanceConfigHandler.energyStorageStructureBlock);
-        else return null;
+        if (meta == 0) {
+            return Item.getItemFromBlock(BalanceConfigHandler.energyStorageStructureOuterBlock);
+        }
+        if (meta == 1) {
+            return Item.getItemFromBlock(BalanceConfigHandler.energyStorageStructureBlock);
+        }
+        return null;
     }
 
     @Override
     public int damageDropped(int metadata) {
+        if (metadata == 0)
+        {
+            return BalanceConfigHandler.energyStorageStructureOuterBlockMetadata;
+        }
         if (metadata == 1) {
             return BalanceConfigHandler.energyStorageStructureBlockMetadata;
         }
@@ -152,9 +160,12 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 
     private void revert(World world, int x, int y, int z) {
         int meta = world.getBlockMetadata(x, y, z);
-        if (meta == 0) world.setBlock(x, y, z, ModBlocks.draconiumBlock);
-        else if (meta == 1)
+        if (meta == 0) {
+            world.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureOuterBlock, BalanceConfigHandler.energyStorageStructureOuterBlockMetadata, 3);
+        }
+        else if (meta == 1) {
             world.setBlock(x, y, z, BalanceConfigHandler.energyStorageStructureBlock, BalanceConfigHandler.energyStorageStructureBlockMetadata, 3);
+        }
     }
 
     @Override
@@ -196,10 +207,14 @@ public class InvisibleMultiblock extends BlockDE implements IHudDisplayBlock {
 
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
-        if (world.getBlockMetadata(x, y, z) == 0) return new ItemStack(ModBlocks.draconiumBlock);
-        else if (world.getBlockMetadata(x, y, z) == 1)
+        int metadata = world.getBlockMetadata(x, y, z);
+        if (metadata == 0) {
+            return new ItemStack(BalanceConfigHandler.energyStorageStructureOuterBlock, 1, BalanceConfigHandler.energyStorageStructureOuterBlockMetadata);
+        }
+        if (metadata == 1) {
             return new ItemStack(BalanceConfigHandler.energyStorageStructureBlock, 1, BalanceConfigHandler.energyStorageStructureBlockMetadata);
-        else return new ItemStack(Blocks.glass);
+        }
+        return new ItemStack(Blocks.glass);
     }
 
     @Override

@@ -257,7 +257,7 @@ public class WyvernSword extends ItemSword implements IEnergyContainerWeaponItem
         if (upgradeIndex == EnumUpgrade.ATTACK_AOE.index) {
             return BalanceConfigHandler.wyvernWeaponsMaxAttackAOEUpgradePoints;
         }
-        if (upgradeIndex == EnumUpgrade.ARROW_DAMAGE.index) {
+        if (upgradeIndex == EnumUpgrade.ATTACK_DAMAGE.index) {
             return BalanceConfigHandler.wyvernWeaponsMaxAttackDamageUpgradePoints;
         }
         return BalanceConfigHandler.wyvernWeaponsMaxUpgradePoints;

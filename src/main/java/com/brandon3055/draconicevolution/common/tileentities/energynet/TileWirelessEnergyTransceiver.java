@@ -1,12 +1,16 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cofh.api.energy.IEnergyReceiver;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.brandonscore.common.utills.Utills;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,9 +19,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Brandon on 10/02/2015.
@@ -40,17 +41,23 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
 
     @Override
     public int getCap() {
-        return 50000 + (powerTier * 4500000);
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyWirelessTransceiverBasicStorage :
+               BalanceConfigHandler.energyWirelessTransceiverAdvancedStorage;
     }
 
     @Override
     public int getRec() {
-        return 50000 + (powerTier * 4500000);
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyWirelessTransceiverBasicMaxReceive :
+               BalanceConfigHandler.energyWirelessTransceiverAdvancedMaxReceive;
     }
 
     @Override
     public int getExt() {
-        return 50000 + (powerTier * 4500000);
+        return powerTier == 0 ?
+               BalanceConfigHandler.energyWirelessTransceiverBasicMaxExtract :
+               BalanceConfigHandler.energyWirelessTransceiverAdvancedMaxExtract;
     }
 
     @Override
@@ -77,7 +84,7 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
                     break;
                 }
 
-                int sent = receiver.receiveEnergy(worldObj, storage.extractEnergy(receiver.receiveEnergy(worldObj, powerTier == 0 ? 5000 : 50000, true), false), false);
+                int sent = receiver.receiveEnergy(worldObj, storage.extractEnergy(receiver.receiveEnergy(worldObj, powerTier == 0 ? BalanceConfigHandler.energyWirelessTransceiverBasicMaxSend : BalanceConfigHandler.energyWirelessTransceiverAdvancedMaxSend, true), false), false);
 
                 sent = (sent / 20);
 
