@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.entity;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
 import com.brandon3055.draconicevolution.common.network.GenericParticlePacket;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -416,7 +417,7 @@ public class EntityCustomArrow extends EntityArrow {
 
     public void onHitAnything() {
         if (bowProperties.explosionPower > 0 && !worldObj.isRemote) {
-            worldObj.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, true);
+            worldObj.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, ConfigHandler.bowBlockDamage);
             setDead();
         }
         if (bowProperties.shockWavePower > 0 && !worldObj.isRemote) {

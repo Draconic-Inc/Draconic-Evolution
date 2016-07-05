@@ -1,15 +1,13 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
-import java.util.*;
-
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.network.ShieldHitPacket;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -25,6 +23,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+
+import java.util.*;
 
 /**
  * Created by Brandon on 13/11/2014.
@@ -211,54 +211,55 @@ public class CustomArmorHandler {
     public static void tickArmorEffects(ArmorSummery summery, EntityPlayer player) {
 
         //region/*----------------- Flight ------------------*/
+        if (ConfigHandler.enableFlight) {
+            if (summery != null && summery.flight[0]) {
+                playersWithFlight.put(player, true);
+                player.capabilities.allowFlying = true;
+                if (summery.flight[1]) player.capabilities.isFlying = true;
 
-        if (summery != null && summery.flight[0]) {
-            playersWithFlight.put(player, true);
-            player.capabilities.allowFlying = true;
-            if (summery.flight[1]) player.capabilities.isFlying = true;
+                if (player.worldObj.isRemote) setPlayerFlySpeed(player, 0.05F + (0.05F * summery.flightSpeedModifier));
 
-            if (player.worldObj.isRemote) setPlayerFlySpeed(player, 0.05F + (0.05F * summery.flightSpeedModifier));
-
-            if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && summery.flightVModifier > 0) {
+                if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && summery.flightVModifier > 0) {
 //				float percentIncrease = summery.flightVModifier;
 
-                if (BrandonsCore.proxy.isSpaceDown() && !BrandonsCore.proxy.isShiftDown()) {
-                    //LogHelper.info(player.motionY);
-                    player.motionY = 0.225F * summery.flightVModifier;
+                    if (BrandonsCore.proxy.isSpaceDown() && !BrandonsCore.proxy.isShiftDown()) {
+                        //LogHelper.info(player.motionY);
+                        player.motionY = 0.225F * summery.flightVModifier;
+                    }
+
+                    if (BrandonsCore.proxy.isShiftDown() && !BrandonsCore.proxy.isSpaceDown()) {
+                        player.motionY = -0.225F * summery.flightVModifier;
+                    }
                 }
 
-                if (BrandonsCore.proxy.isShiftDown() && !BrandonsCore.proxy.isSpaceDown()) {
-                    player.motionY = -0.225F * summery.flightVModifier;
+                if (summery.flight[2] && player.moveForward == 0 && player.moveStrafing == 0 && player.capabilities.isFlying) {
+                    player.motionX *= 0.5;
+                    player.motionZ *= 0.5;
                 }
-            }
 
-            if (summery.flight[2] && player.moveForward == 0 && player.moveStrafing == 0 && player.capabilities.isFlying) {
-                player.motionX *= 0.5;
-                player.motionZ *= 0.5;
-            }
-
-        } else {
-            if (!playersWithFlight.containsKey(player)) {
-                playersWithFlight.put(player, false);
-            }
-
-            if (playersWithFlight.get(player) && !player.worldObj.isRemote) {
-                playersWithFlight.put(player, false);
-
-                if (!player.capabilities.isCreativeMode) {
-                    player.capabilities.allowFlying = false;
-                    player.capabilities.isFlying = false;
-                    player.sendPlayerAbilities();
-                    LogHelper.info("Send Disable");
+            } else {
+                if (!playersWithFlight.containsKey(player)) {
+                    playersWithFlight.put(player, false);
                 }
-            }
 
-            if (player.worldObj.isRemote && playersWithFlight.get(player)) {
-                playersWithFlight.put(player, false);
-                player.capabilities.allowFlying = false;
-                player.capabilities.isFlying = false;
-                LogHelper.info("Put Client");
-                setPlayerFlySpeed(player, 0.05F);
+                if (playersWithFlight.get(player) && !player.worldObj.isRemote) {
+                    playersWithFlight.put(player, false);
+
+                    if (!player.capabilities.isCreativeMode) {
+                        player.capabilities.allowFlying = false;
+                        player.capabilities.isFlying = false;
+                        player.sendPlayerAbilities();
+                    }
+                }
+
+                if (player.worldObj.isRemote && playersWithFlight.get(player)) {
+                    playersWithFlight.put(player, false);
+                    if (!player.capabilities.isCreativeMode) {
+                        player.capabilities.allowFlying = false;
+                        player.capabilities.isFlying = false;
+                    }
+                    setPlayerFlySpeed(player, 0.05F);
+                }
             }
         }
         //endregion

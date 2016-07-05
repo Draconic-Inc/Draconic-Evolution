@@ -1,8 +1,5 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import java.util.List;
-import java.util.UUID;
-
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -31,6 +28,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
+import java.util.UUID;
 
 public class TileGrinder extends TileObjectSync implements ISidedInventory, IEnergyReceiver {
     //########### variables #############//
@@ -150,10 +150,11 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
     @SuppressWarnings("unchecked")
     public boolean killNextEntity() {
         if (worldObj.isRemote) return false;
+        //fakePlayer = null;
         if (fakePlayer == null) {
             fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
         }
-        if (fakePlayer.getHeldItem() == null || !ItemStack.areItemStacksEqual(fakePlayer.getHeldItem(), diamondSword)) {
+        if (BalanceConfigHandler.grinderShouldUseLooting && (fakePlayer.getHeldItem() == null || !ItemStack.areItemStacksEqual(fakePlayer.getHeldItem(), diamondSword))) {
             fakePlayer.setCurrentItemOrArmor(0, diamondSword);
         }
         killBox = AxisAlignedBB.getBoundingBox(centreX - 4.5, centreY - 4.5, centreZ - 4.5, centreX + 4.5, centreY + 4.5, centreZ + 4.5);
