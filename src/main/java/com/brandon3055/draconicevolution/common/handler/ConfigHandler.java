@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.common.handler;
 
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import net.minecraftforge.common.config.Configuration;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import net.minecraftforge.common.config.Configuration;
 
 public class ConfigHandler {
 
@@ -47,6 +47,7 @@ public class ConfigHandler {
     public static boolean useOldD2DToolTextures;
     public static boolean disableGuardianCrystalRespawn;
     public static boolean disableLog;
+    public static boolean enableFlight;
     private static String[] itemDislocatorBlacklist;
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 
@@ -123,6 +124,7 @@ public class ConfigHandler {
             disableGuardianCrystalRespawn = config.get(Configuration.CATEGORY_GENERAL, "Disable Guardian Crystal Respawn", false, "(Wuss mode) Setting this to true will disable the chaos guardians ability to respawn healing crystals. Under certain circumstances such as on a Spigot server where entity render distance is significantly lower this may be required.").getBoolean(false);
             itemDislocatorBlacklist = config.getStringList("Item Dislocator Blacklist", Configuration.CATEGORY_GENERAL, new String[]{"appliedenergistics2:item.ItemCrystalSeed"}, "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4");
             disableLog = config.get(Configuration.CATEGORY_GENERAL, "Disable Log", false, "If you are having issued with console spam that you cant fix setting this to true will disable all log output from Draconic Evolution (Not recommended)").getBoolean(false);
+            enableFlight = config.get(Configuration.CATEGORY_GENERAL, "Enable Flight", true, "Set this to false to disable flight given by draconic armor.").getBoolean(true);
 
 
             //Spawner

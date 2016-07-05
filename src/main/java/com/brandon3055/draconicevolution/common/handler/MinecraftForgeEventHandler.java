@@ -171,8 +171,9 @@ public class MinecraftForgeEventHandler {
             }
 
             for (Object o : event.entity.worldObj.playerEntities) {
-                if (o instanceof EntityPlayer)
+                if (o instanceof EntityPlayer) {
                     ((EntityPlayer) o).addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
+                }
             }
 
             int count = 30 + event.entity.worldObj.rand.nextInt(30);

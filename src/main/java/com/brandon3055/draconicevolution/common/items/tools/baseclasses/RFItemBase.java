@@ -1,8 +1,5 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -22,6 +19,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Brandon on 8/01/2015.
@@ -149,10 +149,14 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
             int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
             list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt") + ": " + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
         }
-        for (ItemConfigField field : getFields(stack, 0))
+
+        for (ItemConfigField field : getFields(stack, 0)){
             list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
-        if (capacity > 0)
+        }
+
+        if (getCapacity(stack) > 0) {
             list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
+        }
 
         return list;
     }

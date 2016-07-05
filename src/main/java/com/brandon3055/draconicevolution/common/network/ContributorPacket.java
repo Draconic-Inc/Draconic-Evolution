@@ -47,7 +47,9 @@ public class ContributorPacket implements IMessage {
                 ContributorHandler.Contributor contributor1 = ContributorHandler.contributors.get(message.contributor);
 
                 if (ctx.side == Side.SERVER) {
-                    if (!contributor1.isUserValid(ctx.getServerHandler().playerEntity)) return null;
+                    if (!contributor1.isUserValid(ctx.getServerHandler().playerEntity)) {
+                        return null;
+                    }
 
                     contributor1.contributorWingsEnabled = message.wings;
                     contributor1.patreonBadgeEnabled = message.badge;
@@ -55,8 +57,9 @@ public class ContributorPacket implements IMessage {
                     DraconicEvolution.network.sendToAll(message);
                 } else {
                     EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
-                    if (!contributor1.isUserValid(player) || message.contributor.equals(player.getCommandSenderName()))
+                    if (!contributor1.isUserValid(player) || message.contributor.equals(player.getCommandSenderName())) {
                         return null;
+                    }
 
                     contributor1.contributorWingsEnabled = message.wings;
                     contributor1.patreonBadgeEnabled = message.badge;

@@ -1,5 +1,11 @@
+######## 1.0.2h ########
+-added config option to disable flight.
+-removed some log spam.
+-fixed issue which makes it impossible to charge new bows after crafting.
+-fixed config option to disable arrow explosion damage.
+
 ######## 1.0.2g ########
--fixed server crash
+-fixed server crash.
 
 ######## 1.0.2f ########
 -fixed shield sound effect being too loud.

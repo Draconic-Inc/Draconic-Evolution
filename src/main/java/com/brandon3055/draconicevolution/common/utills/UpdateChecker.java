@@ -41,13 +41,15 @@ public class UpdateChecker {
             if (!thread.getVersion().equals(VersionHandler.VERSION) || (VersionHandler.SNAPSHOT > 0 && thread.getSnapshot() == 0)) {
                 event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "[Draconic Evolution]" + EnumChatFormatting.RESET + " New version available:"));
                 event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Draconic Evolution v" + thread.getVersion()));
-                if (!StringUtils.isNullOrEmpty(thread.getNote()))
+                if (!StringUtils.isNullOrEmpty(thread.getNote())){
                     event.player.addChatComponentMessage(new ChatComponentText(thread.getNote()));
+                }
             } else if (thread.getSnapshot() > VersionHandler.SNAPSHOT) {
                 event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_PURPLE + "[Draconic Evolution]" + EnumChatFormatting.RESET + " New snapshot version available:"));
                 event.player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.BLUE + "Draconic Evolution v" + thread.getVersion() + "-snapshot_" + thread.getSnapshot()));
-                if (!StringUtils.isNullOrEmpty(thread.getNote()))
+                if (!StringUtils.isNullOrEmpty(thread.getNote())){
                     event.player.addChatComponentMessage(new ChatComponentText(thread.getNote()));
+                }
             }
 
         } else if (thread.isFailed()) {

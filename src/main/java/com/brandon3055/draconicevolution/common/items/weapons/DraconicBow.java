@@ -1,8 +1,5 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -35,6 +32,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableItem, IEnergyContainerWeaponItem, IHudDisplayItem {
     public static final String[] bowPullIconNameArray = new String[]{"pulling_0", "pulling_1", "pulling_2"};
@@ -283,10 +283,6 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-
-        if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-            return 0;
-        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyReceived = Math.min(getMaxEnergyStored(container) - energy, Math.min(this.maxReceive, maxReceive));
 
@@ -299,10 +295,6 @@ public class DraconicBow extends ItemBow implements IInventoryTool, IUpgradableI
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-
-        if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
-            return 0;
-        }
         int energy = ItemNBTHelper.getInteger(container, "Energy", 0);
         int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
 
