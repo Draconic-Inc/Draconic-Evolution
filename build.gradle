@@ -48,6 +48,7 @@ minecraft {
     runDir = "run"
 	mappings = "${config.mappings}"
     replace '${mod_version}', project.config.mod_version
+    makeObfSourceJar = false
 }
 
 String buildNo = "1"
