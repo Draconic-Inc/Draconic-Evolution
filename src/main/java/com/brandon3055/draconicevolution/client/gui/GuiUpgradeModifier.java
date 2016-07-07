@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
-import com.brandon3055.draconicevolution.api.itemupgrade.IUpgrade;
 import com.brandon3055.draconicevolution.api.itemupgrade.ItemUpgradeRegistry;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileUpgradeModifier;
@@ -14,7 +12,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,8 +19,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiUpgradeModifier extends GuiContainer {
@@ -118,9 +113,9 @@ public class GuiUpgradeModifier extends GuiContainer {
         if (tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IUpgradableItem) {
             stack = tile.getStackInSlot(0);
             upgradableItem = (IUpgradableItem) stack.getItem();
-            upgradeRegistry = upgradableItem.getValidUpgrades(stack, new ItemUpgradeRegistry());
+     //       upgradeRegistry = upgradableItem.getValidUpgrades(stack, new ItemUpgradeRegistry());
             inUse = true;
-            coreSlots = upgradableItem.getUpgradeCapacity(stack);
+       //     coreSlots = upgradableItem.getUpgradeCapacity(stack);
             //coreTier = upgradableItem.getMaxTier(stack);
             usedSlots = 0;
             coreInInventory[0] = player.inventory.hasItemStack(new ItemStack(DEFeatures.draconicCore));
@@ -128,9 +123,9 @@ public class GuiUpgradeModifier extends GuiContainer {
             coreInInventory[2] = player.inventory.hasItemStack(new ItemStack(DEFeatures.awakenedCore));
             coreInInventory[3] = player.inventory.hasItemStack(new ItemStack(DEFeatures.chaoticCore));
 
-            for (IUpgrade upgrade : upgradeRegistry.getUpgrades()) {
-                usedSlots += upgrade.getUpgradeCount(-1);
-            }
+//            for (IUpgrade upgrade : upgradeRegistry.getUpgrades()) {
+//                usedSlots += upgrade.getUpgradeCount(-1);
+//            }
 
         } else inUse = false;
     }
@@ -188,127 +183,127 @@ public class GuiUpgradeModifier extends GuiContainer {
 
     private void renderUpgrades(int x, int y) {
         //First Draw
-        for (IUpgrade upgrade : upgradeRegistry.getUpgrades()) {
-            int xIndex = upgradeRegistry.getIndexFromName(upgrade.getName());
-            int spacing = (xSize - 6) / upgradeRegistry.size();
-            int xPos = guiLeft + (xIndex * spacing) + ((spacing - 23) / 2) + 4;
-            int yPos = guiTop + 90;
-
-            ResourceHelperDE.bindTexture("textures/gui/UpgradeModifier.png");
-
-            drawTexturedModalRect(xPos, yPos, 0, 190, 24, 24);
-            drawTexturedModalRect(xPos + 3, yPos + 3, xIndex * 18, 220, 18, 18);//Index?
-            drawTexturedModalRect(xPos + 2, yPos - 10, 126, 190, 20, 11);
-
-            int[] appliedCores = new int[4];
-            for (int i = 0; i < appliedCores.length; i++) {
-                appliedCores[i] = upgrade.getUpgradeCount(i);
-            }
-
-            for (int i = 0; i <= coreTier; i++) {
-                drawTexturedModalRect(xPos + 3, yPos + 24 + i * 18, 24 + i * 18, 190, 18, 18);
-                drawTexturedModalRect(xPos + 3, yPos + 24 + i * 18, 24 + i * 18, 190, 18, 18);
-
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glColor4f(0F, 0F, 0F, 0.9F);
-                if (appliedCores[i] < 10) {
-                    drawTexturedModalRect(xPos + 8, yPos + 28 + i * 18, 3, 3, 7, 9);
-                } else {
-                    drawTexturedModalRect(xPos + 5, yPos + 28 + i * 18, 3, 3, 13, 9);
-                }
-                GL11.glColor4f(1F, 1F, 1F, 1F);
-                GL11.glDisable(GL11.GL_BLEND);
-
-                //Draw + buttons
-                if (coreSlots > usedSlots /*&& upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index)*/) {
-                    boolean hovering = GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y);
-                    if (!coreInInventory[i]) {
-                        drawTexturedModalRect(xPos, yPos + 33 + i * 18, 24, 208, 8, 8);
-                    } else {
-                        drawTexturedModalRect(xPos, yPos + 33 + i * 18, 32 + (hovering ? 8 : 0), 208, 8, 8);
-                    }
-                }
-
-                //Draw - buttons
-                if (appliedCores[i] > 0) {
-                    boolean hovering = GuiHelper.isInRect(xPos + 16, yPos + 33 + i * 18, 8, 8, x, y);
-                    drawTexturedModalRect(xPos + 16, yPos + 33 + i * 18, 56 + (hovering ? 8 : 0), 208, 8, 8);
-                }
-
-
-            }
-            for (int i = 0; i <= coreTier; i++)
-                fontRendererObj.drawString(String.valueOf(appliedCores[i]), xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(appliedCores[i])) / 2, yPos + 29 + i * 18, 0xFFFFFF);
-            fontRendererObj.drawString(String.valueOf(upgrade.getLevel()), xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(upgrade.getLevel())) / 2, yPos - 8, 0xFFFFFF);
-//            fontRendererObj.drawString(String.valueOf(upgrade.getUpgradePoints(stack)), xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(upgrade.getUpgradePoints(stack)))/2, yPos - 8, 0xFFFFFF);
-        }
-
-        fontRendererObj.drawStringWithShadow(I18n.format("gui.de.cores.txt"), guiLeft + 4, guiTop + 4, 0x00ff00);
-        fontRendererObj.drawString(I18n.format("gui.de.cap.txt"), guiLeft + 4, guiTop + 16, 0x000000);
-        fontRendererObj.drawString(">" + coreSlots, guiLeft + 4, guiTop + 25, 0x000000);
-        fontRendererObj.drawString(I18n.format("gui.de.installed.txt"), guiLeft + 4, guiTop + 37, 0x000000);
-        fontRendererObj.drawString(">" + usedSlots, guiLeft + 4, guiTop + 46, 0x000000);
-        fontRendererObj.drawString(I18n.format("gui.de.free.txt"), guiLeft + 4, guiTop + 58, 0x000000);
-        fontRendererObj.drawString(">" + (coreSlots - usedSlots), guiLeft + 4, guiTop + 67, 0x000000);
+//        for (IUpgrade upgrade : upgradeRegistry.getUpgrades()) {
+//            int xIndex = upgradeRegistry.getIndexFromName(upgrade.getName());
+//            int spacing = (xSize - 6) / upgradeRegistry.size();
+//            int xPos = guiLeft + (xIndex * spacing) + ((spacing - 23) / 2) + 4;
+//            int yPos = guiTop + 90;
+//
+//            ResourceHelperDE.bindTexture("textures/gui/UpgradeModifier.png");
+//
+//            drawTexturedModalRect(xPos, yPos, 0, 190, 24, 24);
+//            drawTexturedModalRect(xPos + 3, yPos + 3, xIndex * 18, 220, 18, 18);//Index?
+//            drawTexturedModalRect(xPos + 2, yPos - 10, 126, 190, 20, 11);
+//
+//            int[] appliedCores = new int[4];
+//            for (int i = 0; i < appliedCores.length; i++) {
+//                appliedCores[i] = upgrade.getUpgradeCount(i);
+//            }
+//
+//            for (int i = 0; i <= coreTier; i++) {
+//                drawTexturedModalRect(xPos + 3, yPos + 24 + i * 18, 24 + i * 18, 190, 18, 18);
+//                drawTexturedModalRect(xPos + 3, yPos + 24 + i * 18, 24 + i * 18, 190, 18, 18);
+//
+//                GL11.glEnable(GL11.GL_BLEND);
+//                GL11.glColor4f(0F, 0F, 0F, 0.9F);
+//                if (appliedCores[i] < 10) {
+//                    drawTexturedModalRect(xPos + 8, yPos + 28 + i * 18, 3, 3, 7, 9);
+//                } else {
+//                    drawTexturedModalRect(xPos + 5, yPos + 28 + i * 18, 3, 3, 13, 9);
+//                }
+//                GL11.glColor4f(1F, 1F, 1F, 1F);
+//                GL11.glDisable(GL11.GL_BLEND);
+//
+//                //Draw + buttons
+//                if (coreSlots > usedSlots /*&& upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index)*/) {
+//                    boolean hovering = GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y);
+//                    if (!coreInInventory[i]) {
+//                        drawTexturedModalRect(xPos, yPos + 33 + i * 18, 24, 208, 8, 8);
+//                    } else {
+//                        drawTexturedModalRect(xPos, yPos + 33 + i * 18, 32 + (hovering ? 8 : 0), 208, 8, 8);
+//                    }
+//                }
+//
+//                //Draw - buttons
+//                if (appliedCores[i] > 0) {
+//                    boolean hovering = GuiHelper.isInRect(xPos + 16, yPos + 33 + i * 18, 8, 8, x, y);
+//                    drawTexturedModalRect(xPos + 16, yPos + 33 + i * 18, 56 + (hovering ? 8 : 0), 208, 8, 8);
+//                }
+//
+//
+//            }
+//            for (int i = 0; i <= coreTier; i++)
+//                fontRendererObj.drawString(String.valueOf(appliedCores[i]), xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(appliedCores[i])) / 2, yPos + 29 + i * 18, 0xFFFFFF);
+//            fontRendererObj.drawString(String.valueOf(upgrade.getLevel()), xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(upgrade.getLevel())) / 2, yPos - 8, 0xFFFFFF);
+////            fontRendererObj.drawString(String.valueOf(upgrade.getUpgradePoints(stack)), xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(upgrade.getUpgradePoints(stack)))/2, yPos - 8, 0xFFFFFF);
+//        }
+//
+//        fontRendererObj.drawStringWithShadow(I18n.format("gui.de.cores.txt"), guiLeft + 4, guiTop + 4, 0x00ff00);
+//        fontRendererObj.drawString(I18n.format("gui.de.cap.txt"), guiLeft + 4, guiTop + 16, 0x000000);
+//        fontRendererObj.drawString(">" + coreSlots, guiLeft + 4, guiTop + 25, 0x000000);
+//        fontRendererObj.drawString(I18n.format("gui.de.installed.txt"), guiLeft + 4, guiTop + 37, 0x000000);
+//        fontRendererObj.drawString(">" + usedSlots, guiLeft + 4, guiTop + 46, 0x000000);
+//        fontRendererObj.drawString(I18n.format("gui.de.free.txt"), guiLeft + 4, guiTop + 58, 0x000000);
+//        fontRendererObj.drawString(">" + (coreSlots - usedSlots), guiLeft + 4, guiTop + 67, 0x000000);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void drawScreen(int x, int y, float f) {
         super.drawScreen(x, y, f);
-
-        if (!inUse) return;
-        //Second Draw
-        for (IUpgrade upgrade : upgradeRegistry.getUpgrades()) {
-            int xIndex = upgradeRegistry.getIndexFromName(upgrade.getName());
-            int spacing = (xSize - 6) / upgradeRegistry.size();
-            int xPos = guiLeft + (xIndex * spacing) + ((spacing - 23) / 2) + 4;
-            int yPos = guiTop + 90;
-            int[] appliedCores = new int[]{1, 2, 3, 4};//upgrade.getCoresApplied(tile.getStackInCore(0));
-
-            if (GuiHelper.isInRect(xPos, yPos, 24, 24, x, y)) {
-                List list = new ArrayList();
-                list.add(I18n.format(upgrade.getUnlocalizedName()));
-                drawHoveringText(list, x, y, fontRendererObj);
-            }
-
-            if (GuiHelper.isInRect(xPos + 3, yPos - 9, 18, 8, x, y)) {
-                List list = new ArrayList();
-                //	list.add(I18n.format("gui.de.basePoints.txt")+": "+upgradableItem.getBaseUpgradePoints(upgrade.index));
-                //	list.add(I18n.format("gui.de.maxPoints.txt")+": "+upgradableItem.getMaxUpgradePoints(upgrade.index));
-                //	list.add(I18n.format("gui.de.pointCost.txt")+": "+upgrade.pointConversion);
-                drawHoveringText(list, x, y, fontRendererObj);
-            }
-
-            for (int i = 0; i <= coreTier; i++) {
-                if (GuiHelper.isInRect(xPos + 9, yPos + 25 + i * 18, 6, 15, x, y)) {
-                    List list = new ArrayList();
-                    list.add("Stuff");
-                    //double value = Math.pow(2, i) / upgrade.pointConversion;
-                    //String string = StatCollector.translateToLocal("gui.de.value.txt")+": "+value+" "+ (value == 1 ? StatCollector.translateToLocal("gui.de.point.txt") : StatCollector.translateToLocal("gui.de.points.txt"));
-                    //list.add(string.replace(".0", ""));
-                    drawHoveringText(list, x, y, fontRendererObj);
-                }
-
-                //Draw Button Text (add)
-                if (coreSlots > usedSlots && GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y)) {
-                    List list = new ArrayList<String>();
-                    if (coreInInventory[i]) {
-                        list.add(I18n.format("gui.de.addCore.txt"));
-                    } else {
-                        list.add(I18n.format("gui.de.noCoresInInventory" + i + ".txt"));
-                    }
-                    drawHoveringText(list, x, y, fontRendererObj);
-                }
-
-                //Draw Button Text (remove)
-                if (appliedCores[i] > 0 && GuiHelper.isInRect(xPos + 16, yPos + 33 + i * 18, 8, 8, x, y)) {
-                    List list = new ArrayList<String>();
-                    if (coreInInventory[i]) list.add(I18n.format("gui.de.removeCore.txt"));
-                    drawHoveringText(list, x, y, fontRendererObj);
-                }
-            }
-        }
+//
+//        if (!inUse) return;
+//        //Second Draw
+//        for (IUpgrade upgrade : upgradeRegistry.getUpgrades()) {
+//            int xIndex = upgradeRegistry.getIndexFromName(upgrade.getName());
+//            int spacing = (xSize - 6) / upgradeRegistry.size();
+//            int xPos = guiLeft + (xIndex * spacing) + ((spacing - 23) / 2) + 4;
+//            int yPos = guiTop + 90;
+//            int[] appliedCores = new int[]{1, 2, 3, 4};//upgrade.getCoresApplied(tile.getStackInCore(0));
+//
+//            if (GuiHelper.isInRect(xPos, yPos, 24, 24, x, y)) {
+//                List list = new ArrayList();
+//                list.add(I18n.format(upgrade.getUnlocalizedName()));
+//                drawHoveringText(list, x, y, fontRendererObj);
+//            }
+//
+//            if (GuiHelper.isInRect(xPos + 3, yPos - 9, 18, 8, x, y)) {
+//                List list = new ArrayList();
+//                //	list.add(I18n.format("gui.de.basePoints.txt")+": "+upgradableItem.getBaseUpgradePoints(upgrade.index));
+//                //	list.add(I18n.format("gui.de.maxPoints.txt")+": "+upgradableItem.getMaxUpgradePoints(upgrade.index));
+//                //	list.add(I18n.format("gui.de.pointCost.txt")+": "+upgrade.pointConversion);
+//                drawHoveringText(list, x, y, fontRendererObj);
+//            }
+//
+//            for (int i = 0; i <= coreTier; i++) {
+//                if (GuiHelper.isInRect(xPos + 9, yPos + 25 + i * 18, 6, 15, x, y)) {
+//                    List list = new ArrayList();
+//                    list.add("Stuff");
+//                    //double value = Math.pow(2, i) / upgrade.pointConversion;
+//                    //String string = StatCollector.translateToLocal("gui.de.value.txt")+": "+value+" "+ (value == 1 ? StatCollector.translateToLocal("gui.de.point.txt") : StatCollector.translateToLocal("gui.de.points.txt"));
+//                    //list.add(string.replace(".0", ""));
+//                    drawHoveringText(list, x, y, fontRendererObj);
+//                }
+//
+//                //Draw Button Text (add)
+//                if (coreSlots > usedSlots && GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y)) {
+//                    List list = new ArrayList<String>();
+//                    if (coreInInventory[i]) {
+//                        list.add(I18n.format("gui.de.addCore.txt"));
+//                    } else {
+//                        list.add(I18n.format("gui.de.noCoresInInventory" + i + ".txt"));
+//                    }
+//                    drawHoveringText(list, x, y, fontRendererObj);
+//                }
+//
+//                //Draw Button Text (remove)
+//                if (appliedCores[i] > 0 && GuiHelper.isInRect(xPos + 16, yPos + 33 + i * 18, 8, 8, x, y)) {
+//                    List list = new ArrayList<String>();
+//                    if (coreInInventory[i]) list.add(I18n.format("gui.de.removeCore.txt"));
+//                    drawHoveringText(list, x, y, fontRendererObj);
+//                }
+//            }
+//        }
 
     }
 

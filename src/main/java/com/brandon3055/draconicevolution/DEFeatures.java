@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.items.Debugger;
+import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.*;
@@ -55,8 +56,8 @@ public class DEFeatures {
     @Feature(name = "energyInfuser", tileEntity = TileEnergyInfuser.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static EnergyInfuser energyInfuser = new EnergyInfuser();
 
-    @Feature(name = "upgradeModifier", tileEntity = TileUpgradeModifier.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-    public static UpgradeModifier upgradeModifier = new UpgradeModifier();
+    //@Feature(name = "upgradeModifier", tileEntity = TileUpgradeModifier.class, itemBlock = ItemBlockBCore.class, cTab = 1)
+    //public static UpgradeModifier upgradeModifier = new UpgradeModifier();
 
     @Feature(name = "craftingPedestal", variantMap = {"0:facing=up,tier=basic", "1:facing=up,tier=wyvern", "2:facing=up,tier=draconic", "3:facing=up,tier=chaotic"}, tileEntity = TileCraftingPedestal.class, itemBlock = ItemBlockBasic.class, cTab = 1)
     public static CraftingPedestal craftingPedestal = new CraftingPedestal();
@@ -75,6 +76,17 @@ public class DEFeatures {
 
     @Feature(name = "fusionCraftingCore", tileEntity = TileFusionCraftingCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static FusionCraftingCore fusionCraftingCore = new FusionCraftingCore();
+    //endregion
+
+    //region Exotic Blocks
+
+    @Feature(name = "chaosCrystal", tileEntity = TileChaosCrystal.class ,cTab = -1)
+    public static ChaosCrystal chaosCrystal = new ChaosCrystal();
+
+    @Feature(name = "chaosShardAtmos", cTab = -1)
+    public static ChaosShardAtmos chaosShardAtmos = new ChaosShardAtmos();
+
+
     //endregion
 
 	/* ------------------ Items ------------------ */
@@ -158,6 +170,9 @@ public class DEFeatures {
 
     @Feature(name = "draconicSword", cTab = 1)
     public static DraconicSword draconicSword = new DraconicSword();
+
+    @Feature(name = "toolUpgrade", cTab = 1)
+    public static ToolUpgrade toolUpgrade = new ToolUpgrade();
 
     //endregion
 

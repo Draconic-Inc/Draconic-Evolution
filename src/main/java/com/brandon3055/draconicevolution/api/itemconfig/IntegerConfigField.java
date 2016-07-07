@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,9 +47,10 @@ public class IntegerConfigField implements IItemConfigField {
 
     @Override
     public String getUnlocalizedName() {
-        return "gui.config.field." + getName() + ".entry";
+        return "config.field." + getName() + ".entry";
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getReadableValue() {
         return String.valueOf(value) + extension;

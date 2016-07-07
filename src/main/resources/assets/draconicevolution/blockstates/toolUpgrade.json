@@ -1,0 +1,24 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type": {
+      "rfcap": { "textures": { "layer0": "draconicevolution:items/upgrades/rfCap" } },
+      "digspeed" : { "textures": { "layer0": "draconicevolution:items/upgrades/digSpeed" } },
+      "digaoe" : { "textures": { "layer0": "draconicevolution:items/upgrades/digAOE" } },
+      "digdepth" : { "textures": { "layer0": "draconicevolution:items/upgrades/digDepth" } },
+      "attackdmg": { "textures": { "layer0": "draconicevolution:items/upgrades/attackDmg" } },
+      "attackaoe": { "textures": { "layer0": "draconicevolution:items/upgrades/attackAOE" } },
+      "arrowdmg" : { "textures": { "layer0": "draconicevolution:items/upgrades/arrowDmg" } },
+      "drawspeed": { "textures": { "layer0": "draconicevolution:items/upgrades/drawSpeed" } },
+      "arrowspeed": { "textures": { "layer0": "draconicevolution:items/upgrades/arrowSpeed" } },
+      "shieldcap": { "textures": { "layer0": "draconicevolution:items/upgrades/shieldCap" } },
+      "shieldrec": { "textures": { "layer0": "draconicevolution:items/upgrades/shieldRec" } },
+      "movespeed": { "textures": { "layer0": "draconicevolution:items/upgrades/moveSpeed" } },
+      "jumpboost": { "textures": { "layer0": "draconicevolution:items/upgrades/jumpBoost" } }
+    }
+  }
+}

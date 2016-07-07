@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.toolconfig;
 
+import com.brandon3055.brandonscore.client.gui.guicomponents.ColourRectButton;
+import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import net.minecraft.client.Minecraft;
@@ -8,14 +10,17 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-import static com.brandon3055.brandonscore.inventory.PlayerSlot.EnumInvCategory.ARMOR;
-import static com.brandon3055.brandonscore.inventory.PlayerSlot.EnumInvCategory.MAIN;
-import static com.brandon3055.brandonscore.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
+import static com.brandon3055.brandonscore.inventory.PlayerSlot.EnumInvCategory.*;
 
 /**
  * Created by brandon3055 on 2/06/2016.
@@ -25,6 +30,7 @@ public class GuiToolConfig extends GuiScreen {
     private ToolButton[] armor;
     private ToolButton[] inventory;
     private ToolButton[] offHand;
+    private ColourRectButton configButton;
 
     public GuiToolConfig(EntityPlayer player){
         this.player = player;
@@ -37,7 +43,7 @@ public class GuiToolConfig extends GuiScreen {
     public void initGui() {
         super.initGui();
         int centerX = width / 2;
-        int centerY = height / 2;
+        int centerY = 40 + height / 2;
         buttonList.clear();
         int id = 0;
 
@@ -62,12 +68,13 @@ public class GuiToolConfig extends GuiScreen {
 
         for (int i = 0; i < player.inventory.offHandInventory.length; i++){
             ItemStack stack = player.inventory.offHandInventory[i];
-            int x = - 100 + centerX;
-            int y = + 31 + centerY + i * 18;
+            int x = + 24 + centerX;
+            int y = - 52 + centerY + i * 18;
             buttonList.add(offHand[i] = new ToolButton(id, x, y, 18, 18, stack, new PlayerSlot(i, OFF_HAND)));
             id++;
         }
 
+        buttonList.add(configButton = new ColourRectButton(id, I18n.format("gui.de.toolConfig.hud.txt"), centerX + 23, centerY - 107, 59, 16, 0x88000000, 0xFF440066, 0xFF009900));
     }
 
     //region Draw
@@ -75,29 +82,29 @@ public class GuiToolConfig extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         int centerX = width / 2;
-        int centerY = height / 2;
+        int centerY = 40 + height / 2;
         drawDefaultBackground();
 
         //region Draw Inventory Back
 
-        //Draw Background
-        int posX = centerX - 90;
-        int posY = centerY - 115;
-        this.drawGradientRect(posX, posY, posX + 172 + 8, posY + 173, 0xaF000000, 0xaF000000);
-        posX = centerX - 100 - 8;
-        posY = centerY + 31 - 8;
-        this.drawGradientRect(posX, posY, posX + 18, posY + 35, 0xaF000000, 0xaF000000);
-        //Draw Main Inventory
-        posX = centerX - 81;
-        posY = centerY - 24;
+        GuiHelper.drawColouredRect(centerX - 90, centerY - 115, 180, 173, 0xAF000000);
+        int border = 0xFF005555;
+        GuiHelper.drawColouredRect(centerX - 90, centerY - 117, 180, 2, border);
+        GuiHelper.drawColouredRect(centerX - 90, centerY + 56, 180, 2, border);
+        GuiHelper.drawColouredRect(centerX - 90, centerY - 117, 2, 175, border);
+        GuiHelper.drawColouredRect(centerX + 88, centerY - 117, 2, 175, border);
+
+        //Draw Main Inventory //TODO Replace all "drawGradientRect" with GuiHelper.drawColouredRect
+        int posX = centerX - 81;
+        int posY = centerY - 24;
         this.drawGradientRect(posX - 1, posY - 1, posX + 163, posY + 74, 0xFF00FFFF, 0xFF00FFFF);
         this.drawGradientRect(posX, posY, posX + 162, posY + 73, 0xFF000000, 0xFF000000);
         posY = centerY + 30;
         this.drawGradientRect(posX - 1, posY, posX + 163, posY + 1, 0xFF00FFFF, 0xFF00FFFF);
         //Draw Off Hand
-        posX = centerX - 100;
-        posY = centerY + 31;
-        this.drawGradientRect(posX - 1, posY - 1, posX + 18, posY + 19, 0xFF00FFFF, 0xFF00FFFF);
+        posX = centerX + 24;
+        posY = centerY - 52;
+        this.drawGradientRect(posX - 1, posY - 1, posX + 19, posY + 19, 0xFF00FFFF, 0xFF00FFFF);
         this.drawGradientRect(posX, posY, posX + 18, posY + 18, 0xFF000000, 0xFF000000);
         //Draw Armor
         posX = centerX - 81;
@@ -125,6 +132,10 @@ public class GuiToolConfig extends GuiScreen {
                 ((ToolButton)button).drawToolTips(mc, mouseX, mouseY);
             }
         }
+
+        if (GuiHelper.isInRect(centerX + 23, centerY - 107, 59, 16, mouseX, mouseY)) {
+            drawHoveringText(Arrays.asList(I18n.format("gui.de.toolConfig.hudDesc.txt")), mouseX, mouseY);
+        }
     }
 
     //endregion
@@ -133,7 +144,10 @@ public class GuiToolConfig extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        if (button instanceof ToolButton){
+        if (button.id == configButton.id) {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiHudConfig(this));
+        }
+        else if (button instanceof ToolButton){
             ToolButton toolButton = (ToolButton) button;
 
             if (toolButton.stack != null && toolButton.stack.getItem() instanceof IConfigurableItem){
@@ -181,15 +195,13 @@ public class GuiToolConfig extends GuiScreen {
            // super.drawButton(mc, mouseX, mouseY);
 
             if (stack != null){
-                if (hovered){
-                    int hoverColour = stack.getItem() instanceof IConfigurableItem ? 0x3000ffff : 0xFFFF0000;
-
+                if (hovered && stack.getItem() instanceof IConfigurableItem ){
                     GlStateManager.disableLighting();
                     GlStateManager.disableDepth();
                     int j1 = xPosition;
                     int k1 = yPosition;
                     GlStateManager.colorMask(true, true, true, false);
-                    this.drawGradientRect(j1, k1, j1 + 18, k1 + 18, hoverColour, hoverColour);
+                    this.drawGradientRect(j1, k1, j1 + 18, k1 + 18, 0x3000ffff, 0x3000ffff);
                     GlStateManager.colorMask(true, true, true, true);
                     GlStateManager.enableLighting();
                     GlStateManager.enableDepth();
@@ -199,17 +211,28 @@ public class GuiToolConfig extends GuiScreen {
                 mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRendererObj, stack, xPosition + 1, yPosition + 1, stack.stackSize > 1 ? String.valueOf(stack.stackSize) : "");
             }
 
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
+            GlStateManager.colorMask(true, true, true, false);
             if (stack == null || !(stack.getItem() instanceof IConfigurableItem)){
-                GlStateManager.disableLighting();
-                GlStateManager.disableDepth();
-                GlStateManager.colorMask(true, true, true, false);
-                int j1 = xPosition;
-                int k1 = yPosition;
-                this.drawGradientRect(j1, k1, j1 + 18, k1 + 18, 0xA0000000, 0xA0000000);
-                GlStateManager.colorMask(true, true, true, true);
-                GlStateManager.enableLighting();
-                GlStateManager.enableDepth();
+                this.drawGradientRect(xPosition, yPosition, xPosition + 18, yPosition + 18, 0xB0000000, 0xB0000000);
+                GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, 1, 16, 0x55FF0000);
+                GuiHelper.drawColouredRect(xPosition + 16, yPosition + 1, 1, 16, 0x55FF0000);
+                GuiHelper.drawColouredRect(xPosition + 2, yPosition + 1, 14, 1, 0x55FF0000);
+                GuiHelper.drawColouredRect(xPosition + 2, yPosition + 16, 14, 1, 0x55FF0000);
+            } else {
+//                GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, 1, 16, 0x5500FF00);
+//                GuiHelper.drawColouredRect(xPosition + 16, yPosition + 1, 1, 16, 0x5500FF00);
+//                GuiHelper.drawColouredRect(xPosition + 2, yPosition + 1, 14, 1, 0x5500FF00);
+//                GuiHelper.drawColouredRect(xPosition + 2, yPosition + 16, 14, 1, 0x5500FF00);
+                GuiHelper.drawColouredRect(xPosition, yPosition, 1, 18, 0x8800FF00);
+                GuiHelper.drawColouredRect(xPosition + 17, yPosition, 1, 18, 0x8800FF00);
+                GuiHelper.drawColouredRect(xPosition + 1, yPosition, 16, 1, 0x8800FF00);
+                GuiHelper.drawColouredRect(xPosition + 1, yPosition + 17, 16, 1, 0x8800FF00);
             }
+            GlStateManager.colorMask(true, true, true, true);
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepth();
 
         }
 
@@ -223,6 +246,9 @@ public class GuiToolConfig extends GuiScreen {
         public void playPressSound(SoundHandler soundHandlerIn) {
             if (stack != null && stack.getItem() instanceof IConfigurableItem) {
                 super.playPressSound(soundHandlerIn);
+            }
+            else if (stack != null){
+                mc.thePlayer.addChatComponentMessage(new TextComponentTranslation("chat.toolConfig.thatItemNotConfigurable.msg").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
             }
         }
     }

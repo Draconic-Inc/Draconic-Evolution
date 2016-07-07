@@ -1,6 +1,9 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by brandon3055 on 1/06/2016.
@@ -8,8 +11,8 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class BooleanConfigField extends IntegerConfigField {
 
-    private String onTxt = "gui.config.field.on.state";
-    private String offTxt = "gui.config.field.off.state";
+    private String onTxt = "config.field.on.state";
+    private String offTxt = "config.field.off.state";
 
     public BooleanConfigField(String name, Boolean value, String description) {
         super(name, value ? 1 : 0, 0, 1, description, EnumControlType.TOGGLE);
@@ -21,9 +24,10 @@ public class BooleanConfigField extends IntegerConfigField {
         return this;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getReadableValue() {
-        return value == 1 ? onTxt : offTxt;
+        return value == 1 ? I18n.format(onTxt) : I18n.format(offTxt);
     }
 
     @Override

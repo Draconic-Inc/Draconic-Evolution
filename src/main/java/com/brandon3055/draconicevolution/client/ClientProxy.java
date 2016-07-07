@@ -7,6 +7,14 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.ToolModelLoader;
+import com.brandon3055.draconicevolution.client.render.entity.RenderChaosGuardian;
+import com.brandon3055.draconicevolution.client.render.entity.RenderEntityChaosVortex;
+import com.brandon3055.draconicevolution.client.render.entity.RenderGuardianCrystal;
+import com.brandon3055.draconicevolution.client.render.entity.RenderGuardianProjectile;
+import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
+import com.brandon3055.draconicevolution.entity.EntityChaosVortex;
+import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
+import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -14,6 +22,7 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -38,12 +47,13 @@ public class ClientProxy extends CommonProxy {
         TextureUtils.addIconRegister(loader);
 
         ToolModelLoader.registerModels();
+
+        registerRendering();
 	}
 
 	@Override
 	public void init(FMLInitializationEvent event)
 	{
-
 
 		super.init(event);
 		MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
@@ -53,7 +63,6 @@ public class ClientProxy extends CommonProxy {
 //		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		KeyBindings.init();
 		registerRenderIDs();
-		registerRendering();
 //		ResourceHandler.instance.tick(null);
 	}
 
@@ -138,11 +147,11 @@ public class ClientProxy extends CommonProxy {
 //
 //		//Entitys
 //		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
-//		RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, new RenderDragon());
+		RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, new RenderChaosGuardian.Factory());
 //		RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart());
-//		RenderingRegistry.registerEntityRenderingHandler(EntityDragonProjectile.class, new RenderDragonProjectile());
-//		RenderingRegistry.registerEntityRenderingHandler(EntityChaosCrystal.class, new RenderChaosCrystal());
-//		RenderingRegistry.registerEntityRenderingHandler(EntityChaosVortex.class, new RenderEntityChaosVortex());
+		RenderingRegistry.registerEntityRenderingHandler(EntityGuardianProjectile.class, new RenderGuardianProjectile.Factory());
+		RenderingRegistry.registerEntityRenderingHandler(EntityGuardianCrystal.class, new RenderGuardianCrystal.Factory());
+		RenderingRegistry.registerEntityRenderingHandler(EntityChaosVortex.class, new RenderEntityChaosVortex.Factory());
 //		RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, new RenderEntityCustomArrow());
 	}
 

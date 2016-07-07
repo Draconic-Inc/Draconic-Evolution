@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.brandonscore.client.utills.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;

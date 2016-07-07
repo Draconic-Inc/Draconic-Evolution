@@ -8,6 +8,8 @@ import com.brandon3055.brandonscore.config.ModConfigProperty;
  */
 public class DEConfig {
 
+    //Category World
+
 	@ModConfigProperty(category = "World", name = "worldGenEnabled", comment = "Setting this to false will just completely disable ALL DE world gen!")
 	public static boolean worldGenEnabled = true;
 
@@ -37,4 +39,18 @@ public class DEConfig {
 
 	@ModConfigProperty(category = "World", name = "oreGenDimentionBlacklist", comment = "Add the dimension id of any mod dimension's you dont want draconium ore generated in")
 	public static int[] oreGenDimentionBlacklist = new int[0];
+
+    //Category Tweak
+
+    @ModConfigProperty(category = "Tweaks", name = "rapidDespawnAOEMinedItems", comment = "If set to true items dropped by tools in AOE mode will despawn after 5 seconds if not picked up.")
+    public static boolean rapidDespawnAOEMinedItems = false;
+
+    @ModConfigProperty(category = "Tweaks", name = "disableGuardianCrystalRespawn", comment = "(Wuss mode) Setting this to true will disable the chaos guardians ability to respawn healing crystals.")
+    public static boolean disableGuardianCrystalRespawn = false;
+
+    //Category Client
+
+    @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stores. You should not need to adjust these unless something breaks.")
+    public static int[] hudSettings = new int[]{996, 825, 69, 907, 90, 100, 3, 0, 1, 1, 1, 1}; //x, y, x, y, scale, scale, fademode, fademode, rotateArmor, armorText, hudEnabled, shieldEnabled
+
 }

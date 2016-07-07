@@ -1,15 +1,20 @@
 package com.brandon3055.draconicevolution.network;
 
+import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.network.MessageHandlerWrapper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
+import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
+import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketSimpleBoolean implements IMessage
 {
     public static final byte ID_TOOL_CONFIG = 0;
+	public static final byte ID_TOOL_PROFILE_CHANGE = 1;
 
 //	public static final byte ID_WEATHERCONTROLLER =
 //	public static final byte ID_DISSENCHANTER =
@@ -52,6 +57,15 @@ public class PacketSimpleBoolean implements IMessage
 					ctx.getServerHandler().playerEntity.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().playerEntity.worldObj, (int)ctx.getServerHandler().playerEntity.posX, (int)ctx.getServerHandler().playerEntity.posY, (int)ctx.getServerHandler().playerEntity.posZ);
 					break;
 				}
+                case ID_TOOL_PROFILE_CHANGE:
+                {
+                    ItemStack stack = HandHelper.getMainFirst(ctx.getServerHandler().playerEntity);
+                    if (stack != null && stack.getItem() instanceof IConfigurableItem){
+                        ToolConfigHelper.incrementProfile(stack);
+                    }
+
+                    break;
+                }
 
 //				case ID_WEATHERCONTROLLER:
 //				{

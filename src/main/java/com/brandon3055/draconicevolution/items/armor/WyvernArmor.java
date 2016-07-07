@@ -5,14 +5,17 @@ import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
-import com.brandon3055.draconicevolution.api.itemupgrade.ItemUpgradeRegistry;
-import com.brandon3055.draconicevolution.api.itemupgrade.SimpleUpgrade;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.IDualModel;
+import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.items.tools.ToolBase;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by brandon3055 on 6/06/2016.
@@ -42,18 +45,24 @@ public class WyvernArmor extends ItemArmor implements ICustomRender, IDualModel,
     //region Upgrade
 
     @Override
-    public ItemUpgradeRegistry getValidUpgrades(ItemStack stack, ItemUpgradeRegistry upgradeRegistry) {
-        upgradeRegistry.register(stack, new SimpleUpgrade(UpgradeHelper.RF_CAPACITY));
-        upgradeRegistry.register(stack, new SimpleUpgrade(UpgradeHelper.JUMP_BOOST));
-        upgradeRegistry.register(stack, new SimpleUpgrade(UpgradeHelper.MOVE_SPEED));
-        upgradeRegistry.register(stack, new SimpleUpgrade(UpgradeHelper.SHIELD_CAPACITY));
-        upgradeRegistry.register(stack, new SimpleUpgrade(UpgradeHelper.SHIELD_RECOVERY));
-        return upgradeRegistry;
+    public List<String> getValidUpgrades(ItemStack stack) {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(ToolUpgrade.RF_CAPACITY);
+        list.add(ToolUpgrade.JUMP_BOOST);
+        list.add(ToolUpgrade.MOVE_SPEED);
+        list.add(ToolUpgrade.SHIELD_CAPACITY);
+        list.add(ToolUpgrade.SHIELD_RECOVERY);
+        return list;
     }
 
     @Override
-    public int getUpgradeCapacity(ItemStack stack) {
-        return 3;
+    public int getMaxUpgradeLevel(ItemStack stack) {
+        return 2;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        ToolBase.holdCTRLForUpgrades(tooltip, stack);
     }
 
     //endregion

@@ -63,6 +63,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
 
         if (!worldObj.isRemote && isOutputMode.value) {
             int extracted = getCore().extractEnergy(TileEnergyBase.sendEnergyToAll(worldObj, pos, getEnergyStored(null)), false);
+//            LogHelper.info(extracted);
             if (extracted > 0) {
                 particleRate.value = (byte) Math.min(20, extracted < 500 && extracted > 0 ? 1 : extracted / 500);
             }
@@ -72,8 +73,8 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
             spawnParticles();
         }
 
-        if (particleRate.value > 0) {
-           particleRate.value--;
+        if (particleRate.value > 1 || (particleRate.value > 0 && worldObj.rand.nextInt(2) == 0)) {
+           particleRate.value-= 2;
         }
     }
 
@@ -158,6 +159,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
                 worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(EnergyPylon.FACING, CCDirection.DOWN));
             } else {
                 worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(EnergyPylon.FACING, CCDirection.UNKNOWN));
+                return false;
             }
         }
 
@@ -323,7 +325,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
 
     @Override
     public int getEnergyStored(EnumFacing from) {
-        if (!hasCoreLock.value || getCore() == null) {
+        if (!hasCoreLock.value) {
             return 0;
         }
         return (int) Math.min(getCore().getExtendedStorage(), Integer.MAX_VALUE);

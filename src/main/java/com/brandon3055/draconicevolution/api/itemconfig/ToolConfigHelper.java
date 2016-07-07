@@ -18,6 +18,23 @@ public class ToolConfigHelper {
         return stack.getTagCompound().getByte("ToolProfile");
     }
 
+    public static String getProfileName(ItemStack stack, int profile) {
+        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey("ToolProfileName"+profile)){
+            return "Profile " + (profile + 1);
+        }
+
+        return stack.getTagCompound().getString("ToolProfileName"+profile);
+    }
+
+    public static void setProfileName(ItemStack stack, int profile, String name) {
+        if (stack.getTagCompound() == null) {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+
+        stack.getTagCompound().setString("ToolProfileName"+profile, name);
+    }
+
+
     /**
      * Increments the current selected config profile.
      * */

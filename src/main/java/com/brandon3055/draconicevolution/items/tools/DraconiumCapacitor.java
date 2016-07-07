@@ -8,6 +8,8 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.itemupgrade.*;
+import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,9 +19,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,9 +63,9 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
         switch (tier) {
             case 0:
-                return wyvernBaseCap + (UpgradeHelper.getUpgradeLevel(stack, UpgradeHelper.RF_CAPACITY) * 8000000);
+                return wyvernBaseCap + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.RF_CAPACITY) * 8000000);
             case 1:
-                return draconicBaseCap + (UpgradeHelper.getUpgradeLevel(stack, UpgradeHelper.RF_CAPACITY) * 16000000);
+                return draconicBaseCap + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.RF_CAPACITY) * 16000000);
             case 2:
                 return Integer.MAX_VALUE;
         }
@@ -132,7 +134,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
             int newMode = mode == 3 ? 0 : mode + 1;
             ItemNBTHelper.setShort(stack, "Mode", (short) newMode);
             if (world.isRemote)
-                player.addChatComponentMessage(new TextComponentTranslation(InfoHelper.ITC() + I18n.translateToLocal("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.translateToLocal("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt")));
+                player.addChatComponentMessage(new TextComponentTranslation(InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt")));
         }
         return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
     }
@@ -195,14 +197,16 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         if (InfoHelper.holdShiftForDetails(tooltip)) {
-            tooltip.add(I18n.translateToLocal("info.de.changwMode.txt"));
-            tooltip.add(InfoHelper.ITC() + I18n.translateToLocal("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.translateToLocal("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt"));
+            tooltip.add(I18n.format("info.de.changwMode.txt"));
+            tooltip.add(InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt"));
             //InfoHelper.addLore(stack, tooltip);
         }
-        //ToolBase.holdCTRLForUpgrades(list, stack);TODO
+
+        ToolBase.holdCTRLForUpgrades(tooltip, stack);
+
         InfoHelper.addEnergyInfo(stack, tooltip);
         if (stack.getItemDamage() == 2){
-            tooltip.add(InfoHelper.HITC()+I18n.translateToLocal("info.creativeCapacitor.txt")+" "+ Utils.formatNumber(Integer.MAX_VALUE/2)+" RF/t");
+            tooltip.add(InfoHelper.HITC()+I18n.format("info.creativeCapacitor.txt")+" "+ Utils.formatNumber(Integer.MAX_VALUE/2)+" RF/t");
         }
     }
 
@@ -211,15 +215,14 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     //region IUpgradable
 
     @Override
-    public ItemUpgradeRegistry getValidUpgrades(ItemStack stack, ItemUpgradeRegistry upgradeRegistry) {
-        upgradeRegistry.register(stack, new SimpleUpgrade(UpgradeHelper.RF_CAPACITY));
-        return upgradeRegistry;
+    public List<String> getValidUpgrades(ItemStack stack) {
+        return new ArrayList<String>() {{ add(ToolUpgrade.RF_CAPACITY); }};
     }
 
     @Override
-    public int getUpgradeCapacity(ItemStack stack) {
+    public int getMaxUpgradeLevel(ItemStack stack) {
         return stack.getItemDamage() == 0 ? 3 :
-               stack.getItemDamage() == 1 ? 6 : 0;
+                stack.getItemDamage() == 1 ? 6 : 0;
     }
 
     //endregion

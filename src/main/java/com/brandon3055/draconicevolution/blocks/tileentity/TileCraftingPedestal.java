@@ -44,7 +44,6 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
     @Override
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         validateCraftingInventory();
-
         if (currentCraftingInventory != null){
             int maxRFPerTick = currentCraftingInventory.getRequiredCharge() / 300;
             int maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getRequiredCharge() - energy.value, maxRFPerTick));

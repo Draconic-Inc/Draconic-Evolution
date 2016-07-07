@@ -1,24 +1,35 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 
+import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.google.common.collect.Lists;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.opengl.GL11;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Brandon on 28/10/2014.
@@ -46,11 +57,18 @@ public class ClientEventHandler {
     }
 
     @SubscribeEvent
+    public void drawHUD(RenderGameOverlayEvent.Post event) {
+        HudHandler.drawHUD(event);
+    }//TODO Rename event
+
+    @SubscribeEvent
     public void tickEnd(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END )
         if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT)
             return;
         elapsedTicks++;
+
+        HudHandler.clientTick();
 
         for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = playerShieldStatus.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry<EntityPlayer, XZPair<Float, Integer>> entry = i.next();
@@ -196,5 +214,136 @@ public class ClientEventHandler {
             }
             catch (Exception e){}
         }
+    }
+
+    @SubscribeEvent
+    public void renderWorldEvent(RenderWorldLastEvent event) {
+        if (event.isCanceled()) {
+            return;
+        }
+
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        World world = player.getEntityWorld();
+        ItemStack stack = player.getHeldItemMainhand();
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (stack == null || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)){
+            return;
+        }
+
+        if (mc.objectMouseOver == null || mc.objectMouseOver.typeOfHit != RayTraceResult.Type.BLOCK){
+            return;
+        }
+
+        BlockPos pos = mc.objectMouseOver.getBlockPos();
+        IBlockState state = world.getBlockState(pos);
+        MiningToolBase tool = (MiningToolBase)stack.getItem();
+
+        if (!tool.isToolEffective(stack, state)) {
+            return;
+        }
+
+        renderMiningAOE(world, stack, pos, player, event.getPartialTicks());
+    }
+
+    private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, EntityPlayerSP player, float partialTicks) {
+        MiningToolBase tool = (MiningToolBase)stack.getItem();
+        PairKV<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
+        List<BlockPos> blocks = Lists.newArrayList(BlockPos.getAllInBox(aoe.getKey(), aoe.getValue()));
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer buffer = tessellator.getBuffer();
+
+        double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double)partialTicks;
+        double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double)partialTicks;
+        double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)partialTicks;
+
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.glLineWidth(2.0F);
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableDepth();
+
+
+        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+
+        for (BlockPos block : blocks){
+            IBlockState state = world.getBlockState(block);
+
+            if (!tool.isToolEffective(stack, state)){
+                continue;
+            }
+
+            double renderX = block.getX() - offsetX;
+            double renderY = block.getY() - offsetY;
+            double renderZ = block.getZ() - offsetZ;
+
+            AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).contract(0.49D);
+
+  //          buffer.pos(renderX, renderY, renderZ).color(1F, 1F, 1F, 1F).endVertex();
+//            buffer.pos(renderX + 1, renderY + 1, renderZ + 1).color(1F, 1F, 1F, 1F).endVertex();
+
+            double rDist = Utils.getDistanceSq(pos.getX(), pos.getY(), pos.getZ(), block.getX(), block.getY(), block.getZ());
+
+
+            float colour = 1F - (float)rDist / 100F;
+            if (colour < 0.1F) {
+                colour = 0.1F;
+            }
+            float alpha = colour;
+            if (alpha < 0.15) {
+                alpha = 0.15F;
+            }
+
+            float r = 0F;
+            float g = 1F;
+            float b = 1F;
+
+
+            buffer.pos(box.minX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.pos(box.maxX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+
+            buffer.pos(box.maxX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.pos(box.minX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+
+            buffer.pos(box.minX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.pos(box.maxX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+
+            buffer.pos(box.maxX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.pos(box.minX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+
+//
+//            buffer.begin(3, DefaultVertexFormats.POSITION);
+//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//            buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+//            buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//            tessellator.draw();
+//            buffer.begin(3, DefaultVertexFormats.POSITION);
+//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//            buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//            buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//            tessellator.draw();
+//            buffer.begin(1, DefaultVertexFormats.POSITION);
+//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//            buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+//            buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//            buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//            buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//            tessellator.draw();
+
+        }
+
+        tessellator.draw();
+
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
 }

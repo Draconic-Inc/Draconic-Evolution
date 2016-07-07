@@ -19,6 +19,10 @@ repositories {
         name 'Covers1624 maven'
         url "http://adel.podgeweb.com:1616/maven/"
     }
+    maven {
+        name 'Covers1624 maven'
+        url "http://172.17.5.4:1616/maven/"
+    }
 	maven {
         name 'CB Maven'
         url "http://chickenbones.net/maven/"

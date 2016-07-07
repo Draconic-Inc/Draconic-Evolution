@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.api.itemconfig;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Map;
 
@@ -22,9 +24,11 @@ public interface IItemConfigField {
     String getUnlocalizedName();
 
     /**
+     * Warning this is client side! Remember to keep that in mind when implementing and don't forget the @SideOnly
      * Returns the field value formatted for display to the user.
      * */
-    String getReadableValue();//TODO add support for number formatting and stuff (Probably to the actual integer/double fields)
+    @SideOnly(Side.CLIENT)//Because they had to go and make life complicated by moving localization client side!
+    String getReadableValue();
 
     /**
      * Used for the slider control type to display the current value while sliding.

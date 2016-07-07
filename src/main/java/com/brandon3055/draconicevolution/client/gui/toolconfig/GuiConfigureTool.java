@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.toolconfig;
 
-import com.brandon3055.brandonscore.client.utills.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -34,7 +34,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
 /**
  * Created by brandon3055 on 7/06/2016.
  */
-public class GuiConfigureTool extends GuiScreen {
+public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename config profiles
 
     private GuiToolConfig parent;
     private final EntityPlayer player;
@@ -143,7 +143,6 @@ public class GuiConfigureTool extends GuiScreen {
         GuiHelper.drawColouredRect(centerX + 160, centerY - 122, 2, 239, border);
 
         GuiHelper.drawColouredRect(centerX - 160, centerY - 8, 320, 2, border);
-
         GuiHelper.drawColouredRect(centerX - 160, centerY + 12, 320, 2, border);
 
         //Draw item Background
@@ -376,7 +375,7 @@ public class GuiConfigureTool extends GuiScreen {
                     }
 
                     int pos = (int)((width - 14) * sliderPos);
-                    boolean mouseOver = GuiHelper.isInRect(xPosition + 3 + pos, yPosition + 3, 6, 12, mouseX, mouseY) || isDragging;
+                    boolean mouseOver = GuiHelper.isInRect(xPosition + 3, yPosition + 3, width - 6, 12, mouseX, mouseY) || isDragging;
 
                     GuiHelper.drawColouredRect(xPosition + 4, yPosition + 8, width - 8, 2, 0xFF222222);
                     GuiHelper.drawColouredRect(xPosition + 1, yPosition + 2, 3, 14, 0xFF770000);
@@ -490,8 +489,8 @@ public class GuiConfigureTool extends GuiScreen {
                 case PLUS1_MINUS1:
                     break;
                 case SLIDER:
-                    int pos = (int)((width - 14) * activeButton.field.getFractionalValue());
-                    isDragging = GuiHelper.isInRect(xPosition + 3 + pos, yPosition + 3, 6, 12, mouseX, mouseY);
+                //    int pos = (int)((width - 14) * activeButton.field.getFractionalValue());
+                    isDragging = GuiHelper.isInRect(xPosition + 3, yPosition + 3, width - 6, 12, mouseX, mouseY);
                     if (isDragging){
                         mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     }

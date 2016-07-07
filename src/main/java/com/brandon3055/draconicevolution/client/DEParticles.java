@@ -1,10 +1,7 @@
 package com.brandon3055.draconicevolution.client;
 
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyCoreFX;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleInfuser;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleLineIndicator;
+import com.brandon3055.draconicevolution.client.render.particle.*;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,6 +16,8 @@ public class DEParticles {
     public static int ENERGY_CORE_FX;
     public static int LINE_INDICATOR;
     public static int INFUSER;
+    public static int GUARDIAN_PROJECTILE;
+    public static int CHAOS_IMPLOSION;
 
 
     public static void registerClient(){
@@ -26,6 +25,8 @@ public class DEParticles {
         ENERGY_CORE_FX = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergyCoreFX.Factory());
         LINE_INDICATOR = BCEffectHandler.registerFX(DE_SHEET, new ParticleLineIndicator.Factory());
         INFUSER = BCEffectHandler.registerFX(DE_SHEET, new ParticleInfuser.Factory());
+        GUARDIAN_PROJECTILE = BCEffectHandler.registerFX(DE_SHEET, new ParticleGuardianProjectile.Factory());
+        CHAOS_IMPLOSION = BCEffectHandler.registerFX(DE_SHEET, new ParticleChaosImplosion.Factory());
     }
 
     public static void registerServer(){
@@ -33,5 +34,7 @@ public class DEParticles {
         ENERGY_CORE_FX = BCEffectHandler.registerFXServer();
         LINE_INDICATOR = BCEffectHandler.registerFXServer();
         INFUSER = BCEffectHandler.registerFXServer();
+        GUARDIAN_PROJECTILE = BCEffectHandler.registerFXServer();
+        CHAOS_IMPLOSION = BCEffectHandler.registerFXServer();
     }
 }

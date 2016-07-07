@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.config.ModConfigProcessor;
 import com.brandon3055.brandonscore.config.ModFeatureParser;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
+import com.brandon3055.draconicevolution.command.CommandUpgrade;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.DEWorldGenHandler;
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,10 +12,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 @Mod(modid = DraconicEvolution.MODID, name = DraconicEvolution.MODNAME, version = DraconicEvolution.VERSION, canBeDeactivated = false, guiFactory = DraconicEvolution.GUI_FACTORY,  dependencies = DraconicEvolution.DEPENDENCIES)
@@ -55,9 +53,14 @@ public class DraconicEvolution {
 	{
 		LogHelper.info("Hello Minecraft!!!");
 	}
-	
+
+    @Mod.EventHandler
+    public void serverStart(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandUpgrade());
+    }
+
 	@Mod.EventHandler
-	public static void preInit(FMLPreInitializationEvent event)
+	public void preInit(FMLPreInitializationEvent event)
 	{
 		configuration = new Configuration(event.getSuggestedConfigurationFile());
 		configProcessor.processConfig(DEConfig.class, configuration);

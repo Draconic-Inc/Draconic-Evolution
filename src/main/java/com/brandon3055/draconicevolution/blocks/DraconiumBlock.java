@@ -66,4 +66,14 @@ public class DraconiumBlock extends BlockMobSafe {
 		return new ItemStack(this, 1, world.getBlockState(pos).getValue(CHARGED) ? 1 : 0);
 	}
 	//endregion
+
+
+    @Override
+    public float getEnchantPowerBonus(World world, BlockPos pos) {
+        if (world.getBlockState(pos).getValue(CHARGED)) {
+            return 12f;
+        }
+
+        return 4f;
+    }
 }

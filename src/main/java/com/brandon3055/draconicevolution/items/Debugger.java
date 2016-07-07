@@ -1,34 +1,41 @@
 package com.brandon3055.draconicevolution.items;
 
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.FusionRecipes;
-import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeRegistry;
+import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleFusionCrafting;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.NoiseGeneratorSimplex;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 4/4/2016.
  */
 public class Debugger extends ItemBCore {
+
+    private static final Map<Integer, String> MODES = new HashMap<Integer, String>();
+
+    static {
+        MODES.put(0, "Complete Crafting");
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {}
 
     //todo remove from tab and NEI
 
@@ -37,13 +44,183 @@ public class Debugger extends ItemBCore {
         return true;
     }
 
-//    private void generate(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+////    private void generate(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+////
+////        int posX = (int)player.posX;
+////        double posY = (int)player.posY;
+////        int posZ = (int)player.posZ;
+////
+////        int rayCount = 500;
+////
+////        NoiseGeneratorSimplex ng = new NoiseGeneratorSimplex();
+////
+////        for (int ray = rayCount; ray > 0; ray--){
+////
+////            double pc = ray / (double)rayCount;
+////            double direction = Math.PI * 2 * pc;
+////            int rayDist = 20 + itemRand.nextInt(10);
+////
+////            double x = posX + itemRand.nextGaussian() * 5;
+////            double y = posY + itemRand.nextGaussian() * 5;
+////            double z = posZ + itemRand.nextGaussian() * 5;
+////
+////            double r = 1 + itemRand.nextDouble();
+////
+////            for (int rayD = 0; rayD < rayDist; rayD++){
+////                double dpc = 1D - (rayD / (double)rayDist);
+////
+////                double d2 = direction + (ng.getValue(x/1.8, z/1.8) * r);
+////                x += Math.cos(d2);
+////                z += Math.sin(d2);
+////
+////                int prevY = (int)y;
+////                y += itemRand.nextGaussian() + (dpc*1.3);
+////                if ((int)y - prevY > 1) y--;
+////                if ((int)y - prevY < -1) y++;
+////
+////                BlockPos pos = new BlockPos((int)x, (int)y, (int)z);
+////
+////                world.setBlockState(pos, Blocks.LOG.getDefaultState());
+////
+////                for (EnumFacing facing : EnumFacing.VALUES){
+////                    BlockPos pos2 = pos.offset(facing);
+////                    if (world.isAirBlock(pos2)) {
+////                        world.setBlockState(pos2, Blocks.LEAVES.getDefaultState());
+////                    }
+////                }
+////            }
+////        }
 //
-//        int posX = (int)player.posX;
-//        double posY = (int)player.posY;
-//        int posZ = (int)player.posZ;
+////        rayCount = 200;
+////
+////
+////        for (; rayCount > 0; rayCount--) {
+////
+////            double pc = rayCount / 100D;
+////            double direction = Math.PI * 2 * pc;
+////            int rayDist = 15 + itemRand.nextInt(5);
+////
+////            Vec3I vec = new Vec3I(posX, (int) posY, posZ);
+////            double x = posX + itemRand.nextDouble() * 10;
+////            double y = posY + itemRand.nextDouble() * 10;
+////            double z = posZ + itemRand.nextDouble() * 10;
+////
+////            double r = 1 + itemRand.nextDouble();
+////
+////            for (int rayD = 0; rayD < rayDist; rayD++) {
+////                double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
+////                x += Math.cos(d2);
+////                z += Math.sin(d2);
+////
+////                int prevY = (int) y;
+////                y += itemRand.nextGaussian();
+////                if ((int) y - prevY > 1) y--;
+////                if ((int) y - prevY < -1) y++;
+////
+////                vec.set((int) x, (int) y, (int) z);
+////
+////                world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
+////
+////                for (EnumFacing facing : EnumFacing.VALUES) {
+////                    BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
+////                    if (world.isAirBlock(pos)) {
+////                        world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
+////                    }
+////                }
+////            }
+////        }
 //
-//        int rayCount = 500;
+////        int posX = (int)player.posX;
+////        double posY = (int)player.posY;
+////        int posZ = (int)player.posZ;
+////
+////        int rayCount = 100;
+////
+////        for (; rayCount > 0; rayCount--){
+////
+////            double pc = rayCount / 100D;
+////            double direction = Math.PI * 2 * pc;
+////            int rayDist = 35 + itemRand.nextInt(10);
+////
+////            Vec3I vec = new Vec3I(posX, (int)posY, posZ);
+////            double x = posX + itemRand.nextDouble() * 10;
+////            double y = posY + itemRand.nextDouble() * 10;
+////            double z = posZ + itemRand.nextDouble() * 10;
+////
+////            for (int rayD = 0; rayD < rayDist; rayD++){
+////                double d2 = direction + itemRand.nextDouble();
+////                x += Math.cos(d2);
+////                z += Math.sin(d2);
+////                y += itemRand.nextGaussian();
+////
+////                vec.set((int)x, (int)y, (int)z);
+////
+////                world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
+////
+////                for (EnumFacing facing : EnumFacing.VALUES){
+////                    BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
+////                    if (world.isAirBlock(pos)) {
+////                        world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
+////                    }
+////                }
+////            }
+////        }
+////    }
+//
+//    public boolean generate(World worldIn, Random rand, BlockPos position) {
+////        if (position.getY() + 2 + height > 256) {
+//////            return false;
+//////
+////  }
+//        int trunkHeight = 20;
+//
+//
+////        for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, -1, -1), position.add(1, -1, 1))) {
+////            IBlockState state = worldIn.getBlockState(pos);
+////            if (!(state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS)) {
+////                return false;
+////            }
+////        }
+//        //TODO Check gen area.
+//        //for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, 1, 1))) {
+//        //    IBlockState state = worldIn.getBlockState(pos);
+//        //    Block block = state.getBlock();
+//        //    if (!block.isLeaves(state, worldIn, pos) && !block.isWood(worldIn, pos) && block != Blocks.tallgrass && block != Blocks.grass && block != Blocks.vine) {
+//        //        return false;
+//        //    }
+//        //}
+//
+//        for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, -1, -1), position.add(1, -1, 1))) {
+//            worldIn.setBlockState(pos, Blocks.DIRT.getDefaultState());
+//        }
+//        for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, trunkHeight, 1))) {
+//            worldIn.setBlockState(pos, Blocks.LOG.getDefaultState());
+//        }
+//        for (EnumFacing dir : EnumFacing.HORIZONTALS) {
+//            BlockPos edgePos = position.offset(dir, 2);
+//            switch (dir) {
+//                case NORTH:
+//                    generateVines(worldIn, rand, dir, edgePos.add(-1, 0, 0), edgePos.add(1, trunkHeight, 0));
+//                    continue;
+//                case SOUTH:
+//                    generateVines(worldIn, rand, dir, edgePos.add(-1, 0, 0), edgePos.add(1, trunkHeight, 0));
+//                    continue;
+//                case WEST:
+//                    generateVines(worldIn, rand, dir, edgePos.add(0, 0, -1), edgePos.add(0, trunkHeight, 1));
+//                    continue;
+//                case EAST:
+//                    generateVines(worldIn, rand, dir, edgePos.add(0, 0, -1), edgePos.add(0, trunkHeight, 1));
+//                    continue;
+//                default:
+//                    LogHelper.info("Invalid side in EnumFacing.HORIZONTALS [%s]", dir.getName());
+//            }
+//        }
+//        BlockPos rayStartPos = position.add(0, trunkHeight - 3, 0);
+//        int posX = rayStartPos.getX();
+//        double posY = rayStartPos.getY();
+//        int posZ = rayStartPos.getZ();
+//
+//        /*int rayCount = 1000;
 //
 //        NoiseGeneratorSimplex ng = new NoiseGeneratorSimplex();
 //
@@ -51,343 +228,190 @@ public class Debugger extends ItemBCore {
 //
 //            double pc = ray / (double)rayCount;
 //            double direction = Math.PI * 2 * pc;
-//            int rayDist = 20 + itemRand.nextInt(10);
+//            int rayDist = 20 + rand.nextInt(10);
 //
-//            double x = posX + itemRand.nextGaussian() * 5;
-//            double y = posY + itemRand.nextGaussian() * 5;
-//            double z = posZ + itemRand.nextGaussian() * 5;
+//            double x = posX;
+//            double y = posY;
+//            double z = posZ;
 //
-//            double r = 1 + itemRand.nextDouble();
-//
-//            for (int rayD = 0; rayD < rayDist; rayD++){
-//                double dpc = 1D - (rayD / (double)rayDist);
-//
-//                double d2 = direction + (ng.getValue(x/1.8, z/1.8) * r);
-//                x += Math.cos(d2);
-//                z += Math.sin(d2);
-//
-//                int prevY = (int)y;
-//                y += itemRand.nextGaussian() + (dpc*1.3);
-//                if ((int)y - prevY > 1) y--;
-//                if ((int)y - prevY < -1) y++;
-//
-//                BlockPos pos = new BlockPos((int)x, (int)y, (int)z);
-//
-//                world.setBlockState(pos, Blocks.LOG.getDefaultState());
-//
-//                for (EnumFacing facing : EnumFacing.VALUES){
-//                    BlockPos pos2 = pos.offset(facing);
-//                    if (world.isAirBlock(pos2)) {
-//                        world.setBlockState(pos2, Blocks.LEAVES.getDefaultState());
-//                    }
-//                }
-//            }
-//        }
-
-//        rayCount = 200;
-//
-//
-//        for (; rayCount > 0; rayCount--) {
-//
-//            double pc = rayCount / 100D;
-//            double direction = Math.PI * 2 * pc;
-//            int rayDist = 15 + itemRand.nextInt(5);
-//
-//            Vec3I vec = new Vec3I(posX, (int) posY, posZ);
-//            double x = posX + itemRand.nextDouble() * 10;
-//            double y = posY + itemRand.nextDouble() * 10;
-//            double z = posZ + itemRand.nextDouble() * 10;
-//
-//            double r = 1 + itemRand.nextDouble();
+//            double r = 1 + rand.nextDouble();
 //
 //            for (int rayD = 0; rayD < rayDist; rayD++) {
-//                double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
+//                double d2 = direction + (ng.func_151605_a(x/1.8, z/1.8) * r);
 //                x += Math.cos(d2);
 //                z += Math.sin(d2);
 //
 //                int prevY = (int) y;
-//                y += itemRand.nextGaussian();
-//                if ((int) y - prevY > 1) y--;
-//                if ((int) y - prevY < -1) y++;
-//
-//                vec.set((int) x, (int) y, (int) z);
-//
-//                world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
-//
-//                for (EnumFacing facing : EnumFacing.VALUES) {
-//                    BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
-//                    if (world.isAirBlock(pos)) {
-//                        world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
-//                    }
+//                y += rand.nextGaussian();
+//                if ((int) y - prevY > 1) {
+//                    y--;
 //                }
+//                if ((int) y - prevY < -1) {
+//                    y++;
+//                }
+//                placeRayPart(worldIn, new BlockPos(x, y, z));
 //            }
-//        }
-
-//        int posX = (int)player.posX;
-//        double posY = (int)player.posY;
-//        int posZ = (int)player.posZ;
-//
+//        }*/
 //        int rayCount = 100;
 //
-//        for (; rayCount > 0; rayCount--){
+//        NoiseGeneratorSimplex ng = new NoiseGeneratorSimplex();
 //
-//            double pc = rayCount / 100D;
-//            double direction = Math.PI * 2 * pc;
-//            int rayDist = 35 + itemRand.nextInt(10);
+//        //region Long Rays
 //
-//            Vec3I vec = new Vec3I(posX, (int)posY, posZ);
-//            double x = posX + itemRand.nextDouble() * 10;
-//            double y = posY + itemRand.nextDouble() * 10;
-//            double z = posZ + itemRand.nextDouble() * 10;
+////        for (int ray = rayCount; ray > 0; ray--) {
+////
+////            double pc = ray / (double) rayCount;
+////            double direction = Math.PI * 2 * pc;
+////            int rayDist = 35 + rand.nextInt(10);
+////
+////            double x = posX + itemRand.nextGaussian() * 3;
+////            double y = posY + itemRand.nextGaussian() * 2;
+////            double z = posZ + itemRand.nextGaussian() * 3;
+////
+////            double r = 1 + rand.nextDouble();
+////
+////            for (int rayD = 0; rayD < rayDist; rayD++) {
+////                double dpc = 1D - (rayD / (double) rayDist);
+////
+////                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
+////                x += Math.cos(d2);
+////                z += Math.sin(d2);
+////
+////                int prevY = (int) y;
+////                y += rand.nextGaussian() + (dpc);
+////                if ((int) y - prevY > 1) {
+////                    y--;
+////                }
+////                if ((int) y - prevY < -1) {
+////                    y++;
+////                }
+////
+////                BlockPos vec = new BlockPos(x, y, z);
+////
+////                placeRayPart(worldIn, vec);
+////            }
+////        }
+//        //endregion
 //
-//            for (int rayD = 0; rayD < rayDist; rayD++){
-//                double d2 = direction + itemRand.nextDouble();
-//                x += Math.cos(d2);
-//                z += Math.sin(d2);
-//                y += itemRand.nextGaussian();
+//        //region Short Rays
 //
-//                vec.set((int)x, (int)y, (int)z);
+//        rayCount = 100;
 //
-//                world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
+////        for (int ray = rayCount; ray > 0; ray--) {
+////
+////            double pc = ray / (double) rayCount;
+////            double direction = Math.PI * 2 * pc;
+////            int rayDist = 15 + rand.nextInt(5);
+////
+////            double x = posX + itemRand.nextGaussian() * 3;
+////            double y = posY + itemRand.nextGaussian() * 2;
+////            double z = posZ + itemRand.nextGaussian() * 3;
+////
+////            double r = 1 + rand.nextDouble();
+////
+////            for (int rayD = 0; rayD < rayDist; rayD++) {
+////                double dpc = 1D - (rayD / (double) rayDist);
+////
+////                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
+////                x += Math.cos(d2);
+////                z += Math.sin(d2);
+////
+////                int prevY = (int) y;
+////                y += rand.nextGaussian() + (dpc);
+////                if ((int) y - prevY > 1) {
+////                    y--;
+////                }
+////                if ((int) y - prevY < -1) {
+////                    y++;
+////                }
+////
+////                BlockPos vec = new BlockPos(x, y, z);
+////
+////                placeRayPart(worldIn, vec);
+////            }
+////        }
 //
-//                for (EnumFacing facing : EnumFacing.VALUES){
-//                    BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
-//                    if (world.isAirBlock(pos)) {
-//                        world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
-//                    }
-//                }
-//            }
+//        //endregion
+//
+//        return true;
+//    }
+//
+//    private void generateVines(World world, Random rand, EnumFacing dir, BlockPos from, BlockPos to) {
+//        for (BlockPos pos : BlockPos.getAllInBox(from, to)) {
+////            if (rand.nextInt(5) == 1 && world.getBlockState(pos).getBlock() == Blocks.air) {
+////                world.setBlockState(pos, Blocks.vine.getDefaultState().withProperty(BlockVine.getPropertyFor(dir.getOpposite()), true));
+////  /          }
 //        }
 //    }
-
-    public boolean generate(World worldIn, Random rand, BlockPos position) {
-//        if (position.getY() + 2 + height > 256) {
-////            return false;
-////
-//  }
-        int trunkHeight = 20;
-
-
-//        for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, -1, -1), position.add(1, -1, 1))) {
-//            IBlockState state = worldIn.getBlockState(pos);
-//            if (!(state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS)) {
-//                return false;
-//            }
-//        }
-        //TODO Check gen area.
-        //for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, 1, 1))) {
-        //    IBlockState state = worldIn.getBlockState(pos);
-        //    Block block = state.getBlock();
-        //    if (!block.isLeaves(state, worldIn, pos) && !block.isWood(worldIn, pos) && block != Blocks.tallgrass && block != Blocks.grass && block != Blocks.vine) {
-        //        return false;
-        //    }
-        //}
-
-        for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, -1, -1), position.add(1, -1, 1))) {
-            worldIn.setBlockState(pos, Blocks.DIRT.getDefaultState());
-        }
-        for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, trunkHeight, 1))) {
-            worldIn.setBlockState(pos, Blocks.LOG.getDefaultState());
-        }
-        for (EnumFacing dir : EnumFacing.HORIZONTALS) {
-            BlockPos edgePos = position.offset(dir, 2);
-            switch (dir) {
-                case NORTH:
-                    generateVines(worldIn, rand, dir, edgePos.add(-1, 0, 0), edgePos.add(1, trunkHeight, 0));
-                    continue;
-                case SOUTH:
-                    generateVines(worldIn, rand, dir, edgePos.add(-1, 0, 0), edgePos.add(1, trunkHeight, 0));
-                    continue;
-                case WEST:
-                    generateVines(worldIn, rand, dir, edgePos.add(0, 0, -1), edgePos.add(0, trunkHeight, 1));
-                    continue;
-                case EAST:
-                    generateVines(worldIn, rand, dir, edgePos.add(0, 0, -1), edgePos.add(0, trunkHeight, 1));
-                    continue;
-                default:
-                    LogHelper.info("Invalid side in EnumFacing.HORIZONTALS [%s]", dir.getName());
-            }
-        }
-        BlockPos rayStartPos = position.add(0, trunkHeight - 3, 0);
-        int posX = rayStartPos.getX();
-        double posY = rayStartPos.getY();
-        int posZ = rayStartPos.getZ();
-
-        /*int rayCount = 1000;
-
-        NoiseGeneratorSimplex ng = new NoiseGeneratorSimplex();
-
-        for (int ray = rayCount; ray > 0; ray--){
-
-            double pc = ray / (double)rayCount;
-            double direction = Math.PI * 2 * pc;
-            int rayDist = 20 + rand.nextInt(10);
-
-            double x = posX;
-            double y = posY;
-            double z = posZ;
-
-            double r = 1 + rand.nextDouble();
-
-            for (int rayD = 0; rayD < rayDist; rayD++) {
-                double d2 = direction + (ng.func_151605_a(x/1.8, z/1.8) * r);
-                x += Math.cos(d2);
-                z += Math.sin(d2);
-
-                int prevY = (int) y;
-                y += rand.nextGaussian();
-                if ((int) y - prevY > 1) {
-                    y--;
-                }
-                if ((int) y - prevY < -1) {
-                    y++;
-                }
-                placeRayPart(worldIn, new BlockPos(x, y, z));
-            }
-        }*/
-        int rayCount = 100;
-
-        NoiseGeneratorSimplex ng = new NoiseGeneratorSimplex();
-
-        //region Long Rays
-
-//        for (int ray = rayCount; ray > 0; ray--) {
 //
-//            double pc = ray / (double) rayCount;
-//            double direction = Math.PI * 2 * pc;
-//            int rayDist = 35 + rand.nextInt(10);
+//    private void placeRayPart(World world, BlockPos pos) {
+//        //Iterable<BlockPos> l = BlockPos.getAllInBox(sPos, sPos.add(itemRand.nextInt(2), itemRand.nextInt(2), itemRand.nextInt(2)));
 //
-//            double x = posX + itemRand.nextGaussian() * 3;
-//            double y = posY + itemRand.nextGaussian() * 2;
-//            double z = posZ + itemRand.nextGaussian() * 3;
-//
-//            double r = 1 + rand.nextDouble();
-//
-//            for (int rayD = 0; rayD < rayDist; rayD++) {
-//                double dpc = 1D - (rayD / (double) rayDist);
-//
-//                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
-//                x += Math.cos(d2);
-//                z += Math.sin(d2);
-//
-//                int prevY = (int) y;
-//                y += rand.nextGaussian() + (dpc);
-//                if ((int) y - prevY > 1) {
-//                    y--;
-//                }
-//                if ((int) y - prevY < -1) {
-//                    y++;
-//                }
-//
-//                BlockPos vec = new BlockPos(x, y, z);
-//
-//                placeRayPart(worldIn, vec);
-//            }
-//        }
-        //endregion
-
-        //region Short Rays
-
-        rayCount = 100;
-
-//        for (int ray = rayCount; ray > 0; ray--) {
-//
-//            double pc = ray / (double) rayCount;
-//            double direction = Math.PI * 2 * pc;
-//            int rayDist = 15 + rand.nextInt(5);
-//
-//            double x = posX + itemRand.nextGaussian() * 3;
-//            double y = posY + itemRand.nextGaussian() * 2;
-//            double z = posZ + itemRand.nextGaussian() * 3;
-//
-//            double r = 1 + rand.nextDouble();
-//
-//            for (int rayD = 0; rayD < rayDist; rayD++) {
-//                double dpc = 1D - (rayD / (double) rayDist);
-//
-//                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
-//                x += Math.cos(d2);
-//                z += Math.sin(d2);
-//
-//                int prevY = (int) y;
-//                y += rand.nextGaussian() + (dpc);
-//                if ((int) y - prevY > 1) {
-//                    y--;
-//                }
-//                if ((int) y - prevY < -1) {
-//                    y++;
-//                }
-//
-//                BlockPos vec = new BlockPos(x, y, z);
-//
-//                placeRayPart(worldIn, vec);
-//            }
-//        }
-
-        //endregion
-
-        return true;
-    }
-
-    private void generateVines(World world, Random rand, EnumFacing dir, BlockPos from, BlockPos to) {
-        for (BlockPos pos : BlockPos.getAllInBox(from, to)) {
-//            if (rand.nextInt(5) == 1 && world.getBlockState(pos).getBlock() == Blocks.air) {
-//                world.setBlockState(pos, Blocks.vine.getDefaultState().withProperty(BlockVine.getPropertyFor(dir.getOpposite()), true));
-//  /          }
-        }
-    }
-
-    private void placeRayPart(World world, BlockPos pos) {
-        //Iterable<BlockPos> l = BlockPos.getAllInBox(sPos, sPos.add(itemRand.nextInt(2), itemRand.nextInt(2), itemRand.nextInt(2)));
-
-//        //for (BlockPos pos : l) {
-//            world.setBlockState(pos, Blocks.log.getDefaultState());
-//            for (EnumFacing side : EnumFacing.VALUES) {
-//                BlockPos leavesPos = pos.offset(side);
-//                if (world.isAirBlock(leavesPos)) {
-//                    world.setBlockState(leavesPos, Blocks.leaves.getDefaultState());
-//                }
-//            }
-//        //}
-    }
+////        //for (BlockPos pos : l) {
+////            world.setBlockState(pos, Blocks.log.getDefaultState());
+////            for (EnumFacing side : EnumFacing.VALUES) {
+////                BlockPos leavesPos = pos.offset(side);
+////                if (world.isAirBlock(leavesPos)) {
+////                    world.setBlockState(leavesPos, Blocks.leaves.getDefaultState());
+////                }
+////            }
+////        //}
+//    }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
-        FusionRecipeRegistry.recipeRegistry.clear();
-        FusionRecipes.registerRecipes();
 
-        if (world.isRemote && BCEffectHandler.effectRenderer != null) {
-            BCEffectHandler.effectRenderer.addEffect(new ResourceLocation("textures/particle/particles2.png"), new ParticleFusionCrafting(world, new Vec3D(player.posX, player.posY, player.posZ + 3), new Vec3D(), new TileFusionCraftingCore()));
+        MODES.clear();
+        MODES.put(0, "Complete Crafting");
+        MODES.put(1, "Insert RF");
+        MODES.put(2, "Extract RF");
 
-            return super.onItemRightClick(itemStack, world, player, hand);
-        }
+        handleRightClick(itemStack, world, player, hand);
 
-        world.addWeatherEffect(new EntityLightningBolt(world, player.posX, player.posY + 0, player.posZ+ 20, true));
+//        if (!world.isRemote){
+//            RayTraceResult traceResult = RayTracer.retrace(player, 1000);
+//            if (traceResult != null){
+//                Vec3D pos = new Vec3D(traceResult.getBlockPos());
+//                BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
+//            }
+//        }
+        //LogHelper.info(world.getNearestPlayerNotCreative(player, 100));
 
-        try {
-            List<String> list = new ArrayList<String>();
-            list.add("a");
-            list.add("b");
-            list.add("c");
-            list.add("d");
-            list.add("e");
-            list.add("f");
-
-            for (int i = 0; i < 5; i++) {
-                for (String s : list) {
-                    if (s.equals("d")) {
-                        list.remove(s);
-                        LogHelper.info("Removed S");
-                        break;
-                    }
-                }
-                LogHelper.info("Loop");
-            }
-
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        FusionRecipeRegistry.recipeRegistry.clear();
+//        FusionRecipes.registerRecipes();
+//
+//        if (world.isRemote && BCEffectHandler.effectRenderer != null) {
+//            BCEffectHandler.effectRenderer.addEffect(new ResourceLocation("textures/particle/particles2.png"), new ParticleFusionCrafting(world, new Vec3D(player.posX, player.posY, player.posZ + 3), new Vec3D(), new TileFusionCraftingCore()));
+//
+//            return super.onItemRightClick(itemStack, world, player, hand);
+//        }
+//
+//        world.addWeatherEffect(new EntityLightningBolt(world, player.posX, player.posY + 0, player.posZ+ 20, true));
+//
+//        try {
+//            List<String> list = new ArrayList<String>();
+//            list.add("a");
+//            list.add("b");
+//            list.add("c");
+//            list.add("d");
+//            list.add("e");
+//            list.add("f");
+//
+//            for (int i = 0; i < 5; i++) {
+//                for (String s : list) {
+//                    if (s.equals("d")) {
+//                        list.remove(s);
+//                        LogHelper.info("Removed S");
+//                        break;
+//                    }
+//                }
+//                LogHelper.info("Loop");
+//            }
+//
+//
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
 
 
 //        int range = 1;
@@ -396,7 +420,6 @@ public class Debugger extends ItemBCore {
 //           // world.setBlockToAir(pos);
 //        }
 
-        LogHelper.info("Doom");
 //
         //BODMAS
 
@@ -569,8 +592,77 @@ public class Debugger extends ItemBCore {
         return super.onItemRightClick(itemStack, world, player, hand);
     }
 
-    private void debug(Item item){
+
+
+
+    public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+        int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
+        if (player.isSneaking()){
+            mode++;
+            if (mode == MODES.size()){
+                mode = 0;
+            }
+            if (!world.isRemote){
+                player.addChatComponentMessage(new TextComponentString(MODES.get(mode)));
+            }
+            ItemNBTHelper.setInteger(stack, "mode", mode);
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+        }
+
+        switch (mode){
+            case 0:
+                break;
+        }
+
+        return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
     }
+
+    @Override
+    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+        int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
+
+        switch (mode){
+            case 0: return finishCraft(world, pos);
+
+            case 1:
+            case 2:
+                TileEntity tile = world.getTileEntity(pos);
+                if (mode == 1 && tile instanceof IEnergyReceiver){
+                    if (!world.isRemote) {
+                        LogHelper.info(((IEnergyReceiver) tile).receiveEnergy(side, Integer.MAX_VALUE, false));
+                    }
+                    return EnumActionResult.PASS;
+                }
+                else  if (mode == 2 && tile instanceof IEnergyProvider){
+                    if (!world.isRemote) {
+                        ((IEnergyProvider) tile).extractEnergy(side, Integer.MAX_VALUE, false);
+                    }
+                    return EnumActionResult.PASS;
+                }
+                break;
+
+        }
+
+        return EnumActionResult.PASS;
+    }
+
+
+    //region Functions
+
+    public EnumActionResult finishCraft(World world, BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+
+        if (tile instanceof TileFusionCraftingCore && !world.isRemote){
+            if (((TileFusionCraftingCore) tile).craftingInProgress()) {
+                ((TileFusionCraftingCore) tile).craftingStage.value = 2000;
+            }
+            return EnumActionResult.FAIL;
+        }
+
+        return EnumActionResult.PASS;
+    }
+
+    //endregion
 }
 
 

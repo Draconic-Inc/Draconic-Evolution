@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -12,6 +15,7 @@ public class AOEConfigField extends IntegerConfigField {
         super(name, value, minValue, maxValue, description, EnumControlType.SELECTIONS);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getReadableValue() {
         return (1 + (value * 2)) + "x" + (1 + (value * 2));

@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileFusionCraftingCore;
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -21,6 +22,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -53,6 +56,7 @@ public class FusionCraftingCore extends BlockBCore implements ICustomRender, ITi
         return true;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
         ClientRegistry.bindTileEntitySpecialRenderer(TileFusionCraftingCore.class, new RenderTileFusionCraftingCore());
@@ -66,5 +70,19 @@ public class FusionCraftingCore extends BlockBCore implements ICustomRender, ITi
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         return new AxisAlignedBB(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
+    }
+
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn)
+    {
+        if (!world.isRemote)
+        {
+            if (world.isBlockPowered(pos))
+            {
+                TileEntity tile = world.getTileEntity(pos);
+                if (tile instanceof TileFusionCraftingCore){
+                    ((TileFusionCraftingCore) tile).attemptStartCrafting();
+                }
+            }
+        }
     }
 }

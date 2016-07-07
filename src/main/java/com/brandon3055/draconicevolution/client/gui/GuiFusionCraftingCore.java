@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.client.gui.effects.GuiEffect;
 import com.brandon3055.brandonscore.client.gui.effects.GuiEffectRenderer;
-import com.brandon3055.brandonscore.client.utills.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.InfoHelper;
@@ -105,18 +105,6 @@ public class GuiFusionCraftingCore extends GuiContainer {
 
         if (currentRecipe != null) {
             GuiHelper.drawStack2D(currentRecipe.getRecipeOutput(tile.getStackInCore(0)), mc, guiLeft + (xSize / 2) - 8, guiTop + 70, 16F);
-            if (canCraft != null && !canCraft.equals("true")) {
-                if (canCraft.equals("tierLow")) {
-                    GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.tierLow.info"), guiLeft + (xSize / 2), guiTop + 95, 0xFF0000, false);
-                }
-                else if (canCraft.equals("outputObstructed")) {
-                    GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.outputObstructed.info"), guiLeft + (xSize / 2), guiTop + 95, 0xAA00FF, false);
-                }
-                else{
-                    GuiHelper.drawCenteredString(fontRendererObj, I18n.format(canCraft), guiLeft + (xSize / 2), guiTop + 95, 0xFF0000, false);
-                }
-            }
-
             List<Object> ingredients = currentRecipe.getRecipeIngredients();
 
             int centerX = guiLeft + xSize / 2;
@@ -191,12 +179,24 @@ public class GuiFusionCraftingCore extends GuiContainer {
             //endregion
 
             //Draw Progress
-            if (tile.isCrafting.value && tile.craftingStage.value > 0) {
+            if (tile.isCrafting.value && tile.craftingStage.value >= 0) {
                 int state = tile.craftingStage.value;
                 String status = state > 1000 ? I18n.format("gui.fusionCrafting.crafting.info") : I18n.format("gui.fusionCrafting.charging.info");
                 double d = state > 1000 ? (state - 1000F) / 1000D : state / 1000D;
                 drawCenteredString(fontRendererObj, status + ": " + TextFormatting.GOLD + ((int) (d * 100) + "%"), width / 2, guiTop + 95, state < 1000 ? 0x00FF00 : 0x00FFFF);
             }
+
+//            if (currentRecipe != null) {
+//                if (canCraft != null && !canCraft.equals("true")) {
+//                    if (canCraft.equals("tierLow")) {
+//                        GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.tierLow.info"), guiLeft + (xSize / 2), guiTop + 95, 0xFF0000, false);
+//                    } else if (canCraft.equals("outputObstructed")) {
+//                        GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.outputObstructed.info"), guiLeft + (xSize / 2), guiTop + 95, 0xAA00FF, false);
+//                    } else {
+//                        GuiHelper.drawCenteredString(fontRendererObj, I18n.format(canCraft), guiLeft + (xSize / 2), guiTop + 95, 0xFF0000, false);
+//                    }
+//                }
+//            }
         }
     }
 
@@ -298,6 +298,23 @@ public class GuiFusionCraftingCore extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+
+        if (currentRecipe != null) {
+            if (canCraft != null && !canCraft.equals("true")) {
+                if (canCraft.equals("tierLow")) {
+                    GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.tierLow.info"), (xSize / 2), 95, 0xAA00FF, false);
+                } else if (canCraft.equals("outputObstructed")) {
+                    GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.outputObstructed.info"), (xSize / 2), 95, 0xAA00FF, false);
+                } else {
+
+                    GlStateManager.translate(0, 0, 600);
+                    GuiHelper.drawColouredRect(5, 88, xSize - 10, 20, 0xFFFF0000);
+                    GuiHelper.drawColouredRect(6, 89, xSize - 12, 18, 0xFF000000);
+                    GuiHelper.drawCenteredSplitString(fontRendererObj, I18n.format(canCraft), (xSize / 2), 90, xSize - 10, 0xAA00FF, false);
+                    GlStateManager.translate(0, 0, -600);
+                }
+            }
+        }
     }
 
     @Override

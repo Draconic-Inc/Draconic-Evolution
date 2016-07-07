@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
 import com.brandon3055.brandonscore.handlers.HandHelper;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiToolConfig;
+import com.brandon3055.draconicevolution.network.PacketSimpleBoolean;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -19,6 +21,7 @@ public class KeyInputHandler {
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+
 		if(KeyBindings.placeItem.isPressed()) {
             handlePlaceItemKey();
         }
@@ -26,8 +29,8 @@ public class KeyInputHandler {
 			Minecraft.getMinecraft().displayGuiScreen(new GuiToolConfig(player));
 			//DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_CONFIG, true));
 		}
-		else if (KeyBindings.toolProfileChange.isPressed() && player != null && HandHelper.getMainFirst(player) == null){
-//			DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
+		else if (KeyBindings.toolProfileChange.isPressed() && player != null && HandHelper.getMainFirst(player) != null){
+			DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_PROFILE_CHANGE, false));
 
 			ItemStack stack = HandHelper.getMainFirst(player);
 //			if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem)stack.getItem()).hasProfiles()){
