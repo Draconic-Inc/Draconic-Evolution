@@ -5,6 +5,8 @@ import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
+import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Lists;
@@ -17,6 +19,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -168,24 +171,24 @@ public class ClientEventHandler {
 //			GL11.glDisable(GL11.GL_ALPHA_TEST);
 //			GL11.glEnable(GL11.GL_BLEND);
 //			GL11.glDisable(GL11.GL_LIGHTING);
-//			ResourceHandler.bindResource("textures/models/shieldSphere.png");
+//			ResourceHelperDE.bindTexture("textures/models/shieldSphere.png");
 //
-//			float p = playerShieldStatus.get(event.entityPlayer).getKey();
+//			float p = 1;//playerShieldStatus.get(event.getEntityPlayer()).getKey();
 //
 //			EntityPlayer viewingPlayer = Minecraft.getMinecraft().thePlayer;
 //
-//			int i = 5 - (elapsedTicks - playerShieldStatus.get(event.entityPlayer).getValue());
+//			int i = 5;// - (elapsedTicks - playerShieldStatus.get(event.entityPlayer).getValue());
 //
 //			GL11.glColor4f(1F - p, 0F, p, i / 5F);
 //
-//			if (viewingPlayer != event.entityPlayer){
-//				double translationXLT = event.entityPlayer.prevPosX - viewingPlayer.prevPosX;
-//				double translationYLT = event.entityPlayer.prevPosY - viewingPlayer.prevPosY;
-//				double translationZLT = event.entityPlayer.prevPosZ - viewingPlayer.prevPosZ;
+//			if (viewingPlayer != event.getEntityPlayer()){
+//				double translationXLT = event.getEntityPlayer().prevPosX - viewingPlayer.prevPosX;
+//				double translationYLT = event.getEntityPlayer().prevPosY - viewingPlayer.prevPosY;
+//				double translationZLT = event.getEntityPlayer().prevPosZ - viewingPlayer.prevPosZ;
 //
-//				double translationX = translationXLT + (((event.entityPlayer.posX - viewingPlayer.posX) - translationXLT) * event.partialRenderTick);
-//				double translationY = translationYLT + (((event.entityPlayer.posY - viewingPlayer.posY) - translationYLT) * event.partialRenderTick);
-//				double translationZ = translationZLT + (((event.entityPlayer.posZ - viewingPlayer.posZ) - translationZLT) * event.partialRenderTick);
+//				double translationX = translationXLT + (((event.getEntityPlayer().posX - viewingPlayer.posX) - translationXLT) * event.getPartialRenderTick());
+//				double translationY = translationYLT + (((event.getEntityPlayer().posY - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());
+//				double translationZ = translationZLT + (((event.getEntityPlayer().posZ - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
 //
 //				GL11.glTranslated(translationX, translationY + 1.1, translationZ);
 //			}
@@ -204,6 +207,24 @@ public class ClientEventHandler {
 //			GL11.glDepthMask(true);
 //			GL11.glPopMatrix();
 //		}
+    }
+
+    @SubscribeEvent
+    public void renderArmorEvent(RenderPlayerEvent.SetArmorModel event) {
+        if (event.isCanceled()) {
+            return;
+        }
+        if (event.getStack() != null && (event.getStack().getItem() instanceof DraconicArmor || event.getStack().getItem() instanceof WyvernArmor)) {
+            ItemArmor itemarmor = (ItemArmor) event.getStack().getItem();
+
+
+//            ModelBiped modelbiped = itemarmor.getArmorModel(event.getEntityPlayer(), event.getStack(), event.getSlot(), event.getRenderer().getMainModel());
+//            event.getRenderer().setRenderPassModel(modelbiped);
+//            modelbiped.onGround = event.renderer.modelBipedMain.onGround;
+//            modelbiped.isRiding = event.renderer.modelBipedMain.isRiding;
+//            modelbiped.isChild = event.renderer.modelBipedMain.isChild;
+            event.setResult(1);
+        }
     }
 
     @SubscribeEvent

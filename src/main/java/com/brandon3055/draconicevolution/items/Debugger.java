@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCor
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -596,6 +597,8 @@ public class Debugger extends ItemBCore {
 
 
     public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+        player.inventory.addItemStackToInventory(new ItemStack(Blocks.END_GATEWAY, 64));
+
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
         if (player.isSneaking()){
             mode++;

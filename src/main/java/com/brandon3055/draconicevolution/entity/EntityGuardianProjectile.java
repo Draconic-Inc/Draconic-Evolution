@@ -52,23 +52,23 @@ public class EntityGuardianProjectile extends Entity {
     //public static final int FIREBALL = 0; 			/** Generic fireball a lot more powerful then ghast fireball */
     public static final int FIREBOMB = 1;
     /**
-     * Large fireball with a trail and large fiery AOE
+     * Large fireball with a trail and large fiery AOE TODO Update Doc
      */
     public static final int TELEPORT = 2;
     /**
-     * Ender pearl which teleports the player away if it hits.
+     * Ender pearl which teleports the player away if it hits. TODO Update Doc
      */
     public static final int FIRE_CHASER = 3;
     /**
-     * Fireball that chases the player it is fired at (Explodes on impact with blocks)
+     * Fireball that chases the player it is fired at (Explodes on impact with blocks) TODO Update Doc
      */
     public static final int ENERGY_CHASER = 4;
     /**
-     * Energy gall that chases the player. (Can pass through blocks)
+     * Energy gall that chases the player. (Can pass through blocks) TODO Update Doc
      */
     public static final int CHAOS_CHASER = 5;
     /**
-     * Chases player. On impact splits into mini chaos charges which lock on to other or the same player (can pass through blocks)
+     * Chases player. On impact splits into mini chaos charges which lock on to other or the same player (can pass through blocks) TODO Update Doc
      */
     public static final int MINI_CHAOS_CHASER = 6;
     /**

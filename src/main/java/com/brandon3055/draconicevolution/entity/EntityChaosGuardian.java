@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
+import net.minecraft.entity.boss.dragon.phase.PhaseList;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,7 +66,6 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
     public boolean forceNewTarget;
 
 
-
     /**
      * How long until the next attack sequence
      */
@@ -112,7 +112,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
     public float circleDirection = 1;
 
     public EnumBehaviour behaviour = EnumBehaviour.ROAMING;
-    private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS)).setDarkenSky(true).setCreateFog(true).setPlayEndBossMusic(true);
+    private final BossInfoServer bossInfo = (BossInfoServer) (new BossInfoServer(this.getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS)).setDarkenSky(true).setCreateFog(true).setPlayEndBossMusic(true);
 
     public EntityChaosGuardian(World par1World) {
         super(par1World);
@@ -144,7 +144,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
     @Override
     public void onLivingUpdate() {
         //setHealth(0);
-      //  setHealth(1);
+        //  setHealth(1);
         //setDead();
         //LogHelper.info(getMaxHealth()+" "+getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue());
 
@@ -152,7 +152,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
         //LogHelper.info(getHealth());
 
         //setHealth(0);
-       // if (!worldObj.isRemote)LogHelper.info(behaviour);
+        // if (!worldObj.isRemote)LogHelper.info(behaviour);
         //if (player != null) player.setLocationAndAngles(posX, posY, posZ, 0, 0);
         //setPosition(10000, 100, 0);
 
@@ -203,8 +203,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
             if (worldObj.getClosestPlayer(posX, posY, posZ, 500, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
                 DragonChunkLoader.stopLoading(this);
-            }
-            else {
+            } else {
                 if (getHealth() > 0) {
                     DragonChunkLoader.updateLoaded(this);
                 }
@@ -228,217 +227,217 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
             worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
 //            this.worldObj.spawnParticle("largeexplode", this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
         }
-        {
-            this.updateDragonEnderCrystal();
-            f = 0.2F / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F + 1.0F);
-            f *= moveSpeedMultiplier == 0 ? 1 : moveSpeedMultiplier;
-            f *= (float) Math.pow(2.0D, this.motionY);
 
-            if (this.slowed) {
-                this.animTime += f * 0.5F;
-            } else {
-                this.animTime += f;
-            }
+        this.updateDragonEnderCrystal();
+        f = 0.2F / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F + 1.0F);
+        f *= moveSpeedMultiplier == 0 ? 1 : moveSpeedMultiplier;
+        f *= (float) Math.pow(2.0D, this.motionY);
 
-            this.rotationYaw = MathHelper.wrapDegrees(this.rotationYaw);
+        if (this.slowed) {
+            this.animTime += f * 0.5F;
+        } else {
+            this.animTime += f;
+        }
 
-            if (this.ringBufferIndex < 0) {
-                for (int i = 0; i < this.ringBuffer.length; ++i) {
-                    this.ringBuffer[i][0] = (double) this.rotationYaw;
-                    this.ringBuffer[i][1] = this.posY;
-                }
-            }
+        this.rotationYaw = MathHelper.wrapDegrees(this.rotationYaw);
 
-            if (++this.ringBufferIndex == this.ringBuffer.length) {
-                this.ringBufferIndex = 0;
-            }
-
-            this.ringBuffer[this.ringBufferIndex][0] = (double) this.rotationYaw;
-            this.ringBuffer[this.ringBufferIndex][1] = this.posY;
-            double d0;
-            double d1;
-            double d2;
-            double d10;
-            float f12;
-
-            if (this.worldObj.isRemote) {
-                if (this.newPosRotationIncrements > 0) {
-                    d10 = this.posX + (this.interpTargetX - this.posX) / (double) this.newPosRotationIncrements;
-                    d0 = this.posY + (this.interpTargetY - this.posY) / (double) this.newPosRotationIncrements;
-                    d1 = this.posZ + (this.interpTargetZ - this.posZ) / (double) this.newPosRotationIncrements;
-                    d2 = MathHelper.wrapDegrees(this.interpTargetYaw - (double) this.rotationYaw);
-                    this.rotationYaw = (float) ((double) this.rotationYaw + d2 / (double) this.newPosRotationIncrements);
-                    this.rotationPitch = (float) ((double) this.rotationPitch + (this.interpTargetPitch - (double) this.rotationPitch) / (double) this.newPosRotationIncrements);
-                    --this.newPosRotationIncrements;
-                    this.setPosition(d10, d0, d1);
-                    this.setRotation(this.rotationYaw, this.rotationPitch);
-                }
-            } else {
-
-                d10 = this.targetX - this.posX;
-                d0 = this.targetY - this.posY;
-                d1 = this.targetZ - this.posZ;
-                d2 = d10 * d10 + d0 * d0 + d1 * d1;
-
-                if (this.target != null) {
-                    if (behaviour == EnumBehaviour.CIRCLE_PLAYER) {
-                        this.targetX = this.target.posX + (int) (Math.cos(circlePosition) * 60);
-                        this.targetZ = this.target.posZ + (int) (Math.sin(circlePosition) * 60);
-                        moveSpeedMultiplier = 1F + Math.min(((float) Utils.getDistanceAtoB(targetX, targetZ, posX, posZ) / 50) * 3F, 3F);
-                    } else {
-                        this.targetX = this.target.posX;
-                        this.targetZ = this.target.posZ;
-                    }
-
-                    double d3 = this.targetX - this.posX;
-                    double d5 = this.targetZ - this.posZ;
-                    double d7 = Math.sqrt(d3 * d3 + d5 * d5);
-                    double d8 = 0.4000000059604645D + d7 / 80.0D - 1.0D;
-
-                    if (d8 > 10.0D) {
-                        d8 = 10.0D;
-                    }
-
-                    this.targetY = this.target.getEntityBoundingBox().minY + d8 + (behaviour == EnumBehaviour.CIRCLE_PLAYER ? 25 : 0);
-                } else if (behaviour != EnumBehaviour.FIREBOMB) {
-                    this.targetX += this.rand.nextGaussian() * 2.0D;
-                    this.targetZ += this.rand.nextGaussian() * 2.0D;
-                }
-
-                if (this.forceNewTarget || d2 < 100.0D || d2 > 22500.0D || this.isCollidedHorizontally || this.isCollidedVertically) {
-                    this.setNewTarget();
-                }
-
-
-                d0 /= (double) MathHelper.sqrt_double(d10 * d10 + d1 * d1);
-                //if (isUber) f12 = 1.0F;//Verticle Motion Speed
-                //else
-                f12 = 0.6F;
-
-                if (d0 < (double) (-f12)) {
-                    d0 = (double) (-f12);
-                }
-
-                if (d0 > (double) f12) {
-                    d0 = (double) f12;
-                }
-
-                this.motionY += d0 * 0.10000000149011612D;
-                this.rotationYaw = MathHelper.wrapDegrees(this.rotationYaw);
-                double d4 = 180.0D - Math.atan2(d10, d1) * 180.0D / Math.PI;
-                double d6 = MathHelper.wrapDegrees(d4 - (double) this.rotationYaw);
-
-                if (d6 > 50.0D) {
-                    d6 = 50.0D;
-                }
-
-                if (d6 < -50.0D) {
-                    d6 = -50.0D;
-                }
-
-                Vec3d vec3 = new Vec3d(this.targetX - this.posX, this.targetY - this.posY, this.targetZ - this.posZ).normalize();
-                Vec3d vec32 = new Vec3d((double) MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F), this.motionY, (double) (-MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F))).normalize();
-                float f5 = (float) (vec32.dotProduct(vec3) + 0.5D) / 1.5F;
-
-                if (f5 < 0.0F) {
-                    f5 = 0.0F;
-                }
-
-                this.randomYawVelocity *= 0.8F;
-                float f6 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 1.0F + 1.0F;
-                double d9 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ) * 1.0D + 1.0D;
-
-                if (d9 > 40.0D) {
-                    d9 = 40.0D;
-                }
-
-                this.randomYawVelocity = (float) ((double) this.randomYawVelocity + d6 * (0.699999988079071D / d9 / (double) f6));
-                this.rotationYaw += this.randomYawVelocity * 0.1F;
-                float f7 = (float) (2.0D / (d9 + 1.0D));
-                float f8 = 0.06F;
-                this.moveRelative(0.0F, -1.0F, f8 * (f5 * f7 + (1.0F - f7)));
-
-                if (this.slowed) {
-                    this.moveEntity(this.motionX * 0.800000011920929D * moveSpeedMultiplier, this.motionY * 0.800000011920929D * moveSpeedMultiplier, this.motionZ * 0.800000011920929D * moveSpeedMultiplier);
-                } else {
-                    this.moveEntity(this.motionX * moveSpeedMultiplier, this.motionY * moveSpeedMultiplier, this.motionZ * moveSpeedMultiplier);
-                }
-
-                Vec3d vec31 = new Vec3d(this.motionX, this.motionY, this.motionZ).normalize();
-                float f9 = (float) (vec31.dotProduct(vec32) + 1.0D) / 2.0F;
-                f9 = 0.8F + 0.15F * f9;
-                this.motionX *= (double) f9;
-                this.motionZ *= (double) f9;
-                this.motionY *= 0.9100000262260437D;
-            }
-
-            this.renderYawOffset = this.rotationYaw;
-            this.dragonPartHead.width = this.dragonPartHead.height = 3.0F;
-            this.dragonPartTail1.width = this.dragonPartTail1.height = 2.0F;
-            this.dragonPartTail2.width = this.dragonPartTail2.height = 2.0F;
-            this.dragonPartTail3.width = this.dragonPartTail3.height = 2.0F;
-            this.dragonPartBody.height = 3.0F;
-            this.dragonPartBody.width = 5.0F;
-            this.dragonPartWing1.height = 2.0F;
-            this.dragonPartWing1.width = 4.0F;
-            this.dragonPartWing2.height = 3.0F;
-            this.dragonPartWing2.width = 4.0F;
-            f1 = (float) (this.getMovementOffsets(5, 1.0F)[1] - this.getMovementOffsets(10, 1.0F)[1]) * 10.0F / 180.0F * (float) Math.PI;
-            f2 = MathHelper.cos(f1);
-            float f10 = -MathHelper.sin(f1);
-            float f3 = this.rotationYaw * (float) Math.PI / 180.0F;
-            float f11 = MathHelper.sin(f3);
-            float f4 = MathHelper.cos(f3);
-            this.dragonPartBody.onUpdate();
-            this.dragonPartBody.setLocationAndAngles(this.posX + (double) (f11 * 0.5F), this.posY, this.posZ - (double) (f4 * 0.5F), 0.0F, 0.0F);
-            this.dragonPartWing1.onUpdate();
-            this.dragonPartWing1.setLocationAndAngles(this.posX + (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ + (double) (f11 * 4.5F), 0.0F, 0.0F);
-            this.dragonPartWing2.onUpdate();
-            this.dragonPartWing2.setLocationAndAngles(this.posX - (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ - (double) (f11 * 4.5F), 0.0F, 0.0F);
-
-            if (!this.worldObj.isRemote && this.hurtTime == 0) {
-                this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-                this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-                this.attackEntitiesInList(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.getEntityBoundingBox().expand(1.0D, 1.0D, 1.0D)));
-            }
-
-            double[] adouble1 = this.getMovementOffsets(5, 1.0F);
-            double[] adouble = this.getMovementOffsets(0, 1.0F);
-            f12 = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F - this.randomYawVelocity * 0.01F);
-            float f13 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F - this.randomYawVelocity * 0.01F);
-            this.dragonPartHead.onUpdate();
-            this.dragonPartHead.setLocationAndAngles(this.posX + (double) (f12 * 5.5F * f2), this.posY + (adouble[1] - adouble1[1]) * 1.0D + (double) (f10 * 5.5F), this.posZ - (double) (f13 * 5.5F * f2), 0.0F, 0.0F);
-
-            for (int j = 0; j < 3; ++j) {
-                EntityDragonPart entitydragonpart = null;
-
-                if (j == 0) {
-                    entitydragonpart = this.dragonPartTail1;
-                }
-
-                if (j == 1) {
-                    entitydragonpart = this.dragonPartTail2;
-                }
-
-                if (j == 2) {
-                    entitydragonpart = this.dragonPartTail3;
-                }
-
-                double[] adouble2 = this.getMovementOffsets(12 + j * 2, 1.0F);
-                float f14 = this.rotationYaw * (float) Math.PI / 180.0F + this.simplifyAngle(adouble2[0] - adouble1[0]) * (float) Math.PI / 180.0F * 1.0F;
-                float f15 = MathHelper.sin(f14);
-                float f16 = MathHelper.cos(f14);
-                float f17 = 1.5F;
-                float f18 = (float) (j + 1) * 2.0F;
-                entitydragonpart.onUpdate();
-                entitydragonpart.setLocationAndAngles(this.posX - (double) ((f11 * f17 + f15 * f18) * f2), this.posY + (adouble2[1] - adouble1[1]) * 1.0D - (double) ((f18 + f17) * f10) + 1.5D, this.posZ + (double) ((f4 * f17 + f16 * f18) * f2), 0.0F, 0.0F);
-            }
-
-            if (!this.worldObj.isRemote) {
-                this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getEntityBoundingBox());
+        if (this.ringBufferIndex < 0) {
+            for (int i = 0; i < this.ringBuffer.length; ++i) {
+                this.ringBuffer[i][0] = (double) this.rotationYaw;
+                this.ringBuffer[i][1] = this.posY;
             }
         }
 
+        if (++this.ringBufferIndex == this.ringBuffer.length) {
+            this.ringBufferIndex = 0;
+        }
+
+        this.ringBuffer[this.ringBufferIndex][0] = (double) this.rotationYaw;
+        this.ringBuffer[this.ringBufferIndex][1] = this.posY;
+        double d0;
+        double d1;
+        double d2;
+        double d10;
+        float f12;
+
+        if (this.worldObj.isRemote) {
+            if (this.newPosRotationIncrements > 0) {
+                d10 = this.posX + (this.interpTargetX - this.posX) / (double) this.newPosRotationIncrements;
+                d0 = this.posY + (this.interpTargetY - this.posY) / (double) this.newPosRotationIncrements;
+                d1 = this.posZ + (this.interpTargetZ - this.posZ) / (double) this.newPosRotationIncrements;
+                d2 = MathHelper.wrapDegrees(this.interpTargetYaw - (double) this.rotationYaw);
+                this.rotationYaw = (float) ((double) this.rotationYaw + d2 / (double) this.newPosRotationIncrements);
+                this.rotationPitch = (float) ((double) this.rotationPitch + (this.interpTargetPitch - (double) this.rotationPitch) / (double) this.newPosRotationIncrements);
+                --this.newPosRotationIncrements;
+                this.setPosition(d10, d0, d1);
+                this.setRotation(this.rotationYaw, this.rotationPitch);
+            }
+        } else {
+
+            d10 = this.targetX - this.posX;
+            d0 = this.targetY - this.posY;
+            d1 = this.targetZ - this.posZ;
+            d2 = d10 * d10 + d0 * d0 + d1 * d1;
+
+            if (this.target != null) {
+                if (behaviour == EnumBehaviour.CIRCLE_PLAYER) {
+                    this.targetX = this.target.posX + (int) (Math.cos(circlePosition) * 60);
+                    this.targetZ = this.target.posZ + (int) (Math.sin(circlePosition) * 60);
+                    moveSpeedMultiplier = 1F + Math.min(((float) Utils.getDistanceAtoB(targetX, targetZ, posX, posZ) / 50) * 3F, 3F);
+                } else {
+                    this.targetX = this.target.posX;
+                    this.targetZ = this.target.posZ;
+                }
+
+                double d3 = this.targetX - this.posX;
+                double d5 = this.targetZ - this.posZ;
+                double d7 = Math.sqrt(d3 * d3 + d5 * d5);
+                double d8 = 0.4000000059604645D + d7 / 80.0D - 1.0D;
+
+                if (d8 > 10.0D) {
+                    d8 = 10.0D;
+                }
+
+                this.targetY = this.target.getEntityBoundingBox().minY + d8 + (behaviour == EnumBehaviour.CIRCLE_PLAYER ? 25 : 0);
+            } else if (behaviour != EnumBehaviour.FIREBOMB) {
+                this.targetX += this.rand.nextGaussian() * 2.0D;
+                this.targetZ += this.rand.nextGaussian() * 2.0D;
+            }
+
+            if (this.forceNewTarget || d2 < 100.0D || d2 > 22500.0D || this.isCollidedHorizontally || this.isCollidedVertically) {
+                this.setNewTarget();
+            }
+
+
+            d0 /= (double) MathHelper.sqrt_double(d10 * d10 + d1 * d1);
+            //if (isUber) f12 = 1.0F;//Verticle Motion Speed
+            //else
+            f12 = 0.6F;
+
+            if (d0 < (double) (-f12)) {
+                d0 = (double) (-f12);
+            }
+
+            if (d0 > (double) f12) {
+                d0 = (double) f12;
+            }
+
+            this.motionY += d0 * 0.10000000149011612D;
+            this.rotationYaw = MathHelper.wrapDegrees(this.rotationYaw);
+            double d4 = 180.0D - Math.atan2(d10, d1) * 180.0D / Math.PI;
+            double d6 = MathHelper.wrapDegrees(d4 - (double) this.rotationYaw);
+
+            if (d6 > 50.0D) {
+                d6 = 50.0D;
+            }
+
+            if (d6 < -50.0D) {
+                d6 = -50.0D;
+            }
+
+            Vec3d vec3 = new Vec3d(this.targetX - this.posX, this.targetY - this.posY, this.targetZ - this.posZ).normalize();
+            Vec3d vec32 = new Vec3d((double) MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F), this.motionY, (double) (-MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F))).normalize();
+            float f5 = (float) (vec32.dotProduct(vec3) + 0.5D) / 1.5F;
+
+            if (f5 < 0.0F) {
+                f5 = 0.0F;
+            }
+
+            this.randomYawVelocity *= 0.8F;
+            float f6 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 1.0F + 1.0F;
+            double d9 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ) * 1.0D + 1.0D;
+
+            if (d9 > 40.0D) {
+                d9 = 40.0D;
+            }
+
+            this.randomYawVelocity = (float) ((double) this.randomYawVelocity + d6 * (0.699999988079071D / d9 / (double) f6));
+            this.rotationYaw += this.randomYawVelocity * 0.1F;
+            float f7 = (float) (2.0D / (d9 + 1.0D));
+            float f8 = 0.06F;
+            this.moveRelative(0.0F, -1.0F, f8 * (f5 * f7 + (1.0F - f7)));
+
+            if (this.slowed) {
+                this.moveEntity(this.motionX * 0.800000011920929D * moveSpeedMultiplier, this.motionY * 0.800000011920929D * moveSpeedMultiplier, this.motionZ * 0.800000011920929D * moveSpeedMultiplier);
+            } else {
+                this.moveEntity(this.motionX * moveSpeedMultiplier, this.motionY * moveSpeedMultiplier, this.motionZ * moveSpeedMultiplier);
+            }
+
+            Vec3d vec31 = new Vec3d(this.motionX, this.motionY, this.motionZ).normalize();
+            float f9 = (float) (vec31.dotProduct(vec32) + 1.0D) / 2.0F;
+            f9 = 0.8F + 0.15F * f9;
+            this.motionX *= (double) f9;
+            this.motionZ *= (double) f9;
+            this.motionY *= 0.9100000262260437D;
+        }
+
+        this.renderYawOffset = this.rotationYaw;
+        this.dragonPartHead.width = this.dragonPartHead.height = 3.0F;
+        this.dragonPartTail1.width = this.dragonPartTail1.height = 2.0F;
+        this.dragonPartTail2.width = this.dragonPartTail2.height = 2.0F;
+        this.dragonPartTail3.width = this.dragonPartTail3.height = 2.0F;
+        this.dragonPartBody.height = 3.0F;
+        this.dragonPartBody.width = 5.0F;
+        this.dragonPartWing1.height = 2.0F;
+        this.dragonPartWing1.width = 4.0F;
+        this.dragonPartWing2.height = 3.0F;
+        this.dragonPartWing2.width = 4.0F;
+        f1 = (float) (this.getMovementOffsets(5, 1.0F)[1] - this.getMovementOffsets(10, 1.0F)[1]) * 10.0F / 180.0F * (float) Math.PI;
+        f2 = MathHelper.cos(f1);
+        float f10 = -MathHelper.sin(f1);
+        float f3 = this.rotationYaw * (float) Math.PI / 180.0F;
+        float f11 = MathHelper.sin(f3);
+        float f4 = MathHelper.cos(f3);
+        this.dragonPartBody.onUpdate();
+        this.dragonPartBody.setLocationAndAngles(this.posX + (double) (f11 * 0.5F), this.posY, this.posZ - (double) (f4 * 0.5F), 0.0F, 0.0F);
+        this.dragonPartWing1.onUpdate();
+        this.dragonPartWing1.setLocationAndAngles(this.posX + (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ + (double) (f11 * 4.5F), 0.0F, 0.0F);
+        this.dragonPartWing2.onUpdate();
+        this.dragonPartWing2.setLocationAndAngles(this.posX - (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ - (double) (f11 * 4.5F), 0.0F, 0.0F);
+
+        if (!this.worldObj.isRemote && this.hurtTime == 0) {
+            this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
+            this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
+            this.attackEntitiesInList(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.getEntityBoundingBox().expand(1.0D, 1.0D, 1.0D)));
+        }
+
+        double[] adouble1 = this.getMovementOffsets(5, 1.0F);
+        double[] adouble = this.getMovementOffsets(0, 1.0F);
+        f12 = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F - this.randomYawVelocity * 0.01F);
+        float f13 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F - this.randomYawVelocity * 0.01F);
+        this.dragonPartHead.onUpdate();
+        this.dragonPartHead.setLocationAndAngles(this.posX + (double) (f12 * 5.5F * f2), this.posY + (adouble[1] - adouble1[1]) * 1.0D + (double) (f10 * 5.5F), this.posZ - (double) (f13 * 5.5F * f2), 0.0F, 0.0F);
+
+        for (int j = 0; j < 3; ++j) {
+            EntityDragonPart entitydragonpart = null;
+
+            if (j == 0) {
+                entitydragonpart = this.dragonPartTail1;
+            }
+
+            if (j == 1) {
+                entitydragonpart = this.dragonPartTail2;
+            }
+
+            if (j == 2) {
+                entitydragonpart = this.dragonPartTail3;
+            }
+
+            double[] adouble2 = this.getMovementOffsets(12 + j * 2, 1.0F);
+            float f14 = this.rotationYaw * (float) Math.PI / 180.0F + this.simplifyAngle(adouble2[0] - adouble1[0]) * (float) Math.PI / 180.0F * 1.0F;
+            float f15 = MathHelper.sin(f14);
+            float f16 = MathHelper.cos(f14);
+            float f17 = 1.5F;
+            float f18 = (float) (j + 1) * 2.0F;
+            entitydragonpart.onUpdate();
+            entitydragonpart.setLocationAndAngles(this.posX - (double) ((f11 * f17 + f15 * f18) * f2), this.posY + (adouble2[1] - adouble1[1]) * 1.0D - (double) ((f18 + f17) * f10) + 1.5D, this.posZ + (double) ((f4 * f17 + f16 * f18) * f2), 0.0F, 0.0F);
+        }
+
+        if (!this.worldObj.isRemote) {
+            this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getEntityBoundingBox());
+        }
+
+        getPhaseManager().setPhase(PhaseList.HOLDING_PATTERN);
     }
 
     public void onCrystalTargeted(EntityPlayer player, boolean destroyed) {
@@ -713,11 +712,9 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
         if (behaviour == EnumBehaviour.DEAD) return;
         if (behaviour == EnumBehaviour.LOW_HEALTH_STRATEGY) {
             attackInProgress = ((WeightedAttack) WeightedRandom.getRandomItem(rand, weightedLowHealthAttaxks)).attack;
-        }
-        else if (behaviour != EnumBehaviour.FIREBOMB) {
+        } else if (behaviour != EnumBehaviour.FIREBOMB) {
             attackInProgress = ((WeightedAttack) WeightedRandom.getRandomItem(rand, weightedAttacks)).attack;
-        }
-        else {
+        } else {
             attackInProgress = ATTACK_ENERGY_CHASER;
         }
     }
@@ -822,8 +819,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
                     EntityPlayer potentialTarget = targets.get(rand.nextInt(targets.size()));
                     if (worldObj.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(potentialTarget.posX, potentialTarget.posY, potentialTarget.posZ)) == null) {
                         target = potentialTarget;
-                    }
-                    else targets.remove(potentialTarget);
+                    } else targets.remove(potentialTarget);
                 }
 
                 break;
@@ -884,7 +880,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
                 break;
             case FIREBOMB:
-                if ((target == null && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0){
+                if ((target == null && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0) {
                     selectNewBehaviour();
                 }
                 if (damageSource.getEntity() instanceof EntityPlayer && damageSource.getEntity() != target && worldObj.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getEntity().posX, damageSource.getEntity().posY, damageSource.getEntity().posZ)) == null) {
@@ -898,7 +894,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
         if ((damageSource.getEntity() instanceof EntityPlayer || damageSource.isExplosion()) && healingChaosCrystal == null)//tod reanable this
         {
             super.attackDragonFrom(damageSource, dmg);
-        } else if (damageSource.getEntity() instanceof EntityPlayer){
+        } else if (damageSource.getEntity() instanceof EntityPlayer) {
             ((EntityPlayer) damageSource.getEntity()).addChatComponentMessage(new TextComponentTranslation("msg.de.guardianAttackBlocked.txt").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)));
         }
 
@@ -971,8 +967,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
             TileEntity tile = worldObj.getTileEntity(new BlockPos(homeX, homeY, homeZ));
             if (tile instanceof TileChaosCrystal) {
                 ((TileChaosCrystal) tile).setDefeated();
-            }
-            else {
+            } else {
                 boolean breac = false;
                 for (int x = homeX - 100; x < homeX + 100; x++) {
                     for (int y = homeY - 100; y < homeX + 100; y++) {
@@ -983,11 +978,17 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
                                 ((TileChaosCrystal) tile).setDefeated();
                                 breac = true;
                             }
-                            if (breac) { break; }
+                            if (breac) {
+                                break;
+                            }
                         }
-                        if (breac) { break; }
+                        if (breac) {
+                            break;
+                        }
                     }
-                    if (breac) { break; }
+                    if (breac) {
+                        break;
+                    }
                 }
             }
         }
@@ -1075,13 +1076,12 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
     private void updateDragonEnderCrystal() {
         if (worldObj.isRemote) {
             BlockPos pos = getCrystalPos();
-            if (healingChaosCrystal == null && pos != null && ticksExisted % 10 == 0){
+            if (healingChaosCrystal == null && pos != null && ticksExisted % 10 == 0) {
                 List<EntityGuardianCrystal> list = worldObj.getEntitiesWithinAABB(EntityGuardianCrystal.class, new AxisAlignedBB(pos.add(-2, -2, -2), pos.add(3, 3, 3)));
-                if (list.size() > 0){
+                if (list.size() > 0) {
                     healingChaosCrystal = list.get(0);
                 }
-            }
-            else if (healingChaosCrystal != null) {
+            } else if (healingChaosCrystal != null) {
                 if (pos == null || Utils.getDistanceSq(healingChaosCrystal.posX, healingChaosCrystal.posY, healingChaosCrystal.posZ, pos.getX(), pos.getY(), pos.getZ()) > 10) {
                     healingChaosCrystal = null;
                 }
@@ -1099,7 +1099,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
         if (this.healingChaosCrystal != null) {
             if (!healingChaosCrystal.isAlive()) {
-                this.attackEntityFromPart(this.dragonPartHead, DamageSource.causeExplosionDamage((Explosion)null), 10.0F);
+                this.attackEntityFromPart(this.dragonPartHead, DamageSource.causeExplosionDamage((Explosion) null), 10.0F);
                 healingChaosCrystal = null;
             } else if (this.ticksExisted % 10 == 0 && this.getHealth() < this.getMaxHealth()) {
                 this.setHealth(this.getHealth() + 2F);
@@ -1301,7 +1301,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
     @Nullable
     public BlockPos getCrystalPos() {
-        return (BlockPos)((Optional)this.getDataManager().get(CRYSTAL_POSITION)).orNull();
+        return (BlockPos) ((Optional) this.getDataManager().get(CRYSTAL_POSITION)).orNull();
     }
 
     @Override

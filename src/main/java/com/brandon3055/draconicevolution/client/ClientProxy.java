@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
+import com.brandon3055.draconicevolution.client.model.ArmorModelHelper;
 import com.brandon3055.draconicevolution.client.model.ToolModelLoader;
 import com.brandon3055.draconicevolution.client.render.entity.RenderChaosGuardian;
 import com.brandon3055.draconicevolution.client.render.entity.RenderEntityChaosVortex;
@@ -45,6 +46,7 @@ public class ClientProxy extends CommonProxy {
         ToolModelLoader loader = new ToolModelLoader();
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(loader);
         TextureUtils.addIconRegister(loader);
+        TextureUtils.addIconRegister(new ArmorModelHelper());
 
         ToolModelLoader.registerModels();
 
