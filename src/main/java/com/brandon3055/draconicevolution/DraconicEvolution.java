@@ -21,7 +21,7 @@ public class DraconicEvolution {
 	public static final String VERSION	= "${mod_version}";//todo Test
 	public static final String PROXY_CLIENT = "com.brandon3055.draconicevolution.client.ClientProxy";
 	public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.CommonProxy";
-	public static final String DEPENDENCIES = "after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:BrandonsCore;";//@["+ BrandonsCore.VERSION +",);";
+	public static final String DEPENDENCIES = "after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;";//required-after:BrandonsCore;";//@["+ BrandonsCore.VERSION +",);";
 	public static final String GUI_FACTORY 	= "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
 	public static final String networkChannelName = "DEvolutionNC";
 	//region Misc Fields
