@@ -48,9 +48,11 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "disableGuardianCrystalRespawn", comment = "(Wuss mode) Setting this to true will disable the chaos guardians ability to respawn healing crystals.")
     public static boolean disableGuardianCrystalRespawn = false;
 
+    @ModConfigProperty(category = "Tweaks", name = "enableFlight", comment = "Set this to false if you would like to disable the draconic armors flight.")
+    public static boolean enableFlight = true;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stores. You should not need to adjust these unless something breaks.")
     public static int[] hudSettings = new int[]{996, 825, 69, 907, 90, 100, 3, 0, 1, 1, 1, 1}; //x, y, x, y, scale, scale, fademode, fademode, rotateArmor, armorText, hudEnabled, shieldEnabled
-
 }

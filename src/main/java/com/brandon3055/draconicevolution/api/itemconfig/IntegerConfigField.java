@@ -19,6 +19,7 @@ public class IntegerConfigField implements IItemConfigField {
     protected int maxValue;
     protected int value;
     private String extension = "";
+    private String prefix = "";
 
     /**
      * @param name the name of the field
@@ -40,6 +41,11 @@ public class IntegerConfigField implements IItemConfigField {
         return this;
     }
 
+    public IntegerConfigField setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
+
     @Override
     public String getName() {
         return name;
@@ -53,7 +59,7 @@ public class IntegerConfigField implements IItemConfigField {
     @SideOnly(Side.CLIENT)
     @Override
     public String getReadableValue() {
-        return String.valueOf(value) + extension;
+        return prefix + String.valueOf(value) + extension;
     }
 
     @Override

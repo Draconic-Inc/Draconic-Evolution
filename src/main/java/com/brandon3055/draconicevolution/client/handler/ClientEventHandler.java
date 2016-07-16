@@ -1,14 +1,19 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 
+import codechicken.lib.colour.ColourRGBA;
+import codechicken.lib.render.TextureUtils;
+import codechicken.lib.render.TransformUtils;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
+import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
-import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -17,15 +22,19 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -46,14 +55,19 @@ public class ClientEventHandler {
     public static boolean bowZoom = false;
     public static boolean lastTickBowZoom = false;
     public static int tickSet = 0;
-    private static int remountTicksRemaining = 0;
-    private static int remountEntityID = 0;
     public static float energyCrystalAlphaValue = 0f;
     public static float energyCrystalAlphaTarget = 0f;
     public static boolean playerHoldingWrench = false;
     public static Minecraft mc;
     private static Random rand = new Random();
-//	private static IModelCustom shieldSphere;
+    public static IBakedModel shieldModel = null;
+
+    private static Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
+        @Override
+        public TextureAtlasSprite apply(ResourceLocation input) {
+            return TextureUtils.getTexture(input);
+        }
+    };
 
     public ClientEventHandler() {
 //		shieldSphere = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/shieldSphere.obj"));
@@ -66,9 +80,10 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void tickEnd(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END )
-        if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT)
-            return;
+        if (event.phase == TickEvent.Phase.END)
+            if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT) {
+                return;
+            }
         elapsedTicks++;
 
         HudHandler.clientTick();
@@ -101,8 +116,6 @@ public class ClientEventHandler {
                 energyCrystalAlphaTarget = rand.nextFloat();
 
 //			playerHoldingWrench = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == ModItems.wrench;
-
-            searchForPlayerMount();
         }
     }
 
@@ -138,75 +151,62 @@ public class ClientEventHandler {
         //endregion
     }
 
-    private void searchForPlayerMount() {
-//		if (remountTicksRemaining > 0){
-//			Entity e = Minecraft.getMinecraft().theWorld.getEntityByID(remountEntityID);
-//			if (e != null){
-//				Minecraft.getMinecraft().thePlayer.mountEntity(e);
-//				LogHelper.info("Successfully placed player on mount after "+(500 - remountTicksRemaining)+" ticks");
-//				remountTicksRemaining = 0;
-//				return;
-//			}
-//			remountTicksRemaining--;
-//			if (remountTicksRemaining == 0){
-//				LogHelper.error("Unable to locate player mount after 500 ticks! Aborting");
-//				DraconicEvolution.network.sendToServer(new MountUpdatePacket(-1));
-//			}
-//		}
-    }
-
-    public static void tryRepositionPlayerOnMount(int id) {
-        if (remountTicksRemaining == 500) return;
-        remountTicksRemaining = 500;
-        remountEntityID = id;
-        LogHelper.info("Started checking for player mount"); //Todo move to core as this is part of the teleporter
-    }
-
     @SubscribeEvent
     public void renderPlayerEvent(RenderPlayerEvent.Post event) {
-//		if (playerShieldStatus.containsKey(event.entityPlayer)) {
-//			GL11.glPushMatrix();
-//			GL11.glDepthMask(false);
-//			GL11.glDisable(GL11.GL_CULL_FACE);
-//			GL11.glDisable(GL11.GL_ALPHA_TEST);
-//			GL11.glEnable(GL11.GL_BLEND);
-//			GL11.glDisable(GL11.GL_LIGHTING);
-//			ResourceHelperDE.bindTexture("textures/models/shieldSphere.png");
-//
-//			float p = 1;//playerShieldStatus.get(event.getEntityPlayer()).getKey();
-//
-//			EntityPlayer viewingPlayer = Minecraft.getMinecraft().thePlayer;
-//
-//			int i = 5;// - (elapsedTicks - playerShieldStatus.get(event.entityPlayer).getValue());
-//
-//			GL11.glColor4f(1F - p, 0F, p, i / 5F);
-//
-//			if (viewingPlayer != event.getEntityPlayer()){
-//				double translationXLT = event.getEntityPlayer().prevPosX - viewingPlayer.prevPosX;
-//				double translationYLT = event.getEntityPlayer().prevPosY - viewingPlayer.prevPosY;
-//				double translationZLT = event.getEntityPlayer().prevPosZ - viewingPlayer.prevPosZ;
-//
-//				double translationX = translationXLT + (((event.getEntityPlayer().posX - viewingPlayer.posX) - translationXLT) * event.getPartialRenderTick());
-//				double translationY = translationYLT + (((event.getEntityPlayer().posY - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());
-//				double translationZ = translationZLT + (((event.getEntityPlayer().posZ - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
-//
-//				GL11.glTranslated(translationX, translationY + 1.1, translationZ);
-//			}
-//			else{
-//				GL11.glTranslated(0, -0.5, 0);
-//			}
-//
-//			GL11.glScaled(1, 1.5, 1);
-//
-//			shieldSphere.renderAll();
-//
-//			GL11.glEnable(GL11.GL_CULL_FACE);
-//			GL11.glEnable(GL11.GL_ALPHA_TEST);
-//			GL11.glDisable(GL11.GL_BLEND);
-//			GL11.glEnable(GL11.GL_LIGHTING);
-//			GL11.glDepthMask(true);
-//			GL11.glPopMatrix();
-//		}
+        if (playerShieldStatus.containsKey(event.getEntityPlayer())) {
+            if (shieldModel == null) {
+                try {
+                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shieldSphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, bakedTextureGetter);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
+
+            GlStateManager.pushMatrix();
+            GlStateManager.depthMask(false);
+            GlStateManager.disableCull();
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.disableLighting();
+
+            float p = playerShieldStatus.get(event.getEntityPlayer()).getKey();
+
+            EntityPlayer viewingPlayer = Minecraft.getMinecraft().thePlayer;
+
+            int i = 5 - (elapsedTicks - playerShieldStatus.get(event.getEntityPlayer()).getValue());
+
+            //GlStateManager.color(1F - p, 0F, p, i / 5F);
+
+            if (viewingPlayer != event.getEntityPlayer()) {
+                double translationXLT = event.getEntityPlayer().prevPosX - viewingPlayer.prevPosX;
+                double translationYLT = event.getEntityPlayer().prevPosY - viewingPlayer.prevPosY;
+                double translationZLT = event.getEntityPlayer().prevPosZ - viewingPlayer.prevPosZ;
+
+                double translationX = translationXLT + (((event.getEntityPlayer().posX - viewingPlayer.posX) - translationXLT) * event.getPartialRenderTick());
+                double translationY = translationYLT + (((event.getEntityPlayer().posY - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());
+                double translationZ = translationZLT + (((event.getEntityPlayer().posZ - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
+
+                GlStateManager.translate(translationX, translationY + 1.1, translationZ);
+            } else {
+                //GL11.glTranslated(0, -0.5, 0);
+                GlStateManager.translate(0, 1.15, 0);
+            }
+
+            GlStateManager.scale(1, 1.5, 1);
+
+            GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
+
+            ModelUtils.renderQuadsARGB(shieldModel.getQuads(null, null, 0), new ColourRGBA(1D - p, 0D, p, i / 5D).argb());
+
+            GlStateManager.enableCull();
+            GlStateManager.enableAlpha();
+            GlStateManager.disableBlend();
+            GlStateManager.enableLighting();
+            GlStateManager.depthMask(true);
+            GlStateManager.popMatrix();
+        }
     }
 
     @SubscribeEvent
@@ -229,11 +229,12 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void guiOpenEvent(GuiOpenEvent event) {
-        if (event.getGui() instanceof GuiMainMenu && rand.nextInt(300) == 0){
+        if (event.getGui() instanceof GuiMainMenu && rand.nextInt(300) == 0) {
             try {
-                ReflectionHelper.setPrivateValue(GuiMainMenu.class, (GuiMainMenu)event.getGui(), Utils.addCommas(Long.MAX_VALUE) + " RF!!!!", "splashText", "field_110353_x");
+                ReflectionHelper.setPrivateValue(GuiMainMenu.class, (GuiMainMenu) event.getGui(), Utils.addCommas(Long.MAX_VALUE) + " RF!!!!", "splashText", "field_110353_x");
             }
-            catch (Exception e){}
+            catch (Exception e) {
+            }
         }
     }
 
@@ -248,17 +249,17 @@ public class ClientEventHandler {
         ItemStack stack = player.getHeldItemMainhand();
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (stack == null || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)){
+        if (stack == null || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
             return;
         }
 
-        if (mc.objectMouseOver == null || mc.objectMouseOver.typeOfHit != RayTraceResult.Type.BLOCK){
+        if (mc.objectMouseOver == null || mc.objectMouseOver.typeOfHit != RayTraceResult.Type.BLOCK) {
             return;
         }
 
         BlockPos pos = mc.objectMouseOver.getBlockPos();
         IBlockState state = world.getBlockState(pos);
-        MiningToolBase tool = (MiningToolBase)stack.getItem();
+        MiningToolBase tool = (MiningToolBase) stack.getItem();
 
         if (!tool.isToolEffective(stack, state)) {
             return;
@@ -268,15 +269,15 @@ public class ClientEventHandler {
     }
 
     private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, EntityPlayerSP player, float partialTicks) {
-        MiningToolBase tool = (MiningToolBase)stack.getItem();
+        MiningToolBase tool = (MiningToolBase) stack.getItem();
         PairKV<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
         List<BlockPos> blocks = Lists.newArrayList(BlockPos.getAllInBox(aoe.getKey(), aoe.getValue()));
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer buffer = tessellator.getBuffer();
 
-        double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double)partialTicks;
-        double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double)partialTicks;
-        double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)partialTicks;
+        double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks;
+        double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
+        double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
 
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -288,10 +289,10 @@ public class ClientEventHandler {
 
         buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
-        for (BlockPos block : blocks){
+        for (BlockPos block : blocks) {
             IBlockState state = world.getBlockState(block);
 
-            if (!tool.isToolEffective(stack, state)){
+            if (!tool.isToolEffective(stack, state)) {
                 continue;
             }
 
@@ -301,13 +302,13 @@ public class ClientEventHandler {
 
             AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).contract(0.49D);
 
-  //          buffer.pos(renderX, renderY, renderZ).color(1F, 1F, 1F, 1F).endVertex();
+            //          buffer.pos(renderX, renderY, renderZ).color(1F, 1F, 1F, 1F).endVertex();
 //            buffer.pos(renderX + 1, renderY + 1, renderZ + 1).color(1F, 1F, 1F, 1F).endVertex();
 
             double rDist = Utils.getDistanceSq(pos.getX(), pos.getY(), pos.getZ(), block.getX(), block.getY(), block.getZ());
 
 
-            float colour = 1F - (float)rDist / 100F;
+            float colour = 1F - (float) rDist / 100F;
             if (colour < 0.1F) {
                 colour = 0.1F;
             }

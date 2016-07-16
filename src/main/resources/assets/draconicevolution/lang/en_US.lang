@@ -77,7 +77,7 @@ item.draconicevolution:wyvernSword.name=Sword of the Wyvern
 item.draconicevolution:wyvernBow.name=Bow of the Wyvern
 item.draconicevolution:wyvernHelm.name=Wyvern Helm
 item.draconicevolution:wyvernChest.name=Wyvern Chestplate
-item.draconicevolution:wyvernLeggs.name=Wyvern Leggings
+item.draconicevolution:wyvernLegs.name=Wyvern Leggings
 item.draconicevolution:wyvernBoots.name=Wyvern Boots
 item.draconicevolution:draconicPick.name=Draconic Pickaxe
 item.draconicevolution:draconicAxe.name=Draconic Axe
@@ -87,7 +87,7 @@ item.draconicevolution:draconicSword.name=Draconic Sword
 item.draconicevolution:draconicBow.name=Draconic Bow
 item.draconicevolution:draconicHelm.name=Draconic Helm
 item.draconicevolution:draconicChest.name=Draconic Chestplate
-item.draconicevolution:draconicLeggs.name=Draconic Leggings
+item.draconicevolution:draconicLegs.name=Draconic Leggings
 item.draconicevolution:draconicBoots.name=Draconic Boots
 item.draconicevolution:draconicStaffOfPower.name=Draconic Staff of Power
 item.draconicevolution:mobSoul.name=Mob Soul
@@ -156,7 +156,7 @@ msg.bowmodedevistation.txt=§3Fire Mode: §6Devastation!!! (Creative Only)
 msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
 msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
 msg.teleporterBound.txt=§aTeleporter bound to:
-msg.teleporterLowHealth.txt= §cYou are to low on health!
+msg.teleporterLowHealth.txt=§cYou are to low on health!
 msg.teleporterSentMob.txt=The entity has been sent to
 msg.teleporterEntityDimensional.txt=§cYou can not send mobs across dimensions!
 msg.teleporterAlreadySet.txt=§cError this charm can only be bound to one location
@@ -704,9 +704,26 @@ config.field.aoeSafeMode.entry=A.O.E Safe Mode
 config.field.aoeSafeMode.description=When enabled this tool will not break anything if it detects a tile entity within its AOE range. This can help prevent you from accidentally breaking half your base with a single miss click.
 config.field.digDepth.entry=Dig Depth
 config.field.digDepth.description=This function only works with
-
 config.field.showDigAOE.entry=Show Dig A.O.E
 config.field.showDigAOE.description=When enabled shows all of the blocks covered by this tools mining AOE.
+config.field.armorSpeedModifier.entry=Speed Modifier
+config.field.armorSpeedModifier.description=This allows you to adjust the speed boost given by this armor piece.
+config.field.armorJumpModifier.entry=Jump Modifier
+config.field.armorJumpModifier.description=This allows you to adjust the jump boost given by this armor piece.
+config.field.sprintBoost.entry=Boost on Sprint
+config.field.sprintBoost.description=When enabled the modifiers you have set will be reduced when you are NOT sprinting.
+config.field.armorNV.entry=Night Vision
+config.field.armorNV.description=Enable or disable night vision. Be default the night vision will only be applied when you are in a dark area.
+config.field.armorNVLock.entry=Night Vision Lock
+config.field.armorNVLock.description=This locks night vision to active regardless of the light level you are in.
+config.field.armorFSpeedModifier.entry=Flight Speed Modifier
+config.field.armorFSpeedModifier.description=Allows you to adjust the speed boost applied by this armor while flying.
+config.field.armorVFSpeedModifier.entry=Vertical Boost
+config.field.armorVFSpeedModifier.description=This allows you to increase the speed at which you ascend/descend while flying.
+config.field.armorInertiaCancel.entry=Inertia Cancellation
+config.field.armorInertiaCancel.description=When flying at high speeds this will force you to stop almost instantly when you let go of the move key.
+config.field.armorHillStep.entry=Step Assist
+config.field.armorHillStep.description=Allows you to step up 1 full block without jumping.
 
 config.field..entry=
 config.field..description
@@ -714,7 +731,9 @@ config.field..description
 config.field..entry=
 config.field..description
 
-config.field..entry=
+
+
+
 
 //---- Info Helper ----//TODO Move this to BrandonsCore
 info.bc.holdShiftForDetails.txt=Hold %sShift%s for Details

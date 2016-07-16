@@ -30,7 +30,7 @@ public class DraconicStaffOfPower extends MiningToolBase {
     }
 
     @Override
-    public int getMaxUpgradeLevel(ItemStack stack) {
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
         return 3;
     }
 

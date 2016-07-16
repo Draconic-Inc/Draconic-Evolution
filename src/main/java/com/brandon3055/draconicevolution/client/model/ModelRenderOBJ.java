@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.client.model;
 import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TransformUtils;
 import com.brandon3055.brandonscore.utils.ModelUtils;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Function;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -31,11 +30,7 @@ public class ModelRenderOBJ extends ModelRenderer {
 
     private static Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
         @Override
-        public TextureAtlasSprite apply(ResourceLocation input) {
-            LogHelper.info("APPLY: "+input+" "+TextureUtils.getTexture(input));
-            return TextureUtils.getTexture(input);
-            //return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(input.toString());
-        }
+        public TextureAtlasSprite apply(ResourceLocation input) { return TextureUtils.getTexture(input); }
     };
 
     public ModelRenderOBJ(ModelBase baseModel, ResourceLocation customModel, ResourceLocation texture) {
@@ -95,7 +90,6 @@ public class ModelRenderOBJ extends ModelRenderer {
 
             GlStateManager.translate(-this.offsetX, -this.offsetY, -this.offsetZ);
         }
-
     }
 
     private void compileDisplayList(float scale) {
@@ -104,28 +98,18 @@ public class ModelRenderOBJ extends ModelRenderer {
         }
         scale = this.scale;
         this.displayList = GLAllocation.generateDisplayLists(1);
-        GL11.glNewList(this.displayList, GL11.GL_COMPILE);
+        GlStateManager.glNewList(this.displayList, GL11.GL_COMPILE);
 
-        GL11.glPushMatrix();
-        //ResourceHelperDE.bindTexture(texture);
-        //scale = 1F/15F;
-        GL11.glScalef(scale, scale, scale);
-        GL11.glRotatef(180, -1, 0, 1);
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, scale);
+        GlStateManager.rotate(180, -1, 0, 1);
 
-        //CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-        //Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new RotatF, 0, 1, 0), -1 * scale);
-       // model.render(0, 0, 0, 0, 0);
-        //CCRenderState.draw();
-        //model.renderAll();
-
-//        TextureUtils.get
         GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
         ModelUtils.renderQuads(objModel.getQuads(null, null, 0));
 
+        GlStateManager.popMatrix();
 
-        GL11.glPopMatrix();
-
-        GL11.glEndList();
+        GlStateManager.glEndList();
         this.compiled = true;
     }
 
@@ -136,22 +120,22 @@ public class ModelRenderOBJ extends ModelRenderer {
                 this.compileDisplayList(scale);
             }
 
-            GL11.glPushMatrix();
-            GL11.glTranslatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
             if (this.rotateAngleY != 0.0F) {
-                GL11.glRotatef(this.rotateAngleY * 57.295776F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(this.rotateAngleY * 57.295776F, 0.0F, 1.0F, 0.0F);
             }
 
             if (this.rotateAngleX != 0.0F) {
-                GL11.glRotatef(this.rotateAngleX * 57.295776F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(this.rotateAngleX * 57.295776F, 1.0F, 0.0F, 0.0F);
             }
 
             if (this.rotateAngleZ != 0.0F) {
-                GL11.glRotatef(this.rotateAngleZ * 57.295776F, 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(this.rotateAngleZ * 57.295776F, 0.0F, 0.0F, 1.0F);
             }
 
-            GL11.glCallList(this.displayList);
-            GL11.glPopMatrix();
+            GlStateManager.callList(this.displayList);
+            GlStateManager.popMatrix();
         }
 
     }
@@ -165,20 +149,20 @@ public class ModelRenderOBJ extends ModelRenderer {
 
             if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
                 if (this.rotationPointX != 0.0F || this.rotationPointY != 0.0F || this.rotationPointZ != 0.0F) {
-                    GL11.glTranslatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
+                    GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                 }
             } else {
-                GL11.glTranslatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
+                GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                 if (this.rotateAngleZ != 0.0F) {
-                    GL11.glRotatef(this.rotateAngleZ * 57.295776F, 0.0F, 0.0F, 1.0F);
+                    GlStateManager.rotate(this.rotateAngleZ * 57.295776F, 0.0F, 0.0F, 1.0F);
                 }
 
                 if (this.rotateAngleY != 0.0F) {
-                    GL11.glRotatef(this.rotateAngleY * 57.295776F, 0.0F, 1.0F, 0.0F);
+                    GlStateManager.rotate(this.rotateAngleY * 57.295776F, 0.0F, 1.0F, 0.0F);
                 }
 
                 if (this.rotateAngleX != 0.0F) {
-                    GL11.glRotatef(this.rotateAngleX * 57.295776F, 1.0F, 0.0F, 0.0F);
+                    GlStateManager.rotate(this.rotateAngleX * 57.295776F, 1.0F, 0.0F, 0.0F);
                 }
             }
         }

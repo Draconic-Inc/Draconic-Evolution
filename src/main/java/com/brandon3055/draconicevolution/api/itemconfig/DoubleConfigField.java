@@ -19,6 +19,7 @@ public class DoubleConfigField implements IItemConfigField {
     protected double maxValue;
     protected double value;
     private String extension = "";
+    private String prefix = "";
 
     /**
      * @param name the name of the field
@@ -40,6 +41,11 @@ public class DoubleConfigField implements IItemConfigField {
         return this;
     }
 
+    public DoubleConfigField setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
+
     @Override
     public String getName() {
         return name;
@@ -53,7 +59,7 @@ public class DoubleConfigField implements IItemConfigField {
     @SideOnly(Side.CLIENT)
     @Override
     public String getReadableValue() {
-        return String.valueOf(Math.round(value * 100) / 100D) + extension;
+        return prefix + String.valueOf(Math.round(value * 100) / 100D) + extension;
     }
 
     @Override

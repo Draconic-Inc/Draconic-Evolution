@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Matrix4;
@@ -45,7 +46,7 @@ public class ParticleChaosImplosion extends BCParticle {
         this.motionX = this.motionY = this.motionZ = 0;
 
         if (model == null) {
-            Map<String, CCModel> map = CCModel.parseObjModels(ResourceHelperDE.getResource("models/reactorCoreModel.obj"));
+            Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactorCoreModel.obj"));
             model = CCModel.combine(map.values());
             model.apply(new Scale(1, 0.5, 1));
         }

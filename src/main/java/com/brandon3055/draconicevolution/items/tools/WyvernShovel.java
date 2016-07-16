@@ -23,7 +23,7 @@ public class WyvernShovel extends MiningToolBase {
     }
 
     @Override
-    public int getMaxUpgradeLevel(ItemStack stack) {
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
         return 2;
     }
 

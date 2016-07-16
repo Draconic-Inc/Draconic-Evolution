@@ -29,7 +29,7 @@ public class WyvernSword extends ToolBase {
     }
 
     @Override
-    public int getMaxUpgradeLevel(ItemStack stack) {
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
         return 1;
     }
 

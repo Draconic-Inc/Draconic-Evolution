@@ -40,6 +40,9 @@ public class DEFeatures {
 
 	@Feature(name = "infusedObsidian")
 	public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
+
+    @Feature(name = "portal", tileEntity = TilePortal.class)
+    public static Portal portal = new Portal();
     //endregion
 
     //region Machines
@@ -61,6 +64,9 @@ public class DEFeatures {
 
     @Feature(name = "craftingPedestal", variantMap = {"0:facing=up,tier=basic", "1:facing=up,tier=wyvern", "2:facing=up,tier=draconic", "3:facing=up,tier=chaotic"}, tileEntity = TileCraftingPedestal.class, itemBlock = ItemBlockBasic.class, cTab = 1)
     public static CraftingPedestal craftingPedestal = new CraftingPedestal();
+
+    @Feature(name = "dislocatorReceptacle", tileEntity = TileDislocatorReceptacle.class, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static DislocatorReceptacle dislocatorReceptacle = new DislocatorReceptacle();
 
     //endregion
 
@@ -174,32 +180,35 @@ public class DEFeatures {
     @Feature(name = "toolUpgrade", cTab = 1)
     public static ToolUpgrade toolUpgrade = new ToolUpgrade();
 
+    @Feature(name = "dislocator", cTab = 1)
+    public static Dislocator dislocator = new Dislocator();
+
     //endregion
 
     //region Armor
-    @Feature(name = "wyvernHelm", cTab = 1)
+    @Feature(name = "wyvernHelm", cTab = 1, stateOverride = "armor#type=wyvernHelm")
     public static WyvernArmor wyvernHelm = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.HEAD);
 
-    @Feature(name = "wyvernChest", cTab = 1)
-    public static WyvernArmor wyvernChest = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.CHEST);
+    @Feature(name = "wyvernChest", cTab = 1, stateOverride = "armor#type=wyvernChest")
+    public static WyvernArmor wyvernChest = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 1, EntityEquipmentSlot.CHEST);
 
-    @Feature(name = "wyvernLegs", cTab = 1)
-    public static WyvernArmor wyvernLegs = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.LEGS);
+    @Feature(name = "wyvernLegs", cTab = 1, stateOverride = "armor#type=wyvernLegs")
+    public static WyvernArmor wyvernLegs = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 2, EntityEquipmentSlot.LEGS);
 
-    @Feature(name = "wyvernBoots", cTab = 1)
-    public static WyvernArmor wyvernBoots = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.FEET);
+    @Feature(name = "wyvernBoots", cTab = 1, stateOverride = "armor#type=wyvernBoots")
+    public static WyvernArmor wyvernBoots = new WyvernArmor(ItemArmor.ArmorMaterial.DIAMOND, 3, EntityEquipmentSlot.FEET);
 
-    @Feature(name = "draconicHelm", cTab = 1)
+    @Feature(name = "draconicHelm", cTab = 1, stateOverride = "armor#type=draconicHelm")
     public static DraconicArmor draconicHelm = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.HEAD);
 
-    @Feature(name = "draconicChest", cTab = 1)
-    public static DraconicArmor draconicChest = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.CHEST);
+    @Feature(name = "draconicChest", cTab = 1, stateOverride = "armor#type=draconicChest")
+    public static DraconicArmor draconicChest = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 1, EntityEquipmentSlot.CHEST);
 
-    @Feature(name = "draconicLegs", cTab = 1)
-    public static DraconicArmor draconicLegs = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.LEGS);
+    @Feature(name = "draconicLegs", cTab = 1, stateOverride = "armor#type=draconicLegs")
+    public static DraconicArmor draconicLegs = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 2, EntityEquipmentSlot.LEGS);
 
-    @Feature(name = "draconicBoots", cTab = 1)
-    public static DraconicArmor draconicBoots = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 0, EntityEquipmentSlot.FEET);
+    @Feature(name = "draconicBoots", cTab = 1, stateOverride = "armor#type=draconicBoots")
+    public static DraconicArmor draconicBoots = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 3, EntityEquipmentSlot.FEET);
 
     //endregion
 }

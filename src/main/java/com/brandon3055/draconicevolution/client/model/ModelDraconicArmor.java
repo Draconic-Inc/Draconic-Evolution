@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
 
 
 public class ModelDraconicArmor extends ModelBiped {
@@ -161,8 +162,8 @@ public class ModelDraconicArmor extends ModelBiped {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        if (entity == null) {
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if (entity == null || entity instanceof EntityArmorStand) {
             isSneak = false;
             isRiding = false;
             isChild = false;
@@ -192,7 +193,10 @@ public class ModelDraconicArmor extends ModelBiped {
             bipedRightLeg.rotateAngleZ = 0F;
 
             setRotationAngles(0, 0, 0, 0, 0, 0, null);
-        } else super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        }
+        else {
+            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+        }
 
 
         GlStateManager.pushMatrix();

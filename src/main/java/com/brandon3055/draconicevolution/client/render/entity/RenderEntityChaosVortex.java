@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
 import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCOBJParser;
 import com.brandon3055.draconicevolution.entity.EntityChaosVortex;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.renderer.entity.Render;
@@ -18,7 +19,7 @@ public class RenderEntityChaosVortex extends Render<EntityChaosVortex> {
 
     public RenderEntityChaosVortex(RenderManager manager) {
         super(manager);
-        Map<String, CCModel> map = CCModel.parseObjModels(ResourceHelperDE.getResource("models/reactorCoreModel.obj"));
+        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactorCoreModel.obj"));
         model = CCModel.combine(map.values());
     }
 

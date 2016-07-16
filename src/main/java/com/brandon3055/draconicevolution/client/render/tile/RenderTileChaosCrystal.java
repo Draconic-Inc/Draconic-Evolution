@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Matrix4;
@@ -27,7 +28,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
     private CCModel model;
 
     public RenderTileChaosCrystal() {
-        Map<String, CCModel> map = CCModel.parseObjModels(ResourceHelperDE.getResource("models/chaosCrystal.obj"));
+        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/chaosCrystal.obj"));
         model = CCModel.combine(map.values());
     }
 

@@ -30,7 +30,7 @@ public class ParticleEnergyCoreFX extends BCParticle {
     public ParticleEnergyCoreFX(World worldIn, Vec3D pos, Vec3D targetPos) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.targetPos = targetPos;
-        this.particleMaxAge = 3000;
+        this.particleMaxAge = 50;
         this.particleScale = 1F;
         this.particleTextureIndexY = 1;
         Vec3D dir = Vec3D.getDirectionVec(pos, targetPos);

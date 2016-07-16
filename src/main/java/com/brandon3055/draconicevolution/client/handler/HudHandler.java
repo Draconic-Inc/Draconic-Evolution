@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiHudConfig;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.items.armor.CustomArmorHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -17,7 +18,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,9 @@ public class HudHandler {
     private static int height;
 
     public static void drawHUD(RenderGameOverlayEvent.Post event) {
+        //LogHelper.info(event.getType());
         Minecraft mc = Minecraft.getMinecraft();
-        if (event.getType() != RenderGameOverlayEvent.ElementType.CROSSHAIRS || mc.gameSettings.showDebugInfo || mc.currentScreen instanceof GuiChat) {
+        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL || mc.gameSettings.showDebugInfo || mc.currentScreen instanceof GuiChat) {
             return;
         }
 
@@ -130,45 +131,43 @@ public class HudHandler {
             }
         }
 
+        CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(mc.thePlayer);
 
-//        CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(mc.thePlayer);
-//
-//        if (summery == null) {
-//            showShieldHud = false;
-//            return;
-//        }
-//        showShieldHud = armorStatsFadeOut > 0F;
-//
-//        if (maxShieldPoints != summery.maxProtectionPoints || shieldPoints != summery.protectionPoints || shieldEntropy != summery.entropy || rfTotal != summery.totalEnergyStored)
-//            armorStatsFadeOut = 5F;
-//
-//        maxShieldPoints = summery.maxProtectionPoints;
-//        shieldPoints = summery.protectionPoints;
-//        shieldPercentCharge = (int) (summery.protectionPoints / summery.maxProtectionPoints * 100D);
-//        shieldEntropy = summery.entropy;
-//        rfCharge = (int) ((double) summery.totalEnergyStored / Math.max((double) summery.maxTotalEnergyStorage, 1D) * 100D);
-//        rfTotal = summery.totalEnergyStored;
+        if (summery == null) {
+            showShieldHud = false;
+            return;
+        }
+        showShieldHud = armorStatsFadeOut > 0F;
+
+        if (maxShieldPoints != summery.maxProtectionPoints || shieldPoints != summery.protectionPoints || shieldEntropy != summery.entropy || rfTotal != summery.totalEnergyStored)
+            armorStatsFadeOut = 5F;
+
+        maxShieldPoints = summery.maxProtectionPoints;
+        shieldPoints = summery.protectionPoints;
+        shieldPercentCharge = (int) (summery.protectionPoints / summery.maxProtectionPoints * 100D);
+        shieldEntropy = summery.entropy;
+        rfCharge = (int) ((double) summery.totalEnergyStored / Math.max((double) summery.maxTotalEnergyStorage, 1D) * 100D);
+        rfTotal = summery.totalEnergyStored;
     }
 
-
     private static void drawArmorHUD(int x, int y, boolean rotated, double scale) {
-        GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
+        GlStateManager.pushMatrix();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
         ResourceHelperDE.bindTexture("textures/gui/HUD.png");
 
-        GL11.glTranslated(x, y, 0);
-        GL11.glScaled(scale, scale, 1);
-        GL11.glTranslated(-x, -y, 0);
-        GL11.glColor4f(1F, 1F, 1F, Math.min(armorStatsFadeOut, 1F));
+        GlStateManager.translate(x, y, 0);
+        GlStateManager.scale(scale, scale, 1);
+        GlStateManager.translate(-x, -y, 0);
+        GlStateManager.color(1F, 1F, 1F, Math.min(armorStatsFadeOut, 1F));
 
         if (rotated) {
             GuiHelper.drawTexturedRect(x - 15, y + 1, 14, 16, 2, 0, 13, 15, 0, GuiHelper.PXL128);
             x += 104;
-            GL11.glTranslated(x, y, 0);
-            GL11.glRotated(-90, 0, 0, -1);
-            GL11.glTranslated(-x, -y, 0);
+            GlStateManager.translate(x, y, 0);
+            GlStateManager.rotate(-90, 0, 0, -1);
+            GlStateManager.translate(-x, -y, 0);
         } else GuiHelper.drawTexturedRect(x + 1, y + 105, 15, 17, 2, 0, 13, 15, 0, GuiHelper.PXL128);
 
         GuiHelper.drawTexturedRect(x, y, 17, 104, 0, 15, 17, 104, 0, GuiHelper.PXL128);
@@ -179,9 +178,9 @@ public class HudHandler {
 
         if (DEConfig.hudSettings[9] == 1) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
-            GL11.glTranslated(x, y, 0);
-            if (rotated) GL11.glRotated(90, 0, 0, -1);
-            GL11.glTranslated(-x, -y, 0);
+            GlStateManager.translate(x, y, 0);
+            if (rotated) GlStateManager.rotate(90, 0, 0, -1);
+            GlStateManager.translate(-x, -y, 0);
             String shield = Math.round(shieldPoints) + "/" + (int) maxShieldPoints;
             String entropy = "EN: " + (int) shieldEntropy + "%";
             String energy = "RF: " + Utils.formatNumber(rfTotal);
@@ -198,9 +197,9 @@ public class HudHandler {
         }
 
         ResourceHelperDE.bindTexture(ResourceHelperDE.getResourceRAW("minecraft:textures/gui/icons.png"));
-        GL11.glColor4f(1F, 1F, 1F, 1F);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glPopMatrix();
+        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.disableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.popMatrix();
     }
 }

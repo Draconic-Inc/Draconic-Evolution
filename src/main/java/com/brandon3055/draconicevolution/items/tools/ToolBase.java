@@ -13,10 +13,12 @@ import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.IDualModel;
+import com.brandon3055.draconicevolution.items.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,6 +57,16 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     @Override
     public boolean isItemTool(ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public boolean hasCustomEntity(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+        return new EntityPersistentItem(world, location, itemstack);
     }
 
     //endregion
@@ -104,7 +116,7 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     }
 
     @Override
-    public abstract int getMaxUpgradeLevel(ItemStack stack);
+    public abstract int getMaxUpgradeLevel(ItemStack stack, String upgrade);
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
@@ -120,6 +132,18 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
         else {
             list.add(TextFormatting.GOLD + I18n.format("upgrade.de.upgrades.info"));
             list.addAll(UpgradeHelper.getUpgradeStats(stack));
+        }
+    }
+
+    @Override
+    public int getCapacity(ItemStack stack) {
+        int level = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.RF_CAPACITY);
+
+        if (level == 0) {
+            return super.getCapacity(stack);
+        }
+        else {
+            return super.getCapacity(stack) * (int)Math.pow(2, level + 1);
         }
     }
 

@@ -35,10 +35,6 @@ public class DESoundHandler {
     public static final SoundEvent coreSound;
     public static final SoundEvent shieldStrike;
 
-
-
-
-
     static {
         if (!Bootstrap.isRegistered()) {
             throw new RuntimeException("Accessed Sounds before Bootstrap!");
@@ -59,11 +55,6 @@ public class DESoundHandler {
             shieldStrike = getRegisteredSoundEvent("draconicevolution:shieldStrike");
         }
     }
-
-
-
-
-
 
 
     private static SoundEvent getRegisteredSoundEvent(String id) {
@@ -91,6 +82,10 @@ public class DESoundHandler {
 
     public static void playSoundFromServer(World world, double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay, double range) {
         Object o = ReflectionHelper.getPrivateValue(SoundEvent.class, soundIn, "field_187506_b", "soundName");
+
+        if (o instanceof ResourceLocation){
+            o = o.toString();
+        }
 
         if (o instanceof String) {
             String soundId = (String) o;

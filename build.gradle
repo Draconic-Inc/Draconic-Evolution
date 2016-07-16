@@ -48,7 +48,9 @@ minecraft {
     runDir = "run"
 	mappings = "${config.mappings}"
     replace '${mod_version}', project.config.mod_version
+    replaceIn "DraconicEvolution.java"
     makeObfSourceJar = false
+    useDepAts = true
 }
 
 String buildNo = "1"

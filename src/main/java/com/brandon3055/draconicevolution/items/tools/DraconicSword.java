@@ -12,7 +12,7 @@ public class DraconicSword extends WyvernSword {
     }
 
     @Override
-    public int getMaxUpgradeLevel(ItemStack stack) {
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
         return 3;
     }
 

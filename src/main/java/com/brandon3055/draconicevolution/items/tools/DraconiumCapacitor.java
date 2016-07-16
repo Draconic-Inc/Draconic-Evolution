@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.itemupgrade.*;
+import com.brandon3055.draconicevolution.items.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
@@ -51,6 +52,16 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 1), "Energy", draconicBaseCap));
 
         subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 2), "Energy", Integer.MAX_VALUE / 2));
+    }
+
+    @Override
+    public boolean hasCustomEntity(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+        return new EntityPersistentItem(world, location, itemstack);
     }
 
     //endregion
@@ -220,7 +231,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     }
 
     @Override
-    public int getMaxUpgradeLevel(ItemStack stack) {
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
         return stack.getItemDamage() == 0 ? 3 :
                 stack.getItemDamage() == 1 ? 6 : 0;
     }

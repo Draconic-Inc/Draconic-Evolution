@@ -96,5 +96,6 @@ public class ToolModelLoader implements TextureUtils.IIconRegister, IResourceMan
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
         modelCache.clear();
+        registerModels();
     }
 }

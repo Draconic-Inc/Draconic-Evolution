@@ -119,7 +119,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
         }
 
         IUpgradableItem item = (IUpgradableItem)inventory.getStackInCore(0).getItem();
-        if (item.getMaxUpgradeLevel(inventory.getStackInCore(0)) < upgradeLevel){
+        if (item.getMaxUpgradeLevel(inventory.getStackInCore(0), upgrade) < upgradeLevel){
             return "upgrade.de.upgradeLevelToHigh.info";
         }
 

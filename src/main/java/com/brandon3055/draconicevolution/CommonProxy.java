@@ -6,8 +6,11 @@ import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
+import com.brandon3055.draconicevolution.items.EntityPersistentItem;
+import com.brandon3055.draconicevolution.items.armor.CustomArmorHandler;
 import com.brandon3055.draconicevolution.network.PacketConfigureTool;
 import com.brandon3055.draconicevolution.network.PacketPlaySound;
+import com.brandon3055.draconicevolution.network.PacketShieldHit;
 import com.brandon3055.draconicevolution.network.PacketSimpleBoolean;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.audio.ISound;
@@ -61,6 +64,7 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(PacketSimpleBoolean.Handler.class, PacketSimpleBoolean.class, 0, Side.SERVER);
         DraconicEvolution.network.registerMessage(PacketConfigureTool.Handler.class, PacketConfigureTool.class, 1, Side.SERVER);
         DraconicEvolution.network.registerMessage(PacketPlaySound.Handler.class, PacketPlaySound.class, 2, Side.CLIENT);
+        DraconicEvolution.network.registerMessage(PacketShieldHit.Handler.class, PacketShieldHit.class, 3, Side.CLIENT);
 //		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlacedItemPacket.Handler.class, PlacedItemPacket.class, 2, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);
@@ -124,6 +128,7 @@ public class CommonProxy {
 //		MinecraftForge.EVENT_BUS.register(new MinecraftForgeEventHandler());
 //		MinecraftForge.EVENT_BUS.register(new Achievements());
         MinecraftForge.EVENT_BUS.register(new Achievements());
+        MinecraftForge.EVENT_BUS.register(new CustomArmorHandler());
 //		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
 	}
 
@@ -148,7 +153,7 @@ public class CommonProxy {
 	//@Callback
 	public void registerEntities() {
 //		EntityRegistry.registerModEntity(EntityCustomDragon.class, "EnderDragon", 0, DraconicEvolution.instance, 256, 3, true);
-//		EntityRegistry.registerModEntity(EntityPersistentItem.class, "Persistent Item", 1, DraconicEvolution.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityPersistentItem.class, "PersistentItem", 1, DraconicEvolution.instance, 32, 5, true);
 //		EntityRegistry.registerModEntity(EntityDraconicArrow.class, "Arrow", 2, DraconicEvolution.instance, 32, 5, true);
 //		EntityRegistry.registerModEntity(EntityEnderArrow.class, "Ender Arrow", 3, DraconicEvolution.instance, 32, 1, true);
 //		EntityRegistry.registerModEntity(EntityDragonHeart.class, "Dragon Heart Item", 5, DraconicEvolution.instance, 32, 5, true);

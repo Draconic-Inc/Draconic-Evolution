@@ -16,7 +16,7 @@ public class DraconicPick extends WyvernPick {
     }
 
     @Override
-    public int getMaxUpgradeLevel(ItemStack stack) {
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
         return 3;
     }
 

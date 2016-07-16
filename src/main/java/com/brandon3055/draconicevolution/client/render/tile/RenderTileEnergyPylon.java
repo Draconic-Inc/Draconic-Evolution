@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.vec.Scale;
 import com.brandon3055.brandonscore.client.render.TESRBase;
@@ -22,7 +23,7 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
     private static CCModel model;
 
     public RenderTileEnergyPylon() {
-        Map<String, CCModel> map = CCModel.parseObjModels(ResourceHelperDE.getResource("models/pylonSphere.obj")); //Note dont generate the model evey render frame move this to constructor
+        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/pylonSphere.obj")); //Note dont generate the model evey render frame move this to constructor
         model = CCModel.combine(map.values());
         model.apply(new Scale(0.35, 0.35, 0.35));
     }
@@ -43,7 +44,6 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
             GlStateManager.disableCull();
 
             CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            CCRenderState.pullBuffer();
 
 //            Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 1.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks), 1, 0, 0), 1);
 
@@ -65,7 +65,6 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
             GlStateManager.enableBlend();
 
             CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            CCRenderState.pullBuffer();
             model.computeNormals();
             model.render();
             CCRenderState.draw();
