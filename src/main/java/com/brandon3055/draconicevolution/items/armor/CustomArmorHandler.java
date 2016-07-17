@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.armor;
 
-import com.brandon3055.brandonscore.proxy.SainProxyHandler;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -237,12 +237,12 @@ public class CustomArmorHandler {
                 if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && summery.flightVModifier > 0) {
 //				float percentIncrease = summery.flightVModifier;
 
-                    if (SainProxyHandler.isJumpKeyDown() && !SainProxyHandler.isSneakKeyDown()) {
+                    if (BrandonsCore.proxy.isJumpKeyDown() && !BrandonsCore.proxy.isSneakKeyDown()) {
                         //LogHelper.info(player.motionY);
                         player.motionY = 0.225F * summery.flightVModifier;
                     }
 
-                    if (SainProxyHandler.isSneakKeyDown() && !SainProxyHandler.isJumpKeyDown()) {
+                    if (BrandonsCore.proxy.isSneakKeyDown() && !BrandonsCore.proxy.isJumpKeyDown()) {
                         player.motionY = -0.225F * summery.flightVModifier;
                     }
                 }

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.armor;
 
-import com.brandon3055.brandonscore.proxy.SainProxyHandler;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IntegerConfigField;
@@ -212,7 +212,7 @@ public class DraconicArmor extends WyvernArmor {
     public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorFSpeedModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !SainProxyHandler.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
             modifier /= 5F;
         }
 
@@ -223,7 +223,7 @@ public class DraconicArmor extends WyvernArmor {
     public float getFlightVModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorVFSpeedModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !SainProxyHandler.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
             modifier /= 5F;
         }
 

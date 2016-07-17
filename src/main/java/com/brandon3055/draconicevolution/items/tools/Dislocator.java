@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.brandonscore.proxy.SainProxyHandler;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.items.EntityPersistentItem;
@@ -98,7 +98,7 @@ public class Dislocator extends ItemBCore {
                     ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
                     ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
                     ItemNBTHelper.setBoolean(stack, "IsSet", true);
-                    ItemNBTHelper.setString(stack, "DimentionName", SainProxyHandler.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionType().getName());//TODO Is this really needed?
+                    ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionType().getName());//TODO Is this really needed?
                 }
                 return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
             }
