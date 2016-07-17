@@ -198,7 +198,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     public float getSpeedModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorSpeedModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && player.isSprinting()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !player.isSprinting()){
             modifier /= 5F;
         }
 
@@ -209,7 +209,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     public float getJumpModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorJumpModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) || BrandonsCore.proxy.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
             modifier /= 5F;
         }
 
