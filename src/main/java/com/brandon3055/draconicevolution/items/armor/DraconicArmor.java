@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.armor;
 
-import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.proxy.SainProxyHandler;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IntegerConfigField;
@@ -11,7 +11,6 @@ import com.brandon3055.draconicevolution.client.model.ModelDraconicArmor;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.tools.ToolStats;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -213,7 +212,7 @@ public class DraconicArmor extends WyvernArmor {
     public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorFSpeedModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !SainProxyHandler.isSprintKeyDown()){
             modifier /= 5F;
         }
 
@@ -224,14 +223,7 @@ public class DraconicArmor extends WyvernArmor {
     public float getFlightVModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorVFSpeedModifier", stack) / 100F;
 
-        LogHelper.info("getFlightVModifier");
-        LogHelper.info(modifier);
-        LogHelper.info(stack);
-        LogHelper.info(ToolConfigHelper.getBooleanField("sprintBoost", stack));
-        LogHelper.info(BrandonsCore.proxy);
-        LogHelper.info(BrandonsCore.proxy.isSprintKeyDown());
-
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !SainProxyHandler.isSprintKeyDown()){
             modifier /= 5F;
         }
 

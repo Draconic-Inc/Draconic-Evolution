@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.armor;
 
-import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.proxy.SainProxyHandler;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
@@ -209,7 +209,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     public float getJumpModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorJumpModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !SainProxyHandler.isSprintKeyDown()){
             modifier /= 5F;
         }
 
