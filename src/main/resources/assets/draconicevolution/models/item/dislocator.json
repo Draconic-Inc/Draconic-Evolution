@@ -1,6 +1,4 @@
 {
   "parent": "item/generated",
-  "textures": {
-    "layer0": "draconicevolution:items/dislocator"
-  }
+  "textures": { "layer0": "draconicevolution:items/dislocator" }
 }
