@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.model;
 import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TransformUtils;
 import com.brandon3055.brandonscore.utils.ModelUtils;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Function;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -96,6 +97,13 @@ public class ModelRenderOBJ extends ModelRenderer {
         if (this.scale == 0) {
             this.scale = scale;
         }
+
+        if (objModel == null){
+            compiled = true;
+            LogHelper.bigError("Armor Model Display List could not be compiled!!! Armor model is broken!");
+            return;
+        }
+
         scale = this.scale;
         this.displayList = GLAllocation.generateDisplayLists(1);
         GlStateManager.glNewList(this.displayList, GL11.GL_COMPILE);
