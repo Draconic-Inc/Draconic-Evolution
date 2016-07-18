@@ -120,7 +120,8 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
             if (player.getHeldItemMainhand() == null){
                 player.setHeldItem(EnumHand.MAIN_HAND, craftingPedestal.getStackInSlot(0));
                 craftingPedestal.setInventorySlotContents(0, null);
-            }else {
+            }
+            else {
                 world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, craftingPedestal.getStackInSlot(0)));
                 craftingPedestal.setInventorySlotContents(0, null);
             }
