@@ -52,6 +52,7 @@ tile.draconicevolution:craftingPedestal.facing.up.tier.wyvern.name=Wyvern Fusion
 tile.draconicevolution:craftingPedestal.facing.up.tier.draconic.name=Draconic Fusion Crafting Injector
 tile.draconicevolution:craftingPedestal.facing.up.tier.chaotic.name=Chaotic Fusion Crafting Injector
 
+tile.draconicevolution:creativeRFSource.name=Creative RF Source
 
 
 //Item Information ----------------------------------------------------------------------------------------------------------------------------------------
@@ -136,6 +137,8 @@ item.draconicevolution:toolUpgrade.shieldCap.name=Upgrade Key (Shield Capacity)
 item.draconicevolution:toolUpgrade.shieldRec.name=Upgrade Key (Shield Recovery)
 item.draconicevolution:toolUpgrade.moveSpeed.name=Upgrade Key (Movement Speed)
 item.draconicevolution:toolUpgrade.jumpBoost.name=Upgrade Key (Jump Boost)
+
+item.draconicevolution:creativeExchanger.name=Creative Block Exchanger
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 

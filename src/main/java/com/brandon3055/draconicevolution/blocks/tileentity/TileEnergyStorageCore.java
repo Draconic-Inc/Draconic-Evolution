@@ -61,10 +61,10 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
     public final SyncableByte tier = new SyncableByte((byte)1, true, false, true);
     public final SyncableLong energy = new SyncableLong(0, true, false, false);
     public final SyncableVec3I[] stabOffsets = new SyncableVec3I[4];
-    public final SyncableInt transferRate = new SyncableInt(0, false, true, false);
+    public final SyncableLong transferRate = new SyncableLong(0, false, true, false);
 
     private int ticksElapsed = 0;
-    private int[] flowArray = new int[20];
+    private long[] flowArray = new long[20];
     public float rotation = 0;
 
     public TileEnergyStorageCore() {
@@ -86,12 +86,12 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 	@Override
 	public void update() {
         if (!worldObj.isRemote){
-            flowArray[ticksElapsed % 20] = (int)(energy.value - energy.lastTickValue);
+            flowArray[ticksElapsed % 20] = (energy.value - energy.lastTickValue);
             long total = 0;
-            for (int i : flowArray){
+            for (long i : flowArray){
                 total += i;
             }
-            transferRate.value = (int)(total / 20L);
+            transferRate.value = total / 20L;
         }
         else {
             rotation++;

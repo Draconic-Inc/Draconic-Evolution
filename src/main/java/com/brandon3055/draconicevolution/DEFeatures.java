@@ -86,12 +86,14 @@ public class DEFeatures {
 
     //region Exotic Blocks
 
-    @Feature(name = "chaosCrystal", tileEntity = TileChaosCrystal.class ,cTab = -1)
+    @Feature(name = "chaosCrystal", tileEntity = TileChaosCrystal.class, cTab = -1)
     public static ChaosCrystal chaosCrystal = new ChaosCrystal();
 
     @Feature(name = "chaosShardAtmos", cTab = -1)
     public static ChaosShardAtmos chaosShardAtmos = new ChaosShardAtmos();
 
+    @Feature(name = "creativeRFSource", tileEntity = TileCreativeRFCapacitor.class, cTab = 1)
+    public static CreativeRFSource creativeRFSource = new CreativeRFSource();
 
     //endregion
 
@@ -130,6 +132,11 @@ public class DEFeatures {
 
 	@Feature(name = "nugget", variantMap = {"0:type=draconium", "1:type=awakened"})
 	public static ItemSimpleSubs nugget = new ItemSimpleSubs(new String[]{"0:draconium", "1:awakened"});
+
+    @Feature(name = "chaosShard", stateOverride = "simpleComponents#type=chaosShard")
+    public static Item chaosShard = new Item();
+
+
     //endregion
 
     //region Tools
@@ -212,6 +219,13 @@ public class DEFeatures {
 
     @Feature(name = "draconicBoots", cTab = 1, stateOverride = "armor#type=draconicBoots")
     public static DraconicArmor draconicBoots = new DraconicArmor(ItemArmor.ArmorMaterial.DIAMOND, 3, EntityEquipmentSlot.FEET);
+
+    //endregion
+
+    //region Exotic Items
+
+    @Feature(name = "creativeExchanger", stateOverride = "simpleComponents#type=chaoticCore", cTab = 1)
+    public static CreativeExchanger creativeExchanger = new CreativeExchanger();
 
     //endregion
 }

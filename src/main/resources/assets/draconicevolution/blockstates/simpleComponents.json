@@ -17,7 +17,10 @@
       "awakenedcore":  { "textures": { "layer0": "draconicevolution:items/components/awakenedCore"   } },
       "chaoticcore":   { "textures": { "layer0": "draconicevolution:items/components/chaoticCore"    } },
       "wyvernecore":  { "textures": { "layer0": "draconicevolution:items/components/wyvernEnergyCore"   } },
-      "draconicecore":   { "textures": { "layer0": "draconicevolution:items/components/draconicEnergyCore"    } }
+      "draconicecore":   { "textures": { "layer0": "draconicevolution:items/components/draconicEnergyCore"    } },
+      "chaosshard":   {
+        "model": "draconicevolution:chaosShard.obj"
+      }
     }
   }
 }

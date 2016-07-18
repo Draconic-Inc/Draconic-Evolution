@@ -6,8 +6,10 @@ import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TransformUtils;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
+import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
@@ -249,11 +251,94 @@ public class ClientEventHandler {
         ItemStack stack = player.getHeldItemMainhand();
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (stack == null || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
+        if (mc.objectMouseOver == null || mc.objectMouseOver.typeOfHit != RayTraceResult.Type.BLOCK) {
             return;
         }
 
-        if (mc.objectMouseOver == null || mc.objectMouseOver.typeOfHit != RayTraceResult.Type.BLOCK) {
+        if (stack != null && stack.getItem() == DEFeatures.creativeExchanger) {
+
+            int size = ItemNBTHelper.getByte(stack, "Size", (byte) 0);
+
+            int xRange = 0;
+            int yRange = 0;
+            int zRange = 0;
+
+            switch (mc.objectMouseOver.sideHit.getAxis()) {
+                case X:
+                    zRange = size;
+                    yRange = size;
+                    break;
+                case Y:
+                    xRange = size;
+                    zRange = size;
+                    break;
+                case Z:
+                    xRange = size;
+                    yRange = size;
+                    break;
+            }
+
+            Iterable<BlockPos> blocks = BlockPos.getAllInBox(mc.objectMouseOver.getBlockPos().add(-xRange, -yRange, -zRange), mc.objectMouseOver.getBlockPos().add(xRange, yRange, zRange));
+
+            Tessellator tessellator = Tessellator.getInstance();
+            VertexBuffer buffer = tessellator.getBuffer();
+
+            double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) event.getPartialTicks();
+            double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) event.getPartialTicks();
+            double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) event.getPartialTicks();
+
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.color(1F, 1F, 1F, 1F);
+            GlStateManager.glLineWidth(2.0F);
+            GlStateManager.disableTexture2D();
+            GlStateManager.disableDepth();
+
+            for (BlockPos block : blocks) {
+                if (world.isAirBlock(block)) {
+                    continue;
+                }
+
+                double renderX = block.getX() - offsetX;
+                double renderY = block.getY() - offsetY;
+                double renderZ = block.getZ() - offsetZ;
+
+                AxisAlignedBB boundingBox = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1);
+
+                buffer.begin(3, DefaultVertexFormats.POSITION);
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+                tessellator.draw();
+                buffer.begin(3, DefaultVertexFormats.POSITION);
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+                tessellator.draw();
+                buffer.begin(1, DefaultVertexFormats.POSITION);
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+                tessellator.draw();
+            }
+
+            GlStateManager.enableDepth();
+            GlStateManager.enableTexture2D();
+            GlStateManager.disableBlend();
+
+
+        }
+
+        if (stack == null || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
             return;
         }
 

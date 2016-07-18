@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,11 +63,13 @@ public class GuiEnergyCore extends GuiContainer {
             String capText = tile.tier.value == 8 ? I18n.format("gui.de.almostInfinite.txt") : Utils.formatNumber(tile.getExtendedCapacity());
             GuiHelper.drawCenteredString(fontRendererObj, capText, guiLeft + xSize / 2, guiTop + 27, 0x555555, false);
 
-            GuiHelper.drawCenteredString(fontRendererObj, I18n.format("info.de.charge.txt"), guiLeft + xSize / 2, guiTop + 38, 0xFFAA00, true);
-            GuiHelper.drawCenteredString(fontRendererObj, Utils.formatNumber(tile.getExtendedStorage()) + "RF", guiLeft + xSize / 2, guiTop + 49, 0x555555, false);
+            DecimalFormat energyValue = new DecimalFormat("###.###");
+            double percent = (double) tile.getExtendedStorage() / (double) tile.getExtendedCapacity() * 100D;
+            GuiHelper.drawCenteredString(fontRendererObj, I18n.format("info.bc.charge.txt"), guiLeft + xSize / 2, guiTop + 38, 0xFFAA00, true);
+            GuiHelper.drawCenteredString(fontRendererObj, Utils.formatNumber(tile.getExtendedStorage()) + "RF [" + energyValue.format(percent) + "%]", guiLeft + xSize / 2, guiTop + 49, 0x555555, false);
 
             int coreColour = tile.transferRate.value > 0 ? 0x00FF00 : tile.transferRate.value < 0 ? 0xFF0000 : 0x222222;
-            String transfer = (tile.transferRate.value > 0 ? "+" : "") + tile.transferRate.value + " RF/t";
+            String transfer = (tile.transferRate.value > 0 ? "+" : "") + Utils.formatNumber(tile.transferRate.value) + " RF/t";
             GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.de.transfer.txt"), guiLeft + xSize / 2, guiTop + 59, 0xFFAA00, true);
             GuiHelper.drawCenteredString(fontRendererObj, transfer, guiLeft + xSize / 2, guiTop + 70, coreColour, tile.transferRate.value > 0);
 
