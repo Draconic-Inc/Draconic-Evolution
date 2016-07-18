@@ -1,0 +1,120 @@
+{
+  "charge": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:charge",
+        "stream": false
+      }
+    ]
+  },
+  "discharge": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:discharge",
+        "stream": false
+      }
+    ]
+  },
+  "boom": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:boom",
+        "stream": false
+      }
+    ]
+  },
+  "beam": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:beam",
+        "stream": false
+      }
+    ]
+  },
+  "portal": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:portal",
+        "stream": false
+      }
+    ]
+  },
+  "shieldUp": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "draconicevolution:shieldUp",
+        "stream": false
+      }
+    ]
+  },
+  "fusionExplosion": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "draconicevolution:fusionExplosion",
+        "stream": false
+      }
+    ]
+  },
+  "chaosChamberAmbient": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "draconicevolution:chaosChamberAmbient",
+        "stream": true
+      }
+    ]
+  },
+  "coreSound": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:coreSound",
+        "stream": false
+      }
+    ]
+  },
+  "shieldStrike": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:shieldStrike",
+        "stream": false
+      }
+    ]
+  },
+  "energyBolt": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:energyBolt",
+        "stream": false
+      }
+    ]
+  },
+  "fusionComplete": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:fusionComplete",
+        "stream": false
+      }
+    ]
+  },
+  "fusionRotation": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:fusionRotation",
+        "stream": false
+      }
+    ]
+  }
+}
+
