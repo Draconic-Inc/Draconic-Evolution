@@ -183,6 +183,9 @@ public class DEFeatures {
     @Feature(name = "dislocator", cTab = 1)
     public static Dislocator dislocator = new Dislocator();
 
+    @Feature(name = "dislocatorAdvanced", cTab = 1)
+    public static DislocatorAdvanced dislocatorAdvanced = new DislocatorAdvanced();
+
     //endregion
 
     //region Armor

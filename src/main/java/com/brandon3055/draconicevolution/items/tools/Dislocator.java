@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.items.EntityPersistentItem;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.resources.I18n;
@@ -176,5 +177,10 @@ public class Dislocator extends ItemBCore {
     @Override
     public Entity createEntity(World world, Entity location, ItemStack itemstack) {
         return new EntityPersistentItem(world, location, itemstack);
+    }
+
+    @Override
+    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+        return repair != null && repair.getItem() == DEFeatures.draconiumIngot;
     }
 }

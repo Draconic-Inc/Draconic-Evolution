@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.ArmorModelHelper;
-import com.brandon3055.draconicevolution.client.model.ToolModelLoader;
+import com.brandon3055.draconicevolution.client.model.tool.ToolModelLoader;
 import com.brandon3055.draconicevolution.client.render.entity.RenderChaosGuardian;
 import com.brandon3055.draconicevolution.client.render.entity.RenderEntityChaosVortex;
 import com.brandon3055.draconicevolution.client.render.entity.RenderGuardianCrystal;

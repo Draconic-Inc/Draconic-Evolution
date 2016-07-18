@@ -12,7 +12,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.IDualModel;
+import com.brandon3055.draconicevolution.client.model.tool.IDualModel;
 import com.brandon3055.draconicevolution.items.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.google.common.collect.Multimap;

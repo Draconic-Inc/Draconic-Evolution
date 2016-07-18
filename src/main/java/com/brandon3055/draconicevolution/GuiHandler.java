@@ -133,8 +133,8 @@ public class GuiHandler implements IGuiHandler {
 //					return new GUISunDial(player.inventory, (TileSunDial) te1);
 //				}
 //				break;
-//			case GUIID_TELEPORTER:
-//				return new GUITeleporter(player);
+			case GUIID_TELEPORTER:
+				return new GuiDislocator(player);
 			case GUIID_GRINDER:
 				if (tileEntity != null && tileEntity instanceof TileGrinder) {
 					return new GuiGrinder(player.inventory, (TileGrinder) tileEntity);

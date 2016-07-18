@@ -51,6 +51,9 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "enableFlight", comment = "Set this to false if you would like to disable the draconic armors flight.")
     public static boolean enableFlight = true;
 
+    @ModConfigProperty(category = "Tweaks", name = "dislocatorUsesPerPearl", comment = "Sets the number of teleports you get per ender pearl with the Advanced Dislocator")
+    public static int dislocatorUsesPerPearl = 1;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stores. You should not need to adjust these unless something breaks.")
