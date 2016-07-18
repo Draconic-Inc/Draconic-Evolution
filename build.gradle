@@ -17,11 +17,7 @@ apply plugin: 'maven-publish'
 repositories {
     maven {
         name 'Covers1624 maven'
-        url "http://adel.podgeweb.com:1616/maven/"
-    }
-    maven {
-        name 'Covers1624 maven'
-        url "http://172.17.5.4:1616/maven/"
+        url "http://jenkins.podgeweb.com:1616/maven/"
     }
 	maven {
         name 'CB Maven'
