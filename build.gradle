@@ -53,7 +53,7 @@ minecraft {
     useDepAts = true
 }
 
-String buildNo = "38"
+String buildNo = "1"
 if(System.getenv("BUILD_NUMBER") != null){
 	buildNo = System.getenv("BUILD_NUMBER")
 }
@@ -62,7 +62,7 @@ version = version + ".${buildNo}"
 dependencies {
     //compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:deobf"
     //compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:deobf"
-//	compile "com.brandon3055.brandonscore:BrandonsCore:${config.minecraft_version}-${config.bcore_version}:deobf"
+	compile "com.brandon3055.brandonscore:BrandonsCore:${config.minecraft_version}-${config.bcore_version}:deobf"
 	compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:deobf"
 
     //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
