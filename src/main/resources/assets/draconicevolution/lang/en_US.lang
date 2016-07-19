@@ -734,7 +734,10 @@ config.field..description
 config.field..entry=
 config.field..description
 
-
+config.field.AOE.entry=A.O.E
+config.field.replaceSame.entry=Replace Same Blocks
+config.field.replaceVisible.entry=Replace Visible
+config.field.fillLogic.entry=Fill Logic
 
 
 

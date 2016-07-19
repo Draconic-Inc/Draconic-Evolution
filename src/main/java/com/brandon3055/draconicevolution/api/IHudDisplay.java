@@ -19,8 +19,8 @@ public interface IHudDisplay {
      * @param stack Will be the stack the player is holding if this interface is implemented by an item.
      * @param world The players world.
      * @param pos The position of the block if this interface is implemented by a block.
-     * @param displayData The list to which display data should be added.
+     * @param displayList The list to which display data should be added.
      */
     @SideOnly(Side.CLIENT)
-    void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayData);
+    void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList);
 }

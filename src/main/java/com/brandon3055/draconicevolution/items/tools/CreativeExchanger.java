@@ -2,11 +2,18 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.utils.FacingUtils;
+import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
+import com.brandon3055.draconicevolution.api.IHudDisplay;
+import com.brandon3055.draconicevolution.api.itemconfig.*;
+import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -17,12 +24,20 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 19/07/2016.
  */
-public class CreativeExchanger extends ItemBCore {
+public class CreativeExchanger extends ItemBCore implements IConfigurableItem, IHudDisplay {
+
+    public CreativeExchanger() {
+        setMaxStackSize(1);
+    }
+
+    //region Basic
 
     @Override
     public boolean hasEffect(ItemStack stack) {
@@ -30,28 +45,42 @@ public class CreativeExchanger extends ItemBCore {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        tooltip.add(TextFormatting.BLUE + "Use tool config gui to configure. " + TextFormatting.GOLD + "Key: \"" + KeyBindings.toolConfig.getDisplayName() + "\"");
+        tooltip.add(TextFormatting.BLUE + "To cycle config profile press: " + TextFormatting.GOLD + KeyBindings.toolProfileChange.getDisplayName());
+        tooltip.add("");
+        tooltip.add(TextFormatting.AQUA + "Right Click to replace blocks in matching configuration.");
+        tooltip.add(TextFormatting.AQUA + "Left Click to replace single block.");
+        tooltip.add("");
+        tooltip.add(TextFormatting.DARK_RED + "This item may not be completely stable.");
+        tooltip.add(TextFormatting.DARK_RED + "Please be responsible and don't try anything stupid!");
+        tooltip.add(TextFormatting.DARK_PURPLE + "Added for BTM will probably be refined for survival later.");
+    }
+
+    //endregion
+
+    //region Interaction
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         RayTraceResult traceResult = RayTracer.retrace(player);
 
         if (traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
-            return super.onItemRightClick(itemStack, world, player, hand);
+            return super.onItemRightClick(stack, world, player, hand);
         }
 
         if (world.isRemote){
-            return super.onItemRightClick(itemStack, world, player, hand);
-        }
-        int range = ItemNBTHelper.getByte(itemStack, "Size", (byte)0);
-        if (player.isSneaking()){
-            range++;
-            if (range > 10) {
-                range = 0;
-            }
-            player.addChatComponentMessage(new TextComponentString("Range: " + (range * 2 + 1) +" x " + (range * 2 + 1)).setStyle(new Style().setColor(TextFormatting.AQUA)));
-            ItemNBTHelper.setInteger(itemStack, "Size", range);
-            return super.onItemRightClick(itemStack, world, player, hand);
+            return super.onItemRightClick(stack, world, player, hand);
         }
 
-        return super.onItemRightClick(itemStack, world, player, hand);
+        if (player.isSneaking()){
+            player.addChatComponentMessage(new TextComponentString(TextFormatting.DARK_RED + "Clear Mode"));
+            ItemNBTHelper.setString(stack, "BlockName", "");
+            ItemNBTHelper.setByte(stack, "BlockData", (byte) 0);
+            return super.onItemRightClick(stack, world, player, hand);
+        }
+
+        return super.onItemRightClick(stack, world, player, hand);
     }
 
     @Override
@@ -69,50 +98,32 @@ public class CreativeExchanger extends ItemBCore {
             ItemNBTHelper.setString(stack, "BlockName", name);
             ItemNBTHelper.setByte(stack, "BlockData", (byte) data);
 
-            player.addChatComponentMessage(new TextComponentString("Selected: " + new TextComponentTranslation(prevState.getBlock().getUnlocalizedName() + ".name").getFormattedText()).setStyle(new Style().setColor(TextFormatting.GREEN)));
+            Item item = Item.getItemFromBlock(prevState.getBlock());
 
+            if (item != null) {
+                player.addChatComponentMessage(new TextComponentString("Selected: " + new TextComponentTranslation(item.getUnlocalizedName(new ItemStack(item, 1, data)) + ".name").getFormattedText()).setStyle(new Style().setColor(TextFormatting.GREEN)));
+            }
             return EnumActionResult.SUCCESS;
         }
         else {
-            Block block = Block.REGISTRY.getObject(new ResourceLocation(ItemNBTHelper.getString(stack, "BlockName", "")));
-            if (block == Blocks.AIR){
-                player.addChatComponentMessage(new TextComponentString("[ERROR-404] Set Block not Found").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
-                return EnumActionResult.SUCCESS;
+            Block newBlock = Block.REGISTRY.getObject(new ResourceLocation(ItemNBTHelper.getString(stack, "BlockName", "")));
+            IBlockState newState = newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte) 0));
+            List<BlockPos> toReplace = getBlocksToReplace(stack, pos, world, side);
+
+            boolean replaced = false;
+            for (BlockPos replacePos : toReplace) {
+                world.setBlockState(replacePos, newState);
+                replaced = true;
             }
 
-            IBlockState newState = block.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte)0));
-            int size = ItemNBTHelper.getByte(stack, "Size", (byte) 0);
-
-            int xRange = 0;
-            int yRange = 0;
-            int zRange = 0;
-
-            switch (side.getAxis()){
-                case X:
-                    zRange = size;
-                    yRange = size;
-                    break;
-                case Y:
-                    xRange = size;
-                    zRange = size;
-                    break;
-                case Z:
-                    xRange = size;
-                    yRange = size;
-                    break;
-            }
-
-            Iterable<BlockPos> blocks = BlockPos.getAllInBox(pos.add(-xRange, -yRange, -zRange), pos.add(xRange, yRange, zRange));
-
-            for (BlockPos setPos : blocks) {
-                if (world.isAirBlock(setPos)){
-                    continue;
+            if (replaced){
+                if (newState.getBlock() == Blocks.AIR){
+                    world.playEvent(2001, pos, Block.getStateId(prevState));
                 }
-
-                world.setBlockState(setPos, newState);
+                else {
+                    world.playEvent(2001, pos, Block.getStateId(newState));
+                }
             }
-
-            world.playEvent(2001, pos, Block.getStateId(newState));
         }
 
 
@@ -120,9 +131,120 @@ public class CreativeExchanger extends ItemBCore {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        tooltip.add("This item may not be completely stable.");
-        tooltip.add("Please don't try anything stupid!");
-        tooltip.add("Added for BTM may or may not stay");
+    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player) {
+        Block newBlock = Block.REGISTRY.getObject(new ResourceLocation(ItemNBTHelper.getString(stack, "BlockName", "")));
+        if (newBlock == Blocks.AIR){
+            if (player.worldObj.isRemote) {
+                player.addChatComponentMessage(new TextComponentString("[ERROR-404] Set Block not Found").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
+            }
+            return false;
+        }
+        IBlockState currentState = player.worldObj.getBlockState(pos);
+        IBlockState newState = newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte)0));
+        if (newState == currentState){
+            return false;
+        }
+
+        player.worldObj.setBlockState(pos, newState);
+        player.worldObj.playEvent(2001, pos, Block.getStateId(newState));
+        player.worldObj.notifyBlockOfStateChange(pos, newBlock);
+
+        return true;
     }
+
+    @Override
+    public boolean canHarvestBlock(IBlockState blockIn) {
+        return false;
+    }
+
+    //endregion
+
+    //region Config
+
+    @Override
+    public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
+        registry.register(stack, new AOEConfigField("AOE", 0, 0, 20, "Sets the replace AOE for the item"));
+        registry.register(stack, new BooleanConfigField("replaceSame", false, "Only replace blocks that are the same as the one you right clicked."));
+        registry.register(stack, new BooleanConfigField("replaceVisible", false, "Only replace blocks that are not hidden under another block. Logic: If you click on the north side of a block. It will only replace blocks within the AOE that have air on the north side of them"));
+        registry.register(stack, new BooleanConfigField("fillLogic", false, "\"Fills\" the area. e.g. if you have an area of blocks with an air gap around them (Or another block type with ReplaceSame enabled) it will only replace blocks in that area."));
+
+        return registry;
+    }
+
+    @Override
+    public int getProfileCount(ItemStack stack) {
+        return 5;
+    }
+
+    //endregion
+
+    //region Block Selection
+
+    public static List<BlockPos> getBlocksToReplace(ItemStack stack, BlockPos pos, World world, EnumFacing side) {
+        int range = ToolConfigHelper.getIntegerField("AOE", stack);
+        boolean replaceSame = ToolConfigHelper.getBooleanField("replaceSame", stack);
+        boolean replaceVisible = ToolConfigHelper.getBooleanField("replaceVisible", stack);
+        boolean fillLogic = ToolConfigHelper.getBooleanField("fillLogic", stack);
+        IBlockState state = world.getBlockState(pos);
+
+        List<BlockPos> toReplace = new ArrayList<BlockPos>();
+        List<BlockPos> scanned = new ArrayList<BlockPos>();
+        toReplace.add(pos);
+        scanned.add(pos);
+
+        scanBlocks(world, pos, pos, state, side, range, replaceSame, replaceVisible, fillLogic, toReplace, scanned);
+
+        return toReplace;
+    }
+
+    private static void scanBlocks(World world, BlockPos pos, BlockPos origin, IBlockState originState, EnumFacing side, int range, boolean replaceSame, boolean replaceVisible, boolean fillLogic, List<BlockPos> toReplace, List<BlockPos> scanned) {
+
+        for (EnumFacing dir : FacingUtils.getFacingsAroundAxis(side.getAxis())){
+            BlockPos newPos = pos.offset(dir);
+
+            if (scanned.contains(newPos) || !isInRange(origin, newPos, range)){
+                continue;
+            }
+
+            scanned.add(newPos);
+            IBlockState state = world.getBlockState(newPos);
+
+            boolean validReplace = !world.isAirBlock(newPos) && (!replaceSame || state == originState) && (!replaceVisible || world.isAirBlock(newPos.offset(side)) || state.getBlock().isReplaceable(world, newPos.offset(side))) && (!fillLogic || state == originState);
+
+            if (validReplace){
+                toReplace.add(newPos);
+            }
+
+            if (!fillLogic || validReplace){
+                scanBlocks(world, newPos, origin, originState, side, range, replaceSame, replaceVisible, fillLogic, toReplace, scanned);
+            }
+        }
+    }
+
+    private static boolean isInRange(BlockPos origin, BlockPos pos, int range) {
+        BlockPos diff = pos.subtract(origin);
+        return Math.abs(diff.getX()) <= range && Math.abs(diff.getY()) <= range &&Math.abs(diff.getZ()) <= range;
+    }
+
+    @Override
+    public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
+        ItemConfigFieldRegistry registry = new ItemConfigFieldRegistry();
+        getFields(stack, registry);
+
+        Block newBlock = Block.REGISTRY.getObject(new ResourceLocation(ItemNBTHelper.getString(stack, "BlockName", "")));
+        String opMode = TextFormatting.DARK_RED + "Clear Mode";
+
+        if (newBlock != Blocks.AIR){
+            opMode = TextFormatting.GREEN + "Block: " + TextFormatting.GOLD + I18n.format(newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte)0)).getBlock().getUnlocalizedName() + ".name");
+        }
+
+        displayList.add(TextFormatting.DARK_PURPLE + ToolConfigHelper.getProfileName(stack, ToolConfigHelper.getProfile(stack)));
+        displayList.add(opMode);
+
+        for (IItemConfigField field : registry.getFields()) {
+            displayList.add(InfoHelper.ITC() + I18n.format(field.getUnlocalizedName()) + ": " + InfoHelper.HITC() + field.getReadableValue());
+        }
+    }
+
+    //endregion
 }

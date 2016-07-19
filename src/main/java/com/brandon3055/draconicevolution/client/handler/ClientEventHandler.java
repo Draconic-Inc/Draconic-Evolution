@@ -6,7 +6,6 @@ import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TransformUtils;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
@@ -14,6 +13,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
+import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -257,28 +257,28 @@ public class ClientEventHandler {
 
         if (stack != null && stack.getItem() == DEFeatures.creativeExchanger) {
 
-            int size = ItemNBTHelper.getByte(stack, "Size", (byte) 0);
+//            int size = ItemNBTHelper.getByte(stack, "Size", (byte) 0);
+//
+//            int xRange = 0;
+//            int yRange = 0;
+//            int zRange = 0;
+//
+//            switch (mc.objectMouseOver.sideHit.getAxis()) {
+//                case X:
+//                    zRange = size;
+//                    yRange = size;
+//                    break;
+//                case Y:
+//                    xRange = size;
+//                    zRange = size;
+//                    break;
+//                case Z:
+//                    xRange = size;
+//                    yRange = size;
+//                    break;
+//            }
 
-            int xRange = 0;
-            int yRange = 0;
-            int zRange = 0;
-
-            switch (mc.objectMouseOver.sideHit.getAxis()) {
-                case X:
-                    zRange = size;
-                    yRange = size;
-                    break;
-                case Y:
-                    xRange = size;
-                    zRange = size;
-                    break;
-                case Z:
-                    xRange = size;
-                    yRange = size;
-                    break;
-            }
-
-            Iterable<BlockPos> blocks = BlockPos.getAllInBox(mc.objectMouseOver.getBlockPos().add(-xRange, -yRange, -zRange), mc.objectMouseOver.getBlockPos().add(xRange, yRange, zRange));
+            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, mc.objectMouseOver.getBlockPos(), world, mc.objectMouseOver.sideHit);
 
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer buffer = tessellator.getBuffer();
@@ -292,7 +292,7 @@ public class ClientEventHandler {
             GlStateManager.color(1F, 1F, 1F, 1F);
             GlStateManager.glLineWidth(2.0F);
             GlStateManager.disableTexture2D();
-            GlStateManager.disableDepth();
+        //    GlStateManager.disableDepth();
 
             for (BlockPos block : blocks) {
                 if (world.isAirBlock(block)) {
@@ -303,35 +303,44 @@ public class ClientEventHandler {
                 double renderY = block.getY() - offsetY;
                 double renderZ = block.getZ() - offsetZ;
 
-                AxisAlignedBB boundingBox = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1);
+                AxisAlignedBB boundingBox = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
+                float colour = 1F;
+                if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))){
+                    GlStateManager.disableDepth();
+                    colour = 0.2F;
+                }
 
-                buffer.begin(3, DefaultVertexFormats.POSITION);
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+                buffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
                 tessellator.draw();
-                buffer.begin(3, DefaultVertexFormats.POSITION);
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+                buffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
                 tessellator.draw();
-                buffer.begin(1, DefaultVertexFormats.POSITION);
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+                buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
+                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
                 tessellator.draw();
+
+                if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))){
+                    GlStateManager.enableDepth();
+                }
             }
 
-            GlStateManager.enableDepth();
+        //    GlStateManager.enableDepth();
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();
 
@@ -454,3 +463,86 @@ public class ClientEventHandler {
         GlStateManager.disableBlend();
     }
 }
+
+
+//EnumFacing
+//
+//        if ()
+//
+//        switch () {
+//
+//        case DOWN:
+//        buffer.begin(3, DefaultVertexFormats.POSITION);
+//        buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//        buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+//        buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//        buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//        buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//        tessellator.draw();
+//        break;
+//        case UP:
+//        break;
+//        case NORTH:
+//        break;
+//        case SOUTH:
+//        break;
+//        case WEST:
+//        break;
+//        case EAST:
+//        break;
+//        }
+//
+
+
+//                buffer.begin(3, DefaultVertexFormats.POSITION);
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                tessellator.draw();
+
+//                buffer.begin(3, DefaultVertexFormats.POSITION);
+//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                tessellator.draw();
+
+//                buffer.begin(3, DefaultVertexFormats.POSITION);
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                tessellator.draw();
+
+//                buffer.begin(3, DefaultVertexFormats.POSITION);
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                tessellator.draw();
+
+//                buffer.begin(3, DefaultVertexFormats.POSITION);
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//                tessellator.draw();
+
+
+
+//                buffer.begin(1, DefaultVertexFormats.POSITION);
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
+//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
+//                tessellator.draw();
