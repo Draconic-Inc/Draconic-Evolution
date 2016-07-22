@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
 import com.brandon3055.draconicevolution.integration.computers.oc.DEManagedPeripheral;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import li.cil.oc.api.Driver;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import li.cil.oc.api.prefab.ManagedEnvironment;
@@ -32,7 +31,6 @@ public class CCOCIntegration {
 
 	@Optional.Method(modid = "OpenComputers")
 	public static void initOC() {
-        LogHelper.info("Init OC");
 		Driver.add(new OCAdapter());
 	}
 
@@ -40,13 +38,11 @@ public class CCOCIntegration {
 
 		@Override
 		public Class<?> getTileEntityClass() {
-            LogHelper.info("Get Tile Class");
 			return IDEPeripheral.class;
 		}
 
         @Override
         public ManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side) {
-            LogHelper.info("Create");
             return new DEManagedPeripheral((IDEPeripheral)world.getTileEntity(pos));
         }
     }

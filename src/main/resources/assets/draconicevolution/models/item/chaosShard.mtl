@@ -4,4 +4,4 @@
 newmtl palette
 Kd 0.512000 0.512000 0.512000
 Ks 0.500000 0.500000 0.500000
-map_Kd draconicevolution:models\chaosCrystal
+map_Kd draconicevolution:models/chaosCrystal
