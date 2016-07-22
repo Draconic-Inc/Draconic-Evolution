@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.utils.Teleporter;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
-import com.brandon3055.draconicevolution.items.EntityPersistentItem;
+import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;

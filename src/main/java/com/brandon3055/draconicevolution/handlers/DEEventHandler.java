@@ -1,7 +1,17 @@
 package com.brandon3055.draconicevolution.handlers;
 
+import com.brandon3055.brandonscore.config.ModFeatureParser;
+import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
 @SuppressWarnings("unused")
-public class MinecraftForgeEventHandler {
+public class DEEventHandler {
 
 //    Random random = new Random();
 //    private static Method becomeAngryAt;
@@ -23,7 +33,7 @@ public class MinecraftForgeEventHandler {
 //
 //    @SubscribeEvent
 //    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-//        EntityLivingBase entity = event.entityLiving;
+//        EntityLivingBase entity = event.getEntity()Living;
 //
 //        if (entity.getEntityData().hasKey("SpawnedByDESpawner")) {
 //            long spawnTime = entity.getEntityData().getLong("SpawnedByDESpawner");
@@ -42,7 +52,7 @@ public class MinecraftForgeEventHandler {
 //        }
 //
 //
-//        if (!event.entityLiving.worldObj.isRemote || !(event.entityLiving instanceof EntityPlayerSP)) return;
+//        if (!event.getEntity()Living.worldObj.isRemote || !(event.getEntity()Living instanceof EntityPlayerSP)) return;
 //        EntityPlayerSP player = (EntityPlayerSP) entity;
 //
 //        double motionX = player.motionX;
@@ -67,22 +77,22 @@ public class MinecraftForgeEventHandler {
 //
 //    @SubscribeEvent
 //    public void onLivingHurt(LivingHurtEvent event) {
-//        if (event.entityLiving instanceof EntityPlayer) {
+//        if (event.getEntity()Living instanceof EntityPlayer) {
 //            CustomArmorHandler.onPlayerHurt(event);
 //        }
 //    }
 //
 //    @SubscribeEvent(priority = EventPriority.LOW)
 //    public void onLivingDeath(LivingDeathEvent event) {
-//        if (event.entityLiving instanceof EntityPlayer) {
+//        if (event.getEntity()Living instanceof EntityPlayer) {
 //            CustomArmorHandler.onPlayerDeath(event);
 //        }
 //    }
 //
 //    @SubscribeEvent
 //    public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
-//        if (!(event.entityLiving instanceof EntityPlayer)) return;
-//        EntityPlayer player = (EntityPlayer) event.entityLiving;
+//        if (!(event.getEntity()Living instanceof EntityPlayer)) return;
+//        EntityPlayer player = (EntityPlayer) event.getEntity()Living;
 //        CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(player);
 //
 //        if (summery != null && summery.jumpModifier > 0) {
@@ -92,42 +102,63 @@ public class MinecraftForgeEventHandler {
 //
 //    @SubscribeEvent(priority = EventPriority.LOW)
 //    public void onLivingAttack(LivingAttackEvent event) {
-//        if (!(event.entityLiving instanceof EntityPlayer)) return;
+//        if (!(event.getEntity()Living instanceof EntityPlayer)) return;
 //
 //        CustomArmorHandler.onPlayerAttacked(event);
 //    }
 //
-//    @SubscribeEvent
-//    public void onDropEvent(LivingDropsEvent event) {
-//        if (!event.entity.worldObj.isRemote && ((event.entity instanceof EntityDragon) || (EntityList.getEntityString(event.entity) != null && !EntityList.getEntityString(event.entity).isEmpty() && EntityList.getEntityString(event.entity).equals("HardcoreEnderExpansion.Dragon")))) {
-//            EntityItem item = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(ModItems.dragonHeart));
-//            event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, ((int) event.entity.posX) + 0.5, event.entity.posY, ((int) event.entity.posZ) + 0.5));
-//            if (event.entity instanceof EntityCustomDragon && ((EntityCustomDragon) event.entity).getIsUber()) {
-//                event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(event.entity.worldObj, event.entity.posX, event.entity.posY + 2, event.entity.posZ));
-//            }
+    @SubscribeEvent
+    public void onDropEvent(LivingDropsEvent event) {
+        if (!event.getEntity().worldObj.isRemote && ((event.getEntity() instanceof EntityDragon) || (EntityList.getEntityString(event.getEntity()) != null && !EntityList.getEntityString(event.getEntity()).isEmpty() && EntityList.getEntityString(event.getEntity()).equals("HardcoreEnderExpansion.Dragon")))) {
+            if (ModFeatureParser.isEnabled(DEFeatures.dragonHeart)) {
+                EntityDragonHeart heart = new EntityDragonHeart(event.getEntity().worldObj, event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ);
+                event.getEntity().worldObj.spawnEntityInWorld(heart);
+//                EntityItem item = new EntityItem(event.getEntity().worldObj, event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ, new ItemStack(DEFeatures.dragonHeart));
+//                event.getEntity().worldObj.spawnEntityInWorld(new EntityDragonHeart(event.getEntity().worldObj, ((int) event.getEntity().posX) + 0.5, event.getEntity().posY, ((int) event.getEntity().posZ) + 0.5));
+//                if (event.getEntity() instanceof EntityCustomDragon && ((EntityCustomDragon) event.getEntity()).getIsUber()) {
+//                    event.getEntity().worldObj.spawnEntityInWorld(new EntityDragonHeart(event.getEntity().worldObj, event.getEntity().posX, event.getEntity().posY + 2, event.getEntity().posZ));
+//                }
+//                EntityPlayer player = event.getEntityLiving().worldObj.getClosestPlayerToEntity(event.getEntity(), 512);
+//                ItemStack stack = new ItemStack(DEFeatures.dragonHeart);
+//                if (player == null) {
+//                    FeatureUtils.dropItem(stack, event.getEntityLiving().worldObj, new Vec3D(event.getEntityLiving()).toVector3());
+//                }
+//                else {
+//                    int remainder = InventoryUtils.insertItem(new InventoryRange(player.inventory, 0, 35), stack, false);
+//                    if (remainder > 0) {
 //
-//            for (Object o : event.entity.worldObj.playerEntities) {
+//                    }
+//                }
+
+            }
+
+
+
+
+//            for (Object o : event.getEntity().worldObj.playerEntities) {
 //                if (o instanceof EntityPlayer) {
 //                    ((EntityPlayer) o).addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
 //                }
 //            }
+
+            if (ModFeatureParser.isEnabled(DEFeatures.draconiumDust)) {
+                int count = 30 + event.getEntity().worldObj.rand.nextInt(30);
+                for (int i = 0; i < count; i++) {
+                    float mm = 0.3F;
+                    EntityItem item = new EntityItem(event.getEntity().worldObj, event.getEntity().posX - 2 + event.getEntity().worldObj.rand.nextInt(4), event.getEntity().posY - 2 + event.getEntity().worldObj.rand.nextInt(4), event.getEntity().posZ - 2 + event.getEntity().worldObj.rand.nextInt(4), new ItemStack(DEFeatures.draconiumDust));
+                    item.motionX = mm * ((((float) event.getEntity().worldObj.rand.nextInt(100)) / 100F) - 0.5F);
+                    item.motionY = mm * ((((float) event.getEntity().worldObj.rand.nextInt(100)) / 100F) - 0.5F);
+                    item.motionZ = mm * ((((float) event.getEntity().worldObj.rand.nextInt(100)) / 100F) - 0.5F);
+                    event.getEntity().worldObj.spawnEntityInWorld(item);
+                }
+            }
+        }
 //
-//            int count = 30 + event.entity.worldObj.rand.nextInt(30);
-//            for (int i = 0; i < count; i++) {
-//                float mm = 0.3F;
-//                EntityItem item2 = new EntityItem(event.entity.worldObj, event.entity.posX - 2 + event.entity.worldObj.rand.nextInt(4), event.entity.posY - 2 + event.entity.worldObj.rand.nextInt(4), event.entity.posZ - 2 + event.entity.worldObj.rand.nextInt(4), new ItemStack(ModItems.draconiumDust));
-//                item.motionX = mm * ((((float) event.entity.worldObj.rand.nextInt(100)) / 100F) - 0.5F);
-//                item.motionY = mm * ((((float) event.entity.worldObj.rand.nextInt(100)) / 100F) - 0.5F);
-//                item.motionZ = mm * ((((float) event.entity.worldObj.rand.nextInt(100)) / 100F) - 0.5F);
-//                event.entity.worldObj.spawnEntityInWorld(item2);
-//            }
-//        }
-//
-//        if (event.entity.worldObj.isRemote || !(event.source.damageType.equals("player") || event.source.damageType.equals("arrow")) || !isValidEntity(event.entityLiving)) {
+//        if (event.getEntity().worldObj.isRemote || !(event.source.damageType.equals("player") || event.source.damageType.equals("arrow")) || !isValidEntity(event.getEntity()Living)) {
 //            return;
 //        }
 //
-//        EntityLivingBase entity = event.entityLiving;
+//        EntityLivingBase entity = event.getEntity()Living;
 //        Entity attacker = event.source.getEntity();
 //
 //        if (attacker == null || !(attacker instanceof EntityPlayer)) {
@@ -153,7 +184,7 @@ public class MinecraftForgeEventHandler {
 //            world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
 //            Achievements.triggerAchievement((EntityPlayer) attacker, "draconicevolution.soul");
 //        }
-//    }
+    }
 //
 //    private int getDropChanceFromItem(ItemStack stack) {
 //        int chance = 0;
@@ -216,8 +247,8 @@ public class MinecraftForgeEventHandler {
 //
 //    @SubscribeEvent
 //    public void onEntityConstructing(EntityEvent.EntityConstructing event) {
-//        if (event.entity instanceof EntityPlayer && ExtendedPlayer.get((EntityPlayer) event.entity) == null)
-//            ExtendedPlayer.register((EntityPlayer) event.entity);
+//        if (event.getEntity() instanceof EntityPlayer && ExtendedPlayer.get((EntityPlayer) event.getEntity()) == null)
+//            ExtendedPlayer.register((EntityPlayer) event.getEntity());
 //    }
 //
 //    @SubscribeEvent
@@ -240,9 +271,9 @@ public class MinecraftForgeEventHandler {
 //    public void stopUsingEvent(PlayerUseItemEvent.Start event) {
 //        if (!ConfigHandler.pigmenBloodRage || event.item == null || event.item.getItem() == null) return;
 //        if (event.item.getItem() == Items.porkchop || event.item.getItem() == Items.cooked_porkchop) {
-//            World world = event.entityPlayer.worldObj;
+//            World world = event.getEntity()Player.worldObj;
 //            if (world.isRemote) return;
-//            EntityPlayer player = event.entityPlayer;
+//            EntityPlayer player = event.getEntity()Player;
 //            List list = world.getEntitiesWithinAABB(EntityPigZombie.class, AxisAlignedBB.getBoundingBox(player.posX - 32, player.posY - 32, player.posZ - 32, player.posX + 32, player.posY + 32, player.posZ + 32));
 //
 //            EntityZombie entityAtPlayer = new EntityPigZombie(world);
@@ -282,7 +313,7 @@ public class MinecraftForgeEventHandler {
 //    @SideOnly(Side.CLIENT)
 //    @SubscribeEvent
 //    public void joinWorld(EntityJoinWorldEvent event) {
-//        if (event.entity instanceof EntityPlayerSP) {
+//        if (event.getEntity() instanceof EntityPlayerSP) {
 //            speedNeedsUpdating = true;
 //            DraconicEvolution.network.sendToServer(new MountUpdatePacket(0));
 //        }
@@ -290,16 +321,16 @@ public class MinecraftForgeEventHandler {
 //
 //    @SubscribeEvent(priority = EventPriority.LOW)
 //    public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
-//        if (event.entityPlayer != null) {
+//        if (event.getEntity()Player != null) {
 //            float newDigSpeed = event.originalSpeed;
-//            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.entityPlayer);
+//            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.getEntity()Player);
 //            if (summery == null) return;
 //
-//            if (event.entityPlayer.isInsideOfMaterial(Material.water)) {
+//            if (event.getEntity()Player.isInsideOfMaterial(Material.water)) {
 //                if (summery.flight[0]) newDigSpeed *= 5f;
 //            }
 //
-//            if (!event.entityPlayer.onGround) {
+//            if (!event.getEntity()Player.onGround) {
 //                if (summery.flight[0]) newDigSpeed *= 5f;
 //            }
 //
@@ -333,10 +364,10 @@ public class MinecraftForgeEventHandler {
 //
 //    @SubscribeEvent
 //    public void entityJoinWorld(EntityJoinWorldEvent event) {
-//        if (!event.world.isRemote && event.entity instanceof EntityEnderCrystal && event.entity.dimension == 1) {
-//            DataUtills.XZPair<Integer, Integer> location = ChaosWorldGenHandler.getClosestChaosSpawn((int) event.entity.posX / 16, (int) event.entity.posZ / 16);
-//            if ((location.x != 0 || location.z != 0) && Utills.getDistanceAtoB(event.entity.posX, event.entity.posZ, location.x, location.z) < 500) {
-//                ProcessHandler.addProcess(new ChaosWorldGenHandler.CrystalRemover(event.entity));
+//        if (!event.world.isRemote && event.getEntity() instanceof EntityEnderCrystal && event.getEntity().dimension == 1) {
+//            DataUtills.XZPair<Integer, Integer> location = ChaosWorldGenHandler.getClosestChaosSpawn((int) event.getEntity().posX / 16, (int) event.getEntity().posZ / 16);
+//            if ((location.x != 0 || location.z != 0) && Utills.getDistanceAtoB(event.getEntity().posX, event.getEntity().posZ, location.x, location.z) < 500) {
+//                ProcessHandler.addProcess(new ChaosWorldGenHandler.CrystalRemover(event.getEntity()));
 //            }
 //        }
 //    }

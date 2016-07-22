@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.items;
+package com.brandon3055.draconicevolution.entity;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;

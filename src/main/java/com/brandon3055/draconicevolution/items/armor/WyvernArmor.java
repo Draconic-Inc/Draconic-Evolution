@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.ModelWyvernArmor;
-import com.brandon3055.draconicevolution.items.EntityPersistentItem;
+import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.tools.ToolBase;
 import com.brandon3055.draconicevolution.items.tools.ToolStats;

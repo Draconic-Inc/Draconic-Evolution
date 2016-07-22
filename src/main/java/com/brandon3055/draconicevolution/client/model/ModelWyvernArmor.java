@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
 
 
 public class ModelWyvernArmor extends ModelBiped {
@@ -119,7 +120,7 @@ public class ModelWyvernArmor extends ModelBiped {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 
-        if (entity == null) {
+        if (entity == null || entity instanceof EntityArmorStand) {
             isSneak = false;
             isRiding = false;
             isChild = false;

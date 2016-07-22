@@ -142,6 +142,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         if (isCrafting.value) {
             return;
         }
+
         pedestals.clear();
         int range = 16;
 
@@ -158,7 +159,6 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
             if (tile instanceof ICraftingPedestal) {
                 ICraftingPedestal pedestal = (ICraftingPedestal) tile;
-
                 Vec3D dirVec = new Vec3D(tile.getPos()).subtract(pos);
                 double dist = Utils.getDistanceAtoB(new Vec3D(tile.getPos()), new Vec3D(pos));
 
@@ -254,6 +254,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 continue;
             }
 
+            pedestal.setCraftingInventory(this);
             Vec3D spawn = new Vec3D(((TileEntity) pedestal).getPos());
             spawn.add(0.5 + pedestal.getDirection().getFrontOffsetX() * 0.45, 0.5 + pedestal.getDirection().getFrontOffsetY() * 0.45, 0.5 + pedestal.getDirection().getFrontOffsetZ() * 0.45);
             effects.add(new EffectTrackerFusionCrafting(worldObj, spawn, new Vec3D(pos), this));
@@ -263,6 +264,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     private double effectRotation = 0;
     private boolean allLocked = false;
+    private boolean halfCycle = false;
 
     @SideOnly(Side.CLIENT)
     public void updateEffects() {
@@ -319,6 +321,19 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             effect.circlePosition.set(pos.getX() + 0.5 + offsetX, pos.getY() + 0.5 + offsetY, pos.getZ() + 0.5 + offsetZ);
             index++;
         }
+
+//        //LogHelper.info(Math.sin(effectRotation));
+//        double rotationPos = Math.sin(effectRotation * 2);
+//        float pitch = 0.1F + (((getCraftingStage() - 1000) / 1000F) * 1.9F);
+//
+//        if (rotationPos > 0 && !halfCycle){
+//            halfCycle = true;
+//            worldObj.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, DESoundHandler.fusionRotation, SoundCategory.BLOCKS, 1F, pitch, false);
+//        }
+//        else if (rotationPos < 0 && halfCycle) {
+//            halfCycle = false;
+//            worldObj.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, DESoundHandler.fusionRotation, SoundCategory.BLOCKS, 1F, pitch, false);
+//        }
 
         if (!allLocked && flag){
             FMLClientHandler.instance().getClient().getSoundHandler().playSound(new FusionRotationSound(this));

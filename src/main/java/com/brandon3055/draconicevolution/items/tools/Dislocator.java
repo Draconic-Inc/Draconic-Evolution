@@ -5,7 +5,7 @@ import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.items.EntityPersistentItem;
+import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;

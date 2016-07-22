@@ -15,8 +15,10 @@ import com.brandon3055.brandonscore.network.wrappers.SyncableVec3I;
 import com.brandon3055.brandonscore.utils.LinkedHashList;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.EnergyPylon;
 import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -32,7 +34,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEnergyProvider, ITickable, IMultiBlock {
+public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEnergyProvider, ITickable, IMultiBlock, IExtendedRFStorage,IDEPeripheral {
     public final SyncableBool isOutputMode = new SyncableBool(false, true, false, true);
     public final SyncableBool structureValid = new SyncableBool(false, true, false, true);
     public final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, -1, 0), true, false, false);
@@ -342,6 +344,53 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
         return hasCoreLock.value;
+    }
+
+    @Override
+    public long getExtendedStorage() {
+        if (!hasCoreLock.value || getCore() == null) {
+            return 0;
+        }
+        return getCore().getExtendedStorage();
+    }
+
+    @Override
+    public long getExtendedCapacity() {
+        if (!hasCoreLock.value || getCore() == null) {
+            return 0;
+        }
+        return getCore().getExtendedCapacity();
+    }
+
+    //endregion
+
+    //region IDEPeripheral
+
+    @Override
+    public String getName() {
+        return "draconic_rf_storage";
+    }
+
+    @Override
+    public String[] getMethodNames() {
+        return new String[]{"getEnergyStored", "getMaxEnergyStored", "getTransferPerTick"};
+    }
+
+    @Override
+    public Object[] callMethod(String method, Object... args) {
+        if (method.equals("getEnergyStored")) {
+            return new Object[] {getExtendedStorage()};
+        }
+        else if (method.equals("getMaxEnergyStored")) {
+            return new Object[] {getExtendedCapacity()};
+        }
+        else if (method.equals("getTransferPerTick")){
+            if (!hasCoreLock.value || getCore() == null) {
+                return new Object[0];
+            }
+            return new Object[] {getCore().transferRate.value};
+        }
+        return new Object[0];
     }
 
     //endregion

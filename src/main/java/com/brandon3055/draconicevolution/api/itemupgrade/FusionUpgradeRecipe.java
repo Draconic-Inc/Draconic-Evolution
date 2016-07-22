@@ -42,6 +42,10 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
 
     @Override
     public ItemStack getRecipeOutput(@Nullable ItemStack catalyst) {
+        if (catalyst == null) {
+            return null;
+        }
+
         ItemStack stack = catalyst.copy();
         UpgradeHelper.setUpgradeLevel(stack, upgrade, upgradeLevel);
         return stack;

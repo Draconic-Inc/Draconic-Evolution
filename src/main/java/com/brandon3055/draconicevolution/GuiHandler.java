@@ -113,6 +113,12 @@ public class GuiHandler implements IGuiHandler {
 //					return new ContainerTemplate(player.inventory, (TileContainerTemplate) containerTemp);
 //				}
 //				break;
+
+
+
+            case 2016: {
+                return new ContainerRecipeBuilder(player);
+            }
 		}
 
 		return null;
@@ -198,6 +204,12 @@ public class GuiHandler implements IGuiHandler {
 //					return new GUIContainerTemplate(player.inventory, (TileContainerTemplate) containerTemp);
 //				}
 //				break;
+
+
+
+            case 2016: {
+                return new GuiRecipeBuilder(player);
+            }
 		}
 
 		return null;

@@ -8,7 +8,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.itemupgrade.*;
-import com.brandon3055.draconicevolution.items.EntityPersistentItem;
+import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;

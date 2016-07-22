@@ -48,6 +48,8 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         tooltip.add(TextFormatting.BLUE + "Use tool config gui to configure. " + TextFormatting.GOLD + "Key: \"" + KeyBindings.toolConfig.getDisplayName() + "\"");
         tooltip.add(TextFormatting.BLUE + "To cycle config profile press: " + TextFormatting.GOLD + KeyBindings.toolProfileChange.getDisplayName());
+        tooltip.add(TextFormatting.BLUE + "Shift+Right Click to select block.");
+        tooltip.add(TextFormatting.BLUE + "Shift+Right Click air for clear mode.");
         tooltip.add("");
         tooltip.add(TextFormatting.AQUA + "Right Click to replace blocks in matching configuration.");
         tooltip.add(TextFormatting.AQUA + "Left Click to replace single block.");

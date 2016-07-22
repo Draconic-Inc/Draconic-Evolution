@@ -8,14 +8,8 @@ import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.ArmorModelHelper;
 import com.brandon3055.draconicevolution.client.model.tool.ToolModelLoader;
-import com.brandon3055.draconicevolution.client.render.entity.RenderChaosGuardian;
-import com.brandon3055.draconicevolution.client.render.entity.RenderEntityChaosVortex;
-import com.brandon3055.draconicevolution.client.render.entity.RenderGuardianCrystal;
-import com.brandon3055.draconicevolution.client.render.entity.RenderGuardianProjectile;
-import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
-import com.brandon3055.draconicevolution.entity.EntityChaosVortex;
-import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
-import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
+import com.brandon3055.draconicevolution.client.render.entity.*;
+import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -150,7 +144,7 @@ public class ClientProxy extends CommonProxy {
 //		//Entitys
 //		RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
 		RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, new RenderChaosGuardian.Factory());
-//		RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart());
+		RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityGuardianProjectile.class, new RenderGuardianProjectile.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityGuardianCrystal.class, new RenderGuardianCrystal.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityChaosVortex.class, new RenderEntityChaosVortex.Factory());

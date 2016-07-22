@@ -55,7 +55,7 @@ public class GuiEnergyCore extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GuiHelper.drawGuiBaseBackground(this, guiLeft, guiTop, xSize, ySize);
         GuiHelper.drawPlayerSlots(this, guiLeft + (xSize / 2), guiTop + 115, true);
-        drawCenteredString(fontRendererObj, String.format(I18n.format("gui.de.energyStorageCore.name"), tile.tier), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
+        drawCenteredString(fontRendererObj, String.format(I18n.format("gui.de.energyStorageCore.name"), tile.tier.toString()), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
 
         if (tile.active.value) {
 

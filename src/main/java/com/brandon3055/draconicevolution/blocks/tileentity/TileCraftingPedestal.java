@@ -29,6 +29,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
 
     @Override
     public void update() {
+//        LogHelper.info(currentCraftingInventory);
         //receiveEnergy(EnumFacing.DOWN, 100, false);
         //LogHelper.info("E: "+energy);
     }
@@ -98,7 +99,6 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
         if (validateCraftingInventory()) {
             return false;
         }
-
         currentCraftingInventory = craftingInventory;
         return true;
     }

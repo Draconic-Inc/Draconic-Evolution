@@ -23,6 +23,10 @@ repositories {
         name 'CB Maven'
         url "http://chickenbones.net/maven/"
     }
+    maven {
+        name 'OC Maven'
+        url "http://maven.cil.li/"
+    }
 }
 
 // Define properties file
@@ -60,6 +64,7 @@ dependencies {
     //compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:deobf"
 	compile "com.brandon3055.brandonscore:BrandonsCore:${config.minecraft_version}-${config.bcore_version}:deobf"
 	compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:deobf"
+    compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
 
     //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
     //compile project(path: ':BrandonsCore')

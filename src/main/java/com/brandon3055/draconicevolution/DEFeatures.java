@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.items.Debugger;
+import com.brandon3055.draconicevolution.items.ItemPersistent;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
@@ -29,17 +30,17 @@ public class DEFeatures {
 	/* ------------------ Blocks ------------------ */
 
     //region Simple Blocks
-	@Feature(name = "draconiumOre", variantMap = {"0:type=normal", "1:type=nether", "2:type=end"}, itemBlock = ItemBlockBasic.class)
-	public static DraconiumOre draconiumOre = (DraconiumOre) new DraconiumOre().setHardness(10f).setResistance(20.0f);
+    @Feature(name = "draconiumOre", variantMap = {"0:type=normal", "1:type=nether", "2:type=end"}, itemBlock = ItemBlockBasic.class)
+    public static DraconiumOre draconiumOre = (DraconiumOre) new DraconiumOre().setHardness(10f).setResistance(20.0f);
 
-	@Feature(name = "draconiumBlock", variantMap = {"0:charged=false", "1:charged=true"}, itemBlock = ItemDraconiumBlock.class)
-	public static DraconiumBlock draconiumBlock = (DraconiumBlock) new DraconiumBlock().setHardness(10f).setResistance(20.0f);
+    @Feature(name = "draconiumBlock", variantMap = {"0:charged=false", "1:charged=true"}, itemBlock = ItemDraconiumBlock.class)
+    public static DraconiumBlock draconiumBlock = (DraconiumBlock) new DraconiumBlock().setHardness(10f).setResistance(20.0f);
 
-	@Feature(name = "draconicBlock")
-	public static BlockMobSafe draconicBlock = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
+    @Feature(name = "draconicBlock")
+    public static BlockMobSafe draconicBlock = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
 
-	@Feature(name = "infusedObsidian")
-	public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
+    @Feature(name = "infusedObsidian")
+    public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
 
     @Feature(name = "portal", tileEntity = TilePortal.class)
     public static Portal portal = new Portal();
@@ -48,13 +49,13 @@ public class DEFeatures {
     //region Machines
 
     @Feature(name = "generator", tileEntity = TileGenerator.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-	public static Generator generator = new Generator();
+    public static Generator generator = new Generator();
 
-	@Feature(name = "grinder", tileEntity = TileGrinder.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-	public static Grinder grinder = new Grinder();
+    @Feature(name = "grinder", tileEntity = TileGrinder.class, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static Grinder grinder = new Grinder();
 
-	@Feature(name = "particleGenerator", variantMap = {"0:type=normal", "1:type=inverted", "2:type=stabilizer"}, cTab = 1, itemBlock = ItemBlockBasic.class)
-	public static ParticleGenerator particleGenerator = new ParticleGenerator();
+    @Feature(name = "particleGenerator", variantMap = {"0:type=normal", "1:type=inverted", "2:type=stabilizer"}, cTab = 1, itemBlock = ItemBlockBasic.class)
+    public static ParticleGenerator particleGenerator = new ParticleGenerator();
 
     @Feature(name = "energyInfuser", tileEntity = TileEnergyInfuser.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static EnergyInfuser energyInfuser = new EnergyInfuser();
@@ -71,8 +72,8 @@ public class DEFeatures {
     //endregion
 
     //region Advanced Machines
-	@Feature(name = "energyStorageCore", tileEntity = TileEnergyStorageCore.class, cTab = 1)
-	public static EnergyStorageCore energyStorageCore = new EnergyStorageCore();
+    @Feature(name = "energyStorageCore", tileEntity = TileEnergyStorageCore.class, cTab = 1)
+    public static EnergyStorageCore energyStorageCore = new EnergyStorageCore();
 
     @Feature(name = "energyPylon", tileEntity = TileEnergyPylon.class, cTab = 1)
     public static EnergyPylon energyPylon = new EnergyPylon();
@@ -100,26 +101,26 @@ public class DEFeatures {
 	/* ------------------ Items ------------------ */
 
     //region Crafting Components / Base items
-	@Feature(name = "draconiumDust", stateOverride = "simpleComponents#type=draconiumDust")
-	public static Item draconiumDust = new Item();
+    @Feature(name = "draconiumDust", stateOverride = "simpleComponents#type=draconiumDust")
+    public static Item draconiumDust = new Item();
 
-	@Feature(name = "draconiumIngot", stateOverride = "simpleComponents#type=draconiumIngot")
-	public static Item draconiumIngot = new Item();
+    @Feature(name = "draconiumIngot", stateOverride = "simpleComponents#type=draconiumIngot")
+    public static Item draconiumIngot = new Item();
 
-	@Feature(name = "draconicIngot", stateOverride = "simpleComponents#type=draconicIngot")
-	public static Item draconicIngot = new Item();
+    @Feature(name = "draconicIngot", stateOverride = "simpleComponents#type=draconicIngot")
+    public static Item draconicIngot = new Item();
 
-	@Feature(name = "draconicCore", stateOverride = "simpleComponents#type=draconicCore")
-	public static Item draconicCore = new Item();
+    @Feature(name = "draconicCore", stateOverride = "simpleComponents#type=draconicCore")
+    public static Item draconicCore = new Item();
 
-	@Feature(name = "wyvernCore", stateOverride = "simpleComponents#type=wyvernCore")
-	public static Item wyvernCore = new Item();
+    @Feature(name = "wyvernCore", stateOverride = "simpleComponents#type=wyvernCore")
+    public static Item wyvernCore = new Item();
 
-	@Feature(name = "awakenedCore", stateOverride = "simpleComponents#type=awakenedCore")
-	public static Item awakenedCore = new Item();
+    @Feature(name = "awakenedCore", stateOverride = "simpleComponents#type=awakenedCore")
+    public static Item awakenedCore = new Item();
 
-	@Feature(name = "chaoticCore", stateOverride = "simpleComponents#type=chaoticCore")
-	public static Item chaoticCore = new Item();
+    @Feature(name = "chaoticCore", stateOverride = "simpleComponents#type=chaoticCore")
+    public static Item chaoticCore = new Item();
 
     @Feature(name = "wyvernEnergyCore", stateOverride = "simpleComponents#type=wyvernECore")
     public static Item wyvernEnergyCore = new Item();
@@ -127,14 +128,17 @@ public class DEFeatures {
     @Feature(name = "draconicEnergyCore", stateOverride = "simpleComponents#type=draconicECore")
     public static Item draconicEnergyCore = new Item();
 
+    @Feature(name = "dragonHeart", stateOverride = "simpleComponents#type=dragonHeart")
+    public static ItemPersistent dragonHeart = new ItemPersistent();
+
     @Feature(name = "debugger", stateOverride = "simpleComponents#type=draconicIngot")
     public static Item debugger = new Debugger();
 
-	@Feature(name = "nugget", variantMap = {"0:type=draconium", "1:type=awakened"})
-	public static ItemSimpleSubs nugget = new ItemSimpleSubs(new String[]{"0:draconium", "1:awakened"});
+    @Feature(name = "nugget", variantMap = {"0:type=draconium", "1:type=awakened"})
+    public static ItemSimpleSubs nugget = new ItemSimpleSubs(new String[]{"0:draconium", "1:awakened"});
 
-    @Feature(name = "chaosShard", stateOverride = "simpleComponents#type=chaosShard")
-    public static Item chaosShard = new Item();
+    @Feature(name = "chaosShard", variantMap = {"0:type=shard", "1:type=fragLarge", "2:type=fragMedium", "3:type=fragSmall"})
+    public static ItemSimpleSubs chaosShard = new ItemSimpleSubs(new String[]{"0:shard", "1:fragLarge", "2:fragMedium", "3:fragSmall"});
 
 
     //endregion

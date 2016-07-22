@@ -19,6 +19,7 @@ public class DEParticles {
     public static int GUARDIAN_PROJECTILE;
     public static int CHAOS_IMPLOSION;
     public static int PORTAL;
+    public static int DRAGON_HEART;
 
 
     public static void registerClient(){
@@ -29,6 +30,7 @@ public class DEParticles {
         GUARDIAN_PROJECTILE = BCEffectHandler.registerFX(DE_SHEET, new ParticleGuardianProjectile.Factory());
         CHAOS_IMPLOSION = BCEffectHandler.registerFX(DE_SHEET, new ParticleChaosImplosion.Factory());
         PORTAL = BCEffectHandler.registerFX(DE_SHEET, new ParticlePortal.Factory());
+        DRAGON_HEART = BCEffectHandler.registerFX(DE_SHEET, new ParticleDragonHeart.Factory());
     }
 
     public static void registerServer(){
@@ -39,5 +41,6 @@ public class DEParticles {
         GUARDIAN_PROJECTILE = BCEffectHandler.registerFXServer();
         CHAOS_IMPLOSION = BCEffectHandler.registerFXServer();
         PORTAL = BCEffectHandler.registerFXServer();
+        DRAGON_HEART = BCEffectHandler.registerFXServer();
     }
 }

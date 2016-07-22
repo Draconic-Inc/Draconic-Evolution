@@ -4,9 +4,9 @@ import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.entity.*;
+import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
-import com.brandon3055.draconicevolution.items.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.armor.CustomArmorHandler;
 import com.brandon3055.draconicevolution.network.*;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -123,7 +123,7 @@ public class CommonProxy {
 	}
 
 	public void registerEventListeners(Side s) {
-//		MinecraftForge.EVENT_BUS.register(new MinecraftForgeEventHandler());
+		MinecraftForge.EVENT_BUS.register(new DEEventHandler());
 //		MinecraftForge.EVENT_BUS.register(new Achievements());
         MinecraftForge.EVENT_BUS.register(new Achievements());
         MinecraftForge.EVENT_BUS.register(new CustomArmorHandler());
@@ -151,10 +151,10 @@ public class CommonProxy {
 	//@Callback
 	public void registerEntities() {
 //		EntityRegistry.registerModEntity(EntityCustomDragon.class, "EnderDragon", 0, DraconicEvolution.instance, 256, 3, true);
-		EntityRegistry.registerModEntity(EntityPersistentItem.class, "PersistentItem", 1, DraconicEvolution.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityPersistentItem.class, "PersistentItem", 1, DraconicEvolution.instance, 512, 5, true);
 //		EntityRegistry.registerModEntity(EntityDraconicArrow.class, "Arrow", 2, DraconicEvolution.instance, 32, 5, true);
 //		EntityRegistry.registerModEntity(EntityEnderArrow.class, "Ender Arrow", 3, DraconicEvolution.instance, 32, 1, true);
-//		EntityRegistry.registerModEntity(EntityDragonHeart.class, "Dragon Heart Item", 5, DraconicEvolution.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityDragonHeart.class, "DragonHeartItem", 5, DraconicEvolution.instance, 32, 5, true);
 		EntityRegistry.registerModEntity(EntityChaosGuardian.class, "ChaosGuardian", 6, DraconicEvolution.instance, 256, 1, true);
 		EntityRegistry.registerModEntity(EntityGuardianProjectile.class, "GuardianProjectile", 7, DraconicEvolution.instance, 256, 1, true);
 		EntityRegistry.registerModEntity(EntityGuardianCrystal.class, "GuardianCrystal", 8, DraconicEvolution.instance, 256, 5, false);

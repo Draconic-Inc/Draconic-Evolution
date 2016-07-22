@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.items.tools;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class DraconicStaffOfPower extends MiningToolBase {
 
     @Override
     public List<String> getValidUpgrades(ItemStack stack) {
+        ReflectionHelper.setPrivateValue(ToolBase.class, this, 1000, "baseAttackDamage");
         List<String> list = super.getValidUpgrades(stack);
         list.add(ToolUpgrade.ATTACK_DAMAGE);
         list.add(ToolUpgrade.ATTACK_AOE);
