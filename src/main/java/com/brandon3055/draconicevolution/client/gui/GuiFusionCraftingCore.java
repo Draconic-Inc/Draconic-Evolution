@@ -8,12 +8,12 @@ import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
-import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeRegistry;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.render.effect.RenderEnergyBolt;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
+import com.brandon3055.draconicevolution.lib.RecipeManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
@@ -77,9 +77,9 @@ public class GuiFusionCraftingCore extends GuiContainer {
         if (currentRecipe != null && canCraft != null && canCraft.equals("true")) {
 
             //Ingredients
-            GuiHelper.drawColouredRect(guiLeft + 15, guiTop + 7, 20, 100, 0xFFFF0066);
+            GuiHelper.drawColouredRect(guiLeft + 15, guiTop + 7, 20, 100, 0xFFAA00FF);
             GuiHelper.drawColouredRect(guiLeft + 16, guiTop + 8, 18, 98, 0xFF000000);
-            GuiHelper.drawColouredRect(guiLeft + xSize - 35, guiTop + 7, 20, 100, 0xFFFF0066);
+            GuiHelper.drawColouredRect(guiLeft + xSize - 35, guiTop + 7, 20, 100, 0xFFAA00FF);
             GuiHelper.drawColouredRect(guiLeft + xSize - 34, guiTop + 8, 18, 98, 0xFF000000);
 
             //Items
@@ -105,7 +105,7 @@ public class GuiFusionCraftingCore extends GuiContainer {
 
         if (currentRecipe != null) {
             GuiHelper.drawStack2D(currentRecipe.getRecipeOutput(tile.getStackInCore(0)), mc, guiLeft + (xSize / 2) - 8, guiTop + 70, 16F);
-            List<Object> ingredients = currentRecipe.getRecipeIngredients();
+            List ingredients = currentRecipe.getRecipeIngredients();
 
             int centerX = guiLeft + xSize / 2;
             int centerY = guiTop + ySize / 2 - 42;
@@ -203,7 +203,7 @@ public class GuiFusionCraftingCore extends GuiContainer {
     @Override
     public void updateScreen() {
         super.updateScreen();
-        currentRecipe = FusionRecipeRegistry.findRecipe(tile, player.worldObj, tile.getPos());
+        currentRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(tile, player.worldObj, tile.getPos());
         if (currentRecipe != null) {
             canCraft = currentRecipe.canCraft(tile, player.worldObj, tile.getPos());
         }
@@ -409,7 +409,7 @@ public class GuiFusionCraftingCore extends GuiContainer {
         this.itemRender.zLevel = 0.0F;
     }
 
-    public class EnergyEffect extends GuiEffect {
+    public static class EnergyEffect extends GuiEffect {
 
         private final double xTarget;
         private final double yTarget;

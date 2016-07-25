@@ -664,6 +664,10 @@ gui.fusionCrafting.tierLow.info=Pedestal Tier Too Low
 gui.fusionCrafting.outputObstructed.info=Output Obstructed
 gui.fusionCrafting.crafting.info=Crafting
 gui.fusionCrafting.charging.info=Charging
+gui.jeiFusion.tier.0=Tier: Basic
+gui.jeiFusion.tier.1=Tier: Wyvern
+gui.jeiFusion.tier.2=Tier: Draconic
+gui.jeiFusion.tier.3=Tier: Chaotic
 
 
 //---- Upgrades ----//
@@ -760,3 +764,4 @@ gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
 
 //---- Very Generic ----//
 generic.de.Mode.txt=Mode
+generic.de.energyCost.txt=Energy Cost

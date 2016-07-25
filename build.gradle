@@ -27,47 +27,52 @@ repositories {
         name 'OC Maven'
         url "http://maven.cil.li/"
     }
+//    maven {
+//        name 'JEI Maven'
+//        url "http://dvs1.progwml6.com/files/maven"
+//    }
 }
 
-// Define properties file
-ext.configFile = file "build.properties"
+// Define properties file //Switched to gradle.properties
+//ext.configFile = file "build.properties"
+//
+//configFile.withReader {
+//    // Load config.  It shall from now be referenced as simply config or project.config
+//    def prop = new Properties()
+//    prop.load(it)
+//    project.ext.config = new ConfigSlurper().parse prop
+//}
 
-configFile.withReader {
-    // Load config.  It shall from now be referenced as simply config or project.config
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
-version = "${config.minecraft_version}-${config.mod_version}"
+version = "${minecraft_version}-${mod_version}"
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
+String buildNo = "1"
+if(System.getenv("BUILD_NUMBER") != null){
+    buildNo = System.getenv("BUILD_NUMBER")
+}
+version += ".${buildNo}"
+
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
+    version = minecraft_version + "-" + forge_version
     runDir = "run"
-	mappings = "${config.mappings}"
-    replace '${mod_version}', project.config.mod_version
+	mappings = mcp_mappings
+    replace '${mod_version}', mod_version
     replaceIn "DraconicEvolution.java"
     makeObfSourceJar = false
     useDepAts = true
 }
 
-String buildNo = "1"
-if(System.getenv("BUILD_NUMBER") != null){
-	buildNo = System.getenv("BUILD_NUMBER")
-}
-version = version + ".${buildNo}"
-
 dependencies {
     //compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:deobf"
     //compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:deobf"
-	compile "com.brandon3055.brandonscore:BrandonsCore:${config.minecraft_version}-${config.bcore_version}:deobf"
-	compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:deobf"
-    compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
+	compile "com.brandon3055.brandonscore:BrandonsCore:${minecraft_version}-${bcore_version}:deobf"
+	compile "codechicken:CodeChickenLib:${minecraft_version}-${CCLIB_version}:deobf"
 
-    //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
-    //compile project(path: ':BrandonsCore')
+    compile "li.cil.oc:OpenComputers:${oc_version}:api"
+
+//    deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
+//    runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
 }
 
 processResources

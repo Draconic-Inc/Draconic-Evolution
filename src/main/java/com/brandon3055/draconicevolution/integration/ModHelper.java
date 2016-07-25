@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.integration;
 
 import com.brandon3055.brandonscore.handlers.HandHelper;
+import com.brandon3055.draconicevolution.integration.jei.DraconicEvolutionPlugin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -17,6 +18,7 @@ public class ModHelper {
 	public static boolean isTConInstalled;
     public static boolean isAvaritiaInstalled;
     public static boolean isRotaryCraftInstalled;
+    public static boolean isJEIInstalled;
 	private static Item cleaver;
     private static Item avaritiaSword;
     private static Item bedrockSword;
@@ -25,7 +27,7 @@ public class ModHelper {
         isTConInstalled = Loader.isModLoaded("TConstruct");
         isAvaritiaInstalled = Loader.isModLoaded("Avaritia");
         isRotaryCraftInstalled = Loader.isModLoaded("RotaryCraft");
-
+        isJEIInstalled = Loader.isModLoaded("JEI");
 	}
 
 	public static boolean isHoldingCleaver(EntityPlayer player){
@@ -89,6 +91,12 @@ public class ModHelper {
         }
 
         return event.getAmount();
+    }
+
+    public static void reloadJEI() {
+        if (isJEIInstalled) {
+            DraconicEvolutionPlugin.reloadJEI();
+        }
     }
 
 }

@@ -26,7 +26,7 @@ public class DraconicEvolution {
 	public static final String GUI_FACTORY 	= "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
 	public static final String networkChannelName = "DEvolutionNC";
 	//region Misc Fields
-	public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "toolsAndWeapons", 0);
+	public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "toolsAndWeapons", 0);//TODO Use CCL Tabs
 	public static CreativeTabs tabBlocksItems = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "blocksAndItems", 1);
 
 	public static SimpleNetworkWrapper network;
@@ -70,7 +70,6 @@ public class DraconicEvolution {
 		featureParser.registerFeatures();
 
 		OreHandler.initialize();
-        FusionRecipes.registerRecipes();
 
 		proxy.preInit(event);
         proxy.registerParticles();

@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
 import com.brandon3055.draconicevolution.items.armor.CustomArmorHandler;
+import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.brandon3055.draconicevolution.network.*;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.audio.ISound;
@@ -22,6 +23,8 @@ import net.minecraftforge.fml.relauncher.Side;
 public class CommonProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
+        RecipeManager.initialize();
+        FusionRecipes.registerRecipes();//TODO Remove
 //		ConfigHandler.init(event.getSuggestedConfigurationFile());
 		registerEventListeners(event.getSide());
 //		ModBlocks.init();
@@ -32,6 +35,7 @@ public class CommonProxy {
 		registerOres();
 
 //		DraconicEvolution.reaperEnchant = new EnchantmentReaper(ConfigHandler.reaperEnchantID);
+
 
 		Achievements.addModAchievements();
 		LogHelper.info("Finished PreInitialization");

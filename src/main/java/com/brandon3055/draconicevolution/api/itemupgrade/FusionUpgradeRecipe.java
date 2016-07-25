@@ -1,18 +1,17 @@
 package com.brandon3055.draconicevolution.api.itemupgrade;
 
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingPedestal;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 11/06/2016.
@@ -27,6 +26,8 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
     protected List<Object> ingredients;
     protected int energyCost;
     protected int craftingTier;
+    private static Item[] tools = new Item[] {DEFeatures.wyvernAxe, DEFeatures.draconicAxe, DEFeatures.wyvernShovel, DEFeatures.draconicShovel, DEFeatures.wyvernPick, DEFeatures.draconicPick, DEFeatures.wyvernSword, DEFeatures.draconicSword, DEFeatures.wyvernBow, DEFeatures.draconicBow, DEFeatures.draconicStaffOfPower};
+    private static Random rand = new Random();
 
     public FusionUpgradeRecipe(String upgrade, ItemStack upgradeKey, int energyCost, int craftingTier, int upgradeLevel, Object... ingredients) {
         this.upgrade = upgrade;
@@ -54,6 +55,16 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
     @Override
     public boolean isRecipeCatalyst(ItemStack catalyst) {
         return catalyst != null && catalyst.getItem() instanceof IUpgradableItem && ((IUpgradableItem) catalyst.getItem()).getValidUpgrades(catalyst).contains(upgrade);
+    }
+
+    @Override
+    public ItemStack getRecipeCatalyst() {
+        return new ItemStack(tools[rand.nextInt(tools.length)]);
+    }
+
+    @Override
+    public int getRecipeTier() {
+        return craftingTier;
     }
 
     @Override

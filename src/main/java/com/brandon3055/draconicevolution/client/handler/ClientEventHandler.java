@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
+import com.brandon3055.draconicevolution.utils.ITickableTimeout;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -37,6 +38,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -63,6 +65,8 @@ public class ClientEventHandler {
     public static Minecraft mc;
     private static Random rand = new Random();
     public static IBakedModel shieldModel = null;
+    private static boolean isJEIInstalled;
+    public static List<ITickableTimeout> tickableList = new ArrayList<ITickableTimeout>();
 
     private static Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
         @Override
@@ -72,7 +76,7 @@ public class ClientEventHandler {
     };
 
     public ClientEventHandler() {
-//		shieldSphere = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/shieldSphere.obj"));
+        isJEIInstalled = Loader.isModLoaded("JEI");
     }
 
     @SubscribeEvent
@@ -82,11 +86,22 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void tickEnd(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END)
-            if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT) {
-                return;
-            }
+        if (event.phase != TickEvent.Phase.END || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT) {
+            return;
+        }
+
         elapsedTicks++;
+
+        Iterator<ITickableTimeout> tickableIterator = tickableList.iterator();
+        while (tickableIterator.hasNext()){
+            ITickableTimeout tickable = tickableIterator.next();
+            if (tickable.getTimeOut() > 10) {
+                tickableIterator.remove();
+            }
+            else {
+                tickable.tick();
+            }
+        }
 
         HudHandler.clientTick();
 
@@ -292,7 +307,7 @@ public class ClientEventHandler {
             GlStateManager.color(1F, 1F, 1F, 1F);
             GlStateManager.glLineWidth(2.0F);
             GlStateManager.disableTexture2D();
-        //    GlStateManager.disableDepth();
+            //    GlStateManager.disableDepth();
 
             for (BlockPos block : blocks) {
                 if (world.isAirBlock(block)) {
@@ -305,7 +320,7 @@ public class ClientEventHandler {
 
                 AxisAlignedBB boundingBox = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
                 float colour = 1F;
-                if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))){
+                if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))) {
                     GlStateManager.disableDepth();
                     colour = 0.2F;
                 }
@@ -335,12 +350,12 @@ public class ClientEventHandler {
                 buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
                 tessellator.draw();
 
-                if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))){
+                if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))) {
                     GlStateManager.enableDepth();
                 }
             }
 
-        //    GlStateManager.enableDepth();
+            //    GlStateManager.enableDepth();
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();
 
@@ -533,7 +548,6 @@ public class ClientEventHandler {
 //                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
 //                tessellator.draw();
-
 
 
 //                buffer.begin(1, DefaultVertexFormats.POSITION);

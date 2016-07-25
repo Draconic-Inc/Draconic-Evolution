@@ -2,15 +2,15 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.client.gui.guicomponents.ColourRectButton;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerRecipeBuilder;
-import com.brandon3055.draconicevolution.lib.RecipeHandler;
+import com.brandon3055.draconicevolution.lib.RecipeManager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -171,8 +171,12 @@ public class GuiRecipeBuilder extends GuiContainer {
             }
         }
         else if (button.id == 100) {
-            RecipeHandler.reInitialize();
+            RecipeManager.initialize();
+            ModHelper.reloadJEI();
         }
+
+//        Recipes take a back seat...
+//        Get placable items up and running so i can display stuff in the booth! (Even if its just a quick fix and not the upgrade i planned)
 
     }
 
@@ -314,7 +318,7 @@ public class GuiRecipeBuilder extends GuiContainer {
             }
         }
         else {
-            recipeString += findItemString(output, false);
+            recipeString += String.format("new ItemStack(%s)", findItemString(output, false));
         }
 
         recipeString += ", ";
@@ -326,7 +330,7 @@ public class GuiRecipeBuilder extends GuiContainer {
             }
         }
         else {
-            recipeString += findItemString(input, false);
+            recipeString += String.format("new ItemStack(%s)", findItemString(input, false));
         }
 
         recipeString += ", [RF Cost], [Tier], ";
@@ -349,7 +353,7 @@ public class GuiRecipeBuilder extends GuiContainer {
         textField.setText(recipeString);
     }
 
-    //FusionRecipeRegistry.registerRecipe(new SimpleFusionRecipe(new ItemStack(Items.STONE_AXE), new ItemStack(Items.WOODEN_AXE), 1000, 0, new ItemStack(DEFeatures.draconicCore)));
+    //FusionRecipeRegistry.addRecipe(new SimpleFusionRecipe(new ItemStack(Items.STONE_AXE), new ItemStack(Items.WOODEN_AXE), 1000, 0, new ItemStack(DEFeatures.draconicCore)));
 
     private static String findItemString(ItemStack stack, boolean findOre) {
         if (findOre && OreDictionary.getOreIDs(stack).length > 0) {
@@ -359,10 +363,12 @@ public class GuiRecipeBuilder extends GuiContainer {
         Item item = stack.getItem();
 
         if (item.getRegistryName().getResourceDomain().equals("minecraft")) {
-            return (item instanceof ItemBlock ? "Blocks." : "Items.") + item.getRegistryName().getResourcePath().toUpperCase();
+            //return (item instanceof ItemBlock ? "Blocks." : "Items.") + item.getRegistryName().getResourcePath().toUpperCase();
+            return item.getRegistryName().getResourcePath().toUpperCase();
         }
         if (item.getRegistryName().getResourceDomain().equals("draconicevolution")) {
-            return "DEFeatures." + item.getRegistryName().getResourcePath();
+            //return "DEFeatures." + item.getRegistryName().getResourcePath();
+            return item.getRegistryName().getResourcePath();
         }
 
         return "Unknown";

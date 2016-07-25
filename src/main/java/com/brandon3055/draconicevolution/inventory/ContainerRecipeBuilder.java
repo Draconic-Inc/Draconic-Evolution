@@ -4,7 +4,10 @@ import com.brandon3055.brandonscore.utils.LinkedHashList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityFurnace;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -76,7 +79,37 @@ public class ContainerRecipeBuilder extends Container {
         }
     }
 
+    @Nullable
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+        Slot slot = getSlot(index);
 
+        if (slot != null && slot.getHasStack())
+        {
+            ItemStack stack = slot.getStack();
+            ItemStack result = stack.copy();
+
+            if (index >= 36){
+                if (!mergeItemStack(stack, 0, 36, false)){
+                    return null;
+                }
+            }else if (TileEntityFurnace.getItemBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + inventoryCache.getSizeInventory(), false)){
+                return null;
+            }
+
+            if (stack.stackSize == 0) {
+                slot.putStack(null);
+            }else{
+                slot.onSlotChanged();
+            }
+
+            slot.onPickupFromSlot(player, stack);
+
+            return result;
+        }
+
+        return null;
+    }
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {

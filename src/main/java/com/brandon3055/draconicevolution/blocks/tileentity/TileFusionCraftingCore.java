@@ -7,7 +7,6 @@ import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.brandonscore.network.wrappers.SyncableShort;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeRegistry;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingPedestal;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
@@ -16,6 +15,7 @@ import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerFusio
 import com.brandon3055.draconicevolution.client.sound.FusionRotationSound;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -49,7 +49,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
      * 1 -> 1000 = Charge percentage<br>
      * 1000 -> 2000 = Crafting progress
      */
-    public final SyncableShort craftingStage = new SyncableShort((short) 0, true, false, true);
+    public final SyncableShort craftingStage = new SyncableShort((short) 0, true, false, false);
     public IFusionRecipe activeRecipe = null;
 
     @SideOnly(Side.CLIENT)
@@ -66,16 +66,17 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     @Override
     public void update() {
+        if (!worldObj.isRemote) {
+            detectAndSendChanges();
+        }
         //LogHelper.info("- " + isCrafting);
+
         if (worldObj.isRemote) {
-            if (isCrafting.value && !isCrafting.lastTickValue) {
-                initializeEffects();
-            }
-            isCrafting.lastTickValue = isCrafting.value;
             updateEffects();
         }
-
-        detectAndSendChanges();
+        else if (worldObj.isRemote && effects != null) {
+            effects = null;
+        }
 
         //Update Crafting
         if (isCrafting.value && !worldObj.isRemote) {
@@ -106,20 +107,28 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
             if (percentage <= 1D && craftingStage.value < 1000) {
                 craftingStage.value = (short) (percentage * 1000D);
-            } else if (craftingStage.value < 2000) {
+            }
+            else if (craftingStage.value < 2000) {
                 craftingStage.value += 2;
-            } else if (craftingStage.value >= 2000) {
+            }
+            else if (craftingStage.value >= 2000) {
                 activeRecipe.craft(this, worldObj, pos);
+
                 for (ICraftingPedestal pedestal : pedestals) {
                     pedestal.onCraft();
                 }
+                //Reset tile... Oops
+                isCrafting.value = false;
             }
+        }
+        else if (!worldObj.isRemote && !isCrafting.value && craftingStage.value > 0) {
+            craftingStage.value = 0;
         }
     }
 
     public void attemptStartCrafting() {
         updatePedestals();
-        activeRecipe = FusionRecipeRegistry.findRecipe(this, worldObj, pos);
+        activeRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos);
 
         if (activeRecipe != null && activeRecipe.canCraft(this, worldObj, pos) != null && activeRecipe.canCraft(this, worldObj, pos).equals("true")) {
             isCrafting.value = true;
@@ -240,7 +249,32 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     @SideOnly(Side.CLIENT)
     public void initializeEffects() {
-        activeRecipe = FusionRecipeRegistry.findRecipe(this, worldObj, pos);
+        pedestals.clear();
+        int range = 16;
+
+        List<BlockPos> positions = new ArrayList<BlockPos>();
+        //X
+        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-range, -1, -1), pos.add(range, 1, 1))));
+        //Y
+        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-1, -range, -1), pos.add(1, range, 1))));
+        //Z
+        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-1, -1, -range), pos.add(1, 1, range))));
+
+        for (BlockPos checkPos : positions) {
+            TileEntity tile = worldObj.getTileEntity(checkPos);
+
+            if (tile instanceof ICraftingPedestal) {
+                ICraftingPedestal pedestal = (ICraftingPedestal) tile;
+                Vec3D dirVec = new Vec3D(tile.getPos()).subtract(pos);
+                double dist = Utils.getDistanceAtoB(new Vec3D(tile.getPos()), new Vec3D(pos));
+
+                if (dist >= 2 && EnumFacing.getFacingFromVector((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
+                    pedestals.add(pedestal);
+                }
+            }
+        }
+
+        activeRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos);
 
         if (activeRecipe == null) {
             effects = null;
@@ -269,8 +303,11 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     @SideOnly(Side.CLIENT)
     public void updateEffects() {
         if (effects == null) {
-            effectRotation = 0;
-            allLocked = false;
+            if (isCrafting.value) {
+                initializeEffects();
+                effectRotation = 0;
+                allLocked = false;
+            }
             return;
         }
 
@@ -322,7 +359,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             index++;
         }
 
-//        //LogHelper.info(Math.sin(effectRotation));
+        //LogHelper.info(Math.sin(effectRotation));
 //        double rotationPos = Math.sin(effectRotation * 2);
 //        float pitch = 0.1F + (((getCraftingStage() - 1000) / 1000F) * 1.9F);
 //
@@ -345,6 +382,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             for (int i = 0; i < 100 ; i++) {
                 BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new EffectTrackerFusionCrafting.SubParticle(worldObj, new Vec3D(pos).add(0.5, 0.5, 0.5)));
             }
+
             worldObj.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 2F, 1F, false);
             effects = null;
         }

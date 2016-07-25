@@ -26,8 +26,21 @@ public interface IFusionRecipe {
 
     /**
      * @return the ingredients required for this recipe.
+     * These can be Items, Blocks, ItemStacks or ore dictionary strings. (Or a mix of any)
      */
-     List<Object> getRecipeIngredients();
+     List getRecipeIngredients();
+
+    /**
+     * Currently only used for JEI integration.
+     * @return The pedestal tier required for this recipe.
+     */
+    int getRecipeTier();
+
+    /**
+     * This is currently only used for JEI integration.
+     * @return the recipe catalyst
+     */
+    ItemStack getRecipeCatalyst();
 
     /**
      * @param inventory The crafting inventory. Note this dose not extend IInventory because it should not need to

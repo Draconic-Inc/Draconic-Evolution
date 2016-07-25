@@ -7,7 +7,7 @@ import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
-import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeRegistry;
+import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeAPI;
 import com.brandon3055.draconicevolution.api.itemupgrade.FusionUpgradeRecipe;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
@@ -96,7 +96,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {//TODO Make
     public static void addUpgradeRecipes() {
         for (int id = 0; id < ID_TO_NAME.size(); id++){
             for (int level = 0; level < UPGRADE_RECIPES[id].length; level++){
-                FusionRecipeRegistry.registerRecipe(new FusionUpgradeRecipe(ID_TO_NAME.get(id), new ItemStack(DEFeatures.toolUpgrade, 1, id), UPGRADE_COST[level], level, level + 1, UPGRADE_RECIPES[id][level]));
+                FusionRecipeAPI.addRecipe(new FusionUpgradeRecipe(ID_TO_NAME.get(id), new ItemStack(DEFeatures.toolUpgrade, 1, id), UPGRADE_COST[level], level, level + 1, UPGRADE_RECIPES[id][level]));
             }
         }
     }

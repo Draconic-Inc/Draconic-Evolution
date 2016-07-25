@@ -57,6 +57,10 @@ public class Debugger extends ItemBCore {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+
+//        LogHelper.info("Side");
+//        if (true) return new ActionResult(EnumActionResult.FAIL, itemStack);
+
         MODES.clear();
         MODES.put(0, "Complete Crafting");
         MODES.put(1, "Insert RF");

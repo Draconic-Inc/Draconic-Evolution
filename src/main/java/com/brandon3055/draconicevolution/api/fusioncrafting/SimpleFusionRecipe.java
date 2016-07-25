@@ -21,6 +21,9 @@ public class SimpleFusionRecipe implements IFusionRecipe {
     protected int energyCost;
     protected int craftingTier;
 
+    /**
+     * tier 0 = basic, tier 1 = wyvern, tier 2 = awakened, tier 3 = chaotic
+     */
     public SimpleFusionRecipe(ItemStack result, ItemStack catalyst, int energyCost, int craftingTier, Object... ingredients) {
         this.result = result;
         this.catalyst = catalyst;
@@ -38,6 +41,16 @@ public class SimpleFusionRecipe implements IFusionRecipe {
     @Override
     public boolean isRecipeCatalyst(ItemStack catalyst) {
         return catalyst != null && this.catalyst.isItemEqual(catalyst);
+    }
+
+    @Override
+    public ItemStack getRecipeCatalyst() {
+        return catalyst;
+    }
+
+    @Override
+    public int getRecipeTier() {
+        return craftingTier;
     }
 
     @Override
