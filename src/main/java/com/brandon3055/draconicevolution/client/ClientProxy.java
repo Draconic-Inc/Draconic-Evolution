@@ -41,6 +41,7 @@ public class ClientProxy extends CommonProxy {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(loader);
         TextureUtils.addIconRegister(loader);
         TextureUtils.addIconRegister(new ArmorModelHelper());
+        TextureUtils.addIconRegister(new DETextureCache());
 
         ToolModelLoader.registerModels();
 

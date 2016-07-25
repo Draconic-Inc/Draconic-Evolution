@@ -20,6 +20,7 @@ public class DraconicEvolution {
 	public static final String MODID	= "DraconicEvolution";
 	public static final String MODNAME	= "Draconic Evolution";
 	public static final String VERSION	= "${mod_version}";//todo Test
+    public static final String MOD_PREFIX = MODID.toLowerCase() + ":";
 	public static final String PROXY_CLIENT = "com.brandon3055.draconicevolution.client.ClientProxy";
 	public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.CommonProxy";
 	public static final String DEPENDENCIES = "after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:BrandonsCore@["+ BrandonsCore.VERSION +",);";

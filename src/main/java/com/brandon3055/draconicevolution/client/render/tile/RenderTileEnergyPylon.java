@@ -1,11 +1,17 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.TextureUtils;
+import codechicken.lib.render.uv.IconTransformation;
+import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
+import com.brandon3055.draconicevolution.client.DETextureCache;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,47 +32,44 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
         Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/pylonSphere.obj")); //Note dont generate the model evey render frame move this to constructor
         model = CCModel.combine(map.values());
         model.apply(new Scale(0.35, 0.35, 0.35));
+        model.computeNormals();
     }
 
     @Override
     public void renderTileEntityAt(TileEnergyPylon te, double x, double y, double z, float partialTicks, int destroyStage) {
-        if (!te.structureValid.value){
+        if (!te.structureValid.value) {
             return;
         }
+        TextureUtils.bindBlockTexture();
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x + 0.5, y + (te.sphereOnTop.value ? 1.5 : - 0.5), z + 0.5);
-        ResourceHelperDE.bindTexture("textures/models/pylonSphereTexture.png");
+        Vector3 translateVector = new Vector3(x + 0.5, y + (te.sphereOnTop.value ? 1.5 : -0.5), z + 0.5);
+        translateVector.translation().glApply();
+        IconTransformation iconTransform = new IconTransformation(DETextureCache.getDETexture("models/pylonSphereTexture"));
         setLighting(200F);
-
-        GlStateManager.rotate((ClientEventHandler.elapsedTicks + partialTicks) * 2F, 0, 1, 0.5f);
 
         if (MinecraftForgeClient.getRenderPass() == 0) {
             GlStateManager.disableCull();
 
             CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-
-//            Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 1.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks), 1, 0, 0), 1);
-
-            model.computeNormals();
-            model.render();//new Rotation((ClientEventHandler.elapsedTicks + partialTicks) * 2F, 1, 0, 1), new Translation(x + 0.5, y + 1.5, z + 0.5));
+            Rotation rotY = new Rotation(((ClientEventHandler.elapsedTicks + partialTicks) * 2F) * MathHelper.torad, new Vector3(0, 1, 0.5).normalize());
+            model.render(iconTransform, rotY);
             CCRenderState.draw();
+
             GlStateManager.enableCull();
 
         } else {
             float f = ((ClientEventHandler.elapsedTicks + partialTicks) % 30F) / 30F;
 
-            if (te.isOutputMode.value){
+            if (te.isOutputMode.value) {
                 f = 1F - f;
             }
 
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
             GlStateManager.color(1F, 1F, 1F, 1F - f);
-            GlStateManager.scale(1 + f, 1 + f, 1 + f);
             GlStateManager.enableBlend();
 
             CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            model.computeNormals();
-            model.render();
+            model.render(iconTransform, new Scale(1 + f, 1 + f, 1 + f));
             CCRenderState.draw();
 
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
@@ -76,40 +79,3 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
         GlStateManager.popMatrix();
     }
 }
-
-/*
-* Something to remember http://puu.sh/oXKUf/7038543b55.jpg
-        GlStateManager.pushMatrix();
-        //GlStateManager.disableCull();
-        GlStateManager.disableDepth();
-        GlStateManager.enableBlend();
-        setLighting(200F);
-        //GlStateManager.translate(x, y + 2, z);
-
-
-        ResourceHelperDE.bindTexture("textures/models/pylonSphereTexture.png");
-
-        CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-        CCRenderState.pullBuffer();
-        Map<String, CCModel> map = CCModel.parseObjModels(ResourceHelperDE.getResource("models/pylonSphere.obj")); //Note dont generate the model evey render frame move this to constructor
-        CCModel model = CCModel.combine(map.values());
-        model.apply(new Scale(0.5, 0.5, 0.5));
-        model.render(x + 0.5, y + 1.5, z + 0.5, 0, 0);
-        CCRenderState.draw();
-
-
-
-
-
-
-
-
-        resetLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.disableBlend();
-        GlStateManager.enableCull();
-        GlStateManager.popMatrix();
-
-
-        Because GlStateManager.enableBlend();
-* */
