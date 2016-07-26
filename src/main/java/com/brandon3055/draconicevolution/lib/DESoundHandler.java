@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.lib;
 
+import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.network.PacketPlaySound;
@@ -79,6 +80,11 @@ public class DESoundHandler {
             return null;
         }
     }
+
+    public static void playSoundFromServer(World world, Vec3D pos, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay, double range) {
+        playSoundFromServer(world, pos.x, pos.y, pos.z, soundIn, category, volume, pitch, distanceDelay, range);
+    }
+
 
     public static void playSoundFromServer(World world, double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay, double range) {
         Object o = ReflectionHelper.getPrivateValue(SoundEvent.class, soundIn, "field_187506_b", "soundName");

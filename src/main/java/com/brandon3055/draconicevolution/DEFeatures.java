@@ -96,6 +96,9 @@ public class DEFeatures {
     @Feature(name = "creativeRFSource", tileEntity = TileCreativeRFCapacitor.class, cTab = 1)
     public static CreativeRFSource creativeRFSource = new CreativeRFSource();
 
+    @Feature(name = "placedItem", tileEntity = TilePlacedItem.class, cTab = -1)
+    public static PlacedItem placedItem = new PlacedItem();
+
     //endregion
 
 	/* ------------------ Items ------------------ */

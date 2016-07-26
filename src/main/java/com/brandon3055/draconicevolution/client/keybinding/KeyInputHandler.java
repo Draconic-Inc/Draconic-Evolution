@@ -5,10 +5,12 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiToolConfig;
 import com.brandon3055.draconicevolution.network.PacketDislocator;
+import com.brandon3055.draconicevolution.network.PacketPlaceItem;
 import com.brandon3055.draconicevolution.network.PacketSimpleBoolean;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -49,10 +51,10 @@ public class KeyInputHandler {
 
 
 	private void handlePlaceItemKey(){
-//		EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-//		WorldClient world = Minecraft.getMinecraft().theWorld;
-//		RayTraceResult mop = ToolHandler.raytraceFromEntity(world, player, 4.5D);
-//		if (mop != null) DraconicEvolution.network.sendToServer(new PlacedItemPacket((byte) mop.sideHit, mop.blockX, mop.blockY, mop.blockZ));
+		RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
+		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
+            DraconicEvolution.network.sendToServer(new PacketPlaceItem());
+        }
 	}
 
 	@SideOnly(Side.CLIENT)
