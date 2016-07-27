@@ -17,62 +17,62 @@ apply plugin: 'maven-publish'
 repositories {
     maven {
         name 'Covers1624 maven'
-        url "http://jenkins.podgeweb.com:1616/maven/"
+        url "http://adel.podgeweb.com:1616/maven/"
+    }
+    maven {
+        name 'Covers1624 maven'
+        url "http://172.17.5.4:1616/maven/"
     }
 	maven {
         name 'CB Maven'
         url "http://chickenbones.net/maven/"
     }
-    maven {
-        name 'OC Maven'
-        url "http://maven.cil.li/"
+        maven {
+        name 'JEI Maven'
+        url "http://dvs1.progwml6.com/files/maven"
     }
-//    maven {
-//        name 'JEI Maven'
-//        url "http://dvs1.progwml6.com/files/maven"
-//    }
 }
 
-// Define properties file //Switched to gradle.properties
-//ext.configFile = file "build.properties"
-//
-//configFile.withReader {
-//    // Load config.  It shall from now be referenced as simply config or project.config
-//    def prop = new Properties()
-//    prop.load(it)
-//    project.ext.config = new ConfigSlurper().parse prop
-//}
+// Define properties file
+ext.configFile = file "build.properties"
 
-version = mcversion + '-' + mod_version
+configFile.withReader {
+    // Load config.  It shall from now be referenced as simply config or project.config
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+version = "${config.mcversion}-${config.mod_version}"
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
-String buildNo = "1"
-if(System.getenv("BUILD_NUMBER") != null){
-    buildNo = System.getenv("BUILD_NUMBER")
-}
-version += ".${buildNo}"
-
 minecraft {
-    version = mcversion + "-" + forge_version
+    version = config.mcversion + "-" + config.forge_version
     runDir = "run"
-	mappings = mcp_mappings
-    replace '${mod_version}', mod_version
+	mappings = "${config.mappings}"
+    replace '${mod_version}', project.config.mod_version
     replaceIn "DraconicEvolution.java"
     makeObfSourceJar = false
     useDepAts = true
 }
 
+String buildNo = "38"
+if(System.getenv("BUILD_NUMBER") != null){
+	buildNo = System.getenv("BUILD_NUMBER")
+}
+version = version + ".${buildNo}"
+
 dependencies {
     //compile "codechicken:CodeChickenCore:${config.mcversion}-${config.ccc_version}:deobf"
     //compile "codechicken:NotEnoughItems:${config.mcversion}-${config.NEI_version}:deobf"
-	compile "com.brandon3055.brandonscore:BrandonsCore:${mcversion}-${bcore_version}:deobf"
-	compile "codechicken:CodeChickenLib:${mcversion}-${CCLIB_version}:deobf"
+//	compile "com.brandon3055.brandonscore:BrandonsCore:${config.mcversion}-${config.bcore_version}:deobf"
+	compile "codechicken:CodeChickenLib:${config.mcversion}-${config.CCLIB_version}:deobf"
+    deobfCompile "mezz.jei:jei_${config.mcversion}:${config.jei_version}:api"
+    runtime "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
 
-    compile "li.cil.oc:OpenComputers:${oc_version}:api"
-
-//    deobfCompile "mezz.jei:jei_${mcversion}:${jei_version}:api"
-//    runtime "mezz.jei:jei_${mcversion}:${jei_version}"
+    //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
+    //compile project(path: ':BrandonsCore')
 }
 
 processResources
