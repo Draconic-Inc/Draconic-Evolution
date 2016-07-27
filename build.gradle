@@ -27,8 +27,8 @@ repositories {
         name 'CB Maven'
         url "http://chickenbones.net/maven/"
     }
-        maven {
-        name 'JEI Maven'
+    maven {
+    //    name 'JEI Maven'
         url "http://dvs1.progwml6.com/files/maven"
     }
 }
