@@ -25,6 +25,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -99,6 +101,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
         ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, new RenderTilePlacedItem());
