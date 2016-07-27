@@ -1,3 +1,0 @@
-//include ':BrandonsCore'
-
-//project(':BrandonsCore').projectDir = "$rootDir/../BrandonsCore" as File
