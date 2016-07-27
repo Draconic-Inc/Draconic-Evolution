@@ -43,7 +43,7 @@ repositories {
 //    project.ext.config = new ConfigSlurper().parse prop
 //}
 
-version = "${minecraft_version}-${mod_version}"
+version = minecraft_version + "-" + mod_version
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
