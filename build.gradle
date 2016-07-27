@@ -50,7 +50,7 @@ archivesBaseName = "Draconic-Evolution"
 minecraft {
     version = config.mcversion + "-" + config.forge_version
     runDir = "run"
-	mappings = "${config.mappings}"
+	mappings = "${config.mcp_mappings}"
     replace '${mod_version}', project.config.mod_version
     replaceIn "DraconicEvolution.java"
     makeObfSourceJar = false
