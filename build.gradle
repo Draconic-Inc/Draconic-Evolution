@@ -68,8 +68,10 @@ dependencies {
     //compile "codechicken:NotEnoughItems:${config.mcversion}-${config.NEI_version}:deobf"
 //	compile "com.brandon3055.brandonscore:BrandonsCore:${config.mcversion}-${config.bcore_version}:deobf"
 	compile "codechicken:CodeChickenLib:${config.mcversion}-${config.CCLIB_version}:deobf"
-    deobfCompile "mezz.jei:jei_${config.mcversion}:${config.jei_version}:api"
-    runtime "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
+    //deobfCompile "mezz.jei:jei_${config.mcversion}:${config.jei_version}:api"
+    //runtime "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
+    compile "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
+
 
     //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
     //compile project(path: ':BrandonsCore')
