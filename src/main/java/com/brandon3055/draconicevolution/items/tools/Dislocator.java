@@ -34,6 +34,11 @@ public class Dislocator extends ItemBCore {
     }
 
     @Override
+    public boolean isItemTool(ItemStack stack) {
+        return false;
+    }
+
+    @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         if (getLocation(stack) == null) {
             if (player.worldObj.isRemote) {

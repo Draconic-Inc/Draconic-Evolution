@@ -190,6 +190,11 @@ public class RecipeManager {
         FUSION_REGISTRY.add(recipe);
     }
 
+    public static void addRecipe(IRecipe recipe) {
+        activeCrafting.add(recipe);
+        GameRegistry.addRecipe(recipe);
+    }
+
     public static boolean isEnabled(Object stack) {
         if (stack instanceof ItemStack) {
             Item item = ((ItemStack) stack).getItem();

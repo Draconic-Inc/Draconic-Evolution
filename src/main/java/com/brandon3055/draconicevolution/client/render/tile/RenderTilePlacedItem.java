@@ -11,6 +11,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
+import java.util.List;
+
 /**
  * Created by brandon3055 on 25/07/2016.
  */
@@ -23,7 +25,10 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
 
         ItemStack[] stacks = new ItemStack[] {te.getStackInSlot(0), te.getStackInSlot(1), te.getStackInSlot(2), te.getStackInSlot(3)};
         int index = 0;
-        for (IndexedCuboid6 cuboid : te.getIndexedCuboids()) {
+
+        List<IndexedCuboid6> cuboids = te.getIndexedCuboids();
+
+        for (IndexedCuboid6 cuboid : cuboids) {
             ItemStack stack = stacks[(Integer)cuboid.data - 1];
             if (stack != null) {
                 GlStateManager.pushMatrix();
@@ -42,7 +47,7 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
 
                 GlStateManager.rotate((float)te.rotation[index].value * 22.5F, 0F, 0F, -1F);
 
-                if (stack.getItem().isItemTool(stack) && te.getIndexedCuboids().size() == 1) {
+                if (stack.getItem().isItemTool(stack) && cuboids.size() == 1) {
                     GlStateManager.scale(0.8F, 0.8F, 0.8F);
                     Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
                 }

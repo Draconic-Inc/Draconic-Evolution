@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.lib;
 
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.items.tools.RecipeDislocatorClone;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -39,10 +40,6 @@ public class DERecipes {
 	    /* ------------------ Items ------------------ */
 
         //region Crafting Components / Base items
-        if (RecipeManager.isEnabled(DEFeatures.draconiumDust) && RecipeManager.isEnabled(DEFeatures.draconiumIngot)){
-            GameRegistry.addSmelting(DEFeatures.draconiumDust, new ItemStack(DEFeatures.draconicIngot), 0);
-        }
-
         //Nuggets, Ingots, Blocks and Shards
         addShapeless(ALL, new ItemStack(nugget, 9), "ingotDraconium");                          //Ingots to Nuggets
         addShapeless(ALL, new ItemStack(nugget, 9, 1), "ingotDraconiumAwakened");
@@ -89,6 +86,12 @@ public class DERecipes {
 //                Maby try to get as many litle features in as possible
 //                Or.... Finish the tools Atleast the weapons
 
+
+        /* ------------------ Other ------------------ */
+        if (RecipeManager.isEnabled(DEFeatures.draconiumDust) && RecipeManager.isEnabled(DEFeatures.draconiumIngot)){
+            GameRegistry.addSmelting(DEFeatures.draconiumDust, new ItemStack(DEFeatures.draconicIngot), 0);
+        }
+        RecipeManager.addRecipe(new RecipeDislocatorClone());
     }
 
     //endregion

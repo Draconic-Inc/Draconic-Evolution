@@ -51,10 +51,10 @@ public class TilePortalClient extends TilePortal implements ITickable {
             else if (axis == X && player.posX > pos.getX() + 0.5){
                 BCEffectHandler.spawnFX(DEParticles.PORTAL, worldObj, new Vec3D(pos).add(1, rD1, rD2), new Vec3D(pos).add(0.25, rD1 + rO1, rD2 + rO2), 256D);
             }
-            else if (axis == Y && player.posY > pos.getY() + 0.5){
+            else if (axis == Y && player.posY + player.getEyeHeight() > pos.getY() + 0.5){
                 BCEffectHandler.spawnFX(DEParticles.PORTAL, worldObj, new Vec3D(pos).add(rD1, 1, rD2), new Vec3D(pos).add(rD1 + rO1, 0.25, rD2 + rO2), 256D);
             }
-            else if (axis == Y && player.posY < pos.getY() + 0.5){
+            else if (axis == Y && player.posY + player.getEyeHeight() < pos.getY() + 0.5){
                 BCEffectHandler.spawnFX(DEParticles.PORTAL, worldObj, new Vec3D(pos).add(rD1, 0, rD2), new Vec3D(pos).add(rD1 + rO1, 0.75, rD2 + rO2), 256D);
             }
         }

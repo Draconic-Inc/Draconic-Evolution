@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
 import com.brandon3055.brandonscore.utils.FeatureUtils;
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.PlacedItem;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.block.state.IBlockState;
@@ -20,7 +21,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -83,13 +83,16 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
 
     public void breakBlock() {
         for (int i = 0; i < getSizeInventory(); i++) {
-            FeatureUtils.dropItemNoDellay(getStackInSlot(i), worldObj, Vector3.fromTile(this));
+            FeatureUtils.dropItemNoDellay(getStackInSlot(i), worldObj, Vector3.fromTileCenter(this));
         }
         stacks.clear();
     }
 
-    @Override
-    public IndexedCuboid6 getBlockBounds() {
+    private IndexedCuboid6 blockBounds = new IndexedCuboid6(0, new Cuboid6(0, 0, 0, 1, 1, 1));
+    private List<IndexedCuboid6> indexedCuboids = new LinkedList<IndexedCuboid6>();
+
+    private void recalculateBounds() {
+
         IBlockState state = worldObj.getBlockState(getPos());
         Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center));
 
@@ -104,19 +107,17 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
             box.expand(new Vector3(axis == EnumFacing.Axis.X ? -0.02 : 0.03, axis == EnumFacing.Axis.Y ? -0.02 : 0.03, axis == EnumFacing.Axis.Z ? -0.02 : 0.03));
         }
 
-        return new IndexedCuboid6(0, box);
+        blockBounds = new IndexedCuboid6(0, box);
     }
 
-    private static final Transformation[] rotations = new Transformation[]{Rotation.sideRotations[3], Rotation.sideRotations[2], Rotation.sideRotations[0], Rotation.sideRotations[1], Rotation.quarterRotations[3], Rotation.quarterRotations[1],};
-
-    @Override
-    public List<IndexedCuboid6> getIndexedCuboids() {
+    private void recalculateCuboids() {
         IBlockState state = worldObj.getBlockState(getPos());
-        ArrayList<IndexedCuboid6> cuboids = new ArrayList<IndexedCuboid6>();
+        if (state.getBlock() != DEFeatures.placedItem) {
+            return;
+        }
+        indexedCuboids.clear();
 
         double scale = toolDisplay.value ? 0.2 : 0.32;
-
-        Cuboid6 box = new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, 0.36);//.apply(new Translation(new Vector3(getPos())));
 
         Translation toPos = new Translation(new Vector3(getPos()));
         Transformation rotation = rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5));
@@ -126,39 +127,34 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
         double itemH = 0.03;
 
         if (displayCount.value == 1) {
-            cuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(rotation))));
+            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(rotation))));
         } else if (displayCount.value == 2) {
-            cuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(-offset, 0, 0).with(rotation)))));
-            cuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(offset, 0, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(-offset, 0, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(offset, 0, 0).with(rotation)))));
         } else if (displayCount.value == 3) {
-            cuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(-offset, -offset, 0).with(rotation)))));
-            cuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(toPos.with(new Translation(offset, -offset, 0).with(rotation)))));
-            cuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(0, offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(0, offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(-offset, -offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(toPos.with(new Translation(offset, -offset, 0).with(rotation)))));
         } else if (displayCount.value == 4) {
-            cuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(-offset, offset, 0).with(rotation)))));
-            cuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(offset, offset, 0).with(rotation)))));
-            cuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(toPos.with(new Translation(-offset, -offset, 0).with(rotation)))));
-            cuboids.add(new IndexedCuboid6(4, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[3] ? blockH : itemH).apply(toPos.with(new Translation(offset, -offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(-offset, offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(offset, offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(toPos.with(new Translation(-offset, -offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(4, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[3] ? blockH : itemH).apply(toPos.with(new Translation(offset, -offset, 0).with(rotation)))));
         }
+    }
 
+    @Override
+    public IndexedCuboid6 getBlockBounds() {
+        recalculateBounds();//TODO Well that didnt make any improvement at all.. Maby look into a custom item renderer
+        return blockBounds;
+    }
 
-//        if (displayCount.value == 1) {
-//            cuboids.add(new IndexedCuboid6(1, box.copy().apply(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5)))));
-//        } else if (displayCount.value == 2) {
-//            cuboids.add(new IndexedCuboid6(1, box.copy().apply(new Translation(-offset, 0, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//            cuboids.add(new IndexedCuboid6(2, box.copy().apply(new Translation(offset, 0, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//        } else if (displayCount.value == 3) {
-//            cuboids.add(new IndexedCuboid6(2, box.copy().apply(new Translation(-offset, -offset, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//            cuboids.add(new IndexedCuboid6(3, box.copy().apply(new Translation(offset, -offset, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//            cuboids.add(new IndexedCuboid6(1, box.copy().apply(new Translation(0, offset, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//        } else if (displayCount.value == 4) {
-//            cuboids.add(new IndexedCuboid6(1, box.copy().apply(new Translation(-offset, offset, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//            cuboids.add(new IndexedCuboid6(2, box.copy().apply(new Translation(offset, offset, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//            cuboids.add(new IndexedCuboid6(3, box.copy().apply(new Translation(-offset, -offset, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//            cuboids.add(new IndexedCuboid6(4, box.copy().apply(new Translation(offset, -offset, 0).with(rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5))))));
-//        }
+    private static final Transformation[] rotations = new Transformation[]{Rotation.sideRotations[3], Rotation.sideRotations[2], Rotation.sideRotations[0], Rotation.sideRotations[1], Rotation.quarterRotations[3], Rotation.quarterRotations[1],};
 
-        return cuboids;
+    @Override
+    public List<IndexedCuboid6> getIndexedCuboids() {
+        recalculateCuboids();
+        return indexedCuboids;
     }
 
     //endregion
