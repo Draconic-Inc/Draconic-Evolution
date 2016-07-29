@@ -586,7 +586,7 @@ public class Debugger extends ItemBCore {
 //            }
 //        }
 //        BlockPos rayStartPos = position.add(0, trunkHeight - 3, 0);
-//        int posX = rayStartPos.getX();
+//        int posX = rayStartPos.getA();
 //        double posY = rayStartPos.getY();
 //        int posZ = rayStartPos.getZ();
 //

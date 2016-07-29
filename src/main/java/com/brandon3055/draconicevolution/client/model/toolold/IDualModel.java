@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.client.model.tool;
+package com.brandon3055.draconicevolution.client.model.toolold;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 

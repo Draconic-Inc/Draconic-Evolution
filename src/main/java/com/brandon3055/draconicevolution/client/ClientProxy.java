@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client;
 
+import codechicken.lib.model.loader.CCBakedModelLoader;
 import codechicken.lib.render.HitBoxRenderHandler;
 import codechicken.lib.render.TextureUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
@@ -8,13 +9,12 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.ArmorModelHelper;
-import com.brandon3055.draconicevolution.client.model.tool.ToolModelLoader;
+import com.brandon3055.draconicevolution.client.model.tool.DEBakedModelProvider;
 import com.brandon3055.draconicevolution.client.render.entity.*;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -32,19 +32,20 @@ public class ClientProxy extends CommonProxy {
 	{
 		super.preInit(event);
         OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);
+        CCBakedModelLoader.registerLoader(DEBakedModelProvider.INSTANCE);
 //        ModelLoaderRegistry.registerLoader(new CustomModelLoader());
 		DraconicEvolution.featureParser.registerRendering();
 		DEImageHandler.init(event);
 
-        ToolModelLoader.buildItemMap();
+//        ToolModelLoader.buildItemMap();
 
-        ToolModelLoader loader = new ToolModelLoader();
-        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(loader);
-        TextureUtils.addIconRegister(loader);
+//        ToolModelLoader loader = new ToolModelLoader();
+//        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(loader);
+//        TextureUtils.addIconRegister(loader);
         TextureUtils.addIconRegister(new ArmorModelHelper());
         TextureUtils.addIconRegister(new DETextureCache());
 
-        ToolModelLoader.registerModels();
+//       ToolModelLoader.registerModels();
 
         registerRendering();
 	}

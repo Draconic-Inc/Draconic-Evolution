@@ -17,21 +17,19 @@ import javax.vecmath.Matrix4f;
 import java.util.List;
 
 /**
- * Created by brandon3055 on 5/06/2016.
+ * Created by brandon3055 on 28/07/2016.
  */
-public class BakedToolModel implements IPerspectiveAwareModel {
+public class PerspectiveAwareToolModel implements IPerspectiveAwareModel {
 
-    private final ImmutableList<BakedQuad> quads;
-    private final TextureAtlasSprite particle;
     private final IBakedModel objModel;
+    private final ImmutableList<BakedQuad> simpleQuads;
+    private final TextureAtlasSprite particle;
 
-    public BakedToolModel(ImmutableList<BakedQuad> quads, TextureAtlasSprite particle, IBakedModel objModel){
-        this.quads = quads;
-        this.particle = particle;
+    public PerspectiveAwareToolModel(ImmutableList<BakedQuad> simpleQuads, IBakedModel objModel, TextureAtlasSprite particle) {
         this.objModel = objModel;
+        this.simpleQuads = simpleQuads;
+        this.particle = particle;
     }
-
-    //region IPerspectiveAwareModel
 
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
@@ -49,7 +47,7 @@ public class BakedToolModel implements IPerspectiveAwareModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
         if (side == null) {
-            return quads;
+            return simpleQuads;
         }
         return ImmutableList.of();
     }
@@ -83,6 +81,4 @@ public class BakedToolModel implements IPerspectiveAwareModel {
     public ItemOverrideList getOverrides() {
         return ItemOverrideList.NONE;
     }
-
-    //endregion
 }

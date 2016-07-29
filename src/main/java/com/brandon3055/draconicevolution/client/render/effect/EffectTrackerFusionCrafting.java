@@ -35,7 +35,7 @@ public class EffectTrackerFusionCrafting {
     private Random rand = new Random();
     private final Vec3D corePos;
     public final IFusionCraftingInventory craftingInventory;
-    private boolean renderBolt = false;
+    private int renderBolt = 0;
     private float rotation;
     private float rotationSpeed = 1;
     private float aRandomFloat = 0;
@@ -45,6 +45,7 @@ public class EffectTrackerFusionCrafting {
     public Vec3D prevPos = new Vec3D();
     public Vec3D circlePosition = new Vec3D();
     private World worldObj;
+    private long boltSeed = 0;
 
     public float alpha = 0F;
     public float scale = 1F;
@@ -108,8 +109,9 @@ public class EffectTrackerFusionCrafting {
             BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
         }
 
-        renderBolt = rand.nextInt((chance * 2) + 2) == 0;
-        if (renderBolt){
+        if (rand.nextInt((chance * 2) + 2) == 0){
+            renderBolt = 2;
+            boltSeed = rand.nextLong();
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
             BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
             worldObj.playSound(pos.x, pos.y, pos.z, DESoundHandler.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
@@ -158,9 +160,9 @@ public class EffectTrackerFusionCrafting {
         GlStateManager.pushMatrix();
         GlStateManager.translate(relativeX, relativeY, relativeZ);
 
-        if (renderBolt){
-            renderBolt = false;
-            RenderEnergyBolt.renderBoltBetween(new Vec3D(), corePos.copy().subtract(correctX - 0.5, correctY - 0.5, correctZ - 0.5), 0.05, 1, 10, rand.nextLong(), true);
+        if (renderBolt > 0){
+            renderBolt--;
+            RenderEnergyBolt.renderBoltBetween(new Vec3D(), corePos.copy().subtract(correctX - 0.5, correctY - 0.5, correctZ - 0.5), 0.05, 1, 10, boltSeed, true);
         }
 
         GlStateManager.enableBlend();

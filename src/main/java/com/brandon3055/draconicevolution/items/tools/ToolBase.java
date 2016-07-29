@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import codechicken.lib.model.CCOverrideBakedModel;
+import codechicken.lib.render.ModelRegistryHelper;
 import com.brandon3055.brandonscore.asm.IEnchantmentOverride;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
@@ -12,7 +14,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.tool.IDualModel;
+import com.brandon3055.draconicevolution.client.model.toolold.IDualModel;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.google.common.collect.Multimap;
@@ -158,6 +160,7 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     public void registerRenderer(Feature feature) {
         modelLocation = new ModelResourceLocation("draconicevolution:"+feature.name(), "inventory");
         ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
+        ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:"+feature.name(), "inventory"), new CCOverrideBakedModel());
     }
 
     @Override

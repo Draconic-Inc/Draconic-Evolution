@@ -1,6 +1,11 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import codechicken.lib.model.SimpleOverrideBakedModel;
+import codechicken.lib.render.ModelRegistryHelper;
+import com.brandon3055.brandonscore.config.Feature;
+import com.brandon3055.draconicevolution.client.model.tool.BowModelOverrideList;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,6 +23,9 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -191,6 +199,18 @@ public class WyvernBow extends ToolBase {
 
             //endregion
 
+    //region Render
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerRenderer(Feature feature) {
+        modelLocation = new ModelResourceLocation("draconicevolution:" + feature.name(), "inventory");
+        ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
+        ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.name(), "inventory"), new SimpleOverrideBakedModel(new BowModelOverrideList()));
+    }
+
+    //endregion
+
     //region Upgrade & Config
 
     @Override
@@ -218,4 +238,6 @@ public class WyvernBow extends ToolBase {
     }
 
     //endregion
+
+
 }

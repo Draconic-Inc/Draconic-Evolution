@@ -1,5 +1,6 @@
-package com.brandon3055.draconicevolution.client.model.tool;
+package com.brandon3055.draconicevolution.client.model.toolold;
 
+import com.brandon3055.draconicevolution.items.tools.WyvernBow;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.*;
@@ -59,7 +60,14 @@ public class OverrideBakedModel implements IBakedModel {
                     return originalModel;
                 }
 
-                IBakedModel model = ToolModelLoader.getModel((IDualModel) stack.getItem());
+                IBakedModel model;
+
+                if (stack.getItem() instanceof WyvernBow) {
+                    model = ToolModelLoader.getBowModel(stack);
+                }
+                else {
+                    model = ToolModelLoader.getModel((IDualModel) stack.getItem());
+                }
 
                 if (model != null){
                     return model;
