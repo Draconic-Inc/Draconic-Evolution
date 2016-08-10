@@ -3,17 +3,20 @@ package com.brandon3055.draconicevolution;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.config.ModConfigProcessor;
 import com.brandon3055.brandonscore.config.ModFeatureParser;
+import com.brandon3055.brandonscore.handlers.FileHandler;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.command.CommandUpgrade;
+import com.brandon3055.draconicevolution.items.tools.ToolStats;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.DEWorldGenHandler;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+
+import java.io.File;
 
 @Mod(modid = DraconicEvolution.MODID, name = DraconicEvolution.MODNAME, version = DraconicEvolution.VERSION, canBeDeactivated = false, guiFactory = DraconicEvolution.GUI_FACTORY,  dependencies = DraconicEvolution.DEPENDENCIES)
 public class DraconicEvolution {
@@ -29,13 +32,8 @@ public class DraconicEvolution {
 	//region Misc Fields
 	public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "toolsAndWeapons", 0);//TODO Use CCL Tabs
 	public static CreativeTabs tabBlocksItems = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "blocksAndItems", 1);
-
 	public static SimpleNetworkWrapper network;
-
 	public static boolean debug = false;//todo
-
-	public static Enchantment reaperEnchant;
-
 	public static Configuration configuration;
 	//endregion
 
@@ -63,8 +61,9 @@ public class DraconicEvolution {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		configuration = new Configuration(event.getSuggestedConfigurationFile());
-		configProcessor.processConfig(DEConfig.class, configuration);
+		configuration = new Configuration(new File(FileHandler.brandon3055Folder, "DraconicEvolution.cfg"));
+		configProcessor.initialize(configuration, DEConfig.comments, DEConfig.class, ToolStats.class);
+        configProcessor.loadConfig();
 
 		featureParser.loadFeatures(DEFeatures.class);
 		featureParser.loadFeatureConfig(configuration);

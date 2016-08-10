@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 import java.util.Set;
@@ -10,13 +9,13 @@ import java.util.Set;
  */
 public class WyvernAxe extends MiningToolBase {
 
-    public WyvernAxe(float attackDamage, float attackSpeed, Set<Block> effectiveBlocks) {
+    public WyvernAxe(double attackDamage, double attackSpeed, Set effectiveBlocks) {
         super(attackDamage, attackSpeed, effectiveBlocks);
     }
 
     public WyvernAxe() {
         super(ToolStats.WYV_AXE_ATTACK_DAMAGE, ToolStats.WYV_AXE_ATTACK_SPEED, AXE_OVERRIDES);//TODO Attack Damage and speed
-        this.baseMiningSpeed = ToolStats.WYV_AXE_MINING_SPEED;
+        this.baseMiningSpeed = (float)ToolStats.WYV_AXE_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
         this.setHarvestLevel("axe", 10);

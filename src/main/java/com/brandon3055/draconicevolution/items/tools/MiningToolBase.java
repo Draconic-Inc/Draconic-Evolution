@@ -49,7 +49,7 @@ public abstract class MiningToolBase extends ToolBase {
     protected float baseMiningSpeed = 1F;
     protected int baseAOE = 0;
 
-    public MiningToolBase(float attackDamage, float attackSpeed, Set effectiveBlocks) {
+    public MiningToolBase(double attackDamage, double attackSpeed, Set effectiveBlocks) {
         super(attackDamage, attackSpeed);
         this.effectiveBlocks.addAll(effectiveBlocks);
     }

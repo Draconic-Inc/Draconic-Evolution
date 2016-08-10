@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiHudConfig;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import com.brandon3055.draconicevolution.items.armor.CustomArmorHandler;
+import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

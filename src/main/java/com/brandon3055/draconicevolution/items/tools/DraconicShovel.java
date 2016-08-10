@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 public class DraconicShovel extends WyvernShovel {
     public DraconicShovel() {
         super(ToolStats.DRA_SHOVEL_ATTACK_DAMAGE, ToolStats.DRA_SHOVEL_ATTACK_SPEED, SHOVEL_OVERRIDES);
-        this.baseMiningSpeed = ToolStats.DRA_SHOVEL_MINING_SPEED;
+        this.baseMiningSpeed = (float)ToolStats.DRA_SHOVEL_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
         setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
         this.setHarvestLevel("shovel", 10);

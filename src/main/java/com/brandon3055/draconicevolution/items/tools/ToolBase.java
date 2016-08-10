@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
@@ -48,9 +49,9 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     private float baseAttackSpeed;
     protected int energyPerOperation = 1024;//TODO Energy Cost
 
-    public ToolBase(float attackDamage, float attackSpeed) {
-        this.baseAttackDamage = attackDamage;
-        this.baseAttackSpeed = attackSpeed;
+    public ToolBase(double attackDamage, double attackSpeed) {
+        this.baseAttackDamage = (float)attackDamage;
+        this.baseAttackSpeed = (float)attackSpeed;
         setMaxStackSize(1);
     }
 
@@ -158,14 +159,16 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
-        modelLocation = new ModelResourceLocation("draconicevolution:"+feature.name(), "inventory");
-        ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
-        ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:"+feature.name(), "inventory"), new CCOverrideBakedModel());
+        if (!DEConfig.disable3DModels) {
+            modelLocation = new ModelResourceLocation("draconicevolution:" + feature.name(), "inventory");
+            ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
+            ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.name(), "inventory"), new CCOverrideBakedModel());
+        }
     }
 
     @Override
     public boolean registerNormal(Feature feature) {
-        return false;
+        return DEConfig.disable3DModels;
     }
 
     @Override

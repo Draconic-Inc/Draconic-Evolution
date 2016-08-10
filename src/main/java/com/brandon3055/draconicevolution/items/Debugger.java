@@ -5,6 +5,7 @@ import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.client.particle.BCEffectRenderer;
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.lib.BlockPlacementBatcher;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
@@ -21,6 +22,8 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.util.ArrayDeque;
@@ -46,7 +49,8 @@ public class Debugger extends ItemBCore {
     //region Item Junk
 
     @Override
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {}
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+    }
 
     //todo remove from tab and NEI
 
@@ -58,6 +62,122 @@ public class Debugger extends ItemBCore {
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
 
+//        if (!world.isRemote ) {
+//            MassBlockModificationThread plThread = new MassBlockModificationThread(world);
+//
+//            int range = 10;
+//
+//            Iterable<BlockPos> blocks = BlockPos.getAllInBox(new BlockPos(player.posX - range, 0, player.posZ - range), new BlockPos(player.posX + range, 128, player.posZ + range));
+//
+//            for (BlockPos pos : blocks) {
+//                plThread.setBlock(pos, Blocks.AIR.getDefaultState());
+//            }
+//
+//            plThread.start();
+//        }
+//
+//
+//        if (true) {
+//            return new ActionResult(EnumActionResult.FAIL, itemStack);
+//        }
+
+//        if (!world.isRemote && world instanceof WorldServer) {
+//            BlockPlacementBatcher batcher = new BlockPlacementBatcher((WorldServer)world);
+//
+//            int range = 100;
+//
+//            Iterable<BlockPos> blocks = BlockPos.getAllInBox(new BlockPos(player.posX - range, 0, player.posZ - range), new BlockPos(player.posX + range, 128, player.posZ + range));
+//
+//            for (BlockPos pos : blocks) {
+//
+//                if (world.rand.nextBoolean()) {
+//                    batcher.setBlockState(pos, Blocks.AIR.getDefaultState());
+//                }
+//                else {
+//                    batcher.setBlockState(pos, Blocks.STONE.getDefaultState());
+//                }
+//
+//            }
+//
+////            batcher.finish();
+////            SPacketChunkData data = new SPacketChunkData(chunk, 65535);
+////            if (player instanceof EntityPlayerMP) {
+////                  ((EntityPlayerMP) player).connection.sendPacket(data);
+////            }
+//        }
+
+
+//        if (!player.worldObj.isRemote) {
+//            int range = 4;
+//
+//            for (int chunkX = - range; chunkX < range; chunkX++) {
+//                for (int chunkZ = - range; chunkZ < range; chunkZ++) {
+//
+//                    Chunk chunk = world.getChunkFromChunkCoords((int) (player.posX / 16) + chunkX, (int) (player.posZ / 16) + chunkZ);
+//
+//                    ExtendedBlockStorage[] blockStorage = chunk.getBlockStorageArray();
+//
+//                    //for (ExtendedBlockStorage storage : blockStorage) {
+//                        for (int x = 0; x < 16; x++) {
+//                            for (int y = 0; y < 255; y++) {
+//                                for (int z = 0; z < 16; z++) {
+//                                    chunk.setBlockState(new BlockPos(x, y, z), Blocks.AIR.getDefaultState());
+//                                }
+//                            }
+//                        }
+//                    //}
+//
+//
+////                    SPacketChunkData data = new SPacketChunkData(chunk, 65535);
+////                    if (player instanceof EntityPlayerMP) {
+////                        ((EntityPlayerMP) player).connection.sendPacket(data);
+////                    }
+//                }
+//            }
+//        }
+
+
+//        if (!player.worldObj.isRemote) {
+//            int range = 5;
+//
+//            for (int chunkX = - range; chunkX < range; chunkX++) {
+//                for (int chunkZ = - range; chunkZ < range; chunkZ++) {
+//
+//                    Chunk chunk = world.getChunkFromChunkCoords((int) (player.posX / 16) + chunkX, (int) (player.posZ / 16) + chunkZ);
+//
+//                    ExtendedBlockStorage[] blockStorage = chunk.getBlockStorageArray();
+//
+//                    for (int i = 0; i < blockStorage.length - 8; i++) {
+//                        ExtendedBlockStorage storage = blockStorage[i];
+//                        for (int x = 0; x < 16; x++) {
+//                            for (int y = 0; y < 16; y++) {
+//                                for (int z = 0; z < 16; z++) {
+//                                    if (storage == null) {
+//                                        storage = new ExtendedBlockStorage(i, true);
+//                                        blockStorage[i] = storage;
+//                                    }
+//
+//                                    if (world.rand.nextBoolean()) {
+//                                        storage.set(x, y, z, Blocks.AIR.getDefaultState());
+//                                    }
+//                                    else {
+//                                        storage.set(x, y, z, Blocks.STONE.getDefaultState());
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//
+//                    SPacketChunkData data = new SPacketChunkData(chunk, 65535);
+//                    if (player instanceof EntityPlayerMP) {
+//                        ((EntityPlayerMP) player).connection.sendPacket(data);
+//                    }
+//                }
+//            }
+//        }
+
+
 //        LogHelper.info("Side");
 //        if (true) return new ActionResult(EnumActionResult.FAIL, itemStack);
 
@@ -67,6 +187,7 @@ public class Debugger extends ItemBCore {
         MODES.put(2, "Extract RF");
         MODES.put(3, "List Particles");
         MODES.put(4, "Recipe");
+        MODES.put(5, "Clear");
 
         handleRightClick(itemStack, world, player, hand);
 
@@ -161,14 +282,13 @@ public class Debugger extends ItemBCore {
 //       // LogHelper.info(Integer.parseInt("011010", 2));
 
 
-
-      //  LogHelper.info();
+        //  LogHelper.info();
 
 //        BigInteger bigInteger = BigInteger.valueOf(Long.MAX_VALUE);
 //        BigInteger bigInteger2 = BigInteger.valueOf(Long.MAX_VALUE);
 //        BigInteger value = bigInteger.multiply(bigInteger2);
 //        LogHelper.info(value+" "+bigInteger);
-       // generate(world, world.rand, new BlockPos(player.posX, player.posY, player.posZ));
+        // generate(world, world.rand, new BlockPos(player.posX, player.posY, player.posZ));
 
 
 //        for (int i = 0; i < 6; i++){
@@ -217,7 +337,6 @@ public class Debugger extends ItemBCore {
 //                }
 //            }
 //        }
-
 
 
 //        for (int x = posX; x < posX + size; x++){
@@ -298,23 +417,23 @@ public class Debugger extends ItemBCore {
         player.inventory.addItemStackToInventory(new ItemStack(Blocks.END_GATEWAY, 64));
 
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
-        if (player.isSneaking()){
+        if (player.isSneaking()) {
             mode++;
-            if (mode == MODES.size()){
+            if (mode == MODES.size()) {
                 mode = 0;
             }
-            if (!world.isRemote){
+            if (!world.isRemote) {
                 player.addChatComponentMessage(new TextComponentString(MODES.get(mode)));
             }
             ItemNBTHelper.setInteger(stack, "mode", mode);
             return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
         }
 
-        switch (mode){
+        switch (mode) {
             case 0:
                 break;
             case 3:
-                if (world.isRemote){
+                if (world.isRemote) {
                     Map<ResourceLocation, ArrayDeque<Particle>[][]> texturedRenderQueue = ReflectionHelper.getPrivateValue(BCEffectRenderer.class, BCEffectHandler.effectRenderer, "texturedRenderQueue");
 
                     for (ArrayDeque<Particle>[][] array : texturedRenderQueue.values()) {
@@ -327,6 +446,45 @@ public class Debugger extends ItemBCore {
 
                 }
                 break;
+            case 4:
+                if (!world.isRemote) {
+                    player.openGui(DraconicEvolution.instance, 2016, world, 0, 0, 0);
+                }
+                break;
+
+            case 5:
+
+
+                if (world instanceof WorldServer) {
+                    FMLLog.info("Run");
+
+                    BlockPlacementBatcher batcher = new BlockPlacementBatcher((WorldServer) world);
+
+                    for (int x = -120; x < 120; x++) {
+                        for (int y = 0; y < 100; y++) {
+                            for (int z = -120; z < 120; z++) {
+                                //world.getChunkFromBlockCoords(pos.add(x * 16, 0, z * 16)).generateSkylightMap();
+                                BlockPos posAt = new BlockPos(player.posX + x, y, player.posZ + z);
+
+                                if (posAt.getY() == 63 || world.getBlockState(posAt).getBlock() == Blocks.BEDROCK || world.getBlockState(posAt).getBlock() == Blocks.STONE || world.getBlockState(posAt).getBlock() == Blocks.DIRT || world.getBlockState(posAt).getBlock() == Blocks.GRASS || world.getBlockState(posAt).getBlock().getRegistryName().getResourceDomain().contains("jarrm") || world.getBlockState(posAt).getBlock().getRegistryName().getResourcePath().contains("dra")) {
+                                    batcher.setBlockState(posAt, Blocks.AIR.getDefaultState());
+                                }
+
+                            }
+                        }
+                    }
+
+                    batcher.finish();
+                }
+
+                BlockPos pos = new BlockPos(player);
+                for (int x = -10; x < 10; x++) {
+                    for (int z = -10; z < 10; z++) {
+                        world.getChunkFromBlockCoords(pos.add(x * 16, 0, z * 16)).generateSkylightMap();
+                    }
+                }
+
+                break;
         }
 
         return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
@@ -336,19 +494,20 @@ public class Debugger extends ItemBCore {
     public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
 
-        switch (mode){
-            case 0: return finishCraft(world, pos);
+        switch (mode) {
+            case 0:
+                return finishCraft(world, pos);
 
             case 1:
             case 2:
                 TileEntity tile = world.getTileEntity(pos);
-                if (mode == 1 && tile instanceof IEnergyReceiver){
+                if (mode == 1 && tile instanceof IEnergyReceiver) {
                     if (!world.isRemote) {
                         LogHelper.info(((IEnergyReceiver) tile).receiveEnergy(side, Integer.MAX_VALUE, false));
                     }
                     return EnumActionResult.PASS;
                 }
-                else  if (mode == 2 && tile instanceof IEnergyProvider){
+                else if (mode == 2 && tile instanceof IEnergyProvider) {
                     if (!world.isRemote) {
                         ((IEnergyProvider) tile).extractEnergy(side, Integer.MAX_VALUE, false);
                     }
@@ -366,16 +525,6 @@ public class Debugger extends ItemBCore {
     public EnumActionResult miscFunctions(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand, int mode) {
         IBlockState state = world.getBlockState(pos);
 
-        //region Recipe
-
-        if (mode == 4) {
-            if (!world.isRemote) {
-                player.openGui(DraconicEvolution.instance, 2016, world, 0, 0, 0);
-            }
-        }
-
-        //endregion
-
         return EnumActionResult.PASS;
     }
 
@@ -384,7 +533,7 @@ public class Debugger extends ItemBCore {
     public EnumActionResult finishCraft(World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
 
-        if (tile instanceof TileFusionCraftingCore && !world.isRemote){
+        if (tile instanceof TileFusionCraftingCore && !world.isRemote) {
             if (((TileFusionCraftingCore) tile).craftingInProgress()) {
                 ((TileFusionCraftingCore) tile).craftingStage.value = 2000;
             }
@@ -408,10 +557,6 @@ public class Debugger extends ItemBCore {
 //double years = days / 365D;
 //int centuries = (int)years / 100;
 //LogHelper.info(centuries+" "+years+" "+Integer.MAX_VALUE);
-
-
-
-
 
 
 ////    private void generate(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {

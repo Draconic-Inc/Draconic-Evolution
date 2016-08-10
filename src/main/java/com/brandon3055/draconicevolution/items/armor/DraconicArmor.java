@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items.armor;
 
 import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IntegerConfigField;
@@ -15,12 +16,14 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,6 +36,14 @@ import static net.minecraft.inventory.EntityEquipmentSlot.*;
  * Created by brandon3055 on 6/06/2016.
  */
 public class DraconicArmor extends WyvernArmor {
+
+    private static ArmorMaterial draconicMaterial = EnumHelper.addArmorMaterial("draconicArmor", "draconicevolution:draconicArmor2D", -1, new int[]{3, 6, 8, 3}, 20, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 3.0F);
+
+    public DraconicArmor(int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
+        super(draconicMaterial, renderIndexIn, equipmentSlotIn);
+        this.baseProtectionPoints = 512F;
+        this.baseRecovery = 4F;
+    }
 
     public DraconicArmor(ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
         super(materialIn, renderIndexIn, equipmentSlotIn);
@@ -89,7 +100,9 @@ public class DraconicArmor extends WyvernArmor {
     @SideOnly(Side.CLIENT)
     @Override
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {//TODO Look into that default model and the texture issue
-        //return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+        if (DEConfig.disable3DModels) {
+            return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+        }
 
         if (model == null) {
             if (armorType == HEAD) model = new ModelDraconicArmor(1F, true, false, false, false);

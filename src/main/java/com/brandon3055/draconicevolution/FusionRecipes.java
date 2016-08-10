@@ -12,8 +12,8 @@ import net.minecraft.item.ItemStack;
  */
 public class FusionRecipes {
 
-    public static void registerRecipes() {
-        ToolUpgrade.addUpgradeRecipes();
+    public static void registerRecipes() {//TODO Remove this class
+
 
 //        FusionRecipeAPI.addRecipe(new SimpleFusionRecipe(new ItemStack(Items.STONE_AXE), new ItemStack(Items.WOODEN_AXE), 1000, 0, new ItemStack(Items.DIAMOND), new ItemStack(Blocks.OBSIDIAN), new ItemStack(DEFeatures.draconiumDust), new ItemStack(DEFeatures.draconicCore)));
 //        FusionRecipeAPI.addRecipe(new SimpleFusionRecipe(new ItemStack(Items.IRON_AXE), new ItemStack(Items.STONE_AXE), 1000, 0, new ItemStack(Items.DIAMOND), new ItemStack(Blocks.OBSIDIAN), new ItemStack(DEFeatures.draconiumDust), new ItemStack(DEFeatures.draconicCore)));

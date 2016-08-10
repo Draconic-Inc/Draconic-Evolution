@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.Loader;
 
-import static com.brandon3055.draconicevolution.items.armor.CustomArmorHandler.ArmorSummery;
+import static com.brandon3055.draconicevolution.handlers.CustomArmorHandler.ArmorSummery;
 
 /**
  * Created by brandon3055 on 29/9/2015.

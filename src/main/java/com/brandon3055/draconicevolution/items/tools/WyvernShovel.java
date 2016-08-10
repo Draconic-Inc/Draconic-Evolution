@@ -10,13 +10,13 @@ import java.util.Set;
  */
 public class WyvernShovel extends MiningToolBase {
 
-    public WyvernShovel(float attackDamage, float attackSpeed, Set<Block> effectiveBlocks) {
+    public WyvernShovel(double attackDamage, double attackSpeed, Set<Block> effectiveBlocks) {
         super(attackDamage, attackSpeed, effectiveBlocks);
     }
 
     public WyvernShovel() {
         super(ToolStats.WYV_SHOVEL_ATTACK_DAMAGE, ToolStats.WYV_SHOVEL_ATTACK_SPEED, SHOVEL_OVERRIDES);//TODO Attack Damage and speed
-        this.baseMiningSpeed = ToolStats.WYV_SHOVEL_MINING_SPEED;
+        this.baseMiningSpeed = (float)ToolStats.WYV_SHOVEL_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
         this.setHarvestLevel("shovel", 10);

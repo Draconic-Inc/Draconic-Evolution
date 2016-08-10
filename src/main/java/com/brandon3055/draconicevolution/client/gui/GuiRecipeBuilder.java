@@ -33,7 +33,7 @@ public class GuiRecipeBuilder extends GuiContainer {
     private GuiButton genShapeless;
     private GuiButton genOre;
     private GuiButton genFusion;
-    private boolean ore = false;
+    private boolean ore = true;
 
     public GuiRecipeBuilder(EntityPlayer player) {
         super(new ContainerRecipeBuilder(player));
@@ -48,20 +48,19 @@ public class GuiRecipeBuilder extends GuiContainer {
     @Override
     public void initGui() {
         super.initGui();
-        textField = new GuiTextField(0, fontRendererObj, guiLeft + 20, guiTop + 119, xSize - 53, 12);
+        textField = new GuiTextField(0, fontRendererObj, 1, guiTop + 119, guiLeft + xSize, 12);
         textField.setEnableBackgroundDrawing(false);
         textField.setTextColor(0x00FF00);
         textField.setMaxStringLength(1000);
         buttonList.clear();
         buttonList.add(new ColourRectButton(0, "Crafting", guiLeft + 18, guiTop + 130, 50, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         buttonList.add(new ColourRectButton(1, "Fusion", guiLeft + 70, guiTop + 130, 50, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(new ColourRectButton(2, "Clear", guiLeft + 122, guiTop + 130, 46, 12, 0xFF440000, 0xFF000066, 0xFF006600));
 
 
-        buttonList.add(new ColourRectButton(9, "Copy", guiLeft + xSize - 31, guiTop + 117, 29, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(new ColourRectButton(9, "Copy", guiLeft + xSize - 31, guiTop + 130, 29, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         buttonList.add(genShaped = new ColourRectButton(10, "Shaped", guiLeft + 18, guiTop + 100, 42, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         buttonList.add(genShapeless = new ColourRectButton(11, "Shapeless", guiLeft + 61, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(genOre = new ColourRectButton(12, "Ore: false", guiLeft + 118, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(genOre = new ColourRectButton(12, "Ore: true", guiLeft + 118, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         buttonList.add(genFusion = new ColourRectButton(13, "Gen Fusion", guiLeft + 18, guiTop + 100, 70, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         buttonList.add(new ColourRectButton(100, "Reload Recipes", guiLeft - 90 , guiTop + ySize - 12, 90, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         genFusion.visible = false;
@@ -74,7 +73,7 @@ public class GuiRecipeBuilder extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GuiHelper.drawBorderedRect(guiLeft, guiTop, xSize, ySize, 1, 0xFF000000, 0xFFFF0000);
-        GuiHelper.drawBorderedRect(guiLeft + 18, guiTop + 117, xSize - 50, 12, 1, 0xFF111111, 0xFFFFFFFF);
+        GuiHelper.drawBorderedRect(0, guiTop + 117, guiLeft + xSize, 12, 1, 0xFF111111, 0xFFFFFFFF);
 
         int posX = 20;
         int posY = 145;

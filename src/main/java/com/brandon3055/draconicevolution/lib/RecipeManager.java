@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeAPI;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.fusioncrafting.SimpleFusionRecipe;
+import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -63,8 +64,8 @@ public class RecipeManager {
 
         activeFusion.clear();
 
-        DERecipes.addCrafting();
-//        DERecipes.addFusion();
+        ToolUpgrade.addUpgrades();
+        DERecipes.addRecipes();
     }
 
     //endregion

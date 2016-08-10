@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 public class DraconicAxe extends WyvernAxe {
     public DraconicAxe() {
         super(ToolStats.DRA_AXE_ATTACK_DAMAGE, ToolStats.DRA_AXE_ATTACK_SPEED, AXE_OVERRIDES);
-        this.baseMiningSpeed = ToolStats.DRA_AXE_MINING_SPEED;
+        this.baseMiningSpeed = (float)ToolStats.DRA_AXE_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
         setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
         this.setHarvestLevel("axe", 10);

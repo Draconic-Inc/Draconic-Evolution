@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
-import com.brandon3055.draconicevolution.items.armor.CustomArmorHandler;
+import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.brandon3055.draconicevolution.network.*;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -165,7 +165,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityGuardianCrystal.class, "GuardianCrystal", 8, DraconicEvolution.instance, 256, 5, false);
 //		EntityRegistry.registerModEntity(EntityChaosBolt.class, "ChaosBolt", 9, DraconicEvolution.instance, 32, 5, true);
 		EntityRegistry.registerModEntity(EntityChaosVortex.class, "EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
-//		EntityRegistry.registerModEntity(EntityCustomArrow.class, "CustomArrow", 11, DraconicEvolution.instance, 128, 1, true);
+		EntityRegistry.registerModEntity(EntityCustomArrow.class, "CustomArrow", 11, DraconicEvolution.instance, 128, 1, true);
 
 	}
 

@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class WyvernSword extends ToolBase {
 
-    public WyvernSword(float attackDamage, float attackSpeed) {
+    public WyvernSword(double attackDamage, double attackSpeed) {
         super(attackDamage, attackSpeed);
     }
 

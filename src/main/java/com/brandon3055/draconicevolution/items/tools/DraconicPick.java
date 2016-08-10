@@ -9,7 +9,7 @@ public class DraconicPick extends WyvernPick {
 
     public DraconicPick() {
         super(ToolStats.DRA_PICK_ATTACK_DAMAGE, ToolStats.DRA_PICK_ATTACK_SPEED, PICKAXE_OVERRIDES);
-        this.baseMiningSpeed = ToolStats.DRA_PICK_MINING_SPEED;
+        this.baseMiningSpeed = (float)ToolStats.DRA_PICK_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
         setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
         this.setHarvestLevel("pickaxe", 10);

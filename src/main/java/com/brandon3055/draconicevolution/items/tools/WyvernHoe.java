@@ -16,7 +16,7 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.DIG_AOE;
 public class WyvernHoe extends ToolBase {
     protected int baseAOE;
 
-    public WyvernHoe(float attackDamage, float attackSpeed) {
+    public WyvernHoe(double attackDamage, double attackSpeed) {
         super(attackDamage, attackSpeed);
         this.baseAOE = 2;
     }

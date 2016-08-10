@@ -7,8 +7,10 @@ import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.items.tools.WyvernBow;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
@@ -38,6 +40,11 @@ public class DEBakedModelProvider implements IBakedModelLoader {
                 return stack.getItem().getRegistryName().getResourcePath() + "0" + ItemNBTUtils.getInteger(stack, "DrawStage");
             }
 
+            return null;
+        }
+
+        @Override
+        public String createKey(IBlockState state, EnumFacing face) {
             return null;
         }
     }

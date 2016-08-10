@@ -1,8 +1,8 @@
-# MagicaVoxel @ ephtracy
+# Blender MTL File: 'None'
+# Material Count: 1
 
 newmtl palette
-# illum 1
-Ka 0.000 0.000 0.000
-Kd 1.000 1.000 1.000
-# Ks 0.000 0.000 0.000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+d 1.000000
 map_Kd draconicevolution:items/tools/obj/draconicBow01

@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.items.armor;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
@@ -16,11 +17,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -34,8 +37,17 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
  */
 public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgradableItem, ICustomArmor {
 
+    private static ArmorMaterial wyvernMaterial = EnumHelper.addArmorMaterial("wyvernArmor", "draconicevolution:wyvernArmor2D", -1, new int[]{3, 6, 8, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.0F);
+
     protected float baseProtectionPoints;
     protected float baseRecovery;
+
+    public WyvernArmor(int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
+        super(wyvernMaterial, renderIndexIn, equipmentSlotIn);
+        this.setMaxDamage(-1);
+        this.baseProtectionPoints = 256F;
+        this.baseRecovery = 2F;
+    }
 
     public WyvernArmor(ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
         super(materialIn, renderIndexIn, equipmentSlotIn);
@@ -139,7 +151,9 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     @SideOnly(Side.CLIENT)
     @Override
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
-        //return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+        if (DEConfig.disable3DModels) {
+            return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+        }
 
         if (model == null) {
             if (armorType == EntityEquipmentSlot.HEAD) model = new ModelWyvernArmor(0.5F, true, false, false, false);

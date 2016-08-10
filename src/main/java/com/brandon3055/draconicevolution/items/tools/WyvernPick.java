@@ -10,13 +10,13 @@ import java.util.Set;
  */
 public class WyvernPick extends MiningToolBase {
     
-    public WyvernPick(float attackDamage, float attackSpeed, Set<Block> effectiveBlocks) {
+    public WyvernPick(double attackDamage, double attackSpeed, Set<Block> effectiveBlocks) {
         super(attackDamage, attackSpeed, effectiveBlocks);
     }
 
     public WyvernPick() {
         super(ToolStats.WYV_PICK_ATTACK_DAMAGE, ToolStats.WYV_PICK_ATTACK_SPEED, PICKAXE_OVERRIDES);//TODO Attack Damage and speed
-        this.baseMiningSpeed = ToolStats.WYV_PICK_MINING_SPEED;
+        this.baseMiningSpeed = (float)ToolStats.WYV_PICK_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
         this.setHarvestLevel("pickaxe", 10);
