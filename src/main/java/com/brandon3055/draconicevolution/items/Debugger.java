@@ -5,7 +5,6 @@ import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.client.particle.BCEffectRenderer;
 import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.brandonscore.lib.BlockPlacementBatcher;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
@@ -467,24 +466,24 @@ public class Debugger extends ItemBCore {
 
                 if (world instanceof WorldServer) {
                     FMLLog.info("Run");
-
-                    BlockPlacementBatcher batcher = new BlockPlacementBatcher((WorldServer) world);
-
-                    for (int x = -120; x < 120; x++) {
-                        for (int y = 0; y < 100; y++) {
-                            for (int z = -120; z < 120; z++) {
-                                //world.getChunkFromBlockCoords(pos.add(x * 16, 0, z * 16)).generateSkylightMap();
-                                BlockPos posAt = new BlockPos(player.posX + x, y, player.posZ + z);
-
-                                if (posAt.getY() == 63 || world.getBlockState(posAt).getBlock() == Blocks.BEDROCK || world.getBlockState(posAt).getBlock() == Blocks.STONE || world.getBlockState(posAt).getBlock() == Blocks.DIRT || world.getBlockState(posAt).getBlock() == Blocks.GRASS || world.getBlockState(posAt).getBlock().getRegistryName().getResourceDomain().contains("jarrm") || world.getBlockState(posAt).getBlock().getRegistryName().getResourcePath().contains("dra")) {
-                                    batcher.setBlockState(posAt, Blocks.AIR.getDefaultState());
-                                }
-
-                            }
-                        }
-                    }
-
-                    batcher.finish();
+//
+//                    BlockPlacementBatcher batcher = new BlockPlacementBatcher((WorldServer) world);
+//
+//                    for (int x = -120; x < 120; x++) {
+//                        for (int y = 0; y < 100; y++) {
+//                            for (int z = -120; z < 120; z++) {
+//                                //world.getChunkFromBlockCoords(pos.add(x * 16, 0, z * 16)).generateSkylightMap();
+//                                BlockPos posAt = new BlockPos(player.posX + x, y, player.posZ + z);
+//
+//                                if (posAt.getY() == 63 || world.getBlockState(posAt).getBlock() == Blocks.BEDROCK || world.getBlockState(posAt).getBlock() == Blocks.STONE || world.getBlockState(posAt).getBlock() == Blocks.DIRT || world.getBlockState(posAt).getBlock() == Blocks.GRASS || world.getBlockState(posAt).getBlock().getRegistryName().getResourceDomain().contains("jarrm") || world.getBlockState(posAt).getBlock().getRegistryName().getResourcePath().contains("dra")) {
+//                                    batcher.setBlockState(posAt, Blocks.AIR.getDefaultState());
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//
+//                    batcher.finish();
                 }
 
                 BlockPos pos = new BlockPos(player);
