@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
@@ -44,7 +43,7 @@ public class DEBakedModelProvider implements IBakedModelLoader {
         }
 
         @Override
-        public String createKey(IBlockState state, EnumFacing face) {
+        public String createKey(IBlockState state) {
             return null;
         }
     }
