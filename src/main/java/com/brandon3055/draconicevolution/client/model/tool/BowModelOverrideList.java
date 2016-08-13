@@ -2,11 +2,13 @@ package com.brandon3055.draconicevolution.client.model.tool;
 
 import codechicken.lib.model.loader.CCBakedModelLoader;
 import codechicken.lib.util.ItemNBTUtils;
+import com.brandon3055.draconicevolution.handlers.BowHandler;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverride;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -23,8 +25,9 @@ public class BowModelOverrideList extends ItemOverrideList {
     public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
         ItemStack copy = stack.copy();
 
-        if (entity != null && entity.getActiveItemStack() == stack) {
-            ItemNBTUtils.setInteger(copy, "DrawStage", Math.min(entity.getItemInUseMaxCount() / 10, 3)); //todo calculate the actual draw stage
+        if (entity instanceof EntityPlayer && entity.getActiveItemStack() == stack && entity.getItemInUseMaxCount() > 0) {
+            BowHandler.BowProperties bowProperties = new BowHandler.BowProperties(copy, (EntityPlayer) entity);
+            ItemNBTUtils.setInteger(copy, "DrawStage", (int)Math.min(((double)entity.getItemInUseMaxCount() / bowProperties.getDrawTicks() * 3D), 3)); //todo calculate the actual draw stage
         }
 
         IBakedModel model = CCBakedModelLoader.getModel(copy);

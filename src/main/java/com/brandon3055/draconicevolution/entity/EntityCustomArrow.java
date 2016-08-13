@@ -1,10 +1,14 @@
 package com.brandon3055.draconicevolution.entity;
 
-import com.brandon3055.draconicevolution.handlers.BowHandler;
-import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.handlers.BowHandler.BowProperties;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,9 +18,12 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class EntityCustomArrow extends EntityArrow {
 //    private BlockPos blockHitPos = new BlockPos(0, -1, 0);
@@ -32,7 +39,7 @@ public class EntityCustomArrow extends EntityArrow {
 //    public int knockbackStrength = 0;
     private static final DataParameter<Boolean> IS_ENERGY = EntityDataManager.<Boolean>createKey(EntityCustomArrow.class, DataSerializers.BOOLEAN);
 
-    public BowHandler.BowProperties bowProperties = new BowHandler.BowProperties();
+    public BowProperties bowProperties = new BowProperties();
 
     public EntityCustomArrow(World worldIn)
     {
@@ -44,30 +51,13 @@ public class EntityCustomArrow extends EntityArrow {
         super(worldIn, x, y, z);
     }
 
-    public EntityCustomArrow(World worldIn, EntityLivingBase shooter)
+    public EntityCustomArrow(BowProperties bowProperties, World worldIn, EntityLivingBase shooter)
     {
         super(worldIn, shooter);
+        this.bowProperties = bowProperties;
     }
 
-//    public EntityCustomArrow(World world) {
-//        super(world);
-//        setRenderDistanceWeight(40);
-//    }
-//
-//    public EntityCustomArrow(World world, double x, double y, double z) {
-//        super(world, x, y, z);
-//        setRenderDistanceWeight(40);
-//    }
-//
-//    public EntityCustomArrow(World world, EntityLivingBase entityLivingBase1, EntityLivingBase entityLivingBase2, float f1, float f2) {
-//        super(world, entityLivingBase1, entityLivingBase2, f1, f2);
-//        setRenderDistanceWeight(40);
-//    }
-//
-//    public EntityCustomArrow(World world, EntityLivingBase entityLivingBase, float velocity) {
-//        super(world, entityLivingBase, velocity);
-//        setRenderDistanceWeight(40);
-//    }
+    //region Arrow Stuffs
 
     @Override
     protected void entityInit() {
@@ -101,13 +91,15 @@ public class EntityCustomArrow extends EntityArrow {
     @Override
     public void onUpdate() {
         super.onUpdate();
+
+
         //region Entity Update And motion
-//        if (worldObj.isRemote) {
-//            bowProperties.energyBolt = dataManager.get(IS_ENERGY);
-//        }
-//        else {
-//            dataManager.set(IS_ENERGY, bowProperties.energyBolt);
-//        }
+        if (worldObj.isRemote) {
+            bowProperties.energyBolt = dataManager.get(IS_ENERGY);
+        }
+        else {
+            dataManager.set(IS_ENERGY, bowProperties.energyBolt);
+        }
 //
 //
 //        if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
@@ -360,6 +352,34 @@ public class EntityCustomArrow extends EntityArrow {
 //        }
     }
 
+    @Override
+    protected ItemStack getArrowStack() {
+        return new ItemStack(Items.ARROW);
+    }
+
+    @Override
+    public void onCollideWithPlayer(EntityPlayer entityIn)
+    {
+        if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0)
+        {
+            boolean flag = this.pickupStatus == EntityArrow.PickupStatus.ALLOWED || this.pickupStatus == EntityArrow.PickupStatus.CREATIVE_ONLY && entityIn.capabilities.isCreativeMode;
+
+            if (this.pickupStatus == EntityArrow.PickupStatus.ALLOWED && !entityIn.inventory.addItemStackToInventory(getArrowStack()))
+            {
+                flag = false;
+            }
+
+            if (flag)
+            {
+                this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                entityIn.onItemPickup(this, 1);
+                this.setDead();
+            }
+        }
+    }
+
+    //endregion
+
     @SideOnly(Side.CLIENT)
     private void spawnArrowParticles() {
 //        Particles.ArrowParticle particle = new Particles.ArrowParticle(worldObj, posX - 0.25 + rand.nextDouble() * 0.5, posY + rand.nextDouble() * 0.5, posZ - 0.25 + rand.nextDouble() * 0.5, 0xff6000, 0.2F + rand.nextFloat() * 0.5f);
@@ -369,6 +389,8 @@ public class EntityCustomArrow extends EntityArrow {
 //        particle.motionZ = (rand.nextDouble() - 0.5) * mm;
 //        ParticleHandler.spawnCustomParticle(particle, 64);
     }
+
+    //region Save
 
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
@@ -410,68 +432,103 @@ public class EntityCustomArrow extends EntityArrow {
         }
     }
 
+    //endregion
+
     @Override
-    public void onCollideWithPlayer(EntityPlayer entityIn)
-    {
-        //LogHelper.info(this.inGround);
-        if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0)
-        {
-            LogHelper.info(pickupStatus);
-            boolean flag = this.pickupStatus == EntityArrow.PickupStatus.ALLOWED || this.pickupStatus == EntityArrow.PickupStatus.CREATIVE_ONLY && entityIn.capabilities.isCreativeMode;
+    protected void onHit(RayTraceResult traceResult) {
 
-            if (this.pickupStatus == EntityArrow.PickupStatus.ALLOWED && !entityIn.inventory.addItemStackToInventory(getArrowStack()))
-            {
-                flag = false;
-            }
-
-            if (flag)
-            {
-                this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                entityIn.onItemPickup(this, 1);
-                this.setDead();
-            }
+        if (bowProperties.explosionPower > 0 && !worldObj.isRemote) {
+            worldObj.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, DEConfig.bowBlockDamage);
+            setDead();
         }
-    }
 
-    @Override
-    protected ItemStack getArrowStack() {
-        return null;
-    }
+        //region Shock Wave
+        if (bowProperties.shockWavePower > 0 && !worldObj.isRemote) {
+            //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.ARROW_SHOCK_WAVE, posX, posY, posZ, (int) (bowProperties.shockWavePower * 100)), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 256));
+            //worldObj.playSoundEffect(posX, posY, posZ, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
-//    public void onHitEntityLiving(EntityLivingBase entityLivingBase) {
-//    }
+            double range = (double) bowProperties.shockWavePower + 5;
+            List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().expand(range, range, range));
+
+            float damage = 40F * bowProperties.shockWavePower;
+
+            for (Entity e : list) {
+                if (e instanceof EntityLivingBase) {
+                    Entity entity = e;
+                    float distanceModifier = 1F - (entity.getDistanceToEntity(this) / (float)range);
+
+                    if (e instanceof EntityDragon) {
+                        entity = ((EntityDragon) entity).dragonPartBody;
+                        distanceModifier = 1F - (entity.getDistanceToEntity(this) / (bowProperties.shockWavePower * 4));
+                    }
+
+                    if (distanceModifier > 0) {
+                        entity.attackEntityFrom(getDamageSource(), distanceModifier * damage);
+                    }
+                }
+            }
+
+            setDead();
+        }
+        //endregion
+
+        if (traceResult.entityHit != null) {
+            if (isDead) {
+                return;
+            }
+
+            int actualDamage;
+            //Calculate Damage
+            float velocity = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+            actualDamage = MathHelper.ceiling_double_int(velocity * bowProperties.arrowDamage);
+
+            if (bowProperties.energyBolt) {
+                actualDamage *= 1.1F;
+            }
+
+            if (bowProperties.energyBolt) {
+                traceResult.entityHit.hurtResistantTime = 0;
+            }
+
+            if (traceResult.entityHit instanceof EntityDragonPart && ((EntityDragonPart) traceResult.entityHit).entityDragonObj instanceof EntityDragon && bowProperties.energyBolt) {
+                ((EntityDragon) ((EntityDragonPart) traceResult.entityHit).entityDragonObj).hurtResistantTime = 0;
+            }
+
+            if (traceResult.entityHit.attackEntityFrom(getDamageSource(), actualDamage)) {
+                if (traceResult.entityHit instanceof EntityLivingBase) {
+                    EntityLivingBase entitylivingbase = (EntityLivingBase) traceResult.entityHit;
+
+                    if (!this.worldObj.isRemote) {
+                        entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
+                    }
+
+//                    if (this.knockbackStrength > 0) {
+//                        f4 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
 //
-//    public void onHitAnything() {
-//        if (bowProperties.explosionPower > 0 && !worldObj.isRemote) {
-//            worldObj.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, ConfigHandler.bowBlockDamage);
-//            setDead();
-//        }
-//        if (bowProperties.shockWavePower > 0 && !worldObj.isRemote) {
-//            DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.ARROW_SHOCK_WAVE, posX, posY, posZ, (int) (bowProperties.shockWavePower * 100)), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 256));
-//            worldObj.playSoundEffect(posX, posY, posZ, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
-//
-//            double range = (double) bowProperties.shockWavePower + 5;
-//            List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, boundingBox.expand(range, range, range));
-//
-//            float damage = 40F * bowProperties.shockWavePower;
-//
-//            for (Entity e : list) {
-//                if (e instanceof EntityLivingBase) {
-//                    Entity entity = e;
-//                    float distanceModifier = 1F - (entity.getDistanceToEntity(this) / bowProperties.shockWavePower);
-//
-//                    if (e instanceof EntityDragon) {
-//                        entity = ((EntityDragon) entity).dragonPartBody;
-//                        distanceModifier = 1F - (entity.getDistanceToEntity(this) / (bowProperties.shockWavePower * 4));
+//                        if (f4 > 0.0F) {
+//                            traceResult.entityHit.addVelocity(this.motionX * this.knockbackStrength * 0.6000000238418579D / f4, 0.1D, this.motionZ * this.knockbackStrength * 0.6000000238418579D / f4);
+//                        }
+//                    }
+
+//                    if (this.shootingEntity != null && this.shootingEntity instanceof EntityLivingBase) {
+//                        EnchantmentHelper.func_151384_a(entitylivingbase, this.shootingEntity);
+//                        EnchantmentHelper.func_151385_b((EntityLivingBase) this.shootingEntity, entitylivingbase);
 //                    }
 //
-//                    if (distanceModifier > 0) entity.attackEntityFrom(getDamageSource(), distanceModifier * damage);
-//                }
-//            }
-//
-//            setDead();
-//        }
-//    }
+//                    if (this.shootingEntity != null && traceResult.entityHit != this.shootingEntity && traceResult.entityHit instanceof EntityPlayer && this.shootingEntity instanceof EntityPlayerMP) {
+//                        ((EntityPlayerMP) this.shootingEntity).playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(6, 0.0F));
+//                    }
+                }
+
+//                this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+                this.setDead();
+
+            }
+        }
+
+
+    }
+
 
     private DamageSource getDamageSource() {
         if (bowProperties.energyBolt) {

@@ -70,8 +70,11 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "dislocatorUsesPerPearl", comment = "Sets the number of teleports you get per ender pearl with the Advanced Dislocator")
     public static int dislocatorUsesPerPearl = 1;
 
-    @ModConfigProperty(category = "Tweaks", name = "hardMode", comment = "When true everything is just a little harder.")
+    @ModConfigProperty(category = "Tweaks", name = "hardMode", comment = "When true everything is just a little harder. (Currently only effects recipes but that will probably change in the future)")
     public static boolean hardMode = false;
+
+    @ModConfigProperty(category = "Tweaks", name = "bowBlockDamage", comment = "Set to false to prevent the bows explosion effect breaking blocks")
+    public static boolean bowBlockDamage = true;
 
     //public static boolean modifyVanillaResurrection = false; TODO
 

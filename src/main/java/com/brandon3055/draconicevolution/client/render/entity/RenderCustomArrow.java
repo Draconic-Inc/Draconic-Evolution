@@ -27,24 +27,20 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
 
     protected RenderCustomArrow(RenderManager renderManager) {
         super(renderManager);
-        try {
-            arrowModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/item/tools/arrowCommon.obj")).bake(TransformUtils.DEFAULT_ITEM, DefaultVertexFormats.ITEM, TextureUtils.bakedTextureGetter);
-                    //new Function<ResourceLocation, TextureAtlasSprite>() {
-//                @Nullable
-//                @Override
-//                public TextureAtlasSprite apply(ResourceLocation input) {
-//                    return input.equals(ResourceHelperDE.getResource("items/tools/obj/arrowCommon")) ? TextureUtils.bakedTextureGetter.apply(input) : fullSprite;
-//                }
-//            });
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
     @Override
     public void doRender(EntityCustomArrow entityArrow, double x, double y, double z, float f1, float f2) {
+        if (arrowModel == null) { //For some reason doing this in the constructor dose not work
+            try {
+                arrowModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/item/tools/arrowCommon.obj")).bake(TransformUtils.DEFAULT_ITEM, DefaultVertexFormats.ITEM, TextureUtils.bakedTextureGetter);
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x, (float) y, (float) z);
         GlStateManager.rotate(entityArrow.prevRotationYaw + (entityArrow.rotationYaw - entityArrow.prevRotationYaw) * f2 - 90.0F, 0.0F, 1.0F, 0.0F);
@@ -69,13 +65,10 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
             bindEntityTexture(entityArrow);
             ModelUtils.renderQuads(arrowModel.getQuads(null, null, 0));
 
-            GlStateManager.translate(0, -0.025, 0);
-            GlStateManager.color(1F, 1F, 1F, 0.6F);
-            GlStateManager.scale(1.05, 1.05, 1.05);
-
-            GlStateManager.color(1F, 1F, 1F, 0.4F);
-            GlStateManager.scale(1.05, 1.05, 1.05);
-            ModelUtils.renderQuads(arrowModel.getQuads(null, null, 0));
+            GlStateManager.translate(0, -0.05, 0);
+            GlStateManager.scale(1.1, 1.1, 1.02);
+            GlStateManager.scale(1.1, 1.1, 1.02);
+            ModelUtils.renderQuadsARGB(arrowModel.getQuads(null, null, 0), 0x66FF0000);
         } else {
             TextureUtils.bindBlockTexture();
             ModelUtils.renderQuads(arrowModel.getQuads(null, null, 0));

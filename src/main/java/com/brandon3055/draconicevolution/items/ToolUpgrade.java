@@ -104,7 +104,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {//TODO Make
         registerUpgrade(4, ATTACK_AOE, 4);
         //registerUpgrade(ATTACK_SPEED);
         registerUpgrade(5, ARROW_DAMAGE, 4);
-        registerUpgrade(6, DRAW_SPEED, 2);
+        registerUpgrade(6, DRAW_SPEED, 3);
         registerUpgrade(7, ARROW_SPEED, 4);
         registerUpgrade(8, SHIELD_CAPACITY, 4);
         registerUpgrade(9, SHIELD_RECOVERY, 4);
@@ -133,7 +133,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {//TODO Make
         else if (ID_TO_NAME.containsKey(stack.getItemDamage()) && RECIPE_MAP.containsKey(ID_TO_NAME.get(stack.getItemDamage()))) {
             LinkedList<FusionUpgradeRecipe> recipes = RECIPE_MAP.get(ID_TO_NAME.get(stack.getItemDamage()));
             FusionUpgradeRecipe recipe = recipes.get(ClientEventHandler.elapsedTicks / 100 % recipes.size());
-            tooltip.add(InfoHelper.ITC() + I18n.format("upgrade.de.level.info") + ": " + InfoHelper.HITC() + I18n.format("upgrade.level." + (recipe.getRecipeTier() + 1)));
+            tooltip.add(InfoHelper.ITC() + I18n.format("upgrade.de.level.info") + ": " + InfoHelper.HITC() + I18n.format("upgrade.level." + (recipe.getRecipeTier() + 1)) + TextFormatting.DARK_GRAY + " " + (5 - ClientEventHandler.elapsedTicks % 100 / 20));
             for (Object o : recipe.getRecipeIngredients()) {
                 ItemStack ingredient = OreDictHelper.resolveObject(o);
                 tooltip.add("-" + ingredient.getDisplayName());

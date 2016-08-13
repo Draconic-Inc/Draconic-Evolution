@@ -170,7 +170,6 @@ public class DERecipes {
 
         //endregion
 
-//        Pump out recipes as quick as possible
 //                Than maby the chest or the reactor
 //                Maby try to get as many litle features in as possible
 //                Or.... Finish the tools Atleast the weapons

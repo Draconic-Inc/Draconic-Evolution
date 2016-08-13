@@ -2,7 +2,10 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import codechicken.lib.model.SimpleOverrideBakedModel;
 import codechicken.lib.render.ModelRegistryHelper;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.config.Feature;
+import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
@@ -13,6 +16,7 @@ import com.brandon3055.draconicevolution.client.model.tool.BowModelOverrideList;
 import com.brandon3055.draconicevolution.handlers.BowHandler;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +25,8 @@ import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
@@ -34,7 +40,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public class WyvernBow extends ToolBase {
+public class WyvernBow extends ToolBase{
 
     public WyvernBow(float attackDamage, float attackSpeed) {
         super(attackDamage, attackSpeed);
@@ -219,10 +225,23 @@ public class WyvernBow extends ToolBase {
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
+        super.addDisplayData(stack, world, pos, displayList);
+
+        if (BrandonsCore.proxy.getClientPlayer() != null) {
+            BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, BrandonsCore.proxy.getClientPlayer());
+            displayList.add(InfoHelper.ITC() + I18n.format("gui.de.rfPerShot.txt") + ": " + InfoHelper.HITC() + Utils.addCommas(properties.calculateEnergyCost()));
+            if (!properties.canFire() && properties.cantFireMessage != null) {
+                displayList.add(TextFormatting.DARK_RED + I18n.format(properties.cantFireMessage));
+            }
+        }
+    }
+
     //endregion
 
     //region Upgrade & Config
-
 
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {

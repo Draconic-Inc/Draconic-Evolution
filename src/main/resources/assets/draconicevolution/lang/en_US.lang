@@ -489,33 +489,6 @@ button.de.DOWN.txt=DOWN
 button.de.toggleHidden.txt=Toggle Hidden
 
 //Item Config Buttons
-button.de.ArmorNVActive.name=Night Vision
-button.de.ArmorNVLock.name=Lock Night Vision
-button.de.ArmorFlightLock.name=Lock Flight
-button.de.ArmorInertiaCancellation.name=Inertia Cancellation
-button.de.ArmorSpeedMult.name=Move Speed Modifier
-button.de.ArmorJumpMult.name=Jump Height Modifier
-button.de.ArmorHillStep.name=Hill Step
-button.de.ArmorSprintOnly.name=Reduce When Walking
-button.de.ArmorFlightSpeedMult.name=Flight Speed Modifier
-button.de.ToolDigMultiplier.name=Dig Speed
-button.de.ToolDigAOE.name=Size
-button.de.ToolDigDepth.name=Dig Depth
-button.de.WeaponAttackAOE.name=Attack A.O.E
-button.de.ToolVoidJunk.name=Void Junk
-button.de.AxeTreeMode.name=Tree Mode
-button.de.BaseSafeAOE.name=AOE Safe Mode
-button.de.VerticalAcceleration.name=Vertical Acceleration
-button.de.EffectiveOnSprint.name=Effective while sprinting
-button.de.GogglesOfRevealing.name=Magical Sense
-button.de.BowArrowSpeedModifier.name=Arrow Velocity Modifier
-button.de.BowAutoFire.name=Auto Fire
-button.de.BowArrowDamage.name=Base Damage
-button.de.BowExplosionPower.name=Explosive Power
-button.de.BowShockWavePower.name=Shock Wave Power
-button.de.BowEnergyBolt.name=Arrow of Draconic Fire
-button.de.BowZoomModifier.name=Magnification
-
 button.de.reactorCharge.txt=Charge Reactor
 button.de.reactorStart.txt=Activate
 button.de.reactorStop.txt=Initiate Shutdown
@@ -732,17 +705,63 @@ config.field.armorInertiaCancel.description=When flying at high speeds this will
 config.field.armorHillStep.entry=Step Assist
 config.field.armorHillStep.description=Allows you to step up 1 full block without jumping.
 
-config.field..entry=
-config.field..description
+config.field.bowArrowDamage.entry=Arrow Base Damage
+config.field.bowArrowDamage.description=Allows you to adjust the base damage inflicted by your arrows. Note base damage is multiplied by arrow velocity to get the actual damage.
+
+config.field.bowArrowSpeedModifier.entry=Arrow Velocity Modifier
+config.field.bowArrowSpeedModifier.description=Modifies the velocity of your arrows. This effects damage and distance.
+
+config.field.bowAutoFire.entry=Auto Fire
+config.field.bowAutoFire.description=Fires automatically when fully charged
+
+config.field.bowExplosionPower.entry=Explosion Power
+config.field.bowExplosionPower.description=Adjusts the explosion power of your arrows.
+
+config.field.bowZoomModifier.entry=Magnification
+config.field.bowZoomModifier.description=Can be used to take precision long range shots
+
+config.field.bowFireArrow.entry=Arrow of Draconic Fire
+config.field.bowFireArrow.description=Fire an arrow made of pure energy. Removes the need for ammunition and unlocks the Shock Wave effect.
+
+config.field.bowShockPower.entry=Shock Wave Power
+config.field.bowShockPower.description=Creates a powerful Shock Wave on impact that dose more damage to entities than an equivelent explosion but without damaging blocks.
 
 config.field..entry=
-config.field..description
+config.field..description=
+
 
 config.field.AOE.entry=A.O.E
 config.field.replaceSame.entry=Replace Same Blocks
 config.field.replaceVisible.entry=Replace Visible
 config.field.fillLogic.entry=Fill Logic
 
+
+button.de.ArmorNVActive.name=Night Vision
+button.de.ArmorNVLock.name=Lock Night Vision
+button.de.ArmorFlightLock.name=Lock Flight
+button.de.ArmorInertiaCancellation.name=Inertia Cancellation
+button.de.ArmorSpeedMult.name=Move Speed Modifier
+button.de.ArmorJumpMult.name=Jump Height Modifier
+button.de.ArmorHillStep.name=Hill Step
+button.de.ArmorSprintOnly.name=Reduce When Walking
+button.de.ArmorFlightSpeedMult.name=Flight Speed Modifier
+button.de.ToolDigMultiplier.name=Dig Speed
+button.de.ToolDigAOE.name=Size
+button.de.ToolDigDepth.name=Dig Depth
+button.de.WeaponAttackAOE.name=Attack A.O.E
+button.de.ToolVoidJunk.name=Void Junk
+button.de.AxeTreeMode.name=Tree Mode
+button.de.BaseSafeAOE.name=AOE Safe Mode
+button.de.VerticalAcceleration.name=Vertical Acceleration
+button.de.EffectiveOnSprint.name=Effective while sprinting
+button.de.GogglesOfRevealing.name=Magical Sense
+button.de.BowArrowSpeedModifier.name=Arrow Velocity Modifier
+button.de.BowAutoFire.name=Auto Fire
+button.de.BowArrowDamage.name=Base Damage
+button.de.BowExplosionPower.name=Explosive Power
+button.de.BowShockWavePower.name=Shock Wave Power
+button.de.BowEnergyBolt.name=Arrow of Draconic Fire
+button.de.BowZoomModifier.name=Magnification
 
 
 //---- Info Helper ----//TODO Move this to BrandonsCore

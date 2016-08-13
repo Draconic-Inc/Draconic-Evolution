@@ -66,7 +66,7 @@ public class BowHandler {
 
         float velocity = properties.arrowSpeed * drawArrowSpeedModifier * 3F; //2F is the speed of a vanilla arrow
 
-        EntityCustomArrow customArrow = new EntityCustomArrow(world, player);
+        EntityCustomArrow customArrow = new EntityCustomArrow(properties, world, player);
         customArrow.setAim(player, player.rotationPitch, player.rotationYaw, 0.0F, velocity, 1.0F);
         customArrow.bowProperties = properties;
 
@@ -204,11 +204,11 @@ public class BowHandler {
             arrowDamage = (float)ToolConfigHelper.getDoubleField("bowArrowDamage", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
             arrowSpeed = 1F + (float)ToolConfigHelper.getIntegerField("bowArrowSpeedModifier", bow) / 100F;// IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowSpeedModifier", 0F);
             explosionPower = (float)ToolConfigHelper.getDoubleField("bowExplosionPower", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowExplosionPower", 0F);
-            shockWavePower = (float)ToolConfigHelper.getDoubleField("bowShockWavePower", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowShockWavePower", 0F);
+            shockWavePower = (float)ToolConfigHelper.getDoubleField("bowShockPower", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowShockWavePower", 0F);
             drawTimeReduction = UpgradeHelper.getUpgradeLevel(bow, ToolUpgrade.DRAW_SPEED);// IUpgradableItemd.EnumUpgrade.DRAW_SPEED.getUpgradePoints(bow);
             zoomModifier = (float)ToolConfigHelper.getIntegerField("bowZoomModifier", bow) / 100F;// IConfigurableItem.ProfileHelper.getFloat(bow, "BowZoomModifier", 0F);
             autoFire = ToolConfigHelper.getBooleanField("bowAutoFire", bow);// IConfigurableItem.ProfileHelper.getBoolean(bow, "BowAutoFire", false);
-            energyBolt = ToolConfigHelper.getBooleanField("bowEnergyBolt", bow);// IConfigurableItem.ProfileHelper.getBoolean(bow, "BowEnergyBolt", false);
+            energyBolt = ToolConfigHelper.getBooleanField("bowFireArrow", bow);// IConfigurableItem.ProfileHelper.getBoolean(bow, "BowEnergyBolt", false);
 //            arrowDamage = IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
 //            arrowSpeed = 1F + IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowSpeedModifier", 0F);
 //            explosionPower = IConfigurableItem.ProfileHelper.getFloat(bow, "BowExplosionPower", 0F);
@@ -220,7 +220,7 @@ public class BowHandler {
         }
 
         public int getDrawTicks() {
-            return Math.max(62 - (drawTimeReduction * 10), 1);
+            return Math.max(62 - (drawTimeReduction * 20), 1);
         }
 
         /**
