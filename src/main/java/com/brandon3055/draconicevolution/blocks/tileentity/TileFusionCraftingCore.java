@@ -74,9 +74,6 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         if (worldObj.isRemote) {
             updateEffects();
         }
-        else if (worldObj.isRemote && effects != null) {
-            effects = null;
-        }
 
         //Update Crafting
         if (isCrafting.value && !worldObj.isRemote) {
@@ -107,6 +104,9 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
             if (percentage <= 1D && craftingStage.value < 1000) {
                 craftingStage.value = (short) (percentage * 1000D);
+                if (craftingStage.value == 0 && percentage > 0) {
+                    craftingStage.value = 1;
+                }
             }
             else if (craftingStage.value < 2000) {
                 craftingStage.value += 2;
@@ -205,7 +205,6 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     //endregion
 
     //region Inventory
-
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
