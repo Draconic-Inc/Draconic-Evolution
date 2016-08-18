@@ -1,3 +1,9 @@
+######## 2.0.0.x ########
+-Fixed fusion crafting not syncing properly client side.
+
+######## 2.0.0.82 ########
+-Initial beta release for 1.10.2
+
 ######## 1.0.2-Snapshot 12 (RC2) ########
 -fixed issue with the different tier Item Dislocators stacking ant reverting to ether the Wyvern or Draconic tier.
 
@@ -373,12 +379,12 @@ All mobs killed by the mob grinder now drop loot and player only loot.
 
 Fixed Armor Crash
 All tool and armor item entities are now Persistent and can not be killed except if they fall out of the world
-All items in the game can be placed in the world using the “Place Item” key (default P)
+All items in the game can be placed in the world using the ï¿½Place Itemï¿½ key (default P)
 Added ender arrow
 Improved Draconic Helm night vision effect (effect now stops immediately when you enter a lit area)
 Fixed Mob grinder crash
 Update Fix is now disabled by default
-Fixed Buggy gui’s for grinder and generator
+Fixed Buggy guiï¿½s for grinder and generator
 
 ######## 0.9.32-beta (Bug Fix) ######## 
 
@@ -416,7 +422,7 @@ Fixed Advanced charm of dislocation server crash
 Draconium ore can no longer be destroyed by the Enderdragon
 Weapons now work on the Enderdragon
 Fixed Draconic Hoe use animation
-Draconic Hoe now checks “isReplacable”
+Draconic Hoe now checks ï¿½isReplacableï¿½
 Reduced the teleport sound effect volume
 Fixed Mining AOE bugginess
 Added AOE to the Draconic Axe

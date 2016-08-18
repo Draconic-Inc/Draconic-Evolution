@@ -20,4 +20,23 @@ public class DraconicSword extends WyvernSword {
     public int getToolTier(ItemStack stack) {
         return 1;
     }
+
+    //region Attack Stats
+
+    @Override
+    public double getWeaponAOE(ItemStack stack) {
+        return 0;
+    }
+
+    @Override
+    public float getWeaponDamage(ItemStack stack) {
+        return (float)ToolStats.DRA_SWORD_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public float getWeaponSpeed(ItemStack stack) {
+        return (float)ToolStats.DRA_SWORD_ATTACK_SPEED;
+    }
+
+    //endregion
 }

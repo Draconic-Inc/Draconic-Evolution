@@ -92,16 +92,31 @@ public class ClientEventHandler {
 
         elapsedTicks++;
 
-        Iterator<ITickableTimeout> tickableIterator = tickableList.iterator();
-        while (tickableIterator.hasNext()){
-            ITickableTimeout tickable = tickableIterator.next();
-            if (tickable.getTimeOut() > 10) {
-                tickableIterator.remove();
+        //Iterator<ITickableTimeout> tickableIterator = tickableList.iterator();
+        List<ITickableTimeout> toRemove = new ArrayList<ITickableTimeout>();
+        for (ITickableTimeout timeout : tickableList) {
+            if (timeout.getTimeOut() > 10) {
+                toRemove.add(timeout);
             }
             else {
-                tickable.tick();
+                timeout.tick();
             }
         }
+
+        if (!toRemove.isEmpty()) {
+            tickableList.removeAll(toRemove);
+        }
+
+
+//        while (tickableIterator.hasNext()){
+//            ITickableTimeout tickable = tickableIterator.next();
+//            if (tickable.getTimeOut() > 10) {
+//                tickableIterator.remove();
+//            }
+//            else {
+//                tickable.tick();
+//            }
+//        }
 
         HudHandler.clientTick();
 

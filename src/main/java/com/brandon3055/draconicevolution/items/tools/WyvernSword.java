@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public class WyvernSword extends ToolBase {
+public class WyvernSword extends ToolBase implements IMeleeWeapon {
 
     public WyvernSword(double attackDamage, double attackSpeed) {
         super(attackDamage, attackSpeed);
@@ -42,4 +42,23 @@ public class WyvernSword extends ToolBase {
     public int getToolTier(ItemStack stack) {
         return 0;
     }
+
+    //region Attack Stats
+
+    @Override
+    public double getWeaponAOE(ItemStack stack) {
+        return 0;
+    }
+
+    @Override
+    public float getWeaponDamage(ItemStack stack) {
+        return (float)ToolStats.WYV_SWORD_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public float getWeaponSpeed(ItemStack stack) {
+        return (float)ToolStats.WYV_SWORD_ATTACK_SPEED;
+    }
+
+    //endregion
 }
