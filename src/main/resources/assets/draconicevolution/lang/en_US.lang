@@ -686,6 +686,7 @@ config.field.digDepth.entry=Dig Depth
 config.field.digDepth.description=This function only works with
 config.field.showDigAOE.entry=Show Dig A.O.E
 config.field.showDigAOE.description=When enabled shows all of the blocks covered by this tools mining AOE.
+
 config.field.armorSpeedModifier.entry=Speed Modifier
 config.field.armorSpeedModifier.description=This allows you to adjust the speed boost given by this armor piece.
 config.field.armorJumpModifier.entry=Jump Modifier
@@ -707,28 +708,27 @@ config.field.armorHillStep.description=Allows you to step up 1 full block withou
 
 config.field.bowArrowDamage.entry=Arrow Base Damage
 config.field.bowArrowDamage.description=Allows you to adjust the base damage inflicted by your arrows. Note base damage is multiplied by arrow velocity to get the actual damage.
-
 config.field.bowArrowSpeedModifier.entry=Arrow Velocity Modifier
 config.field.bowArrowSpeedModifier.description=Modifies the velocity of your arrows. This effects damage and distance.
-
 config.field.bowAutoFire.entry=Auto Fire
 config.field.bowAutoFire.description=Fires automatically when fully charged
-
 config.field.bowExplosionPower.entry=Explosion Power
 config.field.bowExplosionPower.description=Adjusts the explosion power of your arrows.
-
 config.field.bowZoomModifier.entry=Magnification
 config.field.bowZoomModifier.description=Can be used to take precision long range shots
-
 config.field.bowFireArrow.entry=Arrow of Draconic Fire
 config.field.bowFireArrow.description=Fire an arrow made of pure energy. Removes the need for ammunition and unlocks the Shock Wave effect.
-
 config.field.bowShockPower.entry=Shock Wave Power
 config.field.bowShockPower.description=Creates a powerful Shock Wave on impact that dose more damage to entities than an equivelent explosion but without damaging blocks.
 
+config.field.attackAOE.entry=Attack Radius
+config.field.attackAOE.description=Allows you to adjust the area covered by this weapons swing.
+
+config.field.showHarvestIndicator.entry=Harvest Indicator
+config.field.showHarvestIndicator.description=Shows where the axe is currently harvesting blocks.
+
 config.field..entry=
 config.field..description=
-
 
 config.field.AOE.entry=A.O.E
 config.field.replaceSame.entry=Replace Same Blocks

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.utils;
 
+import codechicken.lib.asm.ObfMapping;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,12 @@ public class LogHelper {
     }
 
     //Standard log entries.
+
+    public static void dev(Object object) {
+        if (!ObfMapping.obfuscated) {
+            log(Level.INFO, "[DEV]: " + object);
+        }
+    }
 
     public static void all(Object object) {
         log(Level.ALL, object);

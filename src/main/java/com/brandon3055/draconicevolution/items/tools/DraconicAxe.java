@@ -18,4 +18,14 @@ public class DraconicAxe extends WyvernAxe {
     public int getToolTier(ItemStack stack) {
         return 1;
     }
+
+    @Override
+    protected int getHarvestRange() {
+        return 2;
+    }
+
+    @Override
+    protected int getMaxHarvest() {
+        return 8192;
+    }
 }

@@ -44,7 +44,7 @@ public abstract class MiningToolBase extends ToolBase {
 
     protected static final Set SHOVEL_OVERRIDES = Sets.newHashSet(Blocks.CLAY, Blocks.DIRT, Blocks.FARMLAND, Blocks.GRASS, Blocks.GRAVEL, Blocks.MYCELIUM, Blocks.SAND, Blocks.SNOW, Blocks.SNOW_LAYER, Blocks.SOUL_SAND, Blocks.GRASS_PATH);
     protected static final Set PICKAXE_OVERRIDES = Sets.newHashSet(Blocks.ACTIVATOR_RAIL, Blocks.COAL_ORE, Blocks.COBBLESTONE, Blocks.DETECTOR_RAIL, Blocks.DIAMOND_BLOCK, Blocks.DIAMOND_ORE, Blocks.DOUBLE_STONE_SLAB, Blocks.GOLDEN_RAIL, Blocks.GOLD_BLOCK, Blocks.GOLD_ORE, Blocks.ICE, Blocks.IRON_BLOCK, Blocks.IRON_ORE, Blocks.LAPIS_BLOCK, Blocks.LAPIS_ORE, Blocks.LIT_REDSTONE_ORE, Blocks.MOSSY_COBBLESTONE, Blocks.NETHERRACK, Blocks.PACKED_ICE, Blocks.RAIL, Blocks.REDSTONE_ORE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.STONE, Blocks.STONE_SLAB, Blocks.STONE_BUTTON, Blocks.STONE_PRESSURE_PLATE, Blocks.OBSIDIAN, Material.ROCK, Material.IRON, Material.ANVIL, Material.GLASS, Material.CIRCUITS);
-    protected static final Set AXE_OVERRIDES = Sets.newHashSet(Blocks.PLANKS, Blocks.BOOKSHELF, Blocks.LOG, Blocks.LOG2, Blocks.CHEST, Blocks.PUMPKIN, Blocks.LIT_PUMPKIN, Blocks.MELON_BLOCK, Blocks.LADDER, Blocks.WOODEN_BUTTON, Blocks.WOODEN_PRESSURE_PLATE, Material.PLANTS);
+    protected static final Set AXE_OVERRIDES = Sets.newHashSet(Blocks.PLANKS, Blocks.BOOKSHELF, Blocks.LOG, Blocks.LOG2, Blocks.CHEST, Blocks.PUMPKIN, Blocks.LIT_PUMPKIN, Blocks.MELON_BLOCK, Blocks.LADDER, Blocks.WOODEN_BUTTON, Blocks.WOODEN_PRESSURE_PLATE, Material.PLANTS, Material.LEAVES);
     protected Set<Object> effectiveBlocks = new HashSet<Object>();
     protected float baseMiningSpeed = 1F;
     protected int baseAOE = 0;
@@ -97,8 +97,6 @@ public abstract class MiningToolBase extends ToolBase {
         if (getEnergyStored(stack) < (energyPerOperation * totalBlocks)) {
             return super.onBlockStartBreak(stack, pos, player);
         }
-
-        player.capabilities.allowFlying = true;
 
         if (rad > 0 || depth > 0) {
             return breakAOEBlocks(stack, pos, rad, depth, player);

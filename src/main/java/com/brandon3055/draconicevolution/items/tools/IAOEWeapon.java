@@ -5,11 +5,8 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by brandon3055 on 16/08/2016.
  */
-public interface IMeleeWeapon {
+public interface IAOEWeapon {
     
     double getWeaponAOE(ItemStack stack);
 
-    float getWeaponDamage(ItemStack stack);
-
-    float getWeaponSpeed(ItemStack stack);
 }

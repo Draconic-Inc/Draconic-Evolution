@@ -22,12 +22,16 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -180,9 +184,28 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
 
     //region Attack
 
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+        if (this instanceof IAOEWeapon && player.getCooledAttackStrength(0.5F) >= 0.95F && ((IAOEWeapon)this).getWeaponAOE(stack) > 0) {
+
+            List<EntityLivingBase> entities = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, entity.getEntityBoundingBox().expand(((IAOEWeapon)this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon)this).getWeaponAOE(stack)));
+
+            for (EntityLivingBase aoeEntity : entities) {
+                if (aoeEntity != player && aoeEntity != entity && !player.isOnSameTeam(entity)) {
+                    aoeEntity.knockBack(player, 0.4F, (double) MathHelper.sin(player.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(player.rotationYaw * 0.017453292F)));
+                    aoeEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), getAttackDamage(stack));
+                }
+            }
+
+            player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0F, 1.0F);
+            player.spawnSweepParticles();
+        }
+
+        return super.onLeftClickEntity(stack, player, entity);
+    }
+
     public float getAttackDamage(ItemStack stack) {
-        UpgradeHelper.getUpgradeLevel(stack, ATTACK_DAMAGE);
-        return baseAttackDamage;
+        return baseAttackDamage + (UpgradeHelper.getUpgradeLevel(stack, ATTACK_DAMAGE) * (baseAttackDamage / 4F));
     }
 
     private float getAttackSpeed(ItemStack stack) {
@@ -196,8 +219,8 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
 
         if (equipmentSlot == EntityEquipmentSlot.MAINHAND)
         {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", (double)getAttackDamage(stack) - 1, 0));
-            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", (double)getAttackSpeed(stack), 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double)getAttackDamage(stack) - 1, 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double)getAttackSpeed(stack), 0));
         }
 
         return multimap;

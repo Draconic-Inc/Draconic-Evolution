@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -23,19 +25,14 @@ public class DraconicSword extends WyvernSword {
 
     //region Attack Stats
 
-    @Override
-    public double getWeaponAOE(ItemStack stack) {
-        return 0;
-    }
-
-    @Override
-    public float getWeaponDamage(ItemStack stack) {
-        return (float)ToolStats.DRA_SWORD_ATTACK_DAMAGE;
-    }
-
-    @Override
-    public float getWeaponSpeed(ItemStack stack) {
-        return (float)ToolStats.DRA_SWORD_ATTACK_SPEED;
+    protected double getMaxAttackAOE(ItemStack stack) {
+        int level = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ATTACK_AOE);
+        if (level == 0) return 2;
+        else if (level == 1) return 3;
+        else if (level == 2) return 5;
+        else if (level == 3) return 8;
+        else if (level == 4) return 12;
+        else return 0;
     }
 
     //endregion
