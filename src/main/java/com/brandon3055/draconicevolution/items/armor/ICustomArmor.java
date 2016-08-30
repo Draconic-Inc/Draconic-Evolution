@@ -24,7 +24,7 @@ public interface ICustomArmor extends IEnergyContainerItem {
 	/**Returns the movement speed modifier for this armor*/
 	float getSpeedModifier(ItemStack stack, EntityPlayer player);
 
-	/**Returns the jump height modifier for this armor*/
+	/**Returns the jump ySize modifier for this armor*/
 	float getJumpModifier(ItemStack stack, EntityPlayer player);
 
 	/**Returns true if this armor has up-hill step enabled*/

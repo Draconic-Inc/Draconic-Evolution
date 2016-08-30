@@ -12,8 +12,10 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
+import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -27,9 +29,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.util.ArrayDeque;
@@ -50,6 +50,8 @@ public class Debugger extends ItemBCore {
         MODES.put(2, "Extract RF");
         MODES.put(3, "List Particles");
         MODES.put(4, "Recipe");
+        MODES.put(5, "Clear");
+        MODES.put(6, "Mod Wiki");
     }
 
     //region Item Junk
@@ -202,6 +204,7 @@ public class Debugger extends ItemBCore {
         MODES.put(3, "List Particles");
         MODES.put(4, "Recipe");
         MODES.put(5, "Clear");
+        MODES.put(6, "Mod Wiki");
 
         handleRightClick(itemStack, world, player, hand);
 
@@ -434,7 +437,7 @@ public class Debugger extends ItemBCore {
 
 //
 //
-        if (true) {
+        if (false) {
 
             int posX = (int) player.posX;
             double posY = (int) player.posY;
@@ -613,38 +616,10 @@ public class Debugger extends ItemBCore {
                 }
                 break;
 
-            case 5:
-
-
-                if (world instanceof WorldServer) {
-                    FMLLog.info("Run");
-//
-//                    BlockPlacementBatcher batcher = new BlockPlacementBatcher((WorldServer) world);
-//
-//                    for (int x = -120; x < 120; x++) {
-//                        for (int y = 0; y < 100; y++) {
-//                            for (int z = -120; z < 120; z++) {
-//                                //world.getChunkFromBlockCoords(pos.add(x * 16, 0, z * 16)).generateSkylightMap();
-//                                BlockPos posAt = new BlockPos(player.posX + x, y, player.posZ + z);
-//
-//                                if (posAt.getY() == 63 || world.getBlockState(posAt).getBlock() == Blocks.BEDROCK || world.getBlockState(posAt).getBlock() == Blocks.STONE || world.getBlockState(posAt).getBlock() == Blocks.DIRT || world.getBlockState(posAt).getBlock() == Blocks.GRASS || world.getBlockState(posAt).getBlock().getRegistryName().getResourceDomain().contains("jarrm") || world.getBlockState(posAt).getBlock().getRegistryName().getResourcePath().contains("dra")) {
-//                                    batcher.setBlockState(posAt, Blocks.AIR.getDefaultState());
-//                                }
-//
-//                            }
-//                        }
-//                    }
-//
-//                    batcher.finish();
+            case 6:
+                if (world.isRemote) {
+                    Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
                 }
-
-                BlockPos pos = new BlockPos(player);
-                for (int x = -10; x < 10; x++) {
-                    for (int z = -10; z < 10; z++) {
-                        world.getChunkFromBlockCoords(pos.add(x * 16, 0, z * 16)).generateSkylightMap();
-                    }
-                }
-
                 break;
         }
 
@@ -870,7 +845,7 @@ public class Debugger extends ItemBCore {
 ////    }
 //
 //    public boolean generate(World worldIn, Random rand, BlockPos position) {
-////        if (position.getY() + 2 + height > 256) {
+////        if (position.getY() + 2 + ySize > 256) {
 //////            return false;
 //////
 ////  }

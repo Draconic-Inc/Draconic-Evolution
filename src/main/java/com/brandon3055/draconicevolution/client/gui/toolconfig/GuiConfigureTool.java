@@ -404,10 +404,10 @@ public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename co
             if (dropDownPos > 0) {
                 int h = (dropDownPos < 1F ? (int) ((float) height + partialTick) : height) - 20;
                 GuiHelper.drawColouredRect(xPosition, yPosition + 20, width, h, 0xFF000000);
-                //GuiHelper.drawColouredRect(xPosition, yPosition + 18, width, 1, 0xFFFF0000);
-                //GuiHelper.drawColouredRect(xPosition, yPosition + height - (int)(1 * dropDownPos), width, 1, 0xFFFF0000);
-                //GuiHelper.drawColouredRect(xPosition, yPosition + 18, 1, height - 18, 0xFFFF0000);
-                //GuiHelper.drawColouredRect(xPosition + width - 1, yPosition + 18, 1, height - 18, 0xFFFF0000);
+                //GuiHelper.drawColouredRect(xPosition, yPosition + 18, xSize, 1, 0xFFFF0000);
+                //GuiHelper.drawColouredRect(xPosition, yPosition + ySize - (int)(1 * dropDownPos), xSize, 1, 0xFFFF0000);
+                //GuiHelper.drawColouredRect(xPosition, yPosition + 18, 1, ySize - 18, 0xFFFF0000);
+                //GuiHelper.drawColouredRect(xPosition + xSize - 1, yPosition + 18, 1, ySize - 18, 0xFFFF0000);
             }
 
             for (Button button : buttonList) {
@@ -489,7 +489,7 @@ public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename co
                 case PLUS1_MINUS1:
                     break;
                 case SLIDER:
-                //    int pos = (int)((width - 14) * activeButton.field.getFractionalValue());
+                //    int pos = (int)((xSize - 14) * activeButton.field.getFractionalValue());
                     isDragging = GuiHelper.isInRect(xPosition + 3, yPosition + 3, width - 6, 12, mouseX, mouseY);
                     if (isDragging){
                         mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.toolconfig;
 
-import com.brandon3055.brandonscore.client.gui.guicomponents.ColourRectButton;
+import com.brandon3055.brandonscore.client.gui.guicomponentsold.ColourRectButton;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
