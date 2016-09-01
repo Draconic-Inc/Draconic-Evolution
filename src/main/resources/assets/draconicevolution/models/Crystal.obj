@@ -1,6 +1,6 @@
 # Blender v2.70 (sub 0) OBJ File: ''
 # www.blender.org
-mtllib Crystal.mtl
+mtllib crystal.mtl
 o Circle
 v 0.000000 0.749936 0.000000
 v 0.000000 0.349936 -0.250000

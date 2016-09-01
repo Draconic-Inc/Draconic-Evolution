@@ -1,10 +1,15 @@
 ######## 2.0.0.x ########
 -Fixed fusion crafting not syncing properly client side.
--Fixed occasional crash related to JEI integration
--Implemented axe tree mechanics
--Implemented Attack AOE on weapons
+-Fixed occasional crash related to JEI integration.
+-Implemented axe tree mechanics.
+-Implemented Attack AOE on weapons.
 -Refactored ALL textures and registry names from camelCase names to snake_case.
  Note this breaks some things like the energy core and fusion crafting setups but most items/blocks should be correctly remapped.
+-Fixed creative tab icons.
+-Fixed placed item hit boxes.
+-Fixed staff and sword 3D item rendering.
+-Fixed the "Disable3DModels" config setting.
+
 
 ######## 2.0.0.82 ########
 -Initial beta release for 1.10.2
