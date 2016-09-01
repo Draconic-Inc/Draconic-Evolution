@@ -44,74 +44,74 @@
       }
     ]
   },
-  "shieldUp": {
+  "shield_up": {
     "category": "master",
     "sounds": [
       {
-        "name": "draconicevolution:shieldUp",
+        "name": "draconicevolution:shield_up",
         "stream": false
       }
     ]
   },
-  "fusionExplosion": {
+  "fusion_explosion": {
     "category": "master",
     "sounds": [
       {
-        "name": "draconicevolution:fusionExplosion",
+        "name": "draconicevolution:fusion_explosion",
         "stream": false
       }
     ]
   },
-  "chaosChamberAmbient": {
+  "chaos_chamber_ambient": {
     "category": "ambient",
     "sounds": [
       {
-        "name": "draconicevolution:chaosChamberAmbient",
+        "name": "draconicevolution:chaos_chamber_ambient",
         "stream": true
       }
     ]
   },
-  "coreSound": {
+  "core_sound": {
     "category": "block",
     "sounds": [
       {
-        "name": "draconicevolution:coreSound",
+        "name": "draconicevolution:core_sound",
         "stream": false
       }
     ]
   },
-  "shieldStrike": {
+  "shield_strike": {
     "category": "player",
     "sounds": [
       {
-        "name": "draconicevolution:shieldStrike",
+        "name": "draconicevolution:shield_strike",
         "stream": false
       }
     ]
   },
-  "energyBolt": {
+  "energy_bolt": {
     "category": "block",
     "sounds": [
       {
-        "name": "draconicevolution:energyBolt",
+        "name": "draconicevolution:energy_bolt",
         "stream": false
       }
     ]
   },
-  "fusionComplete": {
+  "fusion_complete": {
     "category": "block",
     "sounds": [
       {
-        "name": "draconicevolution:fusionComplete",
+        "name": "draconicevolution:fusion_complete",
         "stream": false
       }
     ]
   },
-  "fusionRotation": {
+  "fusion_rotation": {
     "category": "block",
     "sounds": [
       {
-        "name": "draconicevolution:fusionRotation",
+        "name": "draconicevolution:fusion_rotation",
         "stream": false
       }
     ]

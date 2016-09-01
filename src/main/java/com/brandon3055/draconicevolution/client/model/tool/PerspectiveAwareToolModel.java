@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
 import codechicken.lib.render.TransformUtils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -24,23 +25,37 @@ public class PerspectiveAwareToolModel implements IPerspectiveAwareModel {
     private final IBakedModel objModel;
     private final ImmutableList<BakedQuad> simpleQuads;
     private final TextureAtlasSprite particle;
+    private final ToolTransformOverride transformOverride;
 
-    public PerspectiveAwareToolModel(ImmutableList<BakedQuad> simpleQuads, IBakedModel objModel, TextureAtlasSprite particle) {
+    public PerspectiveAwareToolModel(ImmutableList<BakedQuad> simpleQuads, IBakedModel objModel, TextureAtlasSprite particle, ToolTransformOverride transformOverride) {
         this.objModel = objModel;
         this.simpleQuads = simpleQuads;
         this.particle = particle;
+        this.transformOverride = transformOverride;
     }
 
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+        if (DEConfig.disable3DModels) {
+            if (cameraTransformType == ItemCameraTransforms.TransformType.GUI){
+                return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_TOOL.getTransforms(), cameraTransformType);
+            }
+            else if (cameraTransformType == ItemCameraTransforms.TransformType.GROUND) {
+                return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_ITEM.getTransforms(), cameraTransformType);
+            }
+            else {
+                return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_TOOL.getTransforms(), cameraTransformType);
+            }
+        }
+
         if (cameraTransformType == ItemCameraTransforms.TransformType.GUI){
-            return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_TOOL.getTransforms(), cameraTransformType);
+            return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, transformOverride.getOverride(cameraTransformType, TransformUtils.DEFAULT_TOOL).getTransforms(), cameraTransformType);
         }
         else if (cameraTransformType == ItemCameraTransforms.TransformType.GROUND) {
-            return IPerspectiveAwareModel.MapWrapper.handlePerspective(objModel, TransformUtils.DEFAULT_ITEM.getTransforms(), cameraTransformType);
+            return IPerspectiveAwareModel.MapWrapper.handlePerspective(objModel, transformOverride.getOverride(cameraTransformType, TransformUtils.DEFAULT_ITEM).getTransforms(), cameraTransformType);
         }
         else {
-            return IPerspectiveAwareModel.MapWrapper.handlePerspective(objModel, TransformUtils.DEFAULT_TOOL.getTransforms(), cameraTransformType);
+            return IPerspectiveAwareModel.MapWrapper.handlePerspective(objModel, transformOverride.getOverride(cameraTransformType, TransformUtils.DEFAULT_TOOL).getTransforms(), cameraTransformType);
         }
     }
 

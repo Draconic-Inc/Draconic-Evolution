@@ -26,13 +26,13 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
         ItemStack[] stacks = new ItemStack[] {te.getStackInSlot(0), te.getStackInSlot(1), te.getStackInSlot(2), te.getStackInSlot(3)};
         int index = 0;
 
-        List<IndexedCuboid6> cuboids = te.getIndexedCuboids();
+        List<IndexedCuboid6> cuboids = te.getCachedRenderCuboids();
 
         for (IndexedCuboid6 cuboid : cuboids) {
             ItemStack stack = stacks[(Integer)cuboid.data - 1];
             if (stack != null) {
                 GlStateManager.pushMatrix();
-                Vector3 center = cuboid.center().copy().sub(new Vector3(te.getPos()));
+                Vector3 center = cuboid.center();//.copy().sub(new Vector3(te.getPos()));
                 GlStateManager.translate(center.x - 0.5, center.y - 0.5, center.z - 0.5);
 
                 if (te.facing.getAxis() == EnumFacing.Axis.Y){

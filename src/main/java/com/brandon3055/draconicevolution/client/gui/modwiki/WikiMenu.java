@@ -18,7 +18,7 @@ public class WikiMenu extends GuiElementBase {
     @Override
     public void initElement() {
         super.initElement();
-        xSize = parentGui.screenWidth();
+        xSize = modularGui.screenWidth();
         ySize = 20;
     }
 

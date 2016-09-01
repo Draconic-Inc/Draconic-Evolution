@@ -14,27 +14,27 @@ public class ArmorModelHelper implements TextureUtils.IIconRegister {
     @Override
     public void registerIcons(TextureMap textureMap) {
 
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernHelmet"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernBody"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernRightArm"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernLeftArm"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernBelt"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernRightLeg"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernLeftLeg"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernRightBoot"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvernLeftBoot"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_helmet"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_body"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_right_arm"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_left_arm"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_belt"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_right_leg"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_left_leg"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_right_boot"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_left_boot"));
 
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicHelmet"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicBody"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicRightArm"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicLeftArm"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicBelt"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicRightLeg"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicLeftLeg"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicRightBoot"));
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconicLeftBoot"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_helmet"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_body"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_right_arm"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_left_arm"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_belt"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_right_leg"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_left_leg"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_right_boot"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/draconic_left_boot"));
 
-        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/shieldSphere"));
+        textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/shield_sphere"));
 
         DEFeatures.draconicHelm.model = null;
         DEFeatures.draconicChest.model = null;

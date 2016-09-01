@@ -47,15 +47,15 @@ public class ModelWyvernArmor extends ModelBiped {
 //        this.bipedRightLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 12, 4, 0.0F);
 
 
-        this.head = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernHelmet.obj"), ResourceHelperDE.getResource("models/armor/WyvernHelmet"));
-        this.body = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernBody.obj"), ResourceHelperDE.getResource("models/armor/wyvernBody"));
-        this.rightArm = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernRightArm.obj"), ResourceHelperDE.getResource("models/armor/wyvernRightArm"));
-        this.leftArm = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernLeftArm.obj"), ResourceHelperDE.getResource("models/armor/wyvernLeftArm"));
-        this.belt = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernBelt.obj"), ResourceHelperDE.getResource("models/armor/wyvernBelt"));
-        this.rightLeg = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernRightLeg.obj"), ResourceHelperDE.getResource("models/armor/wyvernRightLeg"));
-        this.leftLeg = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernLeftLeg.obj"), ResourceHelperDE.getResource("models/armor/wyvernLeftLeg"));
-        this.rightBoot = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernRightBoot.obj"), ResourceHelperDE.getResource("models/armor/wyvernRightBoot"));
-        this.leftBoot = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvernLeftBoot.obj"), ResourceHelperDE.getResource("models/armor/wyvernLeftBoot"));
+        this.head = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_helmet.obj"), ResourceHelperDE.getResource("models/armor/Wyvern_helmet"));
+        this.body = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_body.obj"), ResourceHelperDE.getResource("models/armor/wyvern_body"));
+        this.rightArm = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_right_arm.obj"), ResourceHelperDE.getResource("models/armor/wyvern_right_arm"));
+        this.leftArm = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_left_arm.obj"), ResourceHelperDE.getResource("models/armor/wyvern_left_arm"));
+        this.belt = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_belt.obj"), ResourceHelperDE.getResource("models/armor/wyvern_belt"));
+        this.rightLeg = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_right_leg.obj"), ResourceHelperDE.getResource("models/armor/wyvern_right_leg"));
+        this.leftLeg = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_left_leg.obj"), ResourceHelperDE.getResource("models/armor/wyvern_left_leg"));
+        this.rightBoot = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_right_boot.obj"), ResourceHelperDE.getResource("models/armor/wyvern_right_boot"));
+        this.leftBoot = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/wyvern_left_boot.obj"), ResourceHelperDE.getResource("models/armor/wyvern_left_boot"));
 
         this.bipedHead.cubeList.clear();
         this.bipedHeadwear.cubeList.clear();

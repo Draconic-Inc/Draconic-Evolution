@@ -40,20 +40,20 @@ public class DESoundHandler {
         if (!Bootstrap.isRegistered()) {
             throw new RuntimeException("Accessed Sounds before Bootstrap!");
         } else {
-            energyBolt = getRegisteredSoundEvent("draconicevolution:energyBolt");
-            fusionComplete = getRegisteredSoundEvent("draconicevolution:fusionComplete");
-            fusionRotation = getRegisteredSoundEvent("draconicevolution:fusionRotation");
+            energyBolt = getRegisteredSoundEvent("draconicevolution:energy_bolt");
+            fusionComplete = getRegisteredSoundEvent("draconicevolution:fusion_complete");
+            fusionRotation = getRegisteredSoundEvent("draconicevolution:fusion_rotation");
 
             charge = getRegisteredSoundEvent("draconicevolution:charge");
             discharge = getRegisteredSoundEvent("draconicevolution:discharge");
             boom = getRegisteredSoundEvent("draconicevolution:boom");
             beam = getRegisteredSoundEvent("draconicevolution:beam");
             portal = getRegisteredSoundEvent("draconicevolution:portal");
-            shieldUp = getRegisteredSoundEvent("draconicevolution:shieldUp");
-            fusionExplosion = getRegisteredSoundEvent("draconicevolution:fusionExplosion");
-            chaosChamberAmbient = getRegisteredSoundEvent("draconicevolution:chaosChamberAmbient");
-            coreSound = getRegisteredSoundEvent("draconicevolution:coreSound");
-            shieldStrike = getRegisteredSoundEvent("draconicevolution:shieldStrike");
+            shieldUp = getRegisteredSoundEvent("draconicevolution:shield_up");
+            fusionExplosion = getRegisteredSoundEvent("draconicevolution:fusion_explosion");
+            chaosChamberAmbient = getRegisteredSoundEvent("draconicevolution:chaos_chamber_ambient");
+            coreSound = getRegisteredSoundEvent("draconicevolution:core_sound");
+            shieldStrike = getRegisteredSoundEvent("draconicevolution:shield_strike");
         }
     }
 

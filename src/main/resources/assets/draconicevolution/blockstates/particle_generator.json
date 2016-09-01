@@ -1,0 +1,39 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "draconicevolution:blocks/particle_gen/normal",
+      "all": "draconicevolution:blocks/particle_gen/normal"
+    },
+    "model": "draconicevolution:particle_generator",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "type": {
+      "normal": {
+        "textures": {
+          "all": "draconicevolution:blocks/particle_gen/normal"
+        }
+      },
+      "inverted": {
+        "textures": {
+          "all": "draconicevolution:blocks/particle_gen/inverted"
+        }
+      },
+      "stabilizer": {
+        "textures": {
+          "particle": "draconicevolution:blocks/particle_gen/stabilizer",
+          "all": "draconicevolution:blocks/particle_gen/stabilizer"
+        }
+      },
+      "stabilizer2": {
+        "textures": {
+          "particle": "draconicevolution:blocks/particle_gen/stabilizer",
+          "all": "draconicevolution:blocks/particle_gen/stabilizer"
+        },
+        "model": "draconicevolution:obj_models/stabilizer_sphere.obj"
+      }
+    },
+    "normal": [{}]
+  }
+}

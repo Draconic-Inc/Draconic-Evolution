@@ -1,0 +1,8 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl palette
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+d 1.000000
+map_Kd draconicevolution:items/tools/obj/wyvern_bow02

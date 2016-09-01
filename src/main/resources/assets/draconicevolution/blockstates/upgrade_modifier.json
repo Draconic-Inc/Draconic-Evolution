@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:energy_infuser",
+    "textures": {
+      "particle": "draconicevolution:blocks/energy_infuser/energy_infuser_bottom",
+      "top":      "draconicevolution:blocks/energy_infuser/energy_infuser_top",
+      "sides":    "draconicevolution:blocks/energy_infuser/energy_infuser-side",
+      "bottom":   "draconicevolution:blocks/energy_infuser/energy_infuser_bottom"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{}]
+  }
+}

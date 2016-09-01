@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileUpgradeModifier;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.inventory.ContainerUpgradeModifier;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
@@ -48,7 +49,7 @@ public class GuiUpgradeModifier extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
         GL11.glColor4f(1F, 1F, 1F, 1F);
-        ResourceHelperDE.bindTexture("textures/gui/UpgradeModifier.png");
+        ResourceHelperDE.bindTexture("textures/gui/upgrade_modifier.png");
 
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -131,7 +132,7 @@ public class GuiUpgradeModifier extends GuiContainer {
     }
 
     private void drawSlots() {
-        ResourceHelperDE.bindTexture("textures/gui/Widgets.png");
+        ResourceHelperDE.bindTexture(DETextures.GUI_WIDGETS);
 
         int xPos = guiLeft + ((xSize - 162) / 2);
         int yPos = guiTop + 110;
@@ -189,7 +190,7 @@ public class GuiUpgradeModifier extends GuiContainer {
 //            int xPos = guiLeft + (xIndex * spacing) + ((spacing - 23) / 2) + 4;
 //            int yPos = guiTop + 90;
 //
-//            ResourceHelperDE.bindTexture("textures/gui/UpgradeModifier.png");
+//            ResourceHelperDE.bindTexture("textures/gui/upgrade_modifier.png");
 //
 //            drawTexturedModalRect(xPos, yPos, 0, 190, 24, 24);
 //            drawTexturedModalRect(xPos + 3, yPos + 3, xIndex * 18, 220, 18, 18);//Index?

@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.client.sound.FusionRotationSound;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -291,7 +292,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             Vec3D spawn = new Vec3D(((TileEntity) pedestal).getPos());
             spawn.add(0.5 + pedestal.getDirection().getFrontOffsetX() * 0.45, 0.5 + pedestal.getDirection().getFrontOffsetY() * 0.45, 0.5 + pedestal.getDirection().getFrontOffsetZ() * 0.45);
             effects.add(new EffectTrackerFusionCrafting(worldObj, spawn, new Vec3D(pos), this));
-//            BCEffectHandler.effectRenderer.addEffect(ResourceHelperDE.getResource("textures/blocks/fusion_crafting/fusionParticle.png"), new ParticleFusionCrafting(worldObj, spawn, new Vec3D(pos), this));
+//            BCEffectHandler.effectRenderer.addEffect(ResourceHelperDE.getResource("textures/blocks/fusion_crafting/fusion_particle.png"), new ParticleFusionCrafting(worldObj, spawn, new Vec3D(pos), this));
         }
     }
 
@@ -391,7 +392,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     public void renderEffects(float partialTicks) {
   //     craftingStage.value = 1500;
         if (effects != null) {
-            ResourceHelperDE.bindTexture("textures/blocks/fusion_crafting/fusionParticle.png");
+            ResourceHelperDE.bindTexture(DETextures.FUSION_PARTICLE);
             Tessellator tessellator = Tessellator.getInstance();
 
             //Pre-Render

@@ -2,12 +2,11 @@ package com.brandon3055.draconicevolution;
 
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.client.DEParticles;
-import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.entity.*;
+import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
-import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.brandon3055.draconicevolution.network.*;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -45,7 +44,6 @@ public class CommonProxy {
 //		CraftingHandler.init();
 		registerGuiHandeler();
 		registerEntities();
-		DETab.initialize();
 //		PotionHandler.init();
 		CCOCIntegration.init();
 		ModHelper.init();

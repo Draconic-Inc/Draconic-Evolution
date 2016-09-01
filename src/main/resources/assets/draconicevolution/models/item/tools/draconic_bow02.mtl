@@ -1,0 +1,6 @@
+# MagicaVoxel @ ephtracy
+
+newmtl palette
+Ka 0.000 0.000 0.000
+Kd 1.000 1.000 1.000
+map_Kd draconicevolution:items/tools/obj/draconic_bow02

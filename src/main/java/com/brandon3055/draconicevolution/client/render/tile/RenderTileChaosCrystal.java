@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -28,14 +29,14 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
     private CCModel model;
 
     public RenderTileChaosCrystal() {
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/chaosCrystal.obj"));
+        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/chaos_crystal.obj"));
         model = CCModel.combine(map.values());
     }
 
     @Override
     public void renderTileEntityAt(TileChaosCrystal te, double x, double y, double z, float partialTicks, int destroyStage) {
 
-        ResourceHelperDE.bindTexture("textures/models/chaosCrystal.png");
+        ResourceHelperDE.bindTexture(DETextures.CHAOS_CRYSTAL);
         CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
         Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1);
         model.render(mat);

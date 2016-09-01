@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.network.PacketDislocator;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -62,7 +63,7 @@ public class GuiDislocator extends GuiScreen {
     public void drawScreen(int x, int y, float f) {
         drawDefaultBackground();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        ResourceHelperDE.bindTexture("textures/gui/dislocatorAdvanced.png");
+        ResourceHelperDE.bindTexture(DETextures.GUI_DISLOCATOR_ADVANCED);
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;
         drawTexturedModalRect(posX, posY, 0, 0, xSize, ySize);

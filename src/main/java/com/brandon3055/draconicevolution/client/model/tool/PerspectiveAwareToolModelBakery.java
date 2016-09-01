@@ -27,7 +27,7 @@ public class PerspectiveAwareToolModelBakery {
         this.objLocation = resourceSet.getC();
     }
 
-    public PerspectiveAwareToolModel bake(IModelState state) {
+    public PerspectiveAwareToolModel bake(IModelState state, ToolTransformOverride transformOverride) {
 
         TextureAtlasSprite particle = TextureUtils.bakedTextureGetter.apply(simpleTexture);
         IBakedModel model2D = new ItemLayerModel(ImmutableList.of(simpleTexture)).bake(state, DefaultVertexFormats.ITEM, TextureUtils.bakedTextureGetter);
@@ -41,7 +41,7 @@ public class PerspectiveAwareToolModelBakery {
             throw new RuntimeException(e);
         }
 
-        return new PerspectiveAwareToolModel(ImmutableList.copyOf(model2D.getQuads(null, null, 0)), objModel, particle);
+        return new PerspectiveAwareToolModel(ImmutableList.copyOf(model2D.getQuads(null, null, 0)), objModel, particle, transformOverride);
     }
 
 }

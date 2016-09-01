@@ -1,0 +1,9 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl textureMat
+map_Kd draconicevolution:blocks/obj_textures/stabilizer_sphere
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+d 1.000000
+

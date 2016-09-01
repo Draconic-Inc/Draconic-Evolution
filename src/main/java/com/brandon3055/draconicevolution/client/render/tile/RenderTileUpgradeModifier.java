@@ -31,7 +31,7 @@ public class RenderTileUpgradeModifier extends TESRBase<TileUpgradeModifier>
 		Tessellator tess = Tessellator.getInstance();
 
 //
-		ResourceHelperDE.bindTexture("textures/models/upgradeModifierGear.png");
+		ResourceHelperDE.bindTexture("textures/models/upgrade_modifier_gear.png");
         GlStateManager.pushMatrix();
         GlStateManager.enableAlpha();
         GlStateManager.disableLighting();

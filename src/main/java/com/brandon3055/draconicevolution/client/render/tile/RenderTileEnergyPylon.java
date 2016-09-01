@@ -29,7 +29,7 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
     private static CCModel model;
 
     public RenderTileEnergyPylon() {
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/pylonSphere.obj")); //Note dont generate the model evey render frame move this to constructor
+        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/pylon_sphere.obj")); //Note dont generate the model evey render frame move this to constructor
         model = CCModel.combine(map.values());
         model.apply(new Scale(0.35, 0.35, 0.35));
         model.computeNormals();

@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiHudConfig;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -155,7 +156,7 @@ public class HudHandler {
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-        ResourceHelperDE.bindTexture("textures/gui/HUD.png");
+        ResourceHelperDE.bindTexture(DETextures.GUI_HUD);
 
         GlStateManager.translate(x, y, 0);
         GlStateManager.scale(scale, scale, 1);

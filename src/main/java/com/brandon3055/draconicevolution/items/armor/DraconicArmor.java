@@ -37,7 +37,7 @@ import static net.minecraft.inventory.EntityEquipmentSlot.*;
  */
 public class DraconicArmor extends WyvernArmor {
 
-    private static ArmorMaterial draconicMaterial = EnumHelper.addArmorMaterial("draconicArmor", "draconicevolution:draconicArmor2D", -1, new int[]{3, 6, 8, 3}, 20, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 3.0F);
+    private static ArmorMaterial draconicMaterial = EnumHelper.addArmorMaterial("draconicArmor", "draconicevolution:draconic_armor", -1, new int[]{3, 6, 8, 3}, 20, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 3.0F);
 
     public DraconicArmor(int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
         super(draconicMaterial, renderIndexIn, equipmentSlotIn);

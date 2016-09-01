@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.entity;
 
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.model.ModelDragon;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
@@ -131,7 +132,7 @@ public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {//TO
 
     @Override
     protected ResourceLocation getEntityTexture(EntityChaosGuardian entity) {
-        return ResourceHelperDE.getResource("textures/entity/chaosGuardian.png");
+        return ResourceHelperDE.getResource(DETextures.CHAOS_GUARDIAN);
     }
 //
 //    protected void renderEquippedItems(EntityDragon dragon, float p_77029_2_) {

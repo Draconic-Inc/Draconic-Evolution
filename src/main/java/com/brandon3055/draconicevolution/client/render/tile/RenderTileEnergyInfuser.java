@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -51,7 +52,7 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
     public void renderBlock(TileEnergyInfuser tile, float partialTicks)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        bindTexture(ResourceHelperDE.getResource("textures/blocks/energy_infuser/energyInfuserDecoration.png"));
+        bindTexture(ResourceHelperDE.getResource(DETextures.ENERGY_INFUSER_DECORATION));
 
 //        tessellator.setColorRGBA(255, 255, 255, 255);
 

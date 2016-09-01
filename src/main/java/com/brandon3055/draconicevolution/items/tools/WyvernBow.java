@@ -6,7 +6,6 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IntegerConfigField;
@@ -40,7 +39,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public class WyvernBow extends ToolBase{
+public class WyvernBow extends ToolBase {
 
     public WyvernBow(float attackDamage, float attackSpeed) {
         super(attackDamage, attackSpeed);
@@ -218,11 +217,11 @@ public class WyvernBow extends ToolBase{
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
-        if (!DEConfig.disable3DModels) {
-            modelLocation = new ModelResourceLocation("draconicevolution:" + feature.name(), "inventory");
+        //if (!DEConfig.disable3DModels) {
+            modelLocation = new ModelResourceLocation("draconicevolution:" + feature.registryName(), "inventory");
             ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
-            ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.name(), "inventory"), new SimpleOverrideBakedModel(new BowModelOverrideList()));
-        }
+            ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.registryName(), "inventory"), new SimpleOverrideBakedModel(new BowModelOverrideList()));
+        //}
     }
 
     @SideOnly(Side.CLIENT)

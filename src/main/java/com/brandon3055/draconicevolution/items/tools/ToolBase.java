@@ -7,7 +7,6 @@ import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.utils.InfoHelper;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
@@ -15,7 +14,6 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.toolold.IDualModel;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.google.common.collect.Multimap;
@@ -47,7 +45,7 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.ATTACK_DAMAGE;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, IDualModel, IUpgradableItem, IConfigurableItem, IEnchantmentOverride, IHudDisplay {
+public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, IUpgradableItem, IConfigurableItem, IEnchantmentOverride, IHudDisplay {
 
     private float baseAttackDamage;
     private float baseAttackSpeed;
@@ -163,21 +161,16 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
-        if (!DEConfig.disable3DModels) {
-            modelLocation = new ModelResourceLocation("draconicevolution:" + feature.name(), "inventory");
+        //if (!DEConfig.disable3DModels) {
+            modelLocation = new ModelResourceLocation("draconicevolution:" + feature.registryName(), "inventory");
             ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
-            ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.name(), "inventory"), new CCOverrideBakedModel());
-        }
+            ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.registryName(), "inventory"), new CCOverrideBakedModel());
+        //}
     }
 
     @Override
     public boolean registerNormal(Feature feature) {
-        return DEConfig.disable3DModels;
-    }
-
-    @Override
-    public ModelResourceLocation getModelLocation() {
-        return modelLocation;
+        return false;//DEConfig.disable3DModels;
     }
 
     //endregion

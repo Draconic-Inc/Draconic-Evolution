@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.client.model.ModelLargeECStabilizer;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumFacing;
 
@@ -53,7 +54,7 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
         }
 
         GlStateManager.pushMatrix();
-        ResourceHelperDE.bindTexture("textures/blocks/particle_gen/stabilizerLarge.png");
+        ResourceHelperDE.bindTexture(DETextures.STABILIZER_LARGE);
         GlStateManager.rotate(te.rotation + (te.isCoreActive.value ? partialTicks : 0), 0, 0, 1);
         largeModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F / 16F);
         GlStateManager.popMatrix();

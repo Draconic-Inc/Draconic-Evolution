@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks;
 
+import codechicken.lib.raytracer.ICuboidProvider;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
@@ -22,6 +23,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -138,11 +140,20 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         TileEntity tile = source.getTileEntity(pos);
 
-        if (tile instanceof TilePlacedItem) {
-            return ((TilePlacedItem) tile).getBlockBounds().aabb();
+        if (tile instanceof ICuboidProvider) {
+            return ((ICuboidProvider) tile).getIndexedCuboids().get(0).aabb();
+//            return ((TilePlacedItem) tile).getBlockBounds().aabb();
         }
 
         return super.getBoundingBox(state, source, pos);
+    }
+
+    public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof ICuboidProvider) {
+            return RayTracer.rayTraceCuboidsClosest(start, end, ((ICuboidProvider) tile).getIndexedCuboids(), pos);
+        }
+        return super.collisionRayTrace(state, world, pos, start, end);
     }
 
     //endregion

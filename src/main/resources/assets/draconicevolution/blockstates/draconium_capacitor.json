@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "textures": {
+      "layer0": "blocks/dirt"
+    },
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type":{
+      "wyvern": { "textures": { "layer0": "draconicevolution:items/capacitors/wyvern_capacitor"  } },
+      "draconic":{ "textures": { "layer0": "draconicevolution:items/capacitors/draconic_capacitor" } },
+      "creative": { "textures": { "layer0": "draconicevolution:items/capacitors/creative_capacitor"  } }
+    }
+  }
+}

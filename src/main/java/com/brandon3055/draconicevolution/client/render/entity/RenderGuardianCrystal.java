@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.entity;
 import com.brandon3055.draconicevolution.client.model.ModelGuardianCrystal;
 import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -33,7 +34,7 @@ public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
         float rotation = (float) crystal.innerRotation + (crystal.health > 0 ? partialTicks : 0);
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
-        ResourceHelperDE.bindTexture("textures/entity/guardianCrystal.png");
+        ResourceHelperDE.bindTexture(DETextures.CHAOS_GUARDIAN_CRYSTAL);
         float r2 = MathHelper.sin(rotation * 0.2F) / 2.0F + 0.5F;
         r2 += r2 * r2;
         this.model.render(crystal, 0.0F, rotation * 3.0F, r2 * 0.2F, crystal.deathAnimation, crystal.health, 0.0625F);
@@ -98,7 +99,7 @@ public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityGuardianCrystal entity) {
-        return ResourceHelperDE.getResource("textures/entity/guardianCrystal.png");
+        return ResourceHelperDE.getResource(DETextures.CHAOS_GUARDIAN_CRYSTAL);
     }
 
     public static class Factory implements IRenderFactory<EntityGuardianCrystal> {

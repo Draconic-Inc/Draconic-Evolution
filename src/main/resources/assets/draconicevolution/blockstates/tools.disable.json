@@ -10,40 +10,40 @@
   "variants": {
     "type": {
       "wyvernaxe": {
-        "model": "draconicevolution:tools/wyvernAxe.obj"
+        "model": "draconicevolution:tools/wyvern_axe.obj"
       },
       "wyvernbow": {
-        "model": "draconicevolution:tools/wyvernBow00.obj"
+        "model": "draconicevolution:tools/wyvern_bow00.obj"
       },
       "wyvernpick": {
-        "model": "draconicevolution:tools/wyvernPickaxe.obj"
+        "model": "draconicevolution:tools/wyvern_pickaxe.obj"
       },
       "wyvernshovel": {
-        "model": "draconicevolution:tools/wyvernShovel.obj"
+        "model": "draconicevolution:tools/wyvern_shovel.obj"
       },
       "wyvernsword": {
-        "model": "draconicevolution:tools/wyvernSword.obj"
+        "model": "draconicevolution:tools/wyvern_sword.obj"
       },
       "draconicaxe": {
-        "model": "draconicevolution:tools/draconicAxe.obj"
+        "model": "draconicevolution:tools/draconic_axe.obj"
       },
       "draconicbow": {
-        "model": "draconicevolution:tools/draconicBow00.obj"
+        "model": "draconicevolution:tools/draconic_bow00.obj"
       },
       "draconichoe": {
-        "model": "draconicevolution:tools/draconicHoe.obj"
+        "model": "draconicevolution:tools/draconic_hoe.obj"
       },
       "draconicpick": {
-        "model": "draconicevolution:tools/draconicPickaxe.obj"
+        "model": "draconicevolution:tools/draconic_pickaxe.obj"
       },
       "draconicshovel": {
-        "model": "draconicevolution:tools/draconicShovel.obj"
+        "model": "draconicevolution:tools/draconic_shovel.obj"
       },
       "draconicstaffofpower": {
-        "model": "draconicevolution:tools/draconicStaffOfPower.obj"
+        "model": "draconicevolution:tools/draconic_staff_of_power.obj"
       },
       "draconicsword": {
-        "model": "draconicevolution:tools/draconicSword.obj"
+        "model": "draconicevolution:tools/draconic_sword.obj"
       }
     }
   }

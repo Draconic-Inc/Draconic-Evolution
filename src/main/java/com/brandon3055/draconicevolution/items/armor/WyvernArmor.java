@@ -37,7 +37,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
  */
 public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgradableItem, ICustomArmor {
 
-    private static ArmorMaterial wyvernMaterial = EnumHelper.addArmorMaterial("wyvernArmor", "draconicevolution:wyvernArmor2D", -1, new int[]{3, 6, 8, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.0F);
+    private static ArmorMaterial wyvernMaterial = EnumHelper.addArmorMaterial("wyvernArmor", "draconicevolution:wyvern_armor", -1, new int[]{3, 6, 8, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.0F);
 
     protected float baseProtectionPoints;
     protected float baseRecovery;

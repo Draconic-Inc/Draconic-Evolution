@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.blocks.EnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -156,7 +157,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     }
 
     private void renderStabilizer(boolean renderStage, float partialTick) {
-        IBakedModel bakedModel = ModelUtils.loadBakedModel(ResourceHelperDE.getResource("block/obj_models/stabilizerSphere.obj"));
+        IBakedModel bakedModel = ModelUtils.loadBakedModel(ResourceHelperDE.getResource("block/obj_models/stabilizer_sphere.obj"));
         List<BakedQuad> listQuads = bakedModel.getQuads(DEFeatures.energyStorageCore.getDefaultState(), null, 0);
         GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
         if (!renderStage) {
@@ -172,7 +173,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     }
 
     private void renderStabilizerBeam(TileEnergyStorageCore te, Vec3I vec, boolean renderStage, float partialTick){
-        ResourceHelperDE.bindTexture("textures/models/stabilizerBeam.png");
+        ResourceHelperDE.bindTexture(DETextures.STABILIZER_BEAM);
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer vertexBuffer = tessellator.getBuffer();
         GL11.glPushMatrix();

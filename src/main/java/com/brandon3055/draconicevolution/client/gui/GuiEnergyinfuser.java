@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.inventory.ContainerEnergyInfuser;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -43,7 +44,7 @@ public class GuiEnergyinfuser extends GuiContainer {
         drawCenteredString(fontRendererObj, DEFeatures.energyInfuser.getLocalizedName(), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
 
         GlStateManager.color(1, 1, 1, 1);
-        ResourceHelperDE.bindTexture("textures/gui/energyInfuser.png");
+        ResourceHelperDE.bindTexture(DETextures.GUI_ENERGY_INFUSER);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         if (tile.getStackInSlot(0) == null) {

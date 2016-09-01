@@ -94,7 +94,7 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlock {
     }
 
     public void revert(){
-        if (blockName.equals("draconicevolution:particleGenerator")){
+        if (blockName.equals("draconicevolution:particle_generator")){
             worldObj.setBlockState(pos, DEFeatures.particleGenerator.getDefaultState().withProperty(ParticleGenerator.TYPE, "stabilizer"));
             return;
         }

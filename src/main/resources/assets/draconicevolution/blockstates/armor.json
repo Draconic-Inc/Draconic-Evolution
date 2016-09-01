@@ -9,14 +9,14 @@
   },
   "variants": {
     "type":{
-      "wyvernhelm": { "textures": { "layer0": "draconicevolution:items/armor/wyvernHelmet"  } },
-      "wyvernchest":{ "textures": { "layer0": "draconicevolution:items/armor/wyvernChestplate" } },
-      "wyvernlegs": { "textures": { "layer0": "draconicevolution:items/armor/wyvernLeggings"  } },
-      "wyvernboots":  { "textures": { "layer0": "draconicevolution:items/armor/wyvernBoots"   } },
-      "draconichelm":    { "textures": { "layer0": "draconicevolution:items/armor/draconicHelmet"     } },
-      "draconicchest":  { "textures": { "layer0": "draconicevolution:items/armor/draconicChestplate"   } },
-      "draconiclegs":   { "textures": { "layer0": "draconicevolution:items/armor/draconicLeggings"    } },
-      "draconicboots":  { "textures": { "layer0": "draconicevolution:items/armor/draconicBoots"   } }
+      "wyvernhelm": { "textures": { "layer0": "draconicevolution:items/armor/wyvern_helmet"  } },
+      "wyvernchest":{ "textures": { "layer0": "draconicevolution:items/armor/wyvern_chestplate" } },
+      "wyvernlegs": { "textures": { "layer0": "draconicevolution:items/armor/wyvern_leggings"  } },
+      "wyvernboots":  { "textures": { "layer0": "draconicevolution:items/armor/wyvern_boots"   } },
+      "draconichelm":    { "textures": { "layer0": "draconicevolution:items/armor/draconic_helmet"     } },
+      "draconicchest":  { "textures": { "layer0": "draconicevolution:items/armor/draconic_chestplate"   } },
+      "draconiclegs":   { "textures": { "layer0": "draconicevolution:items/armor/draconic_leggings"    } },
+      "draconicboots":  { "textures": { "layer0": "draconicevolution:items/armor/draconic_boots"   } }
     }
   }
 }

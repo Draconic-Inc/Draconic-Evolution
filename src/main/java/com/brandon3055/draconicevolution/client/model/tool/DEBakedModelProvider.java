@@ -63,14 +63,14 @@ public class DEBakedModelProvider implements IBakedModelLoader {
 
     @Override
     public IBakedModel bakeModel(String key) {
-        //LogHelper.info("Try Bake... " + key);
+        ToolTransformOverride transformOverride = new ToolTransformOverride(key);
         if (key.contains("Bow")) {
             PerspectiveAwareToolModelBakery bakery = new PerspectiveAwareToolModelBakery(ToolModelRegistry.itemMap.get(key));
-            return bakery.bake(TransformUtils.DEFAULT_ITEM);
+            return bakery.bake(TransformUtils.DEFAULT_ITEM, transformOverride);
         }
         else if (ToolModelRegistry.itemMap.containsKey(key)){
             PerspectiveAwareToolModelBakery bakery = new PerspectiveAwareToolModelBakery(ToolModelRegistry.itemMap.get(key));
-            return bakery.bake(TransformUtils.DEFAULT_ITEM);
+            return bakery.bake(TransformUtils.DEFAULT_ITEM, transformOverride);
         }
 
 

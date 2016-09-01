@@ -47,15 +47,15 @@ public class ModelDraconicArmor extends ModelBiped {
 //        this.bipedRightLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 12, 4, 0.0F);
 
 
-        this.head = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicHelmet.obj"), ResourceHelperDE.getResource("models/armor/draconicHelmet"));
-        this.body = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicBody.obj"), ResourceHelperDE.getResource("models/armor/draconicBody"));
-        this.rightArm = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicRightArm.obj"), ResourceHelperDE.getResource("models/armor/draconicRightArm"));
-        this.leftArm = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicLeftArm.obj"), ResourceHelperDE.getResource("models/armor/draconicLeftArm"));
-        this.belt = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicBelt.obj"), ResourceHelperDE.getResource("models/armor/draconicBelt"));
-        this.rightLeg = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicRightLeg.obj"), ResourceHelperDE.getResource("models/armor/draconicRightLeg"));
-        this.leftLeg = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicLeftLeg.obj"), ResourceHelperDE.getResource("models/armor/draconicLeftLeg"));
-        this.rightBoot = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicRightBoot.obj"), ResourceHelperDE.getResource("models/armor/draconicRightBoot"));
-        this.leftBoot = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconicLeftBoot.obj"), ResourceHelperDE.getResource("models/armor/draconicLeftBoot"));
+        this.head = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_helmet.obj"), ResourceHelperDE.getResource("models/armor/draconic_helmet"));
+        this.body = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_body.obj"), ResourceHelperDE.getResource("models/armor/draconic_body"));
+        this.rightArm = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_right_arm.obj"), ResourceHelperDE.getResource("models/armor/draconic_right_arm"));
+        this.leftArm = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_left_arm.obj"), ResourceHelperDE.getResource("models/armor/draconic_left_arm"));
+        this.belt = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_belt.obj"), ResourceHelperDE.getResource("models/armor/draconic_belt"));
+        this.rightLeg = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_right_leg.obj"), ResourceHelperDE.getResource("models/armor/draconic_right_leg"));
+        this.leftLeg = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_left_leg.obj"), ResourceHelperDE.getResource("models/armor/draconic_left_leg"));
+        this.rightBoot = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_right_boot.obj"), ResourceHelperDE.getResource("models/armor/draconic_right_boot"));
+        this.leftBoot = new ModelRenderOBJ(this, ResourceHelperDE.getResource("models/armor/draconic_left_boot.obj"), ResourceHelperDE.getResource("models/armor/draconic_left_boot"));
 
         this.bipedHead.cubeList.clear();
         this.bipedHeadwear.cubeList.clear();

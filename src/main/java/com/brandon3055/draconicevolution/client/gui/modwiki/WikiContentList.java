@@ -25,7 +25,7 @@ public class WikiContentList extends GuiElementBase {
 
     @Override
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        GuiHelper.drawBorderedRect(xPos, yPos, xSize, ySize, 1, 0xFF777777, 0xFF000000);
+        GuiHelper.drawBorderedRect(xPos, yPos, xSize, ySize, 1, 0xFF77FF77, 0xFF000000);
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
     }
 

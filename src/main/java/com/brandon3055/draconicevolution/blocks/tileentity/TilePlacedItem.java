@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.raytracer.ICuboidProvider;
 import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.*;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.network.PacketSyncableObject;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
 import com.brandon3055.brandonscore.utils.FeatureUtils;
@@ -19,15 +21,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidProvider {
+public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider{
 
     private LinkedList<ItemStack> stacks = new LinkedList<ItemStack>();
     public final SyncableByte displayCount = new SyncableByte((byte) 1, true, false, true);
@@ -48,13 +50,13 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
 
     //region Bounds / Interaction
 
-    public void handleClick(int subHit, EntityPlayer player) {
+    public void handleClick(int hit, EntityPlayer player) {
         if (player.isSneaking()) {
-            if (subHit == -1) {
+            if (hit == -1) {
                 return;
             }
 
-            int index = subHit - 1;
+            int index = hit - 1;
 
             if (index >= 0 && index < rotation.length) {
                 rotation[index].value++;
@@ -65,7 +67,7 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
             return;
         }
 
-        if (subHit == -1) {
+        if (hit == 0) {
             for (int i = 0; i < getSizeInventory(); i++) {
                 FeatureUtils.dropItemNoDellay(getStackInSlot(i), worldObj, Vector3.fromEntity(player));
             }
@@ -73,9 +75,9 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
             worldObj.setBlockToAir(pos);
         }
         else {
-            if (getStackInSlot(subHit - 1) != null) {
-                FeatureUtils.dropItemNoDellay(getStackInSlot(subHit - 1), worldObj, Vector3.fromEntity(player));
-                setInventorySlotContents(subHit - 1, null);
+            if (getStackInSlot(hit - 1) != null) {
+                FeatureUtils.dropItemNoDellay(getStackInSlot(hit - 1), worldObj, Vector3.fromEntity(player));
+                setInventorySlotContents(hit - 1, null);
 
             }
         }
@@ -91,16 +93,24 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
     private IndexedCuboid6 blockBounds = new IndexedCuboid6(0, new Cuboid6(0, 0, 0, 1, 1, 1));
     private List<IndexedCuboid6> indexedCuboids = new LinkedList<IndexedCuboid6>();
 
-    private void recalculateBounds() {
+    private void calculateBounds() {
 
         IBlockState state = worldObj.getBlockState(getPos());
         Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center));
 
         int i = 0;
-        for (Cuboid6 cuboid : getIndexedCuboids()) {
+        for (Cuboid6 cuboid : indexedCuboids) {
             i++;
-            box.enclose(cuboid.copy().apply(new Translation(new Vector3(new BlockPos(0, 0, 0).subtract(getPos())))));
+            box.enclose(cuboid);
         }
+
+        if (facing.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE) {
+            box.setSide(facing.getIndex() ^ 1, 0.01);
+        }
+        else {
+            box.setSide(facing.getIndex() ^ 1, 0.99);
+        }
+
 
         if (i > 1) {
             EnumFacing.Axis axis = facing.getAxis();
@@ -119,42 +129,82 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
 
         double scale = toolDisplay.value ? 0.2 : 0.32;
 
-        Translation toPos = new Translation(new Vector3(getPos()));
-        Transformation rotation = rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5));
+        Transformation rotation = rotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center);
 
         double offset = 0.225;
         double blockH = 0.36;
         double itemH = 0.03;
 
         if (displayCount.value == 1) {
-            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(rotation))));
+            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(rotation)));
         } else if (displayCount.value == 2) {
-            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(-offset, 0, 0).with(rotation)))));
-            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(offset, 0, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(-offset, 0, 0).with(rotation))));
+            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(offset, 0, 0).with(rotation))));
         } else if (displayCount.value == 3) {
-            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(0, offset, 0).with(rotation)))));
-            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(-offset, -offset, 0).with(rotation)))));
-            indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(toPos.with(new Translation(offset, -offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(0, offset, 0).with(rotation))));
+            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(-offset, -offset, 0).with(rotation))));
+            indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(new Translation(offset, -offset, 0).with(rotation))));
         } else if (displayCount.value == 4) {
-            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(-offset, offset, 0).with(rotation)))));
-            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(offset, offset, 0).with(rotation)))));
-            indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(toPos.with(new Translation(-offset, -offset, 0).with(rotation)))));
-            indexedCuboids.add(new IndexedCuboid6(4, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[3] ? blockH : itemH).apply(toPos.with(new Translation(offset, -offset, 0).with(rotation)))));
+            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(-offset, offset, 0).with(rotation))));
+            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(offset, offset, 0).with(rotation))));
+            indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(new Translation(-offset, -offset, 0).with(rotation))));
+            indexedCuboids.add(new IndexedCuboid6(4, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[3] ? blockH : itemH).apply(new Translation(offset, -offset, 0).with(rotation))));
         }
+//        IBlockState state = worldObj.getBlockState(getPos());
+//        if (state.getBlock() != DEFeatures.placedItem) {
+//            return;
+//        }
+//        indexedCuboids.clear();
+//
+//        double scale = toolDisplay.value ? 0.2 : 0.32;
+//
+//        Translation toPos = new Translation(new Vector3(getPos()));//todo not at position
+//        Transformation rotation = rotations[state.getValue(PlacedItem.FACING).getIndex()].at(new Vector3(pos).add(0.5));
+//
+//        double offset = 0.225;
+//        double blockH = 0.36;
+//        double itemH = 0.03;
+//
+//        if (displayCount.value == 1) {
+//            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(rotation))));
+//        } else if (displayCount.value == 2) {
+//            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(-offset, 0, 0).with(rotation)))));
+//            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(offset, 0, 0).with(rotation)))));
+//        } else if (displayCount.value == 3) {
+//            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(0, offset, 0).with(rotation)))));
+//            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(-offset, -offset, 0).with(rotation)))));
+//            indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(toPos.with(new Translation(offset, -offset, 0).with(rotation)))));
+//        } else if (displayCount.value == 4) {
+//            indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(toPos.with(new Translation(-offset, offset, 0).with(rotation)))));
+//            indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(toPos.with(new Translation(offset, offset, 0).with(rotation)))));
+//            indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(toPos.with(new Translation(-offset, -offset, 0).with(rotation)))));
+//            indexedCuboids.add(new IndexedCuboid6(4, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[3] ? blockH : itemH).apply(toPos.with(new Translation(offset, -offset, 0).with(rotation)))));
+//        }
     }
 
-    @Override
-    public IndexedCuboid6 getBlockBounds() {
-        recalculateBounds();//TODO Well that didnt make any improvement at all.. Maby look into a custom item renderer
-        return blockBounds;
-    }
+//    @Override
+//    public IndexedCuboid6 getBlockBounds() {
+//        recalculateBounds();//TODO Well that didnt make any improvement at all.. Maby look into a custom item renderer
+//        return blockBounds;
+//    }
 
     private static final Transformation[] rotations = new Transformation[]{Rotation.sideRotations[3], Rotation.sideRotations[2], Rotation.sideRotations[0], Rotation.sideRotations[1], Rotation.quarterRotations[3], Rotation.quarterRotations[1],};
+
+    public List<IndexedCuboid6> getCachedRenderCuboids() {
+        if (indexedCuboids.isEmpty()) {
+            recalculateCuboids();
+        }
+        return indexedCuboids;
+    }
 
     @Override
     public List<IndexedCuboid6> getIndexedCuboids() {
         recalculateCuboids();
-        return indexedCuboids;
+        calculateBounds();
+        List<IndexedCuboid6> list = new ArrayList<IndexedCuboid6>();
+        list.add(blockBounds);
+        list.addAll(indexedCuboids);
+        return list;
     }
 
     //endregion
@@ -213,6 +263,12 @@ public class TilePlacedItem extends TileInventoryBase implements IIndexedCuboidP
         }
 
         markDirty();
+    }
+
+    @Override
+    public void receiveSyncPacketFromServer(PacketSyncableObject packet) {
+        super.receiveSyncPacketFromServer(packet);
+        recalculateCuboids();
     }
 
     //endregion

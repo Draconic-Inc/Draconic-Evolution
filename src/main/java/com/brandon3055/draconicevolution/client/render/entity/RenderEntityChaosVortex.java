@@ -19,7 +19,7 @@ public class RenderEntityChaosVortex extends Render<EntityChaosVortex> {
 
     public RenderEntityChaosVortex(RenderManager manager) {
         super(manager);
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactorCoreModel.obj"));
+        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
         model = CCModel.combine(map.values());
     }
 

@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
@@ -27,7 +28,7 @@ public class FusionRecipeCategory extends BlankRecipeCategory {
     private IFusionRecipe recipeCache = null;
 
     public FusionRecipeCategory(IGuiHelper guiHelper) {
-        background = guiHelper.createDrawable(ResourceHelperDE.getResource("textures/gui/jeiFusionBackground.png"), 0, 0, xSize, ySize);
+        background = guiHelper.createDrawable(ResourceHelperDE.getResource(DETextures.GUI_JEI_FUSION), 0, 0, xSize, ySize);
         localizedName = I18n.format("gui.de.fusionCraftingCore.name");
     }
 

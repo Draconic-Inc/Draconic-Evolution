@@ -176,8 +176,8 @@ public class DEEventHandler {
 //
 //        if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
 //            ItemStack soul = new ItemStack(ModItems.mobSoul);
-//            String name = EntityList.getEntityString(entity);
-//            ItemNBTHelper.setString(soul, "Name", name);
+//            String registryName = EntityList.getEntityString(entity);
+//            ItemNBTHelper.setString(soul, "Name", registryName);
 //            if (entity instanceof EntitySkeleton) {
 //                ItemNBTHelper.setInteger(soul, "SkeletonType", ((EntitySkeleton) entity).getSkeletonType());
 //            }

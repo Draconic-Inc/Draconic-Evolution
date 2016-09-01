@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.FullAtlasSprite;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.entity.EntityCustomArrow;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.Render;
@@ -34,7 +35,7 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
     public void doRender(EntityCustomArrow entityArrow, double x, double y, double z, float f1, float f2) {
         if (arrowModel == null) { //For some reason doing this in the constructor dose not work
             try {
-                arrowModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/item/tools/arrowCommon.obj")).bake(TransformUtils.DEFAULT_ITEM, DefaultVertexFormats.ITEM, TextureUtils.bakedTextureGetter);
+                arrowModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/item/tools/arrow_common.obj")).bake(TransformUtils.DEFAULT_ITEM, DefaultVertexFormats.ITEM, TextureUtils.bakedTextureGetter);
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
@@ -83,7 +84,7 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityCustomArrow arrow) {
-        return arrow.bowProperties.energyBolt ? ResourceHelperDE.getResource("textures/models/reactorCore.png") : ResourceHelperDE.getResource("items/tools/obj/arrowCommon");
+        return arrow.bowProperties.energyBolt ? ResourceHelperDE.getResource(DETextures.REACTOR_CORE) : ResourceHelperDE.getResource("items/tools/obj/arrow_common");
     }
 
     public static class Factory implements IRenderFactory<EntityCustomArrow> {

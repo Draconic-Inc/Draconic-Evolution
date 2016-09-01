@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.inventory.ContainerGenerator;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
@@ -37,7 +38,7 @@ public class GuiGenerator extends GuiContainer {
 	protected void drawGuiContainerBackgroundLayer(float f, int X, int Y) {
 		GL11.glColor4f(1, 1, 1, 1);
 
-		ResourceHelperDE.bindTexture("textures/gui/Generator.png");
+		ResourceHelperDE.bindTexture(DETextures.GUI_GENERATOR);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		drawTexturedModalRect(guiLeft + 63, guiTop + 34, 0, ySize, 18, 18);//fuel box
 		drawTexturedModalRect(guiLeft + 97, guiTop + 34, 18, ySize, 18, 18);//flame box

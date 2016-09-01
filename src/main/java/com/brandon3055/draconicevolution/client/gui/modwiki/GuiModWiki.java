@@ -23,14 +23,14 @@ public class GuiModWiki extends ModularGuiScreen {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        elements.clear();
+        manager.clear();
 
-        elements.add(new ElementButton(this, 0, width / 2, height / 2, 100, 15, "Test Button"));
-        elements.add(wikiMenu = new WikiMenu(this));
-        elements.add(wikiList = new WikiContentList(this));
-        elements.add(contentWindow = new WikiContentWindow(this));
+        manager.add(new ElementButton(this, 0, width / 2, height / 2, 100, 15, "Test Button"));
+        manager.add(wikiMenu = new WikiMenu(this));
+        manager.add(wikiList = new WikiContentList(this));
+        manager.add(contentWindow = new WikiContentWindow(this));
 
-        initElements();
+        manager.initElements();
     }
 
     //endregion

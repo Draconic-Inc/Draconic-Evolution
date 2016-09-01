@@ -1,0 +1,40 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:energy_core_model.obj",
+    "textures": {"all": "draconicevolution:blocks/energy_storage_core"}
+  },
+  "variants": {
+    "modelrender": {
+      "0": {
+        "transform": "forge:default-block",
+        "model": "minecraft:cube_all"
+      },
+      "1": {
+        "textures": {"#texture": "draconicevolution:models/energy_core_base"},
+        "transform":{
+          "translation":[0.325, 0.325, 0.325],
+          "scale": 0.65
+        }
+      },
+      "2": {
+        "textures": {"#texture": "draconicevolution:models/energy_core_overlay"},
+        "transform": {
+          "translation": [0.35, 0.35, 0.35],
+          "scale": 0.7
+        }
+      }
+    },
+    "active": {
+      "true": {},
+      "false": {}
+    },
+    "normal": [{}],
+    "inventory": [
+      {
+        "transform": "forge:default-block",
+        "model": "minecraft:cube_all"
+      }
+    ]
+  }
+}

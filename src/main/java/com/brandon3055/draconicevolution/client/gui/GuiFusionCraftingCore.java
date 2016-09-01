@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.client.render.effect.RenderEnergyBolt;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
@@ -92,7 +93,7 @@ public class GuiFusionCraftingCore extends GuiContainer {
         drawCenteredString(fontRendererObj, I18n.format("gui.de.fusionCraftingCore.name"), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
         GlStateManager.color(1F, 1F, 1F, 1F);
 
-        ResourceHelperDE.bindTexture("textures/gui/fusionCrafting.png");
+        ResourceHelperDE.bindTexture(DETextures.GUI_FUSION_CRAFTING);
         //drawTexturedModalRect(guiLeft + (xSize / 2) - 8, guiTop + 45, 0, 0, 15, 21);
         GuiHelper.drawPlayerSlots(this, guiLeft + (xSize / 2), guiTop + 115, true);
         if (currentRecipe == null || canCraft == null || !canCraft.equals("true")){

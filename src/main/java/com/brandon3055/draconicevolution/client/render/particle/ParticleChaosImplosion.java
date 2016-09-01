@@ -46,7 +46,7 @@ public class ParticleChaosImplosion extends BCParticle {
         this.motionX = this.motionY = this.motionZ = 0;
 
         if (model == null) {
-            Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactorCoreModel.obj"));
+            Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
             model = CCModel.combine(map.values());
             model.apply(new Scale(1, 0.5, 1));
         }

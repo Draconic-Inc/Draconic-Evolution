@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.client.creativetab;
 
 
+import com.brandon3055.brandonscore.config.ModFeatureParser;
+import com.brandon3055.draconicevolution.DEFeatures;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -12,12 +14,7 @@ public class DETab extends CreativeTabs {
 	private String label;
 	private int tab;
 
-	static ItemStack iconStackStaff;
-
-	public static void initialize() {
-	/*	if (ModItems.isEnabled(ModItems.draconicDestructionStaff)) iconStackStaff = ItemNBTHelper.setInteger(new ItemStack(ModItems.draconicDestructionStaff), "Energy", 30000000);
-		else */iconStackStaff = new ItemStack(Items.STICK);
-	}
+	static ItemStack itemStackStaff = null;
 
 	public DETab(int id, String modid, String label, int tab) {
 		super(id, modid);
@@ -28,10 +25,18 @@ public class DETab extends CreativeTabs {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ItemStack getIconItemStack() {
+		if (tab == 0) {
+			if (itemStackStaff == null) {
+				itemStackStaff = new ItemStack(DEFeatures.draconicStaffOfPower);
+				DEFeatures.draconicStaffOfPower.modifyEnergy(itemStackStaff, DEFeatures.draconicStaffOfPower.getMaxEnergyStored(itemStackStaff));
+			}
 
-//		if (tab == 0) return iconStackStaff;
-//		else if (ModBlocks.isEnabled(ModBlocks.energyInfuser)) return new ItemStack(ModBlocks.energyInfuser);
-		return new ItemStack(Items.ENDER_EYE);
+			return itemStackStaff;
+		}
+		else if (ModFeatureParser.isEnabled(DEFeatures.chaoticCore)){
+			return new ItemStack(DEFeatures.chaoticCore);
+		}
+		else return new ItemStack(Items.ENDER_EYE);
 	}
 
 	@Override

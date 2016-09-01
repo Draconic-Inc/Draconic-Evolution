@@ -188,7 +188,7 @@ public class ClientEventHandler {
         if (playerShieldStatus.containsKey(event.getEntityPlayer())) {
             if (shieldModel == null) {
                 try {
-                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shieldSphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, bakedTextureGetter);
+                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, bakedTextureGetter);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

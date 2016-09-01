@@ -18,12 +18,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -70,13 +68,7 @@ public class Debugger extends ItemBCore {
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
 
-        List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().expand(10, 10, 10));
-
-        for (EntityItem item : list) {
-            NBTTagCompound compound = new NBTTagCompound();
-            item.writeToNBT(compound);
-            LogHelper.info(compound);
-        }
+//      LogHelper.info(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "draconicevolution:creativeSource"));
 
 //        if (!world.isRemote ) {
 //            MassBlockModificationThread plThread = new MassBlockModificationThread(world);

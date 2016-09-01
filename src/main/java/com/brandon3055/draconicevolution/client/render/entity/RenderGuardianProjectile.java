@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.render.entity;
 
 import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -89,18 +90,18 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
         switch (entity.type) {
             case EntityGuardianProjectile.FIREBOMB:
             case EntityGuardianProjectile.FIRE_CHASER:
-                return ResourceHelperDE.getResource("textures/entity/projectileFire.png");
+                return ResourceHelperDE.getResource(DETextures.PROJECTILE_FIRE);
             case EntityGuardianProjectile.TELEPORT:
                 return ResourceHelperDE.getResourceRAW("textures/items/ender_pearl.png");
             case EntityGuardianProjectile.ENERGY_CHASER:
-                return ResourceHelperDE.getResource("textures/entity/projectileEnergy.png");
+                return ResourceHelperDE.getResource(DETextures.PROJECTILE_ENERGY);
             case EntityGuardianProjectile.CHAOS_CHASER:
             case EntityGuardianProjectile.MINI_CHAOS_CHASER:
-                return ResourceHelperDE.getResource("textures/entity/projectileChaos.png");
+                return ResourceHelperDE.getResource(DETextures.PROJECTILE_CHAOS);
             case EntityGuardianProjectile.IGNITION_CHARGE:
-                return ResourceHelperDE.getResource("textures/entity/projectileIgnition.png");
+                return ResourceHelperDE.getResource(DETextures.PROJECTILE_IGNITION);
             default:
-                return ResourceHelperDE.getResource("textures/entity/projectileFire.png");
+                return ResourceHelperDE.getResource(DETextures.PROJECTILE_FIRE);
         }
     }
 

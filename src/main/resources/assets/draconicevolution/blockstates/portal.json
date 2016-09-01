@@ -17,7 +17,7 @@
     "drawup": {
       "true":{
         "submodel": {
-          "sideup": { "model": "draconicevolution:portalWall", "y": 180 }
+          "sideup": { "model": "draconicevolution:portal_wall", "y": 180 }
         }
       },
       "false":{}
@@ -25,7 +25,7 @@
     "drawdown": {
       "true":{
         "submodel": {
-          "sidedown": { "model": "draconicevolution:portalWall" }
+          "sidedown": { "model": "draconicevolution:portal_wall" }
         }
       },
       "false":{}
@@ -33,7 +33,7 @@
     "draweast": {
       "true":{
         "submodel": {
-          "sideeast": { "model": "draconicevolution:portalWall", "y": 90 }
+          "sideeast": { "model": "draconicevolution:portal_wall", "y": 90 }
         }
       },
       "false":{}
@@ -41,7 +41,7 @@
     "drawwest": {
       "true":{
         "submodel": {
-          "sidewest": { "model": "draconicevolution:portalWall", "y": -90 }
+          "sidewest": { "model": "draconicevolution:portal_wall", "y": -90 }
         }
       },
       "false":{}

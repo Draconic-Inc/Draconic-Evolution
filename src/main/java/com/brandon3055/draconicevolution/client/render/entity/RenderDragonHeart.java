@@ -4,6 +4,7 @@ import codechicken.lib.render.RenderUtils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -75,7 +76,7 @@ public class RenderDragonHeart extends Render<EntityDragonHeart> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityDragonHeart entity) {
-        return ResourceHelperDE.getResource("textures/items/components/dragonHeart.png");
+        return ResourceHelperDE.getResource(DETextures.DRAGON_HEART);
     }
 
     public static class Factory implements IRenderFactory<EntityDragonHeart> {
