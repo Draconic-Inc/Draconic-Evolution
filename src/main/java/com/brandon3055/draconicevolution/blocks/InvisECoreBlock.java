@@ -60,14 +60,6 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     }
 
 
-//    @Override TODO Confirm this is correct
-//    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
-//        TileEntity tile = world.getTileEntity(pos);
-//        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock)tile).getController() == null){
-//            ((TileInvisECoreBlock)tile).revert();
-//        }
-//    }
-
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);

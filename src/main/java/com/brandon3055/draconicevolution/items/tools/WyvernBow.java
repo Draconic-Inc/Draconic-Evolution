@@ -46,7 +46,7 @@ public class WyvernBow extends ToolBase {
     }
 
     public WyvernBow() {
-        super(1, 0);//TODO Attack Damage and speed
+        super(1, 0);
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
     }
 

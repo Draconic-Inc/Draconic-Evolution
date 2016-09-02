@@ -103,7 +103,7 @@ public class Generator extends BlockBCore implements ITileEntityProvider {
 
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return 0;//state.getActualState(world, pos).getValue(ACTIVE) ? 13 : 0;todo WTF TO I HAVE TO DO TO MAKE THIS UPDATE PROPERLY!?!?!?!?!?!
+		return 0;//state.getActualState(world, pos).getValue(ACTIVE) ? 13 : 0;todo WTF DO I HAVE TO DO TO MAKE THIS UPDATE PROPERLY!?!?!?!?!?!
 	}
 
 	@Override

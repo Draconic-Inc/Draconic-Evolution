@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileChaosCrystal;
 import net.minecraft.block.ITileEntityProvider;
@@ -10,7 +11,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -57,7 +57,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, ICu
     @Nullable
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return Items.APPLE;//TODO When chaos shards exist
+        return DEFeatures.chaosShard;
     }
 
     @Override
@@ -88,6 +88,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, ICu
             TileEntity tile = world.getTileEntity(pos);
             if (!world.isRemote && tile instanceof TileChaosCrystal) {
                 ((TileChaosCrystal) tile).locationHash = ((TileChaosCrystal) tile).getLocationHash(pos, world.provider.getDimension());
+                ((TileChaosCrystal) tile).guardianDefeated.value = true;
             }
         }
         else {

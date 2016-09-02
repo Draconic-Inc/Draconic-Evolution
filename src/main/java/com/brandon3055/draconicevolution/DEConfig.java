@@ -76,6 +76,9 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "bowBlockDamage", comment = "Set to false to prevent the bows explosion effect breaking blocks")
     public static boolean bowBlockDamage = true;
 
+    @ModConfigProperty(category = "Tweaks", name = "grinderEnergyPerHeart", comment = "Sets the energy per use per heart of damage for the grinder.")
+    public static int grinderEnergyPerHeart = 80;
+
     //public static boolean modifyVanillaResurrection = false; TODO
 
     //Category Client

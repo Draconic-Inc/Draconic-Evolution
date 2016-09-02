@@ -65,7 +65,6 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
         }
     }
 
-    //TODO SERVER TEST!!!!!!
     @SideOnly(Side.CLIENT)
     private void updateVisual() {
         Vec3D spawn = new Vec3D(pos);

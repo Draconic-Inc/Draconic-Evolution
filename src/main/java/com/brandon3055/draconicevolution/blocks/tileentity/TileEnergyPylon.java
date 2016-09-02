@@ -193,7 +193,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
 
     //region Rendering
 
-    @SideOnly(Side.CLIENT)//todo Test Server!!!!!!
+    @SideOnly(Side.CLIENT)
     private void drawParticleBeam() {
         if (getCore() == null) return;
 

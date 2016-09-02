@@ -48,7 +48,7 @@ public class TileChaosCrystal extends TileBCBase implements ITickable{
         }
     }
 
-    public void detonate() {//TODO Detonation
+    public void detonate() {
         if (worldObj.isRemote){
             return;
         }

@@ -23,7 +23,6 @@ public class CommonProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
         RecipeManager.initialize();
-        FusionRecipes.registerRecipes();//TODO Remove
 //		ConfigHandler.init(event.getSuggestedConfigurationFile());
 		registerEventListeners(event.getSide());
 //		ModBlocks.init();

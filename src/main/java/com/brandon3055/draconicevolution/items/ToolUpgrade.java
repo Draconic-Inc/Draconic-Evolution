@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 26/06/2016.
  */
-public class ToolUpgrade extends ItemBCore implements ICustomRender {//TODO Make better textures for the upgrades! (Maby just a single texture with slightly different variants based on what it applies to)
+public class ToolUpgrade extends ItemBCore implements ICustomRender {
 
     public static final Map<Integer, String> ID_TO_NAME = new HashMap<Integer, String>();
     public static final Map<String, Integer> NAME_TO_ID = new HashMap<String, Integer>();

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.BlockMobSafe;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
@@ -29,7 +29,7 @@ import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
  * Created by Brandon on 23/07/2014.
  * Block for DE Generator
  */
-public class Grinder extends BlockBCore implements ITileEntityProvider {
+public class Grinder extends BlockMobSafe implements ITileEntityProvider {
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	public static final PropertyBool ACTIVE = PropertyBool.create("active");
 

@@ -39,7 +39,7 @@ public class WyvernAxe extends MiningToolBase {
     }
 
     public WyvernAxe() {
-        super(ToolStats.WYV_AXE_ATTACK_DAMAGE, ToolStats.WYV_AXE_ATTACK_SPEED, AXE_OVERRIDES);//TODO Attack Damage and speed
+        super(ToolStats.WYV_AXE_ATTACK_DAMAGE, ToolStats.WYV_AXE_ATTACK_SPEED, AXE_OVERRIDES);
         this.baseMiningSpeed = (float) ToolStats.WYV_AXE_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
@@ -175,9 +175,6 @@ public class WyvernAxe extends MiningToolBase {
 
         @Override
         public void updateProcess() {
-
-            //   TODO loot core
-
             if (!player.isEntityAlive() || player.getHeldItem(hand) != stack || collector.collected >= axe.getMaxHarvest() || collector.isCollectionComplete()) {
                 collector.killCollector();
                 LogHelper.dev("Finish " + collector.collected);

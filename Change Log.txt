@@ -9,7 +9,7 @@
 -Fixed placed item hit boxes.
 -Fixed staff and sword 3D item rendering.
 -Fixed the "Disable3DModels" config setting.
-
+-Fixed mob grinder not killing mobs with armor.
 
 ######## 2.0.0.82 ########
 -Initial beta release for 1.10.2

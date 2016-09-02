@@ -69,7 +69,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     //region Energy
 
     @Override
-    public int getCapacity(ItemStack stack) { //todo Upgrade System
+    public int getCapacity(ItemStack stack) {
         int tier = stack.getItemDamage();
 
         switch (tier) {
@@ -85,7 +85,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     }
 
     @Override
-    public int getMaxReceive(ItemStack stack) { //todo Upgrade System
+    public int getMaxReceive(ItemStack stack) {
         int tier = stack.getItemDamage();
 
         switch (tier) {
@@ -101,7 +101,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     }
 
     @Override
-    public int getMaxExtract(ItemStack stack) { //todo Upgrade System
+    public int getMaxExtract(ItemStack stack) {
         int tier = stack.getItemDamage();
 
         switch (tier) {

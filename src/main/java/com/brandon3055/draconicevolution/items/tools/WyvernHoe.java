@@ -22,7 +22,7 @@ public class WyvernHoe extends ToolBase {
     }
 
     public WyvernHoe() {
-        super(ToolStats.WYV_HOE_ATTACK_DAMAGE, ToolStats.WYV_HOE_ATTACK_SPEED);//todo attack damage and speed
+        super(ToolStats.WYV_HOE_ATTACK_DAMAGE, ToolStats.WYV_HOE_ATTACK_SPEED);
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
         this.baseAOE = 1;
     }

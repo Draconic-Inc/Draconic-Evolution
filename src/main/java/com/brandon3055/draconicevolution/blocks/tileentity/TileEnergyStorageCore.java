@@ -372,7 +372,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 
     //endregion
 
-    //region IMultiBlock todo Actually implement this
+    //region IMultiBlock todo Actually implement this//Actually may just remove IMultiBlock... Its kinda broken
 
     @Override
     public boolean isStructureValid() {

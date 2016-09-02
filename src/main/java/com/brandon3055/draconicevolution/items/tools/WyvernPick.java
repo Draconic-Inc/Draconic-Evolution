@@ -15,7 +15,7 @@ public class WyvernPick extends MiningToolBase {
     }
 
     public WyvernPick() {
-        super(ToolStats.WYV_PICK_ATTACK_DAMAGE, ToolStats.WYV_PICK_ATTACK_SPEED, PICKAXE_OVERRIDES);//TODO Attack Damage and speed
+        super(ToolStats.WYV_PICK_ATTACK_DAMAGE, ToolStats.WYV_PICK_ATTACK_SPEED, PICKAXE_OVERRIDES);
         this.baseMiningSpeed = (float)ToolStats.WYV_PICK_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);

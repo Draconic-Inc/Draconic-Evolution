@@ -15,7 +15,7 @@ public class WyvernShovel extends MiningToolBase {
     }
 
     public WyvernShovel() {
-        super(ToolStats.WYV_SHOVEL_ATTACK_DAMAGE, ToolStats.WYV_SHOVEL_ATTACK_SPEED, SHOVEL_OVERRIDES);//TODO Attack Damage and speed
+        super(ToolStats.WYV_SHOVEL_ATTACK_DAMAGE, ToolStats.WYV_SHOVEL_ATTACK_SPEED, SHOVEL_OVERRIDES);
         this.baseMiningSpeed = (float)ToolStats.WYV_SHOVEL_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);

@@ -26,7 +26,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon {
     }
 
     public WyvernSword() {
-        super(ToolStats.WYV_SWORD_ATTACK_DAMAGE, ToolStats.WYV_SWORD_ATTACK_SPEED);//TODO Attack Damage and speed
+        super(ToolStats.WYV_SWORD_ATTACK_DAMAGE, ToolStats.WYV_SWORD_ATTACK_SPEED);
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
     }
 

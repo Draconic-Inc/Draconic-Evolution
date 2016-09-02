@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon {
     public DraconicStaffOfPower() {
-        super(ToolStats.DRA_STAFF_ATTACK_DAMAGE, ToolStats.DRA_STAFF_ATTACK_SPEED, PICKAXE_OVERRIDES);//TODO Attack Damage and speed
+        super(ToolStats.DRA_STAFF_ATTACK_DAMAGE, ToolStats.DRA_STAFF_ATTACK_SPEED, PICKAXE_OVERRIDES);
         this.baseMiningSpeed = (float) ToolStats.DRA_STAFF_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE + 1;
         setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY * 3, 16000000, 0);
