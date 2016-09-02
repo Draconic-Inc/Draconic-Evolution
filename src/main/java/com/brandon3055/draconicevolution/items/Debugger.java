@@ -29,6 +29,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -610,12 +612,17 @@ public class Debugger extends ItemBCore {
 
             case 6:
                 if (world.isRemote) {
-                    Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
+                    openWiki();
                 }
                 break;
         }
 
         return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void openWiki() {
+        Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
     }
 
     @Override
