@@ -36,7 +36,7 @@ public class DEConfig {
     public static boolean disableOreSpawnOverworld = false;
 
     @ModConfigProperty(category = "World", name = "disableOreSpawnEnd", comment = "Disables draconium ore generation in the end")
-    public static boolean disableOreSpawnEnd = true;
+    public static boolean disableOreSpawnEnd = false;
 
     @ModConfigProperty(category = "World", name = "disableOreSpawnNether", comment = "Disables draconium ore generation in the nether")
     public static boolean disableOreSpawnNether = false;

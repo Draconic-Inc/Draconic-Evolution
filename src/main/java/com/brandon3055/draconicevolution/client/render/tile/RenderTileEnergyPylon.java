@@ -44,7 +44,7 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
         GlStateManager.pushMatrix();
         Vector3 translateVector = new Vector3(x + 0.5, y + (te.sphereOnTop.value ? 1.5 : -0.5), z + 0.5);
         translateVector.translation().glApply();
-        IconTransformation iconTransform = new IconTransformation(DETextureCache.getDETexture("models/pylonSphereTexture"));
+        IconTransformation iconTransform = new IconTransformation(DETextureCache.getDETexture("models/pylon_sphere_texture"));
         setLighting(200F);
 
         if (MinecraftForgeClient.getRenderPass() == 0) {
