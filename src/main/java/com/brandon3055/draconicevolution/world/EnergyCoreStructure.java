@@ -135,7 +135,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     @Override
     public void forBlock(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
-        if (name.isEmpty() || name.equals("draconicevolution:energyStorageCore")) return;
+        if (name.isEmpty() || name.equals("draconicevolution:energy_storage_core")) return;
 
         //region Render Build Guide
 
@@ -200,7 +200,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     private MultiBlockStorage buildTier1() {
         MultiBlockStorage storage = new MultiBlockStorage(1, this);
-        String X = "draconicevolution:energyStorageCore";
+        String X = "draconicevolution:energy_storage_core";
 
         storage.addRow(X);
 
@@ -210,8 +210,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier2() {
         MultiBlockStorage storage = new MultiBlockStorage(3, this);
         String e = "";
-        String X = "draconicevolution:energyStorageCore";
-        String D = "draconicevolution:draconiumBlock";
+        String X = "draconicevolution:energy_storage_core";
+        String D = "draconicevolution:draconium_block";
 
         storage.addRow(e, e, e);
         storage.addRow(e, D, e);
@@ -232,8 +232,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     private MultiBlockStorage buildTier3() {
         MultiBlockStorage storage = new MultiBlockStorage(3, this);
-        String X = "draconicevolution:energyStorageCore";
-        String D = "draconicevolution:draconiumBlock";
+        String X = "draconicevolution:energy_storage_core";
+        String D = "draconicevolution:draconium_block";
 
         storage.addRow(D, D, D);
         storage.addRow(D, D, D);
@@ -255,8 +255,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier4() {
         MultiBlockStorage storage = new MultiBlockStorage(5, this);
         String e = "";
-        String X = "draconicevolution:energyStorageCore";
-        String D = "draconicevolution:draconiumBlock";
+        String X = "draconicevolution:energy_storage_core";
+        String D = "draconicevolution:draconium_block";
         String R = "minecraft:redstone_block";
 
         storage.addRow(e, e, e, e, e);
@@ -299,8 +299,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier5() {
         MultiBlockStorage storage = new MultiBlockStorage(7, this);
         String e = "";
-        String X = "draconicevolution:energyStorageCore";
-        String D = "draconicevolution:draconiumBlock";
+        String X = "draconicevolution:energy_storage_core";
+        String D = "draconicevolution:draconium_block";
         String R = "minecraft:redstone_block";
 
         storage.addRow(e, e, e, e, e, e, e);
@@ -371,8 +371,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier6() {
         MultiBlockStorage storage = new MultiBlockStorage(9, this);
         String e = "";
-        String X = "draconicevolution:energyStorageCore";
-        String D = "draconicevolution:draconiumBlock";
+        String X = "draconicevolution:energy_storage_core";
+        String D = "draconicevolution:draconium_block";
         String R = "minecraft:redstone_block";
 
         storage.addRow(e, e, e, e, e, e, e, e, e);
@@ -479,8 +479,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier7() {
         MultiBlockStorage storage = new MultiBlockStorage(11, this);
         String e = "";
-        String X = "draconicevolution:energyStorageCore";
-        String D = "draconicevolution:draconiumBlock";
+        String X = "draconicevolution:energy_storage_core";
+        String D = "draconicevolution:draconium_block";
         String R = "minecraft:redstone_block";
 
 
@@ -633,9 +633,9 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTierOMG() {
         MultiBlockStorage storage = new MultiBlockStorage(13, this);
         String e = "";
-        String X = "draconicevolution:energyStorageCore";
-        String A = "draconicevolution:draconicBlock";
-        String D = "draconicevolution:draconicBlock";
+        String X = "draconicevolution:energy_storage_core";
+        String A = "draconicevolution:draconic_block";
+        String D = "draconicevolution:draconic_block";
 
         storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
         storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
@@ -854,7 +854,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     @Override
     public void setBlock(String name, World world, BlockPos pos) {
-        if (!name.equals("draconicevolution:energyStorageCore") && name.length() > 0) {
+        if (!name.equals("draconicevolution:energy_storage_core") && name.length() > 0) {
             super.setBlock(name, world, pos);
         }
     }

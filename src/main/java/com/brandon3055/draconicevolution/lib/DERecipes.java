@@ -53,7 +53,7 @@ public class DERecipes {
         addFusion(HARD, new ItemStack(craftingPedestal, 1, 1), new ItemStack(craftingPedestal), 256000, 0, wyvernCore, "netherStar", draconicCore, "netherStar", draconicCore, "netherStar", "blockDraconium", "netherStar");
         addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 2), new ItemStack(craftingPedestal, 1, 1), 256000, 1, "gemDiamond", "gemDiamond", wyvernCore, "blockDraconiumAwakened", wyvernCore, "gemDiamond", "gemDiamond");
         addFusion(HARD, new ItemStack(craftingPedestal, 1, 2), new ItemStack(craftingPedestal, 1, 1), 1000000, 1, "netherStar", "netherStar", wyvernCore, "blockDraconiumAwakened", wyvernCore, "netherStar", "netherStar", DRAGON_EGG);
-        addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 8000000, 2, "gemDiamond", "gemDiamond", chaoticCore, DRAGON_EGG, chaoticCore, "gemDiamond", "gemDiamond");
+        addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 8000000, 2, "gemDiamond", "gemDiamond", chaoticCore, DRAGON_EGG, "gemDiamond", "gemDiamond");
         addFusion(HARD, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 23000000, 2, "netherStar", "netherStar", chaoticCore, DRAGON_EGG, chaoticCore, "netherStar", "netherStar", chaosShard);
 
         //endregion
@@ -146,6 +146,12 @@ public class DERecipes {
         addShaped(HARD, draconiumCapacitor, "ABA", "BCB", "ABA", 'A', "blockDraconium", 'B', wyvernEnergyCore, 'C', wyvernCore);
         addShaped(NORMAL, new ItemStack(draconiumCapacitor, 1, 1), "ABA", "CDC", "ACA", 'A', draconicEnergyCore, 'B', awakenedCore, 'C', "ingotDraconiumAwakened", 'D', draconiumCapacitor);
         addShaped(HARD, new ItemStack(draconiumCapacitor, 1, 1), "ABA", "CDC", "ACA", 'A', draconicEnergyCore, 'B', awakenedCore, 'C', "blockDraconiumAwakened", 'D', draconiumCapacitor);
+
+        addShaped(NORMAL, dislocator, "ABA", "BCB", "ABA", 'A', BLAZE_POWDER, 'B', "dustDraconium", 'C', ENDER_EYE);
+        addShaped(HARD, dislocator, "ABA", "BCB", "ABA", 'A', BLAZE_POWDER, 'B', "dustDraconium", 'C', CHORUS_FLOWER);
+
+        addFusion(NORMAL, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 1000000, 1, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", wyvernCore, "ingotDraconium");
+        addFusion(HARD, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 10000000, 2, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", DRAGON_EGG, "ingotDraconium");
 
         //endregion
 

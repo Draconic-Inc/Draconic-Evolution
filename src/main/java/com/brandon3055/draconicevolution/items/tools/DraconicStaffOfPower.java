@@ -55,7 +55,7 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon {
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
-        return super.onBlockStartBreak(itemstack, pos, player) || player.capabilities.isCreativeMode;
+        return super.onBlockStartBreak(itemstack, pos, player);
     }
 
     //region Attack Stats

@@ -154,8 +154,8 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
 
             for (EnumFacing facing2 : EnumFacing.VALUES){
                 if (facing2 != facing1 && facing2 != facing1.getOpposite()){
-                    search = search.add(facing2.getFrontOffsetX(), facing2.getFrontOffsetY(), facing2.getFrontOffsetZ());
-                    stabilizer = worldObj.getTileEntity(search);
+                    BlockPos s2 = search.add(facing2.getFrontOffsetX(), facing2.getFrontOffsetY(), facing2.getFrontOffsetZ());
+                    stabilizer = worldObj.getTileEntity(s2);
 
                     if (stabilizer instanceof TileEnergyCoreStabilizer && ((TileEnergyCoreStabilizer)stabilizer).checkAndFormMultiBlock()) {
                         return;
@@ -217,7 +217,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
             TileEntity tile = worldObj.getTileEntity(pos.add(offset));
 
             if (tile instanceof TileInvisECoreBlock){
-                ((TileInvisECoreBlock)tile).blockName = "draconicevolution:particleGenerator";
+                ((TileInvisECoreBlock)tile).blockName = "draconicevolution:particle_generator";
                 ((TileInvisECoreBlock)tile).setController(this);
             }
         }

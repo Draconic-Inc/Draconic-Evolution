@@ -54,8 +54,8 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     @Override
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock)tile).getController() == null){
-            ((TileInvisECoreBlock)tile).revert();
+        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).getController() == null) {
+            ((TileInvisECoreBlock) tile).revert();
         }
     }
 
@@ -64,8 +64,8 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
 
-        if (tile instanceof TileInvisECoreBlock){
-            return ((TileInvisECoreBlock)tile).onTileClicked(playerIn, state);
+        if (tile instanceof TileInvisECoreBlock) {
+            return ((TileInvisECoreBlock) tile).onTileClicked(playerIn, state);
         }
 
         return super.onBlockActivated(world, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
@@ -84,19 +84,20 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
 
         if (tile instanceof TileInvisECoreBlock) {
 
-            if (!((TileInvisECoreBlock)tile).blockName.isEmpty() && !player.capabilities.isCreativeMode) {
-                Block block = Block.REGISTRY.getObject(new ResourceLocation(((TileInvisECoreBlock)tile).blockName));
+            if (!((TileInvisECoreBlock) tile).blockName.isEmpty() && !player.capabilities.isCreativeMode) {
+                Block block = Block.REGISTRY.getObject(new ResourceLocation(((TileInvisECoreBlock) tile).blockName));
 
                 if (block != null) {
-                    if (((TileInvisECoreBlock)tile).blockName.equals("draconicevolution:particleGenerator")){
+                    if (((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:particle_generator")) {
                         spawnAsEntity(world, pos, new ItemStack(block, 1, 2));
-                    }else {
+                    }
+                    else {
                         spawnAsEntity(world, pos, new ItemStack(block));
                     }
                 }
             }
 
-            IMultiBlock master = ((TileInvisECoreBlock)tile).getController();
+            IMultiBlock master = ((TileInvisECoreBlock) tile).getController();
             if (master != null) {
                 world.setBlockToAir(pos);
                 master.validateStructure();
@@ -108,16 +109,20 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
         TileEntity tile = world.getTileEntity(pos);
 
-        if (tile instanceof TileInvisECoreBlock){
-            if (((TileInvisECoreBlock)tile).blockName.equals("draconicevolution:draconiumBlock")){
+        if (tile instanceof TileInvisECoreBlock) {
+            if (((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:draconium_block")) {
                 return new ItemStack(DEFeatures.draconiumBlock);
-            } else if (((TileInvisECoreBlock)tile).blockName.equals("draconicevolution:draconicBlock")){
+            }
+            else if (((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:draconic_block")) {
                 return new ItemStack(DEFeatures.draconicBlock);
-            } else if (((TileInvisECoreBlock)tile).blockName.equals("draconicevolution:particleGenerator")){
+            }
+            else if (((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:particle_generator")) {
                 return new ItemStack(DEFeatures.particleGenerator, 1, 2);
-            } else if (((TileInvisECoreBlock)tile).blockName.equals("minecraft:glass")){
+            }
+            else if (((TileInvisECoreBlock) tile).blockName.equals("minecraft:glass")) {
                 return new ItemStack(Blocks.GLASS);
-            } else if (((TileInvisECoreBlock)tile).blockName.equals("minecraft:redstone_block")){
+            }
+            else if (((TileInvisECoreBlock) tile).blockName.equals("minecraft:redstone_block")) {
                 return new ItemStack(Blocks.REDSTONE_BLOCK);
             }
         }
@@ -129,8 +134,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
 
     //region Rendering
 
-    public boolean isFullCube(IBlockState state)
-    {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
@@ -143,16 +147,16 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
 
-        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock)tile).blockName.equals("draconicevolution:particleGenerator")){
-            IMultiBlock controller = ((TileInvisECoreBlock)tile).getController();
+        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:particle_generator")) {
+            IMultiBlock controller = ((TileInvisECoreBlock) tile).getController();
 
-            if (controller instanceof TileEnergyCoreStabilizer){
-                TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer)controller;
-                if (stabilizer.isValidMultiBlock.value){
+            if (controller instanceof TileEnergyCoreStabilizer) {
+                TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer) controller;
+                if (stabilizer.isValidMultiBlock.value) {
                     AxisAlignedBB bb = new AxisAlignedBB(stabilizer.getPos());
 
-                    if (stabilizer.multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL){
-                        if (stabilizer.multiBlockAxis == EnumFacing.Axis.X){
+                    if (stabilizer.multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {
+                        if (stabilizer.multiBlockAxis == EnumFacing.Axis.X) {
                             bb = bb.expand(0, 1, 1);
                         }
                         else {
@@ -175,7 +179,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
 
-        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock)tile).blockName.equals("minecraft:glass")){
+        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).blockName.equals("minecraft:glass")) {
             return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
         }
 
