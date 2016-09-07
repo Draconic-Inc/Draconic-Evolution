@@ -66,7 +66,7 @@ public class ClientEventHandler {
     private static Random rand = new Random();
     public static IBakedModel shieldModel = null;
     private static boolean isJEIInstalled;
-    public static List<ITickableTimeout> tickableList = new ArrayList<ITickableTimeout>();
+    public static final List<ITickableTimeout> tickableList = Collections.synchronizedList(new ArrayList<ITickableTimeout>());
 
     private static Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
         @Override
