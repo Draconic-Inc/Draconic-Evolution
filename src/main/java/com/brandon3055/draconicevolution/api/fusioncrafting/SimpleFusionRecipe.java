@@ -64,7 +64,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         pedestals.addAll(inventory.getPedestals());
 
         //Check the catalyst for this recipe
-        if (inventory.getStackInCore(0) == null || !inventory.getStackInCore(0).isItemEqual(catalyst)) {
+        if (inventory.getStackInCore(0) == null || !inventory.getStackInCore(0).isItemEqual(catalyst) || inventory.getStackInCore(0).stackSize < catalyst.stackSize) {
             return false;
         }
 
@@ -128,7 +128,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         }
 
         ItemStack catalyst = inventory.getStackInCore(0);
-        catalyst.stackSize--;
+        catalyst.stackSize -= this.catalyst.stackSize;
 
         if (catalyst.stackSize <= 0){
             catalyst = null;
