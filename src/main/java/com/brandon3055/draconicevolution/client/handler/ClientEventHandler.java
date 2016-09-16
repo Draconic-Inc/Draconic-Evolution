@@ -30,6 +30,7 @@ import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -65,9 +66,10 @@ public class ClientEventHandler {
         if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT)
             return;
 
-        for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = playerShieldStatus.entrySet().iterator(); i.hasNext(); ) {
+        Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = new ArrayList<Map.Entry<EntityPlayer, XZPair<Float, Integer>>>(playerShieldStatus.entrySet()).iterator();
+        while (i.hasNext()) {
             Map.Entry<EntityPlayer, XZPair<Float, Integer>> entry = i.next();
-            if (elapsedTicks - entry.getValue().getValue() > 5) i.remove();
+            if (elapsedTicks - entry.getValue().getValue() > 5) playerShieldStatus.remove(entry);
         }
 
 
