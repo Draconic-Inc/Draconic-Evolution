@@ -92,20 +92,25 @@ public class ClientEventHandler {
 
         elapsedTicks++;
 
-        //Iterator<ITickableTimeout> tickableIterator = tickableList.iterator();
-        List<ITickableTimeout> toRemove = new ArrayList<ITickableTimeout>();
-        for (ITickableTimeout timeout : tickableList) {
-            if (timeout.getTimeOut() > 10) {
-                toRemove.add(timeout);
+        //Yea... This thing is probably over-synchronized now but if you know what i had to go though to fix this you would understand...
+        synchronized (tickableList) {
+            List<ITickableTimeout> toRemove = new ArrayList<ITickableTimeout>();
+            for (int i = 0; i < tickableList.size(); i++) {
+                ITickableTimeout timeout = tickableList.get(i);
+                if (timeout.getTimeOut() > 10) {
+                    toRemove.add(timeout);
+                }
+                else {
+                    timeout.tick();
+                }
             }
-            else {
-                timeout.tick();
+
+            for (ITickableTimeout timeout : toRemove) {
+                tickableList.remove(timeout);
             }
         }
 
-        if (!toRemove.isEmpty()) {
-            tickableList.removeAll(toRemove);
-        }
+
 
 
 //        while (tickableIterator.hasNext()){

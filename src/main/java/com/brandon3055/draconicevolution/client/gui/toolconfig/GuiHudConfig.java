@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.toolconfig;
 
-import com.brandon3055.brandonscore.client.gui.guicomponentsold.ColourRectButton;
+import com.brandon3055.brandonscore.client.gui.ButtonColourRect;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -63,19 +63,19 @@ public class GuiHudConfig extends GuiScreen {
         int c2 = 0xFF440066;
         int c3 = 0xFF009900;
 
-        buttonList.add(new ColourRectButton(0, I18n.format("gui.back"), x - 35, y + 95, 70, 15, c1, c2, c3));
+        buttonList.add(new ButtonColourRect(0, I18n.format("gui.back"), x - 35, y + 95, 70, 15, c1, c2, c3));
 
-        buttonList.add(new ColourRectButton(1, I18n.format("button.de.scaleUp.txt"), x + 2, y - 37, 80, 15, c1, c2, c3));
-        buttonList.add(new ColourRectButton(2, I18n.format("button.de.scaleDown.txt"), x - 81, y - 37, 80, 15, c1, c2, c3));
-        buttonList.add(buttonHudFade = new ColourRectButton(3, "", x - 81, y - 20, 163, 15, c1, c2, c3));
-        buttonList.add(new ColourRectButton(9, I18n.format("button.de.toggleHidden.txt"), x - 81, y - 3, 163, 15, c1, c2, c3));
+        buttonList.add(new ButtonColourRect(1, I18n.format("button.de.scaleUp.txt"), x + 2, y - 37, 80, 15, c1, c2, c3));
+        buttonList.add(new ButtonColourRect(2, I18n.format("button.de.scaleDown.txt"), x - 81, y - 37, 80, 15, c1, c2, c3));
+        buttonList.add(buttonHudFade = new ButtonColourRect(3, "", x - 81, y - 20, 163, 15, c1, c2, c3));
+        buttonList.add(new ButtonColourRect(9, I18n.format("button.de.toggleHidden.txt"), x - 81, y - 3, 163, 15, c1, c2, c3));
 
-        buttonList.add(new ColourRectButton(4, I18n.format("button.de.scaleUp.txt"), x + 2, y + 25, 80, 15, c1, c2, c3));
-        buttonList.add(new ColourRectButton(5, I18n.format("button.de.scaleDown.txt"), x - 81, y + 25, 80, 15, c1, c2, c3));
-        buttonList.add(buttonArmorFade = new ColourRectButton(6, "", x - 81, y + 42, 163, 15, c1, c2, c3));
-        buttonList.add(buttonArmorNumeric = new ColourRectButton(7, "", x + 2, y + 59, 80, 15, c1, c2, c3));
-        buttonList.add(new ColourRectButton(8, I18n.format("button.de.rotate.txt"), x - 81, y + 59, 80, 15, c1, c2, c3));
-        buttonList.add(new ColourRectButton(10, I18n.format("button.de.toggleHidden.txt"), x - 81, y + 76, 163, 15, c1, c2, c3));
+        buttonList.add(new ButtonColourRect(4, I18n.format("button.de.scaleUp.txt"), x + 2, y + 25, 80, 15, c1, c2, c3));
+        buttonList.add(new ButtonColourRect(5, I18n.format("button.de.scaleDown.txt"), x - 81, y + 25, 80, 15, c1, c2, c3));
+        buttonList.add(buttonArmorFade = new ButtonColourRect(6, "", x - 81, y + 42, 163, 15, c1, c2, c3));
+        buttonList.add(buttonArmorNumeric = new ButtonColourRect(7, "", x + 2, y + 59, 80, 15, c1, c2, c3));
+        buttonList.add(new ButtonColourRect(8, I18n.format("button.de.rotate.txt"), x - 81, y + 59, 80, 15, c1, c2, c3));
+        buttonList.add(new ButtonColourRect(10, I18n.format("button.de.toggleHidden.txt"), x - 81, y + 76, 163, 15, c1, c2, c3));
     }
 
     @Override

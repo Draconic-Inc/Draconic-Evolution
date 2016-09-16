@@ -7,6 +7,11 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.brandon3055.draconicevolution.handlers.CustomArmorHandler.ArmorSummery;
 
@@ -15,7 +20,9 @@ import static com.brandon3055.draconicevolution.handlers.CustomArmorHandler.Armo
  */
 public class ModHelper {
 
-	public static boolean isTConInstalled;
+    private static Map<String, String> loadedMods = null;
+
+    public static boolean isTConInstalled;
     public static boolean isAvaritiaInstalled;
     public static boolean isRotaryCraftInstalled;
     public static boolean isJEIInstalled;
@@ -97,6 +104,19 @@ public class ModHelper {
         if (isJEIInstalled) {
             DraconicEvolutionPlugin.reloadJEI();
         }
+    }
+
+    /**
+     * @return a map of Modid to Mod Name for all loaded mods
+     */
+    public static Map<String, String> getLoadedMods() {
+        if (loadedMods == null) {
+            loadedMods = Collections.synchronizedMap(new HashMap<String, String>());
+            for (ModContainer mod : Loader.instance().getModList()) {
+                loadedMods.put(mod.getModId(), mod.getName());
+            }
+        }
+        return loadedMods;
     }
 
 }

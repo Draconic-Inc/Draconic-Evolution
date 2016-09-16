@@ -1,4 +1,12 @@
-######## 2.0.0.x ########
+######## 2.0.xx ########
+-Hopefully actually fixed the JEI crash now..........
+-Fixed fusion crafting injectors not dropping the correct tier when harvested.
+-Fixed advanced energy core stabilizers not forming when corners are placed last.
+-Fixed energy pylon particles stopping after chunk unloads and hopefully fixed energy transfer stopping aswell.
+-
+
+
+######## 2.0.88 ########
 -Fixed fusion crafting not syncing properly client side.
 -Fixed occasional crash related to JEI integration.
 -Implemented axe tree mechanics.

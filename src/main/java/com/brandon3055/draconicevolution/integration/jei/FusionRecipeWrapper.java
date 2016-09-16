@@ -35,8 +35,9 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper implements ITickable
 
         inputs.addAll(recipe.getRecipeIngredients());
         inputs.add(recipe.getRecipeCatalyst());
-
-        ClientEventHandler.tickableList.add(this);
+        synchronized (ClientEventHandler.tickableList) {
+            ClientEventHandler.tickableList.add(this);
+        }
     }
 
     @Nonnull

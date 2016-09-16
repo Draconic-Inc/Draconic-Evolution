@@ -135,6 +135,11 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
         return true;
     }
 
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
     //endregion
 
     //region Rendering

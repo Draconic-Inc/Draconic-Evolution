@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.toolconfig;
 
-import com.brandon3055.brandonscore.client.gui.guicomponentsold.ColourRectButton;
+import com.brandon3055.brandonscore.client.gui.ButtonColourRect;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
@@ -30,7 +30,7 @@ public class GuiToolConfig extends GuiScreen {
     private ToolButton[] armor;
     private ToolButton[] inventory;
     private ToolButton[] offHand;
-    private ColourRectButton configButton;
+    private ButtonColourRect configButton;
 
     public GuiToolConfig(EntityPlayer player){
         this.player = player;
@@ -74,7 +74,7 @@ public class GuiToolConfig extends GuiScreen {
             id++;
         }
 
-        buttonList.add(configButton = new ColourRectButton(id, I18n.format("gui.de.toolConfig.hud.txt"), centerX + 23, centerY - 107, 59, 16, 0x88000000, 0xFF440066, 0xFF009900));
+        buttonList.add(configButton = new ButtonColourRect(id, I18n.format("gui.de.toolConfig.hud.txt"), centerX + 23, centerY - 107, 59, 16, 0x88000000, 0xFF440066, 0xFF009900));
     }
 
     //region Draw

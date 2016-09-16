@@ -353,14 +353,14 @@
     ]
   },
   {
-    "name":"tile.draconicevolution:draconicBlock",
+    "name":"tile.draconicevolution:draconic_block",
     "images":[],
     "content":
     [
       "You have been studying the interactions of Draconium with various materials and have come to realize that this is only an inert state.",
       "You have discovered a method to bring out the true power of Draconium using a complex ritual involving a dragon heart.",
       "(See the Dragon Heart page for details)",
-      "[c]tile.draconicevolution:draconicBlock:0",
+      "[c]tile.draconicevolution:draconic_block:0",
       "This block is resistant to the wither."
     ]
   },
@@ -715,13 +715,13 @@
     ]
   },
   {
-    "name":"tile.draconicevolution:energyStorageCore",
+    "name":"tile.draconicevolution:energy_storage_core",
     "images":[],
     "content":
     [
       "Using Draconic knowledge you have discovered how to build a multi-block structure capable of storing more power than any other device ever invented, with the highest tier able to store up to 2.14 trillion RF.",
       "More information is available in the Energy Core multi-block tutorial.",
-      "[c]tile.draconicevolution:energyStorageCore:0"
+      "[c]tile.draconicevolution:energy_storage_core:0"
     ]
   },
   {
@@ -800,13 +800,13 @@
     ]
   },
   {
-    "name":"tile.draconicevolution:particleGenerator",
+    "name":"tile.draconicevolution:particle_generator",
     "images":[],
     "content":
     [
       "Purely decorative, this blocks allows for fully customizable particle effects to be created. For more information check out the instruction manual built into its GUI.",
       "This block is also used as a part of the Energy Storage multi-block structure.",
-      "[c]tile.draconicevolution:particleGenerator:0"
+      "[c]tile.draconicevolution:particle_generator:0"
     ]
   },
   {

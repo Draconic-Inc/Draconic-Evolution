@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementBase;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
 import net.minecraft.client.Minecraft;
 
 /**
  * Created by brandon3055 on 31/08/2016.
  */
-public class WikiMenu extends GuiElementBase {
+public class WikiMenu extends MGuiElementBase {
     private GuiModWiki guiModWiki;
 
     public WikiMenu(GuiModWiki parentGui) {
@@ -17,14 +17,17 @@ public class WikiMenu extends GuiElementBase {
 
     @Override
     public void initElement() {
+        toRemove.addAll(childElements);
         super.initElement();
         xSize = modularGui.screenWidth();
         ySize = 20;
+
+        addChild(new MGuiButtonSolid(modularGui, "Reload", xPos + (xSize / 2), yPos + 3, 50, 12, "Reload").setColours(0xFF000000, 0xFF333333, 0xFF555555));
     }
 
     @Override
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        GuiHelper.drawBorderedRect(xPos, yPos, xSize, ySize, 1, 0xFF777777, 0xFF000000);
+        //drawBorderedRect(xPos, yPos, xSize, ySize, 1, WikiStyle.BASE_GUI_COLOUR, WikiStyle.BOURDER_COLOUR);
 
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
     }

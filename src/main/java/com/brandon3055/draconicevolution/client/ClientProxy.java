@@ -5,6 +5,7 @@ import codechicken.lib.render.HitBoxRenderHandler;
 import codechicken.lib.render.TextureUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
@@ -48,6 +49,7 @@ public class ClientProxy extends CommonProxy {
 //       ToolModelLoader.registerModels();
 
         registerRendering();
+		WikiDocManager.initialize();
 	}
 
 	@Override

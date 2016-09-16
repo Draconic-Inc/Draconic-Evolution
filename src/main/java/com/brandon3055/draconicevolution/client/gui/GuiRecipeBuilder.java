@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.brandonscore.client.gui.guicomponentsold.ColourRectButton;
+import com.brandon3055.brandonscore.client.gui.ButtonColourRect;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerRecipeBuilder;
@@ -53,16 +53,16 @@ public class GuiRecipeBuilder extends GuiContainer {
         textField.setTextColor(0x00FF00);
         textField.setMaxStringLength(1000);
         buttonList.clear();
-        buttonList.add(new ColourRectButton(0, "Crafting", guiLeft + 18, guiTop + 130, 50, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(new ColourRectButton(1, "Fusion", guiLeft + 70, guiTop + 130, 50, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(new ButtonColourRect(0, "Crafting", guiLeft + 18, guiTop + 130, 50, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(new ButtonColourRect(1, "Fusion", guiLeft + 70, guiTop + 130, 50, 12, 0xFF440000, 0xFF000066, 0xFF006600));
 
 
-        buttonList.add(new ColourRectButton(9, "Copy", guiLeft + xSize - 31, guiTop + 130, 29, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(genShaped = new ColourRectButton(10, "Shaped", guiLeft + 18, guiTop + 100, 42, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(genShapeless = new ColourRectButton(11, "Shapeless", guiLeft + 61, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(genOre = new ColourRectButton(12, "Ore: true", guiLeft + 118, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(genFusion = new ColourRectButton(13, "Gen Fusion", guiLeft + 18, guiTop + 100, 70, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(new ColourRectButton(100, "Reload Recipes", guiLeft - 90 , guiTop + ySize - 12, 90, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(new ButtonColourRect(9, "Copy", guiLeft + xSize - 31, guiTop + 130, 29, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(genShaped = new ButtonColourRect(10, "Shaped", guiLeft + 18, guiTop + 100, 42, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(genShapeless = new ButtonColourRect(11, "Shapeless", guiLeft + 61, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(genOre = new ButtonColourRect(12, "Ore: true", guiLeft + 118, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(genFusion = new ButtonColourRect(13, "Gen Fusion", guiLeft + 18, guiTop + 100, 70, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(new ButtonColourRect(100, "Reload Recipes", guiLeft - 90 , guiTop + ySize - 12, 90, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         genFusion.visible = false;
     }
 

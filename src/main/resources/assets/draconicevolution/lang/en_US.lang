@@ -778,6 +778,12 @@ gui.de.toolConfig.hud.txt=HUD
 gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
 
 
-//---- Very Generic ----//
+//---- Generic ----//
 generic.de.Mode.txt=Mode
 generic.de.energyCost.txt=Energy Cost
+
+//---- Mod Wiki ----//
+guiwiki.label.navigation=Navigation
+guiwiki.label.mods=Mods
+
+guiwiki.button.home=Home
