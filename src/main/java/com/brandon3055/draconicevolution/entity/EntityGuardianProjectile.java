@@ -144,7 +144,7 @@ public class EntityGuardianProjectile extends Entity {
         }
         if (worldObj.isRemote) {
             if (type == 0) {
-                type = dataManager.get(TYPE);
+                type = (int) dataManager.get(TYPE);
             }
             spawnParticle();
         }

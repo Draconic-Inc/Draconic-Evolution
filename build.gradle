@@ -51,6 +51,7 @@ version = "${config.mcversion}-${config.mod_version}"
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
+
 minecraft {
     version = config.mcversion + "-" + config.forge_version
     runDir = "run"
