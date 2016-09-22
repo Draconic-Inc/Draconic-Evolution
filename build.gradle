@@ -76,7 +76,7 @@ dependencies {
 	compile "com.brandon3055.brandonscore:BrandonsCore:${config.mcversion}-${config.bcore_version}:deobf"
 	compile "codechicken:CodeChickenLib:${config.mcversion}-${config.CCLIB_version}:deobf"
     compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
-    compile "mezz.jei:jei_${config.mcversion}:${config.jei_version}:dev"
+    compile "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
 
 
     //deobfCompile "mezz.jei:jei_${config.mcversion}:${config.jei_version}:api"

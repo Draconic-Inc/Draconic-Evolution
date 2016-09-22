@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import mezz.jei.api.IRecipeRegistry;
+import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -97,7 +98,8 @@ public class JeiHelper {
             this.wrapper = wrapper;
             this.registry = registry;
             this.result = result;
-            this.layout = new RecipeLayout(index, 0, 0, category, wrapper, MasterFocus.create(registry, new Focus<>(result)));
+            IFocus<?> f = new Focus<Object>(result);
+            this.layout = new RecipeLayout(index, 0, 0, category, wrapper, MasterFocus.create(registry, f));
             this.width = category.getBackground().getWidth();
             this.height = category.getBackground().getHeight();
             this.title = category.getTitle();
@@ -119,7 +121,8 @@ public class JeiHelper {
         @Override
         public void render(Minecraft mc, int xPos, int yPos, int mouseX, int mouseY) {
             if (this.xPos != xPos || this.yPos != yPos) {
-                layout = new RecipeLayout(index, xPos, yPos, category, wrapper, MasterFocus.create(registry, new Focus<>(result)));
+                IFocus<?> f = new Focus<Object>(result);
+                layout = new RecipeLayout(index, xPos, yPos, category, wrapper, MasterFocus.create(registry, f));
                 layout.setRecipeTransferButton(-1000, -1000);
                 this.xPos = xPos;
                 this.yPos = yPos;
