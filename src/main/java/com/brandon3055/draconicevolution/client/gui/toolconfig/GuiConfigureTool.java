@@ -130,9 +130,6 @@ public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename co
         int centerX = width / 2;
         int centerY = height / 2;
 
-        //ToDO Drop down for selectables
-
-
         //region Draw Background & Item
 
         GuiHelper.drawColouredRect(centerX - 160, centerY - 120, 320, 235, 0xAF000000);

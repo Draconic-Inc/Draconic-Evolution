@@ -33,7 +33,7 @@ public class DraconicEvolution {
 	public static final String PROXY_CLIENT = "com.brandon3055.draconicevolution.client.ClientProxy";
 	public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.CommonProxy";
 	public static final String DEPENDENCIES = "after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:brandonscore@["+ BrandonsCore.VERSION +",);";
-	public static final String GUI_FACTORY 	= "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
+	public static final String GUI_FACTORY 	= "";//TODO com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
 	public static final String networkChannelName = "DEvolutionNC";
 	//region Misc Fields
 	public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "toolsAndWeapons", 0);
@@ -52,12 +52,10 @@ public class DraconicEvolution {
 	public static ModFeatureParser featureParser = new ModFeatureParser(MODID, new CreativeTabs[]{tabBlocksItems, tabToolsWeapons});
 	public static ModConfigProcessor configProcessor = new ModConfigProcessor();
 
-   // Still need to finish particle updating and ofcoarse rendering
-
 	public DraconicEvolution()
 	{
 		LogHelper.info("Hello Minecraft!!!");
-        LogHelper.info("Starting Draconic Evolution Beta! Initializing Random Bug Generator!!!");
+        LogHelper.info("Starting Draconic Evolution non-Beta! Deactivating Random Bug Generator!!!");
         LogHelper.warn("=======================================================");
         LogHelper.warn("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
         LogHelper.warn("If the game crashes on first start after automatically");

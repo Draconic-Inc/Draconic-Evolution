@@ -32,12 +32,9 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper implements ITickable
     @SuppressWarnings("unchecked")
     public FusionRecipeWrapper(IFusionRecipe recipe) {
         this.recipe = recipe;
-
         inputs.addAll(recipe.getRecipeIngredients());
         inputs.add(recipe.getRecipeCatalyst());
-        synchronized (ClientEventHandler.tickableList) {
-            ClientEventHandler.tickableList.add(this);
-        }
+        ClientEventHandler.addTickable(this);
     }
 
     @Nonnull

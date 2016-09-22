@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree;
 
+import codechicken.lib.colour.Colour;
+import codechicken.lib.colour.ColourARGB;
 import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiLabel;
@@ -13,6 +15,7 @@ import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManag
 import com.brandon3055.draconicevolution.client.gui.modwiki.swing.SwingHelper;
 import com.brandon3055.draconicevolution.client.gui.modwiki.swing.UIAddBranch;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -20,9 +23,10 @@ import org.w3c.dom.NodeList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
-import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle.NAV_WINDOW;
-import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle.TEXT_COLOUR;
+import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_WINDOW;
+import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_TEXT;
 import static com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager.*;
 
 /**
@@ -49,7 +53,14 @@ public class TreeBranchContent extends TreeBranchRoot {
         addChild(label = new MGuiLabel(guiWiki, xPos, yPos, xSize, ySize, branchName) {
             @Override
             public int getTextColour() {
-                return TEXT_COLOUR;
+                return NAV_TEXT;
+            }
+
+            @Override
+            public boolean getDropShadow() {
+                Colour colour = new ColourARGB(NAV_TEXT);
+                long l = ((colour.r & 0xff) + (colour.g & 0xff) + (colour.b & 0xff)) / 3;
+                return l > 80;
             }
         }.setAlignment(EnumAlignment.LEFT).setWrap(true));
 
@@ -60,8 +71,8 @@ public class TreeBranchContent extends TreeBranchRoot {
             addChild(icon = stackIcon);
             addChild(iconBackground = back);
 
-            int wrapCount = modularGui.getMinecraft().fontRendererObj.listFormattedStringToWidth(branchName, label.xSize - 22).size();
-            ySize = Math.max(22, (wrapCount * modularGui.getMinecraft().fontRendererObj.FONT_HEIGHT) + 7);
+            int line =  modularGui.getMinecraft().fontRendererObj.listFormattedStringToWidth(branchName, label.xSize - 28).size();
+            ySize = Math.max(22, (line * modularGui.getMinecraft().fontRendererObj.FONT_HEIGHT) + 7);
             label.ySize = ySize;
             stackIcon.yOffset = (ySize - 18) / 2;
             stackIcon.xOffset = 3;
@@ -126,6 +137,15 @@ public class TreeBranchContent extends TreeBranchRoot {
             drawBorderedRect(xPos + 1, yPos + 1, xSize - 2, ySize - 2, 1, 0, 0xFF000000);
         }
 
+        if (GuiModWiki.editMode && !isModBranch) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(xPos, yPos, 100);
+            GlStateManager.scale(0.6, 0.6, 1);
+            String s = "W:§f" + sortingWeight;
+            drawString(minecraft.fontRendererObj, s, 0, 0, 0xFF0000, false);
+            drawColouredRect(0, 0, minecraft.fontRendererObj.getStringWidth(s), 8, 0xAA000000);
+            GlStateManager.popMatrix();
+        }
 
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
     }
@@ -144,7 +164,7 @@ public class TreeBranchContent extends TreeBranchRoot {
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (isMouseOver(mouseX, mouseY) && mouseButton == 1) {
+        if (GuiModWiki.editMode && isMouseOver(mouseX, mouseY) && mouseButton == 1) {
             if (isModBranch) {
                 PopupEditMod editMod = new PopupEditMod(modularGui, list.xPos + 12, list.yPos + 24, list.xSize - 12 - list.rightPadding, list.ySize - 25, list, this);
                 list.addChild(editMod);
@@ -192,6 +212,8 @@ public class TreeBranchContent extends TreeBranchRoot {
             addSubBranch(contentBranch);
             contentBranch.loadBranchesXML();
         }
+
+        Collections.sort(subBranches, BRANCH_SORTER);
     }
 
     public void loadNonModAttributes() {

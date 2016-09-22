@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.entity;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.network.PacketLootSync;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -106,8 +105,6 @@ public class EntityLootCore extends Entity {
             return;
         }
 
-        updateStored();
-
         despawnTimer = 0;
 
         if (pickupDellay > 0) {
@@ -120,7 +117,6 @@ public class EntityLootCore extends Entity {
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack != null) {
-                LogHelper.dev(stack.getTagCompound());
                 int start = stack.stackSize;
                 player.inventory.addItemStackToInventory(stack);
 

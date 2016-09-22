@@ -103,7 +103,7 @@ item.draconicevolution:draconium_capacitor.creative.name=Creative Flux Capacitor
 item.draconicevolution:draconic_ingot.name=Awakened Draconium Ingot
 item.draconicevolution:creative_structure_spawner_comet.name=Spawn Comet
 item.draconicevolution:creative_structure_spawner_ender_island.name=Spawn Ender Island
-item.draconicevolution:infoTablet.name=Draconic Evolution Information Tablet
+item.draconicevolution:info_tablet.name=Draconic Evolution Information Tablet
 item.draconicevolution:wrench.name=Crystal Binder
 item.draconicevolution:dezils_marshmallow.name=Dezil's Marshmallow
 item.draconicevolution:reactor_crafting_part.frame.name=Reactor Stabilizer Frame
@@ -648,6 +648,7 @@ upgrade.de.upgradeApplied.info=Upgrade Applied
 upgrade.de.upgradePrevLevelRequired.info=Previous level must be applied first
 upgrade.de.holdCtrlForUpgrades.info=Hold %sCTRL%s for Upgrades
 upgrade.de.holdShiftForRecipes.info=Hold %sShift%s for Recipes
+upgrade.de.holdCTRLToPause.info=CTRL to Pause
 upgrade.de.level.info=Level
 
 upgrade.de.rfCap.name=RF Capacity
@@ -724,6 +725,9 @@ config.field.attackAOE.description=Allows you to adjust the area covered by this
 config.field.showHarvestIndicator.entry=Harvest Indicator
 config.field.showHarvestIndicator.description=Shows where the axe is currently harvesting blocks.
 
+config.field.landFill.entry=Land Fill
+config.field.landFill.description=Will automatically use dirt from your inventory to fill up to a 1 block deep hole in order to create a flat tilled area. Will also harvest up to 1 block above the area to be tilled if needed.
+
 config.field..entry=
 config.field..description=
 
@@ -781,9 +785,26 @@ gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
 //---- Generic ----//
 generic.de.Mode.txt=Mode
 generic.de.energyCost.txt=Energy Cost
+generic.options.txt=Options
+generic.ok.txt=OK
 
 //---- Mod Wiki ----//
 guiwiki.label.navigation=Navigation
 guiwiki.label.mods=Mods
+modwiki.label.style=Style
+
+modwiki.style.navWindow=Nav Window
+modwiki.style.mainWindow=Main Window
+modwiki.style.menu=Menu
+modwiki.style.presets=Presets
+modwiki.style.navText=Nav Text
+modwiki.style.text=Text
+
+modwiki.style.preset.intellij=Intellij
+modwiki.style.preset.black&white=Black & White
+modwiki.style.preset.white&black=White & Black
+modwiki.style.preset.purple=Purple
+modwiki.style.preset.draconic=Draconic
+modwiki.style.preset.transparent=Transparent
 
 guiwiki.button.home=Home

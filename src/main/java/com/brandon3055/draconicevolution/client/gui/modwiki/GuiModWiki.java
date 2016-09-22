@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiScreen;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButton;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
+import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDownloadManager;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.GuiDocTree;
 import net.minecraft.client.Minecraft;
 
@@ -18,7 +19,7 @@ public class GuiModWiki extends ModularGuiScreen implements IMGuiListener {
     public WikiContentWindow contentWindow;
     public GuiDocTree wikiDataTree = null;
     public static String activeID = null;
-    public static boolean editMode = true;
+    public static boolean editMode = false;
 
 //    public static ModDataList activeMod = null;
 //    public static ModDataEntry activeModData = null;
@@ -56,10 +57,6 @@ public class GuiModWiki extends ModularGuiScreen implements IMGuiListener {
     }
 
     public void updateWindowPositions() {
-        //region Menu Window
-
-        //endregion
-
         //region Nav Window
 
         wikiList.xPos = 0;
@@ -110,10 +107,13 @@ public class GuiModWiki extends ModularGuiScreen implements IMGuiListener {
     @Override
     public void onMGuiEvent(String event, MGuiElementBase element) {
         if (element instanceof MGuiButton && ((MGuiButton) element).buttonName.equals("Reload")) {
+            WikiDocManager.initFiles();
             WikiDocManager.loadDocsFromDisk();
             wikiDataTree.reloadData();
             wikiList.reloadList();
             wikiDataTree.reOpenLast();
+            WikiConfig.load();
+            WikiDownloadManager.downloadManifest();
         }
     }
 
@@ -133,7 +133,7 @@ public class GuiModWiki extends ModularGuiScreen implements IMGuiListener {
 
     @Override
     public boolean doesGuiPauseGame() {
-        return false;
+        return true;
     }
 
     //endregion

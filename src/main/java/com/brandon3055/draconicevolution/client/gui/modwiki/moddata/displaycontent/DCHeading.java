@@ -87,7 +87,7 @@ public class DCHeading extends DisplayComponentBase {
                 GlStateManager.translate(-x, -y, 0);
             }
 
-            drawString(fontRenderer, string, x, y, colour, shadow);
+            drawString(fontRenderer, string, x, y, getColour(), shadow);
 
             if (headingSize > 0) {
                 GlStateManager.popMatrix();
@@ -119,8 +119,9 @@ public class DCHeading extends DisplayComponentBase {
 
         list.add(new MGuiLabel(modularGui, 0, 0, 37, 12, "Colour:").setAlignment(EnumAlignment.CENTER));
         MGuiTextField colourField = new MGuiTextField(modularGui, 0, 0, 45, 12, fontRenderer).setListener(this).setMaxStringLength(6).setText("FFFFFF");
+        colourField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the base colour. If left default this will be the text colour for the selected style", "If you change this the only way to to go back is to remove the colour attribute from the entry in the XML file."}, colourField));
         colourField.setId("COLOUR");
-        colourField.setText(Integer.toHexString(colour));
+        colourField.setText(Integer.toHexString(getColour()));
         colourField.setValidator(new Predicate<String>() {
             @Override
             public boolean apply(@Nullable String input) {
@@ -228,8 +229,8 @@ public class DCHeading extends DisplayComponentBase {
         }
         else if (eventElement.id.equals("COLOUR") && eventString.equals("TEXT_FIELD_CHANGED") && eventElement instanceof MGuiTextField) {
             try {
-                colour = Utils.parseHex(((MGuiTextField) eventElement).getText());
-                element.setAttribute(ATTRIB_COLOUR, Integer.toHexString(colour));
+                setColour(Utils.parseHex(((MGuiTextField) eventElement).getText()));
+                element.setAttribute(ATTRIB_COLOUR, Integer.toHexString(getColour()));
                 requiresSave = true;
                 saveTimer = 60;
             }
@@ -263,7 +264,7 @@ public class DCHeading extends DisplayComponentBase {
     public void onCreated() {
         element.setAttribute(SIZE_ATTRIB, "0");
         element.setTextContent("Click To Edit");
-        element.setAttribute(ATTRIB_COLOUR, "FFFFFF");
+//        element.setAttribute(ATTRIB_COLOUR, "FFFFFF");
         element.setAttribute(ATTRIB_SHADOW, "true");
         element.setAttribute(ATTRIB_ALIGNMENT, "CENTER");
     }

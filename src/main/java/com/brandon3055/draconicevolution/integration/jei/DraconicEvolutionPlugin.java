@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 public class DraconicEvolutionPlugin implements IModPlugin {
 
     public static IJeiHelpers jeiHelpers = null;
+    public static IJeiRuntime jeiRuntime = null;
 
     public DraconicEvolutionPlugin() {}
 
@@ -28,13 +29,16 @@ public class DraconicEvolutionPlugin implements IModPlugin {
 
         registry.addRecipes(RecipeManager.FUSION_REGISTRY.getRecipes());
 
-        this.jeiHelpers = jeiHelpers;
+        DraconicEvolutionPlugin.jeiHelpers = jeiHelpers;
     }
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime iJeiRuntime) {
-
+        jeiRuntime = iJeiRuntime;
+//        iJeiRuntime.getRecipeRegistry().getRecipeCategoriesWithOutput(new ItemStack(Items.IRON_SHOVEL)).get(0).drawAnimations();
     }
+
+
 
     public static void reloadJEI() {
         if (jeiHelpers != null) {

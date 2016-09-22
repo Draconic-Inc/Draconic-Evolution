@@ -137,7 +137,7 @@ public class UIAddBranch extends JFrame implements ActionListener {
                 return;
             }
 
-            if (activeIDs.contains(parentID + ":" + idField.getText())) {
+            if (activeIDs.contains(parentID + (parentBranch.isModBranch ? ":" : "/") + idField.getText())) {
                 JOptionPane.showMessageDialog(this, "That ID is already in use in this branch", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }

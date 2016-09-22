@@ -1,12 +1,9 @@
 package com.brandon3055.draconicevolution.items;
 
-import codechicken.lib.inventory.InventoryUtils;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.client.particle.BCEffectRenderer;
-import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
-import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
@@ -59,8 +56,6 @@ public class Debugger extends ItemBCore {
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
     }
-
-    //todo remove from tab and NEI
 
     @Override
     public boolean hasEffect(ItemStack stack) {
@@ -627,30 +622,30 @@ public class Debugger extends ItemBCore {
 
     @Override
     public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-
-        if (!world.isRemote) {
-
-            LogHelper.info("GO");
-
-            InventoryDynamic inventory = new InventoryDynamic();
-
-            for (BlockPos getPos : BlockPos.getAllInBox(pos.add(-20, -20, -20), pos.add(20, 20, 20))) {
-                List<ItemStack> stacks = BlockToStackHelper.breakAndCollect(world, getPos);
-                for (ItemStack s : stacks) {
-                    InventoryUtils.insertItem(inventory, s, false);
-                }
-            }
-
-//            for (int i = 0; i < inventory.getSizeInventory(); i++) {
-//                ItemStack s = inventory.removeStackFromSlot(i);
-//                if (s != null) {
-//                    EntityItem item = new EntityItem(world, player.posX, player.posY - 10, player.posZ, s);
-//                    world.spawnEntityInWorld(item);
+//
+//        if (!world.isRemote) {
+//
+//            LogHelper.info("GO");
+//
+//            InventoryDynamic inventory = new InventoryDynamic();
+//
+//            for (BlockPos getPos : BlockPos.getAllInBox(pos.add(-20, -20, -20), pos.add(20, 20, 20))) {
+//                List<ItemStack> stacks = BlockToStackHelper.breakAndCollect(world, getPos);
+//                for (ItemStack s : stacks) {
+//                    InventoryUtils.insertItem(inventory, s, false);
 //                }
 //            }
-
-            return EnumActionResult.PASS;
-        }
+//
+////            for (int i = 0; i < inventory.getSizeInventory(); i++) {
+////                ItemStack s = inventory.removeStackFromSlot(i);
+////                if (s != null) {
+////                    EntityItem item = new EntityItem(world, player.posX, player.posY - 10, player.posZ, s);
+////                    world.spawnEntityInWorld(item);
+////                }
+////            }
+//
+//            return EnumActionResult.PASS;
+//        }
 
 
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
@@ -857,7 +852,6 @@ public class Debugger extends ItemBCore {
 ////                return false;
 ////            }
 ////        }
-//        //TODO Check gen area.
 //        //for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, 1, 1))) {
 //        //    IBlockState state = worldIn.getBlockState(pos);
 //        //    Block block = state.getBlock();

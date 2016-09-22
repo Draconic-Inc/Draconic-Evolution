@@ -65,7 +65,8 @@ public class DCLink extends DisplayComponentBase {
         int split = list.size();
         ySize = (int) (fontRenderer.FONT_HEIGHT * scaleFactor * split);
 
-        xMin = xMax = (xSize / 2);
+        xMin = xSize;
+        xMax = 0;
 
         for (String string : list) {
             float x = 0;
@@ -128,7 +129,7 @@ public class DCLink extends DisplayComponentBase {
 
             boolean mouseOver = isMouseOver(mouseX, mouseY) && mouseX >= xPos + xMin && mouseX <= xPos + xMax;
 
-            drawString(fontRenderer, string, x, y, mouseOver ? hoverColour : colour, shadow);
+            drawString(fontRenderer, string, x, y, mouseOver ? hoverColour : getColour(), shadow);
 
             if (headingSize > 0) {
                 GlStateManager.popMatrix();
@@ -199,7 +200,7 @@ public class DCLink extends DisplayComponentBase {
         MGuiTextField colourField = new MGuiTextField(modularGui, 0, 0, 45, 12, fontRenderer).setListener(this).setMaxStringLength(6);
         colourField.setId("COLOUR");
         colourField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the primary link colour.", TextFormatting.GOLD + "This is a HEX value meaning it accepts digits between 0 and F", TextFormatting.GOLD + "Format is Red, Green, Blue [RRGGBB]", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, colourField));
-        colourField.setText(Integer.toHexString(colour));
+        colourField.setText(Integer.toHexString(getColour()));
         colourField.setValidator(new Predicate<String>() {
             @Override
             public boolean apply(@Nullable String input) {
@@ -341,22 +342,11 @@ public class DCLink extends DisplayComponentBase {
         }
         else if (eventElement.id.equals("COLOUR") && eventString.equals("TEXT_FIELD_CHANGED") && eventElement instanceof MGuiTextField) {
             try {
-                colour = Utils.parseHex(((MGuiTextField) eventElement).getText());
-                element.setAttribute(ATTRIB_COLOUR, Integer.toHexString(colour));
+                setColour(Utils.parseHex(((MGuiTextField) eventElement).getText()));
+                element.setAttribute(ATTRIB_COLOUR, Integer.toHexString(getColour()));
 
                 requiresSave = true;
                 saveTimer = 60;
-
-//                int pos = ((MGuiTextField) eventElement).getCursorPosition();
-//                save();
-//
-//                for (MGuiElementBase element : branch.guiWiki.contentWindow.editControls) {
-//                    if (element instanceof MGuiTextField && element.id.equals("COLOUR")) {
-//                        ((MGuiTextField) element).setFocused(true);
-//                        ((MGuiTextField) element).setCursorPosition(pos);
-//                        break;
-//                    }
-//                }
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -444,8 +434,8 @@ public class DCLink extends DisplayComponentBase {
         element.setAttribute(ATTRIB_LINK_TARGET, TARGET_BRANCH);
         element.setAttribute(ATTRIB_LINK, branch.branchID);
         element.setAttribute(ATTRIB_SIZE, "0");
-        element.setTextContent("Click To Edit");
-        element.setAttribute(ATTRIB_COLOUR, "FFFFFF");
+        element.setTextContent("Click to the left or right of this text to edit.");
+//        element.setAttribute(ATTRIB_COLOUR, "FFFFFF");
         element.setAttribute(ATTRIB_HC, "0000FF");
         element.setAttribute(ATTRIB_SHADOW, "true");
         element.setAttribute(ATTRIB_ALIGNMENT, "CENTER");

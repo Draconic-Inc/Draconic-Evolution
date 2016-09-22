@@ -1,20 +1,16 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
 import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiTextField;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
 import com.brandon3055.draconicevolution.client.gui.modwiki.swing.SwingHelper;
 import com.brandon3055.draconicevolution.client.gui.modwiki.swing.UIEditTextArea;
-import com.google.common.base.Predicate;
 import net.minecraft.client.Minecraft;
 import org.w3c.dom.Element;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,11 +43,7 @@ public class DCTextArea extends DisplayComponentBase {
 
     @Override
     public void initElement() {
-        if (isBeingEdited) {
 
-
-
-        }
         super.initElement();
     }
 
@@ -77,7 +69,7 @@ public class DCTextArea extends DisplayComponentBase {
             int yTex = yPos + (row * fontRenderer.FONT_HEIGHT);
             int xTex = alignment == LEFT ? xPos + 4 : alignment == CENTER ? xPos + (xSize / 2) - (textWidth / 2) : xPos + xSize - textWidth - 4;
 
-            drawString(fontRenderer, text, xTex, yTex, colour);
+            drawString(fontRenderer, text, xTex, yTex, getColour());
 //            int cursor = cursoePos - textPos;
 //            if (isBeingEdited && timer / 10 % 2 == 0 && cursoePos != -1 && cursoePos >= textPos && cursoePos <= textPos + text.length()) {
 //                boolean onNewLine = text.endsWith("\\n");
@@ -461,24 +453,6 @@ public class DCTextArea extends DisplayComponentBase {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Open the editor or bring it to the front if it is already open in the background"}));
-
-        list.add(new MGuiLabel(modularGui, 0, 0, 65, 12, "Base Colour:").setAlignment(EnumAlignment.CENTER));
-        MGuiTextField colourField = new MGuiTextField(modularGui, 0, 0, 45, 12, fontRenderer).setListener(this).setMaxStringLength(6).setText("FFFFFF");
-        colourField.setId("COLOUR");
-        colourField.setText(Integer.toHexString(colour));
-        colourField.setValidator(new Predicate<String>() {
-            @Override
-            public boolean apply(@Nullable String input) {
-                try {
-                    Integer.parseInt(input, 16);
-                }
-                catch (Exception e) {
-                    return false;
-                }
-                return true;
-            }
-        });
-        list.add(colourField);
         return list;
     }
 
@@ -497,8 +471,8 @@ public class DCTextArea extends DisplayComponentBase {
         }
         else if (eventElement.id.equals("COLOUR") && eventString.equals("TEXT_FIELD_CHANGED") && eventElement instanceof MGuiTextField) {
             try {
-                colour = Integer.parseInt(((MGuiTextField) eventElement).getText(), 16);
-                element.setAttribute(ATTRIB_COLOUR, Integer.toHexString(colour));
+                setColour(Integer.parseInt(((MGuiTextField) eventElement).getText(), 16));
+                element.setAttribute(ATTRIB_COLOUR, Integer.toHexString(getColour()));
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -513,7 +487,7 @@ public class DCTextArea extends DisplayComponentBase {
 
     @Override
     public int getEntryHeight() {
-        return ySize;// + (isBeingEdited ? 12 : 0);
+        return ySize;
     }
 
     //endregion
@@ -536,8 +510,8 @@ public class DCTextArea extends DisplayComponentBase {
     @Override
     public void setXSize(int xSize) {
         super.setXSize(xSize);
-        if (this.xSize < 10) {
-            this.xSize = 10;
+        if (this.xSize < 40) {
+            this.xSize = 40;
         }
         ySize = Math.max(parseRawText().size() * fontRenderer.FONT_HEIGHT, 8);
     }
@@ -569,6 +543,7 @@ public class DCTextArea extends DisplayComponentBase {
                 editTextArea = null;
             }
             else {
+//                LogHelper.dev(editTextArea.linkTimer);
                 editTextArea.linkTimer = 20;
                 if (editTextArea.hasChanged) {
                     editTextArea.hasChanged = false;
@@ -582,7 +557,6 @@ public class DCTextArea extends DisplayComponentBase {
                     return true;
                 }
             }
-
         }
 
         return super.onUpdate();

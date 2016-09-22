@@ -42,6 +42,14 @@ public class GuiDocTree {
         idToBranchMap.clear();
         dataRootBranch = new TreeBranchRoot(guiWiki, null, I18n.format("guiwiki.label.mods"));
         activeBranch = dataRootBranch;
+
+        if (WikiDocManager.projectIntelContainer != null) {
+            dataRootBranch.branchData = WikiDocManager.projectIntelContainer.getElement("en_US");
+            if (dataRootBranch.branchData != null) {
+                dataRootBranch.loadBranchContent();
+            }
+        }
+
         String lang = guiWiki.mc.getLanguageManager().getCurrentLanguage().getLanguageCode();
 
         for (ModDocContainer modDoc : WikiDocManager.modDocMap.values()) {

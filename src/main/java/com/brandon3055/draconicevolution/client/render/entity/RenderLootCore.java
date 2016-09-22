@@ -101,9 +101,10 @@ public class RenderLootCore extends Render<EntityLootCore> {
             for (ItemStack stack : lootCore.displayMap.keySet()) {
                 int rowY = (int)yPos + row * 8 + 4;
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(-5, 0 + rowY, 0);
-                GlStateManager.scale(8, 8, 8);
-                Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.GUI);
+                GlStateManager.translate(-5, rowY, 0);
+                GlStateManager.scale(9, 9, 9);
+                GlStateManager.rotate(180, 1, 0, 0);
+                Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
                 GlStateManager.popMatrix();
                 renderer.drawString("x" + lootCore.displayMap.get(stack), 0, -4 + rowY, -1);
                 row++;

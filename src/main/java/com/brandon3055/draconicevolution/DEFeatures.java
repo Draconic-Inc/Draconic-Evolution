@@ -1,15 +1,13 @@
 package com.brandon3055.draconicevolution;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.blocks.BlockMobSafe;
-import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
-import com.brandon3055.brandonscore.blocks.ItemBlockBasic;
+import com.brandon3055.brandonscore.blocks.*;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.items.ItemSimpleSubs;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.items.Debugger;
+import com.brandon3055.draconicevolution.items.InfoTablet;
 import com.brandon3055.draconicevolution.items.ItemPersistent;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
@@ -228,6 +226,13 @@ public class DEFeatures {
 
     //endregion
 
+    //region Misc
+
+    @Feature(registryName = "info_tablet", stateOverride = "simple_components#type=info_tablet")
+    public static InfoTablet infoTablet = new InfoTablet();
+
+    //endregion
+
     //region Exotic Items
 
     @Feature(registryName = "creative_exchanger", stateOverride = "simple_components#type=chaoticCore", cTab = 1)
@@ -235,40 +240,3 @@ public class DEFeatures {
 
     //endregion
 }
-
-//@Feature(registryName = "wyvernAxe", stateOverride = "tools#type=wyvernAxe")
-//public static WyvernAxe wyvernAxe = new WyvernAxe();
-//
-//@Feature(registryName = "wyvernBow", stateOverride = "tools#type=wyvernBow")
-//public static WyvernBow wyvernBow = new WyvernBow();
-//
-//@Feature(registryName = "wyvernPick", stateOverride = "tools#type=wyvernPick")
-//public static WyvernPick wyvernPick = new WyvernPick();
-//
-//@Feature(registryName = "wyvernShovel", stateOverride = "tools#type=wyvernShovel")
-//public static WyvernShovel wyvernShovel = new WyvernShovel();
-//
-//@Feature(registryName = "wyvernSword", stateOverride = "tools#type=wyvernSword")
-//public static WyvernSword wyvernSword = new WyvernSword();
-//
-//
-//@Feature(registryName = "draconicAxe", stateOverride = "tools#type=draconicAxe")
-//public static DraconicAxe draconicAxe = new DraconicAxe();
-//
-//@Feature(registryName = "draconicBow", stateOverride = "tools#type=draconicBow")
-//public static DraconicBow draconicBow = new DraconicBow();
-//
-//@Feature(registryName = "draconicHoe", stateOverride = "tools#type=draconicHoe")
-//public static DraconicHoe draconicHoe = new DraconicHoe();
-//
-//@Feature(registryName = "draconicPick", stateOverride = "tools#type=draconicPick")
-//public static DraconicPick draconicPick = new DraconicPick();
-//
-//@Feature(registryName = "draconicShovel", stateOverride = "tools#type=draconicShovel")
-//public static DraconicShovel draconicShovel = new DraconicShovel();
-//
-//@Feature(registryName = "draconicStaffOfPower", stateOverride = "tools#type=draconicStaffOfPower")
-//public static DraconicStaffOfPower draconicStaffOfPower = new DraconicStaffOfPower();
-//
-//@Feature(registryName = "draconicSword", stateOverride = "tools#type=draconicSword")
-//public static DraconicSword draconicSword = new DraconicSword();

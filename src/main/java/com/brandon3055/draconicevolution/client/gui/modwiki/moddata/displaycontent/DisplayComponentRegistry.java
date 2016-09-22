@@ -20,7 +20,7 @@ public class DisplayComponentRegistry {
         register(new DCTextArea.Factory());
         register(new DCImage.Factory());
         register(new DCLink.Factory());
-//        register(new DCRecipe.Factory());
+        register(new DCRecipe.Factory());
         register(new DCStack.Factory());
         register(new DCVSpacer.Factory());
         register(new DCSplitContainer.Factory());

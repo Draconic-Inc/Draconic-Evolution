@@ -27,7 +27,7 @@ public class BowModelOverrideList extends ItemOverrideList {
 
         if (entity instanceof EntityPlayer && entity.getActiveItemStack() == stack && entity.getItemInUseMaxCount() > 0) {
             BowHandler.BowProperties bowProperties = new BowHandler.BowProperties(copy, (EntityPlayer) entity);
-            ItemNBTUtils.setInteger(copy, "DrawStage", (int)Math.min(((double)entity.getItemInUseMaxCount() / bowProperties.getDrawTicks() * 3D), 3)); //todo calculate the actual draw stage
+            ItemNBTUtils.setInteger(copy, "DrawStage", (int)Math.min(((double)entity.getItemInUseMaxCount() / bowProperties.getDrawTicks() * 3D), 3));
         }
 
         IBakedModel model = CCBakedModelLoader.getModel(copy);

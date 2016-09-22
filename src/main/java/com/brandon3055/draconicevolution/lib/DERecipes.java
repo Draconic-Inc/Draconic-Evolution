@@ -33,8 +33,8 @@ public class DERecipes {
         addShaped(HARD, grinder, "ABA", "CDC", "AEA", 'A', "ingotIron", 'B', "ingotDraconium", 'C', wyvernSword, 'D', draconicCore, 'E', FURNACE);
         addShaped(NORMAL, energyInfuser, "ABA", "CDC", "ACA", 'A', "ingotDraconium", 'B', new ItemStack(particleGenerator, 1, 2), 'C', draconicCore, 'D', ENCHANTING_TABLE);
         addShaped(HARD, energyInfuser, "ABA", "CDC", "AEA", 'A', "ingotDraconium", 'B', new ItemStack(particleGenerator, 1, 2), 'C', wyvernCore, 'D', ENCHANTING_TABLE, 'E', draconicCore);
-        addShaped(ALL, particleGenerator, "ABA", "BCB", "ABA", 'A', "blockRedstone", 'B', BLAZE_ROD, 'C', draconicCore);
-        addShaped(NORMAL, new ItemStack(particleGenerator, 1, 2), "A A", " B ", "A A", 'A', "gemDiamond", 'B', particleGenerator);
+        addShaped(ALL, new ItemStack(particleGenerator, 1, 0), "ABA", "BCB", "ABA", 'A', "blockRedstone", 'B', BLAZE_ROD, 'C', draconicCore);
+        addShaped(NORMAL, new ItemStack(particleGenerator, 1, 2), "A A", " B ", "A A", 'A', "gemDiamond", 'B', new ItemStack(particleGenerator, 1, 0));
         addFusion(HARD, new ItemStack(particleGenerator, 1, 2), new ItemStack(particleGenerator), 80000, 1, "gemDiamond", wyvernCore, "gemDiamond", wyvernCore, "gemDiamond", "gemDiamond");
         addShaped(NORMAL, infusedObsidian, "ABA", "BCB", "ABA", 'A', BLAZE_POWDER, 'B', "obsidian", 'C', "dustDraconium");
         addFusion(HARD, new ItemStack(infusedObsidian), new ItemStack(OBSIDIAN), 32000, 1, "dustDraconium", "ingotDraconium", "gemDiamond", "ingotDraconium", "dustDraconium", "dustDraconium", BLAZE_POWDER, "gemDiamond", BLAZE_POWDER, "dustDraconium");
@@ -172,6 +172,12 @@ public class DERecipes {
         addShaped(ALL, getKey(ToolUpgrade.SHIELD_RECOVERY), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_CHESTPLATE);
         addShaped(ALL, getKey(ToolUpgrade.MOVE_SPEED     ), "ABA", "CDC", "AEA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_BOOTS, 'E', "blockRedstone");
         addShaped(ALL, getKey(ToolUpgrade.JUMP_BOOST     ), "ABA", "CDC", "AEA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_BOOTS, 'E', "blockSlime");
+        //endregion
+
+        //region Misc
+
+        addShaped(ALL, infoTablet, "AAA", "ABA", "AAA", 'A', "stone", 'B', draconiumDust);
+
         //endregion
 
         //region Exotic Items

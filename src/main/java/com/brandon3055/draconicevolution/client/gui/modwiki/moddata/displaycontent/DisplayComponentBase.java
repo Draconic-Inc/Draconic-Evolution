@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiBu
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiListEntry;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
+import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
@@ -26,10 +27,18 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
     public Element element;
     public EnumAlignment alignment = EnumAlignment.CENTER;
     public boolean shadow;
-    public int colour = 0xFFFFFF;
+    private int colour = 0xFFFFFF;
+    public boolean colourSet = false;
     public int posIndex = 0;
+    public DCSplitContainer container = null;
+    /**
+     * If true will attempt to save the element on exit.
+     */
     public boolean requiresSave = false;
     public boolean isBeingEdited = false;
+    /**
+     * Used with requiresSave to schedule a save.
+     */
     public int saveTimer = 0;
 
     public static final String ATTRIB_ALIGNMENT = "alignment";
@@ -55,17 +64,7 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
     public void moveEntry(int newXPos, int newYPos) {
         int moveX = newXPos - xPos;
         int moveY = newYPos - yPos;
-        xPos = newXPos;
-        yPos = newYPos;
-
-        for (MGuiElementBase child : childElements) {
-            child.xPos += moveX;
-            child.yPos += moveY;
-            for (MGuiElementBase child2 : child.childElements) {
-                child2.xPos += moveX;
-                child2.yPos += moveY;
-            }
-        }
+        moveBy(moveX, moveY);
     }
 
     public void setXSize(int xSize) {
@@ -78,7 +77,7 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (isMouseOver(mouseX, mouseY) && modWiki.contentWindow.editingComponent != this) {
+        if (GuiModWiki.editMode && isMouseOver(mouseX, mouseY) && modWiki.contentWindow.editingComponent != this) {
             modWiki.contentWindow.setEditingComponent(this);
             return true;
         }
@@ -157,7 +156,6 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
         else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("TOGGLE_ALIGN")) {
             alignment = alignment == EnumAlignment.LEFT ? EnumAlignment.CENTER : alignment == EnumAlignment.CENTER ? EnumAlignment.RIGHT : EnumAlignment.LEFT;
             element.setAttribute(ATTRIB_ALIGNMENT, alignment.name());
-
             save();
         }
     }
@@ -165,10 +163,22 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
     public void save() {
         try {
             int index = branch.branchContent.indexOf(this);
+            if (container != null) {
+                index = branch.branchContent.indexOf(container);
+            }
+
             branch.save();
             branch.loadBranchContent();
             modWiki.wikiDataTree.setActiveBranch(branch);
-            modWiki.contentWindow.setEditingComponent(index >= 0 && index < branch.branchContent.size() ? branch.branchContent.get(index) : null);
+            DisplayComponentBase comp = index >= 0 && index < branch.branchContent.size() ? branch.branchContent.get(index) : null;
+
+            if (comp instanceof DCSplitContainer && container != null) {
+                String side = element.getAttribute("splitSide");
+                modWiki.contentWindow.setEditingComponent(side.equals("LEFT") ? ((DCSplitContainer) comp).componentLeft : side.equals("RIGHT") ? ((DCSplitContainer) comp).componentRight : null);
+            }
+            else {
+                modWiki.contentWindow.setEditingComponent(comp);
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -224,6 +234,7 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
         if (element.hasAttribute(ATTRIB_COLOUR) && element.getAttribute(ATTRIB_COLOUR).length() > 0) {
             try {
                 colour = Integer.parseInt(element.getAttribute(ATTRIB_COLOUR), 16);
+                colourSet = true;
             }
             catch (Exception e) {
                 LogHelper.error("Error reading element colour: " + element + " In:" + branch.branchID);
@@ -238,13 +249,25 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
 
     @Override
     public boolean onUpdate() {
-        if (requiresSave && saveTimer-- <= 0) {
-            saveTimer = 0;
-            requiresSave = false;
-            save();
-            return true;
+        if (saveTimer > 0) {
+            saveTimer--;
+
+            if (saveTimer <= 0) {
+                requiresSave = false;
+                save();
+                return true;
+            }
         }
 
         return super.onUpdate();
+    }
+
+    public int getColour() {
+        return colourSet ? colour : WikiConfig.TEXT_COLOUR;
+    }
+
+    public void setColour(int colour) {
+        this.colour = colour;
+        colourSet = true;
     }
 }

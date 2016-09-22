@@ -1,10 +1,14 @@
-######## 2.0.xx ########
+######## 2.0.x ########
+-Optimized tool mining code a bit.
+-Finished the draconic hoe.
+-Fixed issue with small textures breaking mipmapping.
+-Re-Added the information tablet [wip]
+
+######## 2.0.94 ########
 -Hopefully actually fixed the JEI crash now..........
 -Fixed fusion crafting injectors not dropping the correct tier when harvested.
 -Fixed advanced energy core stabilizers not forming when corners are placed last.
 -Fixed energy pylon particles stopping after chunk unloads and hopefully fixed energy transfer stopping aswell.
--
-
 
 ######## 2.0.88 ########
 -Fixed fusion crafting not syncing properly client side.

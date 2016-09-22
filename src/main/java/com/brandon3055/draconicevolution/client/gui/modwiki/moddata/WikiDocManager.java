@@ -2,8 +2,14 @@ package com.brandon3055.draconicevolution.client.gui.modwiki.moddata;
 
 import com.brandon3055.brandonscore.handlers.FileHandler;
 import com.brandon3055.brandonscore.utils.LinkedHashList;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
+import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IResource;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -16,12 +22,17 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 29/08/2016.
  */
 public class WikiDocManager {
+    public static final ResourceLocation piDoc = new ResourceLocation(DraconicEvolution.MOD_PREFIX + "projectintelligence.xml");
+
     public static final String ATTRIB_DOC_REV = "docRevision";
     public static final String ATTRIB_MODID = "modid";
     public static final String ATTRIB_MOD_NAME = "modName";
@@ -46,6 +57,7 @@ public class WikiDocManager {
     public static Map<String, ModDocContainer> modDocMap = new LinkedHashMap<String, ModDocContainer>();
     public static List<String> loadedCategories = new LinkedHashList<String>();
     public static Map<Document, File> documentToFileMap = new HashMap<Document, File>();
+    public static ModDocContainer projectIntelContainer;
 
     public static void clearCategories() {
         loadedCategories.clear();
@@ -63,6 +75,46 @@ public class WikiDocManager {
     public static void initialize() {
         wikiFolder = new File(FileHandler.brandon3055Folder, "ProjectIntelligence");
         wikiFolder.mkdirs();
+        initFiles();
+    }
+
+    public static void initFiles() {
+        try {
+            IResource piResource = Minecraft.getMinecraft().getResourceManager().getResource(piDoc);
+            File piXML = new File(wikiFolder, "projectintelligence.xml");
+            InputStream is = piResource.getInputStream();
+            OutputStream os = new FileOutputStream(piXML);
+            IOUtils.copy(is, os);
+            is.close();
+            os.close();
+
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = docFactory.newDocumentBuilder();
+            Document document = builder.parse(piXML);
+            Element mod = document.getDocumentElement();
+            String modid = mod.getAttribute(ATTRIB_MODID);
+            String lang = mod.getAttribute(ATTRIB_LANG);
+
+            projectIntelContainer = new ModDocContainer(modid, mod, lang);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        WikiConfig.initialize(wikiFolder);
+
+        if (!WikiConfig.editTarget.equals("[CONFIG]")) {
+            modDocsFolder = new File("D:\\Mass Storage\\Minecraft Dev\\WorkSpaces\\1.9\\Project-Intelligence-Docs\\ModDocs");
+
+            if (modDocsFolder.isDirectory() || modDocsFolder.mkdirs()) {
+                return;
+            }
+            else {
+                LogHelper.error("Specified docs folder [%s] dose not exist and could not be created. Using config folder instead.", modDocsFolder.isDirectory());
+            }
+        }
+
         modDocsFolder = new File(wikiFolder, "ModDocs");
         modDocsFolder.mkdirs();
     }
@@ -84,7 +136,9 @@ public class WikiDocManager {
 
         for (File modFolder : modFolders) {
             if (!modFolder.isDirectory()) {
-                LogHelper.warn("Found unknown file in Mod Doc folder. " + modFolder);
+                if (!modFolder.getName().equals("manifest.json")) {
+                    LogHelper.warn("Found unknown file in Mod Doc folder. " + modFolder);
+                }
                 continue;
             }
             LogHelper.dev("Checking for mod documentation in " + modFolder);

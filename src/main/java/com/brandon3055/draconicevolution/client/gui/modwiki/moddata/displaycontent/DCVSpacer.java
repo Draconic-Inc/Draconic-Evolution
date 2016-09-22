@@ -28,9 +28,10 @@ public class DCVSpacer extends DisplayComponentBase {
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
 
-        String text = String.format("[Separator: %s Line%s]", ySize / 8D, ySize == 8 ? "" : "s");
-        drawCenteredString(fontRenderer, text, xPos + (xSize / 2), yPos + (ySize / 2) - 4, 0x00FF00, true);
-
+        if (GuiModWiki.editMode && isMouseOver(mouseX, mouseY)) {
+            String text = String.format("[Separator: %s Line%s]", ySize / 8D, ySize == 8 ? "" : "s");
+            drawCenteredString(fontRenderer, text, xPos + (xSize / 2), yPos + (ySize / 2) - 4, 0x00FF00, true);
+        }
     }
 
 
@@ -68,8 +69,8 @@ public class DCVSpacer extends DisplayComponentBase {
         }
         else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("SIZE_-")) {
             ySize -= modifier;
-            if (ySize < 8) {
-                ySize = 8;
+            if (ySize < 4) {
+                ySize = 4;
             }
             element.setAttribute("size", String.valueOf(ySize));
             save();

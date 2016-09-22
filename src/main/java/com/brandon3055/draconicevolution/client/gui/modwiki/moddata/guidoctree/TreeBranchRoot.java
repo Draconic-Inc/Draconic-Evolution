@@ -27,6 +27,7 @@ import static com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiD
  * Created by brandon3055 on 7/09/2016.
  */
 public class TreeBranchRoot extends MGuiListEntry {
+    public static final String ATTRIB_WEIGHT = "sortingWeight";
 
     public Element branchData;
     public GuiModWiki guiWiki;
@@ -36,6 +37,7 @@ public class TreeBranchRoot extends MGuiListEntry {
     public String branchName = "[Unknown Branch]";
     public String branchID = "ROOT";
     public boolean isModBranch = false;
+    public int sortingWeight = 0;
 
     public TreeBranchRoot(GuiModWiki guiWiki, TreeBranchRoot parent, String branchName) {
         super(guiWiki);
@@ -131,6 +133,17 @@ public class TreeBranchRoot extends MGuiListEntry {
 
     public void loadBranchContent() {
         branchContent.clear();
+
+        if (branchData.hasAttribute(ATTRIB_WEIGHT)) {
+            try {
+                sortingWeight = Integer.parseInt(branchData.getAttribute(ATTRIB_WEIGHT));
+                if (sortingWeight < 0) {
+                    sortingWeight = 0;
+                }
+            }
+            catch (Exception e) {}
+        }
+
         NodeList nodeList = branchData.getElementsByTagName(WikiDocManager.ELEMENT_CONTENT);
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
@@ -155,13 +168,20 @@ public class TreeBranchRoot extends MGuiListEntry {
             branchContent.add(displayComponent);
         }
 
-        Collections.sort(branchContent, INDEX_SORTER);
+        Collections.sort(branchContent, CONTENT_SORTER);
     }
 
-    public static Comparator<DisplayComponentBase> INDEX_SORTER = new Comparator<DisplayComponentBase>() {
+    public static Comparator<DisplayComponentBase> CONTENT_SORTER = new Comparator<DisplayComponentBase>() {
         @Override
         public int compare(DisplayComponentBase o1, DisplayComponentBase o2) {
             return o1.posIndex < o2.posIndex ? -1 : o1.posIndex > o2.posIndex ? 1 : 0;
+        }
+    };
+
+    public static Comparator<TreeBranchRoot> BRANCH_SORTER = new Comparator<TreeBranchRoot>() {
+        @Override
+        public int compare(TreeBranchRoot o1, TreeBranchRoot o2) {
+            return o1.sortingWeight < o2.sortingWeight ? -1 : o1.sortingWeight > o2.sortingWeight ? 1 : 0;
         }
     };
 

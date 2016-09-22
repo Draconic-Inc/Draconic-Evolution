@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki;
 
+import codechicken.lib.colour.Colour;
+import codechicken.lib.colour.ColourARGB;
 import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
@@ -19,8 +21,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle.CONTENT_WINDOW;
-import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle.TEXT_COLOUR;
+import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.CONTENT_WINDOW;
+import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_TEXT;
 
 /**
  * Created by brandon3055 on 31/08/2016.
@@ -52,31 +54,39 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
         addChild(label = new MGuiLabel(guiModWiki, xPos, yPos + 1, xSize, 12, activeBranch.branchID.equals("ROOT") ? "Project Intelligence" : activeBranch.branchName) {
             @Override
             public int getTextColour() {
-                return TEXT_COLOUR;
+                return NAV_TEXT;
+            }
+
+            @Override
+            public boolean getDropShadow() {
+                Colour colour = new ColourARGB(NAV_TEXT);
+                long l = ((colour.r & 0xff) + (colour.g & 0xff) + (colour.b & 0xff)) / 3;
+                return l > 80;
             }
         }.setAlignment(EnumAlignment.LEFT));
 
-        if (GuiModWiki.editMode) {
-            addChild(delete = (MGuiButtonSolid) new MGuiButtonSolid(guiModWiki, "DELETE", xPos + xSize - 12, yPos, 12, 12, "X") {
-                @Override
-                protected int getFillColour(boolean hovering, boolean disabled) {
-                    return disabled ? 0xFF777777 : hovering ? 0xFFFFFFFF : 0xFFFF0000;
-                }
+        addChild(delete = (MGuiButtonSolid) new MGuiButtonSolid(guiModWiki, "DELETE", xPos + xSize - 12, yPos, 12, 12, "X") {
+            @Override
+            protected int getFillColour(boolean hovering, boolean disabled) {
+                return disabled ? 0xFF777777 : hovering ? 0xFFFFFFFF : 0xFFFF0000;
+            }
 
-                @Override
-                protected int getBorderColour(boolean hovering, boolean disabled) {
-                    return disabled ? 0xFF555555 : hovering ? 0xFFFF0000 : 0xFFFFFFFF;
-                }
-            }.setListener(this).setToolTip(new String[]{"Delete Selected Display Component"}));
-            delete.disabled = true;
+            @Override
+            protected int getBorderColour(boolean hovering, boolean disabled) {
+                return disabled ? 0xFF555555 : hovering ? 0xFFFF0000 : 0xFFFFFFFF;
+            }
+        }.setListener(this).setToolTip(new String[]{"Delete Selected Display Component"}));
+        delete.disabled = true;
 
-            addChild(add = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "ADD", xPos + xSize - 38, yPos, 25, 12, "Add") {
-                @Override
-                protected int getBorderColour(boolean hovering, boolean disabled) {
-                    return hovering ? 0xFF00FF00 : 0xFFFF0000;
-                }
-            }.setListener(this).setToolTip(new String[]{"Add New Display Component"}));
-        }
+        addChild(add = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "ADD", xPos + xSize - 38, yPos, 25, 12, "Add") {
+            @Override
+            protected int getBorderColour(boolean hovering, boolean disabled) {
+                return hovering ? 0xFF00FF00 : 0xFFFF0000;
+            }
+        }.setListener(this).setToolTip(new String[]{"Add New Display Component"}));
+
+        delete.setEnabled(GuiModWiki.editMode && activeBranch.branchData != null);
+        add.setEnabled(GuiModWiki.editMode && activeBranch.branchData != null);
 
         super.initElement();
         initialized = true;
@@ -91,6 +101,7 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
                 return mixColours(CONTENT_WINDOW, 0x00505050);
             }
         };
+        scrollBar.addChild(new MGuiHoverPopup(modularGui, new String[] {"Pro Tip.", "Hold shift while scrolling to scroll faster!"}, scrollBar));
         scrollBar.borderColour = 0x00000000;
         scrollBar.backColour = 0x00000000;
         addChild(scrollBar);
@@ -123,6 +134,10 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
 
         if (scrollBar.isEnabled() && GuiHelper.isInRect(scrollBar.xPos, scrollBar.yPos, scrollBar.xSize, scrollBar.ySize, mouseX, mouseY)) {
             drawColouredRect(xPos + xSize - 4, yPos + 12, 4, ySize - 12, mixColours(scrollBar.scrollColour, 0xCC000000, true));
+        }
+
+        if (activeBranch.branchData == null) {
+            drawString(fontRenderer, "[Error: Failed to load page content]", xPos + 3, yPos + 15, 0xFF0000);
         }
 
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
@@ -158,6 +173,7 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
 
     public void setEditingComponent(DisplayComponentBase component) {
         topPadding = 12;
+
         if (!initialized) {
             return;
         }
@@ -204,7 +220,13 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
     @Override
     public void onMGuiEvent(String eventString, MGuiElementBase eventElement) {
         if (eventElement == delete && editingComponent != null) {
-            activeBranch.branchData.removeChild(editingComponent.element);
+//            if (editingComponent instanceof DCSplitContainer) {
+//                ((DCSplitContainer) editingComponent).deleteSelectedComponent();
+//            }
+//            else {
+            editingComponent.element.getParentNode().removeChild(editingComponent.element);
+//                activeBranch.branchData.removeChild(editingComponent.element);
+//            }
             try {
                 activeBranch.save();
                 WikiDocManager.reload(false, true, true);
@@ -287,6 +309,10 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
     //region Misc
 
     public void setActiveBranch(TreeBranchRoot activeBranch) {
+        if (activeBranch != this.activeBranch && scrollBar != null) {
+            scrollBar.setScrollPos(0);
+        }
+
         this.activeBranch = activeBranch;
         setEditingComponent(null);
         if (label != null) {

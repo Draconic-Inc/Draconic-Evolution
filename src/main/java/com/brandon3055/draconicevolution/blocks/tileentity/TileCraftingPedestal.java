@@ -10,12 +10,11 @@ import com.brandon3055.draconicevolution.blocks.CraftingPedestal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class TileCraftingPedestal extends TileInventoryBase implements IEnergyReceiver, ICraftingPedestal, ITickable { //TODO Rrmove ITickable
+public class TileCraftingPedestal extends TileInventoryBase implements IEnergyReceiver, ICraftingPedestal {
 
     public final SyncableByte facing = new SyncableByte((byte)0, true, false, true);
     private final SyncableInt energy = new SyncableInt(0, true, false);
@@ -25,13 +24,6 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
         this.setInventorySize(1);
         registerSyncableObject(facing, true);
         registerSyncableObject(energy, true);
-    }
-
-    @Override
-    public void update() {
-//        LogHelper.info(currentCraftingInventory);
-        //receiveEnergy(EnumFacing.DOWN, 100, false);
-        //LogHelper.info("E: "+energy);
     }
 
     @Override

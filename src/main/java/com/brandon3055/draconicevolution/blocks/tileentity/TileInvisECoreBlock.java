@@ -23,7 +23,7 @@ import java.util.LinkedList;
  */
 public class TileInvisECoreBlock extends TileBCBase implements IMultiBlock {
 
-    public final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, -1, 0), true, false, true);//todo change core to controller
+    public final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, -1, 0), true, false, true);
     public String blockName = "";
 
     public TileInvisECoreBlock(){

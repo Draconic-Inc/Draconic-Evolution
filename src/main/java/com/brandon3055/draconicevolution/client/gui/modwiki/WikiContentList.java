@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle.NAV_WINDOW;
+import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_WINDOW;
 import static com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager.*;
 
 /**
@@ -55,19 +55,19 @@ public class WikiContentList extends MGuiList implements IMGuiListener {
         addChild(buttonToggleNav = ((MGuiButtonSolid) new MGuiButtonSolid(modularGui, "TOGGLE_PANEL", xSize - 11, yPos + 1, 10, 10, "<") {
             @Override
             public int getTextColour(boolean hovered, boolean disabled) {
-                return mixColours(WikiStyle.BUTTON_TEXT, (hovered ? 0x202020 : 0));
+                return mixColours(WikiConfig.NAV_WINDOW, (hovered ? 0x606060 : 0x404040));
             }
-        }.setListener(this)).setColours(0, 0, 0));
+        }.setListener(this).setToolTip(new String[] {"Toggle Navigation Window"})).setColours(0, 0, 0));
         addChild(navLabel = new MGuiLabel(modularGui, xPos, yPos, xSize, 12, I18n.format("guiwiki.label.navigation")) {
             @Override
             public int getTextColour() {
-                return WikiStyle.GUI_TEXT;
+                return WikiConfig.TEXT_COLOUR;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false));
         addChild(branchLabel = new MGuiLabel(modularGui, xPos + 12, yPos + 12, maxXSize - 12, 12, I18n.format("guiwiki.label.mods")) {
             @Override
             public int getTextColour() {
-                return WikiStyle.GUI_TEXT;
+                return WikiConfig.TEXT_COLOUR;
             }
         }.setShadow(false));
         addChild(buttonAddBranch = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "ADD_BRANCH", xPos + maxXSize - 40, yPos, 28, 12, "[§4add§r]") {
@@ -123,9 +123,9 @@ public class WikiContentList extends MGuiList implements IMGuiListener {
     @Override
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         int navWindowColour = NAV_WINDOW;
-        NAV_WINDOW = 0xFF300060;
-        //TEXT_COLOUR = 0x23FFFFFF;
-        NAV_WINDOW = 0xFF3c3f41;
+//        NAV_WINDOW = 0xFF300060;
+//        //NAV_TEXT = 0x23FFFFFF;
+//        NAV_WINDOW = 0xFF3c3f41;
 
         int neg10 = mixColours(navWindowColour, 0x00101010, true);
         int pos10 = mixColours(navWindowColour, 0x00101010);

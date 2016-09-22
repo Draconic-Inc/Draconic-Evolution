@@ -78,10 +78,6 @@ public class DCImage extends DisplayComponentBase {
         int texXPos = (int) (alignment == LEFT ? xPos + 2 : alignment == CENTER ? xPos + (xSize / 2) - (scaledWidth / 2) : xPos + xSize - scaledWidth - 2);
 
         drawScaledCustomSizeModalRect(texXPos, yPos, 0, 0, texXSize, texYSize, scaledWidth, scaledHeight, texXSize, texYSize);
-
-
-
-
     }
 
     @Override
@@ -287,7 +283,10 @@ public class DCImage extends DisplayComponentBase {
     public void loadFromXML(Element element) {
         super.loadFromXML(element);
         url = element.getAttribute(ATTRIB_URL);
-        scale = Integer.parseInt(element.getAttribute(ATTRIB_SCALE));
+        try {
+            scale = Integer.parseInt(element.getAttribute(ATTRIB_SCALE));
+        }
+        catch (Exception e) {}
         if (scale < 1) {
             scale = 1;
         }

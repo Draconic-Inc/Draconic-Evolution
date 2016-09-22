@@ -79,10 +79,16 @@ public class ClientEventHandler {
         isJEIInstalled = Loader.isModLoaded("JEI");
     }
 
+    public static void addTickable(ITickableTimeout tickable) {
+        synchronized (tickableList) {
+            tickableList.add(tickable);
+        }
+    }
+
     @SubscribeEvent
-    public void drawHUD(RenderGameOverlayEvent.Post event) {
+    public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
         HudHandler.drawHUD(event);
-    }//TODO Rename event
+    }
 
     @SubscribeEvent
     public void tickEnd(TickEvent.ClientTickEvent event) {
@@ -109,19 +115,6 @@ public class ClientEventHandler {
                 tickableList.remove(timeout);
             }
         }
-
-
-
-
-//        while (tickableIterator.hasNext()){
-//            ITickableTimeout tickable = tickableIterator.next();
-//            if (tickable.getTimeOut() > 10) {
-//                tickableIterator.remove();
-//            }
-//            else {
-//                tickable.tick();
-//            }
-//        }
 
         HudHandler.clientTick();
 

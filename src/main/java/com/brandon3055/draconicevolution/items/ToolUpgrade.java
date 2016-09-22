@@ -124,6 +124,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
         return super.getUnlocalizedName(stack) + "." + ID_TO_NAME.get(stack.getItemDamage());
     }
 
+    private int tick;
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
@@ -131,13 +132,21 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
             tooltip.add(I18n.format("upgrade.de.holdShiftForRecipes.info", TextFormatting.AQUA + "" + TextFormatting.ITALIC, TextFormatting.RESET + "" + TextFormatting.GRAY));
         }
         else if (ID_TO_NAME.containsKey(stack.getItemDamage()) && RECIPE_MAP.containsKey(ID_TO_NAME.get(stack.getItemDamage()))) {
+            if (!InfoHelper.isCtrlKeyDown()) {
+                tick = ClientEventHandler.elapsedTicks;
+            }
+
             LinkedList<FusionUpgradeRecipe> recipes = RECIPE_MAP.get(ID_TO_NAME.get(stack.getItemDamage()));
-            FusionUpgradeRecipe recipe = recipes.get(ClientEventHandler.elapsedTicks / 100 % recipes.size());
-            tooltip.add(InfoHelper.ITC() + I18n.format("upgrade.de.level.info") + ": " + InfoHelper.HITC() + I18n.format("upgrade.level." + (recipe.getRecipeTier() + 1)) + TextFormatting.DARK_GRAY + " " + (5 - ClientEventHandler.elapsedTicks % 100 / 20));
+            FusionUpgradeRecipe recipe = recipes.get(tick / 100 % recipes.size());
+            tooltip.add(InfoHelper.ITC() + I18n.format("upgrade.de.level.info") + ": " + InfoHelper.HITC() + I18n.format("upgrade.level." + (recipe.getRecipeTier() + 1)) + TextFormatting.DARK_GRAY + " " + (5 - tick % 100 / 20));
             for (Object o : recipe.getRecipeIngredients()) {
                 ItemStack ingredient = OreDictHelper.resolveObject(o);
-                tooltip.add("-" + ingredient.getDisplayName());
+                if (ingredient != null) {
+                    tooltip.add("-" + ingredient.getDisplayName());
+                }
             }
+
+            tooltip.add(TextFormatting.BLUE + I18n.format("upgrade.de.holdCTRLToPause.info"));
         }
     }
 

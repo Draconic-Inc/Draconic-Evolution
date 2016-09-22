@@ -121,7 +121,7 @@ public class PopupEditMod extends MGuiPopUpDialog implements IMGuiListener {
     @Override
     public void close() {
         ((MGuiList) parent).disableList = false;
-        super.close();
+        parent.removeChild(this);
     }
 
     public void editModBranch(String newName, boolean delete) throws Exception {

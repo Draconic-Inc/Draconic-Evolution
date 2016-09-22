@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
  * Created by brandon3055 on 06/07/2016.
  */
 @SideOnly(Side.CLIENT)
-public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {//TODO Fix the quardians head position
+public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
     protected ModelDragon modelDragon;
 
     public RenderChaosGuardian(RenderManager manager) {

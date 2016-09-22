@@ -99,7 +99,7 @@ public class DraconicArmor extends WyvernArmor {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {//TODO Look into that default model and the texture issue
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
         if (DEConfig.disable3DModels) {
             return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
         }

@@ -109,8 +109,12 @@ public class EffectTrackerFusionCrafting {
             BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
         }
 
+        if (renderBolt > 0) {
+            renderBolt--;
+        }
+
         if (rand.nextInt((chance * 2) + 2) == 0){
-            renderBolt = 2;
+            renderBolt = 30;
             boltSeed = rand.nextLong();
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
             BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
@@ -161,7 +165,6 @@ public class EffectTrackerFusionCrafting {
         GlStateManager.translate(relativeX, relativeY, relativeZ);
 
         if (renderBolt > 0){
-            renderBolt--;
             RenderEnergyBolt.renderBoltBetween(new Vec3D(), corePos.copy().subtract(correctX - 0.5, correctY - 0.5, correctZ - 0.5), 0.05, 1, 10, boltSeed, true);
         }
 

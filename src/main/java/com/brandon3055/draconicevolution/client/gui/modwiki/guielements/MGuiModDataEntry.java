@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiList;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiListEntry;
-import com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle;
+import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.ModContentPage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -14,7 +14,7 @@ import net.minecraft.init.SoundEvents;
 
 import java.io.IOException;
 
-import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle.NAV_WINDOW;
+import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_WINDOW;
 
 /**
  * Created by brandon3055 on 4/09/2016.
@@ -41,7 +41,7 @@ public class MGuiModDataEntry extends MGuiListEntry {
         addChild(label = new MGuiLabel(modularGui, xPos, yPos, xSize, getEntryHeight(), dataEntry.readableName) {
             @Override
             public int getTextColour() {
-                return WikiStyle.TEXT_COLOUR;
+                return WikiConfig.NAV_TEXT;
             }
         }.setAlignment(EnumAlignment.LEFT).setWrap(true));
         super.initElement();

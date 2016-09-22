@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumFacing;
 
-public class RenderTileCraftingPedestal extends TESRBase<TileCraftingPedestal>//TODO Maby replace the centre piece that the item sits on with the gear?
+public class RenderTileCraftingPedestal extends TESRBase<TileCraftingPedestal>
 {
     @Override
     public void renderTileEntityAt(TileCraftingPedestal te, double x, double y, double z, float partialTicks, int destroyStage) {

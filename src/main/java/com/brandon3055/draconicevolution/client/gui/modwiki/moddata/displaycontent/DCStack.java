@@ -53,7 +53,6 @@ public class DCStack extends DisplayComponentBase {
         int size = Math.min(xSize - 4, (int) ((scale / 100D) * 18D));
         stackIcon.ySize = stackIcon.xSize = size;
         iconBackground.setEnabled(renderSlot);
-        iconBackground.xSize = iconBackground.ySize = size;
         iconBackground.yPos = stackIcon.yPos;
 
         int xOffset = 0;
@@ -70,8 +69,10 @@ public class DCStack extends DisplayComponentBase {
         }
 
         stackIcon.xPos = xPos + xOffset;
-        iconBackground.xPos = stackIcon.xPos;
         ySize = stackIcon.ySize;
+
+        iconBackground.xPos = stackIcon.xPos;
+        iconBackground.yPos = stackIcon.yPos;
     }
 
 
@@ -226,7 +227,11 @@ public class DCStack extends DisplayComponentBase {
         toolTip = !element.hasAttribute(ATTRIB_TIP) || Boolean.parseBoolean(element.getAttribute(ATTRIB_TIP));
         renderSlot = !element.hasAttribute(ATTRIB_SLOT) || Boolean.parseBoolean(element.getAttribute(ATTRIB_SLOT));
         stackString = element.getTextContent();
-        stackIcon.setStack(StackReference.fromString(stackString));
+        StackReference ref = StackReference.fromString(stackString);
+        if (ref == null) {
+            ref = new StackReference("null");
+        }
+        stackIcon.setStack(ref);
         stackIcon.setToolTip(toolTip);
         iconBackground.setEnabled(renderSlot);
 

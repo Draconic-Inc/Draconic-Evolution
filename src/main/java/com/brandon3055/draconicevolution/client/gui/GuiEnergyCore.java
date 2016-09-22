@@ -77,7 +77,9 @@ public class GuiEnergyCore extends GuiContainer {
             int stabColour = tile.stabilizersOK.value ? 0x00FF00 : 0xFF0000;
             String stabText = I18n.format("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.value ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
             GuiHelper.drawCenteredString(fontRendererObj, stabText, guiLeft + xSize / 2, guiTop + 18, stabColour, tile.stabilizersOK.value);
-            GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.de.advancedStabilizersRequired.txt"), guiLeft + xSize / 2, guiTop + 28, 0x777777, false);
+            if (tile.tier.value >= 5) {
+                GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.de.advancedStabilizersRequired.txt"), guiLeft + xSize / 2, guiTop + 28, 0x777777, false);
+            }
 
             int coreColour = tile.coreValid.value ? 0x00FF00 : 0xFF0000;
             String coreText = I18n.format("gui.de.core.txt") + ": " + (tile.coreValid.value ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));

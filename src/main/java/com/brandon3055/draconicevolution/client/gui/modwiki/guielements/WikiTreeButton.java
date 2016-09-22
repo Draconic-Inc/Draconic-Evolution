@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.modwiki.guielements;
 
 import com.brandon3055.brandonscore.client.gui.modulargui.IModularGui;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiVerticalButton;
-import com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle;
+import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -10,7 +10,7 @@ import net.minecraft.init.SoundEvents;
 
 import java.io.IOException;
 
-import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiStyle.NAV_WINDOW;
+import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_WINDOW;
 
 /**
  * Created by brandon3055 on 8/09/2016.
@@ -28,7 +28,7 @@ public class WikiTreeButton extends MGuiVerticalButton {
 
     @Override
     public int getTextColour(boolean hovered, boolean disabled) {
-        return mixColours(WikiStyle.GUI_TEXT, (hovered ? 0x202020 : 0));
+        return mixColours(WikiConfig.TEXT_COLOUR, (hovered ? 0x202020 : 0));
     }
 
     @Override

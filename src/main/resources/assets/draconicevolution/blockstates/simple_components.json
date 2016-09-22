@@ -18,7 +18,8 @@
       "chaoticcore":   { "textures": { "layer0": "draconicevolution:items/components/chaotic_core"        } },
       "wyvernecore":   { "textures": { "layer0": "draconicevolution:items/components/wyvern_energy_core"  } },
       "draconicecore": { "textures": { "layer0": "draconicevolution:items/components/draconic_energy_core"} },
-      "dragonheart":   { "textures": { "layer0": "draconicevolution:items/components/dragon_heart"        } }
+      "dragonheart":   { "textures": { "layer0": "draconicevolution:items/components/dragon_heart"        } },
+      "info_tablet":   { "textures": { "layer0": "draconicevolution:items/info_tablet"                    } }
     }
   }
 }
