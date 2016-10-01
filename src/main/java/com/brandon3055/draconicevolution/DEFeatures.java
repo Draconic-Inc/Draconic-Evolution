@@ -5,11 +5,9 @@ import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.items.ItemSimpleSubs;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
+import com.brandon3055.draconicevolution.blocks.machines.*;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
-import com.brandon3055.draconicevolution.items.Debugger;
-import com.brandon3055.draconicevolution.items.InfoTablet;
-import com.brandon3055.draconicevolution.items.ItemPersistent;
-import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.items.*;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.*;
@@ -57,15 +55,20 @@ public class DEFeatures {
     @Feature(registryName = "energy_infuser", tileEntity = TileEnergyInfuser.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static EnergyInfuser energyInfuser = new EnergyInfuser();
 
-    //@Feature(registryName = "upgradeModifier", tileEntity = TileUpgradeModifier.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-    //public static UpgradeModifier upgradeModifier = new UpgradeModifier();
-
     @Feature(registryName = "crafting_pedestal", variantMap = {"0:facing=up,tier=basic", "1:facing=up,tier=wyvern", "2:facing=up,tier=draconic", "3:facing=up,tier=chaotic"}, tileEntity = TileCraftingPedestal.class, itemBlock = ItemBlockBasic.class, cTab = 1)
     public static CraftingPedestal craftingPedestal = new CraftingPedestal();
 
     @Feature(registryName = "dislocator_receptacle", tileEntity = TileDislocatorReceptacle.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static DislocatorReceptacle dislocatorReceptacle = new DislocatorReceptacle();
 
+    @Feature(registryName = "dislocator_pedestal", tileEntity = TileDislocatorPedestal.class, cTab = 1)
+    public static DislocatorPedestal dislocatorPedestal = new DislocatorPedestal();
+
+    @Feature(registryName = "rain_sensor", tileEntity = TileRainSensor.class)
+    public static RainSensor rainSensor = new RainSensor();
+
+    @Feature(registryName = "diss_enchanter", tileEntity = TileDissEnchanter.class, itemBlock = ItemBlockBCore.class)
+    public static DissEnchanter dissEnchanter = new DissEnchanter();
     //endregion
 
     //region Advanced Machines
@@ -239,4 +242,33 @@ public class DEFeatures {
     public static CreativeExchanger creativeExchanger = new CreativeExchanger();
 
     //endregion
+
+
+
+
+
+    //In Progress... To be sorted into categories when done
+
+    //These are not ready for release and so are commented out for release builds
+
+//    @Feature(registryName = "entity_detector", tileEntity = TileEntityDetector.class)
+//    public static EntityDetector entityDetector = new EntityDetector();
+//
+//    @Feature(registryName = "celestial_manipulator", tileEntity = TileCelestialManipulator.class)//, itemBlock = ItemBlockBCore.class, cTab = 1)
+//    public static CelestialManipulator celestialManipulator = new CelestialManipulator();
+//
+//    @Feature(registryName = "potentiometer", tileEntity = TilePotentiometer.class)
+//    public static Potentiometer potentiometer = new Potentiometer();
+//
+//    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
+//    public static DraconiumChest draconiumChest = new DraconiumChest();
+//
+//    @Feature(registryName = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
+//    public static StabilizedSpawner stabilizedSpawner = new StabilizedSpawner();
+//
+//
+//
+//
+//    @Feature(registryName = "mob_soul")
+//    public static MobSoul mobSoul = new MobSoul();
 }

@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
 import com.brandon3055.brandonscore.network.wrappers.SyncableInt;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingPedestal;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
-import com.brandon3055.draconicevolution.blocks.CraftingPedestal;
+import com.brandon3055.draconicevolution.blocks.machines.CraftingPedestal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

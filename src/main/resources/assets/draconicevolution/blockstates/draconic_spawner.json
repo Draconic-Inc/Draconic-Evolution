@@ -1,0 +1,11 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube_all",
+    "textures": {"all": "blocks/mob_spawner"},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{}]
+  }
+}

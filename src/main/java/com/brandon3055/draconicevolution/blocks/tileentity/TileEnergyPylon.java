@@ -16,7 +16,7 @@ import com.brandon3055.brandonscore.utils.LinkedHashList;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
-import com.brandon3055.draconicevolution.blocks.EnergyPylon;
+import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.init.Blocks;

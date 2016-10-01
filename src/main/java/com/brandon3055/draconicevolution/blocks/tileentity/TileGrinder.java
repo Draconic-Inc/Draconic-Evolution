@@ -5,7 +5,7 @@ import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.blocks.Grinder;
+import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.google.common.base.Predicate;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.state.IBlockState;

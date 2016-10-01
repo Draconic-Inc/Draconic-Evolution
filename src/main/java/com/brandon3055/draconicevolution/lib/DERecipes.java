@@ -38,12 +38,16 @@ public class DERecipes {
         addFusion(HARD, new ItemStack(particleGenerator, 1, 2), new ItemStack(particleGenerator), 80000, 1, "gemDiamond", wyvernCore, "gemDiamond", wyvernCore, "gemDiamond", "gemDiamond");
         addShaped(NORMAL, infusedObsidian, "ABA", "BCB", "ABA", 'A', BLAZE_POWDER, 'B', "obsidian", 'C', "dustDraconium");
         addFusion(HARD, new ItemStack(infusedObsidian), new ItemStack(OBSIDIAN), 32000, 1, "dustDraconium", "ingotDraconium", "gemDiamond", "ingotDraconium", "dustDraconium", "dustDraconium", BLAZE_POWDER, "gemDiamond", BLAZE_POWDER, "dustDraconium");
-        addShaped(NORMAL, dislocatorReceptacle, "ABA", " C ", "A A", 'A', "ingotIron", 'B', draconicCore, 'C', infusedObsidian); //TODO Add Dislocator Pedestal when implemented
-        addShaped(HARD, dislocatorReceptacle, "ABA", " C ", "A A", 'A', "ingotIron", 'B', wyvernCore, 'C', infusedObsidian); //TODO Add Dislocator Pedestal when implemented
+        addShaped(NORMAL, dislocatorReceptacle, "ABA", " C ", "A A", 'A', "ingotIron", 'B', draconicCore, 'C', infusedObsidian);
+        addShaped(HARD, dislocatorReceptacle, "ABA", " C ", "A A", 'A', "ingotIron", 'B', wyvernCore, 'C', infusedObsidian);
+        addShaped(ALL, dislocatorPedestal, " A ", " B ", "CDC", 'A', STONE_PRESSURE_PLATE, 'B', "stone", 'C', STONE_SLAB, 'D', BLAZE_POWDER);
         addShaped(NORMAL, energyStorageCore, "AAA", "BCB", "AAA", 'A', "ingotDraconium", 'B', wyvernEnergyCore, 'C', wyvernCore);
         addShaped(HARD, energyStorageCore, "AAA", "BCB", "AAA", 'A', "ingotDraconiumAwakened", 'B', draconicEnergyCore, 'C', awakenedCore);
         addShaped(NORMAL, new ItemStack(energyPylon, 2), "ABA", "CDC", "AEA", 'A', "ingotDraconium", 'B', ENDER_EYE, 'C', "gemEmerald", 'D', draconicCore, 'E', "gemDiamond");
         addShaped(HARD, new ItemStack(energyPylon, 2), "ABA", "CDC", "AEA", 'A', "ingotDraconium", 'B', ENDER_EYE, 'C', "gemEmerald", 'D', wyvernCore, 'E', "gemDiamond");
+        addShaped(ALL, rainSensor, " A ", "BCB", "DDD", 'A', BUCKET, 'B', "dustRedstone", 'C', STONE_PRESSURE_PLATE, 'D', STONE_SLAB);
+        addShaped(ALL, dissEnchanter, "ABA", "CDC", "EEE", 'A', "gemEmerald", 'B', draconicCore, 'C', ENCHANTED_BOOK, 'D', ENCHANTING_TABLE, 'E', BOOKSHELF);
+
         //Fusion Crafting Blocks
         addShaped(NORMAL, fusionCraftingCore, "ABA", "BCB", "ABA", 'A', "blockLapis", 'B', "gemDiamond", 'C', draconicCore);
         addShaped(HARD, fusionCraftingCore, "ABA", "BCB", "ABA", 'A', "blockLapis", 'B', "netherStar", 'C', draconicCore);

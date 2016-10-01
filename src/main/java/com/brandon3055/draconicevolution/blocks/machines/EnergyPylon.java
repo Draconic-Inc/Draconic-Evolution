@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.blocks;
+package com.brandon3055.draconicevolution.blocks.machines;
 
 import codechicken.lib.util.CCDirection;
 import com.brandon3055.brandonscore.blocks.BlockBCore;

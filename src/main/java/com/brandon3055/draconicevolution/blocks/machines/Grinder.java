@@ -1,9 +1,10 @@
-package com.brandon3055.draconicevolution.blocks;
+package com.brandon3055.draconicevolution.blocks.machines;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.BlockMobSafe;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -13,28 +14,26 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.Random;
 
 /**
  * Created by Brandon on 23/07/2014.
  * Block for DE Generator
  */
-public class Generator extends BlockBCore implements ITileEntityProvider {
+public class Grinder extends BlockMobSafe implements ITileEntityProvider {
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
-	public Generator(){
+	public Grinder(){
 		super(Material.IRON);
 		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
@@ -47,8 +46,8 @@ public class Generator extends BlockBCore implements ITileEntityProvider {
 
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		TileGenerator tileGenerator = worldIn.getTileEntity(pos) instanceof TileGenerator ? (TileGenerator)worldIn.getTileEntity(pos) : null;
-		return state.withProperty(ACTIVE, tileGenerator != null && tileGenerator.active.value);
+		TileGrinder tileGrinder = worldIn.getTileEntity(pos) instanceof TileGrinder ? (TileGrinder)worldIn.getTileEntity(pos) : null;
+		return state.withProperty(ACTIVE, tileGrinder != null && tileGrinder.active.value);
 	}
 
 	@Override
@@ -91,65 +90,58 @@ public class Generator extends BlockBCore implements ITileEntityProvider {
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
-		worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+		worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing()), 2);
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 	}
 	//endregion
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileGenerator();
-	}
-
-	@Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return 0;//state.getActualState(world, pos).getValue(ACTIVE) ? 13 : 0;todo WTF DO I HAVE TO DO TO MAKE THIS UPDATE PROPERLY!?!?!?!?!?!
+		return new TileGrinder();
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
-			FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GENERATOR, world, pos.getX(), pos.getY(), pos.getZ());
+			FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GRINDER, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("incomplete-switch")
-	public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand)
-	{
-		if (stateIn.getActualState(worldIn, pos).getValue(ACTIVE))
-		{
-			EnumFacing enumfacing = (EnumFacing)stateIn.getValue(FACING);
-			double d0 = (double)pos.getX() + 0.5D;
-			double d1 = (double)pos.getY() + 0.4 + rand.nextDouble() * 0.2;
-			double d2 = (double)pos.getZ() + 0.5D;
-			double d3 = 0.52D;
-			double d4 = rand.nextDouble() * 0.4D - 0.2D;
+    @Override
+    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return true;
+    }
 
-			if (rand.nextDouble() < 0.1D)
-			{
-				worldIn.playSound((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
-			}
+//    @Override
+//    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
+//        super.neighborChanged(state, worldIn, pos, blockIn);
+//    }
+//
+//    @Override
+//	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+//		TileEntity tileEntity = worldIn.getTileEntity(pos);
+//		if (tileEntity instanceof TileGrinder){
+//			((TileGrinder)tileEntity).updateKillBox();
+//            ((TileGrinder)tileEntity).powered = worldIn.isBlockPowered(pos);
+//		}
+//	}
 
-			switch (enumfacing)
-			{
-				case WEST:
-					worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 - d3, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
-					worldIn.spawnParticle(EnumParticleTypes.FLAME, d0 - d3, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
-					break;
-				case EAST:
-					worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + d3, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
-					worldIn.spawnParticle(EnumParticleTypes.FLAME, d0 + d3, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
-					break;
-				case NORTH:
-					worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + d4, d1, d2 - d3, 0.0D, 0.0D, 0.0D, new int[0]);
-					worldIn.spawnParticle(EnumParticleTypes.FLAME, d0 + d4, d1, d2 - d3, 0.0D, 0.0D, 0.0D, new int[0]);
-					break;
-				case SOUTH:
-					worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + d4, d1, d2 + d3, 0.0D, 0.0D, 0.0D, new int[0]);
-					worldIn.spawnParticle(EnumParticleTypes.FLAME, d0 + d4, d1, d2 + d3, 0.0D, 0.0D, 0.0D, new int[0]);
-			}
+
+    @Override
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+		if (tileEntity instanceof TileGrinder){
+			((TileGrinder)tileEntity).updateKillBox();
+            ((TileGrinder)tileEntity).powered = worldIn.isBlockPowered(pos);
+		}
+    }
+
+    @Override
+	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if (tileEntity instanceof TileGrinder){
+			((TileGrinder)tileEntity).updateKillBox();
 		}
 	}
 }

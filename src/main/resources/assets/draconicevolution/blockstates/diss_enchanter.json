@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:diss_enchanter",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{}]
+  }
+}

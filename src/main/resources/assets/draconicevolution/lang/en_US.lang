@@ -23,7 +23,7 @@ tile.draconicevolution:draconium1.name=Resurrection Stone
 tile.draconicevolution:draconium_block.charged.true.name=Charged Draconium Block
 tile.draconicevolution:c_key_stone.name=Creative Key Stone
 tile.draconicevolution:diss_enchanter.name=Disenchanter
-tile.draconicevolution:teleporter_stand.name=Dislocator Pedestal
+tile.draconicevolution:dislocator_pedestal.name=Dislocator Pedestal
 tile.draconicevolution:draconium_chest.name=Draconic Chest
 tile.draconicevolution:draconic_block.name=Awakened Draconium Block
 tile.draconicevolution:infused_obsidian.name=Draconium Infused Obsidian
@@ -623,10 +623,12 @@ potion.de.jumpBoost.txt=Jump Boost
 //---- Gui Names ----//
 gui.de.energyStorageCore.name=Tier %s Energy Core
 gui.de.fusionCraftingCore.name=Fusion Crafting
+gui.de.dissEnchanter.name=Disenchanter
 
 
 //---- Generic Gui Buttons ----//
 gui.de.button.start=Start
+gui.de.button.extract=Extract
 
 
 //---- Gui Fusion Crafting Info ----//
@@ -776,6 +778,8 @@ info.bc.ctrl.txt=CTRL
 
 //---- Chat Messages ----//
 chat.toolConfig.thatItemNotConfigurable.msg=That item is not configurable
+chat.dissEnchanter.notEnoughLevels.msg=You require %s levels to extract that enchantment!
+
 
 //---- GUI Buttons ----//
 gui.de.toolConfig.hud.txt=HUD

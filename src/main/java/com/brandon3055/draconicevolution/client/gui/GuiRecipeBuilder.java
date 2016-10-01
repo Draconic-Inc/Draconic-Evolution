@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerRecipeBuilder;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
+import com.google.common.base.CaseFormat;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -367,7 +368,7 @@ public class GuiRecipeBuilder extends GuiContainer {
         }
         if (item.getRegistryName().getResourceDomain().equals("draconicevolution")) {
             //return "DEFeatures." + item.getRegistryName().getResourcePath();
-            return item.getRegistryName().getResourcePath();
+            return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getRegistryName().getResourcePath());
         }
 
         return "Unknown";

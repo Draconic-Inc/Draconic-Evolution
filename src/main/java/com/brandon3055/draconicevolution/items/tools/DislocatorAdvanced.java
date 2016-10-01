@@ -107,7 +107,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
             if (!player.capabilities.isCreativeMode && fuel <= 0) {
                 if (world.isRemote) {
-                    player.addChatMessage(new TextComponentString("msg.teleporterOutOfFuel.txt"));
+                    player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
                 }
                 return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
             }

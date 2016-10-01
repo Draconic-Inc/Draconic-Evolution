@@ -311,6 +311,8 @@ public abstract class MiningToolBase extends ToolBase {
             }
         }
 
+        player.worldObj.playEvent(2001, pos, Block.getStateId(blockState));
+
         for (BlockPos block : aoeBlocks) {
             breakExtraBlockNew(stack, player.worldObj, block, player, refStrength, inventoryDynamic);
         }
@@ -329,8 +331,6 @@ public abstract class MiningToolBase extends ToolBase {
             lootCore.setPosition(player.posX, player.posY, player.posZ);
             player.worldObj.spawnEntityInWorld(lootCore);
         }
-
-        player.worldObj.playEvent(2001, pos, Block.getStateId(blockState));
 
         return true;
     }
@@ -354,6 +354,10 @@ public abstract class MiningToolBase extends ToolBase {
         }
 
         if (player.capabilities.isCreativeMode) {
+            if (world.isRemote && itemRand.nextInt(10) == 0) {
+                world.playEvent(2001, pos, Block.getStateId(state));
+            }
+
             block.onBlockHarvested(world, pos, state, player);
             if (block.removedByPlayer(state, world, pos, player, false)) {
                 block.onBlockDestroyedByPlayer(world, pos, state);
@@ -362,11 +366,7 @@ public abstract class MiningToolBase extends ToolBase {
             if (!world.isRemote) {
                 ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(world, pos));
             }
-            else {
-                if (itemRand.nextInt(10) == 0) {
-                    world.playEvent(2001, pos, Block.getStateId(state));
-                }
-            }
+
             return;
         }
 

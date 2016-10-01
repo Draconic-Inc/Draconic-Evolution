@@ -74,11 +74,11 @@ public class GuiHandler implements IGuiHandler {
 					return new ContainerGenerator(player, (TileGenerator) tileEntity);
 				}
 				break;
-//			case GUIID_DISSENCHANTER:
-//				if (dissenchanter != null && dissenchanter instanceof TileDissEnchanter) {
-//					return new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) dissenchanter);
-//				}
-//				break;
+			case GUIID_DISSENCHANTER:
+				if (tileEntity != null && tileEntity instanceof TileDissEnchanter) {
+					return new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) tileEntity);
+				}
+				break;
 //			case GUIID_DRACONIC_CHEST:
 //				if (containerChest != null && containerChest instanceof TileDraconiumChest) {
 //					return new ContainerDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
@@ -165,11 +165,11 @@ public class GuiHandler implements IGuiHandler {
 				break;
 //			case GUIID_MANUAL:
 //				return new GUIManual();
-//			case GUIID_DISSENCHANTER:
-//				if (dissenchanter != null && dissenchanter instanceof TileDissEnchanter) {
-//					return new GUIDissEnchanter(player.inventory, (TileDissEnchanter) dissenchanter);
-//				}
-//				break;
+			case GUIID_DISSENCHANTER:
+				if (tileEntity != null && tileEntity instanceof TileDissEnchanter) {
+					return new GuiDissEnchanter(player, new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) tileEntity));
+				}
+				break;
 //			case GUIID_DRACONIC_CHEST:
 //				if (containerChest != null && containerChest instanceof TileDraconiumChest) {
 //					return new GUIDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);

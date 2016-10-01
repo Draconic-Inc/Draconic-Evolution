@@ -83,7 +83,7 @@ public class WyvernHoe extends ToolBase {
             if (fill && airOrReplaceable && lowerBlockOk && (player.capabilities.isCreativeMode || player.inventory.hasItemStack(new ItemStack(Blocks.DIRT)))) {
                 BlockEvent.PlaceEvent event = ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(world, aoePos, Blocks.DIRT.getDefaultState()), EnumFacing.UP);
 
-                if (!event.isCanceled() && (player.capabilities.isCreativeMode || InventoryUtils.conumeStack(new ItemStack(Blocks.DIRT), player.inventory))) {
+                if (!event.isCanceled() && (player.capabilities.isCreativeMode || InventoryUtils.consumeStack(new ItemStack(Blocks.DIRT), player.inventory))) {
                     world.setBlockState(aoePos, Blocks.DIRT.getDefaultState());
                 }
             }

@@ -1,0 +1,23 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "draconicevolution:blocks/rain_sensor_side",
+      "bottom": "draconicevolution:blocks/rain_sensor_side",
+      "top": "draconicevolution:blocks/rain_sensor_inactive"
+    },
+    "model": "draconicevolution:rain_sensor",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "active": {
+      "true": {
+        "textures": {
+          "top": "draconicevolution:blocks/rain_sensor_active"
+        }
+      },
+      "false": {}
+    },
+    "normal": [{}]
+  }
+}

@@ -9,18 +9,12 @@ import com.brandon3055.draconicevolution.command.CommandUpgrade;
 import com.brandon3055.draconicevolution.items.tools.ToolStats;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.DEWorldGenHandler;
-import com.google.common.base.CaseFormat;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
 
@@ -115,38 +109,38 @@ public class DraconicEvolution {
 		}
 	}
 
-	@Mod.EventHandler
-	public void remapEvent(FMLMissingMappingsEvent event) {
-		for (FMLMissingMappingsEvent.MissingMapping mapping : event.getAll()) {
-			if (mapping.name.startsWith(DraconicEvolution.MOD_PREFIX)) {
-				if (mapping.type == GameRegistry.Type.BLOCK) {
-					if (mapping.name.equals(DraconicEvolution.MOD_PREFIX + "creativeRFSource")) {
-						mapping.remap(DEFeatures.creativeRFSource);
-						continue;
-					}
-					Block newBlock = Block.REGISTRY.getObject(new ResourceLocation(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapping.name)));
-
-					if (newBlock == Blocks.AIR) {
-						LogHelper.bigError("Could not remap block! " + mapping.name);
-					}
-
-					mapping.remap(newBlock);
-				}
-				else if (mapping.type == GameRegistry.Type.ITEM) {
-					if (mapping.name.equals(DraconicEvolution.MOD_PREFIX + "creativeRFSource")) {
-						mapping.remap(Item.getItemFromBlock(DEFeatures.creativeRFSource));
-						continue;
-					}
-					Item newItem = Item.REGISTRY.getObject(new ResourceLocation(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapping.name)));
-
-					if (newItem == null) {
-						LogHelper.bigError("Could not remap item! " + mapping.name);
-						continue;
-					}
-
-					mapping.remap(newItem);
-				}
-			}
-		}
-	}
+//	@Mod.EventHandler
+//	public void remapEvent(FMLMissingMappingsEvent event) {
+//		for (FMLMissingMappingsEvent.MissingMapping mapping : event.getAll()) {
+//			if (mapping.name.startsWith(DraconicEvolution.MOD_PREFIX)) {
+//				if (mapping.type == GameRegistry.Type.BLOCK) {
+//					if (mapping.name.equals(DraconicEvolution.MOD_PREFIX + "creativeRFSource")) {
+//						mapping.remap(DEFeatures.creativeRFSource);
+//						continue;
+//					}
+//					Block newBlock = Block.REGISTRY.getObject(new ResourceLocation(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapping.name)));
+//
+//					if (newBlock == Blocks.AIR) {
+//						LogHelper.bigError("Could not remap block! " + mapping.name);
+//					}
+//
+//					mapping.remap(newBlock);
+//				}
+//				else if (mapping.type == GameRegistry.Type.ITEM) {
+//					if (mapping.name.equals(DraconicEvolution.MOD_PREFIX + "creativeRFSource")) {
+//						mapping.remap(Item.getItemFromBlock(DEFeatures.creativeRFSource));
+//						continue;
+//					}
+//					Item newItem = Item.REGISTRY.getObject(new ResourceLocation(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapping.name)));
+//
+//					if (newItem == null) {
+//						LogHelper.bigError("Could not remap item! " + mapping.name);
+//						continue;
+//					}
+//
+//					mapping.remap(newItem);
+//				}
+//			}
+//		}
+//	}
 }

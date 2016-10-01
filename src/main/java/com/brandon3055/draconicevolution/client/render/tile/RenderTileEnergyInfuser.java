@@ -35,9 +35,9 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
     @Override
     public void renderTileEntityAt(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage) {
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
-        GL11.glTranslatef((float) x, (float) y, (float) z);
+        GlStateManager.translate((float) x, (float) y, (float) z);
 
         if (!te.running.value){
             partialTicks = 0;
@@ -45,7 +45,7 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
         renderBlock(te, partialTicks);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
 
@@ -55,9 +55,9 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
         bindTexture(ResourceHelperDE.getResource(DETextures.ENERGY_INFUSER_DECORATION));
 
 //        tessellator.setColorRGBA(255, 255, 255, 255);
-
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+    
+        GlStateManager.enableAlpha();
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 
         drawWings(tessellator, tile, partialTicks);
         renderChargingItem(tile, partialTicks);
@@ -66,39 +66,39 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
 
     private void drawWings(Tessellator tess, TileEnergyInfuser tile, float partialTicks){
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         float srcXMin = 0F;        //iicon.getMinU();
         float srcYMin = 0F * pxl;  //iicon.getMaxU();
         float srcXMax = 92F * pxl;  //iicon.getMinV();
         float srcYMax = 51F * pxl; //iicon.getMaxV();
 
-        GL11.glTranslatef(-0.64F, 0.365F, 0.51F);
-        GL11.glScalef(0.7F, 0.7F, 0.7F);
+        GlStateManager.translate(-0.64F, 0.365F, 0.51F);
+        GlStateManager.scale(0.7F, 0.7F, 0.7F);
         float xTrans = 0.025F;
 
 
         {
-            GL11.glTranslatef(1.62F, 0F, -xTrans);
-            GL11.glRotatef(tile.rotation + partialTicks, 0F, 1F, 0F);
-            GL11.glTranslatef(-1.62F, 0F, xTrans);
+            GlStateManager.translate(1.62F, 0F, -xTrans);
+            GlStateManager.rotate(tile.rotation + partialTicks, 0F, 1F, 0F);
+            GlStateManager.translate(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GL11.glTranslatef(1.62F, 0F, -xTrans);
-            GL11.glRotatef(90, 0F, 1F, 0F);
-            GL11.glTranslatef(-1.62F, 0F, xTrans);
+            GlStateManager.translate(1.62F, 0F, -xTrans);
+            GlStateManager.rotate(90, 0F, 1F, 0F);
+            GlStateManager.translate(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GL11.glTranslatef(1.62F, 0F, -xTrans);
-            GL11.glRotatef(90, 0F, 1F, 0F);
-            GL11.glTranslatef(-1.62F, 0F, xTrans);
+            GlStateManager.translate(1.62F, 0F, -xTrans);
+            GlStateManager.rotate(90, 0F, 1F, 0F);
+            GlStateManager.translate(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GL11.glTranslatef(1.62F, 0F, -xTrans);
-            GL11.glRotatef(90, 0F, 1F, 0F);
-            GL11.glTranslatef(-1.62F, 0F, xTrans);
+            GlStateManager.translate(1.62F, 0F, -xTrans);
+            GlStateManager.rotate(90, 0F, 1F, 0F);
+            GlStateManager.translate(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
@@ -106,15 +106,15 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
             srcYMin = 51F * pxl;  //iicon.getMaxU();
             srcXMax = 33F * pxl;  //iicon.getMinV();
             srcYMax = 83F * pxl; //iicon.getMaxV();
-            GL11.glTranslatef(1.26F, 0F, 0.31F);
-            GL11.glTranslatef(0F, 0F, 0F);
-            GL11.glRotatef(90, 0F, 1F, 0F);
-            GL11.glRotatef(90, 1F, 0F, 0F);
-            GL11.glTranslatef(-0F, 0F, 0F);
-            GL11.glScalef(1.4F, 1.4F, 1.4F);
+            GlStateManager.translate(1.26F, 0F, 0.31F);
+            GlStateManager.translate(0F, 0F, 0F);
+            GlStateManager.rotate(90, 0F, 1F, 0F);
+            GlStateManager.rotate(90, 1F, 0F, 0F);
+            GlStateManager.translate(-0F, 0F, 0F);
+            GlStateManager.scale(1.4F, 1.4F, 1.4F);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 32, 32, 0.0625F);
         }
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness)
@@ -200,13 +200,13 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
             GlStateManager.translate(0.5F, 0.7F, 0.5F);
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
 //            if (tile.getWorldObj().getWorldInfo().getGameRulesInstance().getGameRuleBooleanValue("doDaylightCycle"))
-//                GL11.glRotatef(tile.getWorldObj().getWorldTime(), 0F, -1F, 0F);
+//                GL11.rotate(tile.getWorldObj().getWorldTime(), 0F, -1F, 0F);
 //            else
             GlStateManager.rotate(tile.rotation + partialTicks, 0F, -1F, 0F);
 //            if (stack.getItem() instanceof ItemBlock)
 //            {
-//                GL11.glScalef(1F, 1F, 1F);
-//                GL11.glTranslatef(0F, 0.045F, 0.0f);
+//                GL11.scale(1F, 1F, 1F);
+//                GL11.translate(0F, 0.045F, 0.0f);
 //            }
 //
             renderItem(stack);

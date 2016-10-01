@@ -5,7 +5,7 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.network.wrappers.SyncableVec3I;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.blocks.EnergyStorageCore;
+import com.brandon3055.draconicevolution.blocks.machines.EnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
@@ -91,8 +91,6 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
         else {
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            //GlStateManager.depthMask(true);
-            //GlStateManager.disableCull();
 
             setLighting(200F);
             renderStabilizers(te, true, partialTicks);
@@ -104,8 +102,6 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             } else {
                 ModelUtils.renderQuadsRGB(outerQuads, 0.2F, 1F, 1F);
             }
-
-            GlStateManager.enableCull();
         }
 
         GlStateManager.enableTexture2D();
