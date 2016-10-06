@@ -136,13 +136,6 @@ public class MinecraftForgeEventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onLivingDeath(LivingDeathEvent event) {
-        if (event.entityLiving instanceof EntityPlayer) {
-            CustomArmorHandler.onPlayerDeath(event);
-        }
-    }
-
     @SubscribeEvent
     public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
         if (!(event.entityLiving instanceof EntityPlayer)) return;
