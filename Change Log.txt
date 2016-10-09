@@ -1,4 +1,4 @@
-######## 2.0.0.x ########
+######## 2.0.0.102 ########
 -Buffed Capacitor capacity upgrades. Now each level increases the capacity by 50% instead of like 2% ish.. I meant to fix that a while ago.
 -Fixed Draconic bow, axe, hoe and shovel not accepting draconic level upgrades.
 -Dislocator Receptacle now responds to redstone.
