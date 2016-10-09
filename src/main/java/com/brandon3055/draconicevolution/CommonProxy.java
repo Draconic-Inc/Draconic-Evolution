@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution;
 
-import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
@@ -35,7 +34,7 @@ public class CommonProxy {
 //		DraconicEvolution.reaperEnchant = new EnchantmentReaper(ConfigHandler.reaperEnchantID);
 
 
-		Achievements.addModAchievements();
+//		Achievements.addModAchievements();
 		LogHelper.info("Finished PreInitialization");
 	}
 
@@ -53,7 +52,7 @@ public class CommonProxy {
 
 	public void postInit(FMLPostInitializationEvent event) {
 //		OreDoublingRegistry.init();
-		Achievements.registerAchievementPane();
+//		Achievements.registerAchievementPane();
 		LogHelper.info("Finished PostInitialization");
 	}
 
@@ -127,8 +126,7 @@ public class CommonProxy {
 
 	public void registerEventListeners(Side s) {
 		MinecraftForge.EVENT_BUS.register(new DEEventHandler());
-//		MinecraftForge.EVENT_BUS.register(new Achievements());
-        MinecraftForge.EVENT_BUS.register(new Achievements());
+//        MinecraftForge.EVENT_BUS.register(new Achievements());
         MinecraftForge.EVENT_BUS.register(new CustomArmorHandler());
 //		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
 	}

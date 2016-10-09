@@ -10,7 +10,6 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon {
 
     @Override
     public List<String> getValidUpgrades(ItemStack stack) {
-        ReflectionHelper.setPrivateValue(ToolBase.class, this, 1000, "baseAttackDamage");
         List<String> list = super.getValidUpgrades(stack);
         list.add(ToolUpgrade.ATTACK_DAMAGE);
         list.add(ToolUpgrade.ATTACK_AOE);

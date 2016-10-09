@@ -76,6 +76,7 @@ public class WikiDocManager {
         wikiFolder = new File(FileHandler.brandon3055Folder, "ProjectIntelligence");
         wikiFolder.mkdirs();
         initFiles();
+        loadDocsFromDisk();
         WikiDownloadManager.downloadManifest();
     }
 

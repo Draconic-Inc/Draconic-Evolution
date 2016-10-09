@@ -41,7 +41,7 @@ public class TilePortal extends TileBCBase {
             IBlockState state = worldObj.getBlockState(pos);
             for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(state.getValue(Portal.AXIS))){
                 IBlockState checkPos = worldObj.getBlockState(pos.offset(facing));
-                if (checkPos.getBlock() != DEFeatures.portal && checkPos.getBlock() != DEFeatures.infusedObsidian){
+                if (checkPos.getBlock() != DEFeatures.portal && checkPos.getBlock() != DEFeatures.infusedObsidian && checkPos.getBlock() != DEFeatures.dislocatorReceptacle){
                     ((TileDislocatorReceptacle) tile).deactivate();
                     worldObj.setBlockToAir(pos);
                 }

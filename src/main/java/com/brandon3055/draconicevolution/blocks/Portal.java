@@ -80,7 +80,6 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
 
     //region Portal Logic
 
-
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return worldIn.isRemote ? new TilePortalClient() : new TilePortal();
@@ -94,7 +93,7 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
-        return null;//new AxisAlignedBB(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
+        return NULL_AABB;//new AxisAlignedBB(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
     }
 
     @Override

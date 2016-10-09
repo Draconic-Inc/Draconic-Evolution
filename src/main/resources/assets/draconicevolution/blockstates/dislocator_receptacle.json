@@ -9,14 +9,22 @@
     "transform": "forge:default-block"
   },
   "variants": {
-    "active": {
-      "true": {
-        "textures": {
-          "all": "draconicevolution:blocks/animated/dislocator_receptacle_active"
-        }
-      },
-      "false": {}
-    },
+    "active=false,camo=false":[{}],
+    "active=true,camo=false":[{
+      "textures": {
+        "all": "draconicevolution:blocks/animated/dislocator_receptacle_active"
+      }
+    }],
+    "active=false,camo=true":[{
+      "textures": {
+        "all": "draconicevolution:blocks/animated/infused_obsidian"
+      }
+    }],
+    "active=true,camo=true":[{
+      "textures": {
+        "all": "draconicevolution:blocks/animated/infused_obsidian"
+      }
+    }],
     "normal": [{}]
   }
 }

@@ -28,4 +28,9 @@ public class DraconicAxe extends WyvernAxe {
     protected int getMaxHarvest() {
         return 8192;
     }
+
+    @Override
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
+        return 3;
+    }
 }

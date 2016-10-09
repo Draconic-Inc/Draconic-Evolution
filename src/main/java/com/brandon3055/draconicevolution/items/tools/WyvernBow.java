@@ -244,7 +244,7 @@ public class WyvernBow extends ToolBase {
 
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
-        double maxDamage = 2 + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ATTACK_DAMAGE) * 2);
+        double maxDamage = 2 + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_DAMAGE) * 2);
         int maxSpeed = 100 + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_SPEED) * 100;
 
         registry.register(stack, new DoubleConfigField("bowArrowDamage", 2, 0, maxDamage, "config.field.bowArrowDamage.description", SLIDER));

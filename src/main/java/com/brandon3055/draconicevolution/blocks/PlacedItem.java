@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.blocks;
 
 import codechicken.lib.raytracer.ICuboidProvider;
 import codechicken.lib.raytracer.RayTracer;
-import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.config.Feature;
@@ -38,7 +37,6 @@ import java.util.List;
  */
 public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICustomRender {
 
-    private RayTracer rayTracer = new RayTracer();
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
     public PlacedItem() {
@@ -52,7 +50,8 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
     //region Block state and stuff...
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {}
+    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    }
 
     @Override
     protected BlockStateContainer createBlockState() {
@@ -60,27 +59,23 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
+    public IBlockState getStateFromMeta(int meta) {
         EnumFacing enumfacing = EnumFacing.getFront(meta);
         return this.getDefaultState().withProperty(FACING, enumfacing);
     }
 
     @Override
-    public int getMetaFromState(IBlockState state)
-    {
+    public int getMetaFromState(IBlockState state) {
         return state.getValue(FACING).getIndex();
     }
 
     @Override
-    public IBlockState withRotation(IBlockState state, Rotation rot)
-    {
+    public IBlockState withRotation(IBlockState state, Rotation rot) {
         return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
-    {
+    public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
         return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
     }
 
@@ -123,11 +118,12 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
         if (tile instanceof TilePlacedItem) {
 
             RayTraceResult hit = RayTracer.retraceBlock(world, player, pos);
-            RayTraceResult subHitResult = rayTracer.rayTraceCuboids(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), ((TilePlacedItem) tile).getIndexedCuboids(), new BlockCoord(pos));
+            RayTraceResult subHitResult = RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), ((TilePlacedItem) tile).getIndexedCuboids(), pos);
 
             if (subHitResult != null) {
                 hit = subHitResult;
-            } else if (hit == null) {
+            }
+            else if (hit == null) {
                 return true;
             }
 
@@ -166,7 +162,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
         if (tile instanceof TilePlacedItem) {
 
             RayTraceResult hit = target;
-            RayTraceResult subHitResult = rayTracer.rayTraceCuboids(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), ((TilePlacedItem) tile).getIndexedCuboids(), new BlockCoord(pos));
+            RayTraceResult subHitResult = RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), ((TilePlacedItem) tile).getIndexedCuboids(), pos);
 
             if (subHitResult != null) {
                 hit = subHitResult;
@@ -184,7 +180,8 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
     }
 
     @Override
-    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, ItemStack heldStack) {}
+    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, ItemStack heldStack) {
+    }
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {

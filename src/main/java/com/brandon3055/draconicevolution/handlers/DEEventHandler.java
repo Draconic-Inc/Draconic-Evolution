@@ -1,13 +1,20 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import com.brandon3055.brandonscore.config.ModFeatureParser;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.world.gen.feature.WorldGenEndPodium;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @SuppressWarnings("unused")
@@ -113,23 +120,11 @@ public class DEEventHandler {
             if (ModFeatureParser.isEnabled(DEFeatures.dragonHeart)) {
                 EntityDragonHeart heart = new EntityDragonHeart(event.getEntity().worldObj, event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ);
                 event.getEntity().worldObj.spawnEntityInWorld(heart);
-//                EntityItem item = new EntityItem(event.getEntity().worldObj, event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ, new ItemStack(DEFeatures.dragonHeart));
-//                event.getEntity().worldObj.spawnEntityInWorld(new EntityDragonHeart(event.getEntity().worldObj, ((int) event.getEntity().posX) + 0.5, event.getEntity().posY, ((int) event.getEntity().posZ) + 0.5));
-//                if (event.getEntity() instanceof EntityCustomDragon && ((EntityCustomDragon) event.getEntity()).getIsUber()) {
-//                    event.getEntity().worldObj.spawnEntityInWorld(new EntityDragonHeart(event.getEntity().worldObj, event.getEntity().posX, event.getEntity().posY + 2, event.getEntity().posZ));
-//                }
-//                EntityPlayer player = event.getEntityLiving().worldObj.getClosestPlayerToEntity(event.getEntity(), 512);
-//                ItemStack stack = new ItemStack(DEFeatures.dragonHeart);
-//                if (player == null) {
-//                    FeatureUtils.dropItem(stack, event.getEntityLiving().worldObj, new Vec3D(event.getEntityLiving()).toVector3());
-//                }
-//                else {
-//                    int remainder = InventoryUtils.insertItem(new InventoryRange(player.inventory, 0, 35), stack, false);
-//                    if (remainder > 0) {
-//
-//                    }
-//                }
 
+                DragonFightManager manager = ((EntityDragon)event.getEntity()).getFightManager();
+                if (DEConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
+                   event.getEntity().worldObj.setBlockState(event.getEntity().worldObj.getHeight(WorldGenEndPodium.END_PODIUM_LOCATION).add(0, 0, -4), Blocks.DRAGON_EGG.getDefaultState());
+                }
             }
 
 
@@ -251,9 +246,13 @@ public class DEEventHandler {
 //            ExtendedPlayer.register((EntityPlayer) event.getEntity());
 //    }
 //
-//    @SubscribeEvent
-//    public void itemTooltipEvent(ItemTooltipEvent event) {
-//        if (ConfigHandler.showUnlocalizedNames) event.toolTip.add(event.itemStack.getUnlocalizedName());
+    @SubscribeEvent
+    public void itemTooltipEvent(ItemTooltipEvent event) {
+        if (DEConfig.expensiveDragonRitual && event.getItemStack() != null && event.getItemStack().getItem() == Items.END_CRYSTAL) {
+            event.getToolTip().add(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution.");
+        }
+
+//        if (DEConfig.showUnlocalizedNames) event.toolTip.add(event.itemStack.getUnlocalizedName());
 //        if (DraconicEvolution.debug && event.itemStack.hasTagCompound()) {
 //            String s = event.itemStack.getTagCompound().toString();
 //            int escape = 0;
@@ -265,7 +264,7 @@ public class DEEventHandler {
 //            }
 //            event.toolTip.add(s);
 //        }
-//    }
+    }
 //
 //    @SubscribeEvent
 //    public void stopUsingEvent(PlayerUseItemEvent.Start event) {

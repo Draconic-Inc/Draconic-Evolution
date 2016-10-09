@@ -26,4 +26,9 @@ public class DraconicBow extends WyvernBow {
     public int getToolTier(ItemStack stack) {
         return 1;
     }
+
+    @Override
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
+        return 3;
+    }
 }

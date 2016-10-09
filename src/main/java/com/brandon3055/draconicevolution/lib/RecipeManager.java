@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.fusioncrafting.SimpleFusionRecipe;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.brandon3055.draconicevolution.lib.RecipeManager.RecipeDifficulty.ALL;
@@ -41,6 +43,24 @@ public class RecipeManager {
     public static void initialize() {
         FusionRecipeAPI.registry = FUSION_REGISTRY;
         loadRecipes();
+
+        if (DEConfig.expensiveDragonRitual) {
+            java.util.List<IRecipe> list = CraftingManager.getInstance().getRecipeList();
+
+            boolean removed = false;
+            Iterator<IRecipe> i = list.iterator();
+            while (i.hasNext()) {
+                IRecipe recipe = i.next();
+                if (recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() == Items.END_CRYSTAL) {
+                    i.remove();
+                    removed = true;
+                }
+            }
+
+            if (removed) {
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR));
+            }
+        }
     }
 
     /**

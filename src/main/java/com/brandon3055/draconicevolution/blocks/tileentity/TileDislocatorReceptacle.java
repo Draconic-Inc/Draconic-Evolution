@@ -24,8 +24,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 16/07/2016.
@@ -33,12 +32,18 @@ import java.util.List;
 public class TileDislocatorReceptacle extends TileInventoryBase implements ITickable {
 
     public final SyncableBool ACTIVE = new SyncableBool(false, true, false, true);
+    public final SyncableBool CAMO = new SyncableBool(false, true, false, true);
+    public final SyncableBool LT_REDSTONE = new SyncableBool(false, true, false, true);
     public boolean igniting = false;
     private List<Entity> teleportQ = new ArrayList<Entity>();
+    private Map<Integer, Integer> cooldownMap = new HashMap<>();
 
     public TileDislocatorReceptacle() {
         setInventorySize(1);
         setShouldRefreshOnBlockChange();
+        registerSyncableObject(ACTIVE, true);
+        registerSyncableObject(LT_REDSTONE, true);
+        registerSyncableObject(CAMO, true);
     }
 
     @Override
@@ -63,6 +68,32 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             DESoundHandler.playSoundFromServer(entity.worldObj, entity.posX, entity.posY, entity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
 
+        try {
+
+//            Iterator<Map.Entry<Entity, Integer>> i = cooldownMap.entrySet().iterator();
+//            while (i.hasNext()) {
+//                Map.Entry<Entity, Integer> entry = i.next();
+//
+//            }
+            List<Integer> toRemove = new ArrayList<>();
+
+            for (Integer key : cooldownMap.keySet()) {
+                if (cooldownMap.get(key) > 0) {
+                    cooldownMap.put(key, cooldownMap.get(key) - 1);
+                }
+                else {
+                    toRemove.add(key);
+                }
+            }
+
+            for (Integer i : toRemove) {
+                cooldownMap.remove(i);
+            }
+            toRemove.clear();
+
+        }
+        catch (Exception e) {e.printStackTrace();}
+
         teleportQ.clear();
     }
 
@@ -70,10 +101,13 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     public boolean onBlockActivated(EntityPlayer player) {
         if (worldObj.isRemote) {
-            return true;
+            return !LT_REDSTONE.value;
         }
 
         if (getStackInSlot(0) != null) {
+            if (LT_REDSTONE.value) {
+                return true;
+            }
             if (player.getHeldItemMainhand() == null) {
                 player.setHeldItem(EnumHand.MAIN_HAND, getStackInSlot(0));
                 setInventorySlotContents(0, null);
@@ -116,10 +150,11 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     //region Teleport Handling
 
     public void handleEntityTeleport(Entity entity) {
-        if (worldObj.isRemote || teleportQ.contains(entity)) {
+        if (worldObj.isRemote || teleportQ.contains(entity) || cooldownMap.containsKey(entity.getEntityId())) {
             return;
         }
 
+        cooldownMap.put(entity.getEntityId(), 10);
         teleportQ.add(entity);
     }
 

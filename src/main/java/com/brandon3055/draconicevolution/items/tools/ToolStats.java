@@ -88,5 +88,5 @@ public class ToolStats {
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicStaffAttackDMG")
     public static double DRA_STAFF_ATTACK_DAMAGE = 60D;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicStaffAttackSpeed")
-    public static double DRA_STAFF_ATTACK_SPEED = -3.5D;
+    public static double DRA_STAFF_ATTACK_SPEED = -3D;
 }

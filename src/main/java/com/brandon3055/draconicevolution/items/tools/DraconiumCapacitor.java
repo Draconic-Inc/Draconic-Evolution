@@ -72,11 +72,13 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     public int getCapacity(ItemStack stack) {
         int tier = stack.getItemDamage();
 
+        int upgrade = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.RF_CAPACITY);
+
         switch (tier) {
             case 0:
-                return wyvernBaseCap + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.RF_CAPACITY) * 8000000);
+                return wyvernBaseCap + (upgrade * (wyvernBaseCap / 2));
             case 1:
-                return draconicBaseCap + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.RF_CAPACITY) * 16000000);
+                return draconicBaseCap + (upgrade * (draconicBaseCap / 2));
             case 2:
                 return Integer.MAX_VALUE;
         }

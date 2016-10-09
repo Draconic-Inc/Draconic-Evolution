@@ -114,7 +114,7 @@ public class EffectTrackerFusionCrafting {
         }
 
         if (rand.nextInt((chance * 2) + 2) == 0){
-            renderBolt = 30;
+            renderBolt = 1;
             boltSeed = rand.nextLong();
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
             BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));

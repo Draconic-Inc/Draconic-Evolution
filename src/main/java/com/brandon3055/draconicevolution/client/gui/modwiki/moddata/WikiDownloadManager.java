@@ -42,9 +42,16 @@ public class WikiDownloadManager {
                 return;
             }
 
+            LogHelper.dev("Checking Manifest: " +manifest);
+
             for (String url : entry.downloadToVersion.keySet()) {
                 try {
                     String lang = url.substring(url.lastIndexOf("-") + 1).replace(".xml", "");
+
+                    if (WikiDocManager.modDocMap.get(entry.modid).langToVersion.containsKey(lang)) {
+                        LogHelper.dev("Version : " + WikiDocManager.modDocMap.get(entry.modid).langToVersion.get(lang));
+                    }
+
                     if (WikiDocManager.modDocMap.containsKey(entry.modid) && WikiDocManager.modDocMap.get(entry.modid).langToVersion.containsKey(lang) && WikiDocManager.modDocMap.get(entry.modid).langToVersion.get(lang) >= entry.downloadToVersion.get(url)) {
                         LogHelper.dev(entry.modName+": Current Doc Version Up To Date.");
                         continue;
