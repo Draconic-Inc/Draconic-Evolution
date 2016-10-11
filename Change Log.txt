@@ -1,4 +1,7 @@
-######## 2.0.0.102 ########
+######## 2.0.0.X ########
+-Fixed some hard mode recipe issues
+
+######## 2.0.0.105 ########
 -Buffed Capacitor capacity upgrades. Now each level increases the capacity by 50% instead of like 2% ish.. I meant to fix that a while ago.
 -Fixed Draconic bow, axe, hoe and shovel not accepting draconic level upgrades.
 -Dislocator Receptacle now responds to redstone.

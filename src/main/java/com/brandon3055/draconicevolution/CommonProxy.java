@@ -10,13 +10,21 @@ import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.brandon3055.draconicevolution.network.*;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+
+import java.util.Iterator;
 
 public class CommonProxy {
 
@@ -53,6 +61,25 @@ public class CommonProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 //		OreDoublingRegistry.init();
 //		Achievements.registerAchievementPane();
+
+		if (DEConfig.expensiveDragonRitual) {
+			java.util.List<IRecipe> list = CraftingManager.getInstance().getRecipeList();
+
+			boolean removed = false;
+			Iterator<IRecipe> i = list.iterator();
+			while (i.hasNext()) {
+				IRecipe recipe = i.next();
+				if (recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() == Items.END_CRYSTAL) {
+					i.remove();
+					removed = true;
+				}
+			}
+
+			if (removed) {
+				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR));
+			}
+		}
+
 		LogHelper.info("Finished PostInitialization");
 	}
 
