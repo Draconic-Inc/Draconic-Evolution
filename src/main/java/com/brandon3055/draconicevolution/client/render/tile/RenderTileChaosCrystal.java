@@ -36,11 +36,12 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
     @Override
     public void renderTileEntityAt(TileChaosCrystal te, double x, double y, double z, float partialTicks, int destroyStage) {
 
+        CCRenderState ccrs = CCRenderState.instance();
         ResourceHelperDE.bindTexture(DETextures.CHAOS_CRYSTAL);
-        CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
         Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1);
-        model.render(mat);
-        CCRenderState.draw();
+        model.render(ccrs, mat);
+        ccrs.draw();
 
         if (!te.guardianDefeated.value) {
             GlStateManager.pushMatrix();

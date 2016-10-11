@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import codechicken.lib.render.TextureUtils;
+import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.DEFeatures;

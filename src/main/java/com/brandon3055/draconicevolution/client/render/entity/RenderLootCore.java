@@ -39,12 +39,13 @@ public class RenderLootCore extends Render<EntityLootCore> {
     public void doRender(EntityLootCore entity, double x, double y, double z, float entityYaw, float partialTicks) {
         ResourceHelperDE.bindTexture("textures/items/loot_core.png");
 
-        CCRenderState.reset();
-        CCRenderState.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
+        CCRenderState ccrs = CCRenderState.instance();
+        ccrs.reset();
+        ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         float yOffset =  MathHelper.sin(((float)ClientEventHandler.elapsedTicks + partialTicks) / 10.0F) * 0.1F + 0.1F;
         Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y + (entity.height / 2) + yOffset, z), new Rotation(((float)(ClientEventHandler.elapsedTicks + entity.timeOffset) + partialTicks) / 30F, new Vector3(entity.rotX, entity.rotY, 0).normalize()), 0.1);
-        CCModelLibrary.icosahedron7.render(pearlMat);
-        CCRenderState.draw();
+        CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
+        ccrs.draw();
 
         entity.isLooking = Minecraft.getMinecraft().entityRenderer.pointedEntity == entity;
 

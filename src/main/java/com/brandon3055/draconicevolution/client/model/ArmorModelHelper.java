@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.model;
 
-import codechicken.lib.render.TextureUtils;
+import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;

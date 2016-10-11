@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
-import codechicken.lib.render.TextureUtils;
+import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.ImmutableList;

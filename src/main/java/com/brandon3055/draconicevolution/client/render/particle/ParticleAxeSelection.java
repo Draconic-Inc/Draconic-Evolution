@@ -1,8 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.colour.ColourARGB;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.TextureUtils;
+import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -11,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -72,7 +72,7 @@ public class ParticleAxeSelection extends BCParticle {
             return;
         }
 
-        CCRenderState.draw();
+        Tessellator.getInstance().draw();
 
         GlStateManager.pushMatrix();
         TextureUtils.bindBlockTexture();

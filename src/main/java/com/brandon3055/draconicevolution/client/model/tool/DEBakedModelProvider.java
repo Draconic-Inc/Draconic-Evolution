@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
 import codechicken.lib.model.loader.IBakedModelLoader;
-import codechicken.lib.render.TransformUtils;
 import codechicken.lib.util.ItemNBTUtils;
+import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.items.tools.WyvernBow;

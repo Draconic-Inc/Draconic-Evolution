@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.model.loader.CCBakedModelLoader;
-import codechicken.lib.render.HitBoxRenderHandler;
-import codechicken.lib.render.TextureUtils;
+import codechicken.lib.render.CCRenderEventHandler;
+import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
@@ -64,7 +64,7 @@ public class ClientProxy extends CommonProxy {
 //		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		KeyBindings.init();
 		registerRenderIDs();
-        HitBoxRenderHandler.init();
+        CCRenderEventHandler.init();
 //		ResourceHandler.instance.tick(null);
 	}
 

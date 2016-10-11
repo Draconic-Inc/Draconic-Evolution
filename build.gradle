@@ -61,7 +61,6 @@ minecraft {
     replace '${mod_version}', project.config.mod_version
     replaceIn "DraconicEvolution.java"
     makeObfSourceJar = false
-    useDepAts = true
 }
 
 String buildNo = "38"
@@ -105,11 +104,17 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }
+
+def commonManifest = {
+    attributes 'FMLAT': 'DraconicEvolution_at.cfg'
+}
+
 
 jar {
     classifier = 'universal'
-    //manifest commonManifest
+    manifest commonManifest
 }
 
 task srcJar(type: Jar) {
@@ -120,7 +125,7 @@ task srcJar(type: Jar) {
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
-    //manifest commonManifest
+    manifest commonManifest
 }
 
 // Tell the artifact system about our extra jars
@@ -131,40 +136,44 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "file:///var/www/maven")
-            pom {
-                groupId = project.group
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name project.archivesBaseName
-                    packaging 'jar'
-                    description 'DraconicEvolution'
-                    url 'https://github.com/brandon3055/Draconic-Evolution'
-                    scm {
+            if (project.hasProperty("local_maven")) {
+                repository(url: "file://${local_maven}")
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+                    project {
+                        name project.archivesBaseName
+                        packaging 'jar'
+                        description 'DraconicEvolution'
                         url 'https://github.com/brandon3055/Draconic-Evolution'
-                        connection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
-                        developerConnection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
-                    }
-                    issueManagement {
-                        system 'github'
-                        url 'https://github.com/brandon3055/Draconic-Evolution/issues'
-                    }
-                    licenses {
-                        license {
-                            name 'License'
-                            url 'https://raw.githubusercontent.com/brandon3055/Draconic-Evolution/master/LICENSE.txt'
-                            distribution 'repo'
+                        scm {
+                            url 'https://github.com/brandon3055/Draconic-Evolution'
+                            connection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
+                            developerConnection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
                         }
-                    }
-                    developers {
-                        developer {
-                            id 'brandon3055'
-                            name 'brandon3055'
-                            roles { role 'developer' }
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/brandon3055/Draconic-Evolution/issues'
+                        }
+                        licenses {
+                            license {
+                                name 'License'
+                                url 'https://raw.githubusercontent.com/brandon3055/Draconic-Evolution/master/LICENSE.txt'
+                                distribution 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id 'brandon3055'
+                                name 'brandon3055'
+                                roles { role 'developer' }
+                            }
                         }
                     }
                 }
+            } else {
+                println 'Maven upload triggered but no local_maven property found!'
             }
         }
     }

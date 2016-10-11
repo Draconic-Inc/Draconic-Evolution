@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
-import codechicken.lib.render.TransformUtils;
+import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;

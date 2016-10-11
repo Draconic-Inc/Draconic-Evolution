@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
-import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.TransformUtils;
+import codechicken.lib.texture.TextureUtils;
+import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.lib.FullAtlasSprite;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.entity.EntityCustomArrow;

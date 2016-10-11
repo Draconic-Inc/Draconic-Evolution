@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client;
 
-import codechicken.lib.render.TextureUtils.IIconRegister;
+import codechicken.lib.texture.TextureUtils.IIconRegister;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;

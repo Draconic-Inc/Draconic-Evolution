@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.model.SimpleOverrideBakedModel;
-import codechicken.lib.render.ModelRegistryHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.utils.InfoHelper;

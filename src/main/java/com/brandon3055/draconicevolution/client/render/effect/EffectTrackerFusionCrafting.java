@@ -134,6 +134,7 @@ public class EffectTrackerFusionCrafting {
 
     public void renderEffect(Tessellator tessellator, float partialTicks) {
         VertexBuffer vertexbuffer = tessellator.getBuffer();
+        CCRenderState ccrs = CCRenderState.instance();
         //region Icosahedron
 
         float relativeX = (float) (this.prevPos.x + (this.pos.x - this.prevPos.x) * (double) partialTicks - interpPosX);
@@ -150,11 +151,11 @@ public class EffectTrackerFusionCrafting {
         GlStateManager.translate(relativeX, relativeY, relativeZ);
         GlStateManager.rotate(rotation + (partialTicks * rotationSpeed), 0F, 1F, 0F);
         GlStateManager.translate(-relativeX, -relativeY, -relativeZ);
-        CCRenderState.reset();
-        CCRenderState.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL, vertexbuffer);
+        ccrs.reset();
+        ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL, vertexbuffer);
         Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(relativeX, relativeY, relativeZ), new Rotation(0F, new Vector3(0, 0, 0)), 0.15 * scale);
-        CCRenderState.bind(vertexbuffer);
-        CCModelLibrary.icosahedron7.render(pearlMat);
+        ccrs.bind(vertexbuffer);
+        CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
         tessellator.draw();
         GlStateManager.popMatrix();
         GlStateManager.color(1F, 1F, 1F, 1F);

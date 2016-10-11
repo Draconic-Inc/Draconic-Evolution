@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.client.handler;
 
 
 import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.TransformUtils;
+import codechicken.lib.texture.TextureUtils;
+import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
 import com.brandon3055.brandonscore.utils.ModelUtils;
@@ -16,7 +16,6 @@ import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import com.brandon3055.draconicevolution.utils.ITickableTimeout;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -26,12 +25,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -67,13 +64,6 @@ public class ClientEventHandler {
     public static IBakedModel shieldModel = null;
     private static boolean isJEIInstalled;
     public static final List<ITickableTimeout> tickableList = Collections.synchronizedList(new ArrayList<ITickableTimeout>());
-
-    private static Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
-        @Override
-        public TextureAtlasSprite apply(ResourceLocation input) {
-            return TextureUtils.getTexture(input);
-        }
-    };
 
     public ClientEventHandler() {
         isJEIInstalled = Loader.isModLoaded("JEI");
@@ -186,7 +176,7 @@ public class ClientEventHandler {
         if (playerShieldStatus.containsKey(event.getEntityPlayer())) {
             if (shieldModel == null) {
                 try {
-                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, bakedTextureGetter);
+                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

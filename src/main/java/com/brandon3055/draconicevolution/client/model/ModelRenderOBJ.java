@@ -1,17 +1,15 @@
 package com.brandon3055.draconicevolution.client.model;
 
-import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.TransformUtils;
+import codechicken.lib.texture.TextureUtils;
+import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.google.common.base.Function;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -29,17 +27,12 @@ public class ModelRenderOBJ extends ModelRenderer {
     private IBakedModel objModel;
     public float scale = 0;
 
-    private static Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
-        @Override
-        public TextureAtlasSprite apply(ResourceLocation input) { return TextureUtils.getTexture(input); }
-    };
-
     public ModelRenderOBJ(ModelBase baseModel, ResourceLocation customModel, ResourceLocation texture) {
         super(baseModel);
         this.customModel = customModel;
 
         try {
-            objModel = OBJLoader.INSTANCE.loadModel(customModel).bake(TransformUtils.DEFAULT_TOOL, DefaultVertexFormats.ITEM, bakedTextureGetter);
+            objModel = OBJLoader.INSTANCE.loadModel(customModel).bake(TransformUtils.DEFAULT_TOOL, DefaultVertexFormats.ITEM, TextureUtils.bakedTextureGetter);
         }
         catch (Exception e) {
             e.printStackTrace();

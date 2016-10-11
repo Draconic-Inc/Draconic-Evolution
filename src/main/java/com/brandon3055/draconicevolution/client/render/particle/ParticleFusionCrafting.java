@@ -142,7 +142,8 @@ public class ParticleFusionCrafting extends BCParticle {
 
     @Override
     public void renderParticle(VertexBuffer vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        CCRenderState.draw(); //End Draw
+        CCRenderState ccrs = CCRenderState.instance();
+        ccrs.draw(); //End Draw
         //region Icosahedron
 
         float x = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
@@ -162,12 +163,12 @@ public class ParticleFusionCrafting extends BCParticle {
         //GlStateManager.rotate((float)Math.sin((rotation + partialTicks) * rotationSpeed / 100F) * 20F, 1F, 0F, 0F);
         GlStateManager.translate(-x, -y, -z);
 
-        CCRenderState.reset();
-        CCRenderState.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL, vertexbuffer);
+        ccrs.reset();
+        ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL, vertexbuffer);
         Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y, z), new Rotation(0F, new Vector3(0, 0, 0)), 0.15 * particleScale);
-        CCRenderState.bind(vertexbuffer);
-        CCModelLibrary.icosahedron7.render(pearlMat);
-        CCRenderState.draw();
+        ccrs.bind(vertexbuffer);
+        CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
+        ccrs.draw();
 
         GlStateManager.popMatrix();
         GlStateManager.color(1F, 1F, 1F, 1F);

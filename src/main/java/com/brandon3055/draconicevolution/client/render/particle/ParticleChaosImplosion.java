@@ -116,8 +116,8 @@ public class ParticleChaosImplosion extends BCParticle {
             super.renderParticle(vertexbuffer, entity, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
             return;
         }
-
-        CCRenderState.draw();
+        CCRenderState ccrs = CCRenderState.instance();
+        ccrs.draw();
 
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
@@ -134,26 +134,26 @@ public class ParticleChaosImplosion extends BCParticle {
 
             double scale = (contract ? 50D - (size + partialTicks) : size + partialTicks) * 8D;
             GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
-            CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
             Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
-            model.render(mat);
-            CCRenderState.draw();
+            model.render(ccrs, mat);
+            ccrs.draw();
         }
         else if (explosion) {
             double baseScale = size + partialTicks;
 
             GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
-            CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
 
             for (int i = 40; i > 0; i--) {
                 double scale = baseScale / i * 4D;
 
                 Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
-                model.render(mat);
+                model.render(ccrs, mat);
 
             }
 
-            CCRenderState.draw();
+            ccrs.draw();
         }
 
         GlStateManager.depthMask(true);

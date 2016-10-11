@@ -4,11 +4,11 @@ import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.uv.IconTransformation;
+import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
+import codechicken.lib.vec.uv.IconTransformation;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import com.brandon3055.draconicevolution.client.DETextureCache;
@@ -40,6 +40,7 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
         if (!te.structureValid.value) {
             return;
         }
+        CCRenderState ccrs = CCRenderState.instance();
         TextureUtils.bindBlockTexture();
         GlStateManager.pushMatrix();
         Vector3 translateVector = new Vector3(x + 0.5, y + (te.sphereOnTop.value ? 1.5 : -0.5), z + 0.5);
@@ -50,10 +51,10 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
         if (MinecraftForgeClient.getRenderPass() == 0) {
             GlStateManager.disableCull();
 
-            CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
+            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
             Rotation rotY = new Rotation(((ClientEventHandler.elapsedTicks + partialTicks) * 2F) * MathHelper.torad, new Vector3(0, 1, 0.5).normalize());
-            model.render(iconTransform, rotY);
-            CCRenderState.draw();
+            model.render(ccrs, iconTransform, rotY);
+            ccrs.draw();
 
             GlStateManager.enableCull();
 
@@ -68,9 +69,9 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
             GlStateManager.color(1F, 1F, 1F, 1F - f);
             GlStateManager.enableBlend();
 
-            CCRenderState.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            model.render(iconTransform, new Scale(1 + f, 1 + f, 1 + f));
-            CCRenderState.draw();
+            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
+            model.render(ccrs, iconTransform, new Scale(1 + f, 1 + f, 1 + f));
+            ccrs.draw();
 
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
             GlStateManager.disableBlend();
