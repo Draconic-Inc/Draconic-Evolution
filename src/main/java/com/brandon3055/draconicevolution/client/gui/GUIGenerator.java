@@ -35,7 +35,7 @@ public class GUIGenerator extends GuiContainer {
         this.player = invPlayer.player;
     }
 
-    private static final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/Grinder.png");
+    private static final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/GGrinder.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int X, int Y) {
