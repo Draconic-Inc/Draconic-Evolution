@@ -177,8 +177,7 @@
       "",
       "Awakened Item Dislocator",
       "Further testing has revealed that upgrading the Item dislocator with a bit of power and Awakened Draconium can greatly increase the range and effectiveness.",
-      "[c]item.draconicevolution:magnet:1",
-      "Sneaking will temporarily disable ether Item Dislocator."
+      "[c]item.draconicevolution:magnet:1"
     ]
   },
   {
@@ -354,14 +353,14 @@
     ]
   },
   {
-    "name":"tile.draconicevolution:draconicBlock",
+    "name":"tile.draconicevolution:draconic_block",
     "images":[],
     "content":
     [
       "You have been studying the interactions of Draconium with various materials and have come to realize that this is only an inert state.",
       "You have discovered a method to bring out the true power of Draconium using a complex ritual involving a dragon heart.",
       "(See the Dragon Heart page for details)",
-      "[c]tile.draconicevolution:draconicBlock:0",
+      "[c]tile.draconicevolution:draconic_block:0",
       "This block is resistant to the wither."
     ]
   },
@@ -716,13 +715,13 @@
     ]
   },
   {
-    "name":"tile.draconicevolution:energyStorageCore",
+    "name":"tile.draconicevolution:energy_storage_core",
     "images":[],
     "content":
     [
       "Using Draconic knowledge you have discovered how to build a multi-block structure capable of storing more power than any other device ever invented, with the highest tier able to store up to 2.14 trillion RF.",
       "More information is available in the Energy Core multi-block tutorial.",
-      "[c]tile.draconicevolution:energyStorageCore:0"
+      "[c]tile.draconicevolution:energy_storage_core:0"
     ]
   },
   {
@@ -752,8 +751,7 @@
       "Structural Setup:",
       "The Reactor consists of 6 main components. Four Reactor Stabilizers, the Reactor Core and an Energy Injector.  You will also need at least two Flux Gates to regulate the reactor.",
       "Place the Reactor Core at the intended center of the structure.",
-      "Place the four Stabilizers in a ring around the Core, each facing inwards. The Stabilizers do not need to be in a horizontal ring. You may place one Stabilizer above and one below the Core, all set they can be up to 8 blocks away. They must also be far enough away that they will not be consumed by the expansion of the Core as you continue to energize it.  The Core will expand to twice its original size when at max temperature. So, if you intend for the Core to reach maximum capacity, the Stabilizers will need to be placed a minimum of 4 blocks away. To test for adequate Stabilizer linkage to the Core, simply right click onr of the stabilizers and the Reactor GUI will open. If all 4 stabilizers are setup correctly the Reactor status should show as \"OFFLINE\".  Otherwise, status will read \"INVALID SETUP\" and require you to make changes in Stabilizer placement before continuing.",
-      "If the GUI dose not open at all break and replace the stabilizer making sure there are no blocks between the core and the stabilizer when it is placed. If you can access the gui from all 4 stabilizers they are good to go. This also applies to the energy injector. You can not access the gui from the injector but it is important to make sure there are no blocks obstructing its link to the core when it is placed.",
+      "Place the four Stabilizers in a ring around the Core, each facing inwards. The Stabilizers do not need to be in a horizontal ring. You may place one Stabilizer above and one below the Core, all set they can be up to 8 blocks away. They must also be far enough away that they will not be consumed by the expansion of the Core as you continue to energize it.  The Core will expand to twice its original size when at full temperature. So, if you intend for the Core to reach maximum capacity, the Stabilizers will need to be placed a minimum of 4 blocks away. To test for adequate Stabilizer linkage to the Core, simply right click the Core and the Reactor GUI will open. If all 4 stabilizers are setup correctly the Reactor status should show as \"OFFLINE\".  Otherwise, status will read \"INVALID SETUP\" and require you to make changes in Stabilizer placement before continuing.",
       "Once you have Stabilizers and the Core positioned accurately, place the Energy Injector on one of the remaining two sides of the Reactor Core.",
 
       "Component Functions:",
@@ -802,13 +800,13 @@
     ]
   },
   {
-    "name":"tile.draconicevolution:particleGenerator",
+    "name":"tile.draconicevolution:particle_generator",
     "images":[],
     "content":
     [
       "Purely decorative, this blocks allows for fully customizable particle effects to be created. For more information check out the instruction manual built into its GUI.",
       "This block is also used as a part of the Energy Storage multi-block structure.",
-      "[c]tile.draconicevolution:particleGenerator:0"
+      "[c]tile.draconicevolution:particle_generator:0"
     ]
   },
   {
@@ -979,8 +977,7 @@
       "The HUD shows three stats. Shield points (Large Red-Green bar), Entropy (Small Green bar) and the total remaining RF stored in your armor (Small Blue bar). The Numerical values for these stats will also be shown if enabled in the HUD config.",
       "The Shield Points or Capacity is the number of damage points (Half a heart) the armor can absorb and this will drop when you take damage. As long as any piece of armor has power your shield points will regenerate at the cost of RF. The base regeneration rate is the equivalent of the entire capacity every 3 seconds.",
       "Entropy ranges from 0 to 100%. It will increase each time you receive damage and will slowly decrease when you are not taking damage. Entropy reduces the rate at which your shield points regenerate. If your entropy reaches 100% your shield will not regenerate at all.",
-      "The shield can be upgraded using Upgrade Modifiers. Upgrading Shield Capacity will increase your shield points and upgrading Shield Recovery will increase the rate at which Entropy recovers. Note that the recovery rate is calculated by averaging the Recovery Points of all equipped armor pieces.",
-      "The shield also has a last stand ability. It is capable of blocking any fatal blow at the cost of 10 million RF. If you have less then 10MRF total stored in your armor this ability will not work at all and you will die. "
+      "The shield can be upgraded using Upgrade Modifiers. Upgrading Shield Capacity will increase your shield points and upgrading Shield Recovery will increase the rate at which Entropy recovers. Note that the recovery rate is calculated by averaging the Recovery Points of all equipped armor pieces."
     ]
   },
   {

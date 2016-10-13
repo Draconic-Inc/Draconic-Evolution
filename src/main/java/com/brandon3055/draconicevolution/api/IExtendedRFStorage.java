@@ -2,18 +2,11 @@ package com.brandon3055.draconicevolution.api;
 
 /**
  * Created by Brandon on 6/03/2015.
+ * This is can be used to read the energy stored in blocks that store more then MaxInt such as the Energy Core
  */
-public interface IExtendedRFStorage {
-    /**
-     * I will probably leave these here forever but i highly recommend switching as i may remove then at some point.
-     */
-    @Deprecated
-    double getEnergyStored();
+public interface IExtendedRFStorage
+{
+	long getExtendedStorage();
 
-    @Deprecated
-    double getMaxEnergyStored();
-
-    long getExtendedStorage();
-
-    long getExtendedCapacity();
+	long getExtendedCapacity();
 }

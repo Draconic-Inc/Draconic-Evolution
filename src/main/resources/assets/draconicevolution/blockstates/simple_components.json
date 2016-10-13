@@ -1,0 +1,25 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "textures": {
+      "layer0": "blocks/dirt"
+    },
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type":{
+      "draconiumdust": { "textures": { "layer0": "draconicevolution:items/components/draconium_dust"      } },
+      "draconiumingot":{ "textures": { "layer0": "draconicevolution:items/components/draconium_ingot"     } },
+      "draconicingot": { "textures": { "layer0": "draconicevolution:items/components/draconic_ingot"      } },
+      "draconiccore":  { "textures": { "layer0": "draconicevolution:items/components/draconic_core"       } },
+      "wyverncore":    { "textures": { "layer0": "draconicevolution:items/components/wyvern_core"         } },
+      "awakenedcore":  { "textures": { "layer0": "draconicevolution:items/components/awakened_core"       } },
+      "chaoticcore":   { "textures": { "layer0": "draconicevolution:items/components/chaotic_core"        } },
+      "wyvernecore":   { "textures": { "layer0": "draconicevolution:items/components/wyvern_energy_core"  } },
+      "draconicecore": { "textures": { "layer0": "draconicevolution:items/components/draconic_energy_core"} },
+      "dragonheart":   { "textures": { "layer0": "draconicevolution:items/components/dragon_heart"        } },
+      "info_tablet":   { "textures": { "layer0": "draconicevolution:items/info_tablet"                    } }
+    }
+  }
+}

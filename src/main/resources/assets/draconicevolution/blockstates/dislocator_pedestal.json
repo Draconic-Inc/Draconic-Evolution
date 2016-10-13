@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:dislocator_pedestal",
+    "textures": {
+      "particle": "draconicevolution:blocks/dislocator_pedestal"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal":[{}]
+  }
+}

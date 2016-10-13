@@ -1,0 +1,14 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:fusion_crafting_core",
+    "textures": {
+      "texture":"draconicevolution:blocks/fusion_crafting/crafting_core",
+      "particle": "draconicevolution:blocks/fusion_crafting/crafting_core"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal":[{}]
+  }
+}

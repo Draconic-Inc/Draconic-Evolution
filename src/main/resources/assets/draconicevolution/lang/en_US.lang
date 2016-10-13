@@ -1,113 +1,141 @@
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
-tile.draconicevolution:xRayBlock.name=Distortion Flame
-tile.draconicevolution:sunDial.name=Sun Dial
-tile.draconicevolution:weatherController.name=Weather Controller
-tile.draconicevolution:draconiumOre.name=Draconium Ore
+tile.draconicevolution:x_ray_block.name=Distortion Flame
+tile.draconicevolution:sun_dial.name=Sun Dial
+tile.draconicevolution:weather_controller.name=Weather Controller
+tile.draconicevolution:draconium_ore.type.normal.name=Draconium Ore
+tile.draconicevolution:draconium_ore.type.nether.name=Nether Draconium Ore
+tile.draconicevolution:draconium_ore.type.end.name=Ender Draconium Ore
 tile.draconicevolution:grinder.name=Mob Grinder
 tile.draconicevolution:potentiometer.name=Potentiometer
-tile.draconicevolution:rainSensor.name=Rain Sensor
-tile.draconicevolution:particleGenerator.name=Particle Generator
-tile.draconicevolution:playerDetector.name=Player Detector
-tile.draconicevolution:playerDetectorAdvanced.name=Advanced Player Detector
-tile.draconicevolution:energyInfuser.name=Energy Infuser
-tile.draconicevolution:customSpawner.name=Stabilized Mob Spawner
-tile.draconicevolution:longRangeDislocator1.name=Admin Dislocator
-tile.draconicevolution:longRangeDislocator0.name=Long Range Dislocator
+tile.draconicevolution:rain_sensor.name=Rain Sensor
+tile.draconicevolution:particle_generator.type.normal.name=Particle Generator
+tile.draconicevolution:particle_generator.type.inverted.name=Particle Generator
+tile.draconicevolution:particle_generator.type.stabilizer.name=Energy Core Stabilizer
+tile.draconicevolution:player_detector.name=Player Detector
+tile.draconicevolution:player_detectorAdvanced.name=Advanced Player Detector
+tile.draconicevolution:energy_infuser.name=Energy Infuser
+tile.draconicevolution:custom_spawner.name=Stabilized Mob Spawner
 tile.draconicevolution:generator.name=Generator
-tile.draconicevolution:energyStorageCore.name=Energy Core
-tile.draconicevolution:invisibleMultiblock.name=Energy Core
-tile.draconicevolution:energyPylon.name=Energy Pylon
-tile.draconicevolution:draconium0.name=Draconium Block
+tile.draconicevolution:energy_storage_core.name=Energy Core
+tile.draconicevolution:energy_pylon.name=Energy Pylon
+tile.draconicevolution:draconium_block.charged.false.name=Draconium Block
 tile.draconicevolution:draconium1.name=Resurrection Stone
-tile.draconicevolution:draconium2.name=Charged Draconium Block
-tile.draconicevolution:cKeyStone.name=Creative Key Stone
-tile.draconicevolution:dissEnchanter.name=Disenchanter
-tile.draconicevolution:teleporterStand.name=Dislocator Pedestal
-tile.draconicevolution:draconiumChest.name=Draconic Chest
-tile.draconicevolution:draconicBlock.name=Awakened Draconium Block
-tile.draconicevolution:infusedObsidian.name=Draconium Infused Obsidian
-tile.draconicevolution:dislocatorReceptacle.name=Dislocator Receptacle
+tile.draconicevolution:draconium_block.charged.true.name=Charged Draconium Block
+tile.draconicevolution:c_key_stone.name=Creative Key Stone
+tile.draconicevolution:diss_enchanter.name=Disenchanter
+tile.draconicevolution:dislocator_pedestal.name=Dislocator Pedestal
+tile.draconicevolution:draconium_chest.name=Draconic Chest
+tile.draconicevolution:draconic_block.name=Awakened Draconium Block
+tile.draconicevolution:infused_obsidian.name=Draconium Infused Obsidian
+tile.draconicevolution:dislocator_receptacle.name=Dislocator Receptacle
 tile.draconicevolution:portal.name=Portal
-tile.draconicevolution:flowGateFlux.name=Flux Gate
-tile.draconicevolution:flowGateFluid.name=Fluid Gate
-tile.draconicevolution:reactorCore.name=Draconic Reactor Core
-tile.draconicevolution:reactorStabilizer.name=Reactor Stabilizer
-tile.draconicevolution:reactorEnergyInjector.name=Reactor Energy Injector
-tile.draconicevolution:chaosCrystal.name=Chaos Crystal
-tile.draconicevolution:upgradeModifier.name=Upgrade Modifier
+tile.draconicevolution:flow_gate_flux.name=Flux Gate
+tile.draconicevolution:flow_gate_fluid.name=Fluid Gate
+tile.draconicevolution:reactor_core.name=Draconic Reactor Core
+tile.draconicevolution:reactor_stabilizer.name=Reactor Stabilizer
+tile.draconicevolution:reactor_energy_injector.name=Reactor Energy Injector
+tile.draconicevolution:chaos_crystal.name=Chaos Crystal
+tile.draconicevolution:upgrade_modifier.name=Upgrade Modifier
 
-tile.draconicevolution:energyCrystal0.name=Energy Relay
-tile.draconicevolution:energyCrystal1.name=Advanced Energy Relay
-tile.draconicevolution:energyCrystal2.name=Energy Transceiver
-tile.draconicevolution:energyCrystal3.name=Advanced Energy Transceiver
-tile.draconicevolution:energyCrystal4.name=Wireless Energy Transceiver
-tile.draconicevolution:energyCrystal5.name=Advanced Wireless Transceiver
+tile.draconicevolution:energy_crystal0.name=Energy Relay
+tile.draconicevolution:energy_crystal1.name=Advanced Energy Relay
+tile.draconicevolution:energy_crystal2.name=Energy Transceiver
+tile.draconicevolution:energy_crystal3.name=Advanced Energy Transceiver
+tile.draconicevolution:energy_crystal4.name=Wireless Energy Transceiver
+tile.draconicevolution:energy_crystal5.name=Advanced Wireless Transceiver
+
+tile.draconicevolution:fusion_crafting_core.name=Fusion Crafting Core
+tile.draconicevolution:crafting_pedestal.facing.up.tier.basic.name=Basic Fusion Crafting Injector
+tile.draconicevolution:crafting_pedestal.facing.up.tier.wyvern.name=Wyvern Fusion Crafting Injector
+tile.draconicevolution:crafting_pedestal.facing.up.tier.draconic.name=Draconic Fusion Crafting Injector
+tile.draconicevolution:crafting_pedestal.facing.up.tier.chaotic.name=Chaotic Fusion Crafting Injector
+
+tile.draconicevolution:creative_rf_source.name=Creative RF Source
 
 
 //Item Information ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:awakenedCore.name=Awakened Core
-item.draconicevolution:draconiumIngot.name=Draconium Ingot
-item.draconicevolution:draconiumDust.name=Draconium Dust
-item.draconicevolution:draconiumBlend.name=Draconium Blend (Depreciated)
-item.draconicevolution:dragonHeart.name=Dragon Heart
-item.draconicevolution:wyvernCore.name=Wyvern Core
-item.draconicevolution:sunFocus.name=Solar Focus
-item.draconicevolution:tclogo.name=TCLogo
-item.draconicevolution:draconicCore.name=Draconic Core
-item.draconicevolution:teleporterMKI.name=Charm of Dislocation
-item.draconicevolution:teleporterMKII.name=Enhanced Charm of Dislocation
+item.draconicevolution:awakened_core.name=Awakened Core
+item.draconicevolution:draconium_ingot.name=Draconium Ingot
+item.draconicevolution:draconium_dust.name=Draconium Dust
+item.draconicevolution:draconium_blend.name=Draconium Blend (Depreciated)
+item.draconicevolution:dragon_heart.name=Dragon Heart
+item.draconicevolution:wyvern_core.name=Wyvern Core
+item.draconicevolution:sun_focus.name=Solar Focus
+item.draconicevolution:draconic_core.name=Draconic Core
+item.draconicevolution:dislocator.name=Dislocator
+item.draconicevolution:dislocator_advanced.name=Advanced Dislocation
 
 info.teleporterInfGUI.txt=Shift + Right click to open gui
 info.teleporterInfScroll.txt=Shift + scroll to cycle destinations
 
-item.draconicevolution:wyvernPickaxe.name=Pickaxe of the Wyvern
-item.draconicevolution:wyvernShovel.name=Shovel of the Wyvern
-item.draconicevolution:wyvernSword.name=Sword of the Wyvern
-item.draconicevolution:wyvernBow.name=Bow of the Wyvern
-item.draconicevolution:wyvernHelm.name=Wyvern Helm
-item.draconicevolution:wyvernChest.name=Wyvern Chestplate
-item.draconicevolution:wyvernLeggs.name=Wyvern Leggings
-item.draconicevolution:wyvernBoots.name=Wyvern Boots
-item.draconicevolution:draconicPickaxe.name=Draconic Pickaxe
-item.draconicevolution:draconicAxe.name=Draconic Axe
-item.draconicevolution:draconicShovel.name=Draconic Shovel
-item.draconicevolution:draconicHoe.name=Draconic Hoe
-item.draconicevolution:draconicSword.name=Draconic Sword
-item.draconicevolution:draconicBow.name=Draconic Bow
-item.draconicevolution:draconicHelm.name=Draconic Helm
-item.draconicevolution:draconicChest.name=Draconic Chestplate
-item.draconicevolution:draconicLeggs.name=Draconic Leggings
-item.draconicevolution:draconicBoots.name=Draconic Boots
-item.draconicevolution:draconicDistructionStaff.name=Draconic Staff of Power
-item.draconicevolution:mobSoul.name=Mob Soul
-item.draconicevolution:enderArrow.name=Ender Arrow
-item.draconicevolution:safetyMatch.name=Safety Match
-item.draconicevolution:safetyMatchBox.name=Box of Safety Matches
+item.draconicevolution:wyvern_pick.name=Pickaxe of the Wyvern
+item.draconicevolution:wyvern_axe.name=Axe of the Wyvern
+item.draconicevolution:wyvern_shovel.name=Shovel of the Wyvern
+item.draconicevolution:wyvern_sword.name=Sword of the Wyvern
+item.draconicevolution:wyvern_bow.name=Bow of the Wyvern
+item.draconicevolution:wyvern_helm.name=Wyvern Helm
+item.draconicevolution:wyvern_chest.name=Wyvern Chestplate
+item.draconicevolution:wyvern_legs.name=Wyvern Leggings
+item.draconicevolution:wyvern_boots.name=Wyvern Boots
+item.draconicevolution:draconic_pick.name=Draconic Pickaxe
+item.draconicevolution:draconic_axe.name=Draconic Axe
+item.draconicevolution:draconic_shovel.name=Draconic Shovel
+item.draconicevolution:draconic_hoe.name=Draconic Hoe
+item.draconicevolution:draconic_sword.name=Draconic Sword
+item.draconicevolution:draconic_bow.name=Draconic Bow
+item.draconicevolution:draconic_helm.name=Draconic Helm
+item.draconicevolution:draconic_chest.name=Draconic Chestplate
+item.draconicevolution:draconic_legs.name=Draconic Leggings
+item.draconicevolution:draconic_boots.name=Draconic Boots
+item.draconicevolution:draconic_staff_of_power.name=Draconic Staff of Power
+item.draconicevolution:mob_soul.name=Mob Soul
+item.draconicevolution:ender_arrow.name=Ender Arrow
+item.draconicevolution:safety_match.name=Safety Match
+item.draconicevolution:safety_match_box.name=Box of Safety Matches
 item.draconicevolution:key.name=Key
-item.draconicevolution:draconiumEnergyCore0.name=Wyvern Energy Core
-item.draconicevolution:draconiumEnergyCore1.name=Draconic Energy Core
-item.draconicevolution:draconiumFluxCapacitor0.name=Wyvern Flux Capacitor
-item.draconicevolution:draconiumFluxCapacitor1.name=Draconic Flux Capacitor
-item.draconicevolution:draconicIngot.name=Awakened Draconium Ingot
-item.draconicevolution:creativeStructureSpawnerComet.name=Spawn Comet
-item.draconicevolution:creativeStructureSpawnerEnderIsland.name=Spawn Ender Island
-item.draconicevolution:infoTablet.name=Draconic Evolution Information Tablet
+item.draconicevolution:wyvern_energy_core.name=Wyvern Energy Core
+item.draconicevolution:draconic_energy_core.name=Draconic Energy Core
+
+item.draconicevolution:draconium_capacitor.wyvern.name=Wyvern Flux Capacitor
+item.draconicevolution:draconium_capacitor.draconic.name=Draconic Flux Capacitor
+item.draconicevolution:draconium_capacitor.creative.name=Creative Flux Capacitor
+
+item.draconicevolution:draconic_ingot.name=Awakened Draconium Ingot
+item.draconicevolution:creative_structure_spawner_comet.name=Spawn Comet
+item.draconicevolution:creative_structure_spawner_ender_island.name=Spawn Ender Island
+item.draconicevolution:info_tablet.name=Draconic Evolution Information Tablet
 item.draconicevolution:wrench.name=Crystal Binder
-item.draconicevolution:dezilsMarshmallow.name=Dezil's Marshmallow
-item.draconicevolution:reactorCraftingPart.frame.name=Reactor Stabilizer Frame
-item.draconicevolution:reactorCraftingPart.rotorInner.name=Reactor Stabilizer Inner Rotor
-item.draconicevolution:reactorCraftingPart.rotorOuter.name=Reactor Stabilizer Outer Rotor
-item.draconicevolution:reactorCraftingPart.rotorAssembly.name=Reactor Stabilizer Rotor Assembly
-item.draconicevolution:reactorCraftingPart.stabilizerRing.name=Reactor Stabilizer Focus Ring
-item.draconicevolution:chaoticCore.name=Chaotic Core
-item.draconicevolution:chaosShard.name=Chaos Shard
-item.draconicevolution:chaosFragment0.name=Tiny Chaos Fragment
-item.draconicevolution:chaosFragment1.name=Small Chaos Fragment
-item.draconicevolution:chaosFragment2.name=Large Chaos Fragment
+item.draconicevolution:dezils_marshmallow.name=Dezil's Marshmallow
+item.draconicevolution:reactor_crafting_part.frame.name=Reactor Stabilizer Frame
+item.draconicevolution:reactor_crafting_part.rotorInner.name=Reactor Stabilizer Inner Rotor
+item.draconicevolution:reactor_crafting_part.rotorOuter.name=Reactor Stabilizer Outer Rotor
+item.draconicevolution:reactor_crafting_part.rotorAssembly.name=Reactor Stabilizer Rotor Assembly
+item.draconicevolution:reactor_crafting_part.stabilizerRing.name=Reactor Stabilizer Focus Ring
+item.draconicevolution:chaotic_core.name=Chaotic Core
+item.draconicevolution:chaos_shard.shard.name=Chaos Shard
+item.draconicevolution:chaos_shard.fragSmall.name=Tiny Chaos Fragment
+item.draconicevolution:chaos_shard.fragMedium.name=Small Chaos Fragment
+item.draconicevolution:chaos_shard.fragLarge.name=Large Chaos Fragment
 item.draconicevolution:nugget.draconium.name=Draconium Nugget
 item.draconicevolution:nugget.awakened.name=Awakened Draconium Nugget
 item.draconicevolution:magnet.wyvern.name=Item Dislocator
 item.draconicevolution:magnet.draconic.name=Awakened Item Dislocator
+
+item.draconicevolution:tool_upgrade.rfCap.name=Upgrade Key (RF Capacity)
+item.draconicevolution:tool_upgrade.digSpeed.name=Upgrade Key (Dig Speed)
+item.draconicevolution:tool_upgrade.digAOE.name=Upgrade Key (Dig AOE)
+item.draconicevolution:tool_upgrade.digDepth.name=Upgrade Key (Dig Depth)
+item.draconicevolution:tool_upgrade.attackDmg.name=Upgrade Key (Attack Damage)
+item.draconicevolution:tool_upgrade.attackAOE.name=Upgrade Key (Attack AOE)
+item.draconicevolution:tool_upgrade.arrowDmg.name=Upgrade Key (Arrow Damage)
+item.draconicevolution:tool_upgrade.drawSpeed.name=Upgrade Key (Draw Speed)
+item.draconicevolution:tool_upgrade.arrowSpeed.name=Upgrade Key (Arrow Speed)
+item.draconicevolution:tool_upgrade.shieldCap.name=Upgrade Key (Shield Capacity)
+item.draconicevolution:tool_upgrade.shieldRec.name=Upgrade Key (Shield Recovery)
+item.draconicevolution:tool_upgrade.moveSpeed.name=Upgrade Key (Movement Speed)
+item.draconicevolution:tool_upgrade.jumpBoost.name=Upgrade Key (Jump Boost)
+
+item.draconicevolution:creative_exchanger.name=Creative Block Exchanger
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -128,7 +156,7 @@ msg.bowmodedevistation.txt=§3Fire Mode: §6Devastation!!! (Creative Only)
 msg.bowoutofgunpowder.txt=§4You need 4 gunpowder to use explosive mode
 msg.teleporterUnSet.txt=§cYou must first set the destination before you can teleport (Shift + Right click)
 msg.teleporterBound.txt=§aTeleporter bound to:
-msg.teleporterLowHealth.txt= §cYou are to low on health!
+msg.teleporterLowHealth.txt=§cYou are to low on health!
 msg.teleporterSentMob.txt=The entity has been sent to
 msg.teleporterEntityDimensional.txt=§cYou can not send mobs across dimensions!
 msg.teleporterAlreadySet.txt=§cError this charm can only be bound to one location
@@ -173,6 +201,7 @@ msg.de.shockWaveForEnergyBoltsOnly.txt=Shock Wave is only possible with Arrow of
 msg.de.explosiveNotForEnergyBolts.txt=Explosive is not possible with Arrow of Draconic Fire
 msg.de.insufficientPowerToFire.txt=Insufficient Power to Fire
 msg.de.outOfArrows.txt=Out of Arrows!!!
+msg.de.coreNotFound.txt=[Error: 404] Core Not Found!
 
 //Energy Net
 msg.de.wrenchMode.bind.txt=Function: Bind
@@ -210,6 +239,8 @@ info.teleporterInfFuel.txt=Fuel:
 info.teleporterInfSet1.txt=Bound to
 info.teleporterInfSet2.txt=Uses remaining
 info.de.rightClickToTeleport.txt=Right click to teleport
+info.de.draconiumBlockCapacitorCharge.txt=Hold item and sneak to charge from capacitor.
+info.creativeCapacitor.txt=Can source or sink
 
 info.draconicAxe1.txt=Timber!!!!!!
 info.draconicAxe2.txt=Will fall an entire tree
@@ -249,9 +280,9 @@ info.draconiumChestInfo2.txt=to access colour options
 
 info.de.capacitorMode.txt=Mode
 info.de.capacitorMode0.txt=Inactive
-info.de.capacitorMode1.txt=Charge Hotbar
-info.de.capacitorMode2.txt=Charge Armor & Held Item
-info.de.capacitorMode3.txt=Charge Armor & Hotbar
+info.de.capacitorMode1.txt=Charge Armor
+info.de.capacitorMode2.txt=Charge Held Items
+info.de.capacitorMode3.txt=Charge Armor & Held Items
 info.de.changwMode.txt=Shift Right click to change mode
 
 info.de.toolInventoryOblit.txt=Junk filter & Enchants
@@ -275,6 +306,8 @@ info.de.manual.contributorsButton.txt=Contributors
 info.de.manual.contributorsButtonInfo.txt=A list of people who have contributed to Draconic Evolution
 info.de.shiftRightClickToActivate.txt=Shift-Right click to activate.
 info.de.blockRange.txt=Block Range.
+info.de.hasSavedData.txt=Contents Saved!
+info.de.energyBuffer.txt=Energy Buffer
 
 info.de.manual.nav1.txt=Navigation Tips
 info.de.manual.nav2.txt=Press Backspace to go to the previous page.
@@ -380,17 +413,8 @@ achievement.draconicevolution.sundial.desc=Craft a sun dial and take control of 
 achievement.draconicevolution.manual=Knowledge to the Max!
 achievement.draconicevolution.manual.desc=Craft the Draconic Tablet
 
-//InfoHelper ----------------------------------------------------------------------------------------------------------------------------------------
-info.de.charge.txt=Charge
-info.de.hold.txt=Hold
-info.de.shift.txt=Shift
-info.de.forDetails.txt=for Details
-info.de.ctrl.txt=CTRL
-info.de.forUpgrades.txt=for Stats
-info.de.useUpgradeModifier.txt=Use an Upgrade Modifier to boost these stats!
-
 //Lore ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:wyvernPickaxe.lore=2Mundane picks are so weak\nthrough Draconium, you increase the area and speed to mine.
+item.draconicevolution:wyvernPick.lore=2Mundane picks are so weak\nthrough Draconium, you increase the area and speed to mine.
 item.draconicevolution:wyvernShovel.lore=2One block at a time? Not with Draconium!\nfaster, larger area, this is a start!
 item.draconicevolution:wyvernSword.lore=2Draconium begins to unlock the sword’s potential\nthe area and strength of the sword improves.
 item.draconicevolution:wyvernBow.lore=2Infusing Draconium in a mundane bow\nallows you to shoot faster and with more power.
@@ -400,7 +424,7 @@ item.draconicevolution:wyvernChest.lore=2Infusing the armor with Draconium\nyou 
 item.draconicevolution:wyvernLeggs.lore=2You feel even stronger and faster now\nthat you have infused diamond legs with Draconium
 item.draconicevolution:wyvernBoots.lore=2You learn to improve the boots\nDraconium seems to have given you greater\nagility
 
-item.draconicevolution:draconicPickaxe.lore=2Great care and research has\nallowed you to mine even larger areas
+item.draconicevolution:draconicPick.lore=2Great care and research has\nallowed you to mine even larger areas
 item.draconicevolution:draconicAxe.lore=2After lots of trial and error\nyou can now feel an entire tree with one try
 item.draconicevolution:draconicShovel.lore=2Even more efficient\nyou can dig an even larger area
 item.draconicevolution:draconicHoe.lore=2Draconium even improves farming\nentire areas can be tilled and placed in a single click
@@ -423,12 +447,12 @@ entity.DraconicEvolution.ChaosGuardian.name=Chaos Guardian
 key.placeItem=Place Item in world
 key.toolConfig=Tool & Armor Config GUI
 key.toolProfileChange=Change Tool Config Profile
-key.toggleFlight=Toggle Creative Flight
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian
 death.attack.damage.de.fusionExplode=%1$s was vaporized by a high energy fusion explosion
 death.attack.chaosBurst=%1$s was destroyed by dark energy
+death.attack.de.islandImplode=%1$s did not run fast enough and was consumed by the implosion of the chaos island
 
 death.attack.de.GuardianFireball=%1$s was firebombed by a Chaos Guardian
 death.attack.de.GuardianEnergyBall=%1$s was zapped like a bug by a Chaos Guardian
@@ -462,33 +486,6 @@ button.de.DOWN.txt=DOWN
 button.de.toggleHidden.txt=Toggle Hidden
 
 //Item Config Buttons
-button.de.ArmorNVActive.name=Night Vision
-button.de.ArmorNVLock.name=Lock Night Vision
-button.de.ArmorFlightLock.name=Lock Flight
-button.de.ArmorInertiaCancellation.name=Inertia Cancellation
-button.de.ArmorSpeedMult.name=Move Speed Modifier
-button.de.ArmorJumpMult.name=Jump Height Modifier
-button.de.ArmorHillStep.name=Hill Step
-button.de.ArmorSprintOnly.name=Reduce When Walking
-button.de.ArmorFlightSpeedMult.name=Flight Speed Modifier
-button.de.ToolDigMultiplier.name=Dig Speed
-button.de.ToolDigAOE.name=Size
-button.de.ToolDigDepth.name=Dig Depth
-button.de.WeaponAttackAOE.name=Attack A.O.E
-button.de.ToolVoidJunk.name=Void Junk
-button.de.AxeTreeMode.name=Tree Mode
-button.de.BaseSafeAOE.name=AOE Safe Mode
-button.de.VerticalAcceleration.name=Vertical Acceleration
-button.de.EffectiveOnSprint.name=Effective while sprinting
-button.de.GogglesOfRevealing.name=Magical Sense
-button.de.BowArrowSpeedModifier.name=Arrow Velocity Modifier
-button.de.BowAutoFire.name=Auto Fire
-button.de.BowArrowDamage.name=Base Damage
-button.de.BowExplosionPower.name=Explosive Power
-button.de.BowShockWavePower.name=Shock Wave Power
-button.de.BowEnergyBolt.name=Arrow of Draconic Fire
-button.de.BowZoomModifier.name=Magnification
-
 button.de.reactorCharge.txt=Charge Reactor
 button.de.reactorStart.txt=Activate
 button.de.reactorStop.txt=Initiate Shutdown
@@ -504,8 +501,15 @@ button.de.fadeMode3.txt=Fade Out: 75%
 button.de.fadeMode4.txt=Fade Out: Full
 button.de.rotate.txt=Rotate
 button.de.numeric.txt=Numeric:
+button.de.buildGuide.txt=Build Guide:
+button.de.tierUp.txt=Tier Up
+button.de.tierDown.txt=Tier Down
+
+button.de.activate.txt=Activate
+button.de.deactivate.txt=Deactivate
 
 //Gui ----------------------------------------------------------------------------------------------------------------------------------------
+
 gui.de.flowGate.name=Flow Control
 gui.de.flowGatePartialSignal.name=The actual flow will vary between the two given values depending on the strength of the redstone signal being supplied to the block.
 gui.de.flowGateCurrentFlow.name=Flow
@@ -521,6 +525,9 @@ gui.de.mass.name=Core Mass
 gui.de.genRate.name=Generation Rate
 gui.de.fieldInputRate.name=Field Input Rate
 gui.de.fuelConversion.name=Fuel Conversion Rate
+gui.de.configureItem.txt=Configure Item
+gui.de.min.txt=Min
+gui.de.max.txt=Max
 
 gui.de.insert.txt=Insert
 gui.de.extract.txt=Extract
@@ -571,6 +578,19 @@ gui.de.clickAndDragPurpleBoxes.txt=Click and drag the purple boxes to move the d
 gui.de.profile.txt=Profile
 gui.de.maxDamage.txt=Max Damage
 gui.de.rfPerShot.txt=RF/Shot
+gui.de.tier.txt=Tier
+gui.de.inactive.txt=Inactive
+gui.de.active.txt=Active
+gui.de.energyStorage.txt=Energy Storage
+gui.de.capacity.txt=Capacity
+gui.de.maxStorage.txt=>> Max Storage <<
+gui.de.stabilizers.txt=Stabilizers
+gui.de.invalid.txt=Invalid
+gui.de.valid.txt=Valid
+gui.de.advancedStabilizersRequired.txt=Advanced Stabilizers Required
+gui.de.core.txt=Core
+gui.de.almostInfinite.txt=Almost Infinite!
+gui.de.transfer.txt=Transfer
 
 gui.de.RFCapacity.txt=RF Capacity
 gui.de.DigSpeed.txt=Dig Speed
@@ -594,3 +614,201 @@ potion.de.highStep.txt=High Step
 potion.de.swiftness.txt=Swiftness
 potion.de.fireImmune.txt=Fire Immunity
 potion.de.jumpBoost.txt=Jump Boost
+
+
+
+
+//##################   Start of refactored (sane) localization   ##################
+
+//---- Gui Names ----//
+gui.de.energyStorageCore.name=Tier %s Energy Core
+gui.de.fusionCraftingCore.name=Fusion Crafting
+gui.de.dissEnchanter.name=Disenchanter
+
+
+//---- Generic Gui Buttons ----//
+gui.de.button.start=Start
+gui.de.button.extract=Extract
+
+
+//---- Gui Fusion Crafting Info ----//
+gui.fusionCrafting.tierLow.info=Pedestal Tier Too Low
+gui.fusionCrafting.outputObstructed.info=Output Obstructed
+gui.fusionCrafting.crafting.info=Crafting
+gui.fusionCrafting.charging.info=Charging
+gui.jeiFusion.tier.0=Tier: Basic
+gui.jeiFusion.tier.1=Tier: Wyvern
+gui.jeiFusion.tier.2=Tier: Draconic
+gui.jeiFusion.tier.3=Tier: Chaotic
+
+
+//---- Upgrades ----//
+upgrade.de.upgrades.info=Upgrades
+upgrade.de.upgradeNA.info=Upgrade Not Applicable for this item
+upgrade.de.upgradeLevelToHigh.info=Upgrade level too high for this item
+upgrade.de.upgradeApplied.info=Upgrade Applied
+upgrade.de.upgradePrevLevelRequired.info=Previous level must be applied first
+upgrade.de.holdCtrlForUpgrades.info=Hold %sCTRL%s for Upgrades
+upgrade.de.holdShiftForRecipes.info=Hold %sShift%s for Recipes
+upgrade.de.holdCTRLToPause.info=CTRL to Pause
+upgrade.de.level.info=Level
+
+upgrade.de.rfCap.name=RF Capacity
+upgrade.de.digSpeed.name=Dig Speed
+upgrade.de.digAOE.name=Dig AOE
+upgrade.de.digDepth.name=Dig Depth
+upgrade.de.attackDmg.name=Attack Damage
+upgrade.de.attackAOE.name=Attack AOE
+upgrade.de.arrowDmg.name=Arrow Damage
+upgrade.de.drawSpeed.name=Draw Speed
+upgrade.de.arrowSpeed.name=Arrow Speed
+upgrade.de.shieldCap.name=Shield Capacity
+upgrade.de.shieldRec.name=Shield Recovery
+upgrade.de.moveSpeed.name=Movement Speed
+upgrade.de.jumpBoost.name=Jump Boost
+
+upgrade.level.0=-
+upgrade.level.1=Basic
+upgrade.level.2=Wyvern
+upgrade.level.3=Draconic
+upgrade.level.4=Chaotic
+
+//---- Tool Config ----//
+config.field.on.state=On
+config.field.off.state=Off
+config.field.digSpeed.entry=Dig Speed Multiplier
+config.field.digSpeed.description=Allows you to adjust how fast this tool breaks blocks. Useful if you need precision over speed.
+config.field.digAOE.entry=Dig A.O.E
+config.field.digAOE.description=Allows you to adjust this tools mining area of effect.
+config.field.aoeSafeMode.entry=A.O.E Safe Mode
+config.field.aoeSafeMode.description=When enabled this tool will not break anything if it detects a tile entity within its AOE range. This can help prevent you from accidentally breaking half your base with a single miss click.
+config.field.digDepth.entry=Dig Depth
+config.field.digDepth.description=This function only works with
+config.field.showDigAOE.entry=Show Dig A.O.E
+config.field.showDigAOE.description=When enabled shows all of the blocks covered by this tools mining AOE.
+
+config.field.armorSpeedModifier.entry=Speed Modifier
+config.field.armorSpeedModifier.description=This allows you to adjust the speed boost given by this armor piece.
+config.field.armorJumpModifier.entry=Jump Modifier
+config.field.armorJumpModifier.description=This allows you to adjust the jump boost given by this armor piece.
+config.field.sprintBoost.entry=Boost on Sprint
+config.field.sprintBoost.description=When enabled the modifiers you have set will be reduced when you are NOT sprinting.
+config.field.armorNV.entry=Night Vision
+config.field.armorNV.description=Enable or disable night vision. Be default the night vision will only be applied when you are in a dark area.
+config.field.armorNVLock.entry=Night Vision Lock
+config.field.armorNVLock.description=This locks night vision to active regardless of the light level you are in.
+config.field.armorFSpeedModifier.entry=Flight Speed Modifier
+config.field.armorFSpeedModifier.description=Allows you to adjust the speed boost applied by this armor while flying.
+config.field.armorVFSpeedModifier.entry=Vertical Boost
+config.field.armorVFSpeedModifier.description=This allows you to increase the speed at which you ascend/descend while flying.
+config.field.armorInertiaCancel.entry=Inertia Cancellation
+config.field.armorInertiaCancel.description=When flying at high speeds this will force you to stop almost instantly when you let go of the move key.
+config.field.armorHillStep.entry=Step Assist
+config.field.armorHillStep.description=Allows you to step up 1 full block without jumping.
+
+config.field.bowArrowDamage.entry=Arrow Base Damage
+config.field.bowArrowDamage.description=Allows you to adjust the base damage inflicted by your arrows. Note base damage is multiplied by arrow velocity to get the actual damage.
+config.field.bowArrowSpeedModifier.entry=Arrow Velocity Modifier
+config.field.bowArrowSpeedModifier.description=Modifies the velocity of your arrows. This effects damage and distance.
+config.field.bowAutoFire.entry=Auto Fire
+config.field.bowAutoFire.description=Fires automatically when fully charged
+config.field.bowExplosionPower.entry=Explosion Power
+config.field.bowExplosionPower.description=Adjusts the explosion power of your arrows.
+config.field.bowZoomModifier.entry=Magnification
+config.field.bowZoomModifier.description=Can be used to take precision long range shots
+config.field.bowFireArrow.entry=Arrow of Draconic Fire
+config.field.bowFireArrow.description=Fire an arrow made of pure energy. Removes the need for ammunition and unlocks the Shock Wave effect.
+config.field.bowShockPower.entry=Shock Wave Power
+config.field.bowShockPower.description=Creates a powerful Shock Wave on impact that dose more damage to entities than an equivelent explosion but without damaging blocks.
+
+config.field.attackAOE.entry=Attack Radius
+config.field.attackAOE.description=Allows you to adjust the area covered by this weapons swing.
+
+config.field.showHarvestIndicator.entry=Harvest Indicator
+config.field.showHarvestIndicator.description=Shows where the axe is currently harvesting blocks.
+
+config.field.landFill.entry=Land Fill
+config.field.landFill.description=Will automatically use dirt from your inventory to fill up to a 1 block deep hole in order to create a flat tilled area. Will also harvest up to 1 block above the area to be tilled if needed.
+
+config.field..entry=
+config.field..description=
+
+config.field.AOE.entry=A.O.E
+config.field.replaceSame.entry=Replace Same Blocks
+config.field.replaceVisible.entry=Replace Visible
+config.field.fillLogic.entry=Fill Logic
+
+
+button.de.ArmorNVActive.name=Night Vision
+button.de.ArmorNVLock.name=Lock Night Vision
+button.de.ArmorFlightLock.name=Lock Flight
+button.de.ArmorInertiaCancellation.name=Inertia Cancellation
+button.de.ArmorSpeedMult.name=Move Speed Modifier
+button.de.ArmorJumpMult.name=Jump Height Modifier
+button.de.ArmorHillStep.name=Hill Step
+button.de.ArmorSprintOnly.name=Reduce When Walking
+button.de.ArmorFlightSpeedMult.name=Flight Speed Modifier
+button.de.ToolDigMultiplier.name=Dig Speed
+button.de.ToolDigAOE.name=Size
+button.de.ToolDigDepth.name=Dig Depth
+button.de.WeaponAttackAOE.name=Attack A.O.E
+button.de.ToolVoidJunk.name=Void Junk
+button.de.AxeTreeMode.name=Tree Mode
+button.de.BaseSafeAOE.name=AOE Safe Mode
+button.de.VerticalAcceleration.name=Vertical Acceleration
+button.de.EffectiveOnSprint.name=Effective while sprinting
+button.de.GogglesOfRevealing.name=Magical Sense
+button.de.BowArrowSpeedModifier.name=Arrow Velocity Modifier
+button.de.BowAutoFire.name=Auto Fire
+button.de.BowArrowDamage.name=Base Damage
+button.de.BowExplosionPower.name=Explosive Power
+button.de.BowShockWavePower.name=Shock Wave Power
+button.de.BowEnergyBolt.name=Arrow of Draconic Fire
+button.de.BowZoomModifier.name=Magnification
+
+
+//---- Info Helper ----//TODO Move this to BrandonsCore
+info.bc.holdShiftForDetails.txt=Hold %sShift%s for Details
+info.bc.charge.txt=Charge
+
+info.bc.hold.txt=Hold
+info.bc.shift.txt=Shift
+info.bc.forDetails.txt=for Details
+info.bc.ctrl.txt=CTRL
+
+//---- Chat Messages ----//
+chat.toolConfig.thatItemNotConfigurable.msg=That item is not configurable
+chat.dissEnchanter.notEnoughLevels.msg=You require %s levels to extract that enchantment!
+
+
+//---- GUI Buttons ----//
+gui.de.toolConfig.hud.txt=HUD
+gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
+
+
+//---- Generic ----//
+generic.de.Mode.txt=Mode
+generic.de.energyCost.txt=Energy Cost
+generic.options.txt=Options
+generic.ok.txt=OK
+
+//---- Mod Wiki ----//
+guiwiki.label.navigation=Navigation
+guiwiki.label.mods=Mods
+modwiki.label.style=Style
+
+modwiki.style.navWindow=Nav Window
+modwiki.style.mainWindow=Main Window
+modwiki.style.menu=Menu
+modwiki.style.presets=Presets
+modwiki.style.navText=Nav Text
+modwiki.style.text=Text
+
+modwiki.style.preset.intellij=Intellij
+modwiki.style.preset.black&white=Black & White
+modwiki.style.preset.white&black=White & Black
+modwiki.style.preset.purple=Purple
+modwiki.style.preset.draconic=Draconic
+modwiki.style.preset.transparent=Transparent
+
+guiwiki.button.home=Home

@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type": {
+      "draconium": {
+        "textures": { "layer0": "draconicevolution:items/components/nugget_draconium" }
+      },
+      "awakened": {
+        "textures": { "layer0": "draconicevolution:items/components/nugget_awakened" }
+      }
+    }
+  }
+}

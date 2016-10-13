@@ -1,30 +1,41 @@
-
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
-
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 repositories {
     maven {
-        name 'CB Maven FS'
+        name 'Covers1624 maven'
+        url "http://adel.podgeweb.com:1616/maven/"
+    }
+    maven {
+        name 'Covers1624 maven'
+        url "http://172.17.5.4:1616/maven/"
+    }
+	maven {
+        name 'CB Maven'
         url "http://chickenbones.net/maven/"
     }
+    maven {
+        name 'OC Maven'
+        url "http://maven.cil.li/"
+    }
+    maven {
+        name "JEI Maven."
+        url "http://dvs1.progwml6.com/files/maven"
+    }
 }
-
-apply plugin: 'forge'
 
 // Define properties file
 ext.configFile = file "build.properties"
@@ -36,23 +47,43 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-version = "${config.minecraft_version}-${config.mod_version}"
+version = "${config.mcversion}-${config.mod_version}"
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
+    version = config.mcversion + "-" + config.forge_version
     runDir = "run"
+	mappings = "${config.mcp_mappings}"
+    replace '${mod_version}', project.config.mod_version
+    replaceIn "DraconicEvolution.java"
+    makeObfSourceJar = false
 }
 
-
+String buildNo = "38"
+if(System.getenv("BUILD_NUMBER") != null){
+	buildNo = System.getenv("BUILD_NUMBER")
+}
+version = version + ".${buildNo}"
 
 dependencies {
-    compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
-    compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:dev"
-    compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
+    //compile "codechicken:CodeChickenCore:${config.mcversion}-${config.ccc_version}:deobf"
+    //compile "codechicken:NotEnoughItems:${config.mcversion}-${config.NEI_version}:deobf"
+	compile "com.brandon3055.brandonscore:BrandonsCore:${config.mcversion}-${config.bcore_version}:deobf"
+	compile "codechicken:CodeChickenLib:${config.mcversion}-${config.CCLIB_version}:deobf"
+    compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
+    compile "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
 
-    if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
+
+    //deobfCompile "mezz.jei:jei_${config.mcversion}:${config.jei_version}:api"
+    //runtime "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
+
+
+    //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
+    //compile project(path: ':BrandonsCore')
 }
 
 processResources
@@ -73,29 +104,77 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-apply plugin: 'idea'
-idea {
-    module {
-        inheritOutputDirs = true
-    }
+def commonManifest = {
+    attributes 'FMLAT': 'DraconicEvolution_at.cfg'
 }
 
-task deobfJar(type: Jar) { // Generate deobfuscated
-    from sourceSets.main.output
-    classifier = 'deobf'
+
+jar {
+    classifier = 'universal'
+    manifest commonManifest
 }
 
-task sourceJar(type: Jar) { // Generate sources
+task srcJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
 }
 
-tasks.build.dependsOn('sourceJar', 'deobfJar')
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest commonManifest
+}
 
+// Tell the artifact system about our extra jars
 artifacts {
-   archives deobfJar
-   archives sourceJar
-   archives jar
+    archives srcJar, deobfJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            if (project.hasProperty("local_maven")) {
+                repository(url: "file://${local_maven}")
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+                    project {
+                        name project.archivesBaseName
+                        packaging 'jar'
+                        description 'DraconicEvolution'
+                        url 'https://github.com/brandon3055/Draconic-Evolution'
+                        scm {
+                            url 'https://github.com/brandon3055/Draconic-Evolution'
+                            connection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
+                            developerConnection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
+                        }
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/brandon3055/Draconic-Evolution/issues'
+                        }
+                        licenses {
+                            license {
+                                name 'License'
+                                url 'https://raw.githubusercontent.com/brandon3055/Draconic-Evolution/master/LICENSE.txt'
+                                distribution 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id 'brandon3055'
+                                name 'brandon3055'
+                                roles { role 'developer' }
+                            }
+                        }
+                    }
+                }
+            } else {
+                println 'Maven upload triggered but no local_maven property found!'
+            }
+        }
+    }
 }

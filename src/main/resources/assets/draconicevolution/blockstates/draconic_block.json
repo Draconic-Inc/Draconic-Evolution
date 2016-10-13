@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube",
+    "textures": {
+      "particle": "draconicevolution:blocks/draconic_block",
+      "down": "draconicevolution:blocks/draconic_block",
+      "up": "draconicevolution:blocks/draconic_block",
+      "north": "draconicevolution:blocks/draconic_block_side",
+      "south": "draconicevolution:blocks/draconic_block_side",
+      "east": "draconicevolution:blocks/draconic_block_side",
+      "west": "draconicevolution:blocks/draconic_block_side"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal":[{}],
+    "inventory":[{}]
+  }
+}

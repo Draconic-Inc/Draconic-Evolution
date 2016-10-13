@@ -1,0 +1,47 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:chaos_shard.obj",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type": {
+      "shard": {
+        "transform": {
+          //"gui": {
+            "scale": 1// },
+          //"thirdperson": { "scale": 0.7 },
+          //"firstperson": { "scale": 0.7 },
+          //"head":        { "scale": 0.7 }
+        }
+      },
+      "fraglarge": {
+        "transform": {
+          //"gui": {
+          "scale": 0.75 //},
+          //"thirdperson": { "scale": 0.55 },
+          //"firstperson": { "scale": 0.55 },
+          //"head":        { "scale": 0.55 }
+        }
+      },
+      "fragmedium": {
+        "transform": {
+          //"gui": {
+          "scale": 0.5// },
+          //"thirdperson": { "scale": 0.4 },
+          //"firstperson": { "scale": 0.4 },
+          //"head":        { "scale": 0.4 }
+        }
+      },
+      "fragsmall": {
+        "transform": {
+          //"gui": {
+          "scale": 0.25// },
+          //"thirdperson": { "scale": 0.25 },
+          //"firstperson": { "scale": 0.25 },
+          //"head":        { "scale": 0.25 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "draconicevolution:blocks/portal",
+      "all": "draconicevolution:blocks/portal"
+    },
+    "model": "draconicevolution:portal",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "axis": {
+      "x":{ "x": 90, "y": 90 },
+      "y":{},
+      "z":{ "x": 90 }
+    },
+    "drawup": {
+      "true":{
+        "submodel": {
+          "sideup": { "model": "draconicevolution:portal_wall", "y": 180 }
+        }
+      },
+      "false":{}
+    },
+    "drawdown": {
+      "true":{
+        "submodel": {
+          "sidedown": { "model": "draconicevolution:portal_wall" }
+        }
+      },
+      "false":{}
+    },
+    "draweast": {
+      "true":{
+        "submodel": {
+          "sideeast": { "model": "draconicevolution:portal_wall", "y": 90 }
+        }
+      },
+      "false":{}
+    },
+    "drawwest": {
+      "true":{
+        "submodel": {
+          "sidewest": { "model": "draconicevolution:portal_wall", "y": -90 }
+        }
+      },
+      "false":{}
+    },
+
+    "normal": [{}]
+  }
+}

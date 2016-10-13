@@ -1,0 +1,50 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "textures": {
+      "layer0": "blocks/dirt"
+    },
+    "transform": "forge:default-tool"
+  },
+  "variants": {
+    "type": {
+      "wyvernaxe": {
+        "model": "draconicevolution:tools/wyvern_axe.obj"
+      },
+      "wyvernbow": {
+        "model": "draconicevolution:tools/wyvern_bow00.obj"
+      },
+      "wyvernpick": {
+        "model": "draconicevolution:tools/wyvern_pickaxe.obj"
+      },
+      "wyvernshovel": {
+        "model": "draconicevolution:tools/wyvern_shovel.obj"
+      },
+      "wyvernsword": {
+        "model": "draconicevolution:tools/wyvern_sword.obj"
+      },
+      "draconicaxe": {
+        "model": "draconicevolution:tools/draconic_axe.obj"
+      },
+      "draconicbow": {
+        "model": "draconicevolution:tools/draconic_bow00.obj"
+      },
+      "draconichoe": {
+        "model": "draconicevolution:tools/draconic_hoe.obj"
+      },
+      "draconicpick": {
+        "model": "draconicevolution:tools/draconic_pickaxe.obj"
+      },
+      "draconicshovel": {
+        "model": "draconicevolution:tools/draconic_shovel.obj"
+      },
+      "draconicstaffofpower": {
+        "model": "draconicevolution:tools/draconic_staff_of_power.obj"
+      },
+      "draconicsword": {
+        "model": "draconicevolution:tools/draconic_sword.obj"
+      }
+    }
+  }
+}

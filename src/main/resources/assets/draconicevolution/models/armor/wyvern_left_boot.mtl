@@ -1,0 +1,5 @@
+newmtl palette
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+d 1.000000
+map_Kd draconicevolution:models/armor/wyvern_left_boot

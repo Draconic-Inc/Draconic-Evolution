@@ -1,61 +1,55 @@
-######## 1.0.2h ########
--added config option to disable flight.
--removed some log spam.
--fixed issue which makes it impossible to charge new bows after crafting.
--fixed config option to disable arrow explosion damage.
+######## 2.0.0.107 ########
+-Fixed some hard mode recipe issues
+-Updated to latest CCL version
 
-######## 1.0.2g ########
--fixed server crash.
+######## 2.0.0.105 ########
+-Buffed Capacitor capacity upgrades. Now each level increases the capacity by 50% instead of like 2% ish.. I meant to fix that a while ago.
+-Fixed Draconic bow, axe, hoe and shovel not accepting draconic level upgrades.
+-Dislocator Receptacle now responds to redstone.
+-Dislocator Receptacle can now be camouflaged by right clicking it with a block of infused draconium.
+-Dislocator Receptacle can not be right clicked when powered by redstone. This prevents people from removing the dislocator.
+-Disabled achievement registry to stop crashes. Achievements will return Soon™
+-Added 500ms cooldown to portals to reduce issues with teleport loops.
+-Removed some debug i forgot about that modified the base damage of the staff.
+-Added config option to spawn dragon egg on every dragon death (on by default).
+-Added config option to increase the dragon summoning cost (on by default).
+-Fixed wiki re-downloading documentation every launch.
+-Updated to latest version of CCL to fix crash issue.
 
-######## 1.0.2f ########
--fixed shield sound effect being too loud.
--fixed rare edge case where reflection by another mod causes certain tiles to crash servers. 
--merged pull to add lots of config options for all the things! https://github.com/brandon3055/Draconic-Evolution/pull/332
+######## 2.0.0.101 ########
+-Fixed Advanced Dislocator out of pearls message.
+-Fixed Pickaxe crashing when mining some blocks.
+-Updated Dislocator Pedestal.
+-Updated Rain Sensor.
+-Updated Disenchanter
 
-######## 1.0.2e ########
--damage that bypasses armor now deals double damage and increased entropy to the shield.
--fake players should now be able to mine draconium ore, infused obsidian and both draconium blocks.
--fixed crash involving the bedrock sword compatibility code.
--attempted to fix a rendering bug with the energy transceivers (may or may not be fixed now).
--hopefully fixed issue with Armourers-Workshop not being able to make the draconic armor invisible.
--fixed flight sometimes not being disabled when draconic chestplate is removed.
+######## 2.0.0.100 ########
+-Optimized tool mining code a bit.
+-Finished the draconic hoe.
+-Fixed issue with small textures breaking mipmapping.
+-Re-Added the information tablet [wip]
 
-######## 1.0.2d ########
--added config option to disable all log output
--stopped potential console spam from chaos guardian.
--fixed draconic armor flight speed boost not being removed when the armor is removed.
--reduced potential FPS hit from the HUD. (may also fix some other random issues)
+######## 2.0.0.94 ########
+-Hopefully actually fixed the JEI crash now..........
+-Fixed fusion crafting injectors not dropping the correct tier when harvested.
+-Fixed advanced energy core stabilizers not forming when corners are placed last.
+-Fixed energy pylon particles stopping after chunk unloads and hopefully fixed energy transfer stopping aswell.
 
-######## 1.0.2c ########
--fixed shovels unable to harvest some blocks in AOE mode (Any block that requires a shovel but can not be harvested by hand)
--added config blacklist for the Item Dislocator.
--fixed armor still draining power when another mod cancels a damage event.
--removed some debug code that got left in last update.
+######## 2.0.0.88 ########
+-Fixed fusion crafting not syncing properly client side.
+-Fixed occasional crash related to JEI integration.
+-Implemented axe tree mechanics.
+-Implemented Attack AOE on weapons.
+-Refactored ALL textures and registry names from camelCase names to snake_case.ForgeBlock
+ Note this breaks some things like the energy core and fusion crafting setups but most items/blocks should be correctly remapped.
+-Fixed creative tab icons.
+-Fixed placed item hit boxes.
+-Fixed staff and sword 3D item rendering.
+-Fixed the "Disable3DModels" config setting.
+-Fixed mob grinder not killing mobs with armor.
 
-######## 1.0.2b ########
--fixed not being able to close the flow gate gui's by pressing the inventory key.
--fixed inability to pick up arrows fired by the bows.
--fixed conflict with the travellers gloves from Tinkers Construct (And other mods that do something similar)
--fixed broken shield texture (That did not show in the dev environment so i kinda missed it until now)
--hopefully fixed particles in chaos chamber not despawning on Cauldron servers...
--fixed Item Dislocator range issues.
-
-######## 1.0.2a ########
--updated manual-zh_CN.json (Thankyou https://github.com/sfmiyuki for that)
--draconic sword and staff of power now have an unlimited hit rate. (that was supposed to be a thing from the beginning)
--increased the energy cost of the shields last stand ability from 5M RF to 10M RF.
--added support for Avaritia's "Sword of the Cosmos" It will now deal a significant amount of damage to the draconic shield. As it should. 
--Note to devs. Please try to avoid bypassing the vanilla damage system. If you want your extremely expensive op weapon to deal a lot of damage then just make it deal a lot of damage. 
--fixed WAILA localization for the energy core.
-
-######## 1.0.2 ########
--fixed HUD not working with Dual Hotbars installed.   
--draconic magnet now also accelerates the collection of XP orbs.
--added computer support to particle generator (Added by https://github.com/wlhlm)
--fixed player getting kicked from server when changing tool modes.
--fixed Wyvern sword, Draconic sword and Draconic hoe RF capacity upgrade not working.
--fixed FPS lag when you combine a custom spawner with rednet cable.
--fixed "fake" mobs spawning at 0, 0, 0 when using the custom spawner. This was actually a bug i caught from vanilla! 
+######## 2.0.0.82 ########
+-Initial beta release for 1.10.2
 
 ######## 1.0.2-Snapshot 12 (RC2) ########
 -fixed issue with the different tier Item Dislocators stacking ant reverting to ether the Wyvern or Draconic tier.

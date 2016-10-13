@@ -1,0 +1,23 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "blocks/glass"
+    },
+    "model": "block",
+    "uvlock": true,
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "facing": {
+      "up":{},
+      "down":{},
+      "north":{},
+      "south":{},
+      "east":{},
+      "west":{}
+    },
+
+    "normal": [{}]
+  }
+}
