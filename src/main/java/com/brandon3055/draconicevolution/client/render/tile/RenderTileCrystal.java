@@ -31,7 +31,7 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
     private IModelCustom modelCrystalTransceiver;
 
     public RenderTileCrystal() {
-        modelCrystal = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/Crystal.obj"));
+        modelCrystal = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/CCrystal.obj"));
         modelCrystalTransceiver = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/CrystalTransceiver.obj"));
     }
 
