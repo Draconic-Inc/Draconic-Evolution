@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 1/10/2016.
  */
-public class GGuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter> implements IMGuiListener {
+public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter> implements IMGuiListener {
     private final EntityPlayer player;
     private MGuiBackground background;
     private MGuiButton extractButton;
@@ -33,7 +33,7 @@ public class GGuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchante
 
 //    private final TileDissEnchanter dissEnchanter;
 
-    public GGuiDissEnchanter(EntityPlayer player, ContainerDissEnchanter container) {
+    public GuiDissEnchanter(EntityPlayer player, ContainerDissEnchanter container) {
         super(container);
         this.player = player;
         xSize = 175;

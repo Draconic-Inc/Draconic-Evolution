@@ -22,7 +22,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
-public class GGuiUpgradeModifier extends GuiContainer {
+public class GuiUpgradeModifier extends GuiContainer {
 
     public EntityPlayer player;
     private TileUpgradeModifier tile;
@@ -33,7 +33,7 @@ public class GGuiUpgradeModifier extends GuiContainer {
     private ItemUpgradeRegistry upgradeRegistry = new ItemUpgradeRegistry();
     private ContainerUpgradeModifier containerEM;
 
-    public GGuiUpgradeModifier(EntityPlayer player, TileUpgradeModifier tile, ContainerUpgradeModifier containerEM) {
+    public GuiUpgradeModifier(EntityPlayer player, TileUpgradeModifier tile, ContainerUpgradeModifier containerEM) {
         super(containerEM);
         this.containerEM = containerEM;
 
