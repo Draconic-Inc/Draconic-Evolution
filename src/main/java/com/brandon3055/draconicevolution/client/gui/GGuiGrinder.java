@@ -22,12 +22,12 @@ import java.util.ArrayList;
  * Created by brandon3055 on 30/3/2016.
  */
 @SideOnly(Side.CLIENT)
-public class GuiGrinder extends GuiContainer {
+public class GGuiGrinder extends GuiContainer {
 
 	public EntityPlayer player;
 	private TileGrinder tile;
 
-	public GuiGrinder(InventoryPlayer invPlayer, TileGrinder tile) {
+	public GGuiGrinder(InventoryPlayer invPlayer, TileGrinder tile) {
 		super(new ContainerGrinder(invPlayer, tile));
 
 		xSize = 176;

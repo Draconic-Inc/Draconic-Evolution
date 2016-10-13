@@ -22,13 +22,13 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 31/05/2016.
  */
-public class GuiEnergyinfuser extends GuiContainer {
+public class GGuiEnergyinfuser extends GuiContainer {
 
     public EntityPlayer player;
     public TileEnergyInfuser tile;
     private float rotation = 0;
 
-    public GuiEnergyinfuser(EntityPlayer player, TileEnergyInfuser tile) {
+    public GGuiEnergyinfuser(EntityPlayer player, TileEnergyInfuser tile) {
         super(new ContainerEnergyInfuser(player, tile));
         this.tile = tile;
         this.xSize = 176;

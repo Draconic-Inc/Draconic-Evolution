@@ -143,7 +143,7 @@ public class GuiHandler implements IGuiHandler {
 				return new GuiDislocator(player);
 			case GUIID_GRINDER:
 				if (tileEntity != null && tileEntity instanceof TileGrinder) {
-					return new GuiGrinder(player.inventory, (TileGrinder) tileEntity);
+					return new GGuiGrinder(player.inventory, (TileGrinder) tileEntity);
 				}
 				break;
 //			case GUIID_PARTICLEGEN:
@@ -155,19 +155,19 @@ public class GuiHandler implements IGuiHandler {
 //				break;
 			case GUIID_ENERGY_INFUSER:
 				if (tileEntity != null && tileEntity instanceof TileEnergyInfuser) {
-					return new GuiEnergyinfuser(player, (TileEnergyInfuser) tileEntity);
+					return new GGuiEnergyinfuser(player, (TileEnergyInfuser) tileEntity);
 				}
 				break;
 			case GUIID_GENERATOR:
 				if (tileEntity != null && tileEntity instanceof TileGenerator) {
-					return new GuiGenerator(player, (TileGenerator) tileEntity);
+					return new GGuiGenerator(player, (TileGenerator) tileEntity);
 				}
 				break;
 //			case GUIID_MANUAL:
 //				return new GUIManual();
 			case GUIID_DISSENCHANTER:
 				if (tileEntity != null && tileEntity instanceof TileDissEnchanter) {
-					return new GuiDissEnchanter(player, new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) tileEntity));
+					return new GGuiDissEnchanter(player, new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) tileEntity));
 				}
 				break;
 //			case GUIID_DRACONIC_CHEST:
@@ -186,7 +186,7 @@ public class GuiHandler implements IGuiHandler {
 //				return world.tileEntity(x, y, z) instanceof TileGate ? new GUIFlowGate((TileGate)world.tileEntity(x, y, z)) : null;
 			case GUIID_UPGRADE_MODIFIER:
 				if (tileEntity != null && tileEntity instanceof TileUpgradeModifier) {
-					return new GuiUpgradeModifier(player, (TileUpgradeModifier) tileEntity, new ContainerUpgradeModifier(player, (TileUpgradeModifier) tileEntity));
+					return new GGuiUpgradeModifier(player, (TileUpgradeModifier) tileEntity, new ContainerUpgradeModifier(player, (TileUpgradeModifier) tileEntity));
 				}
 				break;
             case GUIID_ENERGY_CORE:
