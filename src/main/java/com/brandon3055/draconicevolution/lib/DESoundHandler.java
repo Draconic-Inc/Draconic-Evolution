@@ -35,6 +35,8 @@ public class DESoundHandler {
     public static final SoundEvent chaosChamberAmbient;
     public static final SoundEvent coreSound;
     public static final SoundEvent shieldStrike;
+    public static final SoundEvent electricBuzz;
+    public static final SoundEvent sunDialEffect;
 
     static {
         if (!Bootstrap.isRegistered()) {
@@ -54,6 +56,8 @@ public class DESoundHandler {
             chaosChamberAmbient = getRegisteredSoundEvent("draconicevolution:chaos_chamber_ambient");
             coreSound = getRegisteredSoundEvent("draconicevolution:core_sound");
             shieldStrike = getRegisteredSoundEvent("draconicevolution:shield_strike");
+            electricBuzz = getRegisteredSoundEvent("draconicevolution:electric_buzz");
+            sunDialEffect = getRegisteredSoundEvent("draconicevolution:sun_dial_effect");
         }
     }
 

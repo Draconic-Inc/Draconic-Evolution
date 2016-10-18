@@ -65,6 +65,8 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
                 f = 1F - f;
             }
 
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
             GlStateManager.color(1F, 1F, 1F, 1F - f);
             GlStateManager.enableBlend();

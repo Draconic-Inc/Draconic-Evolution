@@ -1,6 +1,9 @@
+######## 2.0.0.x ########
+-Added Celestial Manipulator.
+
 ######## 2.0.0.107 ########
--Fixed some hard mode recipe issues
--Updated to latest CCL version
+-Fixed some hard mode recipe issues.
+-Updated to latest CCL version.
 
 ######## 2.0.0.105 ########
 -Buffed Capacitor capacity upgrades. Now each level increases the capacity by 50% instead of like 2% ish.. I meant to fix that a while ago.

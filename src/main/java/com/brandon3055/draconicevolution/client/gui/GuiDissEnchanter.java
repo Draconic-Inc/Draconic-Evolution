@@ -31,8 +31,6 @@ public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter
     private MGuiButton extractButton;
     private MGuiSelectDialog selector;
 
-//    private final TileDissEnchanter dissEnchanter;
-
     public GuiDissEnchanter(EntityPlayer player, ContainerDissEnchanter container) {
         super(container);
         this.player = player;

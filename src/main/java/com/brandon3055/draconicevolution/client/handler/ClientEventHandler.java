@@ -249,9 +249,11 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void guiOpenEvent(GuiOpenEvent event) {
-        if (event.getGui() instanceof GuiMainMenu && rand.nextInt(300) == 0) {
+        if (event.getGui() instanceof GuiMainMenu && rand.nextInt(150) == 0) {
             try {
-                ReflectionHelper.setPrivateValue(GuiMainMenu.class, (GuiMainMenu) event.getGui(), Utils.addCommas(Long.MAX_VALUE) + " RF!!!!", "splashText", "field_110353_x");
+                String s = rand.nextBoolean() ? "Icosahedrons proudly brought to you by CCL!!!" : Utils.addCommas(Long.MAX_VALUE) + " RF!!!!";
+
+                ReflectionHelper.setPrivateValue(GuiMainMenu.class, (GuiMainMenu) event.getGui(), s, "splashText", "field_110353_x");
             }
             catch (Exception e) {
             }

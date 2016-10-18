@@ -90,8 +90,10 @@ public class RainSensor extends BlockBCore {
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
         worldIn.scheduleUpdate(pos, this, 20);
 
-        if (state.getValue(ACTIVE) != worldIn.isRaining()) {
-            worldIn.setBlockState(pos, state.withProperty(ACTIVE, worldIn.isRaining()));
+        boolean raining = worldIn.isRaining() && worldIn.canSeeSky(pos);
+
+        if (state.getValue(ACTIVE) != raining) {
+            worldIn.setBlockState(pos, state.withProperty(ACTIVE, raining));
         }
 
         super.updateTick(worldIn, pos, state, rand);

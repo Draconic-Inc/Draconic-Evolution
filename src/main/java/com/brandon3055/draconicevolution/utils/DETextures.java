@@ -26,4 +26,5 @@ public class DETextures {
     public static final String CHAOS_CRYSTAL = "textures/models/chaos_crystal.png";
     public static final String REACTOR_CORE = "textures/models/reactor_core.png";
     public static final String STABILIZER_BEAM = "textures/models/stabilizer_beam.png";
+    public static final String CELESTIAL_PARTICLE = "textures/particle/celestial_manipulator.png";
 }

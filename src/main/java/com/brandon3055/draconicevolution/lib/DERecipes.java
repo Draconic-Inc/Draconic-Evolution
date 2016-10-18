@@ -47,6 +47,8 @@ public class DERecipes {
         addShaped(HARD, new ItemStack(energyPylon, 2), "ABA", "CDC", "AEA", 'A', "ingotDraconium", 'B', ENDER_EYE, 'C', "gemEmerald", 'D', wyvernCore, 'E', "gemDiamond");
         addShaped(ALL, rainSensor, " A ", "BCB", "DDD", 'A', BUCKET, 'B', "dustRedstone", 'C', STONE_PRESSURE_PLATE, 'D', STONE_SLAB);
         addShaped(ALL, dissEnchanter, "ABA", "CDC", "EEE", 'A', "gemEmerald", 'B', draconicCore, 'C', ENCHANTED_BOOK, 'D', ENCHANTING_TABLE, 'E', BOOKSHELF);
+        addShaped(NORMAL, celestialManipulator, "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', CLOCK, 'C', "ingotDraconium", 'D', DRAGON_EGG, 'E', "ingotIron", 'F', wyvernCore);
+        addShaped(HARD, celestialManipulator, "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', CLOCK, 'C', "ingotDraconiumAwakened", 'D', DRAGON_EGG, 'E', "ingotIron", 'F', awakenedCore);
 
         //Fusion Crafting Blocks
         addShaped(NORMAL, fusionCraftingCore, "ABA", "BCB", "ABA", 'A', "blockLapis", 'B', "gemDiamond", 'C', draconicCore);

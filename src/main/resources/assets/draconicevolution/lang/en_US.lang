@@ -1,7 +1,7 @@
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:x_ray_block.name=Distortion Flame
 tile.draconicevolution:sun_dial.name=Sun Dial
-tile.draconicevolution:weather_controller.name=Weather Controller
+tile.draconicevolution:celestial_manipulator.name=Celestial Manipulator
 tile.draconicevolution:draconium_ore.type.normal.name=Draconium Ore
 tile.draconicevolution:draconium_ore.type.nether.name=Nether Draconium Ore
 tile.draconicevolution:draconium_ore.type.end.name=Ender Draconium Ore
@@ -202,6 +202,11 @@ msg.de.explosiveNotForEnergyBolts.txt=Explosive is not possible with Arrow of Dr
 msg.de.insufficientPowerToFire.txt=Insufficient Power to Fire
 msg.de.outOfArrows.txt=Out of Arrows!!!
 msg.de.coreNotFound.txt=[Error: 404] Core Not Found!
+msg.de.notRaining.txt=Its not currently raining!
+msg.de.alreadyRaining.txt=Its already raining!
+msg.de.alreadyStorm.txt=Its already thundering!
+msg.de.insufficientPower.txt=Insufficient Power!
+msg.de.alreadyRunning.txt=Already Running!
 
 //Energy Net
 msg.de.wrenchMode.bind.txt=Function: Bind
@@ -439,8 +444,8 @@ item.draconicevolution:draconicBoots.lore=2Stronger, faster, better than before\
 item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, true power!\none tool to do it all, mine, battle, and death!
 
 //Entity ----------------------------------------------------------------------------------------------------------------------------------------
-entity.DraconicEvolution.EnderDragon.name=Ender Dragon
-entity.DraconicEvolution.ChaosGuardian.name=Chaos Guardian
+entity.draconicevolution.EnderDragon.name=Ender Dragon
+entity.draconicevolution.ChaosGuardian.name=Chaos Guardian
 
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
@@ -785,6 +790,21 @@ chat.dissEnchanter.notEnoughLevels.msg=You require %s levels to extract that enc
 gui.de.toolConfig.hud.txt=HUD
 gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
 
+gui.de.celMod.weather=Weather
+gui.de.celMod.time=Time
+gui.de.celMod.stopRain=Stop Rain
+gui.de.celMod.startRain=Start Rain
+gui.de.celMod.startStorm=Start Storm
+gui.de.celMod.skipTo=Skip To...
+gui.de.celMod.sunRise=Sun Rise
+gui.de.celMod.midDay=Mid Day
+gui.de.celMod.sunSet=Sun Set
+gui.de.celMod.moonRise=Moon Rise
+gui.de.celMod.midnight=Midnight
+gui.de.celMod.moonSet=Moon Set
+gui.de.celMod.skipToTime=Skip To Time
+gui.de.celMod.skip24=Skip 24
+gui.de.celMod.stop=Stop
 
 //---- Generic ----//
 generic.de.Mode.txt=Mode

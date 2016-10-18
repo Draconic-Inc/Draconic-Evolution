@@ -254,8 +254,8 @@ public class DEFeatures {
 //    @Feature(registryName = "entity_detector", tileEntity = TileEntityDetector.class)
 //    public static EntityDetector entityDetector = new EntityDetector();
 //
-//    @Feature(registryName = "celestial_manipulator", tileEntity = TileCelestialManipulator.class)//, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static CelestialManipulator celestialManipulator = new CelestialManipulator();
+    @Feature(registryName = "celestial_manipulator", tileEntity = TileCelestialManipulator.class)//, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static CelestialManipulator celestialManipulator = new CelestialManipulator();
 //
 //    @Feature(registryName = "potentiometer", tileEntity = TilePotentiometer.class)
 //    public static Potentiometer potentiometer = new Potentiometer();

@@ -115,6 +115,24 @@
         "stream": false
       }
     ]
+  },
+  "electric_buzz": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:electric_buzz",
+        "stream": false
+      }
+    ]
+  },
+  "sun_dial_effect": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:sun_dial_effect",
+        "stream": false
+      }
+    ]
   }
 }
 
