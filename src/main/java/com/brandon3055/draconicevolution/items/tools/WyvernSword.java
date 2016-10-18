@@ -40,7 +40,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon {
 
     @Override
     public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
-        return 1;
+        return 2;
     }
 
     @Override
