@@ -1,5 +1,6 @@
 ######## 2.0.0.x ########
 -Added Celestial Manipulator.
+-Added ability to add/remove Fusion Crafting recipes (For pack devs) See config/brandon3055/Custom Fusion Recipe Info.txt for details (After first game launch)
 
 ######## 2.0.0.107 ########
 -Fixed some hard mode recipe issues.

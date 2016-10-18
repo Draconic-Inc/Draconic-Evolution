@@ -126,7 +126,6 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         holdCTRLForUpgrades(tooltip, stack);
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add(TextFormatting.DARK_RED+"Still WIP but mostly finished.");
     }
 
     public static void holdCTRLForUpgrades(List<String> list, ItemStack stack) {
