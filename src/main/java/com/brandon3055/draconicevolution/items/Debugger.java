@@ -2,8 +2,6 @@ package com.brandon3055.draconicevolution.items;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import cofh.lib.world.WorldGenMinableCluster;
-import cofh.thermalfoundation.block.BlockOre;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.client.particle.BCEffectRenderer;
 import com.brandon3055.brandonscore.items.ItemBCore;
@@ -624,19 +622,19 @@ public class Debugger extends ItemBCore {
 
     @Override
     public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-        if (world.isRemote) return EnumActionResult.PASS;
-
-        WorldGenMinableCluster cluster = new WorldGenMinableCluster(BlockOre.oreCopper, 100);
-
-        cluster.generate(world, world.rand, pos);
-//        BlockOre.oreMithril.getItemDamage()
-
-//        world.setBlockState(pos, Block.getBlockFromItem(BlockOre.oreMithril.getItem()).getStateFromMeta(BlockOre.oreMithril.getItemDamage()));
-//        world.setBlockState(pos, Block.getBlockFromItem(BlockOre.oreMithril.getItem()).getStateFromMeta(BlockOre.oreMithril.getItemDamage()));
-
-        LogHelper.dev("GenOre");
-
-        if (true) return EnumActionResult.FAIL;
+//        if (world.isRemote) return EnumActionResult.PASS;
+//
+//        WorldGenMinableCluster cluster = new WorldGenMinableCluster(BlockOre.oreCopper, 100);
+//
+//        cluster.generate(world, world.rand, pos);
+////        BlockOre.oreMithril.getItemDamage()
+//
+////        world.setBlockState(pos, Block.getBlockFromItem(BlockOre.oreMithril.getItem()).getStateFromMeta(BlockOre.oreMithril.getItemDamage()));
+////        world.setBlockState(pos, Block.getBlockFromItem(BlockOre.oreMithril.getItem()).getStateFromMeta(BlockOre.oreMithril.getItemDamage()));
+//
+//        LogHelper.dev("GenOre");
+//
+//        if (true) return EnumActionResult.FAIL;
 
 
 //        if (!world.isRemote) {
