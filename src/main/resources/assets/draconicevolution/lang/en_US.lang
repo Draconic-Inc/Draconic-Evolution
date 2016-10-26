@@ -11,7 +11,9 @@ tile.draconicevolution:rain_sensor.name=Rain Sensor
 tile.draconicevolution:particle_generator.type.normal.name=Particle Generator
 tile.draconicevolution:particle_generator.type.inverted.name=Particle Generator
 tile.draconicevolution:particle_generator.type.stabilizer.name=Energy Core Stabilizer
-tile.draconicevolution:player_detector.name=Player Detector
+tile.draconicevolution:entity_detector.name=Entity Detector
+tile.draconicevolution:entity_detector.advanced.false.name=Entity Detector
+tile.draconicevolution:entity_detector.advanced.true.name=Advanced Entity Detector
 tile.draconicevolution:player_detectorAdvanced.name=Advanced Player Detector
 tile.draconicevolution:energy_infuser.name=Energy Infuser
 tile.draconicevolution:custom_spawner.name=Stabilized Mob Spawner
@@ -631,11 +633,6 @@ gui.de.fusionCraftingCore.name=Fusion Crafting
 gui.de.dissEnchanter.name=Disenchanter
 
 
-//---- Generic Gui Buttons ----//
-gui.de.button.start=Start
-gui.de.button.extract=Extract
-
-
 //---- Gui Fusion Crafting Info ----//
 gui.fusionCrafting.tierLow.info=Pedestal Tier Too Low
 gui.fusionCrafting.outputObstructed.info=Output Obstructed
@@ -790,6 +787,7 @@ chat.dissEnchanter.notEnoughLevels.msg=You require %s levels to extract that enc
 gui.de.toolConfig.hud.txt=HUD
 gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
 
+//---- Celestial Manipulato ----//
 gui.de.celMod.weather=Weather
 gui.de.celMod.time=Time
 gui.de.celMod.stopRain=Stop Rain
@@ -805,14 +803,18 @@ gui.de.celMod.moonSet=Moon Set
 gui.de.celMod.skipToTime=Skip To Time
 gui.de.celMod.skip24=Skip 24
 gui.de.celMod.stop=Stop
+gui.de.celMod.rs.0=Stop Rain
+gui.de.celMod.rs.1=Start Rain
+gui.de.celMod.rs.2=Start Storm
+gui.de.celMod.rs.3=Sun Rise
+gui.de.celMod.rs.4=Mid Day
+gui.de.celMod.rs.5=Sun Set
+gui.de.celMod.rs.6=Moon Rise
+gui.de.celMod.rs.7=Midnight
+gui.de.celMod.rs.8=Moon Set
+gui.de.celMod.rs.9=Cycle 1 full Minecraft day\nOr until restone signal stops.
 
-//---- Generic ----//
-generic.de.Mode.txt=Mode
-generic.de.energyCost.txt=Energy Cost
-generic.options.txt=Options
-generic.ok.txt=OK
-
-//---- Mod Wiki ----//
+//---- Entity Detector ----//
 guiwiki.label.navigation=Navigation
 guiwiki.label.mods=Mods
 modwiki.label.style=Style
@@ -832,3 +834,19 @@ modwiki.style.preset.draconic=Draconic
 modwiki.style.preset.transparent=Transparent
 
 guiwiki.button.home=Home
+
+//---- Entity Detector ----//
+gui.entityDetector.pulseDelay=Pulse Delay
+gui.entityDetector.pulseDelay.info=The delay between scanning pulses. The scanning pulse is when the block checks for nearby entities.
+gui.entityDetector.outputPulse=Pulse Output Mode
+gui.entityDetector.outputContin=Fixed Output Mode
+gui.entityDetector.output.info=The strength of the output is determined by the number of valid entities detected and the RS Min and RS Max settings.\noPulse mode will emmit a 1 tick pulse every scanning pulse.\nFixed mode will emmit a continuous signal updating every scanning pulse.
+gui.entityDetector.range=Range
+gui.entityDetector.range.info=The scanning range in blocks.\nIncreasing the range increases the energy cost for each scanning pulse
+gui.entityDetector.rsMin=RS Min Threshold
+gui.entityDetector.rsMin.info=The minimum number of detected entities required to produce a redstone signal of 1.
+gui.entityDetector.rsMax=RS Max Threshold
+gui.entityDetector.rsMax.info=The minimum number of detected entities required to produce a redstone signal of 15.
+gui.entityDetector.energyCost=Energy Per Pulse
+gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse.\nThe energy requires is 125 * range^1.5\nThis means the energy cost increases exponentially as you increase the range.
+gui.entityDetector.filter=Open Entity Filter Configurator

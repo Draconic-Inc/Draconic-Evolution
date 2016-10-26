@@ -55,6 +55,13 @@ public class RecipeManager {
      * it will first remove all currently loaded recipes before reloading.
      */
     public static void loadRecipes() {
+        if (DEConfig.hardMode) {
+            LogHelper.info("Loading Hard Mode Recipes...");
+        }
+        else {
+            LogHelper.info("Loading Default Recipes...");
+        }
+
         if (!activeCrafting.isEmpty()) {
             for (IRecipe recipe : activeCrafting) {
                 CraftingManager.getInstance().getRecipeList().remove(recipe);
@@ -196,13 +203,13 @@ public class RecipeManager {
                     toRemove.add(recipe);
                 }
                 if (!found1) {
-                    LogHelper.warn("Did not find a recipe matching \"Catalyst:" + catalyst + ", Result:" + result +", Ingredients:" + ingredients + "\" to remove.");
+                    LogHelper.warn("Did not find a recipe matching \"Catalyst:" + catalyst + ", Result:" + result + ", Ingredients:" + ingredients + "\" to remove.");
                     failedToRemve++;
                 }
             }
             else {
                 if (ingredients == null) {
-                    LogHelper.error("No ingredients found for recipe! Catalyst:"+catalyst+" = Result:"+result);
+                    LogHelper.error("No ingredients found for recipe! Catalyst:" + catalyst + " = Result:" + result);
                     failedToAdd++;
                 }
 

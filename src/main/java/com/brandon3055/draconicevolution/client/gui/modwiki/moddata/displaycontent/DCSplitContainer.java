@@ -150,14 +150,14 @@ public class DCSplitContainer extends DisplayComponentBase {
 
         list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, fontRenderer.getStringWidth("Horizontal Align") + 4, 12, "Horizontal Align") {
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Horizontal divider Alignment between Fixed Left Column Size, 50/50 and Fixed Right Column Size", "Current: " + alignment}));
 
         list.add(new MGuiButtonSolid(modularGui, "TOGGLE_V_ALIGN", 0, 0, fontRenderer.getStringWidth("Vertical Align") + 4, 12, "Vertical Align") {
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Vertical alignment of smallest component between Top, Middle and Bottom.", "Current: " + vAlignment}));
@@ -187,13 +187,13 @@ public class DCSplitContainer extends DisplayComponentBase {
 
         list.add(new MGuiButtonSolid(modularGui, "SET_LEFT", 0, 0, fontRenderer.getStringWidth("Set Left") + 4, 12, "Set Left") {
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Set the left sub display component."}));
         list.add(new MGuiButtonSolid(modularGui, "SET_RIGHT", 0, 0, fontRenderer.getStringWidth("Set Right") + 4, 12, "Set Right") {
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Set the right sub display component."}));

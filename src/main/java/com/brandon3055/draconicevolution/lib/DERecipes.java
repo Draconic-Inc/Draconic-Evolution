@@ -11,6 +11,7 @@ import static com.brandon3055.draconicevolution.lib.RecipeManager.RecipeDifficul
 import static com.brandon3055.draconicevolution.lib.RecipeManager.*;
 import static net.minecraft.init.Blocks.*;
 import static net.minecraft.init.Items.*;
+import static net.minecraft.init.Items.SKULL;
 
 /**
  * Created by brandon3055 on 23/07/2016.
@@ -49,6 +50,9 @@ public class DERecipes {
         addShaped(ALL, dissEnchanter, "ABA", "CDC", "EEE", 'A', "gemEmerald", 'B', draconicCore, 'C', ENCHANTED_BOOK, 'D', ENCHANTING_TABLE, 'E', BOOKSHELF);
         addShaped(NORMAL, celestialManipulator, "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', CLOCK, 'C', "ingotDraconium", 'D', DRAGON_EGG, 'E', "ingotIron", 'F', wyvernCore);
         addShaped(HARD, celestialManipulator, "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', CLOCK, 'C', "ingotDraconiumAwakened", 'D', DRAGON_EGG, 'E', "ingotIron", 'F', awakenedCore);
+        addShaped(ALL, potentiometer, " A ", "BCB", "DDD", 'A', "plankWood", 'B', "dustRedstone", 'C', "dustDraconium", 'D', STONE_SLAB);
+        addShaped(ALL, entityDetector, "ABA", "CDC", "EFE", 'A', new ItemStack(DYE, 1, 4), 'B', ENDER_EYE, 'C', "dustRedstone", 'D', "ingotDraconium", 'E', "ingotIron", 'F', draconicCore);
+        addShaped(ALL, new ItemStack(entityDetector, 1, 1), "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', new ItemStack(SKULL, 1, 1), 'C', "blockLapis", 'D', "gemDiamond", 'E', "ingotDraconium", 'F', entityDetector);
 
         //Fusion Crafting Blocks
         addShaped(NORMAL, fusionCraftingCore, "ABA", "BCB", "ABA", 'A', "blockLapis", 'B', "gemDiamond", 'C', draconicCore);

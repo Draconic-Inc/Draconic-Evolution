@@ -1,11 +1,15 @@
-package com.brandon3055.draconicevolution.client.model.tool;
+package com.brandon3055.draconicevolution.client.model;
 
 import codechicken.lib.model.loader.IBakedModelLoader;
 import codechicken.lib.util.ItemNBTUtils;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.model.tool.PerspectiveAwareToolModelBakery;
+import com.brandon3055.draconicevolution.client.model.tool.ToolModelRegistry;
+import com.brandon3055.draconicevolution.client.model.tool.ToolTransformOverride;
 import com.brandon3055.draconicevolution.items.tools.WyvernBow;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -44,6 +48,7 @@ public class DEBakedModelProvider implements IBakedModelLoader {
 
         @Override
         public String createKey(IBlockState state) {
+            LogHelper.bigInfo("Thing! "+state);
             return null;
         }
     }
@@ -74,6 +79,6 @@ public class DEBakedModelProvider implements IBakedModelLoader {
         }
 
 
-        return null; //Return a perspective aware model
+        return null;
     }
 }

@@ -20,7 +20,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int GUIID_GRINDER = 2;
     public static final int GUIID_TELEPORTER = 3;
     public static final int GUIID_PARTICLEGEN = 5;
-    public static final int GUIID_PLAYERDETECTOR = 6;
+    public static final int GUIID_ENTITY_DETECTOR = 6;
     public static final int GUIID_ENERGY_INFUSER = 7;
     public static final int GUIID_GENERATOR = 8;
     public static final int GUIID_MANUAL = 9;
@@ -46,7 +46,7 @@ public class GuiHandler implements IGuiHandler {
         switch (ID) {
             case GUIID_CELESTIAL:
                 if (tileEntity != null && tileEntity instanceof TileCelestialManipulator) {
-                    return new ContainerDummy(((TileCelestialManipulator) tileEntity), player, 0, 0);
+                    return new ContainerDummy(((TileCelestialManipulator) tileEntity), player, 19, 120);
                 }
                 break;
 //			case GUIID_SUN_DIAL:
@@ -59,11 +59,11 @@ public class GuiHandler implements IGuiHandler {
                     return new ContainerGrinder(player.inventory, (TileGrinder) tileEntity);
                 }
                 break;
-//			case GUIID_PLAYERDETECTOR:
-//				if (detector != null && detector instanceof TilePlayerDetectorAdvanced) {
-//					return new ContainerPlayerDetector(player.inventory, (TilePlayerDetectorAdvanced) detector);
-//				}
-//				break;
+			case GUIID_ENTITY_DETECTOR:
+                if (tileEntity != null && tileEntity instanceof TileEntityDetector) {
+                    return new ContainerDummy((TileEntityDetector) tileEntity, player, 19, 120);
+                }
+				break;
             case GUIID_ENERGY_INFUSER:
                 if (tileEntity != null && tileEntity instanceof TileEnergyInfuser) {
                     return new ContainerEnergyInfuser(player, (TileEnergyInfuser) tileEntity);
@@ -147,11 +147,11 @@ public class GuiHandler implements IGuiHandler {
                 break;
 //			case GUIID_PARTICLEGEN:
 //				return (gen != null && gen instanceof TileParticleGenerator) ? new GUIParticleGenerator((TileParticleGenerator) gen, player) : null;
-//			case GUIID_PLAYERDETECTOR:
-//				if (detector != null && detector instanceof TilePlayerDetectorAdvanced) {
-//					return new GUIPlayerDetector(player.inventory, (TilePlayerDetectorAdvanced) detector);
-//				}
-//				break;
+			case GUIID_ENTITY_DETECTOR:
+                if (tileEntity != null && tileEntity instanceof TileEntityDetector) {
+                    return new GuiEntityDetector(player, (TileEntityDetector) tileEntity);
+                }
+				break;
             case GUIID_ENERGY_INFUSER:
                 if (tileEntity != null && tileEntity instanceof TileEnergyInfuser) {
                     return new GuiEnergyinfuser(player, (TileEnergyInfuser) tileEntity);

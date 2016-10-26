@@ -3,13 +3,11 @@ package com.brandon3055.draconicevolution.items.tools;
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.model.SimpleOverrideBakedModel;
 import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.api.IFOVModifierItem;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.IntegerConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
+import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.tool.BowModelOverrideList;
 import com.brandon3055.draconicevolution.handlers.BowHandler;
@@ -19,6 +17,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public class WyvernBow extends ToolBase {
+public class WyvernBow extends ToolBase implements IFOVModifierItem {
 
     public WyvernBow(float attackDamage, float attackSpeed) {
         super(attackDamage, attackSpeed);
@@ -251,9 +250,13 @@ public class WyvernBow extends ToolBase {
         registry.register(stack, new IntegerConfigField("bowArrowSpeedModifier", 0, 0, maxSpeed, "config.field.bowArrowSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         registry.register(stack, new BooleanConfigField("bowAutoFire", false, "config.field.bowAutoFire.description"));
         registry.register(stack, new DoubleConfigField("bowExplosionPower", 0, 0, 4, "config.field.bowExplosionPower.description", SLIDER));
-        registry.register(stack, new IntegerConfigField("bowZoomModifier", 0, 0, 300, "config.field.bowZoomModifier.description", SLIDER));
+        registry.register(stack, new IntegerConfigField("bowZoomModifier", 0, 0, (int)(getMaxZoomModifier(stack) * 100), "config.field.bowZoomModifier.description", SLIDER));
 
         return super.getFields(stack, registry);
+    }
+
+    public float getMaxZoomModifier(ItemStack stack) {
+        return 3;
     }
 
     @Override
@@ -283,4 +286,18 @@ public class WyvernBow extends ToolBase {
     //endregion
 
 
+    @Override
+    public float getNewFOV(EntityPlayer player, ItemStack stack, float currentFOV, float originalFOV, EntityEquipmentSlot slot) {
+        float zoom = ((10 + ToolConfigHelper.getIntegerField("bowZoomModifier", stack)) / 605F);
+
+        if (player.getActiveItemStack() == stack) {
+            if (currentFOV > 1.5F) {
+                currentFOV = 1.5F;
+            }
+
+            return currentFOV - zoom;
+        }
+
+        return currentFOV;
+    }
 }

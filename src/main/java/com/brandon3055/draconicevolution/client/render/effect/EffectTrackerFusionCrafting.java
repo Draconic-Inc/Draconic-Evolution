@@ -106,7 +106,7 @@ public class EffectTrackerFusionCrafting {
         }
 
         if (rand.nextInt(chance) == 0){
-            BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
+            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
         }
 
         if (renderBolt > 0) {
@@ -117,7 +117,7 @@ public class EffectTrackerFusionCrafting {
             renderBolt = 1;
             boltSeed = rand.nextLong();
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
-            BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
+            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
             worldObj.playSound(pos.x, pos.y, pos.z, DESoundHandler.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
         }
 

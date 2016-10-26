@@ -378,7 +378,7 @@ public class ModelLargeECStabilizer extends ModelBase {
     }
 
     /**
-     * This is a helper function from Tabula to set the rotation of model parts
+     * This is a helper function from Tabula to set the ROTATION of model parts
      */
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;

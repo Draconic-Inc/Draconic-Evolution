@@ -34,34 +34,34 @@ public class OptionsWindow extends MGuiElementBase implements IMGuiListener{
 
         addChild(new MGuiButtonSolid(modularGui, "COLOUR_NAV", xPos + 15, yPos + 30, size, 12, I18n.format("modwiki.style.navWindow")){
             @Override
-            protected int getFillColour(boolean hovering, boolean disabled) {
+            public int getFillColour(boolean hovering, boolean disabled) {
                 return WikiConfig.NAV_WINDOW;
             }
 
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return WikiConfig.NAV_WINDOW;
             }
         }.setListener(this));
         addChild(new MGuiButtonSolid(modularGui, "COLOUR_MAIN", xPos + 17 + (size), yPos + 30, size, 12, I18n.format("modwiki.style.mainWindow")){
             @Override
-            protected int getFillColour(boolean hovering, boolean disabled) {
+            public int getFillColour(boolean hovering, boolean disabled) {
                 return WikiConfig.CONTENT_WINDOW;
             }
 
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return WikiConfig.CONTENT_WINDOW;
             }
         }.setListener(this));
         addChild(new MGuiButtonSolid(modularGui, "COLOUR_MENU", xPos + 19 + (size * 2), yPos + 30, size, 12, I18n.format("modwiki.style.menu")){
             @Override
-            protected int getFillColour(boolean hovering, boolean disabled) {
+            public int getFillColour(boolean hovering, boolean disabled) {
                 return WikiConfig.MENU_BAR;
             }
 
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return WikiConfig.MENU_BAR;
             }
         }.setListener(this));
@@ -69,34 +69,34 @@ public class OptionsWindow extends MGuiElementBase implements IMGuiListener{
 
         addChild(new MGuiButtonSolid(modularGui, "COLOUR_NAV_TEXT", xPos + 15, yPos + 44, size, 12, I18n.format("modwiki.style.navText")){
             @Override
-            protected int getFillColour(boolean hovering, boolean disabled) {
+            public int getFillColour(boolean hovering, boolean disabled) {
                 return mixColours(WikiConfig.NAV_TEXT, 0xFF000000);
             }
 
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return mixColours(WikiConfig.NAV_TEXT, 0xFF000000);
             }
         }.setListener(this));
         addChild(new MGuiButtonSolid(modularGui, "COLOUR_MISC_TEXT", xPos + 17 + (size), yPos + 44, size, 12, I18n.format("modwiki.style.text")){
             @Override
-            protected int getFillColour(boolean hovering, boolean disabled) {
+            public int getFillColour(boolean hovering, boolean disabled) {
                 return mixColours(WikiConfig.TEXT_COLOUR, 0xFF000000);
             }
 
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return mixColours(WikiConfig.TEXT_COLOUR, 0xFF000000);
             }
         }.setListener(this));
         addChild(new MGuiButtonSolid(modularGui, "PRESETS", xPos + 19 + (size * 2), yPos + 44, size, 12, I18n.format("modwiki.style.presets")){
             @Override
-            protected int getFillColour(boolean hovering, boolean disabled) {
+            public int getFillColour(boolean hovering, boolean disabled) {
                 return 0xFFFFFFFF;
             }
 
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FFFF : 0xFF000000;
             }
         }.setListener(this));

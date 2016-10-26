@@ -3,9 +3,11 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileEnergyBase;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
+import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator.SubParticle;
@@ -15,10 +17,12 @@ import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,13 +35,15 @@ import java.util.List;
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileCelestialManipulator extends TileEnergyBase implements ITickable, IEnergyReceiver {
+public class TileCelestialManipulator extends TileEnergyBase implements ITickable, IEnergyReceiver, IChangeListener {
 
     public final SyncableBool WEATHER_MODE = new SyncableBool(true, true, true, false);
     public final SyncableBool ACTIVE = new SyncableBool(false, true, true, false);
     public final SyncableBool weatherToggleRunning = new SyncableBool(false, true, true, false);
     public final SyncableBool timeWarpRunning = new SyncableBool(false, true, true, false);
     public final SyncableBool timeWarpStopping = new SyncableBool(false, true, true, false);
+    public final SyncableBool redstoneSignal = new SyncableBool(false, true, true, false);
+    public final SyncableByte rsMode = new SyncableByte((byte) 0, false, true, false);
     public int timer = 0;
     public boolean storm = false;
     public boolean rain = false;
@@ -51,6 +57,8 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         registerSyncableObject(weatherToggleRunning, false);
         registerSyncableObject(timeWarpRunning, false);
         registerSyncableObject(timeWarpStopping, false);
+        registerSyncableObject(redstoneSignal, true);
+        registerSyncableObject(rsMode, true);
     }
 
     @Override
@@ -75,7 +83,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
             timer++;
             if (worldObj.isRemote) {
                 updateSunEffect();
-                energyStorage.setEnergyStored(energyStored.value);
+//                energyStorage.setEnergyStored(energyStored.value);
             }
             else {
                 energyStored.value = energyStorage.getEnergyStored();
@@ -171,83 +179,95 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
     @Override
     public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
         if (packet.getIndex() == 0 && packet.stringValue != null) {
-            String button = packet.stringValue;
+            handleInteract(packet.stringValue, client);
+        }
+        else if (packet.getIndex() == 1 && packet.intValue >= 0 && packet.intValue <= 9) {
+            rsMode.value = (byte) packet.intValue;
+        }
+    }
 
-            if (button.endsWith("STOP") && ACTIVE.value && timeWarpRunning.value) {
-                stopTimeWarp();
+    public void handleInteract(String action, EntityPlayer player) {
+
+        if (action.endsWith("STOP") && ACTIVE.value && timeWarpRunning.value) {
+            stopTimeWarp();
+            return;
+        }
+
+        if (ACTIVE.value) {
+            sendMessage(new TextComponentTranslation("msg.de.alreadyRunning.txt"), player);
+            return;
+        }
+
+        switch (action) {
+            case "WEATHER_MODE":
+                WEATHER_MODE.value = true;
                 return;
-            }
-
-            if (ACTIVE.value) {
-                client.addChatComponentMessage(new TextComponentTranslation("msg.de.alreadyRunning.txt"));
+            case "SUN_MODE":
+                WEATHER_MODE.value = false;
                 return;
-            }
+            case "STOP_RAIN":
+                if (!worldObj.isRaining()) {
+                    sendMessage(new TextComponentTranslation("msg.de.notRaining.txt"), player);
+                    return;
+                }
+                if (getEnergyStored() < 256000) {
+                    sendMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (256000RF)"), player);
+                    return;
+                }
+                energyStorage.modifyEnergyStored(-256000);
+                toggleWeather(false, false);
+                return;
+            case "START_RAIN":
+                if (worldObj.isRaining()) {
+                    sendMessage(new TextComponentTranslation("msg.de.alreadyRaining.txt"), player);
+                    return;
+                }
+                if (getEnergyStored() < 256000) {
+                    sendMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (256000RF)"), player);
+                    return;
+                }
+                energyStorage.modifyEnergyStored(-256000);
+                toggleWeather(true, false);
+                return;
+            case "START_STORM":
+                if (worldObj.isRaining() && worldObj.isThundering()) {
+                    sendMessage(new TextComponentTranslation("msg.de.alreadyStorm.txt"), player);
+                    return;
+                }
+                if (getEnergyStored() < 384000) {
+                    sendMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (384000RF)"), player);
+                    return;
+                }
+                energyStorage.modifyEnergyStored(-384000);
+                toggleWeather(true, true);
+                return;
+            case "SUN_RISE":
+                startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(0));
+                break;
+            case "MID_DAY":
+                startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(5900));
+                break;
+            case "SUN_SET":
+                startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(12000));
+                break;
+            case "MOON_RISE":
+                startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(13000));
+                break;
+            case "MIDNIGHT":
+                startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(17900));
+                break;
+            case "MOON_SET":
+                startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(22500));
+                break;
+            case "SKIP_24":
+                startTimeWarp(worldObj.getWorldTime() + 24000);
+                break;
+        }
+    }
 
-            switch (button) {
-                case "WEATHER_MODE":
-                    WEATHER_MODE.value = true;
-                    return;
-                case "SUN_MODE":
-                    WEATHER_MODE.value = false;
-                    return;
-                case "STOP_RAIN":
-                    if (!worldObj.isRaining()) {
-                        client.addChatComponentMessage(new TextComponentTranslation("msg.de.notRaining.txt"));
-                        return;
-                    }
-                    if (getEnergyStored() < 256000) {
-                        client.addChatComponentMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (256000RF)"));
-                        return;
-                    }
-                    energyStorage.modifyEnergyStored(-256000);
-                    toggleWeather(false, false);
-                    return;
-                case "START_RAIN":
-                    if (worldObj.isRaining()) {
-                        client.addChatComponentMessage(new TextComponentTranslation("msg.de.alreadyRaining.txt"));
-                        return;
-                    }
-                    if (getEnergyStored() < 256000) {
-                        client.addChatComponentMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (256000RF)"));
-                        return;
-                    }
-                    energyStorage.modifyEnergyStored(-256000);
-                    toggleWeather(true, false);
-                    return;
-                case "START_STORM":
-                    if (worldObj.isRaining() && worldObj.isThundering()) {
-                        client.addChatComponentMessage(new TextComponentTranslation("msg.de.alreadyStorm.txt"));
-                        return;
-                    }
-                    if (getEnergyStored() < 384000) {
-                        client.addChatComponentMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (384000RF)"));
-                        return;
-                    }
-                    energyStorage.modifyEnergyStored(-384000);
-                    toggleWeather(true, true);
-                    return;
-                case "SUN_RISE":
-                    startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(0));
-                    break;
-                case "MID_DAY":
-                    startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(5900));
-                    break;
-                case "SUN_SET":
-                    startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(12000));
-                    break;
-                case "MOON_RISE":
-                    startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(13000));
-                    break;
-                case "MIDNIGHT":
-                    startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(17900));
-                    break;
-                case "MOON_SET":
-                    startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(22500));
-                    break;
-                case "SKIP_24":
-                    startTimeWarp(worldObj.getWorldTime() + 24000);
-                    break;
-            }
+    private void sendMessage(ITextComponent message, EntityPlayer player) {
+        if (player != null) {
+            player.addChatComponentMessage(message);
         }
     }
 
@@ -319,7 +339,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 try {
                     SubParticle particle = new SubParticle(worldObj, effects.get(worldObj.rand.nextInt(effects.size())).pos);
                     particle.setScale(2);
-                    BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, particle);
+                    BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle, 128, true);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -415,7 +435,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 
         if (timer % 4 == 0) {
             for (int i = 0; i < (timer % 20 <= 10 ? 10 : 2); i++) {
-                BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new EffectTrackerCelestialManipulator.SubParticle2(worldObj, focus, effects.get(i % 2)));
+                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerCelestialManipulator.SubParticle2(worldObj, focus, effects.get(i % 2)), 128, true);
             }
         }
 
@@ -474,7 +494,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
     private void standbyParticleEffect() {
         SubParticle particle = new SubParticle(worldObj, Vec3D.getCenter(pos));
         particle.setScale(0.2F);
-        BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, particle);
+        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle);
         if (effects != null) {
             effects = null;
         }
@@ -517,4 +537,24 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
     }
 
     //endregion
+
+    private String[] ACTIONS = new String[] {"STOP_RAIN", "START_RAIN", "START_STORM", "SUN_RISE", "MID_DAY", "SUN_SET", "MOON_RISE", "MIDNIGHT", "MOON_SET", "SKIP_24"};
+
+    @Override
+    public void onNeighborChange() {
+        if (worldObj.isBlockPowered(pos)) {
+            if (!redstoneSignal.value) {
+                redstoneSignal.value = true;
+                handleInteract(ACTIONS[rsMode.value], null);
+            }
+        }
+        else {
+            if (redstoneSignal.value) {
+                redstoneSignal.value = false;
+                if (timeWarpRunning.value && rsMode.value == 9) {
+                    stopTimeWarp();
+                }
+            }
+        }
+    }
 }

@@ -2,28 +2,17 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "particles": "draconicevolution:blocks/entity_detector_inactive",
-      "down": "draconicevolution:blocks/machine_top",
-      "up": "draconicevolution:blocks/machine_top",
-      "north": "draconicevolution:blocks/entity_detector_inactive",
-      "south": "draconicevolution:blocks/entity_detector_inactive",
-      "west": "draconicevolution:blocks/entity_detector_inactive",
-      "east": "draconicevolution:blocks/entity_detector_inactive"
+      "particle": "draconicevolution:blocks/draconium_block",
+      "texture": "draconicevolution:blocks/entity_detector"
     },
-    "model": "cube",
+    "model": "draconicevolution:entity_detector",
     "transform": "forge:default-block"
   },
   "variants": {
-    "active": {
+    "advanced": {
       "true": {
         "textures": {
-          "particles": "draconicevolution:blocks/entity_detector_active",
-          "down": "draconicevolution:blocks/machine_top",
-          "up": "draconicevolution:blocks/machine_top",
-          "north": "draconicevolution:blocks/entity_detector_active",
-          "south": "draconicevolution:blocks/entity_detector_active",
-          "west": "draconicevolution:blocks/entity_detector_active",
-          "east": "draconicevolution:blocks/entity_detector_active"
+          "texture": "draconicevolution:blocks/entity_detector_advanced"
         }
       },
       "false": {}

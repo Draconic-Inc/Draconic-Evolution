@@ -380,7 +380,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
         if (!isCrafting.value){
             for (int i = 0; i < 100 ; i++) {
-                BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new EffectTrackerFusionCrafting.SubParticle(worldObj, new Vec3D(pos).add(0.5, 0.5, 0.5)));
+                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerFusionCrafting.SubParticle(worldObj, new Vec3D(pos).add(0.5, 0.5, 0.5)));
             }
 
             worldObj.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 2F, 1F, false);

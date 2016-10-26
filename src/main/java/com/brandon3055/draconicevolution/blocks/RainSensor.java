@@ -31,7 +31,6 @@ public class RainSensor extends BlockBCore {
 
     //region BlockState
 
-
     @Override
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(ACTIVE, meta == 1);
@@ -84,7 +83,6 @@ public class RainSensor extends BlockBCore {
         }
         super.randomDisplayTick(stateIn, worldIn, pos, rand);
     }
-
 
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {

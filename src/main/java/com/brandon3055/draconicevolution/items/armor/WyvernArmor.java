@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items.armor;
 
 import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.api.IFOVModifierItem;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -17,6 +18,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -35,7 +37,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
 /**
  * Created by brandon3055 on 6/06/2016.
  */
-public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgradableItem, ICustomArmor {
+public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgradableItem, ICustomArmor, IFOVModifierItem {
 
     private static ArmorMaterial wyvernMaterial = EnumHelper.addArmorMaterial("wyvernArmor", "draconicevolution:wyvern_armor", -1, new int[]{3, 6, 8, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.0F);
 
@@ -343,6 +345,23 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     }
 
     //endregion
+
+
+    @Override
+    public float getNewFOV(EntityPlayer player, ItemStack stack, float currentFOV, float originalFOV, EntityEquipmentSlot slot) {
+        if (slot == EntityEquipmentSlot.LEGS) {
+            float speedModifier = getSpeedModifier(stack, player);
+            float newFov = currentFOV - ((speedModifier / 2F) * 1F);
+            newFov += speedModifier * 0.02F;
+
+            if (newFov < 1F && player.getActivePotionEffect(MobEffects.SLOWNESS) == null) {
+                newFov = 1F;
+            }
+            return newFov;
+        }
+
+        return currentFOV;
+    }
 
     @Override
     public boolean hasCustomEntity(ItemStack stack) {

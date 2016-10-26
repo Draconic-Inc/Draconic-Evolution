@@ -61,7 +61,7 @@ public class ParticleFusionCrafting extends BCParticle {
     public void onUpdate() {
         if (particleAge++ > 20 && (craftingInventory == null || !craftingInventory.craftingInProgress() || ((TileEntity) craftingInventory).isInvalid())) {
             for (int i = 0; i < 10; i++){
-                BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, new Vec3D(posX, posY, posZ)));
+                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, new Vec3D(posX, posY, posZ)));
             }
             setExpired();
             return;
@@ -120,13 +120,13 @@ public class ParticleFusionCrafting extends BCParticle {
         }
 
         if (rand.nextInt(chance) == 0){
-            BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, new Vec3D(posX, posY, posZ)));
+            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, new Vec3D(posX, posY, posZ)));
         }
 
         renderBolt = rand.nextInt(chance * 2) == 0;
         if (renderBolt){
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
-            BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
+            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
         }
 
         particleAlpha = craftingInventory.getCraftingStage() / 1000F;
@@ -160,7 +160,7 @@ public class ParticleFusionCrafting extends BCParticle {
         GlStateManager.translate(x, y, z);
 
         GlStateManager.rotate(rotation + (partialTicks * rotationSpeed), 0F, 1F, 0F);
-        //GlStateManager.rotate((float)Math.sin((rotation + partialTicks) * rotationSpeed / 100F) * 20F, 1F, 0F, 0F);
+        //GlStateManager.rotate((float)Math.sin((ROTATION + partialTicks) * rotationSpeed / 100F) * 20F, 1F, 0F, 0F);
         GlStateManager.translate(-x, -y, -z);
 
         ccrs.reset();

@@ -39,12 +39,12 @@ public class WikiMenu extends MGuiElementBase implements IMGuiListener {
         int size = fontRenderer.getStringWidth(s);
         addChild(new MGuiButtonSolid(modularGui, "OPTIONS", xPos + xSize - (size + 7), yPos + 4, size + 4, 12, s){
             @Override
-            protected int getFillColour(boolean hovering, boolean disabled) {
+            public int getFillColour(boolean hovering, boolean disabled) {
                 return hovering ? mixColours(MENU_BAR, 0x00151515) : MENU_BAR;
             }
 
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? mixColours(MENU_BAR, 0x00101010, true) : mixColours(MENU_BAR, 0x00202020, true);
             }
 

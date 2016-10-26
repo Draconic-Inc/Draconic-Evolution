@@ -151,14 +151,14 @@ public class DCRecipe extends DisplayComponentBase {
 
         list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Horizontal Alignment"}));
 
         list.add(new MGuiButtonSolid(modularGui, "SELECT_STACK", 0, 0, 56, 12, "Pick Stack"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[] {"Select a stack from your inventory"}));

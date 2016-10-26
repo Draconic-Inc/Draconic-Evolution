@@ -23,6 +23,11 @@ public class DraconicBow extends WyvernBow {
     }
 
     @Override
+    public float getMaxZoomModifier(ItemStack stack) {
+        return 6;
+    }
+
+    @Override
     public int getToolTier(ItemStack stack) {
         return 1;
     }

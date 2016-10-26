@@ -73,7 +73,7 @@ public class EffectTrackerCelestialManipulator {
 
         renderBolt = 1;
         boltSeed = rand.nextLong();
-        BCEffectHandler.effectRenderer.addEffect(DEParticles.DE_SHEET, new SubParticle(worldObj, effectFocus));
+        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, effectFocus), 128, true);
 
         rotationSpeed = -1F;
         rotation += rotationSpeed;
@@ -145,13 +145,14 @@ public class EffectTrackerCelestialManipulator {
         }
 
         @Override
-        public void setScale(float scale) {
+        public BCParticle setScale(float scale) {
             super.setScale(scale);
 
             double speed = 0.1 * scale;
             this.motionX = (-0.5 + rand.nextDouble()) * speed;
             this.motionY = (-0.5 + rand.nextDouble()) * speed;
             this.motionZ = (-0.5 + rand.nextDouble()) * speed;
+            return this;
         }
 
         @Override
@@ -224,13 +225,14 @@ public class EffectTrackerCelestialManipulator {
         }
 
         @Override
-        public void setScale(float scale) {
+        public BCParticle setScale(float scale) {
             super.setScale(scale);
 
             double speed = 1;
             this.motionX = (-0.5 + rand.nextDouble()) * speed;
             this.motionY = (-0.5 + rand.nextDouble()) * speed;
             this.motionZ = (-0.5 + rand.nextDouble()) * speed;
+            return this;
         }
 
         @Override

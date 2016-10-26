@@ -48,7 +48,7 @@ public class WikiDownloadManager {
                 try {
                     String lang = url.substring(url.lastIndexOf("-") + 1).replace(".xml", "");
 
-                    if (WikiDocManager.modDocMap.get(entry.modid).langToVersion.containsKey(lang)) {
+                    if (WikiDocManager.modDocMap.containsKey(entry.modid) && WikiDocManager.modDocMap.get(entry.modid).langToVersion.containsKey(lang)) {
                         LogHelper.dev("Version : " + WikiDocManager.modDocMap.get(entry.modid).langToVersion.get(lang));
                     }
 
@@ -268,6 +268,7 @@ public class WikiDownloadManager {
             }
         }
     }
+
     public static class ManifestEntry {
         public final String modName;
         public final String modid;
@@ -284,5 +285,4 @@ public class WikiDownloadManager {
             return String.format("Name: %s, ModId: %s, Downloads: %s", modName, modid, downloadToVersion);
         }
     }
-
 }

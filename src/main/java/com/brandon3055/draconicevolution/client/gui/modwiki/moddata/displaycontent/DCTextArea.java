@@ -443,13 +443,13 @@ public class DCTextArea extends DisplayComponentBase {
         LinkedList<MGuiElementBase> list = super.getEditControls();
         list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Text Alignment"}));
         list.add(new MGuiButtonSolid(modularGui, "OPEN_EDITOR", 0, 0, 66, 12, "Show Editor"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Open the editor or bring it to the front if it is already open in the background"}));

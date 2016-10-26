@@ -64,14 +64,19 @@ public class DEFeatures {
     @Feature(registryName = "dislocator_pedestal", tileEntity = TileDislocatorPedestal.class, cTab = 1)
     public static DislocatorPedestal dislocatorPedestal = new DislocatorPedestal();
 
-    @Feature(registryName = "rain_sensor", tileEntity = TileRainSensor.class)
+    @Feature(registryName = "rain_sensor", tileEntity = TileRainSensor.class, cTab = 1)
     public static RainSensor rainSensor = new RainSensor();
 
-    @Feature(registryName = "diss_enchanter", tileEntity = TileDissEnchanter.class, itemBlock = ItemBlockBCore.class)
+    @Feature(registryName = "diss_enchanter", tileEntity = TileDissEnchanter.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static DissEnchanter dissEnchanter = new DissEnchanter();
+
+    @Feature(registryName = "potentiometer", tileEntity = TilePotentiometer.class, cTab = 1)
+    public static Potentiometer potentiometer = new Potentiometer();
+
     //endregion
 
     //region Advanced Machines
+
     @Feature(registryName = "energy_storage_core", tileEntity = TileEnergyStorageCore.class, cTab = 1)
     public static EnergyStorageCore energyStorageCore = new EnergyStorageCore();
 
@@ -83,6 +88,10 @@ public class DEFeatures {
 
     @Feature(registryName = "fusion_crafting_core", tileEntity = TileFusionCraftingCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static FusionCraftingCore fusionCraftingCore = new FusionCraftingCore();
+
+    @Feature(registryName = "celestial_manipulator", tileEntity = TileCelestialManipulator.class)//, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static CelestialManipulator celestialManipulator = new CelestialManipulator();
+
     //endregion
 
     //region Exotic Blocks
@@ -231,7 +240,7 @@ public class DEFeatures {
 
     //region Misc
 
-    @Feature(registryName = "info_tablet", stateOverride = "simple_components#type=info_tablet")
+    @Feature(registryName = "info_tablet", stateOverride = "simple_components#type=info_tablet", cTab = 1)
     public static InfoTablet infoTablet = new InfoTablet();
 
     //endregion
@@ -251,14 +260,10 @@ public class DEFeatures {
 
     //These are not ready for release and so are commented out for release builds
 
-//    @Feature(registryName = "entity_detector", tileEntity = TileEntityDetector.class)
-//    public static EntityDetector entityDetector = new EntityDetector();
+    @Feature(registryName = "entity_detector", tileEntity = TileEntityDetector.class, variantMap = {"0:advanced=false", "1:advanced=true"}, itemBlock = ItemBlockBasic.class, cTab = 1)
+    public static EntityDetector entityDetector = new EntityDetector();
 //
-    @Feature(registryName = "celestial_manipulator", tileEntity = TileCelestialManipulator.class)//, itemBlock = ItemBlockBCore.class, cTab = 1)
-    public static CelestialManipulator celestialManipulator = new CelestialManipulator();
 //
-//    @Feature(registryName = "potentiometer", tileEntity = TilePotentiometer.class)
-//    public static Potentiometer potentiometer = new Potentiometer();
 //
 //    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
 //    public static DraconiumChest draconiumChest = new DraconiumChest();

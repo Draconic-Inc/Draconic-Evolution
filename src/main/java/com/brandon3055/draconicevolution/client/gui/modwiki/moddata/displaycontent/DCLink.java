@@ -187,7 +187,7 @@ public class DCLink extends DisplayComponentBase {
 
         list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Text Alignment"}));
@@ -236,45 +236,45 @@ public class DCLink extends DisplayComponentBase {
 
         list.add(new MGuiButtonSolid(modularGui, "CYCLE_SIZE", 0, 0, 20, 12, "S:"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Cycle Trough Link Sizes", "Hold Shift to reverse"}).setDisplayString("S:" + headingSize));
 
         list.add(new MGuiButtonSolid(modularGui, "SHADOW", 0, 0, 10, 12, "S"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Shadow"}));
 
         list.add(new MGuiButtonSolid(modularGui, "OBFUSCATED", 0, 0, 10, 12, TextFormatting.OBFUSCATED + "O"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Obfuscated"}).addToGroup("STYLE"));
         list.add(new MGuiButtonSolid(modularGui, "BOLD", 0, 0, 10, 12, TextFormatting.BOLD + "B"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Bold"}).addToGroup("STYLE"));
         list.add(new MGuiButtonSolid(modularGui, "STRIKETHROUGH", 0, 0, 10, 12, TextFormatting.STRIKETHROUGH + "S"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Strike-through"}).addToGroup("STYLE"));
         list.add(new MGuiButtonSolid(modularGui, "UNDERLINE", 0, 0, 10, 12, TextFormatting.UNDERLINE + "U"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Underline"}).addToGroup("STYLE"));
         list.add(new MGuiButtonSolid(modularGui, "ITALIC", 0, 0, 10, 12, TextFormatting.ITALIC + "I"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Italic"}).addToGroup("STYLE"));
@@ -288,7 +288,7 @@ public class DCLink extends DisplayComponentBase {
         list.add(linkField);
         list.add(new MGuiButtonSolid(modularGui, "SWITCH_TARGET", 0, 0, 36, 12, "Target"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Switch Target Type"}));

@@ -88,13 +88,13 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
         LinkedList<MGuiElementBase> list = new LinkedList<MGuiElementBase>();
         list.add(new MGuiButtonSolid(modularGui, "MOVE_UP", 0, 0, 10, 12, "▲"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Move Element Up"}));
         list.add(new MGuiButtonSolid(modularGui, "MOVE_DOWN", 0, 0, 10, 12, "▼"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Move Element Down"}));

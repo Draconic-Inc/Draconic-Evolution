@@ -86,14 +86,14 @@ public class DCStack extends DisplayComponentBase {
 
         list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Horizontal Alignment"}));
 
         list.add(new MGuiButtonSolid(modularGui, "SELECT_STACK", 0, 0, 56, 12, "Pick Stack"){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[] {"Select a stack from your inventory"}));
@@ -101,7 +101,7 @@ public class DCStack extends DisplayComponentBase {
         String s = "Turn ToolTip: " + (toolTip ? "Off" : "On");
         list.add(new MGuiButtonSolid(modularGui, "TOGGLE_TOOLTIP", 0, 0, fontRenderer.getStringWidth(s) + 4, 12, s){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[] {"Toggle item tool tip on or off"}));
@@ -109,7 +109,7 @@ public class DCStack extends DisplayComponentBase {
         s = "Turn Slot: " + (toolTip ? "Off" : "On");
         list.add(new MGuiButtonSolid(modularGui, "TOGGLE_SLOT", 0, 0, fontRenderer.getStringWidth(s) + 4, 12, s){
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[] {"Toggle Slot Renderer on or off"}));

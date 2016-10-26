@@ -34,6 +34,7 @@ public class CelestialManipulator extends BlockBCore implements ITileEntityProvi
 
     public CelestialManipulator() {
         setIsFullCube(false);
+        canProvidePower = true;
     }
 
     @Override

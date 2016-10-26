@@ -67,12 +67,12 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
 
         addChild(delete = (MGuiButtonSolid) new MGuiButtonSolid(guiModWiki, "DELETE", xPos + xSize - 12, yPos, 12, 12, "X") {
             @Override
-            protected int getFillColour(boolean hovering, boolean disabled) {
+            public int getFillColour(boolean hovering, boolean disabled) {
                 return disabled ? 0xFF777777 : hovering ? 0xFFFFFFFF : 0xFFFF0000;
             }
 
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return disabled ? 0xFF555555 : hovering ? 0xFFFF0000 : 0xFFFFFFFF;
             }
         }.setListener(this).setToolTip(new String[]{"Delete Selected Display Component"}));
@@ -80,7 +80,7 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
 
         addChild(add = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "ADD", xPos + xSize - 38, yPos, 25, 12, "Add") {
             @Override
-            protected int getBorderColour(boolean hovering, boolean disabled) {
+            public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Add New Display Component"}));

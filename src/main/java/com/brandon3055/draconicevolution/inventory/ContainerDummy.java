@@ -12,7 +12,9 @@ public class ContainerDummy extends ContainerBCBase {
 
     public ContainerDummy(TileBCBase tile, EntityPlayer player, int invX, int invY) {
         super(player, tile);
-        addPlayerSlots(invX, invY);
+        if (invX != -1) {
+            addPlayerSlots(invX, invY);
+        }
     }
 
     @Override
