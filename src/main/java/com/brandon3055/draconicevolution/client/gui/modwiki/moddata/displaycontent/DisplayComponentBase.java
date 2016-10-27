@@ -77,7 +77,7 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (GuiModWiki.editMode && isMouseOver(mouseX, mouseY) && modWiki.contentWindow.editingComponent != this) {
+        if (WikiConfig.editMode && isMouseOver(mouseX, mouseY) && modWiki.contentWindow.editingComponent != this) {
             modWiki.contentWindow.setEditingComponent(this);
             return true;
         }
@@ -86,13 +86,13 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
 
     public LinkedList<MGuiElementBase> getEditControls() {
         LinkedList<MGuiElementBase> list = new LinkedList<MGuiElementBase>();
-        list.add(new MGuiButtonSolid(modularGui, "MOVE_UP", 0, 0, 10, 12, "▲"){
+        list.add(new MGuiButtonSolid(modularGui, "MOVE_UP", 0, 0, 10, 12, "▲") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Move Element Up"}));
-        list.add(new MGuiButtonSolid(modularGui, "MOVE_DOWN", 0, 0, 10, 12, "▼"){
+        list.add(new MGuiButtonSolid(modularGui, "MOVE_DOWN", 0, 0, 10, 12, "▼") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
@@ -191,7 +191,7 @@ public abstract class DisplayComponentBase extends MGuiListEntry implements IMGu
 
     @Override
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        if (GuiModWiki.editMode) {
+        if (WikiConfig.editMode && WikiConfig.drawEditInfo) {
             drawBorderedRect(xPos, yPos, xSize, ySize, 0.5, 0, modWiki.contentWindow.editingComponent == this ? 0xFF00FF00 : 0xFFFF0000);
             if (isMouseOver(mouseX, mouseY)) {
                 int x = list.xPos;

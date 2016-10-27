@@ -234,7 +234,7 @@ public class WikiContentList extends MGuiList implements IMGuiListener {
         scrollBar.xPos = xPos + maxXSize - 5;
         navLabel.setEnabled(!isHidden);
         branchLabel.setEnabled(!isHidden);
-        buttonAddBranch.setEnabled(!isHidden && GuiModWiki.editMode);
+        buttonAddBranch.setEnabled(!isHidden && WikiConfig.editMode);
         xSize = isHidden ? 12 : maxXSize;
         buttonToggleNav.xPos = xSize - 11;
         buttonToggleNav.displayString = isHidden ? ">" : "<";

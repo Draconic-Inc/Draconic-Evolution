@@ -2,51 +2,57 @@ package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.brandonscore.client.gui.effects.GuiEffectRenderer;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
-import com.brandon3055.brandonscore.utils.LinkedHashList;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.gui.GuiFusionCraftingCore;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.utils.ITickableTimeout;
+import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 24/07/2016.
  */
-public class FusionRecipeWrapper extends BlankRecipeWrapper implements ITickableTimeout {
+public class FusionRecipeWrapper extends BlankRecipeWrapper {
 
     private GuiEffectRenderer effectRenderer = new GuiEffectRenderer();
     public final IFusionRecipe recipe;
-    private final List inputs = new LinkedHashList();
+    private final List inputs = new LinkedList();
     private int timeout = 0;
     private int xSize = 164;
     private int ySize = 111;
+    private int lastTick = 0;
+    private ITickTimer timer;
 
     @SuppressWarnings("unchecked")
     public FusionRecipeWrapper(IFusionRecipe recipe) {
         this.recipe = recipe;
-        inputs.addAll(recipe.getRecipeIngredients());
         inputs.add(recipe.getRecipeCatalyst());
-        ClientEventHandler.addTickable(this);
+        for (Object o : recipe.getRecipeIngredients()) {
+            if (o instanceof Item) {
+                inputs.add(new ItemStack((Item) o));
+            }
+            else {
+                inputs.add(o);
+            }
+        }
+
+        timer = DEJEIPlugin.jeiHelpers.getGuiHelper().createTickTimer(1000000, 1000000, false);
     }
 
-    @Nonnull
     @Override
-    public List getInputs() {
-        return inputs;
-    }
-
-    @Nonnull
-    @Override
-    public List getOutputs() {
-        return Arrays.asList(recipe.getRecipeOutput(null));
+    public void getIngredients(IIngredients ingredients) {
+        List<List<ItemStack>> list = DEJEIPlugin.jeiHelpers.getStackHelper().expandRecipeItemStackInputs(inputs);
+        ingredients.setInputLists(ItemStack.class, list);
+        ingredients.setOutput(ItemStack.class, recipe.getRecipeOutput(null));
     }
 
     @Override
@@ -62,13 +68,15 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper implements ITickable
 
     @Override
     public void drawAnimations(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight) {
+        if (timer.getValue() != lastTick) {
+            lastTick = timer.getValue();
+            tick();
+        }
+
         effectRenderer.renderEffects(minecraft.getRenderPartialTicks());
     }
 
-    @Override
     public void tick() {
-        timeout++;
-
         effectRenderer.updateEffects();
         World world = Minecraft.getMinecraft().theWorld;
 
@@ -138,10 +146,5 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper implements ITickable
         } else {
             effectRenderer.clearEffects();
         }
-    }
-
-    @Override
-    public int getTimeOut() {
-        return timeout;
     }
 }

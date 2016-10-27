@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
-import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
@@ -9,6 +8,7 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by brandon3055 on 24/07/2016.
  */
-public class FusionRecipeCategory extends BlankRecipeCategory {
+public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix animation in PI
 
     private final IDrawable background;
     private final String localizedName;
@@ -50,8 +50,76 @@ public class FusionRecipeCategory extends BlankRecipeCategory {
         return background;
     }
 
+//    @Override TODO
+//    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {
+//        if (!(recipeWrapper instanceof FusionRecipeWrapper)) {
+//            return;
+//        }
+//
+//        FusionRecipeWrapper recipe = (FusionRecipeWrapper) recipeWrapper;
+//        recipeCache = recipe.recipe;
+//
+//        IGuiItemStackGroup stackGroup = recipeLayout.getItemStacks();
+//        stackGroup.init(0, true, xSize / 2 - 9, ySize / 2 - 9 - 23);
+//        stackGroup.setFromRecipe(0, recipe.recipe.getRecipeCatalyst());
+//        stackGroup.init(1, false, xSize / 2 - 9, ySize / 2 - 9 + 23);
+//        stackGroup.setFromRecipe(1, recipe.recipe.getRecipeOutput(null));
+//
+//
+//        //region Add Ingredients
+//
+//        int centerX = xSize / 2;
+//        int centerY = ySize / 2;
+//
+//        for (int i = 0; i < recipe.recipe.getRecipeIngredients().size(); i++) {
+//            boolean isLeft = i % 2 == 0;
+//            boolean isOdd = recipe.recipe.getRecipeIngredients().size() % 2 == 1;
+//            int sideCount = recipe.recipe.getRecipeIngredients().size() / 2;
+//
+//            if (isOdd && !isLeft) {
+//                sideCount--;
+//            }
+//
+//            int xPos;
+//            int yPos;
+//
+//            if (isLeft) {
+//                xPos = centerX - 65;
+//                int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
+//                int sideIndex = i / 2;
+//
+//                if (sideCount <= 1 && (!isOdd || recipe.recipe.getRecipeIngredients().size() == 1)) {
+//                    sideIndex = 1;
+//                    ySize = 40;
+//                }
+//
+//                yPos = centerY - 40 + (sideIndex * ySize);
+//            } else {
+//                xPos = centerX + 63;
+//                int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
+//                int sideIndex = i / 2;
+//
+//                if (isOdd) {
+//                    sideCount++;
+//                }
+//
+//                if (sideCount <= 1) {
+//                    sideIndex = 1;
+//                    ySize = 40;
+//                }
+//
+//                yPos = centerY - 40 + (sideIndex * ySize);
+//            }
+//
+//            stackGroup.init(i + 2, true, xPos - 8, yPos - 8);
+//            stackGroup.setFromRecipe(i + 2, OreDictHelper.resolveObject(recipe.recipe.getRecipeIngredients().get(i)));
+//        }
+//
+//        //endregion
+//    }
+
     @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {
+    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) { //TODO JEI Update
         if (!(recipeWrapper instanceof FusionRecipeWrapper)) {
             return;
         }
@@ -61,9 +129,10 @@ public class FusionRecipeCategory extends BlankRecipeCategory {
 
         IGuiItemStackGroup stackGroup = recipeLayout.getItemStacks();
         stackGroup.init(0, true, xSize / 2 - 9, ySize / 2 - 9 - 23);
-        stackGroup.setFromRecipe(0, recipe.recipe.getRecipeCatalyst());
+
+//        stackGroup.setFromRecipe(0, recipe.recipe.getRecipeCatalyst()); //todo
         stackGroup.init(1, false, xSize / 2 - 9, ySize / 2 - 9 + 23);
-        stackGroup.setFromRecipe(1, recipe.recipe.getRecipeOutput(null));
+//        stackGroup.setFromRecipe(1, recipe.recipe.getRecipeOutput(null));
 
 
         //region Add Ingredients
@@ -112,9 +181,10 @@ public class FusionRecipeCategory extends BlankRecipeCategory {
             }
 
             stackGroup.init(i + 2, true, xPos - 8, yPos - 8);
-            stackGroup.setFromRecipe(i + 2, OreDictHelper.resolveObject(recipe.recipe.getRecipeIngredients().get(i)));
+//            stackGroup.setFromRecipe(i + 2, OreDictHelper.resolveObject(recipe.recipe.getRecipeIngredients().get(i)));
         }
 
+        stackGroup.set(ingredients);
         //endregion
     }
 

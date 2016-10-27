@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment.Vertical;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
+import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.WikiContentWindow;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
@@ -120,7 +121,7 @@ public class DCSplitContainer extends DisplayComponentBase {
     @Override
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
-        if (GuiModWiki.editMode) {
+        if (WikiConfig.editMode && WikiConfig.drawEditInfo) {
             zOffset += 10;
             if (branch.guiWiki.contentWindow.editingComponent == this) {
                 drawBorderedRect(xPos, yPos, xSize, ySize, 0.8, 0, 0xFF0000FF);

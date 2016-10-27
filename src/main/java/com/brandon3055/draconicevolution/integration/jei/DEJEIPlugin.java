@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.client.gui.GuiFusionCraftingCore;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
 import mezz.jei.api.*;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
+import mezz.jei.api.ingredients.IModIngredientRegistration;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
@@ -17,12 +18,21 @@ import java.util.ArrayList;
  * Created by brandon3055 on 24/07/2016.
  */
 @JEIPlugin
-public class DraconicEvolutionPlugin implements IModPlugin {
+public class DEJEIPlugin implements IModPlugin {
 
     public static IJeiHelpers jeiHelpers = null;
     public static IJeiRuntime jeiRuntime = null;
 
-    public DraconicEvolutionPlugin() {}
+    public DEJEIPlugin() {}
+
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
+
+    }
+
+    @Override
+    public void registerIngredients(IModIngredientRegistration registry) {
+    }
 
     @Override
     public void register(IModRegistry registry) {
@@ -36,7 +46,7 @@ public class DraconicEvolutionPlugin implements IModPlugin {
 
         registry.addRecipes(RecipeManager.FUSION_REGISTRY.getRecipes());
 
-        DraconicEvolutionPlugin.jeiHelpers = jeiHelpers;
+        DEJEIPlugin.jeiHelpers = jeiHelpers;
 
         registry.addAdvancedGuiHandlers(new IAdvancedGuiHandler() {
             @Override
@@ -58,7 +68,6 @@ public class DraconicEvolutionPlugin implements IModPlugin {
     @Override
     public void onRuntimeAvailable(IJeiRuntime iJeiRuntime) {
         jeiRuntime = iJeiRuntime;
-//        iJeiRuntime.getRecipeRegistry().getRecipeCategoriesWithOutput(new ItemStack(Items.IRON_SHOVEL)).get(0).drawAnimations();
     }
 
 

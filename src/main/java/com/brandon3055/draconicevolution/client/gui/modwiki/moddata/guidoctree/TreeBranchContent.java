@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiSl
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiStackIcon;
 import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
+import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.guielements.PopupEditContent;
 import com.brandon3055.draconicevolution.client.gui.modwiki.guielements.PopupEditMod;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
@@ -137,7 +138,7 @@ public class TreeBranchContent extends TreeBranchRoot {
             drawBorderedRect(xPos + 1, yPos + 1, xSize - 2, ySize - 2, 1, 0, 0xFF000000);
         }
 
-        if (GuiModWiki.editMode && !isModBranch) {
+        if (WikiConfig.editMode && !isModBranch && WikiConfig.drawEditInfo) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(xPos, yPos, 100);
             GlStateManager.scale(0.6, 0.6, 1);
@@ -152,7 +153,7 @@ public class TreeBranchContent extends TreeBranchRoot {
 
     @Override
     public void renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        if (GuiModWiki.editMode && isMouseOver(mouseX, mouseY)) {
+        if (WikiConfig.editMode && isMouseOver(mouseX, mouseY)) {
             drawHoveringText(Arrays.asList(new String[] {TextFormatting.RED + "[Right click to edit]"}), mouseX, mouseY, minecraft.fontRendererObj, modularGui.screenWidth(), modularGui.screenHeight());
         }
         super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
@@ -164,7 +165,7 @@ public class TreeBranchContent extends TreeBranchRoot {
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (GuiModWiki.editMode && isMouseOver(mouseX, mouseY) && mouseButton == 1) {
+        if (WikiConfig.editMode && isMouseOver(mouseX, mouseY) && mouseButton == 1) {
             if (isModBranch) {
                 PopupEditMod editMod = new PopupEditMod(modularGui, list.xPos + 12, list.yPos + 24, list.xSize - 12 - list.rightPadding, list.ySize - 25, list, this);
                 list.addChild(editMod);

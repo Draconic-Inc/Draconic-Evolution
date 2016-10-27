@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.integration;
 
 import com.brandon3055.brandonscore.handlers.HandHelper;
-import com.brandon3055.draconicevolution.integration.jei.DraconicEvolutionPlugin;
+import com.brandon3055.draconicevolution.integration.jei.DEJEIPlugin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -102,7 +102,7 @@ public class ModHelper {
 
     public static void reloadJEI() {
         if (isJEIInstalled) {
-            DraconicEvolutionPlugin.reloadJEI();
+            DEJEIPlugin.reloadJEI();
         }
     }
 

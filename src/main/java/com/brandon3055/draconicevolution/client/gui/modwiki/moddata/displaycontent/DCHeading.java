@@ -87,7 +87,7 @@ public class DCHeading extends DisplayComponentBase {
                 GlStateManager.translate(-x, -y, 0);
             }
 
-            drawString(fontRenderer, string, x, y, getColour(), shadow);
+            drawString(fontRenderer, string, x, y, getColour(), shadow && getColour() / 3 > 50);
 
             if (headingSize > 0) {
                 GlStateManager.popMatrix();

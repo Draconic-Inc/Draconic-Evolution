@@ -970,9 +970,9 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
             } else {
                 boolean breac = false;
                 for (int x = homeX - 100; x < homeX + 100; x++) {
-                    for (int y = homeY - 100; y < homeX + 100; y++) {
+                    for (int y = homeY - 100; y < homeY + 100; y++) {
                         if (y < 0 || y > 255) continue;
-                        for (int z = homeX - 100; z < homeX + 100; z++) {
+                        for (int z = homeZ - 100; z < homeZ + 100; z++) {
                             tile = worldObj.getTileEntity(new BlockPos(x, y, z));
                             if (tile instanceof TileChaosCrystal) {
                                 ((TileChaosCrystal) tile).setDefeated();

@@ -106,8 +106,8 @@ public class WikiDocManager {
 
         WikiConfig.initialize(wikiFolder);
 
-        if (!WikiConfig.editTarget.equals("[CONFIG]")) {
-            modDocsFolder = new File("D:\\Mass Storage\\Minecraft Dev\\WorkSpaces\\1.9\\Project-Intelligence-Docs\\ModDocs");
+        if (!WikiConfig.docLocation.equals("[CONFIG]")) {
+            modDocsFolder = new File(WikiConfig.docLocation);
 
             if (modDocsFolder.isDirectory() || modDocsFolder.mkdirs()) {
                 return;

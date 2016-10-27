@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.guielements;
 
+import codechicken.lib.asm.ObfMapping;
 import com.brandon3055.brandonscore.client.gui.modulargui.IModularGui;
 import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
+import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.client.gui.modwiki.StylePreset;
 import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import net.minecraft.client.Minecraft;
@@ -15,12 +17,12 @@ import java.util.List;
 /**
  * Created by brandon3055 on 18/09/2016.
  */
-public class OptionsWindow extends MGuiElementBase implements IMGuiListener{
+public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
 
     public static volatile boolean requiresSave = false;
     public MGuiSelectDialog selector;
 
-    public OptionsWindow(IModularGui modularGui, int xPos, int yPos, int xSize, int ySize) {
+    public WikiConfigWindow(IModularGui modularGui, int xPos, int yPos, int xSize, int ySize) {
         super(modularGui, xPos, yPos, xSize, ySize);
     }
 
@@ -66,7 +68,6 @@ public class OptionsWindow extends MGuiElementBase implements IMGuiListener{
             }
         }.setListener(this));
 
-
         addChild(new MGuiButtonSolid(modularGui, "COLOUR_NAV_TEXT", xPos + 15, yPos + 44, size, 12, I18n.format("modwiki.style.navText")){
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
@@ -101,7 +102,21 @@ public class OptionsWindow extends MGuiElementBase implements IMGuiListener{
             }
         }.setListener(this));
 
+        if (!ObfMapping.obfuscated) {
+            addChild(new MGuiButtonSolid(modularGui, "TOGGLE_EDIT", xPos + 15, yPos + 77, size, 12, "Edit Mode"){
+                @Override
+                public int getFillColour(boolean hovering, boolean disabled) {
+                    return 0xFFFFFFFF;
+                }
 
+                @Override
+                public int getBorderColour(boolean hovering, boolean disabled) {
+                    return hovering ? 0xFF00FFFF : 0xFF000000;
+                }
+            }.setListener(this));
+            addChild(new MGuiLabel(modularGui, xPos + 17 + size, yPos + 77, size, 12, "Edit Directory"));
+            addChild(new MGuiTextField(modularGui, xPos + 15, yPos + 91, size * 3 + 4, 12, modularGui.getMinecraft().fontRendererObj).setMaxStringLength(1024).setText(WikiConfig.docLocation).setListener(this));
+        }
 
         super.initElement();
     }
@@ -120,6 +135,10 @@ public class OptionsWindow extends MGuiElementBase implements IMGuiListener{
         drawCenteredString(fontRenderer, I18n.format("modwiki.label.style"), xPos + (xSize / 2), yPos + 18, 0x00FFFF, true);
         drawColouredRect(xPos + 15, yPos + 60, xSize - 30, 0.5, 0xFF00FFFF);
         drawColouredRect(xPos + 20, yPos + 60.5, xSize - 40, 0.5, 0xFF000000);
+
+        drawCenteredString(fontRenderer, I18n.format("modwiki.label.edit"), xPos + (xSize / 2), yPos + 65, 0xFF0000, false);
+        drawColouredRect(xPos + 15, yPos + 107, xSize - 30, 0.5, 0xFFFF0000);
+        drawColouredRect(xPos + 20, yPos + 107.5, xSize - 40, 0.5, 0xFF000000);
 
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
     }
@@ -182,6 +201,11 @@ public class OptionsWindow extends MGuiElementBase implements IMGuiListener{
             picker.initElement();
             picker.show();
         }
+        else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("TOGGLE_EDIT")) {
+            WikiConfig.editMode = !WikiConfig.editMode;
+            WikiConfig.save();
+            Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
+        }
         else if (eventElement instanceof MGuiColourPicker && eventString.equals("COLOUR_PICKED")) {
             if (eventElement.id.equals("SELECT_COLOUR_NAV")) {
                 WikiConfig.NAV_WINDOW = ((MGuiColourPicker) eventElement).getColourARGB();
@@ -230,6 +254,10 @@ public class OptionsWindow extends MGuiElementBase implements IMGuiListener{
                 modularGui.getManager().remove(selector);
                 selector = null;
             }
+        }
+        else if (eventString.equals("TEXT_FIELD_CHANGED") && eventElement instanceof MGuiTextField) {
+            WikiConfig.docLocation = ((MGuiTextField) eventElement).getText();
+            WikiConfig.save();
         }
 
     }

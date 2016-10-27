@@ -636,6 +636,22 @@ public class Debugger extends ItemBCore {
 //
 //        if (true) return EnumActionResult.FAIL;
 
+//        try {
+//            //          minecraft:stone,21,2,{SomeTag:\"test\",AnotherTag:\"What The Hell...\"}
+//            String s = "minecraft:stone,21,2,{SomeTag:\"test\",AnotherTag:\"What The Hell...\"}";
+//            LogHelper.dev(StackReference.fromString(s));
+//            LogHelper.dev(StackReference.fromString(s).createStack());
+//            LogHelper.dev(StackReference.fromString(s).createStack().getTagCompound().getString("SomeTag"));
+////            NBTTagCompound c = new NBTTagCompound();
+////            c.setString("TestS", "What?");
+////            c.setString("Test2", "Why?");
+////            c.setString("Test3", "I Dont Get It...");
+//            LogHelper.dev("");
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
 
 //        if (!world.isRemote) {
 //

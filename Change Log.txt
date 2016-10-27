@@ -1,9 +1,11 @@
-######## 2.0.0.x ########
+######## 2.0.1.x ########
 -Fixed Documentation downloader breaking.
 -Updated Potentiometer.
 -Updated and upgraded Player detector (Now Entity Detector)
 -Fixed bow magnification.
 -Reduced FOV warp when wearing leggings with a high speed setting.
+-Fixed guardian crystal shield occasionally not deactivating. (But the guardian still needs a full re write for 1.10.2)
+-Updated to support latest JEI version.
 
 ######## 2.0.0.120 ########
 -Added Celestial Manipulator.

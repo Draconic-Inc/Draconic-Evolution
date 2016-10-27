@@ -85,8 +85,8 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
             }
         }.setListener(this).setToolTip(new String[]{"Add New Display Component"}));
 
-        delete.setEnabled(GuiModWiki.editMode && activeBranch.branchData != null);
-        add.setEnabled(GuiModWiki.editMode && activeBranch.branchData != null);
+        delete.setEnabled(WikiConfig.editMode && activeBranch.branchData != null);
+        add.setEnabled(WikiConfig.editMode && activeBranch.branchData != null);
 
         super.initElement();
         initialized = true;

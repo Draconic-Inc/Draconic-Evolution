@@ -4,7 +4,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
-import com.brandon3055.draconicevolution.client.gui.modwiki.guielements.OptionsWindow;
+import com.brandon3055.draconicevolution.client.gui.modwiki.guielements.WikiConfigWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -16,7 +16,7 @@ import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.TE
  */
 public class WikiMenu extends MGuiElementBase implements IMGuiListener {
     private GuiModWiki guiModWiki;
-    private OptionsWindow optionsWindow = null;
+    private WikiConfigWindow wikiConfigWindow = null;
 
     public WikiMenu(GuiModWiki parentGui) {
         super(parentGui);
@@ -31,8 +31,9 @@ public class WikiMenu extends MGuiElementBase implements IMGuiListener {
         ySize = 20;
 
 
-        if (GuiModWiki.editMode) {
+        if (WikiConfig.editMode) {
             addChild(new MGuiButtonSolid(modularGui, "Reload", xPos + (xSize / 2), yPos + 3, 50, 12, "Reload").setColours(0xFF000000, 0xFF333333, 0xFF555555));
+            addChild(new MGuiButtonSolid(modularGui, "TOGGLE_EDIT_LINES", xPos + (xSize / 2) + 51, yPos + 3, 12, 12, "E").setColours(MENU_BAR, 0xFFFF0000, 0xFFFF0000).setListener(this).setToolTip(new String[] {"Toggle Edit. Edit lines and info."}));
         }
 
         String s = I18n.format("generic.options.txt");
@@ -53,6 +54,8 @@ public class WikiMenu extends MGuiElementBase implements IMGuiListener {
                 return TEXT_COLOUR;
             }
         }.setListener(this).setToolTip(new String[] {"Open Options Window"}));//.setColours(0xFF888888, 0xFF000000, 0xFF222222)
+
+
     }
 
     //region Render
@@ -89,15 +92,18 @@ public class WikiMenu extends MGuiElementBase implements IMGuiListener {
     @Override
     public void onMGuiEvent(String eventString, MGuiElementBase eventElement) {
         if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("OPTIONS")) {
-            if (optionsWindow != null) {
-                modularGui.getManager().remove(optionsWindow);
-                optionsWindow = null;
+            if (wikiConfigWindow != null) {
+                modularGui.getManager().remove(wikiConfigWindow);
+                wikiConfigWindow = null;
             }
             else {
-                optionsWindow = new OptionsWindow(modularGui, (modularGui.screenWidth() / 2) - 128, (modularGui.screenHeight() / 2) - 100, 256, 200);
-                modularGui.getManager().add(optionsWindow, displayLevel + 1);
-                optionsWindow.initElement();
+                wikiConfigWindow = new WikiConfigWindow(modularGui, (modularGui.screenWidth() / 2) - 128, (modularGui.screenHeight() / 2) - 100, 256, 200);
+                modularGui.getManager().add(wikiConfigWindow, displayLevel + 1);
+                wikiConfigWindow.initElement();
             }
+        }
+        else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("TOGGLE_EDIT_LINES")) {
+            WikiConfig.drawEditInfo = !WikiConfig.drawEditInfo;
         }
     }
 

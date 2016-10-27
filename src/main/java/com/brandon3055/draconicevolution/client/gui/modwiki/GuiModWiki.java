@@ -19,7 +19,6 @@ public class GuiModWiki extends ModularGuiScreen implements IMGuiListener {
     public WikiContentWindow contentWindow;
     public GuiDocTree wikiDataTree = null;
     public static String activeID = null;
-    public static boolean editMode = false;
 
 //    public static ModDataList activeMod = null;
 //    public static ModDataEntry activeModData = null;

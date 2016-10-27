@@ -7,7 +7,6 @@ import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.gui.Focus;
-import mezz.jei.gui.MasterFocus;
 import mezz.jei.gui.RecipeLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -21,7 +20,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 21/09/2016.
  */
-public class JeiHelper {
+public class JeiHelper {//TODO This Is Now Borked
 
     //region JEI Checks
 
@@ -35,7 +34,7 @@ public class JeiHelper {
 
     @Optional.Method(modid = "JEI")
     public static boolean checkJEDRuntime() {
-        return DraconicEvolutionPlugin.jeiRuntime != null;
+        return DEJEIPlugin.jeiRuntime != null;
     }
 
     //endregion
@@ -54,7 +53,7 @@ public class JeiHelper {
     private static List<IRecipeRenderer> getRenderers(ItemStack result) {
         List<IRecipeRenderer> renderers = new ArrayList<>();
 
-        IRecipeRegistry registry = DraconicEvolutionPlugin.jeiRuntime.getRecipeRegistry();
+        IRecipeRegistry registry = DEJEIPlugin.jeiRuntime.getRecipeRegistry();
         List<IRecipeCategory> categories = registry.getRecipeCategoriesWithOutput(result);
 
         for (IRecipeCategory category : categories) {
@@ -98,8 +97,8 @@ public class JeiHelper {
             this.wrapper = wrapper;
             this.registry = registry;
             this.result = result;
-            IFocus<?> f = new Focus<Object>(result);
-            this.layout = new RecipeLayout(index, 0, 0, category, wrapper, MasterFocus.create(registry, f));
+//            IFocus<?> f = new Focus<Object>(result);
+            this.layout = new RecipeLayout(index, 0, 0, category, wrapper, registry.createFocus(IFocus.Mode.OUTPUT, result));
             this.width = category.getBackground().getWidth();
             this.height = category.getBackground().getHeight();
             this.title = category.getTitle();
@@ -121,8 +120,7 @@ public class JeiHelper {
         @Override
         public void render(Minecraft mc, int xPos, int yPos, int mouseX, int mouseY) {
             if (this.xPos != xPos || this.yPos != yPos) {
-                IFocus<?> f = new Focus<Object>(result);
-                layout = new RecipeLayout(index, xPos, yPos, category, wrapper, MasterFocus.create(registry, f));
+                this.layout = new RecipeLayout(index, xPos, yPos, category, wrapper, registry.createFocus(IFocus.Mode.OUTPUT, result));
                 layout.setRecipeTransferButton(-1000, -1000);
                 this.xPos = xPos;
                 this.yPos = yPos;
@@ -133,22 +131,22 @@ public class JeiHelper {
 
         @Override
         public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton) {
-            Focus focus = layout.getFocusUnderMouse(mouseX, mouseY);
+            Focus focus = null;//layout.getFocusUnderMouse(mouseX, mouseY);
             if (focus != null) {
                 if (focus.getValue() instanceof ItemStack) {
                     if (mouseButton == 0) {
-                        DraconicEvolutionPlugin.jeiRuntime.getRecipesGui().showRecipes((ItemStack) focus.getValue());
+                        DEJEIPlugin.jeiRuntime.getRecipesGui().showRecipes((ItemStack) focus.getValue());
                     }
                     else if (mouseButton == 1) {
-                        DraconicEvolutionPlugin.jeiRuntime.getRecipesGui().showUses((ItemStack) focus.getValue());
+                        DEJEIPlugin.jeiRuntime.getRecipesGui().showUses((ItemStack) focus.getValue());
                     }
                 }
                 else if (focus.getValue() instanceof FluidStack) {
                     if (mouseButton == 0) {
-                        DraconicEvolutionPlugin.jeiRuntime.getRecipesGui().showRecipes((FluidStack) focus.getValue());
+                        DEJEIPlugin.jeiRuntime.getRecipesGui().showRecipes((FluidStack) focus.getValue());
                     }
                     else if (mouseButton == 1) {
-                        DraconicEvolutionPlugin.jeiRuntime.getRecipesGui().showUses((FluidStack) focus.getValue());
+                        DEJEIPlugin.jeiRuntime.getRecipesGui().showUses((FluidStack) focus.getValue());
                     }
                 }
             }

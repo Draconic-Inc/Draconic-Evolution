@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
+import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
@@ -28,7 +29,7 @@ public class DCVSpacer extends DisplayComponentBase {
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
 
-        if (GuiModWiki.editMode && isMouseOver(mouseX, mouseY)) {
+        if (WikiConfig.editMode && isMouseOver(mouseX, mouseY)) {
             String text = String.format("[Separator: %s Line%s]", ySize / 8D, ySize == 8 ? "" : "s");
             drawCenteredString(fontRenderer, text, xPos + (xSize / 2), yPos + (ySize / 2) - 4, 0x00FF00, true);
         }

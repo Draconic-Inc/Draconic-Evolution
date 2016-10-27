@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.modwiki.moddata;
 
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.handlers.IProcess;
+import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.gson.stream.JsonReader;
 
@@ -19,6 +20,14 @@ public class WikiDownloadManager {
     public static DLMonitor monitor = null;
 
     public static void downloadManifest() {
+        if (WikiConfig.editMode) {
+            LogHelper.info("Wiki is in edit mode. Canceling update check!");
+            return;
+        }
+        else if (!WikiConfig.docLocation.equals("[CONFIG]")) {
+            LogHelper.info("Wiki document home location has been changed! Canceling update check!");
+            return;
+        }
         LogHelper.info("Downloading Project Intelligence Mod Manifest...");
         DownloadThread thread = new DownloadThread("https://raw.githubusercontent.com/brandon3055/Project-Intelligence-Docs/master/ModDocs/manifest.json", WikiDocManager.wikiFolder.getAbsolutePath() + "\\manifest.json");
         thread.setDaemon(true);
