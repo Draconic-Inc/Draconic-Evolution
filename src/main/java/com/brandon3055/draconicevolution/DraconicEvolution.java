@@ -50,13 +50,6 @@ public class DraconicEvolution {
 	{
 		LogHelper.info("Hello Minecraft!!!");
         LogHelper.info("Starting Draconic Evolution non-Beta! Deactivating Random Bug Generator!!!");
-        LogHelper.warn("=======================================================");
-        LogHelper.warn("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-        LogHelper.warn("If the game crashes on first start after automatically");
-        LogHelper.warn("installing CCL just try restarting.");
-        LogHelper.warn("There is currently a minor bug in the CCL downloader.");
-        LogHelper.warn("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-        LogHelper.warn("=======================================================");
 	}
 
     @Mod.EventHandler

@@ -220,7 +220,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         @Override
         public boolean apply(EntityLivingBase input) {
-            return !(input instanceof EntityPlayer);
+            return !(input instanceof EntityPlayer) && input.isEntityAlive();
         }
     }
 }

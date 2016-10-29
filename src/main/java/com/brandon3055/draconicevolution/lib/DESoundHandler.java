@@ -61,7 +61,6 @@ public class DESoundHandler {
         }
     }
 
-
     private static SoundEvent getRegisteredSoundEvent(String id) {
         SoundEvent soundevent = new SoundEvent(new ResourceLocation(id));
 

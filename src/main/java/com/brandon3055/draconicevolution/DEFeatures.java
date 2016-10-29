@@ -89,7 +89,7 @@ public class DEFeatures {
     @Feature(registryName = "fusion_crafting_core", tileEntity = TileFusionCraftingCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static FusionCraftingCore fusionCraftingCore = new FusionCraftingCore();
 
-    @Feature(registryName = "celestial_manipulator", tileEntity = TileCelestialManipulator.class)//, itemBlock = ItemBlockBCore.class, cTab = 1)
+    @Feature(registryName = "celestial_manipulator", tileEntity = TileCelestialManipulator.class, cTab = 1)//, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static CelestialManipulator celestialManipulator = new CelestialManipulator();
 
     //endregion
