@@ -14,9 +14,9 @@ public class ToolStats {
     public static int DRACONIC_BASE_CAPACITY = 16000000;
 
     @ModConfigProperty(category = "Stat Tweaks", name = "wyvernBaseMineAOE")
-    public static int BASE_WYVERN_MINING_AOE = 1;
+    public static int BASE_WYVERN_MINING_AOE = 0;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicBaseMineAOE")
-    public static int BASE_DRACONIC_MINING_AOE = 2;
+    public static int BASE_DRACONIC_MINING_AOE = 1;
 
     //Wyvern Shovel
     @ModConfigProperty(category = "Stat Tweaks", name = "wyvernShovelMineSpeed")

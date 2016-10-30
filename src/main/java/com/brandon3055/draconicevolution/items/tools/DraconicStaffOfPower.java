@@ -60,10 +60,10 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon {
 
     protected double getMaxAttackAOE(ItemStack stack) {
         int level = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ATTACK_AOE);
-        if (level == 0) return 3;
-        else if (level == 1) return 4;
-        else if (level == 2) return 6;
-        else if (level == 3) return 9;
+        if (level == 0) return 2;
+        else if (level == 1) return 3;
+        else if (level == 2) return 5;
+        else if (level == 3) return 8;
         else if (level == 4) return 15;
         else return 0;
     }

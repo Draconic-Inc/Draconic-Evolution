@@ -73,9 +73,9 @@ public class WyvernSword extends ToolBase implements IAOEWeapon {
 
     protected double getMaxAttackAOE(ItemStack stack) {
         int level = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ATTACK_AOE);
-        if (level == 0) return 1;
-        else if (level == 1) return 2;
-        else if (level == 2) return 3;
+        if (level == 0) return 0;
+        else if (level == 1) return 1;
+        else if (level == 2) return 2;
         else if (level == 3) return 5;
         else if (level == 4) return 10;
         else return 0;

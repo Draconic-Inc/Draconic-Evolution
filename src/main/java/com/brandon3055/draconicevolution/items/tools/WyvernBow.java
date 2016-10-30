@@ -243,8 +243,8 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem {
 
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
-        double maxDamage = 2 + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_DAMAGE) * 2);
-        int maxSpeed = 100 + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_SPEED) * 100;
+        double maxDamage = 2 + getToolTier(stack) + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_DAMAGE) * 2);
+        int maxSpeed = 100 + (getToolTier(stack) * 100) + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_SPEED) * 100;
 
         registry.register(stack, new DoubleConfigField("bowArrowDamage", 2, 0, maxDamage, "config.field.bowArrowDamage.description", SLIDER));
         registry.register(stack, new IntegerConfigField("bowArrowSpeedModifier", 0, 0, maxSpeed, "config.field.bowArrowSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));

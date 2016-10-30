@@ -2,6 +2,7 @@
 -Tweaked how the energy core build guide renderers.
 -Fixed celestial manipulator not syncing properly on multilplayer leading to a crash.
 -Added the ability to change the name of tool config profiles.
+-Nurfed mining AOE and Depth (Only effective when the config is regenerated)
 
 ######## 2.0.1.124 ########
 -Fixed Documentation downloader breaking.
