@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
+import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.integration.computers.oc.DEManagedPeripheral;
+import com.brandon3055.draconicevolution.integration.computers.oc.IExtendedRFStoragePeripheral;
 import li.cil.oc.api.Driver;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import li.cil.oc.api.prefab.ManagedEnvironment;
@@ -32,6 +34,7 @@ public class CCOCIntegration {
 	@Optional.Method(modid = "OpenComputers")
 	public static void initOC() {
 		Driver.add(new OCAdapter());
+		Driver.add(new OCExtendedRFAdapter());
 	}
 
 	public static class OCAdapter extends DriverSidedTileEntity {
@@ -46,6 +49,19 @@ public class CCOCIntegration {
             return new DEManagedPeripheral((IDEPeripheral)world.getTileEntity(pos));
         }
     }
+
+	public static class OCExtendedRFAdapter extends DriverSidedTileEntity {
+
+		@Override
+		public Class<?> getTileEntityClass() {
+			return IExtendedRFStorage.class;
+		}
+
+		@Override
+		public ManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side) {
+			return new IExtendedRFStoragePeripheral((IExtendedRFStorage)world.getTileEntity(pos));
+		}
+	}
 
     //Computercraft
 //	public static class DEPeripheralProvider implements IPeripheralProvider {

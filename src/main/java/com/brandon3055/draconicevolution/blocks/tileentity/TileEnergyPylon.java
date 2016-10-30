@@ -34,7 +34,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEnergyProvider, ITickable, IMultiBlock, IExtendedRFStorage,IDEPeripheral {
+public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEnergyProvider, ITickable, IMultiBlock, IExtendedRFStorage, IDEPeripheral {
     public final SyncableBool isOutputMode = new SyncableBool(false, true, false, true);
     public final SyncableBool structureValid = new SyncableBool(false, true, false, true);
     public final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, -1, 0), true, false, false);

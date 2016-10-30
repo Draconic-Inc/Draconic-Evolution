@@ -20,6 +20,18 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @SuppressWarnings("unused")
 public class DEEventHandler {
 
+//    @SubscribeEvent
+//    public void entityJoinWorld(EntityJoinWorldEvent event) {
+
+//    }
+
+//    @SubscribeEvent
+//    public void login(PlayerEvent.PlayerLoggedInEvent event) {
+
+//    }
+
+
+
 //    Random random = new Random();
 //    private static Method becomeAngryAt;
 //

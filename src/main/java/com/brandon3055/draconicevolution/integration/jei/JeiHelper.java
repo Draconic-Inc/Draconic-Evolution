@@ -6,8 +6,8 @@ import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import mezz.jei.gui.Focus;
 import mezz.jei.gui.RecipeLayout;
+import mezz.jei.input.IClickedIngredient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringUtils;
@@ -65,7 +65,9 @@ public class JeiHelper {//TODO This Is Now Borked
                         IRecipeWrapper wrapper = handler.getRecipeWrapper(recipe);
                         renderers.add(new RecipeRenderer(recipes.indexOf(recipe), category, wrapper, registry, result));
                     }
-                    catch (Throwable t) { t.printStackTrace(); }
+                    catch (Throwable t) {
+                        t.printStackTrace();
+                    }
                 }
             }
         }
@@ -131,22 +133,26 @@ public class JeiHelper {//TODO This Is Now Borked
 
         @Override
         public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton) {
-            Focus focus = null;//layout.getFocusUnderMouse(mouseX, mouseY);
-            if (focus != null) {
-                if (focus.getValue() instanceof ItemStack) {
-                    if (mouseButton == 0) {
-                        DEJEIPlugin.jeiRuntime.getRecipesGui().showRecipes((ItemStack) focus.getValue());
-                    }
-                    else if (mouseButton == 1) {
-                        DEJEIPlugin.jeiRuntime.getRecipesGui().showUses((ItemStack) focus.getValue());
-                    }
+            IClickedIngredient ingredient = layout.getIngredientUnderMouse(mouseX, mouseY);
+            if (ingredient != null) {
+//                IFocus f = registry.createFocus(IFocus.Mode.NONE, ingredient);
+//                DEJEIPlugin.jeiRuntime.getRecipesGui().show(f);
+                if (ingredient.getValue() instanceof ItemStack) {
+                    IFocus f = registry.createFocus(mouseButton == 0 ? IFocus.Mode.OUTPUT : IFocus.Mode.INPUT, (ItemStack)ingredient.getValue());
+                    DEJEIPlugin.jeiRuntime.getRecipesGui().show(f);
+//                    if (mouseButton == 0) {
+//                        DEJEIPlugin.jeiRuntime.getRecipesGui().showRecipes((ItemStack) ingredient.getValue());
+//                    }
+//                    else if (mouseButton == 1) {
+//                        DEJEIPlugin.jeiRuntime.getRecipesGui().showUses((ItemStack) ingredient.getValue());
+//                    }
                 }
-                else if (focus.getValue() instanceof FluidStack) {
+                else if (ingredient.getValue() instanceof FluidStack) {
                     if (mouseButton == 0) {
-                        DEJEIPlugin.jeiRuntime.getRecipesGui().showRecipes((FluidStack) focus.getValue());
+                        DEJEIPlugin.jeiRuntime.getRecipesGui().showRecipes((FluidStack) ingredient.getValue());
                     }
                     else if (mouseButton == 1) {
-                        DEJEIPlugin.jeiRuntime.getRecipesGui().showUses((FluidStack) focus.getValue());
+                        DEJEIPlugin.jeiRuntime.getRecipesGui().showUses((FluidStack) ingredient.getValue());
                     }
                 }
             }

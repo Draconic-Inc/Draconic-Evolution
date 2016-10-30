@@ -70,8 +70,6 @@ public class DEJEIPlugin implements IModPlugin {
         jeiRuntime = iJeiRuntime;
     }
 
-
-
     public static void reloadJEI() {
         if (jeiHelpers != null) {
             jeiHelpers.reload();

@@ -1,14 +1,17 @@
 package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.brandonscore.lib.MultiBlockStorage;
+import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.MultiBlockHelper;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -16,6 +19,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -135,38 +140,16 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     @Override
     public void forBlock(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
-        if (name.isEmpty() || name.equals("draconicevolution:energy_storage_core")) return;
+        if (name.isEmpty() || name.equals("draconicevolution:energy_storage_core")) {
+            return;
+        }
 
         //region Render Build Guide
 
         if (flag == FLAG_RENDER) {//todo find a way to render these from the center out (Maby try rendering them relative to haw far from the player they are)... Actually maby i can use cover's new baking system to make the entire thing a baked model!
-            Block block = Block.REGISTRY.getObject(new ResourceLocation(name));
-
-            if (block == null || name.equals("") || name.equals("air")) {
-                return;
+            if (world.isRemote) {
+                renderBuildGuide(name, world, pos, startPos, flag);
             }
-
-            BlockPos translation = new BlockPos(pos.getX() - startPos.getX(), pos.getY() - startPos.getY(), pos.getZ() - startPos.getZ());
-            translation = translation.add(getCoreOffset(core.tier.value));
-
-            IBlockState state = block.getDefaultState();
-
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(translation.getX(), translation.getY(), translation.getZ());
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            GlStateManager.scale(0.9, 0.9, 0.9);
-            GlStateManager.translate(0.05, 0.05, 0.05);
-            float brightnessX = OpenGlHelper.lastBrightnessX;
-            float brightnessY = OpenGlHelper.lastBrightnessY;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 150f, 150f);
-
-            List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
-            ModelUtils.renderQuadsARGB(blockQuads, 0x80FFFFFF);
-
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
-            GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
         }
 
         //endregion
@@ -194,6 +177,46 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         }
 
         //endregion
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderBuildGuide(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
+        Block block = Block.REGISTRY.getObject(new ResourceLocation(name));
+
+        Vec3D corePos = Vec3D.getCenter(startPos.subtract(getCoreOffset(core.tier.value)));
+        double dist = Utils.getDistanceAtoB(corePos, Vec3D.getCenter(pos));
+        double pDist = Minecraft.getMinecraft().thePlayer.getDistance(corePos.x, corePos.y, corePos.z);
+
+        if (dist + 2 > pDist) {
+            return;
+        }
+
+        if (name.equals("") || name.equals("air")) {
+            return;
+        }
+
+        BlockPos translation = new BlockPos(pos.getX() - startPos.getX(), pos.getY() - startPos.getY(), pos.getZ() - startPos.getZ());
+        translation = translation.add(getCoreOffset(core.tier.value));
+
+        IBlockState state = block.getDefaultState();
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(translation.getX(), translation.getY(), translation.getZ());
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.scale(0.8, 0.8, 0.8);
+        GlStateManager.translate(0.1, 0.1, 0.1);
+        float brightnessX = OpenGlHelper.lastBrightnessX;
+        float brightnessY = OpenGlHelper.lastBrightnessY;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 150f, 150f);
+
+        List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
+
+        ModelUtils.renderQuadsARGB(blockQuads, 0xFFFFFFFF);
+
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
     }
 
     //region Structure Builders

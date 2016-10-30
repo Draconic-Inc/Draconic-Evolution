@@ -38,11 +38,11 @@ import java.util.List;
 public class TileCelestialManipulator extends TileEnergyBase implements ITickable, IEnergyReceiver, IChangeListener {
 
     public final SyncableBool WEATHER_MODE = new SyncableBool(true, true, true, false);
-    public final SyncableBool ACTIVE = new SyncableBool(false, true, true, false);
-    public final SyncableBool weatherToggleRunning = new SyncableBool(false, true, true, false);
-    public final SyncableBool timeWarpRunning = new SyncableBool(false, true, true, false);
-    public final SyncableBool timeWarpStopping = new SyncableBool(false, true, true, false);
-    public final SyncableBool redstoneSignal = new SyncableBool(false, true, true, false);
+    public final SyncableBool ACTIVE = new SyncableBool(false, true, false, false);
+    public final SyncableBool weatherToggleRunning = new SyncableBool(false, true, false, false);
+    public final SyncableBool timeWarpRunning = new SyncableBool(false, true, false, false);
+    public final SyncableBool timeWarpStopping = new SyncableBool(false, true, false, false);
+    public final SyncableBool redstoneSignal = new SyncableBool(false, true, false, false);
     public final SyncableByte rsMode = new SyncableByte((byte) 0, false, true, false);
     public int timer = 0;
     public boolean storm = false;
@@ -83,7 +83,6 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
             timer++;
             if (worldObj.isRemote) {
                 updateSunEffect();
-//                energyStorage.setEnergyStored(energyStored.value);
             }
             else {
                 energyStored.value = energyStorage.getEnergyStored();
@@ -119,14 +118,16 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 updateSunEffect();
             }
             else if (worldObj.isRemote) {
-                effects.clear();
+                if (effects != null) {
+                    effects.clear();
+                }
                 if (sound != null) {
                     sound.kill();
                     sound = null;
                 }
             }
         }
-        else if (ACTIVE.value) {
+        else if (ACTIVE.value && !worldObj.isRaining()) {
             ACTIVE.value = false;
         }
         else if (worldObj.isRemote) {

@@ -127,7 +127,7 @@ public class ChaosWorldGenHandler {
 		EntityChaosGuardian guardian = new EntityChaosGuardian(world);
 		List<EntityPlayer> list = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(islandCenter.x - 1000, 0, islandCenter.z - 1000, islandCenter.x + 1000, 255, islandCenter.z + 1000));
 		for (EntityPlayer player : list) {
-			player.addChatComponentMessage(new TextComponentString("[Chaos Guardian]:").setStyle(new Style().setColor(TextFormatting.GOLD)).appendSibling(new TextComponentString(" Just a heads up. My creator has not got around to fixing all of my 1.10.2 bugs yet so i mey be a little broken. You have been warned! Now come and get wrecked!!!!").setStyle(new Style().setColor(TextFormatting.RED))));
+			player.addChatComponentMessage(new TextComponentString("[Chaos Guardian]:").setStyle(new Style().setColor(TextFormatting.GOLD)).appendSibling(new TextComponentString(" Just a heads up. My creator has not got around to fixing all of my 1.10.2 bugs yet so i may be a little broken. You have been warned! Now come and get wrecked!!!!").setStyle(new Style().setColor(TextFormatting.RED))));
 		}
 
 		guardian.setPositionAndUpdate(islandCenter.x, shardY, islandCenter.z);

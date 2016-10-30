@@ -11,11 +11,14 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.network.PacketConfigureTool;
+import com.brandon3055.draconicevolution.network.PacketToolProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -34,7 +37,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
 /**
  * Created by brandon3055 on 7/06/2016.
  */
-public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename config profiles
+public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.GuiResponder{//TODO add ability to rename config profiles
 
     private GuiToolConfig parent;
     private final EntityPlayer player;
@@ -44,6 +47,7 @@ public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename co
     public FieldButton[] fieldButtons;
     public int selected = -1;
     public float partialTick;
+    public GuiTextField profileField;
 
     public GuiConfigureTool(GuiToolConfig parent, EntityPlayer player, ItemStack stack, PlayerSlot slot) {
         this.parent = parent;
@@ -85,6 +89,12 @@ public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename co
         }
 
         buttonList.add(new AdjusterButton(i, centerX - 160, centerY - 6, 320, 18, this));
+
+        profileField = new GuiTextField(0, fontRendererObj, centerX + 50, centerY - 115, 105, 14);
+        profileField.setEnableBackgroundDrawing(false);
+        profileField.setText(ToolConfigHelper.getProfileName(stack, ToolConfigHelper.getProfile(stack)));
+        profileField.setMaxStringLength(20);
+        profileField.setGuiResponder(this);
     }
 
     @Override
@@ -116,6 +126,21 @@ public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename co
     @Override
     public boolean doesGuiPauseGame() {
         return false;
+    }
+
+    @Override
+    public void setEntryValue(int id, boolean value) {
+
+    }
+
+    @Override
+    public void setEntryValue(int id, float value) {
+
+    }
+
+    @Override
+    public void setEntryValue(int id, String value) {
+        DraconicEvolution.network.sendToServer(new PacketToolProfile(slot, value));
     }
 
     //endregion
@@ -162,6 +187,9 @@ public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename co
         }
 
         //endregion
+        GuiHelper.drawColouredRect(centerX + 47, centerY - 118, 108, 14, 0x50303030);
+
+        profileField.drawTextBox();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
@@ -207,11 +235,21 @@ public class GuiConfigureTool extends GuiScreen {//TODO add ability to rename co
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (profileField.textboxKeyTyped(typedChar, keyCode)) {
+            return;
+        }
+
         super.keyTyped(typedChar, keyCode);
 
         if (mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode)) {
             mc.displayGuiScreen(parent);
         }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        profileField.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     //endregion
