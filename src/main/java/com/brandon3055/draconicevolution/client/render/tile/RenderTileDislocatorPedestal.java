@@ -70,7 +70,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
     private void drawNameString(ItemStack item, float rotation, TileDislocatorPedestal te, float f) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         RayTraceResult mop = player.rayTrace(10, f);
-        boolean isCursorOver = mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK && mop.blockPos.equals(te.getPos());
+        boolean isCursorOver = mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK && mop.getBlockPos().equals(te.getPos());
         boolean isSneaking = player.isSneaking();
 
         if (!isCursorOver && (isSneaking != DEConfig.invertDPDSB)) {
