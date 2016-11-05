@@ -10,7 +10,6 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileChaosCrystal;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
@@ -56,9 +55,9 @@ public class Debugger extends ItemBCore {
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
-            RenderTileChaosCrystal.initShader();
-        }
+//        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
+//            RenderTileChaosCrystal.initShader();
+//        }
         super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
