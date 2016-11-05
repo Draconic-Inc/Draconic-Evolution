@@ -3,7 +3,10 @@ package com.brandon3055.draconicevolution.client.gui.toolconfig;
 import com.brandon3055.brandonscore.client.gui.ButtonColourRect;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
+import com.brandon3055.draconicevolution.handlers.ContributorHandler;
+import com.brandon3055.draconicevolution.network.PacketContributor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
@@ -75,6 +78,21 @@ public class GuiToolConfig extends GuiScreen {
         }
 
         buttonList.add(configButton = new ButtonColourRect(id, I18n.format("gui.de.toolConfig.hud.txt"), centerX + 23, centerY - 107, 59, 16, 0x88000000, 0xFF440066, 0xFF009900));
+
+
+        if (ContributorHandler.contributors.containsKey(player.getName())) {
+            ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(player.getName());
+            if (!contributor.isUserValid(player)) {
+                return;
+            }
+
+            if (contributor.contributionLevel >= 1) {
+                buttonList.add(new ButtonColourRect(44, "Contributor Wings: " + (contributor.contributorWingsEnabled ? "Enabled" : "Disabled"), centerX - 240, centerY - 100, 150, 20, 0x88000000, 0xFF440066, 0xFF009900));
+            }
+            if (contributor.contribution.toLowerCase().contains("patreon")) {
+                buttonList.add(new ButtonColourRect(45, "Patreon Badge: " + (contributor.patreonBadgeEnabled ? "Enabled" : "Disabled"), centerX - 240, centerY + 22 - 100, 150, 20, 0x88000000, 0xFF440066, 0xFF009900));
+            }
+        }
     }
 
     //region Draw
@@ -153,6 +171,20 @@ public class GuiToolConfig extends GuiScreen {
             if (toolButton.stack != null && toolButton.stack.getItem() instanceof IConfigurableItem){
                 mc.displayGuiScreen(new GuiConfigureTool(this, player, ((ToolButton) button).stack, ((ToolButton) button).slot));
             }
+        }
+        if (ContributorHandler.contributors.containsKey(player.getName())) {
+            ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(player.getName());
+            if (!contributor.isUserValid(player)) return;
+
+            if (button.id == 44) {
+                contributor.contributorWingsEnabled = !contributor.contributorWingsEnabled;
+                button.displayString = "Contributor Wings: " + (contributor.contributorWingsEnabled ? "Enabled" : "Disabled");
+            } else if (button.id == 45) {
+                contributor.patreonBadgeEnabled = !contributor.patreonBadgeEnabled;
+                button.displayString = "Patreon Badge: " + (contributor.patreonBadgeEnabled ? "Enabled" : "Disabled");
+            }
+
+            DraconicEvolution.network.sendToServer(new PacketContributor(player.getName(), contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled));
         }
     }
 

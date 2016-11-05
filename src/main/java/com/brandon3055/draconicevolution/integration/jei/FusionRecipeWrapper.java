@@ -5,9 +5,11 @@ import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.gui.GuiFusionCraftingCore;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
@@ -40,6 +42,9 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
             if (o instanceof Item) {
                 inputs.add(new ItemStack((Item) o));
             }
+            else if (o instanceof Block) {
+                inputs.add(new ItemStack((Block) o));
+            }
             else {
                 inputs.add(o);
             }
@@ -68,8 +73,8 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
 
     @Override
     public void drawAnimations(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight) {
-        if (timer.getValue() != lastTick) {
-            lastTick = timer.getValue();
+        if (ClientEventHandler.elapsedTicks != lastTick) {
+            lastTick = ClientEventHandler.elapsedTicks;
             tick();
         }
 

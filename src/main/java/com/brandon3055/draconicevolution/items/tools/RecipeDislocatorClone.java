@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.brandonscore.utils.Teleporter;
+import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.DEFeatures;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ public class RecipeDislocatorClone implements IRecipe {
         ItemStack source = inv.getStackInSlot(0);
         ItemStack target = inv.getStackInSlot(1);
 
-        if (source == null || target == null || !source.hasTagCompound()) {
+        if (source == null || target == null || !source.hasTagCompound() || !(source.getItem() instanceof Dislocator) || !(target.getItem() instanceof Dislocator)) {
             return null;
         }
 
@@ -37,7 +37,7 @@ public class RecipeDislocatorClone implements IRecipe {
         NBTTagList sourceList = new NBTTagList();
 
         if (source.getItem() == DEFeatures.dislocator) {
-            Teleporter.TeleportLocation location = ((Dislocator)source.getItem()).getLocation(source);
+            TeleportLocation location = ((Dislocator)source.getItem()).getLocation(source);
             location.setName("*-Copy-*");
             NBTTagCompound compound = new NBTTagCompound();
             location.writeToNBT(compound);
@@ -48,8 +48,12 @@ public class RecipeDislocatorClone implements IRecipe {
         }
 
         if (output.getItem() == DEFeatures.dislocator) {
+            TeleportLocation location = ((Dislocator)source.getItem()).getLocation(source);
+            if (location == null) {
+                return null;
+            }
             NBTTagCompound compound = new NBTTagCompound();
-            ((Dislocator)source.getItem()).getLocation(source).writeToNBT(compound);
+            location.writeToNBT(compound);
             compound.setBoolean("IsSet", true);
             output.setTagCompound(compound);
         }
@@ -59,12 +63,12 @@ public class RecipeDislocatorClone implements IRecipe {
 
             for (int i = 0; i < sourceList.tagCount(); i++) {
                 boolean matchFound = false;
-                Teleporter.TeleportLocation sourceLocation = new Teleporter.TeleportLocation();
+                TeleportLocation sourceLocation = new TeleportLocation();
                 NBTTagCompound sourceCompound = sourceList.getCompoundTagAt(i);
                 sourceLocation.readFromNBT(sourceCompound);
 
                 for (int j = 0; j < targetList.tagCount(); j++) {
-                    Teleporter.TeleportLocation targetLocation = new Teleporter.TeleportLocation();
+                    TeleportLocation targetLocation = new TeleportLocation();
                     targetLocation.readFromNBT(targetList.getCompoundTagAt(j));
 
                     if (sourceLocation.hashCode() == targetLocation.hashCode()) {

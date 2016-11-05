@@ -52,21 +52,21 @@ public class ToolStats {
 
     //Draconic Shovel
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicShovelMineSpeed")
-    public static double DRA_SHOVEL_MINING_SPEED = 15D;
+    public static double DRA_SHOVEL_MINING_SPEED = 18D;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicShovelAttackDMG")
     public static double DRA_SHOVEL_ATTACK_DAMAGE = 20D;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicShovelAttackSpeed")
     public static double DRA_SHOVEL_ATTACK_SPEED = -2.9D;
     //Draconic Pick
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicPicMineSpeed")
-    public static double DRA_PICK_MINING_SPEED = 15D;
+    public static double DRA_PICK_MINING_SPEED = 18D;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicPicAttackDMG")
     public static double DRA_PICK_ATTACK_DAMAGE = 20D;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicPicAttackSpeed")
     public static double DRA_PICK_ATTACK_SPEED = -2.9D;
     //Draconic Axe
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicAxeMineSpeed")
-    public static double DRA_AXE_MINING_SPEED = 15D;
+    public static double DRA_AXE_MINING_SPEED = 18D;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicAxeAttackDMG")
     public static double DRA_AXE_ATTACK_DAMAGE = 45D;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicAxeAttackSpeed")

@@ -124,14 +124,14 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
         //Attack the mob and enter cooldown mode for 5 ticks is successful. Else cooldown for 3 ticks.
         if (target.attackEntityFrom(source, damage)) {
             energyStorage.modifyEnergyStored(-cost);
-            coolDown = 5;
+            coolDown = 2;
         }
         else {
             coolDown = 3;
         }
 
         //If a mob was killed reduce the despawn time of any xp dropped.
-        if (coolDown == 5) {
+        if (coolDown == 2) {
             List<EntityXPOrb> xp = worldObj.getEntitiesWithinAABB(EntityXPOrb.class, killBox.expand(4, 4, 4));
             for (EntityXPOrb orb : xp) {
                 if (orb.xpOrbAge < 5400) {

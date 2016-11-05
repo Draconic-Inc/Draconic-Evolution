@@ -33,17 +33,21 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
 	}
 
 	@Override
-	public void update() {
+	public void update() {//TODO Give this a good re write!
 		super.detectAndSendChanges();
-		if (worldObj.isRemote) return;
+		if (worldObj.isRemote) {
+			return;
+		}
 
 		active.value = burnTimeRemaining.value > 0 && getEnergyStored() < getMaxEnergyStored();
 
 		if (burnTimeRemaining.value > 0 && getEnergyStored() < getMaxEnergyStored()) {
 			burnTimeRemaining.value -= burnSpeed;
-			energyStorage.setEnergyStored(getEnergyStored() + Math.min(burnSpeed * EPBT, getMaxEnergyStored() - getEnergyStored()));
+			energyStorage.modifyEnergyStored(burnSpeed * EPBT * 2);
 		}
-		if (burnTimeRemaining.value <= 0 && getEnergyStored() < getMaxEnergyStored()) tryRefuel();
+		if (burnTimeRemaining.value <= 0 && getEnergyStored() < getMaxEnergyStored()) {
+			tryRefuel();
+		}
 
 		sendEnergyToAll();
 	}

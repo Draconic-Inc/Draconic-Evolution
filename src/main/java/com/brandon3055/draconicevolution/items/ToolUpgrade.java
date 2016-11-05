@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeAPI;
+import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.itemupgrade.FusionUpgradeRecipe;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -23,10 +24,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 26/06/2016.
@@ -52,8 +50,9 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
     public static final String JUMP_BOOST = "jumpBoost";
 
     public static final Map<String, LinkedList<FusionUpgradeRecipe>> RECIPE_MAP = new HashMap<String, LinkedList<FusionUpgradeRecipe>>();
+    public static final List<IFusionRecipe> upgrades = new ArrayList<>();
 
-    private static final int[] UPGRADE_COST = new int[]{32000, 512000, 32000000, 512000000};
+    private static final int[] UPGRADE_COST = new int[]{32000, 512000, 32000000, 256000000};
 
     public ToolUpgrade() {
         setHasSubtypes(true);
@@ -92,10 +91,12 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
 
             RECIPE_MAP.get(name).add(recipe);
             FusionRecipeAPI.addRecipe(recipe);
+            upgrades.add(recipe);
         }
     }
 
-    public static void addUpgrades() {
+    public static Collection<IFusionRecipe> addUpgrades() {
+        upgrades.clear();
         registerUpgrade(0, RF_CAPACITY, 4);
         registerUpgrade(1, DIG_SPEED, 4);
         registerUpgrade(2, DIG_AOE, 4);
@@ -110,6 +111,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
         registerUpgrade(9, SHIELD_RECOVERY, 4);
         registerUpgrade(10, MOVE_SPEED, 4);
         registerUpgrade(11, JUMP_BOOST, 4);
+        return upgrades;
     }
 
     @Override

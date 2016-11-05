@@ -209,6 +209,9 @@ public class DEFeatures {
     @Feature(registryName = "dislocator_advanced", cTab = 1)
     public static DislocatorAdvanced dislocatorAdvanced = new DislocatorAdvanced();
 
+    @Feature(registryName = "magnet", cTab = 1, stateOverride = "misc#", variantMap = {"0:type=magnet_basic", "1:type=magnet_advanced"})
+    public static Magnet magnet = new Magnet();
+
     //endregion
 
     //region Armor

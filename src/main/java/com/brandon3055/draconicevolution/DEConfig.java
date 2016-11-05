@@ -85,7 +85,8 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "expensiveDragonRitual", comment = "Lets face it. The biggest issue with the new dragon ritual is it is too darn cheap! This modifies the recipe to make it a bit more expensive.")
     public static boolean expensiveDragonRitual = true;
 
-    //public static boolean modifyVanillaResurrection = false; TODO
+    @ModConfigProperty(category = "Tweaks", name = "itemDislocatorBlacklist", comment = "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4")
+    public static String[] itemDislocatorBlacklist = new String[]{"appliedenergistics2:item.ItemCrystalSeed"};
 
     //Category Client
 
@@ -94,6 +95,22 @@ public class DEConfig {
 
     @ModConfigProperty(category = "Client Settings", name = "disable3DModels", comment = "Disabled the 3D tool and armor models. This is required if you want to use a 2D resource pack.)")
     public static boolean disable3DModels = false;
+
+    @ModConfigProperty(category = "Client Settings", name = "invertDPDSB", comment = "Invert Dislocator Pedestal display name shift behavior.")
+    public static boolean invertDPDSB = false;
+
+    public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
+
+    public static void init(){
+        itemDislocatorBlacklistMap.clear();
+        for (String s : itemDislocatorBlacklist) {
+            if (s.contains("|")) {
+                itemDislocatorBlacklistMap.put(s.substring(0, s.indexOf("|")), Integer.parseInt(s.substring(s.indexOf("|") + 1)));
+            } else {
+                itemDislocatorBlacklistMap.put(s, -1);
+            }
+        }
+    }
 }
 
 

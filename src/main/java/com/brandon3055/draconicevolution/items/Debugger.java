@@ -10,11 +10,14 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileChaosCrystal;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -51,6 +54,14 @@ public class Debugger extends ItemBCore {
         MODES.put(6, "Mod Wiki");
     }
 
+    @Override
+    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
+            RenderTileChaosCrystal.initShader();
+        }
+        super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+    }
+
     //region Item Junk
 
     @Override
@@ -64,6 +75,20 @@ public class Debugger extends ItemBCore {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+
+        if (world.isRemote) {
+            RenderTileChaosCrystal.initShader();
+
+
+//            InputStream stream = ShaderProgram.class.getResourceAsStream("/assets/draconicevolution/shaders/starfield.frag");
+//            if (stream == null) {
+//                throw new RuntimeException("Unable to locate resource: " + "/assets/draconicevolution/shaders/starfield.frag");
+//            }
+//
+//            RenderTileChaosCrystal.program.reAttach(RenderTileChaosCrystal.fragID, ARBFragmentShader.GL_FRAGMENT_SHADER_ARB, stream);
+//            RenderTileChaosCrystal.program.attachVert("/assets/draconicevolution/shaders/starfield.vert");
+        }
+
 
 //      LogHelper.info(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "draconicevolution:creativeSource"));
 

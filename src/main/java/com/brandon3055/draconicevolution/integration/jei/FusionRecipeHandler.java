@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
-import com.brandon3055.draconicevolution.api.itemupgrade.FusionUpgradeRecipe;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
@@ -40,6 +39,6 @@ public class FusionRecipeHandler implements IRecipeHandler<IFusionRecipe> {
 
     @Override
     public boolean isRecipeValid(@Nonnull IFusionRecipe recipe) {
-        return !(recipe instanceof FusionUpgradeRecipe);
+        return true;
     }
 }

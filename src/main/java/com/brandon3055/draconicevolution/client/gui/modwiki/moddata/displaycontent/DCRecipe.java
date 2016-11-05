@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
+import codechicken.lib.render.state.GlStateManagerHelper;
 import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiStackIcon;
@@ -118,7 +119,9 @@ public class DCRecipe extends DisplayComponentBase {
             }
 
             drawBorderedRect(x, yPos + yOffset + fontRenderer.FONT_HEIGHT, renderer.getWidth() + 2, renderer.getHeight() + 2, 1, 0, 0xFF000000);
+            GlStateManagerHelper.pushState();
             renderer.render(minecraft, x + 1, yPos + yOffset + fontRenderer.FONT_HEIGHT + 1, mouseX, mouseY);
+            GlStateManagerHelper.popState();
             yOffset += renderer.getHeight() + fontRenderer.FONT_HEIGHT + 4;
         }
 

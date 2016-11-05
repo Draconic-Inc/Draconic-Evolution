@@ -66,7 +66,7 @@ public class UIEditTextArea extends JFrame implements ActionListener {
                         e.printStackTrace();
                     }
                 }
-                UIEditTextArea.this.dispose();
+                UIEditTextArea.this.setTitle("[Error!!!] MC Connection Lost!");
             }
         };
         timeout.setDaemon(true);

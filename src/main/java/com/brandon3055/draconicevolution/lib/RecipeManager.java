@@ -77,8 +77,7 @@ public class RecipeManager {
         }
 
         activeFusion.clear();
-
-        ToolUpgrade.addUpgrades();
+        activeFusion.addAll(ToolUpgrade.addUpgrades());
         DERecipes.addRecipes();
         try {
             loadRecipesFromConfig();

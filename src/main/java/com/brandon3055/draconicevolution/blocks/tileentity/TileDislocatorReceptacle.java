@@ -24,7 +24,10 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 16/07/2016.
@@ -132,7 +135,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         super.setInventorySlotContents(index, stack);
-        if (getStackInSlot(0) == null && !ACTIVE.value) {
+        if (getStackInSlot(0) == null && ACTIVE.value) {
             deactivate();
         }
         else if (getStackInSlot(0) != null) {

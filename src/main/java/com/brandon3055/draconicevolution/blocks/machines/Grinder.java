@@ -20,6 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -61,6 +62,11 @@ public class Grinder extends BlockMobSafe implements ITileEntityProvider {
 		}
 
 		return this.getDefaultState().withProperty(FACING, enumfacing);
+	}
+
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		return super.getBoundingBox(state, source, pos);
 	}
 
 	@Override

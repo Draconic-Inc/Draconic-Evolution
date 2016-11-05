@@ -1,8 +1,12 @@
-######## 2.0.1.x ########
+######## 2.0.2.x ########
 -Tweaked how the energy core build guide renderers.
 -Fixed celestial manipulator not syncing properly on multilplayer leading to a crash.
 -Added the ability to change the name of tool config profiles.
--Nurfed mining AOE and Depth (Only effective when the config is regenerated)
+-Reduced mining AOE and Depth by 1 (Only effective when the config is regenerated)
+-Added JEI support for fusion upgrade recipes.
+-Updated item dislocator.
+-Fixed crash when copying a location between dislocators.
+-Removed the hard mode recipe for the Draconic Core because it made some recipes way to expensive.
 
 ######## 2.0.1.124 ########
 -Fixed Documentation downloader breaking.

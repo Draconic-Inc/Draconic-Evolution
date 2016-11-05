@@ -50,7 +50,7 @@ import java.util.*;
 public class ClientEventHandler {
     public static Map<EntityPlayer, XZPair<Float, Integer>> playerShieldStatus = new HashMap<EntityPlayer, XZPair<Float, Integer>>();
 
-    public static int elapsedTicks;
+    public static volatile int elapsedTicks;
     private static float previousFOB = 0f;
     public static float previousSensitivity = 0;
     public static boolean bowZoom = false;
@@ -78,6 +78,27 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
         HudHandler.drawHUD(event);
+
+        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+            return;
+        }
+    }
+
+    @SubscribeEvent
+    public void renderGameOverlayPre(RenderGameOverlayEvent.Pre event) {
+        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+            return;
+        }
+
+//        RenderTileChaosCrystal.program.runShader();
+
+
+//        mc.getFramebuffer().bindFramebufferTexture();
+//        RenderTileChaosCrystal.program.bindShader();
+//        RenderTileChaosCrystal.program.runShader();
+
+//        mc.getFramebuffer().bindFramebuffer(true);
+
     }
 
     @SubscribeEvent

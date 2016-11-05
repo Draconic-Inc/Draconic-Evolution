@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "textures": {
+      "layer0": "blocks/dirt"
+    },
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type":{
+      "magnet_basic": { "textures": { "layer0": "draconicevolution:items/magnet_basic"      } },
+      "magnet_advanced":{ "textures": { "layer0": "draconicevolution:items/magnet_advanced"     } }
+    }
+  }
+}

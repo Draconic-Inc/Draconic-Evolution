@@ -16,6 +16,8 @@ import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.layers.LayerElytra;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -24,10 +26,15 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClientProxy extends CommonProxy {
 	private final static boolean debug = DraconicEvolution.debug;
 	public static String downloadLocation;
-	
+	public static List<LayerElytra> elytra = new ArrayList<>();
+	public static LayerContributorWings layerWings;
+
 	@Override
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -73,6 +80,11 @@ public class ClientProxy extends CommonProxy {
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		super.postInit(event);
+
+		for (RenderPlayer renderPlayer : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
+			renderPlayer.addLayer(layerWings = new LayerContributorWings(renderPlayer));
+		}
+
 //		ResourceHandler.instance.tick(null);
 	}
 

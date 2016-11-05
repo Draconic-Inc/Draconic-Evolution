@@ -174,10 +174,6 @@ public class GuiRecipeBuilder extends GuiContainer {
             RecipeManager.initialize();
             ModHelper.reloadJEI();
         }
-
-//        Recipes take a back seat...
-//        Get placable items up and running so i can display stuff in the booth! (Even if its just a quick fix and not the upgrade i planned)
-
     }
 
     @Override

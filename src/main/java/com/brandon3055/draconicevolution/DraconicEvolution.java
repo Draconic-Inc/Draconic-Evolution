@@ -67,6 +67,7 @@ public class DraconicEvolution {
 		featureParser.loadFeatures(DEFeatures.class);
 		featureParser.loadFeatureConfig(configuration);
 		featureParser.registerFeatures();
+		DEConfig.init();
 
 		OreHandler.initialize();
 

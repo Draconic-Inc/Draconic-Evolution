@@ -92,8 +92,8 @@ public class DERecipes {
         addShaped(ALL, new ItemStack(chaosShard, 1, 1), "AAA", "AAA", "AAA", 'A', new ItemStack(chaosShard, 1, 2));
         addShaped(ALL, chaosShard, "AAA", "AAA", "AAA", 'A', new ItemStack(chaosShard, 1, 1));
         //Cores
-        addShaped(NORMAL, draconicCore, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', "ingotGold", 'C', "gemDiamond");
-        addShaped(HARD, draconicCore, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', "gemDiamond", 'C', "netherStar");
+        addShaped(ALL, draconicCore, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', "ingotGold", 'C', "gemDiamond");
+        //addShaped(HARD, draconicCore, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', "gemDiamond", 'C', "netherStar");
         addShaped(NORMAL, wyvernCore, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', draconicCore, 'C', "netherStar");
         addFusion(HARD, new ItemStack(wyvernCore), new ItemStack(EMERALD_BLOCK), 1000000, 0, draconicCore, draconicCore, "blockDraconium", "netherStar", draconicCore, "netherStar", "blockDraconium", draconicCore, draconicCore);
         addFusion(NORMAL, new ItemStack(awakenedCore), new ItemStack(NETHER_STAR), 1000000, 1, wyvernCore, wyvernCore, "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", wyvernCore, wyvernCore);
@@ -187,6 +187,10 @@ public class DERecipes {
         //region Misc
 
         addShaped(ALL, infoTablet, "AAA", "ABA", "AAA", 'A', "stone", 'B', draconiumDust);
+        addShaped(NORMAL, magnet, "A A", "B B", "CDC", 'A', "dustRedstone", 'B', "ingotDraconium", 'C', "ingotIron", 'D', dislocator);
+        addShaped(HARD, magnet, "A A", "B B", "BCB", 'A', "blockRedstone", 'B', "ingotDraconium", 'C', dislocator);
+        addShaped(NORMAL, new ItemStack(magnet, 1, 1), "A A", "B B", "CDC", 'A', "ingotDraconium", 'B', "dustRedstone", 'C', "ingotDraconiumAwakened", 'D', magnet);
+        addShaped(HARD, new ItemStack(magnet, 1, 1), "A A", "BCB", "DED", 'A', "ingotDraconium", 'B', "dustRedstone", 'C', magnet, 'D', "ingotDraconiumAwakened", 'E', dislocatorAdvanced);
 
         //endregion
 

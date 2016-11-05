@@ -20,9 +20,9 @@ import java.util.*;
  */
 public class FusionUpgradeRecipe implements IFusionRecipe {
 
-    protected final int upgradeLevel;
-    protected final ItemStack upgradeKey;
-    protected final String upgrade;
+    public final int upgradeLevel;
+    public final ItemStack upgradeKey;
+    public final String upgrade;
     protected List<Object> ingredients;
     protected int energyCost;
     protected int craftingTier;
@@ -59,7 +59,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
 
     @Override
     public ItemStack getRecipeCatalyst() {
-        return new ItemStack(tools[rand.nextInt(tools.length)]);
+        return null;//new ItemStack(tools[rand.nextInt(tools.length)]);
     }
 
     @Override

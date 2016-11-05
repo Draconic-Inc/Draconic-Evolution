@@ -65,7 +65,7 @@ item.draconicevolution:wyvern_core.name=Wyvern Core
 item.draconicevolution:sun_focus.name=Solar Focus
 item.draconicevolution:draconic_core.name=Draconic Core
 item.draconicevolution:dislocator.name=Dislocator
-item.draconicevolution:dislocator_advanced.name=Advanced Dislocation
+item.draconicevolution:dislocator_advanced.name=Advanced Dislocator
 
 info.teleporterInfGUI.txt=Shift + Right click to open gui
 info.teleporterInfScroll.txt=Shift + scroll to cycle destinations
@@ -120,8 +120,8 @@ item.draconicevolution:chaos_shard.fragMedium.name=Small Chaos Fragment
 item.draconicevolution:chaos_shard.fragLarge.name=Large Chaos Fragment
 item.draconicevolution:nugget.draconium.name=Draconium Nugget
 item.draconicevolution:nugget.awakened.name=Awakened Draconium Nugget
-item.draconicevolution:magnet.wyvern.name=Item Dislocator
-item.draconicevolution:magnet.draconic.name=Awakened Item Dislocator
+item.draconicevolution:magnet.basic.name=Item Dislocator
+item.draconicevolution:magnet.advanced.name=Awakened Item Dislocator
 
 item.draconicevolution:tool_upgrade.rfCap.name=Upgrade Key (RF Capacity)
 item.draconicevolution:tool_upgrade.digSpeed.name=Upgrade Key (Dig Speed)
@@ -812,7 +812,7 @@ gui.de.celMod.rs.5=Sun Set
 gui.de.celMod.rs.6=Moon Rise
 gui.de.celMod.rs.7=Midnight
 gui.de.celMod.rs.8=Moon Set
-gui.de.celMod.rs.9=Cycle 1 full Minecraft day\nOr until restone signal stops.
+gui.de.celMod.rs.9=Cycle 1 full Minecraft day Or until restone signal stops.
 
 //---- Entity Detector ----//
 guiwiki.label.navigation=Navigation

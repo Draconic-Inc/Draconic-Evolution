@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.config.ModFeatureParser;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
@@ -15,6 +16,8 @@ import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.feature.WorldGenEndPodium;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @SuppressWarnings("unused")
@@ -330,28 +333,32 @@ public class DEEventHandler {
 //        }
 //    }
 //
-//    @SubscribeEvent(priority = EventPriority.LOW)
-//    public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
-//        if (event.getEntity()Player != null) {
-//            float newDigSpeed = event.originalSpeed;
-//            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.getEntity()Player);
-//            if (summery == null) return;
-//
-//            if (event.getEntity()Player.isInsideOfMaterial(Material.water)) {
-//                if (summery.flight[0]) newDigSpeed *= 5f;
-//            }
-//
-//            if (!event.getEntity()Player.onGround) {
-//                if (summery.flight[0]) newDigSpeed *= 5f;
-//            }
-//
-//            if (event.newSpeed > 1) {
-//                newDigSpeed += event.newSpeed - 1;
-//            }
-//
-//            event.newSpeed = newDigSpeed;
-//        }
-//    }
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
+        if (event.getEntityPlayer() != null) {
+            float newDigSpeed = event.getOriginalSpeed();
+            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.getEntityPlayer());
+            if (summery == null){
+                return;
+            }
+
+            if (event.getEntityPlayer().isInsideOfMaterial(Material.WATER)) {
+                if (summery.armorStacks[3] != null && summery.armorStacks[3].getItem() == DEFeatures.draconicHelm) {
+                    newDigSpeed *= 5f;
+                }
+            }
+
+            if (!event.getEntityPlayer().onGround) {
+                if (summery.armorStacks[2] != null && summery.armorStacks[2].getItem() == DEFeatures.draconicChest) {
+                    newDigSpeed *= 5f;
+                }
+            }
+
+            if (newDigSpeed != event.getOriginalSpeed()) {
+                event.setNewSpeed(newDigSpeed);
+            }
+        }
+    }
 //
 //    @SubscribeEvent
 //    public void worldUnload(WorldEvent.Unload e) {

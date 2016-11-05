@@ -36,7 +36,7 @@ public class TileChaosCrystal extends TileBCBase implements ITickable{
 
         if (worldObj.isRemote && soundTimer-- <= 0) {
             soundTimer = 3600 + worldObj.rand.nextInt(1200);
-            worldObj.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESoundHandler.chaosChamberAmbient, SoundCategory.HOSTILE, 1.5F, worldObj.rand.nextFloat() * 0.4F + 0.8F, false);
+            worldObj.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESoundHandler.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, worldObj.rand.nextFloat() * 0.4F + 0.8F, false);
         }
 
         if (!worldObj.isRemote && guardianDefeated.value && worldObj.rand.nextInt(50) == 0) {
