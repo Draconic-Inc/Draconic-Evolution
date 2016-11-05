@@ -1,12 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.pipeline.CCShaderPipeline;
-import codechicken.lib.render.shader.pipeline.attribute.IShaderOperation;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
@@ -15,17 +11,13 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
-
-import java.nio.FloatBuffer;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by brandon3055 on 24/9/2015.
@@ -33,132 +25,130 @@ import java.util.Random;
 public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
     private CCModel model;
 
-    public static ShaderProgram program;
-    public static int shaderOperation;
-    public static Framebuffer framebuffer;
-    public static int i = 0;
-    private static final Random RANDOM = new Random(31100L);
-    FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-
-    public RenderTileChaosCrystal() {
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/chaos_crystal.obj"));
-        model = CCModel.combine(map.values());
-        initShader();
-    }
-
-    public static void initShader() {
-        if (program != null) {
-            program.cleanup();
-        }
-
-        framebuffer = new Framebuffer(0, 0, true);
-
-        shaderOperation = CCShaderPipeline.registerOperation();
-        program = new ShaderProgram();
-        program.attachFrag("/assets/draconicevolution/shaders/starfield.frag");
-        program.attachVert("/assets/draconicevolution/shaders/starfield.vert");
-        program.attachShaderOperation(new IShaderOperation() {
-            @Override
-            public boolean load(ShaderProgram program) {
-                return true;
-            }
-
-            //Do rendering stuff and things!
-            //Also set shader variables using
-            //
-            // int varID = program.getUniformLoc("var");
-            // ARBShaderObjects.glUniform1fARB(varID, value);
-            //
-            @Override
-            public void operate(ShaderProgram program) {
-//                initShader();
-                //Reset - Clears operations
-                //Set Oipelone Loads
-                //
-                Minecraft mc = Minecraft.getMinecraft();
-                int width = 2;//mc.displayWidth;
-                int height = 2;//mc.displayHeight;
-
-                int x = program.getUniformLoc("yaw");//ARBShaderObjects.glGetUniformLocationARB(shader, "yaw");
-                ARBShaderObjects.glUniform1fARB(x, (float) ((mc.thePlayer.rotationYaw * 2 * Math.PI) / 360.0));
-
-                int z = program.getUniformLoc("pitch");//ARBShaderObjects.glGetUniformLocationARB(shader, "pitch");
-                ARBShaderObjects.glUniform1fARB(z, -(float) ((mc.thePlayer.rotationPitch * 2 * Math.PI) / 360.0));
-
-                int time = program.getUniformLoc("time");
-                ARBShaderObjects.glUniform1fARB(time, ClientEventHandler.elapsedTicks);
-
-                int alpha = program.getUniformLoc("alpha");
-                ARBShaderObjects.glUniform1fARB(alpha, 0.1F);
-
-                int widthID = program.getUniformLoc("displayW");
-                ARBShaderObjects.glUniform1fARB(widthID, width);
-
-                int heightID = program.getUniformLoc("displayH");
-                ARBShaderObjects.glUniform1fARB(heightID, height);
+//    public static ShaderProgram program;
+//    public static int shaderOperation;
+//    public static int i = 0;
 
 
-//                ResourceHelperDE.bindTexture("textures/java_2016-11-04_13-04-37.png");
-                ResourceHelperDE.bindTexture("textures/models/reactor_core.png");
-                //Do Rendering
-
-                GlStateManager.matrixMode(GL11.GL_TEXTURE);
-                GlStateManager.pushMatrix();
-                GlStateManager.loadIdentity();
-//                GlStateManager.enableBlend();
-//                GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0F);
-
-//                mc.getFramebuffer().bindFramebuffer(true);
-//                mc.getFramebuffer().bindFramebufferTexture();
-//                framebuffer.bindFramebuffer(true);
-//                framebuffer.bindFramebufferTexture();
-//                framebuffer.
-
-//                new Framebuffer()
-
-                Tessellator tess = Tessellator.getInstance();
-                VertexBuffer buffer = tess.getBuffer();
-
-                int min = 0;
-//                width -= 400;
-//                height -= 400;
-
-//                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-//                buffer.pos(width, height, 0).tex(1, 0).endVertex();
-//                buffer.pos(width, min,    0).tex(1, 1).endVertex();
-//                buffer.pos(min  , min,    0).tex(0, 1).endVertex();
-//                buffer.pos(min  , height, 0).tex(0, 0).endVertex();
+//    public RenderTileChaosCrystal() {
+//        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/chaos_crystal.obj"));
+//        model = CCModel.combine(map.values());
+//        initShader();
+//    }
 //
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-                buffer.pos(width, height, 0).endVertex();
-                buffer.pos(width, min, 0).endVertex();
-                buffer.pos(min, min, 0).endVertex();
-                buffer.pos(min, height, 0).endVertex();
-
-//                buffer.pos(0, height, width).endVertex();
-//                buffer.pos(0, min,    width).endVertex();
-//                buffer.pos(0, min,    min  ).endVertex();
-//                buffer.pos(0, height, min  ).endVertex();
-
-                tess.draw();
-
-
-//                GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-                GlStateManager.popMatrix();
-                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-//                GlStateManager.matrixMode(GL11.GL_MODELVIEW_MATRIX);
-//                mc.getFramebuffer().createFramebuffer(width, height);
-//                mc.getFramebuffer().bindFramebuffer(true);
-//                framebuffer.framebufferRender(width, height);
-
-            }
-
-            @Override
-            public int operationID() {
-                return shaderOperation;
-            }
-        });
-    }
+//    public static void initShader() {
+//        if (program != null) {
+//            program.cleanup();
+//        }
+//
+//        framebuffer = new Framebuffer(0, 0, true);
+//
+//        shaderOperation = CCShaderPipeline.registerOperation();
+//        program = new ShaderProgram();
+//        program.attachFrag("/assets/draconicevolution/shaders/starfield.frag");
+//        program.attachVert("/assets/draconicevolution/shaders/starfield.vert");
+//        program.attachShaderOperation(new IShaderOperation() {
+//            @Override
+//            public boolean load(ShaderProgram program) {
+//                return true;
+//            }
+//
+//            //Do rendering stuff and things!
+//            //Also set shader variables using
+//            //
+//            // int varID = program.getUniformLoc("var");
+//            // ARBShaderObjects.glUniform1fARB(varID, value);
+//            //
+//            @Override
+//            public void operate(ShaderProgram program) {
+////                initShader();
+//                //Reset - Clears operations
+//                //Set Oipelone Loads
+//                //
+//                Minecraft mc = Minecraft.getMinecraft();
+//                int width = 2;//mc.displayWidth;
+//                int height = 2;//mc.displayHeight;
+//
+//                int x = program.getUniformLoc("yaw");//ARBShaderObjects.glGetUniformLocationARB(shader, "yaw");
+//                ARBShaderObjects.glUniform1fARB(x, (float) ((mc.thePlayer.rotationYaw * 2 * Math.PI) / 360.0));
+//
+//                int z = program.getUniformLoc("pitch");//ARBShaderObjects.glGetUniformLocationARB(shader, "pitch");
+//                ARBShaderObjects.glUniform1fARB(z, -(float) ((mc.thePlayer.rotationPitch * 2 * Math.PI) / 360.0));
+//
+//                int time = program.getUniformLoc("time");
+//                ARBShaderObjects.glUniform1fARB(time, ClientEventHandler.elapsedTicks);
+//
+//                int alpha = program.getUniformLoc("alpha");
+//                ARBShaderObjects.glUniform1fARB(alpha, 0.1F);
+//
+//                int widthID = program.getUniformLoc("displayW");
+//                ARBShaderObjects.glUniform1fARB(widthID, width);
+//
+//                int heightID = program.getUniformLoc("displayH");
+//                ARBShaderObjects.glUniform1fARB(heightID, height);
+//
+//
+////                ResourceHelperDE.bindTexture("textures/java_2016-11-04_13-04-37.png");
+//                ResourceHelperDE.bindTexture("textures/models/reactor_core.png");
+//                //Do Rendering
+//
+//                GlStateManager.matrixMode(GL11.GL_TEXTURE);
+//                GlStateManager.pushMatrix();
+//                GlStateManager.loadIdentity();
+////                GlStateManager.enableBlend();
+////                GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0F);
+//
+////                mc.getFramebuffer().bindFramebuffer(true);
+////                mc.getFramebuffer().bindFramebufferTexture();
+////                framebuffer.bindFramebuffer(true);
+////                framebuffer.bindFramebufferTexture();
+////                framebuffer.
+//
+////                new Framebuffer()
+//
+//                Tessellator tess = Tessellator.getInstance();
+//                VertexBuffer buffer = tess.getBuffer();
+//
+//                int min = 0;
+////                width -= 400;
+////                height -= 400;
+//
+////                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+////                buffer.pos(width, height, 0).tex(1, 0).endVertex();
+////                buffer.pos(width, min,    0).tex(1, 1).endVertex();
+////                buffer.pos(min  , min,    0).tex(0, 1).endVertex();
+////                buffer.pos(min  , height, 0).tex(0, 0).endVertex();
+////
+//                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+//                buffer.pos(width, height, 0).endVertex();
+//                buffer.pos(width, min, 0).endVertex();
+//                buffer.pos(min, min, 0).endVertex();
+//                buffer.pos(min, height, 0).endVertex();
+//
+////                buffer.pos(0, height, width).endVertex();
+////                buffer.pos(0, min,    width).endVertex();
+////                buffer.pos(0, min,    min  ).endVertex();
+////                buffer.pos(0, height, min  ).endVertex();
+//
+//                tess.draw();
+//
+//
+////                GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+//                GlStateManager.popMatrix();
+//                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+////                GlStateManager.matrixMode(GL11.GL_MODELVIEW_MATRIX);
+////                mc.getFramebuffer().createFramebuffer(width, height);
+////                mc.getFramebuffer().bindFramebuffer(true);
+////                framebuffer.framebufferRender(width, height);
+//
+//            }
+//
+//            @Override
+//            public int operationID() {
+//                return shaderOperation;
+//            }
+//        });
+//    }
 
 
     @Override
@@ -240,10 +230,10 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 //    }
 
     public void testing(TileChaosCrystal te, double x, double y, double z, float partialTicks, int destroyStage) {
-        ResourceHelperDE.bindTexture(DETextures.CHAOS_GUARDIAN);
+//        ResourceHelperDE.bindTexture(DETextures.CHAOS_GUARDIAN);
 
-        program.bindShader();
-        program.runShader();
+//        program.bindShader();
+//        program.runShader();
 ////        float ex  = (float)this.rendererDispatcher.entityX;
 ////        float f1 = (float)this.rendererDispatcher.entityY;
 ////        float ez = (float)this.rendererDispatcher.entityZ;
@@ -322,13 +312,4 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 //        GlStateManager.disableTexGenCoord(GlStateManager.TexGen.Q);
 //        GlStateManager.enableLighting();
     }
-
-    private FloatBuffer getBuffer(float a, float b, float c, float d)
-    {
-        this.buffer.clear();
-        this.buffer.put(a).put(b).put(c).put(d);
-        this.buffer.flip();
-        return this.buffer;
-    }
-
 }
