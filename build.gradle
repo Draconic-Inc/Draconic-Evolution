@@ -15,15 +15,15 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 repositories {
+//    maven {
+//        name 'Covers1624 maven'
+//        url "http://adel.podgeweb.com:1616/maven/"
+//    }
+//    maven {
+//        name 'Covers1624 maven'
+//        url "http://172.17.5.4:1616/maven/"
+//    }
     maven {
-        name 'Covers1624 maven'
-        url "http://adel.podgeweb.com:1616/maven/"
-    }
-    maven {
-        name 'Covers1624 maven'
-        url "http://172.17.5.4:1616/maven/"
-    }
-	maven {
         name 'CB Maven'
         url "http://chickenbones.net/maven/"
     }
@@ -57,55 +57,53 @@ targetCompatibility = "1.7"
 minecraft {
     version = config.mcversion + "-" + config.forge_version
     runDir = "run"
-	mappings = "${config.mcp_mappings}"
+    mappings = "${config.mcp_mappings}"
     replace '${mod_version}', project.config.mod_version
     replaceIn "DraconicEvolution.java"
     makeObfSourceJar = false
 }
 
 String buildNo = "38"
-if(System.getenv("BUILD_NUMBER") != null){
-	buildNo = System.getenv("BUILD_NUMBER")
+if (System.getenv("BUILD_NUMBER") != null) {
+    buildNo = System.getenv("BUILD_NUMBER")
 }
 version = version + ".${buildNo}"
 
 dependencies {
     //compile "codechicken:CodeChickenCore:${config.mcversion}-${config.ccc_version}:deobf"
     //compile "codechicken:NotEnoughItems:${config.mcversion}-${config.NEI_version}:deobf"
-	compile "com.brandon3055.brandonscore:BrandonsCore:${config.mcversion}-${config.bcore_version}:deobf"
-	compile "codechicken:CodeChickenLib:${config.mcversion}-${config.CCLIB_version}:deobf"
+    compile "com.brandon3055.brandonscore:BrandonsCore:${config.mcversion}-${config.bcore_version}:deobf"
+    compile "codechicken:CodeChickenLib:${config.mcversion}-${config.CCLIB_version}:deobf"
     compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
     compile "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
 
-
     //deobfCompile "mezz.jei:jei_${config.mcversion}:${config.jei_version}:api"
     //runtime "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
-
 
     //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
     //compile project(path: ':BrandonsCore')
 }
 
 processResources
-{
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+        {
+            // this will ensure that this task is redone when the versions change.
+            inputs.property "version", project.version
+            inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-    rename '(.+_at.cfg)', 'META-INF/$1'
-}
+            // replace stuff in mcmod.info, nothing else
+            from(sourceSets.main.resources.srcDirs) {
+                include 'mcmod.info'
+
+                // replace version and mcversion
+                expand 'version': project.version, 'mcversion': project.minecraft.version
+            }
+
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+            }
+            rename '(.+_at.cfg)', 'META-INF/$1'
+        }
 
 def commonManifest = {
     attributes 'FMLAT': 'DraconicEvolution_at.cfg'
