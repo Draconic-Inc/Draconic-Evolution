@@ -107,6 +107,7 @@ public class KeyInputHandler {
         if (c > 0 && c < 8) return c + i;
         if (c == 0 && i < 0) return 8;
         if (c == 8 && i > 0) return 0;
+        if (c == 150 && i < 0) return 152;
         return c + i;
     }
 }
