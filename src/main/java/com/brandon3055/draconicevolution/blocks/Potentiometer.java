@@ -40,6 +40,7 @@ public class Potentiometer extends BlockBCore implements ITileEntityProvider, IC
         setIsFullCube(false);
         setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.UP));
         this.canProvidePower = true;
+        this.setHardness(2F);
     }
 
     //region Blockstate

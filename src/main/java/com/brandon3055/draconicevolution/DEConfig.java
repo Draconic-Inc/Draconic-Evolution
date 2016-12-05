@@ -99,6 +99,12 @@ public class DEConfig {
     @ModConfigProperty(category = "Client Settings", name = "invertDPDSB", comment = "Invert Dislocator Pedestal display name shift behavior.")
     public static boolean invertDPDSB = false;
 
+    @ModConfigProperty(category = "Client Settings", name = "useShaders", comment = "Set this to false if your system can not handle the awesomeness that is shaders! (Warning will make cool things look like crap)")
+    public static boolean useShaders = true;
+
+    @ModConfigProperty(category = "Client Settings", name = "useCrystalShaders", comment = "This allowes you to just disable the energy crystal shader which can be a lot lagier than the reactor since there are usually a lot more of them (The fallback crystal texture is not soooo bad...)")
+    public static boolean useCrystalShaders = true;
+
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 
     public static void init(){

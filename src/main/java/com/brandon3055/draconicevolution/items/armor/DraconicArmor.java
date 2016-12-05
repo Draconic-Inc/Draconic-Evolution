@@ -51,7 +51,6 @@ public class DraconicArmor extends WyvernArmor {
         this.baseRecovery = 4F;
     }
 
-
     //region Upgrade
 
     @Override
@@ -77,10 +76,14 @@ public class DraconicArmor extends WyvernArmor {
             registry.register(stack, new BooleanConfigField("armorInertiaCancel", false, "config.field.armorInertiaCancel.description"));
         }
         if (armorType == LEGS) {
-            registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, 800, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
+            int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.MOVE_SPEED);
+            int i = 200 + (100 * u) + (Math.max(u - 1, 0) * 100) + (Math.max(u - 2, 0) * 100);
+            registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         }
         if (armorType == FEET){
-            registry.register(stack, new IntegerConfigField("armorJumpModifier", 0, 0, 800, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
+            int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.JUMP_BOOST);
+            int i = 200 + (100 * u) + (Math.max(u - 1, 0) * 100) + (Math.max(u - 2, 0) * 100);
+            registry.register(stack, new IntegerConfigField("armorJumpModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
             registry.register(stack, new BooleanConfigField("armorHillStep", true, "config.field.armorHillStep.description"));
         }
         if (armorType == FEET || armorType == LEGS || armorType == CHEST){

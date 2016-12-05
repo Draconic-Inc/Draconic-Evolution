@@ -44,25 +44,25 @@ public class PacketContributor implements IMessage {
         @Override
         public IMessage onMessage(PacketContributor message, MessageContext ctx) {
             if (ContributorHandler.contributors.containsKey(message.contributor)) {
-                ContributorHandler.Contributor contributor1 = ContributorHandler.contributors.get(message.contributor);
+                ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(message.contributor);
 
                 if (ctx.side == Side.SERVER) {
-                    if (!contributor1.isUserValid(ctx.getServerHandler().playerEntity)) {
+                    if (!contributor.isUserValid(ctx.getServerHandler().playerEntity)) {
                         return null;
                     }
 
-                    contributor1.contributorWingsEnabled = message.wings;
-                    contributor1.patreonBadgeEnabled = message.badge;
-
+                    contributor.contributorWingsEnabled = message.wings;
+                    contributor.patreonBadgeEnabled = message.badge;
+                    ContributorHandler.saveContributorConfig();
                     DraconicEvolution.network.sendToAll(message);
                 } else {
                     EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
-                    if (!contributor1.isUserValid(player) || message.contributor.equals(player.getName())) {
+                    if (!contributor.isUserValid(player) || message.contributor.equals(player.getName())) {
                         return null;
                     }
 
-                    contributor1.contributorWingsEnabled = message.wings;
-                    contributor1.patreonBadgeEnabled = message.badge;
+                    contributor.contributorWingsEnabled = message.wings;
+                    contributor.patreonBadgeEnabled = message.badge;
                 }
             }
 

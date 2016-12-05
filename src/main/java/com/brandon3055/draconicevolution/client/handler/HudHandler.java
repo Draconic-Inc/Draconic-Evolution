@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.handler;
 
+import codechicken.lib.render.state.GlStateManagerHelper;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -50,6 +51,8 @@ public class HudHandler {
             return;
         }
 
+        GlStateManagerHelper.pushState();
+        GlStateManager.pushMatrix();
         ScaledResolution resolution = event.getResolution();
         width = resolution.getScaledWidth();
         height = resolution.getScaledHeight();
@@ -59,11 +62,8 @@ public class HudHandler {
             int x = (int) (((float) DEConfig.hudSettings[0] / 1000F) * (float) width);
             int y = (int) (((float) DEConfig.hudSettings[1] / 1000F) * (float) height);
 
-            //GlStateManager.pushMatrix();
             GuiHelper.drawHoveringTextScaled(hudList, x, y, fontRenderer, toolTipFadeOut > 1 ? 1 : toolTipFadeOut, DEConfig.hudSettings[4] / 100D, width, height);
             GlStateManager.disableLighting();
-            //GlStateManager.enableAlpha();
-            //GlStateManager.popMatrix();
         }
 
         if (DEConfig.hudSettings[11] == 1 && showShieldHud) {
@@ -72,8 +72,13 @@ public class HudHandler {
 
             drawArmorHUD(x, y, DEConfig.hudSettings[8] == 1, DEConfig.hudSettings[5] / 100D);
         }
+
+        GlStateManager.popMatrix();
+        GlStateManagerHelper.popState();
     }
 
+
+    //TODO Clean up this entire system and re write the actual renderer to look cleaner and be more flexible!
     //x, y, x, y, scale, scale, fademode, fademode, rotateArmor, armorText
     public static void clientTick() {
         if (DEConfig.hudSettings[6] > 0 && toolTipFadeOut > 1F - ((float) DEConfig.hudSettings[6] * 0.25F)) {
@@ -182,7 +187,7 @@ public class HudHandler {
             GlStateManager.translate(x, y, 0);
             if (rotated) GlStateManager.rotate(90, 0, 0, -1);
             GlStateManager.translate(-x, -y, 0);
-            String shield = Math.round(shieldPoints) + "/" + (int) maxShieldPoints;
+            String shield = (int) shieldPoints + "/" + (int) maxShieldPoints;
             String entropy = "EN: " + (int) shieldEntropy + "%";
             String energy = "RF: " + Utils.formatNumber(rfTotal);
             float fade = Math.min(armorStatsFadeOut, 1F);

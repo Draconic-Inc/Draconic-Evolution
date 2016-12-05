@@ -41,7 +41,9 @@ public class DEWorldGenHandler implements IWorldGenerator {
 			GameRegistry.registerWorldGenerator(instance, 0);
 			MinecraftForge.EVENT_BUS.register(instance);
 
-			if (DEConfig.enableRetroGen) MinecraftForge.EVENT_BUS.register(new WorldTickHandler());
+			if (DEConfig.enableRetroGen) {
+				MinecraftForge.EVENT_BUS.register(new WorldTickHandler());
+			}
 		}
 	}
 

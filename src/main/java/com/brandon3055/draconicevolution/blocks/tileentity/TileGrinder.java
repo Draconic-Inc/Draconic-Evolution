@@ -167,6 +167,14 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
         killBox = new AxisAlignedBB(pos1, pos2);
     }
 
+    public AxisAlignedBB getKillBoxForRender() {
+        if (killBox == null) {
+            updateKillBox();
+        }
+        return killBox;
+    }
+
+
     //endregion
 
     @Override
@@ -198,14 +206,14 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
     //endregion
 
     @Override
-    public void writeDataToNBT(NBTTagCompound dataCompound) {
-        super.writeDataToNBT(dataCompound);
+    public void writeRetainedData(NBTTagCompound dataCompound) {
+        super.writeRetainedData(dataCompound);
         active.toNBT(dataCompound);
     }
 
     @Override
-    public void readDataFromNBT(NBTTagCompound dataCompound) {
-        super.readDataFromNBT(dataCompound);
+    public void readRetainedData(NBTTagCompound dataCompound) {
+        super.readRetainedData(dataCompound);
         active.fromNBT(dataCompound);
     }
 

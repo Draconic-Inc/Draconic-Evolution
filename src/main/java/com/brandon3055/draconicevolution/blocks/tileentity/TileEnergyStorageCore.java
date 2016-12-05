@@ -56,12 +56,14 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
     public final SyncableBool active = new SyncableBool(false, true, false, true);
     public final SyncableBool structureValid = new SyncableBool(false, true, false, true);
     public final SyncableBool coreValid = new SyncableBool(false, true, false, true);
+    public final SyncableString invalidMessage = new SyncableString("", true, false, false);
     public final SyncableBool buildGuide = new SyncableBool(false, true, false, true);
     public final SyncableBool stabilizersOK = new SyncableBool(false, false, true, true);
     public final SyncableByte tier = new SyncableByte((byte)1, true, false, true);
     public final SyncableLong energy = new SyncableLong(0, true, false, false);
     public final SyncableVec3I[] stabOffsets = new SyncableVec3I[4];
     public final SyncableLong transferRate = new SyncableLong(0, false, true, false);
+
 
     private int ticksElapsed = 0;
     private long[] flowArray = new long[20];
@@ -81,6 +83,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
             stabOffsets[i] = new SyncableVec3I(new Vec3I(0, -1, 0), true, false, false);
             registerSyncableObject(stabOffsets[i], true);
         }
+        registerSyncableObject(invalidMessage, false);
     }
 
 	@Override
@@ -115,8 +118,6 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
                     if (dir < 0) {
                         player.moveEntity(-player.motionX*1.5, -player.motionY*1.5, -player.motionZ*1.5);
                     }
-
-                    //  player.motionX = player.motionY = player.motionZ = 0;
 
                     double multiplier = (threshold - dist) * 0.05;
 
@@ -235,7 +236,9 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
      public boolean validateStructure() {
         boolean valid = checkStabilizers();
 
-        if (! (coreValid.value = coreStructure.checkTier(tier.value))){
+        if (!(coreValid.value = coreStructure.checkTier(tier.value))){
+            BlockPos pos = coreStructure.invalidBlock;
+            invalidMessage.value = "Error At: " + "x:" + pos.getX() + ", y:" + pos.getY() + ", z:" + pos.getZ() + " Expected: " + coreStructure.expectedBlock;
             valid = false;
         }
 
@@ -245,6 +248,10 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
         }
 
         structureValid.value = valid;
+
+        if (valid) {
+            invalidMessage.value = "";
+        }
 
         return valid;
     }
@@ -361,12 +368,12 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 	//region Sync & Save
 
 	@Override
-	public void writeDataToNBT(NBTTagCompound compound) {
+	public void writeRetainedData(NBTTagCompound compound) {
 
 	}
 
 	@Override
-	public void readDataFromNBT(NBTTagCompound compound) {
+	public void readRetainedData(NBTTagCompound compound) {
 
 	}
 

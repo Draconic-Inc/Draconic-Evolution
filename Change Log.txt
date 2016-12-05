@@ -1,5 +1,34 @@
-######## 2.0.3.x ########
+-- 2.1.0.x --
+-Updated Flux and Fluid Gate's
 
+######## 2.0.4.x ########
+-Fixed advanced dislocator not teleporting other players.
+-Fixed disabling the dragon heart drop also disables the dragon egg spawn override.
+-Added support for Forge Energy.
+-Reduced Retrogen Spam.
+-Tools and armor now keep their energy and upgrades when upgraded from wyvern to draconic.
+-Fixed armor display rounding error.
+-Fixed bows not using power.
+-Fixed entity detector crash.
+-Added AOE display to grinder (Shift-Right Click)
+-Fixed custom fusion recipes.
+-Added a more obvious recipes button to the fusion crafting gui.
+-Fixed jump boost not working on the armor.
+-Armor jump boost and walk speed upgrades now actually work. (note this node not mean you can increase the speed and jump height because the previous speed and jump stats were equivelent to max upgraded)
+-Tools are now finally Enchantable! (Via normal vanilla enchanting)
+-Fixed bows not using arrows.
+-Fixed arrows passing though blocks.
+-Made some adjustments to bow draw speed.
+-Increased staff default attack speed (Must edit or regenerate DE config for this change to take effect)
+-Fixed basic entity detector filter.
+-Re-wrote teleportation code.
+-Fixed Celestial Manipulator getting stuck in an active state.
+-Item Dislocators now work on loot cores.
+-Fixed energy core build guide not rendering properly.
+-Added message to Energy core gui when it finds an invalid block in the structure.
+
+######## 2.0.3.137 ########
+-Fixed chaos crystal crash.
 
 ######## 2.0.2.134 ########
 -Tweaked how the energy core build guide renderers.

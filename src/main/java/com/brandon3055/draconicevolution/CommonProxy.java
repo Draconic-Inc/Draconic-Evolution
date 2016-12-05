@@ -1,5 +1,9 @@
 package com.brandon3055.draconicevolution;
 
+import codechicken.lib.packet.PacketCustom;
+import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
+import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerServer;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.ContributorHandler;
@@ -85,6 +89,8 @@ public class CommonProxy {
 	}
 
 	public void initializeNetwork() {
+		PacketCustom.assignHandler("DE", new CCLNetworkTest());
+
 		DraconicEvolution.network = NetworkRegistry.INSTANCE.newSimpleChannel(DraconicEvolution.networkChannelName);
 		DraconicEvolution.network.registerMessage(PacketSimpleBoolean.Handler.class, PacketSimpleBoolean.class, 0, Side.SERVER);
         DraconicEvolution.network.registerMessage(PacketConfigureTool.Handler.class, PacketConfigureTool.class, 1, Side.SERVER);
@@ -96,6 +102,7 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(PacketToolProfile.Handler.class, PacketToolProfile.class, 7, Side.SERVER);
 		DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 8, Side.CLIENT);
 		DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 9, Side.SERVER);
+		DraconicEvolution.network.registerMessage(CrystalUpdateBatcher.Handler.class, CrystalUpdateBatcher.class, 10, Side.CLIENT);
 //		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlacedItemPacket.Handler.class, PlacedItemPacket.class, 2, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);
@@ -201,22 +208,8 @@ public class CommonProxy {
         DEParticles.registerServer();
     }
 
-//	public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render, int beamType)
-//	{
-//		return null;
-//	}
-//
-//	public ParticleEnergyField energyField(World worldObj, double x, double y, double z, int type, boolean advanced, ParticleEnergyField oldBeam, boolean render) {
-//		return null;
-//	}
-//
-//	public ParticleReactorBeam reactorBeam(TileEntity tile, ParticleReactorBeam oldBeam, boolean render) {
-//		return null;
-//	}
-
-	public void spawnParticle(Object particle, int range)
-	{
-
+    public ENetFXHandler createENetFXHandler(TileCrystalBase tile) {
+    	return new ENetFXHandlerServer(tile);
 	}
 
 	public ISound playISound(ISound sound){

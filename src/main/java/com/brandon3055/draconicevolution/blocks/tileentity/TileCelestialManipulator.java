@@ -127,7 +127,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 }
             }
         }
-        else if (ACTIVE.value && !worldObj.isRaining()) {
+        else if (ACTIVE.value) {
             ACTIVE.value = false;
         }
         else if (worldObj.isRemote) {
@@ -188,7 +188,6 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
     }
 
     public void handleInteract(String action, EntityPlayer player) {
-
         if (action.endsWith("STOP") && ACTIVE.value && timeWarpRunning.value) {
             stopTimeWarp();
             return;

@@ -285,7 +285,6 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem {
 
     //endregion
 
-
     @Override
     public float getNewFOV(EntityPlayer player, ItemStack stack, float currentFOV, float originalFOV, EntityEquipmentSlot slot) {
         float zoom = ((10 + ToolConfigHelper.getIntegerField("bowZoomModifier", stack)) / 605F);

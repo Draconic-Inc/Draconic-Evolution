@@ -133,7 +133,7 @@ public class GuiHudConfig extends GuiScreen {
     @Override
     public void drawScreen(int x, int y, float partial) {
         drawDefaultBackground();
-        HudHandler.drawHUD(new RenderGameOverlayEvent.Post(new RenderGameOverlayEvent(partial, new ScaledResolution(mc)), RenderGameOverlayEvent.ElementType.AIR));
+        HudHandler.drawHUD(new RenderGameOverlayEvent.Post(new RenderGameOverlayEvent(partial, new ScaledResolution(mc)), RenderGameOverlayEvent.ElementType.ALL));
 
         int[] pos = DEConfig.hudSettings;
         int hudX = (int) ((pos[0] / 1000D) * width);

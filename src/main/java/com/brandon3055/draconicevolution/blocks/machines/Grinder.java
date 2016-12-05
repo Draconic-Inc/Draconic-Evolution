@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockMobSafe;
+import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -108,7 +111,33 @@ public class Grinder extends BlockMobSafe implements ITileEntityProvider {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (!world.isRemote) {
+		if (player.isSneaking()) {
+			TileEntity tile = world.getTileEntity(pos);
+			if (tile instanceof TileGrinder && world.isRemote) {
+				AxisAlignedBB bb = ((TileGrinder) tile).getKillBoxForRender();
+
+				for (double i = 0; i <= 7; i+= 0.01) {
+					Vec3D minX = new Vec3D(bb.minX + i, bb.minY, bb.minZ);
+					Vec3D minY = new Vec3D(bb.minX, bb.minY + i, bb.minZ);
+					Vec3D minZ = new Vec3D(bb.minX, bb.minY, bb.minZ + i);
+
+					BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minX, new Vec3D(), 0, 255, 255, 130);
+					BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minY, new Vec3D(), 0, 255, 255, 130);
+					BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minZ, new Vec3D(), 0, 255, 255, 130);
+
+					Vec3D maxX = new Vec3D(bb.maxX - i, bb.maxY, bb.maxZ);
+					Vec3D maxY = new Vec3D(bb.maxX, bb.maxY - i, bb.maxZ);
+					Vec3D maxZ = new Vec3D(bb.maxX, bb.maxY, bb.maxZ - i);
+
+					BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxX, new Vec3D(), 0, 255, 255, 130);
+					BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxY, new Vec3D(), 0, 255, 255, 130);
+					BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxZ, new Vec3D(), 0, 255, 255, 130);
+				}
+
+
+			}
+		}
+		else if (!world.isRemote) {
 			FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GRINDER, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;

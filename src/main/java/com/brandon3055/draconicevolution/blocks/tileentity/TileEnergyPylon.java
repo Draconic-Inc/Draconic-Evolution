@@ -370,7 +370,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     //region IDEPeripheral
 
     @Override
-    public String getName() {
+    public String getPeripheralName() {
         return "draconic_rf_storage";
     }
 

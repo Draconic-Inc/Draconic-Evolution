@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.render.effect.RenderEnergyBolt;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.brandon3055.draconicevolution.utils.DETextures;
@@ -315,6 +316,10 @@ public class GuiFusionCraftingCore extends GuiContainer {
                     GlStateManager.translate(0, 0, -600);
                 }
             }
+        }
+        else if (ModHelper.isJEIInstalled){
+            GuiHelper.drawBorderedRect(81, 45, 18, 22, 1, 0xFF101010, 0xFF303030);
+            fontRendererObj.drawString("R", 87, 52, 0xA0A0A0, false);
         }
     }
 

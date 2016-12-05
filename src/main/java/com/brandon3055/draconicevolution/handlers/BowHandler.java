@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.entity.EntityCustomArrow;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.items.tools.WyvernBow;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -220,7 +222,9 @@ public class BowHandler {
         }
 
         public int getDrawTicks() {
-            return Math.max(62 - (drawTimeReduction * 20), 1);
+            int reduction = Math.min(drawTimeReduction, 4);
+            double d = reduction * reduction * reduction * 0.25;
+            return (int) (20D / (1 + d));
         }
 
         /**
@@ -230,11 +234,11 @@ public class BowHandler {
         public boolean consumeArrowAndEnergy() {
 
             if (!player.capabilities.isCreativeMode){
-                ((IEnergyContainerItem) bow.getItem()).extractEnergy(bow, calculateEnergyCost(), false);
+                ((WyvernBow) bow.getItem()).modifyEnergy(bow, -calculateEnergyCost());
             }
 
             if (!energyBolt && EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("infinity"), bow) == 0 && !player.capabilities.isCreativeMode) {
-                player.inventory.deleteStack(new ItemStack(Items.ARROW));
+                InventoryUtils.consumeStack(new ItemStack(Items.ARROW), player.inventory);
                 return true;
             }
 

@@ -99,10 +99,14 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
         if (armorType == EntityEquipmentSlot.LEGS) {
-            registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, 500, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
+            int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.MOVE_SPEED);
+            int i = 100 + (100 * u) + (Math.max(u - 1, 0) * 50);
+            registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         }
         if (armorType == EntityEquipmentSlot.FEET){
-            registry.register(stack, new IntegerConfigField("armorJumpModifier", 0, 0, 500, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
+            int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.JUMP_BOOST);
+            int i = 100 + (100 * u) + (Math.max(u - 1, 0) * 50);
+            registry.register(stack, new IntegerConfigField("armorJumpModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         }
         if (armorType == EntityEquipmentSlot.FEET || armorType == EntityEquipmentSlot.LEGS){
             registry.register(stack, new BooleanConfigField("sprintBoost", false, "config.field.sprintBoost.description"));
@@ -110,7 +114,6 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
         return registry;
     }
-
 
     //endregion
 
@@ -345,7 +348,6 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     }
 
     //endregion
-
 
     @Override
     public float getNewFOV(EntityPlayer player, ItemStack stack, float currentFOV, float originalFOV, EntityEquipmentSlot slot) {

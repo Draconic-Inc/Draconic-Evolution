@@ -19,6 +19,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -182,6 +183,20 @@ public class CustomArmorHandler {
         tickArmorEffects(summery, player);
     }
 
+    @SubscribeEvent
+    public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
+        if (!(event.getEntity() instanceof EntityPlayer)) {
+            return;
+        }
+
+        EntityPlayer player = (EntityPlayer) event.getEntity();
+        CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(player);
+
+        if (summery != null && summery.jumpModifier > 0) {
+            player.motionY += (double) (summery.jumpModifier * 0.135F);
+        }
+    }
+
     public static void tickShield(ArmorSummery summery, EntityPlayer player) {
         if (summery == null || (summery.maxProtectionPoints - summery.protectionPoints < 0.01 && summery.entropy == 0) || player.worldObj.isRemote) {
             return;
@@ -335,7 +350,9 @@ public class CustomArmorHandler {
         }
 
         if (event.getSource().damageType.equals("fall") && summery.jumpModifier > 0F) {
-            if (event.getAmount() < summery.jumpModifier * 5F) event.setCanceled(true);
+            if (event.getAmount() < summery.jumpModifier * 5F) {
+                event.setCanceled(true);
+            }
             return true;
         }
 
@@ -451,7 +468,9 @@ public class CustomArmorHandler {
                 }
             }
 
-            if (peaces == 0) return null;
+            if (peaces == 0) {
+                return null;
+            }
 
             entropy = totalEntropy / peaces;
             meanRecoveryPoints = totalRecoveryPoints / peaces;

@@ -83,7 +83,10 @@ public class GuiEnergyCore extends GuiContainer {
 
             int coreColour = tile.coreValid.value ? 0x00FF00 : 0xFF0000;
             String coreText = I18n.format("gui.de.core.txt") + ": " + (tile.coreValid.value ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
-            GuiHelper.drawCenteredString(fontRendererObj, coreText, guiLeft + xSize / 2, guiTop + 48, coreColour, tile.coreValid.value);
+            GuiHelper.drawCenteredString(fontRendererObj, coreText, guiLeft + xSize / 2, guiTop + 36, coreColour, tile.coreValid.value);
+            if (!tile.coreValid.value) {
+                GuiHelper.drawCenteredSplitString(fontRendererObj, tile.invalidMessage.value, guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.value);
+            }
         }
     }
 

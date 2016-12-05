@@ -21,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -202,8 +201,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(translation.getX(), translation.getY(), translation.getZ());
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//        GlStateManager.enableBlend();
+//        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.scale(0.8, 0.8, 0.8);
         GlStateManager.translate(0.1, 0.1, 0.1);
         float brightnessX = OpenGlHelper.lastBrightnessX;
@@ -212,10 +211,10 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
 
-        ModelUtils.renderQuadsARGB(blockQuads, 0xFFFFFFFF);
+        ModelUtils.renderQuadsARGB(blockQuads, 0xFF404040);
 
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
-        GlStateManager.disableBlend();
+//        GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
 

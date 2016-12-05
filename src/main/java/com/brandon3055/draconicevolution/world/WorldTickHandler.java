@@ -19,9 +19,13 @@ import java.util.Random;
 public class WorldTickHandler {
 	public static TIntObjectHashMap<ArrayDeque<ChunkPos>> chunksToGen = new TIntObjectHashMap<ArrayDeque<ChunkPos>>();
 
+	private int tick = 0;
+
 	@SubscribeEvent
 	public void tickEnd(TickEvent.WorldTickEvent event) {
-		if (event.side != Side.SERVER) return;
+		if (event.side != Side.SERVER) {
+			return;
+		}
 
 		World world = event.world;
 		int dimension = event.world.provider.getDimension();
@@ -32,7 +36,9 @@ public class WorldTickHandler {
 			if (chunks != null && chunks.size() > 0){
                 ChunkPos chunkPos = chunks.pollFirst();
 
-				LogHelper.info("Retroactively adding ore to {dim: "+dimension+", chunkPos: "+chunkPos.toString()+", chunksToGo: "+chunks.size()+"}");
+				if (tick++ % 20 == 0) {
+					LogHelper.info("Retroactively adding ore to {dim: "+dimension+", chunkPos: "+chunkPos.toString()+", chunksToGo: "+chunks.size()+"}");
+				}
 
 				long worldSeed = world.getSeed();
 				Random rand = new Random(worldSeed);

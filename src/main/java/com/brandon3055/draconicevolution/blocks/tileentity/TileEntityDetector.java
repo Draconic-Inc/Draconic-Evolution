@@ -75,7 +75,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
 
         @Override
         public boolean isTypeSelectionEnabled() {
-            return isAdvanced();
+            return true;
         }
     };
     public List<String> playerNames = new ArrayList<>();
@@ -390,9 +390,9 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     //region Misc
 
     @Override
-    public void writeDataToNBT(NBTTagCompound dataCompound) {
+    public void writeRetainedData(NBTTagCompound dataCompound) {
         entityFilter.writeToNBT(dataCompound);
-        super.writeDataToNBT(dataCompound);
+        super.writeRetainedData(dataCompound);
 
         for (SyncableObject syncableObject : syncableObjectMap.values()) {
             if (syncableObject != energyStored && syncableObject != OUTPUT_STRENGTH) { //These dont need to be saved
@@ -402,9 +402,9 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     }
 
     @Override
-    public void readDataFromNBT(NBTTagCompound dataCompound) {
+    public void readRetainedData(NBTTagCompound dataCompound) {
         entityFilter.readFromNBT(dataCompound);
-        super.readDataFromNBT(dataCompound);
+        super.readRetainedData(dataCompound);
 
         for (SyncableObject syncableObject : syncableObjectMap.values()) {
             if (syncableObject != energyStored && syncableObject != OUTPUT_STRENGTH) { //These dont need to be saved

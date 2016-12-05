@@ -1,16 +1,18 @@
 {
-  "forge_marker": 1,
+  "ccl_marker": 1,
+  "block_variants": "",
+  "inventory_variants": "type",
   "defaults": {
     "model": "builtin/generated",
-    "textures": {
-      "layer0": "blocks/dirt"
-    },
-    "transform": "forge:default-item"
+    "transform": "ccl:default-item"
   },
   "variants": {
     "type":{
       "magnet_basic": { "textures": { "layer0": "draconicevolution:items/magnet_basic"      } },
-      "magnet_advanced":{ "textures": { "layer0": "draconicevolution:items/magnet_advanced"     } }
+      "magnet_advanced":{ "textures": { "layer0": "draconicevolution:items/magnet_advanced" } },
+      "crystal_binder":{
+        "transform": "ccl:default-tool",
+        "textures": { "layer0": "draconicevolution:items/crystal_binder" } }
     }
   }
 }

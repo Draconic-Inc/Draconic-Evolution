@@ -55,9 +55,11 @@ public class Debugger extends ItemBCore {
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 //        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
-//            RenderTileChaosCrystal.initShader();
+////            DEShaders.initReactorShader();
+////            DEShaders.initReactorShieldShader();
+//            DEShaders.initEnergyCrystalShader();
 //        }
-        super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+
     }
 
     //region Item Junk
@@ -71,8 +73,67 @@ public class Debugger extends ItemBCore {
         return true;
     }
 
+//    private
+
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+
+//        if (!world.isRemote) {
+//            PacketCustom packet = new PacketCustom("DE", 1);
+//            LogHelper.dev("Writing Test Data...");
+//            for (int i = 0; i < 20; i++) {
+//                packet.writeString("Test String "+i+"0000000000 " + i * 432 + " 1111111111");
+//            }
+//            LogHelper.dev("Raw Packet Size: " + packet.readableBytes() +" Array Size: " + packet.array().length);
+//            packet.compress();
+//            LogHelper.dev("Sent Size: " + packet.toPacket().payload().readableBytes());
+//            packet.sendToPlayer(player);
+//
+////            DraconicEvolution.network.sendTo(new PacketCompressionTest(), (EntityPlayerMP) player);
+//        }
+//
+//        if (true) {
+//            return new ActionResult(EnumActionResult.FAIL, itemStack);
+//        }
+//
+//        if (world.isRemote) {
+//
+//            Map<String, List<String>> variantValueMap = new LinkedHashMap<>();
+//            variantValueMap.put("type", new ArrayList<String>(){{add("alloyfurnace");}});
+//            variantValueMap.put("active", new ArrayList<String>(){{add("true"); add("false");}});
+//            variantValueMap.put("facinghoz", new ArrayList<String>(){{add("north"); add("south"); add("east"); add("west");}});
+//
+//
+//            LinkedList<String> possibleCombos = new LinkedList<>();
+//            List<String> keys = Lists.newArrayList(variantValueMap.keySet());
+//
+//            int comboCount = 1;
+//            for (String key : variantValueMap.keySet()) {
+//                comboCount *= variantValueMap.get(key).size();
+//            }
+//
+//            int[] indexes = new int[variantValueMap.size()];
+//            for (int l = 0; l < comboCount; l++) {
+//                for (int in = 0; in < indexes.length; in++) {
+//                    indexes[in]++;
+//                    if (indexes[in] >= variantValueMap.get(keys.get(in)).size()) {
+//                        indexes[in] = 0;
+//                    }
+//                    else {
+//                        break;
+//                    }
+//                }
+//
+//                String combo = "";
+//                for (int i = 0; i < indexes.length; i++) {
+//                    combo += keys.get(i) + "=" + variantValueMap.get(keys.get(i)).get(indexes[i]) + ",";
+//                }
+//                possibleCombos.add(combo.substring(0, combo.length() - 1));
+//            }
+//
+//            for (String s : possibleCombos) LogHelper.info(s);
+//        }
+
 
 
 //      LogHelper.info(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "draconicevolution:creativeSource"));

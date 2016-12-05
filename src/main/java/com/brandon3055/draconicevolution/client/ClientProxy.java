@@ -5,6 +5,9 @@ import codechicken.lib.render.CCRenderEventHandler;
 import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
+import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerClient;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
@@ -22,9 +25,11 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -269,8 +274,11 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void spawnParticle(Object particle, int range) {
-//		if (particle instanceof EntityFX && ((EntityFX)particle).worldObj.isRemote) ParticleHandler.spawnCustomParticle((EntityFX)particle, range);
+	public ENetFXHandler createENetFXHandler(TileCrystalBase tile) {
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+			return super.createENetFXHandler(tile);
+		}
+		return new ENetFXHandlerClient(tile);
 	}
 
 	@Override

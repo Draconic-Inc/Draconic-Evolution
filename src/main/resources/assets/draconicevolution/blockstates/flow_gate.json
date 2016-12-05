@@ -1,0 +1,34 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:flow_gate",
+    "textures": {
+      "particle":"draconicevolution:blocks/flux_gate"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": { "y": 180 },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      },
+      "up": { "x": 270 },
+      "down": { "x": 90 }
+    },
+    "type": {
+      "flux": {
+        "textures": { "texture":"draconicevolution:blocks/flux_gate" }
+      },
+      "fluid": {
+        "textures": { "texture":"draconicevolution:blocks/fluid_gate" }
+      }
+    },
+    "inventory": [{}],
+    "normal": [{}]
+  }
+}

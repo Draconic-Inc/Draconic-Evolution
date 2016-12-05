@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.network.PacketContributor;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Charsets;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,6 +44,7 @@ public class ContributorHandler {
                     thread = null;
                     readFile();
                     successfulLoad = true;
+                    loadContributorConfig();
                 }
                 else if (thread.isFailed()) {
                     thread = null;
@@ -55,7 +57,6 @@ public class ContributorHandler {
             }
         });
     }
-
 
     public static boolean isPlayerContributor(EntityPlayer player) {
         return contributors.containsKey(player.getName()) && contributors.get(player.getName()).isUserValid(player);
@@ -121,21 +122,6 @@ public class ContributorHandler {
         }
     }
 
-    public static void tick() {
-
-        if (thread == null) {
-            return;
-        }
-
-        if (thread.isFinished()) {
-            thread = null;
-            readFile();
-            successfulLoad = true;
-        } else if (thread.isFailed()) {
-            thread = null;
-        }
-    }
-
     public static class DLThread extends Thread {
 
         private boolean finished = false;
@@ -179,6 +165,63 @@ public class ContributorHandler {
         }
     }
     //endregion
+
+    public static void loadContributorConfig() {
+        try {
+            File file = new File(FileHandler.brandon3055Folder, "contributor_settings.json");
+            if (!file.exists()) {
+                return;
+            }
+
+            JsonReader reader = new JsonReader(new FileReader(file));
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+                reader.beginArray();
+                boolean wings = reader.nextBoolean();
+                boolean badge = reader.nextBoolean();
+
+                if (contributors.containsKey(name)) {
+                    contributors.get(name).contributorWingsEnabled = wings;
+                    contributors.get(name).patreonBadgeEnabled = badge;
+                }
+
+                reader.endArray();
+            }
+
+            reader.endObject();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveContributorConfig() {
+        try {
+            File file = new File(FileHandler.brandon3055Folder, "contributor_settings.json");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            JsonWriter writer = new JsonWriter(new FileWriter(file));
+            writer.beginObject();
+
+            for (String name : contributors.keySet()) {
+                writer.name(name);
+                writer.beginArray();
+                writer.value(contributors.get(name).contributorWingsEnabled);
+                writer.value(contributors.get(name).patreonBadgeEnabled);
+                writer.endArray();
+            }
+
+            writer.endObject();
+            writer.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static class Contributor {
         public String name;

@@ -31,20 +31,24 @@ tile.draconicevolution:draconic_block.name=Awakened Draconium Block
 tile.draconicevolution:infused_obsidian.name=Draconium Infused Obsidian
 tile.draconicevolution:dislocator_receptacle.name=Dislocator Receptacle
 tile.draconicevolution:portal.name=Portal
-tile.draconicevolution:flow_gate_flux.name=Flux Gate
-tile.draconicevolution:flow_gate_fluid.name=Fluid Gate
+tile.draconicevolution:flux_gate.name=Flux Gate
+tile.draconicevolution:fluid_gate.name=Fluid Gate
 tile.draconicevolution:reactor_core.name=Draconic Reactor Core
 tile.draconicevolution:reactor_stabilizer.name=Reactor Stabilizer
 tile.draconicevolution:reactor_energy_injector.name=Reactor Energy Injector
 tile.draconicevolution:chaos_crystal.name=Chaos Crystal
 tile.draconicevolution:upgrade_modifier.name=Upgrade Modifier
 
-tile.draconicevolution:energy_crystal0.name=Energy Relay
-tile.draconicevolution:energy_crystal1.name=Advanced Energy Relay
-tile.draconicevolution:energy_crystal2.name=Energy Transceiver
-tile.draconicevolution:energy_crystal3.name=Advanced Energy Transceiver
-tile.draconicevolution:energy_crystal4.name=Wireless Energy Transceiver
-tile.draconicevolution:energy_crystal5.name=Advanced Wireless Transceiver
+tile.draconicevolution:energy_crystal.relay.basic.name=Basic Energy Relay Crystal
+tile.draconicevolution:energy_crystal.relay.wyvern.name=Wyvern Energy Relay Crystal
+tile.draconicevolution:energy_crystal.relay.draconic.name=Draconic Energy Relay Crystal
+tile.draconicevolution:energy_crystal.crystal_io.basic.name=Basic Energy I/O Crystal
+tile.draconicevolution:energy_crystal.crystal_io.wyvern.name=Wyvern Energy I/O Crystal
+tile.draconicevolution:energy_crystal.crystal_io.draconic.name=Draconic Energy I/O Crystal
+tile.draconicevolution:energy_crystal.relay.basic.name=Basic Wireless Energy Crystal
+tile.draconicevolution:energy_crystal.relay.wyvern.name=Wyvern Wireless Energy Crystal
+tile.draconicevolution:energy_crystal.relay.draconic.name=Draconic Wireless Energy Crystal
+
 
 tile.draconicevolution:fusion_crafting_core.name=Fusion Crafting Core
 tile.draconicevolution:crafting_pedestal.facing.up.tier.basic.name=Basic Fusion Crafting Injector
@@ -106,7 +110,7 @@ item.draconicevolution:draconic_ingot.name=Awakened Draconium Ingot
 item.draconicevolution:creative_structure_spawner_comet.name=Spawn Comet
 item.draconicevolution:creative_structure_spawner_ender_island.name=Spawn Ender Island
 item.draconicevolution:info_tablet.name=Draconic Evolution Information Tablet
-item.draconicevolution:wrench.name=Crystal Binder
+item.draconicevolution:crystal_binder.name=Crystal Binder
 item.draconicevolution:dezils_marshmallow.name=Dezil's Marshmallow
 item.draconicevolution:reactor_crafting_part.frame.name=Reactor Stabilizer Frame
 item.draconicevolution:reactor_crafting_part.rotorInner.name=Reactor Stabilizer Inner Rotor
@@ -209,21 +213,6 @@ msg.de.alreadyRaining.txt=Its already raining!
 msg.de.alreadyStorm.txt=Its already thundering!
 msg.de.insufficientPower.txt=Insufficient Power!
 msg.de.alreadyRunning.txt=Already Running!
-
-//Energy Net
-msg.de.wrenchMode.bind.txt=Function: Bind
-msg.de.wrenchMode.unBind.txt=Function: Un-Bind
-msg.de.wrenchMode.unBindAll.txt=Function: Un-Bind All
-msg.de.wrenchMode.modeSwitch.txt=Function: Mode Change
-msg.de.rightClickUnbind.txt=Right click air to un-bind
-msg.de.boundTo.txt=Bound To
-msg.de.posSaved.txt=Position Saved
-msg.de.invalidTile.txt=Target Invalid
-msg.de.outOfRange.txt=Target out of range
-msg.de.maxConnections.txt=Connection limit reached
-msg.de.linked.txt=Devices Linked
-msg.de.unLinked.txt=Devices Un-Linked
-msg.de.wrongSide.txt=Can not connect to that side of the target device
 
 //Reactor
 msg.de.reactorRSMode.0.txt=Comparator Mode: Temperature
@@ -850,3 +839,21 @@ gui.entityDetector.rsMax.info=The minimum number of detected entities required t
 gui.entityDetector.energyCost=Energy Per Pulse
 gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse.\nThe energy requires is 125 * range^1.5\nThis means the energy cost increases exponentially as you increase the range.
 gui.entityDetector.filter=Open Entity Filter Configurator
+
+//---- Energy Net ----//
+eNet.de.posSavedToTool.info=Block Position saved to tool. (Sneak-Right click air to clear)
+eNet.de.posCleared.info=Position Cleared
+eNet.de.toolNotBound.info=Tool not bound! Sneak+Right click to bind.
+eNet.de.boundToInvalid.info=The tool is bound to an invalid block!
+eNet.de.linkBroken.info=Link Broken!
+eNet.de.devicesLinked.info=Devices Linked!
+eNet.de.linkLimitReachedThis.info=This device has reached its connection limit!
+eNet.de.linkLimitReachedTarget.info=The target device has reached its connection limit!
+eNet.de.thisRangeLimit.info=The target device is too far away!
+eNet.de.targetRangeLimit.info=This device is too far from the target device!
+eNet.de.deviceInvalid.info=That is not a valid device!
+eNet.de.linkFailedUnknown.info=Link Failed! [Reason Unknown...]
+eNet.de.linkToSelf.info=You can not link a device to itself...
+eNet.de.hudCharge.info=Charge
+eNet.de.hudLinks.info=Links
+eNet.de.hudWirelessLinks.info=Wireless Links

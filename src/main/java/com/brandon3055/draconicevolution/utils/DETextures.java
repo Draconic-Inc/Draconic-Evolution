@@ -25,6 +25,10 @@ public class DETextures {
     public static final String DRAGON_HEART = "textures/items/components/dragon_heart.png";
     public static final String CHAOS_CRYSTAL = "textures/models/chaos_crystal.png";
     public static final String REACTOR_CORE = "textures/models/reactor_core.png";
+    public static final String REACTOR_SHIELD = "textures/models/reactor_shield.png";
     public static final String STABILIZER_BEAM = "textures/models/stabilizer_beam.png";
     public static final String CELESTIAL_PARTICLE = "textures/particle/celestial_manipulator.png";
+    public static final String ENERGY_CRYSTAL_BASE = "textures/models/crystal_purple_transparent.png";
+    public static final String ENERGY_CRYSTAL_NO_SHADER = "textures/models/crystal_no_shader.png";
+
 }

@@ -129,28 +129,28 @@ public class DERecipes {
         addShaped(HARD, wyvernBoots, "ABA", "CDC", "AEA", 'A', "blockDraconium", 'B', wyvernCore, 'C', "netherStar", 'D', DIAMOND_BOOTS, 'E', wyvernEnergyCore);
 
         //Draconic
-        addFusion(NORMAL, new ItemStack(draconicPick), new ItemStack(wyvernPick), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
-        addFusion(HARD, new ItemStack(draconicPick), new ItemStack(wyvernPick), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
-        addFusion(NORMAL, new ItemStack(draconicShovel), new ItemStack(wyvernShovel), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
-        addFusion(HARD, new ItemStack(draconicShovel), new ItemStack(wyvernShovel), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
-        addFusion(NORMAL, new ItemStack(draconicAxe), new ItemStack(wyvernAxe), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
-        addFusion(HARD, new ItemStack(draconicAxe), new ItemStack(wyvernAxe), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
-        addFusion(NORMAL, new ItemStack(draconicBow), new ItemStack(wyvernBow), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
-        addFusion(HARD, new ItemStack(draconicBow), new ItemStack(wyvernBow), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
-        addFusion(NORMAL, new ItemStack(draconicSword), new ItemStack(wyvernSword), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
-        addFusion(HARD, new ItemStack(draconicSword), new ItemStack(wyvernSword), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
-        addFusion(NORMAL, new ItemStack(draconicHoe), new ItemStack(DIAMOND_HOE), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
-        addFusion(HARD, new ItemStack(draconicHoe), new ItemStack(DIAMOND_HOE), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
-        addFusion(NORMAL, new ItemStack(draconicStaffOfPower), new ItemStack(draconicPick), 16000, 2, "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", awakenedCore, draconicShovel, draconicSword);
-        addFusion(HARD, new ItemStack(draconicStaffOfPower), new ItemStack(draconicPick), 512000, 2, "blockDraconiumAwakened", "blockDraconiumAwakened", "blockDraconiumAwakened", "blockDraconiumAwakened", "blockDraconiumAwakened", awakenedCore, draconicShovel, draconicSword);
-        addFusion(NORMAL, new ItemStack(draconicHelm), new ItemStack(wyvernHelm), 320000, 2, "ingotDraconiumAwakened", awakenedCore, draconicEnergyCore, draconicEnergyCore);
-        addFusion(HARD, new ItemStack(draconicHelm), new ItemStack(wyvernHelm), 5000000, 2, "blockDraconiumAwakened", awakenedCore, draconicEnergyCore);
-        addFusion(NORMAL, new ItemStack(draconicChest), new ItemStack(wyvernChest), 320000, 2, "ingotDraconiumAwakened", awakenedCore, draconicEnergyCore, draconicEnergyCore);
-        addFusion(HARD, new ItemStack(draconicChest), new ItemStack(wyvernChest), 5000000, 2, "blockDraconiumAwakened", awakenedCore, draconicEnergyCore);
-        addFusion(NORMAL, new ItemStack(draconicLegs), new ItemStack(wyvernLegs), 320000, 2, "ingotDraconiumAwakened", awakenedCore, draconicEnergyCore, draconicEnergyCore);
-        addFusion(HARD, new ItemStack(draconicLegs), new ItemStack(wyvernLegs), 5000000, 2, "blockDraconiumAwakened", awakenedCore, draconicEnergyCore);
-        addFusion(NORMAL, new ItemStack(draconicBoots), new ItemStack(wyvernBoots), 320000, 2, "ingotDraconiumAwakened", awakenedCore, draconicEnergyCore, draconicEnergyCore);
-        addFusion(HARD, new ItemStack(draconicBoots), new ItemStack(wyvernBoots), 5000000, 2, "blockDraconiumAwakened", awakenedCore, draconicEnergyCore);
+        addFusionTool(NORMAL, new ItemStack(draconicPick), new ItemStack(wyvernPick), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
+        addFusionTool(HARD, new ItemStack(draconicPick), new ItemStack(wyvernPick), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
+        addFusionTool(NORMAL, new ItemStack(draconicShovel), new ItemStack(wyvernShovel), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
+        addFusionTool(HARD, new ItemStack(draconicShovel), new ItemStack(wyvernShovel), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
+        addFusionTool(NORMAL, new ItemStack(draconicAxe), new ItemStack(wyvernAxe), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
+        addFusionTool(HARD, new ItemStack(draconicAxe), new ItemStack(wyvernAxe), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
+        addFusionTool(NORMAL, new ItemStack(draconicBow), new ItemStack(wyvernBow), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
+        addFusionTool(HARD, new ItemStack(draconicBow), new ItemStack(wyvernBow), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
+        addFusionTool(NORMAL, new ItemStack(draconicSword), new ItemStack(wyvernSword), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
+        addFusionTool(HARD, new ItemStack(draconicSword), new ItemStack(wyvernSword), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
+        addFusionTool(NORMAL, new ItemStack(draconicHoe), new ItemStack(DIAMOND_HOE), 16000, 2, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened");
+        addFusionTool(HARD, new ItemStack(draconicHoe), new ItemStack(DIAMOND_HOE), 512000, 2, draconicEnergyCore, awakenedCore, "blockDraconiumAwakened", "blockDraconiumAwakened");
+        addFusionTool(NORMAL, new ItemStack(draconicStaffOfPower), new ItemStack(draconicPick), 16000, 2, "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", "ingotDraconiumAwakened", awakenedCore, draconicShovel, draconicSword);
+        addFusionTool(HARD, new ItemStack(draconicStaffOfPower), new ItemStack(draconicPick), 512000, 2, "blockDraconiumAwakened", "blockDraconiumAwakened", "blockDraconiumAwakened", "blockDraconiumAwakened", "blockDraconiumAwakened", awakenedCore, draconicShovel, draconicSword);
+        addFusionTool(NORMAL, new ItemStack(draconicHelm), new ItemStack(wyvernHelm), 320000, 2, "ingotDraconiumAwakened", awakenedCore, draconicEnergyCore, draconicEnergyCore);
+        addFusionTool(HARD, new ItemStack(draconicHelm), new ItemStack(wyvernHelm), 5000000, 2, "blockDraconiumAwakened", awakenedCore, draconicEnergyCore);
+        addFusionTool(NORMAL, new ItemStack(draconicChest), new ItemStack(wyvernChest), 320000, 2, "ingotDraconiumAwakened", awakenedCore, draconicEnergyCore, draconicEnergyCore);
+        addFusionTool(HARD, new ItemStack(draconicChest), new ItemStack(wyvernChest), 5000000, 2, "blockDraconiumAwakened", awakenedCore, draconicEnergyCore);
+        addFusionTool(NORMAL, new ItemStack(draconicLegs), new ItemStack(wyvernLegs), 320000, 2, "ingotDraconiumAwakened", awakenedCore, draconicEnergyCore, draconicEnergyCore);
+        addFusionTool(HARD, new ItemStack(draconicLegs), new ItemStack(wyvernLegs), 5000000, 2, "blockDraconiumAwakened", awakenedCore, draconicEnergyCore);
+        addFusionTool(NORMAL, new ItemStack(draconicBoots), new ItemStack(wyvernBoots), 320000, 2, "ingotDraconiumAwakened", awakenedCore, draconicEnergyCore, draconicEnergyCore);
+        addFusionTool(HARD, new ItemStack(draconicBoots), new ItemStack(wyvernBoots), 5000000, 2, "blockDraconiumAwakened", awakenedCore, draconicEnergyCore);
 
         addShaped(NORMAL, draconiumCapacitor, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', wyvernEnergyCore, 'C', wyvernCore);
         addShaped(HARD, draconiumCapacitor, "ABA", "BCB", "ABA", 'A', "blockDraconium", 'B', wyvernEnergyCore, 'C', wyvernCore);
@@ -197,11 +197,6 @@ public class DERecipes {
         //region Exotic Items
 
         //endregion
-
-//                Than maby the chest or the reactor
-//                Maby try to get as many litle features in as possible
-//                Or.... Finish the tools Atleast the weapons
-
 
         /* ------------------ Other ------------------ */
         if (RecipeManager.isEnabled(DEFeatures.draconiumDust) && RecipeManager.isEnabled(DEFeatures.draconiumIngot)){

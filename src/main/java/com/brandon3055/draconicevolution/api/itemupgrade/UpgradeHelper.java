@@ -8,7 +8,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 31/05/2016.
@@ -41,6 +43,49 @@ public class UpgradeHelper {
     public static void setUpgradeLevel(ItemStack stack, String upgrade, int level) {
         NBTTagCompound upgradeTag = stack.getSubCompound(UPGRADE_TAG, true);
         upgradeTag.setByte(upgrade, (byte)level);
+    }
+
+    /**
+     * This returns a map of all upgrades and their level applied to a stack.
+     * @param stack a stack.
+     * @return a map of all upgrades and their levels applied to this stack.
+     */
+    public static Map<String, Integer> getUpgrades(ItemStack stack) {
+        Map<String, Integer> upgrades = new HashMap<>();
+        if (!stack.hasTagCompound() || !stack.getTagCompound().hasKey(UPGRADE_TAG)) {
+            return upgrades;
+        }
+
+        NBTTagCompound upgradeTag = stack.getSubCompound(UPGRADE_TAG, true);
+
+        for (String upgrade : upgradeTag.getKeySet()) {
+            if (upgradeTag.hasKey(upgrade, 1)) {
+                upgrades.put(upgrade, (int)upgradeTag.getByte(upgrade));
+            }
+        }
+
+        return upgrades;
+    }
+
+    /**
+     * Applies a map of upgrades to a stack. If the upgrade already exists on the item its level whil be changed to whatever the new level is.
+     * Any upgrades already applied and do not exist in the given map will not be affected.
+     * This will not apply an upgrade if the item dose not accept it.
+     *
+     * @param stack The stack.
+     * @param upgrades A map of upgrates and their levels.
+     */
+    public static void setUpgrades(ItemStack stack, Map<String, Integer> upgrades) {
+        if (stack == null || !(stack.getItem() instanceof IUpgradableItem)) {
+            return;
+        }
+        IUpgradableItem item = (IUpgradableItem) stack.getItem();
+
+        for (String upgrade : upgrades.keySet()) {
+            if (item.getValidUpgrades(stack).contains(upgrade)) {
+                setUpgradeLevel(stack, upgrade, upgrades.get(upgrade));
+            }
+        }
     }
 
     @SideOnly(Side.CLIENT)

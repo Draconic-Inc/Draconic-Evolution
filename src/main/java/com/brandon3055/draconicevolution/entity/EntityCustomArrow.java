@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.handlers.BowHandler.BowProperties;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -17,6 +19,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -41,18 +44,15 @@ public class EntityCustomArrow extends EntityArrow {
 
     public BowProperties bowProperties = new BowProperties();
 
-    public EntityCustomArrow(World worldIn)
-    {
+    public EntityCustomArrow(World worldIn) {
         super(worldIn);
     }
 
-    public EntityCustomArrow(World worldIn, double x, double y, double z)
-    {
+    public EntityCustomArrow(World worldIn, double x, double y, double z) {
         super(worldIn, x, y, z);
     }
 
-    public EntityCustomArrow(BowProperties bowProperties, World worldIn, EntityLivingBase shooter)
-    {
+    public EntityCustomArrow(BowProperties bowProperties, World worldIn, EntityLivingBase shooter) {
         super(worldIn, shooter);
         this.bowProperties = bowProperties;
     }
@@ -197,7 +197,7 @@ public class EntityCustomArrow extends EntityArrow {
 //                    movingobjectposition = null;
 //                }
 //            }
-            //endregion
+        //endregion
 
 //            float velocity;
 //            float f4;
@@ -358,19 +358,15 @@ public class EntityCustomArrow extends EntityArrow {
     }
 
     @Override
-    public void onCollideWithPlayer(EntityPlayer entityIn)
-    {
-        if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0)
-        {
+    public void onCollideWithPlayer(EntityPlayer entityIn) {
+        if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
             boolean flag = this.pickupStatus == EntityArrow.PickupStatus.ALLOWED || this.pickupStatus == EntityArrow.PickupStatus.CREATIVE_ONLY && entityIn.capabilities.isCreativeMode;
 
-            if (this.pickupStatus == EntityArrow.PickupStatus.ALLOWED && !entityIn.inventory.addItemStackToInventory(getArrowStack()))
-            {
+            if (this.pickupStatus == EntityArrow.PickupStatus.ALLOWED && !entityIn.inventory.addItemStackToInventory(getArrowStack())) {
                 flag = false;
             }
 
-            if (flag)
-            {
+            if (flag) {
                 this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 entityIn.onItemPickup(this, 1);
                 this.setDead();
@@ -455,7 +451,7 @@ public class EntityCustomArrow extends EntityArrow {
             for (Entity e : list) {
                 if (e instanceof EntityLivingBase) {
                     Entity entity = e;
-                    float distanceModifier = 1F - (entity.getDistanceToEntity(this) / (float)range);
+                    float distanceModifier = 1F - (entity.getDistanceToEntity(this) / (float) range);
 
                     if (e instanceof EntityDragon) {
                         entity = ((EntityDragon) entity).dragonPartBody;
@@ -525,6 +521,30 @@ public class EntityCustomArrow extends EntityArrow {
 
             }
         }
+        else {
+            BlockPos blockpos = traceResult.getBlockPos();
+            xTile = blockpos.getX();
+            yTile = blockpos.getY();
+            zTile = blockpos.getZ();
+            IBlockState iblockstate = worldObj.getBlockState(blockpos);
+            inTile = iblockstate.getBlock();
+            inData = inTile.getMetaFromState(iblockstate);
+            motionX = (double) ((float) (traceResult.hitVec.xCoord - posX));
+            motionY = (double) ((float) (traceResult.hitVec.yCoord - posY));
+            motionZ = (double) ((float) (traceResult.hitVec.zCoord - posZ));
+            float f2 = MathHelper.sqrt_double(motionX * motionX + motionY * motionY + motionZ * motionZ);
+            posX -= motionX / (double) f2 * 0.05000000074505806D;
+            posY -= motionY / (double) f2 * 0.05000000074505806D;
+            posZ -= motionZ / (double) f2 * 0.05000000074505806D;
+            playSound(SoundEvents.ENTITY_ARROW_HIT, 1.0F, 1.2F / (rand.nextFloat() * 0.2F + 0.9F));
+            inGround = true;
+            arrowShake = 7;
+            setIsCritical(false);
+
+            if (iblockstate.getMaterial() != Material.AIR) {
+                inTile.onEntityCollidedWithBlock(worldObj, blockpos, iblockstate, this);
+            }
+        }
 
 
     }
@@ -533,6 +553,7 @@ public class EntityCustomArrow extends EntityArrow {
     private DamageSource getDamageSource() {
         if (bowProperties.energyBolt) {
             return new EntityDamageSourceIndirect("customArrowEnergy", this, shootingEntity != null ? shootingEntity : this).setProjectile().setDamageIsAbsolute();
-        } else return DamageSource.causeArrowDamage(this, shootingEntity != null ? shootingEntity : this);
+        }
+        else return DamageSource.causeArrowDamage(this, shootingEntity != null ? shootingEntity : this);
     }
 }

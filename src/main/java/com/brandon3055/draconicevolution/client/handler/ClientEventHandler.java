@@ -9,13 +9,12 @@ import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.handlers.BinderHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
-import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
-import com.brandon3055.draconicevolution.utils.ITickableTimeout;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -27,7 +26,6 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -35,7 +33,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -62,43 +59,10 @@ public class ClientEventHandler {
     public static Minecraft mc;
     private static Random rand = new Random();
     public static IBakedModel shieldModel = null;
-    private static boolean isJEIInstalled;
-    public static final List<ITickableTimeout> tickableList = Collections.synchronizedList(new ArrayList<ITickableTimeout>());
-
-    public ClientEventHandler() {
-        isJEIInstalled = Loader.isModLoaded("JEI");
-    }
-
-    public static void addTickable(ITickableTimeout tickable) {
-        synchronized (tickableList) {
-            tickableList.add(tickable);
-        }
-    }
 
     @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
         HudHandler.drawHUD(event);
-
-        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
-            return;
-        }
-    }
-
-    @SubscribeEvent
-    public void renderGameOverlayPre(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
-            return;
-        }
-
-//        RenderTileChaosCrystal.program.runShader();
-
-
-//        mc.getFramebuffer().bindFramebufferTexture();
-//        RenderTileChaosCrystal.program.bindShader();
-//        RenderTileChaosCrystal.program.runShader();
-
-//        mc.getFramebuffer().bindFramebuffer(true);
-
     }
 
     @SubscribeEvent
@@ -108,56 +72,32 @@ public class ClientEventHandler {
         }
 
         elapsedTicks++;
-
-        //Yea... This thing is probably over-synchronized now but if you know what i had to go though to fix this you would understand...
-        synchronized (tickableList) {
-            List<ITickableTimeout> toRemove = new ArrayList<ITickableTimeout>();
-            for (int i = 0; i < tickableList.size(); i++) {
-                ITickableTimeout timeout = tickableList.get(i);
-                if (timeout.getTimeOut() > 10) {
-                    toRemove.add(timeout);
-                }
-                else {
-                    timeout.tick();
-                }
-            }
-
-            for (ITickableTimeout timeout : toRemove) {
-                tickableList.remove(timeout);
-            }
-        }
-
         HudHandler.clientTick();
 
         for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = playerShieldStatus.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry<EntityPlayer, XZPair<Float, Integer>> entry = i.next();
             if (elapsedTicks - entry.getValue().getValue() > 5) i.remove();
         }
-
-
-        if (mc == null) mc = Minecraft.getMinecraft();
-        else if (mc.theWorld != null) {
-
-//			HudHandler.clientTick();
-
-            if (bowZoom && !lastTickBowZoom) {
-                previousSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-                Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity / 3;
-            } else if (!bowZoom && lastTickBowZoom) {
-                Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity;
-            }
-
-            lastTickBowZoom = bowZoom;
-            if (elapsedTicks - tickSet > 10) bowZoom = false;
-
-            if (energyCrystalAlphaValue < energyCrystalAlphaTarget) energyCrystalAlphaValue += 0.01f;
-            if (energyCrystalAlphaValue > energyCrystalAlphaTarget) energyCrystalAlphaValue -= 0.01f;
-
-            if (Math.abs(energyCrystalAlphaTarget - energyCrystalAlphaValue) <= 0.02f)
-                energyCrystalAlphaTarget = rand.nextFloat();
-
-//			playerHoldingWrench = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == ModItems.wrench;
-        }
+//        if (mc == null) { TODO Do i really want to reimplement this?
+//            mc = Minecraft.getMinecraft();
+//        }
+//        else if (mc.theWorld != null) {
+//            if (bowZoom && !lastTickBowZoom) {
+//                previousSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+//                Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity / 3;
+//            }
+//            else if (!bowZoom && lastTickBowZoom) {
+//                Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity;
+//            }
+//
+//            lastTickBowZoom = bowZoom;
+//            if (elapsedTicks - tickSet > 10) bowZoom = false;
+//
+//            if (energyCrystalAlphaValue < energyCrystalAlphaTarget) energyCrystalAlphaValue += 0.01f;
+//            if (energyCrystalAlphaValue > energyCrystalAlphaTarget) energyCrystalAlphaValue -= 0.01f;
+//
+//            if (Math.abs(energyCrystalAlphaTarget - energyCrystalAlphaValue) <= 0.02f) energyCrystalAlphaTarget = rand.nextFloat();
+//        }
     }
 
     @SubscribeEvent
@@ -230,7 +170,8 @@ public class ClientEventHandler {
                 double translationZ = translationZLT + (((event.getEntityPlayer().posZ - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
 
                 GlStateManager.translate(translationX, translationY + 1.1, translationZ);
-            } else {
+            }
+            else {
                 //GL11.glTranslated(0, -0.5, 0);
                 GlStateManager.translate(0, 1.15, 0);
             }
@@ -250,23 +191,23 @@ public class ClientEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void renderArmorEvent(RenderPlayerEvent.SetArmorModel event) {
-        if (event.isCanceled()) {
-            return;
-        }
-        if (event.getStack() != null && (event.getStack().getItem() instanceof DraconicArmor || event.getStack().getItem() instanceof WyvernArmor)) {
-            ItemArmor itemarmor = (ItemArmor) event.getStack().getItem();
-
-
-//            ModelBiped modelbiped = itemarmor.getArmorModel(event.getEntityPlayer(), event.getStack(), event.getSlot(), event.getRenderer().getMainModel());
-//            event.getRenderer().setRenderPassModel(modelbiped);
-//            modelbiped.onGround = event.renderer.modelBipedMain.onGround;
-//            modelbiped.isRiding = event.renderer.modelBipedMain.isRiding;
-//            modelbiped.isChild = event.renderer.modelBipedMain.isChild;
-            event.setResult(1);
-        }
-    }
+//    @SubscribeEvent
+//    public void renderArmorEvent(RenderPlayerEvent.SetArmorModel event) {
+////        if (event.isCanceled()) {
+////            return;
+////        }
+////        if (event.getStack() != null && (event.getStack().getItem() instanceof DraconicArmor || event.getStack().getItem() instanceof WyvernArmor)) {
+////            ItemArmor itemarmor = (ItemArmor) event.getStack().getItem();
+////
+////
+//////            ModelBiped modelbiped = itemarmor.getArmorModel(event.getEntityPlayer(), event.getStack(), event.getSlot(), event.getRenderer().getMainModel());
+//////            event.getRenderer().setRenderPassModel(modelbiped);
+//////            modelbiped.onGround = event.renderer.modelBipedMain.onGround;
+//////            modelbiped.isRiding = event.renderer.modelBipedMain.isRiding;
+//////            modelbiped.isChild = event.renderer.modelBipedMain.isChild;
+////            event.setResult(1);
+////        }
+//    }
 
     @SubscribeEvent
     public void guiOpenEvent(GuiOpenEvent event) {
@@ -290,7 +231,19 @@ public class ClientEventHandler {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         World world = player.getEntityWorld();
         ItemStack stack = player.getHeldItemMainhand();
+        ItemStack offStack = player.getHeldItemOffhand();
         Minecraft mc = Minecraft.getMinecraft();
+        float partialTicks = event.getPartialTicks();
+
+        if (stack != null && stack.getItem() instanceof ICrystalBinder) {
+            BinderHandler.renderWorldOverlay(player, world, stack, mc, partialTicks);
+            return;
+        }
+        else if (offStack != null && offStack.getItem() instanceof ICrystalBinder) {
+            BinderHandler.renderWorldOverlay(player, world, offStack, mc, partialTicks);
+            return;
+        }
+
 
         if (mc.objectMouseOver == null || mc.objectMouseOver.typeOfHit != RayTraceResult.Type.BLOCK) {
             return;
@@ -298,42 +251,20 @@ public class ClientEventHandler {
 
         if (stack != null && stack.getItem() == DEFeatures.creativeExchanger) {
 
-//            int size = ItemNBTHelper.getByte(stack, "Size", (byte) 0);
-//
-//            int xRange = 0;
-//            int yRange = 0;
-//            int zRange = 0;
-//
-//            switch (mc.objectMouseOver.sideHit.getAxis()) {
-//                case X:
-//                    zRange = size;
-//                    yRange = size;
-//                    break;
-//                case Y:
-//                    xRange = size;
-//                    zRange = size;
-//                    break;
-//                case Z:
-//                    xRange = size;
-//                    yRange = size;
-//                    break;
-//            }
-
             List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, mc.objectMouseOver.getBlockPos(), world, mc.objectMouseOver.sideHit);
 
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer buffer = tessellator.getBuffer();
 
-            double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) event.getPartialTicks();
-            double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) event.getPartialTicks();
-            double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) event.getPartialTicks();
+            double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks;
+            double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
+            double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
 
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.color(1F, 1F, 1F, 1F);
             GlStateManager.glLineWidth(2.0F);
             GlStateManager.disableTexture2D();
-            //    GlStateManager.disableDepth();
 
             for (BlockPos block : blocks) {
                 if (world.isAirBlock(block)) {
@@ -381,11 +312,8 @@ public class ClientEventHandler {
                 }
             }
 
-            //    GlStateManager.enableDepth();
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();
-
-
         }
 
         if (stack == null || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
@@ -400,7 +328,7 @@ public class ClientEventHandler {
             return;
         }
 
-        renderMiningAOE(world, stack, pos, player, event.getPartialTicks());
+        renderMiningAOE(world, stack, pos, player, partialTicks);
     }
 
     private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, EntityPlayerSP player, float partialTicks) {
@@ -503,10 +431,17 @@ public class ClientEventHandler {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
     }
-}
 
 
-//EnumFacing
+//    public static CrystalTexture crystalTexture = new CrystalTexture(256, "draconicevolution:crystal_texture");
+//
+//    @SubscribeEvent
+//    public void textureStitch(TextureStitchEvent.Post event) {
+//        event.getMap().mapUploadedSprites.put("draconicevolution:crystal_texture", crystalTexture.texture);
+//    }
+
+
+//          EnumFacing
 //
 //        if ()
 //
@@ -533,8 +468,8 @@ public class ClientEventHandler {
 //        break;
 //        }
 //
-
-
+//
+//
 //                buffer.begin(3, DefaultVertexFormats.POSITION);
 //                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
 //                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
@@ -542,7 +477,7 @@ public class ClientEventHandler {
 //                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
 //                tessellator.draw();
-
+//
 //                buffer.begin(3, DefaultVertexFormats.POSITION);
 //                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
 //                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
@@ -550,7 +485,7 @@ public class ClientEventHandler {
 //                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
 //                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
 //                tessellator.draw();
-
+//
 //                buffer.begin(3, DefaultVertexFormats.POSITION);
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
@@ -558,7 +493,7 @@ public class ClientEventHandler {
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
 //                tessellator.draw();
-
+//
 //                buffer.begin(3, DefaultVertexFormats.POSITION);
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
@@ -566,7 +501,7 @@ public class ClientEventHandler {
 //                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
 //                tessellator.draw();
-
+//
 //                buffer.begin(3, DefaultVertexFormats.POSITION);
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
@@ -574,8 +509,8 @@ public class ClientEventHandler {
 //                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
 //                tessellator.draw();
-
-
+//
+//
 //                buffer.begin(1, DefaultVertexFormats.POSITION);
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
@@ -586,3 +521,4 @@ public class ClientEventHandler {
 //                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
 //                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
 //                tessellator.draw();
+}

@@ -43,13 +43,13 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
 
 		if (burnTimeRemaining.value > 0 && getEnergyStored() < getMaxEnergyStored()) {
 			burnTimeRemaining.value -= burnSpeed;
-			energyStorage.modifyEnergyStored(burnSpeed * EPBT * 2);
+			energyStorage.modifyEnergyStored(burnSpeed * EPBT);
 		}
 		if (burnTimeRemaining.value <= 0 && getEnergyStored() < getMaxEnergyStored()) {
 			tryRefuel();
 		}
 
-		sendEnergyToAll();
+		energyStorage.modifyEnergyStored(-sendEnergyToAll());
 	}
 
 	public void tryRefuel() {
@@ -94,16 +94,16 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
 	//endregion
 
 	@Override
-	public void writeDataToNBT(NBTTagCompound dataCompound) {
-		super.writeDataToNBT(dataCompound);
+	public void writeRetainedData(NBTTagCompound dataCompound) {
+		super.writeRetainedData(dataCompound);
 		burnTime.toNBT(dataCompound);
 		burnTimeRemaining.toNBT(dataCompound);
 		active.toNBT(dataCompound);
 	}
 
 	@Override
-	public void readDataFromNBT(NBTTagCompound dataCompound) {
-		super.readDataFromNBT(dataCompound);
+	public void readRetainedData(NBTTagCompound dataCompound) {
+		super.readRetainedData(dataCompound);
 		burnTime.fromNBT(dataCompound);
 		burnTimeRemaining.fromNBT(dataCompound);
 		active.fromNBT(dataCompound);

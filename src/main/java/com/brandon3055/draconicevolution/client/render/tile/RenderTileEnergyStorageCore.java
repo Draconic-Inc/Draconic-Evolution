@@ -37,7 +37,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     public void renderTileEntityAt(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage) {
         //region Build Guide
 
-        if (te.buildGuide.value && MinecraftForgeClient.getRenderPass() == 1) {
+        if (te.buildGuide.value && MinecraftForgeClient.getRenderPass() == 0) {
             GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, z);

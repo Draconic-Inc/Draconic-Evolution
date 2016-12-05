@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
+import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.client.gui.*;
 import com.brandon3055.draconicevolution.inventory.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -91,7 +92,6 @@ public class GuiHandler implements IGuiHandler {
 //				break;
 //			case GUIID_TOOL_CONFIG:
 //				return new ContainerAdvTool(player.inventory, new InventoryTool(player, null));
-
             case GUIID_UPGRADE_MODIFIER:
                 if (tileEntity != null && tileEntity instanceof TileUpgradeModifier) {
                     return new ContainerUpgradeModifier(player, (TileUpgradeModifier) tileEntity);
@@ -105,6 +105,11 @@ public class GuiHandler implements IGuiHandler {
             case GUIID_FUSION_CRAFTING:
                 if (tileEntity != null && tileEntity instanceof TileFusionCraftingCore) {
                     return new ContainerFusionCraftingCore(player, (TileFusionCraftingCore) tileEntity);
+                }
+                break;
+            case GUIID_FLOW_GATE:
+                if (tileEntity instanceof TileFlowGate) {
+                    return new ContainerDummy((TileFlowGate) tileEntity, player, -1, -1);
                 }
                 break;
 
@@ -181,8 +186,11 @@ public class GuiHandler implements IGuiHandler {
 //				break;
 //			case GUIID_TOOL_CONFIG:
 //				return new GUIToolConfig(player, new ContainerAdvTool(player.inventory, new InventoryTool(player, null)));
-//			case GUIID_FLOW_GATE:
-//				return world.tileEntity(x, y, z) instanceof TileGate ? new GUIFlowGate((TileGate)world.tileEntity(x, y, z)) : null;
+			case GUIID_FLOW_GATE:
+			    if (tileEntity instanceof TileFlowGate) {
+			        return new GuiFlowGate((TileFlowGate) tileEntity, player);
+                }
+                break;
             case GUIID_UPGRADE_MODIFIER:
                 if (tileEntity != null && tileEntity instanceof TileUpgradeModifier) {
                     return new GuiUpgradeModifier(player, (TileUpgradeModifier) tileEntity, new ContainerUpgradeModifier(player, (TileUpgradeModifier) tileEntity));

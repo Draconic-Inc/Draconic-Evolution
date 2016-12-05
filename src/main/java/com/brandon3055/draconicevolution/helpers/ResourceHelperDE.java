@@ -23,13 +23,17 @@ public class ResourceHelperDE {
 
 	public static ResourceLocation getResource(String rs)
 	{
-		if (!cachedResources.containsKey(rs)) cachedResources.put(rs, new ResourceLocation(RESOURCE_PREFIX+rs));
+		if (!cachedResources.containsKey(rs)) {
+			cachedResources.put(rs, new ResourceLocation(RESOURCE_PREFIX + rs));
+		}
 		return cachedResources.get(rs);
 	}
 
 	public static ResourceLocation getResourceRAW(String rs)
 	{
-		if (!cachedResources.containsKey(rs)) cachedResources.put(rs, new ResourceLocation(rs));
+		if (!cachedResources.containsKey(rs)) {
+			cachedResources.put(rs, new ResourceLocation(rs));
+		}
 		return cachedResources.get(rs);
 	}
 

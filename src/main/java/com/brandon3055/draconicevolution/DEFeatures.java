@@ -1,13 +1,21 @@
 package com.brandon3055.draconicevolution;
 
-import com.brandon3055.brandonscore.blocks.*;
+import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.BlockMobSafe;
+import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
+import com.brandon3055.brandonscore.blocks.ItemBlockBasic;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.items.ItemSimpleSubs;
 import com.brandon3055.draconicevolution.blocks.*;
+import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
 import com.brandon3055.draconicevolution.blocks.machines.*;
+import com.brandon3055.draconicevolution.blocks.reactor.ReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
-import com.brandon3055.draconicevolution.items.*;
+import com.brandon3055.draconicevolution.items.Debugger;
+import com.brandon3055.draconicevolution.items.InfoTablet;
+import com.brandon3055.draconicevolution.items.ItemPersistent;
+import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.*;
@@ -72,6 +80,9 @@ public class DEFeatures {
 
     @Feature(registryName = "potentiometer", tileEntity = TilePotentiometer.class, cTab = 1)
     public static Potentiometer potentiometer = new Potentiometer();
+
+    @Feature(registryName = "entity_detector", tileEntity = TileEntityDetector.class, variantMap = {"0:advanced=false", "1:advanced=true"}, itemBlock = ItemBlockBasic.class, cTab = 1)
+    public static EntityDetector entityDetector = new EntityDetector();
 
     //endregion
 
@@ -263,10 +274,21 @@ public class DEFeatures {
 
     //These are not ready for release and so are commented out for release builds
 
-    @Feature(registryName = "entity_detector", tileEntity = TileEntityDetector.class, variantMap = {"0:advanced=false", "1:advanced=true"}, itemBlock = ItemBlockBasic.class, cTab = 1)
-    public static EntityDetector entityDetector = new EntityDetector();
-//
-//
+
+    //@Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class)
+    public static ReactorCore reactorCore = new ReactorCore();
+
+    //@Feature(registryName = "energy_crystal", tileEntity = TileCrystalDirectIO.class, itemBlock = ItemBlockBCore.class)
+    public static EnergyCrystal energyCrystal = new EnergyCrystal();
+
+    //@Feature(registryName = "flow_gate", variantMap = {"0:facing=north,type=flux", "8:facing=north,type=fluid"}, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static FlowGate flowGate = (FlowGate) new FlowGate().addName(0, "flux_gate").addName(8, "fluid_gate");
+
+    //@Feature(registryName = "crystal_binder", stateOverride = "misc#type=crystal_binder")
+    public static CrystalBinder crystalBinder = new CrystalBinder();
+
+
+
 //
 //    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
 //    public static DraconiumChest draconiumChest = new DraconiumChest();

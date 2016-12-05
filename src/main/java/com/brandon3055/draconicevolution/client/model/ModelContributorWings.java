@@ -80,7 +80,7 @@ public class ModelContributorWings extends ModelBase {
         float baseRot = 0.45906584F;
         float outerRot = 0.61086524F;
 
-        float animation = (float) Math.sin(((float) ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) / 20);
+        float animation = (float) Math.sin(((float) ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) / 40) * 0.5F;
 
         if (entity instanceof EntityLivingBase && ((EntityLivingBase)entity).isElytraFlying())
         {

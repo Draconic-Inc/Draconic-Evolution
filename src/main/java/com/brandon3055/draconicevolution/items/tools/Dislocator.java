@@ -47,7 +47,7 @@ public class Dislocator extends ItemBCore {
             return true;
         }
 
-        if (entity instanceof EntityPlayer) {
+        if (entity instanceof EntityPlayer && !(this instanceof DislocatorAdvanced)) {
             if (player.worldObj.isRemote) {
                 player.addChatMessage(new TextComponentTranslation("msg.teleporterPlayerT1.txt"));
             }

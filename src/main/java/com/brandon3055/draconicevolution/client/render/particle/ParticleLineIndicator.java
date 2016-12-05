@@ -67,6 +67,9 @@ public class ParticleLineIndicator extends BCParticle {
             if (args.length >= 3){
                 particle.setRBGColorF(args[0] / 255F, args[1] / 255F, args[2] / 255F);
             }
+            if (args.length >= 4) {
+                particle.setMaxAge(args[3]);
+            }
 
             return particle;
         }
