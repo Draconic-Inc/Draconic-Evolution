@@ -1,7 +1,6 @@
 {
   "ccl_marker": 1,
-  "block_variants": "",
-  "inventory_variants": "type",
+  "variant_sets": ["type"],
   "defaults": {
     "model": "builtin/generated",
     "transform": "ccl:default-item"
