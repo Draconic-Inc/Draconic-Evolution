@@ -1,0 +1,16 @@
+{
+  "archivesBase" : "com.brandon3055.draconicevolution.Draconic-Evolution",
+  "displayName" : "Draconic Evolution",
+  "projectId" : "223565",
+  "uploadSRC" : false,
+  "relations" : [
+    {
+      "slug" : "codechicken-lib-1-8",
+      "type" : "requiredLibrary"
+    },
+	{
+      "slug" : "brandons-core",
+      "type" : "requiredLibrary"
+    }
+  ]
+}
