@@ -244,7 +244,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
             output = (int) Math.max(0, Math.min(15, eCount - min));
         }
         else {
-            output = (int) Math.max(0, Math.min(15, Utils.scale(eCount, min, max, 0, 15)));
+            output = (int) Math.max(0, Math.min(15, Utils.map(eCount, min, max, 0, 15)));
         }
 
         if (OUTPUT_STRENGTH.value != output) {

@@ -26,6 +26,9 @@
 -Item Dislocators now work on loot cores.
 -Fixed energy core build guide not rendering properly.
 -Added message to Energy core gui when it finds an invalid block in the structure.
+-Fixed loot core not inserting all items into your inventory at once.
+-Fixed energy pylon not updating connected conduits properly when changing active state.
+-Fixed issue where updates were actually being released! Thanks for helping me fix that issue @covers1624!
 
 ######## 2.0.3.137 ########
 -Fixed chaos crystal crash.

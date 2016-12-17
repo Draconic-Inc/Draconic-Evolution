@@ -262,6 +262,9 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
         NBTTagList itemList = new NBTTagList();
 
         for (ItemStack stack : stacks) {
+            if (stack == null) {
+                continue;
+            }
             itemList.appendTag(stack.writeToNBT(new NBTTagCompound()));
         }
 

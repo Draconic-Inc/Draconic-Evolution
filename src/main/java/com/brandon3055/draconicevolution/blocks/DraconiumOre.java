@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -13,8 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -75,6 +75,7 @@ public class DraconiumOre extends BlockBCore {
 	//endregion
 
 	//region Drops
+
 	@Override
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
 		return DEFeatures.draconiumDust;
@@ -84,6 +85,7 @@ public class DraconiumOre extends BlockBCore {
 	public int quantityDropped(IBlockState state, int fortune, Random random) {
 		return 4 - state.getValue(ORE_TYPE).getMeta() + random.nextInt(2 + (fortune * 2));
 	}
+
 	//endregion
 
 	public static IBlockState getEnd(){

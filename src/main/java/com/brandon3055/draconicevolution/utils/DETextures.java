@@ -30,5 +30,8 @@ public class DETextures {
     public static final String CELESTIAL_PARTICLE = "textures/particle/celestial_manipulator.png";
     public static final String ENERGY_CRYSTAL_BASE = "textures/models/crystal_purple_transparent.png";
     public static final String ENERGY_CRYSTAL_NO_SHADER = "textures/models/crystal_no_shader.png";
+    public static final String ENERGY_BEAM_BASIC = "textures/particle/energy_beam_basic.png";
+    public static final String ENERGY_BEAM_WYVERN = "textures/particle/energy_beam_wyvern.png";
+    public static final String ENERGY_BEAM_DRACONIC = "textures/particle/energy_beam_draconic.png";
 
 }

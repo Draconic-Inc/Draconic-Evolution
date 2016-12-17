@@ -134,6 +134,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
         coreOffset.vec = new Vec3I(pos.subtract(selectedCore.getPos()));
         core = selectedCore;
         hasCoreLock.value = true;
+        worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
         coreSelection++;
 
         if (hasCoreLock.value && worldObj.isRemote) {

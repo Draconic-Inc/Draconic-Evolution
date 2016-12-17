@@ -9,10 +9,8 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
-import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -27,8 +25,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -90,6 +86,26 @@ public class Debugger extends ItemBCore {
 //            packet.sendToPlayer(player);
 //
 ////            DraconicEvolution.network.sendTo(new PacketCompressionTest(), (EntityPlayerMP) player);
+//        }
+
+
+//        if (!world.isRemote) {
+//            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(player, player.getEntityBoundingBox().expand(10, 10, 10));
+//            for (Entity entity : list) {
+//                if (entity.isRiding()) {
+//                    LogHelper.dev(entity+" "+entity.isRiding()+" "+entity.getRidingEntity());
+//                    continue;
+//                }
+//
+//                Entity e;
+//                for (e = player; e.getPassengers().size() > 0; e = e.getPassengers().get(0)) {
+//                    LogHelper.dev("Passengers: " + e.getPassengers());
+//                }
+//                entity.startRiding(e, true);
+//                ((EntityPlayerMP) player).connection.sendPacket(new SPacketSetPassengers(e));
+//                break;
+//            }
+//
 //        }
 //
 //        if (true) {
@@ -686,9 +702,9 @@ public class Debugger extends ItemBCore {
         return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
     }
 
-    @SideOnly(Side.CLIENT)
+//    @SideOnly(Side.CLIENT)
     private void openWiki() {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
+//        Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
     }
 
     @Override

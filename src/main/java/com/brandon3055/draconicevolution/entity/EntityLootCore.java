@@ -114,7 +114,7 @@ public class EntityLootCore extends Entity {
 
         boolean inserted = false;
 
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+        for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack != null) {
                 int start = stack.stackSize;

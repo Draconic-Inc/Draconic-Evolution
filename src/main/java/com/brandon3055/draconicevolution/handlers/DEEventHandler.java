@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.boss.EntityDragon;
@@ -34,6 +35,12 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class DEEventHandler {
+//
+//    @SubscribeEvent
+//    public void explodeEvent(ExplosionEvent event) {
+////        event.setCanceled(true);
+////        LogHelper.dev("Event Canceled");
+//    }
 
     //region Ticking
 
@@ -159,7 +166,20 @@ public class DEEventHandler {
     List<UUID> deadDragons = new LinkedList<>();
     @SubscribeEvent
     public void onDropEvent(LivingDropsEvent event) {
-        if (!deadDragons.contains(event.getEntity().getUniqueID()) && !event.getEntity().worldObj.isRemote && ((event.getEntity() instanceof EntityDragon) || (EntityList.getEntityString(event.getEntity()) != null && !EntityList.getEntityString(event.getEntity()).isEmpty() && EntityList.getEntityString(event.getEntity()).equals("HardcoreEnderExpansion.Dragon")))) {
+        if (deadDragons.contains(event.getEntity().getUniqueID())) {
+            LogHelper.error("WTF Is Going On!?!?!? The dragon is already dead how can it die again!?!?!");
+            LogHelper.error("Whoever is screwing with the dragon you need to fix your shit!");
+            LogHelper.error("Offending Entity: " + event.getEntity()+" Class: " + event.getEntity().getClass());
+            StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+            LogHelper.error("****************************************");
+            for (int i = 2; i < trace.length; i++) {
+                LogHelper.error("*  at %s", trace[i].toString());
+            }
+            LogHelper.error("****************************************");
+            event.setCanceled(true);
+            return;
+        }
+        if (!event.getEntity().worldObj.isRemote && ((event.getEntity() instanceof EntityDragon) || (EntityList.getEntityString(event.getEntity()) != null && !EntityList.getEntityString(event.getEntity()).isEmpty() && EntityList.getEntityString(event.getEntity()).equals("HardcoreEnderExpansion.Dragon")))) {
             deadDragons.add(event.getEntity().getUniqueID());
             if (ModFeatureParser.isEnabled(DEFeatures.dragonHeart)) {
                 EntityDragonHeart heart = new EntityDragonHeart(event.getEntity().worldObj, event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ);

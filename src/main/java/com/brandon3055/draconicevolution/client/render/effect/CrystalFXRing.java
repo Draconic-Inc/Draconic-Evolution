@@ -1,23 +1,31 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
+import codechicken.lib.render.state.GlStateManagerHelper;
+import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 29/11/2016.
  */
 public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
 
+    private long rSeed = 0;
+
     public CrystalFXRing(World worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
         this.particleTextureIndexX = 3 + tile.getTier();
         this.particleAge = worldIn.rand.nextInt(1024);
+        this.rSeed = tile.getPos().toLong();
     }
 
     @Override
@@ -25,12 +33,6 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
-
-//        particleTextureIndexX = (ClientEventHandler.elapsedTicks) % 7;
-//        particleTextureIndexY = 3;
-
-//        particleTextureIndexX = (ClientEventHandler.elapsedTicks) % 5;
-//        particleTextureIndexY = 1;
 
         float[] r = {0.0F, 0.8F, 1.0F};
         float[] g = {0.8F, 0.1F, 0.7F};
@@ -43,42 +45,37 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
 
     @Override
     public void renderParticle(VertexBuffer vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        rand.setSeed(3490276L);
+        rand.setSeed(rSeed);
         float animTime = ClientEventHandler.elapsedTicks + particleAge + partialTicks;
-        GlStateManager.pushMatrix();
-        GlStateManager.disableCull();
-        ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
 
         //region variables
 
-        float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
-        float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
-        float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
+//        float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+//        float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+//        float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
+        float renderX = (float) (this.posX - interpPosX);
+        float renderY = (float) (this.posY - interpPosY);
+        float renderZ = (float) (this.posZ - interpPosZ);
+        double mipLevel = Math.max(0, Math.min(1, (entity.getDistanceSq(posX, posY, posZ) - 20) / 600D));
 
         //endregion
 
         //region GLRender
 
-        double pCount = 100;//Minecraft.getMinecraft().gameSettings.fancyGraphics ? 35 : 15;
+        double pCount = 20 + (80 * (1 - mipLevel));//Minecraft.getMinecraft().gameSettings.fancyGraphics ? 35 : 15;
         for (int i = 0; i < pCount; i++) {
-
             double rotation = i / pCount * (3.141 * 2D) + animTime / 80D;
 
-            boolean rBool = rand.nextBoolean();
-            float rFloat1 = rand.nextFloat();
-            float rFloat2 = rand.nextFloat();
             float rFloat3 = rand.nextFloat();
             float rFloat4 = rand.nextFloat();
 
-
             //region Shadow
 
-            float scale = 0.01F + (rFloat4 * 0.05F);
+            float scale = 0.01F + (rFloat4 * 0.05F) + ((float) mipLevel * 0.2F);
             float a = 1;//sd + 0.1F;
             float r = particleRed;
             float g = particleGreen;
             float b = particleBlue;
-
 
             rotation -= 0.05F;
             //endregion
@@ -86,9 +83,9 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             //region Sub Circular Calculation
 
             double subRotationRadius = (0.1 * rFloat3) + 0.02;
-            double dir = rBool ? 1 : -1;
-            double sy = Math.cos(dir * rotation * (rFloat3 * 10) * (1 - (rFloat1 * 0.2F))) * subRotationRadius;
-            double sx = Math.sin(dir * rotation * (rFloat3 * 10) * (1 - (rFloat2 * 0.2F))) * subRotationRadius;
+            double dir = rand.nextBoolean() ? 1 : -1;
+            double sy = Math.cos(dir * rotation * (rFloat3 * 10) * (1 - (rand.nextFloat() * 0.2F))) * subRotationRadius;
+            double sx = Math.sin(dir * rotation * (rFloat3 * 10) * (1 - (rand.nextFloat() * 0.2F))) * subRotationRadius;
             float drawY = renderY + (float) sy;
             double renderRadius = 0.4 + sx;
 
@@ -113,7 +110,7 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             vertexbuffer.pos((double) (drawX + rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(r, g, b, a).endVertex();
 
             //region Inner
-            scale = 0.01F + (rFloat4 * 0.04F) * (float) Math.sin((animTime + i) / 30);
+            scale = 0.01F + (rFloat4 * 0.04F) * (float) Math.sin((animTime + i) / 30) + ((float) mipLevel * 0.05F);
             rotation = i / pCount * (3.141 * 2D) + animTime / 200D;
             rotation -= 0.05F;
 
@@ -142,11 +139,28 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             //endregion
         }
 
-
         //endregion
-
-        GlStateManager.popMatrix();
     }
+
+    public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
+        @Override
+        public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManagerHelper.pushState();
+            GlStateManager.depthMask(false);
+            GlStateManager.disableCull();
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+            ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
+            vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        }
+
+        @Override
+        public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
+            tessellator.getBuffer().sortVertexData(0, 0, 0);
+            tessellator.draw();
+            GlStateManagerHelper.popState();
+        }
+    };
 }
 
 

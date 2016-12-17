@@ -20,7 +20,6 @@ import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerElytra;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -31,13 +30,10 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ClientProxy extends CommonProxy {
 	private final static boolean debug = DraconicEvolution.debug;
 	public static String downloadLocation;
-	public static List<LayerElytra> elytra = new ArrayList<>();
+//	public static List<LayerElytra> elytra = new ArrayList<>();
 	public static LayerContributorWings layerWings;
 
 	@Override

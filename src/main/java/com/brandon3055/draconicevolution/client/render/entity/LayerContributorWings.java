@@ -31,6 +31,20 @@ public class LayerContributorWings implements LayerRenderer<AbstractClientPlayer
     }
 
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+//        GlStateManager.rotate(180, 0, 0, 1);
+//        if (player.isSneaking()) {
+//            GlStateManager.translate(0, -0.26, 0);
+//        }
+//        GlStateManager.rotate(netHeadYaw, 0, -1, 0);
+//        if (player.isElytraFlying()) {
+//            GlStateManager.rotate(-45, -1, 0, 0);
+//        }
+//        else {
+//            GlStateManager.rotate(headPitch, -1, 0, 0);
+//        }
+//        GlStateManager.translate(0, 0.7, 0);
+//        Minecraft.getMinecraft().getRenderItem().renderItem(new ItemStack(Blocks.CHEST), ItemCameraTransforms.TransformType.FIXED);
+
         if (!ContributorHandler.isPlayerContributor(player)) {
             return;
         }
