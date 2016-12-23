@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,14 +13,15 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class ENetFXHandlerServer extends ENetFXHandler {
+public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirelessIO> {
 
     private BatchedCrystalUpdate batchedUpdate;
     private Map<Byte, Byte> lastTickIndexToFlow = new HashMap<>();
+    private Map<Byte, Byte> lastTickIndexToRFlow = new HashMap<>();
     private int lastTickEnergy = -1;
 
 
-    public ENetFXHandlerServer(TileCrystalBase tile) {
+    public ENetFXHandlerServerWireless(TileCrystalWirelessIO tile) {
         super(tile);
     }
 
@@ -37,11 +38,20 @@ public class ENetFXHandlerServer extends ENetFXHandler {
                 update.indexToFlowMap.put(i, flow);
                 lastTickIndexToFlow.put(i, flow);
             }
+        }
 
-            if (update.indexToFlowMap.size() > 0 || Math.abs(lastTickEnergy - tile.getEnergyStored()) > 100) {
-                lastTickEnergy = tile.getEnergyStored();
-                batchedUpdate = update;
+        for (byte i = 0; i < tile.receiverFlowRates.size(); i++) {
+            byte flow = tile.receiverFlowRates.get(i);
+
+            if (!lastTickIndexToRFlow.containsKey(i) || lastTickIndexToRFlow.get(i) != flow) {
+                update.indexToFlowMap.put((byte) (i + 128), flow);
+                lastTickIndexToRFlow.put((byte) (i + 128), flow);
             }
+        }
+
+        if (update.indexToFlowMap.size() > 0 || Math.abs(lastTickEnergy - tile.getEnergyStored()) > 100) {
+            lastTickEnergy = tile.getEnergyStored();
+            batchedUpdate = update;
         }
 
         if (batchedUpdate != null) {

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.client.gui.*;
@@ -33,6 +34,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int GUIID_UPGRADE_MODIFIER = 15;
     public static final int GUIID_ENERGY_CORE = 16;
     public static final int GUIID_FUSION_CRAFTING = 17;
+    public static final int GUIID_ENERGY_CRYSTAL = 18;
 
     public static final int GUIID_CONTAINER_TEMPLATE = 100;
 
@@ -43,11 +45,11 @@ public class GuiHandler implements IGuiHandler {
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tile = world.getTileEntity(pos);
         switch (ID) {
             case GUIID_CELESTIAL:
-                if (tileEntity != null && tileEntity instanceof TileCelestialManipulator) {
-                    return new ContainerDummy(((TileCelestialManipulator) tileEntity), player, 19, 120);
+                if (tile instanceof TileCelestialManipulator) {
+                    return new ContainerDummy(((TileCelestialManipulator) tile), player, 19, 120);
                 }
                 break;
 //			case GUIID_SUN_DIAL:
@@ -56,28 +58,28 @@ public class GuiHandler implements IGuiHandler {
 //				}
 //				break;
             case GUIID_GRINDER:
-                if (tileEntity != null && tileEntity instanceof TileGrinder) {
-                    return new ContainerGrinder(player.inventory, (TileGrinder) tileEntity);
+                if (tile instanceof TileGrinder) {
+                    return new ContainerGrinder(player.inventory, (TileGrinder) tile);
                 }
                 break;
 			case GUIID_ENTITY_DETECTOR:
-                if (tileEntity != null && tileEntity instanceof TileEntityDetector) {
-                    return new ContainerDummy((TileEntityDetector) tileEntity, player, 19, 120);
+                if (tile instanceof TileEntityDetector) {
+                    return new ContainerDummy((TileEntityDetector) tile, player, 19, 120);
                 }
 				break;
             case GUIID_ENERGY_INFUSER:
-                if (tileEntity != null && tileEntity instanceof TileEnergyInfuser) {
-                    return new ContainerEnergyInfuser(player, (TileEnergyInfuser) tileEntity);
+                if (tile instanceof TileEnergyInfuser) {
+                    return new ContainerEnergyInfuser(player, (TileEnergyInfuser) tile);
                 }
                 break;
             case GUIID_GENERATOR:
-                if (tileEntity != null && tileEntity instanceof TileGenerator) {
-                    return new ContainerGenerator(player, (TileGenerator) tileEntity);
+                if (tile instanceof TileGenerator) {
+                    return new ContainerGenerator(player, (TileGenerator) tile);
                 }
                 break;
             case GUIID_DISSENCHANTER:
-                if (tileEntity != null && tileEntity instanceof TileDissEnchanter) {
-                    return new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) tileEntity);
+                if (tile instanceof TileDissEnchanter) {
+                    return new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) tile);
                 }
                 break;
 //			case GUIID_DRACONIC_CHEST:
@@ -93,23 +95,28 @@ public class GuiHandler implements IGuiHandler {
 //			case GUIID_TOOL_CONFIG:
 //				return new ContainerAdvTool(player.inventory, new InventoryTool(player, null));
             case GUIID_UPGRADE_MODIFIER:
-                if (tileEntity != null && tileEntity instanceof TileUpgradeModifier) {
-                    return new ContainerUpgradeModifier(player, (TileUpgradeModifier) tileEntity);
+                if (tile instanceof TileUpgradeModifier) {
+                    return new ContainerUpgradeModifier(player, (TileUpgradeModifier) tile);
                 }
                 break;
             case GUIID_ENERGY_CORE:
-                if (tileEntity != null && tileEntity instanceof TileEnergyStorageCore) {
-                    return new ContainerBCBase<TileEnergyStorageCore>(player, (TileEnergyStorageCore) tileEntity).addPlayerSlots(10, 116);
+                if (tile instanceof TileEnergyStorageCore) {
+                    return new ContainerBCBase<TileEnergyStorageCore>(player, (TileEnergyStorageCore) tile).addPlayerSlots(10, 116);
                 }
                 break;
             case GUIID_FUSION_CRAFTING:
-                if (tileEntity != null && tileEntity instanceof TileFusionCraftingCore) {
-                    return new ContainerFusionCraftingCore(player, (TileFusionCraftingCore) tileEntity);
+                if (tile instanceof TileFusionCraftingCore) {
+                    return new ContainerFusionCraftingCore(player, (TileFusionCraftingCore) tile);
                 }
                 break;
             case GUIID_FLOW_GATE:
-                if (tileEntity instanceof TileFlowGate) {
-                    return new ContainerDummy((TileFlowGate) tileEntity, player, -1, -1);
+                if (tile instanceof TileFlowGate) {
+                    return new ContainerDummy((TileFlowGate) tile, player, -1, -1);
+                }
+                break;
+            case GUIID_ENERGY_CRYSTAL:
+                if (tile instanceof TileCrystalBase) {
+                    return new ContainerEnergyCrystal(player, (TileCrystalBase) tile);
                 }
                 break;
 
@@ -131,11 +138,11 @@ public class GuiHandler implements IGuiHandler {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tile = world.getTileEntity(pos);
         switch (ID) {
             case GUIID_CELESTIAL:
-                if (tileEntity != null && tileEntity instanceof TileCelestialManipulator) {
-                    return new GuiCelestialManipulator(player, (TileCelestialManipulator) tileEntity);
+                if (tile instanceof TileCelestialManipulator) {
+                    return new GuiCelestialManipulator(player, (TileCelestialManipulator) tile);
                 }
                 break;
 //			case GUIID_SUN_DIAL:
@@ -146,32 +153,32 @@ public class GuiHandler implements IGuiHandler {
             case GUIID_TELEPORTER:
                 return new GuiDislocator(player);
             case GUIID_GRINDER:
-                if (tileEntity != null && tileEntity instanceof TileGrinder) {
-                    return new GuiGrinder(player.inventory, (TileGrinder) tileEntity);
+                if (tile instanceof TileGrinder) {
+                    return new GuiGrinder(player.inventory, (TileGrinder) tile);
                 }
                 break;
 //			case GUIID_PARTICLEGEN:
 //				return (gen != null && gen instanceof TileParticleGenerator) ? new GUIParticleGenerator((TileParticleGenerator) gen, player) : null;
 			case GUIID_ENTITY_DETECTOR:
-                if (tileEntity != null && tileEntity instanceof TileEntityDetector) {
-                    return new GuiEntityDetector(player, (TileEntityDetector) tileEntity);
+                if (tile instanceof TileEntityDetector) {
+                    return new GuiEntityDetector(player, (TileEntityDetector) tile);
                 }
 				break;
             case GUIID_ENERGY_INFUSER:
-                if (tileEntity != null && tileEntity instanceof TileEnergyInfuser) {
-                    return new GuiEnergyinfuser(player, (TileEnergyInfuser) tileEntity);
+                if (tile instanceof TileEnergyInfuser) {
+                    return new GuiEnergyinfuser(player, (TileEnergyInfuser) tile);
                 }
                 break;
             case GUIID_GENERATOR:
-                if (tileEntity != null && tileEntity instanceof TileGenerator) {
-                    return new GuiGenerator(player, (TileGenerator) tileEntity);
+                if (tile instanceof TileGenerator) {
+                    return new GuiGenerator(player, (TileGenerator) tile);
                 }
                 break;
 //			case GUIID_MANUAL:
 //				return new GUIManual();
             case GUIID_DISSENCHANTER:
-                if (tileEntity != null && tileEntity instanceof TileDissEnchanter) {
-                    return new GuiDissEnchanter(player, new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) tileEntity));
+                if (tile instanceof TileDissEnchanter) {
+                    return new GuiDissEnchanter(player, new ContainerDissEnchanter(player.inventory, (TileDissEnchanter) tile));
                 }
                 break;
 //			case GUIID_DRACONIC_CHEST:
@@ -187,23 +194,28 @@ public class GuiHandler implements IGuiHandler {
 //			case GUIID_TOOL_CONFIG:
 //				return new GUIToolConfig(player, new ContainerAdvTool(player.inventory, new InventoryTool(player, null)));
 			case GUIID_FLOW_GATE:
-			    if (tileEntity instanceof TileFlowGate) {
-			        return new GuiFlowGate((TileFlowGate) tileEntity, player);
+			    if (tile instanceof TileFlowGate) {
+			        return new GuiFlowGate((TileFlowGate) tile, player);
                 }
                 break;
             case GUIID_UPGRADE_MODIFIER:
-                if (tileEntity != null && tileEntity instanceof TileUpgradeModifier) {
-                    return new GuiUpgradeModifier(player, (TileUpgradeModifier) tileEntity, new ContainerUpgradeModifier(player, (TileUpgradeModifier) tileEntity));
+                if (tile instanceof TileUpgradeModifier) {
+                    return new GuiUpgradeModifier(player, (TileUpgradeModifier) tile, new ContainerUpgradeModifier(player, (TileUpgradeModifier) tile));
                 }
                 break;
             case GUIID_ENERGY_CORE:
-                if (tileEntity != null && tileEntity instanceof TileEnergyStorageCore) {
-                    return new GuiEnergyCore(player, (TileEnergyStorageCore) tileEntity);
+                if (tile instanceof TileEnergyStorageCore) {
+                    return new GuiEnergyCore(player, (TileEnergyStorageCore) tile);
                 }
                 break;
             case GUIID_FUSION_CRAFTING:
-                if (tileEntity != null && tileEntity instanceof TileFusionCraftingCore) {
-                    return new GuiFusionCraftingCore(player, (TileFusionCraftingCore) tileEntity);
+                if (tile instanceof TileFusionCraftingCore) {
+                    return new GuiFusionCraftingCore(player, (TileFusionCraftingCore) tile);
+                }
+                break;
+            case GUIID_ENERGY_CRYSTAL:
+                if (tile instanceof TileCrystalBase) {
+                    return new GuiEnergyCrystal(player, (TileCrystalBase) tile);
                 }
                 break;
 //			case GUIID_CONTAINER_TEMPLATE:

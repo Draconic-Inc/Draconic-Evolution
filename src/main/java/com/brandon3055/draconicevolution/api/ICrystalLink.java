@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.api;
 
+import com.brandon3055.brandonscore.lib.Vec3D;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
@@ -29,7 +31,7 @@ public interface ICrystalLink {
      * @param linkTarget The clicked block pos. (Can be any block. Whatever block the player clicked on)
      * @return true if a successful operation occurred. (Controls hand swing)
      */
-    boolean binderUsed(EntityPlayer player, BlockPos linkTarget);
+    boolean binderUsed(EntityPlayer player, BlockPos linkTarget, EnumFacing sideClicked);
 
     /**
      * Used to create a ONE WAY link to another crystal. As one way links between ICrystalLink's are not allowed
@@ -45,14 +47,14 @@ public interface ICrystalLink {
     /**
      * Break the link between this crystal and the target crystal.
      * Be sure to call this for both sides of the link to avoid ending up with invalid links!!
-     * @param otherCrystal The linked crystal.
+     * @param otherCrystal The position of the linked crystal. (Note: The other crystal may not exist!)
      */
-    void breakLink(ICrystalLink otherCrystal);
+    void breakLink(BlockPos otherCrystal);
 
     /**
-     * 0 = Fill - accept all available energy until full.
-     * 1 = Balance - balance capacity with connected crystals.
-     * 2 = Drain - drain all energy from internal buffer into connected network until empty or network is full.
+     * 0 = Fill - accept all available energy until full.<br>
+     * 1 = Balance - balance capacity with connected crystals.<br>
+     * 2 = Drain - drain all energy from internal buffer into connected network until empty or network is full.<br><br>
      *
      * This should always be 1 for all types or energy crystal. The only time this would not be 1 is if you were implementing
      * this interface on some other tile that is not a crystal. All crystals even directIO crystals should balance
@@ -86,4 +88,18 @@ public interface ICrystalLink {
      * If you dont use cofh EnergyStorage then simply copy the behaviour of EnergyStorage.modifyEnergyStored with your energy implementation.
      */
     void modifyEnergyStored(int energy);
+
+    /**
+     * Return the point which a beam connecting to this device from the given target device location should end.
+     * E.g. in relays this calculates the position around the crystal which the beam connects to.
+     *
+     * @param linkTo The location of the device at the other end of the link.
+     * @return Return the point at which a beam connecting to this device should connect.
+     */
+    Vec3D getBeamLinkPos(BlockPos linkTo);
+
+    /**
+     * @return true if a beam connecting to this device should render a "Termination" particle at the end.
+     */
+    boolean renderBeamTermination();
 }

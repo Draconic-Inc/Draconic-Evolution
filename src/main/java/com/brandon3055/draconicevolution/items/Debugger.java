@@ -50,6 +50,9 @@ public class Debugger extends ItemBCore {
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+//
+
+
 //        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
 ////            DEShaders.initReactorShader();
 ////            DEShaders.initReactorShieldShader();
@@ -108,6 +111,15 @@ public class Debugger extends ItemBCore {
 //
 //        }
 //
+//
+//        if (world.isRemote) {
+//            for (int i = 0; i < 50; i++) {
+//                double rf = i * 100;
+//                double d = rf / (10000 + rf);
+//                LogHelper.dev(Utils.round(d, 100) + " " + rf);
+//            }
+//        }
+//
 //        if (true) {
 //            return new ActionResult(EnumActionResult.FAIL, itemStack);
 //        }
@@ -149,7 +161,6 @@ public class Debugger extends ItemBCore {
 //
 //            for (String s : possibleCombos) LogHelper.info(s);
 //        }
-
 
 
 //      LogHelper.info(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "draconicevolution:creativeSource"));
@@ -509,8 +520,6 @@ public class Debugger extends ItemBCore {
     public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 
 
-
-
 //
 //
         if (false) {
@@ -639,23 +648,6 @@ public class Debugger extends ItemBCore {
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
         if (player.isSneaking()) {
             mode++;
@@ -702,7 +694,7 @@ public class Debugger extends ItemBCore {
         return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
     }
 
-//    @SideOnly(Side.CLIENT)
+    //    @SideOnly(Side.CLIENT)
     private void openWiki() {
 //        Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
     }

@@ -8,9 +8,11 @@ import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.items.ItemSimpleSubs;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
 import com.brandon3055.draconicevolution.blocks.machines.*;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorCore;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.items.Debugger;
 import com.brandon3055.draconicevolution.items.InfoTablet;
@@ -275,16 +277,16 @@ public class DEFeatures {
     //These are not ready for release and so are commented out for release builds
 
 
-    //@Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class)
+    @Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class)
     public static ReactorCore reactorCore = new ReactorCore();
 
-    //@Feature(registryName = "energy_crystal", tileEntity = TileCrystalDirectIO.class, itemBlock = ItemBlockBCore.class)
+    @Feature(registryName = "energy_crystal", tileEntity = TileCrystalDirectIO.class, itemBlock = ItemBlockBCore.class)
     public static EnergyCrystal energyCrystal = new EnergyCrystal();
 
-    //@Feature(registryName = "flow_gate", variantMap = {"0:facing=north,type=flux", "8:facing=north,type=fluid"}, itemBlock = ItemBlockBCore.class, cTab = 1)
+    @Feature(registryName = "flow_gate", variantMap = {"0:facing=north,type=flux", "8:facing=north,type=fluid"}, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static FlowGate flowGate = (FlowGate) new FlowGate().addName(0, "flux_gate").addName(8, "fluid_gate");
 
-    //@Feature(registryName = "crystal_binder", stateOverride = "misc#type=crystal_binder")
+    @Feature(registryName = "crystal_binder", stateOverride = "misc#type=crystal_binder")
     public static CrystalBinder crystalBinder = new CrystalBinder();
 
 

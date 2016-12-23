@@ -4,13 +4,11 @@ import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.brandonscore.config.IRegisterMyOwnTiles;
 import com.brandon3055.brandonscore.utils.InfoHelper;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
@@ -35,7 +33,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -202,21 +199,9 @@ public class EnergyCrystal extends BlockBCore implements ICustomRender, IRegiste
         }
 
         IBlockState state = world.getBlockState(pos);
-
-        TileCrystalBase tile = (TileCrystalBase) te;
-        double charge = Utils.round(((double) tile.getEnergyStored() / (double) tile.getMaxEnergyStored()) * 100D, 100);
         displayList.add(InfoHelper.HITC() + I18n.format("tile.draconicevolution:" + nameOverrides.get(state.getValue(TYPE).getMeta(state.getValue(TIER))) + ".name"));
-        displayList.add(TextFormatting.BLUE + I18n.format("eNet.de.hudCharge.info") + ": " + Utils.formatNumber(tile.getEnergyStored()) + " / " + Utils.formatNumber(tile.getMaxEnergyStored()) + " RF [" + charge + "%] //TODO");//todo User dose not need exact numbers so maby just send capacity as a short and to get the energy stored do capacity * maxEnergy
-
-        if (tile.getLinks().size() > 0) {
-            displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudLinks.info") + ": " + tile.getLinks().size() + " / " + tile.maxLinks() + "");
-        }
-
-        if (BrandonsCore.proxy.getClientPlayer().isSneaking()){
-            for (BlockPos lPos : tile.getLinks()) {
-                displayList.add(TextFormatting.GRAY + " " + String.format("[x:%s, y:%s, z:%s]", lPos.getX(), lPos.getY(), lPos.getZ()));
-            }
-        }
+        TileCrystalBase tile = (TileCrystalBase) te;
+        tile.addDisplayData(displayList);
     }
 
     //endregion

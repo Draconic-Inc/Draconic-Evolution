@@ -1,7 +1,9 @@
 -- 2.1.0.x --
 -Updated Flux and Fluid Gate's
 
-######## 2.0.4.x ########
+######## 2.0.5.x ########
+
+######## 2.0.4.142 ########
 -Fixed advanced dislocator not teleporting other players.
 -Fixed disabling the dragon heart drop also disables the dragon egg spawn override.
 -Added support for Forge Energy.

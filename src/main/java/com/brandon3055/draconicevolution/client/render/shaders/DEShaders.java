@@ -4,6 +4,8 @@ import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.render.shader.pipeline.CCShaderPipeline;
 import codechicken.lib.render.shader.pipeline.attribute.IShaderOperation;
 import com.brandon3055.draconicevolution.DEConfig;
+import gnu.trove.map.hash.TObjectFloatHashMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.opengl.ARBShaderObjects;
 
@@ -36,6 +38,7 @@ public class DEShaders {
         reactor = new ShaderProgram();
         reactor.attachFrag("/assets/draconicevolution/shaders/reactor.frag");
         reactor.attachShaderOperation(reactorOp = new ReactorOperation());
+        reactor.validate();
     }
 
     public static void initReactorShieldShader() {
@@ -46,6 +49,7 @@ public class DEShaders {
         reactorShield = new ShaderProgram();
         reactorShield.attachFrag("/assets/draconicevolution/shaders/reactor_shield.frag");
         reactorShield.attachShaderOperation(reactorOp);
+        reactorShield.validate();
     }
 
     public static void initEnergyCrystalShader() {
@@ -58,6 +62,7 @@ public class DEShaders {
         energyCrystal.attachFrag("/assets/draconicevolution/shaders/energy_crystal.frag");
         energyCrystal.attachVert("/assets/draconicevolution/shaders/energy_crystal.vert");
         energyCrystal.attachShaderOperation(eCrystalOp = new ECrystalOperation());
+        energyCrystal.validate();
     }
 
     public static class ReactorOperation implements IShaderOperation {
@@ -102,6 +107,10 @@ public class DEShaders {
         public float angleX = 0;
         public float angleY = 0;
         public float mipmap = 1;
+        private final TObjectFloatHashMap<ShaderProgram> timeCache = new TObjectFloatHashMap<>();
+        private final TObjectFloatHashMap<ShaderProgram> mipmapCache = new TObjectFloatHashMap<>();
+        private final TObjectIntHashMap<ShaderProgram> typeCache = new TObjectIntHashMap<>();
+        private final TObjectFloatHashMap<ShaderProgram> angleCache = new TObjectFloatHashMap<>();
 
         @Override
         public boolean load(ShaderProgram program) {
@@ -110,17 +119,38 @@ public class DEShaders {
 
         @Override
         public void operate(ShaderProgram program) {
-            int time = program.getUniformLoc("time");
-            ARBShaderObjects.glUniform1fARB(time, animation);
+            if (animation != timeCache.get(program)) {
+                int time = program.getUniformLoc("time");
+                ARBShaderObjects.glUniform1fARB(time, animation);
+                timeCache.put(program, animation);
+            }
 
-            int mipmap = program.getUniformLoc("mipmap");
-            ARBShaderObjects.glUniform1fARB(mipmap, this.mipmap);
+            if (this.mipmap != mipmapCache.get(program)) {
+                int mipmap = program.getUniformLoc("mipmap");
+                ARBShaderObjects.glUniform1fARB(mipmap, this.mipmap);
+                mipmapCache.put(program, this.mipmap);
+            }
 
-            int type = program.getUniformLoc("type");
-            ARBShaderObjects.glUniform1iARB(type, this.type);
+            if (this.type != typeCache.get(program)) {
+                int type = program.getUniformLoc("type");
+                ARBShaderObjects.glUniform1iARB(type, this.type);
+                typeCache.put(program, this.type);
+            }
 
-            int angle = program.getUniformLoc("angle");
-            ARBShaderObjects.glUniform2fARB(angle, angleX, angleY);
+            if (angleX * angleY != angleCache.get(program)) {
+                int angle = program.getUniformLoc("angle");
+                ARBShaderObjects.glUniform2fARB(angle, angleX, angleY);
+                angleCache.put(program, angleX * angleY);
+            }
+//
+//            int time = program.getUniformLoc("time");
+//            ARBShaderObjects.glUniform1fARB(time, animation);
+//            int mipmap = program.getUniformLoc("mipmap");
+//            ARBShaderObjects.glUniform1fARB(mipmap, this.mipmap);
+//            int type = program.getUniformLoc("type");
+//            ARBShaderObjects.glUniform1iARB(type, this.type);
+//            int angle = program.getUniformLoc("angle");
+//            ARBShaderObjects.glUniform2fARB(angle, angleX, angleY);
         }
 
         @Override

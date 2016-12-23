@@ -45,9 +45,9 @@ tile.draconicevolution:energy_crystal.relay.draconic.name=Draconic Energy Relay 
 tile.draconicevolution:energy_crystal.crystal_io.basic.name=Basic Energy I/O Crystal
 tile.draconicevolution:energy_crystal.crystal_io.wyvern.name=Wyvern Energy I/O Crystal
 tile.draconicevolution:energy_crystal.crystal_io.draconic.name=Draconic Energy I/O Crystal
-tile.draconicevolution:energy_crystal.relay.basic.name=Basic Wireless Energy Crystal
-tile.draconicevolution:energy_crystal.relay.wyvern.name=Wyvern Wireless Energy Crystal
-tile.draconicevolution:energy_crystal.relay.draconic.name=Draconic Wireless Energy Crystal
+tile.draconicevolution:energy_crystal.wireless.basic.name=Basic Wireless Energy Crystal
+tile.draconicevolution:energy_crystal.wireless.wyvern.name=Wyvern Wireless Energy Crystal
+tile.draconicevolution:energy_crystal.wireless.draconic.name=Draconic Wireless Energy Crystal
 
 
 tile.draconicevolution:fusion_crafting_core.name=Fusion Crafting Core
@@ -856,4 +856,10 @@ eNet.de.linkFailedUnknown.info=Link Failed! [Reason Unknown...]
 eNet.de.linkToSelf.info=You can not link a device to itself...
 eNet.de.hudCharge.info=Charge
 eNet.de.hudLinks.info=Links
+eNet.de.hudWirelessLinks.info=Wireless Links
+eNet.de.IOModeSEND.info=I/O Mode:%s Output
+eNet.de.IOModeRECEIVE.info=I/O Mode:%s Input
+eNet.de.IOModeBALANCE.info=I/O Mode:%s Balance
+eNet.de.sideCanNotReceive.info=That tile can not receive energy on that side!.
+eNet.de.maxReceivers.info=Receiver Limit Reached!
 eNet.de.hudWirelessLinks.info=Wireless Links

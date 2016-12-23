@@ -6,8 +6,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.api.ICrystalLink;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
@@ -16,30 +15,31 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXBeam extends CrystalGLFXBase<TileCrystalBase> {
+public class CrystalFXLink extends CrystalGLFXBase<TileCrystalWirelessIO> {
 
     private final Vec3D linkTarget;
     private final boolean terminateSource;
     private final boolean terminateTarget;
-    private long lSeed = 0;
-    private boolean bolt = false;
-    private float powerLevel = 0;
 
-    public CrystalFXBeam(World worldIn, TileCrystalBase tile, ICrystalLink linkTarget) {
+    public CrystalFXLink(World worldIn, TileCrystalWirelessIO tile, Vec3D linkTarget) {
         super(worldIn, tile);
         this.particleTextureIndexX = 3 + tile.getTier();
         this.particleAge = worldIn.rand.nextInt(1024);
-        this.setPosition(tile.getBeamLinkPos(((TileEntity) linkTarget).getPos()));
-        this.terminateSource = tile.renderBeamTermination();
-        this.linkTarget = linkTarget.getBeamLinkPos(tile.getPos());
-        this.terminateTarget = linkTarget.renderBeamTermination();
+        this.setPosition(tile.getBeamLinkPos(linkTarget.getPos()));
+        this.terminateSource = true;
+        this.linkTarget = linkTarget;
+        EnumFacing face = tile.getReceiversFaces().get(linkTarget.getPos());
+        if (face != null) {
+            linkTarget.add(face.getFrontOffsetX() * 0.6, face.getFrontOffsetY() * 0.6, face.getFrontOffsetZ() * 0.6);
+        }
+        this.terminateTarget = true;
     }
 
     @Override
@@ -49,32 +49,14 @@ public class CrystalFXBeam extends CrystalGLFXBase<TileCrystalBase> {
 
     @Override
     public void onUpdate() {
-        if (ticksTillDeath-- <= 0) {
+        if (!ClientEventHandler.playerHoldingWrench) {
             setExpired();
         }
-//        setExpired();
-
-        float[] r = {0.0F, 0.8F, 1.0F};
-        float[] g = {0.8F, 0.1F, 0.7F};
-        float[] b = {1F, 1F, 0.2F};
-
-        particleRed = r[tile.getTier()];
-        particleGreen = g[tile.getTier()];
-        particleBlue = b[tile.getTier()];
-
-        powerLevel = (float) MathHelper.approachExp(powerLevel, fxState, 0.05);
     }
 
     @Override
     public void renderParticle(VertexBuffer buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        if (powerLevel <= 0 && !ClientEventHandler.playerHoldingWrench) {
-            return;
-        }
-        double scale = 0.1 * powerLevel;
-        if (ClientEventHandler.playerHoldingWrench) {
-            scale = 0.1;
-        }
-
+        double scale = 0.1;
         Vector3 source = new Vector3(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
         Vector3 target = linkTarget.toVector3().subtract(interpPosX, interpPosY, interpPosZ);
         Vector3 dirVec = source.copy().subtract(target).normalize();
@@ -143,39 +125,29 @@ public class CrystalFXBeam extends CrystalGLFXBase<TileCrystalBase> {
 
     @Override
     public IGLFXHandler getFXHandler() {
-        return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
+        return HANDLER;
     }
 
-    private static final FXHandler BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final FXHandler WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final FXHandler DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final FXHandler HANDLER = new FXHandler();
 
     public static class FXHandler implements IGLFXHandler {
 
-        private String texture;
-        private float green;
-
-        public FXHandler(String texture) {
-            this.texture = texture;
-            this.green = texture.endsWith(DETextures.ENERGY_BEAM_WYVERN) ? 0.3F : 1F;
-        }
+        public FXHandler() {}
 
         @Override
         public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            GlStateManager.color(1.0F, green, 1.0F, 1.0F);
             GlStateManagerHelper.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
             GlStateManager.glTexParameterf(3553, 10243, 10497.0F);
             GlStateManager.disableCull();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-            ResourceHelperDE.bindTexture(texture);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            ResourceHelperDE.bindTexture(DETextures.ENERGY_BEAM_BASIC);
+//            GlStateManager.disableTexture2D();
+            GlStateManager.color(1, 0, 0, 1);
 
-            if (ClientEventHandler.playerHoldingWrench) {
-                GlStateManager.color(0, 0, 1, 1);
-            }
 
             vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         }
@@ -184,6 +156,7 @@ public class CrystalFXBeam extends CrystalGLFXBase<TileCrystalBase> {
         public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
             tessellator.draw();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//            GlStateManager.enableTexture2D();
             GlStateManagerHelper.popState();
         }
     }

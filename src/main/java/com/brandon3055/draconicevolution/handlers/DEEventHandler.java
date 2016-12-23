@@ -35,7 +35,8 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class DEEventHandler {
-//
+
+    public static int serverTicks = 0;
 //    @SubscribeEvent
 //    public void explodeEvent(ExplosionEvent event) {
 ////        event.setCanceled(true);
@@ -44,9 +45,11 @@ public class DEEventHandler {
 
     //region Ticking
 
+    @SubscribeEvent
     public void serverTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             CrystalUpdateBatcher.tickEnd();
+            serverTicks++;
         }
     }
 
@@ -276,7 +279,7 @@ public class DEEventHandler {
             return;
         }
 
-        if (BinderHandler.onBinderUse(event.getEntityPlayer(), event.getHand(), event.getWorld(), event.getPos(), event.getItemStack())) {
+        if (BinderHandler.onBinderUse(event.getEntityPlayer(), event.getHand(), event.getWorld(), event.getPos(), stack, event.getFace())) {
             event.setCanceled(true);
         }
     }

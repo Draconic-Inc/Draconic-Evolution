@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -40,7 +41,7 @@ public class BinderHandler {
      *
      * @return true if an operation occurred (Cancels the right click event)
      */
-    public static boolean onBinderUse(EntityPlayer player, EnumHand hand, World world, BlockPos blockClicked, @Nonnull ItemStack binder) {
+    public static boolean onBinderUse(EntityPlayer player, EnumHand hand, World world, BlockPos blockClicked, @Nonnull ItemStack binder, EnumFacing sideClicked) {
         TileEntity tile = world.getTileEntity(blockClicked);
         boolean isBound = isBound(binder);
 
@@ -48,7 +49,7 @@ public class BinderHandler {
         if (tile instanceof ICrystalLink && player.isSneaking()) {
             bind(binder, blockClicked);
             if (world.isRemote) {
-                ChatHelper.translate(player, "eNet.de.posSavedToTool.info", TextFormatting.GREEN);
+                ChatHelper.indexedTrans(player, "eNet.de.posSavedToTool.info", TextFormatting.GREEN, -442611624);
                 player.swingArm(hand);
             }
             return true;
@@ -57,7 +58,7 @@ public class BinderHandler {
         //If the tool is not bound but the player clicked on a linkable block then give them a hint.
         //Note: We don't want to do this if they did not click on a linkable block because that would break other mods that implement ICrystalBinder in their tools.
         if (tile instanceof ICrystalLink && !isBound) {
-            ChatHelper.tranClient(player, "eNet.de.toolNotBound.info", TextFormatting.RED);
+            ChatHelper.indexedTrans(player, "eNet.de.toolNotBound.info", TextFormatting.RED, -442611624);
             return true;
         }
 
@@ -65,17 +66,17 @@ public class BinderHandler {
         if (isBound) {
             BlockPos boundLinkable = getBound(binder);
             if (boundLinkable.equals(blockClicked)) {
-                ChatHelper.tranClient(player, "eNet.de.linkToSelf.info", TextFormatting.RED);
+                ChatHelper.indexedTrans(player, "eNet.de.linkToSelf.info", TextFormatting.RED, -442611624);
                 return true;
             }
             TileEntity boundTile = world.getTileEntity(boundLinkable);
             if (boundTile instanceof ICrystalLink) {
-                if (((ICrystalLink) boundTile).binderUsed(player, blockClicked)) {
+                if (((ICrystalLink) boundTile).binderUsed(player, blockClicked, sideClicked)) {
                     player.swingArm(hand);
                 }
             }
             else {
-                ChatHelper.tranClient(player, "eNet.de.boundToInvalid.info", TextFormatting.RED);
+                ChatHelper.indexedTrans(player, "eNet.de.boundToInvalid.info", TextFormatting.RED, -442611624);
             }
             return true;
         }
@@ -99,7 +100,7 @@ public class BinderHandler {
     public static boolean clearBinder(EntityPlayer player, @Nonnull ItemStack stack) {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey(ICrystalBinder.BINDER_TAG)) {
             stack.getTagCompound().removeTag(ICrystalBinder.BINDER_TAG);
-            ChatHelper.tranClient(player, "eNet.de.posCleared.info", TextFormatting.GREEN);
+            ChatHelper.indexedTrans(player, "eNet.de.posCleared.info", TextFormatting.GREEN, -442611624);
             return true;
         }
         return false;

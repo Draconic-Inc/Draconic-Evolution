@@ -78,6 +78,12 @@ public class ClientEventHandler {
             Map.Entry<EntityPlayer, XZPair<Float, Integer>> entry = i.next();
             if (elapsedTicks - entry.getValue().getValue() > 5) i.remove();
         }
+
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        if (player != null) {
+            playerHoldingWrench = (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ICrystalBinder) || (player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() instanceof ICrystalBinder);
+        }
+
 //        if (mc == null) { TODO Do i really want to reimplement this?
 //            mc = Minecraft.getMinecraft();
 //        }

@@ -48,6 +48,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
 
     @Override
     public void renderTileEntityAt(TileCrystalBase te, double x, double y, double z, float partialTicks, int destroyStage) {
+        te.getFxHandler().renderCooldown = 5;
         GlStateManager.pushMatrix();
         GlStateManagerHelper.pushState();
         GlStateManager.disableLighting();
@@ -94,6 +95,31 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
             crystalFull.render(ccrs, mat);
             ccrs.draw();
         }
+//
+//        if (ClientEventHandler.playerHoldingWrench && te instanceof TileCrystalWirelessIO && !trans) {
+//            TileCrystalWirelessIO tile = (TileCrystalWirelessIO) te;
+//
+//            Tessellator tess = Tessellator.getInstance();
+//            VertexBuffer buffer = tess.getBuffer();
+//            GlStateManager.pushMatrix();
+//            GlStateManager.disableTexture2D();
+//
+//            GlStateManager.glLineWidth(4);
+//            buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+//
+//            for (BlockPos target : tile.getReceivers()) {
+//
+//                Vec3D offset = Vec3D.getCenter(te.getPos()).subtract(Vec3D.getCenter(target)).subtract(0.5, 0.5, 0.5);
+//                buffer.pos(x + 0.5, y + 0.5, z + 0.5).color(0F, 1F, 0F, 1F).endVertex();
+//                buffer.pos(x - offset.x, y - offset.y, z - offset.z).color(0F, 1F, 0F, 1F).endVertex();
+//
+//            }
+//
+//            tess.draw();
+//
+//            GlStateManager.enableTexture2D();
+//            GlStateManager.popMatrix();
+//        }
     }
 
     public void renderHalfCrystal(TileCrystalDirectIO te, double x, double y, double z, float partialTicks, int destroyStage, int tier) {
@@ -171,5 +197,4 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
             ShaderProgram.unbindShader();
         }
     }
-
 }
