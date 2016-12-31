@@ -4,6 +4,8 @@
 ######## 2.0.5.x ########
 -Fixed some mod items not working in custom fusion recipes due to recipes being loaded too early.
 -Fixed AOE code not collecting some blocks such as Ender I/O conduits.
+-made the T8 energy core cheaper when not in hard mode.
+-Updated Energy Crystals.
 
 ######## 2.0.4.142 ########
 -Fixed advanced dislocator not teleporting other players.
