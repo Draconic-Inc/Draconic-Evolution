@@ -88,13 +88,13 @@ public class DERecipes {
 
         //Wireless
 
-        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 0));
+        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', ENDER_PEARL, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 0));
         addShaped(HARD, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 0));
 
-        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 7), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 1));
+        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 7), "ABA", "CDC", "ABA", 'A', ENDER_PEARL, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 1));
         addShaped(HARD, new ItemStack(energyCrystal, 1, 7), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 1));
 
-        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 8), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 2));
+        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 8), "ABA", "CDC", "ABA", 'A', ENDER_PEARL, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 2));
         addShaped(HARD, new ItemStack(energyCrystal, 1, 8), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 2));
 
         //endregion
