@@ -71,14 +71,14 @@ public class DERecipes {
         addShaped(NORMAL, new ItemStack(energyCrystal, 4), " A ", "ABA", " A ", 'A', "gemDiamond", 'B', wyvernEnergyCore);
         addShaped(HARD, new ItemStack(energyCrystal, 4), "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', "gemDiamond", 'C', wyvernEnergyCore);
 
-        addShaped(NORMAL, new ItemStack(energyCrystal, 4, 1), "ABA", "BCB", "ABA", 'A', wyvernEnergyCore, 'B', energyCrystal, 'C', draconicCore);
-        addShaped(HARD, new ItemStack(energyCrystal, 4, 1), "ABA", "BCB", "ABA", 'A', wyvernEnergyCore, 'B', energyCrystal, 'C', wyvernCore);
+        addShaped(NORMAL, new ItemStack(energyCrystal, 4, 1), "ABA", "BCB", "ABA", 'A', wyvernEnergyCore, 'B', new ItemStack(energyCrystal, 1, 0), 'C', draconicCore);
+        addShaped(HARD, new ItemStack(energyCrystal, 4, 1), "ABA", "BCB", "ABA", 'A', wyvernEnergyCore, 'B', new ItemStack(energyCrystal, 1, 0), 'C', wyvernCore);
 
         addFusion(NORMAL, new ItemStack(energyCrystal, 4, 2), new ItemStack(energyCrystal, 4, 1), 128000, 2, wyvernEnergyCore, "gemDiamond", wyvernCore, "gemDiamond", wyvernEnergyCore, wyvernEnergyCore, "gemDiamond", "gemDiamond", wyvernEnergyCore);
         addFusion(HARD, new ItemStack(energyCrystal, 4, 2), new ItemStack(energyCrystal, 4, 1), 512000, 2, wyvernEnergyCore, "gemDiamond", wyvernCore, "gemDiamond", wyvernEnergyCore, wyvernEnergyCore, "gemDiamond", draconicEnergyCore, "gemDiamond", wyvernEnergyCore);
 
         //I/O
-        addShapeless(ALL, new ItemStack(energyCrystal, 2, 3), energyCrystal);
+        addShapeless(ALL, new ItemStack(energyCrystal, 2, 3), new ItemStack(energyCrystal, 1, 0));
         addShapeless(ALL, new ItemStack(energyCrystal, 2, 4), new ItemStack(energyCrystal, 1, 1));
         addShapeless(ALL, new ItemStack(energyCrystal, 2, 5), new ItemStack(energyCrystal, 1, 2));
 
@@ -88,8 +88,8 @@ public class DERecipes {
 
         //Wireless
 
-        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', energyCrystal);
-        addShaped(HARD, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', energyCrystal);
+        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 0));
+        addShaped(HARD, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 0));
 
         addShaped(NORMAL, new ItemStack(energyCrystal, 1, 7), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 1));
         addShaped(HARD, new ItemStack(energyCrystal, 1, 7), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 1));
