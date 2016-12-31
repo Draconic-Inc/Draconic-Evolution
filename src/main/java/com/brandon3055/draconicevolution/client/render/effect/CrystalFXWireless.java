@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -82,8 +83,8 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalBase> {
 
 //        if (ClientEventHandler.elapsedTicks % 10 == 0) {
 //            LogHelper.dev(targetBB);
-
-        if (powerLevel > rand.nextFloat()) {
+        int ps = Minecraft.getMinecraft().gameSettings.particleSetting;
+        if (particleAge % 2 == 0 && powerLevel > rand.nextFloat() && (ps == 0 || (ps == 1 && rand.nextInt(3) == 0) || (ps == 2 && rand.nextInt(10) == 0))) {
             double travel = 50 + rand.nextInt(50);
             travel *= (1.4F - powerLevel);
 

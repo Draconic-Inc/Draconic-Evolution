@@ -2,12 +2,14 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IDataRetainerTile;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.ITilePlaceListener;
 import com.brandon3055.brandonscore.lib.Vec3B;
+import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
@@ -25,6 +27,8 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,18 +39,18 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.ID_CRYSTAL_MAP;
 
@@ -97,8 +101,8 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
             flowRates.clear();
             for (int i = 0; i < linkedCrystals.size(); i++) {
                 flowRates.add(calculateFlow(i));
-                fxHandler.detectAndSendChanges();
             }
+            fxHandler.detectAndSendChanges();
         }
 
 //        if (worldObj.getClosestPlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, false) != null) {
@@ -426,7 +430,11 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
         if (!worldObj.isRemote) {
             player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CRYSTAL, worldObj, pos.getX(), pos.getY(), pos.getZ());
         }
-        return false;
+        return true;
+    }
+
+    public String getUnlocalizedName() {
+        return "tile.draconicevolution:energy_crystal." + getType().getName() + "." + (getTier() == 0 ? "basic" : getTier() == 1 ? "wyvern" : "draconic") + ".name";
     }
 
     //endregion
@@ -569,6 +577,109 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 
     public void receiveBatchedUpdate(BatchedCrystalUpdate update) {
         fxHandler.updateReceived(update);
+    }
+
+    //endregion
+
+    //region Container
+
+    public Map<Integer, Integer> containerEnergyFlow = new HashMap<>();
+//    public Map<Integer, String> tileNamesMap = new HashMap<>();
+
+    public void detectAndSendContainerChanges(List<IContainerListener> listeners) {
+        if (linkedCrystals.size() != transferRatesArrays.size() && !worldObj.isRemote) {
+            rebuildTransferList();
+        }
+
+        List<BlockPos> positions = getLinks();
+        NBTTagList list = new NBTTagList();
+
+        for (BlockPos lPos : positions) {
+            int index = positions.indexOf(lPos);
+
+            if (!containerEnergyFlow.containsKey(index) || containerEnergyFlow.get(index) != getLinkFlow(index)) {
+                containerEnergyFlow.put(index, getLinkFlow(index));
+                NBTTagCompound data = new NBTTagCompound();
+                data.setByte("I", (byte)index);
+                data.setInteger("E", getLinkFlow(index));
+                list.appendTag(data);
+            }
+        }
+
+        if (!list.hasNoTags()) {
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setTag("L", list);
+            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 0, compound, false));
+        }
+        else if (containerEnergyFlow.size() > linkedCrystals.size()) {
+            containerEnergyFlow.clear();
+            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 0, 0, false));
+        }
+    }
+
+    public void sendUpdateToListeners(List<IContainerListener> listeners, PacketTileMessage packet) {
+        for (IContainerListener listener : listeners) {
+            if (listener instanceof EntityPlayerMP) {
+                BrandonsCore.network.sendTo(packet, (EntityPlayerMP) listener);
+            }
+        }
+    }
+
+    @Override
+    public void receivePacketFromServer(PacketTileMessage packet) {
+        if (packet.getIndex() == 0 && packet.isNBT()) {
+            NBTTagList list = packet.compound.getTagList("L", 10);
+
+            for (int i = 0; i < list.tagCount(); i++) {
+                NBTTagCompound data = list.getCompoundTagAt(i);
+                containerEnergyFlow.put((int) data.getByte("I"), data.getInteger("E"));
+            }
+        }
+
+        Iterator<Map.Entry<Integer, Integer>> i = containerEnergyFlow.entrySet().iterator();
+    }
+
+    @Override
+    public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
+        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(client, EnumHand.MAIN_HAND, client.getHeldItemMainhand(), pos, EnumFacing.UP, Vec3d.ZERO);
+        MinecraftForge.EVENT_BUS.post(event);
+
+        if (event.isCanceled()) {
+            return;
+        }
+
+        if (packet.getIndex() == 10) {
+            if (getLinks().size() > packet.intValue && packet.intValue >= 0) {
+                BlockPos target = getLinks().get(packet.intValue);
+                breakLink(target);
+                TileEntity targetTile = worldObj.getTileEntity(target);
+                if (targetTile instanceof ICrystalLink) {
+                    ((ICrystalLink) targetTile).breakLink(pos);
+                }
+            }
+        }
+        else if (packet.getIndex() == 20) {
+            List<BlockPos> links = new ArrayList<>(getLinks());
+            for (BlockPos target : links) {
+                breakLink(target);
+                TileEntity targetTile = worldObj.getTileEntity(target);
+                if (targetTile instanceof ICrystalLink) {
+                    ((ICrystalLink) targetTile).breakLink(pos);
+                }
+            }
+        }
+    }
+
+    public int getLinkFlow(int linkIndex) {
+        if (transferRatesArrays.size() > linkIndex) {
+            long sum = 0;
+            for (int i : transferRatesArrays.get(linkIndex)) {
+                sum += i;
+            }
+            return (int) (sum / 20L);
+        }
+
+        return 0;
     }
 
     //endregion

@@ -58,6 +58,7 @@ public class CommonProxy {
 		CCOCIntegration.init();
 		ModHelper.init();
 		DragonChunkLoader.init();
+		RecipeManager.loadRecipes();
 
 		LogHelper.info("Finished Initialization");
 	}

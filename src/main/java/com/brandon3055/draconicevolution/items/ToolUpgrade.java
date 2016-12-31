@@ -33,6 +33,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
 
     public static final Map<Integer, String> ID_TO_NAME = new HashMap<Integer, String>();
     public static final Map<String, Integer> NAME_TO_ID = new HashMap<String, Integer>();
+    public static final Map<String, Integer> NAME_MAX_LEVEL = new HashMap<String, Integer>();
 
     public static final String RF_CAPACITY = "rfCap";
     public static final String DIG_SPEED = "digSpeed";
@@ -50,9 +51,26 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
     public static final String JUMP_BOOST = "jumpBoost";
 
     public static final Map<String, LinkedList<FusionUpgradeRecipe>> RECIPE_MAP = new HashMap<String, LinkedList<FusionUpgradeRecipe>>();
-    public static final List<IFusionRecipe> upgrades = new ArrayList<>();
+    public static final List<IFusionRecipe> upgradeRecipes = new ArrayList<>();
 
     private static final int[] UPGRADE_COST = new int[]{32000, 512000, 32000000, 256000000};
+
+    static {
+        registerUpgrade(0, RF_CAPACITY, 4);
+        registerUpgrade(1, DIG_SPEED, 4);
+        registerUpgrade(2, DIG_AOE, 4);
+        //registerUpgrade(DIG_DEPTH);
+        registerUpgrade(3, ATTACK_DAMAGE, 4);
+        registerUpgrade(4, ATTACK_AOE, 4);
+        //registerUpgrade(ATTACK_SPEED);
+        registerUpgrade(5, ARROW_DAMAGE, 4);
+        registerUpgrade(6, DRAW_SPEED, 3);
+        registerUpgrade(7, ARROW_SPEED, 4);
+        registerUpgrade(8, SHIELD_CAPACITY, 4);
+        registerUpgrade(9, SHIELD_RECOVERY, 4);
+        registerUpgrade(10, MOVE_SPEED, 4);
+        registerUpgrade(11, JUMP_BOOST, 4);
+    }
 
     public ToolUpgrade() {
         setHasSubtypes(true);
@@ -61,10 +79,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
     private static void registerUpgrade(int id, String upgrade, int maxLevel) {
         ID_TO_NAME.put(id, upgrade);
         NAME_TO_ID.put(upgrade, id);
-
-        for (int i = 0; i < maxLevel; i++) {
-            registerRecipe(upgrade, i);
-        }
+        NAME_MAX_LEVEL.put(upgrade, maxLevel);
     }
 
     private static void registerRecipe(String name, int level) {
@@ -91,27 +106,20 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
 
             RECIPE_MAP.get(name).add(recipe);
             FusionRecipeAPI.addRecipe(recipe);
-            upgrades.add(recipe);
+            upgradeRecipes.add(recipe);
         }
     }
 
-    public static Collection<IFusionRecipe> addUpgrades() {
-        upgrades.clear();
-        registerUpgrade(0, RF_CAPACITY, 4);
-        registerUpgrade(1, DIG_SPEED, 4);
-        registerUpgrade(2, DIG_AOE, 4);
-        //registerUpgrade(DIG_DEPTH);
-        registerUpgrade(3, ATTACK_DAMAGE, 4);
-        registerUpgrade(4, ATTACK_AOE, 4);
-        //registerUpgrade(ATTACK_SPEED);
-        registerUpgrade(5, ARROW_DAMAGE, 4);
-        registerUpgrade(6, DRAW_SPEED, 3);
-        registerUpgrade(7, ARROW_SPEED, 4);
-        registerUpgrade(8, SHIELD_CAPACITY, 4);
-        registerUpgrade(9, SHIELD_RECOVERY, 4);
-        registerUpgrade(10, MOVE_SPEED, 4);
-        registerUpgrade(11, JUMP_BOOST, 4);
-        return upgrades;
+    public static Collection<IFusionRecipe> createUpgradeRecipes() {
+        upgradeRecipes.clear();
+
+        for (String upgrade : NAME_TO_ID.keySet()) {
+            for (int i = 0; i < NAME_MAX_LEVEL.get(upgrade); i++) {
+                registerRecipe(upgrade, i);
+            }
+        }
+
+        return upgradeRecipes;
     }
 
     @Override
@@ -152,6 +160,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
         for (Integer meta : ID_TO_NAME.keySet()) {

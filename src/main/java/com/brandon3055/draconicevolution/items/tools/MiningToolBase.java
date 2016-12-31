@@ -373,7 +373,7 @@ public abstract class MiningToolBase extends ToolBase {
                 return;
             }
 
-            BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player);
+            BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
         } else {
             if (itemRand.nextInt(10) == 0) {
                 world.playEvent(2001, pos, Block.getStateId(state));

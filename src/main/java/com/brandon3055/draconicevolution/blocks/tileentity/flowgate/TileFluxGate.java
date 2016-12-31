@@ -53,8 +53,8 @@ public class TileFluxGate extends TileFlowGate implements IEnergyReceiver {
             return 0;
         }
 
-        int sim = EnergyHelper.insertEnergy(target, maxReceive, from, true);
-        int transfer = EnergyHelper.insertEnergy(target, Math.min(Math.max(0, getFlow() - transferThisTick), sim), from, simulate);
+        int sim = EnergyHelper.insertEnergy(target, maxReceive, getDirection().getOpposite(), true);
+        int transfer = EnergyHelper.insertEnergy(target, Math.min(Math.max(0, getFlow() - transferThisTick), sim), getDirection().getOpposite(), simulate);
 
         if (!simulate) {
             transferThisTick += transfer;

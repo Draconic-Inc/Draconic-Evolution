@@ -66,6 +66,37 @@ public class DERecipes {
         addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 8000000, 2, "gemDiamond", "gemDiamond", chaoticCore, DRAGON_EGG, "gemDiamond", "gemDiamond");
         addFusion(HARD, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 23000000, 2, "netherStar", "netherStar", chaoticCore, DRAGON_EGG, chaoticCore, "netherStar", "netherStar", chaosShard);
 
+        //Energy Net
+        //Relay
+        addShaped(NORMAL, new ItemStack(energyCrystal, 4), " A ", "ABA", " A ", 'A', "gemDiamond", 'B', wyvernEnergyCore);
+        addShaped(HARD, new ItemStack(energyCrystal, 4), "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', "gemDiamond", 'C', wyvernEnergyCore);
+
+        addShaped(NORMAL, new ItemStack(energyCrystal, 4, 1), "ABA", "BCB", "ABA", 'A', wyvernEnergyCore, 'B', energyCrystal, 'C', draconicCore);
+        addShaped(HARD, new ItemStack(energyCrystal, 4, 1), "ABA", "BCB", "ABA", 'A', wyvernEnergyCore, 'B', energyCrystal, 'C', wyvernCore);
+
+        addFusion(NORMAL, new ItemStack(energyCrystal, 4, 2), new ItemStack(energyCrystal, 4, 1), 128000, 2, wyvernEnergyCore, "gemDiamond", wyvernCore, "gemDiamond", wyvernEnergyCore, wyvernEnergyCore, "gemDiamond", "gemDiamond", wyvernEnergyCore);
+        addFusion(HARD, new ItemStack(energyCrystal, 4, 2), new ItemStack(energyCrystal, 4, 1), 512000, 2, wyvernEnergyCore, "gemDiamond", wyvernCore, "gemDiamond", wyvernEnergyCore, wyvernEnergyCore, "gemDiamond", draconicEnergyCore, "gemDiamond", wyvernEnergyCore);
+
+        //I/O
+        addShapeless(ALL, new ItemStack(energyCrystal, 2, 3), energyCrystal);
+        addShapeless(ALL, new ItemStack(energyCrystal, 2, 4), new ItemStack(energyCrystal, 1, 1));
+        addShapeless(ALL, new ItemStack(energyCrystal, 2, 5), new ItemStack(energyCrystal, 1, 2));
+
+        addShapeless(ALL, energyCrystal, new ItemStack(energyCrystal, 1, 3), new ItemStack(energyCrystal, 1, 3));
+        addShapeless(ALL, new ItemStack(energyCrystal, 1, 1), new ItemStack(energyCrystal, 1, 4), new ItemStack(energyCrystal, 1, 4));
+        addShapeless(ALL, new ItemStack(energyCrystal, 1, 2), new ItemStack(energyCrystal, 1, 5), new ItemStack(energyCrystal, 1, 5));
+
+        //Wireless
+
+        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', energyCrystal);
+        addShaped(HARD, new ItemStack(energyCrystal, 1, 6), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', energyCrystal);
+
+        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 7), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 1));
+        addShaped(HARD, new ItemStack(energyCrystal, 1, 7), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 1));
+
+        addShaped(NORMAL, new ItemStack(energyCrystal, 1, 8), "ABA", "CDC", "ABA", 'A', "materialEnderPearl", 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 2));
+        addShaped(HARD, new ItemStack(energyCrystal, 1, 8), "ABA", "CDC", "ABA", 'A', draconicCore, 'B', new ItemStack(particleGenerator, 1, 0), 'C', ENDER_EYE, 'D', new ItemStack(energyCrystal, 1, 2));
+
         //endregion
 
         //region Advanced Machines
@@ -162,6 +193,9 @@ public class DERecipes {
 
         addFusion(NORMAL, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 1000000, 1, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", wyvernCore, "ingotDraconium");
         addFusion(HARD, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 10000000, 2, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", DRAGON_EGG, "ingotDraconium");
+
+        //Other
+        addShaped(ALL, crystalBinder, " AB", " CA", "D  ", 'A', "ingotDraconium", 'B', "gemDiamond", 'C', BLAZE_ROD, 'D', draconicCore);
 
         //endregion
 

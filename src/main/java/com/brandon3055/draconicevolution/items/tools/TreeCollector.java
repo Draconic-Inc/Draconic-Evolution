@@ -136,7 +136,7 @@ public class TreeCollector {
             collector.energyUsed += collector.axe.energyPerOperation;
 
             world.playEvent(2001, pos, Block.getStateId(state));
-            BlockToStackHelper.breakAndCollect(world, pos, inventory);
+            BlockToStackHelper.breakAndCollect(world, pos, inventory, xp);
             collector.collected++;
 
             int rad = collector.connectionRadius;

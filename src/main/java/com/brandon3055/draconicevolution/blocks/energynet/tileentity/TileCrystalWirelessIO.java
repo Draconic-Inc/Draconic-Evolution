@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
@@ -15,13 +16,19 @@ import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -342,6 +349,84 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         receiverCache = null;
+    }
+
+    //endregion
+
+    //region Container
+
+    public Map<Integer, Integer> containerReceiverFlow = new HashMap<>();
+//    public Map<Integer, String> tileNamesMap = new HashMap<>();
+
+    @Override
+    public void detectAndSendContainerChanges(List<IContainerListener> listeners) {
+        super.detectAndSendContainerChanges(listeners);
+        if (linkedReceivers.size() != receiverTransferRates.size() && !worldObj.isRemote) {
+            rebuildReceiverTransferList();
+        }
+
+        List<BlockPos> positions = getReceivers();
+        NBTTagList list = new NBTTagList();
+
+        for (BlockPos lPos : positions) {
+            int index = positions.indexOf(lPos);
+
+            if (!containerReceiverFlow.containsKey(index) || containerReceiverFlow.get(index) != receiverTransfer(index)) {
+                containerReceiverFlow.put(index, receiverTransfer(index));
+                NBTTagCompound data = new NBTTagCompound();
+                data.setByte("I", (byte)index);
+                data.setInteger("E", receiverTransfer(index));
+                list.appendTag(data);
+            }
+        }
+
+        if (!list.hasNoTags()) {
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setTag("L", list);
+            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 1, compound, false));
+        }
+        else if (containerReceiverFlow.size() > linkedReceivers.size()) {
+            containerReceiverFlow.clear();
+            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 1, 0, false));
+        }
+    }
+
+    @Override
+    public void receivePacketFromServer(PacketTileMessage packet) {
+        super.receivePacketFromServer(packet);
+        if (packet.getIndex() == 1 && packet.isNBT()) {
+            NBTTagList list = packet.compound.getTagList("L", 10);
+
+            for (int i = 0; i < list.tagCount(); i++) {
+                NBTTagCompound data = list.getCompoundTagAt(i);
+                containerReceiverFlow.put((int) data.getByte("I"), data.getInteger("E"));
+            }
+        }
+    }
+
+    @Override
+    public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
+        super.receivePacketFromClient(packet, client);
+
+        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(client, EnumHand.MAIN_HAND, client.getHeldItemMainhand(), pos, EnumFacing.UP, Vec3d.ZERO);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) {
+            return;
+        }
+
+        if (packet.getIndex() == 11) {
+            if (getReceivers().size() > packet.intValue && packet.intValue >= 0) {
+                BlockPos target = getReceivers().get(packet.intValue);
+                removeReceiver(target);
+            }
+        }
+
+        else if (packet.getIndex() == 21) {
+            List<BlockPos> links = new ArrayList<>(getReceivers());
+            for (BlockPos target : links) {
+                removeReceiver(target);
+            }
+        }
     }
 
     //endregion

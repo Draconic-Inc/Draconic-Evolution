@@ -61,7 +61,9 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
             particleRate.detectAndSendChanges(this, null, true);
         }
 
-        if (!structureValid.value || !hasCoreLock.value || getCore() == null || !getCore().active.value) return;
+        if (!structureValid.value || !hasCoreLock.value || getCore() == null || !getCore().active.value) {
+            return;
+        }
 
         if (!worldObj.isRemote && isOutputMode.value) {
             int extracted = getCore().extractEnergy(TileEnergyBase.sendEnergyToAll(worldObj, pos, getEnergyStored(null)), false);
@@ -76,7 +78,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
         }
 
         if (particleRate.value > 1 || (particleRate.value > 0 && worldObj.rand.nextInt(2) == 0)) {
-           particleRate.value-= 2;
+           particleRate.value -= 2;
         }
     }
 

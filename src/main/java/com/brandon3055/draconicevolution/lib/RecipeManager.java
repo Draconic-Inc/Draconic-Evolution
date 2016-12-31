@@ -47,7 +47,6 @@ public class RecipeManager {
      */
     public static void initialize() {
         FusionRecipeAPI.registry = FUSION_REGISTRY;
-        loadRecipes();
     }
 
     /**
@@ -77,7 +76,7 @@ public class RecipeManager {
         }
 
         activeFusion.clear();
-        activeFusion.addAll(ToolUpgrade.addUpgrades());
+        activeFusion.addAll(ToolUpgrade.createUpgradeRecipes());
         DERecipes.addRecipes();
         try {
             loadRecipesFromConfig();

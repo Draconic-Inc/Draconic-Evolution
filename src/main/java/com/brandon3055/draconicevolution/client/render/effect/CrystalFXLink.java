@@ -6,6 +6,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
@@ -22,20 +23,21 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXLink extends CrystalGLFXBase<TileCrystalWirelessIO> {
+public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
 
     private final Vec3D linkTarget;
     private final boolean terminateSource;
     private final boolean terminateTarget;
+    public int timeout = 0;
 
-    public CrystalFXLink(World worldIn, TileCrystalWirelessIO tile, Vec3D linkTarget) {
+    public CrystalFXLink(World worldIn, TileCrystalBase tile, Vec3D linkTarget) {
         super(worldIn, tile);
         this.particleTextureIndexX = 3 + tile.getTier();
         this.particleAge = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget.getPos()));
         this.terminateSource = true;
         this.linkTarget = linkTarget;
-        EnumFacing face = tile.getReceiversFaces().get(linkTarget.getPos());
+        EnumFacing face = tile instanceof TileCrystalWirelessIO ? ((TileCrystalWirelessIO) tile).getReceiversFaces().get(linkTarget.getPos()) : null;
         if (face != null) {
             linkTarget.add(face.getFrontOffsetX() * 0.6, face.getFrontOffsetY() * 0.6, face.getFrontOffsetZ() * 0.6);
         }
@@ -49,14 +51,17 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalWirelessIO> {
 
     @Override
     public void onUpdate() {
-        if (!ClientEventHandler.playerHoldingWrench) {
+        if (!ClientEventHandler.playerHoldingWrench && timeout <= 0) {
             setExpired();
+        }
+        else if (timeout > 0) {
+            timeout--;
         }
     }
 
     @Override
     public void renderParticle(VertexBuffer buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        double scale = 0.1;
+        double scale = 0.1 + (timeout * 0.005);
         Vector3 source = new Vector3(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
         Vector3 target = linkTarget.toVector3().subtract(interpPosX, interpPosY, interpPosZ);
         Vector3 dirVec = source.copy().subtract(target).normalize();

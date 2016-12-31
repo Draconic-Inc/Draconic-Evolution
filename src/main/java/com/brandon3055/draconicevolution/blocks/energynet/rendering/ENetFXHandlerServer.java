@@ -37,11 +37,11 @@ public class ENetFXHandlerServer extends ENetFXHandler {
                 update.indexToFlowMap.put(i, flow);
                 lastTickIndexToFlow.put(i, flow);
             }
+        }
 
-            if (update.indexToFlowMap.size() > 0 || Math.abs(lastTickEnergy - tile.getEnergyStored()) > 100) {
-                lastTickEnergy = tile.getEnergyStored();
-                batchedUpdate = update;
-            }
+        if (update.indexToFlowMap.size() > 0 || Math.abs(lastTickEnergy - tile.getEnergyStored()) > 100) {
+            lastTickEnergy = tile.getEnergyStored();
+            batchedUpdate = update;
         }
 
         if (batchedUpdate != null) {

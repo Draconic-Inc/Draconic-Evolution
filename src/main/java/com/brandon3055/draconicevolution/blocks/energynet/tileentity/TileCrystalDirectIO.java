@@ -62,12 +62,12 @@ public class TileCrystalDirectIO extends TileCrystalBase implements IEnergyTrans
 
     @Override
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return from != null && transportState.value != SEND && from.equals(facing.value.getOpposite()) ? energyStorage.receiveEnergy(maxReceive, simulate) : 0;
+        return from != null && transportState.value != SEND && from.equals(facing.value) ? energyStorage.receiveEnergy(maxReceive, simulate) : 0;
     }
 
     @Override
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        return from != null && from.equals(facing.value.getOpposite()) ? energyStorage.extractEnergy(maxExtract, simulate) : 0;
+        return from != null && from.equals(facing.value) ? energyStorage.extractEnergy(maxExtract, simulate) : 0;
     }
 
     @Override

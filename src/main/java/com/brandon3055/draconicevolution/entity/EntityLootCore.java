@@ -112,6 +112,11 @@ public class EntityLootCore extends Entity {
             return;
         }
 
+        if (inventory.xp > 0) {
+            player.addExperience(inventory.xp);
+            inventory.xp = 0;
+        }
+
         boolean inserted = false;
 
         for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {

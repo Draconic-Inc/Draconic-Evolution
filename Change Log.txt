@@ -2,6 +2,8 @@
 -Updated Flux and Fluid Gate's
 
 ######## 2.0.5.x ########
+-Fixed some mod items not working in custom fusion recipes due to recipes being loaded too early.
+-Fixed AOE code not collecting some blocks such as Ender I/O conduits.
 
 ######## 2.0.4.142 ########
 -Fixed advanced dislocator not teleporting other players.
