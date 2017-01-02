@@ -73,6 +73,11 @@ public class EnergyCrystal extends BlockBCore implements ICustomRender, IRegiste
         }
     }
 
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
     //endregion
 
     //region Blockstate

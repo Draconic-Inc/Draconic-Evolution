@@ -54,8 +54,9 @@ public class GuiEnergyCrystal extends ModularGuiContainer<ContainerEnergyCrystal
         linkData.lockScrollBar = true;
 
         manager.add(new MGuiButtonSolid(this, "CLEAR_L", guiLeft + xSize - 60, guiTop + 14, 60, 12, I18n.format("eNet.de.clearLinks.gui")).setColours(0xFF000000, 0xFFFF0000, 0xFF400090), 1);
-        manager.add(new MGuiButtonSolid(this, "CLEAR_R", guiLeft + xSize - 150, guiTop + 14, 90, 12, I18n.format("eNet.de.clearReceivers.gui")).setColours(0xFF000000, 0xFFFF0000, 0xFF400090), 1);
-
+        if (tile instanceof TileCrystalWirelessIO) {
+            manager.add(new MGuiButtonSolid(this, "CLEAR_R", guiLeft + xSize - 150, guiTop + 14, 90, 12, I18n.format("eNet.de.clearReceivers.gui")).setColours(0xFF000000, 0xFFFF0000, 0xFF400090), 1);
+        }
         manager.initElements();
     }
 

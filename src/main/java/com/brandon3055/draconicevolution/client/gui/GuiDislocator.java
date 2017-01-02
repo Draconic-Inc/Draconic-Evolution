@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -208,7 +209,7 @@ public class GuiDislocator extends GuiScreen {
                     if (locations.isEmpty()) return;
 
                     if (!player.capabilities.isCreativeMode && fuel <= 0) {
-                        player.addChatMessage(new TextComponentString("msg.teleporterOutOfFuel.txt"));
+                        player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
                     }
 
                     if (player.capabilities.isCreativeMode || fuel > 0) {
