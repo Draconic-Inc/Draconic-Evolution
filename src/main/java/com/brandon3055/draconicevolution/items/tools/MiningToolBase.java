@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
@@ -111,6 +112,7 @@ public abstract class MiningToolBase extends ToolBase {
     @Override
     public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving) {
         modifyEnergy(stack, -energyPerOperation);
+        LogHelper.dev("Break");
         return super.onBlockDestroyed(stack, worldIn, state, pos, entityLiving);
     }
 
@@ -373,6 +375,7 @@ public abstract class MiningToolBase extends ToolBase {
                 return;
             }
 
+            stack.onBlockDestroyed(world, state, pos, player);
             BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
         } else {
             if (itemRand.nextInt(10) == 0) {
