@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.network;
 
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
