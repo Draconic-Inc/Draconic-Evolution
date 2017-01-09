@@ -19,7 +19,6 @@ public abstract class PacketCompressible implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-//        LogHelper.dev("Received " + buf.readableBytes() + " bytes from Server (1 byte is read by the packet handler)");
         boolean isCompressed = buf.readBoolean();
 
         if (!isCompressed) {
@@ -30,23 +29,19 @@ public abstract class PacketCompressible implements IMessage {
         Inflater inflater = new Inflater();
         try {
             int rawSize = buf.readInt();
-            byte[] test = new byte[buf.readableBytes()];
-
-            buf.readBytes(test);
             buf = buf.unwrap();
-            inflater.setInput(test);
 
             byte[] rawBytes = new byte[rawSize];
             inflater.inflate(rawBytes);
 
-//            LogHelper.dev("Decompressed Size: " + rawSize);
-
             buf.clear();
+            buf.ensureWritable(rawBytes.length + 8000, true); //Just to make absolutely sure the buffer is gig enough
             buf.writeBytes(rawBytes);
             buf.readerIndex(0);
             readBytes(buf);
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new EncoderException(e);
         }
         finally {
