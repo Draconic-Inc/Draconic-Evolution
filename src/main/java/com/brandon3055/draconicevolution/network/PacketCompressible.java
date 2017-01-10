@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.network;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.EncoderException;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -28,13 +29,19 @@ public abstract class PacketCompressible implements IMessage {
         Inflater inflater = new Inflater();
         try {
             int rawSize = buf.readInt();
-            buf = buf.unwrap();
+            byte[] compressedBytes = new byte[buf.readableBytes()];
+            buf.readBytes(compressedBytes);
+            buf = Unpooled.buffer();
+            inflater.setInput(compressedBytes);
 
             byte[] rawBytes = new byte[rawSize];
             inflater.inflate(rawBytes);
 
             buf.clear();
-            buf.ensureWritable(rawBytes.length + 8000, true); //Just to make absolutely sure the buffer is gig enough
+//            buf.capacity(rawBytes.length);
+//            buf.ensureWritable(rawBytes.length, true); //Just to make absolutely sure the buffer is gig enough
+//            LogHelper.dev("Reading Compressed " + rawSize +" "+compressedBytes.length+" "+buf.capacity()+" "+buf.maxCapacity());
+//            LogHelper.dev(new String(rawBytes));
             buf.writeBytes(rawBytes);
             buf.readerIndex(0);
             readBytes(buf);
@@ -50,6 +57,7 @@ public abstract class PacketCompressible implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
+//        LogHelper.info(buf.unwrap().getClass());
         Deflater deflater = new Deflater();
         try {
             buf.writeBoolean(false);
@@ -63,7 +71,7 @@ public abstract class PacketCompressible implements IMessage {
             byte[] cBytes = new byte[rawSize];
             int cSize = deflater.deflate(cBytes);
 
-//            LogHelper.dev("Compression: " + rawSize + " to " + (cSize + 6) + " [Compressed to " + (Utils.round((cSize + 6D) / rawSize, 100) * 100) + "% original size]");
+//            LogHelper.dev("Compression: " + rawSize + " to " + (cSize + 6-6) + " [Compressed to " + (Utils.round((cSize + 6D) / rawSize, 100) * 100) + "% original size]");
 
             if (cSize >= rawSize - 6 || !deflater.finished()) {
 //                LogHelper.dev("Compression No Good! I Ain't Doing It!");
