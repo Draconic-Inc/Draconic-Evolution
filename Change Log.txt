@@ -1,6 +1,6 @@
 -- 2.1.0.x --
 
-######## 2.0.7.163 ########
+######## 2.0.7.166 ########
 -Hopefully fixed multiplayer network crash with energy net.
 -Fixed upgrades not being transferred from wyvern to draconic armor when upgraded.
 
