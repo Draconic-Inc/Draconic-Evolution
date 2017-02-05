@@ -336,6 +336,9 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
     //region Energy Transfer
 
     public int receiveEnergy(int maxReceive, boolean simulate) {
+        if (worldObj.isRemote) {
+            return 0;
+        }
         long energyReceived = Math.min(getExtendedCapacity() - energy.value, maxReceive);
 
         if (!simulate) {
@@ -345,6 +348,9 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
     }
 
     public int extractEnergy(int maxExtract, boolean simulate) {
+        if (worldObj.isRemote) {
+            return 0;
+        }
         long energyExtracted = Math.min(energy.value, maxExtract);
 
         if (!simulate) {
@@ -379,7 +385,8 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 
     //endregion
 
-    //region IMultiBlock todo Actually implement this//Actually may just remove IMultiBlock... Its kinda broken
+    //region IMultiBlock
+    //todo Actually implement this//Actually may just remove IMultiBlock... Its kinda broken
 
     @Override
     public boolean isStructureValid() {
@@ -409,6 +416,8 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
 
     //endregion
 
+    //region Rendering
+
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
@@ -426,4 +435,7 @@ public class TileEnergyStorageCore extends TileBCBase implements IDataRetainerTi
     public boolean shouldRenderInPass(int pass) {
         return true;
     }
+
+    //endregion
 }
+

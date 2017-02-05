@@ -24,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -43,6 +44,8 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     private final SyncableByte particleRate = new SyncableByte((byte) 0, true, false, false);
     private TileEnergyStorageCore core = null;
     private int coreSelection = 0;
+    private int tick = 0;
+    private int lastCompOverride = 0;
 
     public TileEnergyPylon() {
         this.registerSyncableObject(isOutputMode, true);
@@ -65,6 +68,10 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
             return;
         }
 
+        if (tick++ % 10 == 0 && getExtendedCapacity() > 0) {
+            updateComparators();
+        }
+
         if (!worldObj.isRemote && isOutputMode.value) {
             int extracted = getCore().extractEnergy(TileEnergyBase.sendEnergyToAll(worldObj, pos, getEnergyStored(null)), false);
 //            LogHelper.info(extracted);
@@ -82,18 +89,36 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
         }
     }
 
+    public void updateComparators() {
+        int cOut = (int) (getExtendedStorage() / getExtendedCapacity() * 15D);
+        if (cOut != lastCompOverride) {
+            worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
+            lastCompOverride = cOut;
+        }
+    }
+
     //region MultiBlock Handling
 
 
     private TileEnergyStorageCore getCore() {
         if (hasCoreLock.value) {
-            if (!worldObj.getChunkFromBlockCoords(pos.subtract(coreOffset.vec.getPos())).isLoaded()) {
+            BlockPos corePos = pos.subtract(coreOffset.vec.getPos());
+            Chunk coreChunk = worldObj.getChunkFromBlockCoords(corePos);
+
+            if (!coreChunk.isLoaded()) {
+                core = null;
                 return null;
             }
-            if (core == null || core.isInvalid()) {
-                TileEntity tile = worldObj.getTileEntity(pos.subtract(coreOffset.vec.getPos()));
-                core = tile instanceof TileEnergyStorageCore ? (TileEnergyStorageCore)tile : null;
-                if (core == null) {
+
+            TileEntity tileAtPos = coreChunk.getTileEntity(corePos, Chunk.EnumCreateEntityType.CHECK);
+            if (tileAtPos == null || core == null || tileAtPos != core) {
+                TileEntity tile = worldObj.getTileEntity(corePos);
+
+                if (tile instanceof TileEnergyStorageCore) {
+                    core = (TileEnergyStorageCore)tile;
+                }
+                else {
+                    core = null;
                     hasCoreLock.value = false;
                 }
             }

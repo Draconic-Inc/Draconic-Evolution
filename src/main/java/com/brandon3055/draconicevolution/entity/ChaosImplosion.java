@@ -90,7 +90,7 @@ public class ChaosImplosion implements IProcess {
 
             float energy = power * 10;
 
-            for (int y = yCoord; y > 0 && energy > 0; y--) {
+            for (int y = yCoord; y >= 0 && energy > 0; y--) {
                 List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
                 for (Entity entity : entities) entity.attackEntityFrom(ChaosImplosion.chaosImplosion, power * 100);
 

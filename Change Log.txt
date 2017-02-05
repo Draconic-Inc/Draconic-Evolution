@@ -1,5 +1,12 @@
 -- 2.1.0.x --
 
+######## 2.0.8.x ########
+-Re implemented comparator support for the energy core.
+-Fixed shift clicking in Energy core gui causing a crash.
+
+######## 2.0.7.168 ########
+-Corrected a mistake that was causing issues with other mods entities.
+
 ######## 2.0.7.166 ########
 -Hopefully fixed multiplayer network crash with energy net.
 -Fixed upgrades not being transferred from wyvern to draconic armor when upgraded.

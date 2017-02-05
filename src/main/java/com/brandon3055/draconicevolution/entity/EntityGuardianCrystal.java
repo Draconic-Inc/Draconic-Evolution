@@ -35,8 +35,8 @@ import java.util.List;
  */
 public class EntityGuardianCrystal extends EntityLivingBase {
 
-    private static final DataParameter<Integer> SHIELD_TIME = EntityDataManager.<Integer>createKey(EntityGuardianCrystal.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> HEALTH = EntityDataManager.<Float>createKey(EntityGuardianCrystal.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> SHIELD_TIME = EntityDataManager.createKey(EntityGuardianCrystal.class, DataSerializers.VARINT);
+    private static final DataParameter<Float> HEALTH = EntityDataManager.createKey(EntityGuardianCrystal.class, DataSerializers.FLOAT);
 
     public int innerRotation;
     public float deathAnimation = 1F;
