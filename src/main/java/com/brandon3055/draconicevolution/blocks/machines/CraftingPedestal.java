@@ -128,8 +128,8 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
 
         }else {
             ItemStack stack = player.getHeldItemMainhand();
-            craftingPedestal.setInventorySlotContents(0, stack);
-            player.setHeldItem(EnumHand.MAIN_HAND, null);
+            craftingPedestal.setInventorySlotContents(0, stack.copy());
+            stack.stackSize--;
         }
 
         return true;

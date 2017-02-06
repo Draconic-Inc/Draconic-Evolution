@@ -22,6 +22,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
 
     public TileCraftingPedestal(){
         this.setInventorySize(1);
+        this.stackLimit = 1;
         registerSyncableObject(facing, true);
         registerSyncableObject(energy, true);
     }
