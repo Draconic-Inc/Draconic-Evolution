@@ -33,6 +33,9 @@ public class TileCreativeRFCapacitor extends TileBCBase implements IEnergyProvid
 
     @Override
     public void update() {
+        if (worldObj.isRemote) {
+            return;
+        }
         int value = Integer.MAX_VALUE;
         for (EnumFacing direction : EnumFacing.VALUES) {
             TileEnergyBase.sendEnergyTo(worldObj, pos, value, direction);

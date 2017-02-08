@@ -437,6 +437,7 @@ item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, tr
 //Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.draconicevolution.EnderDragon.name=Ender Dragon
 entity.draconicevolution.ChaosGuardian.name=Chaos Guardian
+entity.draconicevolution.lootCore.name=Loot Core
 
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
@@ -690,6 +691,8 @@ config.field.armorNVLock.entry=Night Vision Lock
 config.field.armorNVLock.description=This locks night vision to active regardless of the light level you are in.
 config.field.armorFSpeedModifier.entry=Flight Speed Modifier
 config.field.armorFSpeedModifier.description=Allows you to adjust the speed boost applied by this armor while flying.
+config.field.armorFlightLock=Flight Lock
+config.field.armorFlightLock.description=Allows you to lock creative flight so that it is always active.
 config.field.armorVFSpeedModifier.entry=Vertical Boost
 config.field.armorVFSpeedModifier.description=This allows you to increase the speed at which you ascend/descend while flying.
 config.field.armorInertiaCancel.entry=Inertia Cancellation

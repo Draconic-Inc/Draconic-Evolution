@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingPedestal;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -121,7 +123,18 @@ public class EffectTrackerFusionCrafting {
             worldObj.playSound(pos.x, pos.y, pos.z, DESoundHandler.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
         }
 
-        alpha = craftingInventory.getCraftingStage() / 1000F;
+        if (craftingInventory.getCraftingStage() < 1000) {
+            TileEntity tile = worldObj.getTileEntity(pos.getPos());
+            if (tile instanceof TileCraftingPedestal && craftingInventory.getRequiredCharge() > 0) {
+                alpha = ((TileCraftingPedestal) tile).getCharge() / (float) craftingInventory.getRequiredCharge();
+            }
+        }
+        else {
+            alpha = 1;
+        }
+//
+//        alpha = craftingInventory.getCraftingStage() / 1000F;
+
         rotationSpeed = 1 + (craftingInventory.getCraftingStage() / 1000F) * 10;
         if (alpha > 1){
             alpha = 1;

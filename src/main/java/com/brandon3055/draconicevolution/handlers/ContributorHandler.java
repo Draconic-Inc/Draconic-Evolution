@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.handlers;
 
+import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.handlers.FileHandler;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
@@ -15,6 +16,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -37,7 +39,7 @@ public class ContributorHandler {
         thread = new DLThread();
         thread.start();
 
-        ProcessHandler.addProcess(new IProcess() {
+        IProcess process = new IProcess() {
             @Override
             public void updateProcess() {
                 if (thread.isFinished()) {
@@ -45,9 +47,11 @@ public class ContributorHandler {
                     readFile();
                     successfulLoad = true;
                     loadContributorConfig();
+                    LogHelper.dev("Read Contributors File");
                 }
                 else if (thread.isFailed()) {
                     thread = null;
+                    LogHelper.dev("Contributors File Download Failed");
                 }
             }
 
@@ -55,7 +59,13 @@ public class ContributorHandler {
             public boolean isDead() {
                 return thread == null;
             }
-        });
+        };
+
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+            ProcessHandlerClient.addProcess(process);
+        } else {
+            ProcessHandler.addProcess(process);
+        }
     }
 
     public static boolean isPlayerContributor(EntityPlayer player) {

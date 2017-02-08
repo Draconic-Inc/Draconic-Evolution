@@ -20,7 +20,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
@@ -446,10 +445,10 @@ public class GuiDislocator extends GuiScreen {
                     this.fuel += DEConfig.dislocatorUsesPerPearl * 16;
                 } 
                 else {
-                    player.addChatMessage(new TextComponentString("msg.teleporterOutOfPearls.txt"));
+                    player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfPearls.txt"));
                 }
             } else {
-                player.addChatMessage(new TextComponentString("msg.teleporterOutOfPearls.txt"));
+                player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfPearls.txt"));
             }
         }
         updateButtons();

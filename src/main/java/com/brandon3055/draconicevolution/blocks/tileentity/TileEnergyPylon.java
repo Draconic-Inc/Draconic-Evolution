@@ -146,6 +146,9 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     }
 
     public void selectNextCore() {
+        if (worldObj.isRemote) {
+            return;
+        }
         List<TileEnergyStorageCore> cores = findActiveCores();
         if (cores.size() == 0) {
             core = null;
@@ -164,9 +167,11 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
         worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
         coreSelection++;
 
-        if (hasCoreLock.value && worldObj.isRemote) {
+        if (hasCoreLock.value) {
             drawParticleBeam();
         }
+
+        updateBlock();
     }
 
     @Override
@@ -224,7 +229,6 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
 
     //region Rendering
 
-    @SideOnly(Side.CLIENT)
     private void drawParticleBeam() {
         if (getCore() == null) return;
 

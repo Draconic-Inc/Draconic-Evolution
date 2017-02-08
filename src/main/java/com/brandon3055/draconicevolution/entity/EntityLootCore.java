@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.network.PacketLootSync;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -13,6 +14,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,11 +121,25 @@ public class EntityLootCore extends Entity {
 
         boolean inserted = false;
 
+
         for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack != null) {
                 int start = stack.stackSize;
-                player.inventory.addItemStackToInventory(stack);
+
+                EntityItem item = new EntityItem(worldObj, 0, 0, 0, stack);
+                item.setPosition(posX, posY, posZ);
+                int result = ForgeEventFactory.onItemPickup(item, player, stack);
+
+                stack.stackSize = item.getEntityItem().stackSize;
+
+                if (result == 1) {
+                    player.inventory.addItemStackToInventory(stack);
+                }
+
+                if (item.isDead) {
+                    stack.stackSize = 0;
+                }
 
                 if (stack.stackSize == 0) {
                     inventory.setInventorySlotContents(i, null);

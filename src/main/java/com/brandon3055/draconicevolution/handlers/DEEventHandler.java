@@ -62,10 +62,7 @@ public class DEEventHandler {
 
     }
 
-    @SubscribeEvent
-    public void login(PlayerEvent.PlayerLoggedInEvent event) {
 
-    }
 
 
 
@@ -506,4 +503,15 @@ public class DEEventHandler {
         }
     }*/
     //endregion
+
+    @SubscribeEvent
+    public void login(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event) {
+        if (!event.player.onGround) {
+            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.player);
+            if (summery != null && summery.flight[0]) {
+                event.player.capabilities.isFlying = true;
+                event.player.sendPlayerAbilities();
+            }
+        }
+    }
 }

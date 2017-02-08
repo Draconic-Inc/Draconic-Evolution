@@ -45,6 +45,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
                 energy.value += maxAccept;
             }
 
+            detectAndSendChanges();
             return maxAccept;
         }
 

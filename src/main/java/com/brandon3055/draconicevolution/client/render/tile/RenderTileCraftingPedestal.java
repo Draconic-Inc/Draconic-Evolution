@@ -14,6 +14,8 @@ public class RenderTileCraftingPedestal extends TESRBase<TileCraftingPedestal>
             return;
         }
 
+
+
         if (te.getStackInSlot(0) != null) {
             GlStateManager.pushMatrix();
 

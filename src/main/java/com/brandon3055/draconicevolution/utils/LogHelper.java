@@ -68,6 +68,12 @@ public class LogHelper {
 
     //log with format.
 
+    public static void dev(String object, Object... format) {
+        if (!ObfMapping.obfuscated) {
+            log(Level.INFO, "[DEV]: " + String.format(object, format));
+        }
+    }
+
     public static void all(String object, Object... format) {
         log(Level.ALL, String.format(object, format));
     }
@@ -168,6 +174,19 @@ public class LogHelper {
     }
 
     //Log with trace element.
+
+    public static void bigDdev(String format, Object... data) {
+        if (!ObfMapping.obfuscated) {
+            StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+            dev("****************************************");
+            dev("* " + format, data);
+            for (int i = 2; i < 8 && i < trace.length; i++) {
+                dev("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+            }
+            dev("****************************************");
+        }
+    }
+
     public static void bigAll(String format, Object... data) {
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
         all("****************************************");

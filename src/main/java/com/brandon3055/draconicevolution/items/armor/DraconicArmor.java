@@ -58,7 +58,6 @@ public class DraconicArmor extends WyvernArmor {
         return 3;
     }
 
-
     //endregion
 
     //region Config
@@ -74,6 +73,7 @@ public class DraconicArmor extends WyvernArmor {
             registry.register(stack, new IntegerConfigField("armorFSpeedModifier", 0, 0, 600, "config.field.armorFSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
             registry.register(stack, new IntegerConfigField("armorVFSpeedModifier", 0, 0, 600, "config.field.armorVFSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
             registry.register(stack, new BooleanConfigField("armorInertiaCancel", false, "config.field.armorInertiaCancel.description"));
+            registry.register(stack, new BooleanConfigField("armorFlightLock", false, "config.field.armorFlightLock.description"));
         }
         if (armorType == LEGS) {
             int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.MOVE_SPEED);
@@ -221,7 +221,7 @@ public class DraconicArmor extends WyvernArmor {
 
     @Override
     public boolean[] hasFlight(ItemStack stack) {
-        return new boolean[]{true, false, ToolConfigHelper.getBooleanField("armorInertiaCancel", stack)};
+        return new boolean[]{true, ToolConfigHelper.getBooleanField("armorFlightLock", stack), ToolConfigHelper.getBooleanField("armorInertiaCancel", stack)};
     }
 
     @Override

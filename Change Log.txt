@@ -3,12 +3,24 @@
 ######## 2.0.8.x ########
 -Re implemented comparator support for the energy core.
 -Fixed shift clicking in Energy core gui causing a crash.
+-Fixed particles from pylon sometimes targeting wrong core after switching between cores.
+-Fixed issue with energy pylons breaking (I think...)
+-Fixed contributors wings not working on servers unless you login to a singleplayer world first.
+-Fixed advanced dislocator using health instead of fuel when teleporting entities.
+-Fixed advanced dislocator not teleporting other players.-
+-Re implemented the "Flight Lock" option in the Draconic Chestplate.
+-Energy core build guide now shows invalid blocks.
+-Removed upgrades from armor peaces they dont belong on e.g. jump boost on helmet.
+-Tweaked fusion crafting. Each Icosahedron will mow fade into existence as the injector its attached to charges. Making it easy to see of one or more injectors are not getting power.
+-Re implemented the "If you disconnect while flying you will be flying when you re connect" feature.
+-Fixed an issue the prevented the generator from sending energy to some blocks.
+-Loot core now fires an item pickup event so things like backpacks which collect items as you pick them up should work now.
 
 ######## 2.0.7.168 ########
 -Corrected a mistake that was causing issues with other mods entities.
 
 ######## 2.0.7.166 ########
--Hopefully fixed multiplayer network crash with energy net.
+-Hopefully fixed multiplayer network crash with energy net.Tile
 -Fixed upgrades not being transferred from wyvern to draconic armor when upgraded.
 
 ######## 2.0.6.157 ########
