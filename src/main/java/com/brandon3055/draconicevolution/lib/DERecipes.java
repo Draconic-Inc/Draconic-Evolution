@@ -48,8 +48,8 @@ public class DERecipes {
         addShaped(HARD, new ItemStack(energyPylon, 2), "ABA", "CDC", "AEA", 'A', "ingotDraconium", 'B', ENDER_EYE, 'C', "gemEmerald", 'D', wyvernCore, 'E', "gemDiamond");
         addShaped(ALL, rainSensor, " A ", "BCB", "DDD", 'A', BUCKET, 'B', "dustRedstone", 'C', STONE_PRESSURE_PLATE, 'D', STONE_SLAB);
         addShaped(ALL, dissEnchanter, "ABA", "CDC", "EEE", 'A', "gemEmerald", 'B', draconicCore, 'C', ENCHANTED_BOOK, 'D', ENCHANTING_TABLE, 'E', BOOKSHELF);
-        addShaped(NORMAL, celestialManipulator, "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', CLOCK, 'C', "ingotDraconium", 'D', DRAGON_EGG, 'E', "ingotIron", 'F', wyvernCore);
-        addShaped(HARD, celestialManipulator, "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', CLOCK, 'C', "ingotDraconiumAwakened", 'D', DRAGON_EGG, 'E', "ingotIron", 'F', awakenedCore);
+        addShaped(NORMAL, celestialManipulator, "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', CLOCK, 'C', "ingotDraconium", 'D', "dragonEgg", 'E', "ingotIron", 'F', wyvernCore);
+        addShaped(HARD, celestialManipulator, "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', CLOCK, 'C', "ingotDraconiumAwakened", 'D', "dragonEgg", 'E', "ingotIron", 'F', awakenedCore);
         addShaped(ALL, potentiometer, " A ", "BCB", "DDD", 'A', "plankWood", 'B', "dustRedstone", 'C', "dustDraconium", 'D', STONE_SLAB);
         addShaped(ALL, entityDetector, "ABA", "CDC", "EFE", 'A', new ItemStack(DYE, 1, 4), 'B', ENDER_EYE, 'C', "dustRedstone", 'D', "ingotDraconium", 'E', "ingotIron", 'F', draconicCore);
         addShaped(ALL, new ItemStack(entityDetector, 1, 1), "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', new ItemStack(SKULL, 1, 1), 'C', "blockLapis", 'D', "gemDiamond", 'E', "ingotDraconium", 'F', entityDetector);
@@ -62,9 +62,9 @@ public class DERecipes {
         addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 1), new ItemStack(craftingPedestal), 32000, 0, wyvernCore, "gemDiamond", draconicCore, "gemDiamond", draconicCore, "gemDiamond", "blockDraconium", "gemDiamond");
         addFusion(HARD, new ItemStack(craftingPedestal, 1, 1), new ItemStack(craftingPedestal), 256000, 0, wyvernCore, "netherStar", draconicCore, "netherStar", draconicCore, "netherStar", "blockDraconium", "netherStar");
         addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 2), new ItemStack(craftingPedestal, 1, 1), 256000, 1, "gemDiamond", "gemDiamond", wyvernCore, "blockDraconiumAwakened", wyvernCore, "gemDiamond", "gemDiamond");
-        addFusion(HARD, new ItemStack(craftingPedestal, 1, 2), new ItemStack(craftingPedestal, 1, 1), 1000000, 1, "netherStar", "netherStar", wyvernCore, "blockDraconiumAwakened", wyvernCore, "netherStar", "netherStar", DRAGON_EGG);
-        addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 8000000, 2, "gemDiamond", "gemDiamond", chaoticCore, DRAGON_EGG, "gemDiamond", "gemDiamond");
-        addFusion(HARD, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 23000000, 2, "netherStar", "netherStar", chaoticCore, DRAGON_EGG, chaoticCore, "netherStar", "netherStar", chaosShard);
+        addFusion(HARD, new ItemStack(craftingPedestal, 1, 2), new ItemStack(craftingPedestal, 1, 1), 1000000, 1, "netherStar", "netherStar", wyvernCore, "blockDraconiumAwakened", wyvernCore, "netherStar", "netherStar", "dragonEgg");
+        addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 8000000, 2, "gemDiamond", "gemDiamond", chaoticCore, "dragonEgg", "gemDiamond", "gemDiamond");
+        addFusion(HARD, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 23000000, 2, "netherStar", "netherStar", chaoticCore, "dragonEgg", chaoticCore, "netherStar", "netherStar", chaosShard);
 
         //Energy Net
         //Relay
@@ -176,7 +176,7 @@ public class DERecipes {
         addShaped(HARD, dislocator, "ABA", "BCB", "ABA", 'A', BLAZE_POWDER, 'B', "dustDraconium", 'C', CHORUS_FLOWER);
 
         addFusion(NORMAL, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 1000000, 1, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", wyvernCore, "ingotDraconium");
-        addFusion(HARD, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 10000000, 2, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", DRAGON_EGG, "ingotDraconium");
+        addFusion(HARD, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 10000000, 2, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "dragonEgg", "ingotDraconium");
 
         //Other
         addShaped(ALL, crystalBinder, " AB", " CA", "D  ", 'A', "ingotDraconium", 'B', "gemDiamond", 'C', BLAZE_ROD, 'D', draconicCore);

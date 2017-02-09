@@ -7,7 +7,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.brandonscore.config.IRegisterMyOwnTiles;
+import com.brandon3055.brandonscore.config.ITileRegisterer;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
@@ -47,7 +47,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 19/11/2016.
  */
-public class EnergyCrystal extends BlockBCore implements ICustomRender, IRegisterMyOwnTiles, IHudDisplay {
+public class EnergyCrystal extends BlockBCore implements ICustomRender, ITileRegisterer, IHudDisplay {
 
     public static final PropertyEnum<CrystalType> TYPE = PropertyEnum.create("type", CrystalType.class);
     public static final PropertyInteger TIER = PropertyInteger.create("tier", 0, 2);

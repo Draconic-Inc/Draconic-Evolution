@@ -15,6 +15,7 @@
 -Re implemented the "If you disconnect while flying you will be flying when you re connect" feature.
 -Fixed an issue the prevented the generator from sending energy to some blocks.
 -Loot core now fires an item pickup event so things like backpacks which collect items as you pick them up should work now.
+-Added support for Dragon Mounts Dragon Eggs.
 
 ######## 2.0.7.168 ########
 -Corrected a mistake that was causing issues with other mods entities.

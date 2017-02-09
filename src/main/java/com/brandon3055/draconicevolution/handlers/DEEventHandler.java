@@ -374,6 +374,20 @@ public class DEEventHandler {
             event.getToolTip().add(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution.");
         }
 
+//        ItemStack stack = event.getItemStack();
+//        if (stack != null) {
+//            int[] ids = OreDictionary.getOreIDs(stack);
+//
+//            event.getToolTip().add("Is Block: " + (stack.getItem() instanceof ItemBlock));
+//            event.getToolTip().add(stack.getItem().getRegistryName() + "");
+//            LogHelper.info(Item.REGISTRY.getObject(new ResourceLocation("dragonmounts:dragon_egg")));
+//            LogHelper.info(Block.REGISTRY.getObject(new ResourceLocation("dragonmounts:dragon_egg")));
+//            LogHelper.info(stack.getItem());
+//            for (int id : ids) {
+//                event.getToolTip().add(OreDictionary.getOreName(id));
+//            }
+//        }
+
 //        if (DEConfig.showUnlocalizedNames) event.toolTip.add(event.itemStack.getUnlocalizedName());
 //        if (DraconicEvolution.debug && event.itemStack.hasTagCompound()) {
 //            String s = event.itemStack.getTagCompound().toString();

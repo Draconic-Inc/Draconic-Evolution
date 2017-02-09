@@ -66,8 +66,6 @@ public class DraconicEvolution {
         featureParser.registerFeatures();
         DEConfig.init();
 
-        OreHandler.initialize();
-
         proxy.preInit(event);
         proxy.registerParticles();
     }
@@ -76,6 +74,7 @@ public class DraconicEvolution {
     public void init(FMLInitializationEvent event) {
         DEWorldGenHandler.initialize();
         GuiHandler.initialize();
+        OreHandler.initialize();
 
         proxy.init(event);
     }

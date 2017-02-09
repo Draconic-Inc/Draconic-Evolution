@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.reactor;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.brandonscore.config.IRegisterMyOwnTiles;
+import com.brandon3055.brandonscore.config.ITileRegisterer;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorEnergyInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class ReactorComponent extends BlockBCore implements ITileEntityProvider, IRegisterMyOwnTiles, ICustomRender {
+public class ReactorComponent extends BlockBCore implements ITileEntityProvider, ITileRegisterer, ICustomRender {
 
     public ReactorComponent() {
 

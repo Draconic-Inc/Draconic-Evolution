@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorEnergyInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.client.model.ModelReactorEnergyInjector;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
@@ -25,16 +26,30 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
 
+        if (te instanceof TileReactorStabilizer) {
+            float coreRotation = 0;
+            float ringRotation = 0;
+            float brightness = 1;
 
-        if (te instanceof TileReactorStabilizer && true) {
-            bindTexture(ResourceHelperDE.getResource(DETextures.REACTOR_STABILIZER));
-            stabilizerModel.render(null, 19, 1, 1, 1, 1, 1F/16F);
+            renderStabilizer(coreRotation, ringRotation, brightness, partialTicks);
         }
-        else {
-            bindTexture(ResourceHelperDE.getResource("textures/models/model_reactor_power_injector.png"));
-            injectorModel.render(null, 0, 0, 0, 0, 0, 1F/16F);
+        else if (te instanceof TileReactorEnergyInjector) {
+            renderInjector((TileReactorEnergyInjector) te, partialTicks);
         }
+
 
         GlStateManager.popMatrix();
     }
+
+    private void renderStabilizer(float coreRotation, float ringRotation, float brightness, float partialTicks) {
+        bindTexture(ResourceHelperDE.getResource(DETextures.REACTOR_STABILIZER));
+        stabilizerModel.render(null, 19, 1, 1, 1, 1, 1F / 16F);
+    }
+
+    private void renderInjector(TileReactorEnergyInjector te, float partialTicks) {
+        bindTexture(ResourceHelperDE.getResource("textures/models/model_reactor_power_injector.png"));
+        injectorModel.render(null, 0, 0, 0, 0, 0, 1F / 16F);
+
+    }
+
 }

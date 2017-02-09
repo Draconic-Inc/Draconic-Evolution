@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.machines;
 import codechicken.lib.util.RotationUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.properties.PropertyString;
-import com.brandon3055.brandonscore.config.IRegisterMyOwnTiles;
+import com.brandon3055.brandonscore.config.ITileRegisterer;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 14/11/2016.
  */
-public class FlowGate extends BlockBCore implements IRegisterMyOwnTiles {
+public class FlowGate extends BlockBCore implements ITileRegisterer {
 
     public static final PropertyString TYPE = new PropertyString("type", "flux", "fluid");
     public static final PropertyDirection FACING = BlockDirectional.FACING;

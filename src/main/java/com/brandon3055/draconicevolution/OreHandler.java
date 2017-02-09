@@ -1,8 +1,16 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.brandonscore.config.ModFeatureParser;
+import com.brandon3055.draconicevolution.utils.LogHelper;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by brandon3055 on 22/3/2016.
@@ -15,33 +23,45 @@ public class OreHandler {
 	}
 
 	private static void registerOres(){
-		ModFeatureParser parser = DraconicEvolution.featureParser;
+		OreDictionary.registerOre("dragonEgg", Blocks.DRAGON_EGG);
 
-		if (parser.isEnabled(DEFeatures.draconiumOre)) {
+		if (Loader.isModLoaded("DragonMounts")) {
+			LogHelper.info("Adding ore entry for Dragon Mounts Dragon Eggs...");
+			Item egg = Item.REGISTRY.getObject(new ResourceLocation("dragonmounts:dragon_egg"));
+			if (egg != null) {
+				List<ItemStack> list = new ArrayList<>();
+				egg.getSubItems(egg, egg.getCreativeTab(), list);
+				for (ItemStack stack : list) {
+					OreDictionary.registerOre("dragonEgg", stack);
+				}
+			}
+		}
+
+		if (ModFeatureParser.isEnabled(DEFeatures.draconiumOre)) {
 			OreDictionary.registerOre("oreDraconium", DEFeatures.draconiumOre);
 		}
 
-		if (parser.isEnabled(DEFeatures.draconiumBlock)) {
+		if (ModFeatureParser.isEnabled(DEFeatures.draconiumBlock)) {
 			OreDictionary.registerOre("blockDraconium", new ItemStack(DEFeatures.draconiumBlock));
 		}
 
-		if (parser.isEnabled(DEFeatures.draconicBlock)) {
+		if (ModFeatureParser.isEnabled(DEFeatures.draconicBlock)) {
 			OreDictionary.registerOre("blockDraconiumAwakened", new ItemStack(DEFeatures.draconicBlock));
 		}
 
-		if (parser.isEnabled(DEFeatures.draconiumIngot)) {
+		if (ModFeatureParser.isEnabled(DEFeatures.draconiumIngot)) {
 			OreDictionary.registerOre("ingotDraconium", DEFeatures.draconiumIngot);
 		}
 
-		if (parser.isEnabled(DEFeatures.draconiumDust)) {
+		if (ModFeatureParser.isEnabled(DEFeatures.draconiumDust)) {
 			OreDictionary.registerOre("dustDraconium", DEFeatures.draconiumDust);
 		}
 
-		if (parser.isEnabled(DEFeatures.draconicIngot)) {
+		if (ModFeatureParser.isEnabled(DEFeatures.draconicIngot)) {
 			OreDictionary.registerOre("ingotDraconiumAwakened", DEFeatures.draconicIngot);
 		}
 
-		if (parser.isEnabled(DEFeatures.nugget)) {
+		if (ModFeatureParser.isEnabled(DEFeatures.nugget)) {
 			OreDictionary.registerOre("nuggetDraconium", new ItemStack(DEFeatures.nugget, 1, 0));
 			OreDictionary.registerOre("nuggetDraconiumAwakened", new ItemStack(DEFeatures.nugget, 1, 1));
 		}
