@@ -131,24 +131,20 @@ public class EntityLootCore extends Entity {
                 item.setPosition(posX, posY, posZ);
                 int result = ForgeEventFactory.onItemPickup(item, player, stack);
 
-                stack.stackSize = item.getEntityItem().stackSize;
+                if (result == 1 || stack.stackSize <= 0 || player.inventory.addItemStackToInventory(stack)) {
+                    if (item.isDead) {
+                        stack.stackSize = 0;
+                    }
 
-                if (result == 1) {
-                    player.inventory.addItemStackToInventory(stack);
-                }
+                    if (stack.stackSize == 0) {
+                        inventory.setInventorySlotContents(i, null);
+                    } else {
+                        inventory.setInventorySlotContents(i, stack);
+                    }
 
-                if (item.isDead) {
-                    stack.stackSize = 0;
-                }
-
-                if (stack.stackSize == 0) {
-                    inventory.setInventorySlotContents(i, null);
-                } else {
-                    inventory.setInventorySlotContents(i, stack);
-                }
-
-                if (stack.stackSize < start) {
-                    inserted = true;
+                    if (stack.stackSize < start) {
+                        inserted = true;
+                    }
                 }
             }
         }
