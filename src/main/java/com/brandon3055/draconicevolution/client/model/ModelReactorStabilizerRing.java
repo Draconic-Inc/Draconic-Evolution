@@ -114,7 +114,7 @@ public class ModelReactorStabilizerRing extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float embitterRotation, float brightness, float f2, float f3, float f4, float scale) {
+    public void render(Entity entity, float embitterRotation, float brightness, float invRender, float f3, float f4, float scale) {
 
         this.ringElement1.render(scale);
         this.ringElement2.render(scale);
@@ -173,7 +173,9 @@ public class ModelReactorStabilizerRing extends ModelBase {
 
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
         GL11.glColor4f(colour, colour, colour, 1F);
-        if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
+        if (brightness > 0F && invRender == 0) {
+            GL11.glDisable(GL11.GL_LIGHTING);
+        }
 
         GL11.glPushMatrix();
         GL11.glTranslated(this.emitter1.offsetX, this.emitter1.offsetY, this.emitter1.offsetZ);
@@ -212,10 +214,12 @@ public class ModelReactorStabilizerRing extends ModelBase {
         this.emitter4.render(scale);
         GL11.glPopMatrix();
 
-        if (brightness > 0F) GL11.glEnable(GL11.GL_LIGHTING);
+        if (brightness > 0F && invRender == 0) {
+            GL11.glEnable(GL11.GL_LIGHTING);
+        }
         GL11.glColor4f(1F, 1F, 1F, 1F);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
-        GL11.glEnable(GL11.GL_LIGHTING);
+//        GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     /**

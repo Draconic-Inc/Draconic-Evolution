@@ -35,7 +35,7 @@ tile.draconicevolution:flux_gate.name=Flux Gate
 tile.draconicevolution:fluid_gate.name=Fluid Gate
 tile.draconicevolution:reactor_core.name=Draconic Reactor Core
 tile.draconicevolution:reactor_stabilizer.name=Reactor Stabilizer
-tile.draconicevolution:reactor_energy_injector.name=Reactor Energy Injector
+tile.draconicevolution:reactor_injector.name=Reactor Energy Injector
 tile.draconicevolution:chaos_crystal.name=Chaos Crystal
 tile.draconicevolution:upgrade_modifier.name=Upgrade Modifier
 
@@ -871,3 +871,6 @@ eNet.de.identify.gui=Identify
 eNet.de.unlink.gui=UnLink
 eNet.de.clearLinks.gui=Clear Links
 eNet.de.clearReceivers.gui=Clear Receivers
+
+//---- Misc Info Text ----//
+info.de.shiftReversePlaceLogic.txt=Hold Shift to reverse placement logic.

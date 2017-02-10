@@ -9,9 +9,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by brandon3055 on 22/3/2016.
  * This class will handle all ore dictionary entries for DE along with some other stuff
@@ -29,10 +26,8 @@ public class OreHandler {
 			LogHelper.info("Adding ore entry for Dragon Mounts Dragon Eggs...");
 			Item egg = Item.REGISTRY.getObject(new ResourceLocation("dragonmounts:dragon_egg"));
 			if (egg != null) {
-				List<ItemStack> list = new ArrayList<>();
-				egg.getSubItems(egg, egg.getCreativeTab(), list);
-				for (ItemStack stack : list) {
-					OreDictionary.registerOre("dragonEgg", stack);
+				for (int i = 0; i < 8; i++) {
+					OreDictionary.registerOre("dragonEgg", new ItemStack(egg, 1, i));
 				}
 			}
 		}

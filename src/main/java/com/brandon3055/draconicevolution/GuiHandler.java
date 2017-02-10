@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.client.gui.*;
@@ -87,11 +88,11 @@ public class GuiHandler implements IGuiHandler {
 //					return new ContainerDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
 //				}
 //				break;
-//			case GUIID_REACTOR:
-//				if (reactor != null && reactor instanceof TileReactorCore) {
-//					return new ContainerReactor(player, (TileReactorCore) reactor);
-//				}
-//				break;
+			case GUIID_REACTOR:
+				if (tile instanceof TileReactorCore) {
+					return new ContainerReactor(player, (TileReactorCore) tile);
+				}
+				break;
 //			case GUIID_TOOL_CONFIG:
 //				return new ContainerAdvTool(player.inventory, new InventoryTool(player, null));
             case GUIID_UPGRADE_MODIFIER:
@@ -186,11 +187,11 @@ public class GuiHandler implements IGuiHandler {
 //					return new GUIDraconiumChest(player.inventory, (TileDraconiumChest) containerChest);
 //				}
 //				break;
-//			case GUIID_REACTOR:
-//				if (reactor != null && reactor instanceof TileReactorCore) {
-//					return new GUIReactor(player, (TileReactorCore) reactor, new ContainerReactor(player, (TileReactorCore) reactor));
-//				}
-//				break;
+			case GUIID_REACTOR:
+				if (tile instanceof TileReactorCore) {
+					return new GuiReactor(player, (TileReactorCore) tile);
+				}
+				break;
 //			case GUIID_TOOL_CONFIG:
 //				return new GUIToolConfig(player, new ContainerAdvTool(player.inventory, new InventoryTool(player, null)));
 			case GUIID_FLOW_GATE:

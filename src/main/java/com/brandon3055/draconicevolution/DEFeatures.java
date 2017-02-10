@@ -25,11 +25,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Created by brandon3055 on 18/3/2016.
  * This class contains a reference to all blocks and items in Draconic Evolution
  */
+@GameRegistry.ObjectHolder(DraconicEvolution.MODID)
 public class DEFeatures {
 
 	/* ------------------ Blocks ------------------ */
@@ -290,7 +292,7 @@ public class DEFeatures {
     public static ReactorCore reactorCore = new ReactorCore();
 
 //    @Feature(registryName = "reactor_component", itemBlock = ItemBlockBCore.class)
-    public static ReactorComponent reactorComponent = new ReactorComponent();
+    public static ReactorComponent reactorComponent = (ReactorComponent) new ReactorComponent().addName(0, "reactor_stabilizer").addName(1, "reactor_injector");
 
 
 

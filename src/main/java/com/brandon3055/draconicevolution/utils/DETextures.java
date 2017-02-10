@@ -22,6 +22,7 @@ public class DETextures {
     public static final String GUI_HUD = "textures/gui/hud.png";
     public static final String GUI_JEI_FUSION = "textures/gui/jei_fusion_background.png";
     public static final String GUI_WIDGETS = "textures/gui/widgets.png";
+    public static final String GUI_REACTOR = "textures/gui/reactor.png";
     public static final String DRAGON_HEART = "textures/items/components/dragon_heart.png";
     public static final String CHAOS_CRYSTAL = "textures/models/chaos_crystal.png";
     public static final String REACTOR_CORE = "textures/models/reactor_core.png";

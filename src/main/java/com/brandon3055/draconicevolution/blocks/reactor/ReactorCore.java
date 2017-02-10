@@ -1,12 +1,15 @@
 package com.brandon3055.draconicevolution.blocks.reactor;
 
+import codechicken.lib.model.ModelRegistryHelper;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.client.render.item.RenderItemReactorComponent;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.world.World;
@@ -34,6 +37,7 @@ public class ReactorCore extends BlockBCore implements ITileEntityProvider, ICus
     @Override
     public void registerRenderer(Feature feature) {
         ClientRegistry.bindTileEntitySpecialRenderer(TileReactorCore.class, new RenderTileReactorCore());
+        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemReactorComponent());
     }
 
     @Override

@@ -6,7 +6,9 @@ import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
 import com.brandon3055.brandonscore.network.wrappers.SyncableEnum;
 import com.brandon3055.brandonscore.network.wrappers.SyncableVec3I;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -16,15 +18,15 @@ import net.minecraft.util.math.BlockPos;
  */
 public abstract class TileReactorComponent extends TileBCBase implements ITickable {
 
-    public final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, 0, 0), true, false);
-    public final SyncableEnum<EnumFacing> coreDir = new SyncableEnum<>(EnumFacing.UP, true, false);
-    public final SyncableBool isValid = new SyncableBool(false, true, false);
-    public final SyncableByte rsMode = new SyncableByte((byte) 0, true, false);
+    private final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, 0, 0), true, false);
+    public final SyncableEnum<EnumFacing> facing = new SyncableEnum<>(EnumFacing.UP, true, false);
+    public final SyncableBool isBound = new SyncableBool(false, true, false);
+    public final SyncableByte rsMode = new SyncableByte((byte) 0, true, false); //TODO Make enum
 
     public TileReactorComponent() {
         registerSyncableObject(coreOffset);
-        registerSyncableObject(coreDir);
-        registerSyncableObject(isValid);
+        registerSyncableObject(facing);
+        registerSyncableObject(isBound);
         registerSyncableObject(rsMode);
     }
 
@@ -32,57 +34,114 @@ public abstract class TileReactorComponent extends TileBCBase implements ITickab
 
     @Override
     public void update() {
-
+        detectAndSendChanges();
     }
 
     //endregion
 
-    //region Logic
+    //region============== Structure ==============
 
-    public boolean isActive() {
-        return isValid.value;
+    /**
+     * Called by the core itself to validate this component and bind it to the core.
+     * This should only be called once the core has determined that this component is pointed at the core.
+     * This ignores this components current active isBound state because if the core is calling this method then this component can not possibly be bound to any other core.!
+     */
+    public void bindToCore(TileReactorCore core) {
+        LogHelper.dev("Reactor-Comp: Bind To Core");
+        isBound.value = true;
+        coreOffset.vec = getCoreOffset(core.getPos());
     }
 
-    public String getRedstoneModeString() {
-        return "msg.de.reactorRSMode." + rsMode.value + ".txt";
-    }
-
-    public void changeRedstoneMode() {
-        if (rsMode.value == RMODE_FUEL_INV) {
-            rsMode.value = 0;
+    /**
+     * Finds the core if it iss location is not already stored and pokes it. Core then validates or revalidates the structure.
+     */
+    public void pokeCore() {
+        LogHelper.dev("Reactor-Comp: Try Poke Core");
+        if (isBound.value) {
+            TileReactorCore core = checkAndGetCore();
+            if (core != null) {
+                core.pokeCore(this, facing.value.getOpposite());
+                return;
+            }
         }
-        else {
-            rsMode.value++;
+
+        LogHelper.dev("Reactor-Comp: Try Poke Core | Find");
+        for (int i = 1; i < 16; i++) {
+            BlockPos searchPos = pos.offset(facing.value, i);
+            if (!worldObj.isAirBlock(searchPos)) {
+                TileEntity tile = worldObj.getTileEntity(searchPos);
+                LogHelper.dev("Reactor-Comp: Try Poke Core | Found: " + tile);
+
+                if (tile instanceof TileReactorCore && i > 1) {
+                    //I want this to poke the core regardless of weather or not the core structure is already valid in case this is an energy injector. The core will decide what to do.
+                    ((TileReactorCore) tile).pokeCore(this, facing.value.getOpposite());
+                }
+                return;
+            }
         }
     }
 
-    public int getRedstoneMode() {
-        return rsMode.value;
+    public void invalidate() {
+        isBound.value = false;
     }
+    
+    //endregion ===================================
 
-    //endregion
-
-    //region Initialization & Interaction
-
-    public abstract boolean checkForMaster();
+    //region Player Interaction
 
     public void onPlaced() {
-        checkForMaster();
+        if (worldObj.isRemote) {
+            return;
+        }
+        pokeCore();
     }
 
     public void onBroken() {
+        if (worldObj.isRemote) {
+            return;
+        }
 
+        TileReactorCore core = checkAndGetCore();
+        if (core != null) {
+            core.componentBroken(this, facing.value.getOpposite());
+        }
     }
 
     public void onActivated(EntityPlayer player) {
-
+        if (worldObj.isRemote) {
+            return;
+        }
+        pokeCore();
+        TileReactorCore core = checkAndGetCore();
+        if (core != null) {
+            core.onComponentClicked(player, this);
+        }
     }
+    
+    //endregion
 
-    public void shutDown() {
-        coreOffset.vec.set(0, 0, 0);
-        isValid.value = false;
-        updateBlock();
-    }
+    //region //Logic
+
+//    public boolean isActive() {
+//        return isBound.value;
+//    }
+//
+//    public String getRedstoneModeString() {
+//        return "msg.de.reactorRSMode." + rsMode.value + ".txt";
+//    }
+//
+//    public void changeRedstoneMode() {
+//        if (rsMode.value == RMODE_FUEL_INV) {
+//            rsMode.value = 0;
+//        }
+//        else {
+//            rsMode.value++;
+//        }
+//    }
+//
+//    public int getRedstoneMode() {
+//        return rsMode.value;
+//    }
 
     //endregion
 
@@ -96,20 +155,29 @@ public abstract class TileReactorComponent extends TileBCBase implements ITickab
         return new Vec3I(pos.subtract(corePos));
     }
 
+    /**
+     * @return The core this component is bound to or null if not bound or core is nolonger at bound position. Invalidates the block if the core could not be found.
+     */
+    private TileReactorCore checkAndGetCore(){
+        if (!isBound.value) {
+            return null;
+        }
+        
+        TileEntity tile = worldObj.getTileEntity(getCorePos());
+        if (tile instanceof TileReactorCore) {
+            return (TileReactorCore) tile;
+        }
+        
+        if (worldObj.getChunkFromBlockCoords(getCorePos()).isLoaded()) {
+            invalidate();
+        }
+        
+        return null;
+    }
+    
     //endregion
 
-
-//    public MultiblockHelper.TileLocation getMaster();
-//
-//
-//
-//
-//
-//
-//
-//
-
-    //region RS Modes
+    //region RS Modes TODO Change to enum
 
     public static final int RMODE_TEMP = 0;
     public static final int RMODE_TEMP_INV = 1;

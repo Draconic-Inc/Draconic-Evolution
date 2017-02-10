@@ -14,7 +14,6 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCrystal;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.block.state.IBlockState;
@@ -42,9 +41,6 @@ import java.util.Map;
  * Created by brandon3055 on 21/11/2016.
  */
 public class RenderItemEnergyCrystal implements IItemRenderer, IPerspectiveAwareModel {
-
-    private static RenderTileEnergyCrystal renderer = new RenderTileEnergyCrystal();
-
     private CCModel crystalFull;
     private CCModel crystalHalf;
     private CCModel crystalBase;

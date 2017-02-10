@@ -40,12 +40,14 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         GlStateManager.disableLighting();
         setLighting(200);
         float scale = 2;
+        float intensity = 0;
+        float animation = (ClientEventHandler.elapsedTicks + partialTicks) / 50F;
 
         if (MinecraftForgeClient.getRenderPass() == 0) {
-            renderCore(te, x, y, z, partialTicks, 1, scale, DEShaders.useShaders());
+            renderCore(x, y, z, partialTicks, intensity, animation, scale, DEShaders.useShaders());
         }
         else {
-            renderShield(te, x, y, z, partialTicks, 1, scale, DEShaders.useShaders());
+            renderShield(x, y, z, partialTicks, intensity, scale, DEShaders.useShaders());
         }
 
         resetLighting();
@@ -53,11 +55,27 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         GlStateManager.popMatrix();
     }
 
-    private void renderCore(TileReactorCore te, double x, double y, double z, float partialTicks, float intensity, float scale, boolean useShader) {
+    public void renderItem() {
+        GlStateManager.pushMatrix();
+        GlStateManagerHelper.pushState();
+        GlStateManager.disableLighting();
+        setLighting(200);
+        float scale = 1.5F;
+        float intensity = 0;
+
+        renderCore(0, 0, 0, 0, intensity, 0, scale, DEShaders.useShaders());
+
+
+        resetLighting();
+        GlStateManagerHelper.popState();
+        GlStateManager.popMatrix();
+    }
+
+    private void renderCore(double x, double y, double z, float partialTicks, float intensity, float animation, float scale, boolean useShader) {
         ResourceHelperDE.bindTexture(DETextures.REACTOR_CORE);
         if (useShader) {
             DEShaders.reactorOp.setIntensity(intensity);
-            DEShaders.reactorOp.setAnimation((ClientEventHandler.elapsedTicks + partialTicks) / 50F);
+            DEShaders.reactorOp.setAnimation(animation);
             DEShaders.reactor.freeBindShader();
         }
 
@@ -73,10 +91,10 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         }
     }
 
-    private void renderShield(TileReactorCore te, double x, double y, double z, float partialTicks, float intensity, float scale, boolean useShader) {
+    private void renderShield(double x, double y, double z, float partialTicks, float intensity, float scale, boolean useShader) {
         ResourceHelperDE.bindTexture(DETextures.REACTOR_SHIELD);
         if (useShader) {
-            DEShaders.reactorOp.setIntensity((1F + (float) Math.sin((ClientEventHandler.elapsedTicks + partialTicks) / 50F)) / 2F);
+            DEShaders.reactorOp.setIntensity(intensity);
             DEShaders.reactorShield.freeBindShader();
         }
 

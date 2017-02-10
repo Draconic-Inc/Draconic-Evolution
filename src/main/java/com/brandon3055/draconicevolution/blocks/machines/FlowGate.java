@@ -117,7 +117,7 @@ public class FlowGate extends BlockBCore implements ITileRegisterer {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        EnumFacing facing = RotationUtils.getPlacedRotation(pos, placer);//BlockPistonBase.getFacingFromEntity(pos, placer);
+        EnumFacing facing = RotationUtils.getPlacedRotation(pos, placer);
         if (placer.isSneaking()) {
             facing = facing.getOpposite();
         }

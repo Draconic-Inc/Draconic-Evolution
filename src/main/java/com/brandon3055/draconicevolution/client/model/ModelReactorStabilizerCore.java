@@ -256,7 +256,6 @@ public class ModelReactorStabilizerCore extends ModelBase {
         GL11.glPushMatrix();
 
         this.basePlate.render(f5);
-
         GL11.glRotatef(rotation, 0F, 0F, 1F);
         this.hub1.render(f5);
         GL11.glRotatef(rotation * 2F, 0F, 0F, -1F);
@@ -267,17 +266,21 @@ public class ModelReactorStabilizerCore extends ModelBase {
 
         float b = brightness * 200F;
         float colour = Math.min(2F, (brightness * 2F) + 0.1F);
-        if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
+        if (brightness > 0F) {
+            GL11.glDisable(GL11.GL_LIGHTING);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
+        }
 
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
         GL11.glColor4f(colour, colour, colour, 1F);
         this.rotor2R.render(f5);
         GL11.glRotatef(rotation * 2F, 0F, 0F, 1F);
         this.rotor1R.render(f5);
         GL11.glColor4f(1F, 1F, 1F, 1F);
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
 
-        if (brightness > 0F) GL11.glEnable(GL11.GL_LIGHTING);
+        if (brightness > 0F) {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
+            GL11.glEnable(GL11.GL_LIGHTING);
+        }
 
         GL11.glPopMatrix();
     }
