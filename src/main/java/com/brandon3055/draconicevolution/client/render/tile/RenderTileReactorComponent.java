@@ -45,7 +45,7 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
 
         float brightness = 1;
         if (te instanceof TileReactorStabilizer) {
-            float coreRotation = 0;//Remember Partial Ticks here
+            float coreRotation = te.animRotation + (partialTicks * te.animRotationSpeed);//Remember Partial Ticks here
             float ringRotation = 0;//Remember Partial Ticks here
 
             renderStabilizer(coreRotation, ringRotation, brightness, partialTicks, false);

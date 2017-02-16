@@ -7,6 +7,8 @@ import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
@@ -274,6 +276,14 @@ public class ClientProxy extends CommonProxy {
 			return super.createENetFXHandler(tile);
 		}
 		return tile.createClientFXHandler();
+	}
+
+	@Override
+	public ReactorEffectHandler createReactorFXHandler(TileReactorCore tile) {
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+			return super.createReactorFXHandler(tile);
+		}
+		return new ReactorEffectHandler(tile);
 	}
 
 	@Override

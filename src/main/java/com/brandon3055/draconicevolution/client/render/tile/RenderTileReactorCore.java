@@ -27,10 +27,13 @@ import java.util.Map;
  */
 public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
     private CCModel model;
+    private CCModel model_no_shade;
 
     public RenderTileReactorCore() {
         Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
         model = CCModel.combine(map.values());
+        map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
+        model_no_shade = CCModel.combine(map.values());
     }
 
     @Override
@@ -40,14 +43,18 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         GlStateManager.disableLighting();
         setLighting(200);
         float scale = 2;
-        float intensity = 0;
-        float animation = (ClientEventHandler.elapsedTicks + partialTicks) / 50F;
+        float intensity = 1;
+        float animation = (ClientEventHandler.elapsedTicks + partialTicks) / 20F;
+
+        if (DEShaders.useShaders()) {
+            DEShaders.reactorOp.setAnimation(animation);
+        }
 
         if (MinecraftForgeClient.getRenderPass() == 0) {
             renderCore(x, y, z, partialTicks, intensity, animation, scale, DEShaders.useShaders());
         }
         else {
-            renderShield(x, y, z, partialTicks, intensity, scale, DEShaders.useShaders());
+            renderShield(x, y, z, partialTicks, 0.7F, scale, DEShaders.useShaders());
         }
 
         resetLighting();
@@ -65,7 +72,6 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
 
         renderCore(0, 0, 0, 0, intensity, 0, scale, DEShaders.useShaders());
 
-
         resetLighting();
         GlStateManagerHelper.popState();
         GlStateManager.popMatrix();
@@ -75,7 +81,6 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         ResourceHelperDE.bindTexture(DETextures.REACTOR_CORE);
         if (useShader) {
             DEShaders.reactorOp.setIntensity(intensity);
-            DEShaders.reactorOp.setAnimation(animation);
             DEShaders.reactor.freeBindShader();
         }
 
@@ -97,13 +102,29 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
             DEShaders.reactorOp.setIntensity(intensity);
             DEShaders.reactorShield.freeBindShader();
         }
+        else {
+            float ff = 0.5F;//tile.maxFieldCharge > 0 ? tile.fieldCharge / tile.maxFieldCharge : 0;
+            float r = ff < 0.5F ? 1 - (ff * 2) : 0;
+            float g = ff > 0.5F ? (ff - 0.5F) * 2 : 0;
+            float b = ff * 2;
+            float a = ff < 0.1F ? (ff * 10) : 1;
+            GlStateManager.color(r, g, b, a);
+        }
 
         GlStateManager.enableBlend();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-        Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), scale * 1.05);
-        model.render(ccrs, mat);
+
+        if (DEShaders.useShaders()) {
+            Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), scale * 1.05);
+            model.render(ccrs, mat);
+        }
+        else {
+            Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), scale * -0.525);
+            model_no_shade.render(ccrs, mat);
+        }
+
         ccrs.draw();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 

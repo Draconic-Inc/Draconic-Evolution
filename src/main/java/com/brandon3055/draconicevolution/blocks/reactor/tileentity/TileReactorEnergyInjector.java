@@ -1,33 +1,15 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
+import cofh.api.energy.IEnergyReceiver;
+import net.minecraft.util.EnumFacing;
+
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class TileReactorEnergyInjector extends TileReactorComponent {
+public class TileReactorEnergyInjector extends TileReactorComponent implements IEnergyReceiver {
 
-    //region Initialization
-
-//    @Override
-//    public boolean checkForMaster() {
-//        for (int i = 1; i < 10; i++) {
-//            BlockPos checkPos = pos.offset(facing.value, i);
-//            if (!worldObj.isAirBlock(checkPos)) {
-//                TileEntity tile = worldObj.getTileEntity(checkPos);
-//                if (tile instanceof TileReactorCore) {
-//                    coreOffset.vec = getCoreOffset(checkPos);
-//                    isBound.value = true;
-//                    return true;
-//                }
-//                else {
-//                    isBound.value = false;
-//                    return false;
-//                }
-//            }
-//        }
-//        isBound.value = false;
-//        return false;
-//    }
-
-    //endregion
-
+    @Override
+    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+        return super.receiveEnergy(from, maxReceive, simulate);
+    }
 }

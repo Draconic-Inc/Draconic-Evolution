@@ -3,6 +3,8 @@ package com.brandon3055.draconicevolution;
 import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.ContributorHandler;
@@ -210,6 +212,10 @@ public class CommonProxy {
 
     public ENetFXHandler createENetFXHandler(TileCrystalBase tile) {
     	return tile.createServerFXHandler();
+	}
+
+	public ReactorEffectHandler createReactorFXHandler(TileReactorCore tile) {
+		return null;
 	}
 
 	public ISound playISound(ISound sound){

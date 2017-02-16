@@ -2,16 +2,14 @@ package com.brandon3055.draconicevolution.items;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
-import com.brandon3055.brandonscore.client.particle.BCEffectRenderer;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,14 +18,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +53,13 @@ public class Debugger extends ItemBCore {
 //
 
 
-//        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
+        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
 ////            DEShaders.initReactorShader();
-////            DEShaders.initReactorShieldShader();
+//            DEShaders.initReactorShieldShader();
 //            DEShaders.initEnergyCrystalShader();
-//        }
+//            DEShaders.initReactorBeams();
+
+        }
 
     }
 
@@ -667,15 +668,15 @@ public class Debugger extends ItemBCore {
                 break;
             case 3:
                 if (world.isRemote) {
-                    Map<ResourceLocation, ArrayDeque<Particle>[][]> texturedRenderQueue = ReflectionHelper.getPrivateValue(BCEffectRenderer.class, BCEffectHandler.effectRenderer, "texturedRenderQueue");
-
-                    for (ArrayDeque<Particle>[][] array : texturedRenderQueue.values()) {
-                        for (ArrayDeque<Particle>[] array2 : array) {
-                            for (ArrayDeque<Particle> particle : array2) {
-                                LogHelper.info(particle);
-                            }
-                        }
-                    }
+//                    Map<ResourceLocation, ArrayDeque<Particle>[][]> texturedRenderQueue = ReflectionHelper.getPrivateValue(BCEffectRenderer.class, BCEffectHandler.effectRenderer, "texturedRenderQueue");
+//
+//                    for (ArrayDeque<Particle>[][] array : texturedRenderQueue.values()) {
+//                        for (ArrayDeque<Particle>[] array2 : array) {
+//                            for (ArrayDeque<Particle> particle : array2) {
+//                                LogHelper.info(particle);
+//                            }
+//                        }
+//                    }
 
                 }
                 break;

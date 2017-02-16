@@ -19,6 +19,12 @@ public class DEShaders {
     public static ShaderProgram reactorShield;
     public static ReactorOperation reactorOp;
 
+    public static int reactorBeamOpID;
+    public static ShaderProgram reactorBeamI;
+    public static ShaderProgram reactorBeamO;
+    public static ShaderProgram reactorBeamE;
+    public static ReactorBeamOperation reactorBeamOp;
+
     public static int crystalOpID;
     public static ShaderProgram energyCrystal;
     public static ECrystalOperation eCrystalOp;
@@ -27,6 +33,7 @@ public class DEShaders {
         initReactorShader();
         initReactorShieldShader();
         initEnergyCrystalShader();
+        initReactorBeams();
     }
 
     public static void initReactorShader() {
@@ -50,6 +57,36 @@ public class DEShaders {
         reactorShield.attachFrag("/assets/draconicevolution/shaders/reactor_shield.frag");
         reactorShield.attachShaderOperation(reactorOp);
         reactorShield.validate();
+    }
+
+    public static void initReactorBeams() {
+        if (reactorBeamI != null) {
+            reactorBeamI.cleanup();
+        }
+
+        reactorBeamOpID = CCShaderPipeline.registerOperation();
+        reactorBeamI = new ShaderProgram();
+        reactorBeamI.attachFrag("/assets/draconicevolution/shaders/reactor_beam_i.frag");
+        reactorBeamI.attachShaderOperation(reactorBeamOp = new ReactorBeamOperation());
+        reactorBeamI.validate();
+
+        if (reactorBeamO != null) {
+            reactorBeamO.cleanup();
+        }
+
+        reactorBeamO = new ShaderProgram();
+        reactorBeamO.attachFrag("/assets/draconicevolution/shaders/reactor_beam_o.frag");
+        reactorBeamO.attachShaderOperation(reactorBeamOp);
+        reactorBeamO.validate();
+
+        if (reactorBeamE != null) {
+            reactorBeamE.cleanup();
+        }
+
+        reactorBeamE = new ShaderProgram();
+        reactorBeamE.attachFrag("/assets/draconicevolution/shaders/reactor_beam_e.frag");
+        reactorBeamE.attachShaderOperation(reactorBeamOp);
+        reactorBeamE.validate();
     }
 
     public static void initEnergyCrystalShader() {
@@ -98,6 +135,45 @@ public class DEShaders {
         // 1 - 1.4 Overload temp range
         public void setIntensity(float intensity) {
             this.intensity = intensity;
+        }
+    }
+
+    public static class ReactorBeamOperation implements IShaderOperation {
+        public float power = 0;
+        public float animation = 0;
+        public float fade = 0;
+
+        @Override
+        public boolean load(ShaderProgram program) {
+            return true;
+        }
+
+        @Override
+        public void operate(ShaderProgram program) {
+            int time = program.getUniformLoc("time");
+            ARBShaderObjects.glUniform1fARB(time, animation);
+
+            int intensity = program.getUniformLoc("power");
+            ARBShaderObjects.glUniform1fARB(intensity, this.power);
+            int fade = program.getUniformLoc("fade");
+            ARBShaderObjects.glUniform1fARB(fade, this.fade);
+        }
+
+        @Override
+        public int operationID() {
+            return reactorOpID;
+        }
+
+        public void setAnimation(float animation) {
+            this.animation = animation;
+        }
+
+        public void setPower(float power) {
+            this.power = power;
+        }
+
+        public void setFade(float fade) {
+            this.fade = fade;
         }
     }
 

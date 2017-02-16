@@ -88,6 +88,12 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "itemDislocatorBlacklist", comment = "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4")
     public static String[] itemDislocatorBlacklist = new String[]{"appliedenergistics2:item.ItemCrystalSeed"};
 
+    @ModConfigProperty(category = "Tweaks", name = "reactorOutputMultiplier", comment = "Adjusts the energy output multiplier of the reactor")
+    public static double reactorOutputMultiplier = 1;
+
+    @ModConfigProperty(category = "Tweaks", name = "reactorFuelUsageMultiplier", comment = "Adjusts the fuel usage multiplier of the reactor")
+    public static double reactorFuelUsageMultiplier = 1;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stores. You should not need to adjust these unless something breaks.")
@@ -104,6 +110,9 @@ public class DEConfig {
 
     @ModConfigProperty(category = "Client Settings", name = "useCrystalShaders", comment = "This allowes you to just disable the energy crystal shader which can be a lot lagier than the reactor since there are usually a lot more of them (The fallback crystal texture is not soooo bad...)")
     public static boolean useCrystalShaders = true;
+
+    @ModConfigProperty(category = "Client Settings", name = "useReactorBeamShaders", comment = "Set this to false if you prefer the original look of the reactor beams")
+    public static boolean useReactorBeamShaders = true;
 
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 

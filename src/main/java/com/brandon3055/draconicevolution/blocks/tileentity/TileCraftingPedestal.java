@@ -4,6 +4,7 @@ import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
 import com.brandon3055.brandonscore.network.wrappers.SyncableInt;
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingPedestal;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.blocks.machines.CraftingPedestal;
@@ -73,7 +74,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
 
     @Override
     public int getPedestalTier() {
-        String tier = worldObj.getBlockState(pos).getValue(CraftingPedestal.TIER);
+        String tier = getState(DEFeatures.craftingPedestal).getValue(CraftingPedestal.TIER);
         return CraftingPedestal.TIER.toMeta(tier);
     }
 

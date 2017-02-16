@@ -1,6 +1,11 @@
 -- 2.1.0.x --
 
 ######## 2.0.9.x ########
+-Fixed entity detector crashing due to invalid entities in the entity selection list.
+-Fixed fusion crafter crash when unloading/loading chunks.
+
+######## 2.0.8.177 ########
+-Fixed loot core.
 
 ######## 2.0.8.176 ########
 -Fixed dragon mounts integration crashing server.
@@ -20,7 +25,7 @@
 -Re implemented the "If you disconnect while flying you will be flying when you re connect" feature.
 -Fixed an issue the prevented the generator from sending energy to some blocks.
 -Loot core now fires an item pickup event so things like backpacks which collect items as you pick them up should work now.
--Added support for Dragon Mounts Dragon Eggs.
+-Added support for Dragon Mounts Dragon Eggs.*
 
 ######## 2.0.7.168 ########
 -Corrected a mistake that was causing issues with other mods entities.

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
-import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileEnergyBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
@@ -13,15 +13,19 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
+import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.COMPONENT_MAX_DISTANCE;
+
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public abstract class TileReactorComponent extends TileBCBase implements ITickable {
+public abstract class TileReactorComponent extends TileEnergyBase implements ITickable {
 
     private final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, 0, 0), true, false);
     public final SyncableEnum<EnumFacing> facing = new SyncableEnum<>(EnumFacing.UP, true, false);
     public final SyncableBool isBound = new SyncableBool(false, true, false);
     public final SyncableByte rsMode = new SyncableByte((byte) 0, true, false); //TODO Make enum
+    public float animRotation = 0;
+    public float animRotationSpeed = 0;
 
     public TileReactorComponent() {
         registerSyncableObject(coreOffset);
@@ -35,6 +39,18 @@ public abstract class TileReactorComponent extends TileBCBase implements ITickab
     @Override
     public void update() {
         detectAndSendChanges();
+
+        if (worldObj.isRemote) {
+            TileReactorCore core = tryGetCore();
+            if (core != null) {
+                animRotationSpeed = (float) core.animationState.value * 15F;
+            }
+            else {
+                animRotationSpeed = 0;
+            }
+
+            animRotation += animRotationSpeed;
+        }
     }
 
     //endregion
@@ -66,7 +82,7 @@ public abstract class TileReactorComponent extends TileBCBase implements ITickab
         }
 
         LogHelper.dev("Reactor-Comp: Try Poke Core | Find");
-        for (int i = 1; i < 16; i++) {
+        for (int i = 1; i < COMPONENT_MAX_DISTANCE; i++) {
             BlockPos searchPos = pos.offset(facing.value, i);
             if (!worldObj.isAirBlock(searchPos)) {
                 TileEntity tile = worldObj.getTileEntity(searchPos);
@@ -174,6 +190,18 @@ public abstract class TileReactorComponent extends TileBCBase implements ITickab
         
         return null;
     }
+
+    public TileReactorCore tryGetCore() {
+        if (!isBound.value) {
+            return null;
+        }
+
+        TileEntity tile = worldObj.getTileEntity(getCorePos());
+        if (tile instanceof TileReactorCore) {
+            return (TileReactorCore) tile;
+        }
+        return null;
+    }
     
     //endregion
 
@@ -189,4 +217,9 @@ public abstract class TileReactorComponent extends TileBCBase implements ITickab
     public static final int RMODE_FUEL_INV = 7;
 
     //endregion
+
+    @Override
+    public boolean canConnectEnergy(EnumFacing from) {
+        return from == facing.value.getOpposite();
+    }
 }

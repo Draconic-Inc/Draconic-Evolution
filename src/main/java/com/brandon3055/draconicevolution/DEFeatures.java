@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
 import com.brandon3055.draconicevolution.blocks.machines.*;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorCore;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.items.Debugger;
 import com.brandon3055.draconicevolution.items.InfoTablet;
@@ -283,15 +284,15 @@ public class DEFeatures {
 
 
 
-    //In Progress... To be sorted into categories when done
+    //In Progress... To be sorted into categories when done*
 
     //These are not ready for release and so are commented out for release builds
 
 
-//    @Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class)
+    @Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class)
     public static ReactorCore reactorCore = new ReactorCore();
 
-//    @Feature(registryName = "reactor_component", itemBlock = ItemBlockBCore.class)
+    @Feature(registryName = "reactor_component", itemBlock = ItemBlockBCore.class)
     public static ReactorComponent reactorComponent = (ReactorComponent) new ReactorComponent().addName(0, "reactor_stabilizer").addName(1, "reactor_injector");
 
 

@@ -832,15 +832,15 @@ gui.entityDetector.pulseDelay=Pulse Delay
 gui.entityDetector.pulseDelay.info=The delay between scanning pulses. The scanning pulse is when the block checks for nearby entities.
 gui.entityDetector.outputPulse=Pulse Output Mode
 gui.entityDetector.outputContin=Fixed Output Mode
-gui.entityDetector.output.info=The strength of the output is determined by the number of valid entities detected and the RS Min and RS Max settings.\noPulse mode will emmit a 1 tick pulse every scanning pulse.\nFixed mode will emmit a continuous signal updating every scanning pulse.
+gui.entityDetector.output.info=The strength of the output is determined by the number of valid entities detected and the RS Min and RS Max settings. Pulse mode will emmit a 1 tick pulse every scanning pulse.Fixed mode will emmit a continuous signal updating every scanning pulse.
 gui.entityDetector.range=Range
-gui.entityDetector.range.info=The scanning range in blocks.\nIncreasing the range increases the energy cost for each scanning pulse
+gui.entityDetector.range.info=The scanning range in blocks.Increasing the range increases the energy cost for each scanning pulse
 gui.entityDetector.rsMin=RS Min Threshold
 gui.entityDetector.rsMin.info=The minimum number of detected entities required to produce a redstone signal of 1.
 gui.entityDetector.rsMax=RS Max Threshold
 gui.entityDetector.rsMax.info=The minimum number of detected entities required to produce a redstone signal of 15.
 gui.entityDetector.energyCost=Energy Per Pulse
-gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse.\nThe energy requires is 125 * range^1.5\nThis means the energy cost increases exponentially as you increase the range.
+gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse. The energy requires is 125 * range^1.5 This means the energy cost increases exponentially as you increase the range.
 gui.entityDetector.filter=Open Entity Filter Configurator
 
 //---- Energy Net ----//
