@@ -29,6 +29,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
         registerSyncableObject(facing, true);
         registerSyncableObject(energy, true);
         registerSyncableObject(lastCorePos, true);
+        setShouldRefreshOnBlockChange();
     }
 
     @Override

@@ -38,6 +38,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
         registerSyncableObject(energyStored, false);
         registerSyncableObject(active, false);
         setCapacityAndTransfer(500000, 32000, 0);
+        setShouldRefreshOnBlockChange();
     }
 
     @Override
