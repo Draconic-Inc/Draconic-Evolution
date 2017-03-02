@@ -268,7 +268,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         double offM = 0.4D;
 
         if (dist == 0) {
-            return thisVec.subtract(1 * offM, 0, 0);
+            if (pos.getY() > linkTo.getY()) {
+                return thisVec.subtract(0, 0.4, 0);
+            }
+            else {
+                return thisVec.subtract(0, -0.4, 0);
+            }
         }
 
         double xDist = thisVec.x - targVec.x;
