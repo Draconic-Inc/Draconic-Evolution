@@ -13,12 +13,12 @@ import net.minecraft.util.ITickable;
 public class TileCreativeRFCapacitor extends TileBCBase implements IEnergyProvider, ITickable, IEnergyReceiver {
     @Override
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        return Integer.MAX_VALUE;
+        return maxExtract;
     }
 
     @Override
     public int getEnergyStored(EnumFacing from) {
-        return Integer.MAX_VALUE;
+        return Integer.MAX_VALUE / 2;
     }
 
     @Override
@@ -37,6 +37,7 @@ public class TileCreativeRFCapacitor extends TileBCBase implements IEnergyProvid
             return;
         }
         int value = Integer.MAX_VALUE;
+
         for (EnumFacing direction : EnumFacing.VALUES) {
             TileEnergyBase.sendEnergyTo(worldObj, pos, value, direction);
         }

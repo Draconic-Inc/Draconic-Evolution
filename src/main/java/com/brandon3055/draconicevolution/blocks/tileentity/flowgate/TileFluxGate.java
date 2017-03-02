@@ -47,6 +47,10 @@ public class TileFluxGate extends TileFlowGate implements IEnergyReceiver {
 
     @Override
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+        if (from != getDirection().getOpposite()) {
+            return 0;
+        }
+
         TileEntity target = getTarget();
 
         if (target == null) {
