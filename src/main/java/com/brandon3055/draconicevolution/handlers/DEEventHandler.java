@@ -190,9 +190,9 @@ public class DEEventHandler {
                 event.getEntity().worldObj.setBlockState(event.getEntity().worldObj.getHeight(WorldGenEndPodium.END_PODIUM_LOCATION).add(0, 0, -4), Blocks.DRAGON_EGG.getDefaultState());
             }
 
-            if (ModFeatureParser.isEnabled(DEFeatures.draconiumDust)) {
-                int count = 30 + event.getEntity().worldObj.rand.nextInt(30);
-                for (int i = 0; i < count; i++) {
+            if (ModFeatureParser.isEnabled(DEFeatures.draconiumDust) && DEConfig.dragonDustLootModifier > 0) {
+                double count = (DEConfig.dragonDustLootModifier * 0.9D) + (event.getEntity().worldObj.rand.nextDouble() * (DEConfig.dragonDustLootModifier * 0.2));
+                for (int i = 0; i < (int) count; i++) {
                     float mm = 0.3F;
                     EntityItem item = new EntityItem(event.getEntity().worldObj, event.getEntity().posX - 2 + event.getEntity().worldObj.rand.nextInt(4), event.getEntity().posY - 2 + event.getEntity().worldObj.rand.nextInt(4), event.getEntity().posZ - 2 + event.getEntity().worldObj.rand.nextInt(4), new ItemStack(DEFeatures.draconiumDust));
                     item.motionX = mm * ((((float) event.getEntity().worldObj.rand.nextInt(100)) / 100F) - 0.5F);
