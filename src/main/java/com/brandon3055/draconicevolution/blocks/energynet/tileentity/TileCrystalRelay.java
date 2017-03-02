@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -37,8 +38,14 @@ public class TileCrystalRelay extends TileCrystalBase {
         double dist = thisVec.distXZ(targVec);
         double offM = 0.4D;
 
+        LogHelper.dev(dist);
         if (dist == 0) {
-            return thisVec.subtract(1 * offM, 0, 0);
+            if (pos.getY() > linkTo.getY()) {
+                return thisVec.subtract(0, 0.4, 0);
+            }
+            else {
+                return thisVec.subtract(0, -0.4, 0);
+            }
         }
 
         double xDist = thisVec.x - targVec.x;
