@@ -19,6 +19,7 @@ import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -90,10 +91,10 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     }
 
     public void updateComparators() {
-        int cOut = (int) (getExtendedStorage() / getExtendedCapacity() * 15D);
+        int cOut = (int) (((double) getExtendedStorage() / getExtendedCapacity()) * 15D);
         if (cOut != lastCompOverride) {
-            worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
             lastCompOverride = cOut;
+            worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
         }
     }
 

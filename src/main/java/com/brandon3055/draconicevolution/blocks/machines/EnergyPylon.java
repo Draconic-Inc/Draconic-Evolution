@@ -121,7 +121,7 @@ public class EnergyPylon extends BlockBCore implements ITileEntityProvider, ICus
     public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile != null && tile instanceof TileEnergyPylon && ((TileEnergyPylon) tile).getExtendedCapacity() > 0) {
-            return (int) (((TileEnergyPylon) tile).getExtendedStorage() / ((TileEnergyPylon) tile).getExtendedCapacity() * 15D);
+            return (int) ((double) ((TileEnergyPylon) tile).getExtendedStorage() / ((TileEnergyPylon) tile).getExtendedCapacity() * 15D);
         }
         return 0;
     }
