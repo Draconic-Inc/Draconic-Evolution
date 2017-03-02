@@ -117,6 +117,9 @@ public class DEConfig {
     @ModConfigProperty(category = "Client Settings", name = "useReactorBeamShaders", comment = "Set this to false if you prefer the original look of the reactor beams")
     public static boolean useReactorBeamShaders = true;
 
+    @ModConfigProperty(category = "Client Settings", name = "disableLoudCelestialManipulator", comment = "If true the range of the celestial manipulator sound effect will be significantly reduced.")
+    public static boolean disableLoudCelestialManipulator = false;
+
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 
     public static void init(){

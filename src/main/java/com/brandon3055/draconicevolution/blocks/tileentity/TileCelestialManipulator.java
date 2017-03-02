@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
 import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator.SubParticle;
@@ -299,7 +300,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         sound = new CelestialModifierSound(DESoundHandler.electricBuzz);
         sound.updateSound(vec, 0.01F, 0.5F);
         FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
-        worldObj.playSound(vec.x, vec.y, vec.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 10.0F, 0.5F, false);
+        worldObj.playSound(vec.x, vec.y, vec.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, getSoundVolume(), 0.5F, false);
     }
 
     @SideOnly(Side.CLIENT)
@@ -373,7 +374,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         }
 
         if (timer >= 220) {
-            worldObj.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.boom, SoundCategory.BLOCKS, 100F, 1F, false);
+            worldObj.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.boom, SoundCategory.BLOCKS, DEConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
             timer = 0;
             weatherToggleRunning.value = false;
             effects.clear();
@@ -408,7 +409,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         effects.get(1).renderBolts = false;
 
         sound = new CelestialModifierSound(DESoundHandler.sunDialEffect);
-        sound.updateSound(Vec3D.getCenter(pos), 10, 0.5F);
+        sound.updateSound(Vec3D.getCenter(pos), getSoundVolume(), 0.5F);
         FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
     }
 
@@ -556,5 +557,9 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 }
             }
         }
+    }
+
+    private float getSoundVolume() {
+        return DEConfig.disableLoudCelestialManipulator ? 1 : 10;
     }
 }
