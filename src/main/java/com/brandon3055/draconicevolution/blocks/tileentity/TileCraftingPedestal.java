@@ -2,8 +2,10 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
+import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
 import com.brandon3055.brandonscore.network.wrappers.SyncableInt;
+import com.brandon3055.brandonscore.network.wrappers.SyncableVec3I;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingPedestal;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
@@ -19,12 +21,14 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
 
     public final SyncableByte facing = new SyncableByte((byte)0, true, false, true);
     private final SyncableInt energy = new SyncableInt(0, true, false);
+    private final SyncableVec3I lastCorePos = new SyncableVec3I(new Vec3I(0, 0, 0), true, false);
     public IFusionCraftingInventory currentCraftingInventory = null;
 
     public TileCraftingPedestal(){
         this.setInventorySize(1);
         registerSyncableObject(facing, true);
         registerSyncableObject(energy, true);
+        registerSyncableObject(lastCorePos, true);
     }
 
     @Override
@@ -94,6 +98,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
             return false;
         }
         currentCraftingInventory = craftingInventory;
+        lastCorePos.vec = new Vec3I(((TileEntity) craftingInventory).getPos());
         return true;
     }
 
@@ -129,6 +134,12 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         super.setInventorySlotContents(index, stack);
+
+        TileEntity tile = worldObj.getTileEntity(lastCorePos.vec.getPos());
+        if (tile instanceof IFusionCraftingInventory) {
+            worldObj.notifyNeighborsOfStateChange(tile.getPos(), tile.getBlockType());
+        }
+
         updateBlock();
     }
 }

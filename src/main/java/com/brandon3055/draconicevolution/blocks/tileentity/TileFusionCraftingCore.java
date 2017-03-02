@@ -13,10 +13,12 @@ import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerFusionCrafting;
 import com.brandon3055.draconicevolution.client.sound.FusionRotationSound;
+import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -78,6 +80,9 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
         //Update Crafting
         if (isCrafting.value && !worldObj.isRemote) {
+            if (DEEventHandler.serverTicks % 10 == 0) {
+                worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
+            }
 
             for (ICraftingPedestal pedestal : pedestals) {
                 if (((TileEntity) pedestal).isInvalid()) {
@@ -143,6 +148,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         activeRecipe = null;
         craftingStage.value = 0;
         pedestals.clear();
+        worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
     }
 
     /**
@@ -424,4 +430,21 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     }
 
     //endregion
+
+    public int getComparatorOutput() {
+        updatePedestals();
+        if (getStackInCore(1) != null) {
+            return 15;
+        }
+        else if (craftingStage.value > 0) {
+            return (int) Math.max(1, ((craftingStage.value / 2000D) * 15D));
+        }
+        else if (RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos) != null) {
+            return 1;
+        }
+
+        LogHelper.dev(getStackInCore(0) + " " +  RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos));
+        return 0;
+    }
 }
+

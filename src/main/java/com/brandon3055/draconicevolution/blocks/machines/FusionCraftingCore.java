@@ -85,4 +85,18 @@ public class FusionCraftingCore extends BlockBCore implements ICustomRender, ITi
             }
         }
     }
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+        TileEntity tile = worldIn.getTileEntity(pos);
+        if (tile instanceof TileFusionCraftingCore) {
+            return ((TileFusionCraftingCore) tile).getComparatorOutput();
+        }
+        return super.getComparatorInputOverride(blockState, worldIn, pos);
+    }
 }
