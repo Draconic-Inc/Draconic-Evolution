@@ -26,10 +26,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 11/03/2017.
@@ -361,21 +358,32 @@ public class ProcessExplosion implements IProcess {
             return false;
         }
 
+        long l = System.currentTimeMillis();
+
         LogHelper.dev("Removing Blocks!");
-        LogHelper.startTimer("Removing");
+        LogHelper.startTimer("Adding Blocks For Removal");
+
         ExplosionHelper removalHelper = new ExplosionHelper(world);
         int i = 0;
         for (Collection<BlockPos> list : destroyedBlocks) {
             removalHelper.addBlocksForRemoval(list);
             i += list.size();
         }
+        removalHelper.finish();
+
+        LogHelper.stopTimer();
+        LogHelper.startTimer("Adding Lava");
+
         for (BlockPos pos : lavaPositions) {
             world.setBlockState(pos, lavaState);
         }
+
+        LogHelper.stopTimer();
+        LogHelper.startTimer("Adding update Blocks");
         removalHelper.addBlocksForUpdate(blocksToUpdate);
-        removalHelper.finish();
         LogHelper.dev("Blocks Removed: " + i);
         LogHelper.stopTimer();
+
         isDead = true;
         detonated = true;
 
@@ -396,6 +404,7 @@ public class ProcessExplosion implements IProcess {
             }
         }.run();
 
+        LogHelper.dev("Total explosion time: " + (System.currentTimeMillis() - l) / 1000D + "s");
         return true;
     }
 

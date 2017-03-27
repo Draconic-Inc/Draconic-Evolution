@@ -404,7 +404,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
             explosionCountdown.value = (60*20) + Math.max(0, minExplosionDelay);
         }
 
-//        if (explosionCountdown.value > 200) explosionCountdown.value = 200;
+        if (explosionCountdown.value > 200) explosionCountdown.value = 200;
 
         if (explosionCountdown.value-- <= 0) {
 //            explosionProcess = null;

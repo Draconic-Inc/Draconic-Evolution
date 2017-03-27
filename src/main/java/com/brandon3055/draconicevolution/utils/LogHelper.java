@@ -305,7 +305,7 @@ public class LogHelper {
             value = ns + "ns";
         }
 
-        dev("[Timer]: " + timerName + " Took " + value);
+        info("[Timer]: " + timerName + " Took " + value);
         timerRunning = false;
     }
 }

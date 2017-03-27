@@ -11,12 +11,14 @@ import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.Chunk.EnumCreateEntityType;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -29,6 +31,7 @@ public class ExplosionHelper {
     private THashSet<Chunk> modifiedChunks = new THashSet<>();
     private HashSet<BlockPos> blocksToUpdate = new HashSet<>();
     private HashSet<BlockPos> tilesToRemove = new HashSet<>();
+    private HashMap<ChunkPos, Chunk> chunkCache = new HashMap<>();
     private static final IBlockState AIR = Blocks.AIR.getDefaultState();
 
     public ExplosionHelper(WorldServer serverWorld) {
@@ -53,16 +56,18 @@ public class ExplosionHelper {
                     watcher.sendPacket(new SPacketBlockChange(serverWorld, pos));
                 }
             }
+
+//            return;
         }
 
         //?
-        setRecalcPrecipitationHeightMap(pos);
+//        setRecalcPrecipitationHeightMap(pos);
 
         ExtendedBlockStorage storage = getBlockStorage(pos);
         storage.set(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, AIR);
 
         fireBlockBreak(pos, oldState);
-        removeTileEntity(pos);
+//        removeTileEntity(pos);
 
         setChunkModified(pos);
     }
@@ -87,7 +92,12 @@ public class ExplosionHelper {
     }
 
     private Chunk getChunk(BlockPos pos) {
-        return serverWorld.getChunkFromChunkCoords(pos.getX() >> 4, pos.getZ() >> 4);
+        ChunkPos cp = new ChunkPos(pos);
+        if (!chunkCache.containsKey(cp)) {
+            chunkCache.put(cp, serverWorld.getChunkFromChunkCoords(pos.getX() >> 4, pos.getZ() >> 4));
+        }
+
+        return chunkCache.get(cp);
     }
 
     private boolean hasBlockStorage(BlockPos pos) {
@@ -125,7 +135,7 @@ public class ExplosionHelper {
      * Call when finished removing blocks to calculate lighting and send chunk updates to the client.
      */
     public void finish() {
-        LogHelperBC.startTimer("Sending chunks to client");
+        LogHelperBC.startTimer("EH: finish");
 
         PlayerChunkMap playerChunkMap = serverWorld.getPlayerChunkMap();
         if (playerChunkMap == null) {
@@ -162,7 +172,6 @@ public class ExplosionHelper {
         LogHelperBC.stopTimer();
 
         BlockFalling.fallInstantly = false;
-        modifiedChunks.clear();
     }
 
     public boolean isAirBlock(BlockPos pos) {
