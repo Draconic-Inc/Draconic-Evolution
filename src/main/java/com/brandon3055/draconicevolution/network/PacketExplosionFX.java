@@ -9,6 +9,8 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by brandon3055 on 8/06/2016.
@@ -43,9 +45,14 @@ public class PacketExplosionFX implements IMessage {
 
         @Override
         public IMessage handleMessage(PacketExplosionFX message, MessageContext ctx) {
+            spawnFX(message, ctx);
+            return null;
+        }
+
+        @SideOnly(Side.CLIENT)
+        public void spawnFX(PacketExplosionFX message, MessageContext ctx) {
             ExplosionFX explosionFX = new ExplosionFX(BrandonsCore.proxy.getClientWorld(), Vec3D.getCenter(message.pos), message.radius);
             BCEffectHandler.spawnGLParticle(ExplosionFX.FX_HANDLER, explosionFX);
-            return null;
         }
     }
 }
