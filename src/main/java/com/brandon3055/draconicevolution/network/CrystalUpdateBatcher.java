@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.network;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.network.MessageHandlerWrapper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -82,7 +82,7 @@ public class CrystalUpdateBatcher extends PacketCompressible {
                     continue;
                 }
 
-                TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(ID_CRYSTAL_MAP.get(update.crystalID));
+                TileEntity tile = BrandonsCore.proxy.getClientWorld().getTileEntity(ID_CRYSTAL_MAP.get(update.crystalID));
                 if (tile instanceof TileCrystalBase && !tile.isInvalid()) {
                     ((TileCrystalBase) tile).receiveBatchedUpdate(update);
                 }

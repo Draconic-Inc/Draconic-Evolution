@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.network;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.network.MessageHandlerWrapper;
 import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -43,7 +43,7 @@ public class PacketExplosionFX implements IMessage {
 
         @Override
         public IMessage handleMessage(PacketExplosionFX message, MessageContext ctx) {
-            ExplosionFX explosionFX = new ExplosionFX(Minecraft.getMinecraft().theWorld, Vec3D.getCenter(message.pos), message.radius);
+            ExplosionFX explosionFX = new ExplosionFX(BrandonsCore.proxy.getClientWorld(), Vec3D.getCenter(message.pos), message.radius);
             BCEffectHandler.spawnGLParticle(ExplosionFX.FX_HANDLER, explosionFX);
             return null;
         }

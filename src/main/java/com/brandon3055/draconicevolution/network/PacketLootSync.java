@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.network;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.network.MessageHandlerWrapper;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -56,7 +56,7 @@ public class PacketLootSync implements IMessage
 
         @Override
         public IMessage handleMessage(PacketLootSync message, MessageContext ctx) {
-			Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID);
+			Entity entity = BrandonsCore.proxy.getClientWorld().getEntityByID(message.entityID);
 
 			if (entity instanceof EntityLootCore) {
 				((EntityLootCore) entity).displayMap = message.map;
