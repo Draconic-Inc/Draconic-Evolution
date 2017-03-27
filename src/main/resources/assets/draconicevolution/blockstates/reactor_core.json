@@ -1,0 +1,11 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "draconicevolution:dummy",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [{}],
+    "normal": [{}]
+  }
+}

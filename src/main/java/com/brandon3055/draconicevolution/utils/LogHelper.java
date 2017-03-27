@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.utils;
 
 import codechicken.lib.asm.ObfMapping;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,10 @@ import org.apache.logging.log4j.Logger;
  * Covers gave me permission to use this. In fact he FORCED me to use it!!!
  */
 public class LogHelper {
+
+    private static long startTime = 0;
+    private static String timerName = "";
+    private static boolean timerRunning = false;
 
     private static Logger logger = LogManager.getLogger(DraconicEvolution.MODID);
 
@@ -265,5 +270,42 @@ public class LogHelper {
             warn("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
         }
         warn("****************************************");
+    }
+
+    public static void startTimer(String name) {
+        if (timerRunning) {
+            LogHelper.error("The timer is already running!");
+            return;
+        }
+
+        timerName = name;
+        timerRunning = true;
+        startTime = System.nanoTime();
+    }
+
+    public static void stopTimer() {
+        if (!timerRunning) {
+            LogHelper.error("The timer was not running!!!");
+            return;
+        }
+
+        long ns = System.nanoTime() - startTime;
+
+        String value;
+        long ms = 1000000;
+        long s = ms * 1000;
+
+        if (ns > s) {
+            value = Utils.round(ns / (double)s, 1000) + "s";
+        }
+        else if (ns > 1000){
+            value = Utils.round(ns / (double)ms, 10000) + "ms";
+        }
+        else {
+            value = ns + "ns";
+        }
+
+        dev("[Timer]: " + timerName + " Took " + value);
+        timerRunning = false;
     }
 }

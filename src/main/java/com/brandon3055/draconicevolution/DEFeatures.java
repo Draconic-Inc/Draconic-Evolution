@@ -15,10 +15,7 @@ import com.brandon3055.draconicevolution.blocks.reactor.ReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorCore;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
-import com.brandon3055.draconicevolution.items.Debugger;
-import com.brandon3055.draconicevolution.items.InfoTablet;
-import com.brandon3055.draconicevolution.items.ItemPersistent;
-import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.items.*;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.*;
@@ -112,7 +109,7 @@ public class DEFeatures {
     public static EnergyCrystal energyCrystal = new EnergyCrystal();
 
     @Feature(registryName = "flow_gate", variantMap = {"0:facing=north,type=flux", "8:facing=north,type=fluid"}, itemBlock = ItemBlockBCore.class, cTab = 1)
-    public static FlowGate flowGate = (FlowGate) new FlowGate().addName(0, "flux_gate").addName(8, "fluid_gate");
+    public static FlowGate flowGate = new FlowGate();
 
     //endregion
 
@@ -154,7 +151,12 @@ public class DEFeatures {
     public static Item awakenedCore = new Item();
 
     @Feature(registryName = "chaotic_core", stateOverride = "simple_components#type=chaoticCore")
-    public static Item chaoticCore = new Item();
+    public static Item chaoticCore = new Item(){
+        @Override
+        public boolean hasEffect(ItemStack stack) {
+            return true;
+        }
+    };
 
     @Feature(registryName = "wyvern_energy_core", stateOverride = "simple_components#type=wyvernECore")
     public static Item wyvernEnergyCore = new Item();
@@ -292,8 +294,11 @@ public class DEFeatures {
     @Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class)
     public static ReactorCore reactorCore = new ReactorCore();
 
+    @Feature(registryName = "reactor_part")
+    public static ReactorPart reactorPart = new ReactorPart();
+
     @Feature(registryName = "reactor_component", itemBlock = ItemBlockBCore.class)
-    public static ReactorComponent reactorComponent = (ReactorComponent) new ReactorComponent().addName(0, "reactor_stabilizer").addName(1, "reactor_injector");
+    public static ReactorComponent reactorComponent = new ReactorComponent();
 
 
 

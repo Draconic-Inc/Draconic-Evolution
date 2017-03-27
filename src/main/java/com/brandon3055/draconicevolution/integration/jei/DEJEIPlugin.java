@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.integration.jei;
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.api.ITellJEIToGetOutOfTheWay;
+import com.brandon3055.draconicevolution.api.IJEIClearence;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.client.gui.GuiFusionCraftingCore;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
@@ -54,14 +54,14 @@ public class DEJEIPlugin implements IModPlugin {
         registry.addAdvancedGuiHandlers(new IAdvancedGuiHandler() {
             @Override
             public Class getGuiContainerClass() {
-                return ITellJEIToGetOutOfTheWay.class;
+                return IJEIClearence.class;
             }
 
             @Nullable
             @Override
             public java.util.List<Rectangle> getGuiExtraAreas(GuiContainer guiContainer) {
-                if (guiContainer instanceof ITellJEIToGetOutOfTheWay) {
-                    return ((ITellJEIToGetOutOfTheWay) guiContainer).getGuiExtraAreas();
+                if (guiContainer instanceof IJEIClearence) {
+                    return ((IJEIClearence) guiContainer).getGuiExtraAreas();
                 }
                 return new ArrayList<>();
             }

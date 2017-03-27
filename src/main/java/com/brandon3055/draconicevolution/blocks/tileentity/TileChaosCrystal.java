@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
-import com.brandon3055.draconicevolution.entity.EntityChaosVortex;
+import com.brandon3055.draconicevolution.entity.EntityChaosImplosion;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.nbt.NBTTagCompound;
@@ -56,7 +56,7 @@ public class TileChaosCrystal extends TileBCBase implements ITickable{
         if (locationHash != getLocationHash(pos, worldObj.provider.getDimension()))
             worldObj.setBlockToAir(pos);
         else {
-            EntityChaosVortex vortex = new EntityChaosVortex(worldObj);
+            EntityChaosImplosion vortex = new EntityChaosImplosion(worldObj);
             vortex.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
             worldObj.spawnEntityInWorld(vortex);
         }
@@ -64,6 +64,7 @@ public class TileChaosCrystal extends TileBCBase implements ITickable{
 
     public void setDefeated() {
         guardianDefeated.value = true;
+        detectAndSendChanges();
     }
 
     @Override

@@ -3,6 +3,15 @@
 ######## 2.0.9.x ########
 -Fixed entity detector crashing due to invalid entities in the entity selection list.
 -Fixed fusion crafter crash when unloading/loading chunks.
+-Added config option for dragon draconium dust drop.
+-Modified custom fusion recipe format (Will not break existing configs)
+-Added support for NBT in fusion recipes.
+-Added config option to reduce the range of the celestial manipulator sound.
+-Adjusted the way beams connect between energy relays that are placed one directly above the other.
+-Added comparator output to fusion crafting.
+-Fixed comparator output for energy core not working correctly.
+-Fixed rotating blocks deleting their data.
+-Added support for IItemHandler
 
 ######## 2.0.8.177 ########
 -Fixed loot core.

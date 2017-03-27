@@ -101,6 +101,31 @@ public class DERecipes {
 
         //region Advanced Machines
 
+        //Reactor
+        addShaped(NORMAL, reactorPart, "AAA", "BC ", "AAA", 'A', "ingotIron", 'B', wyvernCore, 'C', "ingotDraconiumAwakened");
+        addShaped(HARD, reactorPart, "AAA", "BC ", "AAA", 'A', "ingotIron", 'B', awakenedCore, 'C', "ingotDraconiumAwakened");
+
+        addShaped(NORMAL, new ItemStack(reactorPart, 1, 1), "   ", "AAA", "BCC", 'A', "ingotDraconiumAwakened", 'B', draconicCore, 'C', "ingotDraconium");
+        addShaped(HARD, new ItemStack(reactorPart, 1, 1), "   ", "AAA", "BCC", 'A', "ingotDraconiumAwakened", 'B', wyvernCore, 'C', "ingotDraconium");
+
+        addShaped(NORMAL, new ItemStack(reactorPart, 1, 2), "   ", "AAA", "BCC", 'A', "gemDiamond", 'B', draconicCore, 'C', "ingotDraconium");
+        addShaped(HARD, new ItemStack(reactorPart, 1, 2), "   ", "AAA", "BCC", 'A', "gemDiamond", 'B', wyvernCore, 'C', "ingotDraconium");
+
+        addShaped(NORMAL, new ItemStack(reactorPart, 1, 3), " AB", "CDD", " AB", 'A', new ItemStack(reactorPart, 1, 1), 'B', new ItemStack(reactorPart, 1, 2), 'C', wyvernCore, 'D', "ingotDraconium");
+        addShaped(HARD, new ItemStack(reactorPart, 1, 3), " AB", "CDD", " AB", 'A', new ItemStack(reactorPart, 1, 1), 'B', new ItemStack(reactorPart, 1, 2), 'C', awakenedCore, 'D', "ingotDraconiumAwakened");
+
+        addShaped(NORMAL, new ItemStack(reactorPart, 1, 4), "ABA", "BCB", "ABA", 'A', "ingotGold", 'B', "gemDiamond", 'C', wyvernCore);
+        addShaped(HARD, new ItemStack(reactorPart, 1, 4), "ABA", "BCB", "ABA", 'A', "ingotGold", 'B', "gemDiamond", 'C', awakenedCore);
+
+        addFusion(NORMAL, new ItemStack(reactorCore), new ItemStack(chaosShard), 64000000, 3, "ingotDraconiumAwakened", "ingotDraconium", "ingotDraconiumAwakened", "ingotDraconium", "ingotDraconiumAwakened", "ingotDraconium", "ingotDraconiumAwakened");
+        addFusion(HARD, new ItemStack(reactorCore), new ItemStack(chaosShard), 128000000, 3, "ingotDraconiumAwakened", "ingotDraconium", "blockDraconiumAwakened", "ingotDraconium", "blockDraconiumAwakened", "ingotDraconium", "ingotDraconiumAwakened");
+
+        addFusion(NORMAL, new ItemStack(reactorComponent), new ItemStack(reactorPart), 16000000, 3, "ingotDraconiumAwakened", draconicEnergyCore, new ItemStack(reactorPart, 1, 3), new ItemStack(reactorPart, 1, 4), "ingotDraconiumAwakened", "ingotDraconiumAwakened", chaoticCore, "ingotDraconiumAwakened");
+        addFusion(HARD, new ItemStack(reactorComponent), new ItemStack(reactorPart), 64000000, 3, "ingotDraconiumAwakened", new ItemStack(reactorPart, 1, 3), new ItemStack(reactorPart, 1, 4), "ingotDraconiumAwakened", draconicEnergyCore, "ingotDraconiumAwakened", awakenedCore, chaoticCore, awakenedCore, "ingotDraconiumAwakened", draconicEnergyCore);
+
+        addFusion(NORMAL, new ItemStack(reactorComponent, 1, 1), new ItemStack(wyvernCore), 16000000, 3, "ingotDraconium", new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), "ingotDraconium", "ingotDraconium", "ingotIron", new ItemStack(reactorPart, 1, 1), "ingotIron", "ingotDraconium");
+        addFusion(HARD, new ItemStack(reactorComponent, 1, 1), new ItemStack(awakenedCore), 64000000, 3, "ingotDraconium", new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), "ingotDraconium", "ingotDraconium", "ingotIron", new ItemStack(reactorPart, 1, 1), "ingotIron", "ingotDraconium");
+
         //endregion
 
         //region Exotic Blocks

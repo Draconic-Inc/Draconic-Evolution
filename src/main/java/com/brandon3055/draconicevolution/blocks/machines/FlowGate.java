@@ -40,7 +40,9 @@ public class FlowGate extends BlockBCore implements ITileRegisterer {
 
     public FlowGate() {
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "flux").withProperty(FACING, EnumFacing.NORTH));
-        setIsFullCube(false);
+        this.setIsFullCube(false);
+        this.addName(0, "flux_gate");
+        this.addName(8, "fluid_gate");
     }
 
     //region BlockState

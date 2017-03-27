@@ -10,6 +10,7 @@ import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.render.TESRBase;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
@@ -22,18 +23,22 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
+import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.MAX_TEMPERATURE;
+
 /**
  * Created by brandon3055 on 6/11/2016.
  */
 public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
-    private CCModel model;
-    private CCModel model_no_shade;
+    private static CCModel model = null;
+    private static CCModel model_no_shade;
 
     public RenderTileReactorCore() {
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
-        model = CCModel.combine(map.values());
-        map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
-        model_no_shade = CCModel.combine(map.values());
+        if (model == null) {
+            Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
+            model = CCModel.combine(map.values());
+            map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
+            model_no_shade = CCModel.combine(map.values());
+        }
     }
 
     @Override
@@ -41,20 +46,32 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         GlStateManager.pushMatrix();
         GlStateManagerHelper.pushState();
         GlStateManager.disableLighting();
-        setLighting(200);
-        float scale = 2;
-        float intensity = 1;
-        float animation = (ClientEventHandler.elapsedTicks + partialTicks) / 20F;
 
-        if (DEShaders.useShaders()) {
-            DEShaders.reactorOp.setAnimation(animation);
-        }
+        setLighting(200);
+        double diameter = te.getCoreDiameter();
+        float t = (float) (te.temperature.value / MAX_TEMPERATURE);
+        float intensity = t <= 0.2 ? (float) Utils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) Utils.map(t, 0.2, 0.8, 0.3, 1) : (float) Utils.map(t, 0.8, 1, 1, 1.3);
+        float shieldPower = (float) (te.maxShieldCharge.value > 0 ? te.shieldCharge.value / te.maxShieldCharge.value : 0);
 
         if (MinecraftForgeClient.getRenderPass() == 0) {
-            renderCore(x, y, z, partialTicks, intensity, animation, scale, DEShaders.useShaders());
+            if (DEShaders.useShaders()) {
+                float animation = (te.coreAnimation + (partialTicks * (float) te.shaderAnimationState.value)) / 20F;
+                DEShaders.reactorOp.setAnimation(animation);
+            }
+            renderCore(x, y, z, partialTicks, intensity, diameter, DEShaders.useShaders());
         }
-        else {
-            renderShield(x, y, z, partialTicks, 0.7F, scale, DEShaders.useShaders());
+        else if (te.shieldAnimationState > 0) {
+            if (DEShaders.useShaders()) {
+                float animation = (te.shieldAnimation + (partialTicks * te.shieldAnimationState)) / 20F;
+                DEShaders.reactorOp.setAnimation(animation);
+            }
+
+            float power = (0.7F * shieldPower) - (1 - te.shieldAnimationState);
+            if (te.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE) {
+                power = 0.05F;//0.05F + ((float) (Math.sin(ClientEventHandler.elapsedTicks / 5F) + 1) / 20F);
+            }
+
+            renderShield(x, y, z, partialTicks, power, diameter, DEShaders.useShaders());
         }
 
         resetLighting();
@@ -67,27 +84,47 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         GlStateManagerHelper.pushState();
         GlStateManager.disableLighting();
         setLighting(200);
-        float scale = 1.5F;
+        float scale = 1.3F;
         float intensity = 0;
 
-        renderCore(0, 0, 0, 0, intensity, 0, scale, DEShaders.useShaders());
+        renderCore(0, 0, 0, 0, intensity, scale, DEShaders.useShaders());
 
         resetLighting();
         GlStateManagerHelper.popState();
         GlStateManager.popMatrix();
     }
 
-    private void renderCore(double x, double y, double z, float partialTicks, float intensity, float animation, float scale, boolean useShader) {
+    public static void renderGUI(TileReactorCore te, int x, int y) {
+        GlStateManager.pushMatrix();
+        GlStateManagerHelper.pushState();
+
+        double diameter = 100;
+        float t = (float) (te.temperature.value / MAX_TEMPERATURE);
+        float intensity = t <= 0.2 ? (float) Utils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) Utils.map(t, 0.2, 0.8, 0.3, 1) : (float) Utils.map(t, 0.8, 1, 1, 1.3);
+        float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.value)) / 20F;
+        float shieldPower = (float) (te.maxShieldCharge.value > 0 ? te.shieldCharge.value / te.maxShieldCharge.value : 0);
+
+        if (DEShaders.useShaders()) {
+            DEShaders.reactorOp.setAnimation(animation);
+        }
+
+        renderCore(x - 0.5, y, 100, 0, intensity, diameter, DEShaders.useShaders());
+        renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.value), diameter, DEShaders.useShaders());
+
+        GlStateManagerHelper.popState();
+        GlStateManager.popMatrix();
+    }
+
+    private static void renderCore(double x, double y, double z, float partialTicks, float intensity, double diameter, boolean useShader) {
         ResourceHelperDE.bindTexture(DETextures.REACTOR_CORE);
         if (useShader) {
             DEShaders.reactorOp.setIntensity(intensity);
             DEShaders.reactor.freeBindShader();
         }
 
-
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-        Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), scale);
+        Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), diameter);
         model.render(ccrs, mat);
         ccrs.draw();
 
@@ -96,10 +133,10 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         }
     }
 
-    private void renderShield(double x, double y, double z, float partialTicks, float intensity, float scale, boolean useShader) {
+    private static void renderShield(double x, double y, double z, float partialTicks, float power, double diameter, boolean useShader) {
         ResourceHelperDE.bindTexture(DETextures.REACTOR_SHIELD);
         if (useShader) {
-            DEShaders.reactorOp.setIntensity(intensity);
+            DEShaders.reactorOp.setIntensity(power);
             DEShaders.reactorShield.freeBindShader();
         }
         else {
@@ -116,12 +153,12 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
 
-        if (DEShaders.useShaders()) {
-            Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), scale * 1.05);
+        if (useShader) {
+            Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), diameter * 1.05);
             model.render(ccrs, mat);
         }
         else {
-            Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), scale * -0.525);
+            Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), diameter * -0.525);
             model_no_shade.render(ccrs, mat);
         }
 

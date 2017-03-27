@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.integration.computers.oc;
 
 
+import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.NamedBlock;
@@ -28,7 +29,7 @@ public class DEManagedPeripheral extends ManagedEnvironment implements ManagedPe
 
 	@Override
 	public Object[] invoke(String method, Context context, Arguments args) throws Exception {
-		return peripheral.callMethod(method, args.toArray());
+		return peripheral.callMethod(method, new ArgHelper(args.toArray()));
 	}
 
 	@Override

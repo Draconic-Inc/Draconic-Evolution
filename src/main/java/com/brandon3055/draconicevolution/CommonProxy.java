@@ -105,6 +105,7 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 8, Side.CLIENT);
 		DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 9, Side.SERVER);
 		DraconicEvolution.network.registerMessage(CrystalUpdateBatcher.Handler.class, CrystalUpdateBatcher.class, 10, Side.CLIENT);
+		DraconicEvolution.network.registerMessage(PacketExplosionFX.Handler.class, PacketExplosionFX.class, 11, Side.CLIENT);
 //		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlacedItemPacket.Handler.class, PlacedItemPacket.class, 2, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);
@@ -200,7 +201,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityGuardianProjectile.class, "GuardianProjectile", 7, DraconicEvolution.instance, 256, 1, true);
 		EntityRegistry.registerModEntity(EntityGuardianCrystal.class, "GuardianCrystal", 8, DraconicEvolution.instance, 256, 5, false);
 //		EntityRegistry.registerModEntity(EntityChaosBolt.class, "ChaosBolt", 9, DraconicEvolution.instance, 32, 5, true);
-		EntityRegistry.registerModEntity(EntityChaosVortex.class, "EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
+		EntityRegistry.registerModEntity(EntityChaosImplosion.class, "EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
 		EntityRegistry.registerModEntity(EntityCustomArrow.class, "CustomArrow", 11, DraconicEvolution.instance, 128, 1, true);
 		EntityRegistry.registerModEntity(EntityLootCore.class, "LootCore", 12, DraconicEvolution.instance, 64, 5, true);
 

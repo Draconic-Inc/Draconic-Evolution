@@ -7,7 +7,7 @@ import java.util.List;
  * Created by brandon3055 on 26/10/2016.
  * A simple interface that can be implemented on any GUI container to move items in the JEI item panel out of the way of extra gui elements that extend past the defined gui size.
  */
-public interface ITellJEIToGetOutOfTheWay {
+public interface IJEIClearence {
 
     /**
      * This returns a list of rectangles where JEI should not render items.

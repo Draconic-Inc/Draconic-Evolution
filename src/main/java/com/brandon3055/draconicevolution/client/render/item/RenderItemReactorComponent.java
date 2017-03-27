@@ -94,12 +94,12 @@ public class RenderItemReactorComponent implements IItemRenderer, IPerspectiveAw
         }
         else if (isStabilizer) {
             GlStateManager.translate(0.5, 0.5, 0.5);
-            RenderTileReactorComponent.renderStabilizer(25, 0, 1F, 0, true);
+            RenderTileReactorComponent.renderStabilizer(25, 0, 1F, 0, true, -1);
         }
         else {
             GlStateManager.translate(0.5, 0.5, 0.5);
             GlStateManager.rotate(90, 1, 0, 0);
-            RenderTileReactorComponent.renderInjector(1F, 0, true);
+            RenderTileReactorComponent.renderInjector(1F, 0, true, -1);
         }
 
         GlStateManagerHelper.popState();

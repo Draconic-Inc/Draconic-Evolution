@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCom
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,6 +30,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,8 +53,11 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
     private static final AxisAlignedBB AABB_INJ_EAST = new AxisAlignedBB(0F, 0F, 0F, 0.125F, 1F, 1F);
 
     public ReactorComponent() {
+        this.setHardness(25F);
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "stabilizer"));
         this.setIsFullCube(false);
+        this.addName(0, "reactor_stabilizer");
+        this.addName(1, "reactor_injector");
     }
 
     //region Block & Registry
@@ -114,6 +119,8 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
+        StateMap deviceStateMap = new StateMap.Builder().ignore(TYPE).build();
+        ModelLoader.setCustomStateMapper(this, deviceStateMap);
         ClientRegistry.bindTileEntitySpecialRenderer(TileReactorStabilizer.class, new RenderTileReactorComponent());
         ClientRegistry.bindTileEntitySpecialRenderer(TileReactorEnergyInjector.class, new RenderTileReactorComponent());
         ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemReactorComponent());
@@ -175,6 +182,27 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
         tooltip.add(I18n.format("info.de.shiftReversePlaceLogic.txt"));
     }
 
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
     //endregion
 
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+
+        if (tileEntity instanceof TileReactorComponent) {
+            return ((TileReactorComponent) tileEntity).rsPower.value;
+        }
+
+        return 0;
+    }
 }

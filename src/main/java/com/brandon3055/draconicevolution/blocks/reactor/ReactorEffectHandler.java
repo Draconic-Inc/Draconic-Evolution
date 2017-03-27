@@ -6,6 +6,8 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorEnergyInjector;
 import com.brandon3055.draconicevolution.client.render.effect.ReactorBeamFX;
+import com.brandon3055.draconicevolution.client.sound.ReactorSound;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,7 +19,10 @@ public class ReactorEffectHandler {
 
     private TileReactorCore reactor;
     @SideOnly(Side.CLIENT)
-    private ReactorBeamFX[] effects = new ReactorBeamFX[6];
+    private ReactorBeamFX[] effects;
+
+    @SideOnly(Side.CLIENT)
+    private ReactorSound reactorSound;
 
     public ReactorEffectHandler(TileReactorCore reactor) {
         this.reactor = reactor;
@@ -25,7 +30,21 @@ public class ReactorEffectHandler {
 
     @SideOnly(Side.CLIENT)
     public void updateEffects() {
-        if (false && !reactor.reactorState.value.isReactorActive()) {
+        if (effects == null) {
+            effects = new ReactorBeamFX[6];
+        }
+
+//        reactorSound.donePlaying = true;
+//        reactorSound = null;;
+        if ((reactorSound == null || reactorSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(reactorSound)) && reactor.reactorState.value.isShieldActive() && reactor.shieldCharge.value > 0) {
+            reactorSound = new ReactorSound(reactor);
+            Minecraft.getMinecraft().getSoundHandler().playSound(reactorSound);
+        }
+        else if (reactorSound != null && (!reactor.reactorState.value.isShieldActive() || reactor.shieldCharge.value <= 0)) {
+            reactorSound.donePlaying = true;
+        }
+
+        if (reactor.reactorState.value == TileReactorCore.ReactorState.INVALID || reactor.shieldAnimationState <= 0) {
             return;
         }
 
@@ -42,7 +61,7 @@ public class ReactorEffectHandler {
             }
 
             if (effects[index] != null && effects[index].isAlive()) {
-                effects[index].updateFX((float) reactor.animationState.value, 1);//todo Power Stat
+                effects[index].updateFX((float) reactor.shieldAnimationState, 1);//todo Power Stat
                 continue;
             }
 

@@ -1,15 +1,14 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
 
+import com.brandon3055.draconicevolution.client.model.ModelChaosGuardian;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.model.ModelDragon;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerEnderDragonDeath;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -25,14 +24,14 @@ import org.lwjgl.opengl.GL11;
  */
 @SideOnly(Side.CLIENT)
 public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
-    protected ModelDragon modelDragon;
+    protected ModelChaosGuardian modelDragon;
 
     public RenderChaosGuardian(RenderManager manager) {
-        super(manager, new ModelDragon(0.0F), 0.5F);
-        this.modelDragon = (ModelDragon) this.mainModel;
+        super(manager, new ModelChaosGuardian(0.0F), 0.5F);
+        this.modelDragon = (ModelChaosGuardian) this.mainModel;
 //        this.setRenderPassModel(this.mainModel);
         this.addLayer(new LayerChaosGuardianEyes(this));
-        this.addLayer(new LayerEnderDragonDeath());
+        this.addLayer(new LayerCHaosGuardianDeath());
     }
 
     @Override

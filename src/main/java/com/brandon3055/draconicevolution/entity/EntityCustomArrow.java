@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -17,11 +18,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -434,7 +438,27 @@ public class EntityCustomArrow extends EntityArrow {
     protected void onHit(RayTraceResult traceResult) {
 
         if (bowProperties.explosionPower > 0 && !worldObj.isRemote) {
-            worldObj.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, DEConfig.bowBlockDamage);
+            Explosion explosion = new Explosion(worldObj, this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, false, DEConfig.bowBlockDamage) {
+                @Override
+                public EntityLivingBase getExplosivePlacedBy() {
+                    return shootingEntity instanceof EntityLivingBase ? (EntityLivingBase) shootingEntity : null;
+                }
+            };
+            if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(worldObj, explosion)) {
+                explosion.doExplosionA();
+                explosion.doExplosionB(true);
+                explosion.clearAffectedBlockPositions();
+
+                for (EntityPlayer entityplayer : worldObj.playerEntities)
+                {
+                    if (entityplayer.getDistanceSq(prevPosX, prevPosY, prevPosZ) < 4096.0D)
+                    {
+                        ((EntityPlayerMP)entityplayer).connection.sendPacket(new SPacketExplosion(prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, explosion.getAffectedBlockPositions(), (Vec3d)explosion.getPlayerKnockbackMap().get(entityplayer)));
+                    }
+                }
+            }
+
+//            worldObj.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, DEConfig.bowBlockDamage);
             setDead();
         }
 

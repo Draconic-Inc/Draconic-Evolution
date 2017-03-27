@@ -6,6 +6,7 @@ import codechicken.lib.render.shader.pipeline.attribute.IShaderOperation;
 import com.brandon3055.draconicevolution.DEConfig;
 import gnu.trove.map.hash.TObjectFloatHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.opengl.ARBShaderObjects;
 
@@ -29,11 +30,23 @@ public class DEShaders {
     public static ShaderProgram energyCrystal;
     public static ECrystalOperation eCrystalOp;
 
+    public static int explosionOverlayOpID;
+    public static ShaderProgram explosionOverlay;
+    public static ExplosionOverlayOp explosionOverlayOp;
+
+    public static int explosionWaveOpID;
+    public static ShaderProgram explosionBlastWave;
+    public static ShaderProgram explosionLeadingWave;
+    public static ShaderProgram explosionCoreEffect;
+    public static ExplosionWaveOp explosionWaveOp;
+
     static {
         initReactorShader();
         initReactorShieldShader();
         initEnergyCrystalShader();
         initReactorBeams();
+        initExplosionOverlay();
+        initExplosionWave();
     }
 
     public static void initReactorShader() {
@@ -102,6 +115,43 @@ public class DEShaders {
         energyCrystal.validate();
     }
 
+    public static void initExplosionOverlay() {
+        if (explosionOverlay != null) {
+            explosionOverlay.cleanup();
+        }
+
+        explosionOverlayOpID = CCShaderPipeline.registerOperation();
+        explosionOverlay = new ShaderProgram();
+        explosionOverlay.attachFrag("/assets/draconicevolution/shaders/explosion_overlay.frag");
+        explosionOverlay.attachShaderOperation(explosionOverlayOp = new ExplosionOverlayOp());
+        explosionOverlay.validate();
+    }
+
+    public static void initExplosionWave() {
+        if (explosionBlastWave != null) {
+            explosionBlastWave.cleanup();
+        }
+        if (explosionLeadingWave != null) {
+            explosionLeadingWave.cleanup();
+        }
+
+        explosionWaveOpID = CCShaderPipeline.registerOperation();
+        explosionBlastWave = new ShaderProgram();
+        explosionBlastWave.attachFrag("/assets/draconicevolution/shaders/explosion_blast_wave.frag");
+        explosionBlastWave.attachShaderOperation(explosionWaveOp = new ExplosionWaveOp());
+        explosionBlastWave.validate();
+
+        explosionLeadingWave = new ShaderProgram();
+        explosionLeadingWave.attachFrag("/assets/draconicevolution/shaders/explosion_leading_wave.frag");
+        explosionLeadingWave.attachShaderOperation(explosionWaveOp);
+        explosionLeadingWave.validate();
+
+        explosionCoreEffect = new ShaderProgram();
+        explosionCoreEffect.attachFrag("/assets/draconicevolution/shaders/explosion_core_effect.frag");
+        explosionCoreEffect.attachShaderOperation(explosionWaveOp);
+        explosionCoreEffect.validate();
+    }
+
     public static class ReactorOperation implements IShaderOperation {
         public float intensity = 0;
         public float animation = 0;
@@ -142,6 +192,7 @@ public class DEShaders {
         public float power = 0;
         public float animation = 0;
         public float fade = 0;
+        public float startup = 0;
 
         @Override
         public boolean load(ShaderProgram program) {
@@ -151,12 +202,16 @@ public class DEShaders {
         @Override
         public void operate(ShaderProgram program) {
             int time = program.getUniformLoc("time");
-            ARBShaderObjects.glUniform1fARB(time, animation);
+            ARBShaderObjects.glUniform1fARB(time, this.animation);
 
             int intensity = program.getUniformLoc("power");
             ARBShaderObjects.glUniform1fARB(intensity, this.power);
+
             int fade = program.getUniformLoc("fade");
             ARBShaderObjects.glUniform1fARB(fade, this.fade);
+
+            int startup = program.getUniformLoc("startup");
+            ARBShaderObjects.glUniform1fARB(startup, this.startup);
         }
 
         @Override
@@ -174,6 +229,10 @@ public class DEShaders {
 
         public void setFade(float fade) {
             this.fade = fade;
+        }
+
+        public void setStartup(float startup) {
+            this.startup = startup;
         }
     }
 
@@ -249,6 +308,83 @@ public class DEShaders {
 
         public void setMipmap(float mipmap) {
             this.mipmap = mipmap;
+        }
+    }
+
+    public static class ExplosionOverlayOp implements IShaderOperation {
+        float screenX = 0;
+        float screenY = 0;
+        float intensity = 0;
+
+        @Override
+        public boolean load(ShaderProgram program) {
+            return true;
+        }
+
+        @Override
+        public void operate(ShaderProgram program) {
+            int pos = program.getUniformLoc("screenPos");
+            ARBShaderObjects.glUniform2fARB(pos, screenX, screenY);
+
+            int intensity = program.getUniformLoc("intensity");
+            ARBShaderObjects.glUniform1fARB(intensity, this.intensity);
+
+            int screenSize = program.getUniformLoc("screenSize");
+            ARBShaderObjects.glUniform2fARB(screenSize, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        }
+
+        @Override
+        public int operationID() {
+            return reactorOpID;
+        }
+
+        public void setScreenPos(float x, float y) {
+            this.screenX = x;
+            this.screenY = y;
+        }
+
+        public void setIntensity(float intensity) {
+            this.intensity = intensity;
+        }
+    }
+
+    public static class ExplosionWaveOp implements IShaderOperation {
+        float time = 0;
+        float scale = 0;
+        float alpha = 1;
+
+        @Override
+        public boolean load(ShaderProgram program) {
+            return true;
+        }
+
+        @Override
+        public void operate(ShaderProgram program) {
+            int t = program.getUniformLoc("time");
+            ARBShaderObjects.glUniform1fARB(t, time);
+
+            int s = program.getUniformLoc("scale");
+            ARBShaderObjects.glUniform1fARB(s, scale);
+
+            int a = program.getUniformLoc("alpha");
+            ARBShaderObjects.glUniform1fARB(a, alpha);
+        }
+
+        @Override
+        public int operationID() {
+            return reactorOpID;
+        }
+
+        public void setTime(float time) {
+            this.time = time;
+        }
+
+        public void setScale(float scale) {
+            this.scale = scale;
+        }
+
+        public void setAlpha(float alpha) {
+            this.alpha = alpha;
         }
     }
 

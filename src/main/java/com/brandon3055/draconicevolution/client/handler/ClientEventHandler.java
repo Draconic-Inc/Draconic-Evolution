@@ -2,8 +2,13 @@ package com.brandon3055.draconicevolution.client.handler;
 
 
 import codechicken.lib.colour.ColourRGBA;
+import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
+import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.client.ProcessHandlerClient;
+import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
 import com.brandon3055.brandonscore.utils.ModelUtils;
@@ -11,6 +16,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
@@ -20,11 +26,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -33,12 +39,15 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 
+import java.nio.FloatBuffer;
 import java.util.*;
 
 /**
@@ -47,22 +56,25 @@ import java.util.*;
 public class ClientEventHandler {
     public static Map<EntityPlayer, XZPair<Float, Integer>> playerShieldStatus = new HashMap<EntityPlayer, XZPair<Float, Integer>>();
 
+    public static FloatBuffer winPos = GLAllocation.createDirectFloatBuffer(3);
     public static volatile int elapsedTicks;
-    private static float previousFOB = 0f;
-    public static float previousSensitivity = 0;
-    public static boolean bowZoom = false;
-    public static boolean lastTickBowZoom = false;
-    public static int tickSet = 0;
-    public static float energyCrystalAlphaValue = 0f;
-    public static float energyCrystalAlphaTarget = 0f;
     public static boolean playerHoldingWrench = false;
     public static Minecraft mc;
     private static Random rand = new Random();
     public static IBakedModel shieldModel = null;
+    public static BlockPos explosionPos = null;
+    public static double explosionAnimation = 0;
+    public static int explosionTime = 0;
+    public static boolean explosionRetreating = false;
 
     @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
         HudHandler.drawHUD(event);
+
+        if (explosionPos != null && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+            mc = Minecraft.getMinecraft();
+            updateExplosionAnimation(mc, mc.theWorld, event.getResolution(), mc.getRenderPartialTicks());
+        }
     }
 
     @SubscribeEvent
@@ -73,6 +85,10 @@ public class ClientEventHandler {
 
         elapsedTicks++;
         HudHandler.clientTick();
+
+        if (explosionPos != null) {
+            updateExplosion();
+        }
 
         for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = playerShieldStatus.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry<EntityPlayer, XZPair<Float, Integer>> entry = i.next();
@@ -196,24 +212,6 @@ public class ClientEventHandler {
             GlStateManager.popMatrix();
         }
     }
-
-//    @SubscribeEvent
-//    public void renderArmorEvent(RenderPlayerEvent.SetArmorModel event) {
-////        if (event.isCanceled()) {
-////            return;
-////        }
-////        if (event.getStack() != null && (event.getStack().getItem() instanceof DraconicArmor || event.getStack().getItem() instanceof WyvernArmor)) {
-////            ItemArmor itemarmor = (ItemArmor) event.getStack().getItem();
-////
-////
-//////            ModelBiped modelbiped = itemarmor.getArmorModel(event.getEntityPlayer(), event.getStack(), event.getSlot(), event.getRenderer().getMainModel());
-//////            event.getRenderer().setRenderPassModel(modelbiped);
-//////            modelbiped.onGround = event.renderer.modelBipedMain.onGround;
-//////            modelbiped.isRiding = event.renderer.modelBipedMain.isRiding;
-//////            modelbiped.isChild = event.renderer.modelBipedMain.isChild;
-////            event.setResult(1);
-////        }
-//    }
 
     @SubscribeEvent
     public void guiOpenEvent(GuiOpenEvent event) {
@@ -438,93 +436,138 @@ public class ClientEventHandler {
         GlStateManager.disableBlend();
     }
 
+    public static void triggerExplosionEffect(BlockPos pos) {
+        explosionPos = pos;
+        explosionRetreating = false;
+        explosionAnimation = 0;
+        explosionTime = 0;
 
-//    public static CrystalTexture crystalTexture = new CrystalTexture(256, "draconicevolution:crystal_texture");
-//
-//    @SubscribeEvent
-//    public void textureStitch(TextureStitchEvent.Post event) {
-//        event.getMap().mapUploadedSprites.put("draconicevolution:crystal_texture", crystalTexture.texture);
-//    }
+        ProcessHandlerClient.addProcess(new DelayedExecutor(5) {
+            @Override
+            public void execute(Object[] args) {
+                FMLClientHandler.instance().reloadRenderers();
+            }
+        });
+    }
 
+    private void updateExplosion() {
+        if (Minecraft.getMinecraft().isGamePaused()) {
+            return;
+        }
+        explosionTime++;
+        if (!explosionRetreating) {
+            explosionAnimation += 0.05;
+            if (explosionAnimation >= 1) {
+                explosionAnimation = 1;
+                explosionRetreating = true;
+            }
+        }
+        else {
+            if (explosionAnimation <= 0) {
+                explosionAnimation = 0;
+                explosionPos = null;
+                return;
+            }
+            explosionAnimation -= 0.01;
+        }
+    }
 
-//          EnumFacing
-//
-//        if ()
-//
-//        switch () {
-//
-//        case DOWN:
-//        buffer.begin(3, DefaultVertexFormats.POSITION);
-//        buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//        buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-//        buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//        buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//        buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//        tessellator.draw();
-//        break;
-//        case UP:
-//        break;
-//        case NORTH:
-//        break;
-//        case SOUTH:
-//        break;
-//        case WEST:
-//        break;
-//        case EAST:
-//        break;
-//        }
-//
-//
-//
-//                buffer.begin(3, DefaultVertexFormats.POSITION);
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                tessellator.draw();
-//
-//                buffer.begin(3, DefaultVertexFormats.POSITION);
-//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                tessellator.draw();
-//
-//                buffer.begin(3, DefaultVertexFormats.POSITION);
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                tessellator.draw();
-//
-//                buffer.begin(3, DefaultVertexFormats.POSITION);
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                tessellator.draw();
-//
-//                buffer.begin(3, DefaultVertexFormats.POSITION);
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//                tessellator.draw();
-//
-//
-//                buffer.begin(1, DefaultVertexFormats.POSITION);
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//                tessellator.draw();
+    private void updateExplosionAnimation(Minecraft mc, World world, ScaledResolution resolution, float partialTick) {
+        //region TargetPoint Calculation
+
+        Entity entity = mc.getRenderViewEntity();
+        float x = (float)(entity.prevPosX + (entity.posX - entity.prevPosX) * (double)partialTick);
+        float y = (float)(entity.prevPosY + (entity.posY - entity.prevPosY) * (double)partialTick);
+        float z = (float)(entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double)partialTick);
+        Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
+        targetPos.subtract(x, y, z);
+        GLU.gluProject((float) targetPos.x, (float) targetPos.y, (float) targetPos.z, ActiveRenderInfo.MODELVIEW, ActiveRenderInfo.PROJECTION, ActiveRenderInfo.VIEWPORT, winPos);
+        float screenX = winPos.get(0) / mc.displayWidth;
+        float screenY = winPos.get(1) / mc.displayHeight;
+        boolean behind = winPos.get(2) > 1;
+        if (behind) {
+            screenX = -1;
+            screenY = -1;
+        }
+
+        //endregion
+
+        //region No Shader
+        if (!DEShaders.useShaders() || explosionRetreating) {
+            float alpha;
+            if (explosionAnimation <= 0) {
+                alpha = 0;
+            }
+            else if (explosionRetreating) {
+                alpha = (float) explosionAnimation - (partialTick * 0.003F);
+            }
+            else {
+                alpha = (float) explosionAnimation + (partialTick * 0.2F);
+            }
+            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0x00FFFFFF | (int)(alpha * 255F) << 24);
+        }
+        //endregion
+
+        else {
+            DEShaders.explosionOverlayOp.setIntensity((float) explosionAnimation);//(float) (Math.sin(ClientEventHandler.elapsedTicks / 20F) + 1) / 3F);
+            DEShaders.explosionOverlayOp.setScreenPos(screenX, screenY);
+            DEShaders.explosionOverlay.freeBindShader();
+
+            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0xFFFFFFFF);
+
+            ShaderProgram.unbindShader();
+        }
+
+    }
+
 }
+
+
+//        world.spawnParticle(EnumParticleTypes.BARRIER, viewPort.x, viewPort.y, viewPort.z, 0, 0, 0);
+
+//        double xPos = screenX * (double) resolution.getScaledWidth();
+//        double yPos = screenY * (double) resolution.getScaledHeight();
+//        double left = xPos - 10;
+//        double top = yPos - 10;
+//        double right = xPos + 10;
+//        double bottom = yPos + 10;
+
+//        GlStateManager.disableTexture2D();
+//        GlStateManager.enableBlend();
+//        GlStateManager.disableAlpha();
+//        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+//        Tessellator tessellator = Tessellator.getInstance();
+//        VertexBuffer vertexbuffer = tessellator.getBuffer();
+//        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+//        vertexbuffer.pos((double) right, (double) top, -500).color(1F, 1F, 1F, alpha).endVertex();
+//        vertexbuffer.pos((double) left, (double) top, -500).color(1F, 1F, 1F, alpha).endVertex();
+//        vertexbuffer.pos((double) left, (double) bottom, -500).color(1F, 1F, 1F, alpha).endVertex();
+//        vertexbuffer.pos((double) right, (double) bottom, -500).color(1F, 1F, 1F, alpha).endVertex();
+//        tessellator.draw();
+//        GlStateManager.shadeModel(GL11.GL_FLAT);
+//        GlStateManager.disableBlend();
+//        GlStateManager.enableAlpha();
+//        GlStateManager.enableTexture2D();
+
+
+    //region Viewport Calculation
+//    Entity entity = mc.getRenderViewEntity();
+//    double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTick;
+//    double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTick;
+//    double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTick;
+//    Vector3 viewPort = new Vector3(d0, d1 + entity.getEyeHeight(), d2);
+//    Vector3 lookVec = new Vector3(entity.getLookVec());
+//    Vector3 targetPos = Vector3.fromBlockPos(explosionPos);
+//
+//        if (mc.gameSettings.thirdPersonView > 0) {
+//                double tpdp = mc.entityRenderer.thirdPersonDistancePrev;
+//                double d3 = (tpdp + (4.0D - tpdp) * partialTick);
+//
+//                if (mc.gameSettings.thirdPersonView == 1) {
+//                viewPort.add(lookVec.x * -d3, lookVec.y * -d3, lookVec.z * -d3);
+//                } else if (mc.gameSettings.thirdPersonView == 2) {
+//                viewPort.add(lookVec.x * d3, lookVec.y * d3, lookVec.z * d3);
+//                }
+//                }
+//endregion

@@ -9,7 +9,6 @@ import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumFacing;
 
@@ -18,9 +17,9 @@ import net.minecraft.util.EnumFacing;
  */
 public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
 
-    private static ModelBase stabilizerModel = new ModelReactorStabilizerCore();
-    private static ModelBase stabilizerRingModel = new ModelReactorStabilizerRing();
-    private static ModelBase injectorModel = new ModelReactorEnergyInjector();
+    public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore();
+    public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing();
+    public static ModelReactorEnergyInjector injectorModel = new ModelReactorEnergyInjector();
 
     @Override
     public void renderTileEntityAt(TileReactorComponent te, double x, double y, double z, float partialTicks, int destroyStage) {
@@ -43,23 +42,25 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
             GlStateManager.rotate(-90, 1, 0, 0);
         }
 
-        float brightness = 1;
         if (te instanceof TileReactorStabilizer) {
             float coreRotation = te.animRotation + (partialTicks * te.animRotationSpeed);//Remember Partial Ticks here
-            float ringRotation = 0;//Remember Partial Ticks here
-
-            renderStabilizer(coreRotation, ringRotation, brightness, partialTicks, false);
+            float ringRotation = coreRotation * -0.5F;//Remember Partial Ticks here
+            renderStabilizer(coreRotation, ringRotation, te.animRotationSpeed / 15F, partialTicks, false, destroyStage);
         }
         else if (te instanceof TileReactorEnergyInjector) {
-            renderInjector(brightness, partialTicks, false);
+            renderInjector(te.animRotationSpeed / 15F, partialTicks, false, destroyStage);
         }
-
 
         GlStateManager.popMatrix();
     }
 
-    public static void renderStabilizer(float coreRotation, float ringRotation, float brightness, float partialTicks, boolean invRender) {
-        ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER);
+    public static void renderStabilizer(float coreRotation, float ringRotation, float brightness, float partialTicks, boolean invRender, int destroyStage) {
+        if (destroyStage >= 0) {
+            ResourceHelperDE.bindTexture(DESTROY_STAGES[destroyStage]);
+        }
+        else {
+            ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER);
+        }
         stabilizerModel.render(null, coreRotation, brightness, invRender ? 1 : 0, 0, 0, 1F / 16F);
         ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER_RING);
         GlStateManager.rotate(90, 1, 0, 0);
@@ -69,9 +70,23 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
         stabilizerRingModel.render(null, -70F, brightness, invRender ? 1 : 0, 0, 0, 1F / 16F);
     }
 
-    public static void renderInjector(float brightness, float partialTicks, boolean invRender) {
-        ResourceHelperDE.bindTexture("textures/models/model_reactor_power_injector.png");
+    public static void renderInjector(float brightness, float partialTicks, boolean invRender, int destroyStage) {
+        if (destroyStage >= 0) {
+            ResourceHelperDE.bindTexture(DESTROY_STAGES[destroyStage]);
+        }
+        else {
+            ResourceHelperDE.bindTexture(DETextures.REACTOR_INJECTOR);
+        }
         injectorModel.render(null, brightness, invRender ? 1 : 0, 0, 0, 0, 1F / 16F);
     }
 
 }
+
+
+//        if (destroyStage >= 0) {
+//                bindTexture(DESTROY_STAGES[destroyStage]);
+//                ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//                crystalFull.render(ccrs, mat);
+//                ccrs.draw();
+//                return;
+//                }

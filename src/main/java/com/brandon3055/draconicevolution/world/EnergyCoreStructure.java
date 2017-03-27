@@ -148,7 +148,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         //region Render Build Guide
 
-        if (flag == FLAG_RENDER) {//todo find a way to render these from the center out (Maby try rendering them relative to haw far from the player they are)... Actually maby i can use cover's new baking system to make the entire thing a baked model!
+        if (flag == FLAG_RENDER) {
             if (world.isRemote) {
                 renderBuildGuide(name, world, pos, startPos, flag);
             }

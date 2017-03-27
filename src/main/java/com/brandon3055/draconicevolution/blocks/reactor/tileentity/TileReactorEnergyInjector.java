@@ -10,6 +10,15 @@ public class TileReactorEnergyInjector extends TileReactorComponent implements I
 
     @Override
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return super.receiveEnergy(from, maxReceive, simulate);
+        if (simulate) {
+            return maxReceive;
+        }
+
+        TileReactorCore core = getCachedCore();
+
+        if (core != null) {
+            return core.injectEnergy(maxReceive);
+        }
+        return 0;
     }
 }

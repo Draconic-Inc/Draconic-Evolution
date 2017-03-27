@@ -30,6 +30,7 @@ public class ReactorBeamFX extends BCParticle {
     protected int ticksTillDeath = 0;
     protected float fxState;
     private float powerState;
+    private TileReactorCore tile;
     private boolean isInjectorEffect;
     private final EnumFacing facing;
     private double dist;
@@ -41,6 +42,7 @@ public class ReactorBeamFX extends BCParticle {
     public ReactorBeamFX(World worldIn, Vec3D pos, EnumFacing facing, TileReactorCore tile, boolean isInjectorEffect) {
         super(worldIn, pos);
         this.facing = facing;
+        this.tile = tile;
         this.isInjectorEffect = isInjectorEffect;
         this.dist = Utils.getDistanceAtoB(pos, Vec3D.getCenter(tile.getPos()));
         this.rand.setSeed(worldIn.rand.nextLong());
@@ -82,19 +84,20 @@ public class ReactorBeamFX extends BCParticle {
         Vec3D pos1 = new Vec3D(posX - interpPosX, posY - interpPosY, posZ - interpPosZ).offset(facing, -0.35D);
         Vec3D pos2;
         double texOffset = (ClientEventHandler.elapsedTicks + partialTicks) / -150D;
-        double coreSize = 0.9;
+        double coreSize = tile.getCoreDiameter() / 2.3;
 
         if (!DEShaders.useShaders() || !DEConfig.useReactorBeamShaders) {
             renderWithoutShaders(buffer, pos1, coreSize, texOffset);
             return;
         }
 
-        DEShaders.reactorBeamOp.setPower(1);
         DEShaders.reactorBeamOp.setAnimation((ClientEventHandler.elapsedTicks + partialTicks) * 0.02F);
 
         texOffset = 0;
 
         if (isInjectorEffect) {
+            DEShaders.reactorBeamOp.setStartup(fxState);
+            DEShaders.reactorBeamOp.setPower(fxState);
             DEShaders.reactorBeamOp.setFade(1);
             DEShaders.reactorBeamE.freeBindShader();
 //            ResourceHelperDE.bindTexture("textures/particle/reactor_energy_beam.png");
@@ -108,6 +111,8 @@ public class ReactorBeamFX extends BCParticle {
             pos2 = pos1.copy().offset(facing, 0.8D);
 
             //Draw Inner
+            DEShaders.reactorBeamOp.setStartup((float) tile.animExtractState.value);
+            DEShaders.reactorBeamOp.setPower((float) tile.animExtractState.value);
             DEShaders.reactorBeamOp.setFade(1);
             DEShaders.reactorBeamO.freeBindShader();
             renderShaderBeam(buffer, pos1, 0.263F, 0.263F, 0.8D, texOffset, 0, true, extractBeamColour);
@@ -116,6 +121,8 @@ public class ReactorBeamFX extends BCParticle {
             renderShaderBeam(buffer, pos2, 0.263F, coreSize / 2, dist - (coreSize * 1.3), texOffset, 0, false, extractBeamColour);
 
             //Draw Outer
+            DEShaders.reactorBeamOp.setStartup(fxState);
+            DEShaders.reactorBeamOp.setPower(fxState);
             DEShaders.reactorBeamOp.setFade(1);
             DEShaders.reactorBeamI.freeBindShader();
             renderShaderBeam(buffer, pos1, 0.355D, 0.355D, 0.8D, texOffset, 0, true, fieldBeamColour);
@@ -196,7 +203,9 @@ public class ReactorBeamFX extends BCParticle {
             GlStateManager.disableCull();
             GlStateManager.depthMask(false);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+//            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+//            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+
             if (!DEShaders.useShaders()) {
                 GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
                 GlStateManager.glTexParameterf(3553, 10243, 10497.0F);
@@ -208,10 +217,11 @@ public class ReactorBeamFX extends BCParticle {
         @Override
         public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-            GlStateManager.shadeModel(GL11.GL_FLAT);
+//            GlStateManager.shadeModel(GL11.GL_FLAT);
+//            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+
             GlStateManager.enableCull();
             if (!DEShaders.useShaders()) {
-                GlStateManager.shadeModel(GL11.GL_FLAT);
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             }
         }

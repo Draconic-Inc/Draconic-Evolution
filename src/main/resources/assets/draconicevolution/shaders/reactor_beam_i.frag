@@ -3,6 +3,7 @@
 uniform float time;
 uniform float power;
 uniform float fade;
+uniform float startup;
 uniform sampler2D texture;
 #define M_PI 3.1415926535897932384626433832795
 
@@ -43,10 +44,12 @@ void main() {
     color -= (1 - tcoord.y) * (1 - tcoord.y) * 1.5 * (1 - fade);// + 60.5;
 
     float co = abs(1 - (color * 2));
-	float r = 0.4;
+	float r = 0.4 * color;
     float g = 2;
     float b = 4;
-    vec4 c = vec4(co * r, pow(co, 2.0) * g, pow(co ,3.0) * b, max((color - 0.25) * 1.5, 0.05));
+    color *= startup;
+    co *= startup;
+    vec4 c = vec4(co * r, pow(co, 2.0) * g, pow(co ,3.0) * b, max((color - 0.25) * 1.5, 0.2 * tcoord.y * startup));//0.05
 
     gl_FragColor = c;
 }
