@@ -120,6 +120,11 @@ public class DEConfig {
     @ModConfigProperty(category = "Client Settings", name = "disableLoudCelestialManipulator", comment = "If true the range of the celestial manipulator sound effect will be significantly reduced.")
     public static boolean disableLoudCelestialManipulator = false;
 
+    //Category Misc
+
+    @ModConfigProperty(category = "Misc", name = "devLog", comment = "This enables dev log output. I primarily use this for development purposes so it wont be very useful to regular users.")
+    public static boolean devLog = false;
+
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 
     public static void init(){

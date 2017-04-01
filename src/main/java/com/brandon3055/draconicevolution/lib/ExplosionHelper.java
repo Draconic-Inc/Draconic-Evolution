@@ -3,9 +3,9 @@ package com.brandon3055.draconicevolution.lib;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.utils.LinkedHashList;
-import com.brandon3055.brandonscore.utils.LogHelperBC;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.network.PacketExplosionFX;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import gnu.trove.set.hash.THashSet;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;
@@ -155,7 +155,7 @@ public class ExplosionHelper {
      * Call when finished removing blocks to calculate lighting and send chunk updates to the client.
      */
     public void finish() {
-        LogHelperBC.dev("EH: finish");
+        LogHelper.dev("EH: finish");
         RemovalProcess process = new RemovalProcess(this);
         ProcessHandler.addProcess(process);
     }
@@ -184,7 +184,7 @@ public class ExplosionHelper {
 
         @Override
         public void updateProcess() {
-            LogHelperBC.info("Processing chunks ar rad: " + index);
+            LogHelper.dev("Processing chunks ar rad: " + index);
             if (helper.radialRemovalMap.containsKey(index)) {
                 List<BlockPos> list = helper.radialRemovalMap.get(index);
                 for (BlockPos pos : list) {
@@ -222,10 +222,10 @@ public class ExplosionHelper {
         }
 
         private void updateBlocks() {
-            LogHelperBC.startTimer("Updating Blocks");
+            LogHelper.startTimer("Updating Blocks");
 
             try {
-                LogHelperBC.dev("Updating " + helper.blocksToUpdate.size() + " Blocks");
+                LogHelper.dev("Updating " + helper.blocksToUpdate.size() + " Blocks");
                 BlockFalling.fallInstantly = true;
                 for (BlockPos pos : helper.blocksToUpdate) {
                     IBlockState state = helper.serverWorld.getBlockState(pos);
@@ -238,7 +238,7 @@ public class ExplosionHelper {
             catch (Throwable e) {
                 e.printStackTrace();
             }
-            LogHelperBC.stopTimer();
+            LogHelper.stopTimer();
 
             BlockFalling.fallInstantly = false;
 

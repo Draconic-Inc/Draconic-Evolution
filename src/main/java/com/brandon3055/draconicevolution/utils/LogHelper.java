@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.utils;
 
 import codechicken.lib.asm.ObfMapping;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +35,7 @@ public class LogHelper {
     //Standard log entries.
 
     public static void dev(Object object) {
-        if (!ObfMapping.obfuscated) {
+        if (!ObfMapping.obfuscated || DEConfig.devLog) {
             log(Level.INFO, "[DEV]: " + object);
         }
     }
@@ -305,7 +306,7 @@ public class LogHelper {
             value = ns + "ns";
         }
 
-        info("[Timer]: " + timerName + " Took " + value);
+        dev("[Timer]: " + timerName + " Took " + value);
         timerRunning = false;
     }
 }
