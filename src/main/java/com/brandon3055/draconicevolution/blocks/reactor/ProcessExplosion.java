@@ -26,7 +26,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by brandon3055 on 11/03/2017.
@@ -363,13 +366,12 @@ public class ProcessExplosion implements IProcess {
         LogHelper.dev("Removing Blocks!");
         LogHelper.startTimer("Adding Blocks For Removal");
 
-        ExplosionHelper removalHelper = new ExplosionHelper(world);
+        ExplosionHelper removalHelper = new ExplosionHelper(world, origin.getPos());
         int i = 0;
         for (Collection<BlockPos> list : destroyedBlocks) {
             removalHelper.addBlocksForRemoval(list);
             i += list.size();
         }
-        removalHelper.finish();
 
         LogHelper.stopTimer();
         LogHelper.startTimer("Adding Lava");
@@ -384,14 +386,16 @@ public class ProcessExplosion implements IProcess {
         LogHelper.dev("Blocks Removed: " + i);
         LogHelper.stopTimer();
 
+        removalHelper.finish();
+
         isDead = true;
         detonated = true;
 
         final BlockPos pos = origin.getPos();
-        PacketExplosionFX packet = new PacketExplosionFX(pos, radius);
+        PacketExplosionFX packet = new PacketExplosionFX(pos, radius, false);
         DraconicEvolution.network.sendToAllAround(packet, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), radius * 4));
 
-        new DelayedExecutor(60) {
+        new DelayedExecutor(30) {
             @Override
             public void execute(Object[] args) {
                 List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).expand(radius * 2.5, radius * 2.5, radius * 2.5));
