@@ -12,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.network.play.server.SPacketChunkData;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntity;
@@ -177,13 +178,16 @@ public class ExplosionHelper {
         public boolean isDead = false;
         private ExplosionHelper helper;
         int index = 0;
+        private MinecraftServer server;
 
         public RemovalProcess(ExplosionHelper helper) {
             this.helper = helper;
+            this.server = helper.serverWorld.getMinecraftServer();
         }
 
         @Override
         public void updateProcess() {
+            server.currentTime = MinecraftServer.getCurrentTimeMillis();
             LogHelper.dev("Processing chunks ar rad: " + index);
             if (helper.radialRemovalMap.containsKey(index)) {
                 List<BlockPos> list = helper.radialRemovalMap.get(index);

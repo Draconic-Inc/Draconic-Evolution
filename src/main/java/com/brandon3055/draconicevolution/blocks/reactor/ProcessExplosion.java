@@ -17,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -43,6 +44,7 @@ public class ProcessExplosion implements IProcess {
      */
     public final Vec3D origin;
     private final WorldServer world;
+    private final MinecraftServer server;
     private final int minimumDelay;
     public double[] angularResistance;
     public boolean isDead = false;
@@ -81,6 +83,7 @@ public class ProcessExplosion implements IProcess {
     public ProcessExplosion(BlockPos origin, int radius, WorldServer world, int minimumDelayTime) {
         this.origin = Vec3D.getCenter(origin);
         this.world = world;
+        this.server = world.getMinecraftServer();
         this.minimumDelay = minimumDelayTime;
         this.angularResistance = new double[121];
         Arrays.fill(angularResistance, 100);
@@ -100,6 +103,7 @@ public class ProcessExplosion implements IProcess {
 
     @Override
     public void updateProcess() {
+        server.currentTime = MinecraftServer.getCurrentTimeMillis();
         if (startTime == -1) {
             startTime = System.currentTimeMillis();
         }

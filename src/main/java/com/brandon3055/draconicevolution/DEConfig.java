@@ -22,6 +22,7 @@ public class DEConfig {
         comments.put("Tweaks", "Just what the name says. Tweaks. Allows you to tweak stuff.");
         comments.put("Client Settings", "These are client side properties that have no effect server side.");
         comments.put("Stat Tweaks", "These allow you to tweak the stats of the tools, weapons and armor.");
+        comments.put("Misc", "Just some misc settings.");
     }
 
     //Category World
