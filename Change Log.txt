@@ -1,6 +1,13 @@
 -- 2.1.0.x --
 
-######## 2.0.9.x ########
+######## 2.0.9.192 ########
+-Fixed inability to set flow override of flow gate via computer.
+
+######## 2.0.9.191 ########
+-Fixed chaos guardian crash on death.
+-Fixed reactor saturation comparator output.
+
+######## 2.0.9.189 ########
 -Fixed entity detector crashing due to invalid entities in the entity selection list.
 -Fixed fusion crafter crash when unloading/loading chunks.
 -Added config option for dragon draconium dust drop.
