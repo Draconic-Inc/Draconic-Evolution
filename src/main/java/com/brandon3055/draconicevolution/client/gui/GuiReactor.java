@@ -53,6 +53,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
     public void initGui()  {
         super.initGui();
         manager.clear();
+        tile.reactorState.value = TileReactorCore.ReactorState.BEYOND_HOPE;
 
         //region Background Elements
 
@@ -79,14 +80,14 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 10, y, 162, 8, I18n.format("gui.reactor.coreVolume.info")){
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF)
                 .addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.reactor.coreVolume.txt")}).setHoverDelay(2)));
         manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, ""){
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
@@ -97,14 +98,14 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.genRate.info")){
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF)
                 .addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.reactor.genRate.txt")}).setHoverDelay(2)));
         manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, ""){
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
@@ -115,14 +116,14 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.fieldInputRate.info")){
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF)
                 .addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.reactor.inputRate.txt")}).setHoverDelay(2)));
         manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, ""){
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
@@ -134,14 +135,14 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.fuelConversion.info")){
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF)
                 .addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.reactor.conversionRate.txt")}).setHoverDelay(2)));
         manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, ""){
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
@@ -149,6 +150,13 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
                 return Utils.addCommas((int) Math.round(tile.fuelUseRate.value * 1000000D)) + "nb/t";
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
+
+        manager.add(new MGuiLabel(this, guiLeft + 13, guiTop + 139, 161, 77, "Emergency shield reserve is now active but it wont last long! There is no way to stop the overload the stabilizers are fried. I suggest you run!"){
+            @Override
+            public boolean isEnabled() {
+                return tile.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE;
+            }
+        }.setWrap(true).setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
 
         //endregion
 
@@ -314,7 +322,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 175, guiTop + 138, 68, 80, "ETE") {
             @Override
             public String getDisplayString() {
-                return "Estimated\nTime\nUntil\nDetonation\n\n" + TextFormatting.UNDERLINE + (tile.explosionCountdown.value >= 0 ? (tile.explosionCountdown.value / 20) + "s" : "Unknown");
+                return "Estimated\nTime\nUntil\nDetonation\n\n" + TextFormatting.UNDERLINE + (tile.explosionCountdown.value >= 0 ? (tile.explosionCountdown.value / 20) + "s" : "Calculating..");
             }
 
             @Override

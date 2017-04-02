@@ -12,6 +12,8 @@
 -Fixed comparator output for energy core not working correctly.
 -Fixed rotating blocks deleting their data.
 -Added support for IItemHandler
+-Re implemented the Reactor!!!
+-Patched the chaos guardian.
 
 ######## 2.0.8.177 ########
 -Fixed loot core.

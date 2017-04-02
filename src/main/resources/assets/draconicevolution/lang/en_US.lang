@@ -869,7 +869,7 @@ gui.reactor.status.warming_up.info=Warming Up
 gui.reactor.status.running.info=Online
 gui.reactor.status.shutdown.info=Stopping
 gui.reactor.status.cooling.info=Cooling Down
-gui.reactor.status.beyond_hope.info=GTFO! THIS THINGS GOING TO BLOW!!!
+gui.reactor.status.beyond_hope.info=Explosion Imminent!!!
 
 gui.reactor.charge.btn=Charge
 gui.reactor.activate.btn=Activate
