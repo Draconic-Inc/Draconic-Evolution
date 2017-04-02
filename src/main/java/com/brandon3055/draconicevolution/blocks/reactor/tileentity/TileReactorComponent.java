@@ -404,7 +404,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         }, SAT {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                return (int) ((tile.saturation.value / tile.maxSaturation.value) * 15D);
+                return (int) (((double) tile.saturation.value / (double) tile.maxSaturation.value) * 15D);
             }
         }, SAT_INV {
             @Override

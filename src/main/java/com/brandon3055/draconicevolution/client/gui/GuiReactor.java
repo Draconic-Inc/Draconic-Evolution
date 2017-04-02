@@ -53,7 +53,6 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
     public void initGui()  {
         super.initGui();
         manager.clear();
-        tile.reactorState.value = TileReactorCore.ReactorState.BEYOND_HOPE;
 
         //region Background Elements
 
