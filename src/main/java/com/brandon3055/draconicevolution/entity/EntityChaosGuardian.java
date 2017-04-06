@@ -1317,7 +1317,12 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
         bossInfo.removePlayer(player);
     }
 
-//    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean isNonBoss() {
+        return false;
+    }
+
+    //    @SideOnly(Side.CLIENT)
 //    public float getHeadPartYOffset(int p_184667_1_, double[] p_184667_2_, double[] p_184667_3_)
 //    {
 //        IPhase iphase = this.phaseManager.getCurrentPhase();
