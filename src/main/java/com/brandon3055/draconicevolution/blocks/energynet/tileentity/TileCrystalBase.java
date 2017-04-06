@@ -5,10 +5,7 @@ import cofh.api.energy.IEnergyHandler;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IDataRetainerTile;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
-import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
-import com.brandon3055.brandonscore.lib.ITilePlaceListener;
-import com.brandon3055.brandonscore.lib.Vec3B;
+import com.brandon3055.brandonscore.lib.*;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -43,6 +40,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
@@ -680,6 +679,24 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
         }
 
         return 0;
+    }
+
+    //endregion
+
+    //region Capability
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(new EnergyHandlerWrapper(this, facing));
+        }
+
+        return super.getCapability(capability, facing);
     }
 
     //endregion
