@@ -31,9 +31,13 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -55,12 +59,18 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     public final SyncableShort craftingStage = new SyncableShort((short) 0, true, false, false);
     public IFusionRecipe activeRecipe = null;
 
+    protected IItemHandler[] itemHandlers = new IItemHandler[6];
+    {
+        for (EnumFacing facing : EnumFacing.values())
+        itemHandlers[facing.getIndex()] = new SidedInvWrapper(this, facing);
+    }
+
     @SideOnly(Side.CLIENT)
     public LinkedList<EffectTrackerFusionCrafting> effects;
 
     public TileFusionCraftingCore() {
         setInventorySize(2);
-        registerSyncableObject(isCrafting, false);
+        registerSyncableObject(isCrafting, true);
         registerSyncableObject(craftingStage, false);
         setShouldRefreshOnBlockChange();
     }
@@ -124,7 +134,9 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                     pedestal.onCraft();
                 }
                 //Reset tile... Oops
-                isCrafting.value = false;
+                if (!worldObj.isRemote) {
+                    isCrafting.value = false;
+                }
             }
         }
         else if (!worldObj.isRemote && !isCrafting.value && craftingStage.value > 0) {
@@ -445,6 +457,11 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
         LogHelper.dev(getStackInCore(0) + " " +  RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos));
         return 0;
+    }
+
+    @Override
+    protected <T> T getItemHandler(Capability<T> capability, EnumFacing facing) {
+        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemHandlers[facing.getIndex()]);
     }
 }
 
