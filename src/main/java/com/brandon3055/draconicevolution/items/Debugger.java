@@ -91,6 +91,34 @@ public class Debugger extends ItemBCore {
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
 
+        if (!world.isRemote) {
+
+            for (int i = 0; i < 100000000; i++) {
+                //This is the corrected input so x and z are offset by + 2048 and range from 0 to 4096
+                int xIn = itemRand.nextInt(4096);
+                int yIn = itemRand.nextInt(255);
+                int zIn = itemRand.nextInt(4096);
+
+                // Y - 8 bit    X - 12 bit     Z - 12 bit
+                //[11111111] [11111111 1111] [1111 11111111]
+                int posInt = (yIn << 24) | (xIn << 12) | (zIn);
+
+                int yOut = posInt >> 24 & 0xFF;
+                int xOut = posInt >> 12 & 0xFFF;
+                int zOut = posInt & 0xFFF;
+
+                boolean match = xIn == xOut && yIn == yOut && zIn == zOut;
+
+                if (!match) {
+                    LogHelper.error("Match Failed! " + xIn + " " + yIn + " " + zIn + " -> " + xOut + " " + yOut + " " + zOut);
+                }
+            }
+            LogHelper.dev("Done");
+
+
+
+        }
+
 //        if (!world.isRemote) {
 //            PacketCustom packet = new PacketCustom("DE", 1);
 //            LogHelper.dev("Writing Test Data...");
