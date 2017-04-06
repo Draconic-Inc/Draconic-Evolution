@@ -1,5 +1,10 @@
 -- 2.1.0.x --
 
+######## 2.0.10.x ########
+-Fixed energy crystals not working with forge energy.
+-Fixed fusion crafting appearing to stop when you leave the area and return.
+-Fixed broken inventory sidedness on Fusion Crafting Core.
+
 ######## 2.0.9.192 ########
 -Fixed inability to set flow override of flow gate via computer.
 
