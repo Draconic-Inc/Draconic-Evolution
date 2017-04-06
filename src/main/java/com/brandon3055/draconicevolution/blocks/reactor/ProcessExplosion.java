@@ -52,10 +52,10 @@ public class ProcessExplosion implements IProcess {
     public int maxRadius;
     public double circumference = 0;
     public double meanResistance = 0;
-    private boolean calculationComplete = false;
-    private boolean detonated = false;
-    private long startTime = -1;
-    private long calcWait = 0;
+    protected boolean calculationComplete = false;
+    protected boolean detonated = false;
+    protected long startTime = -1;
+    protected long calcWait = 0;
     /**
      * Set this to false to disable the laval dropped by the explosion.
      */
@@ -68,6 +68,8 @@ public class ProcessExplosion implements IProcess {
     public HashSet<BlockPos> scannedCache = new HashSet<>();
 
     private IBlockState lavaState;
+
+    private ProcessThread thread;
 
     /**
      * This process is responsible for handling some extremely large explosions as efficiently as possible.
@@ -106,6 +108,8 @@ public class ProcessExplosion implements IProcess {
         server.currentTime = MinecraftServer.getCurrentTimeMillis();
         if (startTime == -1) {
             startTime = System.currentTimeMillis();
+            thread = new ProcessThread(world);
+            thread.start();
         }
 
         if (calcWait > 0) {
@@ -114,13 +118,13 @@ public class ProcessExplosion implements IProcess {
         }
 
         if (!calculationComplete) {
-            long t = System.currentTimeMillis();
-            updateCalculation();
-            t = System.currentTimeMillis() - t;
-            calcWait = t / 40;
-            if (calcWait > 0) {
-                LogHelper.dev("Explosion Calc loop took " + t + "ms! Waiting " + calcWait + " ticks before continuing");
-            }
+//            long t = System.currentTimeMillis();
+//            updateCalculation();
+//            t = System.currentTimeMillis() - t;
+//            calcWait = t / 40;
+//            if (calcWait > 0) {
+//                LogHelper.dev("Explosion Calc loop took " + t + "ms! Waiting " + calcWait + " ticks before continuing");
+//            }
         }
         else if (minimumDelay == -1) {
             isDead = true;
@@ -420,4 +424,26 @@ public class ProcessExplosion implements IProcess {
     public boolean isDead() {
         return isDead;
     }
+
+    private class ProcessThread extends Thread {
+        private WorldServer world;
+
+        public ProcessThread(WorldServer world) {
+            super("DE Explosion Calculator");
+            this.world = world;
+            this.setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            long t = System.currentTimeMillis();
+            while (!ProcessExplosion.this.calculationComplete) {
+                LogHelper.dev("Calculation Progress: " + Utils.round((((double) radius / (double) maxRadius) * 100D), 100) + "% " + (Runtime.getRuntime().freeMemory() / 1000000));
+                ProcessExplosion.this.updateCalculation();
+            }
+            t = System.currentTimeMillis() - t;
+            LogHelper.dev("Threaded Explosion Calculation took " + t + "ms!");
+        }
+    }
+
 }
