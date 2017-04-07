@@ -18,7 +18,6 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -145,7 +144,7 @@ public class RenderItemEnergyCrystal implements IItemRenderer, IPerspectiveAware
     private static float[] b = {0.3F, 0.58F, 0.1F};
 
     public void bindShader(float partialTicks, int tier) {
-        if (OpenGlHelper.shadersSupported) {
+        if (DEShaders.useShaders()) {
             DEShaders.eCrystalOp.setType(tier);
             DEShaders.eCrystalOp.setAnimation((ClientEventHandler.elapsedTicks + partialTicks) / 50);
             DEShaders.eCrystalOp.setMipmap(0);
@@ -155,12 +154,10 @@ public class RenderItemEnergyCrystal implements IItemRenderer, IPerspectiveAware
             ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_NO_SHADER);
             GlStateManager.color(r[tier], g[tier], b[tier]);
         }
-
-        OpenGlHelper.shadersSupported = true;
     }
 
     private void releaseShader() {
-        if (OpenGlHelper.shadersSupported) {
+        if (DEShaders.useShaders()) {
             ShaderProgram.unbindShader();
         }
     }
