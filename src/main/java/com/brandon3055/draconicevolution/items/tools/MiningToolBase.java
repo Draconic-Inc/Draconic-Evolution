@@ -322,9 +322,23 @@ public abstract class MiningToolBase extends ToolBase {
         }
 
         if (!player.worldObj.isRemote) {
-            EntityLootCore lootCore = new EntityLootCore(player.worldObj, inventoryDynamic);
-            lootCore.setPosition(player.posX, player.posY, player.posZ);
-            player.worldObj.spawnEntityInWorld(lootCore);
+            if (DEConfig.disableLootCores) {
+                for (int i = 0; i < inventoryDynamic.getSizeInventory(); i++) {
+                    ItemStack sis = inventoryDynamic.getStackInSlot(i);
+                    if (sis != null) {
+                        EntityItem item = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, sis);
+                        item.setPickupDelay(0);
+                        player.worldObj.spawnEntityInWorld(item);
+                    }
+                }
+                player.addExperience(inventoryDynamic.xp);
+                inventoryDynamic.clear();
+            }
+            else {
+                EntityLootCore lootCore = new EntityLootCore(player.worldObj, inventoryDynamic);
+                lootCore.setPosition(player.posX, player.posY, player.posZ);
+                player.worldObj.spawnEntityInWorld(lootCore);
+            }
         }
 
         return true;

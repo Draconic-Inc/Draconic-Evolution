@@ -386,8 +386,21 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
         animExtractState.value = 1;
         temperature.value = MathHelper.approachExp(temperature.value, MAX_TEMPERATURE * 1.2, 0.0005);
 
+        if (DEConfig.disableLargeReactorBoom) {
+            if (explosionCountdown.value == -1) {
+                explosionCountdown.value = 1200 + worldObj.rand.nextInt(2400);
+            }
+
+            if (explosionCountdown.value-- <= 0) {
+                minimalBoom();
+            }
+
+            return;
+        }
+
         if (explosionProcess == null) {
-            explosionProcess = new ProcessExplosion(pos, (int) Utils.map(convertedFuel.value + reactableFuel.value, 144, 10368, 50, 350), (WorldServer) worldObj, -1);
+            double radius = Utils.map(convertedFuel.value + reactableFuel.value, 144, 10368, 50D, 350D) * DEConfig.reactorExplosionScale;
+            explosionProcess = new ProcessExplosion(pos, (int) radius, (WorldServer) worldObj, -1);
             ProcessHandler.addProcess(explosionProcess);
             explosionCountdown.value = -1;
             minExplosionDelay = 1200 + worldObj.rand.nextInt(2400);
@@ -627,27 +640,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
                 reactorState.value = ReactorState.BEYOND_HOPE;
             }
             else if (temperature.value >= 350) {
-                IBlockState lava = Blocks.FLOWING_LAVA.getDefaultState();
-                LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
-                if (FluidRegistry.isFluidRegistered("pyrotheum")) {
-                    Fluid pyro = FluidRegistry.getFluid("pyrotheum");
-                    if (pyro.canBePlacedInWorld()) {
-                        lava = pyro.getBlock().getDefaultState();
-                    }
-                }
-
-                Vec3D vec = Vec3D.getCenter(pos);
-                worldObj.setBlockToAir(pos);
-                worldObj.createExplosion(null, vec.x, vec.y, vec.z, 8, true);
-                int c = 25 + worldObj.rand.nextInt(25);
-                for (int i = 0; i < c; i++) {
-                    EntityFallingBlock entity = new EntityFallingBlock(worldObj, vec.x, vec.y, vec.z, lava);
-                    entity.fallTime = 1;
-                    entity.shouldDropItem = false;
-                    double vMod = 0.5 + (2 * worldObj.rand.nextDouble());
-                    entity.addVelocity((worldObj.rand.nextDouble() - 0.5) * vMod, (worldObj.rand.nextDouble() / 1.5) * vMod, (worldObj.rand.nextDouble() - 0.5) * vMod);
-                    worldObj.spawnEntityInWorld(entity);
-                }
+                minimalBoom();
             }
             else {
                 reactorState.value = ReactorState.INVALID;
@@ -855,6 +848,30 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
     }
 
     //endregion
+
+    private void minimalBoom() {
+        IBlockState lava = Blocks.FLOWING_LAVA.getDefaultState();
+        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
+        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
+            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
+            if (pyro.canBePlacedInWorld()) {
+                lava = pyro.getBlock().getDefaultState();
+            }
+        }
+
+        Vec3D vec = Vec3D.getCenter(pos);
+        worldObj.setBlockToAir(pos);
+        worldObj.createExplosion(null, vec.x, vec.y, vec.z, 8, true);
+        int c = 25 + worldObj.rand.nextInt(25);
+        for (int i = 0; i < c; i++) {
+            EntityFallingBlock entity = new EntityFallingBlock(worldObj, vec.x, vec.y, vec.z, lava);
+            entity.fallTime = 1;
+            entity.shouldDropItem = false;
+            double vMod = 0.5 + (2 * worldObj.rand.nextDouble());
+            entity.addVelocity((worldObj.rand.nextDouble() - 0.5) * vMod, (worldObj.rand.nextDouble() / 1.5) * vMod, (worldObj.rand.nextDouble() - 0.5) * vMod);
+            worldObj.spawnEntityInWorld(entity);
+        }
+    }
 
     //region Getters & Setters
 

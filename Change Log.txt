@@ -4,6 +4,11 @@
 -Fixed energy crystals not working with forge energy.
 -Fixed fusion crafting appearing to stop when you leave the area and return.
 -Fixed broken inventory sidedness on Fusion Crafting Core.
+-Reduced max reactor explosion from 350 to 300 block radius to avoid melting lower end systems or systems that are already overloaded by massive mod packs.
+-Reduced reactor explosion ram usage.
+-Added config to disable large reactor explosion.
+-Fixed shader setting not disabling shaders for energy crystal inventory rendering.
+-Added config option to disable loot cores.
 
 ######## 2.0.9.192 ########
 -Fixed inability to set flow override of flow gate via computer.

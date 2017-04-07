@@ -98,6 +98,15 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "dragonDustLootModifier", comment = "This can be used to adjust the amount of draconium dust the dragon drops when killed.\nThe amount dropped will be this number +/- 10%")
     public static int dragonDustLootModifier = 1;
 
+    @ModConfigProperty(category = "Tweaks", name = "disableLargeReactorBoom", comment = "If true will disable the massive reactor explosion and replace it with a much smaller one.")
+    public static boolean disableLargeReactorBoom = false;
+
+    @ModConfigProperty(category = "Tweaks", name = "disableLootCores", comment = "This will disable loot cores (The \"Blobs\" of items dropped by the tools.).")
+    public static boolean disableLootCores = false;
+
+    @ModConfigProperty(category = "Tweaks", name = "reactorExplosionScale", comment = "Allows you to adjust the overall scale of the reactor explosion. use \"disableLargeReactorBoom\" to diaable explosion completely.")
+    public static double reactorExplosionScale = 1;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stores. You should not need to adjust these unless something breaks.")
