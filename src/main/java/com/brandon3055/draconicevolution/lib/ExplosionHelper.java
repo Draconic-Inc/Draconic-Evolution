@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.lib;
 
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import com.brandon3055.brandonscore.utils.LinkedHashList;
+import com.brandon3055.brandonscore.lib.ShortPos;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.network.PacketExplosionFX;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -24,7 +24,10 @@ import net.minecraft.world.chunk.Chunk.EnumCreateEntityType;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Created by brandon3055 on 16/03/2017.
@@ -34,42 +37,50 @@ public class ExplosionHelper {
 
     private final WorldServer serverWorld;
     private BlockPos start;
+    private ShortPos shortPos;
     private THashSet<Chunk> modifiedChunks = new THashSet<>();
-    private HashSet<BlockPos> blocksToUpdate = new HashSet<>();
-    private HashSet<BlockPos> tilesToRemove = new HashSet<>();
+    private HashSet<Integer> blocksToUpdate = new HashSet<>();
+    private HashSet<Integer> tilesToRemove = new HashSet<>();
     private HashMap<ChunkPos, Chunk> chunkCache = new HashMap<>();
     private static final IBlockState AIR = Blocks.AIR.getDefaultState();
-    private Map<Integer, LinkedHashList<BlockPos>> radialRemovalMap = new HashMap<>();
+//    private Map<Integer, LinkedHashList<Integer>> radialRemovalMap = new HashMap<>();
+    public LinkedList<HashSet<Integer>> toRemove = new LinkedList<>();
 
-    public ExplosionHelper(WorldServer serverWorld, BlockPos start) {
+    public ExplosionHelper(WorldServer serverWorld, BlockPos start, ShortPos shortPos) {
         this.serverWorld = serverWorld;
         this.start = start;
+        this.shortPos = shortPos;
     }
 
-    public void addBlock(BlockPos pos) {
-        if (!hasBlockStorage(pos) || isAirBlock(pos)) {
-            return;
-        }
+//    public void addBlock(int iPos) {
+//        BlockPos pos = shortPos.getActualPos(iPos);
+//        if (!hasBlockStorage(pos) || isAirBlock(pos)) {
+//            return;
+//        }
+//
+//        int xd = Math.abs(pos.getX() - start.getX()) / 16;
+//        int zd = Math.abs(pos.getZ() - start.getZ()) / 16;
+//        int d = Math.max(xd, zd);
+//
+//        if (!radialRemovalMap.containsKey(d)) {
+//            radialRemovalMap.put(d, new LinkedHashList<Integer>());
+//        }
+//
+//        LinkedHashList<Integer> list = radialRemovalMap.get(d);
+//        list.add(shortPos.getIntPos(pos));
+//    }
 
-        int xd = Math.abs(pos.getX() - start.getX()) / 16;
-        int zd = Math.abs(pos.getZ() - start.getZ()) / 16;
-        int d = Math.max(xd, zd);
+//    public void addBlocksForRemoval(Collection<Integer> blocksToRemove) {
+//        for (int pos : blocksToRemove) {
+//            addBlock(pos);
+//        }
+//    }
 
-        if (!radialRemovalMap.containsKey(d)) {
-            radialRemovalMap.put(d, new LinkedHashList<BlockPos>());
-        }
-
-        LinkedHashList<BlockPos> list = radialRemovalMap.get(d);
-        list.add(pos);
+    public void setBlocksForRemoval(LinkedList<HashSet<Integer>> list) {
+        this.toRemove = list;
     }
 
-    public void addBlocksForRemoval(Collection<BlockPos> blocksToRemove) {
-        for (BlockPos pos : blocksToRemove) {
-            addBlock(pos);
-        }
-    }
-
-    public void addBlocksForUpdate(Collection<BlockPos> blocksToUpdate) {
+    public void addBlocksForUpdate(Collection<Integer> blocksToUpdate) {
         this.blocksToUpdate.addAll(blocksToUpdate);
     }
 
@@ -188,22 +199,38 @@ public class ExplosionHelper {
         @Override
         public void updateProcess() {
             server.currentTime = MinecraftServer.getCurrentTimeMillis();
-            LogHelper.dev("Processing chunks ar rad: " + index);
-            if (helper.radialRemovalMap.containsKey(index)) {
-                List<BlockPos> list = helper.radialRemovalMap.get(index);
-                for (BlockPos pos : list) {
-                    helper.removeBlock(pos);
+            while (MinecraftServer.getCurrentTimeMillis() - server.currentTime < 50 && helper.toRemove.size() > 0) {
+                LogHelper.dev("Processing chunks ar rad: " + index);
+                HashSet<Integer> set = helper.toRemove.removeFirst();
+                for (int pos : set) {
+                    helper.removeBlock(helper.shortPos.getActualPos(pos));
                 }
-                helper.radialRemovalMap.remove(index);
-                finishChunks();
+                index++;
             }
+            finishChunks();
 
-            if (helper.radialRemovalMap.isEmpty()) {
+            if (helper.toRemove.isEmpty()) {
                 isDead = true;
                 updateBlocks();
             }
 
-            index++;
+
+//            LogHelper.dev("Processing chunks ar rad: " + index);
+//            if (helper.radialRemovalMap.containsKey(index)) {
+//                List<Integer> list = helper.radialRemovalMap.get(index);
+//                for (int pos : list) {
+//                    helper.removeBlock(helper.shortPos.getActualPos(pos));
+//                }
+//                helper.radialRemovalMap.remove(index);
+//                finishChunks();
+//            }
+//
+//            if (helper.radialRemovalMap.isEmpty()) {
+//                isDead = true;
+//                updateBlocks();
+//            }
+//
+//            index++;
         }
 
         public void finishChunks() {
@@ -231,12 +258,12 @@ public class ExplosionHelper {
             try {
                 LogHelper.dev("Updating " + helper.blocksToUpdate.size() + " Blocks");
                 BlockFalling.fallInstantly = true;
-                for (BlockPos pos : helper.blocksToUpdate) {
-                    IBlockState state = helper.serverWorld.getBlockState(pos);
+                for (int pos : helper.blocksToUpdate) {
+                    IBlockState state = helper.serverWorld.getBlockState(helper.shortPos.getActualPos(pos));
                     if (state.getBlock() instanceof BlockFalling) {
-                        state.getBlock().updateTick(helper.serverWorld, pos, state, helper.serverWorld.rand);
+                        state.getBlock().updateTick(helper.serverWorld, helper.shortPos.getActualPos(pos), state, helper.serverWorld.rand);
                     }
-                    state.neighborChanged(helper.serverWorld, pos, Blocks.AIR);
+                    state.neighborChanged(helper.serverWorld, helper.shortPos.getActualPos(pos), Blocks.AIR);
                 }
             }
             catch (Throwable e) {

@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.reactor;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
+import com.brandon3055.brandonscore.lib.ShortPos;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -27,10 +28,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 11/03/2017.
@@ -60,34 +58,48 @@ public class ProcessExplosion implements IProcess {
      * Set this to false to disable the laval dropped by the explosion.
      */
     public boolean lava = true;
-    public HashSet<BlockPos> blocksToUpdate = new HashSet<>();
-    public HashSet<HashSet<BlockPos>> destroyedBlocks = new HashSet<>();
-    public HashSet<BlockPos> lavaPositions = new HashSet<>();
+    public HashSet<Integer> blocksToUpdate = new HashSet<>();
+    public LinkedList<HashSet<Integer>> destroyedBlocks = new LinkedList<>();
+    public HashSet<Integer> lavaPositions = new HashSet<>();
 
-    public HashSet<BlockPos> destroyedCache = new HashSet<>();
-    public HashSet<BlockPos> scannedCache = new HashSet<>();
+    public HashSet<Integer> destroyedCache = new HashSet<>();
+    public HashSet<Integer> scannedCache = new HashSet<>();
+    public ShortPos shortPos;
+//    public File cacheFile;
+//    public BufferedWriter writer;
 
     private IBlockState lavaState;
 
-    private ProcessThread thread;
+//    private ProcessThread thread;
 
     /**
      * This process is responsible for handling some extremely large explosions as efficiently as possible.
      * The absolute max recommended radius is 500 (that's 1000 across) However this has only been tested on a high end system and
      * may crash on systems with less ram and processing power. Recommended max is 350 - 400;
-     * @param origin The origin of the explosion.
-     * @param radius The radius of the explosion (Note depending on terrain the actual destruction radius will be slightly less then this)
-     * @param world The server world.
+     *
+     * @param origin           The origin of the explosion.
+     * @param radius           The radius of the explosion (Note depending on terrain the actual destruction radius will be slightly less then this)
+     * @param world            The server world.
      * @param minimumDelayTime The minimum delay in seconds before detonation.
      *                         If the explosion calculation completes before this time is up the process will wait till this amount of time has based before detonating.
      *                         Use -1 for manual detonation.
      */
     public ProcessExplosion(BlockPos origin, int radius, WorldServer world, int minimumDelayTime) {
         this.origin = Vec3D.getCenter(origin);
+        this.shortPos = new ShortPos(origin);
         this.world = world;
         this.server = world.getMinecraftServer();
         this.minimumDelay = minimumDelayTime;
         this.angularResistance = new double[121];
+//        try {
+//            cacheFile = new File(FileHandler.brandon3055Folder, "explosion_" + origin.toString() + ".tmp");
+//            cacheFile.createNewFile();
+//            writer = new BufferedWriter(new FileWriter(cacheFile));
+////            cacheFile = new RandomAccessFile(file, "rws");
+//        }
+//        catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         Arrays.fill(angularResistance, 100);
 
         LogHelper.info("Explosion Calculation Started for " + radius + " Block radius detonation!");
@@ -108,8 +120,8 @@ public class ProcessExplosion implements IProcess {
         server.currentTime = MinecraftServer.getCurrentTimeMillis();
         if (startTime == -1) {
             startTime = System.currentTimeMillis();
-            thread = new ProcessThread(world);
-            thread.start();
+//            thread = new ProcessThread(world);
+//            thread.start();
         }
 
         if (calcWait > 0) {
@@ -118,13 +130,14 @@ public class ProcessExplosion implements IProcess {
         }
 
         if (!calculationComplete) {
-//            long t = System.currentTimeMillis();
-//            updateCalculation();
-//            t = System.currentTimeMillis() - t;
-//            calcWait = t / 40;
-//            if (calcWait > 0) {
-//                LogHelper.dev("Explosion Calc loop took " + t + "ms! Waiting " + calcWait + " ticks before continuing");
-//            }
+            long t = System.currentTimeMillis();
+            updateCalculation();
+            t = System.currentTimeMillis() - t;
+            calcWait = t / 40;
+            LogHelper.dev("Calculation Progress: " + Utils.round((((double) radius / (double) maxRadius) * 100D), 100) + "% " + (Runtime.getRuntime().freeMemory() / 1000000));
+            if (calcWait > 0) {
+                LogHelper.dev("Explosion Calc loop took " + t + "ms! Waiting " + calcWait + " ticks before continuing");
+            }
         }
         else if (minimumDelay == -1) {
             isDead = true;
@@ -182,6 +195,17 @@ public class ProcessExplosion implements IProcess {
         radius++;
         circumference = 2 * Math.PI * radius;
 
+//        try {
+//            for (int p : destroyedCache) {
+//                writer.write(p+"");
+//                writer.newLine();
+//            }
+//            writer.flush();
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
         destroyedBlocks.add(destroyedCache);
         destroyedCache = new HashSet<>();
         scannedCache = new HashSet<>();
@@ -190,6 +214,7 @@ public class ProcessExplosion implements IProcess {
         if (radius >= maxRadius) {
             LogHelper.dev("Explosion Calculation Completed!");
             calculationComplete = true;
+//            IOUtils.closeQuietly(writer);
         }
     }
 
@@ -291,9 +316,10 @@ public class ProcessExplosion implements IProcess {
         dist--;
         travel++;
         BlockPos pos = posVec.getPos();
+        Integer iPos = shortPos.getIntPos(pos);
         posVec.add(0, traceDir, 0);
 
-        if (scannedCache.contains(pos) || destroyedCache.contains(pos)) {
+        if (scannedCache.contains(iPos) || destroyedCache.contains(iPos)) {
             return trace(posVec, power, dist, traceDir, totalResist, travel);
         }
 
@@ -308,22 +334,22 @@ public class ProcessExplosion implements IProcess {
             r = block.getExplosionResistance(null);
 
             if (effectivePower >= r) {
-                destroyedCache.add(pos);
+                destroyedCache.add(iPos);
             }
             else if (mat == Material.WATER || mat == Material.LAVA) {
                 if (effectivePower > 5) {
-                    destroyedCache.add(pos);
+                    destroyedCache.add(iPos);
                 }
                 else {
-                    blocksToUpdate.add(pos);
+                    blocksToUpdate.add(iPos);
                 }
                 r = 10;
             }
             else {
                 if (mat == Material.LAVA || mat == Material.WATER || block instanceof BlockLiquid || block instanceof IFluidBlock || block instanceof BlockFalling) {
-                    blocksToUpdate.add(pos);
+                    blocksToUpdate.add(iPos);
                 }
-                scannedCache.add(pos);
+                scannedCache.add(iPos);
             }
 
             if (r > 1000) {
@@ -331,7 +357,7 @@ public class ProcessExplosion implements IProcess {
             }
         }
         else {
-            scannedCache.add(pos);
+            scannedCache.add(iPos);
         }
 
         r = (r / radius) / travel;//?
@@ -341,13 +367,13 @@ public class ProcessExplosion implements IProcess {
 
         if (dist == 1 && traceDir == -1 && lava && world.rand.nextInt(250) == 0 && !world.isAirBlock(pos.down())) {
             dist = 0;
-            if (destroyedCache.contains(pos)) {
-                destroyedCache.remove(pos);
+            if (destroyedCache.contains(iPos)) {
+                destroyedCache.remove(iPos);
             }
 //            world.setBlockState(pos, lavaState);
-            lavaPositions.add(pos);
-            blocksToUpdate.add(pos);
-            scannedCache.add(pos);
+            lavaPositions.add(iPos);
+            blocksToUpdate.add(iPos);
+            scannedCache.add(iPos);
         }
 
         return trace(posVec, power, dist, traceDir, totalResist, travel);
@@ -362,6 +388,7 @@ public class ProcessExplosion implements IProcess {
 
     /**
      * Call this once the explosion calculation has completed to manually detonate.
+     *
      * @return false if calculation is not yet complete or detonation has already occurred.
      */
     public boolean detonate() {
@@ -374,18 +401,51 @@ public class ProcessExplosion implements IProcess {
         LogHelper.dev("Removing Blocks!");
         LogHelper.startTimer("Adding Blocks For Removal");
 
-        ExplosionHelper removalHelper = new ExplosionHelper(world, origin.getPos());
+        ExplosionHelper removalHelper = new ExplosionHelper(world, origin.getPos(), shortPos);
         int i = 0;
-        for (Collection<BlockPos> list : destroyedBlocks) {
-            removalHelper.addBlocksForRemoval(list);
-            i += list.size();
-        }
+//        try {
+//            BufferedReader reader = new BufferedReader(new FileReader(cacheFile));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                removalHelper.addBlock(Integer.parseInt(line));
+//                i++;
+//            }
+////            Buffere while (cacheFile.getFilePointer() < cacheFile.length()) {
+////                removalHelper.addBlock(cacheFile.readInt());
+////
+////            }
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        removalHelper.setBlocksForRemoval(destroyedBlocks);
+
+//        while (destroyedBlocks.size() > 0) {
+//            HashSet<Integer> list = destroyedBlocks.get(0);
+//            removalHelper.addBlocksForRemoval(list);
+//            i += list.size();
+//            destroyedBlocks.remove(0);
+//        }
+
+//        Iterator<HashSet<Integer>> iter = destroyedBlocks.iterator();
+//        while (iter.hasNext()) {
+//            HashSet<Integer> list = iter.next();
+//            iter.remove();
+//            removalHelper.addBlocksForRemoval(list);
+//            i += list.size();
+//        }
+        //        for (Collection<Integer> list : destroyedBlocks) {
+//            removalHelper.addBlocksForRemoval(list);
+//            destroyedBlocks.
+//            i += list.size();
+//        }
 
         LogHelper.stopTimer();
         LogHelper.startTimer("Adding Lava");
 
-        for (BlockPos pos : lavaPositions) {
-            world.setBlockState(pos, lavaState);
+        for (Integer pos : lavaPositions) {
+            world.setBlockState(shortPos.getActualPos(pos), lavaState);
         }
 
         LogHelper.stopTimer();
