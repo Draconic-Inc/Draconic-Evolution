@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.items;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.lib.ShortPos;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -93,11 +94,14 @@ public class Debugger extends ItemBCore {
 
         if (!world.isRemote) {
 
-            for (int i = 0; i < 100000000; i++) {
+
+            for (int i = 0; i < 1; i++) {
                 //This is the corrected input so x and z are offset by + 2048 and range from 0 to 4096
-                int xIn = itemRand.nextInt(4096);
-                int yIn = itemRand.nextInt(255);
-                int zIn = itemRand.nextInt(4096);
+
+                ShortPos pos = new ShortPos(new BlockPos(itemRand.nextInt(10000) - 5000, itemRand.nextInt(128), itemRand.nextInt(10000) - 5000));
+                int xIn = pos.getRelativeTo().getX() + (itemRand.nextInt(4096) - 2048);
+                int yIn = pos.getRelativeTo().getY() + itemRand.nextInt(128);
+                int zIn = pos.getRelativeTo().getZ() + (itemRand.nextInt(4096) - 2048);
 
                 // Y - 8 bit    X - 12 bit     Z - 12 bit
                 //[11111111] [11111111 1111] [1111 11111111]
@@ -110,8 +114,17 @@ public class Debugger extends ItemBCore {
                 boolean match = xIn == xOut && yIn == yOut && zIn == zOut;
 
                 if (!match) {
-                    LogHelper.error("Match Failed! " + xIn + " " + yIn + " " + zIn + " -> " + xOut + " " + yOut + " " + zOut);
+                   // LogHelper.error("Match Failed! " + xIn + " " + yIn + " " + zIn + " -> " + xOut + " " + yOut + " " + zOut);
                 }
+
+
+
+                BlockPos posIn = new BlockPos(xIn, yIn, zIn);
+                int iPos = pos.getIntPos(posIn);
+                if (!posIn.equals(pos.getActualPos(iPos))) {
+                    LogHelper.dev("MissMatch " + posIn + " " + pos.getActualPos(iPos));
+                }
+
             }
             LogHelper.dev("Done");
 

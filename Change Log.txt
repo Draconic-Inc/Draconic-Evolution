@@ -9,6 +9,7 @@
 -Added config to disable large reactor explosion.
 -Fixed shader setting not disabling shaders for energy crystal inventory rendering.
 -Added config option to disable loot cores.
+-Fixed a minor rendering bug in fusion crafter gui.
 
 ######## 2.0.9.192 ########
 -Fixed inability to set flow override of flow gate via computer.
