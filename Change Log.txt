@@ -1,6 +1,12 @@
 -- 2.1.0.x --
 
-######## 2.0.10.x ########
+######## 2.0.10.194 ########
+-Fixed reactor not exploding as expected when it hits 100% fuel conversion.
+-Fixed a small mistake in the reactor logic.
+-Hopefully fixed crash when certain mod blocks are destroyed by the reactor explosion.
+-Fixed issue where reactor components disconnect from the core when chunks load/unload
+
+######## 2.0.10.193 ########
 -Fixed energy crystals not working with forge energy.
 -Fixed fusion crafting appearing to stop when you leave the area and return.
 -Fixed broken inventory sidedness on Fusion Crafting Core.

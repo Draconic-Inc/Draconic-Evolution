@@ -131,7 +131,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
                 return Utils.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + "RF/t";
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
-        manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.fuelConversion.info")){
+        manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.fuelConversionRate.info")){
             @Override
             public boolean isEnabled() {
                 return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;

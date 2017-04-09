@@ -213,6 +213,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
                 break;
             case WARMING_UP:
                 initializeStartup();
+                checkBlockIntrusions();
                 break;
             case RUNNING:
                 updateOnlineState();
@@ -228,6 +229,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
                 break;
             case STOPPING:
                 updateOnlineState();
+                checkBlockIntrusions();
                 if (temperature.value <= 2000) {
                     reactorState.value = ReactorState.COOLING;
                 }
@@ -239,6 +241,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
                 }
                 break;
             case BEYOND_HOPE:
+                checkBlockIntrusions();
                 updateCriticalState();
                 break;
         }
@@ -291,6 +294,9 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
     }
 
     private void updateOnlineState() {
+////        convertedFuel.value += reactableFuel.value;
+//        reactableFuel.value = 0;
+
         double coreSat = (double) saturation.value / (double) maxSaturation.value;         //1 = Max Saturation
         double negCSat = (1D - coreSat) * 99D;                                             //99 = Min Saturation. I believe this tops out at 99 because at 100 things would overflow and break.
         double temp50 = Math.min((temperature.value / MAX_TEMPERATURE) * 50, 99);          //50 = Max Temp. Why? TBD
@@ -311,7 +317,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
         double riseAmount = (tempRiseExpo - (tempRiseResist * (1D - convLVL)) + convLVL * 1000) / 10000;
 
         //Apply energy calculations.
-        if (reactorState.value == ReactorState.STOPPING) {
+        if (reactorState.value == ReactorState.STOPPING && convLVL < 1) {
             if (temperature.value <= 2001) {
                 reactorState.value = ReactorState.COOLING;
                 startupInitialized.value = false;
@@ -345,7 +351,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
 
         tempDrainFactor.value = temperature.value > 8000 ? 1 + ((temperature.value - 8000) * (temperature.value - 8000) * 0.0000025) : temperature.value > 2000 ? 1 : temperature.value > 1000 ? (temperature.value - 1000) / 1000 : 0;
 //        double drain = Math.min(tempDrainFactor.value * Math.max(0.01, (1D - convLVL)) * (baseMaxRFt / 10.923556), Double.MAX_VALUE);
-        fieldDrain.value = (int) Math.min(tempDrainFactor.value * Math.max(0.01, (1D - convLVL)) * (baseMaxRFt / 10.923556), (double) Integer.MAX_VALUE); //<(baseMaxRFt/make smaller to increase field power drain)
+        fieldDrain.value = (int) Math.min(tempDrainFactor.value * Math.max(0.01, (1D - coreSat)) * (baseMaxRFt / 10.923556), (double) Integer.MAX_VALUE); //<(baseMaxRFt/make smaller to increase field power drain)
 
         double fieldNegPercent = 1D - (shieldCharge.value / maxShieldCharge.value);
         fieldInputRate.value = fieldDrain.value / fieldNegPercent;
@@ -659,7 +665,6 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
             return;
         }
 
-        temperature.value = MathHelper.approachLinear(temperature.value, 5000, 5);
         if (tick % 100 == 0) {
             double rad = (getCoreDiameter() * 1.05) / 2;
             Iterable<BlockPos> inRange = BlockPos.getAllInBox(pos.add(-rad, -rad, -rad), pos.add(rad + 1, rad + 1, rad + 1));

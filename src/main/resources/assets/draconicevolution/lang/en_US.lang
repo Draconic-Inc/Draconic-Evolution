@@ -861,13 +861,13 @@ gui.reactor.tempLoad.info=Temperature Load Factor
 gui.reactor.coreVolume.info=Core Volume
 gui.reactor.genRate.info=Generation Rate
 gui.reactor.fieldInputRate.info=Field Input Rate
-gui.reactor.fuelConversion.info=Fuel Conversion Rate
+gui.reactor.fuelConversionRate.info=Fuel Conversion Rate
 gui.reactor.status.info=Status
 gui.reactor.status.invalid.info=Invalid Setup
 gui.reactor.status.cold.info=Offline
 gui.reactor.status.warming_up.info=Warming Up
 gui.reactor.status.running.info=Online
-gui.reactor.status.shutdown.info=Stopping
+gui.reactor.status.stopping.info=Stopping
 gui.reactor.status.cooling.info=Cooling Down
 gui.reactor.status.beyond_hope.info=Explosion Imminent!!!
 

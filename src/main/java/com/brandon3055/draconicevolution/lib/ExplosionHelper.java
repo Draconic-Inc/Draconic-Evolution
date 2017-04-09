@@ -107,8 +107,6 @@ public class ExplosionHelper {
 
         ExtendedBlockStorage storage = getBlockStorage(pos);
         storage.set(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, AIR);
-
-        fireBlockBreak(pos, oldState);
 //        removeTileEntity(pos);
 
         setChunkModified(pos);

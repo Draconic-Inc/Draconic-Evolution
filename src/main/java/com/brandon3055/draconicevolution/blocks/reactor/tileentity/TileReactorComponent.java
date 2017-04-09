@@ -137,7 +137,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         }
     }
 
-    public void invalidate() {
+    public void invalidateComponent() {
         isBound.value = false;
     }
 
@@ -252,7 +252,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         }
 
         if (worldObj.getChunkFromBlockCoords(getCorePos()).isLoaded()) {
-            invalidate();
+            invalidateComponent();
         }
 
         return null;
@@ -366,11 +366,8 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             else return new Object[]{false};
         }
         else if (method.equals("setFailSafe")) {
-            if (reactor.canStop()) {
-                reactor.failSafeMode.value = args.checkBoolean(0);
-                return new Object[]{true};
-            }
-            else return new Object[]{false};
+            reactor.failSafeMode.value = args.checkBoolean(0);
+            return new Object[]{true};
         }
         return new Object[]{};
     }
