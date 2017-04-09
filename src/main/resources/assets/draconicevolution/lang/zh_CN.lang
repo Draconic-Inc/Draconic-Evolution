@@ -15,7 +15,7 @@ tile.draconicevolution:entity_detector.name=实体检测器
 tile.draconicevolution:entity_detector.advanced.false.name=实体检测器
 tile.draconicevolution:entity_detector.advanced.true.name=高级实体检测器
 tile.draconicevolution:player_detectorAdvanced.name=高级玩家检测器
-tile.draconicevolution:energy_infuser.name=能量注入器（充电座）
+tile.draconicevolution:energy_infuser.name=能量注入器
 tile.draconicevolution:custom_spawner.name=稳定刷怪笼
 tile.draconicevolution:generator.name=发电机
 tile.draconicevolution:energy_storage_core.name=能量核心
@@ -238,7 +238,7 @@ info.draconicCore1.txt=可以用来稳定刷怪笼
 
 info.mobSoul1.txt=能够用在稳定刷怪笼上以改变刷出生物类型
 info.mobSoul2.txt=或者直接潜行右击以得到一只生物
-info.mobSoul3.txt=(单独使用)
+info.mobSoul3.txt=(一次性使用)
 
 info.arrowInfo.txt=末路之旅
 info.arrowInfo0.txt=普通的弓太重了
@@ -417,7 +417,7 @@ item.draconicevolution:draconicChest.lore=2点燃龙心\n可以飞行，如虎�
 item.draconicevolution:draconicLeggs.lore=2更厚的血皮\n龙魂护佑，快若飞鸟
 item.draconicevolution:draconicBoots.lore=2更高，更快，更强\n龙心之精华让你\n跳得更高
 
-item.draconicevolution:draconicDistructionStaff.lore=2漫长崎岖之路通向真正的力量!\没有更好的工具了，挖矿，战斗，带来死亡!
+item.draconicevolution:draconicDistructionStaff.lore=2漫长崎岖之路通向真正的力量!\n一把集中了挖矿，战斗，死亡的超强工具!
 
 //Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.draconicevolution.EnderDragon.name=末影龙
