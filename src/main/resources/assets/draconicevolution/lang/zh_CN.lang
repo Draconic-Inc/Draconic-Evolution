@@ -862,7 +862,7 @@ gui.reactor.charge.btn=充能
 gui.reactor.activate.btn=激活
 gui.reactor.shutdown.btn=关机
 gui.reactor.rsMode.btn=红石\n模式
-gui.reactor.failSafe.btn=死手模式
+gui.reactor.failSafe.btn=失灵抢救模式
 
 gui.reactor.rsMode_temp.btn=温度
 gui.reactor.rsMode_temp_inv.btn=温度（反转）
