@@ -51,7 +51,7 @@ public class Debugger extends ItemBCore {
         MODES.put(4, "Recipe");
         MODES.put(5, "Clear");
         MODES.put(6, "Mod Wiki");
-        MODES.put(7, "Destroy Universe");
+        MODES.put(7, "Explode");
     }
 
     @Override
@@ -347,7 +347,7 @@ public class Debugger extends ItemBCore {
         MODES.put(4, "Recipe");
         MODES.put(5, "Clear");
         MODES.put(6, "Mod Wiki");
-        MODES.put(7, "Destroy Universe");
+        MODES.put(7, "Explode");
 
         handleRightClick(itemStack, world, player, hand);
 

@@ -100,7 +100,6 @@ public class ReactorBeamFX extends BCParticle {
             DEShaders.reactorBeamOp.setPower(fxState);
             DEShaders.reactorBeamOp.setFade(1);
             DEShaders.reactorBeamE.freeBindShader();
-//            ResourceHelperDE.bindTexture("textures/particle/reactor_energy_beam.png");
             pos2 = pos1.copy().offset(facing, 0.6D);
             renderShaderBeam(buffer, pos1, 0.1F, 0.1F, 0.6D, 0, 0, true, energyBeamColour);
             DEShaders.reactorBeamOp.setFade(0);

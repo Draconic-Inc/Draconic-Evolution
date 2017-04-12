@@ -420,7 +420,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
         }
 
         if (explosionCountdown.value == -1) {
-            explosionCountdown.value = (60*20) + Math.max(0, minExplosionDelay);
+            explosionCountdown.value = (60 * 20) + Math.max(0, minExplosionDelay);
         }
 
 //        if (explosionCountdown.value > 200) explosionCountdown.value = 200;
@@ -842,6 +842,20 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
                 LogHelper.dev("Reactor: Structure Validation Failed!!!");
                 return false;
             }
+
+            for (SyncableVec3I vec : componentPositions) {
+                pos = getOffsetPos(vec.vec);
+                tile = worldObj.getTileEntity(pos);
+
+                if (tile instanceof TileReactorEnergyInjector && !((TileReactorEnergyInjector) tile).isBound.value) {
+                    ((TileReactorEnergyInjector) tile).bindToCore(this);
+                }
+
+                if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).getCorePos().equals(this.pos) && !((TileReactorComponent) tile).isBound.value) {
+                    LogHelper.warn("Detected a reactor component in an invalid state. This is likely due to a recent bug that has since been fixed. The state of this component will now be corrected.");
+                    ((TileReactorComponent) tile).bindToCore(this);
+                }
+            }
         }
 
 //Dont think i need to do anything with the injectors.
@@ -999,8 +1013,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
         STOPPING(true), /**
          * The reactor is offline but is still cooling down.
          */
-        COOLING(true),
-        BEYOND_HOPE(true);
+        COOLING(true), BEYOND_HOPE(true);
 
         private final boolean shieldActive;
 
