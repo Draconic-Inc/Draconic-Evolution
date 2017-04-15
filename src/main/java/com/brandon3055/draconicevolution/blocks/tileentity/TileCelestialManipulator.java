@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -217,6 +218,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 }
                 energyStorage.modifyEnergyStored(-256000);
                 toggleWeather(false, false);
+                LogHelper.info("Stopped rain! Cause: " + pos);
                 return;
             case "START_RAIN":
                 if (worldObj.isRaining()) {
@@ -229,6 +231,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 }
                 energyStorage.modifyEnergyStored(-256000);
                 toggleWeather(true, false);
+                LogHelper.info("Started rain! Cause: " + pos);
                 return;
             case "START_STORM":
                 if (worldObj.isRaining() && worldObj.isThundering()) {
@@ -241,27 +244,35 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 }
                 energyStorage.modifyEnergyStored(-384000);
                 toggleWeather(true, true);
+                LogHelper.info("Started storm! Cause: " + pos);
                 return;
             case "SUN_RISE":
                 startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(0));
+                LogHelper.info("Set time to sunrise! Cause: " + pos);
                 break;
             case "MID_DAY":
                 startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(5900));
+                LogHelper.info("Set time to midday! Cause: " + pos);
                 break;
             case "SUN_SET":
                 startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(12000));
+                LogHelper.info("Set time to sunset! Cause: " + pos);
                 break;
             case "MOON_RISE":
                 startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(13000));
+                LogHelper.info("Set time to moonrise! Cause: " + pos);
                 break;
             case "MIDNIGHT":
                 startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(17900));
+                LogHelper.info("Set time to midnight! Cause: " + pos);
                 break;
             case "MOON_SET":
                 startTimeWarp(worldObj.getWorldTime() + calculateTimeTill(22500));
+                LogHelper.info("Set time to moonset! Cause: " + pos);
                 break;
             case "SKIP_24":
                 startTimeWarp(worldObj.getWorldTime() + 24000);
+                LogHelper.info("Skipped one day! Cause: " + pos);
                 break;
         }
     }
