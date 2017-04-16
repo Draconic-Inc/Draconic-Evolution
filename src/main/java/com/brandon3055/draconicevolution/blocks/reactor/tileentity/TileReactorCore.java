@@ -76,11 +76,11 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
     /**
      * Remaining fuel that is yet to be consumed by the reaction.
      */
-    public final SyncableDouble reactableFuel = new SyncableDouble(0, false, true);
+    public final SyncableDouble reactableFuel = new SyncableDouble(0, true, false);
     /**
      * Fuel that has been converted to chaos by the reaction.
      */
-    public final SyncableDouble convertedFuel = new SyncableDouble(0, false, true);
+    public final SyncableDouble convertedFuel = new SyncableDouble(0, true, false);
     public final SyncableDouble temperature = new SyncableDouble(20, true, false);
     public static final double MAX_TEMPERATURE = 10000;
 

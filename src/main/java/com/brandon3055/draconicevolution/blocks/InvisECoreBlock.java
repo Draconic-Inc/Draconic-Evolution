@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
+import com.brandon3055.draconicevolution.world.EnergyCoreStructure;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
@@ -53,6 +54,10 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
 
     @Override
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
+        if (EnergyCoreStructure.coreForming) {
+            return;
+        }
+
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).getController() == null) {
             ((TileInvisECoreBlock) tile).revert();
@@ -180,7 +185,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).blockName.equals("minecraft:glass")) {
-            return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+            return NULL_AABB;
         }
 
         return super.getCollisionBoundingBox(state, world, pos);

@@ -36,6 +36,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private final int FLAG_REVERT = 2;
     private MultiBlockStorage[] structureTiers = new MultiBlockStorage[8];
     private TileEnergyStorageCore core;
+    public static boolean coreForming = false;
 
     public EnergyCoreStructure initialize(TileEnergyStorageCore core) {
         this.core = core;
@@ -122,7 +123,9 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     }
 
     public void formTier(int tier) {
+        coreForming = true;
         forTier(tier, FLAG_FORME);
+        coreForming = false;
     }
 
     public void revertTier(int tier) {

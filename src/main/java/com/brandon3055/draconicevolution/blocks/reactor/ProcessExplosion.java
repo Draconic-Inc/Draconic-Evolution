@@ -156,13 +156,14 @@ public class ProcessExplosion implements IProcess {
 
 //        LogHelper.startTimer("Loop: " + radius);
 
-        Vec3D posVec = new Vec3D();
+        Vec3D posVecUp = new Vec3D();
+        Vec3D posVecDown = new Vec3D();
         for (int x = originPos.getX() - radius; x < originPos.getX() + radius; x++) {
             for (int z = originPos.getZ() - radius; z < originPos.getZ() + radius; z++) {
                 double dist = Utils.getDistanceAtoB(x, z, originPos.getX(), originPos.getZ());
                 if (dist < radius && dist >= radius - 1) {
-                    posVec.set(x + 0.5, origin.y, z + 0.5);
-                    double radialAngle = getRadialAngle(posVec);
+                    posVecUp.set(x + 0.5, origin.y, z + 0.5);
+                    double radialAngle = getRadialAngle(posVecUp);
                     double radialResistance = getRadialResistance(radialAngle);
                     double angularLoad = (meanResistance / radialResistance) * 1;
                     double radialPos = 1D - (radius / (double) maxRadius);
@@ -180,8 +181,9 @@ public class ProcessExplosion implements IProcess {
                     heightDown += (Math.abs(sim) * 4) + world.rand.nextDouble();
                     heightUp += (Math.abs(sim) * 4) + world.rand.nextDouble();
 
-                    double resist = trace(posVec.copy(), power/* * (1 + 8 * radialPos)*/, (int) heightUp * 3, 1, 0, 0);
-                    resist += trace(posVec.subtract(0, 1, 0), power, (int) heightDown, -1, 0, 0);
+                    posVecDown.set(posVecUp);
+                    double resist = trace(posVecUp, power/* * (1 + 8 * radialPos)*/, (int) heightUp * 3, 1, 0, 0);
+                    resist += trace(posVecDown.subtract(0, 1, 0), power, (int) heightDown, -1, 0, 0);
                     resist *= 1 / angularLoad;
 
                     if (radialPos < 0.8) {
@@ -315,13 +317,14 @@ public class ProcessExplosion implements IProcess {
 
         dist--;
         travel++;
-        BlockPos pos = posVec.getPos();
-        Integer iPos = shortPos.getIntPos(pos);
+        Integer iPos = shortPos.getIntPos(posVec);
         posVec.add(0, traceDir, 0);
 
         if (scannedCache.contains(iPos) || destroyedCache.contains(iPos)) {
             return trace(posVec, power, dist, traceDir, totalResist, travel);
         }
+
+        BlockPos pos = posVec.getPos();
 
         double r = 1;
 
