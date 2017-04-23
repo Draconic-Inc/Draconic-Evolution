@@ -26,7 +26,7 @@ public class DraconicEvolution {
     public static final String MOD_PREFIX = MODID.toLowerCase() + ":";
     public static final String PROXY_CLIENT = "com.brandon3055.draconicevolution.client.ClientProxy";
     public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.CommonProxy";
-    public static final String DEPENDENCIES = "after:NotEnoughItems;after:ThermalExpansion;after:ThermalFoundation;required-after:brandonscore@[" + BrandonsCore.VERSION + ",);";
+    public static final String DEPENDENCIES = "after:NotEnoughItems;before:ThermalExpansion;after:ThermalFoundation;required-after:brandonscore@[" + BrandonsCore.VERSION + ",);";
     public static final String GUI_FACTORY = "";//TODO com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
     public static final String networkChannelName = "DEvolutionNC";
     //region Misc Fields
@@ -66,8 +66,6 @@ public class DraconicEvolution {
         featureParser.registerFeatures();
         DEConfig.init();
 
-        OreHandler.initialize();
-
         proxy.preInit(event);
         proxy.registerParticles();
     }
@@ -76,6 +74,7 @@ public class DraconicEvolution {
     public void init(FMLInitializationEvent event) {
         DEWorldGenHandler.initialize();
         GuiHandler.initialize();
+        OreHandler.initialize();
 
         proxy.init(event);
     }

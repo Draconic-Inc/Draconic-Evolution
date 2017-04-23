@@ -4,7 +4,7 @@ import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.properties.PropertyString;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.brandonscore.config.IRegisterMyOwnTiles;
+import com.brandon3055.brandonscore.config.ITileRegisterer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileParticleGenerator;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class ParticleGenerator extends BlockBCore implements ITileEntityProvider, IRegisterMyOwnTiles, ICustomRender {
+public class ParticleGenerator extends BlockBCore implements ITileEntityProvider, ITileRegisterer, ICustomRender {
     public static final PropertyString TYPE = new PropertyString("type", "normal", "inverted", "stabilizer", "stabilizer2");
 
     public ParticleGenerator() {

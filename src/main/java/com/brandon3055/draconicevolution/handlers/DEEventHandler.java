@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.config.ModFeatureParser;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
+import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -35,7 +36,8 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class DEEventHandler {
-//
+
+    public static int serverTicks = 0;
 //    @SubscribeEvent
 //    public void explodeEvent(ExplosionEvent event) {
 ////        event.setCanceled(true);
@@ -44,9 +46,11 @@ public class DEEventHandler {
 
     //region Ticking
 
+    @SubscribeEvent
     public void serverTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             CrystalUpdateBatcher.tickEnd();
+            serverTicks++;
         }
     }
 
@@ -59,10 +63,7 @@ public class DEEventHandler {
 
     }
 
-    @SubscribeEvent
-    public void login(PlayerEvent.PlayerLoggedInEvent event) {
 
-    }
 
 
 
@@ -179,20 +180,23 @@ public class DEEventHandler {
             event.setCanceled(true);
             return;
         }
-        if (!event.getEntity().worldObj.isRemote && ((event.getEntity() instanceof EntityDragon) || (EntityList.getEntityString(event.getEntity()) != null && !EntityList.getEntityString(event.getEntity()).isEmpty() && EntityList.getEntityString(event.getEntity()).equals("HardcoreEnderExpansion.Dragon")))) {
+        if (!event.getEntity().worldObj.isRemote && ((event.getEntity() instanceof EntityDragon || event.getEntity() instanceof EntityChaosGuardian) || (EntityList.getEntityString(event.getEntity()) != null && !EntityList.getEntityString(event.getEntity()).isEmpty() && EntityList.getEntityString(event.getEntity()).equals("HardcoreEnderExpansion.Dragon")))) {
             deadDragons.add(event.getEntity().getUniqueID());
             if (ModFeatureParser.isEnabled(DEFeatures.dragonHeart)) {
                 EntityDragonHeart heart = new EntityDragonHeart(event.getEntity().worldObj, event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ);
                 event.getEntity().worldObj.spawnEntityInWorld(heart);
             }
-            DragonFightManager manager = ((EntityDragon)event.getEntity()).getFightManager();
-            if (DEConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
-                event.getEntity().worldObj.setBlockState(event.getEntity().worldObj.getHeight(WorldGenEndPodium.END_PODIUM_LOCATION).add(0, 0, -4), Blocks.DRAGON_EGG.getDefaultState());
+
+            if (event.getEntity() instanceof EntityDragon) {
+                DragonFightManager manager = ((EntityDragon) event.getEntity()).getFightManager();
+                if (DEConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
+                    event.getEntity().worldObj.setBlockState(event.getEntity().worldObj.getHeight(WorldGenEndPodium.END_PODIUM_LOCATION).add(0, 0, -4), Blocks.DRAGON_EGG.getDefaultState());
+                }
             }
 
-            if (ModFeatureParser.isEnabled(DEFeatures.draconiumDust)) {
-                int count = 30 + event.getEntity().worldObj.rand.nextInt(30);
-                for (int i = 0; i < count; i++) {
+            if (ModFeatureParser.isEnabled(DEFeatures.draconiumDust) && DEConfig.dragonDustLootModifier > 0) {
+                double count = (DEConfig.dragonDustLootModifier * 0.9D) + (event.getEntity().worldObj.rand.nextDouble() * (DEConfig.dragonDustLootModifier * 0.2));
+                for (int i = 0; i < (int) count; i++) {
                     float mm = 0.3F;
                     EntityItem item = new EntityItem(event.getEntity().worldObj, event.getEntity().posX - 2 + event.getEntity().worldObj.rand.nextInt(4), event.getEntity().posY - 2 + event.getEntity().worldObj.rand.nextInt(4), event.getEntity().posZ - 2 + event.getEntity().worldObj.rand.nextInt(4), new ItemStack(DEFeatures.draconiumDust));
                     item.motionX = mm * ((((float) event.getEntity().worldObj.rand.nextInt(100)) / 100F) - 0.5F);
@@ -276,7 +280,7 @@ public class DEEventHandler {
             return;
         }
 
-        if (BinderHandler.onBinderUse(event.getEntityPlayer(), event.getHand(), event.getWorld(), event.getPos(), event.getItemStack())) {
+        if (BinderHandler.onBinderUse(event.getEntityPlayer(), event.getHand(), event.getWorld(), event.getPos(), stack, event.getFace())) {
             event.setCanceled(true);
         }
     }
@@ -373,6 +377,20 @@ public class DEEventHandler {
         if (DEConfig.expensiveDragonRitual && event.getItemStack() != null && event.getItemStack().getItem() == Items.END_CRYSTAL) {
             event.getToolTip().add(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution.");
         }
+
+//        ItemStack stack = event.getItemStack();
+//        if (stack != null) {
+//            int[] ids = OreDictionary.getOreIDs(stack);
+//
+//            event.getToolTip().add("Is Block: " + (stack.getItem() instanceof ItemBlock));
+//            event.getToolTip().add(stack.getItem().getRegistryName() + "");
+//            LogHelper.info(Item.REGISTRY.getObject(new ResourceLocation("dragonmounts:dragon_egg")));
+//            LogHelper.info(Block.REGISTRY.getObject(new ResourceLocation("dragonmounts:dragon_egg")));
+//            LogHelper.info(stack.getItem());
+//            for (int id : ids) {
+//                event.getToolTip().add(OreDictionary.getOreName(id));
+//            }
+//        }
 
 //        if (DEConfig.showUnlocalizedNames) event.toolTip.add(event.itemStack.getUnlocalizedName());
 //        if (DraconicEvolution.debug && event.itemStack.hasTagCompound()) {
@@ -503,4 +521,15 @@ public class DEEventHandler {
         }
     }*/
     //endregion
+
+    @SubscribeEvent
+    public void login(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event) {
+        if (!event.player.onGround) {
+            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.player);
+            if (summery != null && summery.flight[0]) {
+                event.player.capabilities.isFlying = true;
+                event.player.sendPlayerAbilities();
+            }
+        }
+    }
 }

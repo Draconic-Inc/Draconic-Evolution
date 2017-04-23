@@ -2,46 +2,61 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IDataRetainerTile;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
-import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.ITilePlaceListener;
-import com.brandon3055.brandonscore.lib.Vec3B;
+import com.brandon3055.brandonscore.lib.*;
+import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
+import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerClient;
+import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerServer;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
+import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.util.*;
 
 import static com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.ID_CRYSTAL_MAP;
 
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public abstract class TileCrystalBase extends TileBCBase implements IDataRetainerTile, ITilePlaceListener, ICrystalLink, IEnergyHandler, ITickable {
+public abstract class TileCrystalBase extends TileBCBase implements IDataRetainerTile, ITilePlaceListener, ICrystalLink, IEnergyHandler, ITickable, IActivatableTile {
 
     //region Stats
 
@@ -55,11 +70,14 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 
     //endregion
 
+    protected int tick = 0;
     private int crystalTier = -1;
     protected LinkedList<Vec3B> linkedCrystals = new LinkedList<>();
+    public LinkedList<int[]> transferRatesArrays = new LinkedList<>();
+    public LinkedList<Byte> flowRates = new LinkedList<>();
     private LinkedList<BlockPos> linkedPosCache = null;
     protected EnergyStorage energyStorage = new EnergyStorage(0);
-    private ENetFXHandler fxHandler;
+    protected ENetFXHandler fxHandler;
 
     public TileCrystalBase() {
         this.setShouldRefreshOnBlockChange();
@@ -71,7 +89,96 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     @Override
     public void update() {
         detectAndSendChanges();
+        if (linkedCrystals.size() != transferRatesArrays.size() && !worldObj.isRemote) {
+            rebuildTransferList();
+        }
+
+        balanceLinkedDevices();
         fxHandler.update();
+
+        if (!worldObj.isRemote && DEEventHandler.serverTicks % 10 == 0) {
+            flowRates.clear();
+            for (int i = 0; i < linkedCrystals.size(); i++) {
+                flowRates.add(calculateFlow(i));
+            }
+            fxHandler.detectAndSendChanges();
+        }
+
+//        if (worldObj.getClosestPlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, false) != null) {
+//            LogHelper.dev(flowRates+" "+linkedCrystals);
+//        }
+
+        tick++;
+    }
+
+    public void balanceLinkedDevices() {
+        if (worldObj.isRemote) {
+            return;
+        }
+        for (BlockPos linkedPos : getLinks()) {
+            TileEntity linkedTile = worldObj.getTileEntity(linkedPos);
+
+            if (!(linkedTile instanceof ICrystalLink)) {
+                if (worldObj.getChunkFromBlockCoords(linkedPos).isLoaded()) {
+                    breakLink(linkedPos);
+                    return;
+                }
+                else {
+                    continue;
+                }
+            }
+
+            ICrystalLink linkedCrystal = (ICrystalLink) linkedTile;
+            double thisCap = (double) getEnergyStored() / (double) getMaxEnergyStored();
+            double thatCap = (double) linkedCrystal.getEnergyStored() / (double) linkedCrystal.getMaxEnergyStored();
+            double diff = thisCap - thatCap;
+
+            if (linkedCrystal.balanceMode() == 0 && thatCap < 1) {
+                transferRatesArrays.get(linkedPosCache.indexOf(linkedPos))[tick % 20] = balanceTransfer(linkedCrystal, 1 - thatCap);
+                continue;
+            }
+
+            if (diff <= 0 || linkedCrystal.balanceMode() == 2) {
+                transferRatesArrays.get(linkedPosCache.indexOf(linkedPos))[tick % 20] = 0;
+                continue;
+            }
+
+            transferRatesArrays.get(linkedPosCache.indexOf(linkedPos))[tick % 20] = balanceTransfer(linkedCrystal, diff);
+        }
+    }
+
+    protected int balanceTransfer(ICrystalLink sendTo, double capDiff) {
+        int stored = getEnergyStored();
+
+        if (stored <= 0) {
+            return 0;
+        }
+
+        double transferCap = Math.min(getMaxEnergyStored(), sendTo.getMaxEnergyStored());
+        int energyToEqual = (int) (((capDiff) * (double) sendTo.getMaxEnergyStored()) / 2.1);//The / 2 is needed! diff/2 == amount to equal
+        double maxFlow = Math.min(energyToEqual, Math.min(transferCap, sendTo.getMaxEnergyStored() - sendTo.getEnergyStored()));
+
+        double flowRate = Math.min(1, capDiff * 10D); //Offsets the flow rate so bellow 10% there is max flow.
+        int transfer = (int) (flowRate * maxFlow);
+
+        double minFlow = 0.002 * transferCap;
+
+        if (transfer < minFlow) {
+            transfer = (int) Math.min(minFlow, energyToEqual);
+        }
+
+        sendTo.modifyEnergyStored((transfer = energyStorage.extractEnergy(transfer, false)));
+
+        return transfer;
+    }
+
+    public void rebuildTransferList() {
+        transferRatesArrays.clear();
+        flowRates.clear();
+        for (int i = 0; i < linkedCrystals.size(); i++) {
+            transferRatesArrays.add(new int[20]);
+            flowRates.add((byte)0);
+        }
     }
 
     //endregion
@@ -81,24 +188,25 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     @Nonnull
     @Override
     public List<BlockPos> getLinks() {
-        if (linkedPosCache == null) { //TODO make sure linkedPosCache is set null client side when the links change!
+        if (linkedPosCache == null || linkedPosCache.size() != linkedCrystals.size()) { //TODO make sure linkedPosCache is set null client side when the links change!
             linkedPosCache = new LinkedList<>();
             for (Vec3B offset : linkedCrystals) {
-                linkedPosCache.add(new BlockPos(fromOffset(offset)));
+                linkedPosCache.add(fromOffset(offset));
             }
             fxHandler.reloadConnections();
+            updateBlock();
         }
         return linkedPosCache;
     }
 
     //Remember: This is called when a binder linked to "this" tile is used on another block.
     @Override
-    public boolean binderUsed(EntityPlayer player, BlockPos linkTarget) {
+    public boolean binderUsed(EntityPlayer player, BlockPos linkTarget, EnumFacing sideClicked) {
         TileEntity te = worldObj.getTileEntity(linkTarget);
 
         //region Check if the target device is valid
         if (!(te instanceof ICrystalLink)) {
-            ChatHelper.tranClient(player, "eNet.de.deviceInvalid.info", TextFormatting.RED);
+            ChatHelper.indexedTrans(player, "eNet.de.deviceInvalid.info", TextFormatting.RED, -442611624);
             return false;
         }
         //endregion
@@ -107,49 +215,49 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 
         //region Check if the devices are already linked and if they are break the link
         if (getLinks().contains(te.getPos())) {
-            breakLink(target);
-            target.breakLink(this);
-            ChatHelper.tranClient(player, "eNet.de.linkBroken.info", TextFormatting.GREEN);
+            breakLink(te.getPos());
+            target.breakLink(pos);
+            ChatHelper.indexedTrans(player, "eNet.de.linkBroken.info", TextFormatting.GREEN, -442611624);
             return true;
         }
         //endregion
 
         //region Check if both devices to see if ether of them have reached their connection limit.
         if (getLinks().size() >= maxLinks()) {
-            ChatHelper.tranClient(player, "eNet.de.linkLimitReachedThis.info", TextFormatting.RED);
+            ChatHelper.indexedTrans(player, "eNet.de.linkLimitReachedThis.info", TextFormatting.RED, -442611624);
             return false;
         }
         else if (target.getLinks().size() >= target.maxLinks()) {
-            ChatHelper.tranClient(player, "eNet.de.linkLimitReachedTarget.info", TextFormatting.RED);
+            ChatHelper.indexedTrans(player, "eNet.de.linkLimitReachedTarget.info", TextFormatting.RED, -442611624);
             return false;
         }
         //endregion
 
         //region Check both devices are in range
         if (!Utils.inRangeSphere(pos, linkTarget, maxLinkRange())) {
-            ChatHelper.tranClient(player, "eNet.de.thisRangeLimit.info", TextFormatting.RED);
+            ChatHelper.indexedTrans(player, "eNet.de.thisRangeLimit.info", TextFormatting.RED, -442611624);
             return false;
         }
         else if (!Utils.inRangeSphere(pos, linkTarget, target.maxLinkRange())) {
-            ChatHelper.tranClient(player, "eNet.de.targetRangeLimit.info", TextFormatting.RED);
+            ChatHelper.indexedTrans(player, "eNet.de.targetRangeLimit.info", TextFormatting.RED, -442611624);
             return false;
         }
         //endregion
 
         //region All checks have passed. Make the link!
         if (!target.createLink(this)) {
-            ChatHelper.tranClient(player, "eNet.de.linkFailedUnknown.info", TextFormatting.RED);
+            ChatHelper.indexedTrans(player, "eNet.de.linkFailedUnknown.info", TextFormatting.RED, -442611624);
             return false;
         }
 
         if (!createLink(target)) {
             //Ensure we don't leave a half linked device if this fails.
-            target.breakLink(this);
-            ChatHelper.tranClient(player, "eNet.de.linkFailedUnknown.info", TextFormatting.RED);
+            target.breakLink(pos);
+            ChatHelper.indexedTrans(player, "eNet.de.linkFailedUnknown.info", TextFormatting.RED, -442611624);
             return false;
         }
 
-        ChatHelper.tranClient(player, "eNet.de.devicesLinked.info", TextFormatting.GREEN);
+        ChatHelper.indexedTrans(player, "eNet.de.devicesLinked.info", TextFormatting.GREEN, -442611624);
         return true;
         //endregion
     }
@@ -160,15 +268,14 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
         linkedCrystals.add(offset);
         linkedPosCache = null;
         updateBlock();
+        dirtyBlock();
+        fxHandler.reloadConnections();
         return true;
     }
 
     @Override
-    public void breakLink(ICrystalLink otherCrystal) {
-//        if (worldObj.isRemote) {
-//            return;
-//        }
-        Vec3B offset = getOffset(((TileEntity) otherCrystal).getPos());
+    public void breakLink(BlockPos otherCrystal) {
+        Vec3B offset = getOffset(otherCrystal);
 
         if (linkedCrystals.contains(offset)) {
             linkedCrystals.remove(offset);
@@ -176,6 +283,8 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 
         linkedPosCache = null;
         updateBlock();
+        dirtyBlock();
+        fxHandler.reloadConnections();
     }
 
     //endregion
@@ -251,11 +360,11 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     private int getCapacityForTier(int tier) {
         switch (tier) {
             case 0:
-                return 512000;
+                return 4000000;
             case 1:
-                return 4096000;
+                return 16000000;
             case 2:
-                return 32768000;
+                return 64000000;
         }
         return 0;
     }
@@ -278,6 +387,55 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
         return pos.subtract(targetOffset.getPos());
     }
 
+    public ENetFXHandler getFxHandler() {
+        return fxHandler;
+    }
+
+    public byte calculateFlow(int index) {
+        long sum = 0;
+        for (int transfer : transferRatesArrays.get(index)) {
+            sum += transfer;
+        }
+
+        double rf = (sum / 20L);
+        double d = rf / ((getMaxEnergyStored() * 0.001) + rf);
+        return (byte) (d * 255);
+    }
+
+    public void getLinkData(List<LinkData> data) {
+        for (BlockPos target : getLinks()) {
+            TileEntity tile = worldObj.getTileEntity(target);
+            if (tile == null) {
+                continue;
+            }
+
+            LinkData ld = new LinkData();
+            ld.displayName = tile.getClass().getSimpleName();
+
+            long sum = 0;
+            for (int transfer : transferRatesArrays.get(linkedPosCache.indexOf(target))) {
+                sum += transfer;
+            }
+
+            ld.transferPerTick = (int) (sum / 20L);
+            ld.linkTarget = target;
+            ld.data = "Data...";
+            data.add(ld);
+        }
+    }
+
+    @Override
+    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (!worldObj.isRemote) {
+            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CRYSTAL, worldObj, pos.getX(), pos.getY(), pos.getZ());
+        }
+        return true;
+    }
+
+    public String getUnlocalizedName() {
+        return "tile.draconicevolution:energy_crystal." + getType().getName() + "." + (getTier() == 0 ? "basic" : getTier() == 1 ? "wyvern" : "draconic") + ".name";
+    }
+
     //endregion
 
     //region Render
@@ -295,6 +453,33 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     @SideOnly(Side.CLIENT)
     public abstract CrystalGLFXBase createStaticFX();
 
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(pos, pos.add(1, 1, 1));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void addDisplayData(List<String> displayList) {
+        double charge = Utils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
+        displayList.add(TextFormatting.BLUE + I18n.format("eNet.de.hudCharge.info") + ": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]");
+        displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudLinks.info") + ": " + getLinks().size() + " / " + maxLinks() + "");
+
+//        if (BrandonsCore.proxy.getClientPlayer().isSneaking()) {
+//            for (BlockPos lPos : getLinks()) {
+//                displayList.add(TextFormatting.GRAY + " " + String.format("[x:%s, y:%s, z:%s]", lPos.getX(), lPos.getY(), lPos.getZ()));
+//            }
+//        }
+    }
+
+    public ENetFXHandler createServerFXHandler() {
+        return new ENetFXHandlerServer(this);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public ENetFXHandler createClientFXHandler() {
+        return new ENetFXHandlerClient(this);
+    }
+
     //endregion
 
     //region Sync/Save
@@ -307,11 +492,37 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
             list.appendTag(new NBTTagByteArray(new byte[]{vec.x, vec.y, vec.z}));
         }
         compound.setTag("LinkedCrystals", list);
+        fxHandler.writeToNBT(compound);
+
+        byte[] array = new byte[flowRates.size()];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = flowRates.get(i);
+        }
+        compound.setByteArray("FlowRates", array);
+//        LogHelper.dev("Write "+flowRates+" "+array);
     }
 
     @Override
     public void readExtraNBT(NBTTagCompound compound) {
+        NBTTagList list = compound.getTagList("LinkedCrystals", 7);
+        linkedCrystals.clear();
+        for (int i = 0; i < list.tagCount(); i++) {
+            byte[] data = ((NBTTagByteArray) list.get(i)).getByteArray();
+            linkedCrystals.add(new Vec3B(data[0], data[1], data[2]));
+        }
+        if (linkedPosCache != null) {
+            linkedPosCache.clear();
+        }
+        fxHandler.readFromNBT(compound);
 
+        if (compound.hasKey("FlowRates")) {
+            byte[] array = compound.getByteArray("FlowRates");
+            flowRates.clear();
+            for (byte b : array) {
+                flowRates.add(b);
+            }
+//            LogHelper.dev("Read "+flowRates+" ");
+        }
     }
 
     @Override
@@ -350,7 +561,7 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     public void onLoad() {
         super.onLoad();
         if (!ID_CRYSTAL_MAP.containsKey(getIDHash())) {
-            ID_CRYSTAL_MAP.put(getIDHash(), this);
+            ID_CRYSTAL_MAP.put(getIDHash(), pos);
         }
     }
 
@@ -368,4 +579,162 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     }
 
     //endregion
+
+    //region Container
+
+    public Map<Integer, Integer> containerEnergyFlow = new HashMap<>();
+//    public Map<Integer, String> tileNamesMap = new HashMap<>();
+
+    public void detectAndSendContainerChanges(List<IContainerListener> listeners) {
+        if (linkedCrystals.size() != transferRatesArrays.size() && !worldObj.isRemote) {
+            rebuildTransferList();
+        }
+
+        List<BlockPos> positions = getLinks();
+        NBTTagList list = new NBTTagList();
+
+        for (BlockPos lPos : positions) {
+            int index = positions.indexOf(lPos);
+
+            if (!containerEnergyFlow.containsKey(index) || containerEnergyFlow.get(index) != getLinkFlow(index)) {
+                containerEnergyFlow.put(index, getLinkFlow(index));
+                NBTTagCompound data = new NBTTagCompound();
+                data.setByte("I", (byte)index);
+                data.setInteger("E", getLinkFlow(index));
+                list.appendTag(data);
+            }
+        }
+
+        if (!list.hasNoTags()) {
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setTag("L", list);
+            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 0, compound, false));
+        }
+        else if (containerEnergyFlow.size() > linkedCrystals.size()) {
+            containerEnergyFlow.clear();
+            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 0, 0, false));
+        }
+    }
+
+    public void sendUpdateToListeners(List<IContainerListener> listeners, PacketTileMessage packet) {
+        for (IContainerListener listener : listeners) {
+            if (listener instanceof EntityPlayerMP) {
+                BrandonsCore.network.sendTo(packet, (EntityPlayerMP) listener);
+            }
+        }
+    }
+
+    @Override
+    public void receivePacketFromServer(PacketTileMessage packet) {
+        if (packet.getIndex() == 0 && packet.isNBT()) {
+            NBTTagList list = packet.compound.getTagList("L", 10);
+
+            for (int i = 0; i < list.tagCount(); i++) {
+                NBTTagCompound data = list.getCompoundTagAt(i);
+                containerEnergyFlow.put((int) data.getByte("I"), data.getInteger("E"));
+            }
+        }
+
+        Iterator<Map.Entry<Integer, Integer>> i = containerEnergyFlow.entrySet().iterator();
+    }
+
+    @Override
+    public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
+        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(client, EnumHand.MAIN_HAND, client.getHeldItemMainhand(), pos, EnumFacing.UP, Vec3d.ZERO);
+        MinecraftForge.EVENT_BUS.post(event);
+
+        if (event.isCanceled()) {
+            return;
+        }
+
+        if (packet.getIndex() == 10) {
+            if (getLinks().size() > packet.intValue && packet.intValue >= 0) {
+                BlockPos target = getLinks().get(packet.intValue);
+                breakLink(target);
+                TileEntity targetTile = worldObj.getTileEntity(target);
+                if (targetTile instanceof ICrystalLink) {
+                    ((ICrystalLink) targetTile).breakLink(pos);
+                }
+            }
+        }
+        else if (packet.getIndex() == 20) {
+            List<BlockPos> links = new ArrayList<>(getLinks());
+            for (BlockPos target : links) {
+                breakLink(target);
+                TileEntity targetTile = worldObj.getTileEntity(target);
+                if (targetTile instanceof ICrystalLink) {
+                    ((ICrystalLink) targetTile).breakLink(pos);
+                }
+            }
+        }
+    }
+
+    public int getLinkFlow(int linkIndex) {
+        if (transferRatesArrays.size() > linkIndex) {
+            long sum = 0;
+            for (int i : transferRatesArrays.get(linkIndex)) {
+                sum += i;
+            }
+            return (int) (sum / 20L);
+        }
+
+        return 0;
+    }
+
+    //endregion
+
+    //region Capability
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(new EnergyHandlerWrapper(this, facing));
+        }
+
+        return super.getCapability(capability, facing);
+    }
+
+    //endregion
+
+    public static class LinkData {
+        public String displayName;
+        public int transferPerTick;
+        public BlockPos linkTarget;
+        public String data;
+
+        public LinkData() {}
+
+        public LinkData(String displayName, int transferPerTick, BlockPos linkTarget, String data) {
+            this.displayName = displayName;
+            this.transferPerTick = transferPerTick;
+            this.linkTarget = linkTarget;
+            this.data = data;
+        }
+
+        public void toBytes(ByteBuf buf) {
+            ByteBufUtils.writeUTF8String(buf, displayName);
+            buf.writeInt(transferPerTick);
+            buf.writeLong(linkTarget.toLong());
+            ByteBufUtils.writeUTF8String(buf, data);
+        }
+
+        public static LinkData fromBytes(ByteBuf buf) {
+            LinkData data = new LinkData();
+            data.displayName = ByteBufUtils.readUTF8String(buf);
+            data.transferPerTick = buf.readInt();
+            data.linkTarget = BlockPos.fromLong(buf.readLong());
+            data.data = ByteBufUtils.readUTF8String(buf);
+            return data;
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
 import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
@@ -13,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TextComponentString;
 
 import javax.annotation.Nullable;
 
@@ -70,7 +70,7 @@ public class TilePotentiometer extends TileBCBase implements IRedstoneEmitter, I
         }
 
         if (worldObj.isRemote) {
-            player.addChatComponentMessage(new TextComponentString(POWER.toString()));
+            ChatHelper.indexedMsg(player, POWER.toString(), -442611624);
         }
         else {
             worldObj.playSound(null, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (POWER.value / 20F));

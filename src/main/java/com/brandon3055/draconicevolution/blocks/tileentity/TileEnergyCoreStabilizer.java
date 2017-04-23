@@ -35,9 +35,9 @@ import java.util.LinkedList;
  */
 public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, IMultiBlock {
 
-    public final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, -1, 0), true, false, false);
-    public final SyncableBool hasCoreLock = new SyncableBool(false, true, false, false);
-    public final SyncableBool isCoreActive = new SyncableBool(false, true, false, false);
+    public final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, -1, 0), true, false);
+    public final SyncableBool hasCoreLock = new SyncableBool(false, true, false);
+    public final SyncableBool isCoreActive = new SyncableBool(false, true, false);
     public final SyncableBool isValidMultiBlock = new SyncableBool(false, true, false, true);
     public EnumFacing.Axis multiBlockAxis = EnumFacing.Axis.Y;
     public EnumFacing coreDirection = EnumFacing.DOWN;

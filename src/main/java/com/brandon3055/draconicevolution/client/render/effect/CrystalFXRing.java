@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.render.state.GlStateManagerHelper;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
+import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
@@ -45,14 +46,17 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
 
     @Override
     public void renderParticle(VertexBuffer vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        if (!renderEnabled) {
+            return;
+        }
+
+        boolean wierless = tile.getType() == EnergyCrystal.CrystalType.WIRELESS;
+
         rand.setSeed(rSeed);
         float animTime = ClientEventHandler.elapsedTicks + particleAge + partialTicks;
 
         //region variables
 
-//        float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
-//        float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
-//        float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
         float renderX = (float) (this.posX - interpPosX);
         float renderY = (float) (this.posY - interpPosY);
         float renderZ = (float) (this.posZ - interpPosZ);
@@ -62,7 +66,7 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
 
         //region GLRender
 
-        double pCount = 20 + (80 * (1 - mipLevel));//Minecraft.getMinecraft().gameSettings.fancyGraphics ? 35 : 15;
+        double pCount = 20 + (80 * (1 - mipLevel));//Minecraft.getMinecraft().gameSettings.fancyGraphics ? 35 : 15;TODO?
         for (int i = 0; i < pCount; i++) {
             double rotation = i / pCount * (3.141 * 2D) + animTime / 80D;
 
@@ -121,9 +125,9 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             drawY = renderY;
             drawZ = renderZ + (float) oz;
 
-            r = 0;
-            g = 1;
-            b = 1;
+            r = wierless ? 1 : 0;
+            g = wierless ? 0 : 1;
+            b = wierless ? 0 : 1;
 
             particleTextureIndexX = 0;
             particleTextureIndexY = 0;
@@ -140,6 +144,11 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
         }
 
         //endregion
+    }
+
+    @Override
+    public IGLFXHandler getFXHandler() {
+        return FX_HANDLER;
     }
 
     public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
@@ -162,91 +171,3 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
         }
     };
 }
-
-
-//region Base Field Implementation
-//        rand.setSeed(3490276L);
-//                float animTime = ClientEventHandler.elapsedTicks + particleAge + partialTicks;
-//                GlStateManager.pushMatrix();
-//                GlStateManager.disableCull();
-//                ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
-//
-//                //region variables
-//
-//                float minU = (float) this.particleTextureIndexX / texturesPerRow;
-//                float maxU = minU + 1F / texturesPerRow;
-//                float minV = (float) this.particleTextureIndexY / texturesPerRow;
-//                float maxV = minV + 1F / texturesPerRow;
-//                float scale = 0.02F;//0.1F * this.particleScale;
-//
-//                if (this.particleTexture != null) {
-//                minU = this.particleTexture.getMinU();
-//                maxU = this.particleTexture.getMaxU();
-//                minV = this.particleTexture.getMinV();
-//                maxV = this.particleTexture.getMaxV();
-//                }
-//
-//                float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
-//                float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
-//                float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
-//
-//                //endregio
-//
-//                //region GLRender
-//
-//                double pCount = 100;//Minecraft.getMinecraft().gameSettings.fancyGraphics ? 35 : 15;
-//                for (int i = 0; i < pCount; i++) {
-//
-//        double rotation = i / pCount * (3.141 * 2D) + animTime / 80D;
-//
-//        boolean rBool = rand.nextBoolean();
-//        float rFloat1 = rand.nextFloat();
-//        float rFloat2 = rand.nextFloat();
-//        float rFloat3 = rand.nextFloat();
-//
-////            int sCount = 1;
-////            for (int s = 0; s < sCount; s++) {
-//        //region Shadow
-//        float sd = 1F;// - s / (float) sCount;
-//
-//        scale = 0.03F * sd;
-//        float a = 1;//sd + 0.1F;
-//        float r = sd * particleRed;
-//        float g = sd * particleGreen;
-//        float b = sd * particleBlue;
-//
-//
-//        rotation -= 0.05F;
-//        //endregio
-//
-//        //region Sub Circular Calculation
-//
-//        double subRotationRadius = (0.1 * rFloat3) + 0.02;
-//        double dir = rBool ? 1 : -1;
-//        double sy = Math.cos(dir * rotation * (rFloat3 * 10) * (1 - (rFloat1 * 0.2F))) * subRotationRadius;
-//        double sx = Math.sin(dir * rotation * (rFloat3 * 10) * (1 - (rFloat2 * 0.2F))) * subRotationRadius;
-//        float drawY = renderY + (float) sy;
-//        double renderRadius = 0.4 + sx;
-//
-//        //endregio
-//
-//        //region Circular Calculation
-//        double ox = Math.sin(rotation) * renderRadius;
-//        double oz = Math.cos(rotation) * renderRadius;
-//        float drawX = renderX + (float) ox;
-//        float drawZ = renderZ + (float) oz;
-//        //endregio
-//
-//        vertexbuffer.pos((double) (drawX - rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(r, g, b, a).endVertex();
-//        vertexbuffer.pos((double) (drawX - rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(r, g, b, a).endVertex();
-//        vertexbuffer.pos((double) (drawX + rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(r, g, b, a).endVertex();
-//        vertexbuffer.pos((double) (drawX + rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(r, g, b, a).endVertex();
-//
-////            }
-//        }
-//
-//
-//        //endregio
-//
-//        GlStateManager.popMatrix();
-//endregion

@@ -17,11 +17,11 @@ import java.util.List;
 /**
  * Created by brandon3055 on 3/10/2015.
  */
-public class EntityChaosVortex extends Entity {
-    protected static final DataParameter<Integer> TICKS = EntityDataManager.<Integer>createKey(EntityChaosVortex.class, DataSerializers.VARINT);
+public class EntityChaosImplosion extends Entity {
+    protected static final DataParameter<Integer> TICKS = EntityDataManager.<Integer>createKey(EntityChaosImplosion.class, DataSerializers.VARINT);
 
 
-    public EntityChaosVortex(World world) {
+    public EntityChaosImplosion(World world) {
         super(world);
         this.noClip = true;
         this.setSize(0F, 0F);
@@ -76,7 +76,7 @@ public class EntityChaosVortex extends Entity {
         if (ticksExisted == 700 && !worldObj.isRemote) {
             BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, worldObj, pos, pos, 1024D, 5);
             //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.CHAOS_IMPLOSION, posX, posY, posZ), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 512));
-            ProcessHandler.addProcess(new ChaosImplosion(worldObj, (int) posX, (int) posY, (int) posZ));
+            ProcessHandler.addProcess(new ProcessChaosImplosion(worldObj, (int) posX, (int) posY, (int) posZ));
         }
 
         if (ticksExisted > 720) {

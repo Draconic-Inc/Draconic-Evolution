@@ -8,20 +8,14 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.DraconiumOre;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
-import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
+import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -125,10 +119,10 @@ public class ChaosWorldGenHandler {
 		tileChaosShard.locationHash = tileChaosShard.getLocationHash(center, world.provider.getDimension());
 
 		EntityChaosGuardian guardian = new EntityChaosGuardian(world);
-		List<EntityPlayer> list = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(islandCenter.x - 1000, 0, islandCenter.z - 1000, islandCenter.x + 1000, 255, islandCenter.z + 1000));
-		for (EntityPlayer player : list) {
-			player.addChatComponentMessage(new TextComponentString("[Chaos Guardian]:").setStyle(new Style().setColor(TextFormatting.GOLD)).appendSibling(new TextComponentString(" Just a heads up. My creator has not got around to fixing all of my 1.10.2 bugs yet so i may be a little broken. You have been warned! Now come and get wrecked!!!!").setStyle(new Style().setColor(TextFormatting.RED))));
-		}
+//		List<EntityPlayer> list = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(islandCenter.x - 1000, 0, islandCenter.z - 1000, islandCenter.x + 1000, 255, islandCenter.z + 1000));
+//		for (EntityPlayer player : list) {
+//			player.addChatComponentMessage(new TextComponentString("[Chaos Guardian]:").setStyle(new Style().setColor(TextFormatting.GOLD)).appendSibling(new TextComponentString(" Just a heads up. My creator has not got around to fixing all of my 1.10.2 bugs yet so i may be a little broken. You have been warned! Now come and get wrecked!!!!").setStyle(new Style().setColor(TextFormatting.RED))));
+//		}
 
 		guardian.setPositionAndUpdate(islandCenter.x, shardY, islandCenter.z);
 		world.spawnEntityInWorld(guardian);

@@ -21,7 +21,7 @@ import net.minecraft.world.World;
  */
 public class EntityDragonHeart extends Entity {
 
-    private static final DataParameter<Integer> AGE = EntityDataManager.<Integer>createKey(Entity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> AGE = EntityDataManager.<Integer>createKey(EntityDragonHeart.class, DataSerializers.VARINT);
     public float rotation = 0f;
     public float rotationInc = 0;
     public ItemStack renderStack = new ItemStack(DEFeatures.dragonHeart);

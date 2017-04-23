@@ -22,6 +22,7 @@ public class DETextures {
     public static final String GUI_HUD = "textures/gui/hud.png";
     public static final String GUI_JEI_FUSION = "textures/gui/jei_fusion_background.png";
     public static final String GUI_WIDGETS = "textures/gui/widgets.png";
+    public static final String GUI_REACTOR = "textures/gui/reactor.png";
     public static final String DRAGON_HEART = "textures/items/components/dragon_heart.png";
     public static final String CHAOS_CRYSTAL = "textures/models/chaos_crystal.png";
     public static final String REACTOR_CORE = "textures/models/reactor_core.png";
@@ -33,5 +34,9 @@ public class DETextures {
     public static final String ENERGY_BEAM_BASIC = "textures/particle/energy_beam_basic.png";
     public static final String ENERGY_BEAM_WYVERN = "textures/particle/energy_beam_wyvern.png";
     public static final String ENERGY_BEAM_DRACONIC = "textures/particle/energy_beam_draconic.png";
+
+    public static final String REACTOR_STABILIZER = "textures/models/reactor_stabilizer_core.png";
+    public static final String REACTOR_STABILIZER_RING = "textures/models/reactor_stabilizer_ring.png";
+    public static final String REACTOR_INJECTOR= "textures/models/model_reactor_power_injector.png";
 
 }

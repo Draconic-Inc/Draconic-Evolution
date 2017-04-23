@@ -2,31 +2,36 @@ package com.brandon3055.draconicevolution.items;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
-import com.brandon3055.brandonscore.client.particle.BCEffectRenderer;
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.lib.ShortPos;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
-import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,19 +51,32 @@ public class Debugger extends ItemBCore {
         MODES.put(4, "Recipe");
         MODES.put(5, "Clear");
         MODES.put(6, "Mod Wiki");
+        MODES.put(7, "Explode");
     }
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-//        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
+//
+
+
+        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
 ////            DEShaders.initReactorShader();
-////            DEShaders.initReactorShieldShader();
+//            DEShaders.initReactorShieldShader();
 //            DEShaders.initEnergyCrystalShader();
-//        }
+//            DEShaders.initReactorBeams();
+            DEShaders.initExplosionOverlay();
+            DEShaders.initExplosionWave();
+
+        }
 
     }
 
     //region Item Junk
+
+    @Override
+    public NBTTagCompound getNBTShareTag(ItemStack stack) {
+        return super.getNBTShareTag(stack);
+    }
 
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
@@ -73,6 +91,46 @@ public class Debugger extends ItemBCore {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+
+        if (!world.isRemote) {
+
+
+            for (int i = 0; i < 1; i++) {
+                //This is the corrected input so x and z are offset by + 2048 and range from 0 to 4096
+
+                ShortPos pos = new ShortPos(new BlockPos(itemRand.nextInt(10000) - 5000, itemRand.nextInt(128), itemRand.nextInt(10000) - 5000));
+                int xIn = pos.getRelativeTo().getX() + (itemRand.nextInt(4096) - 2048);
+                int yIn = pos.getRelativeTo().getY() + itemRand.nextInt(128);
+                int zIn = pos.getRelativeTo().getZ() + (itemRand.nextInt(4096) - 2048);
+
+                // Y - 8 bit    X - 12 bit     Z - 12 bit
+                //[11111111] [11111111 1111] [1111 11111111]
+                int posInt = (yIn << 24) | (xIn << 12) | (zIn);
+
+                int yOut = posInt >> 24 & 0xFF;
+                int xOut = posInt >> 12 & 0xFFF;
+                int zOut = posInt & 0xFFF;
+
+                boolean match = xIn == xOut && yIn == yOut && zIn == zOut;
+
+                if (!match) {
+                   // LogHelper.error("Match Failed! " + xIn + " " + yIn + " " + zIn + " -> " + xOut + " " + yOut + " " + zOut);
+                }
+
+
+
+                BlockPos posIn = new BlockPos(xIn, yIn, zIn);
+                int iPos = pos.getIntPos(posIn);
+                if (!posIn.equals(pos.getActualPos(iPos))) {
+                    LogHelper.dev("MissMatch " + posIn + " " + pos.getActualPos(iPos));
+                }
+
+            }
+            LogHelper.dev("Done");
+
+
+
+        }
 
 //        if (!world.isRemote) {
 //            PacketCustom packet = new PacketCustom("DE", 1);
@@ -106,6 +164,15 @@ public class Debugger extends ItemBCore {
 //                break;
 //            }
 //
+//        }
+//
+//
+//        if (world.isRemote) {
+//            for (int i = 0; i < 50; i++) {
+//                double rf = i * 100;
+//                double d = rf / (10000 + rf);
+//                LogHelper.dev(Utils.round(d, 100) + " " + rf);
+//            }
 //        }
 //
 //        if (true) {
@@ -149,7 +216,6 @@ public class Debugger extends ItemBCore {
 //
 //            for (String s : possibleCombos) LogHelper.info(s);
 //        }
-
 
 
 //      LogHelper.info(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "draconicevolution:creativeSource"));
@@ -281,6 +347,7 @@ public class Debugger extends ItemBCore {
         MODES.put(4, "Recipe");
         MODES.put(5, "Clear");
         MODES.put(6, "Mod Wiki");
+        MODES.put(7, "Explode");
 
         handleRightClick(itemStack, world, player, hand);
 
@@ -509,8 +576,6 @@ public class Debugger extends ItemBCore {
     public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 
 
-
-
 //
 //
         if (false) {
@@ -639,23 +704,6 @@ public class Debugger extends ItemBCore {
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
         if (player.isSneaking()) {
             mode++;
@@ -674,15 +722,15 @@ public class Debugger extends ItemBCore {
                 break;
             case 3:
                 if (world.isRemote) {
-                    Map<ResourceLocation, ArrayDeque<Particle>[][]> texturedRenderQueue = ReflectionHelper.getPrivateValue(BCEffectRenderer.class, BCEffectHandler.effectRenderer, "texturedRenderQueue");
-
-                    for (ArrayDeque<Particle>[][] array : texturedRenderQueue.values()) {
-                        for (ArrayDeque<Particle>[] array2 : array) {
-                            for (ArrayDeque<Particle> particle : array2) {
-                                LogHelper.info(particle);
-                            }
-                        }
-                    }
+//                    Map<ResourceLocation, ArrayDeque<Particle>[][]> texturedRenderQueue = ReflectionHelper.getPrivateValue(BCEffectRenderer.class, BCEffectHandler.effectRenderer, "texturedRenderQueue");
+//
+//                    for (ArrayDeque<Particle>[][] array : texturedRenderQueue.values()) {
+//                        for (ArrayDeque<Particle>[] array2 : array) {
+//                            for (ArrayDeque<Particle> particle : array2) {
+//                                LogHelper.info(particle);
+//                            }
+//                        }
+//                    }
 
                 }
                 break;
@@ -697,15 +745,16 @@ public class Debugger extends ItemBCore {
                     openWiki();
                 }
                 break;
+            case 7:
+                if (!world.isRemote) {
+                    destroyUniverse(player);
+                }
+                break;
         }
 
         return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
     }
 
-//    @SideOnly(Side.CLIENT)
-    private void openWiki() {
-//        Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
-    }
 
     @Override
     public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
@@ -803,6 +852,10 @@ public class Debugger extends ItemBCore {
 
     //region Functions
 
+    private void openWiki() {
+//        Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
+    }
+
     public EnumActionResult finishCraft(World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
 
@@ -814,6 +867,126 @@ public class Debugger extends ItemBCore {
         }
 
         return EnumActionResult.PASS;
+    }
+
+    private void destroyUniverse(EntityPlayer player) {
+        /*
+        * == Logic Design ideas ==
+        * Zones:
+        * -Z1 <= 10% rad.
+        *   Nothing survives unless its indestructible.
+        *
+        * //-Z2 10 -> 50~% rad. (Will vary depending on the resistance of the blocks destroyed though)
+        * //-Z1 <= 10% rad.
+        * Dont think zones are going to work out except for zone 1.
+        *
+        * Resistance:
+        * -The resistance of each block will be divided by the radius of the trace.
+         */
+
+
+//        Vec3D a = new Vec3D(0, 0, 0);
+//        Vec3D b = new Vec3D(1, 0, -1);
+//
+//        double theta = Math.atan2(b.x - a.x, a.z - b.z);
+//        if (theta < 0.0){
+//            theta += Math.PI * 2;
+//        }
+//
+//        int arraySize = 2;
+//        double angularValue = (theta / 6.28319) * arraySize;
+//
+//        int min = MathHelper.floor(angularValue);
+//        int max = MathHelper.ceil(angularValue);
+//        double delta = angularValue - min;
+//        double minShare = 1 - delta;
+//        double maxShare = delta;
+//
+//        LogHelper.dev(angularValue);
+//        LogHelper.dev("Min: " + min);
+//        LogHelper.dev("Min Share: " + minShare);
+//        LogHelper.dev("Max: " + max);
+//        LogHelper.dev("Max Share: " + maxShare + "\n");
+
+//        RayTraceResult result = RayTracer.retrace(player, 5000);
+//        if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
+//
+//        }
+
+//        ProcessExplosion explosion = new ProcessExplosion(new Vec3D(player).getPos(), 350, (WorldServer) player.worldObj, 10);
+//        ProcessHandler.addProcess(explosion);
+
+        IBlockState lava = Blocks.FLOWING_LAVA.getDefaultState();
+        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
+        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
+            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
+            if (pyro.canBePlacedInWorld()) {
+                lava = pyro.getBlock().getDefaultState();
+            }
+        }
+
+        World world = player.worldObj;
+        world.createExplosion(null, player.posX, player.posY, player.posZ, 8, true);
+        int c = 25 + world.rand.nextInt(25);
+        for (int i = 0; i < c; i++) {
+            EntityFallingBlock entity = new EntityFallingBlock(world, ((int) player.posX) + 0.5, (int) player.posY, ((int) player.posZ) + 0.5, lava);
+            entity.fallTime = 1;
+            entity.shouldDropItem = false;
+            double vMod = 0.5 + (2 * world.rand.nextDouble());
+            entity.addVelocity((world.rand.nextDouble() - 0.5) * vMod, (world.rand.nextDouble() / 1.5) * vMod, (world.rand.nextDouble() - 0.5) * vMod);
+            world.spawnEntityInWorld(entity);
+        }
+
+
+//        for (BlockPos pos : BlockPos.getAllInBox(new Vec3D(player).getPos().add(-20, -20, -20), new Vec3D(player).getPos().add(20, 20, 20))) {
+//            IBlockState state = player.worldObj.getBlockState(pos);
+//            if (state.getBlock() instanceof BlockFalling) {
+//                state.getBlock().updateTick(player.worldObj, pos, state, player.worldObj.rand);
+//            }
+//            state.neighborChanged(player.worldObj, pos, Blocks.AIR);
+//        }
+
+
+//        while (!explosion.isDead()) {
+//            explosion.updateProcess();
+//        }
+//
+//        WorldServer world = (WorldServer) player.worldObj;
+//        LogHelper.dev("Finding Chunks to relight");
+//        List<ChunkPos> chunks = new LinkedHashList<>();
+//        for (BlockPos pos : explosion.destroyedCache) {
+//            ChunkPos cp = new ChunkPos(pos);
+//            if (!chunks.contains(cp)) {
+//                chunks.add(cp);
+//            }
+//        }
+//        LogHelper.dev("Relighting chunks");
+//        for (ChunkPos pos : chunks) {
+//            Chunk chunk = world.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos);
+//            chunk.generateSkylightMap();
+//            SPacketChunkData packet = new SPacketChunkData(chunk, 65535);
+//            world.getMinecraftServer().getPlayerList().sendPacketToAllPlayers(packet);
+//
+//        }
+//        for (int x = -10; x < 2; x++) {
+//            for (int z = -10; z < 2; z++) {
+//                world.getChunkFromBlockCoords(new Vec3D(player).getPos().add(x * 16, 0, z * 16)).generateSkylightMap();
+//            }
+//        }
+
+//        LogHelper.dev("Done!");
+
+//        double[] radialPower = new double[128];
+
+
+//        for (int i = 0; i < radialPower.length; i++) {
+//            double r = (i / (double) radialPower.length) * Math.PI * 2;
+//            LogHelper.dev(SimplexNoise.noise(Math.sin(r), Math.cos(r)));
+//
+////            radialPower[i] = p + (SimplexNoise.noise(Math.sin(r) * 1000, Math.cos(r) * 1000) * (power / 5D));
+//        }
+
+
     }
 
     //endregion

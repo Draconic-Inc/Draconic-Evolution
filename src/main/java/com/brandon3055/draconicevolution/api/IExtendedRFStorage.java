@@ -9,7 +9,13 @@ package com.brandon3055.draconicevolution.api;
  */
 public interface IExtendedRFStorage
 {
+	/**
+	 * @return Returns that current amount of energy starred in this tile as a long.
+	 */
 	long getExtendedStorage();
 
+	/**
+	 * @return Return the max energy this tile can store as a long.
+	 */
 	long getExtendedCapacity();
 }

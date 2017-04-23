@@ -22,29 +22,30 @@ float snoise(vec3 uv, float res){
 }
 
 void main() {
-    float power = 0;//(sin(time) + 1) / 2;
+    float power = intensity;//(sin(time) + 1) / 2;
 
     vec3 coord = vec3(gl_TexCoord[0]);
     float yModifier = max(0, max(1 - (coord.y * 10), (coord.y - 0.9) * 10));
-    float brightness = 1.2 + (yModifier * 1) + 1 - min(1, power * 3);  //(1.4 + (yModifier * 1.2 * iCap)) * max(-0.4, intensity);
+    float brightness = 1.2 + (yModifier * -2) + 1 - min(1, power * 3);  //(1.4 + (yModifier * 1.2 * iCap)) * max(-0.4, intensity);
 
-    float density = 60;
+    coord.x += time / 10;
+    coord.y += time / 5;
+    coord.x -= coord.y / 6;
+    coord.y *= 0.2;
+
+    float density = 31;
     for(int i = 1; i <= 7; i++)
     {
         float power = pow(2, float(i));
-        brightness += (1.5 / power) * max(snoise(coord + vec3(0, 0, time * 0.003), power * density), -1);
+        brightness += (1.5 / power) * max(snoise(coord + vec3(0, 0, time * 0.006), power * density), -1);//0.006 controls animation speed
     }
 
+    float po = max(brightness, 0.8);
+    float r = (0.5 - (power * 2));
+    float g = power + yModifier * 0.5;
+    float b = (power * 2) + yModifier * 0.5;
 
-//    float r = 0.1;
-//    float g = 1;
-//    float b = 1;
-
-    float r = 0.5 - (power * 2);
-    float g = power;
-    float b = power * 2;
-
-    vec4 colour = vec4(brightness * r, pow(brightness, 2.0) * g, pow(brightness ,3.0) * b, max(0.05, 2 - brightness));
+    vec4 colour = vec4(po * r, pow(po, 2.0) * g, pow(po ,3.0) * b, max(0.1, 2 - brightness));
 
 	gl_FragColor = colour;
 }

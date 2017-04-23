@@ -7,20 +7,42 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by brandon3055 on 29/11/2016.
  */
 public class ENetFXHandlerServer extends ENetFXHandler {
 
     private BatchedCrystalUpdate batchedUpdate;
+    private Map<Byte, Byte> lastTickIndexToFlow = new HashMap<>();
+    private int lastTickEnergy = -1;
+
 
     public ENetFXHandlerServer(TileCrystalBase tile) {
         super(tile);
     }
 
     @Override
-    public void update() {
+    public void update() {}
 
+    @Override
+    public void detectAndSendChanges() {
+        BatchedCrystalUpdate update = new BatchedCrystalUpdate(tile.getIDHash(), tile.getEnergyStored());
+        for (byte i = 0; i < tile.flowRates.size(); i++) {
+            byte flow = tile.flowRates.get(i);
+
+            if (!lastTickIndexToFlow.containsKey(i) || lastTickIndexToFlow.get(i) != flow) {
+                update.indexToFlowMap.put(i, flow);
+                lastTickIndexToFlow.put(i, flow);
+            }
+        }
+
+        if (update.indexToFlowMap.size() > 0 || Math.abs(lastTickEnergy - tile.getEnergyStored()) > 100) {
+            lastTickEnergy = tile.getEnergyStored();
+            batchedUpdate = update;
+        }
 
         if (batchedUpdate != null) {
             sendUpdate();
@@ -29,7 +51,7 @@ public class ENetFXHandlerServer extends ENetFXHandler {
 
     @Override
     public void reloadConnections() {
-
+        lastTickIndexToFlow.clear();
     }
 
     private void sendUpdate() {
@@ -42,7 +64,7 @@ public class ENetFXHandlerServer extends ENetFXHandler {
                 double d6 = tp.z - player.posZ;
 
                 if (d4 * d4 + d5 * d5 + d6 * d6 < tp.range * tp.range) {
-                    CrystalUpdateBatcher.gueData(batchedUpdate, player);
+                    CrystalUpdateBatcher.queData(batchedUpdate, player);
                 }
             }
         }

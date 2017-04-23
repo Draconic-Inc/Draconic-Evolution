@@ -123,8 +123,14 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     public List<String> getValidUpgrades(ItemStack stack) {
         ArrayList<String> list = new ArrayList<String>();
         list.add(ToolUpgrade.RF_CAPACITY);
-        list.add(ToolUpgrade.JUMP_BOOST);
-        list.add(ToolUpgrade.MOVE_SPEED);
+
+        if (armorType == EntityEquipmentSlot.FEET) {
+            list.add(ToolUpgrade.JUMP_BOOST);
+        }
+        if (armorType == EntityEquipmentSlot.LEGS) {
+            list.add(ToolUpgrade.MOVE_SPEED);
+        }
+
         list.add(ToolUpgrade.SHIELD_CAPACITY);
         list.add(ToolUpgrade.SHIELD_RECOVERY);
         return list;

@@ -13,10 +13,12 @@ import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerFusionCrafting;
 import com.brandon3055.draconicevolution.client.sound.FusionRotationSound;
+import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -29,9 +31,13 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -53,12 +59,18 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     public final SyncableShort craftingStage = new SyncableShort((short) 0, true, false, false);
     public IFusionRecipe activeRecipe = null;
 
+    protected IItemHandler[] itemHandlers = new IItemHandler[6];
+    {
+        for (EnumFacing facing : EnumFacing.values())
+        itemHandlers[facing.getIndex()] = new SidedInvWrapper(this, facing);
+    }
+
     @SideOnly(Side.CLIENT)
     public LinkedList<EffectTrackerFusionCrafting> effects;
 
     public TileFusionCraftingCore() {
         setInventorySize(2);
-        registerSyncableObject(isCrafting, false);
+        registerSyncableObject(isCrafting, true);
         registerSyncableObject(craftingStage, false);
         setShouldRefreshOnBlockChange();
     }
@@ -78,6 +90,9 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
         //Update Crafting
         if (isCrafting.value && !worldObj.isRemote) {
+            if (DEEventHandler.serverTicks % 10 == 0) {
+                worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
+            }
 
             for (ICraftingPedestal pedestal : pedestals) {
                 if (((TileEntity) pedestal).isInvalid()) {
@@ -119,7 +134,9 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                     pedestal.onCraft();
                 }
                 //Reset tile... Oops
-                isCrafting.value = false;
+                if (!worldObj.isRemote) {
+                    isCrafting.value = false;
+                }
             }
         }
         else if (!worldObj.isRemote && !isCrafting.value && craftingStage.value > 0) {
@@ -143,6 +160,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         activeRecipe = null;
         craftingStage.value = 0;
         pedestals.clear();
+        worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
     }
 
     /**
@@ -424,4 +442,26 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     }
 
     //endregion
+
+    public int getComparatorOutput() {
+        updatePedestals();
+        if (getStackInCore(1) != null) {
+            return 15;
+        }
+        else if (craftingStage.value > 0) {
+            return (int) Math.max(1, ((craftingStage.value / 2000D) * 15D));
+        }
+        else if (RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos) != null) {
+            return 1;
+        }
+
+        LogHelper.dev(getStackInCore(0) + " " +  RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos));
+        return 0;
+    }
+
+    @Override
+    protected <T> T getItemHandler(Capability<T> capability, EnumFacing facing) {
+        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemHandlers[facing.getIndex()]);
+    }
 }
+

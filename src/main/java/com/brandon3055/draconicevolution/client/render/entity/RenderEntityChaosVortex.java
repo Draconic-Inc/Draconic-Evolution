@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.render.entity;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCOBJParser;
-import com.brandon3055.draconicevolution.entity.EntityChaosVortex;
+import com.brandon3055.draconicevolution.entity.EntityChaosImplosion;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/10/2015.
  */
-public class RenderEntityChaosVortex extends Render<EntityChaosVortex> {
+public class RenderEntityChaosVortex extends Render<EntityChaosImplosion> {
     private static CCModel model;
 
     public RenderEntityChaosVortex(RenderManager manager) {
@@ -23,7 +23,7 @@ public class RenderEntityChaosVortex extends Render<EntityChaosVortex> {
         model = CCModel.combine(map.values());
     }
 
-    public void doRender(EntityChaosVortex entity, double x, double y, double z, float f1, float tick) {
+    public void doRender(EntityChaosImplosion entity, double x, double y, double z, float f1, float tick) {
 //        if (entity.ticksExisted < 100) {
 //            return;
 //        }
@@ -46,13 +46,13 @@ public class RenderEntityChaosVortex extends Render<EntityChaosVortex> {
 
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityChaosVortex entity) {
+    protected ResourceLocation getEntityTexture(EntityChaosImplosion entity) {
         return null;
     }
 
-    public static class Factory implements IRenderFactory<EntityChaosVortex> {
+    public static class Factory implements IRenderFactory<EntityChaosImplosion> {
         @Override
-        public Render<? super EntityChaosVortex> createRenderFor(RenderManager manager) {
+        public Render<? super EntityChaosImplosion> createRenderFor(RenderManager manager) {
             return new RenderEntityChaosVortex(manager);
         }
     }

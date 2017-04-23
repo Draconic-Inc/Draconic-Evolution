@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.utils;
 
 import codechicken.lib.asm.ObfMapping;
+import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +14,10 @@ import org.apache.logging.log4j.Logger;
  * Covers gave me permission to use this. In fact he FORCED me to use it!!!
  */
 public class LogHelper {
+
+    private static long startTime = 0;
+    private static String timerName = "";
+    private static boolean timerRunning = false;
 
     private static Logger logger = LogManager.getLogger(DraconicEvolution.MODID);
 
@@ -29,7 +35,7 @@ public class LogHelper {
     //Standard log entries.
 
     public static void dev(Object object) {
-        if (!ObfMapping.obfuscated) {
+        if (!ObfMapping.obfuscated || DEConfig.devLog) {
             log(Level.INFO, "[DEV]: " + object);
         }
     }
@@ -67,6 +73,12 @@ public class LogHelper {
     }
 
     //log with format.
+
+    public static void dev(String object, Object... format) {
+        if (!ObfMapping.obfuscated) {
+            log(Level.INFO, "[DEV]: " + String.format(object, format));
+        }
+    }
 
     public static void all(String object, Object... format) {
         log(Level.ALL, String.format(object, format));
@@ -168,6 +180,19 @@ public class LogHelper {
     }
 
     //Log with trace element.
+
+    public static void bigDdev(String format, Object... data) {
+        if (!ObfMapping.obfuscated) {
+            StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+            dev("****************************************");
+            dev("* " + format, data);
+            for (int i = 2; i < 8 && i < trace.length; i++) {
+                dev("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+            }
+            dev("****************************************");
+        }
+    }
+
     public static void bigAll(String format, Object... data) {
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
         all("****************************************");
@@ -246,5 +271,42 @@ public class LogHelper {
             warn("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
         }
         warn("****************************************");
+    }
+
+    public static void startTimer(String name) {
+        if (timerRunning) {
+            LogHelper.error("The timer is already running!");
+            return;
+        }
+
+        timerName = name;
+        timerRunning = true;
+        startTime = System.nanoTime();
+    }
+
+    public static void stopTimer() {
+        if (!timerRunning) {
+            LogHelper.error("The timer was not running!!!");
+            return;
+        }
+
+        long ns = System.nanoTime() - startTime;
+
+        String value;
+        long ms = 1000000;
+        long s = ms * 1000;
+
+        if (ns > s) {
+            value = Utils.round(ns / (double)s, 1000) + "s";
+        }
+        else if (ns > 1000){
+            value = Utils.round(ns / (double)ms, 10000) + "ms";
+        }
+        else {
+            value = ns + "ns";
+        }
+
+        dev("[Timer]: " + timerName + " Took " + value);
+        timerRunning = false;
     }
 }

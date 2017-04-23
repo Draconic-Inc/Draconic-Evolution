@@ -2,6 +2,10 @@ buildscript {
     repositories {
         jcenter()
         maven {
+            name = "covers1624"
+            url = "http://maven.covers1624.net/"
+        }
+        maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }

@@ -129,6 +129,7 @@ public class GuiFusionCraftingCore extends GuiContainer {
 
                 RenderEnergyBolt.renderBoltBetween(new Vec3D(guiLeft + xSize - 34 + boltStats[0], guiTop + 106, 0), new Vec3D(guiLeft + xSize - 34 + boltStats[1], guiTop + 8 + size, 0), 1, charge * 10, 10, boltStats[2], true);
                 RenderEnergyBolt.renderBoltBetween(new Vec3D(guiLeft + xSize - 34 + boltStats[3], guiTop + 106, 0), new Vec3D(guiLeft + xSize - 34 + boltStats[4], guiTop + 8 + size, 0), 1, charge * 10, 10, boltStats[5], true);
+                GlStateManager.depthMask(true);
             }
 
             //endregion

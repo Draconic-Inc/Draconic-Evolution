@@ -10,6 +10,7 @@ import com.brandon3055.brandonscore.network.wrappers.SyncableInt;
 import com.brandon3055.brandonscore.network.wrappers.SyncableObject;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.machines.FlowGate;
+import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -154,39 +155,39 @@ public abstract class TileFlowGate extends TileBCBase implements IDataRetainerTi
     }
 
     @Override
-    public Object[] callMethod(String method, Object... args) {
+    public Object[] callMethod(String method, ArgHelper args) {
         if (method.equals("getFlow")) {
             return new Object[]{getFlow()};
         }
         else if (method.equals("setOverrideEnabled")) {
-            if (args.length == 0 || !(args[0] instanceof Boolean)) {
-                throw new IllegalArgumentException("Expected Boolean got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
-            }
-            flowOverridden.value = (Boolean) args[0];
+//            if (args.length == 0 || !(args[0] instanceof Boolean)) {
+//                throw new IllegalArgumentException("Expected Boolean got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+//            }
+            flowOverridden.value = args.checkBoolean(0);
         }
         else if (method.equals("getOverrideEnabled")) {
             return new Object[]{flowOverridden};
         }
         else if (method.equals("setFlowOverride")) {
-            if (args.length == 0 || !(args[0] instanceof Number)) {
-                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
-            }
-            flowOverride.value = Utils.toInt((Double) args[0]);
+//            if (args.length == 0 || !(args[0] instanceof Number)) {
+//                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+//            }
+            flowOverride.value = args.checkInteger(0);
         }
         else if (method.equals("setSignalHighFlow")) {
-            if (args.length == 0 || !(args[0] instanceof Number)) {
-                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
-            }
-            maxFlow.value = Utils.toInt((Double) args[0]);
+//            if (args.length == 0 || !(args[0] instanceof Number)) {
+//                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+//            }
+            maxFlow.value = args.checkInteger(0);
         }
         else if (method.equals("getSignalHighFlow")) {
             return new Object[]{maxFlow.value};
         }
         else if (method.equals("setSignalLowFlow")) {
-            if (args.length == 0 || !(args[0] instanceof Number)) {
-                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
-            }
-            minFlow.value = Utils.toInt((Double) args[0]);
+//            if (args.length == 0 || !(args[0] instanceof Number)) {
+//                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+//            }
+            minFlow.value = args.checkInteger(0);
         }
         else if (method.equals("getSignalLowFlow")) {
             return new Object[]{minFlow.value};

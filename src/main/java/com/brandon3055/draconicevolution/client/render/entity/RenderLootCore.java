@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -95,8 +96,16 @@ public class RenderLootCore extends Render<EntityLootCore> {
         tessellator.draw();
         GlStateManager.enableTexture2D();
 
-
         if (lootCore.lookAnimation >= 1F) {
+
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(-5, 0, 0);
+            GlStateManager.scale(9, 9, 9);
+            GlStateManager.rotate(180, 1, 0, 0);
+            GlStateManager.popMatrix();
+            String name = I18n.format("entity.draconicevolution.lootCore.name");
+            int w = renderer.getStringWidth(name);
+            renderer.drawString(name, 11 - (w / 2), -17, -1);
 
             int row = 0;
             for (ItemStack stack : lootCore.displayMap.keySet()) {

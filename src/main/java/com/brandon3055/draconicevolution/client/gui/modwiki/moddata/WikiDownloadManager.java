@@ -29,7 +29,7 @@ public class WikiDownloadManager {
             return;
         }
         LogHelper.info("Downloading Project Intelligence Mod Manifest...");
-        DownloadThread thread = new DownloadThread("https://raw.githubusercontent.com/brandon3055/Project-Intelligence-Docs/master/ModDocs/manifest.json", WikiDocManager.wikiFolder.getAbsolutePath() + "\\manifest.json");
+        DownloadThread thread = new DownloadThread("https://raw.githubusercontent.com/brandon3055/Project-Intelligence-Docs/master/ModDocs/manifest.json", WikiDocManager.wikiFolder.getAbsolutePath() + "/manifest.json");
         thread.setDaemon(true);
         thread.start();
         ProcessHandlerClient.addProcess(new ManifestDLMonitor(thread));

@@ -50,9 +50,25 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             return true;
         }
 
+        int fuel = ItemNBTHelper.getInteger(stack, "Fuel", 0);
+        World world = player.worldObj;
+
+        if (!player.capabilities.isCreativeMode && fuel <= 0) {
+            if (world.isRemote) player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
+            return true;
+        }
+
         if (entity instanceof EntityPlayer) {
-            if (player.worldObj.isRemote) {
-                player.addChatMessage(new TextComponentTranslation("msg.teleporterPlayerT1.txt"));
+            if (entity.isSneaking()) {
+                getLocation(stack).teleport(entity);
+                if (!player.capabilities.isCreativeMode && fuel > 0) {
+                    ItemNBTHelper.setInteger(stack, "Fuel", fuel - 1);
+                }
+            }
+            else {
+                if (world.isRemote) {
+                    player.addChatMessage(new TextComponentTranslation("msg.teleporterPlayerConsent.txt"));
+                }
             }
             return true;
         }
@@ -61,27 +77,22 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             return true;
         }
 
-        if (player.getHealth() > 2 || player.capabilities.isCreativeMode) {
-            if (!player.capabilities.isCreativeMode) {
-                player.setHealth(player.getHealth() - 2);
-            }
-
-            if (!entity.worldObj.isRemote) {
-                DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
-            }
-
-            getLocation(stack).teleport(entity);
-
-            if (!entity.worldObj.isRemote) {
-                DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
-            }
-
-            if (player.worldObj.isRemote) {
-                player.addChatMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) getLocation(stack).getXCoord() + " y:" + (int) getLocation(stack).getYCoord() + " z:" + (int) getLocation(stack).getZCoord() + " Dimension: " + getLocation(stack).getDimensionName()));
-            }
+        if (!entity.worldObj.isRemote) {
+            DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
-        else if (player.worldObj.isRemote){
-            player.addChatMessage(new TextComponentTranslation("msg.teleporterLowHealth.txt"));
+
+        getLocation(stack).teleport(entity);
+
+        if (!entity.worldObj.isRemote) {
+            DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+        }
+
+        if (player.worldObj.isRemote) {
+            player.addChatMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) getLocation(stack).getXCoord() + " y:" + (int) getLocation(stack).getYCoord() + " z:" + (int) getLocation(stack).getZCoord() + " Dimension: " + getLocation(stack).getDimensionName()));
+        }
+
+        if (!player.capabilities.isCreativeMode && fuel > 0) {
+            ItemNBTHelper.setInteger(stack, "Fuel", fuel - 1);
         }
 
         return true;

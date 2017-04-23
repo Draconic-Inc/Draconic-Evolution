@@ -30,6 +30,7 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
 		registerSyncableObject(active, false);
 		registerSyncableObject(energyStored, false);
 		setCapacityAndTransfer(100000, 0, 1000);
+		setShouldRefreshOnBlockChange();
 	}
 
 	@Override

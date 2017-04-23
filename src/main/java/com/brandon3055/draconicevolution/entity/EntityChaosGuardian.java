@@ -5,19 +5,19 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.lib.DEDamageSources;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
-import net.minecraft.entity.boss.dragon.phase.PhaseList;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -45,8 +45,9 @@ import java.util.List;
 /**
  * Created by Brandon on 4/07/2014.
  */
-public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolution.ChaosGuardian
+public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolution.ChaosGuardian
 
+    private static final List<Block> DESTRUCTION_BLACKLIST = ImmutableList.of(Blocks.END_STONE, Blocks.OBSIDIAN);
     private static final DataParameter<Optional<BlockPos>> CRYSTAL_POSITION = EntityDataManager.<Optional<BlockPos>>createKey(EntityChaosGuardian.class, DataSerializers.OPTIONAL_BLOCK_POS);
 
     private Entity target;
@@ -143,7 +144,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
     @Override
     public void onLivingUpdate() {
-        //setHealth(0);
+//        setHealth(0);
         //  setHealth(1);
         //setDead();
         //LogHelper.info(getMaxHealth()+" "+getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue());
@@ -437,7 +438,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
             this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getEntityBoundingBox());
         }
 
-        getPhaseManager().setPhase(PhaseList.HOLDING_PATTERN);
+//        getPhaseManager().setPhase(PhaseList.HOLDING_PATTERN);
     }
 
     public void onCrystalTargeted(EntityPlayer player, boolean destroyed) {
@@ -893,7 +894,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
         if ((damageSource.getEntity() instanceof EntityPlayer || damageSource.isExplosion()) && healingChaosCrystal == null)//tod reanable this
         {
-            super.attackDragonFrom(damageSource, dmg);
+            super.attackEntityFrom(damageSource, dmg);
         } else if (damageSource.getEntity() instanceof EntityPlayer) {
             ((EntityPlayer) damageSource.getEntity()).addChatComponentMessage(new TextComponentTranslation("msg.de.guardianAttackBlocked.txt").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)));
         }
@@ -1149,7 +1150,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
                     IBlockState state = this.worldObj.getBlockState(pos);
                     Block block = state.getBlock();
 
-                    if (!worldObj.isAirBlock(pos)) {
+                    if (!worldObj.isAirBlock(pos) && !DESTRUCTION_BLACKLIST.contains(block)) {
                         if (block.canEntityDestroy(state, worldObj, pos, this) && this.worldObj.getGameRules().getBoolean("mobGriefing")) {
                             flag1 = this.worldObj.setBlockToAir(pos) || flag1;
                         } else {
@@ -1315,4 +1316,41 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
         super.removeTrackingPlayer(player);
         bossInfo.removePlayer(player);
     }
+
+    @Override
+    public boolean isNonBoss() {
+        return false;
+    }
+
+    //    @SideOnly(Side.CLIENT)
+//    public float getHeadPartYOffset(int p_184667_1_, double[] p_184667_2_, double[] p_184667_3_)
+//    {
+//        IPhase iphase = this.phaseManager.getCurrentPhase();
+//        PhaseList<? extends IPhase > phaselist = iphase.getPhaseList();
+//        double d0;
+//
+//        if (phaselist != PhaseList.LANDING && phaselist != PhaseList.TAKEOFF)
+//        {
+//            if (iphase.getIsStationary())
+//            {
+//                d0 = (double)p_184667_1_;
+//            }
+//            else if (p_184667_1_ == 6)
+//            {
+//                d0 = 0.0D;
+//            }
+//            else
+//            {
+//                d0 = p_184667_3_[1] - p_184667_2_[1];
+//            }
+//        }
+//        else
+//        {
+//            BlockPos blockpos = this.worldObj.getTopSolidOrLiquidBlock(WorldGenEndPodium.END_PODIUM_LOCATION);
+//            float f = Math.max(MathHelper.sqrt_double(this.getDistanceSqToCenter(blockpos)) / 4.0F, 1.0F);
+//            d0 = (double)((float)p_184667_1_ / f);
+//        }
+//
+//        return (float)d0;
+//    }
 }

@@ -12,5 +12,5 @@ public interface IDEPeripheral {
 	String[] getMethodNames();
 
 	/**Call a method*/
-	Object[] callMethod(String method, Object... args);
+	Object[] callMethod(String method, ArgHelper args);
 }

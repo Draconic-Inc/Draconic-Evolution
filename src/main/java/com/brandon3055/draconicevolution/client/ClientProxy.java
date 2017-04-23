@@ -6,8 +6,9 @@ import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
-import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerClient;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
@@ -167,7 +168,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityGuardianProjectile.class, new RenderGuardianProjectile.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityGuardianCrystal.class, new RenderGuardianCrystal.Factory());
-		RenderingRegistry.registerEntityRenderingHandler(EntityChaosVortex.class, new RenderEntityChaosVortex.Factory());
+		RenderingRegistry.registerEntityRenderingHandler(EntityChaosImplosion.class, new RenderEntityChaosVortex.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, new RenderCustomArrow.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityLootCore.class, new RenderLootCore.Factory());
 	}
@@ -274,7 +275,15 @@ public class ClientProxy extends CommonProxy {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			return super.createENetFXHandler(tile);
 		}
-		return new ENetFXHandlerClient(tile);
+		return tile.createClientFXHandler();
+	}
+
+	@Override
+	public ReactorEffectHandler createReactorFXHandler(TileReactorCore tile) {
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+			return super.createReactorFXHandler(tile);
+		}
+		return new ReactorEffectHandler(tile);
 	}
 
 	@Override

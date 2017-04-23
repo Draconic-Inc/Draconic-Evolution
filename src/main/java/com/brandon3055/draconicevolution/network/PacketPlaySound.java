@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.network;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.network.MessageHandlerWrapper;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -68,7 +68,7 @@ public class PacketPlaySound implements IMessage
             SoundCategory category = SoundCategory.getByName(message.category);
 
             if (event != null){
-                Minecraft.getMinecraft().theWorld.playSound(message.x, message.y, message.z, event, category, message.volume, message.pitch, message.distanceDelay);
+                BrandonsCore.proxy.getClientWorld().playSound(message.x, message.y, message.z, event, category, message.volume, message.pitch, message.distanceDelay);
             }
             else {
                 LogHelper.error("Unable to find sound in vanilla or DE's sound events [%s]", message.sound);

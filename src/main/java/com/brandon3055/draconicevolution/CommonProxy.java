@@ -2,8 +2,9 @@ package com.brandon3055.draconicevolution;
 
 import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
-import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerServer;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.ContributorHandler;
@@ -59,6 +60,7 @@ public class CommonProxy {
 		CCOCIntegration.init();
 		ModHelper.init();
 		DragonChunkLoader.init();
+		RecipeManager.loadRecipes();
 
 		LogHelper.info("Finished Initialization");
 	}
@@ -103,6 +105,7 @@ public class CommonProxy {
 		DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 8, Side.CLIENT);
 		DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 9, Side.SERVER);
 		DraconicEvolution.network.registerMessage(CrystalUpdateBatcher.Handler.class, CrystalUpdateBatcher.class, 10, Side.CLIENT);
+		DraconicEvolution.network.registerMessage(PacketExplosionFX.Handler.class, PacketExplosionFX.class, 11, Side.CLIENT);
 //		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlacedItemPacket.Handler.class, PlacedItemPacket.class, 2, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);
@@ -198,7 +201,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityGuardianProjectile.class, "GuardianProjectile", 7, DraconicEvolution.instance, 256, 1, true);
 		EntityRegistry.registerModEntity(EntityGuardianCrystal.class, "GuardianCrystal", 8, DraconicEvolution.instance, 256, 5, false);
 //		EntityRegistry.registerModEntity(EntityChaosBolt.class, "ChaosBolt", 9, DraconicEvolution.instance, 32, 5, true);
-		EntityRegistry.registerModEntity(EntityChaosVortex.class, "EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
+		EntityRegistry.registerModEntity(EntityChaosImplosion.class, "EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
 		EntityRegistry.registerModEntity(EntityCustomArrow.class, "CustomArrow", 11, DraconicEvolution.instance, 128, 1, true);
 		EntityRegistry.registerModEntity(EntityLootCore.class, "LootCore", 12, DraconicEvolution.instance, 64, 5, true);
 
@@ -209,7 +212,11 @@ public class CommonProxy {
     }
 
     public ENetFXHandler createENetFXHandler(TileCrystalBase tile) {
-    	return new ENetFXHandlerServer(tile);
+    	return tile.createServerFXHandler();
+	}
+
+	public ReactorEffectHandler createReactorFXHandler(TileReactorCore tile) {
+		return null;
 	}
 
 	public ISound playISound(ISound sound){

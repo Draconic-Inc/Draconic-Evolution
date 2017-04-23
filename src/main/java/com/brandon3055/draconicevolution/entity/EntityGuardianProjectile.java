@@ -9,7 +9,6 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -98,7 +97,7 @@ public class EntityGuardianProjectile extends Entity {
                 DESoundHandler.playSoundFromServer(world, shooter.posX + 0.5D, shooter.posY + 0.5D, shooter.posZ + 0.5D, SoundEvents.ENTITY_ENDERDRAGON_SHOOT, SoundCategory.HOSTILE, 10.0F, rand.nextFloat() * 0.3F + 0.85F, false, 256);
             }
 
-            this.rotationYaw = shooter instanceof EntityDragon ? shooter.rotationYaw + 180F : shooter.rotationYaw;
+            this.rotationYaw = shooter instanceof EntityChaosGuardian ? shooter.rotationYaw + 180F : shooter.rotationYaw;
             this.rotationPitch = shooter.rotationPitch;
             if (type == FIREBOMB || type == TELEPORT) {
                 rotationPitch += (rand.nextFloat() - 0.5F) * 20F;

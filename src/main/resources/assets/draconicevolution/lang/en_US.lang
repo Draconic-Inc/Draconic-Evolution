@@ -35,7 +35,7 @@ tile.draconicevolution:flux_gate.name=Flux Gate
 tile.draconicevolution:fluid_gate.name=Fluid Gate
 tile.draconicevolution:reactor_core.name=Draconic Reactor Core
 tile.draconicevolution:reactor_stabilizer.name=Reactor Stabilizer
-tile.draconicevolution:reactor_energy_injector.name=Reactor Energy Injector
+tile.draconicevolution:reactor_injector.name=Reactor Energy Injector
 tile.draconicevolution:chaos_crystal.name=Chaos Crystal
 tile.draconicevolution:upgrade_modifier.name=Upgrade Modifier
 
@@ -45,9 +45,9 @@ tile.draconicevolution:energy_crystal.relay.draconic.name=Draconic Energy Relay 
 tile.draconicevolution:energy_crystal.crystal_io.basic.name=Basic Energy I/O Crystal
 tile.draconicevolution:energy_crystal.crystal_io.wyvern.name=Wyvern Energy I/O Crystal
 tile.draconicevolution:energy_crystal.crystal_io.draconic.name=Draconic Energy I/O Crystal
-tile.draconicevolution:energy_crystal.relay.basic.name=Basic Wireless Energy Crystal
-tile.draconicevolution:energy_crystal.relay.wyvern.name=Wyvern Wireless Energy Crystal
-tile.draconicevolution:energy_crystal.relay.draconic.name=Draconic Wireless Energy Crystal
+tile.draconicevolution:energy_crystal.wireless.basic.name=Basic Wireless Energy Crystal
+tile.draconicevolution:energy_crystal.wireless.wyvern.name=Wyvern Wireless Energy Crystal
+tile.draconicevolution:energy_crystal.wireless.draconic.name=Draconic Wireless Energy Crystal
 
 
 tile.draconicevolution:fusion_crafting_core.name=Fusion Crafting Core
@@ -112,11 +112,11 @@ item.draconicevolution:creative_structure_spawner_ender_island.name=Spawn Ender 
 item.draconicevolution:info_tablet.name=Draconic Evolution Information Tablet
 item.draconicevolution:crystal_binder.name=Crystal Binder
 item.draconicevolution:dezils_marshmallow.name=Dezil's Marshmallow
-item.draconicevolution:reactor_crafting_part.frame.name=Reactor Stabilizer Frame
-item.draconicevolution:reactor_crafting_part.rotorInner.name=Reactor Stabilizer Inner Rotor
-item.draconicevolution:reactor_crafting_part.rotorOuter.name=Reactor Stabilizer Outer Rotor
-item.draconicevolution:reactor_crafting_part.rotorAssembly.name=Reactor Stabilizer Rotor Assembly
-item.draconicevolution:reactor_crafting_part.stabilizerRing.name=Reactor Stabilizer Focus Ring
+item.draconicevolution:reactor_part.stabilizer_frame.name=Reactor Stabilizer Frame
+item.draconicevolution:reactor_part.inner_rotor.name=Reactor Stabilizer Inner Rotor
+item.draconicevolution:reactor_part.outer_rotor.name=Reactor Stabilizer Outer Rotor
+item.draconicevolution:reactor_part.rotor_assembly.name=Reactor Stabilizer Rotor Assembly
+item.draconicevolution:reactor_part.focus_ring.name=Reactor Stabilizer Focus Ring
 item.draconicevolution:chaotic_core.name=Chaotic Core
 item.draconicevolution:chaos_shard.shard.name=Chaos Shard
 item.draconicevolution:chaos_shard.fragSmall.name=Tiny Chaos Fragment
@@ -213,16 +213,6 @@ msg.de.alreadyRaining.txt=Its already raining!
 msg.de.alreadyStorm.txt=Its already thundering!
 msg.de.insufficientPower.txt=Insufficient Power!
 msg.de.alreadyRunning.txt=Already Running!
-
-//Reactor
-msg.de.reactorRSMode.0.txt=Comparator Mode: Temperature
-msg.de.reactorRSMode.1.txt=Comparator Mode: Temperature [Inverted]
-msg.de.reactorRSMode.2.txt=Comparator Mode: Containment Field
-msg.de.reactorRSMode.3.txt=Comparator Mode: Containment Field [Inverted]
-msg.de.reactorRSMode.4.txt=Comparator Mode: Energy Saturation
-msg.de.reactorRSMode.5.txt=Comparator Mode: Energy Saturation [Inverted]
-msg.de.reactorRSMode.6.txt=Comparator Mode: Fuel Conversion
-msg.de.reactorRSMode.7.txt=Comparator Mode: Fuel Conversion [Inverted]
 
 //Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=Unbound
@@ -437,6 +427,7 @@ item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, tr
 //Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.draconicevolution.EnderDragon.name=Ender Dragon
 entity.draconicevolution.ChaosGuardian.name=Chaos Guardian
+entity.draconicevolution.lootCore.name=Loot Core
 
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
@@ -482,18 +473,15 @@ button.de.DOWN.txt=DOWN
 button.de.toggleHidden.txt=Toggle Hidden
 
 //Item Config Buttons
-button.de.reactorCharge.txt=Charge Reactor
-button.de.reactorStart.txt=Activate
-button.de.reactorStop.txt=Initiate Shutdown
 button.de.stats.txt=Stats
 button.de.statsShow.txt=Show
 button.de.statsHide.txt=Hide
 button.de.scaleUp.txt=Scale +
 button.de.scaleDown.txt=Scale -
 button.de.fadeMode0.txt=Fade Out: Off
-button.de.fadeMode1.txt=Fade Out: 25%
-button.de.fadeMode2.txt=Fade Out: 50%
-button.de.fadeMode3.txt=Fade Out: 75%
+button.de.fadeMode1.txt=Fade Out: 25%%
+button.de.fadeMode2.txt=Fade Out: 50%%
+button.de.fadeMode3.txt=Fade Out: 75%%
 button.de.fadeMode4.txt=Fade Out: Full
 button.de.rotate.txt=Rotate
 button.de.numeric.txt=Numeric:
@@ -516,11 +504,6 @@ gui.de.increment.name=Increment value by
 gui.de.decrement.name=Decrement value by
 gui.de.ctrlAndShift.name=You can use Ctrl and Shift to change the increment amount.
 gui.de.pressOrScroll.name=Press Or Scroll
-gui.de.tempLoad.name=Temperature Load Factor
-gui.de.mass.name=Core Mass
-gui.de.genRate.name=Generation Rate
-gui.de.fieldInputRate.name=Field Input Rate
-gui.de.fuelConversion.name=Fuel Conversion Rate
 gui.de.configureItem.txt=Configure Item
 gui.de.min.txt=Min
 gui.de.max.txt=Max
@@ -528,29 +511,8 @@ gui.de.max.txt=Max
 gui.de.insert.txt=Insert
 gui.de.extract.txt=Extract
 gui.de.fuel.txt=Fuel
-gui.de.coreMass.txt=Core Mass
-gui.de.reactionTemp.txt=Core Temperature
-gui.de.fieldStrength.txt=Containment Field Strength
-gui.de.energySaturation.txt=Energy Saturation
-gui.de.fuelConversion.txt=Fuel Conversion Level
-gui.de.status.txt=Status
-gui.de.status0.txt=OFFLINE
-gui.de.status1.txt=CHARGING
-gui.de.status1_5.txt=CHARGED
-gui.de.status2.txt=ONLINE
-gui.de.status3.txt=STOPPING
-gui.de.status4.txt=INVALID SETUP
 gui.de.internalStorage.txt=Internal Storage
 gui.de.itemStorage.txt=Item Storage
-gui.de.reacTempLoadFactor.txt=This shows how much load is being placed on the containment field by the reactors temperature. If the reactor temp passes 8,000 this will increase exponentially.
-gui.de.reacCoreMass.txt=This show the total amount of mass within the reactor in cubic metres. That's the draconium + chaos so this value will only change when you add or remove fuel.
-gui.de.reacGenRate.txt=This is the current RF/t being generated by the reactor.
-gui.de.reacInputRate.txt=This is the exact RF/t input required to maintain the current field strength. As field strength increases this will increase exponentially.
-gui.de.reacConversionRate.txt=This is how fast the reactor is currently using fuel. As the reactor saturation increases this will go down.
-gui.de.noCoresInInventory0.txt=You have no Draconic Cores in your inventory
-gui.de.noCoresInInventory1.txt=You have no Wyvern Cores in your inventory
-gui.de.noCoresInInventory2.txt=You have no Awakened Cores in your inventory
-gui.de.noCoresInInventory3.txt=You have no Chaotic Cores in your inventory
 gui.de.addCore.txt=Add Core
 gui.de.removeCore.txt=Remove Core
 gui.de.cores.txt=Cores
@@ -690,6 +652,8 @@ config.field.armorNVLock.entry=Night Vision Lock
 config.field.armorNVLock.description=This locks night vision to active regardless of the light level you are in.
 config.field.armorFSpeedModifier.entry=Flight Speed Modifier
 config.field.armorFSpeedModifier.description=Allows you to adjust the speed boost applied by this armor while flying.
+config.field.armorFlightLock.entry=Flight Lock
+config.field.armorFlightLock.description=Allows you to lock creative flight so that it is always active.
 config.field.armorVFSpeedModifier.entry=Vertical Boost
 config.field.armorVFSpeedModifier.description=This allows you to increase the speed at which you ascend/descend while flying.
 config.field.armorInertiaCancel.entry=Inertia Cancellation
@@ -829,15 +793,15 @@ gui.entityDetector.pulseDelay=Pulse Delay
 gui.entityDetector.pulseDelay.info=The delay between scanning pulses. The scanning pulse is when the block checks for nearby entities.
 gui.entityDetector.outputPulse=Pulse Output Mode
 gui.entityDetector.outputContin=Fixed Output Mode
-gui.entityDetector.output.info=The strength of the output is determined by the number of valid entities detected and the RS Min and RS Max settings.\noPulse mode will emmit a 1 tick pulse every scanning pulse.\nFixed mode will emmit a continuous signal updating every scanning pulse.
+gui.entityDetector.output.info=The strength of the output is determined by the number of valid entities detected and the RS Min and RS Max settings. Pulse mode will emmit a 1 tick pulse every scanning pulse.Fixed mode will emmit a continuous signal updating every scanning pulse.
 gui.entityDetector.range=Range
-gui.entityDetector.range.info=The scanning range in blocks.\nIncreasing the range increases the energy cost for each scanning pulse
+gui.entityDetector.range.info=The scanning range in blocks.Increasing the range increases the energy cost for each scanning pulse
 gui.entityDetector.rsMin=RS Min Threshold
 gui.entityDetector.rsMin.info=The minimum number of detected entities required to produce a redstone signal of 1.
 gui.entityDetector.rsMax=RS Max Threshold
 gui.entityDetector.rsMax.info=The minimum number of detected entities required to produce a redstone signal of 15.
 gui.entityDetector.energyCost=Energy Per Pulse
-gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse.\nThe energy requires is 125 * range^1.5\nThis means the energy cost increases exponentially as you increase the range.
+gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse. The energy requires is 125 * range^1.5 This means the energy cost increases exponentially as you increase the range.
 gui.entityDetector.filter=Open Entity Filter Configurator
 
 //---- Energy Net ----//
@@ -857,3 +821,82 @@ eNet.de.linkToSelf.info=You can not link a device to itself...
 eNet.de.hudCharge.info=Charge
 eNet.de.hudLinks.info=Links
 eNet.de.hudWirelessLinks.info=Wireless Links
+eNet.de.IOModeSEND.info=I/O Mode:%s Output
+eNet.de.IOModeRECEIVE.info=I/O Mode:%s Input
+eNet.de.IOModeBALANCE.info=I/O Mode:%s Balance
+eNet.de.sideCanNotReceive.info=That tile can not receive energy on that side!.
+eNet.de.maxReceivers.info=Receiver Limit Reached!
+eNet.de.hudWirelessLinks.info=Wireless Links
+eNet.de.output.info=Output
+eNet.de.identify.gui=Identify
+eNet.de.unlink.gui=UnLink
+eNet.de.clearLinks.gui=Clear Links
+eNet.de.clearReceivers.gui=Clear Receivers
+
+//---- Reactor ----//
+gui.reactor.draconicReactor.txt=Draconic Reactor
+gui.reactor.fuelIn.txt=Fuel (in)
+gui.reactor.chaosOut.txt=Chaos (out)
+gui.reactor.tempLoadFactor.txt=This shows how much load is being placed on the containment field by the reactors temperature. If the reactor temp passes 8,000 this will increase exponentially.
+gui.reactor.coreVolume.txt=This show the total volume of matter within the reactor in cubic metres. That's the draconium + chaos so this value will only change when you add or remove fuel.
+gui.reactor.genRate.txt=This is the current RF/t being generated by the reactor.
+gui.reactor.inputRate.txt=This is the exact RF/t input required to maintain the current field strength. As field strength increases this will increase exponentially.
+gui.reactor.conversionRate.txt=This is how fast the reactor is currently using fuel. As the reactor saturation increases this will go down.
+gui.reactor.redstoneMode.txt=Configure the comparator output for this reactor component.
+gui.reactor.rsMode_temp.txt=Will output a signal from 0 to 15 as temperature rises up to 10000
+gui.reactor.rsMode_temp_inv.txt=This is the same as Temperature except the signal is inverted.
+gui.reactor.rsMode_field.txt=Will output a signal from 0 to 15 as the shield strength fluctuates between 0 and 100%, Signal of 1 = > 10% shield and Signal of 15 = >= 90% shield power.
+gui.reactor.rsMode_field_inv.txt=This is the same as Shield except the signal is inverted.
+gui.reactor.rsMode_sat.txt=Will output a signal from 0 to 15 as the saturation level fluctuates between 0 and 100%
+gui.reactor.rsMode_sat_inv.txt=This is the same as Saturation except the signal is inverted.
+gui.reactor.rsMode_fuel.txt=Will output a signal from 0 to 15 as the fuel conversion level increases from 0 to 100%, Signal of 15 = >= 90% Conversion.
+gui.reactor.rsMode_fuel_inv.txt=This is the same as Conversion except the signal is inverted.
+gui.reactor.failSafe.txt=When enabled the reactor will automatically initiate shutdown when the Temperature drops bellow 2500C and Saturation reaches 99% This can be used to automatically shutdown your reactor in the event of a malfunction or just when it needs to be refueled.
+
+gui.reactor.reactionTemp.info=Core Temperature
+gui.reactor.fieldStrength.info=Containment Field Strength
+gui.reactor.energySaturation.info=Energy Saturation
+gui.reactor.fuelConversion.info=Fuel Conversion Level
+gui.reactor.tempLoad.info=Temperature Load Factor
+gui.reactor.coreVolume.info=Core Volume
+gui.reactor.genRate.info=Generation Rate
+gui.reactor.fieldInputRate.info=Field Input Rate
+gui.reactor.fuelConversionRate.info=Fuel Conversion Rate
+gui.reactor.status.info=Status
+gui.reactor.status.invalid.info=Invalid Setup
+gui.reactor.status.cold.info=Offline
+gui.reactor.status.warming_up.info=Warming Up
+gui.reactor.status.running.info=Online
+gui.reactor.status.stopping.info=Stopping
+gui.reactor.status.cooling.info=Cooling Down
+gui.reactor.status.beyond_hope.info=Explosion Imminent!!!
+
+gui.reactor.charge.btn=Charge
+gui.reactor.activate.btn=Activate
+gui.reactor.shutdown.btn=Shutdown
+gui.reactor.rsMode.btn=Redstone\nMode
+gui.reactor.failSafe.btn=Fail-Safe
+
+gui.reactor.rsMode_temp.btn=Temp
+gui.reactor.rsMode_temp_inv.btn=-Temp
+gui.reactor.rsMode_field.btn=Shield
+gui.reactor.rsMode_field_inv.btn=-Shield
+gui.reactor.rsMode_sat.btn=Saturation
+gui.reactor.rsMode_sat_inv.btn=-Saturation
+gui.reactor.rsMode_fuel.btn=Conversion
+gui.reactor.rsMode_fuel_inv.btn=-Conversion
+
+msg.de.reactorRSMode.0.txt=Comparator Mode: Temperature
+msg.de.reactorRSMode.1.txt=Comparator Mode: Temperature [Inverted]
+msg.de.reactorRSMode.2.txt=Comparator Mode: Containment Field
+msg.de.reactorRSMode.3.txt=Comparator Mode: Containment Field [Inverted]
+msg.de.reactorRSMode.4.txt=Comparator Mode: Energy Saturation
+msg.de.reactorRSMode.5.txt=Comparator Mode: Energy Saturation [Inverted]
+msg.de.reactorRSMode.6.txt=Comparator Mode: Fuel Conversion
+msg.de.reactorRSMode.7.txt=Comparator Mode: Fuel Conversion [Inverted]
+gui.de.coreMass.txt=Core Mass
+
+
+
+//---- Misc Info Text ----//
+info.de.shiftReversePlaceLogic.txt=Hold Shift to reverse placement logic.

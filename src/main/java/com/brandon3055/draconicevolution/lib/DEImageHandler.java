@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.lib;
 
-import com.brandon3055.brandonscore.utils.BCLogHelper;
+import com.brandon3055.brandonscore.utils.LogHelperBC;
 import com.google.common.io.ByteStreams;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.client.Minecraft;
@@ -43,7 +43,7 @@ public class DEImageHandler {
 	{
 		if (downloadThread != null && downloadThread.isFinished)
 		{
-			if (downloadThread.isReloadRequired()) BCLogHelper.info("Image Download Finished");
+			if (downloadThread.isReloadRequired()) LogHelperBC.info("Image Download Finished");
 			downloadStatus = downloadThread.wasSuccessful ? 1 : 2;
 			MinecraftForge.EVENT_BUS.unregister(this);
 			addRSPack(event != null);
@@ -93,12 +93,12 @@ public class DEImageHandler {
 					}
 					catch (MalformedURLException e)
 					{
-						BCLogHelper.error("Image Read Failed");
+						LogHelperBC.error("Image Read Failed");
 						e.printStackTrace();
 					}
 					catch (IOException e)
 					{
-						BCLogHelper.error("Image Read Failed");
+						LogHelperBC.error("Image Read Failed");
 						e.printStackTrace();
 					}
 				}
@@ -113,7 +113,7 @@ public class DEImageHandler {
 				URL url = new URL(urlString);
 				String fileName = url.getFile();
 
-				BCLogHelper.info("Downloading Image " + FilenameUtils.getName(fileName));
+				LogHelperBC.info("Downloading Image " + FilenameUtils.getName(fileName));
 
 				File dll = new File(getImagesFolder(), FilenameUtils.getName(fileName));
 
@@ -126,7 +126,7 @@ public class DEImageHandler {
 				os.close();
 
 			}catch (IOException e){
-				BCLogHelper.error("Download Failed");
+				LogHelperBC.error("Download Failed");
 				e.printStackTrace();
 				return false;
 			}
@@ -143,7 +143,7 @@ public class DEImageHandler {
 			}
 			catch (MalformedURLException e)
 			{
-				BCLogHelper.error("Unable to check files existence. Invalid URL: " + urlS);
+				LogHelperBC.error("Unable to check files existence. Invalid URL: " + urlS);
 				e.printStackTrace();
 				return false;
 			}
@@ -182,7 +182,7 @@ public class DEImageHandler {
 			}
 			catch (IOException e)
 			{
-				BCLogHelper.error("Error creating pack.mcmeta");
+				LogHelperBC.error("Error creating pack.mcmeta");
 				e.printStackTrace();
 			}
 		}
@@ -194,7 +194,7 @@ public class DEImageHandler {
 			defaultResourcePacks.add(new FolderResourcePack(rspack));
 
 			f.set(Minecraft.getMinecraft(), defaultResourcePacks);
-			BCLogHelper.info("RS Added");
+			LogHelperBC.info("RS Added");
 			if (refreash) Minecraft.getMinecraft().refreshResources();
 		}
 		catch (IllegalAccessException e) {

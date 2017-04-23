@@ -11,7 +11,7 @@ import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.api.ITellJEIToGetOutOfTheWay;
+import com.brandon3055.draconicevolution.api.IJEIClearence;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.inventory.ContainerDummy;
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 17/10/2016.
  */
-public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy> implements IMGuiListener, ITellJEIToGetOutOfTheWay {
+public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy> implements IMGuiListener, IJEIClearence {
 
     private EntityPlayer player;
     private TileCelestialManipulator tile;

@@ -16,7 +16,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 12/8/2015.
  */
-public class ChaosImplosion implements IProcess {
+public class ProcessChaosImplosion implements IProcess {
 
     public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute().setDamageAllowedInCreativeMode();
 
@@ -29,7 +29,7 @@ public class ChaosImplosion implements IProcess {
 
     private double expansion = 0;
 
-    public ChaosImplosion(World world, int x, int y, int z) {
+    public ProcessChaosImplosion(World world, int x, int y, int z) {
         this.worldObj = world;
         this.xCoord = x;
         this.yCoord = y;
@@ -90,9 +90,9 @@ public class ChaosImplosion implements IProcess {
 
             float energy = power * 10;
 
-            for (int y = yCoord; y > 0 && energy > 0; y--) {
+            for (int y = yCoord; y >= 0 && energy > 0; y--) {
                 List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
-                for (Entity entity : entities) entity.attackEntityFrom(ChaosImplosion.chaosImplosion, power * 100);
+                for (Entity entity : entities) entity.attackEntityFrom(ProcessChaosImplosion.chaosImplosion, power * 100);
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
 

@@ -5,9 +5,11 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.MultiBlockHelper;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -21,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -145,7 +148,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         //region Render Build Guide
 
-        if (flag == FLAG_RENDER) {//todo find a way to render these from the center out (Maby try rendering them relative to haw far from the player they are)... Actually maby i can use cover's new baking system to make the entire thing a baked model!
+        if (flag == FLAG_RENDER) {
             if (world.isRemote) {
                 renderBuildGuide(name, world, pos, startPos, flag);
             }
@@ -186,7 +189,10 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         double dist = Utils.getDistanceAtoB(corePos, Vec3D.getCenter(pos));
         double pDist = Minecraft.getMinecraft().thePlayer.getDistance(corePos.x, corePos.y, corePos.z);
 
-        if (dist + 2 > pDist) {
+        IBlockState atPos = world.getBlockState(pos);
+        boolean invalid = !world.isAirBlock(pos) && (atPos.getBlock().getRegistryName() == null || !atPos.getBlock().getRegistryName().toString().equals(name));
+
+        if (dist + 2 > pDist && !invalid) {
             return;
         }
 
@@ -197,12 +203,21 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         BlockPos translation = new BlockPos(pos.getX() - startPos.getX(), pos.getY() - startPos.getY(), pos.getZ() - startPos.getZ());
         translation = translation.add(getCoreOffset(core.tier.value));
 
+        int alpha = 0xFF000000;
+        if (invalid) {
+            alpha = (int) (((Math.sin(ClientEventHandler.elapsedTicks / 20D) + 1D) / 2D) * 255D) << 24;
+        }
+
         IBlockState state = block.getDefaultState();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(translation.getX(), translation.getY(), translation.getZ());
-//        GlStateManager.enableBlend();
-//        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        if (invalid) {
+            GlStateManager.disableDepth();
+            GlStateManager.enableBlend();
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+        }
+
         GlStateManager.scale(0.8, 0.8, 0.8);
         GlStateManager.translate(0.1, 0.1, 0.1);
         float brightnessX = OpenGlHelper.lastBrightnessX;
@@ -211,10 +226,14 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
 
-        ModelUtils.renderQuadsARGB(blockQuads, 0xFF404040);
+        ModelUtils.renderQuadsARGB(blockQuads, (invalid ? 0x00500000 : 0x00404040) | alpha);
 
+        if (invalid) {
+            GlStateManager.enableDepth();
+            GlStateManager.disableBlend();
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        }
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
-//        GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
 
@@ -657,202 +676,406 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         String e = "";
         String X = "draconicevolution:energy_storage_core";
         String A = "draconicevolution:draconic_block";
-        String D = "draconicevolution:draconic_block";
+        String D = "draconicevolution:draconium_block";
+//        String d = "draconicevolution:draconium_block";
 
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+        //region Hard
+        if (DEConfig.hardMode) {
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
 
-        //Centre
-        storage.newLayer();
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, X, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            //Centre
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, X, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(A, A, D, D, D, D, D, D, D, D, D, A, A);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
-        storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, A, A, D, D, D, D, D, D, D, A, A, e);
+            storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
-        storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, D, D, D, D, D, A, A, e, e);
+            storage.addRow(e, e, A, A, A, A, A, A, A, A, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
 
-        storage.newLayer();
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
-        storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+        }
+        //endregion
+
+        //region Hard
+        else {
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+
+            //Centre
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, X, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(A, D, D, D, D, D, D, D, D, D, D, D, A);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, A, D, D, D, D, D, D, D, D, D, A, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, A, D, D, D, D, D, D, D, A, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, D, D, D, D, D, A, e, e, e);
+            storage.addRow(e, e, e, A, A, A, A, A, A, A, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+
+            storage.newLayer();
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, A, A, A, A, A, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+            storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
+        }
+        //endregion
 
         return storage;
     }

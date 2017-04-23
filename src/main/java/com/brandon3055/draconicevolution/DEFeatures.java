@@ -8,14 +8,14 @@ import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.items.ItemSimpleSubs;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.itemblock.ItemDraconiumBlock;
 import com.brandon3055.draconicevolution.blocks.machines.*;
+import com.brandon3055.draconicevolution.blocks.reactor.ReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorCore;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
-import com.brandon3055.draconicevolution.items.Debugger;
-import com.brandon3055.draconicevolution.items.InfoTablet;
-import com.brandon3055.draconicevolution.items.ItemPersistent;
-import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.items.*;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.items.tools.*;
@@ -23,11 +23,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Created by brandon3055 on 18/3/2016.
  * This class contains a reference to all blocks and items in Draconic Evolution
  */
+@GameRegistry.ObjectHolder(DraconicEvolution.MODID)
 public class DEFeatures {
 
 	/* ------------------ Blocks ------------------ */
@@ -103,6 +105,12 @@ public class DEFeatures {
     @Feature(registryName = "celestial_manipulator", tileEntity = TileCelestialManipulator.class, cTab = 1)//, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static CelestialManipulator celestialManipulator = new CelestialManipulator();
 
+    @Feature(registryName = "energy_crystal", tileEntity = TileCrystalDirectIO.class, itemBlock = ItemBlockBCore.class)
+    public static EnergyCrystal energyCrystal = new EnergyCrystal();
+
+    @Feature(registryName = "flow_gate", variantMap = {"0:facing=north,type=flux", "8:facing=north,type=fluid"}, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static FlowGate flowGate = new FlowGate();
+
     //endregion
 
     //region Exotic Blocks
@@ -143,7 +151,12 @@ public class DEFeatures {
     public static Item awakenedCore = new Item();
 
     @Feature(registryName = "chaotic_core", stateOverride = "simple_components#type=chaoticCore")
-    public static Item chaoticCore = new Item();
+    public static Item chaoticCore = new Item(){
+        @Override
+        public boolean hasEffect(ItemStack stack) {
+            return true;
+        }
+    };
 
     @Feature(registryName = "wyvern_energy_core", stateOverride = "simple_components#type=wyvernECore")
     public static Item wyvernEnergyCore = new Item();
@@ -223,6 +236,9 @@ public class DEFeatures {
     @Feature(registryName = "magnet", cTab = 1, stateOverride = "misc#", variantMap = {"0:type=magnet_basic", "1:type=magnet_advanced"})
     public static Magnet magnet = new Magnet();
 
+    @Feature(registryName = "crystal_binder", stateOverride = "misc#type=crystal_binder")
+    public static CrystalBinder crystalBinder = new CrystalBinder();
+
     //endregion
 
     //region Armor
@@ -270,22 +286,20 @@ public class DEFeatures {
 
 
 
-    //In Progress... To be sorted into categories when done
+    //In Progress... To be sorted into categories when done*
 
     //These are not ready for release and so are commented out for release builds
 
 
-    //@Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class)
+    @Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static ReactorCore reactorCore = new ReactorCore();
 
-    //@Feature(registryName = "energy_crystal", tileEntity = TileCrystalDirectIO.class, itemBlock = ItemBlockBCore.class)
-    public static EnergyCrystal energyCrystal = new EnergyCrystal();
+    @Feature(registryName = "reactor_part", cTab = 1)
+    public static ReactorPart reactorPart = new ReactorPart();
 
-    //@Feature(registryName = "flow_gate", variantMap = {"0:facing=north,type=flux", "8:facing=north,type=fluid"}, itemBlock = ItemBlockBCore.class, cTab = 1)
-    public static FlowGate flowGate = (FlowGate) new FlowGate().addName(0, "flux_gate").addName(8, "fluid_gate");
+    @Feature(registryName = "reactor_component", itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static ReactorComponent reactorComponent = new ReactorComponent();
 
-    //@Feature(registryName = "crystal_binder", stateOverride = "misc#type=crystal_binder")
-    public static CrystalBinder crystalBinder = new CrystalBinder();
 
 
 

@@ -22,6 +22,7 @@ public class DEConfig {
         comments.put("Tweaks", "Just what the name says. Tweaks. Allows you to tweak stuff.");
         comments.put("Client Settings", "These are client side properties that have no effect server side.");
         comments.put("Stat Tweaks", "These allow you to tweak the stats of the tools, weapons and armor.");
+        comments.put("Misc", "Just some misc settings.");
     }
 
     //Category World
@@ -88,6 +89,24 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "itemDislocatorBlacklist", comment = "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4")
     public static String[] itemDislocatorBlacklist = new String[]{"appliedenergistics2:item.ItemCrystalSeed"};
 
+    @ModConfigProperty(category = "Tweaks", name = "reactorOutputMultiplier", comment = "Adjusts the energy output multiplier of the reactor")
+    public static double reactorOutputMultiplier = 1;
+
+    @ModConfigProperty(category = "Tweaks", name = "reactorFuelUsageMultiplier", comment = "Adjusts the fuel usage multiplier of the reactor")
+    public static double reactorFuelUsageMultiplier = 1;
+
+    @ModConfigProperty(category = "Tweaks", name = "dragonDustLootModifier", comment = "This can be used to adjust the amount of draconium dust the dragon drops when killed.\nThe amount dropped will be this number +/- 10%")
+    public static int dragonDustLootModifier = 1;
+
+    @ModConfigProperty(category = "Tweaks", name = "disableLargeReactorBoom", comment = "If true will disable the massive reactor explosion and replace it with a much smaller one.")
+    public static boolean disableLargeReactorBoom = false;
+
+    @ModConfigProperty(category = "Tweaks", name = "disableLootCores", comment = "This will disable loot cores (The \"Blobs\" of items dropped by the tools.).")
+    public static boolean disableLootCores = false;
+
+    @ModConfigProperty(category = "Tweaks", name = "reactorExplosionScale", comment = "Allows you to adjust the overall scale of the reactor explosion. use \"disableLargeReactorBoom\" to diaable explosion completely.")
+    public static double reactorExplosionScale = 1;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stores. You should not need to adjust these unless something breaks.")
@@ -104,6 +123,17 @@ public class DEConfig {
 
     @ModConfigProperty(category = "Client Settings", name = "useCrystalShaders", comment = "This allowes you to just disable the energy crystal shader which can be a lot lagier than the reactor since there are usually a lot more of them (The fallback crystal texture is not soooo bad...)")
     public static boolean useCrystalShaders = true;
+
+    @ModConfigProperty(category = "Client Settings", name = "useReactorBeamShaders", comment = "Set this to false if you prefer the original look of the reactor beams")
+    public static boolean useReactorBeamShaders = true;
+
+    @ModConfigProperty(category = "Client Settings", name = "disableLoudCelestialManipulator", comment = "If true the range of the celestial manipulator sound effect will be significantly reduced.")
+    public static boolean disableLoudCelestialManipulator = false;
+
+    //Category Misc
+
+    @ModConfigProperty(category = "Misc", name = "devLog", comment = "This enables dev log output. I primarily use this for development purposes so it wont be very useful to regular users.")
+    public static boolean devLog = false;
 
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 

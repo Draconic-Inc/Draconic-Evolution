@@ -171,7 +171,7 @@ public class GuiRecipeBuilder extends GuiContainer {
             }
         }
         else if (button.id == 100) {
-            RecipeManager.initialize();
+            RecipeManager.loadRecipes();
             ModHelper.reloadJEI();
         }
     }

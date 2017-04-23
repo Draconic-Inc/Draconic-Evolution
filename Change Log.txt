@@ -1,7 +1,87 @@
 -- 2.1.0.x --
+
+######## 2.0.10.194 ########
+-Fixed reactor not exploding as expected when it hits 100% fuel conversion.
+-Fixed a small mistake in the reactor logic.
+-Hopefully fixed crash when certain mod blocks are destroyed by the reactor explosion.
+-Fixed issue where reactor components disconnect from the core when chunks load/unload
+
+######## 2.0.10.193 ########
+-Fixed energy crystals not working with forge energy.
+-Fixed fusion crafting appearing to stop when you leave the area and return.
+-Fixed broken inventory sidedness on Fusion Crafting Core.
+-Reduced max reactor explosion from 350 to 300 block radius to avoid melting lower end systems or systems that are already overloaded by massive mod packs.
+-Reduced reactor explosion ram usage.
+-Added config to disable large reactor explosion.
+-Fixed shader setting not disabling shaders for energy crystal inventory rendering.
+-Added config option to disable loot cores.
+-Fixed a minor rendering bug in fusion crafter gui.
+
+######## 2.0.9.192 ########
+-Fixed inability to set flow override of flow gate via computer.
+
+######## 2.0.9.191 ########
+-Fixed chaos guardian crash on death.
+-Fixed reactor saturation comparator output.
+
+######## 2.0.9.189 ########
+-Fixed entity detector crashing due to invalid entities in the entity selection list.
+-Fixed fusion crafter crash when unloading/loading chunks.
+-Added config option for dragon draconium dust drop.
+-Modified custom fusion recipe format (Will not break existing configs)
+-Added support for NBT in fusion recipes.
+-Added config option to reduce the range of the celestial manipulator sound.
+-Adjusted the way beams connect between energy relays that are placed one directly above the other.
+-Added comparator output to fusion crafting.
+-Fixed comparator output for energy core not working correctly.
+-Fixed rotating blocks deleting their data.
+-Added support for IItemHandler
+-Re implemented the Reactor!!!
+-Patched the chaos guardian.
+
+######## 2.0.8.177 ########
+-Fixed loot core.
+
+######## 2.0.8.176 ########
+-Fixed dragon mounts integration crashing server.
+
+######## 2.0.8.174 ########
+-Re implemented comparator support for the energy core.
+-Fixed shift clicking in Energy core gui causing a crash.
+-Fixed particles from pylon sometimes targeting wrong core after switching between cores.
+-Fixed issue with energy pylons breaking (I think...)
+-Fixed contributors wings not working on servers unless you login to a singleplayer world first.
+-Fixed advanced dislocator using health instead of fuel when teleporting entities.
+-Fixed advanced dislocator not teleporting other players.-
+-Re implemented the "Flight Lock" option in the Draconic Chestplate.
+-Energy core build guide now shows invalid blocks.
+-Removed upgrades from armor peaces they dont belong on e.g. jump boost on helmet.
+-Tweaked fusion crafting. Each Icosahedron will mow fade into existence as the injector its attached to charges. Making it easy to see of one or more injectors are not getting power.
+-Re implemented the "If you disconnect while flying you will be flying when you re connect" feature.
+-Fixed an issue the prevented the generator from sending energy to some blocks.
+-Loot core now fires an item pickup event so things like backpacks which collect items as you pick them up should work now.
+-Added support for Dragon Mounts Dragon Eggs.*
+
+######## 2.0.7.168 ########
+-Corrected a mistake that was causing issues with other mods entities.
+
+######## 2.0.7.166 ########
+-Hopefully fixed multiplayer network crash with energy net.Tile
+-Fixed upgrades not being transferred from wyvern to draconic armor when upgraded.
+
+######## 2.0.6.157 ########
+-Fixed some broken localization in the advanced dislocator.
+-Fixed wiki manifest not downloading on other operating systems.
+-Fixed Energy Crystal's always dropping a basic release when broken.
+
+######## 2.0.5.154 ########
+-Fixed some mod items not working in custom fusion recipes due to recipes being loaded too early.
+-Fixed AOE code not collecting some blocks such as Ender I/O conduits.
+-made the T8 energy core cheaper when not in hard mode.
+-Updated Energy Crystals.
 -Updated Flux and Fluid Gate's
 
-######## 2.0.4.x ########
+######## 2.0.4.142 ########
 -Fixed advanced dislocator not teleporting other players.
 -Fixed disabling the dragon heart drop also disables the dragon egg spawn override.
 -Added support for Forge Energy.

@@ -1,8 +1,7 @@
 package com.brandon3055.draconicevolution.network;
 
-import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.EncoderException;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -20,7 +19,6 @@ public abstract class PacketCompressible implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        LogHelper.dev("Received " + buf.readableBytes() + " bytes from Server (1 byte is read by the packet handler)");
         boolean isCompressed = buf.readBoolean();
 
         if (!isCompressed) {
@@ -31,23 +29,25 @@ public abstract class PacketCompressible implements IMessage {
         Inflater inflater = new Inflater();
         try {
             int rawSize = buf.readInt();
-            byte[] test = new byte[buf.readableBytes()];
-
-            buf.readBytes(test);
-            buf = buf.unwrap();
-            inflater.setInput(test);
+            byte[] compressedBytes = new byte[buf.readableBytes()];
+            buf.readBytes(compressedBytes);
+            buf = Unpooled.buffer();
+            inflater.setInput(compressedBytes);
 
             byte[] rawBytes = new byte[rawSize];
             inflater.inflate(rawBytes);
 
-            LogHelper.dev("Decompressed Size: " + rawSize);
-
             buf.clear();
+//            buf.capacity(rawBytes.length);
+//            buf.ensureWritable(rawBytes.length, true); //Just to make absolutely sure the buffer is gig enough
+//            LogHelper.dev("Reading Compressed " + rawSize +" "+compressedBytes.length+" "+buf.capacity()+" "+buf.maxCapacity());
+//            LogHelper.dev(new String(rawBytes));
             buf.writeBytes(rawBytes);
             buf.readerIndex(0);
             readBytes(buf);
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new EncoderException(e);
         }
         finally {
@@ -57,12 +57,13 @@ public abstract class PacketCompressible implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
+//        LogHelper.info(buf.unwrap().getClass());
         Deflater deflater = new Deflater();
         try {
             buf.writeBoolean(false);
             writeBytes(buf);
             buf.readerIndex(2);
-            LogHelper.dev("Raw Size " + buf.readableBytes() +" Array Size " + buf.array().length);
+//            LogHelper.dev("Raw Size " + buf.readableBytes() +" Array Size " + buf.array().length);
             int rawSize = buf.readableBytes();
             deflater.setInput(buf.array(), buf.readerIndex(), rawSize);
             deflater.finish();
@@ -70,9 +71,10 @@ public abstract class PacketCompressible implements IMessage {
             byte[] cBytes = new byte[rawSize];
             int cSize = deflater.deflate(cBytes);
 
-            LogHelper.dev("Compression: " + rawSize + " to " + (cSize + 6) + " [Compressed to " + (Utils.round((cSize + 6D) / rawSize, 100) * 100) + "% original size]");
+//            LogHelper.dev("Compression: " + rawSize + " to " + (cSize + 6-6) + " [Compressed to " + (Utils.round((cSize + 6D) / rawSize, 100) * 100) + "% original size]");
 
             if (cSize >= rawSize - 6 || !deflater.finished()) {
+//                LogHelper.dev("Compression No Good! I Ain't Doing It!");
                 return;
             }
 
