@@ -1,7 +1,7 @@
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:x_ray_block.name=畸变之火
 tile.draconicevolution:sun_dial.name=日晷
-tile.draconicevolution:celestial_manipulator.name=天气变换器
+tile.draconicevolution:celestial_manipulator.name=天候变换器
 tile.draconicevolution:draconium_ore.type.normal.name=龙矿
 tile.draconicevolution:draconium_ore.type.nether.name=下界龙矿
 tile.draconicevolution:draconium_ore.type.end.name=末地龙矿
@@ -355,7 +355,7 @@ achievement.draconicevolution.flux=超长待机充电宝!
 achievement.draconicevolution.flux.desc=合成飞龙RF容器
 achievement.draconicevolution.heart=滚烫的龙心!
 achievement.draconicevolution.heart.desc=杀死一条龙并得到龙心.
-achievement.draconicevolution.awakenedblock=来自仪式……并非血魔法！
+achievement.draconicevolution.awakenedblock=来自仪式！
 achievement.draconicevolution.awakenedblock.desc=创造觉醒龙块
 achievement.draconicevolution.core3=成本与利润核算
 achievement.draconicevolution.core3.desc=将飞龙核心升级为觉醒核心
