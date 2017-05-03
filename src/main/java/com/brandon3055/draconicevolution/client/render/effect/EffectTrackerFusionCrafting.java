@@ -37,6 +37,7 @@ public class EffectTrackerFusionCrafting {
     private Random rand = new Random();
     private final Vec3D corePos;
     public final IFusionCraftingInventory craftingInventory;
+    private final int effectCount;
     private int renderBolt = 0;
     private float rotation;
     private float rotationSpeed = 1;
@@ -55,10 +56,11 @@ public class EffectTrackerFusionCrafting {
     public float green = 1F;
     public float blue = 1F;
 
-    public EffectTrackerFusionCrafting(World world, Vec3D pos, Vec3D corePos, IFusionCraftingInventory craftingInventory) {
+    public EffectTrackerFusionCrafting(World world, Vec3D pos, Vec3D corePos, IFusionCraftingInventory craftingInventory, int effectCount) {
         this.worldObj = world;
         this.corePos = corePos;
         this.craftingInventory = craftingInventory;
+        this.effectCount = effectCount;
         this.rotation = rand.nextInt(1000);
         this.aRandomFloat = rand.nextFloat();
         this.pos = pos.copy();
@@ -115,7 +117,7 @@ public class EffectTrackerFusionCrafting {
             renderBolt--;
         }
 
-        if (rand.nextInt((chance * 2) + 2) == 0){
+        if (rand.nextInt((chance * 2) + (int)(effectCount * 1.5)) == 0){
             renderBolt = 1;
             boltSeed = rand.nextLong();
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);

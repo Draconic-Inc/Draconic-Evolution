@@ -16,6 +16,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -193,8 +194,8 @@ public class DraconicArmor extends WyvernArmor {
                 }
                 for (PotionEffect potion : potions) {
                     if (potion.getPotion().isBadEffect()) {
-                        if (potion.getEffectName().equals("effect.digSlowDown") && ModHelper.isHoldingCleaver(player)) {
-                            break;
+                        if (potion.getPotion() == MobEffects.MINING_FATIGUE && ModHelper.isHoldingCleaver(player)) {
+                            continue;
                         }
 
                         player.removePotionEffect(potion.getPotion());

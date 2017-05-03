@@ -111,6 +111,15 @@ public class DEFeatures {
     @Feature(registryName = "flow_gate", variantMap = {"0:facing=north,type=flux", "8:facing=north,type=fluid"}, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static FlowGate flowGate = new FlowGate();
 
+    @Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static ReactorCore reactorCore = new ReactorCore();
+
+    @Feature(registryName = "reactor_part", cTab = 1)
+    public static ReactorPart reactorPart = new ReactorPart();
+
+    @Feature(registryName = "reactor_component", itemBlock = ItemBlockBCore.class, cTab = 1)
+    public static ReactorComponent reactorComponent = new ReactorComponent();
+
     //endregion
 
     //region Exotic Blocks
@@ -291,28 +300,16 @@ public class DEFeatures {
     //These are not ready for release and so are commented out for release builds
 
 
-    @Feature(registryName = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-    public static ReactorCore reactorCore = new ReactorCore();
-
-    @Feature(registryName = "reactor_part", cTab = 1)
-    public static ReactorPart reactorPart = new ReactorPart();
-
-    @Feature(registryName = "reactor_component", itemBlock = ItemBlockBCore.class, cTab = 1)
-    public static ReactorComponent reactorComponent = new ReactorComponent();
-
-
-
-
 //
 //    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
 //    public static DraconiumChest draconiumChest = new DraconiumChest();
 //
-//    @Feature(registryName = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
-//    public static StabilizedSpawner stabilizedSpawner = new StabilizedSpawner();
+    @Feature(registryName = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
+    public static StabilizedSpawner stabilizedSpawner = new StabilizedSpawner();
 //
 //
 //
 //
-//    @Feature(registryName = "mob_soul")
-//    public static MobSoul mobSoul = new MobSoul();
+    @Feature(registryName = "mob_soul")
+    public static MobSoul mobSoul = new MobSoul();
 }

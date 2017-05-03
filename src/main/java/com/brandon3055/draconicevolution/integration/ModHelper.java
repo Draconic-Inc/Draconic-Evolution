@@ -38,9 +38,12 @@ public class ModHelper {
 	}
 
 	public static boolean isHoldingCleaver(EntityPlayer player){
-		if (!isTConInstalled) return false;
-//		else if (cleaver == null) cleaver = GameRegistry.findItem("TConstruct", "cleaver");
-
+		if (!isTConInstalled) {
+		    return false;
+        }
+		else if (cleaver == null) {
+		    cleaver = Item.REGISTRY.getObject(new ResourceLocation("tconstruct", "cleaver"));
+        }
 		return cleaver != null && HandHelper.getItem(player, cleaver) != null;
 	}
 

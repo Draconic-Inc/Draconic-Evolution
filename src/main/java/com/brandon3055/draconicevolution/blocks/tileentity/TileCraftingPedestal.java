@@ -95,6 +95,10 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
 
     @Override
     public boolean setCraftingInventory(IFusionCraftingInventory craftingInventory) {
+        if (craftingInventory == null) {
+            currentCraftingInventory = null;
+            return false;
+        }
         if (validateCraftingInventory() && !worldObj.isRemote) {
             return false;
         }

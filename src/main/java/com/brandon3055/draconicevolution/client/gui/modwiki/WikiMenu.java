@@ -80,10 +80,10 @@ public class WikiMenu extends MGuiElementBase implements IMGuiListener {
         super.renderForegroundLayer(minecraft, mouseX, mouseY, partialTicks);
     }
 
-    @Override
-    public void renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
-    }
+//    @Override
+//    public void renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+//        super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
+//    }
 
     //endregion
 

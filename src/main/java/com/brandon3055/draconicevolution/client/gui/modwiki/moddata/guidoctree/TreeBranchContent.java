@@ -23,11 +23,10 @@ import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
-import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_WINDOW;
 import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_TEXT;
+import static com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig.NAV_WINDOW;
 import static com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager.*;
 
 /**
@@ -152,11 +151,12 @@ public class TreeBranchContent extends TreeBranchRoot {
     }
 
     @Override
-    public void renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+    public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (WikiConfig.editMode && isMouseOver(mouseX, mouseY)) {
-            drawHoveringText(Arrays.asList(new String[] {TextFormatting.RED + "[Right click to edit]"}), mouseX, mouseY, minecraft.fontRendererObj, modularGui.screenWidth(), modularGui.screenHeight());
+            drawHoveringText(Collections.singletonList(TextFormatting.RED + "[Right click to edit]"), mouseX, mouseY, minecraft.fontRendererObj, modularGui.screenWidth(), modularGui.screenHeight());
+            return true;
         }
-        super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
+        return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
     }
 
     //endregion

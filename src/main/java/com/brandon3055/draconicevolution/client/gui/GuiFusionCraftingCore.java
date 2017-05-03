@@ -2,7 +2,14 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.client.gui.effects.GuiEffect;
 import com.brandon3055.brandonscore.client.gui.effects.GuiEffectRenderer;
+import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiBorderedRect;
+import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiList;
+import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiListEntryWrapper;
+import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiStackIcon;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.InfoHelper;
@@ -19,7 +26,6 @@ import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -34,20 +40,23 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 @SideOnly(Side.CLIENT)
-public class GuiFusionCraftingCore extends GuiContainer {
+public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCraftingCore> {
 
     private final EntityPlayer player;
     private final TileFusionCraftingCore tile;
     private IFusionRecipe currentRecipe = null;
+    private IFusionRecipe lastRecipe = null;
     private String canCraft = "";
     private GuiButton startCrafting;
     private GuiEffectRenderer guiEffectRenderer = new GuiEffectRenderer();
     private Random rand = new Random();
     private int[] boltStats = {0, 0, 0, 0, 0, 0};
+
 
     public GuiFusionCraftingCore(EntityPlayer player, TileFusionCraftingCore tile) {
         super(new ContainerFusionCraftingCore(player, tile));
@@ -64,6 +73,41 @@ public class GuiFusionCraftingCore extends GuiContainer {
         buttonList.clear();
         buttonList.add(startCrafting = new StartButton(0, width / 2 - 40, guiTop + 93, 80, 14, I18n.format("gui.de.button.start")));
         startCrafting.visible = false;
+        initRecipeComponents();
+    }
+
+    public void initRecipeComponents() {
+        manager.removeByGroup("RECIPE_ELEMENTS");
+        if (currentRecipe == null) {
+            return;
+        }
+
+        List ingredients = currentRecipe.getRecipeIngredients();
+        int nColumns = ingredients.size() > 16 ? 4 : 2;             //The number of ingredient columns.
+        LinkedList<MGuiList> iColumns = new LinkedList<>();         //The list of ingredient columns.
+
+        for (int i = 0; i < nColumns; i++) {
+            int x = (nColumns == 2 ? 15 + i * 130 : 6 + ((i % 2) * 19) + ((i / 2) * 129));
+            MGuiList list = new MGuiList(this, guiLeft() + x, guiTop() + 8, 20, 98).setScrollingEnabled(false);
+            list.addChild(new MGuiBorderedRect(this, list.xPos, list.yPos - 1, list.xSize, list.ySize + 2).setBorderColour(0xFFAA00FF).setFillColour(0));
+            list.topPadding = list.bottomPadding = 0;
+            iColumns.add((MGuiList) addElement(list));
+        }
+
+        int i = 0;
+        for (Object ingredient : ingredients) {
+            ItemStack ingredStack = OreDictHelper.resolveObject(ingredient);
+            MGuiList column = iColumns.get(iColumns.size() == 4 ? i % 4 : i % 2);
+            column.addEntry(new MGuiListEntryWrapper(this, new MGuiStackIcon(this, 0, 0, 16, 16, new StackReference(ingredStack)).setDrawHoverHighlight(true)));
+            column.sortEvenSpacing(true);
+            i++;
+        }
+
+        manager.initElements();
+    }
+
+    private MGuiElementBase addElement(MGuiElementBase elementBase) {
+        return manager.add(elementBase.addToGroup("RECIPE_ELEMENTS"));
     }
 
     @Override
@@ -77,13 +121,6 @@ public class GuiFusionCraftingCore extends GuiContainer {
         GuiHelper.drawColouredRect(guiLeft + 4, guiTop + 4, xSize - 8, 108, 0xFF000000);
 
         if (currentRecipe != null && canCraft != null && canCraft.equals("true")) {
-
-            //Ingredients
-            GuiHelper.drawColouredRect(guiLeft + 15, guiTop + 7, 20, 100, 0xFFAA00FF);
-            GuiHelper.drawColouredRect(guiLeft + 16, guiTop + 8, 18, 98, 0xFF000000);
-            GuiHelper.drawColouredRect(guiLeft + xSize - 35, guiTop + 7, 20, 100, 0xFFAA00FF);
-            GuiHelper.drawColouredRect(guiLeft + xSize - 34, guiTop + 8, 18, 98, 0xFF000000);
-
             //Items
             GuiHelper.drawColouredRect(guiLeft + (xSize / 2) - 10, guiTop + 24, 20, 64, 0xFF00FFFF);
             GuiHelper.drawColouredRect(guiLeft + (xSize / 2) - 9, guiTop + 25, 18, 62, 0xFF000000);
@@ -97,20 +134,15 @@ public class GuiFusionCraftingCore extends GuiContainer {
         ResourceHelperDE.bindTexture(DETextures.GUI_FUSION_CRAFTING);
         //drawTexturedModalRect(guiLeft + (xSize / 2) - 8, guiTop + 45, 0, 0, 15, 21);
         GuiHelper.drawPlayerSlots(this, guiLeft + (xSize / 2), guiTop + 115, true);
-        if (currentRecipe == null || canCraft == null || !canCraft.equals("true")){
+        if (currentRecipe == null || canCraft == null || !canCraft.equals("true")) {
             drawTexturedModalRect(guiLeft + (xSize / 2) - 9, guiTop + 25, 138, 0, 18, 18);
-            if (tile.getStackInSlot(1) != null){
+            if (tile.getStackInSlot(1) != null) {
                 drawTexturedModalRect(guiLeft + (xSize / 2) - 9, guiTop + 69, 138, 0, 18, 18);
             }
         }
-        //drawTexturedModalRect(guiLeft + (xSize / 2) - 9, guiTop + 69, 138, 0, 18, 18);
 
         if (currentRecipe != null) {
             GuiHelper.drawStack2D(currentRecipe.getRecipeOutput(tile.getStackInCore(0)), mc, guiLeft + (xSize / 2) - 8, guiTop + 70, 16F);
-            List ingredients = currentRecipe.getRecipeIngredients();
-
-            int centerX = guiLeft + xSize / 2;
-            int centerY = guiTop + ySize / 2 - 42;
 
             //region Draw EnergyFX
 
@@ -134,53 +166,6 @@ public class GuiFusionCraftingCore extends GuiContainer {
 
             //endregion
 
-            //region Draw Ingredients
-
-            for (int i = 0; i < ingredients.size(); i++) {
-                boolean isLeft = i % 2 == 0;
-                boolean isOdd = ingredients.size() % 2 == 1;
-                int sideCount = ingredients.size() / 2;
-
-                if (isOdd && !isLeft) {
-                    sideCount--;
-                }
-
-                int xPos;
-                int yPos;
-
-                if (isLeft) {
-                    xPos = centerX - 65;
-                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
-                    int sideIndex = i / 2;
-
-                    if (sideCount <= 1 && (!isOdd || ingredients.size() == 1)) {
-                        sideIndex = 1;
-                        ySize = 40;
-                    }
-
-                    yPos = centerY - 40 + (sideIndex * ySize);
-                } else {
-                    xPos = centerX + 65;
-                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
-                    int sideIndex = i / 2;
-
-                    if (isOdd) {
-                        sideCount++;
-                    }
-
-                    if (sideCount <= 1) {
-                        sideIndex = 1;
-                        ySize = 40;
-                    }
-
-                    yPos = centerY - 40 + (sideIndex * ySize);
-                }
-
-                GuiHelper.drawStack2D(OreDictHelper.resolveObject(ingredients.get(i)), mc, xPos - 8, yPos - 8, 16F);
-            }
-
-            //endregion
-
             //Draw Progress
             if (tile.isCrafting.value && tile.craftingStage.value >= 0) {
                 int state = tile.craftingStage.value;
@@ -188,27 +173,24 @@ public class GuiFusionCraftingCore extends GuiContainer {
                 double d = state > 1000 ? (state - 1000F) / 1000D : state / 1000D;
                 drawCenteredString(fontRendererObj, status + ": " + TextFormatting.GOLD + ((int) (d * 100) + "%"), width / 2, guiTop + 95, state < 1000 ? 0x00FF00 : 0x00FFFF);
             }
-
-//            if (currentRecipe != null) {
-//                if (canCraft != null && !canCraft.equals("true")) {
-//                    if (canCraft.equals("tierLow")) {
-//                        GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.tierLow.info"), guiLeft + (xSize / 2), guiTop + 95, 0xFF0000, false);
-//                    } else if (canCraft.equals("outputObstructed")) {
-//                        GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.outputObstructed.info"), guiLeft + (xSize / 2), guiTop + 95, 0xAA00FF, false);
-//                    } else {
-//                        GuiHelper.drawCenteredString(fontRendererObj, I18n.format(canCraft), guiLeft + (xSize / 2), guiTop + 95, 0xFF0000, false);
-//                    }
-//                }
-//            }
         }
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
+        boolean hasNoRecipe = currentRecipe == null;
         currentRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(tile, player.worldObj, tile.getPos());
         if (currentRecipe != null) {
             canCraft = currentRecipe.canCraft(tile, player.worldObj, tile.getPos());
+            if (hasNoRecipe || currentRecipe != lastRecipe) {
+                lastRecipe = currentRecipe;
+                initRecipeComponents();
+            }
+        }
+        else if (!hasNoRecipe) {
+            manager.removeByGroup("RECIPE_ELEMENTS");
         }
 
         startCrafting.enabled = startCrafting.visible = currentRecipe != null && canCraft != null && canCraft.equals("true") && !tile.craftingInProgress();
@@ -216,60 +198,19 @@ public class GuiFusionCraftingCore extends GuiContainer {
         //region Spawn Particles
 
         if (currentRecipe != null && canCraft != null && canCraft.equals("true")) {
-            List<Object> ingredients = currentRecipe.getRecipeIngredients();
-
             int centerX = guiLeft + xSize / 2;
             int centerY = guiTop + ySize / 2 - 45;
 
-            for (int i = 0; i < ingredients.size(); i++) {
-                boolean isLeft = i % 2 == 0;
-                boolean isOdd = ingredients.size() % 2 == 1;
-                int sideCount = ingredients.size() / 2;
-
-                if (isOdd && !isLeft) {
-                    sideCount--;
-                }
-
-                int xPos;
-                int yPos;
-
-
-                if (isLeft) {
-                    xPos = centerX - 65;
-                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
-
-                    int sideIndex = i / 2;
-
-                    if (sideCount <= 1 && (!isOdd || ingredients.size() == 1)) {
-                        sideIndex = 1;
-                        ySize = 40;
+            for (MGuiElementBase element : manager.getElements()) {
+                if (element instanceof MGuiList) {
+                    for (MGuiElementBase item : ((MGuiList) element).listEntries) {
+                        if (rand.nextInt(10) == 0) {
+                            double xPos = item.xPos + (rand.nextDouble() * 16);
+                            double yPos = item.yPos + (rand.nextDouble() * 16);
+                            double ty = centerY + (-20 + (rand.nextDouble() * 40));
+                            guiEffectRenderer.addEffect(new EnergyEffect(player.worldObj, xPos, yPos, centerX, ty, 0));
+                        }
                     }
-
-                    yPos = centerY - 40 + (sideIndex * ySize);
-                } else {
-                    xPos = centerX + 65;
-
-                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
-
-                    int sideIndex = i / 2;
-
-                    if (isOdd) {
-                        sideCount++;
-                    }
-
-                    if (sideCount <= 1) {
-                        sideIndex = 1;
-                        ySize = 40;
-                    }
-
-                    yPos = centerY - 40 + (sideIndex * ySize);
-                }
-
-                if (rand.nextInt(10) == 0) {
-                    xPos += -8 + (rand.nextDouble() * 16);
-                    yPos += -8 + (rand.nextDouble() * 16);
-                    double ty = centerY + (-20 + (rand.nextDouble() * 40));
-                    guiEffectRenderer.addEffect(new EnergyEffect(player.worldObj, xPos, yPos, centerX, ty, 0));
                 }
             }
 
@@ -288,11 +229,11 @@ public class GuiFusionCraftingCore extends GuiContainer {
 
         //region Update Bolt Stats
 
-        boltStats[0] = (int)(rand.nextDouble() * 18);
-        boltStats[1] = (int)(rand.nextDouble() * 18);
+        boltStats[0] = (int) (rand.nextDouble() * 18);
+        boltStats[1] = (int) (rand.nextDouble() * 18);
         boltStats[2] = rand.nextInt();
-        boltStats[3] = (int)(rand.nextDouble() * 18);
-        boltStats[4] = (int)(rand.nextDouble() * 18);
+        boltStats[3] = (int) (rand.nextDouble() * 18);
+        boltStats[4] = (int) (rand.nextDouble() * 18);
         boltStats[5] = rand.nextInt();
 
         //endregion
@@ -309,7 +250,6 @@ public class GuiFusionCraftingCore extends GuiContainer {
                 } else if (canCraft.equals("outputObstructed")) {
                     GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.outputObstructed.info"), (xSize / 2), 95, 0xAA00FF, false);
                 } else {
-
                     GlStateManager.translate(0, 0, 600);
                     GuiHelper.drawColouredRect(5, 88, xSize - 10, 20, 0xFFFF0000);
                     GuiHelper.drawColouredRect(6, 89, xSize - 12, 18, 0xFF000000);
@@ -318,7 +258,7 @@ public class GuiFusionCraftingCore extends GuiContainer {
                 }
             }
         }
-        else if (ModHelper.isJEIInstalled){
+        else if (ModHelper.isJEIInstalled) {
             GuiHelper.drawBorderedRect(81, 45, 18, 22, 1, 0xFF101010, 0xFF303030);
             fontRendererObj.drawString("R", 87, 52, 0xA0A0A0, false);
         }
@@ -328,73 +268,73 @@ public class GuiFusionCraftingCore extends GuiContainer {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
         guiEffectRenderer.renderEffects(partialTicks);
-
-
-        if (currentRecipe != null && canCraft != null) {
-            List<Object> ingredients = currentRecipe.getRecipeIngredients();
-
-            int centerX = guiLeft + xSize / 2;
-            int centerY = guiTop + ySize / 2 - 45;
-
-            for (int i = 0; i < ingredients.size(); i++) {
-                boolean isLeft = i % 2 == 0;
-                boolean isOdd = ingredients.size() % 2 == 1;
-                int sideCount = ingredients.size() / 2;
-
-                if (isOdd && !isLeft) {
-                    sideCount--;
-                }
-
-                int xPos;
-                int yPos;
-
-
-                if (isLeft) {
-                    xPos = centerX - 65;
-                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
-
-                    int sideIndex = i / 2;
-
-                    if (sideCount <= 1 && (!isOdd || ingredients.size() == 1)) {
-                        sideIndex = 1;
-                        ySize = 40;
-                    }
-
-                    yPos = centerY - 40 + (sideIndex * ySize);
-                } else {
-                    xPos = centerX + 65;
-
-                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
-
-                    int sideIndex = i / 2;
-
-                    if (isOdd) {
-                        sideCount++;
-                    }
-
-                    if (sideCount <= 1) {
-                        sideIndex = 1;
-                        ySize = 40;
-                    }
-
-                    yPos = centerY - 40 + (sideIndex * ySize);
-                }
-
-                if (GuiHelper.isInRect(xPos - 9, yPos - 9, 18, 18, mouseX, mouseY)){
-                    ItemStack stack = OreDictHelper.resolveObject(ingredients.get(i));
-                    if (stack != null) {
-                        renderToolTip(stack, mouseX, mouseY);
-                    }
-                }
-            }
-
-            if (GuiHelper.isInRect(centerX - 8, guiTop + 70, 18, 18, mouseX, mouseY)){
-                ItemStack stack = currentRecipe.getRecipeOutput(tile.getStackInCore(0));
-                if (stack != null) {
-                    renderToolTip(stack, mouseX, mouseY);
-                }
-            }
-        }
+//
+//
+//        if (currentRecipe != null && canCraft != null) {
+//            List<Object> ingredients = currentRecipe.getRecipeIngredients();
+//
+//            int centerX = guiLeft + xSize / 2;
+//            int centerY = guiTop + ySize / 2 - 45;
+//
+//            for (int i = 0; i < ingredients.size(); i++) {
+//                boolean isLeft = i % 2 == 0;
+//                boolean isOdd = ingredients.size() % 2 == 1;
+//                int sideCount = ingredients.size() / 2;
+//
+//                if (isOdd && !isLeft) {
+//                    sideCount--;
+//                }
+//
+//                int xPos;
+//                int yPos;
+//
+//
+//                if (isLeft) {
+//                    xPos = centerX - 65;
+//                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
+//
+//                    int sideIndex = i / 2;
+//
+//                    if (sideCount <= 1 && (!isOdd || ingredients.size() == 1)) {
+//                        sideIndex = 1;
+//                        ySize = 40;
+//                    }
+//
+//                    yPos = centerY - 40 + (sideIndex * ySize);
+//                } else {
+//                    xPos = centerX + 65;
+//
+//                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
+//
+//                    int sideIndex = i / 2;
+//
+//                    if (isOdd) {
+//                        sideCount++;
+//                    }
+//
+//                    if (sideCount <= 1) {
+//                        sideIndex = 1;
+//                        ySize = 40;
+//                    }
+//
+//                    yPos = centerY - 40 + (sideIndex * ySize);
+//                }
+//
+//                if (GuiHelper.isInRect(xPos - 9, yPos - 9, 18, 18, mouseX, mouseY)){
+//                    ItemStack stack = OreDictHelper.resolveObject(ingredients.get(i));
+//                    if (stack != null) {
+//                        renderToolTip(stack, mouseX, mouseY);
+//                    }
+//                }
+//            }
+//
+//            if (GuiHelper.isInRect(centerX - 8, guiTop + 70, 18, 18, mouseX, mouseY)){
+//                ItemStack stack = currentRecipe.getRecipeOutput(tile.getStackInCore(0));
+//                if (stack != null) {
+//                    renderToolTip(stack, mouseX, mouseY);
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -402,18 +342,17 @@ public class GuiFusionCraftingCore extends GuiContainer {
         tile.sendPacketToServer(new PacketTileMessage(tile, (byte) button.id, true, false));
     }
 
-    private void drawItemStack(ItemStack stack, int x, int y, String altText)
-    {
-        GlStateManager.translate(0.0F, 0.0F, 32.0F);
-        this.zLevel = 200.0F;
-        this.itemRender.zLevel = 200.0F;
-        net.minecraft.client.gui.FontRenderer font = null;
-        if (stack != null) font = stack.getItem().getFontRenderer(stack);
-        if (font == null) font = fontRendererObj;
-        this.itemRender.renderItemAndEffectIntoGUI(stack, x, y);
-        this.itemRender.renderItemOverlayIntoGUI(font, stack, x, y, altText);
-        this.zLevel = 0.0F;
-        this.itemRender.zLevel = 0.0F;
+    private void drawItemStack(ItemStack stack, int x, int y, String altText) {
+//        GlStateManager.translate(0.0F, 0.0F, 32.0F);
+//        this.zLevel = 200.0F;
+//        this.itemRender.zLevel = 200.0F;
+//        net.minecraft.client.gui.FontRenderer font = null;
+//        if (stack != null) font = stack.getItem().getFontRenderer(stack);
+//        if (font == null) font = fontRendererObj;
+//        this.itemRender.renderItemAndEffectIntoGUI(stack, x, y);
+//        this.itemRender.renderItemOverlayIntoGUI(font, stack, x, y, altText);
+//        this.zLevel = 0.0F;
+//        this.itemRender.zLevel = 0.0F;
     }
 
     public static class EnergyEffect extends GuiEffect {
@@ -432,7 +371,7 @@ public class GuiFusionCraftingCore extends GuiContainer {
             particleScale = 1F;
             particleTextureIndexY = 1;
 
-            if (type == 1){
+            if (type == 1) {
                 particleRed = 0;
                 particleGreen = 0.8F;
                 particleBlue = 1F;
@@ -454,12 +393,12 @@ public class GuiFusionCraftingCore extends GuiContainer {
                 this.setExpired();
             }
 
-            if (particleMaxAge - particleAge < 10){
+            if (particleMaxAge - particleAge < 10) {
                 float d = ((particleMaxAge - particleAge) / 10F);
                 particleScale = d * 1F;
             }
 
-            if (type == 1 && particleMaxAge - particleAge < 2){
+            if (type == 1 && particleMaxAge - particleAge < 2) {
                 particleScale = 3F;
             }
 

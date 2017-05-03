@@ -3,6 +3,8 @@ package com.brandon3055.draconicevolution.api.fusioncrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by brandon3055 on 11/06/2016.
  * This interface is used to identify and interact with crafting pedestals.
@@ -38,7 +40,7 @@ public interface ICraftingPedestal {
      * @return true if the pedestal accepts the inventory and can craft. false if the pedestal dose not accept the inventory.
      * Will return false if the pedestal is already working with a different core.
      */
-    boolean setCraftingInventory(IFusionCraftingInventory craftingInventory);
+    boolean setCraftingInventory(@Nullable IFusionCraftingInventory craftingInventory);
 
     /**
      * Return the direction this pedestal is facing.

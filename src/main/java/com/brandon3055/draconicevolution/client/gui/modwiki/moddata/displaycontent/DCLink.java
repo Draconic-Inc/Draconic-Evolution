@@ -139,10 +139,10 @@ public class DCLink extends DisplayComponentBase {
         super.renderBackgroundLayer(minecraft, mouseX, mouseY, partialTicks);
     }
 
-    @Override
-    public void renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
-    }
+//    @Override
+//    public void renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+//        super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
+//    }
 
     //endregion
 

@@ -187,7 +187,7 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
             List<EntityLivingBase> entities = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, entity.getEntityBoundingBox().expand(((IAOEWeapon)this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon)this).getWeaponAOE(stack)));
 
             for (EntityLivingBase aoeEntity : entities) {
-                if (aoeEntity != player && aoeEntity != entity && !player.isOnSameTeam(entity)) {
+                if (aoeEntity != player && aoeEntity != entity && !player.isOnSameTeam(entity) && extractAttackEnergy(stack, aoeEntity, player)) {
                     aoeEntity.knockBack(player, 0.4F, (double) MathHelper.sin(player.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(player.rotationYaw * 0.017453292F)));
                     aoeEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), getAttackDamage(stack));
                 }
@@ -197,11 +197,24 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
             player.spawnSweepParticles();
         }
 
+        extractAttackEnergy(stack, entity, player);
         return super.onLeftClickEntity(stack, player, entity);
     }
 
+    protected boolean extractAttackEnergy(ItemStack stack, Entity entity, EntityPlayer player) {
+        if (getEnergyStored(stack) > energyPerOperation) {
+            modifyEnergy(stack, -energyPerOperation);
+            return true;
+        }
+        return false;
+    }
+
     public float getAttackDamage(ItemStack stack) {
-        return baseAttackDamage + (UpgradeHelper.getUpgradeLevel(stack, ATTACK_DAMAGE) * (baseAttackDamage / 4F));
+        float damage = baseAttackDamage + (UpgradeHelper.getUpgradeLevel(stack, ATTACK_DAMAGE) * (baseAttackDamage / 4F));
+        if (getEnergyStored(stack) < energyPerOperation) {
+            damage /= 10;
+        }
+        return damage;
     }
 
     private float getAttackSpeed(ItemStack stack) {

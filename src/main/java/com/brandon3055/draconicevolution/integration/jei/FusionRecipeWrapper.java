@@ -79,6 +79,19 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
         }
 
         effectRenderer.renderEffects(minecraft.getRenderPartialTicks());
+
+        GuiHelper.drawBorderedRect((xSize / 2) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF);
+
+        if (recipe.getRecipeIngredients().size() > 16) {
+            GuiHelper.drawBorderedRect(1, 6, 18, 100, 1, 0x40FFFFFF, 0xFFAA00FF);
+            GuiHelper.drawBorderedRect(18, 6, 18, 100, 1, 0x40FFFFFF, 0xFFAA00FF);
+            GuiHelper.drawBorderedRect(xSize - 20, 6, 18, 100, 1, 0x40FFFFFF, 0xFFAA00FF);
+            GuiHelper.drawBorderedRect(xSize - 37, 6, 18, 100, 1, 0x40FFFFFF, 0xFFAA00FF);
+        }
+        else {
+            GuiHelper.drawBorderedRect(8, 6, 20, 100, 1, 0x40FFFFFF, 0xFFAA00FF);
+            GuiHelper.drawBorderedRect(xSize - 28, 6, 20, 100, 1, 0x40FFFFFF, 0xFFAA00FF);
+        }
     }
 
     public void tick() {
