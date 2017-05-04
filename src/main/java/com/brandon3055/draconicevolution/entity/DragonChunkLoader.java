@@ -16,7 +16,8 @@ import java.util.*;
  */
 public class DragonChunkLoader implements LoadingCallback {
     public static DragonChunkLoader instance;
-    public static Map<EntityChaosGuardian, Ticket> ticketList = new HashMap<EntityChaosGuardian, Ticket>();
+    public static Map<EntityChaosGuardian, Ticket> ticketList = new HashMap<>();
+    public static Map<EntityChaosGuardian, ArrayList<ChunkPos>> chunkList = new HashMap<>();
     public static boolean hasReportedIssue = false;
 
     public static void init() {
@@ -28,58 +29,51 @@ public class DragonChunkLoader implements LoadingCallback {
     public static void updateLoaded(EntityChaosGuardian guardian) {
         Ticket ticket;
 
-        if (ticketList.containsKey(guardian)) {
-            ticket = ticketList.get(guardian);
-        } else {
-            ticket = ForgeChunkManager.requestTicket(DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
-
-            if (ticket != null) {
-                ticket.bindEntity(guardian);
-                ticket.setChunkListDepth(9);
-                ticketList.put(guardian, ticket);
-
-            } else {
-                if (!hasReportedIssue) {
-                    LogHelper.error("##########################################################################################");
-                    LogHelper.error("Could not get ticket for dragon");
-                    LogHelper.error("Fore some reason forge has denied DE's request for a loader ticket for the chaos guardian");
-                    LogHelper.error("This means the chaos guardian may not behave as indented");
-                    LogHelper.error("This error will not show again.");
-                    LogHelper.error("##########################################################################################");
-                    hasReportedIssue = true;
-                }
-                return;
-            }
-        }
-
-        if (ticket == null || guardian.ticksExisted % 4 != 0) return;
-
-        Set<ChunkPos> dragonChunks = new HashSet<ChunkPos>();
-
-        for (int xx = guardian.chunkCoordX - 1; xx <= guardian.chunkCoordX + 1; xx++) {
-            for (int zz = guardian.chunkCoordZ - 1; zz <= guardian.chunkCoordZ + 1; zz++) {
+        //Calculate the chunks to be loaded
+        ArrayList<ChunkPos> dragonChunks = new ArrayList<>();
+        for (int xx = guardian.chunkCoordX - 2; xx <= guardian.chunkCoordX + 2; xx++) {
+            for (int zz = guardian.chunkCoordZ - 2; zz <= guardian.chunkCoordZ + 2; zz++) {
                 dragonChunks.add(new ChunkPos(xx, zz));
             }
         }
 
-        Set<ChunkPos> toLoad = new HashSet<ChunkPos>();
-        Set<ChunkPos> toUnload = new HashSet<ChunkPos>();
-
-        for (ChunkPos pair : ticket.getChunkList()) {
-            if (!contains(dragonChunks, pair)) toUnload.add(pair);
+        //Check if the chunks are already loadsed
+        if (chunkList.containsKey(guardian) && dragonChunks.hashCode() == chunkList.get(guardian).hashCode()) {
+            return;
         }
 
-        for (ChunkPos pair : dragonChunks) {
-            if (!contains(ticket.getChunkList(), pair)) toLoad.add(pair);
+        //Release the current ticket and get a new one
+        if (ticketList.containsKey(guardian)) {
+            ticket = ticketList.get(guardian);
+            ForgeChunkManager.releaseTicket(ticket);
+        }
+        ticket = ForgeChunkManager.requestTicket(DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
+
+        if (ticket != null) {
+            ticket.bindEntity(guardian);
+            ticket.setChunkListDepth(25);
+            ticketList.put(guardian, ticket);
+
+        }
+        else {
+            if (!hasReportedIssue) {
+                LogHelper.error("##########################################################################################");
+                LogHelper.error("Could not get ticket for dragon");
+                LogHelper.error("Fore some reason forge has denied DE's request for a loader ticket for the chaos guardian");
+                LogHelper.error("This means the chaos guardian may not behave as indented");
+                LogHelper.error("This error will not show again.");
+                LogHelper.error("##########################################################################################");
+                hasReportedIssue = true;
+            }
+            return;
         }
 
-        for (ChunkPos unload : toUnload) ForgeChunkManager.unforceChunk(ticket, unload);
-        for (ChunkPos load : toLoad) ForgeChunkManager.forceChunk(ticket, load);
-    }
+        //Force load the chunks
+        for (ChunkPos pos : dragonChunks) {
+            ForgeChunkManager.forceChunk(ticket, pos);
+        }
 
-    private static boolean contains(Set<ChunkPos> set, ChunkPos pair) {
-        for (ChunkPos pair1 : set) if (pair1.equals(pair)) return true;
-        return false;
+        chunkList.put(guardian, dragonChunks);
     }
 
     public static void stopLoading(EntityChaosGuardian guardian) {
@@ -92,9 +86,7 @@ public class DragonChunkLoader implements LoadingCallback {
     public void ticketsLoaded(List<Ticket> tickets, World world) {
         if (!tickets.isEmpty()) {
             for (Ticket ticket : tickets) {
-                if (ticket.getType() == ForgeChunkManager.Type.ENTITY && ticket.getEntity() instanceof EntityChaosGuardian) {
-                    updateLoaded((EntityChaosGuardian) ticket.getEntity());
-                }
+                ForgeChunkManager.releaseTicket(ticket);
             }
         }
     }

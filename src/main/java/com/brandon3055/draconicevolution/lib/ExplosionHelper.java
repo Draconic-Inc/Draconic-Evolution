@@ -106,9 +106,9 @@ public class ExplosionHelper {
 //        setRecalcPrecipitationHeightMap(pos);
 
         ExtendedBlockStorage storage = getBlockStorage(pos);
-        storage.set(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, AIR);
-//        removeTileEntity(pos);
-
+        if (storage != null) {
+            storage.set(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, AIR);
+        }
         setChunkModified(pos);
     }
 

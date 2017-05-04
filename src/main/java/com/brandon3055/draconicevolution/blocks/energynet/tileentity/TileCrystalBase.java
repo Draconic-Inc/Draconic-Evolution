@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.*;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
@@ -350,7 +351,7 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 
     public int getTier() {
         if (crystalTier == -1) {
-            crystalTier = getState(getBlockType()).getValue(EnergyCrystal.TIER);
+            crystalTier = getState(getBlockTypeSafe(DEFeatures.energyCrystal)).getValue(EnergyCrystal.TIER);
         }
         return crystalTier;
     }

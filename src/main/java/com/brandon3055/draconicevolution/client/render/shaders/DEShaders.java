@@ -41,12 +41,14 @@ public class DEShaders {
     public static ExplosionWaveOp explosionWaveOp;
 
     static {
-        initReactorShader();
-        initReactorShieldShader();
-        initEnergyCrystalShader();
-        initReactorBeams();
-        initExplosionOverlay();
-        initExplosionWave();
+        if (OpenGlHelper.shadersSupported) {
+            initReactorShader();
+            initReactorShieldShader();
+            initEnergyCrystalShader();
+            initReactorBeams();
+            initExplosionOverlay();
+            initExplosionWave();
+        }
     }
 
     public static void initReactorShader() {

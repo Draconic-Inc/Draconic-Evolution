@@ -168,15 +168,15 @@ public class DEEventHandler {
     @SubscribeEvent
     public void onDropEvent(LivingDropsEvent event) {
         if (deadDragons.contains(event.getEntity().getUniqueID())) {
-            LogHelper.error("WTF Is Going On!?!?!? The dragon is already dead how can it die again!?!?!");
-            LogHelper.error("Whoever is screwing with the dragon you need to fix your shit!");
-            LogHelper.error("Offending Entity: " + event.getEntity()+" Class: " + event.getEntity().getClass());
+            LogHelper.dev("WTF Is Going On!?!?!? The dragon is already dead how can it die again!?!?!");
+            LogHelper.dev("Whoever is screwing with the dragon you need to fix your shit!");
+            LogHelper.dev("Offending Entity: " + event.getEntity()+" Class: " + event.getEntity().getClass());
             StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-            LogHelper.error("****************************************");
+            LogHelper.dev("****************************************");
             for (int i = 2; i < trace.length; i++) {
-                LogHelper.error("*  at %s", trace[i].toString());
+                LogHelper.dev("*  at %s", trace[i].toString());
             }
-            LogHelper.error("****************************************");
+            LogHelper.dev("****************************************");
             event.setCanceled(true);
             return;
         }

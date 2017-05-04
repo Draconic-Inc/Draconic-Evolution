@@ -163,4 +163,9 @@ public class FlowGate extends BlockBCore implements ITileRegisterer {
     public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return true;
     }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return state.getValue(TYPE).equals("fluid") ? 8 : 0;
+    }
 }

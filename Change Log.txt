@@ -1,12 +1,18 @@
 -- 2.1.0.x --
 
 ######## 2.0.11.x ########
+-Fixed weapons not using energy when attacking only 1 target.
+-Fixed shaders still attempting to initialize when GL does not support them.
+-Fixed a null pointer in the reactor explosion code (I hope).
+-Fixed a crash in the Project Intel editor.
+-Fixed fluid gates dropping flux gates.
+-Silenced the dragon multi-death error message.
+
+######## 2.0.11.99 ########
 -Fixed bug with energy core where if there was a block on an inactive core that needs to be attached to a solid block such as a button or snow when the core activates and that block breaks itself it would also break the block it was attached to.
 -Fixed fusion crafting pedestals working when obstructed by another pedestal or full block.
 -Tweaked fusion crafting gui so that it looks less cluttered when you have recipes with lots of input items.
 -Made it easier to see dark items against the black background of the the fusion crafting gui (But only in the JEI recipe viewer)
-
--Fixed weapons not using energy when attacking only 1 target.
 
 ######## 2.0.10.194 ########
 -Fixed reactor not exploding as expected when it hits 100% fuel conversion.

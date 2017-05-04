@@ -275,6 +275,9 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
             }
         } else {
 
+            if (target != null && (target.isDead || !target.isEntityAlive() || target.getDistance(posX, posY, posZ) > 300)) {
+                target = null;
+            }
             d10 = this.targetX - this.posX;
             d0 = this.targetY - this.posY;
             d1 = this.targetZ - this.posZ;
@@ -1353,4 +1356,11 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
 //
 //        return (float)d0;
 //    }
+
+
+    @Nullable
+    @Override
+    protected ResourceLocation getLootTable() {
+        return null;
+    }
 }
