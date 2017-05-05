@@ -145,6 +145,10 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
 
     @Override
     public void onLivingUpdate() {
+        if (ticksExisted % 20 == 0 && !worldObj.isRemote) {
+            LogHelper.dev("EntityString: " + this.getEntityString());
+            LogHelper.dev("IsDead: " + this.isDead);
+            LogHelper.dev("IsRiding: " + this.isRiding());
 //        setHealth(0);
         //  setHealth(1);
         //setDead();
