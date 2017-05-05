@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.lib.DEDamageSources;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -1262,6 +1263,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
         compound.setInteger("HomeZCoord", homeZ);
         compound.setString("Behaviour", behaviour.name());
         compound.setBoolean("HomeSet", homeSet);
+        LogHelper.bigDev("ChaosGuardian: Save");
         return compound;
     }
 
@@ -1275,6 +1277,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
         homeSet = compound.getBoolean("HomeSet");
         targetX = homeX;
         targetZ = homeZ;
+        LogHelper.bigDev("ChaosGuardian: Load");
     }
 
     @Override

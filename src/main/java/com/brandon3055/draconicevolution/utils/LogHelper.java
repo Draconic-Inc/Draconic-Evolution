@@ -181,12 +181,12 @@ public class LogHelper {
 
     //Log with trace element.
 
-    public static void bigDdev(String format, Object... data) {
+    public static void bigDev(String format, Object... data) {
         if (!ObfMapping.obfuscated) {
             StackTraceElement[] trace = Thread.currentThread().getStackTrace();
             dev("****************************************");
             dev("* " + format, data);
-            for (int i = 2; i < 8 && i < trace.length; i++) {
+            for (int i = 2; i < trace.length; i++) {
                 dev("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
             }
             dev("****************************************");
