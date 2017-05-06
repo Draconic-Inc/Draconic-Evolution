@@ -95,7 +95,7 @@ public class DragonChunkLoader implements LoadingCallback {
     }
 
     @Override
-    public void ticketsLoaded(List<Ticket> tickets, World world) {\
+    public void ticketsLoaded(List<Ticket> tickets, World world) {
         if (!DEConfig.chaosGuardianLoading) {
             return;
         }
