@@ -135,6 +135,9 @@ public class DEConfig {
     @ModConfigProperty(category = "Misc", name = "devLog", comment = "This enables dev log output. I primarily use this for development purposes so it wont be very useful to regular users.")
     public static boolean devLog = false;
 
+    @ModConfigProperty(category = "Misc", name = "chaosGuardianLoading", comment = "Set this to false to disable chaos guardian chunkloading.\nNote. The chaos guardian is ONLY loaded when a player is within a couple hundred blocks.\nThis is to avoid issues where the guardian would flu out of the loaded chunks and freeze\nwhich is especial an issue on servers with reduced render distance.")
+    public static boolean chaosGuardianLoading = true;
+
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 
     public static void init(){
