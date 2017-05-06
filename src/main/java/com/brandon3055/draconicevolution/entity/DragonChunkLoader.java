@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.entity;
 
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.util.math.ChunkPos;
@@ -21,12 +22,18 @@ public class DragonChunkLoader implements LoadingCallback {
     public static boolean hasReportedIssue = false;
 
     public static void init() {
+        if (!DEConfig.chaosGuardianLoading) {
+            return;
+        }
         instance = new DragonChunkLoader();
         MinecraftForge.EVENT_BUS.register(instance);
         ForgeChunkManager.setForcedChunkLoadingCallback(DraconicEvolution.instance, instance);
     }
 
     public static void updateLoaded(EntityChaosGuardian guardian) {
+        if (!DEConfig.chaosGuardianLoading) {
+            return;
+        }
         Ticket ticket;
 
         //Calculate the chunks to be loaded
@@ -77,13 +84,21 @@ public class DragonChunkLoader implements LoadingCallback {
     }
 
     public static void stopLoading(EntityChaosGuardian guardian) {
-        if (!ticketList.containsKey(guardian)) return;
+        if (!DEConfig.chaosGuardianLoading) {
+            return;
+        }
+        if (!ticketList.containsKey(guardian)) {
+            return;
+        }
         ForgeChunkManager.releaseTicket(ticketList.get(guardian));
         ticketList.remove(guardian);
     }
 
     @Override
-    public void ticketsLoaded(List<Ticket> tickets, World world) {
+    public void ticketsLoaded(List<Ticket> tickets, World world) {\
+        if (!DEConfig.chaosGuardianLoading) {
+            return;
+        }
         if (!tickets.isEmpty()) {
             for (Ticket ticket : tickets) {
                 ForgeChunkManager.releaseTicket(ticket);
