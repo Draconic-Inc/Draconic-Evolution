@@ -5,7 +5,6 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
@@ -96,10 +95,10 @@ public class DragonChunkLoader implements LoadingCallback {
         }
         Ticket ticket = ticketList.get(guardian);
 
-        for (ChunkPos pos : ticket.getChunkList()) {
-            ForgeChunkManager.unforceChunk(ticket, pos);
-            ((WorldServer) guardian.worldObj).getChunkProvider().unload(guardian.worldObj.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos));
-        }
+//        for (ChunkPos pos : ticket.getChunkList()) {
+//            ForgeChunkManager.unforceChunk(ticket, pos);
+//            ((WorldServer) guardian.worldObj).getChunkProvider().unload(guardian.worldObj.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos));
+//        }
 
         ForgeChunkManager.releaseTicket(ticket);
 
