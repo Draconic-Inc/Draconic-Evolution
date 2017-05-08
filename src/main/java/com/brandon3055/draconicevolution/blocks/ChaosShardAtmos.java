@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -32,7 +33,7 @@ public class ChaosShardAtmos extends BlockBCore {
 
     @Override
     public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
-        if (world.isRemote || world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 24, false) == null) {
+        if (world.isRemote || Utils.getClosestPlayer(world, pos.getX(), pos.getY(), pos.getZ(), 24, true, true) == null) {
             return;
         }
 

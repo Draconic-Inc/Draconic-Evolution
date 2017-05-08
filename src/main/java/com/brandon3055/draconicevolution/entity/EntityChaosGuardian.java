@@ -205,7 +205,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
 //            dataWatcher.updateObject(23, crystalZ);
             updateTarget();
 
-            if (worldObj.getClosestPlayer(posX, posY, posZ, 500, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
+            if (Utils.getClosestPlayer(worldObj, posX, posY, posZ, 500, true, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
                 LogHelper.dev("Preparing to unload Guardian...");
                 DragonChunkLoader.updateLoaded(this);
                 behaviour = EnumBehaviour.ROAMING;
@@ -518,7 +518,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
 
         switch (behaviour) {
             case ROAMING:
-                if (worldObj.getClosestPlayer(homeX, homeY, homeZ, 200, true) != null) selectNewBehaviour();
+                if (Utils.getClosestPlayer(worldObj, homeX, homeY, homeZ, 200, true) != null) selectNewBehaviour();
                 break;
 
             case GO_HOME:
@@ -539,14 +539,14 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
                 break;
 
             case LOW_HEALTH_STRATEGY:
-                if (worldObj.getClosestPlayer(targetX, targetY, targetZ, 60, true) != null && attackInProgress != ATTACK_TELEPORT) {
+                if (Utils.getClosestPlayer(worldObj, targetX, targetY, targetZ, 60, true) != null && attackInProgress != ATTACK_TELEPORT) {
                     int escape = 0;
                     boolean flag = false;
                     while (!flag && escape < 50) {
                         targetX = homeX + ((rand.nextDouble() - 0.5D) * 220D);
                         targetY = homeY + 30 + rand.nextDouble() * 20D;
                         targetZ = homeZ + ((rand.nextDouble() - 0.5D) * 220D);
-                        if (worldObj.getClosestPlayer(targetX, targetY, targetZ, 60D, true) == null) {
+                        if (Utils.getClosestPlayer(worldObj, targetX, targetY, targetZ, 60D, true) == null) {
                             flag = true;
                         }
                         escape++;
@@ -702,7 +702,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
                     }
                     break;
                 case ATTACK_TELEPORT:
-                    if (target == null) target = worldObj.getClosestPlayer(posX, posY, posZ, 100, true);
+                    if (target == null) target = Utils.getClosestPlayer(worldObj, posX, posY, posZ, 100, false);
                     if (target == null) {
                         attackInProgress = -1;
                         return;
@@ -836,7 +836,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
                 break;
             case CHARGING:
             case CIRCLE_PLAYER:
-                this.target = worldObj.getClosestPlayer(homeX, homeY, homeZ, 200, true);
+                this.target = Utils.getClosestPlayer(worldObj, homeX, homeY, homeZ, 200, false);
                 break;
             case LOW_HEALTH_STRATEGY:
 

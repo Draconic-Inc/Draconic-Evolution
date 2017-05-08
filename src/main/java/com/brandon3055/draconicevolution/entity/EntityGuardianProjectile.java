@@ -150,7 +150,7 @@ public class EntityGuardianProjectile extends Entity {
 
         //Check that there is still a target available and if not kills the projectile.
         if (target == null) {
-            target = worldObj.getClosestPlayer(posX, posY, posZ, 60, false);
+            target = Utils.getClosestPlayer(worldObj, posX, posY, posZ, 60, true);
             if (target == null){
                 if (!worldObj.isRemote) {
                     setDead();
