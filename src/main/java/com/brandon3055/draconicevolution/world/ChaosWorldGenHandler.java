@@ -124,7 +124,7 @@ public class ChaosWorldGenHandler {
 //			player.addChatComponentMessage(new TextComponentString("[Chaos Guardian]:").setStyle(new Style().setColor(TextFormatting.GOLD)).appendSibling(new TextComponentString(" Just a heads up. My creator has not got around to fixing all of my 1.10.2 bugs yet so i may be a little broken. You have been warned! Now come and get wrecked!!!!").setStyle(new Style().setColor(TextFormatting.RED))));
 //		}
 
-		guardian.setPositionAndUpdate(islandCenter.x, shardY, islandCenter.z);
+		guardian.setPosition(islandCenter.x, shardY, islandCenter.z);
 		world.spawnEntityInWorld(guardian);
 
 
