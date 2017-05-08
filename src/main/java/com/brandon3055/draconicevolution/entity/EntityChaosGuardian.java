@@ -143,9 +143,6 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
 
     @Override
     public void onLivingUpdate() {
-        if (ticksExisted % 20 == 0 && !worldObj.isRemote) {
-            LogHelper.dev("UUID: " + this.getUniqueID() + " PersistentUUID: " + this.getPersistentID() + " ID: " + getEntityId());
-        }
 //        setHealth(0);
         //  setHealth(1);
         //setDead();
@@ -205,31 +202,31 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
             updateTarget();
 
             if (Utils.getClosestPlayer(worldObj, posX, posY, posZ, 500, true, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
-                LogHelper.dev("Preparing to unload Guardian...");
-                DragonChunkLoader.updateLoaded(this);
-                behaviour = EnumBehaviour.ROAMING;
-                motionX = motionY = motionZ = 0;
+//                LogHelper.dev("Preparing to unload Guardian...");
+//                DragonChunkLoader.updateLoaded(this);
+//                behaviour = EnumBehaviour.ROAMING;
+//                motionX = motionY = motionZ = 0;
+//
+//                double posX = this.posX - (this.posX % 16) + 8;
+//                double posZ = this.posZ - (this.posZ % 16) + 8;
+//
+//                int chunkX = MathHelper.floor_double(posX / 16.0D);
+//                int chunkZ = MathHelper.floor_double(posZ / 16.0D);
+//
+//                setPosition(posX, posY, posZ);
+//                setPositionAndUpdate(posX, posY, posZ);
+//                LogHelper.dev(String.format("Position (%s, %s) x=%s, z=%s %s", chunkX, chunkZ, posX, posZ, this));
+//
+//                if (chunkX != chunkCoordX || chunkZ != chunkCoordZ) {
+//                    worldObj.getChunkFromChunkCoords(chunkCoordX, chunkCoordZ).removeEntity(this);
+//                    worldObj.getChunkFromChunkCoords(chunkX, chunkZ).addEntity(this);
+//                    LogHelper.dev("Corrected entity chunk position!!!!!!!");
+//                }
 
-                double posX = this.posX - (this.posX % 16) + 8;
-                double posZ = this.posZ - (this.posZ % 16) + 8;
-
-                int chunkX = MathHelper.floor_double(posX / 16.0D);
-                int chunkZ = MathHelper.floor_double(posZ / 16.0D);
-
-                setPosition(posX, posY, posZ);
-                setPositionAndUpdate(posX, posY, posZ);
-                LogHelper.dev(String.format("Position (%s, %s) x=%s, z=%s %s", chunkX, chunkZ, posX, posZ, this));
-
-                if (chunkX != chunkCoordX || chunkZ != chunkCoordZ) {
-                    worldObj.getChunkFromChunkCoords(chunkCoordX, chunkCoordZ).removeEntity(this);
-                    worldObj.getChunkFromChunkCoords(chunkX, chunkZ).addEntity(this);
-                    LogHelper.dev("Corrected entity chunk position!!!!!!!");
-                }
-
-                worldObj.getChunkFromChunkCoords(chunkX, chunkZ).setChunkModified();
+//                worldObj.getChunkFromChunkCoords(chunkX, chunkZ).setChunkModified();
 
                 DragonChunkLoader.stopLoading(this);
-                LogHelper.dev("Guardian Unloaded.");
+//                LogHelper.dev("Guardian Unloaded.");
                 return;
             } else {
                 if (getHealth() > 0) {
