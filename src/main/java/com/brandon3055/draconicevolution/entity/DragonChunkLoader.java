@@ -5,12 +5,16 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 21/10/2015.
@@ -90,7 +94,16 @@ public class DragonChunkLoader implements LoadingCallback {
         if (!ticketList.containsKey(guardian)) {
             return;
         }
-        ForgeChunkManager.releaseTicket(ticketList.get(guardian));
+        Ticket ticket = ticketList.get(guardian);
+
+        for (ChunkPos pos : ticket.getChunkList()) {
+            ForgeChunkManager.unforceChunk(ticket, pos);
+            ((WorldServer) guardian.worldObj).getChunkProvider().unload(guardian.worldObj.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos));
+        }
+
+        ForgeChunkManager.releaseTicket(ticket);
+
+
         ticketList.remove(guardian);
     }
 

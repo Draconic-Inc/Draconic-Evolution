@@ -209,7 +209,19 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
             updateTarget();
 
             if (worldObj.getClosestPlayer(posX, posY, posZ, 500, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
+                LogHelper.dev("Preparing to Guardian...");
+                DragonChunkLoader.updateLoaded(this);
+
+                double posX = this.posX - (this.posX % 16) + 8;
+                double posZ = this.posZ - (this.posZ % 16) + 8;
+
+                setPosition(posX, posY, posZ);
+                behaviour = EnumBehaviour.ROAMING;
+                motionX = motionY = motionZ = 0;
+
                 DragonChunkLoader.stopLoading(this);
+                LogHelper.dev("Guardian Unloaded.");
+                return;
             } else {
                 if (getHealth() > 0) {
                     DragonChunkLoader.updateLoaded(this);

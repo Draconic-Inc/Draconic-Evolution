@@ -91,7 +91,11 @@ public class Debugger extends ItemBCore {
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
 
-        if (!world.isRemote) {
+        //if (!world.isRemote) {
+            double posX = player.posX - (player.posX % 16) + 8;
+            double posZ = player.posZ - (player.posZ % 16) + 8;
+
+            player.setPosition(posX, player.posY, posZ);
 
 //            for (int d = 1; d <= 30; d++) {
 //
@@ -143,7 +147,7 @@ public class Debugger extends ItemBCore {
 
 
 
-        }
+        //}
 
 //        if (!world.isRemote) {
 //            PacketCustom packet = new PacketCustom("DE", 1);
