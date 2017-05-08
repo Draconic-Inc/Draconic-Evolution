@@ -115,6 +115,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
 
     public EntityChaosGuardian(World par1World) {
         super(par1World);
+        enablePersistence();
     }
 
     @Override
@@ -1286,7 +1287,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
         compound.setInteger("HomeZCoord", homeZ);
         compound.setString("Behaviour", behaviour.name());
         compound.setBoolean("HomeSet", homeSet);
-        LogHelper.bigDev("ChaosGuardian: Save");
+        LogHelper.bigDev(String.format("ChaosGuardian: Save chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, (int) posX / 16, (int) posZ / 16, posX, posZ));
         return compound;
     }
 
@@ -1300,7 +1301,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
         homeSet = compound.getBoolean("HomeSet");
         targetX = homeX;
         targetZ = homeZ;
-        LogHelper.bigDev("ChaosGuardian: Load");
+        LogHelper.bigDev(String.format("ChaosGuardian: Load chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, (int) posX / 16, (int) posZ / 16, posX, posZ));
     }
 
     @Override
