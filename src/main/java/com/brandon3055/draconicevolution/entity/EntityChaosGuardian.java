@@ -212,8 +212,9 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
 
                 double posX = this.posX - (this.posX % 16) + 8;
                 double posZ = this.posZ - (this.posZ % 16) + 8;
-                int chunkX = (int)posX / 16;
-                int chunkZ = (int)posZ / 16;
+
+                int chunkX = MathHelper.floor_double(posX / 16.0D);
+                int chunkZ = MathHelper.floor_double(posZ / 16.0D);
 
                 setPosition(posX, posY, posZ);
                 setPositionAndUpdate(posX, posY, posZ);
@@ -1288,7 +1289,9 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
         compound.setInteger("HomeZCoord", homeZ);
         compound.setString("Behaviour", behaviour.name());
         compound.setBoolean("HomeSet", homeSet);
-        LogHelper.bigDev(String.format("ChaosGuardian: Save chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, (int) posX / 16, (int) posZ / 16, posX, posZ));
+        int chunkX = MathHelper.floor_double(posX / 16.0D);
+        int chunkZ = MathHelper.floor_double(posZ / 16.0D);
+        LogHelper.bigDev(String.format("ChaosGuardian: Save chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, chunkX, chunkZ, posX, posZ));
         return compound;
     }
 
@@ -1302,7 +1305,9 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
         homeSet = compound.getBoolean("HomeSet");
         targetX = homeX;
         targetZ = homeZ;
-        LogHelper.bigDev(String.format("ChaosGuardian: Load chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, (int) posX / 16, (int) posZ / 16, posX, posZ));
+        int chunkX = MathHelper.floor_double(posX / 16.0D);
+        int chunkZ = MathHelper.floor_double(posZ / 16.0D);
+        LogHelper.bigDev(String.format("ChaosGuardian: Load chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, chunkX, chunkZ, posX, posZ));
     }
 
     @Override
