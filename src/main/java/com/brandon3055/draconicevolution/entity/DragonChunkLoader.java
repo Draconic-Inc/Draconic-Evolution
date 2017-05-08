@@ -42,8 +42,8 @@ public class DragonChunkLoader implements LoadingCallback {
 
         //Calculate the chunks to be loaded
         ArrayList<ChunkPos> dragonChunks = new ArrayList<>();
-        for (int xx = guardian.chunkCoordX - 2; xx <= guardian.chunkCoordX + 2; xx++) {
-            for (int zz = guardian.chunkCoordZ - 2; zz <= guardian.chunkCoordZ + 2; zz++) {
+        for (int xx = ((int)guardian.posX / 16) - 2; xx <= ((int)guardian.posX / 16) + 2; xx++) {
+            for (int zz = ((int)guardian.posZ / 16) - 2; zz <= ((int)guardian.posZ / 16) + 2; zz++) {
                 dragonChunks.add(new ChunkPos(xx, zz));
             }
         }

@@ -33,10 +33,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.BossInfo;
-import net.minecraft.world.BossInfoServer;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -209,15 +206,26 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
             updateTarget();
 
             if (worldObj.getClosestPlayer(posX, posY, posZ, 500, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
-                LogHelper.dev("Preparing to Guardian...");
+                LogHelper.dev("Preparing to unload Guardian...");
                 DragonChunkLoader.updateLoaded(this);
+                behaviour = EnumBehaviour.ROAMING;
+                motionX = motionY = motionZ = 0;
 
                 double posX = this.posX - (this.posX % 16) + 8;
                 double posZ = this.posZ - (this.posZ % 16) + 8;
+                int chunkX = (int)posX / 16;
+                int chunkZ = (int)posZ / 16;
 
                 setPosition(posX, posY, posZ);
-                behaviour = EnumBehaviour.ROAMING;
-                motionX = motionY = motionZ = 0;
+                LogHelper.dev(String.format("Position (%s, %s) x=%s, z=%s %s", chunkX, chunkZ, posX, posZ, this));
+
+                if (chunkX != chunkCoordX || chunkZ != chunkCoordZ) {
+                    worldObj.getChunkFromChunkCoords(chunkCoordX, chunkCoordZ).removeEntity(this);
+                    worldObj.getChunkFromChunkCoords(chunkX, chunkZ).addEntity(this);
+                    LogHelper.dev("Corrected entity chunk position!!!!!!!");
+                }
+
+                worldObj.getChunkFromChunkCoords(chunkX, chunkZ).setChunkModified();
 
                 DragonChunkLoader.stopLoading(this);
                 LogHelper.dev("Guardian Unloaded.");
