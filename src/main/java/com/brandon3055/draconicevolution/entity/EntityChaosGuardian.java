@@ -216,6 +216,7 @@ public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolu
                 int chunkZ = (int)posZ / 16;
 
                 setPosition(posX, posY, posZ);
+                setPositionAndUpdate(posX, posY, posZ);
                 LogHelper.dev(String.format("Position (%s, %s) x=%s, z=%s %s", chunkX, chunkZ, posX, posZ, this));
 
                 if (chunkX != chunkCoordX || chunkZ != chunkCoordZ) {
