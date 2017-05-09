@@ -1,6 +1,6 @@
 -- 2.1.0.x --
 
-######## 2.0.11.x ########
+######## 2.0.12.221 ########
 -Fixed weapons not using energy when attacking only 1 target.
 -Fixed shaders still attempting to initialize when GL does not support them.
 -Fixed a null pointer in the reactor explosion code (I hope).
