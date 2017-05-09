@@ -142,6 +142,7 @@ item.draconicevolution:tool_upgrade.moveSpeed.name=Upgrade Key (Movement Speed)
 item.draconicevolution:tool_upgrade.jumpBoost.name=Upgrade Key (Jump Boost)
 
 item.draconicevolution:creative_exchanger.name=Creative Block Exchanger
+item.draconicevolution:ender_energy_manipulator.name=Ender Energy Manipulator
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
@@ -242,6 +243,13 @@ info.mobSoul3.txt=(Single Use)
 
 info.arrowInfo.txt=A Painful Ride
 info.arrowInfo0.txt=Too heavy for a regular bow
+
+//ender_extraction_core
+info.de.ender_energy_manipulator.info.txt=This slightly creepy mystical device taps into the energy of the dragons own healing crystals.
+info.de.ender_energy_manipulator.info2.txt=And along with the souls of a few nearby Enderman uses that energy to extract an egg from the Ender Dragon.
+info.de.ender_energy_manipulator.location.msg=Must be placed on the end gateway!
+info.de.ender_energy_manipulator.dead.msg=The Ender Dragon could not be found!
+info.de.ender_energy_manipulator.running.msg=You must wait until the current manipulator is finished!
 
 info.de.obliterationMode.txt=Obliteration Mode
 info.de.obliterationModetrue.txt=Active

@@ -21,6 +21,7 @@ public class DEParticles {
     public static int PORTAL;
     public static int DRAGON_HEART;
     public static int AXE_SELECTION;
+    public static int SOUL_EXTRACTION;
 
 
     public static void registerClient(){
@@ -33,6 +34,7 @@ public class DEParticles {
         PORTAL = BCEffectHandler.registerFX(DE_SHEET, new ParticlePortal.Factory());
         DRAGON_HEART = BCEffectHandler.registerFX(DE_SHEET, new ParticleDragonHeart.Factory());
         AXE_SELECTION = BCEffectHandler.registerFX(new ResourceLocation("textures/items/diamond_axe.png"), new ParticleAxeSelection.Factory());
+        SOUL_EXTRACTION = BCEffectHandler.registerFX(DE_SHEET, new ParticleSoulExtraction.Factory());
     }
 
     public static void registerServer(){
@@ -45,5 +47,6 @@ public class DEParticles {
         PORTAL = BCEffectHandler.registerFXServer();
         DRAGON_HEART = BCEffectHandler.registerFXServer();
         AXE_SELECTION = BCEffectHandler.registerFXServer();
+        SOUL_EXTRACTION = BCEffectHandler.registerFXServer();
     }
 }

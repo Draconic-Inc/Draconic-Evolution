@@ -7,8 +7,9 @@
 -Fixed a crash in the Project Intel editor.
 -Fixed fluid gates dropping flux gates.
 -Silenced the dragon multi-death error message.
+-Added the Ender Energy Manipulator. (An item that can extract an egg from the dragon)
 
-######## 2.0.11.99 ########
+######## 2.0.11.199 ########
 -Fixed bug with energy core where if there was a block on an inactive core that needs to be attached to a solid block such as a button or snow when the core activates and that block breaks itself it would also break the block it was attached to.
 -Fixed fusion crafting pedestals working when obstructed by another pedestal or full block.
 -Tweaked fusion crafting gui so that it looks less cluttered when you have recipes with lots of input items.

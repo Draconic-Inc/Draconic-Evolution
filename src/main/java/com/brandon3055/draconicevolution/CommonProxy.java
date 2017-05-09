@@ -204,6 +204,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityChaosImplosion.class, "EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
 		EntityRegistry.registerModEntity(EntityCustomArrow.class, "CustomArrow", 11, DraconicEvolution.instance, 128, 1, true);
 		EntityRegistry.registerModEntity(EntityLootCore.class, "LootCore", 12, DraconicEvolution.instance, 64, 5, true);
+		EntityRegistry.registerModEntity(EntityEnderEnergyManipulator.class, "EnderEnergyManipulator", 13, DraconicEvolution.instance, 128, 5, true);
 
 	}
 

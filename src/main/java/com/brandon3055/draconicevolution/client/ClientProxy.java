@@ -171,6 +171,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityChaosImplosion.class, new RenderEntityChaosVortex.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, new RenderCustomArrow.Factory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityLootCore.class, new RenderLootCore.Factory());
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnderEnergyManipulator.class, new RenderEntityEnderEnergyManipulator.Factory());
 	}
 
 	public void registerRenderIDs (){

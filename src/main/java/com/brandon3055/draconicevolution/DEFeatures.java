@@ -289,6 +289,9 @@ public class DEFeatures {
     @Feature(registryName = "creative_exchanger", stateOverride = "simple_components#type=chaoticCore", cTab = 1)
     public static CreativeExchanger creativeExchanger = new CreativeExchanger();
 
+    @Feature(registryName = "ender_energy_manipulator", cTab = 1)
+    public static EnderEnergyManipulator enderEnergyManipulator = new EnderEnergyManipulator();
+
     //endregion
 
 
@@ -304,12 +307,12 @@ public class DEFeatures {
 //    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
 //    public static DraconiumChest draconiumChest = new DraconiumChest();
 //
-    @Feature(registryName = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
+    //@Feature(registryName = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
     public static StabilizedSpawner stabilizedSpawner = new StabilizedSpawner();
 //
 //
 //
 //
-    @Feature(registryName = "mob_soul")
+    //@Feature(registryName = "mob_soul")
     public static MobSoul mobSoul = new MobSoul();
 }

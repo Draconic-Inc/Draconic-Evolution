@@ -11,7 +11,9 @@
       "magnet_advanced":{ "textures": { "layer0": "draconicevolution:items/magnet_advanced" } },
       "crystal_binder":{
         "transform": "ccl:default-tool",
-        "textures": { "layer0": "draconicevolution:items/crystal_binder" } }
+        "textures": { "layer0": "draconicevolution:items/crystal_binder" }
+      },
+      "dummy": { "textures": { "layer0": "draconicevolution:items/info_tablet"      } }
     }
   }
 }

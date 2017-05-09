@@ -132,6 +132,9 @@ public class DERecipes {
 
         //region Exotic Blocks
 
+        addFusion(NORMAL, new ItemStack(enderEnergyManipulator), new ItemStack(SKULL, 1, 1), 12000000, 1, "pearlEnderEye", "pearlEnderEye", "pearlEnderEye", "pearlEnderEye", "pearlEnderEye", "pearlEnderEye", draconicCore, wyvernCore, draconicCore, "pearlEnderEye");
+        addFusion(HARD, new ItemStack(enderEnergyManipulator), new ItemStack(SKULL, 1, 1), 32000000, 1, draconicCore, wyvernCore, "pearlEnderEye", wyvernCore, draconicCore, "pearlEnderEye", draconicCore, wyvernCore, draconicCore, "pearlEnderEye");
+
         //endregion
 
 	    /* ------------------ Items ------------------ */
