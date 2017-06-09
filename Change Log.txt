@@ -11,6 +11,7 @@
 -Changed LivingDeathEvent priority for armor to high to hopefully avoid issues with other mods.
 -Fixed wrenching a placed item caused it to break and delete the item.
 -Reset the minimum fusion injector distance to 1 block. Did not mean to change it to 2.
+-Change: Higher tier crafting injectors now reduce charge and crafting time.
 
 ######## 2.0.12.222 ########
 -Fixed weapons not using energy when attacking only 1 target.

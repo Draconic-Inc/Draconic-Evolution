@@ -60,6 +60,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
      */
     public final SyncableShort craftingStage = new SyncableShort((short) 0, true, false, false);
     public IFusionRecipe activeRecipe = null;
+    private int craftingSpeedBoost = 0;
 
     protected IItemHandler[] itemHandlers = new IItemHandler[6];
     {
@@ -127,7 +128,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 }
             }
             else if (craftingStage.value < 2000) {
-                craftingStage.value += 2;
+                craftingStage.value += 2 + craftingSpeedBoost;
             }
             else if (craftingStage.value >= 2000) {
                 activeRecipe.craft(this, worldObj, pos);
@@ -135,7 +136,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 for (ICraftingPedestal pedestal : pedestals) {
                     pedestal.onCraft();
                 }
-                //Reset tile... Oops
+
                 if (!worldObj.isRemote) {
                     isCrafting.value = false;
                 }
@@ -151,6 +152,13 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         activeRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos);
 
         if (activeRecipe != null && activeRecipe.canCraft(this, worldObj, pos) != null && activeRecipe.canCraft(this, worldObj, pos).equals("true")) {
+            int minTier = 3;
+            for (ICraftingPedestal pedestal : pedestals) {
+                if (pedestal.getStackInPedestal() != null && pedestal.getPedestalTier() < minTier) {
+                    minTier = pedestal.getPedestalTier();
+                }
+                craftingSpeedBoost = minTier == 0 ? 0 : minTier == 1 ? 1 : minTier == 2 ? 3 : minTier == 3 ? 5 : 0;
+            }
             isCrafting.value = true;
         } else {
             activeRecipe = null;

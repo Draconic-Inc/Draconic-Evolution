@@ -23,6 +23,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
     private final SyncableInt energy = new SyncableInt(0, true, false);
     private final SyncableVec3I lastCorePos = new SyncableVec3I(new Vec3I(0, 0, 0), true, false);
     public IFusionCraftingInventory currentCraftingInventory = null;
+    private int chargeSpeedModifier = 300;
 
     public TileCraftingPedestal(){
         this.setInventorySize(1);
@@ -44,7 +45,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         validateCraftingInventory();
         if (currentCraftingInventory != null){
-            int maxRFPerTick = currentCraftingInventory.getRequiredCharge() / 300;
+            int maxRFPerTick = currentCraftingInventory.getRequiredCharge() / chargeSpeedModifier;
             int maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getRequiredCharge() - energy.value, maxRFPerTick));
 
             if (!simulate){
@@ -104,6 +105,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
         }
         currentCraftingInventory = craftingInventory;
         lastCorePos.vec = new Vec3I(((TileEntity) craftingInventory).getPos());
+        chargeSpeedModifier = 300 - (getPedestalTier() * 80);
         return true;
     }
 
