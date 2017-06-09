@@ -4,12 +4,15 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.config.ModConfigProcessor;
 import com.brandon3055.brandonscore.config.ModFeatureParser;
 import com.brandon3055.brandonscore.handlers.FileHandler;
+import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
 import com.brandon3055.draconicevolution.command.CommandUpgrade;
 import com.brandon3055.draconicevolution.items.tools.ToolStats;
+import com.brandon3055.draconicevolution.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.DEWorldGenHandler;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -84,15 +87,36 @@ public class DraconicEvolution {
         proxy.postInit(event);
     }
 
-    //FMLInterModComms.sendMessage("DraconicEvolution", "addChestRecipe:item.coal", new ItemStack(Items.diamond, 2));
+    /**
+     * To register an itemstack to be doubled by the DE chest the message should be as followes
+     *
+     * FMLInterModComms.sendMessage("draconicevolution", "addChestRecipe:minecraft:coal", new ItemStack(Items.diamond, 2));
+     *
+     * The input stack format is similar to the format used by the give command. Here are some examples.
+     * minecraft:stone                <br>
+     * minecraft:stone,64             <br>
+     * minecraft:stone,64,3           <br>
+     * minecraft:stone,64,3,{NBT}     <br>
+     */
     @Mod.EventHandler
     public void processMessage(FMLInterModComms.IMCEvent event) {
         for (FMLInterModComms.IMCMessage m : event.getMessages()) {
             LogHelper.info(m.key);
-            if (m.isItemStackMessage() && m.key.contains("addChestRecipe:")) {
-                String s = m.key.substring(m.key.indexOf("addChestRecipe:") + 15);
-//				OreDoublingRegistry.resultOverrides.put(s, m.getItemStackValue());			//TODO Update ore doubling registry
-                LogHelper.info("Added Chest recipe override: " + s + " to " + m.getItemStackValue());
+            if (m.isItemStackMessage() && m.key.startsWith("addChestRecipe:")) {
+                String s = m.key.replace("addChestRecipe:", "");
+                StackReference reference = StackReference.fromString(s);
+                if (reference == null) {
+                    LogHelper.error("IMC error. Mod: " + m.getSender() + " tried to register a smelting override but the specified input stack was invalid! Input: " + s);
+                    continue;
+                }
+                ItemStack stack = reference.createStack();
+                if (stack == null) {
+                    LogHelper.error("IMC error. Mod: " + m.getSender() + " tried to register a smelting override but the specified input stack could not be found! Input: " + s);
+                    continue;
+                }
+
+				OreDoublingRegistry.registerResult(stack, m.getItemStackValue());
+                LogHelper.info("Added Chest recipe override: " + stack + " -> " + m.getItemStackValue());
             }
         }
     }

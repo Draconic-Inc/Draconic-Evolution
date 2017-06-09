@@ -78,6 +78,9 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                     weatherToggleRunning.value = false;
                     worldObj.getWorldInfo().setRaining(rain);
                     worldObj.getWorldInfo().setThundering(storm);
+                    int time = (10*60*20) + worldObj.rand.nextInt(20*60*20);
+                    worldObj.getWorldInfo().setRainTime(rain ? time : 0);
+                    worldObj.getWorldInfo().setCleanWeatherTime(rain ? 0 : time);
                 }
             }
         }

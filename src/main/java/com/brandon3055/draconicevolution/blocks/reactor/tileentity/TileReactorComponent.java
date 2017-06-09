@@ -15,13 +15,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -195,11 +192,11 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         }
     }
 
-    protected boolean verifyPlayerPermission(EntityPlayer player) {
-        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, null, pos, EnumFacing.UP, player.getLookVec());
-        MinecraftForge.EVENT_BUS.post(event);
-        return !event.isCanceled();
-    }
+//    protected boolean verifyPlayerPermission(EntityPlayer player) {
+//        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, null, pos, EnumFacing.UP, player.getLookVec());
+//        MinecraftForge.EVENT_BUS.post(event);
+//        return !event.isCanceled();
+//    }
 
     //endregion
 

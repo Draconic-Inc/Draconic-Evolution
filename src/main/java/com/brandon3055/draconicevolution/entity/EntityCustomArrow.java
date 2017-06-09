@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.entity;
 
+import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.handlers.BowHandler.BowProperties;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -466,6 +468,7 @@ public class EntityCustomArrow extends EntityArrow {
         if (bowProperties.shockWavePower > 0 && !worldObj.isRemote) {
             //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.ARROW_SHOCK_WAVE, posX, posY, posZ, (int) (bowProperties.shockWavePower * 100)), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 256));
             //worldObj.playSoundEffect(posX, posY, posZ, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+            BCEffectHandler.spawnFX(DEParticles.ARROW_SHOCKWAVE, worldObj, posX, posY, posZ, 0, 0, 0, 256D, (int) (bowProperties.shockWavePower * 100));
 
             double range = (double) bowProperties.shockWavePower + 5;
             List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().expand(range, range, range));

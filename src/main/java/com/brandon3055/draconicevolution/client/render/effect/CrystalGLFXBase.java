@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.brandonscore.client.particle.BCParticle;
-import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -41,6 +40,4 @@ public abstract class CrystalGLFXBase<T extends TileCrystalBase> extends BCParti
 
     @Override
     public abstract void renderParticle(VertexBuffer vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ);
-
-    public abstract IGLFXHandler getFXHandler();
 }

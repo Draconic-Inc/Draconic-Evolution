@@ -34,8 +34,8 @@ public class ReactorPart extends ItemBCore implements ICustomRender {
         }
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerRenderer(Feature feature) {
         ModelRegistryHelper.registerItemRenderer(this, new RenderItemReactorPart());
     }

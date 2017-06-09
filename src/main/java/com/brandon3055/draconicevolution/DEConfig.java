@@ -107,6 +107,21 @@ public class DEConfig {
     @ModConfigProperty(category = "Tweaks", name = "reactorExplosionScale", comment = "Allows you to adjust the overall scale of the reactor explosion. use \"disableLargeReactorBoom\" to diaable explosion completely.")
     public static double reactorExplosionScale = 1;
 
+    @ModConfigProperty(category = "Tweaks", name = "soulDropChance", comment = "Mobs have a 1 in this number chance to drop a soul")
+    public static int soulDropChance = 1000;
+
+    @ModConfigProperty(category = "Tweaks", name = "passiveSoulDropChance", comment = "Passive (Animals) Mobs have a 1 in this number chance to drop a soul")
+    public static int passiveSoulDropChance = 800;
+
+    @ModConfigProperty(category = "Tweaks", name = "spawnerList", comment = "By default any entities added to this list will not drop their souls and will not be spawnable by the stabilized spawner.")
+    public static String[] spawnerList = {};
+
+    @ModConfigProperty(category = "Tweaks", name = "spawnerListWhiteList", comment = "Changes the spawner list to a whitelist as opposed to the default blacklist.")
+    public static boolean spawnerListWhiteList = false;
+
+    @ModConfigProperty(category = "Tweaks", name = "spawnerDelays", comment = "Sets the min and max spawn delay in ticks for each spawner tier. Order is as follows.\nBasic MIN, MAX, Wyvern MIN, MAX, Draconic MIN, MAX, Chaotic MIN MAX")
+    public static int[] spawnerDelays = new int[]{200, 800, 100, 400, 50, 200, 25, 100};
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stores. You should not need to adjust these unless something breaks.")

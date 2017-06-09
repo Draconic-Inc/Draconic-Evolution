@@ -130,6 +130,11 @@ public class ExplosionFX extends BCParticle {
         }
     }
 
+    @Override
+    public IGLFXHandler getFXHandler() {
+        return FX_HANDLER;
+    }
+
     public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
         @Override
         public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {

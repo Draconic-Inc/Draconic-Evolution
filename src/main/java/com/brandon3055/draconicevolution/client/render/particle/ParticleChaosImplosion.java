@@ -53,6 +53,11 @@ public class ParticleChaosImplosion extends BCParticle {
     }
 
     @Override
+    public boolean isRawGLParticle() {
+        return true;
+    }
+
+    @Override
     public boolean isTransparent() {
         return true;
     }

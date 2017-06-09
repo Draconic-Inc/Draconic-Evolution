@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution;
 
 import codechicken.lib.packet.PacketCustom;
+import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
@@ -12,7 +13,9 @@ import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
+import com.brandon3055.draconicevolution.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
+import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.network.*;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.audio.ISound;
@@ -45,10 +48,10 @@ public class CommonProxy {
 		initializeNetwork();
 		registerOres();
 
-//		DraconicEvolution.reaperEnchant = new EnchantmentReaper(ConfigHandler.reaperEnchantID);
+		EnchantmentReaper.init();
 
 
-//		Achievements.addModAchievements();
+		Achievements.addModAchievements();
 		LogHelper.info("Finished PreInitialization");
 	}
 
@@ -66,8 +69,8 @@ public class CommonProxy {
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
-//		OreDoublingRegistry.init();
-//		Achievements.registerAchievementPane();
+		OreDoublingRegistry.init();
+		Achievements.registerAchievementPane();
 
 		if (DEConfig.expensiveDragonRitual) {
 			java.util.List<IRecipe> list = CraftingManager.getInstance().getRecipeList();
@@ -167,7 +170,7 @@ public class CommonProxy {
 
 	public void registerEventListeners(Side s) {
 		MinecraftForge.EVENT_BUS.register(new DEEventHandler());
-//        MinecraftForge.EVENT_BUS.register(new Achievements());
+        MinecraftForge.EVENT_BUS.register(new Achievements());
         MinecraftForge.EVENT_BUS.register(new CustomArmorHandler());
 //		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
 	}

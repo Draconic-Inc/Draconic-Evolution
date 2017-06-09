@@ -1,6 +1,18 @@
 -- 2.1.0.x --
 
-######## 2.0.12.221 ########
+######## 2.1.0.x ########
+-Switched from java 7 to java 8
+-Fixed arrow shockwave effect not rendering.
+-Fixed capacitors not charging FE items in your inventory.
+-Updated Mob Soul.
+-Updated Stabilized Spawner.
+-Updated and Upgraded Draconium Chest.
+-Fixed generator not respecting sides when sending energy (Prevented generator sending to IO crystals)
+-Changed LivingDeathEvent priority for armor to high to hopefully avoid issues with other mods.
+-Fixed wrenching a placed item caused it to break and delete the item.
+-Reset the minimum fusion injector distance to 1 block. Did not mean to change it to 2.
+
+######## 2.0.12.222 ########
 -Fixed weapons not using energy when attacking only 1 target.
 -Fixed shaders still attempting to initialize when GL does not support them.
 -Fixed a null pointer in the reactor explosion code (I hope).

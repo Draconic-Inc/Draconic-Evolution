@@ -35,7 +35,7 @@ public class CustomArmorHandler {
     public static final UUID WALK_SPEED_UUID = UUID.fromString("0ea6ce8e-d2e8-11e5-ab30-625662870761");
     private static final DamageSource ADMIN_KILL = new DamageSource("administrative.kill").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
     public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
-    public static List<String> playersWithUphillStep = new ArrayList<String>();
+    public static List<String> playersWithUphillStep = new ArrayList<String>();  //TODO Switch to UUID
 
     @SubscribeEvent
     public void onPlayerHurt(LivingHurtEvent event) {
@@ -132,7 +132,7 @@ public class CustomArmorHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onPlayerDeath(LivingDeathEvent event) {
         if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled()) {
             return;
@@ -325,7 +325,7 @@ public class CustomArmorHandler {
 
             if (hasHighStep && !highStepListed) {
                 playersWithUphillStep.add(player.getDisplayNameString());
-                player.stepHeight = 1f;
+                player.stepHeight = 1.0625f;
             }
 
             if (!hasHighStep && highStepListed) {

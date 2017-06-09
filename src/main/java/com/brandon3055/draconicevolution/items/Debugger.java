@@ -8,7 +8,6 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -55,17 +54,47 @@ public class Debugger extends ItemBCore {
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-//
-
 
         if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
 ////            DEShaders.initReactorShader();
 //            DEShaders.initReactorShieldShader();
 //            DEShaders.initEnergyCrystalShader();
 //            DEShaders.initReactorBeams();
-            DEShaders.initExplosionOverlay();
-            DEShaders.initExplosionWave();
+//            DEShaders.initExplosionOverlay();
+//            DEShaders.initExplosionWave();
 
+
+
+
+
+
+
+
+
+
+
+//            int n = 3;
+//            int s = 2;
+//            int e = 1;
+//            int w = 1;
+//
+//            LogHelper.dev(n+" "+s+" "+e+" "+w);
+//
+//            byte b = (byte) ((n & 3) << 6 | (s & 3) << 4 | (e & 3) << 2 | (w & 3));
+//
+//            b = (byte) ((b & 0xCF) | 2 << 4);
+//            //0x3F << 6
+//            //0xCF << 4
+//            //0xF3 << 3
+//            //0xFC
+//
+//            n = (b >> 6) & 3;
+//            s = (b >> 4) & 3;
+//            e = (b >> 2) & 3;
+//            w = b & 3;
+//
+//            LogHelper.dev(n+" "+s+" "+e+" "+w);
+//            LogHelper.dev(Integer.toBinaryString(Byte.toUnsignedInt(b)));
         }
 
     }
@@ -95,7 +124,7 @@ public class Debugger extends ItemBCore {
             double posX = player.posX - (player.posX % 16) + 8;
             double posZ = player.posZ - (player.posZ % 16) + 8;
 
-            player.setPosition(posX, player.posY, posZ);
+//            player.setPosition(posX, player.posY, posZ);
 
 //            for (int d = 1; d <= 30; d++) {
 //
