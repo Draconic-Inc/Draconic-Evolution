@@ -429,6 +429,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
         if (explosionCountdown.value-- <= 0) {
 //            explosionProcess = null;
             explosionProcess.detonate();
+            worldObj.setBlockToAir(pos);
         }
     }
 
