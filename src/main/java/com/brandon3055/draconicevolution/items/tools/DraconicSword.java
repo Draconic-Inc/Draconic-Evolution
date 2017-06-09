@@ -36,4 +36,10 @@ public class DraconicSword extends WyvernSword {
     }
 
     //endregion
+
+
+    @Override
+    public int getReaperLevel(ItemStack stack) {
+        return 2;
+    }
 }

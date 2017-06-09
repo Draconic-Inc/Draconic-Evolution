@@ -3,13 +3,16 @@ package com.brandon3055.draconicevolution.client.render.item;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -26,6 +29,8 @@ import java.util.List;
  * Created by brandon3055 on 18/04/2017.
  */
 public class RenderItemMobSoul implements IItemRenderer, IPerspectiveAwareModel {
+
+    private ItemCameraTransforms.TransformType transformType;
 
     public RenderItemMobSoul() {
     }
@@ -70,12 +75,13 @@ public class RenderItemMobSoul implements IItemRenderer, IPerspectiveAwareModel 
 
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+        transformType = cameraTransformType;
         return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_ITEM.getTransforms(), cameraTransformType);
     }
 
+    //Remember GuiInventory.drawEntityOnScreen
     @Override
     public void renderItem(ItemStack item) {
-        Minecraft mc = Minecraft.getMinecraft();
         Entity mob = DEFeatures.mobSoul.getRenderEntity(item);
 
         GlStateManager.pushMatrix();
@@ -83,7 +89,27 @@ public class RenderItemMobSoul implements IItemRenderer, IPerspectiveAwareModel 
         float scale = 0.6F / height;
         GlStateManager.translate(0.5, 0.175, 0.5);
         GlStateManager.scale(scale, scale, scale);
-        mc.getRenderManager().doRenderEntity(mob, 0, 0, 0, 0, 1F, true);
+
+        if (transformType != ItemCameraTransforms.TransformType.GROUND) {
+            GlStateManager.rotate((float) Math.sin((ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) / 50F) * 15F , 1, 0, -0.5F);
+            GlStateManager.rotate((ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) * 3, 0, 1, 0);
+        }
+
+            RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        rendermanager.doRenderEntity(mob, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
+
+        if (transformType != ItemCameraTransforms.TransformType.GROUND) {
+            GlStateManager.enableRescaleNormal();
+            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+            GlStateManager.disableTexture2D();
+            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+            GlStateManager.disableLighting();
+        }
+
+        //Some entities like the ender dragon modify the blend state which if not corrected like this breaks inventory rendering.
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.popMatrix();
+
     }
 }
