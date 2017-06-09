@@ -195,7 +195,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 if (dist >= 2 && EnumFacing.getFacingFromVector((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
                     BlockPos pPos = tile.getPos();
                     EnumFacing facing = pedestal.getDirection();
-                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBox(pPos.offset(facing), pPos.offset(facing, FacingUtils.destanceInDirection(pPos, pos, facing) - 2)));
+                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBox(pPos.offset(facing), pPos.offset(facing, FacingUtils.destanceInDirection(pPos, pos, facing) - 1)));
 
                     boolean obstructed = false;
                     for (BlockPos bp : checkList) {

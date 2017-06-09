@@ -240,6 +240,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
                 return getShieldStats();
             }
         }.setHoverDelay(5)));
+
         manager.add(new MGuiTexturedPointer(this, guiLeft + 199, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
@@ -251,6 +252,8 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
                 return getSaturationStats();
             }
         }.setHoverDelay(5)));
+
+
         manager.add(new MGuiTexturedPointer(this, guiLeft + 223, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {

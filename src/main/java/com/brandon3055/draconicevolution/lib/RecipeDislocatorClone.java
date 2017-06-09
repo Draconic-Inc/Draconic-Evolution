@@ -1,8 +1,9 @@
-package com.brandon3055.draconicevolution.items.tools;
+package com.brandon3055.draconicevolution.lib;
 
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;

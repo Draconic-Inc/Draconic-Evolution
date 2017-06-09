@@ -342,18 +342,18 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         tile.sendPacketToServer(new PacketTileMessage(tile, (byte) button.id, true, false));
     }
 
-    private void drawItemStack(ItemStack stack, int x, int y, String altText) {
-//        GlStateManager.translate(0.0F, 0.0F, 32.0F);
-//        this.zLevel = 200.0F;
-//        this.itemRender.zLevel = 200.0F;
-//        net.minecraft.client.gui.FontRenderer font = null;
-//        if (stack != null) font = stack.getItem().getFontRenderer(stack);
-//        if (font == null) font = fontRendererObj;
-//        this.itemRender.renderItemAndEffectIntoGUI(stack, x, y);
-//        this.itemRender.renderItemOverlayIntoGUI(font, stack, x, y, altText);
-//        this.zLevel = 0.0F;
-//        this.itemRender.zLevel = 0.0F;
-    }
+//    private void drawItemStack(ItemStack stack, int x, int y, String altText) {
+////        GlStateManager.translate(0.0F, 0.0F, 32.0F);
+////        this.zLevel = 200.0F;
+////        this.itemRender.zLevel = 200.0F;
+////        net.minecraft.client.gui.FontRenderer font = null;
+////        if (stack != null) font = stack.getItem().getFontRenderer(stack);
+////        if (font == null) font = fontRendererObj;
+////        this.itemRender.renderItemAndEffectIntoGUI(stack, x, y);
+////        this.itemRender.renderItemOverlayIntoGUI(font, stack, x, y, altText);
+////        this.zLevel = 0.0F;
+////        this.itemRender.zLevel = 0.0F;
+//    }
 
     public static class EnergyEffect extends GuiEffect {
 

@@ -152,6 +152,11 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
         return super.collisionRayTrace(state, world, pos, start, end);
     }
 
+    @Override
+    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
+        return false;
+    }
+
     //endregion
 
     //region Harvest
