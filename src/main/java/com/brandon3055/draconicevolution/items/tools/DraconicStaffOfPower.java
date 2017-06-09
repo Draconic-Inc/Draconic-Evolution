@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 5/06/2016.
  */
-public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon {
+public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, IReaperItem {
     public DraconicStaffOfPower() {
         super(ToolStats.DRA_STAFF_ATTACK_DAMAGE, ToolStats.DRA_STAFF_ATTACK_SPEED, PICKAXE_OVERRIDES);
         this.baseMiningSpeed = (float) ToolStats.DRA_STAFF_MINING_SPEED;
@@ -80,4 +81,10 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon {
     }
 
     //endregion
+
+
+    @Override
+    public int getReaperLevel(ItemStack stack) {
+        return 3;
+    }
 }

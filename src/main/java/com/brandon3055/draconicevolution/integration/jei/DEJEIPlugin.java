@@ -5,14 +5,23 @@ import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IJEIClearence;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
+import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
 import com.brandon3055.draconicevolution.client.gui.GuiFusionCraftingCore;
+import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.items.armor.WyvernArmor;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import mezz.jei.api.*;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
+import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -46,9 +55,52 @@ public class DEJEIPlugin implements IModPlugin {
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 
         registry.addRecipeCategories(new FusionRecipeCategory(guiHelper));
-        registry.addRecipeHandlers(new FusionRecipeHandler());
+        registry.addRecipeHandlers(new FusionRecipeHandler(), new EIOSpawnerRecipesHandler(guiHelper));
+
         registry.addRecipeCategoryCraftingItem(new ItemStack(DEFeatures.fusionCraftingCore), RecipeCategoryUids.FUSION_CRAFTING);
+        registry.addRecipeCategoryCraftingItem(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeCategoryCraftingItem(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.SMELTING);
+
         registry.addRecipeClickArea(GuiFusionCraftingCore.class, 81, 45, 18, 22, RecipeCategoryUids.FUSION_CRAFTING);
+        registry.addRecipeClickArea(GuiDraconiumChest.class, 394, 216, 22, 15, VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeClickArea(GuiDraconiumChest.class, 140, 202, 15, 22, VanillaRecipeCategoryUid.SMELTING);
+
+
+        IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
+        recipeTransferRegistry.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest>() {
+            @Override
+            public Class<ContainerDraconiumChest> getContainerClass() {
+                return ContainerDraconiumChest.class;
+            }
+
+            @Override
+            public String getRecipeCategoryUid() {
+                return VanillaRecipeCategoryUid.CRAFTING;
+            }
+
+            @Override
+            public List<Slot> getRecipeSlots(ContainerDraconiumChest container) {
+                List<Slot> slots = new ArrayList<>();
+                for (Slot slot : container.inventorySlots) {
+                    if (slot.slotNumber >= 267 && slot.slotNumber <= 275){
+                        slots.add(slot);
+                    }
+                }
+                return slots;
+            }
+
+            @Override
+            public List<Slot> getInventorySlots(ContainerDraconiumChest container) {
+                List<Slot> slots = new ArrayList<>();
+                for (Slot slot : container.inventorySlots) {
+                    if ((slot.slotNumber >= 0 && slot.slotNumber < 260) || slot.slotNumber > 275) {
+                        slots.add(slot);
+                    }
+                }
+                LogHelper.dev("Inventory Slots: " + slots);
+                return slots;
+            }
+        });
 
         registry.addRecipes(RecipeManager.FUSION_REGISTRY.getRecipes());
         registry.addAdvancedGuiHandlers(new IAdvancedGuiHandler() {
@@ -72,6 +124,16 @@ public class DEJEIPlugin implements IModPlugin {
                 return null;
             }
         });
+
+        Item borkedSpawner = Item.REGISTRY.getObject(new ResourceLocation("enderio:itemBrokenSpawner"));
+        if (borkedSpawner != null) {
+            List<EIOSpawnerRecipesWrapper> wrappers = new ArrayList<>();
+            wrappers.add(new EIOSpawnerRecipesWrapper(jeiHelpers.getGuiHelper(), DEFeatures.draconicCore, borkedSpawner));
+            wrappers.add(new EIOSpawnerRecipesWrapper(jeiHelpers.getGuiHelper(), DEFeatures.wyvernCore, borkedSpawner));
+            wrappers.add(new EIOSpawnerRecipesWrapper(jeiHelpers.getGuiHelper(), DEFeatures.awakenedCore, borkedSpawner));
+            wrappers.add(new EIOSpawnerRecipesWrapper(jeiHelpers.getGuiHelper(), DEFeatures.chaoticCore, borkedSpawner));
+            registry.addRecipes(wrappers);
+        }
 
         iUpgradables.clear();
         Iterator<ItemStack> i = registry.getIngredientRegistry().getIngredients(ItemStack.class).iterator();

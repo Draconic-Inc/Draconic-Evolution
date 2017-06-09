@@ -36,4 +36,10 @@ public class DraconicBow extends WyvernBow {
     public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
         return 3;
     }
+
+
+    @Override
+    public int getReaperLevel(ItemStack stack) {
+        return 2;
+    }
 }

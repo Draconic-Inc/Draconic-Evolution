@@ -6,5 +6,6 @@ package com.brandon3055.draconicevolution.integration.jei;
 public class RecipeCategoryUids {
 
     public static final String FUSION_CRAFTING = "DraconicEvolution.Fusion";
+    public static final String SAPWNER_CRAFTING = "DraconicEvolution.EIOSpawner";
 
 }

@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
+import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IInvCharge;
-import com.brandon3055.draconicevolution.api.itemupgrade.*;
+import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
+import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.client.resources.I18n;
@@ -164,14 +165,14 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
                 int max = Math.min(getEnergyStored(container), getMaxExtract(container));
 
 
-                if (stack != null && stack.getItem() instanceof IEnergyContainerItem) {
-                    IEnergyContainerItem item = (IEnergyContainerItem)stack.getItem();
+                if (EnergyHelper.canReceiveEnergy(stack)) {
+                    Item item = stack.getItem();
 
                     if (item instanceof IInvCharge && !((IInvCharge)item).canCharge(stack, player)){
                         continue;
                     }
 
-                    extractEnergy(container, item.receiveEnergy(stack, max, false), false);
+                    extractEnergy(container, EnergyHelper.insertEnergy(stack, max, false), false);
                 }
             }
         }
@@ -180,14 +181,14 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
             for (ItemStack stack : player.getHeldEquipment()){
                 int max = Math.min(getEnergyStored(container), getMaxExtract(container));
 
-                if (stack != null && stack.getItem() instanceof IEnergyContainerItem) {
-                    IEnergyContainerItem item = (IEnergyContainerItem)stack.getItem();
+                if (EnergyHelper.canReceiveEnergy(stack)) {
+                    Item item = stack.getItem();
 
                     if (item instanceof IInvCharge && !((IInvCharge)item).canCharge(stack, player)){
                         continue;
                     }
 
-                    extractEnergy(container, item.receiveEnergy(stack, max, false), false);
+                    extractEnergy(container, EnergyHelper.insertEnergy(stack, max, false), false);
                 }
             }
         }

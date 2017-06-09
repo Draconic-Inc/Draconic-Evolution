@@ -120,6 +120,9 @@ public class DEFeatures {
     @Feature(registryName = "reactor_component", itemBlock = ItemBlockBCore.class, cTab = 1)
     public static ReactorComponent reactorComponent = new ReactorComponent();
 
+    @Feature(registryName = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
+    public static StabilizedSpawner stabilizedSpawner = new StabilizedSpawner();
+
     //endregion
 
     //region Exotic Blocks
@@ -151,21 +154,16 @@ public class DEFeatures {
     public static Item draconicIngot = new Item();
 
     @Feature(registryName = "draconic_core", stateOverride = "simple_components#type=draconicCore")
-    public static Item draconicCore = new Item();
+    public static ItemCore draconicCore = new ItemCore();
 
     @Feature(registryName = "wyvern_core", stateOverride = "simple_components#type=wyvernCore")
-    public static Item wyvernCore = new Item();
+    public static ItemCore wyvernCore = new ItemCore();
 
     @Feature(registryName = "awakened_core", stateOverride = "simple_components#type=awakenedCore")
-    public static Item awakenedCore = new Item();
+    public static ItemCore awakenedCore = new ItemCore();
 
     @Feature(registryName = "chaotic_core", stateOverride = "simple_components#type=chaoticCore")
-    public static Item chaoticCore = new Item(){
-        @Override
-        public boolean hasEffect(ItemStack stack) {
-            return true;
-        }
-    };
+    public static ItemCore chaoticCore = new ItemCore();
 
     @Feature(registryName = "wyvern_energy_core", stateOverride = "simple_components#type=wyvernECore")
     public static Item wyvernEnergyCore = new Item();
@@ -282,6 +280,10 @@ public class DEFeatures {
     @Feature(registryName = "info_tablet", stateOverride = "simple_components#type=info_tablet", cTab = 1)
     public static InfoTablet infoTablet = new InfoTablet();
 
+    @Feature(registryName = "mob_soul")
+    public static MobSoul mobSoul = new MobSoul();
+
+
     //endregion
 
     //region Exotic Items
@@ -304,15 +306,13 @@ public class DEFeatures {
 
 
 //
-//    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
-//    public static DraconiumChest draconiumChest = new DraconiumChest();
+    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
+    public static DraconiumChest draconiumChest = new DraconiumChest();
 //
-    //@Feature(registryName = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
-    public static StabilizedSpawner stabilizedSpawner = new StabilizedSpawner();
-//
+
 //
 //
 //
-    //@Feature(registryName = "mob_soul")
-    public static MobSoul mobSoul = new MobSoul();
+//
+
 }

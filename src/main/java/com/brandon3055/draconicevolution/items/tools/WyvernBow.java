@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.api.IFOVModifierItem;
 import com.brandon3055.brandonscore.config.Feature;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.tool.BowModelOverrideList;
@@ -38,7 +39,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public class WyvernBow extends ToolBase implements IFOVModifierItem {
+public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem {
 
     public WyvernBow(float attackDamage, float attackSpeed) {
         super(attackDamage, attackSpeed);
@@ -298,5 +299,10 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem {
         }
 
         return currentFOV;
+    }
+
+    @Override
+    public int getReaperLevel(ItemStack stack) {
+        return 1;
     }
 }

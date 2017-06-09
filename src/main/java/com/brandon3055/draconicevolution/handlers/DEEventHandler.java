@@ -4,15 +4,22 @@ import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.brandonscore.config.ModFeatureParser;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
+import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
+import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.material.Material;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -20,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.feature.WorldGenEndPodium;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -32,10 +40,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class DEEventHandler {
+
+    private static Random random = new Random();
 
     public static int serverTicks = 0;
 //    @SubscribeEvent
@@ -67,7 +78,7 @@ public class DEEventHandler {
 
 
 
-    Random random = new Random();
+
     private static Method becomeAngryAt;
 
     public static double maxSpeed = 10F;
@@ -164,9 +175,14 @@ public class DEEventHandler {
 
     //region Mob Drops
 
-    List<UUID> deadDragons = new LinkedList<>();
     @SubscribeEvent
     public void onDropEvent(LivingDropsEvent event) {
+        handleDragonDrops(event);
+        handleSoulDrops(event);
+    }
+
+    List<UUID> deadDragons = new LinkedList<>();
+    private void handleDragonDrops(LivingDropsEvent event) {
         if (deadDragons.contains(event.getEntity().getUniqueID())) {
             LogHelper.dev("WTF Is Going On!?!?!? The dragon is already dead how can it die again!?!?!");
             LogHelper.dev("Whoever is screwing with the dragon you need to fix your shit!");
@@ -206,38 +222,82 @@ public class DEEventHandler {
                 }
             }
         }
-//
-//        if (event.getEntity().worldObj.isRemote || !(event.source.damageType.equals("player") || event.source.damageType.equals("arrow")) || !isValidEntity(event.getEntity()Living)) {
-//            return;
-//        }
-//
-//        EntityLivingBase entity = event.getEntity()Living;
-//        Entity attacker = event.source.getEntity();
-//
-//        if (attacker == null || !(attacker instanceof EntityPlayer)) {
-//            return;
-//        }
-//
-//        int dropChanceModifier = getDropChanceFromItem(((EntityPlayer) attacker).getHeldItem());
-//
-//        if (dropChanceModifier == 0) return;
-//
-//        World world = entity.worldObj;
-//        int rand = random.nextInt(Math.max(ConfigHandler.soulDropChance / dropChanceModifier, 1));
-//        int rand2 = random.nextInt(Math.max(ConfigHandler.passiveSoulDropChance / dropChanceModifier, 1));
-//        boolean isAnimal = entity instanceof EntityAnimal;
-//
-//        if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
-//            ItemStack soul = new ItemStack(ModItems.mobSoul);
-//            String registryName = EntityList.getEntityString(entity);
-//            ItemNBTHelper.setString(soul, "Name", registryName);
-//            if (entity instanceof EntitySkeleton) {
-//                ItemNBTHelper.setInteger(soul, "SkeletonType", ((EntitySkeleton) entity).getSkeletonType());
-//            }
-//            world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
-//            Achievements.triggerAchievement((EntityPlayer) attacker, "draconicevolution.soul");
-//        }
     }
+
+    private void handleSoulDrops(LivingDropsEvent event) {
+        if (event.getEntity().worldObj.isRemote || !(event.getSource().damageType.equals("player") || event.getSource().damageType.equals("arrow")) || !isValidEntity(event.getEntityLiving())) {
+            return;
+        }
+
+        EntityLivingBase entity = event.getEntityLiving();
+        Entity attacker = event.getSource().getEntity();
+
+        if (attacker == null || !(attacker instanceof EntityPlayer)) {
+            return;
+        }
+
+        int dropChanceModifier = getDropChanceFromItem(((EntityPlayer) attacker).getHeldItemMainhand());
+
+        if (dropChanceModifier == 0) {
+            return;
+        }
+
+        World world = entity.worldObj;
+        int rand = random.nextInt(Math.max(DEConfig.soulDropChance / dropChanceModifier, 1));
+        int rand2 = random.nextInt(Math.max(DEConfig.passiveSoulDropChance / dropChanceModifier, 1));
+        boolean isAnimal = entity instanceof EntityAnimal;
+
+        if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
+            ItemStack soul = DEFeatures.mobSoul.getSoulFromEntity(entity, false);
+//            String registryName = EntityList.getEntityString(entity);
+//            ItemNBTHelper.setString(soul, "EntityName", registryName);
+//            if (entity instanceof EntitySkeleton) {
+//                ItemNBTHelper.setString(soul, "SkeletonType", ((EntitySkeleton) entity).getSkeletonType());
+//            }
+
+            world.spawnEntityInWorld(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
+            Achievements.triggerAchievement((EntityPlayer) attacker, "draconicevolution.soul");
+        }
+    }
+
+    private int getDropChanceFromItem(ItemStack stack) {
+        int chance = 0;
+        if (stack == null) {
+            return 0;
+        }
+
+        if (stack.getItem() instanceof IReaperItem) {
+            chance = ((IReaperItem)stack.getItem()).getReaperLevel(stack);
+        }
+
+        chance += EnchantmentHelper.getEnchantmentLevel(EnchantmentReaper.instance, stack);
+        return chance;
+    }
+
+    private boolean isValidEntity(EntityLivingBase entity) {
+        if (!entity.isNonBoss()) {
+            return false;
+        }
+        for (int i = 0; i < DEConfig.spawnerList.length; i++) {
+            if (DEConfig.spawnerList[i].equals(entity.getName()) && DEConfig.spawnerListWhiteList) {
+                return true;
+            } else if (DEConfig.spawnerList[i].equals(entity.getName()) && !DEConfig.spawnerListWhiteList) {
+                return false;
+            }
+        }
+        if (DEConfig.spawnerListWhiteList) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+//    @SubscribeEvent
+//    public void onEntityConstructing(EntityEvent.EntityConstructing event) {
+//        if (event.getEntity() instanceof EntityPlayer && ExtendedPlayer.get((EntityPlayer) event.getEntity()) == null)
+//            ExtendedPlayer.register((EntityPlayer) event.getEntity());
+//    }
 
     //endregion
 
@@ -303,74 +363,6 @@ public class DEEventHandler {
     }
 
     //endregion
-
-    //region C
-/*
-    private int getDropChanceFromItem(ItemStack stack) {
-        int chance = 0;
-        if (stack == null) return 0;
-        if (stack.getItem().equals(ModItems.wyvernBow) || stack.getItem().equals(ModItems.wyvernSword)) chance++;
-        if (stack.getItem().equals(ModItems.draconicSword) || stack.getItem().equals(ModItems.draconicBow)) chance += 2;
-        if (stack.getItem().equals(ModItems.draconicDestructionStaff)) chance += 3;
-
-        chance += EnchantmentHelper.getEnchantmentLevel(ConfigHandler.reaperEnchantID, stack);
-        return chance;
-    }
-
-    private boolean isValidEntity(EntityLivingBase entity) {
-        if (entity instanceof IBossDisplayData) {
-            return false;
-        }
-        for (int i = 0; i < ConfigHandler.spawnerList.length; i++) {
-            if (ConfigHandler.spawnerList[i].equals(entity.getCommandSenderName()) && ConfigHandler.spawnerListType) {
-                return true;
-            } else if (ConfigHandler.spawnerList[i].equals(entity.getCommandSenderName()) && !ConfigHandler.spawnerListType) {
-                return false;
-            }
-        }
-        if (ConfigHandler.spawnerListType) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean changeBlock(ExtendedBlockStorage storage, int x, int y, int z) {
-
-        if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.particleGenerator"))
-            return makeChange(storage, x, y, z, ModBlocks.particleGenerator);
-        else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.customSpawner"))
-            return makeChange(storage, x, y, z, ModBlocks.customSpawner);
-        else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.generator"))
-            return makeChange(storage, x, y, z, ModBlocks.generator);
-        else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.playerDetectorAdvanced"))
-            return makeChange(storage, x, y, z, ModBlocks.playerDetectorAdvanced);
-        else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.energyInfuser"))
-            return makeChange(storage, x, y, z, ModBlocks.energyInfuser);
-        else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.draconiumOre"))
-            return makeChange(storage, x, y, z, ModBlocks.draconiumOre);
-        else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.weatherController"))
-            return makeChange(storage, x, y, z, ModBlocks.weatherController);
-        else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.longRangeDislocator"))
-            return makeChange(storage, x, y, z, ModBlocks.longRangeDislocator);
-        else if (storage.getBlockByExtId(x, y, z).getUnlocalizedName().equals("tile.tile.grinder"))
-            return makeChange(storage, x, y, z, ModBlocks.grinder);
-        return false;
-    }
-
-    private boolean makeChange(ExtendedBlockStorage storage, int x, int y, int z, Block block) {
-        if (block == null) return false;
-        LogHelper.info("Changing block at [X:" + x + " Y:" + y + " Z:" + z + "] from " + storage.getBlockByExtId(x, y, z).getUnlocalizedName() + " to " + block.getUnlocalizedName());
-        storage.func_150818_a(x, y, z, block);
-        return true;
-    }
-
-    @SubscribeEvent
-    public void onEntityConstructing(EntityEvent.EntityConstructing event) {
-        if (event.getEntity() instanceof EntityPlayer && ExtendedPlayer.get((EntityPlayer) event.getEntity()) == null)
-            ExtendedPlayer.register((EntityPlayer) event.getEntity());
-    }*/
-//endregion
 
     @SubscribeEvent
     public void itemTooltipEvent(ItemTooltipEvent event) {

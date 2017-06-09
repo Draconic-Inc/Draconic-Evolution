@@ -2,8 +2,9 @@ package com.brandon3055.draconicevolution.lib;
 
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
-import com.brandon3055.draconicevolution.items.tools.RecipeDislocatorClone;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import static com.brandon3055.draconicevolution.DEFeatures.*;
@@ -127,6 +128,9 @@ public class DERecipes {
 
         addFusion(NORMAL, new ItemStack(reactorComponent, 1, 1), new ItemStack(wyvernCore), 16000000, 3, "ingotDraconium", new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), "ingotDraconium", "ingotDraconium", "ingotIron", new ItemStack(reactorPart, 1, 1), "ingotIron", "ingotDraconium");
         addFusion(HARD, new ItemStack(reactorComponent, 1, 1), new ItemStack(awakenedCore), 64000000, 3, "ingotDraconium", new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), "ingotDraconium", "ingotDraconium", "ingotIron", new ItemStack(reactorPart, 1, 1), "ingotIron", "ingotDraconium");
+
+        addFusion(NORMAL, new ItemStack(draconiumChest), new ItemStack(CHEST), 2000000, 0, FURNACE, draconicCore, FURNACE, draconicCore, FURNACE, "workbench", FURNACE, "blockDraconium", FURNACE, "workbench");
+        addFusion(HARD, new ItemStack(draconiumChest), new ItemStack(CHEST), 10000000, 1, FURNACE, draconicCore, FURNACE, draconicCore, FURNACE, "workbench", FURNACE, "blockDraconium", FURNACE, "workbench");
 
         //endregion
 
@@ -268,7 +272,13 @@ public class DERecipes {
         if (RecipeManager.isEnabled(DEFeatures.draconiumDust) && RecipeManager.isEnabled(DEFeatures.draconiumIngot)){
             GameRegistry.addSmelting(DEFeatures.draconiumDust, new ItemStack(DEFeatures.draconiumIngot), 0);
         }
+
         RecipeManager.addRecipe(new RecipeDislocatorClone());
+
+        Item borkedSpawner = Item.REGISTRY.getObject(new ResourceLocation("enderio:itemBrokenSpawner"));
+        if (borkedSpawner != null) {
+            RecipeManager.addRecipe(new RecipeEIOStabilization(borkedSpawner));
+        }
     }
 
     //region Helpers

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public class WyvernSword extends ToolBase implements IAOEWeapon {
+public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
 
     public WyvernSword(double attackDamage, double attackSpeed) {
         super(attackDamage, attackSpeed);
@@ -90,6 +91,11 @@ public class WyvernSword extends ToolBase implements IAOEWeapon {
     @Override
     public double getWeaponAOE(ItemStack stack) {
         return ToolConfigHelper.getDoubleField("attackAOE", stack);
+    }
+
+    @Override
+    public int getReaperLevel(ItemStack stack) {
+        return 1;
     }
 
     //endregion
