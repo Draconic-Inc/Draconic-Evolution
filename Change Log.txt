@@ -1,6 +1,6 @@
--- 2.1.0.x --
 
-######## 2.1.0.x ########
+
+######## 2.1.0.x (1.10.2 Feature Complete) ########
 -Switched from java 7 to java 8
 -Fixed arrow shockwave effect not rendering.
 -Fixed capacitors not charging FE items in your inventory.
@@ -23,6 +23,7 @@
 -Fixed fluid gates dropping flux gates.
 -Silenced the dragon multi-death error message.
 -Added the Ender Energy Manipulator. (An item that can extract an egg from the dragon)
+-Finally fixed the chaos guardian once and for all... I hope...
 
 ######## 2.0.11.199 ########
 -Fixed bug with energy core where if there was a block on an inactive core that needs to be attached to a solid block such as a button or snow when the core activates and that block breaks itself it would also break the block it was attached to.

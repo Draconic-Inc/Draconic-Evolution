@@ -23,6 +23,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -42,7 +44,12 @@ public class DEFeatures {
     public static DraconiumBlock draconiumBlock = (DraconiumBlock) new DraconiumBlock().setHardness(10f).setResistance(20.0f);
 
     @Feature(registryName = "draconic_block")
-    public static BlockMobSafe draconicBlock = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
+    public static BlockMobSafe draconicBlock = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON){
+        @Override//TODO add a way to override this in BlockBCore
+        public float getEnchantPowerBonus(World world, BlockPos pos) {
+            return 12f;
+        }
+    }.setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
 
     @Feature(registryName = "infused_obsidian")
     public static BlockMobSafe infusedObsidian = (BlockMobSafe) ((BlockBCore) new BlockMobSafe(Material.IRON).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
@@ -122,6 +129,9 @@ public class DEFeatures {
 
     @Feature(registryName = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
     public static StabilizedSpawner stabilizedSpawner = new StabilizedSpawner();
+
+    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
+    public static DraconiumChest draconiumChest = new DraconiumChest();
 
     //endregion
 
@@ -306,8 +316,7 @@ public class DEFeatures {
 
 
 //
-    @Feature(registryName = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
-    public static DraconiumChest draconiumChest = new DraconiumChest();
+
 //
 
 //
