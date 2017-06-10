@@ -55,8 +55,8 @@ version = "${config.mcversion}-${config.mod_version}"
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 minecraft {
     version = config.mcversion + "-" + config.forge_version
