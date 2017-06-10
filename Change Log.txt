@@ -12,6 +12,8 @@
 -Fixed wrenching a placed item caused it to break and delete the item.
 -Reset the minimum fusion injector distance to 1 block. Did not mean to change it to 2.
 -Change: Higher tier crafting injectors now reduce charge and crafting time.
+-Blacklisted tinker tools in the Diss-Enchanter.
+-Hopefully made it impossible to pick up a guardian crystal with items that can pickup mobs.
 
 ######## 2.0.12.222 ########
 -Fixed weapons not using energy when attacking only 1 target.

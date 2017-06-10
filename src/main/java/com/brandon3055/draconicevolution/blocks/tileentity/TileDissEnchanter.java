@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.network.PacketTileMessage;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,7 +26,7 @@ public class TileDissEnchanter extends TileInventoryBase {
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         if (index == 0) {
-            return stack.isItemEnchanted();
+            return stack.isItemEnchanted() && ModHelper.canRemoveEnchants(stack);
         }
         else if (index == 1) {
             return stack.getItem() == Items.BOOK;

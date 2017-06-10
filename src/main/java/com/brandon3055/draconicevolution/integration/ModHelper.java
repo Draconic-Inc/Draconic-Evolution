@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.integration.jei.DEJEIPlugin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -68,6 +69,18 @@ public class ModHelper {
 
         return bedrockSword != null && player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem().equals(bedrockSword);
     }
+
+    public static boolean canRemoveEnchants(ItemStack stack) {
+        if (stack == null) {
+            return false;
+        }
+	    ResourceLocation registry = stack.getItem().getRegistryName();
+        if (registry == null || registry.getResourceDomain().equals("tconstruct")) {
+            return false;
+        }
+
+        return true;
+	}
 
     public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event) {
         if (summery == null) return event.getAmount();
