@@ -253,4 +253,9 @@ public class EntityGuardianCrystal extends EntityLivingBase {
     public EnumHandSide getPrimaryHand() {
         return EnumHandSide.RIGHT;
     }
+
+    @Override
+    public boolean isNonBoss() {
+        return false;
+    }
 }
