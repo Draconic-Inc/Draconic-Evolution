@@ -145,7 +145,7 @@ item.draconicevolution:creative_exchanger.name=Creative Block Exchanger
 item.draconicevolution:ender_energy_manipulator.name=Ender Energy Manipulator
 
 //Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
-itemGroup.toolsAndWeapons=Draconic Evolution Tools & Weapons 
+itemGroup.toolsAndWeapons=Draconic Evolution Tools & weapons
 itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
 
 //Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ msg.range.txt=Range:
 msg.energyStorageCoreUTA.txt=Unable to activate (Invalid Configuration)
 msg.SpawnDragonToFarFrom00.txt=[ERROR] to far from 0,0
 msg.SpawnDragonMustBeInTheEnd.txt=You must perform this ritual in the End dimension!
-msg.wrongKey.txt=This key dose not fit this lock
+msg.wrongKey.txt=This key does not fit this lock
 msg.cKeyStoneType0.txt=Permanent Activation (Consume Key)
 msg.cKeyStoneType1.txt=Button Activation
 msg.cKeyStoneType2.txt=Toggle Activation
@@ -682,10 +682,10 @@ config.field.bowZoomModifier.description=Can be used to take precision long rang
 config.field.bowFireArrow.entry=Arrow of Draconic Fire
 config.field.bowFireArrow.description=Fire an arrow made of pure energy. Removes the need for ammunition and unlocks the Shock Wave effect.
 config.field.bowShockPower.entry=Shock Wave Power
-config.field.bowShockPower.description=Creates a powerful Shock Wave on impact that dose more damage to entities than an equivelent explosion but without damaging blocks.
+config.field.bowShockPower.description=Creates a powerful Shock Wave on impact that does more damage to entities than an equivelent explosion but without damaging blocks.
 
 config.field.attackAOE.entry=Attack Radius
-config.field.attackAOE.description=Allows you to adjust the area covered by this weapons swing.
+config.field.attackAOE.description=Allows you to adjust the area covered by this weapon's swing.
 
 config.field.showHarvestIndicator.entry=Harvest Indicator
 config.field.showHarvestIndicator.description=Shows where the axe is currently harvesting blocks.
