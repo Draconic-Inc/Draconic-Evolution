@@ -21,6 +21,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.WorldGenEndPodium;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -39,7 +40,8 @@ public class EnderEnergyManipulator extends ItemBCore implements ICustomRender {
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         IBlockState state = world.getBlockState(pos);
         List<EntityEnderEnergyManipulator> list = world.getEntities(EntityEnderEnergyManipulator.class, EntitySelectors.IS_ALIVE);
-        if (world.provider.getDimension() == 1 && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, 66, 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
+        BlockPos podiumPos = WorldGenEndPodium.END_PODIUM_LOCATION;
+        if (world.provider.getDimension() == 1 && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(podiumPos.getX(), 66, podiumPos.getZ())) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
             if (!world.isRemote) {
                 EntityEnderEnergyManipulator entity = new EntityEnderEnergyManipulator(world);
                 entity.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);

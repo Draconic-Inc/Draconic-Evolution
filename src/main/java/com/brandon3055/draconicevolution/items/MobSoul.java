@@ -46,7 +46,7 @@ public class MobSoul extends ItemBCore implements ICustomRender {
 
     private static Map<String, Entity> renderEntityMap = new HashMap<>();
     private static Map<String, String> entityNameCache = new HashMap<>();
-    private static List<String> randomDisplayList = null;
+    public static List<String> randomDisplayList = null;
 
     @Override
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {

@@ -506,6 +506,9 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     @Override
     protected <T> T getItemHandler(Capability<T> capability, EnumFacing facing) {
+        if (facing == null) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemHandler);
+        }
         return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemHandlers[facing.getIndex()]);
     }
 }

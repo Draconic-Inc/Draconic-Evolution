@@ -86,11 +86,14 @@ public class GuiToolConfig extends GuiScreen {
                 return;
             }
 
-            if (contributor.contributionLevel >= 1) {
+            if (contributor.hasWings) {
                 buttonList.add(new ButtonColourRect(44, "Contributor Wings: " + (contributor.contributorWingsEnabled ? "Enabled" : "Disabled"), centerX - 240, centerY - 100, 150, 20, 0x88000000, 0xFF440066, 0xFF009900));
             }
-            if (contributor.contribution.toLowerCase().contains("patreon")) {
+            if (contributor.isPatreonSupporter) {
                 buttonList.add(new ButtonColourRect(45, "Patreon Badge: " + (contributor.patreonBadgeEnabled ? "Enabled" : "Disabled"), centerX - 240, centerY + 22 - 100, 150, 20, 0x88000000, 0xFF440066, 0xFF009900));
+            }
+            if (contributor.isLolnetContributor) {
+                buttonList.add(new ButtonColourRect(46, "Lolnet Badge: " + (contributor.lolnetBadgeEnabled ? "Enabled" : "Disabled"), centerX - 240, centerY + 44 - 100, 150, 20, 0x88000000, 0xFF440066, 0xFF009900));
             }
         }
     }
@@ -182,9 +185,12 @@ public class GuiToolConfig extends GuiScreen {
             } else if (button.id == 45) {
                 contributor.patreonBadgeEnabled = !contributor.patreonBadgeEnabled;
                 button.displayString = "Patreon Badge: " + (contributor.patreonBadgeEnabled ? "Enabled" : "Disabled");
+            }else if (button.id == 46) {
+                contributor.patreonBadgeEnabled = !contributor.patreonBadgeEnabled;
+                button.displayString = "Lolnet Badge: " + (contributor.lolnetBadgeEnabled ? "Enabled" : "Disabled");
             }
 
-            DraconicEvolution.network.sendToServer(new PacketContributor(player.getName(), contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled));
+            DraconicEvolution.network.sendToServer(new PacketContributor(player.getName(), contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled, contributor.lolnetBadgeEnabled));
         }
     }
 

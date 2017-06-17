@@ -15,14 +15,16 @@ public class PacketContributor implements IMessage {
     public String contributor;
     public boolean wings;
     public boolean badge;
+    public boolean lBadge;
 
     public PacketContributor() {
     }
 
-    public PacketContributor(String contributor, boolean wings, boolean badge) {
+    public PacketContributor(String contributor, boolean wings, boolean badge, boolean lBadge) {
         this.contributor = contributor;
         this.wings = wings;
         this.badge = badge;
+        this.lBadge = lBadge;
     }
 
     @Override
@@ -30,6 +32,7 @@ public class PacketContributor implements IMessage {
         this.contributor = ByteBufUtils.readUTF8String(bytes);
         this.wings = bytes.readBoolean();
         this.badge = bytes.readBoolean();
+        this.lBadge = bytes.readBoolean();
     }
 
     @Override
@@ -37,6 +40,7 @@ public class PacketContributor implements IMessage {
         ByteBufUtils.writeUTF8String(bytes, contributor);
         bytes.writeBoolean(wings);
         bytes.writeBoolean(badge);
+        bytes.writeBoolean(lBadge);
     }
 
     public static class Handler implements IMessageHandler<PacketContributor, IMessage> {
@@ -53,6 +57,7 @@ public class PacketContributor implements IMessage {
 
                     contributor.contributorWingsEnabled = message.wings;
                     contributor.patreonBadgeEnabled = message.badge;
+                    contributor.lolnetBadgeEnabled = message.lBadge;
                     ContributorHandler.saveContributorConfig();
                     DraconicEvolution.network.sendToAll(message);
                 } else {
@@ -63,6 +68,7 @@ public class PacketContributor implements IMessage {
 
                     contributor.contributorWingsEnabled = message.wings;
                     contributor.patreonBadgeEnabled = message.badge;
+                    contributor.lolnetBadgeEnabled = message.lBadge;
                 }
             }
 

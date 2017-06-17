@@ -1,6 +1,12 @@
+######## 2.1.1.x ########
+-Fixed the draconium capacitor not charging items.
+-Made the celestial manipulator time warp effect a lot smoother.
+-Chaos island explosion nolonger kills you in creative mode.
+-Fixed an item handler crash with the crafting core.
+-Added a catch to the mob soul to fix issues with broken mod mobs.
+-Attempted to fix Ender Energy Manipulator SF compat (may or may not have been successful)
 
-
-######## 2.1.0.x (1.10.2 Feature Complete) ########
+######## 2.1.0.232 (1.10.2 Feature Complete) ########
 -Switched from java 7 to java 8
 -Fixed arrow shockwave effect not rendering.
 -Fixed capacitors not charging FE items in your inventory.

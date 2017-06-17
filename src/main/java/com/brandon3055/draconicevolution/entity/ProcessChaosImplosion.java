@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class ProcessChaosImplosion implements IProcess {
 
-    public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute().setDamageAllowedInCreativeMode();
+    public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute();
 
     private World worldObj;
     private int xCoord;

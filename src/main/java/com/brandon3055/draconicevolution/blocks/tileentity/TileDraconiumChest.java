@@ -72,7 +72,6 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     private boolean autoFeedScheduled = false;
 
     protected IItemHandler[] itemHandlers = new IItemHandler[6];
-
     {
         for (EnumFacing facing : EnumFacing.values())
             itemHandlers[facing.getIndex()] = new SidedInvWrapper(this, facing);

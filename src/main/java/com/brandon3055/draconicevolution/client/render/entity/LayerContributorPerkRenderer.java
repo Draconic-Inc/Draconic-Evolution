@@ -21,30 +21,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class LayerContributorWings implements LayerRenderer<AbstractClientPlayer> {
+public class LayerContributorPerkRenderer implements LayerRenderer<AbstractClientPlayer> {
     private final RenderPlayer renderPlayer;
     private ModelContributorWings modelWings = new ModelContributorWings();
     protected static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
-    public LayerContributorWings(RenderPlayer renderPlayerIn) {
+    public LayerContributorPerkRenderer(RenderPlayer renderPlayerIn) {
         this.renderPlayer = renderPlayerIn;
     }
 
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-//        GlStateManager.rotate(180, 0, 0, 1);
-//        if (player.isSneaking()) {
-//            GlStateManager.translate(0, -0.26, 0);
-//        }
-//        GlStateManager.rotate(netHeadYaw, 0, -1, 0);
-//        if (player.isElytraFlying()) {
-//            GlStateManager.rotate(-45, -1, 0, 0);
-//        }
-//        else {
-//            GlStateManager.rotate(headPitch, -1, 0, 0);
-//        }
-//        GlStateManager.translate(0, 0.7, 0);
-//        Minecraft.getMinecraft().getRenderItem().renderItem(new ItemStack(Blocks.CHEST), ItemCameraTransforms.TransformType.FIXED);
-
         if (!ContributorHandler.isPlayerContributor(player)) {
             return;
         }
@@ -53,7 +39,7 @@ public class LayerContributorWings implements LayerRenderer<AbstractClientPlayer
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        if (contributor.contributionLevel >= 1 && contributor.contributorWingsEnabled) {
+        if (contributor.hasWings && contributor.contributorWingsEnabled) {
             GlStateManager.disableBlend();
             ResourceHelperDE.bindTexture("textures/models/contributor_wings.png");
 
@@ -65,8 +51,12 @@ public class LayerContributorWings implements LayerRenderer<AbstractClientPlayer
             GlStateManager.popMatrix();
         }
 
-        if (contributor.contribution != null && contributor.contribution.toLowerCase().contains("patreon") && contributor.patreonBadgeEnabled) {
+        if (contributor.isPatreonSupporter && contributor.patreonBadgeEnabled) {
             renderBadge(player);
+        }
+
+        if (contributor.isLolnetContributor && contributor.patreonBadgeEnabled) {
+            renderLolnetBadge(player, contributor.isPatreonSupporter && contributor.patreonBadgeEnabled);
         }
     }
 
@@ -107,9 +97,9 @@ public class LayerContributorWings implements LayerRenderer<AbstractClientPlayer
 
 
     public void renderBadge(AbstractClientPlayer entitylivingbaseIn) {
-        if (entitylivingbaseIn.isElytraFlying()) {
-            return;
-        }
+//        if (entitylivingbaseIn.isElytraFlying()) {
+//            return;
+//        }
 
         ResourceHelperDE.bindTexture("textures/special/patreon_badge.png");
         Tessellator tess = Tessellator.getInstance();
@@ -125,6 +115,92 @@ public class LayerContributorWings implements LayerRenderer<AbstractClientPlayer
         double z = -0.13;
         double xSize = 0.22;
         double ySize = 0.22;
+
+        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.alphaFunc(516, 0.003921569F);
+
+        VertexBuffer buffer = tess.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        buffer.pos(x, y, z).tex(0, 0).endVertex();
+        buffer.pos(x, y + ySize, z).tex(0, 1).endVertex();
+        buffer.pos(x + xSize, y + ySize, z).tex(1, 1).endVertex();
+        buffer.pos(x + xSize, y, z).tex(1, 0).endVertex();
+        tess.draw();
+
+        GlStateManager.alphaFunc(516, 0.1F);
+
+        GlStateManager.depthFunc(GL11.GL_EQUAL);
+        GlStateManager.disableLighting();
+        renderPlayer.bindTexture(ENCHANTED_ITEM_GLINT_RES);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+        float f11 = 0.76F;
+        GlStateManager.color(0.9F * f11, 0.8F * f11, 0.1F * f11, 1.0F);
+        GlStateManager.matrixMode(GL11.GL_TEXTURE);
+        GlStateManager.pushMatrix();
+
+        float f12 = 0.125F;
+        GlStateManager.scale(f12, f12, f12);
+        float f13 = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
+        GlStateManager.translate(f13, 0.0F, 0.0F);
+        GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        buffer.pos(x, y, z).tex(0, 0).endVertex();
+        buffer.pos(x, y + ySize, z).tex(0, 1).endVertex();
+        buffer.pos(x + xSize, y + ySize, z).tex(1, 1).endVertex();
+        buffer.pos(x + xSize, y, z).tex(1, 0).endVertex();
+        tess.draw();
+
+        GL11.glPopMatrix();
+        GL11.glPushMatrix();
+        GL11.glScalef(f12, f12, f12);
+        f13 = (float) (Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
+        GL11.glTranslatef(-f13, 0.0F, 0.0F);
+        GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        buffer.pos(x, y, z).tex(0, 0).endVertex();
+        buffer.pos(x, y + ySize, z).tex(0, 1).endVertex();
+        buffer.pos(x + xSize, y + ySize, z).tex(1, 1).endVertex();
+        buffer.pos(x + xSize, y, z).tex(1, 0).endVertex();
+        tess.draw();
+
+        GlStateManager.popMatrix();
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        GlStateManager.disableBlend();
+        GlStateManager.enableLighting();
+        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+
+        GlStateManager.popMatrix();
+    }
+
+    public void renderLolnetBadge(AbstractClientPlayer entitylivingbaseIn, boolean offset) {
+//        if (entitylivingbaseIn.isElytraFlying()) {
+//            return;
+//        }
+//
+        ResourceHelperDE.bindTexture("textures/special/lolnet_badge.png");
+        Tessellator tess = Tessellator.getInstance();
+        GlStateManager.pushMatrix();
+
+        if (entitylivingbaseIn.isSneaking()) {
+            GlStateManager.rotate(29.0F, 1.0F, 0.0F, 0F);
+            GlStateManager.translate(0, 0.15, -0.1);
+        }
+
+        double x = 0.01;
+        double y = 0.04 + (offset ? 0.25 : 0);
+        double z = -0.13;
+        double xSize = 0.22;
+        double ySize = 0.22;
+
+        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.alphaFunc(516, 0.003921569F);
 
         VertexBuffer buffer = tess.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -146,7 +222,7 @@ public class LayerContributorWings implements LayerRenderer<AbstractClientPlayer
 
         float f12 = 0.125F;
         GlStateManager.scale(f12, f12, f12);
-        float f13 = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
+        float f13 = (float) ((Minecraft.getSystemTime() + 4352) % 3000L) / 3000.0F * 8.0F;
         GlStateManager.translate(f13, 0.0F, 0.0F);
         GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
 

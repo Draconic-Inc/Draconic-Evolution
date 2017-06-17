@@ -35,7 +35,7 @@ public class ClientProxy extends CommonProxy {
 	private final static boolean debug = DraconicEvolution.debug;
 	public static String downloadLocation;
 //	public static List<LayerElytra> elytra = new ArrayList<>();
-	public static LayerContributorWings layerWings;
+	public static LayerContributorPerkRenderer layerWings;
 
 	@Override
 	public void preInit(FMLPreInitializationEvent event)
@@ -84,7 +84,7 @@ public class ClientProxy extends CommonProxy {
 		super.postInit(event);
 
 		for (RenderPlayer renderPlayer : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
-			renderPlayer.addLayer(layerWings = new LayerContributorWings(renderPlayer));
+			renderPlayer.addLayer(layerWings = new LayerContributorPerkRenderer(renderPlayer));
 		}
 
 //		ResourceHandler.instance.tick(null);

@@ -21,11 +21,13 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.SPacketTimeUpdate;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -100,6 +102,9 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                     int ticks = extracted / 320;
                     energyStorage.extractEnergy(ticks * 320, false);
                     worldObj.setWorldTime(worldObj.getWorldTime() + ticks);
+                    if (worldObj instanceof WorldServer && worldObj.getMinecraftServer() != null) {
+                        worldObj.getMinecraftServer().getPlayerList().sendPacketToAllPlayersInDimension(new SPacketTimeUpdate(worldObj.getTotalWorldTime(), worldObj.getWorldTime(), true), worldObj.provider.getDimension());
+                    }
                 }
 
                 if (!worldObj.isRemote) {

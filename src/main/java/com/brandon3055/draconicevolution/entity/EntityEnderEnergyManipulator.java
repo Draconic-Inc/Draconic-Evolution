@@ -34,6 +34,7 @@ import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeEndDecorator;
 import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.world.gen.feature.WorldGenEndPodium;
 import net.minecraft.world.gen.feature.WorldGenSpikes;
 
 import javax.annotation.Nullable;
@@ -80,9 +81,12 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
+        BlockPos podiumPos = WorldGenEndPodium.END_PODIUM_LOCATION;
+        double x = podiumPos.getX() + 0.5;
+        double z = podiumPos.getZ() + 0.5;
 
         if (exitPortalLocation == null) {
-            for (exitPortalLocation = new BlockPos(0, 100, 0); worldObj.getBlockState(this.exitPortalLocation).getBlock() != Blocks.BEDROCK && exitPortalLocation.getY() > 30; this.exitPortalLocation = this.exitPortalLocation.down());
+            for (exitPortalLocation = new BlockPos(podiumPos.getX(), 100, podiumPos.getZ()); worldObj.getBlockState(this.exitPortalLocation).getBlock() != Blocks.BEDROCK && exitPortalLocation.getY() > 30; this.exitPortalLocation = this.exitPortalLocation.down());
             if (exitPortalLocation.getY() <= 30) {
                 cancel();
                 return;
@@ -99,7 +103,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             this.moveEntity(this.motionX, this.motionY, this.motionZ);
         }
         else {
-            setPosition(0.5, exitPortalLocation.getY() + 0.5, 0.5);
+            setPosition(x, exitPortalLocation.getY() + 0.5, z);
             motionX = motionY = motionZ = 0;
         }
 
@@ -113,7 +117,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
 
                     List<EntityDragon> list = worldObj.getEntities(EntityDragon.class, EntitySelectors.IS_ALIVE);
                     for (EntityDragon listItem : list) {
-                        if (dragon == null || listItem.getDistance(0, exitPortalLocation.getY() + 0.5, 0) < dragon.getDistance(0, exitPortalLocation.getY() + 0.5, 0)) {
+                        if (dragon == null || listItem.getDistance(x, exitPortalLocation.getY() + 0.5, z) < dragon.getDistance(x, exitPortalLocation.getY() + 0.5, z)) {
                             dragon = listItem;
                         }
                     }
@@ -154,13 +158,16 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
     }
 
     private void updateStage() {
+        BlockPos podiumPos = WorldGenEndPodium.END_PODIUM_LOCATION;
+        double x = podiumPos.getX() + 0.5;
+        double z = podiumPos.getZ() + 0.5;
         switch (getStage()) {
             //region Position
             case POSITION: {
-                if (getDistance(0.5, exitPortalLocation.getY() + 0.5, 0.5) > 0.1) {
+                if (getDistance(x, exitPortalLocation.getY() + 0.5, z) > 0.1) {
                     ((WorldServer) worldObj).spawnParticle(EnumParticleTypes.END_ROD, true, posX, posY, posZ, 1, 0, 0, 0, 0.01, 0);
                     double speed = 0.1;
-                    Vec3D dirVec = Vec3D.getDirectionVec(new Vec3D(this), new Vec3D(0.5, exitPortalLocation.getY() + 0.5, 0.5));
+                    Vec3D dirVec = Vec3D.getDirectionVec(new Vec3D(this), new Vec3D(x, exitPortalLocation.getY() + 0.5, z));
                     motionX = dirVec.x * speed;
                     motionY = dirVec.y * speed;
                     motionZ = dirVec.z * speed;
@@ -168,7 +175,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                 }
                 else {
                     motionX = motionY = motionZ = 0;
-                    setPosition(0.5, exitPortalLocation.getY() + 0.5, 0.5);
+                    setPosition(x, exitPortalLocation.getY() + 0.5, z);
                     setStage(Stage.ACQUIRE_DRAGON);
                     stageTime = 0;
                 }
@@ -190,7 +197,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                     }
 
                     for (EntityDragon listItem : list) {
-                        if (dragon == null || listItem.getDistance(0, exitPortalLocation.getY() + 0.5, 0) < dragon.getDistance(0, exitPortalLocation.getY() + 0.5, 0)) {
+                        if (dragon == null || listItem.getDistance(x - 0.5, exitPortalLocation.getY() + 0.5, z - 0.5) < dragon.getDistance(x - 0.5, exitPortalLocation.getY() + 0.5, z - 0.5)) {
                             dragon = listItem;
                         }
                     }
@@ -369,7 +376,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
         if (!list.isEmpty()) {
             EntityEnderman enderman = list.get(rand.nextInt(list.size()));
             enderman.captureDrops = true;
-            Vec3D dirVec = Vec3D.getDirectionVec(new Vec3D(enderman), new Vec3D(0.5, exitPortalLocation.getY() + 0.5, 0.5));
+            Vec3D dirVec = Vec3D.getDirectionVec(new Vec3D(enderman), new Vec3D(posX, exitPortalLocation.getY() + 0.5, posZ));
             enderman.motionX = dirVec.x;
             enderman.motionY = dirVec.y;
             enderman.motionZ = dirVec.z;

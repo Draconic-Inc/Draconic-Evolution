@@ -4,6 +4,7 @@ import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.items.MobSoul;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
@@ -84,32 +86,36 @@ public class RenderItemMobSoul implements IItemRenderer, IPerspectiveAwareModel 
     public void renderItem(ItemStack item) {
         Entity mob = DEFeatures.mobSoul.getRenderEntity(item);
 
-        GlStateManager.pushMatrix();
-        float height = mob.height;
-        float scale = 0.6F / height;
-        GlStateManager.translate(0.5, 0.175, 0.5);
-        GlStateManager.scale(scale, scale, scale);
+        try {
+            GlStateManager.pushMatrix();
+            float height = mob.height;
+            float scale = 0.6F / height;
+            GlStateManager.translate(0.5, 0.175, 0.5);
+            GlStateManager.scale(scale, scale, scale);
 
-        if (transformType != ItemCameraTransforms.TransformType.GROUND) {
-            GlStateManager.rotate((float) Math.sin((ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) / 50F) * 15F , 1, 0, -0.5F);
-            GlStateManager.rotate((ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) * 3, 0, 1, 0);
-        }
+            if (transformType != ItemCameraTransforms.TransformType.GROUND) {
+                GlStateManager.rotate((float) Math.sin((ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) / 50F) * 15F, 1, 0, -0.5F);
+                GlStateManager.rotate((ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) * 3, 0, 1, 0);
+            }
 
             RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
-        rendermanager.doRenderEntity(mob, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
+            rendermanager.doRenderEntity(mob, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
 
-        if (transformType != ItemCameraTransforms.TransformType.GROUND) {
-            GlStateManager.enableRescaleNormal();
-            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GlStateManager.disableTexture2D();
-            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-            GlStateManager.disableLighting();
+            if (transformType != ItemCameraTransforms.TransformType.GROUND) {
+                GlStateManager.enableRescaleNormal();
+                GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+                GlStateManager.disableTexture2D();
+                GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+                GlStateManager.disableLighting();
+            }
+
+            //Some entities like the ender dragon modify the blend state which if not corrected like this breaks inventory rendering.
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.popMatrix();
         }
-
-        //Some entities like the ender dragon modify the blend state which if not corrected like this breaks inventory rendering.
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.popMatrix();
-
+        catch (Throwable e) {
+            MobSoul.randomDisplayList.remove(EntityList.getEntityString(mob));
+        }
     }
 }
