@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class TileCelestialManipulator extends TileEnergyBase implements ITickable, IEnergyReceiver, IChangeListener {
 
-    public final SyncableBool WEATHER_MODE = new SyncableBool(true, true, true, false);
+    public final SyncableBool WEATHER_MODE = new SyncableBool(true, true, false, false);
     public final SyncableBool ACTIVE = new SyncableBool(false, true, false, false);
     public final SyncableBool weatherToggleRunning = new SyncableBool(false, true, false, false);
     public final SyncableBool timeWarpRunning = new SyncableBool(false, true, false, false);

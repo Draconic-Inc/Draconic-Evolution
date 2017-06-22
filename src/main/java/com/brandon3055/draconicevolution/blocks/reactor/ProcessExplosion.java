@@ -318,9 +318,9 @@ public class ProcessExplosion implements IProcess {
         dist--;
         travel++;
         Integer iPos = shortPos.getIntPos(posVec);
-        posVec.add(0, traceDir, 0);
 
         if (scannedCache.contains(iPos) || destroyedCache.contains(iPos)) {
+            posVec.add(0, traceDir, 0);
             return trace(posVec, power, dist, traceDir, totalResist, travel);
         }
 
@@ -379,6 +379,7 @@ public class ProcessExplosion implements IProcess {
             scannedCache.add(iPos);
         }
 
+        posVec.add(0, traceDir, 0);
         return trace(posVec, power, dist, traceDir, totalResist, travel);
     }
 

@@ -1,4 +1,6 @@
-######## 2.1.1.234 ########
+######## 2.1.2.x ########
+
+######## 2.1.1.235 ########
 -Fixed the draconium capacitor not charging items.
 -Made the celestial manipulator time warp effect a lot smoother.
 -Chaos island explosion nolonger kills you in creative mode.
