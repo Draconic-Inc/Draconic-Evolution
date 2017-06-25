@@ -2,9 +2,11 @@ package com.brandon3055.draconicevolution.client.handler;
 
 
 import codechicken.lib.colour.ColourRGBA;
+import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
+import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
@@ -68,6 +70,8 @@ public class ClientEventHandler {
     public static double explosionAnimation = 0;
     public static int explosionTime = 0;
     public static boolean explosionRetreating = false;
+
+    public static ShaderProgram explosionShader;
 
     @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
@@ -278,37 +282,15 @@ public class ClientEventHandler {
                 double renderY = block.getY() - offsetY;
                 double renderZ = block.getZ() - offsetZ;
 
-                AxisAlignedBB boundingBox = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
+                Cuboid6 box = new Cuboid6(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
                 float colour = 1F;
                 if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))) {
                     GlStateManager.disableDepth();
                     colour = 0.2F;
                 }
+                GL11.glColor4f(colour, colour, colour, colour);
 
-                buffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                tessellator.draw();
-                buffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                tessellator.draw();
-                buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
-                buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).color(colour, colour, colour, colour).endVertex();
-                tessellator.draw();
+                RenderUtils.drawCuboidOutline(box);
 
                 if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))) {
                     GlStateManager.enableDepth();
@@ -368,9 +350,6 @@ public class ClientEventHandler {
 
             AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).contract(0.49D);
 
-            //          buffer.pos(renderX, renderY, renderZ).color(1F, 1F, 1F, 1F).endVertex();
-//            buffer.pos(renderX + 1, renderY + 1, renderZ + 1).color(1F, 1F, 1F, 1F).endVertex();
-
             double rDist = Utils.getDistanceSq(pos.getX(), pos.getY(), pos.getZ(), block.getX(), block.getY(), block.getZ());
 
 
@@ -399,32 +378,6 @@ public class ClientEventHandler {
 
             buffer.pos(box.maxX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
             buffer.pos(box.minX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-
-//
-//            buffer.begin(3, DefaultVertexFormats.POSITION);
-//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//            buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-//            buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//            tessellator.draw();
-//            buffer.begin(3, DefaultVertexFormats.POSITION);
-//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//            buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//            buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//            tessellator.draw();
-//            buffer.begin(1, DefaultVertexFormats.POSITION);
-//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex();
-//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//            buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex();
-//            buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ).endVertex();
-//            buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//            buffer.pos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//            buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).endVertex();
-//            buffer.pos(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ).endVertex();
-//            tessellator.draw();
 
         }
 
@@ -481,13 +434,10 @@ public class ClientEventHandler {
         Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
         targetPos.subtract(x, y, z);
         GLU.gluProject((float) targetPos.x, (float) targetPos.y, (float) targetPos.z, ActiveRenderInfo.MODELVIEW, ActiveRenderInfo.PROJECTION, ActiveRenderInfo.VIEWPORT, winPos);
-        float screenX = winPos.get(0) / mc.displayWidth;
-        float screenY = winPos.get(1) / mc.displayHeight;
+
         boolean behind = winPos.get(2) > 1;
-        if (behind) {
-            screenX = -1;
-            screenY = -1;
-        }
+        float screenX = behind ? -1 : winPos.get(0) / mc.displayWidth;
+        float screenY = behind ? -1 : winPos.get(1) / mc.displayHeight;
 
         //endregion
 
@@ -508,13 +458,20 @@ public class ClientEventHandler {
         //endregion
 
         else {
-            DEShaders.explosionOverlayOp.setIntensity((float) explosionAnimation);//(float) (Math.sin(ClientEventHandler.elapsedTicks / 20F) + 1) / 3F);
-            DEShaders.explosionOverlayOp.setScreenPos(screenX, screenY);
-            DEShaders.explosionOverlay.freeBindShader();
+            if (explosionShader == null) {
+                explosionShader = new ShaderProgram();
+                explosionShader.attachShader(DEShaders.explosionOverlay);
+            }
+
+            explosionShader.useShader(cache -> {
+                cache.glUniform2F("screenPos", screenX, screenY);
+                cache.glUniform1F("intensity", (float) explosionAnimation);
+                cache.glUniform2F("screenSize", mc.displayWidth, mc.displayHeight);
+            });
 
             GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0xFFFFFFFF);
 
-            ShaderProgram.unbindShader();
+            explosionShader.releaseShader();
         }
 
     }

@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -131,8 +132,8 @@ public abstract class MiningToolBase extends ToolBase {
     }
 
     @Override
-    public boolean checkEnchantTypeValid(EnumEnchantmentType type) {
-        return type == EnumEnchantmentType.DIGGER || type == EnumEnchantmentType.ALL;
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment.type == EnumEnchantmentType.DIGGER || enchantment.type == EnumEnchantmentType.ALL;
     }
 
     //endregion

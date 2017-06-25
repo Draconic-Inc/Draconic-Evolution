@@ -38,6 +38,10 @@ public class ExplosionFX extends BCParticle {
     public CoreEffect coreEffect;
     private LinkedList<EffectPart> effectParts = new LinkedList<>();
 
+    private static ShaderProgram leadingWaveProgram;
+    private static ShaderProgram blastWaveProgram;
+    private static ShaderProgram coreEffectProgram;
+
     static {
         Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
         model = CCModel.combine(map.values());
@@ -76,8 +80,6 @@ public class ExplosionFX extends BCParticle {
         coreEffect.update();
 
         if (particleAge > particleMaxAge) {
-//            particleAge = 0;
-//            effectParts.clear();
             setExpired();
         }
 
@@ -138,13 +140,10 @@ public class ExplosionFX extends BCParticle {
     public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
         @Override
         public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-//            GlStateManager.disableCull();
             GlStateManager.color(1F, 1F, 1F, 1F);
             GlStateManager.depthMask(false);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
             GlStateManager.disableTexture2D();
-//            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-//            GlStateManager.matrixMode(GL11.GL_TEXTURE);
 
             if (!DEShaders.useShaders()) {
                 GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
@@ -157,8 +156,6 @@ public class ExplosionFX extends BCParticle {
         @Override
         public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-//            GlStateManager.shadeModel(GL11.GL_FLAT);
-//            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 
             GlStateManager.enableTexture2D();
 
@@ -214,13 +211,17 @@ public class ExplosionFX extends BCParticle {
         @Override
         public void render(Vec3D pos, CCRenderState ccrs, float partialTicks) {
             float ttl = (((float) age + partialTicks) / (float) maxAge);
-            double scale = radius * ttl * 2;//(ClientEventHandler.elapsedTicks + partialTicks) * 2 % 50;
+            double scale = radius * ttl * 2;
 
-
-            DEShaders.explosionWaveOp.setTime((ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
-            DEShaders.explosionWaveOp.setAlpha(1 - ttl);
-            DEShaders.explosionWaveOp.setScale(ttl * 3);
-            DEShaders.explosionLeadingWave.freeBindShader();
+            if (leadingWaveProgram == null) {
+                leadingWaveProgram = new ShaderProgram();
+                leadingWaveProgram.attachShader(DEShaders.explosionLeadingWave);
+            }
+            leadingWaveProgram.useShader(cache -> {
+                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
+                cache.glUniform1F("scale", ttl * 3);
+                cache.glUniform1F("alpha", 1 - ttl);
+            });
 
             ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
             Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, 1, scale));
@@ -228,7 +229,7 @@ public class ExplosionFX extends BCParticle {
             model.render(ccrs, mat);
             ccrs.draw();
 
-            ShaderProgram.unbindShader();
+            leadingWaveProgram.releaseShader();
         }
     }
 
@@ -251,15 +252,22 @@ public class ExplosionFX extends BCParticle {
         @Override
         public void render(Vec3D pos, CCRenderState ccrs, float partialTicks) {
             float ttl = (((float) age + partialTicks) / (float) maxAge);
-            double scale = radius * ttl * 2;//(ClientEventHandler.elapsedTicks + partialTicks) * 2 % 50;
+            double scale = radius * ttl * 2;
             double vScale = (radius / 5) * ttl * this.scale;
 
             float a = age + partialTicks;
 
-            DEShaders.explosionWaveOp.setTime((ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
-            DEShaders.explosionWaveOp.setAlpha(a < 40 ? (a - 20) / 20F : 1 - ttl);
-            DEShaders.explosionWaveOp.setScale(ttl);
-            DEShaders.explosionBlastWave.freeBindShader();
+            if (blastWaveProgram == null) {
+                blastWaveProgram = new ShaderProgram();
+                blastWaveProgram.attachShader(DEShaders.explosionBlastWave);
+            }
+
+            blastWaveProgram.useShader(cache -> {
+                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
+                cache.glUniform1F("scale", ttl);
+                cache.glUniform1F("alpha", a < 40 ? (a - 20) / 20F : 1 - ttl);
+            });
+
 
             ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
             Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, vScale, scale));
@@ -267,7 +275,7 @@ public class ExplosionFX extends BCParticle {
             model.render(ccrs, mat);
             ccrs.draw();
 
-            ShaderProgram.unbindShader();
+            blastWaveProgram.releaseShader();
         }
     }
 
@@ -290,14 +298,21 @@ public class ExplosionFX extends BCParticle {
         @Override
         public void render(Vec3D pos, CCRenderState ccrs, float partialTicks) {
             float ttl = (((float) age + partialTicks) / (float) maxAge);
-            double scale = (radius / 6) * ttl * 2;//(ClientEventHandler.elapsedTicks + partialTicks) * 2 % 50;
-//            double vScale = (radius / 5) * ttl * this.scale;
+            double scale = (radius / 6) * ttl * 2;
+
             float a = age + partialTicks;
 
-            DEShaders.explosionWaveOp.setTime((ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
-            DEShaders.explosionWaveOp.setAlpha(a > 50 ? 1 - ((a - 50F) / 10F) : 1);
-            DEShaders.explosionWaveOp.setScale(a > 35 ? ((a - 35F) / 20F) * 2 : 0);
-            DEShaders.explosionCoreEffect.freeBindShader();
+            if (coreEffectProgram == null) {
+                coreEffectProgram = new ShaderProgram();
+                coreEffectProgram.attachShader(DEShaders.explosionCoreEffect);
+            }
+
+            coreEffectProgram.useShader(cache -> {
+                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
+                cache.glUniform1F("scale", a > 35 ? ((a - 35F) / 20F) * 2 : 0);
+                cache.glUniform1F("alpha", a > 50 ? 1 - ((a - 50F) / 10F) : 1);
+            });
+
 
             ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
             Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, scale / 2, scale));
@@ -305,7 +320,7 @@ public class ExplosionFX extends BCParticle {
             model.render(ccrs, mat);
             ccrs.draw();
 
-            ShaderProgram.unbindShader();
+            coreEffectProgram.releaseShader();
         }
     }
 }

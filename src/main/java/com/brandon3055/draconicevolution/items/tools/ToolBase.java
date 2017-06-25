@@ -6,7 +6,6 @@ import codechicken.lib.model.bakery.IBakeryProvider;
 import codechicken.lib.model.bakery.ModelBakery;
 import codechicken.lib.model.bakery.generation.IBakery;
 import codechicken.lib.render.CCIconRegister;
-import com.brandon3055.brandonscore.asm.IEnchantmentOverride;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.brandonscore.registry.Feature;
@@ -54,7 +53,7 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.ATTACK_DAMAGE;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride, IUpgradableItem, IConfigurableItem, IEnchantmentOverride, IHudDisplay, IBakeryProvider {
+public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride, IUpgradableItem, IConfigurableItem, IHudDisplay, IBakeryProvider {
 
     private float baseAttackDamage;
     private float baseAttackSpeed;

@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -180,8 +181,8 @@ public abstract class WyvernHoe extends ToolBase {
     }
 
     @Override
-    public boolean checkEnchantTypeValid(EnumEnchantmentType type) {
-        return type == EnumEnchantmentType.ALL;
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment.type == EnumEnchantmentType.ALL;
     }
 
     @Override

@@ -34,9 +34,12 @@ import java.util.Map;
  * Created by brandon3055 on 6/11/2016.
  */
 public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
+
     private CCModel crystalFull;
     private CCModel crystalHalf;
     private CCModel crystalBase;
+
+    private static ShaderProgram shaderProgram;
 
     public RenderTileEnergyCrystal() {
         Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/crystal.obj"));
@@ -96,31 +99,6 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
             crystalFull.render(ccrs, mat);
             ccrs.draw();
         }
-//
-//        if (ClientEventHandler.playerHoldingWrench && te instanceof TileCrystalWirelessIO && !trans) {
-//            TileCrystalWirelessIO tile = (TileCrystalWirelessIO) te;
-//
-//            Tessellator tess = Tessellator.getInstance();
-//            VertexBuffer buffer = tess.getBuffer();
-//            GlStateManager.pushMatrix();
-//            GlStateManager.disableTexture2D();
-//
-//            GlStateManager.glLineWidth(4);
-//            buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-//
-//            for (BlockPos target : tile.getReceivers()) {
-//
-//                Vec3D offset = Vec3D.getCenter(te.getPos()).subtract(Vec3D.getCenter(target)).subtract(0.5, 0.5, 0.5);
-//                buffer.pos(x + 0.5, y + 0.5, z + 0.5).color(0F, 1F, 0F, 1F).endVertex();
-//                buffer.pos(x - offset.x, y - offset.y, z - offset.z).color(0F, 1F, 0F, 1F).endVertex();
-//
-//            }
-//
-//            tess.draw();
-//
-//            GlStateManager.enableTexture2D();
-//            GlStateManager.popMatrix();
-//        }
     }
 
     public void renderHalfCrystal(TileCrystalDirectIO te, double x, double y, double z, float partialTicks, int destroyStage, int tier) {
@@ -176,15 +154,23 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
         BlockPos pos = te == null ? new BlockPos(0, 0, 0) : te.getPos();
         double mm = MathHelper.clip((((x * x) + (y * y) + (z * z) - 5) / 512), 0, 1);
         if (DEShaders.useShaders() && DEConfig.useCrystalShaders && mm < 1) {
-            DEShaders.eCrystalOp.setType(tier);
-            DEShaders.eCrystalOp.setAnimation((ClientEventHandler.elapsedTicks + partialTicks) / 50);
-            DEShaders.eCrystalOp.setMipmap((float) mm);
-            DEShaders.energyCrystal.freeBindShader();
 
             float xrot = (float) Math.atan2(x + 0.5, z + 0.5);
             float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posZ);
             float yrot = (float) net.minecraft.util.math.MathHelper.atan2(dist, y + 0.5);
-            DEShaders.eCrystalOp.setAngle(xrot / -3.125F, yrot / 3.125F);
+
+            if (shaderProgram == null) {
+                shaderProgram = new ShaderProgram();
+                shaderProgram.attachShader(DEShaders.energyCrystal_V);
+                shaderProgram.attachShader(DEShaders.energyCrystal_F);
+            }
+
+            shaderProgram.useShader(cache -> {
+                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks) / 50);
+                cache.glUniform1F("mipmap", (float) mm);
+                cache.glUniform1I("type", tier);
+                cache.glUniform2F("angle", xrot / -3.125F, yrot / 3.125F);
+            });
         }
         else {
             ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_NO_SHADER);
@@ -195,7 +181,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
 
     private void releaseShader() {
         if (DEShaders.useShaders() && DEConfig.useCrystalShaders) {
-            ShaderProgram.unbindShader();
+            shaderProgram.releaseShader();
         }
     }
 }

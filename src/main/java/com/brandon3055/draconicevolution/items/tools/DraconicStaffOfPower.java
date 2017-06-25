@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -49,8 +50,8 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
     }
 
     @Override
-    public boolean checkEnchantTypeValid(EnumEnchantmentType type) {
-        return super.checkEnchantTypeValid(type) || type == EnumEnchantmentType.WEAPON;
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment.type == EnumEnchantmentType.WEAPON;
     }
 
     @Override

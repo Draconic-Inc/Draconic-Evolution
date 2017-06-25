@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.handlers.BowHandler;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -181,8 +182,8 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     }
 
     @Override
-    public boolean checkEnchantTypeValid(EnumEnchantmentType type) {
-        return type == EnumEnchantmentType.BOW || type == EnumEnchantmentType.ALL;
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment.type == EnumEnchantmentType.BOW || enchantment.type == EnumEnchantmentType.ALL;
     }
 
     @Override

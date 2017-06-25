@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.client.model.IPerspectiveAwareModel.MapWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
@@ -28,10 +29,12 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public class RenderItemEnergyCrystal implements IItemRenderer, IPerspectiveAwareModel {
+public class RenderItemEnergyCrystal implements IItemRenderer {
     private CCModel crystalFull;
     private CCModel crystalHalf;
     private CCModel crystalBase;
+
+    private static ShaderProgram shaderProgram;
 
     public RenderItemEnergyCrystal() {
         Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/crystal.obj"));
@@ -56,7 +59,7 @@ public class RenderItemEnergyCrystal implements IItemRenderer, IPerspectiveAware
     //endregion
 
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemStack stack, ItemCameraTransforms.TransformType cameraTransformType) {
         return MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_BLOCK.getTransforms(), cameraTransformType);
     }
 
@@ -71,7 +74,6 @@ public class RenderItemEnergyCrystal implements IItemRenderer, IPerspectiveAware
         CCRenderState ccrs = CCRenderState.instance();
         Matrix4 mat = RenderUtils.getMatrix(new Vector3(0.5, type == CrystalType.CRYSTAL_IO ? 0 : 0.5, 0.5), new Rotation(0, 0, 0, 0), 1);
         ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_BASE);
-//        mat.apply(Rotation.sideOrientation(EnumFacing.NORTH.getOpposite().getIndex(), 0).at(new Vector3(0, 1, 0)));
 
         if (type == CrystalType.CRYSTAL_IO) {
             //Render Base
@@ -110,10 +112,18 @@ public class RenderItemEnergyCrystal implements IItemRenderer, IPerspectiveAware
 
     public void bindShader(float partialTicks, int tier) {
         if (DEShaders.useShaders()) {
-            DEShaders.eCrystalOp.setType(tier);
-            DEShaders.eCrystalOp.setAnimation((ClientEventHandler.elapsedTicks + partialTicks) / 50);
-            DEShaders.eCrystalOp.setMipmap(0);
-            DEShaders.energyCrystal.freeBindShader();
+            if (shaderProgram == null) {
+                shaderProgram = new ShaderProgram();
+                shaderProgram.attachShader(DEShaders.energyCrystal_V);
+                shaderProgram.attachShader(DEShaders.energyCrystal_F);
+            }
+
+            shaderProgram.useShader(cache -> {
+                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks) / 50);
+                cache.glUniform1F("mipmap", (float) 0);
+                cache.glUniform1I("type", tier);
+                cache.glUniform2F("angle", 0, 0);
+            });
         }
         else {
             ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_NO_SHADER);
@@ -123,7 +133,7 @@ public class RenderItemEnergyCrystal implements IItemRenderer, IPerspectiveAware
 
     private void releaseShader() {
         if (DEShaders.useShaders()) {
-            ShaderProgram.unbindShader();
+            shaderProgram.releaseShader();
         }
     }
 

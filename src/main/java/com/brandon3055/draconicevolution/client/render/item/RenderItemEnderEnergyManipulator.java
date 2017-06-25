@@ -23,6 +23,8 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer, IPerspec
 
     private static ItemStack stack = new ItemStack(Items.SKULL, 1, 1);
 
+    private static ShaderProgram shaderProgram;
+
 
     public RenderItemEnderEnergyManipulator() {
     }
@@ -54,16 +56,22 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer, IPerspec
         mc.getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
 
         if (DEShaders.useShaders()) {
-            DEShaders.reactorOp.setAnimation(((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / -100F);
-            DEShaders.reactorOp.setIntensity(0.09F);
-            DEShaders.reactorShield.freeBindShader();
+            if (shaderProgram == null) {
+                shaderProgram = new ShaderProgram();
+                shaderProgram.attachShader(DEShaders.reactorShield);
+            }
+            shaderProgram.useShader(cache -> {
+                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / -100F);
+                cache.glUniform1F("intensity", 0.09F);
+            });
             mc.getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
 
-            DEShaders.reactorOp.setAnimation(((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F);
-            DEShaders.reactorOp.setIntensity(0.02F);
-            DEShaders.reactorShield.freeBindShader();
+            shaderProgram.useShader(cache -> {
+                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F);
+                cache.glUniform1F("intensity", 0.02F);
+            });
             mc.getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-            ShaderProgram.unbindShader();
+            shaderProgram.releaseShader();
         }
 
         GlStateManager.popMatrix();

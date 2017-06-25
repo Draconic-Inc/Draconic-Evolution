@@ -39,6 +39,10 @@ public class ReactorBeamFX extends BCParticle {
     private static Colour energyBeamColour = new ColourARGB(0xff0000);
     private int boltSeed = -1;
 
+    private static ShaderProgram beam_E;
+    private static ShaderProgram beam_O;
+    private static ShaderProgram beam_I;
+
     public ReactorBeamFX(World worldIn, Vec3D pos, EnumFacing facing, TileReactorCore tile, boolean isInjectorEffect) {
         super(worldIn, pos);
         this.facing = facing;
@@ -91,53 +95,74 @@ public class ReactorBeamFX extends BCParticle {
             return;
         }
 
-        DEShaders.reactorBeamOp.setAnimation((ClientEventHandler.elapsedTicks + partialTicks) * 0.02F);
+        float animation = (ClientEventHandler.elapsedTicks + partialTicks) * 0.02F;
 
         texOffset = 0;
 
         if (isInjectorEffect) {
-            DEShaders.reactorBeamOp.setStartup(fxState);
-            DEShaders.reactorBeamOp.setPower(fxState);
-            DEShaders.reactorBeamOp.setFade(1);
-            DEShaders.reactorBeamE.freeBindShader();
+            if (beam_E == null) {
+                beam_E = new ShaderProgram();
+                beam_E.attachShader(DEShaders.reactorBeamE);
+            }
+
+            beam_E.useShader(cache -> {
+                cache.glUniform1F("time", animation);
+                cache.glUniform1F("power", fxState);
+                cache.glUniform1F("fade", 1);
+                cache.glUniform1F("startup", fxState);
+            });
             pos2 = pos1.copy().offset(facing, 0.6D);
             renderShaderBeam(buffer, pos1, 0.1F, 0.1F, 0.6D, 0, 0, true, energyBeamColour);
-            DEShaders.reactorBeamOp.setFade(0);
-            DEShaders.reactorBeamE.freeBindShader();
+            beam_E.releaseShader();
             renderShaderBeam(buffer, pos2, 0.1F, coreSize / 1.5, dist - (coreSize * 1.3), 0, 0, false, energyBeamColour);
+            beam_E.releaseShader();
         }
         else {
             pos2 = pos1.copy().offset(facing, 0.8D);
 
             //Draw Inner
-            DEShaders.reactorBeamOp.setStartup((float) tile.animExtractState.value);
-            DEShaders.reactorBeamOp.setPower((float) tile.animExtractState.value);
-            DEShaders.reactorBeamOp.setFade(1);
-            DEShaders.reactorBeamO.freeBindShader();
+            if (beam_O == null) {
+                beam_O = new ShaderProgram();
+                beam_O.attachShader(DEShaders.reactorBeamE);
+            }
+
+            beam_O.useShader(cache -> {
+                cache.glUniform1F("time", animation);
+                cache.glUniform1F("power", (float) tile.animExtractState.value);
+                cache.glUniform1F("fade", 1);
+                cache.glUniform1F("startup", (float) tile.animExtractState.value);
+            });
             renderShaderBeam(buffer, pos1, 0.263F, 0.263F, 0.8D, texOffset, 0, true, extractBeamColour);
-            DEShaders.reactorBeamOp.setFade(0);
-            DEShaders.reactorBeamO.freeBindShader();
+            beam_O.useShader(cache -> {
+                cache.glUniform1F("time", animation);
+                cache.glUniform1F("power", (float) tile.animExtractState.value);
+                cache.glUniform1F("fade", 0);
+                cache.glUniform1F("startup", (float) tile.animExtractState.value);
+            });
             renderShaderBeam(buffer, pos2, 0.263F, coreSize / 2, dist - (coreSize * 1.3), texOffset, 0, false, extractBeamColour);
 
             //Draw Outer
-            DEShaders.reactorBeamOp.setStartup(fxState);
-            DEShaders.reactorBeamOp.setPower(fxState);
-            DEShaders.reactorBeamOp.setFade(1);
-            DEShaders.reactorBeamI.freeBindShader();
+            if (beam_I == null) {
+                beam_I = new ShaderProgram();
+                beam_I.attachShader(DEShaders.reactorBeamE);
+            }
+
+            beam_I.useShader(cache -> {
+                cache.glUniform1F("time", animation);
+                cache.glUniform1F("power", fxState);
+                cache.glUniform1F("fade", 1);
+                cache.glUniform1F("startup", fxState);
+            });
             renderShaderBeam(buffer, pos1, 0.355D, 0.355D, 0.8D, texOffset, 0, true, fieldBeamColour);
-            DEShaders.reactorBeamOp.setFade(0);
-            DEShaders.reactorBeamI.freeBindShader();
+            beam_I.useShader(cache -> {
+                cache.glUniform1F("time", animation);
+                cache.glUniform1F("power", fxState);
+                cache.glUniform1F("fade", 0);
+                cache.glUniform1F("startup", fxState);
+            });
             renderShaderBeam(buffer, pos2, 0.355D, coreSize, dist - coreSize, texOffset, 0, false, fieldBeamColour);
+            beam_I.releaseShader();
         }
-
-        ShaderProgram.unbindShader();
-
-//        if (boltSeed != -1) {
-//            RenderEnergyBolt.renderBoltBetween(pos1.offset(facing, 0.3), pos2.offset(facing, dist), 0.05, 0.3, 10, boltSeed, false);
-//            GlStateManager.enableBlend();
-//            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-//            GlStateManager.disableLighting();
-//        }
     }
 
     public void renderWithoutShaders(VertexBuffer buffer, Vec3D pos1, double coreSize, double texOffset) {
@@ -207,8 +232,6 @@ public class ReactorBeamFX extends BCParticle {
             GlStateManager.disableCull();
             GlStateManager.depthMask(false);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-//            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-//            GlStateManager.matrixMode(GL11.GL_TEXTURE);
 
             if (!DEShaders.useShaders()) {
                 GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
@@ -221,8 +244,6 @@ public class ReactorBeamFX extends BCParticle {
         @Override
         public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-//            GlStateManager.shadeModel(GL11.GL_FLAT);
-//            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 
             GlStateManager.enableCull();
             if (!DEShaders.useShaders()) {

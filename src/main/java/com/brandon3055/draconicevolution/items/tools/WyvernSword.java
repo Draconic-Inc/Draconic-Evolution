@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -45,8 +46,8 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     }
 
     @Override
-    public boolean checkEnchantTypeValid(EnumEnchantmentType type) {
-        return type == EnumEnchantmentType.WEAPON || type == EnumEnchantmentType.ALL;
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment.type == EnumEnchantmentType.WEAPON || enchantment.type == EnumEnchantmentType.ALL;
     }
 
     @Override
