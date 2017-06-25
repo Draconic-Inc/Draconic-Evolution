@@ -232,7 +232,6 @@ public class DEFeatures implements IModFeatures {
     @ModFeature(name = "wyvern_sword", cTab = 1)
     public static WyvernSword wyvernSword = new WyvernSword();
 
-
     @ModFeature(name = "draconic_axe", cTab = 1)
     public static DraconicAxe draconicAxe = new DraconicAxe();
 
@@ -263,7 +262,7 @@ public class DEFeatures implements IModFeatures {
     @ModFeature(name = "dislocator_advanced", cTab = 1)
     public static DislocatorAdvanced dislocatorAdvanced = new DislocatorAdvanced();
 
-    @ModFeature(name = "magnet", cTab = 1, stateOverride = "misc#", variantMap = {"0:type=magnet_basic", "1:type=magnet_advanced"})
+    @ModFeature(name = "magnet", cTab = 1, stateOverride = "misc", variantMap = {"0:type=magnet_basic", "1:type=magnet_advanced"})
     public static Magnet magnet = new Magnet();
 
     @ModFeature(name = "crystal_binder", stateOverride = "misc#type=crystal_binder")

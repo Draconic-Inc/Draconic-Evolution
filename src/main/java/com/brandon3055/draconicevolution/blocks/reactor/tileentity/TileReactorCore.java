@@ -380,7 +380,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
 //        ProcessHandler.clearHandler();
 //        explosionProcess = null;
-        if (explosionCountdown.value > 200) explosionCountdown.value = 200;
+//        if (explosionCountdown.value > 200) explosionCountdown.value = 200;
 //        LogHelper.dev("");
 
         if (explosionProcess == null) {
