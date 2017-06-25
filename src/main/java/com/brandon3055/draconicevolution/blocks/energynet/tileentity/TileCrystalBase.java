@@ -1,12 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.packet.PacketCustom;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
-import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.api.IDataRetainerTile;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.*;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -37,13 +36,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -57,7 +53,7 @@ import static com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.ID_
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public abstract class TileCrystalBase extends TileBCBase implements IDataRetainerTile, ITilePlaceListener, ICrystalLink, IEnergyHandler, ITickable, IActivatableTile {
+public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceListener, ICrystalLink, IEnergyHandler, ITickable, IActivatableTile {
 
     //region Stats
 
@@ -89,15 +85,15 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 
     @Override
     public void update() {
-        detectAndSendChanges();
-        if (linkedCrystals.size() != transferRatesArrays.size() && !worldObj.isRemote) {
+        super.update();
+        if (linkedCrystals.size() != transferRatesArrays.size() && !world.isRemote) {
             rebuildTransferList();
         }
 
         balanceLinkedDevices();
         fxHandler.update();
 
-        if (!worldObj.isRemote && DEEventHandler.serverTicks % 10 == 0) {
+        if (!world.isRemote && DEEventHandler.serverTicks % 10 == 0) {
             flowRates.clear();
             for (int i = 0; i < linkedCrystals.size(); i++) {
                 flowRates.add(calculateFlow(i));
@@ -105,7 +101,7 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
             fxHandler.detectAndSendChanges();
         }
 
-//        if (worldObj.getClosestPlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, false) != null) {
+//        if (world.getClosestPlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, false) != null) {
 //            LogHelper.dev(flowRates+" "+linkedCrystals);
 //        }
 
@@ -113,14 +109,14 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     }
 
     public void balanceLinkedDevices() {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
         for (BlockPos linkedPos : getLinks()) {
-            TileEntity linkedTile = worldObj.getTileEntity(linkedPos);
+            TileEntity linkedTile = world.getTileEntity(linkedPos);
 
             if (!(linkedTile instanceof ICrystalLink)) {
-                if (worldObj.getChunkFromBlockCoords(linkedPos).isLoaded()) {
+                if (world.getChunkFromBlockCoords(linkedPos).isLoaded()) {
                     breakLink(linkedPos);
                     return;
                 }
@@ -178,7 +174,7 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
         flowRates.clear();
         for (int i = 0; i < linkedCrystals.size(); i++) {
             transferRatesArrays.add(new int[20]);
-            flowRates.add((byte)0);
+            flowRates.add((byte) 0);
         }
     }
 
@@ -203,7 +199,7 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     //Remember: This is called when a binder linked to "this" tile is used on another block.
     @Override
     public boolean binderUsed(EntityPlayer player, BlockPos linkTarget, EnumFacing sideClicked) {
-        TileEntity te = worldObj.getTileEntity(linkTarget);
+        TileEntity te = world.getTileEntity(linkTarget);
 
         //region Check if the target device is valid
         if (!(te instanceof ICrystalLink)) {
@@ -405,7 +401,7 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 
     public void getLinkData(List<LinkData> data) {
         for (BlockPos target : getLinks()) {
-            TileEntity tile = worldObj.getTileEntity(target);
+            TileEntity tile = world.getTileEntity(target);
             if (tile == null) {
                 continue;
             }
@@ -426,9 +422,9 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
     }
 
     @Override
-    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if (!worldObj.isRemote) {
-            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CRYSTAL, worldObj, pos.getX(), pos.getY(), pos.getZ());
+    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (!world.isRemote) {
+            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CRYSTAL, world, pos.getX(), pos.getY(), pos.getZ());
         }
         return true;
     }
@@ -485,7 +481,6 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 
     //region Sync/Save
 
-    //Dont need to write link info to the item when it is broken so using this to store all that,
     @Override
     public void writeExtraNBT(NBTTagCompound compound) {
         NBTTagList list = new NBTTagList();
@@ -500,7 +495,8 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
             array[i] = flowRates.get(i);
         }
         compound.setByteArray("FlowRates", array);
-//        LogHelper.dev("Write "+flowRates+" "+array);
+        compound.setByte("Tier", (byte) getTier());
+        energyStorage.writeToNBT(compound);
     }
 
     @Override
@@ -522,23 +518,28 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
             for (byte b : array) {
                 flowRates.add(b);
             }
-//            LogHelper.dev("Read "+flowRates+" ");
         }
-    }
-
-    @Override
-    public void writeRetainedData(NBTTagCompound dataCompound) {
-        super.writeRetainedData(dataCompound);
-        dataCompound.setByte("Tier", (byte) getTier());
-        energyStorage.writeToNBT(dataCompound);
-    }
-
-    @Override
-    public void readRetainedData(NBTTagCompound dataCompound) {
-        super.readRetainedData(dataCompound);
-        int cap = getCapacityForTier(dataCompound.getByte("Tier"));
+        int cap = getCapacityForTier(compound.getByte("Tier"));
         energyStorage.setCapacity(cap).setMaxTransfer(cap);
-        energyStorage.readFromNBT(dataCompound);
+        energyStorage.readFromNBT(compound);
+    }
+
+    @Override
+    public NBTTagCompound writeToItemStack(ItemStack stack, boolean willHarvest) {
+        NBTTagCompound compound = super.writeToItemStack(stack, willHarvest);
+        compound.setByte("Tier", (byte) getTier());
+        energyStorage.writeToNBT(compound);
+        return compound;
+    }
+
+    @Nullable
+    @Override
+    public NBTTagCompound readFromItemStack(ItemStack stack) {
+        NBTTagCompound compound = super.readFromItemStack(stack);
+        int cap = getCapacityForTier(compound.getByte("Tier"));
+        energyStorage.setCapacity(cap).setMaxTransfer(cap);
+        energyStorage.readFromNBT(compound);
+        return compound;
     }
 
     @Override
@@ -587,7 +588,7 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
 //    public Map<Integer, String> tileNamesMap = new HashMap<>();
 
     public void detectAndSendContainerChanges(List<IContainerListener> listeners) {
-        if (linkedCrystals.size() != transferRatesArrays.size() && !worldObj.isRemote) {
+        if (linkedCrystals.size() != transferRatesArrays.size() && !world.isRemote) {
             rebuildTransferList();
         }
 
@@ -600,7 +601,7 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
             if (!containerEnergyFlow.containsKey(index) || containerEnergyFlow.get(index) != getLinkFlow(index)) {
                 containerEnergyFlow.put(index, getLinkFlow(index));
                 NBTTagCompound data = new NBTTagCompound();
-                data.setByte("I", (byte)index);
+                data.setByte("I", (byte) index);
                 data.setInteger("E", getLinkFlow(index));
                 list.appendTag(data);
             }
@@ -609,60 +610,56 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
         if (!list.hasNoTags()) {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setTag("L", list);
-            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 0, compound, false));
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(compound), 0));
         }
         else if (containerEnergyFlow.size() > linkedCrystals.size()) {
             containerEnergyFlow.clear();
-            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 0, 0, false));
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> {
+            }, 1));
         }
     }
 
-    public void sendUpdateToListeners(List<IContainerListener> listeners, PacketTileMessage packet) {
+    public void sendUpdateToListeners(List<IContainerListener> listeners, PacketCustom packet) {
         for (IContainerListener listener : listeners) {
             if (listener instanceof EntityPlayerMP) {
-                BrandonsCore.network.sendTo(packet, (EntityPlayerMP) listener);
+                packet.sendToPlayer((EntityPlayerMP) listener);
             }
         }
     }
 
     @Override
-    public void receivePacketFromServer(PacketTileMessage packet) {
-        if (packet.getIndex() == 0 && packet.isNBT()) {
-            NBTTagList list = packet.compound.getTagList("L", 10);
+    public void receivePacketFromServer(MCDataInput data, int id) {
+        if (id == 0) {
+            NBTTagCompound compound = data.readNBTTagCompound();
+            NBTTagList list = compound.getTagList("L", 10);
 
             for (int i = 0; i < list.tagCount(); i++) {
-                NBTTagCompound data = list.getCompoundTagAt(i);
-                containerEnergyFlow.put((int) data.getByte("I"), data.getInteger("E"));
+                NBTTagCompound tagData = list.getCompoundTagAt(i);
+                containerEnergyFlow.put((int) tagData.getByte("I"), tagData.getInteger("E"));
             }
         }
 
-        Iterator<Map.Entry<Integer, Integer>> i = containerEnergyFlow.entrySet().iterator();
+//        Iterator<Map.Entry<Integer, Integer>> i = containerEnergyFlow.entrySet().iterator(); WTF was this random iterator? Did i forget to finish something?
     }
 
     @Override
-    public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
-        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(client, EnumHand.MAIN_HAND, client.getHeldItemMainhand(), pos, EnumFacing.UP, Vec3d.ZERO);
-        MinecraftForge.EVENT_BUS.post(event);
-
-        if (event.isCanceled()) {
-            return;
-        }
-
-        if (packet.getIndex() == 10) {
-            if (getLinks().size() > packet.intValue && packet.intValue >= 0) {
-                BlockPos target = getLinks().get(packet.intValue);
+    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+        if (id == 10) {
+            int intValue = data.readInt();
+            if (getLinks().size() > intValue && intValue >= 0) {
+                BlockPos target = getLinks().get(intValue);
                 breakLink(target);
-                TileEntity targetTile = worldObj.getTileEntity(target);
+                TileEntity targetTile = world.getTileEntity(target);
                 if (targetTile instanceof ICrystalLink) {
                     ((ICrystalLink) targetTile).breakLink(pos);
                 }
             }
         }
-        else if (packet.getIndex() == 20) {
+        else if (id == 20) {
             List<BlockPos> links = new ArrayList<>(getLinks());
             for (BlockPos target : links) {
                 breakLink(target);
-                TileEntity targetTile = worldObj.getTileEntity(target);
+                TileEntity targetTile = world.getTileEntity(target);
                 if (targetTile instanceof ICrystalLink) {
                     ((ICrystalLink) targetTile).breakLink(pos);
                 }
@@ -708,7 +705,8 @@ public abstract class TileCrystalBase extends TileBCBase implements IDataRetaine
         public BlockPos linkTarget;
         public String data;
 
-        public LinkData() {}
+        public LinkData() {
+        }
 
         public LinkData(String displayName, int transferPerTick, BlockPos linkTarget, String data) {
             this.displayName = displayName;

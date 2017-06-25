@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.network.wrappers.SyncableVec3I;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyStorageCore;
@@ -73,7 +73,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
 
         //GlStateManager.disableCull();
 
-        if (MinecraftForgeClient.getRenderPass() == 0){
+        if (MinecraftForgeClient.getRenderPass() == 0) {
             GlStateManager.enableCull();
             GlStateManager.disableBlend();
             GlStateManager.depthMask(true);
@@ -99,7 +99,8 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             List<BakedQuad> outerQuads = ModelUtils.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().withProperty(EnergyStorageCore.RENDER_TYPE, 2));
             if (te.tier.value == 8) {
                 ModelUtils.renderQuadsRGB(outerQuads, 0.95F, 0.45F, 0F);
-            } else {
+            }
+            else {
                 ModelUtils.renderQuadsRGB(outerQuads, 0.2F, 1F, 1F);
             }
         }
@@ -118,7 +119,6 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     public void renderTileEntityFast(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer buffer) {
 
 
-
         super.renderTileEntityFast(te, x, y, z, partialTicks, destroyStage, buffer);
     }
 
@@ -126,8 +126,8 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
         if (!te.stabilizersOK.value) {
             return;
         }
-        
-        for (SyncableVec3I vec3I : te.stabOffsets) {
+
+        for (ManagedVec3I vec3I : te.stabOffsets) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(-vec3I.vec.x + 0.5, -vec3I.vec.y + 0.5, -vec3I.vec.z + 0.5);
 
@@ -141,12 +141,13 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
 
             GlStateManager.rotate(90, 1, 0, 0);
             renderStabilizerBeam(te, vec3I.vec, renderStage, partialTick);
-            if (te.tier.value >= 5){
+            if (te.tier.value >= 5) {
                 GlStateManager.scale(1.2F, 0.5F, 1.2F);
             }
             else {
                 GlStateManager.scale(0.45, 0.45, 0.45);
             }
+//            LogHelper.dev(vec3I);
             renderStabilizer(renderStage, partialTick);
             GlStateManager.popMatrix();
         }
@@ -168,7 +169,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
         }
     }
 
-    private void renderStabilizerBeam(TileEnergyStorageCore te, Vec3I vec, boolean renderStage, float partialTick){
+    private void renderStabilizerBeam(TileEnergyStorageCore te, Vec3I vec, boolean renderStage, float partialTick) {
         ResourceHelperDE.bindTexture(DETextures.STABILIZER_BEAM);
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer vertexBuffer = tessellator.getBuffer();
@@ -177,15 +178,15 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
 
         double beamLength = Math.abs(vec.x + vec.y + vec.z) - 0.5;
         float time = ClientEventHandler.elapsedTicks + partialTick;
-        double rotation = (double)time * 0.025D * -1.5D;
-        float beamMotion = -time * 0.2F - (float) MathHelper.floor_float(-time * 0.1F);
+        double rotation = (double) time * 0.025D * -1.5D;
+        float beamMotion = -time * 0.2F - (float) MathHelper.floor(-time * 0.1F);
 
         if (!renderStage) {
             //region Render Inner Beam
             double scale = 0.2;
             double d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale;  //x point 1
             double d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale;  //z point 1
-            double d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale;    	//x point 2
+            double d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale;        //x point 2
             double d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale;     //z point 2
             double d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale;//Dist from x-3
             double d17 = 0.5D + Math.sin(rotation + 3.9269908169872414D) * scale;
@@ -193,7 +194,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             double d21 = 0.5D + Math.sin(rotation + 5.497787143782138D) * scale;
             double texXMin = 0.0D;
             double texXMax = 1.0D;
-            double d28 = (double)(-1.0F + beamMotion);
+            double d28 = (double) (-1.0F + beamMotion);
             double texHeight = beamLength * (0.5D / scale) + d28;
 
             if (te.tier.value >= 5) {
@@ -202,25 +203,25 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             GlStateManager.translate(-0.5, 0, -0.5);
 
             vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            vertexBuffer.pos(d7, beamLength, d9)  .tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d7, 0, d9)           .tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d11, 0, d13)         .tex(texXMin, d28).endVertex();
+            vertexBuffer.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
+            vertexBuffer.pos(d7, 0, d9).tex(texXMax, d28).endVertex();
+            vertexBuffer.pos(d11, 0, d13).tex(texXMin, d28).endVertex();
             vertexBuffer.pos(d11, beamLength, d13).tex(texXMin, texHeight).endVertex();
 
             vertexBuffer.pos(d19, beamLength, d21).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d19, 0, d21)         .tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d15, 0, d17)         .tex(texXMin, d28).endVertex();
+            vertexBuffer.pos(d19, 0, d21).tex(texXMax, d28).endVertex();
+            vertexBuffer.pos(d15, 0, d17).tex(texXMin, d28).endVertex();
             vertexBuffer.pos(d15, beamLength, d17).tex(texXMin, texHeight).endVertex();
 
             vertexBuffer.pos(d11, beamLength, d13).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d11, 0, d13)         .tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d19, 0, d21)         .tex(texXMin, d28).endVertex();
+            vertexBuffer.pos(d11, 0, d13).tex(texXMax, d28).endVertex();
+            vertexBuffer.pos(d19, 0, d21).tex(texXMin, d28).endVertex();
             vertexBuffer.pos(d19, beamLength, d21).tex(texXMin, texHeight).endVertex();
 
             vertexBuffer.pos(d15, beamLength, d17).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d15, 0, d17)         .tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d7, 0, d9)           .tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d7, beamLength, d9)  .tex(texXMin, texHeight).endVertex();
+            vertexBuffer.pos(d15, 0, d17).tex(texXMax, d28).endVertex();
+            vertexBuffer.pos(d7, 0, d9).tex(texXMin, d28).endVertex();
+            vertexBuffer.pos(d7, beamLength, d9).tex(texXMin, texHeight).endVertex();
 
             rotation += 0.77f;
             d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale;
@@ -232,28 +233,28 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             d19 = 0.5D + Math.cos(rotation + 5.497787143782138D) * scale;
             d21 = 0.5D + Math.sin(rotation + 5.497787143782138D) * scale;
 
-            d28 = (-1F + (beamMotion*1));
+            d28 = (-1F + (beamMotion * 1));
             texHeight = beamLength * (0.5D / scale) + d28;
 
-            vertexBuffer.pos(d7, beamLength, d9)  .tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d7, 0, d9)           .tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d11, 0, d13)         .tex(texXMin, d28).endVertex();
+            vertexBuffer.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
+            vertexBuffer.pos(d7, 0, d9).tex(texXMax, d28).endVertex();
+            vertexBuffer.pos(d11, 0, d13).tex(texXMin, d28).endVertex();
             vertexBuffer.pos(d11, beamLength, d13).tex(texXMin, texHeight).endVertex();
 
             vertexBuffer.pos(d19, beamLength, d21).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d19, 0, d21)         .tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d15, 0, d17)         .tex(texXMin, d28).endVertex();
+            vertexBuffer.pos(d19, 0, d21).tex(texXMax, d28).endVertex();
+            vertexBuffer.pos(d15, 0, d17).tex(texXMin, d28).endVertex();
             vertexBuffer.pos(d15, beamLength, d17).tex(texXMin, texHeight).endVertex();
 
             vertexBuffer.pos(d11, beamLength, d13).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d11, 0, d13)         .tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d19, 0, d21)         .tex(texXMin, d28).endVertex();
+            vertexBuffer.pos(d11, 0, d13).tex(texXMax, d28).endVertex();
+            vertexBuffer.pos(d19, 0, d21).tex(texXMin, d28).endVertex();
             vertexBuffer.pos(d19, beamLength, d21).tex(texXMin, texHeight).endVertex();
 
             vertexBuffer.pos(d15, beamLength, d17).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d15, 0, d17)         .tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d7, 0, d9)           .tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d7, beamLength, d9)  .tex(texXMin, texHeight).endVertex();
+            vertexBuffer.pos(d15, 0, d17).tex(texXMax, d28).endVertex();
+            vertexBuffer.pos(d7, 0, d9).tex(texXMin, d28).endVertex();
+            vertexBuffer.pos(d7, beamLength, d9).tex(texXMin, texHeight).endVertex();
             //endregion
         }
         else {

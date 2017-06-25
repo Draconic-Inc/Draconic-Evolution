@@ -1,22 +1,21 @@
 package com.brandon3055.draconicevolution.items;
 
 import codechicken.lib.model.ModelRegistryHelper;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemReactorPart;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.List;
 
 /**
  * Created by brandon3055 on 22/09/2016.
  */
-public class ReactorPart extends ItemBCore implements ICustomRender {
+public class ReactorPart extends ItemBCore implements IRenderOverride {
 
     public ReactorPart() {
         this.setHasSubtypes(true);
@@ -28,7 +27,7 @@ public class ReactorPart extends ItemBCore implements ICustomRender {
     }
 
     @Override
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
         for (int i = 0; i < 5; i++) {
             subItems.add(new ItemStack(itemIn, 1, i));
         }

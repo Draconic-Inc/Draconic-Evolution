@@ -35,7 +35,8 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
             case EntityGuardianProjectile.TELEPORT:
                 height = 0;
                 break;
-            default: break;
+            default:
+                break;
         }
 
         bindEntityTexture(projectile);
@@ -65,7 +66,8 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
             GlStateManager.translate(0, 0.25, 0);
             GlStateManager.rotate((projectile.ticksExisted * 40 + partialTicks * 40), 0, 0, 1);
             GlStateManager.translate(0, -0.25, 0);
-        } else if (projectile.type == EntityGuardianProjectile.TELEPORT) {
+        }
+        else if (projectile.type == EntityGuardianProjectile.TELEPORT) {
             f5 = 0;
             f6 = 1;
         }
@@ -78,13 +80,14 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
         buffer.pos((double) (0.0F - f8), (double) (1.0F - f9), 0.0D).tex((double) f3, (double) f5).endVertex();
         tessellator.draw();
 
-        GlStateManager.enableLighting();;
+        GlStateManager.enableLighting();
+        ;
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.disableBlend();
         GlStateManager.disableRescaleNormal();
         GlStateManager.popMatrix();
     }
-    
+
     @Override
     protected ResourceLocation getEntityTexture(EntityGuardianProjectile entity) {
         switch (entity.type) {

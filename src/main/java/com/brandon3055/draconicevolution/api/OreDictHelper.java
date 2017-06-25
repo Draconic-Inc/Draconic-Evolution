@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -21,46 +22,47 @@ public class OreDictHelper {
      * if it matches the given ItemStack.
      *
      * @param oreStack an ore string, itemStack, item or block.
-     * @param compare the stack the be compared with
+     * @param compare  the stack the be compared with
      * @return true if the stacks are the same.
      */
     public static boolean areStacksEqual(Object oreStack, ItemStack compare) {
-        if (oreStack instanceof String){
-            if (!OreDictionary.doesOreNameExist((String)oreStack)){
+        if (oreStack instanceof String) {
+            if (!OreDictionary.doesOreNameExist((String) oreStack)) {
                 return false;
             }
 
             int[] ids = OreDictionary.getOreIDs(compare);
-            for (int id : ids){
-                if (OreDictionary.getOreName(id).equals(oreStack)){
+            for (int id : ids) {
+                if (OreDictionary.getOreName(id).equals(oreStack)) {
                     return true;
                 }
             }
         }
-        else if (oreStack instanceof ItemStack){
+        else if (oreStack instanceof ItemStack) {
             return OreDictionary.itemMatches(compare, (ItemStack) oreStack, false);
         }
-        else if (oreStack instanceof Item){
-            return areStacksEqual(new ItemStack((Item)oreStack), compare);
+        else if (oreStack instanceof Item) {
+            return areStacksEqual(new ItemStack((Item) oreStack), compare);
         }
-        else if (oreStack instanceof Block){
-            return areStacksEqual(new ItemStack((Block)oreStack), compare);
+        else if (oreStack instanceof Block) {
+            return areStacksEqual(new ItemStack((Block) oreStack), compare);
         }
 
         return false;
     }
 
+    @Nonnull
     public static ItemStack findFirstOreMatch(String oreName) {
         if (!OreDictionary.doesOreNameExist(oreName)) {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         List<ItemStack> stacks = OreDictionary.getOres(oreName);
 
-        if (stacks.size() == 0){
-            return null;
+        if (stacks.size() == 0) {
+            return ItemStack.EMPTY;
         }
-        else if (stacks.size() == 1){
+        else if (stacks.size() == 1) {
             return stacks.get(0);
         }
         else {
@@ -88,19 +90,20 @@ public class OreDictHelper {
     /**
      * Takes some object. Works out of it is an itemstack a string an item or a block and returns a stack based on what it finds.
      */
-    public static ItemStack resolveObject(Object object){
-        if (object instanceof String){
-            return findFirstOreMatch((String)object);
+    @Nonnull
+    public static ItemStack resolveObject(Object object) {
+        if (object instanceof String) {
+            return findFirstOreMatch((String) object);
         }
         else if (object instanceof ItemStack) {
             return (ItemStack) object;
         }
-        else if (object instanceof Item){
+        else if (object instanceof Item) {
             return new ItemStack((Item) object);
         }
-        else if (object instanceof Block){
+        else if (object instanceof Block) {
             return new ItemStack((Block) object);
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 }

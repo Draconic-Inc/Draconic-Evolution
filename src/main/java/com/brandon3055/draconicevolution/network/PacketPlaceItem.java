@@ -28,13 +28,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  */
 public class PacketPlaceItem implements IMessage {
 
-    public PacketPlaceItem() {}
+    public PacketPlaceItem() {
+    }
 
     @Override
-    public void fromBytes(ByteBuf buf) {}
+    public void fromBytes(ByteBuf buf) {
+    }
 
     @Override
-    public void toBytes(ByteBuf buf) {}
+    public void toBytes(ByteBuf buf) {
+    }
 
     public static class Handler extends MessageHandlerWrapper<PacketPlaceItem, IMessage> {
 
@@ -42,7 +45,7 @@ public class PacketPlaceItem implements IMessage {
         public IMessage handleMessage(PacketPlaceItem message, MessageContext ctx) {
             EntityPlayer player = ctx.getServerHandler().playerEntity;
             RayTraceResult traceResult = RayTracer.retrace(player);
-            World world = player.worldObj;
+            World world = player.world;
 
             if (traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
                 BlockPos posHit = traceResult.getBlockPos();
@@ -50,23 +53,23 @@ public class PacketPlaceItem implements IMessage {
                 TileEntity tileOnSide = world.getTileEntity(posHit.offset(traceResult.sideHit));
                 ItemStack stack = HandHelper.getMainFirst(player);
 
-                if (stack == null) {
+                if (stack.isEmpty()) {
                     return null;
                 }
 
-                if (tileHit instanceof TilePlacedItem && InventoryUtils.insertItem((TilePlacedItem)tileHit, stack, true) == 0){
-                    PlayerInteractEvent event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, stack, posHit, traceResult.sideHit, traceResult.hitVec);
+                if (tileHit instanceof TilePlacedItem && InventoryUtils.insertItem((TilePlacedItem) tileHit, stack, true) == 0) {
+                    PlayerInteractEvent event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, posHit, traceResult.sideHit, traceResult.hitVec);
                     MinecraftForge.EVENT_BUS.post(event);
 
                     if (event.isCanceled()) {
                         return null;
                     }
 
-                    InventoryUtils.insertItem((TilePlacedItem)tileHit, stack, false);
+                    InventoryUtils.insertItem((TilePlacedItem) tileHit, stack, false);
                     player.inventory.deleteStack(stack);
                 }
-                else if (tileOnSide instanceof TilePlacedItem && InventoryUtils.insertItem((TilePlacedItem)tileOnSide, stack, true) == 0){
-                    PlayerInteractEvent event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, stack, posHit, traceResult.sideHit, traceResult.hitVec);
+                else if (tileOnSide instanceof TilePlacedItem && InventoryUtils.insertItem((TilePlacedItem) tileOnSide, stack, true) == 0) {
+                    PlayerInteractEvent event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, posHit, traceResult.sideHit, traceResult.hitVec);
                     MinecraftForge.EVENT_BUS.post(event);
 
                     if (event.isCanceled()) {

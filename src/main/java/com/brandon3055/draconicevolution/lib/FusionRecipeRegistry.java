@@ -39,7 +39,7 @@ public class FusionRecipeRegistry implements FusionRegistry {
     //endregion
 
     public IFusionRecipe findRecipeForCatalyst(ItemStack catalyst) {
-        if (catalyst == null){
+        if (catalyst == null) {
             return null;
         }
 
@@ -53,7 +53,7 @@ public class FusionRecipeRegistry implements FusionRegistry {
     }
 
     public IFusionRecipe findRecipe(IFusionCraftingInventory inventory, World world, BlockPos corePos) {
-        if (inventory == null || inventory.getStackInCore(0) == null){
+        if (inventory == null || inventory.getStackInCore(0) == null) {
             return null;
         }
 

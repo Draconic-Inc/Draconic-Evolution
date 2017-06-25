@@ -11,12 +11,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketSimpleBoolean implements IMessage
-{
+public class PacketSimpleBoolean implements IMessage {
     public static final byte ID_TOOL_CONFIG = 0;
-	public static final byte ID_TOOL_PROFILE_CHANGE = 1;
+    public static final byte ID_TOOL_PROFILE_CHANGE = 1;
 
-//	public static final byte ID_WEATHERCONTROLLER =
+    //	public static final byte ID_WEATHERCONTROLLER =
 //	public static final byte ID_DISSENCHANTER =
 //	public static final byte ID_DRACONIUMCHEST0 =
 //	public static final byte ID_DRACONIUMCHEST1 =
@@ -24,43 +23,42 @@ public class PacketSimpleBoolean implements IMessage
 //	public static final byte ID_DRACONIUMCHEST3 =
 //	public static final byte ID_DRACONIUMCHEST4 =
 //	public static final byte ID_TOOL_PROFILE_CHANGE =
-	byte id = 0;
-	boolean value = false;
+    byte id = 0;
+    boolean value = false;
 
-	public PacketSimpleBoolean() {}
+    public PacketSimpleBoolean() {
+    }
 
-	public PacketSimpleBoolean(byte id, boolean state) {
-		this.id = id;
-		this.value = state;
-	}
+    public PacketSimpleBoolean(byte id, boolean state) {
+        this.id = id;
+        this.value = state;
+    }
 
-	@Override
-	public void fromBytes(ByteBuf bytes){
-		this.id = bytes.readByte();
-		this.value = bytes.readBoolean();
-	}
+    @Override
+    public void fromBytes(ByteBuf bytes) {
+        this.id = bytes.readByte();
+        this.value = bytes.readBoolean();
+    }
 
-	@Override
-	public void toBytes(ByteBuf bytes){
-		bytes.writeByte(id);
-		bytes.writeBoolean(value);
-	}
+    @Override
+    public void toBytes(ByteBuf bytes) {
+        bytes.writeByte(id);
+        bytes.writeBoolean(value);
+    }
 
-	public static class Handler extends MessageHandlerWrapper<PacketSimpleBoolean, IMessage> {
+    public static class Handler extends MessageHandlerWrapper<PacketSimpleBoolean, IMessage> {
 
         @Override
         public IMessage handleMessage(PacketSimpleBoolean message, MessageContext ctx) {
             switch (message.id) {
 
-				case ID_TOOL_CONFIG:
-				{
-					ctx.getServerHandler().playerEntity.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().playerEntity.worldObj, (int)ctx.getServerHandler().playerEntity.posX, (int)ctx.getServerHandler().playerEntity.posY, (int)ctx.getServerHandler().playerEntity.posZ);
-					break;
-				}
-                case ID_TOOL_PROFILE_CHANGE:
-                {
+                case ID_TOOL_CONFIG: {
+                    ctx.getServerHandler().playerEntity.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().playerEntity.world, (int) ctx.getServerHandler().playerEntity.posX, (int) ctx.getServerHandler().playerEntity.posY, (int) ctx.getServerHandler().playerEntity.posZ);
+                    break;
+                }
+                case ID_TOOL_PROFILE_CHANGE: {
                     ItemStack stack = HandHelper.getMainFirst(ctx.getServerHandler().playerEntity);
-                    if (stack != null && stack.getItem() instanceof IConfigurableItem){
+                    if (!stack.isEmpty() && stack.getItem() instanceof IConfigurableItem) {
                         ToolConfigHelper.incrementProfile(stack);
                     }
 
@@ -142,11 +140,11 @@ public class PacketSimpleBoolean implements IMessage
 //					break;
 //				}
 
-				default:
-					break;
-			}
+                default:
+                    break;
+            }
             return null;
         }
 
-	}
+    }
 }

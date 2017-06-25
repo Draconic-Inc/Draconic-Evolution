@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileEnergyBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
-import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
-import com.brandon3055.brandonscore.network.wrappers.SyncableEnum;
-import com.brandon3055.brandonscore.network.wrappers.SyncableInt;
-import com.brandon3055.brandonscore.network.wrappers.SyncableVec3I;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
@@ -31,31 +31,23 @@ import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileRe
  */
 public abstract class TileReactorComponent extends TileEnergyBase implements ITickable, IDEPeripheral {
 
-    private final SyncableVec3I coreOffset = new SyncableVec3I(new Vec3I(0, 0, 0), true, false);
-    public final SyncableEnum<EnumFacing> facing = new SyncableEnum<>(EnumFacing.UP, true, false);
-    public final SyncableBool isBound = new SyncableBool(false, true, false);
-    public final SyncableEnum<RSMode> rsMode = new SyncableEnum<>(RSMode.TEMP, true, false);
-    public final SyncableInt rsPower = new SyncableInt(0, true, false, true);
+    private final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, 0, 0))).saveToTile().syncViaTile().finish();
+    public final ManagedEnum<EnumFacing> facing = register("facing", new ManagedEnum<>(EnumFacing.UP)).saveToTile().syncViaTile().finish();
+    public final ManagedBool isBound = register("isBound", new ManagedBool(false)).saveToTile().syncViaTile().finish();
+    public final ManagedEnum<RSMode> rsMode = register("rsMode", new ManagedEnum<>(RSMode.TEMP)).saveToTile().syncViaTile().finish();
+    public final ManagedInt rsPower = register("rsPower", new ManagedInt(0)).saveToTile().syncViaTile().trigerUpdate().finish();
     public float animRotation = 0;
     public float animRotationSpeed = 0;
     private TileReactorCore cachedCore = null;
     public boolean coreFalureIminent = false;
 
-    public TileReactorComponent() {
-        registerSyncableObject(coreOffset);
-        registerSyncableObject(facing);
-        registerSyncableObject(isBound);
-        registerSyncableObject(rsMode);
-        registerSyncableObject(rsPower);
-    }
-
     //region update
 
     @Override
     public void update() {
-        detectAndSendChanges();
+        super.update();
 
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             TileReactorCore core = tryGetCore();
             if (core != null) {
                 animRotationSpeed = core.shieldAnimationState * 15F;
@@ -67,13 +59,13 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             }
 
             animRotation += animRotationSpeed;
-            if (coreFalureIminent && worldObj.rand.nextInt(10) == 0) {
-                animRotation += (worldObj.rand.nextDouble() - 0.5) * 360;
-                if (worldObj.rand.nextBoolean()) {
-                    worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + worldObj.rand.nextDouble(), pos.getY() + worldObj.rand.nextDouble(), pos.getZ() + worldObj.rand.nextDouble(), 0, 0, 0);
+            if (coreFalureIminent && world.rand.nextInt(10) == 0) {
+                animRotation += (world.rand.nextDouble() - 0.5) * 360;
+                if (world.rand.nextBoolean()) {
+                    world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), 0, 0, 0);
                 }
                 else {
-                    worldObj.spawnParticle(EnumParticleTypes.CLOUD, pos.getX() + worldObj.rand.nextDouble(), pos.getY() + worldObj.rand.nextDouble(), pos.getZ() + worldObj.rand.nextDouble(), 0, 0, 0);
+                    world.spawnParticle(EnumParticleTypes.CLOUD, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), 0, 0, 0);
                 }
             }
         }
@@ -84,7 +76,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
                 int rs = rsMode.value.getRSSignal(core);
                 if (rs != rsPower.value) {
                     rsPower.value = rs;
-                    worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
+                    world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
                 }
             }
         }
@@ -121,8 +113,8 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         LogHelper.dev("Reactor-Comp: Try Poke Core | Find");
         for (int i = 1; i < COMPONENT_MAX_DISTANCE; i++) {
             BlockPos searchPos = pos.offset(facing.value, i);
-            if (!worldObj.isAirBlock(searchPos)) {
-                TileEntity tile = worldObj.getTileEntity(searchPos);
+            if (!world.isAirBlock(searchPos)) {
+                TileEntity tile = world.getTileEntity(searchPos);
                 LogHelper.dev("Reactor-Comp: Try Poke Core | Found: " + tile);
 
                 if (tile instanceof TileReactorCore && i > 1) {
@@ -143,14 +135,14 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     //region Player Interaction
 
     public void onPlaced() {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
         pokeCore();
     }
 
     public void onBroken() {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
 
@@ -161,34 +153,31 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     }
 
     public void onActivated(EntityPlayer player) {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
+
         pokeCore();
         TileReactorCore core = checkAndGetCore();
+        LogHelper.dev("Gui? " + core);
         if (core != null) {
             core.onComponentClicked(player, this);
         }
     }
 
     public void setRSMode(EntityPlayer player, RSMode rsMode) {
-        if (worldObj.isRemote) {
-            sendPacketToServer(new PacketTileMessage(this, (byte) 0, rsMode.name(), false));
+        if (world.isRemote) {
+            sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
         }
-        else if (verifyPlayerPermission(player)) {
+        else {
             this.rsMode.value = rsMode;
         }
     }
 
     @Override
-    public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
-        if (packet.getIndex() == 0 && !packet.stringValue.isEmpty()) {
-            try {
-                setRSMode(client, RSMode.valueOf(packet.stringValue));
-            }
-            catch (Throwable e) {
-                e.printStackTrace();
-            }
+    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+        if (id == 0) {
+            setRSMode(client, RSMode.valueOf(data.readString()));
         }
     }
 
@@ -243,12 +232,12 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             return null;
         }
 
-        TileEntity tile = worldObj.getTileEntity(getCorePos());
+        TileEntity tile = world.getTileEntity(getCorePos());
         if (tile instanceof TileReactorCore) {
             return (TileReactorCore) tile;
         }
 
-        if (worldObj.getChunkFromBlockCoords(getCorePos()).isLoaded()) {
+        if (world.getChunkFromBlockCoords(getCorePos()).isLoaded()) {
             invalidateComponent();
         }
 
@@ -260,7 +249,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             return null;
         }
 
-        TileEntity tile = worldObj.getTileEntity(getCorePos());
+        TileEntity tile = world.getTileEntity(getCorePos());
         if (tile instanceof TileReactorCore) {
             return (TileReactorCore) tile;
         }
@@ -270,7 +259,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     protected TileReactorCore getCachedCore() {
         if (isBound.value) {
             BlockPos corePos = getCorePos();
-            Chunk coreChunk = worldObj.getChunkFromBlockCoords(corePos);
+            Chunk coreChunk = world.getChunkFromBlockCoords(corePos);
 
             if (!coreChunk.isLoaded()) {
                 cachedCore = null;
@@ -279,7 +268,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
 
             TileEntity tileAtPos = coreChunk.getTileEntity(corePos, Chunk.EnumCreateEntityType.CHECK);
             if (tileAtPos == null || cachedCore == null || tileAtPos != cachedCore || tileAtPos.isInvalid()) {
-                TileEntity tile = worldObj.getTileEntity(corePos);
+                TileEntity tile = world.getTileEntity(corePos);
 
                 if (tile instanceof TileReactorCore) {
                     cachedCore = (TileReactorCore) tile;

@@ -74,7 +74,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         }
         if (tier <= 0) {
             LogHelper.error("[EnergyCoreStructure] Tier value to small. As far as TileEnergyStorageCore is concerned the tiers now start at 1 not 0. This class automatically handles the conversion now");
-        } else {
+        }
+        else {
             LogHelper.error("[EnergyCoreStructure#checkTeir] What exactly were you expecting after Tier 8? Infinity.MAX_VALUE?");
         }
 
@@ -113,7 +114,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         }
         if (tier <= 0) {
             LogHelper.error("[EnergyCoreStructure] Tier value to small. As far as TileEnergyStorageCore is concerned the tiers now start at 1 not 0. This class automatically handles the conversion now");
-        } else {
+        }
+        else {
             LogHelper.error("[EnergyCoreStructure#placeTier] What exactly were you expecting after Tier 8? Infinity.MAX_VALUE?");
         }
     }
@@ -136,9 +138,11 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         tier -= 1;
         if (tier < 0) {
             LogHelper.error("[EnergyCoreStructure] Tier value to small. As far as TileEnergyStorageCore is concerned the tiers now start at 1 not 0. This class automatically handles the conversion now");
-        } else if (tier >= structureTiers.length) {
+        }
+        else if (tier >= structureTiers.length) {
             LogHelper.error("[EnergyCoreStructure#placeTier] What exactly were you expecting after Tier 8? Infinity.MAX_VALUE?");
-        } else {
+        }
+        else {
             structureTiers[tier].forEachInStructure(core.getWorld(), core.getPos().add(getCoreOffset(tier + 1)), flag);
         }
     }
@@ -165,8 +169,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
             world.setBlockState(pos, DEFeatures.invisECoreBlock.getDefaultState());
             TileEntity tile = world.getTileEntity(pos);
             if (tile instanceof TileInvisECoreBlock) {
-                ((TileInvisECoreBlock)tile).blockName = name;
-                ((TileInvisECoreBlock)tile).setController(core);
+                ((TileInvisECoreBlock) tile).blockName = name;
+                ((TileInvisECoreBlock) tile).setController(core);
             }
         }
 
@@ -177,7 +181,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         else if (flag == FLAG_REVERT) {
             TileEntity tile = world.getTileEntity(pos);
             if (tile instanceof TileInvisECoreBlock) {
-                ((TileInvisECoreBlock)tile).revert();
+                ((TileInvisECoreBlock) tile).revert();
             }
         }
 
@@ -190,7 +194,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         Vec3D corePos = Vec3D.getCenter(startPos.subtract(getCoreOffset(core.tier.value)));
         double dist = Utils.getDistanceAtoB(corePos, Vec3D.getCenter(pos));
-        double pDist = Minecraft.getMinecraft().thePlayer.getDistance(corePos.x, corePos.y, corePos.z);
+        double pDist = Minecraft.getMinecraft().player.getDistance(corePos.x, corePos.y, corePos.z);
 
         IBlockState atPos = world.getBlockState(pos);
         boolean invalid = !world.isAirBlock(pos) && (atPos.getBlock().getRegistryName() == null || !atPos.getBlock().getRegistryName().toString().equals(name));
@@ -1088,9 +1092,10 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     @Override
     public boolean checkBlock(String name, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock)tile).blockName.equals(name)) {
+        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).blockName.equals(name)) {
             return true;
-        } else {
+        }
+        else {
             return super.checkBlock(name, world, pos);
         }
     }

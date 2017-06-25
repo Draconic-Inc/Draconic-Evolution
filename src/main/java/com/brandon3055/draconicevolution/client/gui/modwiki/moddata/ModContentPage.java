@@ -16,8 +16,8 @@ public class ModContentPage {
 
     //TODO generalize this do it can be used for both data and sub-data... Unless its easier to add a separate sub-data class... It may be..
 
-    public ModContentPage(){}
-
+    public ModContentPage() {
+    }
 
 
     //region Save / Load

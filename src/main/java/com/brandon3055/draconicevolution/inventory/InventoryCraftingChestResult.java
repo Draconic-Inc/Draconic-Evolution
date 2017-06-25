@@ -54,11 +54,12 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
     @Override
     public ItemStack decrStackSize(int par1, int par2) {
         ItemStack stack = tile.getStackInCraftingSlot(0);
-        if (stack != null) {
+        if (!stack.isEmpty()) {
             ItemStack itemstack = stack;
             tile.setInventoryCraftingSlotContents(0, null);
             return itemstack;
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -103,7 +104,7 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
      * with Container
      */
     @Override
-    public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer) {
+    public boolean isUsableByPlayer(EntityPlayer par1EntityPlayer) {
         return true;
     }
 

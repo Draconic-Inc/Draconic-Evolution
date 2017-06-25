@@ -48,7 +48,8 @@ public class InventoryCraftingChest extends InventoryCrafting {
         if (row >= 0 && row < inventoryWidth) {
             int k = row + column * inventoryWidth;
             return getStackInSlot(k);
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -73,27 +74,29 @@ public class InventoryCraftingChest extends InventoryCrafting {
     @Override
     public ItemStack decrStackSize(int slotID, int par2) {
         ItemStack stack = tile.getStackInCraftingSlot(slotID + 1);
-        if (stack != null) {
+        if (!stack.isEmpty()) {
             ItemStack itemstack;
 
-            if (stack.stackSize <= par2) {
+            if (stack.getCount() <= par2) {
                 itemstack = stack.copy();
-                stack = null;
+                stack = ItemStack.EMPTY;
                 tile.setInventoryCraftingSlotContents(slotID + 1, null);
                 eventHandler.onCraftMatrixChanged(this);
                 return itemstack;
-            } else {
+            }
+            else {
                 itemstack = stack.splitStack(par2);
 
-                if (stack.stackSize == 0) {
-                    stack = null;
+                if (stack.getCount() == 0) {
+                    stack = ItemStack.EMPTY;
                 }
 
                 eventHandler.onCraftMatrixChanged(this);
                 return itemstack;
             }
-        } else {
-            return null;
+        }
+        else {
+            return ItemStack.EMPTY;
         }
     }
 
@@ -128,7 +131,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
      * with Container
      */
     @Override
-    public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer) {
+    public boolean isUsableByPlayer(EntityPlayer par1EntityPlayer) {
         return true;
     }
 

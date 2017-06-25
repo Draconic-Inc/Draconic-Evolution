@@ -31,173 +31,173 @@ import java.util.Random;
  * This method of retrogening is borrowed from CoFH. Because its just so good!
  */
 public class DEWorldGenHandler implements IWorldGenerator {
-	public static DEWorldGenHandler instance = new DEWorldGenHandler();
-	private static String DATA_TAG = "DEWorldGen";
-	private static LinkedHashList<ChunkReference> populatingChunks = new LinkedHashList<ChunkReference>();
+    public static DEWorldGenHandler instance = new DEWorldGenHandler();
+    private static String DATA_TAG = "DEWorldGen";
+    private static LinkedHashList<ChunkReference> populatingChunks = new LinkedHashList<ChunkReference>();
 
 
-	public static void initialize(){
-		if (DEConfig.worldGenEnabled){
-			GameRegistry.registerWorldGenerator(instance, 0);
-			MinecraftForge.EVENT_BUS.register(instance);
+    public static void initialize() {
+        if (DEConfig.worldGenEnabled) {
+            GameRegistry.registerWorldGenerator(instance, 0);
+            MinecraftForge.EVENT_BUS.register(instance);
 
-			if (DEConfig.enableRetroGen) {
-				MinecraftForge.EVENT_BUS.register(new WorldTickHandler());
-			}
-		}
-	}
+            if (DEConfig.enableRetroGen) {
+                MinecraftForge.EVENT_BUS.register(new WorldTickHandler());
+            }
+        }
+    }
 
-	@Override
-	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
-		addOreGen(random, chunkX, chunkZ, world);
-	}
+    @Override
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
+        addOreGen(random, chunkX, chunkZ, world);
+    }
 
-	public void addOreGen(Random random, int chunkX, int chunkZ, World world){
-		switch (world.provider.getDimension()){
-			case 0:
-				if (!DEConfig.disableOreSpawnOverworld) {
-					addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.STONE.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
-				}
-				break;
-			case 1:
-				int actualX = chunkX * 16;
-				int actualZ = chunkZ * 16;
-				int x1 = actualX + random.nextInt(16);
-				int y = 20 + random.nextInt(170);
-				int z1 = actualZ + random.nextInt(16);
-				if (DEConfig.generateEnderComets && Math.sqrt(actualX*actualX + actualZ*actualZ) > 200 && random.nextInt(Math.max(1, DEConfig.cometRarity)) == 0) new WorldGenEnderComet().generate(world, random, new BlockPos(x1, y , z1));
-				if (DEConfig.generateChaosIslands) ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, null, random);
-				if (!DEConfig.disableOreSpawnEnd)addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.END), Blocks.END_STONE.getDefaultState(), world, random, actualX, actualZ, 4, 5, 10, 1, 70);
+    public void addOreGen(Random random, int chunkX, int chunkZ, World world) {
+        switch (world.provider.getDimension()) {
+            case 0:
+                if (!DEConfig.disableOreSpawnOverworld) {
+                    addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.STONE.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
+                }
+                break;
+            case 1:
+                int actualX = chunkX * 16;
+                int actualZ = chunkZ * 16;
+                int x1 = actualX + random.nextInt(16);
+                int y = 20 + random.nextInt(170);
+                int z1 = actualZ + random.nextInt(16);
+                if (DEConfig.generateEnderComets && Math.sqrt(actualX * actualX + actualZ * actualZ) > 200 && random.nextInt(Math.max(1, DEConfig.cometRarity)) == 0) new WorldGenEnderComet().generate(world, random, new BlockPos(x1, y, z1));
+                if (DEConfig.generateChaosIslands) ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, null, random);
+                if (!DEConfig.disableOreSpawnEnd) addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.END), Blocks.END_STONE.getDefaultState(), world, random, actualX, actualZ, 4, 5, 10, 1, 70);
 
-				break;
-			case -1:
-				if (!DEConfig.disableOreSpawnNether){
-					addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NETHER), Blocks.NETHERRACK.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 5, 1, 125);
-				}
-				break;
-			default:
-				for (Integer i : DEConfig.oreGenDimentionBlacklist)
-				{
-					if (i == world.provider.getDimension()) return;
-				}
-				addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.STONE.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
-				break;
-		}
-	}
+                break;
+            case -1:
+                if (!DEConfig.disableOreSpawnNether) {
+                    addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NETHER), Blocks.NETHERRACK.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 5, 1, 125);
+                }
+                break;
+            default:
+                for (Integer i : DEConfig.oreGenDimentionBlacklist) {
+                    if (i == world.provider.getDimension()) return;
+                }
+                addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.STONE.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
+                break;
+        }
+    }
 
-	/**Generate Ore
-	 * Block to generate
-	 * Block to overwrite
-	 * World
-	 * Random
-	 * Chunk x
-	 * Chunk z
-	 * min vain size
-	 * max vain size
-	 * number of tries to spawn
-	 * min y
-	 * max y
-	 * **/
-	public void addOreSpawn(IBlockState block, IBlockState baseBlock, World world, Random random, int chunkXPos, int chunkZPos, int minVainSize, int maxVainSize, int chancesToSpawn, int minY, int maxY) {
-		for (int i = 0; i < chancesToSpawn; i++) {
-			int posX = chunkXPos + random.nextInt(16);
-			int posY = minY + random.nextInt(maxY - minY);
-			int posZ = chunkZPos + random.nextInt(16);
+    /**
+     * Generate Ore
+     * Block to generate
+     * Block to overwrite
+     * World
+     * Random
+     * Chunk x
+     * Chunk z
+     * min vain size
+     * max vain size
+     * number of tries to spawn
+     * min y
+     * max y
+     **/
+    public void addOreSpawn(IBlockState block, IBlockState baseBlock, World world, Random random, int chunkXPos, int chunkZPos, int minVainSize, int maxVainSize, int chancesToSpawn, int minY, int maxY) {
+        for (int i = 0; i < chancesToSpawn; i++) {
+            int posX = chunkXPos + random.nextInt(16);
+            int posY = minY + random.nextInt(maxY - minY);
+            int posZ = chunkZPos + random.nextInt(16);
 
-			new WorldGenMinable(block, (minVainSize + random.nextInt(maxVainSize - minVainSize)), BlockMatcher.forBlock(baseBlock.getBlock())).generate(world, random, new BlockPos(posX, posY, posZ));
-		}
-	}
+            new WorldGenMinable(block, (minVainSize + random.nextInt(maxVainSize - minVainSize)), BlockMatcher.forBlock(baseBlock.getBlock())).generate(world, random, new BlockPos(posX, posY, posZ));
+        }
+    }
 
-	@SubscribeEvent
-	public void populateChunkEvent(PopulateChunkEvent.Pre event){
-		populatingChunks.add(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunkX(), event.getChunkZ()));
-	}
+    @SubscribeEvent
+    public void populateChunkEvent(PopulateChunkEvent.Pre event) {
+        populatingChunks.add(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunkX(), event.getChunkZ()));
+    }
 
-	@SubscribeEvent
-	public void populateChunkEvent(PopulateChunkEvent.Post event){
-		populatingChunks.remove(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunkX(), event.getChunkZ()));
-	}
+    @SubscribeEvent
+    public void populateChunkEvent(PopulateChunkEvent.Post event) {
+        populatingChunks.remove(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunkX(), event.getChunkZ()));
+    }
 
-	@SubscribeEvent
-	public void chunkLoadEvent(ChunkDataEvent.Load event){
+    @SubscribeEvent
+    public void chunkLoadEvent(ChunkDataEvent.Load event) {
 
-		int dim = event.getWorld().provider.getDimension();
+        int dim = event.getWorld().provider.getDimension();
 
-		NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(DATA_TAG);
+        NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(DATA_TAG);
 
-		if (tag != null && tag.getBoolean("Populating")) {
-			populatingChunks.add(new ChunkReference(dim, event.getChunk().xPosition, event.getChunk().zPosition));
-			tag.removeTag("Populating");
-			return;
-		}
+        if (tag != null && tag.getBoolean("Populating")) {
+            populatingChunks.add(new ChunkReference(dim, event.getChunk().xPosition, event.getChunk().zPosition));
+            tag.removeTag("Populating");
+            return;
+        }
 
-		if (tag != null && tag.getBoolean("Generated")) {
-			return;
-		}
+        if (tag != null && tag.getBoolean("Generated")) {
+            return;
+        }
 
-		if (event.getChunk().getAreLevelsEmpty(0, 128)) return;
+        if (event.getChunk().getAreLevelsEmpty(0, 128)) return;
 
-		if (DEConfig.enableRetroGen) {
-			ArrayDeque<ChunkPos> chunks = WorldTickHandler.chunksToGen.get(dim);
+        if (DEConfig.enableRetroGen) {
+            ArrayDeque<ChunkPos> chunks = WorldTickHandler.chunksToGen.get(dim);
 
-			if (chunks == null) {
-				WorldTickHandler.chunksToGen.put(dim, new ArrayDeque<ChunkPos>(128));
-				chunks = WorldTickHandler.chunksToGen.get(dim);
-			}
-			if (chunks != null) {
-				chunks.addLast(new ChunkPos(event.getChunk().xPosition, event.getChunk().zPosition));
-				WorldTickHandler.chunksToGen.put(dim, chunks);
-			}
-		}
-	}
+            if (chunks == null) {
+                WorldTickHandler.chunksToGen.put(dim, new ArrayDeque<ChunkPos>(128));
+                chunks = WorldTickHandler.chunksToGen.get(dim);
+            }
+            if (chunks != null) {
+                chunks.addLast(new ChunkPos(event.getChunk().xPosition, event.getChunk().zPosition));
+                WorldTickHandler.chunksToGen.put(dim, chunks);
+            }
+        }
+    }
 
-	@SubscribeEvent
-	public void chunkSaveEvent(ChunkDataEvent.Save event){
-		NBTTagCompound genTag = event.getData().getCompoundTag(DATA_TAG);
+    @SubscribeEvent
+    public void chunkSaveEvent(ChunkDataEvent.Save event) {
+        NBTTagCompound genTag = event.getData().getCompoundTag(DATA_TAG);
 
-		if (populatingChunks.contains(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunk().xPosition, event.getChunk().zPosition))) {
-			genTag.setBoolean("Generated", true);
-			genTag.setBoolean("Populating", true);
-			return;
-		}
+        if (populatingChunks.contains(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunk().xPosition, event.getChunk().zPosition))) {
+            genTag.setBoolean("Generated", true);
+            genTag.setBoolean("Populating", true);
+            return;
+        }
 
-		genTag.setBoolean("Generated", true);
-		event.getData().setTag(DATA_TAG, genTag);
-	}
+        genTag.setBoolean("Generated", true);
+        event.getData().setTag(DATA_TAG, genTag);
+    }
 
 
-	private static class ChunkReference {
+    private static class ChunkReference {
 
-		public final int dimension;
-		public final int xPos;
-		public final int zPos;
+        public final int dimension;
+        public final int xPos;
+        public final int zPos;
 
-		public ChunkReference(int dim, int x, int z) {
+        public ChunkReference(int dim, int x, int z) {
 
-			dimension = dim;
-			xPos = x;
-			zPos = z;
-		}
+            dimension = dim;
+            xPos = x;
+            zPos = z;
+        }
 
-		@Override
-		public int hashCode() {
+        @Override
+        public int hashCode() {
 
-			return xPos * 43 + zPos * 3 + dimension;
-		}
+            return xPos * 43 + zPos * 3 + dimension;
+        }
 
-		@Override
-		public boolean equals(Object o) {
+        @Override
+        public boolean equals(Object o) {
 
-			if (o == null || o.getClass() != getClass()) {
-				if (o instanceof Chunk) {
-					Chunk other = (Chunk) o;
-					return xPos == other.xPosition && zPos == other.zPosition && dimension == other.getWorld().provider.getDimension();
-				}
-				return false;
-			}
-			ChunkReference other = (ChunkReference) o;
-			return other.dimension == dimension && other.xPos == xPos && other.zPos == zPos;
-		}
+            if (o == null || o.getClass() != getClass()) {
+                if (o instanceof Chunk) {
+                    Chunk other = (Chunk) o;
+                    return xPos == other.xPosition && zPos == other.zPosition && dimension == other.getWorld().provider.getDimension();
+                }
+                return false;
+            }
+            ChunkReference other = (ChunkReference) o;
+            return other.dimension == dimension && other.xPos == xPos && other.zPos == zPos;
+        }
 
-	}
+    }
 }

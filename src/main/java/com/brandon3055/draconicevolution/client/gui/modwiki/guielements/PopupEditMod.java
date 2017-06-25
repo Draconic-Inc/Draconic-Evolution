@@ -91,7 +91,7 @@ public class PopupEditMod extends MGuiPopUpDialog implements IMGuiListener {
                 e.printStackTrace();
             }
         }
-        else if (element == cancelButton){
+        else if (element == cancelButton) {
             close();
         }
         else if (element == deleteButton) {

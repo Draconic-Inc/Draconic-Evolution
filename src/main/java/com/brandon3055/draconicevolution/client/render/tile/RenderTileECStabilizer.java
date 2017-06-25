@@ -30,7 +30,8 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
         EnumFacing facing;
         if (te.isCoreActive.value) {
             facing = te.coreDirection;
-        } else {
+        }
+        else {
             facing = EnumFacing.getFacingFromAxis(EnumFacing.AxisDirection.POSITIVE, te.multiBlockAxis);
         }
 

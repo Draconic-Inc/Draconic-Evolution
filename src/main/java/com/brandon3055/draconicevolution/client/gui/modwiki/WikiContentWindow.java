@@ -101,7 +101,7 @@ public class WikiContentWindow extends MGuiList implements IMGuiListener {
                 return mixColours(CONTENT_WINDOW, 0x00505050);
             }
         };
-        scrollBar.addChild(new MGuiHoverPopup(modularGui, new String[] {"Pro Tip.", "Hold shift while scrolling to scroll faster!"}, scrollBar));
+        scrollBar.addChild(new MGuiHoverPopup(modularGui, new String[]{"Pro Tip.", "Hold shift while scrolling to scroll faster!"}, scrollBar));
         scrollBar.borderColour = 0x00000000;
         scrollBar.backColour = 0x00000000;
         addChild(scrollBar);

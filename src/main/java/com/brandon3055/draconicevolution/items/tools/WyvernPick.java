@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.Set3;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
@@ -9,14 +10,14 @@ import java.util.Set;
  * Created by brandon3055 on 2/06/2016.
  */
 public class WyvernPick extends MiningToolBase {
-    
+
     public WyvernPick(double attackDamage, double attackSpeed, Set<Block> effectiveBlocks) {
         super(attackDamage, attackSpeed, effectiveBlocks);
     }
 
     public WyvernPick() {
         super(ToolStats.WYV_PICK_ATTACK_DAMAGE, ToolStats.WYV_PICK_ATTACK_SPEED, PICKAXE_OVERRIDES);
-        this.baseMiningSpeed = (float)ToolStats.WYV_PICK_MINING_SPEED;
+        this.baseMiningSpeed = (float) ToolStats.WYV_PICK_MINING_SPEED;
         this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
         this.setHarvestLevel("pickaxe", 10);
@@ -31,4 +32,13 @@ public class WyvernPick extends MiningToolBase {
     public int getToolTier(ItemStack stack) {
         return 0;
     }
+
+    //region Rendering
+
+    @Override
+    protected Set3<String, String, String> getTextureLocations() {
+        return Set3.of("items/tools/wyvern_pickaxe", "items/tools/obj/wyvern_pickaxe", "models/item/tools/wyvern_pickaxe.obj");
+    }
+
+    //endregion
 }

@@ -43,7 +43,7 @@ public class ExplosionHelper {
     private HashSet<Integer> tilesToRemove = new HashSet<>();
     private HashMap<ChunkPos, Chunk> chunkCache = new HashMap<>();
     private static final IBlockState AIR = Blocks.AIR.getDefaultState();
-//    private Map<Integer, LinkedHashList<Integer>> radialRemovalMap = new HashMap<>();
+    //    private Map<Integer, LinkedHashList<Integer>> radialRemovalMap = new HashMap<>();
     public LinkedList<HashSet<Integer>> toRemove = new LinkedList<>();
 
     public ExplosionHelper(WorldServer serverWorld, BlockPos start, ShortPos shortPos) {
@@ -51,30 +51,6 @@ public class ExplosionHelper {
         this.start = start;
         this.shortPos = shortPos;
     }
-
-//    public void addBlock(int iPos) {
-//        BlockPos pos = shortPos.getActualPos(iPos);
-//        if (!hasBlockStorage(pos) || isAirBlock(pos)) {
-//            return;
-//        }
-//
-//        int xd = Math.abs(pos.getX() - start.getX()) / 16;
-//        int zd = Math.abs(pos.getZ() - start.getZ()) / 16;
-//        int d = Math.max(xd, zd);
-//
-//        if (!radialRemovalMap.containsKey(d)) {
-//            radialRemovalMap.put(d, new LinkedHashList<Integer>());
-//        }
-//
-//        LinkedHashList<Integer> list = radialRemovalMap.get(d);
-//        list.add(shortPos.getIntPos(pos));
-//    }
-
-//    public void addBlocksForRemoval(Collection<Integer> blocksToRemove) {
-//        for (int pos : blocksToRemove) {
-//            addBlock(pos);
-//        }
-//    }
 
     public void setBlocksForRemoval(LinkedList<HashSet<Integer>> list) {
         this.toRemove = list;
@@ -99,11 +75,8 @@ public class ExplosionHelper {
                 }
             }
 
-//            return;
+            return;
         }
-
-        //?
-//        setRecalcPrecipitationHeightMap(pos);
 
         ExtendedBlockStorage storage = getBlockStorage(pos);
         if (storage != null) {
@@ -198,7 +171,7 @@ public class ExplosionHelper {
         public void updateProcess() {
             server.currentTime = MinecraftServer.getCurrentTimeMillis();
             while (MinecraftServer.getCurrentTimeMillis() - server.currentTime < 50 && helper.toRemove.size() > 0) {
-                LogHelper.dev("Processing chunks ar rad: " + index);
+                LogHelper.dev("Processing chunks at rad: " + index);
                 HashSet<Integer> set = helper.toRemove.removeFirst();
                 for (int pos : set) {
                     helper.removeBlock(helper.shortPos.getActualPos(pos));
@@ -261,7 +234,7 @@ public class ExplosionHelper {
                     if (state.getBlock() instanceof BlockFalling) {
                         state.getBlock().updateTick(helper.serverWorld, helper.shortPos.getActualPos(pos), state, helper.serverWorld.rand);
                     }
-                    state.neighborChanged(helper.serverWorld, helper.shortPos.getActualPos(pos), Blocks.AIR);
+                    state.neighborChanged(helper.serverWorld, helper.shortPos.getActualPos(pos), Blocks.AIR, helper.shortPos.getActualPos(pos).up());
                 }
             }
             catch (Throwable e) {

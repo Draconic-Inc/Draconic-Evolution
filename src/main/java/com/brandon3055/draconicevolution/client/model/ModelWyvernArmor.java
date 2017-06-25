@@ -150,21 +150,21 @@ public class ModelWyvernArmor extends ModelBiped {
             bipedRightLeg.rotateAngleZ = 0F;
 
             setRotationAngles(0, 0, 0, 0, 0, 0, null);
-        } else {
+        }
+        else {
             //super.render(entity, f, f1, f2, f3, f4, f5);
             super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         }
 
         GlStateManager.pushMatrix();
 
-        if (entity.isSneaking())
-        {
+        if (entity.isSneaking()) {
             GlStateManager.translate(0.0F, 0.2F, 0.0F);
         }
 
         this.bipedHead.render(1F / 13F);
 
- //       GlStateManager.pushMatrix();
+        //       GlStateManager.pushMatrix();
 //
 //        if (entity.isSneaking() && )
 //        {
@@ -173,7 +173,7 @@ public class ModelWyvernArmor extends ModelBiped {
 
         this.bipedRightArm.render(1F / 16F);
         this.bipedLeftArm.render(1F / 16F);
- //       GlStateManager.popMatrix();
+        //       GlStateManager.popMatrix();
         this.bipedBody.render(1F / 16F);
         this.bipedRightLeg.render(1F / 16F);
         this.bipedLeftLeg.render(1F / 16F);

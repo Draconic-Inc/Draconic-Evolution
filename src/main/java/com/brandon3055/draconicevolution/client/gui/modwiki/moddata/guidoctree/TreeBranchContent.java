@@ -71,7 +71,7 @@ public class TreeBranchContent extends TreeBranchRoot {
             addChild(icon = stackIcon);
             addChild(iconBackground = back);
 
-            int line =  modularGui.getMinecraft().fontRendererObj.listFormattedStringToWidth(branchName, label.xSize - 28).size();
+            int line = modularGui.getMinecraft().fontRendererObj.listFormattedStringToWidth(branchName, label.xSize - 28).size();
             ySize = Math.max(22, (line * modularGui.getMinecraft().fontRendererObj.FONT_HEIGHT) + 7);
             label.ySize = ySize;
             stackIcon.yOffset = (ySize - 18) / 2;
@@ -231,13 +231,13 @@ public class TreeBranchContent extends TreeBranchRoot {
         if (!isModBranch && branchData.hasAttribute(ATTRIB_ICON_TYPE)) {
             if (branchData.getAttribute(ATTRIB_ICON_TYPE).equals(ICON_TYPE_STACK) && branchData.hasAttribute(ATTRIB_ICON)) {
                 String stackString = branchData.getAttribute(ATTRIB_ICON);
-                StackReference stack = StackReference.fromString(stackString);
+                StackReference stackRef = StackReference.fromString(stackString);
 
-                if (stack == null) {
-                    stack = new StackReference("error");
+                if (stackRef == null) {
+                    stackRef = new StackReference("error");
                 }
 
-                return stack;
+                return stackRef;
             }
         }
         return null;

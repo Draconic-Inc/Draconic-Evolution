@@ -9,13 +9,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -29,7 +29,8 @@ public class ChaosShardAtmos extends BlockBCore {
     }
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {}
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+    }
 
     @Override
     public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
@@ -64,38 +65,31 @@ public class ChaosShardAtmos extends BlockBCore {
 
     //region Air Block Stuff
 
-    public EnumBlockRenderType getRenderType(IBlockState state)
-    {
+    public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.INVISIBLE;
     }
 
     @Nullable
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
-    {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
         return null;
     }
 
-    public boolean isOpaqueCube(IBlockState state)
-    {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
-    public boolean canCollideCheck(IBlockState state, boolean hitIfLiquid)
-    {
+    public boolean canCollideCheck(IBlockState state, boolean hitIfLiquid) {
         return false;
     }
 
-    public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune)
-    {
+    public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
     }
 
-    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos)
-    {
+    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
         return true;
     }
 
-    public boolean isFullCube(IBlockState state)
-    {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 

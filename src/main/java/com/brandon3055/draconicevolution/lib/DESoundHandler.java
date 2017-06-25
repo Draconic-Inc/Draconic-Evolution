@@ -41,7 +41,8 @@ public class DESoundHandler {
     static {
         if (!Bootstrap.isRegistered()) {
             throw new RuntimeException("Accessed Sounds before Bootstrap!");
-        } else {
+        }
+        else {
             energyBolt = getRegisteredSoundEvent("draconicevolution:energy_bolt");
             fusionComplete = getRegisteredSoundEvent("draconicevolution:fusion_complete");
             fusionRotation = getRegisteredSoundEvent("draconicevolution:fusion_rotation");
@@ -66,14 +67,15 @@ public class DESoundHandler {
 
         if (soundevent == null) {
             throw new IllegalStateException("Invalid Sound requested: " + id);
-        } else {
+        }
+        else {
             SOUND_EVENTS.put(id, soundevent);
             return soundevent;
         }
     }
 
     public static SoundEvent getSound(String id) {
-        if (SOUND_EVENTS.containsKey(id)){
+        if (SOUND_EVENTS.containsKey(id)) {
             return SOUND_EVENTS.get(id);
         }
         else if (SoundEvent.REGISTRY.containsKey(ResourceHelperDE.getResourceRAW(id))) {
@@ -92,7 +94,7 @@ public class DESoundHandler {
     public static void playSoundFromServer(World world, double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay, double range) {
         Object o = ReflectionHelper.getPrivateValue(SoundEvent.class, soundIn, "field_187506_b", "soundName");
 
-        if (o instanceof ResourceLocation){
+        if (o instanceof ResourceLocation) {
             o = o.toString();
         }
 

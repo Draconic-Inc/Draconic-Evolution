@@ -22,57 +22,57 @@ import org.lwjgl.input.Mouse;
  */
 public class KeyInputHandler {
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onKeyInput(InputEvent.KeyInputEvent event) {
+        EntityPlayer player = Minecraft.getMinecraft().player;
         if (player == null) {
             return;
         }
 
-		if(KeyBindings.placeItem.isPressed()) {
+        if (KeyBindings.placeItem.isPressed()) {
             handlePlaceItemKey();
         }
-		else if(KeyBindings.toolConfig.isPressed()) {
-			Minecraft.getMinecraft().displayGuiScreen(new GuiToolConfig(player));
-			//DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_CONFIG, true));
-		}
-		else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null){
-			DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_PROFILE_CHANGE, false));
+        else if (KeyBindings.toolConfig.isPressed()) {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiToolConfig(player));
+            //DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_CONFIG, true));
+        }
+        else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
+            DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_PROFILE_CHANGE, false));
 
-			ItemStack stack = HandHelper.getMainFirst(player);
+            ItemStack stack = HandHelper.getMainFirst(player);
 //			if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem)stack.getItem()).hasProfiles()){
 //				int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
 //				if (++preset >= 5) preset = 0;
 //				ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);
 //			}
-		}
-	}
+        }
+    }
 
 
-	private void handlePlaceItemKey(){
-		RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
-		if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
+    private void handlePlaceItemKey() {
+        RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
+        if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
             DraconicEvolution.network.sendToServer(new PacketPlaceItem());
         }
-	}
+    }
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onMouseInput(InputEvent.MouseInputEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onMouseInput(InputEvent.MouseInputEvent event) {
+        EntityPlayer player = Minecraft.getMinecraft().player;
         if (player == null) {
             return;
         }
 
-        if(KeyBindings.placeItem.isPressed()) {
+        if (KeyBindings.placeItem.isPressed()) {
             handlePlaceItemKey();
         }
-        else if(KeyBindings.toolConfig.isPressed()) {
+        else if (KeyBindings.toolConfig.isPressed()) {
             Minecraft.getMinecraft().displayGuiScreen(new GuiToolConfig(player));
             //DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_CONFIG, true));
         }
-        else if (KeyBindings.toolProfileChange.isPressed() && player != null && HandHelper.getMainFirst(player) != null){
+        else if (KeyBindings.toolProfileChange.isPressed() && player != null && HandHelper.getMainFirst(player) != null) {
             DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_PROFILE_CHANGE, false));
 
             ItemStack stack = HandHelper.getMainFirst(player);
@@ -83,28 +83,29 @@ public class KeyInputHandler {
 //			}
         }
 
-		int change = Mouse.getEventDWheel();
-		if (change == 0 || !player.isSneaking()) return;
+        int change = Mouse.getEventDWheel();
+        if (change == 0 || !player.isSneaking()) return;
 
-		if (change > 0){
-			ItemStack item = player.inventory.getStackInSlot(previouseSlot(1, player.inventory.currentItem));
-			if (item != null && item.getItem() == DEFeatures.dislocatorAdvanced){
-				player.inventory.currentItem = previouseSlot(1, player.inventory.currentItem);
-				DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, -1, false));
-			}
-		}else if (change < 0){
-			ItemStack item = player.inventory.getStackInSlot(previouseSlot(-1, player.inventory.currentItem));
-			if (item != null && item.getItem() == DEFeatures.dislocatorAdvanced){
-				player.inventory.currentItem = previouseSlot(-1, player.inventory.currentItem);
-				DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, 1, false));
-			}
-		}
-	}
+        if (change > 0) {
+            ItemStack item = player.inventory.getStackInSlot(previouseSlot(1, player.inventory.currentItem));
+            if (item != null && item.getItem() == DEFeatures.dislocatorAdvanced) {
+                player.inventory.currentItem = previouseSlot(1, player.inventory.currentItem);
+                DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, -1, false));
+            }
+        }
+        else if (change < 0) {
+            ItemStack item = player.inventory.getStackInSlot(previouseSlot(-1, player.inventory.currentItem));
+            if (item != null && item.getItem() == DEFeatures.dislocatorAdvanced) {
+                player.inventory.currentItem = previouseSlot(-1, player.inventory.currentItem);
+                DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, 1, false));
+            }
+        }
+    }
 
-	private int previouseSlot(int i, int c){
-		if (c > 0 && c < 8) return c+i;
-		if (c == 0 && i < 0) return 8;
-		if (c == 8 && i > 0) return 0;
-		return c+i;
-	}
+    private int previouseSlot(int i, int c) {
+        if (c > 0 && c < 8) return c + i;
+        if (c == 0 && i < 0) return 8;
+        if (c == 8 && i > 0) return 0;
+        return c + i;
+    }
 }

@@ -14,7 +14,8 @@ public class ElementBase extends Gui {
     public int ySize;
     public int xSize;
 
-    public ElementBase() {}
+    public ElementBase() {
+    }
 
     public <T extends ElementBase> T addChiled(T element) {
         childElements.add(element);

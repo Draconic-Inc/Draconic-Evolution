@@ -12,16 +12,16 @@ import org.lwjgl.input.Keyboard;
  */
 @SideOnly(Side.CLIENT)
 public class KeyBindings {
-	public static KeyBinding placeItem;
-	public static KeyBinding toolConfig;
-	public static KeyBinding toolProfileChange;
+    public static KeyBinding placeItem;
+    public static KeyBinding toolConfig;
+    public static KeyBinding toolProfileChange;
 
-	public static void init() {
-		placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_P, DraconicEvolution.MODNAME);
-		toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_C, DraconicEvolution.MODNAME);
-		toolProfileChange = new KeyBinding("key.toolProfileChange", Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
-		ClientRegistry.registerKeyBinding(placeItem);
-		ClientRegistry.registerKeyBinding(toolConfig);
-		ClientRegistry.registerKeyBinding(toolProfileChange);
-	}
+    public static void init() {
+        placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_P, DraconicEvolution.MODNAME);
+        toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_C, DraconicEvolution.MODNAME);
+        toolProfileChange = new KeyBinding("key.toolProfileChange", Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
+        ClientRegistry.registerKeyBinding(placeItem);
+        ClientRegistry.registerKeyBinding(toolConfig);
+        ClientRegistry.registerKeyBinding(toolProfileChange);
+    }
 }

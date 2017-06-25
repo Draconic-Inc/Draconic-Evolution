@@ -12,6 +12,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -73,16 +74,16 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
             ItemStack stackInSlot = slot.getStack();
             ItemStack heldStack = inventory.getItemStack();
 
-            if (heldStack != null) {
+            if (!heldStack.isEmpty()) {
                 int value;
                 ItemStack copy = heldStack.copy();
-                copy.stackSize = 1;
+                copy.setCount(1);
 
                 if ((value = getFuelValue(copy)) > 0) {
                     int maxInsert = free / value;
-                    int insert = Math.min(Math.min(heldStack.stackSize, maxInsert), dragType == 1 ? 1 : 64);
+                    int insert = Math.min(Math.min(heldStack.getCount(), maxInsert), dragType == 1 ? 1 : 64);
                     tile.reactableFuel.value += insert * value;
-                    heldStack.stackSize -= insert;
+                    heldStack.shrink(insert);
                 }
 //                else if ((value = getChaosValue(copy)) > 0) {
 //                    int maxInsert = free / value;
@@ -91,22 +92,22 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
 //                    heldStack.stackSize -= insert;
 //                }
 
-                if (heldStack.stackSize <= 0) {
-                    inventory.setItemStack(null);
+                if (heldStack.getCount() <= 0) {
+                    inventory.setItemStack(ItemStack.EMPTY);
                 }
             }
-            else if (stackInSlot != null) {
+            else if (!stackInSlot.isEmpty()) {
                 tile.reactableFuel.value -= getFuelValue(stackInSlot);
                 tile.convertedFuel.value -= getChaosValue(stackInSlot);
                 inventory.setItemStack(stackInSlot);
             }
 
-            return null;
+            return ItemStack.EMPTY;
         }
-        else if (slotId <= 35){
+        else if (slotId <= 35) {
             return super.slotClick(slotId, dragType, clickTypeIn, player);
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -115,33 +116,33 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
     }
 
     private int getFuelValue(ItemStack stack) {
-        if (stack == null) {
+        if (stack.isEmpty()) {
             return 0;
         }
         else if (stack.getItem() == Item.getItemFromBlock(DEFeatures.draconicBlock)) {
-            return stack.stackSize * 1296;
+            return stack.getCount() * 1296;
         }
         else if (stack.getItem() == DEFeatures.draconicIngot) {
-            return stack.stackSize * 144;
+            return stack.getCount() * 144;
         }
         else if (stack.getItem() == DEFeatures.nugget && stack.getItemDamage() == 1) {
-            return stack.stackSize * 16;
+            return stack.getCount() * 16;
         }
         return 0;
     }
 
     private int getChaosValue(ItemStack stack) {
-        if (stack == null) {
+        if (stack.isEmpty()) {
             return 0;
         }
         else if (stack.getItem() == DEFeatures.chaosShard && stack.getItemDamage() == 1) {
-            return stack.stackSize * 1296;
+            return stack.getCount() * 1296;
         }
         else if (stack.getItem() == DEFeatures.chaosShard && stack.getItemDamage() == 2) {
-            return stack.stackSize * 144;
+            return stack.getCount() * 144;
         }
         else if (stack.getItem() == DEFeatures.chaosShard && stack.getItemDamage() == 3) {
-            return stack.stackSize * 16;
+            return stack.getCount() * 16;
         }
         return 0;
     }
@@ -157,20 +158,15 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
 
         @Override
         public void onSlotChange(ItemStack before, ItemStack after) {
-            if (before != null && after != null) {
+            if (!before.isEmpty() && !after.isEmpty()) {
                 if (before.getItem() == after.getItem()) {
-                    int i = after.stackSize - before.stackSize;
+                    int i = after.getCount() - before.getCount();
 
                     if (i > 0) {
                         this.onCrafting(before, i);
                     }
                 }
             }
-        }
-
-        @Override
-        public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack) {
-            super.onPickupFromSlot(playerIn, stack);
         }
 
         @Override
@@ -215,11 +211,11 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
                 }
             }
 
-            return null;
+            return ItemStack.EMPTY;
         }
 
         @Override
-        public void putStack(@Nullable ItemStack stack) {
+        public void putStack(@Nonnull ItemStack stack) {
             //this.inventory.setInventorySlotContents(this.slotIndex, stack);
             this.onSlotChanged();
         }
@@ -236,7 +232,7 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
 
         @Override
         public ItemStack decrStackSize(int amount) {
-            return null;//this.inventory.decrStackSize(this.getSlotIndex, amount);
+            return ItemStack.EMPTY;//this.inventory.decrStackSize(this.getSlotIndex, amount);
         }
 
         @Override

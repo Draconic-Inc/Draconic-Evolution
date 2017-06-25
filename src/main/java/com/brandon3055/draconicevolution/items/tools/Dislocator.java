@@ -34,22 +34,22 @@ public class Dislocator extends ItemBCore {
     }
 
     @Override
-    public boolean isItemTool(ItemStack stack) {
+    public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         if (getLocation(stack) == null) {
-            if (player.worldObj.isRemote) {
-                player.addChatMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
+            if (player.world.isRemote) {
+                player.sendMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
             }
             return true;
         }
 
         if (entity instanceof EntityPlayer && !(this instanceof DislocatorAdvanced)) {
-            if (player.worldObj.isRemote) {
-                player.addChatMessage(new TextComponentTranslation("msg.teleporterPlayerT1.txt"));
+            if (player.world.isRemote) {
+                player.sendMessage(new TextComponentTranslation("msg.teleporterPlayerT1.txt"));
             }
             return true;
         }
@@ -63,38 +63,39 @@ public class Dislocator extends ItemBCore {
                 player.setHealth(player.getHealth() - 2);
             }
 
-            if (!entity.worldObj.isRemote) {
-                DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+            if (!entity.world.isRemote) {
+                DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
 
             getLocation(stack).teleport(entity);
             stack.damageItem(1, player);
-            if (stack.stackSize <= 0){
+            if (stack.getCount() <= 0) {
                 player.inventory.deleteStack(stack);
             }
 
 
-            if (!entity.worldObj.isRemote) {
-                DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+            if (!entity.world.isRemote) {
+                DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
 
-            if (player.worldObj.isRemote) {
-                player.addChatMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) getLocation(stack).getXCoord() + " y:" + (int) getLocation(stack).getYCoord() + " z:" + (int) getLocation(stack).getZCoord() + " Dimension: " + getLocation(stack).getDimensionName()));
+            if (player.world.isRemote) {
+                player.sendMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) getLocation(stack).getXCoord() + " y:" + (int) getLocation(stack).getYCoord() + " z:" + (int) getLocation(stack).getZCoord() + " Dimension: " + getLocation(stack).getDimensionName()));
             }
         }
-        else if (player.worldObj.isRemote){
-            player.addChatMessage(new TextComponentTranslation("msg.teleporterLowHealth.txt"));
+        else if (player.world.isRemote) {
+            player.sendMessage(new TextComponentTranslation("msg.teleporterLowHealth.txt"));
         }
 
         return true;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             if (getLocation(stack) == null) {
                 if (world.isRemote) {
-                    player.addChatMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.worldObj.provider.getDimensionType().getName() + "}"));
+                    player.sendMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.world.provider.getDimensionType().getName() + "}"));
                 }
                 else {
                     ItemNBTHelper.setDouble(stack, "X", player.posX);
@@ -106,32 +107,32 @@ public class Dislocator extends ItemBCore {
                     ItemNBTHelper.setBoolean(stack, "IsSet", true);
                     ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionType().getName());//TODO Is this really needed?
                 }
-                return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+                return new ActionResult<>(EnumActionResult.PASS, stack);
             }
             else if (world.isRemote) {
-                player.addChatMessage(new TextComponentTranslation("msg.teleporterAlreadySet.txt"));
+                player.sendMessage(new TextComponentTranslation("msg.teleporterAlreadySet.txt"));
             }
 
-            return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+            return new ActionResult<>(EnumActionResult.PASS, stack);
         }
         else {
             if (getLocation(stack) == null) {
                 if (world.isRemote) {
-                    player.addChatMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
+                    player.sendMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
                 }
-                return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+                return new ActionResult<>(EnumActionResult.PASS, stack);
             }
 
             if (player.getHealth() > 2 || player.capabilities.isCreativeMode) {
 
                 if (!world.isRemote) {
-                    DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
 
                 getLocation(stack).teleport(player);
 
                 if (!world.isRemote) {
-                    DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
 
                 stack.damageItem(1, player);
@@ -141,9 +142,9 @@ public class Dislocator extends ItemBCore {
                 }
             }
             else if (world.isRemote) {
-                player.addChatMessage(new TextComponentTranslation("msg.teleporterLowHealth.txt"));
+                player.sendMessage(new TextComponentTranslation("msg.teleporterLowHealth.txt"));
             }
-            return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+            return new ActionResult<>(EnumActionResult.PASS, stack);
         }
 
     }
@@ -156,7 +157,8 @@ public class Dislocator extends ItemBCore {
             tooltip.add(TextFormatting.WHITE + I18n.format("info.teleporterInfUnset3.txt"));
             tooltip.add(TextFormatting.WHITE + I18n.format("info.teleporterInfUnset4.txt"));
             tooltip.add(TextFormatting.WHITE + I18n.format("info.teleporterInfUnset5.txt"));
-        } else {
+        }
+        else {
             tooltip.add(TextFormatting.GREEN + I18n.format("info.teleporterInfSet1.txt"));
             tooltip.add(TextFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + getLocation(stack).getDimensionName() + "}");
             tooltip.add(TextFormatting.BLUE + String.valueOf(stack.getMaxDamage() - stack.getItemDamage() + 1) + " " + I18n.format("info.teleporterInfSet2.txt"));

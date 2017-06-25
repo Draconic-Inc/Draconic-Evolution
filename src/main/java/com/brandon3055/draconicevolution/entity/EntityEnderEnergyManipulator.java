@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.dragon.phase.*;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -82,7 +83,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
         this.prevPosZ = this.posZ;
 
         if (exitPortalLocation == null) {
-            for (exitPortalLocation = new BlockPos(0, 100, 0); worldObj.getBlockState(this.exitPortalLocation).getBlock() != Blocks.BEDROCK && exitPortalLocation.getY() > 30; this.exitPortalLocation = this.exitPortalLocation.down());
+            for (exitPortalLocation = new BlockPos(0, 100, 0); world.getBlockState(this.exitPortalLocation).getBlock() != Blocks.BEDROCK && exitPortalLocation.getY() > 30; this.exitPortalLocation = this.exitPortalLocation.down()) ;
             if (exitPortalLocation.getY() <= 30) {
                 cancel();
                 return;
@@ -91,19 +92,19 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             exitPortalLocation = exitPortalLocation.up(1);
         }
 
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             updateStage();
         }
 
         if (getStage() == Stage.POSITION) {
-            this.moveEntity(this.motionX, this.motionY, this.motionZ);
+            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
         }
         else {
             setPosition(0.5, exitPortalLocation.getY() + 0.5, 0.5);
             motionX = motionY = motionZ = 0;
         }
 
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             //region Update Dragon
             if (dragon != null) {
                 dragon.setAttackTarget(null);
@@ -111,7 +112,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                     dragon = null;
                     LogHelper.dev("Re-Acquire Dragon");
 
-                    List<EntityDragon> list = worldObj.getEntities(EntityDragon.class, EntitySelectors.IS_ALIVE);
+                    List<EntityDragon> list = world.getEntities(EntityDragon.class, EntitySelectors.IS_ALIVE);
                     for (EntityDragon listItem : list) {
                         if (dragon == null || listItem.getDistance(0, exitPortalLocation.getY() + 0.5, 0) < dragon.getDistance(0, exitPortalLocation.getY() + 0.5, 0)) {
                             dragon = listItem;
@@ -129,7 +130,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                         dragon.getPhaseManager().setPhase(PhaseList.HOLDING_PATTERN);
                     }
                 }
-                else if (stageTime < 300){
+                else if (stageTime < 300) {
                     IPhase phase = dragon.getPhaseManager().getCurrentPhase();
                     if (phase instanceof PhaseTakeoff) {
                         dragon.getPhaseManager().setPhase(PhaseList.SITTING_SCANNING);
@@ -158,7 +159,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             //region Position
             case POSITION: {
                 if (getDistance(0.5, exitPortalLocation.getY() + 0.5, 0.5) > 0.1) {
-                    ((WorldServer) worldObj).spawnParticle(EnumParticleTypes.END_ROD, true, posX, posY, posZ, 1, 0, 0, 0, 0.01, 0);
+                    ((WorldServer) world).spawnParticle(EnumParticleTypes.END_ROD, true, posX, posY, posZ, 1, 0, 0, 0, 0.01, 0);
                     double speed = 0.1;
                     Vec3D dirVec = Vec3D.getDirectionVec(new Vec3D(this), new Vec3D(0.5, exitPortalLocation.getY() + 0.5, 0.5));
                     motionX = dirVec.x * speed;
@@ -177,13 +178,13 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             //region Acquire Dragon and spawn crystals
             case ACQUIRE_DRAGON: {
                 if (stageTime == 0) {
-                    if (!(worldObj.provider instanceof WorldProviderEnd)) {
+                    if (!(world.provider instanceof WorldProviderEnd)) {
                         cancel();
                         return;
                     }
 
-                    fightManager = ((WorldProviderEnd) worldObj.provider).getDragonFightManager();
-                    List<EntityDragon> list = worldObj.getEntities(EntityDragon.class, EntitySelectors.IS_ALIVE);
+                    fightManager = ((WorldProviderEnd) world.provider).getDragonFightManager();
+                    List<EntityDragon> list = world.getEntities(EntityDragon.class, EntitySelectors.IS_ALIVE);
                     if (fightManager.dragonKilled || list.isEmpty()) {
                         cancel();
                         return;
@@ -195,9 +196,9 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                         }
                     }
 
-                    for (WorldGenSpikes.EndSpike genSpike : BiomeEndDecorator.getSpikesForWorld(worldObj)) {
+                    for (WorldGenSpikes.EndSpike genSpike : BiomeEndDecorator.getSpikesForWorld(world)) {
                         boolean crystalFound = false;
-                        for (EntityEnderCrystal entityendercrystal : worldObj.getEntitiesWithinAABB(EntityEnderCrystal.class, genSpike.getTopBoundingBox())) {
+                        for (EntityEnderCrystal entityendercrystal : world.getEntitiesWithinAABB(EntityEnderCrystal.class, genSpike.getTopBoundingBox())) {
                             entityendercrystal.setBeamTarget(exitPortalLocation.down(2));
                             entityendercrystal.setEntityInvulnerable(true);
                             crystalFound = true;
@@ -211,10 +212,10 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                 else if (deadCrystals.size() > 0 && stageTime > 50) {
                     //Respawn next crystal
                     BlockPos pos = deadCrystals.remove(rand.nextInt(deadCrystals.size()));
-                    worldObj.createExplosion((Entity) null, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 5.0F, true);
-                    EntityEnderCrystal crystal = new EntityEnderCrystal(worldObj);
+                    world.createExplosion((Entity) null, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 5.0F, true);
+                    EntityEnderCrystal crystal = new EntityEnderCrystal(world);
                     crystal.setLocationAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, rand.nextFloat() * 360.0F, 0.0F);
-                    worldObj.spawnEntityInWorld(crystal);
+                    world.spawnEntity(crystal);
                     crystal.setEntityInvulnerable(true);
                     crystal.setBeamTarget(exitPortalLocation.down(2));
                     stageTime = 0;
@@ -232,7 +233,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             //region Collect Souls
             case COLLECT_SOULS: {
                 if (stageTime % 20 == 0) {
-                    List<EntityEnderman> list = worldObj.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
+                    List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
 
                     if (list.size() < 20) {
                         spawnNewEnderman();
@@ -248,7 +249,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
 
                         targeting++;
                         if (targeting > 5 && enderman.getAttackTarget() == this && rand.nextInt(20) == 0) {
-                            EntityPlayer player = Utils.getClosestPlayer(worldObj, enderman.posX, enderman.posY, enderman.posZ, 50, false);
+                            EntityPlayer player = Utils.getClosestPlayer(world, enderman.posX, enderman.posY, enderman.posZ, 50, false);
                             if (player != null) {
                                 enderman.setAttackTarget(player);
                             }
@@ -282,7 +283,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             }//endregion
             case EXTRACT: {
                 if (stageTime % 20 == 0) {
-                    List<EntityEnderman> list = worldObj.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
+                    List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
                     for (EntityEnderman enderman : list) {
                         enderman.setAttackTarget(this);
                     }
@@ -291,23 +292,23 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                 double dragonDist = dragon == null ? 100 : dragon.getDistance(posX, posY, posZ);
 
                 if (dragon != null && dragonDist < 10) {
-                    BCEffectHandler.spawnFX(DEParticles.SOUL_EXTRACTION, worldObj, new Vec3D(dragon).add(0, 2, 0), new Vec3D(this), 512D, 3);
+                    BCEffectHandler.spawnFX(DEParticles.SOUL_EXTRACTION, world, new Vec3D(dragon).add(0, 2, 0), new Vec3D(this), 512D, 3);
                 }
 
                 if (stageTime == 300) {
-                    List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
+                    List<Entity> list = world.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
                     for (Entity entity : list) {
                         if (entity instanceof EntityEnderman || (entity instanceof EntityItem && ((EntityItem) entity).getEntityItem().getItem() == Items.ENDER_PEARL) || entity instanceof EntityAreaEffectCloud) {
                             entity.setDead();
                         }
                     }
 
-                    this.worldObj.playSound((EntityPlayer) null, posX, posY, posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 40.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+                    this.world.playSound((EntityPlayer) null, posX, posY, posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 40.0F, (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F);
 
                     PacketCustom.sendToAllAround(new SPacketExplosion(posX, posY, posZ, 505, Collections.<BlockPos>emptyList(), new Vec3d(0, 0, 0)), posX, posY, posZ, 512, 1);
 
-                    EntityPersistentItem entityItem = new EntityPersistentItem(worldObj, posX, posY, posZ, new ItemStack(Blocks.DRAGON_EGG));
-                    worldObj.spawnEntityInWorld(entityItem);
+                    EntityPersistentItem entityItem = new EntityPersistentItem(world, posX, posY, posZ, new ItemStack(Blocks.DRAGON_EGG));
+                    world.spawnEntity(entityItem);
                     entityItem.motionX = entityItem.motionY = entityItem.motionZ = 0;
                     cleanup();
                     if (dragon != null) {
@@ -316,9 +317,9 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                 }
 
                 if (stageTime > 320) {
-                    worldObj.playSound((EntityPlayer) null, posX, posY, posZ, SoundEvents.ENTITY_ENDERMEN_STARE, SoundCategory.MASTER, 10, 0.7F);
-                    worldObj.playSound((EntityPlayer) null, posX, posY, posZ, SoundEvents.ENTITY_ENDERMEN_STARE, SoundCategory.MASTER, 10, 1F);
-                    worldObj.playSound((EntityPlayer) null, posX, posY, posZ, SoundEvents.ENTITY_ENDERMEN_STARE, SoundCategory.MASTER, 10, 1.3F);
+                    world.playSound((EntityPlayer) null, posX, posY, posZ, SoundEvents.ENTITY_ENDERMEN_STARE, SoundCategory.MASTER, 10, 0.7F);
+                    world.playSound((EntityPlayer) null, posX, posY, posZ, SoundEvents.ENTITY_ENDERMEN_STARE, SoundCategory.MASTER, 10, 1F);
+                    world.playSound((EntityPlayer) null, posX, posY, posZ, SoundEvents.ENTITY_ENDERMEN_STARE, SoundCategory.MASTER, 10, 1.3F);
                     setDead();
                 }
 
@@ -331,16 +332,16 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
     }
 
     private void cancel() {
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             cleanup();
-            worldObj.spawnEntityInWorld(new EntityItem(worldObj, posX, posY, posZ, new ItemStack(DEFeatures.enderEnergyManipulator)));
+            world.spawnEntity(new EntityItem(world, posX, posY, posZ, new ItemStack(DEFeatures.enderEnergyManipulator)));
             setDead();
         }
     }
 
     private void cleanup() {
-        for (WorldGenSpikes.EndSpike worldgenspikes$endspike : BiomeEndDecorator.getSpikesForWorld(worldObj)) {
-            for (EntityEnderCrystal entityendercrystal : worldObj.getEntitiesWithinAABB(EntityEnderCrystal.class, worldgenspikes$endspike.getTopBoundingBox())) {
+        for (WorldGenSpikes.EndSpike worldgenspikes$endspike : BiomeEndDecorator.getSpikesForWorld(world)) {
+            for (EntityEnderCrystal entityendercrystal : world.getEntitiesWithinAABB(EntityEnderCrystal.class, worldgenspikes$endspike.getTopBoundingBox())) {
                 entityendercrystal.setBeamTarget(null);
                 entityendercrystal.setEntityInvulnerable(false);
             }
@@ -348,24 +349,24 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
     }
 
     private void spawnNewEnderman() {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
         for (int i = 0; i < 10; i++) {
-            BlockPos spawnPos = worldObj.getTopSolidOrLiquidBlock(new BlockPos(posX + rand.nextInt(50) - 25, 255, posZ + rand.nextInt(50) - 25));
-            if (!worldObj.isAirBlock(spawnPos)) {
-                EntityEnderman enderman = new EntityEnderman(worldObj);
+            BlockPos spawnPos = world.getTopSolidOrLiquidBlock(new BlockPos(posX + rand.nextInt(50) - 25, 255, posZ + rand.nextInt(50) - 25));
+            if (!world.isAirBlock(spawnPos)) {
+                EntityEnderman enderman = new EntityEnderman(world);
                 enderman.setPosition(spawnPos.getX() + 0.5, spawnPos.getY() + 1, spawnPos.getZ() + 0.5);
-                worldObj.spawnEntityInWorld(enderman);
+                world.spawnEntity(enderman);
             }
         }
     }
 
     private void killnextEnderman() {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
-        List<EntityEnderman> list = worldObj.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(8, 15, 8), EntitySelectors.IS_ALIVE);
+        List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(8, 15, 8), EntitySelectors.IS_ALIVE);
         if (!list.isEmpty()) {
             EntityEnderman enderman = list.get(rand.nextInt(list.size()));
             enderman.captureDrops = true;
@@ -373,10 +374,10 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             enderman.motionX = dirVec.x;
             enderman.motionY = dirVec.y;
             enderman.motionZ = dirVec.z;
-            enderman.attackEntityFrom(DamageSource.magic, 10000F);
+            enderman.attackEntityFrom(DamageSource.MAGIC, 10000F);
             soulsCollected++;
 
-            BCEffectHandler.spawnFX(DEParticles.SOUL_EXTRACTION, worldObj, new Vec3D(enderman), new Vec3D(this), 100);
+            BCEffectHandler.spawnFX(DEParticles.SOUL_EXTRACTION, world, new Vec3D(enderman), new Vec3D(this), 100);
         }
     }
 
@@ -400,7 +401,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
     @Nullable
     @Override
     public ItemStack getItemStackFromSlot(EntityEquipmentSlot slotIn) {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override

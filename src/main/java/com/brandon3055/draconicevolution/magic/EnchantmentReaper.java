@@ -11,31 +11,31 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class EnchantmentReaper extends Enchantment {
 
-	public static EnchantmentReaper instance;
+    public static EnchantmentReaper instance;
 
-	public EnchantmentReaper() {
-		super(Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[] {EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
-		this.setName("draconicevolution.reaperEnchant");
-		this.setRegistryName(new ResourceLocation("draconicevolution", "enchant_reaper"));
-	}
+    public EnchantmentReaper() {
+        super(Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+        this.setName("draconicevolution.reaperEnchant");
+        this.setRegistryName(new ResourceLocation("draconicevolution", "enchant_reaper"));
+    }
 
-	public static void init() {
-		instance = new EnchantmentReaper();
-		GameRegistry.register(instance);
-	}
+    public static void init() {
+        instance = new EnchantmentReaper();
+        GameRegistry.register(instance);
+    }
 
-	@Override
-	public int getMaxLevel() {
-		return 5;
-	}
+    @Override
+    public int getMaxLevel() {
+        return 5;
+    }
 
-	@Override
-	public int getMinEnchantability(int level) {
-		return 1 + 10 * (level - 1);
-	}
+    @Override
+    public int getMinEnchantability(int level) {
+        return 1 + 10 * (level - 1);
+    }
 
-	@Override
-	public int getMaxEnchantability(int level) {
-		return super.getMinEnchantability(level) + 50;
-	}
+    @Override
+    public int getMaxEnchantability(int level) {
+        return super.getMinEnchantability(level) + 50;
+    }
 }

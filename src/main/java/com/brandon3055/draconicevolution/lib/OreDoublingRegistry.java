@@ -35,7 +35,7 @@ public class OreDoublingRegistry {
             }
 
             List<ItemStack> ingots = OreDictionary.getOres(ingot);
-            ItemStack stack = null;
+            ItemStack stack = ItemStack.EMPTY;
 
             for (ItemStack candidate : ingots) {
                 stack = candidate;
@@ -45,9 +45,9 @@ public class OreDoublingRegistry {
                 }
             }
 
-            if (stack != null) {
+            if (!stack.isEmpty()) {
                 stack = stack.copy();
-                stack.stackSize = 2;
+                stack.setCount(2);
                 registerOreResult(oreName, stack);
             }
         }
@@ -64,12 +64,12 @@ public class OreDoublingRegistry {
     }
 
     public static ItemStack getSmeltingResult(ItemStack stack) {
-        if (stack == null) {
-            return null;
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
         }
-        if (stack.stackSize != 1) {
+        if (stack.getCount() != 1) {
             stack = stack.copy();
-            stack.stackSize = 1;
+            stack.setCount(1);
         }
 
         if (stackToStackRecipes.containsKey(stack)) {
@@ -80,7 +80,7 @@ public class OreDoublingRegistry {
         for (int id : ids) {
             String sid = OreDictionary.getOreName(id);
             if (oreRecipes.containsKey(sid)) {
-                return oreRecipes.get(sid);
+                return oreRecipes.getOrDefault(sid, ItemStack.EMPTY);
             }
         }
 

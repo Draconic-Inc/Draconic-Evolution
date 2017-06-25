@@ -6,6 +6,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -55,9 +56,9 @@ public class RainSensor extends BlockBCore {
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        worldIn.scheduleUpdate(pos, this, 10);
-        return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+        world.scheduleUpdate(pos, this, 10);
+        return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
     }
 
     @Override

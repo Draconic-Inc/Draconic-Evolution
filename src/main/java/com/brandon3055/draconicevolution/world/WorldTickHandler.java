@@ -17,46 +17,47 @@ import java.util.Random;
  * Handles World Ticks!
  */
 public class WorldTickHandler {
-	public static TIntObjectHashMap<ArrayDeque<ChunkPos>> chunksToGen = new TIntObjectHashMap<ArrayDeque<ChunkPos>>();
+    public static TIntObjectHashMap<ArrayDeque<ChunkPos>> chunksToGen = new TIntObjectHashMap<ArrayDeque<ChunkPos>>();
 
-	private int tick = 0;
+    private int tick = 0;
 
-	@SubscribeEvent
-	public void tickEnd(TickEvent.WorldTickEvent event) {
-		if (event.side != Side.SERVER) {
-			return;
-		}
+    @SubscribeEvent
+    public void tickEnd(TickEvent.WorldTickEvent event) {
+        if (event.side != Side.SERVER) {
+            return;
+        }
 
-		World world = event.world;
-		int dimension = event.world.provider.getDimension();
+        World world = event.world;
+        int dimension = event.world.provider.getDimension();
 
-		if (event.phase == TickEvent.Phase.END){
-			ArrayDeque<ChunkPos> chunks = chunksToGen.get(dimension);
+        if (event.phase == TickEvent.Phase.END) {
+            ArrayDeque<ChunkPos> chunks = chunksToGen.get(dimension);
 
-			if (chunks != null && chunks.size() > 0){
+            if (chunks != null && chunks.size() > 0) {
                 ChunkPos chunkPos = chunks.pollFirst();
 
-				if (tick++ % 20 == 0) {
-					LogHelper.info("Retroactively adding ore to {dim: "+dimension+", chunkPos: "+chunkPos.toString()+", chunksToGo: "+chunks.size()+"}");
-				}
+                if (tick++ % 20 == 0) {
+                    LogHelper.info("Retroactively adding ore to {dim: " + dimension + ", chunkPos: " + chunkPos.toString() + ", chunksToGo: " + chunks.size() + "}");
+                }
 
-				long worldSeed = world.getSeed();
-				Random rand = new Random(worldSeed);
-				long xSeed = rand.nextLong() >> 2 + 1L;
-				long zSeed = rand.nextLong() >> 2 + 1L;
-				rand.setSeed(xSeed * chunkPos.chunkXPos + zSeed * chunkPos.chunkZPos ^ worldSeed);
-				DEWorldGenHandler.instance.addOreGen(rand, chunkPos.chunkXPos, chunkPos.chunkZPos, world);
-				chunksToGen.put(dimension, chunks);
-			}else if (chunks != null){
-				chunksToGen.remove(dimension);
-			}
-		}
-	}
+                long worldSeed = world.getSeed();
+                Random rand = new Random(worldSeed);
+                long xSeed = rand.nextLong() >> 2 + 1L;
+                long zSeed = rand.nextLong() >> 2 + 1L;
+                rand.setSeed(xSeed * chunkPos.chunkXPos + zSeed * chunkPos.chunkZPos ^ worldSeed);
+                DEWorldGenHandler.instance.addOreGen(rand, chunkPos.chunkXPos, chunkPos.chunkZPos, world);
+                chunksToGen.put(dimension, chunks);
+            }
+            else if (chunks != null) {
+                chunksToGen.remove(dimension);
+            }
+        }
+    }
 
-	@SubscribeEvent
-	public void worldUnload(WorldEvent.Unload event){
-		if (chunksToGen.containsKey(event.getWorld().provider.getDimension())){
-			chunksToGen.get(event.getWorld().provider.getDimension()).clear();
-		}
-	}
+    @SubscribeEvent
+    public void worldUnload(WorldEvent.Unload event) {
+        if (chunksToGen.containsKey(event.getWorld().provider.getDimension())) {
+            chunksToGen.get(event.getWorld().provider.getDimension()).clear();
+        }
+    }
 }

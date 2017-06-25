@@ -65,14 +65,14 @@ public class DraconicArmor extends WyvernArmor {
 
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
-        if (armorType == HEAD){
+        if (armorType == HEAD) {
             registry.register(stack, new BooleanConfigField("armorNV", false, "config.field.armorNV.description"));
             registry.register(stack, new BooleanConfigField("armorNVLock", false, "config.field.armorNVLock.description"));
             //TODO RE Integrate thaumcraft
         }
-        if (armorType == CHEST){
+        if (armorType == CHEST) {
             registry.register(stack, new IntegerConfigField("armorFSpeedModifier", 0, 0, 600, "config.field.armorFSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
-            registry.register(stack, new IntegerConfigField("armorVFSpeedModifier", 0, 0, 600, "config.field.armorVFSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
+//            registry.register(stack, new IntegerConfigField("armorVFSpeedModifier", 0, 0, 600, "config.field.armorVFSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
             registry.register(stack, new BooleanConfigField("armorInertiaCancel", false, "config.field.armorInertiaCancel.description"));
             registry.register(stack, new BooleanConfigField("armorFlightLock", false, "config.field.armorFlightLock.description"));
         }
@@ -81,13 +81,13 @@ public class DraconicArmor extends WyvernArmor {
             int i = 200 + (100 * u) + (Math.max(u - 1, 0) * 100) + (Math.max(u - 2, 0) * 100);
             registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         }
-        if (armorType == FEET){
+        if (armorType == FEET) {
             int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.JUMP_BOOST);
             int i = 200 + (100 * u) + (Math.max(u - 1, 0) * 100) + (Math.max(u - 2, 0) * 100);
             registry.register(stack, new IntegerConfigField("armorJumpModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
             registry.register(stack, new BooleanConfigField("armorHillStep", true, "config.field.armorHillStep.description"));
         }
-        if (armorType == FEET || armorType == LEGS || armorType == CHEST){
+        if (armorType == FEET || armorType == LEGS || armorType == CHEST) {
             registry.register(stack, new BooleanConfigField("sprintBoost", false, "config.field.sprintBoost.description"));
         }
 
@@ -152,7 +152,7 @@ public class DraconicArmor extends WyvernArmor {
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
-        if (stack == null) {
+        if (stack.isEmpty()) {
             return;
         }
         if (stack.getItem() == DEFeatures.draconicHelm) {
@@ -171,7 +171,7 @@ public class DraconicArmor extends WyvernArmor {
                 return;
             }
 
-            if (ToolConfigHelper.getBooleanField("armorNV", stack) && (player.worldObj.getLightBrightness(new BlockPos((int) Math.floor(player.posX), (int) player.posY + 1, (int) Math.floor(player.posZ))) < 0.1F || ToolConfigHelper.getBooleanField("armorNVLock", stack))) {
+            if (ToolConfigHelper.getBooleanField("armorNV", stack) && (player.world.getLightBrightness(new BlockPos((int) Math.floor(player.posX), (int) player.posY + 1, (int) Math.floor(player.posZ))) < 0.1F || ToolConfigHelper.getBooleanField("armorNVLock", stack))) {
                 player.addPotionEffect(new PotionEffect(nv, 419, 0, false, false));
             }
             else if (player.isPotionActive(nv)) {
@@ -229,7 +229,7 @@ public class DraconicArmor extends WyvernArmor {
     public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorFSpeedModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()) {
             modifier /= 5F;
         }
 
@@ -240,7 +240,7 @@ public class DraconicArmor extends WyvernArmor {
     public float getFlightVModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorVFSpeedModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()) {
             modifier /= 5F;
         }
 
@@ -264,12 +264,12 @@ public class DraconicArmor extends WyvernArmor {
             return ToolStats.DRACONIC_BASE_CAPACITY;
         }
         else {
-            return ToolStats.DRACONIC_BASE_CAPACITY * (int)Math.pow(2, level + 1);
+            return ToolStats.DRACONIC_BASE_CAPACITY * (int) Math.pow(2, level + 1);
         }
     }
 
     @Override
-    protected int getMaxReceive(ItemStack stack){
+    protected int getMaxReceive(ItemStack stack) {
         return 1000000;
     }
 

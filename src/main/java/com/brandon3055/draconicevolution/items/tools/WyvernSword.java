@@ -1,7 +1,11 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.api.itemconfig.*;
+import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
+import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -9,11 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketBlockChange;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -59,15 +59,10 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
         boolean cancel = super.onBlockStartBreak(itemstack, pos, player) || player.capabilities.isCreativeMode;
 
         if (cancel && player instanceof EntityPlayerMP) {
-            ((EntityPlayerMP)player).connection.sendPacket(new SPacketBlockChange(player.worldObj, pos));
+            ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(player.world, pos));
         }
 
         return cancel;
-    }
-
-    @Override
-    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-        return super.onItemUseFirst(stack, player, world, pos, side, hitX, hitY, hitZ, hand);
     }
 
     //region Attack Stats
@@ -85,7 +80,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
         registry.register(stack, new DoubleConfigField("attackAOE", getMaxAttackAOE(stack), 0, getMaxAttackAOE(stack), "config.field.attackAOE.description", IItemConfigField.EnumControlType.SLIDER));
-        return super.getFields(stack, registry);
+        return registry;
     }
 
     @Override
@@ -96,6 +91,15 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     @Override
     public int getReaperLevel(ItemStack stack) {
         return 1;
+    }
+
+    //endregion
+
+    //region Rendering
+
+    @Override
+    protected Set3<String, String, String> getTextureLocations() {
+        return Set3.of("items/tools/wyvern_sword", "items/tools/obj/wyvern_sword", "models/item/tools/wyvern_sword.obj");
     }
 
     //endregion

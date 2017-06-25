@@ -75,16 +75,16 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
 
         MGuiLabel iconLabel = new MGuiLabel(modularGui, xPos, nameField.yPos + 18, xSize, 12, "Edit Icon").setAlignment(EnumAlignment.LEFT);
         addChild(iconLabel);
-        StackReference stack = branch.getDisplayStack();
+        StackReference stackRef = branch.getDisplayStack();
         List<String> toolTip = new ArrayList<String>();
-        if (stack == null) {
+        if (stackRef == null) {
             toolTip.add("Display stack not set");
-            stack = new StackReference(new ItemStack(Blocks.BARRIER));
+            stackRef = new StackReference(new ItemStack(Blocks.BARRIER));
         }
         addChild(stackString = new MGuiTextField(modularGui, xPos + 2, iconLabel.yPos + 12, xSize - 4, 16, modularGui.getMinecraft().fontRendererObj));
         stackString.setMaxStringLength(512);
-        stackString.setText(toolTip.size() > 0 ? "" : stack.toString());
-        addChild(stackIcon = new MGuiStackIcon(modularGui, xPos + 3, stackString.yPos + 18, 18, 18, stack));
+        stackString.setText(toolTip.size() > 0 ? "" : stackRef.toString());
+        addChild(stackIcon = new MGuiStackIcon(modularGui, xPos + 3, stackString.yPos + 18, 18, 18, stackRef));
 
         if (toolTip.size() > 0) {
             stackIcon.setToolTip(false);
@@ -93,7 +93,7 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
         stackBack.setBorderColour(0).setFillColour(0);
         addChild(pickStack = new MGuiButtonSolid(modularGui, "PICK_STACK", stackIcon.xPos + 20, stackString.yPos + 18, 24, 18, "Set"));
         addChild(clearStack = new MGuiButtonSolid(modularGui, "CLEAR_STACK", stackIcon.xPos + 45, stackString.yPos + 18, 32, 18, "Clear"));
-        pickStack.setToolTip(Arrays.asList(new String[] {"Select an item from your inventory."})).setListener(this);
+        pickStack.setToolTip(Arrays.asList(new String[]{"Select an item from your inventory."})).setListener(this);
         pickStack.addChild(new MGuiButtonSolid(modularGui, "CANCEL_PICK", xPos + xSize - 48, yPos + ySize - 22, 40, 20, "Cancel").setListener(this));
         clearStack.setListener(this);
 
@@ -103,7 +103,7 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
 
         addChild(okButton = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "OK", xPos + 2, stackIcon.yPos + 32, xSize - 4, 14, "Save & Exit").setColours(0xFF00a000, 0xFF000000, 0xFFFFFFFF).setListener(this));
         addChild(cancelButton = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "CANCEL", xPos + 2, stackIcon.yPos + 48, xSize - 4, 14, "Cancel").setColours(0xFF400000, 0xFF000000, 0xFFFFFFFF).setListener(this));
-        addChild(new MGuiButtonSolid(modularGui, "COPY_ID", xPos + 2, stackIcon.yPos + 64, xSize - 4, 14, "Copy ID for link").setColours(0xFF00a000, 0xFF000000, 0xFFFFFFFF).setListener(this).setToolTip(new String[] {"Copies this branch's id to your clipboard. It can then be used in links to link back to this branch."}));
+        addChild(new MGuiButtonSolid(modularGui, "COPY_ID", xPos + 2, stackIcon.yPos + 64, xSize - 4, 14, "Copy ID for link").setColours(0xFF00a000, 0xFF000000, 0xFFFFFFFF).setListener(this).setToolTip(new String[]{"Copies this branch's id to your clipboard. It can then be used in links to link back to this branch."}));
 
         addChild(new MGuiLabel(modularGui, xPos, yPos + 140, xSize, 12, "Sorting Weight").setAlignment(EnumAlignment.LEFT));
         addChild(weightField = new MGuiTextField(modularGui, xPos + 2, yPos + 152, xSize - 4, 16, modularGui.getMinecraft().fontRendererObj));
@@ -122,7 +122,7 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
                 }
             }
         });
-        weightField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Controls the position of each item within the navigation list", "Branches with higher weight show bellow branches with lower weight", "Valid numbers range is 0-2147483647", "Is multiple branches have the same weight they should show in the order they were created."}, weightField));
+        weightField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Controls the position of each item within the navigation list", "Branches with higher weight show bellow branches with lower weight", "Valid numbers range is 0-2147483647", "Is multiple branches have the same weight they should show in the order they were created."}, weightField));
 
         //endregion
 
@@ -156,14 +156,14 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
     public void onMGuiEvent(String event, MGuiElementBase element) {
         //region Pick Stack
         if (element == pickStack) {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
             selector = new StackSelector(modularGui, xPos, yPos, xSize, ySize);
             selector.setListener(this);
 
             List<ItemStack> stacks = new LinkedList<ItemStack>();
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack stack = player.inventory.getStackInSlot(i);
-                if (stack != null) {
+                if (!stack.isEmpty()) {
                     stacks.add(stack);
                 }
             }
@@ -185,7 +185,7 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
         }
         else if (event.equals("SELECTOR_PICK")) {
             if (element instanceof MGuiStackIcon) {
-                StackReference reference = new StackReference(((MGuiStackIcon)element).getStack());
+                StackReference reference = new StackReference(((MGuiStackIcon) element).getStack());
                 stackIcon.setStack(reference);
                 stackIcon.setToolTip(true);
                 stackString.setText(reference.toString());
@@ -204,7 +204,7 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
             saveAndClose();
         }
 
-        else if (element == cancelButton){
+        else if (element == cancelButton) {
             close();
         }
 

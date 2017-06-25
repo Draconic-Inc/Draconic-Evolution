@@ -1,19 +1,15 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import codechicken.lib.model.ModelRegistryHelper;
-import codechicken.lib.model.SimpleOverrideBakedModel;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IFOVModifierItem;
-import com.brandon3055.brandonscore.config.Feature;
+import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.tool.BowModelOverrideList;
 import com.brandon3055.draconicevolution.handlers.BowHandler;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,10 +23,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -53,154 +49,60 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     //region Bow Stuff
 
     private ItemStack findAmmo(EntityPlayer player) {
-        if (this.isArrow(player.getHeldItem(EnumHand.OFF_HAND)))
-        {
+        if (this.isArrow(player.getHeldItem(EnumHand.OFF_HAND))) {
             return player.getHeldItem(EnumHand.OFF_HAND);
         }
-        else if (this.isArrow(player.getHeldItem(EnumHand.MAIN_HAND)))
-        {
+        else if (this.isArrow(player.getHeldItem(EnumHand.MAIN_HAND))) {
             return player.getHeldItem(EnumHand.MAIN_HAND);
         }
-        else
-        {
-            for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
-            {
+        else {
+            for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
                 ItemStack itemstack = player.inventory.getStackInSlot(i);
 
-                if (this.isArrow(itemstack))
-                {
+                if (this.isArrow(itemstack)) {
                     return itemstack;
                 }
             }
 
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
-    protected boolean isArrow(@Nullable ItemStack stack) {
-        return stack != null && stack.getItem() instanceof ItemArrow;
+    protected boolean isArrow(@Nonnull ItemStack stack) {
+        return stack.getItem() instanceof ItemArrow;
     }
 
+    @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase entityLiving, int timeLeft) {
-       if (entityLiving instanceof EntityPlayer) {
-           BowHandler.onPlayerStoppedUsingBow(stack, world, (EntityPlayer) entityLiving, timeLeft);
-       }
-//        if (entityLiving instanceof EntityPlayer)
-//        {
-//            EntityPlayer entityplayer = (EntityPlayer)entityLiving;
-//            boolean flag = entityplayer.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0;
-//            ItemStack itemstack = this.findAmmo(entityplayer);
-//
-//            int i = this.getMaxItemUseDuration(stack) - timeLeft;
-//            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, (EntityPlayer)entityLiving, i, itemstack != null || flag);
-//            if (i < 0) return;
-//
-//            if (itemstack != null || flag)
-//            {
-//                if (itemstack == null)
-//                {
-//                    itemstack = new ItemStack(Items.ARROW);
-//                }
-//
-//                float f = getArrowVelocity(i);
-//
-//                if ((double)f >= 0.1D)
-//                {
-//                    boolean flag1 = entityplayer.capabilities.isCreativeMode || (itemstack.getItem() instanceof ItemArrow ? ((ItemArrow)itemstack.getItem()).isInfinite(itemstack, stack, entityplayer) : false);
-//
-//                    if (!worldIn.isRemote)
-//                    {
-//                        ItemArrow itemarrow = (ItemArrow)((ItemArrow)(itemstack.getItem() instanceof ItemArrow ? itemstack.getItem() : Items.ARROW));
-//                        EntityArrow entityarrow = itemarrow.createArrow(worldIn, itemstack, entityplayer);
-//                        entityarrow.setAim(entityplayer, entityplayer.rotationPitch, entityplayer.rotationYaw, 0.0F, f * 3.0F, 1.0F);
-//
-//                        if (f == 1.0F)
-//                        {
-//                            entityarrow.setIsCritical(true);
-//                        }
-//
-//                        int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
-//
-//                        if (j > 0)
-//                        {
-//                            entityarrow.setDamage(entityarrow.getDamage() + (double)j * 0.5D + 0.5D);
-//                        }
-//
-//                        int k = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
-//
-//                        if (k > 0)
-//                        {
-//                            entityarrow.setKnockbackStrength(k);
-//                        }
-//
-//                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0)
-//                        {
-//                            entityarrow.setFire(100);
-//                        }
-//
-//                        stack.damageItem(1, entityplayer);
-//
-//                        if (flag1)
-//                        {
-//                            entityarrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
-//                        }
-//
-//                        worldIn.spawnEntityInWorld(entityarrow);
-//                    }
-//
-//                    worldIn.playSound((EntityPlayer)null, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-//
-//                    if (!flag1)
-//                    {
-//                        --itemstack.stackSize;
-//
-//                        if (itemstack.stackSize == 0)
-//                        {
-//                            entityplayer.inventory.deleteStack(itemstack);
-//                        }
-//                    }
-//
-//                    entityplayer.addStat(StatList.getObjectUseStats(this));
-//                }
-//            }
-//        }
+        if (entityLiving instanceof EntityPlayer) {
+            BowHandler.onPlayerStoppedUsingBow(stack, world, (EntityPlayer) entityLiving, timeLeft);
+        }
     }
 
     public static float getArrowVelocity(int charge) {
-        float f = (float)charge / 20.0F;
+        float f = (float) charge / 20.0F;
         f = (f * f + f * 2.0F) / 3.0F;
 
-        if (f > 1.0F)
-        {
+        if (f > 1.0F) {
             f = 1.0F;
         }
 
         return f;
     }
 
-    public int getMaxItemUseDuration(ItemStack stack)
-    {
+    @Override
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 72000;
     }
 
-    public EnumAction getItemUseAction(ItemStack stack)
-    {
+    @Override
+    public EnumAction getItemUseAction(ItemStack stack) {
         return EnumAction.BOW;
     }
 
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
-        return BowHandler.onBowRightClick(stack, world, player, hand);
-//        boolean flag = this.findAmmo(playerIn) != null;
-//
-//        ActionResult<ItemStack> ret = net.minecraftforge.event.ForgeEventFactory.onArrowNock(itemStackIn, worldIn, playerIn, hand, flag);
-//        if (ret != null) return ret;
-//
-//        if (!playerIn.capabilities.isCreativeMode && !flag) {
-//            return !flag ? new ActionResult(EnumActionResult.FAIL, itemStackIn) : new ActionResult(EnumActionResult.PASS, itemStackIn);
-//        } else {
-//            playerIn.setActiveHand(hand);
-//            return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
-//        }
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        return BowHandler.onBowRightClick(player.getHeldItem(hand), world, player, hand);
     }
 
     @Override
@@ -214,14 +116,17 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
 
     //region Render
 
-    @SideOnly(Side.CLIENT)
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void registerRenderer(Feature feature) {
+////        ModelResourceLocation modelLocation = new ModelResourceLocation("draconicevolution:" + feature.getName(), "inventory");
+////        ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
+////        //ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.getName(), "inventory"), new SimpleOverrideBakedModel(new BowModelOverrideList()));
+//    }
+
     @Override
-    public void registerRenderer(Feature feature) {
-        //if (!DEConfig.disable3DModels) {
-            modelLocation = new ModelResourceLocation("draconicevolution:" + feature.registryName(), "inventory");
-            ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
-            ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.registryName(), "inventory"), new SimpleOverrideBakedModel(new BowModelOverrideList()));
-        //}
+    protected Set3<String, String, String> getTextureLocations() {
+        return Set3.of("items/tools/wyvern_bow00", "items/tools/obj/wyvern_bow00", "models/item/tools/wyvern_bow00.obj");
     }
 
     @SideOnly(Side.CLIENT)
@@ -236,6 +141,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
                 displayList.add(TextFormatting.DARK_RED + I18n.format(properties.cantFireMessage));
             }
         }
+        displayList.add(TextFormatting.DARK_RED+"Yes. I know the animation is broken.");
     }
 
     //endregion
@@ -251,9 +157,9 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
         registry.register(stack, new IntegerConfigField("bowArrowSpeedModifier", 0, 0, maxSpeed, "config.field.bowArrowSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         registry.register(stack, new BooleanConfigField("bowAutoFire", false, "config.field.bowAutoFire.description"));
         registry.register(stack, new DoubleConfigField("bowExplosionPower", 0, 0, 4, "config.field.bowExplosionPower.description", SLIDER));
-        registry.register(stack, new IntegerConfigField("bowZoomModifier", 0, 0, (int)(getMaxZoomModifier(stack) * 100), "config.field.bowZoomModifier.description", SLIDER));
+        registry.register(stack, new IntegerConfigField("bowZoomModifier", 0, 0, (int) (getMaxZoomModifier(stack) * 100), "config.field.bowZoomModifier.description", SLIDER));
 
-        return super.getFields(stack, registry);
+        return registry;
     }
 
     public float getMaxZoomModifier(ItemStack stack) {

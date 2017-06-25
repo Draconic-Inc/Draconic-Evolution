@@ -16,9 +16,9 @@ public interface IHudDisplay {
     /**
      * Warning this is client side! Remember to keep that in mind when implementing and don't forget the @SideOnly
      *
-     * @param stack Will be the stack the player is holding if this interface is implemented by an item.
-     * @param world The players world.
-     * @param pos The position of the block if this interface is implemented by a block.
+     * @param stack       Will be the stack the player is holding if this interface is implemented by an item.
+     * @param world       The players world.
+     * @param pos         The position of the block if this interface is implemented by a block.
      * @param displayList The list to which display data should be added.
      */
     @SideOnly(Side.CLIENT)

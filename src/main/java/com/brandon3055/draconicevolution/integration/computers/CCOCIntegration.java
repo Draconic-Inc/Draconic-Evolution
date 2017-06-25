@@ -4,8 +4,8 @@ import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.integration.computers.oc.DEManagedPeripheral;
 import com.brandon3055.draconicevolution.integration.computers.oc.IExtendedRFStoragePeripheral;
 import li.cil.oc.api.Driver;
+import li.cil.oc.api.prefab.AbstractManagedEnvironment;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
-import li.cil.oc.api.prefab.ManagedEnvironment;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,51 +17,51 @@ import net.minecraftforge.fml.common.Optional;
  */
 public class CCOCIntegration {
 
-	public static void init() {
-		if (Loader.isModLoaded("ComputerCraft")) {
+    public static void init() {
+        if (Loader.isModLoaded("ComputerCraft")) {
             initCC();
         }
-		if (Loader.isModLoaded("OpenComputers")) {
+        if (Loader.isModLoaded("OpenComputers")) {
             initOC();
-        }
-	}
-
-	@Optional.Method(modid = "ComputerCraft")
-	public static void initCC() {
-		//ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	public static void initOC() {
-		Driver.add(new OCAdapter());
-		Driver.add(new OCExtendedRFAdapter());
-	}
-
-	public static class OCAdapter extends DriverSidedTileEntity {
-
-		@Override
-		public Class<?> getTileEntityClass() {
-			return IDEPeripheral.class;
-		}
-
-        @Override
-        public ManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side) {
-            return new DEManagedPeripheral((IDEPeripheral)world.getTileEntity(pos));
         }
     }
 
-	public static class OCExtendedRFAdapter extends DriverSidedTileEntity {
+    @Optional.Method(modid = "ComputerCraft")
+    public static void initCC() {
+        //ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
+    }
 
-		@Override
-		public Class<?> getTileEntityClass() {
-			return IExtendedRFStorage.class;
-		}
+    @Optional.Method(modid = "OpenComputers")
+    public static void initOC() {
+        Driver.add(new OCAdapter());
+        Driver.add(new OCExtendedRFAdapter());
+    }
 
-		@Override
-		public ManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side) {
-			return new IExtendedRFStoragePeripheral((IExtendedRFStorage)world.getTileEntity(pos));
-		}
-	}
+    public static class OCAdapter extends DriverSidedTileEntity {
+
+        @Override
+        public Class<?> getTileEntityClass() {
+            return IDEPeripheral.class;
+        }
+
+        @Override
+        public AbstractManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side) {
+            return new DEManagedPeripheral((IDEPeripheral) world.getTileEntity(pos));
+        }
+    }
+
+    public static class OCExtendedRFAdapter extends DriverSidedTileEntity {
+
+        @Override
+        public Class<?> getTileEntityClass() {
+            return IExtendedRFStorage.class;
+        }
+
+        @Override
+        public AbstractManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side) {
+            return new IExtendedRFStoragePeripheral((IExtendedRFStorage) world.getTileEntity(pos));
+        }
+    }
 
     //Computercraft
 //	public static class DEPeripheralProvider implements IPeripheralProvider {

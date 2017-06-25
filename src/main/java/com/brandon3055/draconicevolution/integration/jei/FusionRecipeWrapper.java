@@ -9,6 +9,8 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapperFactory;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -57,7 +59,7 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
     public void getIngredients(IIngredients ingredients) {
         List<List<ItemStack>> list = DEJEIPlugin.jeiHelpers.getStackHelper().expandRecipeItemStackInputs(inputs);
         ingredients.setInputLists(ItemStack.class, list);
-        ingredients.setOutput(ItemStack.class, recipe.getRecipeOutput(null));
+        ingredients.setOutput(ItemStack.class, recipe.getRecipeOutput(ItemStack.EMPTY));
     }
 
     @Override
@@ -69,9 +71,11 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
             GuiHelper.drawCenteredString(minecraft.fontRendererObj, I18n.format("generic.de.energyCost.txt"), xSize / 2, ySize - 20, 0x4444FF, false);
             GuiHelper.drawCenteredString(minecraft.fontRendererObj, Utils.addCommas(recipe.getEnergyCost() * recipe.getRecipeIngredients().size()) + "RF", xSize / 2, ySize - 10, 0x44AAFF, false);
         }
+
+        drawAnimations(minecraft, recipeWidth, recipeHeight);
     }
 
-    @Override
+    //TODO check if this is valid
     public void drawAnimations(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight) {
         if (ClientEventHandler.elapsedTicks != lastTick) {
             lastTick = ClientEventHandler.elapsedTicks;
@@ -96,7 +100,7 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
 
     public void tick() {
         effectRenderer.updateEffects();
-        World world = Minecraft.getMinecraft().theWorld;
+        World world = Minecraft.getMinecraft().world;
 
         if (world != null) {
             List ingredients = recipe.getRecipeIngredients();
@@ -129,7 +133,8 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
                     }
 
                     yPos = centerY - 40 + (sideIndex * ySize);
-                } else {
+                }
+                else {
                     xPos = centerX + 65;
 
                     int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
@@ -152,17 +157,26 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
                     xPos += -8 + (world.rand.nextDouble() * 16);
                     yPos += -8 + (world.rand.nextDouble() * 16);
                     double ty = centerY + (-20 + (world.rand.nextDouble() * 40));
-                    effectRenderer.addEffect(new GuiFusionCraftingCore.EnergyEffect(Minecraft.getMinecraft().theWorld, xPos, yPos, centerX, ty, 0));
+                    effectRenderer.addEffect(new GuiFusionCraftingCore.EnergyEffect(Minecraft.getMinecraft().world, xPos, yPos, centerX, ty, 0));
                 }
             }
 
             double xPos = centerX - 8 + (world.rand.nextDouble() * 16);
             double yTop = 35 - 8 + (world.rand.nextDouble() * 16);//35
-            effectRenderer.addEffect(new GuiFusionCraftingCore.EnergyEffect(Minecraft.getMinecraft().theWorld, xPos, yTop, centerX, 78, 1));//78
+            effectRenderer.addEffect(new GuiFusionCraftingCore.EnergyEffect(Minecraft.getMinecraft().world, xPos, yTop, centerX, 78, 1));//78
 
             effectRenderer.updateEffects();
-        } else {
+        }
+        else {
             effectRenderer.clearEffects();
+        }
+    }
+
+    public static class Factory implements IRecipeWrapperFactory<IFusionRecipe> {
+
+        @Override
+        public IRecipeWrapper getRecipeWrapper(IFusionRecipe recipe) {
+            return new FusionRecipeWrapper(recipe);
         }
     }
 }

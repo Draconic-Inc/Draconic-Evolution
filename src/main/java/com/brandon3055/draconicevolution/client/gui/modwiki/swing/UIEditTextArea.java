@@ -139,7 +139,7 @@ public class UIEditTextArea extends JFrame implements ActionListener {
             b = true;
 
             if (value instanceof TextFormatting) {
-                switch ((TextFormatting)value) {
+                switch ((TextFormatting) value) {
                     case BLACK:
                         setBackground(new Color(0x000000));
                         break;

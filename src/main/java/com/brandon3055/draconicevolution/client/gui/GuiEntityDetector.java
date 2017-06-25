@@ -63,7 +63,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
         filter.playerNames = tile.playerNames;
         filter.setEnabled(false);
         manager.add(filter, 2);
-        hideInventorySlots(false);
+//        hideInventorySlots(false);
 
         //endregion
 
@@ -78,43 +78,43 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
 
         builder.add(decrementRange = new MGuiButton(this, 0, 0, 12, 12, "-"));
         MGuiElementBase element;
-        builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, ""){
+        builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, "") {
             @Override
             public String getDisplayString() {
                 return I18n.format("gui.entityDetector.range") + ": " + tile.RANGE.value + " blocks.";
             }
         });
-        element.addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.entityDetector.range.info")}, element).setHoverDelay(10));
+        element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.range.info")}, element).setHoverDelay(10));
         builder.add(incrementRange = new MGuiButton(this, 0, 0, 12, 12, "+"));
 
         builder.add(decrementPulse = new MGuiButton(this, 0, 0, 12, 12, "-"));
-        builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, ""){
+        builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, "") {
             @Override
             public String getDisplayString() {
                 return I18n.format("gui.entityDetector.pulseDelay") + ": " + tile.PULSE_RATE.value / 20D + " sec.";
             }
         });
-        element.addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.entityDetector.pulseDelay.info")}, element).setHoverDelay(10));
+        element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.pulseDelay.info")}, element).setHoverDelay(10));
         builder.add(incrementPulse = new MGuiButton(this, 0, 0, 12, 12, "+"));
 
         builder.add(decrementRSMin = new MGuiButton(this, 0, 0, 12, 12, "-"));
-        builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, ""){
+        builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, "") {
             @Override
             public String getDisplayString() {
                 return I18n.format("gui.entityDetector.rsMin") + ": " + tile.RS_MIN_DETECTION.value;
             }
         });
-        element.addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.entityDetector.rsMin.info")}, element).setHoverDelay(10));
+        element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.rsMin.info")}, element).setHoverDelay(10));
         builder.add(incrementRSMin = new MGuiButton(this, 0, 0, 12, 12, "+"));
 
         builder.add(decrementRSMax = new MGuiButton(this, 0, 0, 12, 12, "-"));
-        builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, ""){
+        builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, "") {
             @Override
             public String getDisplayString() {
                 return I18n.format("gui.entityDetector.rsMax") + ": " + tile.RS_MAX_DETECTION.value;
             }
         });
-        element.addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.entityDetector.rsMax.info")}, element).setHoverDelay(10));
+        element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.rsMax.info")}, element).setHoverDelay(10));
         builder.add(incrementRSMax = new MGuiButton(this, 0, 0, 12, 12, "+"));
 
         builder.finish(manager, 1);
@@ -130,17 +130,17 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
                 return tile.PULSE_RS_MODE.value;
             }
         }, 1);
-        outputMode.setToolTip(new String[] {I18n.format("gui.entityDetector.output.info")}).setToolTipDelay(10);
+        outputMode.setToolTip(new String[]{I18n.format("gui.entityDetector.output.info")}).setToolTipDelay(10);
 
         manager.add(element = new MGuiButton(this, guiLeft + 9, outputMode.yPos + 13, xSize - 18, 12, I18n.format("gui.entityDetector.filter")).setButtonName("OPEN_FILTER"));
 
-        manager.add(element = new MGuiLabel(this, guiLeft + 9, element.yPos + 13, xSize - 18, 12, ""){
+        manager.add(element = new MGuiLabel(this, guiLeft + 9, element.yPos + 13, xSize - 18, 12, "") {
             @Override
             public String getDisplayString() {
                 return I18n.format("gui.entityDetector.energyCost") + ": " + Utils.formatNumber(tile.getPulseCost()) + " RF";
             }
         }, 1);
-        element.addChild(new MGuiHoverPopup(this, new String[] {I18n.format("gui.entityDetector.energyCost.info")}, element).setHoverDelay(10));
+        element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.energyCost.info")}, element).setHoverDelay(10));
 
         manager.add(energyBar = new MGuiEnergyBar(this, guiLeft + 9, guiTop() + 106, xSize - 18, 14).setEnergyHandler(tile).setHorizontal(true), 1);
         manager.add(new MGuiElementBase(this) {
@@ -159,13 +159,13 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
     @Override
     public void onMGuiEvent(String eventString, MGuiElementBase eventElement) {
         if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("CLOSE_FILTER")) {
-            hideInventorySlots(false);
+//            hideInventorySlots(false);
             filter.setEnabled(false);
             energyBar.setEnabled(true);
             filter.onClose();
         }
         else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("OPEN_FILTER")) {
-            hideInventorySlots(true);
+//            hideInventorySlots(true);
             filter.setEnabled(true);
             energyBar.setEnabled(false);
         }
@@ -175,7 +175,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
         else if (eventElement == decrementPulse || eventElement == incrementPulse) {
             tile.adjustPulseRate(eventElement == decrementPulse, isShiftKeyDown());
         }
-        else if (eventElement == decrementRSMin|| eventElement == incrementRSMin) {
+        else if (eventElement == decrementRSMin || eventElement == incrementRSMin) {
             tile.adjustRSMin(eventElement == decrementRSMin, isShiftKeyDown());
         }
         else if (eventElement == decrementRSMax || eventElement == incrementRSMax) {

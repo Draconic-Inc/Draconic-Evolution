@@ -1,8 +1,14 @@
 package com.brandon3055.draconicevolution;
 
 
-import com.brandon3055.brandonscore.config.ModConfigProperty;
+import com.brandon3055.brandonscore.handlers.FileHandler;
+import com.brandon3055.brandonscore.registry.IModConfigHelper;
+import com.brandon3055.brandonscore.registry.ModConfigContainer;
+import com.brandon3055.brandonscore.registry.ModConfigProperty;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,12 +16,12 @@ import java.util.Map;
  * Created by brandon3055 on 24/3/2016.
  * This class holds all of the config values for Draconic Evolution
  */
-public class DEConfig {
+@ModConfigContainer(modid = DraconicEvolution.MODID)
+public class DEConfig implements IModConfigHelper {
 
     public static Map<String, String> comments = new HashMap<String, String>();
 
-    static
-    {
+    static {
         comments.put("items", "Allows you to disable any item in the mod. Note that disabling an item will automatically\ndisable its recipe and all recipes that use it. (Requires game restart)\nTo disable an item set its value to false");
         comments.put("blocks", "Allows you to disable any block in the mod. Note that disabling an block will automatically\ndisable its recipe and all recipes that use it. (Requires game restart)\nTo disable a block set its value to false");
         comments.put("World", "This category contains config properties related to world gen.");
@@ -23,6 +29,21 @@ public class DEConfig {
         comments.put("Client Settings", "These are client side properties that have no effect server side.");
         comments.put("Stat Tweaks", "These allow you to tweak the stats of the tools, weapons and armor.");
         comments.put("Misc", "Just some misc settings.");
+    }
+
+    @Override
+    public Configuration createConfiguration(FMLPreInitializationEvent event) {
+        return new Configuration(new File(FileHandler.brandon3055Folder, "DraconicEvolution.cfg"), true);
+    }
+
+    @Override
+    public String getCategoryComment(String category) {
+        return comments.getOrDefault(category, "");
+    }
+
+    @Override
+    public void onConfigChanged(String propertyName, String propertyCategory) {
+
     }
 
     //Category World
@@ -124,10 +145,10 @@ public class DEConfig {
 
     //Category Client
 
-    @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stores. You should not need to adjust these unless something breaks.")
+    @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")
     public static int[] hudSettings = new int[]{996, 825, 69, 907, 90, 100, 3, 0, 1, 1, 1, 1}; //x, y, x, y, scale, scale, fademode, fademode, rotateArmor, armorText, hudEnabled, shieldEnabled
 
-    @ModConfigProperty(category = "Client Settings", name = "disable3DModels", comment = "Disabled the 3D tool and armor models. This is required if you want to use a 2D resource pack.)")
+    @ModConfigProperty(category = "Client Settings", name = "disable3DModels", comment = "Disables the 3D tool and armor models. This is required if you want to use a 2D resource pack.)")
     public static boolean disable3DModels = false;
 
     @ModConfigProperty(category = "Client Settings", name = "invertDPDSB", comment = "Invert Dislocator Pedestal display name shift behavior.")
@@ -155,12 +176,14 @@ public class DEConfig {
 
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 
-    public static void init(){
+    @Override
+    public void onConfigLoaded() {
         itemDislocatorBlacklistMap.clear();
         for (String s : itemDislocatorBlacklist) {
             if (s.contains("|")) {
                 itemDislocatorBlacklistMap.put(s.substring(0, s.indexOf("|")), Integer.parseInt(s.substring(s.indexOf("|") + 1)));
-            } else {
+            }
+            else {
                 itemDislocatorBlacklistMap.put(s, -1);
             }
         }

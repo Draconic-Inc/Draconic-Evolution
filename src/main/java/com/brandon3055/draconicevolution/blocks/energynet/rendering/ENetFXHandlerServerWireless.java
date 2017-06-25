@@ -3,9 +3,8 @@ package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraft.server.management.PlayerChunkMapEntry;
+import net.minecraft.world.WorldServer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +25,8 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
     }
 
     @Override
-    public void update() {}
+    public void update() {
+    }
 
     @Override
     public void detectAndSendChanges() {
@@ -65,18 +65,9 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
     }
 
     private void sendUpdate() {
-        NetworkRegistry.TargetPoint tp = tile.syncRange();
-
-        for (EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList()) {
-            if (player.dimension == tp.dimension) {
-                double d4 = tp.x - player.posX;
-                double d5 = tp.y - player.posY;
-                double d6 = tp.z - player.posZ;
-
-                if (d4 * d4 + d5 * d5 + d6 * d6 < tp.range * tp.range) {
-                    CrystalUpdateBatcher.queData(batchedUpdate, player);
-                }
-            }
+        PlayerChunkMapEntry playerChunkMap = ((WorldServer) tile.getWorld()).getPlayerChunkMap().getEntry(tile.getPos().getX() >> 4, tile.getPos().getY() >> 4);
+        if (playerChunkMap != null) {
+            playerChunkMap.players.forEach(playerMP -> CrystalUpdateBatcher.queData(batchedUpdate, playerMP));
         }
 
         batchedUpdate = null;

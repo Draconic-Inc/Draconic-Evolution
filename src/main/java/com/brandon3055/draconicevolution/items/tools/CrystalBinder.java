@@ -14,7 +14,7 @@ public class CrystalBinder extends ItemBCore implements ICrystalBinder {
     }
 
     @Override
-    public boolean isItemTool(ItemStack stack) {
+    public boolean isEnchantable(ItemStack stack) {
         return true;
     }
 }

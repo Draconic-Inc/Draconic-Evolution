@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
  */
 public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
 
-    public ContainerEnergyInfuser(EntityPlayer player, TileEnergyInfuser tile){
+    public ContainerEnergyInfuser(EntityPlayer player, TileEnergyInfuser tile) {
         super(player, tile);
         this.addPlayerSlots(8, 58);
         addSlotToContainer(new SlotCheckValid(tile, 0, 80, 22));
@@ -20,34 +20,34 @@ public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return tile.isUseableByPlayer(playerIn);
+        return tile.isUsableByPlayer(playerIn);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i)
-    {
+    public ItemStack transferStackInSlot(EntityPlayer player, int i) {
         Slot slot = getSlot(i);
 
-        if (slot != null && slot.getHasStack())
-        {
+        if (slot != null && slot.getHasStack()) {
             ItemStack stack = slot.getStack();
             ItemStack result = stack.copy();
 
-            if (i >= 36){
-                if (!mergeItemStack(stack, 0, 36, false)){
+            if (i >= 36) {
+                if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
                 }
-            }else if (!mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)){
+            }
+            else if (!mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
                 return null;
             }
 
-            if (stack.stackSize == 0) {
-                slot.putStack(null);
-            }else{
+            if (stack.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
+            }
+            else {
                 slot.onSlotChanged();
             }
 
-            slot.onPickupFromSlot(player, stack);
+            slot.onTake(player, stack);
 
             return result;
         }

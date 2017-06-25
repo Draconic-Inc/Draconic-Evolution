@@ -10,28 +10,26 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
-public class RenderTileUpgradeModifier extends TESRBase<TileUpgradeModifier>
-{
+public class RenderTileUpgradeModifier extends TESRBase<TileUpgradeModifier> {
 
 
-	private static float pxl = 1F / 256F;
+    private static float pxl = 1F / 256F;
 
     @Override
     public void renderTileEntityAt(TileUpgradeModifier te, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.pushMatrix();
 
         GlStateManager.translate(x, y, z);
-		renderBlock(te, partialTicks);
+        renderBlock(te, partialTicks);
 
         GlStateManager.popMatrix();
-	}
+    }
 
-	public void renderBlock(TileUpgradeModifier tile, float pt)
-	{
-		Tessellator tess = Tessellator.getInstance();
+    public void renderBlock(TileUpgradeModifier tile, float pt) {
+        Tessellator tess = Tessellator.getInstance();
 
 //
-		ResourceHelperDE.bindTexture("textures/models/upgrade_modifier_gear.png");
+        ResourceHelperDE.bindTexture("textures/models/upgrade_modifier_gear.png");
         GlStateManager.pushMatrix();
         GlStateManager.enableAlpha();
         GlStateManager.disableLighting();
@@ -42,7 +40,7 @@ public class RenderTileUpgradeModifier extends TESRBase<TileUpgradeModifier>
         GlStateManager.translate(1, 1, 0);
         GlStateManager.rotate(tile.rotation + (pt * tile.rotationSpeed), 0F, 0F, 1F);
         GlStateManager.translate(-1, -1, 0);
-		render2DWithThicness(tess, 1, 0, 0, 1, 128, 128, 0.0625F);
+        render2DWithThicness(tess, 1, 0, 0, 1, 128, 128, 0.0625F);
 
         GlStateManager.popMatrix();
 
@@ -56,19 +54,19 @@ public class RenderTileUpgradeModifier extends TESRBase<TileUpgradeModifier>
         GlStateManager.translate(1, 1, 0);
         GlStateManager.rotate(-tile.rotation + (pt * -tile.rotationSpeed), 0F, 0F, 1F);
         GlStateManager.translate(-1, -1, 0);
-		render2DWithThicness(tess, 1, 0, 0, 1, 128, 128, 0.0625F);
+        render2DWithThicness(tess, 1, 0, 0, 1, 128, 128, 0.0625F);
         GlStateManager.color(1F, 1F, 1F, 1F);
 
         GlStateManager.popMatrix();
         GlStateManager.enableLighting();
 
 
-		drawBase(tess);
-		renderChargingItem(tile, pt);
+        drawBase(tess);
+        renderChargingItem(tile, pt);
 
-	}
+    }
 
-	private void drawBase(Tessellator tess){
+    private void drawBase(Tessellator tess) {
 //		ResourceHandler.bindResource("textures/models/EnergyInfuserTextureSheet.png");
 //		GLStateManager.glPushMatrix();
 //		tess.startDrawingQuads();
@@ -123,36 +121,34 @@ public class RenderTileUpgradeModifier extends TESRBase<TileUpgradeModifier>
 //		tess.draw();
 //		GLStateManager.glPopMatrix();
 
-	}
+    }
 
-	public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness)
-	{
+    public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
         double pix = 1D / 64D;
         VertexBuffer buffer = tess.getBuffer();
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
         buffer.pos(0.0D, 0.0D, 0.0D).tex(maxU, maxV).endVertex();
-        buffer.pos(width*pix, 0.0D, 0.0D).tex(minU, maxV).endVertex();
-        buffer.pos(width*pix, height*pix, 0.0D).tex(minU, minV).endVertex();
-        buffer.pos(0.0D, height*pix, 0.0D).tex(maxU, minV).endVertex();
+        buffer.pos(width * pix, 0.0D, 0.0D).tex(minU, maxV).endVertex();
+        buffer.pos(width * pix, height * pix, 0.0D).tex(minU, minV).endVertex();
+        buffer.pos(0.0D, height * pix, 0.0D).tex(maxU, minV).endVertex();
 
-        buffer.pos(0.0D, height*pix, (double) (0.0F - thickness)).tex(maxU, minV).endVertex();
-        buffer.pos(width*pix, height*pix, (double) (0.0F - thickness)).tex(minU, minV).endVertex();
-        buffer.pos(width*pix, 0.0D, (double)(0.0F - thickness)).tex(minU, maxV).endVertex();
-        buffer.pos(0.0D, 0.0D, (double)(0.0F - thickness)).tex(maxU, maxV).endVertex();
+        buffer.pos(0.0D, height * pix, (double) (0.0F - thickness)).tex(maxU, minV).endVertex();
+        buffer.pos(width * pix, height * pix, (double) (0.0F - thickness)).tex(minU, minV).endVertex();
+        buffer.pos(width * pix, 0.0D, (double) (0.0F - thickness)).tex(minU, maxV).endVertex();
+        buffer.pos(0.0D, 0.0D, (double) (0.0F - thickness)).tex(maxU, maxV).endVertex();
 
-        float f5 = 0.5F * (maxU - minU) / (float)width;
-        float f6 = 0.5F * (maxV - minV) / (float)height;
+        float f5 = 0.5F * (maxU - minU) / (float) width;
+        float f6 = 0.5F * (maxV - minV) / (float) height;
         int k;
         float f7;
         float f8;
         double d;
 
-        for (k = 0; k < width; ++k)
-        {
-            d = k*pix;
-            f7 = (float)k / (float)width;
+        for (k = 0; k < width; ++k) {
+            d = k * pix;
+            f7 = (float) k / (float) width;
             f8 = maxU + (minU - maxU) * f7 - f5;
             buffer.pos(d, 0.0D, (double) (0.0F - thickness)).tex((double) f8, (double) maxV).endVertex();
             buffer.pos(d, 0.0D, 0.0D).tex((double) f8, (double) maxV).endVertex();
@@ -160,45 +156,42 @@ public class RenderTileUpgradeModifier extends TESRBase<TileUpgradeModifier>
             buffer.pos(d, height * pix, (double) (0.0F - thickness)).tex((double) f8, (double) minV).endVertex();
         }
 
-        for (k = 0; k < width; ++k)
-        {
-            d = (k+1)*pix;
-            f7 = (float)k / (float)width;
+        for (k = 0; k < width; ++k) {
+            d = (k + 1) * pix;
+            f7 = (float) k / (float) width;
             f8 = maxU + (minU - maxU) * f7 - f5;
             buffer.pos(d, height * pix, (double) (0.0F - thickness)).tex((double) f8, (double) minV).endVertex();
-            buffer.pos(d, height * pix, 0.0D).tex( (double) f8, (double) minV).endVertex();
+            buffer.pos(d, height * pix, 0.0D).tex((double) f8, (double) minV).endVertex();
             buffer.pos(d, 0.0D, 0.0D).tex((double) f8, (double) maxV).endVertex();
-            buffer.pos(d, 0.0D, (double) (0.0F - thickness)).tex((double) f8, (double)maxV).endVertex();
+            buffer.pos(d, 0.0D, (double) (0.0F - thickness)).tex((double) f8, (double) maxV).endVertex();
         }
 
-        for (k = 0; k < height; ++k)
-        {
-            d = (k+1)*pix;
-            f7 = (float)k / (float)height;
+        for (k = 0; k < height; ++k) {
+            d = (k + 1) * pix;
+            f7 = (float) k / (float) height;
             f8 = maxV + (minV - maxV) * f7 - f6;
             buffer.pos(0.0D, d, 0.0D).tex((double) maxU, (double) f8).endVertex();
             buffer.pos(width * pix, d, 0.0D).tex((double) minU, (double) f8).endVertex();
             buffer.pos(width * pix, d, (double) (0.0F - thickness)).tex((double) minU, (double) f8).endVertex();
-            buffer.pos(0.0D, d, (double)(0.0F - thickness)).tex((double) maxU, (double) f8).endVertex();
+            buffer.pos(0.0D, d, (double) (0.0F - thickness)).tex((double) maxU, (double) f8).endVertex();
         }
 
 
-        for (k = 0; k < height; ++k)
-        {
-            d = k*pix;
-            f7 = (float)k / (float)height;
+        for (k = 0; k < height; ++k) {
+            d = k * pix;
+            f7 = (float) k / (float) height;
             f8 = maxV + (minV - maxV) * f7 - f6;
-            buffer.pos(width*pix, d, 0.0D).tex((double) minU, (double) f8).endVertex();
+            buffer.pos(width * pix, d, 0.0D).tex((double) minU, (double) f8).endVertex();
             buffer.pos(0.0D, d, 0.0D).tex((double) maxU, (double) f8).endVertex();
-            buffer.pos(0.0D, d, (double)(0.0F - thickness)).tex((double) maxU, (double) f8).endVertex();
-            buffer.pos(width*pix, d, (double)(0.0F - thickness)).tex( (double)minU, (double)f8).endVertex();
+            buffer.pos(0.0D, d, (double) (0.0F - thickness)).tex((double) maxU, (double) f8).endVertex();
+            buffer.pos(width * pix, d, (double) (0.0F - thickness)).tex((double) minU, (double) f8).endVertex();
         }
 
         tess.draw();
 
-	}
+    }
 
-	public void renderChargingItem(TileUpgradeModifier tile, float partialTicks){
+    public void renderChargingItem(TileUpgradeModifier tile, float partialTicks) {
         if (tile.getStackInSlot(0) != null) {
             GlStateManager.pushMatrix();
 //
@@ -222,5 +215,5 @@ public class RenderTileUpgradeModifier extends TESRBase<TileUpgradeModifier>
             renderItem(stack);
             GlStateManager.popMatrix();
         }
-	}
+    }
 }

@@ -80,7 +80,8 @@ public class TreeBranchRoot extends MGuiListEntry {
         positionElements(newXPos, newYPos);
     }
 
-    public void positionElements(int newXPos, int newYPos) {}
+    public void positionElements(int newXPos, int newYPos) {
+    }
 
     //endregion
 
@@ -141,7 +142,8 @@ public class TreeBranchRoot extends MGuiListEntry {
                     sortingWeight = 0;
                 }
             }
-            catch (Exception e) {}
+            catch (Exception e) {
+            }
         }
 
         NodeList nodeList = branchData.getElementsByTagName(WikiDocManager.ELEMENT_CONTENT);

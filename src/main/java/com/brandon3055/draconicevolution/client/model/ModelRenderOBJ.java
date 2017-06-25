@@ -58,12 +58,14 @@ public class ModelRenderOBJ extends ModelRenderer {
             if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
                 if (this.rotationPointX == 0.0F && this.rotationPointY == 0.0F && this.rotationPointZ == 0.0F) {
                     GlStateManager.callList(this.displayList);
-                } else {
+                }
+                else {
                     GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                     GlStateManager.callList(this.displayList);
                     GlStateManager.translate(-this.rotationPointX * scale, -this.rotationPointY * scale, -this.rotationPointZ * scale);
                 }
-            } else {
+            }
+            else {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                 if (this.rotateAngleZ != 0.0F) {
@@ -91,7 +93,7 @@ public class ModelRenderOBJ extends ModelRenderer {
             this.scale = scale;
         }
 
-        if (objModel == null){
+        if (objModel == null) {
             compiled = true;
             LogHelper.bigError("Armor Model Display List could not be compiled!!! Armor model is broken!");
             return;
@@ -152,7 +154,8 @@ public class ModelRenderOBJ extends ModelRenderer {
                 if (this.rotationPointX != 0.0F || this.rotationPointY != 0.0F || this.rotationPointZ != 0.0F) {
                     GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                 }
-            } else {
+            }
+            else {
                 GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                 if (this.rotateAngleZ != 0.0F) {
                     GlStateManager.rotate(this.rotateAngleZ * 57.295776F, 0.0F, 0.0F, 1.0F);

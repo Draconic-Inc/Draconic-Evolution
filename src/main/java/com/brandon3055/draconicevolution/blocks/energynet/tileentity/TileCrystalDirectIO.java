@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 import cofh.api.energy.IEnergyTransport;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.network.wrappers.SyncableEnum;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXIO;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
@@ -20,7 +20,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static cofh.api.energy.IEnergyTransport.InterfaceType.*;
@@ -30,13 +29,10 @@ import static cofh.api.energy.IEnergyTransport.InterfaceType.*;
  */
 public class TileCrystalDirectIO extends TileCrystalBase implements IEnergyTransport {
 
-    public final SyncableEnum<EnumFacing> facing = new SyncableEnum<>(EnumFacing.DOWN, true, false);
-    public final SyncableEnum<IEnergyTransport.InterfaceType> transportState = new SyncableEnum<>(BALANCE, true, false);
+    public final ManagedEnum<EnumFacing> facing = dataManager.register("facing", new ManagedEnum<>(EnumFacing.DOWN)).syncViaTile().saveToTile().finish();
+    public final ManagedEnum<InterfaceType> transportState = dataManager.register("transportState", new ManagedEnum<>(BALANCE)).syncViaTile().saveToTile().saveToItem().finish();
 
     public TileCrystalDirectIO() {
-        super();
-        registerSyncableObject(facing, true);
-        registerSyncableObject(transportState, true, true);
     }
 
     //region Update Energy IO
@@ -45,11 +41,11 @@ public class TileCrystalDirectIO extends TileCrystalBase implements IEnergyTrans
     public void update() {
         super.update();
 
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
 
-        TileEntity tile = worldObj.getTileEntity(pos.offset(facing.value));
+        TileEntity tile = world.getTileEntity(pos.offset(facing.value));
 
         if (transportState.value == SEND && tile != null) {
             energyStorage.extractEnergy(EnergyHelper.insertEnergy(tile, energyStorage.extractEnergy(energyStorage.getMaxExtract(), true), facing.value.getOpposite(), false), false);
@@ -89,12 +85,12 @@ public class TileCrystalDirectIO extends TileCrystalBase implements IEnergyTrans
     //endregion
 
     @Override
-    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (player.isSneaking()) {
             transportState.value = transportState.value == SEND ? BALANCE : transportState.value == BALANCE ? RECEIVE : SEND;
             return true;
         }
-        return super.onBlockActivated(state, player, hand, heldItem, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(state, player, hand, side, hitX, hitY, hitZ);
     }
 
     //region Rendering
@@ -107,7 +103,7 @@ public class TileCrystalDirectIO extends TileCrystalBase implements IEnergyTrans
     @SideOnly(Side.CLIENT)
     @Override
     public CrystalGLFXBase createStaticFX() {
-        return new CrystalFXIO(worldObj, this);
+        return new CrystalFXIO(world, this);
     }
 
     @Override

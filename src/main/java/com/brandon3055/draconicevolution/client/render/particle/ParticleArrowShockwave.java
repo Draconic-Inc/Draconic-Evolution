@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
@@ -36,7 +36,7 @@ public class ParticleArrowShockwave extends BCParticle {
     public ParticleArrowShockwave(World worldIn, Vec3D pos) {
         super(worldIn, pos);
         if (model == null) {
-            Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
+            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
             model = CCModel.combine(map.values());
             model.apply(new Scale(1, 0.5, 1));
         }
@@ -77,22 +77,21 @@ public class ParticleArrowShockwave extends BCParticle {
         float zz = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
 
 
-            double baseScale = size + partialTicks;
+        double baseScale = size + partialTicks;
 
-            GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
+        GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
 
-            for (int i = 10; i > 0; i--) {
-                double scale = baseScale / i * 2D;
+        for (int i = 10; i > 0; i--) {
+            double scale = baseScale / i * 2D;
 
-                GlStateManager.color(1F - (i / 5F), 0.1F, i / 8F, a);
+            GlStateManager.color(1F - (i / 5F), 0.1F, i / 8F, a);
 
-                ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-                Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
-                model.render(ccrs, mat);
-                ccrs.draw();
+            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+            Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
+            model.render(ccrs, mat);
+            ccrs.draw();
 
-            }
-
+        }
 
 
         GlStateManager.depthMask(true);
@@ -111,7 +110,7 @@ public class ParticleArrowShockwave extends BCParticle {
             ParticleArrowShockwave arrowShockwave = new ParticleArrowShockwave(world, pos, speed);
 
             world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 10, 0.9F + world.rand.nextFloat() * 0.2F, false);
-            if (args.length >= 1){
+            if (args.length >= 1) {
                 arrowShockwave.maxSize = args[0] / 100D;
             }
             else {

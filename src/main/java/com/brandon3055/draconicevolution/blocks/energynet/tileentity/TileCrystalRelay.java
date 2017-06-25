@@ -27,7 +27,7 @@ public class TileCrystalRelay extends TileCrystalBase {
     @SideOnly(Side.CLIENT)
     @Override
     public CrystalGLFXBase createStaticFX() {
-        return new CrystalFXRing(worldObj, this);
+        return new CrystalFXRing(world, this);
     }
 
     @Override

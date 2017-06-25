@@ -95,7 +95,7 @@ public class TreeCollector {
 
         @Override
         public void updateProcess() {
-            if (ticks < (double)(collector.activeProcesses.size() / 2) * randOffset) {
+            if (ticks < (double) (collector.activeProcesses.size() / 2) * randOffset) {
                 ticks++;
                 return;
             }

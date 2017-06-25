@@ -20,6 +20,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -35,11 +36,11 @@ public class GuiToolConfig extends GuiScreen {
     private ToolButton[] offHand;
     private ButtonColourRect configButton;
 
-    public GuiToolConfig(EntityPlayer player){
+    public GuiToolConfig(EntityPlayer player) {
         this.player = player;
-        this.armor = new ToolButton[player.inventory.armorInventory.length];
-        this.inventory = new ToolButton[player.inventory.mainInventory.length];
-        this.offHand = new ToolButton[player.inventory.offHandInventory.length];
+        this.armor = new ToolButton[player.inventory.armorInventory.size()];
+        this.inventory = new ToolButton[player.inventory.mainInventory.size()];
+        this.offHand = new ToolButton[player.inventory.offHandInventory.size()];
     }
 
     @Override
@@ -50,18 +51,18 @@ public class GuiToolConfig extends GuiScreen {
         buttonList.clear();
         int id = 0;
 
-        for (int i = 0; i < player.inventory.armorInventory.length; i++){
-            ItemStack stack = player.inventory.armorInventory[i];
-            int x = - 81 + centerX;// + i % 2 * 80;
-            int y = - 52 + centerY - i * 18;
+        for (int i = 0; i < player.inventory.armorInventory.size(); i++) {
+            ItemStack stack = player.inventory.armorInventory.get(i);
+            int x = -81 + centerX;// + i % 2 * 80;
+            int y = -52 + centerY - i * 18;
             buttonList.add(armor[i] = new ToolButton(id, x, y, 18, 18, stack, new PlayerSlot(i, ARMOR)));
             id++;
         }
 
-        for (int i = 0; i < player.inventory.mainInventory.length; i++){
-            ItemStack stack = player.inventory.mainInventory[i];
-            int x = - 81 + centerX + i % 9 * 18;
-            int y = + 30 + centerY - i / 9 * 18;
+        for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
+            ItemStack stack = player.inventory.mainInventory.get(i);
+            int x = -81 + centerX + i % 9 * 18;
+            int y = +30 + centerY - i / 9 * 18;
             if (i < 9) {
                 y += 1;
             }
@@ -69,10 +70,10 @@ public class GuiToolConfig extends GuiScreen {
             id++;
         }
 
-        for (int i = 0; i < player.inventory.offHandInventory.length; i++){
-            ItemStack stack = player.inventory.offHandInventory[i];
-            int x = + 24 + centerX;
-            int y = - 52 + centerY + i * 18;
+        for (int i = 0; i < player.inventory.offHandInventory.size(); i++) {
+            ItemStack stack = player.inventory.offHandInventory.get(i);
+            int x = +24 + centerX;
+            int y = -52 + centerY + i * 18;
             buttonList.add(offHand[i] = new ToolButton(id, x, y, 18, 18, stack, new PlayerSlot(i, OFF_HAND)));
             id++;
         }
@@ -145,9 +146,9 @@ public class GuiToolConfig extends GuiScreen {
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        for (GuiButton button : buttonList){
-            if (button instanceof ToolButton){
-                ((ToolButton)button).drawToolTips(mc, mouseX, mouseY);
+        for (GuiButton button : buttonList) {
+            if (button instanceof ToolButton) {
+                ((ToolButton) button).drawToolTips(mc, mouseX, mouseY);
             }
         }
 
@@ -165,10 +166,10 @@ public class GuiToolConfig extends GuiScreen {
         if (button.id == configButton.id) {
             Minecraft.getMinecraft().displayGuiScreen(new GuiHudConfig(this));
         }
-        else if (button instanceof ToolButton){
+        else if (button instanceof ToolButton) {
             ToolButton toolButton = (ToolButton) button;
 
-            if (toolButton.stack != null && toolButton.stack.getItem() instanceof IConfigurableItem){
+            if (!toolButton.stack.isEmpty() && toolButton.stack.getItem() instanceof IConfigurableItem) {
                 mc.displayGuiScreen(new GuiConfigureTool(this, player, ((ToolButton) button).stack, ((ToolButton) button).slot));
             }
         }
@@ -179,7 +180,8 @@ public class GuiToolConfig extends GuiScreen {
             if (button.id == 44) {
                 contributor.contributorWingsEnabled = !contributor.contributorWingsEnabled;
                 button.displayString = "Contributor Wings: " + (contributor.contributorWingsEnabled ? "Enabled" : "Disabled");
-            } else if (button.id == 45) {
+            }
+            else if (button.id == 45) {
                 contributor.patreonBadgeEnabled = !contributor.patreonBadgeEnabled;
                 button.displayString = "Patreon Badge: " + (contributor.patreonBadgeEnabled ? "Enabled" : "Disabled");
             }
@@ -190,12 +192,10 @@ public class GuiToolConfig extends GuiScreen {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == 1 || mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode))
-        {
-            this.mc.displayGuiScreen((GuiScreen)null);
+        if (keyCode == 1 || mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode)) {
+            this.mc.displayGuiScreen((GuiScreen) null);
 
-            if (this.mc.currentScreen == null)
-            {
+            if (this.mc.currentScreen == null) {
                 this.mc.setIngameFocus();
             }
         }
@@ -205,17 +205,17 @@ public class GuiToolConfig extends GuiScreen {
 
     //region Helpers
 
-    public boolean isItemValid(ItemStack stack){
-        return stack != null && stack.getItem() instanceof IConfigurableItem;
+    public boolean isItemValid(ItemStack stack) {
+        return stack.getItem() instanceof IConfigurableItem;
     }
 
     //endregion
 
     public class ToolButton extends GuiButton {
-        public ItemStack stack = null;
+        public ItemStack stack = ItemStack.EMPTY;
         public final PlayerSlot slot;
 
-        public ToolButton(int buttonId, int x, int y, int widthIn, int heightIn, ItemStack stack, PlayerSlot slot) {
+        public ToolButton(int buttonId, int x, int y, int widthIn, int heightIn, @Nonnull ItemStack stack, PlayerSlot slot) {
             super(buttonId, x, y, widthIn, heightIn, "");
             this.stack = stack;
             this.slot = slot;
@@ -224,10 +224,10 @@ public class GuiToolConfig extends GuiScreen {
         @Override
         public void drawButton(Minecraft mc, int mouseX, int mouseY) {
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-           // super.drawButton(mc, mouseX, mouseY);
+            // super.drawButton(mc, mouseX, mouseY);
 
-            if (stack != null){
-                if (hovered && stack.getItem() instanceof IConfigurableItem ){
+            if (!stack.isEmpty()) {
+                if (hovered && stack.getItem() instanceof IConfigurableItem) {
                     GlStateManager.disableLighting();
                     GlStateManager.disableDepth();
                     int j1 = xPosition;
@@ -239,24 +239,21 @@ public class GuiToolConfig extends GuiScreen {
                     GlStateManager.enableDepth();
                 }
 
-                mc.getRenderItem().renderItemAndEffectIntoGUI(mc.thePlayer, stack, xPosition + 1, yPosition + 1);
-                mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRendererObj, stack, xPosition + 1, yPosition + 1, stack.stackSize > 1 ? String.valueOf(stack.stackSize) : "");
+                mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, xPosition + 1, yPosition + 1);
+                mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRendererObj, stack, xPosition + 1, yPosition + 1, stack.getCount() > 1 ? String.valueOf(stack.getCount()) : "");
             }
 
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
             GlStateManager.colorMask(true, true, true, false);
-            if (stack == null || !(stack.getItem() instanceof IConfigurableItem)){
+            if (stack.isEmpty() || !(stack.getItem() instanceof IConfigurableItem)) {
                 this.drawGradientRect(xPosition, yPosition, xPosition + 18, yPosition + 18, 0xB0000000, 0xB0000000);
                 GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, 1, 16, 0x55FF0000);
                 GuiHelper.drawColouredRect(xPosition + 16, yPosition + 1, 1, 16, 0x55FF0000);
                 GuiHelper.drawColouredRect(xPosition + 2, yPosition + 1, 14, 1, 0x55FF0000);
                 GuiHelper.drawColouredRect(xPosition + 2, yPosition + 16, 14, 1, 0x55FF0000);
-            } else {
-//                GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, 1, 16, 0x5500FF00);
-//                GuiHelper.drawColouredRect(xPosition + 16, yPosition + 1, 1, 16, 0x5500FF00);
-//                GuiHelper.drawColouredRect(xPosition + 2, yPosition + 1, 14, 1, 0x5500FF00);
-//                GuiHelper.drawColouredRect(xPosition + 2, yPosition + 16, 14, 1, 0x5500FF00);
+            }
+            else {
                 GuiHelper.drawColouredRect(xPosition, yPosition, 1, 18, 0x8800FF00);
                 GuiHelper.drawColouredRect(xPosition + 17, yPosition, 1, 18, 0x8800FF00);
                 GuiHelper.drawColouredRect(xPosition + 1, yPosition, 16, 1, 0x8800FF00);
@@ -268,19 +265,19 @@ public class GuiToolConfig extends GuiScreen {
 
         }
 
-        public void drawToolTips(Minecraft mc, int mouseX, int mouseY){
-            if (hovered && stack != null && stack.getItem() instanceof IConfigurableItem) {
+        public void drawToolTips(Minecraft mc, int mouseX, int mouseY) {
+            if (hovered && !stack.isEmpty() && stack.getItem() instanceof IConfigurableItem) {
                 renderToolTip(stack, mouseX, mouseY);
             }
         }
 
         @Override
         public void playPressSound(SoundHandler soundHandlerIn) {
-            if (stack != null && stack.getItem() instanceof IConfigurableItem) {
+            if (!stack.isEmpty() && stack.getItem() instanceof IConfigurableItem) {
                 super.playPressSound(soundHandlerIn);
             }
-            else if (stack != null){
-                mc.thePlayer.addChatComponentMessage(new TextComponentTranslation("chat.toolConfig.thatItemNotConfigurable.msg").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
+            else if (!stack.isEmpty()) {
+                mc.player.sendMessage(new TextComponentTranslation("chat.toolConfig.thatItemNotConfigurable.msg").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
             }
         }
     }

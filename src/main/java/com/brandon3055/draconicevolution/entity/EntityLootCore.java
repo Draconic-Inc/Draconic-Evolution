@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.network.PacketLootSync;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -57,14 +58,16 @@ public class EntityLootCore extends Entity {
     }
 
     @Override
-    protected void entityInit(){    }
+    protected void entityInit() {
+    }
 
     @Override
     public void onUpdate() {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             if (isLooking && lookAnimation < 1F) {
                 lookAnimation += 0.05F;
-            } else if (!isLooking && lookAnimation > 0F) {
+            }
+            else if (!isLooking && lookAnimation > 0F) {
                 lookAnimation -= 0.05F;
             }
         }
@@ -86,12 +89,12 @@ public class EntityLootCore extends Entity {
         }
 
         this.noClip = this.pushOutOfBlocks(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D, this.posZ);
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
 
         float f = 0.98F;
 
         if (this.onGround) {
-            f = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.getEntityBoundingBox().minY) - 1, MathHelper.floor_double(this.posZ))).getBlock().slipperiness * 0.98F;
+            f = this.world.getBlockState(new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ))).getBlock().slipperiness * 0.98F;
         }
 
         this.motionX *= (double) f;
@@ -103,7 +106,7 @@ public class EntityLootCore extends Entity {
 
     @Override
     public void onCollideWithPlayer(EntityPlayer player) {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
 
@@ -124,25 +127,26 @@ public class EntityLootCore extends Entity {
 
         for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
             ItemStack stack = inventory.getStackInSlot(i);
-            if (stack != null) {
-                int start = stack.stackSize;
+            if (!stack.isEmpty()) {
+                int start = stack.getCount();
 
-                EntityItem item = new EntityItem(worldObj, 0, 0, 0, stack);
+                EntityItem item = new EntityItem(world, 0, 0, 0, stack);
                 item.setPosition(posX, posY, posZ);
                 int result = ForgeEventFactory.onItemPickup(item, player, stack);
 
-                if (result == 1 || stack.stackSize <= 0 || player.inventory.addItemStackToInventory(stack)) {
+                if (result == 1 || stack.getCount() <= 0 || player.inventory.addItemStackToInventory(stack)) {
                     if (item.isDead) {
-                        stack.stackSize = 0;
+                        stack.setCount(0);
                     }
 
-                    if (stack.stackSize == 0) {
-                        inventory.setInventorySlotContents(i, null);
-                    } else {
+                    if (stack.getCount() == 0) {
+                        inventory.setInventorySlotContents(i, ItemStack.EMPTY);
+                    }
+                    else {
                         inventory.setInventorySlotContents(i, stack);
                     }
 
-                    if (stack.stackSize < start) {
+                    if (stack.getCount() < start) {
                         inserted = true;
                     }
                 }
@@ -150,39 +154,41 @@ public class EntityLootCore extends Entity {
         }
 
         if (inserted) {
-            this.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            this.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             updateStored();
         }
 
         pickupDellay = 10;
 
-        if (inventory.getSizeInventory() == 1 && inventory.getStackInSlot(0) == null) {
+        if (inventory.getSizeInventory() == 1 && inventory.getStackInSlot(0).isEmpty()) {
             setDead();
         }
     }
 
     private void updateStored() {
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             return;
         }
 
-        displayMap = new HashMap<ItemStack, Integer>();
+        displayMap = new HashMap<>();
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack insert = inventory.getStackInSlot(i);
-            if (insert == null) continue;
+            if (insert.isEmpty()) {
+                continue;
+            }
 
             boolean added = false;
             for (ItemStack stack : displayMap.keySet()) {
                 if (insert.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(insert, stack)) {
                     added = true;
-                    displayMap.put(stack, displayMap.get(stack) + insert.stackSize);
+                    displayMap.put(stack, displayMap.get(stack) + insert.getCount());
                     break;
                 }
             }
 
             if (!added) {
-                displayMap.put(insert, insert.stackSize);
+                displayMap.put(insert, insert.getCount());
             }
         }
 
@@ -191,7 +197,8 @@ public class EntityLootCore extends Entity {
         }
     }
 
-    private List<EntityPlayerMP> trackingPlayers = new ArrayList<EntityPlayerMP>();
+    private List<EntityPlayerMP> trackingPlayers = new ArrayList<>();
+
     @Override
     public void addTrackingPlayer(EntityPlayerMP player) {
         trackingPlayers.add(player);

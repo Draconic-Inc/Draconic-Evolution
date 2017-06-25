@@ -54,7 +54,7 @@ public class ParticleAxeSelection extends BCParticle {
             setExpired();
         }
 
-        float modifier = (float)particleAge / (float)particleMaxAge;
+        float modifier = (float) particleAge / (float) particleMaxAge;
 
         particleScale = 0.2F + (modifier * 0.8F);
         particleAlpha = 1F - modifier;
@@ -90,7 +90,7 @@ public class ParticleAxeSelection extends BCParticle {
         GlStateManager.scale(particleScale, particleScale, particleScale);
         GlStateManager.translate(-0.5, -0.5, -0.5);
 
-        for (EnumFacing facing : EnumFacing.VALUES) ModelUtils.renderQuadsARGB(model.getQuads(state, facing, 0), new ColourARGB((int)(particleAlpha * 255), 255, 255, 255).argb());
+        for (EnumFacing facing : EnumFacing.VALUES) ModelUtils.renderQuadsARGB(model.getQuads(state, facing, 0), new ColourARGB((int) (particleAlpha * 255), 255, 255, 255).argb());
 
 //        GlStateManager.depthMask(true);
         GlStateManager.enableDepth();

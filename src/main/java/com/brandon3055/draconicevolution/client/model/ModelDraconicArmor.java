@@ -201,8 +201,7 @@ public class ModelDraconicArmor extends ModelBiped {
 
         GlStateManager.pushMatrix();
 
-        if (entity.isSneaking())
-        {
+        if (entity.isSneaking()) {
             GlStateManager.translate(0.0F, 0.2F, 0.0F);
         }
 

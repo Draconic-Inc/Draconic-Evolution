@@ -10,7 +10,6 @@ import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.brandonscore.utils.DataUtils.XZPair;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
@@ -48,13 +47,16 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
 import java.nio.FloatBuffer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Brandon on 28/10/2014.
  */
 public class ClientEventHandler {
-    public static Map<EntityPlayer, XZPair<Float, Integer>> playerShieldStatus = new HashMap<EntityPlayer, XZPair<Float, Integer>>();
+    public static Map<EntityPlayer, PairKV<Float, Integer>> playerShieldStatus = new HashMap<EntityPlayer, PairKV<Float, Integer>>();
 
     public static FloatBuffer winPos = GLAllocation.createDirectFloatBuffer(3);
     public static volatile int elapsedTicks;
@@ -73,7 +75,7 @@ public class ClientEventHandler {
 
         if (explosionPos != null && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             mc = Minecraft.getMinecraft();
-            updateExplosionAnimation(mc, mc.theWorld, event.getResolution(), mc.getRenderPartialTicks());
+            updateExplosionAnimation(mc, mc.world, event.getResolution(), mc.getRenderPartialTicks());
         }
     }
 
@@ -90,20 +92,17 @@ public class ClientEventHandler {
             updateExplosion();
         }
 
-        for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = playerShieldStatus.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<EntityPlayer, XZPair<Float, Integer>> entry = i.next();
-            if (elapsedTicks - entry.getValue().getValue() > 5) i.remove();
-        }
+        playerShieldStatus.entrySet().removeIf(entry -> elapsedTicks - entry.getValue().getValue() > 5);
 
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
         if (player != null) {
-            playerHoldingWrench = (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ICrystalBinder) || (player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() instanceof ICrystalBinder);
+            playerHoldingWrench = (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ICrystalBinder) || (!player.getHeldItemOffhand().isEmpty() && player.getHeldItemOffhand().getItem() instanceof ICrystalBinder);
         }
 
 //        if (mc == null) { TODO Do i really want to reimplement this?
 //            mc = Minecraft.getMinecraft();
 //        }
-//        else if (mc.theWorld != null) {
+//        else if (mc.world != null) {
 //            if (bowZoom && !lastTickBowZoom) {
 //                previousSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
 //                Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity / 3;
@@ -176,7 +175,7 @@ public class ClientEventHandler {
 
             float p = playerShieldStatus.get(event.getEntityPlayer()).getKey();
 
-            EntityPlayer viewingPlayer = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer viewingPlayer = Minecraft.getMinecraft().player;
 
             int i = 5 - (elapsedTicks - playerShieldStatus.get(event.getEntityPlayer()).getValue());
 
@@ -232,18 +231,18 @@ public class ClientEventHandler {
             return;
         }
 
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
         World world = player.getEntityWorld();
         ItemStack stack = player.getHeldItemMainhand();
         ItemStack offStack = player.getHeldItemOffhand();
         Minecraft mc = Minecraft.getMinecraft();
         float partialTicks = event.getPartialTicks();
 
-        if (stack != null && stack.getItem() instanceof ICrystalBinder) {
+        if (!stack.isEmpty() && stack.getItem() instanceof ICrystalBinder) {
             BinderHandler.renderWorldOverlay(player, world, stack, mc, partialTicks);
             return;
         }
-        else if (offStack != null && offStack.getItem() instanceof ICrystalBinder) {
+        else if (!stack.isEmpty() && offStack.getItem() instanceof ICrystalBinder) {
             BinderHandler.renderWorldOverlay(player, world, offStack, mc, partialTicks);
             return;
         }
@@ -253,7 +252,7 @@ public class ClientEventHandler {
             return;
         }
 
-        if (stack != null && stack.getItem() == DEFeatures.creativeExchanger) {
+        if (!stack.isEmpty() && stack.getItem() == DEFeatures.creativeExchanger) {
 
             List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, mc.objectMouseOver.getBlockPos(), world, mc.objectMouseOver.sideHit);
 
@@ -320,7 +319,7 @@ public class ClientEventHandler {
             GlStateManager.disableBlend();
         }
 
-        if (stack == null || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
+        if (stack.isEmpty() || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
             return;
         }
 
@@ -476,9 +475,9 @@ public class ClientEventHandler {
         //region TargetPoint Calculation
 
         Entity entity = mc.getRenderViewEntity();
-        float x = (float)(entity.prevPosX + (entity.posX - entity.prevPosX) * (double)partialTick);
-        float y = (float)(entity.prevPosY + (entity.posY - entity.prevPosY) * (double)partialTick);
-        float z = (float)(entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double)partialTick);
+        float x = (float) (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick);
+        float y = (float) (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialTick);
+        float z = (float) (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick);
         Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
         targetPos.subtract(x, y, z);
         GLU.gluProject((float) targetPos.x, (float) targetPos.y, (float) targetPos.z, ActiveRenderInfo.MODELVIEW, ActiveRenderInfo.PROJECTION, ActiveRenderInfo.VIEWPORT, winPos);
@@ -504,7 +503,7 @@ public class ClientEventHandler {
             else {
                 alpha = (float) explosionAnimation + (partialTick * 0.2F);
             }
-            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0x00FFFFFF | (int)(alpha * 255F) << 24);
+            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
         }
         //endregion
 
@@ -551,7 +550,7 @@ public class ClientEventHandler {
 //        GlStateManager.enableTexture2D();
 
 
-    //region Viewport Calculation
+//region Viewport Calculation
 //    Entity entity = mc.getRenderViewEntity();
 //    double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTick;
 //    double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTick;

@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.entity;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -36,7 +37,8 @@ public class EntityPersistentItem extends EntityItem {
         this(world, original.posX, original.posY, original.posZ);
         if (original instanceof EntityItem) {
             this.delayBeforeCanPickup = ((EntityItem) original).delayBeforeCanPickup;
-        } else {
+        }
+        else {
             setDefaultPickupDelay();
         }
         this.motionX = original.motionX;
@@ -49,7 +51,7 @@ public class EntityPersistentItem extends EntityItem {
     @Override
     public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
 //        if (getEntityItem().getItem() instanceof DragonHeart && par1DamageSource.isExplosion() && par2 > 10f && !this.isDead) {
-//            worldObj.spawnEntityInWorld(new EntityDragonHeart(worldObj, posX, posY, posZ));
+//            world.spawnEntityInWorld(new EntityDragonHeart(world, posX, posY, posZ));
 //            this.setDead();
 //        }
         if (par1DamageSource.getDamageType().equals("outOfWorld")) {
@@ -71,7 +73,7 @@ public class EntityPersistentItem extends EntityItem {
     public void onUpdate() {
 //        if (age + 10 >= lifespan) age = 0;
 //        boolean flag2 = false;
-//        if (this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY - 1), MathHelper.floor_double(this.posZ))).getBlock() == Blocks.END_PORTAL) {
+//        if (this.world.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY - 1), MathHelper.floor_double(this.posZ))).getBlock() == Blocks.END_PORTAL) {
 //            flag2 = true;
 //        }
 //        ItemStack stack = this.getDataManager().get(ITEM).orNull();
@@ -104,7 +106,7 @@ public class EntityPersistentItem extends EntityItem {
 //            boolean flag = (int) this.prevPosX != (int) this.posX || (int) this.prevPosY != (int) this.posY || (int) this.prevPosZ != (int) this.posZ;
 //
 //            if (flag || this.ticksExisted % 25 == 0) {
-//                if (this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava) {
+//                if (this.world.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava) {
 //                    this.motionY = 0.20000000298023224D;
 //                    this.motionX = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
 //                    this.motionZ = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
@@ -115,7 +117,7 @@ public class EntityPersistentItem extends EntityItem {
 //            float f = 0.98F;
 //
 //            if (this.onGround) {
-//                f = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
+//                f = this.world.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
 //            }
 //
 //            this.motionX *= (double) f;
@@ -135,9 +137,9 @@ public class EntityPersistentItem extends EntityItem {
 //
 //            ItemStack item = getDataWatcher().getWatchableObjectItemStack(10);
 //
-//            if (!this.worldObj.isRemote && this.age >= lifespan) {
+//            if (!this.world.isRemote && this.age >= lifespan) {
 //                if (item != null) {
-//                    ItemExpireEvent event = new ItemExpireEvent(this, (item.getItem() == null ? 6000 : item.getItem().getEntityLifespan(item, worldObj)));
+//                    ItemExpireEvent event = new ItemExpireEvent(this, (item.getItem() == null ? 6000 : item.getItem().getEntityLifespan(item, world)));
 //                    if (MinecraftForge.EVENT_BUS.post(event)) {
 //                        lifespan += event.extraLife;
 //                    } else {
@@ -157,13 +159,14 @@ public class EntityPersistentItem extends EntityItem {
             age = 0;
         }
 
-        ItemStack stack = this.getDataManager().get(ITEM).orNull();
-        if (stack != null && stack.getItem() != null && stack.getItem().onEntityItemUpdate(this)) {
+        ItemStack stack = this.getDataManager().get(ITEM);
+        if (!stack.isEmpty() && stack.getItem().onEntityItemUpdate(this)) {
             return;
         }
-        if (stack == null) {
+        if (stack.isEmpty()) {
             this.setDead();
-        } else {
+        }
+        else {
             super.onUpdate();
 
             if (this.delayBeforeCanPickup > 0 && this.delayBeforeCanPickup != 32767) {
@@ -176,18 +179,18 @@ public class EntityPersistentItem extends EntityItem {
             this.motionY -= 0.03999999910593033D;
             this.noClip = this.pushOutOfBlocks(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D, this.posZ);
 
-            this.moveEntity(this.motionX, this.motionY, this.motionZ);
+            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
             boolean flag = (int) this.prevPosX != (int) this.posX || (int) this.prevPosY != (int) this.posY || (int) this.prevPosZ != (int) this.posZ;
 
             if (flag || this.ticksExisted % 25 == 0) {
-                if (this.worldObj.getBlockState(new BlockPos(this)).getMaterial() == Material.LAVA) {
+                if (this.world.getBlockState(new BlockPos(this)).getMaterial() == Material.LAVA) {
                     this.motionY = 0.2D;
                     this.motionX = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
                     this.motionZ = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
                     this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
                 }
 
-                if (!this.worldObj.isRemote) {
+                if (!this.world.isRemote) {
                     this.searchForOtherItemsNearby();
                 }
             }
@@ -195,7 +198,7 @@ public class EntityPersistentItem extends EntityItem {
             float f = 0.98F;
 
             if (this.onGround) {
-                f = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.getEntityBoundingBox().minY) - 1, MathHelper.floor_double(this.posZ))).getBlock().slipperiness * 0.98F;
+                f = this.world.getBlockState(new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ))).getBlock().slipperiness * 0.98F;
             }
 
             this.motionX *= (double) f;
@@ -212,14 +215,14 @@ public class EntityPersistentItem extends EntityItem {
 
             this.handleWaterMovement();
 
-            ItemStack item = this.getDataManager().get(ITEM).orNull();
+            ItemStack item = this.getDataManager().get(ITEM);
 
-            if (!this.worldObj.isRemote && this.age >= lifespan) {
+            if (!this.world.isRemote && this.age >= lifespan) {
                 int hook = net.minecraftforge.event.ForgeEventFactory.onItemExpire(this, item);
                 if (hook < 0) this.setDead();
                 else this.lifespan += hook;
             }
-            if (item != null && item.stackSize <= 0) {
+            if (!item.isEmpty() && item.getCount() <= 0) {
                 this.setDead();
             }
         }

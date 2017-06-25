@@ -72,7 +72,7 @@ public class EntityDragonHeart extends Entity {
         rotation += rotationInc;
         super.onUpdate();
 
-        if (getAge() == 1280 && !worldObj.isRemote) {
+        if (getAge() == 1280 && !world.isRemote) {
             drop();
         }
 
@@ -80,16 +80,16 @@ public class EntityDragonHeart extends Entity {
             setDead();
         }
 
-        if (worldObj.isRemote && getAge() < 1200) {
+        if (world.isRemote && getAge() < 1200) {
             for (int i = 0; i < 10; i++) {
                 double rotation = rand.nextDouble() * 1024D;
                 double offsetX = Math.sin(rotation) * (8F + (rand.nextFloat() * 4F));
                 double offsetZ = Math.cos(rotation) * (8F + (rand.nextFloat() * 4F));
-                BCEffectHandler.spawnFX(DEParticles.DRAGON_HEART, worldObj, posX + offsetX, posY + 0.6 + ((rand.nextDouble() - 0.5) * 4), posZ + offsetZ, posX, posY + 0.6 + ((rand.nextDouble() - 0.5) * 0.2), posZ, 128D);
+                BCEffectHandler.spawnFX(DEParticles.DRAGON_HEART, world, posX + offsetX, posY + 0.6 + ((rand.nextDouble() - 0.5) * 4), posZ + offsetZ, posX, posY + 0.6 + ((rand.nextDouble() - 0.5) * 0.2), posZ, 128D);
             }
         }
 
-        if (worldObj.isRemote && getAge() > 1280 && !burstFired) {
+        if (world.isRemote && getAge() > 1280 && !burstFired) {
             burstFired = true;
             for (int i = 0; i < 1000; i++) {
                 double y = rand.nextBoolean() ? 10 : -10;//posY + ((rand.nextDouble() - 0.5) * 10);
@@ -99,20 +99,20 @@ public class EntityDragonHeart extends Entity {
                 Vec3D dir = Vec3D.getDirectionVec(new Vec3D(this).add(0, 0.6, 0), new Vec3D(posX + offsetX, posY + 0.6 + y, posZ + offsetZ));
                 double dist = 1D + rand.nextDouble() * 15D;
 
-                BCEffectHandler.spawnFX(DEParticles.DRAGON_HEART, worldObj, posX, posY + 0.6, posZ, posX + (dir.x * dist), posY + 0.6 + (dir.y * dist), posZ + (dir.z * dist), 128D, 0, 255, 255);
+                BCEffectHandler.spawnFX(DEParticles.DRAGON_HEART, world, posX, posY + 0.6, posZ, posX + (dir.x * dist), posY + 0.6 + (dir.y * dist), posZ + (dir.z * dist), 128D, 0, 255, 255);
             }
         }
     }
 
     private void drop() {
-        EntityPlayer player = worldObj.getClosestPlayerToEntity(this, 512);
+        EntityPlayer player = world.getClosestPlayerToEntity(this, 512);
 
         if (player != null) {
-            BCEffectHandler.spawnFX(DEParticles.DRAGON_HEART, worldObj, new Vec3D(this), new Vec3D(player), 128D, 0, 0, 0, 1);
-            FeatureUtils.dropItemNoDellay(new ItemStack(DEFeatures.dragonHeart), worldObj, new Vec3D(player).toVector3());
+            BCEffectHandler.spawnFX(DEParticles.DRAGON_HEART, world, new Vec3D(this), new Vec3D(player), 128D, 0, 0, 0, 1);
+            FeatureUtils.dropItemNoDellay(new ItemStack(DEFeatures.dragonHeart), world, new Vec3D(player).toVector3());
         }
         else {
-            FeatureUtils.dropItemNoDellay(new ItemStack(DEFeatures.dragonHeart), worldObj, new Vec3D(this).toVector3());
+            FeatureUtils.dropItemNoDellay(new ItemStack(DEFeatures.dragonHeart), world, new Vec3D(this).toVector3());
         }
     }
 

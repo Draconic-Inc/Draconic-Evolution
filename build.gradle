@@ -51,7 +51,7 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-version = "${config.mcversion}-${config.mod_version}"
+version = "${config.mc_version}-${config.mod_version}"
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
@@ -59,9 +59,9 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 minecraft {
-    version = config.mcversion + "-" + config.forge_version
+    version = config.mc_version + "-" + config.forge_version
     runDir = "run"
-    mappings = "${config.mcp_mappings}"
+    mappings = "${config.mappings}"
     replace '${mod_version}', project.config.mod_version
     replaceIn "DraconicEvolution.java"
     makeObfSourceJar = false
@@ -74,15 +74,15 @@ if (System.getenv("BUILD_NUMBER") != null) {
 version = version + ".${buildNo}"
 
 dependencies {
-    //compile "codechicken:CodeChickenCore:${config.mcversion}-${config.ccc_version}:deobf"
-    //compile "codechicken:NotEnoughItems:${config.mcversion}-${config.NEI_version}:deobf"
-    compile "com.brandon3055.brandonscore:BrandonsCore:${config.mcversion}-${config.bcore_version}:deobf"
-    compile "codechicken:CodeChickenLib:${config.mcversion}-${config.CCLIB_version}:deobf"
+    //compile "codechicken:CodeChickenCore:${config.mc_version}-${config.ccc_version}:deobf"
+    //compile "codechicken:NotEnoughItems:${config.mc_version}-${config.NEI_version}:deobf"
+    compile "com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:deobf"
+    compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
     compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
-    compile "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
+    compile "mezz.jei:jei_${config.mc_version}:${config.jei_version}"
 
-    //deobfCompile "mezz.jei:jei_${config.mcversion}:${config.jei_version}:api"
-    //runtime "mezz.jei:jei_${config.mcversion}:${config.jei_version}"
+    //deobfCompile "mezz.jei:jei_${config.mc_version}:${config.jei_version}:api"
+    //runtime "mezz.jei:jei_${config.mc_version}:${config.jei_version}"
 
     //if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
     //compile project(path: ':BrandonsCore')
@@ -92,14 +92,14 @@ processResources
         {
             // this will ensure that this task is redone when the versions change.
             inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
+            inputs.property "mc_version", project.minecraft.version
 
             // replace stuff in mcmod.info, nothing else
             from(sourceSets.main.resources.srcDirs) {
                 include 'mcmod.info'
 
-                // replace version and mcversion
-                expand 'version': project.version, 'mcversion': project.minecraft.version
+                // replace version and mc_version
+                expand 'version': project.version, 'mc_version': project.minecraft.version
             }
 
             // copy everything else, thats not the mcmod.info

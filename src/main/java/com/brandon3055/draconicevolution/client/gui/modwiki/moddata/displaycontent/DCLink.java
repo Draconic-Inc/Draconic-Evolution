@@ -61,7 +61,7 @@ public class DCLink extends DisplayComponentBase {
         }
 
         float scaleFactor = 1F + (headingSize / 2F);
-        List<String> list = fontRenderer.listFormattedStringToWidth(displayString, (int)(xSize / scaleFactor));
+        List<String> list = fontRenderer.listFormattedStringToWidth(displayString, (int) (xSize / scaleFactor));
         int split = list.size();
         ySize = (int) (fontRenderer.FONT_HEIGHT * scaleFactor * split);
 
@@ -85,10 +85,10 @@ public class DCLink extends DisplayComponentBase {
             }
 
             if (x < xMin) {
-                xMin = (int)x;
+                xMin = (int) x;
             }
             if (x + scaledWidth > xMax) {
-                xMax = (int)(x + scaledWidth);
+                xMax = (int) (x + scaledWidth);
             }
         }
     }
@@ -100,7 +100,7 @@ public class DCLink extends DisplayComponentBase {
     @Override
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         float scaleFactor = 1F + (headingSize / 2F);
-        List<String> list = fontRenderer.listFormattedStringToWidth(displayString, (int)(xSize / scaleFactor));
+        List<String> list = fontRenderer.listFormattedStringToWidth(displayString, (int) (xSize / scaleFactor));
 
         for (String string : list) {
 
@@ -185,7 +185,7 @@ public class DCLink extends DisplayComponentBase {
     public LinkedList<MGuiElementBase> getEditControls() {
         LinkedList<MGuiElementBase> list = super.getEditControls();
 
-        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
+        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
@@ -193,13 +193,13 @@ public class DCLink extends DisplayComponentBase {
         }.setListener(this).setToolTip(new String[]{"Toggle Text Alignment"}));
         MGuiTextField textField = new MGuiTextField(modularGui, 0, 0, 100, 12, fontRenderer).setListener(this).setMaxStringLength(2048).setText(displayString);
         textField.setId("TEXT");
-        textField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Modify Link Text", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, textField));
+        textField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Modify Link Text", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, textField));
         list.add(textField);
 
         list.add(new MGuiLabel(modularGui, 0, 0, 37, 12, "Colour:").setAlignment(EnumAlignment.CENTER));
         MGuiTextField colourField = new MGuiTextField(modularGui, 0, 0, 45, 12, fontRenderer).setListener(this).setMaxStringLength(6);
         colourField.setId("COLOUR");
-        colourField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the primary link colour.", TextFormatting.GOLD + "This is a HEX value meaning it accepts digits between 0 and F", TextFormatting.GOLD + "Format is Red, Green, Blue [RRGGBB]", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, colourField));
+        colourField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Set the primary link colour.", TextFormatting.GOLD + "This is a HEX value meaning it accepts digits between 0 and F", TextFormatting.GOLD + "Format is Red, Green, Blue [RRGGBB]", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, colourField));
         colourField.setText(Integer.toHexString(getColour()));
         colourField.setValidator(new Predicate<String>() {
             @Override
@@ -218,7 +218,7 @@ public class DCLink extends DisplayComponentBase {
         list.add(new MGuiLabel(modularGui, 0, 0, 70, 12, "Hover Colour:").setAlignment(EnumAlignment.CENTER));
         MGuiTextField hoverColourField = new MGuiTextField(modularGui, 0, 0, 45, 12, fontRenderer).setListener(this).setMaxStringLength(6);
         hoverColourField.setId("COLOUR_HOVER");
-        hoverColourField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the hover link colour.", TextFormatting.GOLD + "This is a HEX value meaning it accepts digits between 0 and F", TextFormatting.GOLD + "Format is Red, Green, Blue [RRGGBB]", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, hoverColourField));
+        hoverColourField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Set the hover link colour.", TextFormatting.GOLD + "This is a HEX value meaning it accepts digits between 0 and F", TextFormatting.GOLD + "Format is Red, Green, Blue [RRGGBB]", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, hoverColourField));
         hoverColourField.setText(Integer.toHexString(hoverColour));
         hoverColourField.setValidator(new Predicate<String>() {
             @Override
@@ -234,45 +234,45 @@ public class DCLink extends DisplayComponentBase {
         });
         list.add(hoverColourField);
 
-        list.add(new MGuiButtonSolid(modularGui, "CYCLE_SIZE", 0, 0, 20, 12, "S:"){
+        list.add(new MGuiButtonSolid(modularGui, "CYCLE_SIZE", 0, 0, 20, 12, "S:") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Cycle Trough Link Sizes", "Hold Shift to reverse"}).setDisplayString("S:" + headingSize));
 
-        list.add(new MGuiButtonSolid(modularGui, "SHADOW", 0, 0, 10, 12, "S"){
+        list.add(new MGuiButtonSolid(modularGui, "SHADOW", 0, 0, 10, 12, "S") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Shadow"}));
 
-        list.add(new MGuiButtonSolid(modularGui, "OBFUSCATED", 0, 0, 10, 12, TextFormatting.OBFUSCATED + "O"){
+        list.add(new MGuiButtonSolid(modularGui, "OBFUSCATED", 0, 0, 10, 12, TextFormatting.OBFUSCATED + "O") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Obfuscated"}).addToGroup("STYLE"));
-        list.add(new MGuiButtonSolid(modularGui, "BOLD", 0, 0, 10, 12, TextFormatting.BOLD + "B"){
+        list.add(new MGuiButtonSolid(modularGui, "BOLD", 0, 0, 10, 12, TextFormatting.BOLD + "B") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Bold"}).addToGroup("STYLE"));
-        list.add(new MGuiButtonSolid(modularGui, "STRIKETHROUGH", 0, 0, 10, 12, TextFormatting.STRIKETHROUGH + "S"){
+        list.add(new MGuiButtonSolid(modularGui, "STRIKETHROUGH", 0, 0, 10, 12, TextFormatting.STRIKETHROUGH + "S") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Strike-through"}).addToGroup("STYLE"));
-        list.add(new MGuiButtonSolid(modularGui, "UNDERLINE", 0, 0, 10, 12, TextFormatting.UNDERLINE + "U"){
+        list.add(new MGuiButtonSolid(modularGui, "UNDERLINE", 0, 0, 10, 12, TextFormatting.UNDERLINE + "U") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Underline"}).addToGroup("STYLE"));
-        list.add(new MGuiButtonSolid(modularGui, "ITALIC", 0, 0, 10, 12, TextFormatting.ITALIC + "I"){
+        list.add(new MGuiButtonSolid(modularGui, "ITALIC", 0, 0, 10, 12, TextFormatting.ITALIC + "I") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
@@ -283,10 +283,10 @@ public class DCLink extends DisplayComponentBase {
         list.add(new MGuiLabel(modularGui, 0, 0, fontRenderer.getStringWidth(type) + 4, 12, type).setAlignment(EnumAlignment.CENTER));
         MGuiTextField linkField = new MGuiTextField(modularGui, 0, 0, 200, 12, fontRenderer).setListener(this).setMaxStringLength(2048).setText(link);
         linkField.setId("LINK_FIELD");
-        hoverColourField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the link destination.", TextFormatting.GOLD + "Destination can be a web address if or a branch id depending on the target type.", TextFormatting.GOLD + "To get the id of a branch go to its edit menu and click the \"Copy ID\" button.", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, linkField));
+        hoverColourField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Set the link destination.", TextFormatting.GOLD + "Destination can be a web address if or a branch id depending on the target type.", TextFormatting.GOLD + "To get the id of a branch go to its edit menu and click the \"Copy ID\" button.", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, linkField));
 
         list.add(linkField);
-        list.add(new MGuiButtonSolid(modularGui, "SWITCH_TARGET", 0, 0, 36, 12, "Target"){
+        list.add(new MGuiButtonSolid(modularGui, "SWITCH_TARGET", 0, 0, 36, 12, "Target") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
@@ -375,7 +375,7 @@ public class DCLink extends DisplayComponentBase {
             }
         }
         else if (eventElement instanceof MGuiButton && eventElement.isInGroup("STYLE")) {
-            TextFormatting format = TextFormatting.valueOf(((MGuiButton)eventElement).buttonName);
+            TextFormatting format = TextFormatting.valueOf(((MGuiButton) eventElement).buttonName);
 
             if (displayString.contains(format.toString())) {
                 displayString = displayString.replace(format.toString(), "");

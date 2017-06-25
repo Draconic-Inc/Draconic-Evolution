@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.client.handler;
 
-import codechicken.lib.render.state.GlStateManagerHelper;
+import codechicken.lib.render.state.GlStateTracker;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiHudConfig;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
+import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -51,7 +51,7 @@ public class HudHandler {
             return;
         }
 
-        GlStateManagerHelper.pushState();
+        GlStateTracker.pushState();
         GlStateManager.pushMatrix();
         ScaledResolution resolution = event.getResolution();
         width = resolution.getScaledWidth();
@@ -74,7 +74,7 @@ public class HudHandler {
         }
 
         GlStateManager.popMatrix();
-        GlStateManagerHelper.popState();
+        GlStateTracker.popState();
     }
 
 
@@ -96,7 +96,7 @@ public class HudHandler {
 
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (mc == null || mc.thePlayer == null) {
+        if (mc == null || mc.player == null) {
             return;
         }
 
@@ -112,32 +112,33 @@ public class HudHandler {
                 toolTipFadeOut = 1F;
                 armorStatsFadeOut = 1F;
             }
-        } else {
+        }
+        else {
 
-            RayTraceResult traceResult = mc.thePlayer.rayTrace(5, 0);
+            RayTraceResult traceResult = mc.player.rayTrace(5, 0);
             IBlockState state = null;
 
             if (traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
-                state = mc.theWorld.getBlockState(traceResult.getBlockPos());
+                state = mc.world.getBlockState(traceResult.getBlockPos());
             }
 
             if (state != null && state.getBlock() instanceof IHudDisplay) {
-                ((IHudDisplay) state.getBlock()).addDisplayData(null, mc.theWorld, traceResult.getBlockPos(), hudList);
+                ((IHudDisplay) state.getBlock()).addDisplayData(null, mc.world, traceResult.getBlockPos(), hudList);
             }
             else {
-                ItemStack stack = mc.thePlayer.getHeldItemMainhand();
+                ItemStack stack = mc.player.getHeldItemMainhand();
 
-                if (stack == null || !(stack.getItem() instanceof IHudDisplay)) {
-                    stack = mc.thePlayer.getHeldItemOffhand();
+                if (stack.isEmpty() || !(stack.getItem() instanceof IHudDisplay)) {
+                    stack = mc.player.getHeldItemOffhand();
                 }
 
-                if (stack != null && stack.getItem() instanceof IHudDisplay) {
-                    ((IHudDisplay) stack.getItem()).addDisplayData(stack, mc.theWorld, null, hudList);
+                if (!stack.isEmpty() && stack.getItem() instanceof IHudDisplay) {
+                    ((IHudDisplay) stack.getItem()).addDisplayData(stack, mc.world, null, hudList);
                 }
             }
         }
 
-        CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(mc.thePlayer);
+        CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(mc.player);
 
         if (summery == null) {
             showShieldHud = false;
@@ -145,8 +146,7 @@ public class HudHandler {
         }
         showShieldHud = armorStatsFadeOut > 0F;
 
-        if (maxShieldPoints != summery.maxProtectionPoints || shieldPoints != summery.protectionPoints || shieldEntropy != summery.entropy || rfTotal != summery.totalEnergyStored)
-            armorStatsFadeOut = 5F;
+        if (maxShieldPoints != summery.maxProtectionPoints || shieldPoints != summery.protectionPoints || shieldEntropy != summery.entropy || rfTotal != summery.totalEnergyStored) armorStatsFadeOut = 5F;
 
         maxShieldPoints = summery.maxProtectionPoints;
         shieldPoints = summery.protectionPoints;
@@ -174,7 +174,8 @@ public class HudHandler {
             GlStateManager.translate(x, y, 0);
             GlStateManager.rotate(-90, 0, 0, -1);
             GlStateManager.translate(-x, -y, 0);
-        } else GuiHelper.drawTexturedRect(x + 1, y + 105, 15, 17, 2, 0, 13, 15, 0, GuiHelper.PXL128);
+        }
+        else GuiHelper.drawTexturedRect(x + 1, y + 105, 15, 17, 2, 0, 13, 15, 0, GuiHelper.PXL128);
 
         GuiHelper.drawTexturedRect(x, y, 17, 104, 0, 15, 17, 104, 0, GuiHelper.PXL128);
         GuiHelper.drawTexturedRect(x + 2, y + 2 + (100 - shieldPercentCharge), 7, shieldPercentCharge, 17, 100 - shieldPercentCharge, 7, shieldPercentCharge, 0, GuiHelper.PXL128);
@@ -195,7 +196,8 @@ public class HudHandler {
                 fontRenderer.drawStringWithShadow(shield, x + 18, y + 74, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
                 fontRenderer.drawStringWithShadow(energy, x + 18, y + 84, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
                 fontRenderer.drawStringWithShadow(entropy, x + 18, y + 94, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
-            } else {
+            }
+            else {
                 fontRenderer.drawString(shield, x - 52 - fontRenderer.getStringWidth(shield) / 2, y + 2, ((int) (fade * 240F) + 0x10 << 24) | 0x000000FF);
                 fontRenderer.drawStringWithShadow(entropy, x - fontRenderer.getStringWidth(entropy), y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
                 fontRenderer.drawStringWithShadow(energy, x - 102, y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);

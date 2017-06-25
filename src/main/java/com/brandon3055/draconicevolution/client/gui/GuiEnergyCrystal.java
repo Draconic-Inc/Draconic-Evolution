@@ -7,7 +7,6 @@ import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.BlockHelper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -92,7 +91,7 @@ public class GuiEnergyCrystal extends ModularGuiContainer<ContainerEnergyCrystal
             if (receiver && tile instanceof TileCrystalWirelessIO) {
                 list = ((TileCrystalWirelessIO) tile).getReceivers();
             }
-            else if (!receiver){
+            else if (!receiver) {
                 list = tile.getLinks();
             }
 
@@ -102,26 +101,28 @@ public class GuiEnergyCrystal extends ModularGuiContainer<ContainerEnergyCrystal
 
             if (((MGuiButton) eventElement).buttonName.startsWith("IDENTIFY_")) {
                 CrystalFXLink linkFX;
-                linkFX = new CrystalFXLink(mc.theWorld, tile, Vec3D.getCenter(list.get(index)));
+                linkFX = new CrystalFXLink(mc.world, tile, Vec3D.getCenter(list.get(index)));
                 linkFX.timeout = 100;
                 linkFX.setScale(2);
                 BCEffectHandler.spawnGLParticle(linkFX.getFXHandler(), linkFX);
             }
             else if (((MGuiButton) eventElement).buttonName.startsWith("UNLINK_")) {
                 if (receiver) {
-                    tile.sendPacketToServer(new PacketTileMessage(tile, (byte) 11, index, false));
+                    tile.sendPacketToServer(output -> output.writeInt(index), 11);
                 }
                 else {
-                    tile.sendPacketToServer(new PacketTileMessage(tile, (byte) 10, index, false));
+                    tile.sendPacketToServer(output -> output.writeInt(index), 10);
                 }
                 ((MGuiPopUpDialog) eventElement.parent).close();
             }
         }
         else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("CLEAR_L")) {
-            tile.sendPacketToServer(new PacketTileMessage(tile, (byte) 20, false, false));
+            tile.sendPacketToServer(output -> {
+            }, 20);
         }
         else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("CLEAR_R")) {
-            tile.sendPacketToServer(new PacketTileMessage(tile, (byte) 21, false, false));
+            tile.sendPacketToServer(output -> {
+            }, 21);
         }
     }
 
@@ -147,7 +148,7 @@ public class GuiEnergyCrystal extends ModularGuiContainer<ContainerEnergyCrystal
 
                 String tileName = "Unknown Tile...";
                 if (index < positions.size()) {
-                    tileName = BlockHelper.getBlockName(positions.get(index), mc.theWorld);
+                    tileName = BlockHelper.getBlockName(positions.get(index), mc.world);
                 }
 
                 entry.addChild(new MGuiLabel(this, -2, 1, entry.xSize, 12, index + ": " + tileName).setAlignment(EnumAlignment.LEFT).setTextColour(0xF08300).setTrim(true));
@@ -177,7 +178,7 @@ public class GuiEnergyCrystal extends ModularGuiContainer<ContainerEnergyCrystal
 
                     String tileName = "Unknown Tile...";
                     if (index < positions.size()) {
-                        tileName = BlockHelper.getBlockName(positions.get(index), mc.theWorld);
+                        tileName = BlockHelper.getBlockName(positions.get(index), mc.world);
                     }
                     entry.addChild(new MGuiLabel(this, -2, 1, entry.xSize, 12, index + ": " + tileName).setAlignment(EnumAlignment.LEFT).setTextColour(0xFF4000).setTrim(true));
 
@@ -190,8 +191,6 @@ public class GuiEnergyCrystal extends ModularGuiContainer<ContainerEnergyCrystal
             }
 
         }
-
-
 
 
         super.updateScreen();

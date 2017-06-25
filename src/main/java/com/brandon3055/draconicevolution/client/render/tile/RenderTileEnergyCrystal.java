@@ -2,11 +2,11 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.state.GlStateManagerHelper;
+import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
@@ -39,9 +39,9 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
     private CCModel crystalBase;
 
     public RenderTileEnergyCrystal() {
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/crystal.obj"));
+        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/crystal.obj"));
         crystalFull = CCModel.combine(map.values());
-        map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/crystal_half.obj"));
+        map = OBJParser.parseModels(ResourceHelperDE.getResource("models/crystal_half.obj"));
         crystalHalf = map.get("Crystal");
         crystalBase = map.get("Base");
     }
@@ -50,18 +50,19 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
     public void renderTileEntityAt(TileCrystalBase te, double x, double y, double z, float partialTicks, int destroyStage) {
         te.getFxHandler().renderCooldown = 5;
         GlStateManager.pushMatrix();
-        GlStateManagerHelper.pushState();
+        GlStateTracker.pushState();
         GlStateManager.disableLighting();
         setLighting(200);
 
         if (te instanceof TileCrystalDirectIO) {
             renderHalfCrystal((TileCrystalDirectIO) te, x, y, z, partialTicks, destroyStage, te.getTier());
-        } else {
+        }
+        else {
             renderCrystal(te, x, y, z, partialTicks, destroyStage, te.getTier());
         }
 
         resetLighting();
-        GlStateManagerHelper.popState();
+        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 
@@ -87,7 +88,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
             ccrs.draw();
             releaseShader();
         }
-        else if (!(DEShaders.useShaders() && DEConfig.useCrystalShaders)){
+        else if (!(DEShaders.useShaders() && DEConfig.useCrystalShaders)) {
             //Render overlay if shaders are not supported
             ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_BASE);
             GlStateManager.enableBlend();
@@ -181,7 +182,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
             DEShaders.energyCrystal.freeBindShader();
 
             float xrot = (float) Math.atan2(x + 0.5, z + 0.5);
-            float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posZ);
+            float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posZ);
             float yrot = (float) net.minecraft.util.math.MathHelper.atan2(dist, y + 0.5);
             DEShaders.eCrystalOp.setAngle(xrot / -3.125F, yrot / 3.125F);
         }

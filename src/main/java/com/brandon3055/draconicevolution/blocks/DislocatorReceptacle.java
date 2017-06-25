@@ -18,8 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-
 /**
  * Created by brandon3055 on 16/07/2016.
  */
@@ -65,11 +63,12 @@ public class DislocatorReceptacle extends BlockBCore implements ITileEntityProvi
     //region Fun stuff
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = worldIn.getTileEntity(pos);
 
-        if (tile instanceof TileDislocatorReceptacle){
-            if (heldItem != null && heldItem.getItem() instanceof ItemBlock && ((ItemBlock) heldItem.getItem()).getBlock() == DEFeatures.infusedObsidian) {
+        if (tile instanceof TileDislocatorReceptacle) {
+            ItemStack stack = playerIn.getHeldItem(hand);
+            if (stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() == DEFeatures.infusedObsidian) {
                 ((TileDislocatorReceptacle) tile).CAMO.value = !((TileDislocatorReceptacle) tile).CAMO.value;
                 ((TileDislocatorReceptacle) tile).updateBlock();
                 return true;
@@ -85,7 +84,7 @@ public class DislocatorReceptacle extends BlockBCore implements ITileEntityProvi
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         TileEntity tile = worldIn.getTileEntity(pos);
 
-        if (tile instanceof TileDislocatorReceptacle){
+        if (tile instanceof TileDislocatorReceptacle) {
             ((TileDislocatorReceptacle) tile).deactivate();
         }
 
@@ -96,16 +95,16 @@ public class DislocatorReceptacle extends BlockBCore implements ITileEntityProvi
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         TileEntity tile = worldIn.getTileEntity(pos);
 
-        if (tile instanceof TileDislocatorReceptacle){
+        if (tile instanceof TileDislocatorReceptacle) {
             ((TileDislocatorReceptacle) tile).attemptIgnition();
         }
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
         TileEntity t = world.getTileEntity(pos);
 
-        if (t instanceof TileDislocatorReceptacle){
+        if (t instanceof TileDislocatorReceptacle) {
             TileDislocatorReceptacle tile = (TileDislocatorReceptacle) t;
 
             boolean powered = world.isBlockIndirectlyGettingPowered(pos) > 0;

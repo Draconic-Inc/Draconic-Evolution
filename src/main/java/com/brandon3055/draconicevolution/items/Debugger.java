@@ -19,10 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -31,7 +28,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,15 +58,6 @@ public class Debugger extends ItemBCore {
 //            DEShaders.initReactorBeams();
 //            DEShaders.initExplosionOverlay();
 //            DEShaders.initExplosionWave();
-
-
-
-
-
-
-
-
-
 
 
 //            int n = 3;
@@ -107,7 +94,7 @@ public class Debugger extends ItemBCore {
     }
 
     @Override
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
     }
 
     @Override
@@ -118,11 +105,11 @@ public class Debugger extends ItemBCore {
 //    private
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
-
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack itemStack = player.getHeldItem(hand);
         //if (!world.isRemote) {
-            double posX = player.posX - (player.posX % 16) + 8;
-            double posZ = player.posZ - (player.posZ % 16) + 8;
+        double posX = player.posX - (player.posX % 16) + 8;
+        double posZ = player.posZ - (player.posZ % 16) + 8;
 
 //            player.setPosition(posX, player.posY, posZ);
 
@@ -138,7 +125,6 @@ public class Debugger extends ItemBCore {
 //            }
 
 //            30 - 7 = 23
-
 
 
 //            for (int i = 0; i < 1; i++) {
@@ -173,7 +159,6 @@ public class Debugger extends ItemBCore {
 //
 //            }
 //            LogHelper.dev("Done");
-
 
 
         //}
@@ -311,7 +296,7 @@ public class Debugger extends ItemBCore {
 //        }
 
 
-//        if (!player.worldObj.isRemote) {
+//        if (!player.world.isRemote) {
 //            int range = 4;
 //
 //            for (int chunkX = - range; chunkX < range; chunkX++) {
@@ -341,7 +326,7 @@ public class Debugger extends ItemBCore {
 //        }
 
 
-//        if (!player.worldObj.isRemote) {
+//        if (!player.world.isRemote) {
 //            int range = 5;
 //
 //            for (int chunkX = - range; chunkX < range; chunkX++) {
@@ -616,7 +601,7 @@ public class Debugger extends ItemBCore {
 //        }
 
 
-        return super.onItemRightClick(itemStack, world, player, hand);
+        return super.onItemRightClick(world, player, hand);
     }
 
     public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
@@ -757,10 +742,10 @@ public class Debugger extends ItemBCore {
                 mode = 0;
             }
             if (!world.isRemote) {
-                player.addChatComponentMessage(new TextComponentString(MODES.get(mode)));
+                player.sendMessage(new TextComponentString(MODES.get(mode)));
             }
             ItemNBTHelper.setInteger(stack, "mode", mode);
-            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
 
         switch (mode) {
@@ -803,8 +788,9 @@ public class Debugger extends ItemBCore {
 
 
     @Override
-    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-//        if (world.isRemote) return EnumActionResult.PASS;
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        //        if (world.isRemote) return EnumActionResult.PASS;
 //
 //        WorldGenMinableCluster cluster = new WorldGenMinableCluster(BlockOre.oreCopper, 100);
 //
@@ -959,7 +945,7 @@ public class Debugger extends ItemBCore {
 //
 //        }
 
-//        ProcessExplosion explosion = new ProcessExplosion(new Vec3D(player).getPos(), 350, (WorldServer) player.worldObj, 10);
+//        ProcessExplosion explosion = new ProcessExplosion(new Vec3D(player).getPos(), 350, (WorldServer) player.world, 10);
 //        ProcessHandler.addProcess(explosion);
 
         IBlockState lava = Blocks.FLOWING_LAVA.getDefaultState();
@@ -971,7 +957,7 @@ public class Debugger extends ItemBCore {
             }
         }
 
-        World world = player.worldObj;
+        World world = player.world;
         world.createExplosion(null, player.posX, player.posY, player.posZ, 8, true);
         int c = 25 + world.rand.nextInt(25);
         for (int i = 0; i < c; i++) {
@@ -980,16 +966,16 @@ public class Debugger extends ItemBCore {
             entity.shouldDropItem = false;
             double vMod = 0.5 + (2 * world.rand.nextDouble());
             entity.addVelocity((world.rand.nextDouble() - 0.5) * vMod, (world.rand.nextDouble() / 1.5) * vMod, (world.rand.nextDouble() - 0.5) * vMod);
-            world.spawnEntityInWorld(entity);
+            world.spawnEntity(entity);
         }
 
 
 //        for (BlockPos pos : BlockPos.getAllInBox(new Vec3D(player).getPos().add(-20, -20, -20), new Vec3D(player).getPos().add(20, 20, 20))) {
-//            IBlockState state = player.worldObj.getBlockState(pos);
+//            IBlockState state = player.world.getBlockState(pos);
 //            if (state.getBlock() instanceof BlockFalling) {
-//                state.getBlock().updateTick(player.worldObj, pos, state, player.worldObj.rand);
+//                state.getBlock().updateTick(player.world, pos, state, player.world.rand);
 //            }
-//            state.neighborChanged(player.worldObj, pos, Blocks.AIR);
+//            state.neighborChanged(player.world, pos, Blocks.AIR);
 //        }
 
 
@@ -997,7 +983,7 @@ public class Debugger extends ItemBCore {
 //            explosion.updateProcess();
 //        }
 //
-//        WorldServer world = (WorldServer) player.worldObj;
+//        WorldServer world = (WorldServer) player.world;
 //        LogHelper.dev("Finding Chunks to relight");
 //        List<ChunkPos> chunks = new LinkedHashList<>();
 //        for (BlockPos pos : explosion.destroyedCache) {

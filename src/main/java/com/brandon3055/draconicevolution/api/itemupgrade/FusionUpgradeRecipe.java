@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -26,7 +26,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
     protected List<Object> ingredients;
     protected int energyCost;
     protected int craftingTier;
-    private static Item[] tools = new Item[] {DEFeatures.wyvernAxe, DEFeatures.draconicAxe, DEFeatures.wyvernShovel, DEFeatures.draconicShovel, DEFeatures.wyvernPick, DEFeatures.draconicPick, DEFeatures.wyvernSword, DEFeatures.draconicSword, DEFeatures.wyvernBow, DEFeatures.draconicBow, DEFeatures.draconicStaffOfPower};
+    private static Item[] tools = new Item[]{DEFeatures.wyvernAxe, DEFeatures.draconicAxe, DEFeatures.wyvernShovel, DEFeatures.draconicShovel, DEFeatures.wyvernPick, DEFeatures.draconicPick, DEFeatures.wyvernSword, DEFeatures.draconicSword, DEFeatures.wyvernBow, DEFeatures.draconicBow, DEFeatures.draconicStaffOfPower};
     private static Random rand = new Random();
 
     public FusionUpgradeRecipe(String upgrade, ItemStack upgradeKey, int energyCost, int craftingTier, int upgradeLevel, Object... ingredients) {
@@ -42,9 +42,9 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
 
 
     @Override
-    public ItemStack getRecipeOutput(@Nullable ItemStack catalyst) {
-        if (catalyst == null) {
-            return null;
+    public ItemStack getRecipeOutput(@Nonnull ItemStack catalyst) {
+        if (catalyst.isEmpty()) {
+            return ItemStack.EMPTY;
         }
 
         ItemStack stack = catalyst.copy();
@@ -54,12 +54,12 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
 
     @Override
     public boolean isRecipeCatalyst(ItemStack catalyst) {
-        return catalyst != null && catalyst.getItem() instanceof IUpgradableItem && ((IUpgradableItem) catalyst.getItem()).getValidUpgrades(catalyst).contains(upgrade);
+        return !catalyst.isEmpty() && catalyst.getItem() instanceof IUpgradableItem && ((IUpgradableItem) catalyst.getItem()).getValidUpgrades(catalyst).contains(upgrade);
     }
 
     @Override
     public ItemStack getRecipeCatalyst() {
-        return null;//new ItemStack(tools[rand.nextInt(tools.length)]);
+        return ItemStack.EMPTY;//new ItemStack(tools[rand.nextInt(tools.length)]);
     }
 
     @Override
@@ -85,13 +85,13 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
         //Check if the upgrade key is present
         boolean flag = false;
         for (ICraftingPedestal pedestal : pedestals) {
-            if (pedestal.getStackInPedestal() != null && upgradeKey.isItemEqual(pedestal.getStackInPedestal())) {
+            if (!pedestal.getStackInPedestal().isEmpty() && upgradeKey.isItemEqual(pedestal.getStackInPedestal())) {
                 flag = true;
                 break;
             }
         }
 
-        if (!flag){
+        if (!flag) {
             return false;
         }
 
@@ -100,7 +100,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
             flag = false;
 
             for (ICraftingPedestal pedestal : pedestals) {
-                if (pedestal.getStackInPedestal() != null && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal())) {
+                if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal())) {
                     flag = true;
                     pedestals.remove(pedestal);
                     break;
@@ -114,7 +114,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
 
         //Check that there are no extra items that are not part of the recipe.
         for (ICraftingPedestal pedestal : pedestals) {
-            if (pedestal.getStackInPedestal() != null && !pedestal.getStackInPedestal().isItemEqual(upgradeKey)) {
+            if (!pedestal.getStackInPedestal().isEmpty() && !pedestal.getStackInPedestal().isItemEqual(upgradeKey)) {
                 return false;
             }
         }
@@ -129,12 +129,12 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
             return "upgrade.de.upgradeNA.info";
         }
 
-        if (inventory.getStackInCore(1) != null){
+        if (!inventory.getStackInCore(1).isEmpty()) {
             return "outputObstructed";
         }
 
-        IUpgradableItem item = (IUpgradableItem)inventory.getStackInCore(0).getItem();
-        if (item.getMaxUpgradeLevel(inventory.getStackInCore(0), upgrade) < upgradeLevel){
+        IUpgradableItem item = (IUpgradableItem) inventory.getStackInCore(0).getItem();
+        if (item.getMaxUpgradeLevel(inventory.getStackInCore(0), upgrade) < upgradeLevel) {
             return "upgrade.de.upgradeLevelToHigh.info";
         }
 
@@ -150,7 +150,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
         pedestals.addAll(inventory.getPedestals());
 
         for (ICraftingPedestal pedestal : pedestals) {
-            if (pedestal.getStackInPedestal() != null && pedestal.getPedestalTier() < craftingTier) {
+            if (!pedestal.getStackInPedestal().isEmpty() && pedestal.getPedestalTier() < craftingTier) {
                 return "tierLow";
             }
         }
@@ -171,15 +171,16 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
         //Use Ingredients
         for (Object ingredient : ingredients) {
             for (ICraftingPedestal pedestal : pedestals) {
-                if (pedestal.getStackInPedestal() != null && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal()) && pedestal.getPedestalTier() >= craftingTier && !pedestal.getStackInPedestal().isItemEqual(upgradeKey)) {
+                if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal()) && pedestal.getPedestalTier() >= craftingTier && !pedestal.getStackInPedestal().isItemEqual(upgradeKey)) {
 
                     ItemStack stack = pedestal.getStackInPedestal();
                     if (stack.getItem().hasContainerItem(stack)) {
                         stack = stack.getItem().getContainerItem(stack);
-                    } else {
-                        stack.stackSize--;
-                        if (stack.stackSize <= 0) {
-                            stack = null;
+                    }
+                    else {
+                        stack.shrink(1);
+                        if (stack.getCount() <= 0) {
+                            stack = ItemStack.EMPTY;
                         }
                     }
 
@@ -191,7 +192,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
         }
 
         ItemStack stack = inventory.getStackInCore(0);
-        inventory.setStackInCore(0, null);
+        inventory.setStackInCore(0, ItemStack.EMPTY);
         UpgradeHelper.setUpgradeLevel(stack, upgrade, upgradeLevel);
         inventory.setStackInCore(1, stack);
     }

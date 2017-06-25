@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
-import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.google.common.base.Predicate;
@@ -13,7 +13,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -28,25 +27,26 @@ import java.util.UUID;
 
 public class TileGrinder extends TileEnergyInventoryBase implements IEnergyReceiver, ITickable {
 
-    public final SyncableBool active = new SyncableBool(false, true, false, true);
+    public final ManagedBool active = register("active", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
     public static FakePlayer fakePlayer;
     private AxisAlignedBB killBox;
     public boolean powered = false;
 
     public TileGrinder() {
         setInventorySize(1);
-        registerSyncableObject(energyStored, false);
-        registerSyncableObject(active, false);
+        setEnergySyncMode().syncViaContainer();
         setCapacityAndTransfer(500000, 32000, 0);
         setShouldRefreshOnBlockChange();
     }
 
     @Override
     public void update() {
-        super.detectAndSendChanges();
-        if (worldObj.isRemote) return;
+        super.update();
+        if (world.isRemote) {
+            return;
+        }
 
-        active.value = energyStored.value > 0 && !powered;
+        active.value = getEnergyStored() > 0 && !powered;
 
         if (active.value) {
             updateGrinding();
@@ -64,7 +64,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
     private void updateGrinding() {
         //Create the fake player if it dose not already exist
         if (fakePlayer == null) {
-            fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
+            fakePlayer = FakePlayerFactory.get((WorldServer) world, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
         }
 
         //Create the kill box if it dose not already exist
@@ -133,7 +133,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         //If a mob was killed reduce the despawn time of any xp dropped.
         if (coolDown == 2) {
-            List<EntityXPOrb> xp = worldObj.getEntitiesWithinAABB(EntityXPOrb.class, killBox.expand(4, 4, 4));
+            List<EntityXPOrb> xp = world.getEntitiesWithinAABB(EntityXPOrb.class, killBox.expand(4, 4, 4));
             for (EntityXPOrb orb : xp) {
                 if (orb.xpOrbAge < 5400) {
                     orb.xpOrbAge = 5700;
@@ -147,7 +147,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
             return null;
         }
 
-        List<EntityLivingBase> entitiesInRange = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, killBox, grinderPredicate);
+        List<EntityLivingBase> entitiesInRange = world.getEntitiesWithinAABB(EntityLivingBase.class, killBox, grinderPredicate);
 
         for (EntityLivingBase livingBase : entitiesInRange) {
             if (livingBase.isEntityAlive()) {
@@ -159,7 +159,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
     }
 
     public void updateKillBox() {
-        IBlockState state = worldObj.getBlockState(pos);
+        IBlockState state = world.getBlockState(pos);
         EnumFacing facing = state.getValue(Grinder.FACING);
         BlockPos pos1 = pos.add(-3, -3, -3);
         BlockPos pos2 = pos.add(4, 4, 4);
@@ -207,20 +207,8 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
     //endregion
 
     @Override
-    public void writeRetainedData(NBTTagCompound dataCompound) {
-        super.writeRetainedData(dataCompound);
-        active.toNBT(dataCompound);
-    }
-
-    @Override
-    public void readRetainedData(NBTTagCompound dataCompound) {
-        super.readRetainedData(dataCompound);
-        active.fromNBT(dataCompound);
-    }
-
-    @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return stack != null && stack.getItem() instanceof IEnergyContainerItem;
+        return stack.getItem() instanceof IEnergyContainerItem;
     }
 
     private static GrinderPredicate grinderPredicate = new GrinderPredicate();

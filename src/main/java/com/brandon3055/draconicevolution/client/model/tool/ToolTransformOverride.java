@@ -61,14 +61,14 @@ public class ToolTransformOverride {
     }
 
     public CCModelState getOverride(ItemCameraTransforms.TransformType cameraTransformType, CCModelState state) {
-        if (key.equals("draconic_staff_of_power")){
-            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? STAFF_STATE :  state;
+        if (key.equals("draconic_staff_of_power")) {
+            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? STAFF_STATE : state;
         }
-        else if (key.equals("draconic_sword")){
-            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? DR_SWORD_STATE :  state;
+        else if (key.equals("draconic_sword")) {
+            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? DR_SWORD_STATE : state;
         }
-        else if (key.equals("wyvern_sword")){
-            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? WY_SWORD_STATE :  state;
+        else if (key.equals("wyvern_sword")) {
+            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? WY_SWORD_STATE : state;
         }
 
         return state;

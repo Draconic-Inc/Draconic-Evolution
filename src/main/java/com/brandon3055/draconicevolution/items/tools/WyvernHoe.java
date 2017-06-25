@@ -32,7 +32,7 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.DIG_AOE;
 /**
  * Created by brandon3055 on 5/06/2016.
  */
-public class WyvernHoe extends ToolBase {
+public abstract class WyvernHoe extends ToolBase {
     protected int baseAOE;
 
     public WyvernHoe(double attackDamage, double attackSpeed) {
@@ -49,7 +49,8 @@ public class WyvernHoe extends ToolBase {
     //region Hoe
 
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        ItemStack stack = player.getHeldItem(hand);
         if (!hoeBlock(stack, player, world, pos, facing)) {
             if (world.getBlockState(pos).getBlock() != Blocks.FARMLAND) {
                 return EnumActionResult.FAIL;
@@ -93,7 +94,7 @@ public class WyvernHoe extends ToolBase {
 
             if (fill && !world.isAirBlock(aoePos.up()) && canRemoveAbove && up2OK) {
                 if (world.getBlockState(aoePos.up()).getBlock() == Blocks.DIRT) {
-                    world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Blocks.DIRT)));
+                    world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Blocks.DIRT)));
                 }
                 world.setBlockToAir(aoePos.up());
             }
@@ -124,18 +125,14 @@ public class WyvernHoe extends ToolBase {
             IBlockState iblockstate = world.getBlockState(pos);
             Block block = iblockstate.getBlock();
 
-            if (face != EnumFacing.DOWN && world.isAirBlock(pos.up()))
-            {
-                if (block == Blocks.GRASS || block == Blocks.GRASS_PATH)
-                {
+            if (face != EnumFacing.DOWN && world.isAirBlock(pos.up())) {
+                if (block == Blocks.GRASS || block == Blocks.GRASS_PATH) {
                     this.setBlock(player, world, pos, Blocks.FARMLAND.getDefaultState());
                     return true;
                 }
 
-                if (block == Blocks.DIRT)
-                {
-                    switch (iblockstate.getValue(BlockDirt.VARIANT))
-                    {
+                if (block == Blocks.DIRT) {
+                    switch (iblockstate.getValue(BlockDirt.VARIANT)) {
                         case DIRT:
                             this.setBlock(player, world, pos, Blocks.FARMLAND.getDefaultState());
                             return true;
@@ -150,12 +147,10 @@ public class WyvernHoe extends ToolBase {
         }
     }
 
-    protected void setBlock(EntityPlayer player, World worldIn, BlockPos pos, IBlockState state)
-    {
+    protected void setBlock(EntityPlayer player, World worldIn, BlockPos pos, IBlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-        if (!worldIn.isRemote)
-        {
+        if (!worldIn.isRemote) {
             worldIn.setBlockState(pos, state, 11);
         }
     }
@@ -193,6 +188,15 @@ public class WyvernHoe extends ToolBase {
     public int getToolTier(ItemStack stack) {
         return 0;
     }
+
+    //endregion
+
+    //region Rendering
+//
+//    @Override
+//    protected Set3<String, String, String> getTextureLocations() {
+//        return null;
+//    }
 
     //endregion
 }

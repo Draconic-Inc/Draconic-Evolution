@@ -60,8 +60,8 @@ public class ParticleFusionCrafting extends BCParticle {
     @Override
     public void onUpdate() {
         if (particleAge++ > 20 && (craftingInventory == null || !craftingInventory.craftingInProgress() || ((TileEntity) craftingInventory).isInvalid())) {
-            for (int i = 0; i < 10; i++){
-                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, new Vec3D(posX, posY, posZ)));
+            for (int i = 0; i < 10; i++) {
+                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, new Vec3D(posX, posY, posZ)));
             }
             setExpired();
             return;
@@ -72,16 +72,16 @@ public class ParticleFusionCrafting extends BCParticle {
         prevPosZ = posZ;
 
         //region Movement
-        if (craftingInventory.getCraftingStage() > 1000){
+        if (craftingInventory.getCraftingStage() > 1000) {
             double distFromCore = 1.2;
 
-            if (craftingInventory.getCraftingStage() > 1600){
+            if (craftingInventory.getCraftingStage() > 1600) {
                 distFromCore *= 1D - (craftingInventory.getCraftingStage() - 1600) / 400D;
             }
 
-            particleScale = 0.7F + ((float)(distFromCore / 1.2D) * 0.3F);
-            particleGreen = particleBlue = (float)(distFromCore - 0.2);
-            particleRed = 1F - (float)(distFromCore - 0.2);
+            particleScale = 0.7F + ((float) (distFromCore / 1.2D) * 0.3F);
+            particleGreen = particleBlue = (float) (distFromCore - 0.2);
+            particleRed = 1F - (float) (distFromCore - 0.2);
 
             double targetX = corePos.x + 0.5 + (Math.cos(circlePos) * distFromCore);
             double targetZ = corePos.z + 0.5 + (Math.sin(circlePos) * distFromCore);
@@ -96,12 +96,12 @@ public class ParticleFusionCrafting extends BCParticle {
                 moveEntityNoClip(dir.x, dir.y, dir.z);
             }
             else {
-                float rotSpeed = (0.6F * ((craftingInventory.getCraftingStage() - 1000) / 1000F)) + (1.2F - (float)distFromCore);
+                float rotSpeed = (0.6F * ((craftingInventory.getCraftingStage() - 1000) / 1000F)) + (1.2F - (float) distFromCore);
                 rotationLock = true;
-                if (circleDir){
+                if (circleDir) {
                     circleSpeed = rotSpeed;
                 }
-                else if (!circleDir){
+                else if (!circleDir) {
                     circleSpeed = -rotSpeed;
                 }
 
@@ -115,23 +115,23 @@ public class ParticleFusionCrafting extends BCParticle {
         //region Render Logic
 
         int chance = 22 - (int) ((craftingInventory.getCraftingStage() / 2000D) * 22);
-        if (chance < 1){
+        if (chance < 1) {
             chance = 1;
         }
 
-        if (rand.nextInt(chance) == 0){
-            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, new Vec3D(posX, posY, posZ)));
+        if (rand.nextInt(chance) == 0) {
+            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, new Vec3D(posX, posY, posZ)));
         }
 
         renderBolt = rand.nextInt(chance * 2) == 0;
-        if (renderBolt){
+        if (renderBolt) {
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
-            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
+            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, pos));
         }
 
         particleAlpha = craftingInventory.getCraftingStage() / 1000F;
         rotationSpeed = 1 + (craftingInventory.getCraftingStage() / 1000F) * 10;
-        if (particleAlpha > 1){
+        if (particleAlpha > 1) {
             particleAlpha = 1;
         }
 
@@ -156,7 +156,7 @@ public class ParticleFusionCrafting extends BCParticle {
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.color(particleRed, particleGreen, particleBlue, particleAlpha);
-       // GlStateManager.color(1, 0, 0, 1);
+        // GlStateManager.color(1, 0, 0, 1);
         GlStateManager.translate(x, y, z);
 
         GlStateManager.rotate(rotation + (partialTicks * rotationSpeed), 0F, 1F, 0F);
@@ -178,7 +178,7 @@ public class ParticleFusionCrafting extends BCParticle {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
 
-        if (renderBolt){
+        if (renderBolt) {
             renderBolt = false;
             RenderEnergyBolt.renderBoltBetween(new Vec3D(), corePos.copy().subtract(correctX - 0.5, correctY - 0.5, correctZ - 0.5), 0.05, 1, 10, rand.nextLong(), true);
         }
@@ -188,7 +188,7 @@ public class ParticleFusionCrafting extends BCParticle {
 //            Vec3D t = new Vec3D(-0.5 + rand.nextDouble(), -0.5 + rand.nextDouble(), -0.5 + rand.nextDouble());
 //            double l = 1;
 //            t.multiply(l, l, l);
-//            RenderEnergyBolt.renderCorona(new Vec3D(), t, 0.01, 0.2, 4, worldObj.rand.nextLong());
+//            RenderEnergyBolt.renderCorona(new Vec3D(), t, 0.01, 0.2, 4, world.rand.nextLong());
 //        }
 
         GlStateManager.enableBlend();
@@ -230,7 +230,7 @@ public class ParticleFusionCrafting extends BCParticle {
 
             particleTextureIndexX = rand.nextInt(5);
             int ttd = particleMaxAge - particleAge;
-            if (ttd < 10){
+            if (ttd < 10) {
                 particleScale = ttd / 10F;
             }
 
@@ -243,22 +243,22 @@ public class ParticleFusionCrafting extends BCParticle {
 
         @Override
         public void renderParticle(VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            float minU = (float)this.particleTextureIndexX / 8.0F;
+            float minU = (float) this.particleTextureIndexX / 8.0F;
             float maxU = minU + 0.125F;
-            float minV = (float)this.particleTextureIndexY / 8.0F;
+            float minV = (float) this.particleTextureIndexY / 8.0F;
             float maxV = minV + 0.125F;
             float scale = 0.1F * this.particleScale;
 
-            float renderX = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
-            float renderY = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
-            float renderZ = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
+            float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+            float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+            float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
             int brightnessForRender = this.getBrightnessForRender(partialTicks);
             int j = brightnessForRender >> 16 & 65535;
             int k = brightnessForRender & 65535;
-            vertexbuffer.pos((double)(renderX - rotationX * scale - rotationXY * scale), (double)(renderY - rotationZ * scale), (double)(renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double)maxU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double)(renderX - rotationX * scale + rotationXY * scale), (double)(renderY + rotationZ * scale), (double)(renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double)maxU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double)(renderX + rotationX * scale + rotationXY * scale), (double)(renderY + rotationZ * scale), (double)(renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double)minU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double)(renderX + rotationX * scale - rotationXY * scale), (double)(renderY - rotationZ * scale), (double)(renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double)minU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            vertexbuffer.pos((double) (renderX - rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            vertexbuffer.pos((double) (renderX - rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            vertexbuffer.pos((double) (renderX + rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            vertexbuffer.pos((double) (renderX + rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         }
     }
 }

@@ -1,12 +1,12 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "draconicevolution:crafting_pedestal",
+    "model": "draconicevolution:crafting_injector",
     "textures": {
-      "base":"draconicevolution:blocks/fusion_crafting/pedestal_base",
-      "core":"draconicevolution:blocks/fusion_crafting/pedestal_core_basic",
-      "ring":"draconicevolution:blocks/fusion_crafting/pedestal_ring",
-      "particle": "draconicevolution:blocks/fusion_crafting/pedestal_base"
+      "base":"draconicevolution:blocks/fusion_crafting/injector_base",
+      "core":"draconicevolution:blocks/fusion_crafting/injector_core_basic",
+      "ring":"draconicevolution:blocks/fusion_crafting/injector_ring",
+      "particle": "draconicevolution:blocks/fusion_crafting/injector_base"
     },
     "transform": "forge:default-block"
   },
@@ -29,17 +29,17 @@
       "basic":{},
       "wyvern":{
         "textures": {
-          "core":"draconicevolution:blocks/fusion_crafting/pedestal_core_wyvern"
+          "core":"draconicevolution:blocks/fusion_crafting/injector_core_wyvern"
         }
       },
       "draconic":{
         "textures": {
-          "core":"draconicevolution:blocks/fusion_crafting/pedestal_core_draconic"
+          "core":"draconicevolution:blocks/fusion_crafting/injector_core_draconic"
         }
       },
       "chaotic":{
         "textures": {
-          "core":"draconicevolution:blocks/fusion_crafting/pedestal_core_chaotic"
+          "core":"draconicevolution:blocks/fusion_crafting/injector_core_chaotic"
         }
       }
     },

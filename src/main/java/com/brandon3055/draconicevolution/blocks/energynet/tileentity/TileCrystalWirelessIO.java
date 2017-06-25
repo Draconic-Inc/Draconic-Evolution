@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
-import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
@@ -22,13 +22,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -47,7 +43,9 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     protected List<LinkedReceiver> slowList = new ArrayList<>();
     public LinkedList<int[]> receiverTransferRates = new LinkedList<>();
     public LinkedList<Byte> receiverFlowRates = new LinkedList<>();
-    public final SyncableBool useUpdateOptimisation = new SyncableBool(true, false, true);
+    public final ManagedBool useUpdateOptimisation = dataManager.register("transportState", new ManagedBool(true)).syncViaContainer().saveToTile().saveToItem().finish();
+
+//    public final ManagedBool useUpdateOptimisation = new ManagedBool(true, false, true);
 
     public TileCrystalWirelessIO() {
         super();
@@ -57,7 +55,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     @Override
     public void update() {
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             updateEnergyFlow();
         }
 
@@ -107,7 +105,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             fastList.removeAll(moveToSlow);
         }
 
-        if (!worldObj.isRemote && DEEventHandler.serverTicks % 10 == 0) {
+        if (!world.isRemote && DEEventHandler.serverTicks % 10 == 0) {
             receiverFlowRates.clear();
             for (int i = 0; i < linkedReceivers.size(); i++) {
                 receiverFlowRates.add(flowConversion(receiverTransfer(i)));
@@ -119,7 +117,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
      * Attempts to send energy to this receiver. Returns false if the receiver is nolonger valid.
      */
     protected boolean updateReceiver(LinkedReceiver receiver) {
-        if (!receiver.isLinkValid(worldObj)) {
+        if (!receiver.isLinkValid(world)) {
             return false;
         }
 
@@ -154,7 +152,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         receiverFlowRates.clear();
         for (int i = 0; i < linkedReceivers.size(); i++) {
             receiverTransferRates.add(new int[20]);
-            receiverFlowRates.add((byte)0);
+            receiverFlowRates.add((byte) 0);
         }
     }
 
@@ -181,7 +179,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     @Override
     public boolean binderUsed(EntityPlayer player, BlockPos linkTarget, EnumFacing sideClicked) {
-        TileEntity tile = worldObj.getTileEntity(linkTarget);
+        TileEntity tile = world.getTileEntity(linkTarget);
         if (tile == null || tile instanceof ICrystalLink) {
             return super.binderUsed(player, linkTarget, sideClicked);
         }
@@ -257,7 +255,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @SideOnly(Side.CLIENT)
     @Override
     public CrystalGLFXBase createStaticFX() {
-        return new CrystalFXRing(worldObj, this);
+        return new CrystalFXRing(world, this);
     }
 
     @Override
@@ -366,7 +364,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @Override
     public void detectAndSendContainerChanges(List<IContainerListener> listeners) {
         super.detectAndSendContainerChanges(listeners);
-        if (linkedReceivers.size() != receiverTransferRates.size() && !worldObj.isRemote) {
+        if (linkedReceivers.size() != receiverTransferRates.size() && !world.isRemote) {
             rebuildReceiverTransferList();
         }
 
@@ -379,7 +377,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             if (!containerReceiverFlow.containsKey(index) || containerReceiverFlow.get(index) != receiverTransfer(index)) {
                 containerReceiverFlow.put(index, receiverTransfer(index));
                 NBTTagCompound data = new NBTTagCompound();
-                data.setByte("I", (byte)index);
+                data.setByte("I", (byte) index);
                 data.setInteger("E", receiverTransfer(index));
                 list.appendTag(data);
             }
@@ -388,45 +386,42 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         if (!list.hasNoTags()) {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setTag("L", list);
-            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 1, compound, false));
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(compound), 1));
         }
         else if (containerReceiverFlow.size() > linkedReceivers.size()) {
             containerReceiverFlow.clear();
-            sendUpdateToListeners(listeners, new PacketTileMessage(this, (byte) 1, 0, false));
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> {
+            }, 1));
         }
     }
 
     @Override
-    public void receivePacketFromServer(PacketTileMessage packet) {
-        super.receivePacketFromServer(packet);
-        if (packet.getIndex() == 1 && packet.isNBT()) {
-            NBTTagList list = packet.compound.getTagList("L", 10);
+    public void receivePacketFromServer(MCDataInput data, int id) {
+        super.receivePacketFromServer(data, id);
+
+        if (id == 1) {
+            NBTTagCompound compound = data.readNBTTagCompound();
+            NBTTagList list = compound.getTagList("L", 10);
 
             for (int i = 0; i < list.tagCount(); i++) {
-                NBTTagCompound data = list.getCompoundTagAt(i);
-                containerReceiverFlow.put((int) data.getByte("I"), data.getInteger("E"));
+                NBTTagCompound tagData = list.getCompoundTagAt(i);
+                containerReceiverFlow.put((int) tagData.getByte("I"), tagData.getInteger("E"));
             }
         }
     }
 
     @Override
-    public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
-        super.receivePacketFromClient(packet, client);
+    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+        super.receivePacketFromClient(data, client, id);
 
-        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(client, EnumHand.MAIN_HAND, client.getHeldItemMainhand(), pos, EnumFacing.UP, Vec3d.ZERO);
-        MinecraftForge.EVENT_BUS.post(event);
-        if (event.isCanceled()) {
-            return;
-        }
-
-        if (packet.getIndex() == 11) {
-            if (getReceivers().size() > packet.intValue && packet.intValue >= 0) {
-                BlockPos target = getReceivers().get(packet.intValue);
+        if (id == 11) {
+            int intValue = data.readInt();
+            if (getReceivers().size() > intValue && intValue >= 0) {
+                BlockPos target = getReceivers().get(intValue);
                 removeReceiver(target);
             }
         }
-
-        else if (packet.getIndex() == 21) {
+        else if (id == 21) {
             List<BlockPos> links = new ArrayList<>(getReceivers());
             for (BlockPos target : links) {
                 removeReceiver(target);
@@ -454,7 +449,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         public boolean isLinkValid(World world) {
             tileCache = world.getTileEntity(pos);
 
-            if ((tileCache == null || !EnergyHelper.isEnergyTile(tileCache)) && worldObj.getChunkFromBlockCoords(pos).isLoaded()) {
+            if ((tileCache == null || !EnergyHelper.isEnergyTile(tileCache)) && world.getChunkFromBlockCoords(pos).isLoaded()) {
                 return false;
             }
 

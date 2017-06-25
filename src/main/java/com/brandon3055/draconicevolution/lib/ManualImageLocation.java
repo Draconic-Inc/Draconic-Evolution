@@ -8,22 +8,24 @@ import net.minecraft.util.ResourceLocation;
  */
 public class ManualImageLocation extends ResourceLocation {
 
-	private int width;
-	private int height;
+    private int width;
+    private int height;
 
-	public ManualImageLocation(String texturePath, int width, int height) {
-		super(ResourceHelperDE.RESOURCE_PREFIX , "textures/gui/manualimages/" + texturePath);
-		this.width = width;
-		this.height = height;
-	}
+    public ManualImageLocation(String texturePath, int width, int height) {
+        super(ResourceHelperDE.RESOURCE_PREFIX, "textures/gui/manualimages/" + texturePath);
+        this.width = width;
+        this.height = height;
+    }
 
-	public void bind() { ResourceHelperDE.bindTexture(this); }
+    public void bind() {
+        ResourceHelperDE.bindTexture(this);
+    }
 
-	public int getWidth() {
-		return width;
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public int getHeight() {
+        return height;
+    }
 }

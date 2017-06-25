@@ -149,11 +149,11 @@
 //        //setDead();
 //        //LogHelper.info(getMaxHealth()+" "+getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue());
 //
-//        //if (!worldObj.isRemote)LogHelper.info(homeX+" "+homeY+" "+ homeZ);
+//        //if (!world.isRemote)LogHelper.info(homeX+" "+homeY+" "+ homeZ);
 //        //LogHelper.info(getHealth());
 //
 //        //setHealth(0);
-//        // if (!worldObj.isRemote)LogHelper.info(behaviour);
+//        // if (!world.isRemote)LogHelper.info(behaviour);
 //        //if (player != null) player.setLocationAndAngles(posX, posY, posZ, 0, 0);
 //        //setPosition(10000, 100, 0);
 //
@@ -173,13 +173,13 @@
 //        float f1;
 //        float moveSpeedMultiplier = behaviour.dragonSpeed;
 //
-//        if (this.worldObj.isRemote) {
+//        if (this.world.isRemote) {
 ////			connectedCrystalID = dataWatcher.getWatchableObjectInt(20);
 //
 ////            crystalX = dataWatcher.getWatchableObjectInt(21);
 ////            crystalY = dataWatcher.getWatchableObjectInt(22);
 ////            crystalZ = dataWatcher.getWatchableObjectInt(23);
-////			if (ticksExisted % 10 == 0 && connectedCrystalID != -1 && worldObj.getEntityByID(connectedCrystalID) instanceof EntityChaosCrystal) healingChaosCrystal = (EntityChaosCrystal)worldObj.getEntityByID(connectedCrystalID);
+////			if (ticksExisted % 10 == 0 && connectedCrystalID != -1 && world.getEntityByID(connectedCrystalID) instanceof EntityChaosCrystal) healingChaosCrystal = (EntityChaosCrystal)world.getEntityByID(connectedCrystalID);
 ////			else if (connectedCrystalID == -1 && healingChaosCrystal != null) healingChaosCrystal = null;
 //
 //            f = MathHelper.cos(this.animTime * (float) Math.PI * 2.0F);
@@ -187,7 +187,7 @@
 //
 //            if (f1 <= -0.3F && f >= -0.3F) {
 //                if (deathTicks <= 0) {
-//                    this.worldObj.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ENDERDRAGON_FLAP, SoundCategory.HOSTILE, 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
+//                    this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ENDERDRAGON_FLAP, SoundCategory.HOSTILE, 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
 //                }
 //            }
 //        }
@@ -195,11 +195,11 @@
 //        this.prevAnimTime = this.animTime;
 //        float f2;
 //
-//        if (!worldObj.isRemote) {
+//        if (!world.isRemote) {
 //            updateTarget();
 //
 ////
-////            if (worldObj.getClosestPlayer(posX, posY, posZ, 500, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
+////            if (world.getClosestPlayer(posX, posY, posZ, 500, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
 ////                DragonChunkLoader.stopLoading(this);
 ////            } else {
 ////                if (getHealth() > 0) {
@@ -222,8 +222,8 @@
 //            f = (this.rand.nextFloat() - 0.5F) * 8.0F;
 //            f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
 //            f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-//            worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
-////            this.worldObj.spawnParticle("largeexplode", this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+//            world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+////            this.world.spawnParticle("largeexplode", this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
 //        }
 //
 //        this.updateDragonEnderCrystal();
@@ -258,7 +258,7 @@
 //        double d10;
 //        float f12;
 //
-//        if (this.worldObj.isRemote) {
+//        if (this.world.isRemote) {
 //            if (this.newPosRotationIncrements > 0) {
 //                d10 = this.posX + (this.interpTargetX - this.posX) / (double) this.newPosRotationIncrements;
 //                d0 = this.posY + (this.interpTargetY - this.posY) / (double) this.newPosRotationIncrements;
@@ -393,10 +393,10 @@
 //        this.dragonPartWing2.onUpdate();
 //        this.dragonPartWing2.setLocationAndAngles(this.posX - (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ - (double) (f11 * 4.5F), 0.0F, 0.0F);
 //
-//        if (!this.worldObj.isRemote && this.hurtTime == 0) {
-//            this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-//            this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-//            this.attackEntitiesInList(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.getEntityBoundingBox().expand(1.0D, 1.0D, 1.0D)));
+//        if (!this.world.isRemote && this.hurtTime == 0) {
+//            this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
+//            this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
+//            this.attackEntitiesInList(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.getEntityBoundingBox().expand(1.0D, 1.0D, 1.0D)));
 //        }
 //
 //        double[] adouble1 = this.getMovementOffsets(5, 1.0F);
@@ -431,7 +431,7 @@
 //            entitydragonpart.setLocationAndAngles(this.posX - (double) ((f11 * f17 + f15 * f18) * f2), this.posY + (adouble2[1] - adouble1[1]) * 1.0D - (double) ((f18 + f17) * f10) + 1.5D, this.posZ + (double) ((f4 * f17 + f16 * f18) * f2), 0.0F, 0.0F);
 //        }
 //
-//        if (!this.worldObj.isRemote) {
+//        if (!this.world.isRemote) {
 //            this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getEntityBoundingBox());
 //        }
 //
@@ -455,13 +455,13 @@
 //            attackTimer = 1000;
 //        }
 //        if (deathTicks <= 0) {
-//            this.worldObj.playSound(player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERDRAGON_GROWL, SoundCategory.HOSTILE, 20.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
+//            this.world.playSound(player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERDRAGON_GROWL, SoundCategory.HOSTILE, 20.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
 //        }
 //    }
 //
 //    public void updateCrystals() {
 //        if (crystals == null) crystals = new ArrayList<EntityGuardianCrystal>();
-//        List<EntityGuardianCrystal> list = worldObj.getEntitiesWithinAABB(EntityGuardianCrystal.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(200, 200, 200));
+//        List<EntityGuardianCrystal> list = world.getEntitiesWithinAABB(EntityGuardianCrystal.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(200, 200, 200));
 //        activeCrystals = 0;
 //        for (EntityGuardianCrystal crystal : list) {
 //            if (!crystals.contains(crystal)) crystals.add(crystal);
@@ -486,7 +486,7 @@
 //
 //        switch (behaviour) {
 //            case ROAMING:
-//                if (worldObj.getClosestPlayer(homeX, homeY, homeZ, 200, true) != null) selectNewBehaviour();
+//                if (world.getClosestPlayer(homeX, homeY, homeZ, 200, true) != null) selectNewBehaviour();
 //                break;
 //
 //            case GO_HOME:
@@ -507,14 +507,14 @@
 //                break;
 //
 //            case LOW_HEALTH_STRATEGY:
-//                if (worldObj.getClosestPlayer(targetX, targetY, targetZ, 60, true) != null && attackInProgress != ATTACK_TELEPORT) {
+//                if (world.getClosestPlayer(targetX, targetY, targetZ, 60, true) != null && attackInProgress != ATTACK_TELEPORT) {
 //                    int escape = 0;
 //                    boolean flag = false;
 //                    while (!flag && escape < 50) {
 //                        targetX = homeX + ((rand.nextDouble() - 0.5D) * 220D);
 //                        targetY = homeY + 30 + rand.nextDouble() * 20D;
 //                        targetZ = homeZ + ((rand.nextDouble() - 0.5D) * 220D);
-//                        if (worldObj.getClosestPlayer(targetX, targetY, targetZ, 60D, true) == null) {
+//                        if (world.getClosestPlayer(targetX, targetY, targetZ, 60D, true) == null) {
 //                            flag = true;
 //                        }
 //                        escape++;
@@ -540,7 +540,7 @@
 //        if (ignitionChargeTimer > 1 || (ignitionChargeTimer == 1 && ticksExisted % 20 == 0) && !DEConfig.disableGuardianCrystalRespawn) {
 //            ignitionChargeTimer--;
 //        }
-//        if (ignitionChargeTimer <= 0 && !worldObj.isRemote) {
+//        if (ignitionChargeTimer <= 0 && !world.isRemote) {
 //            if ((ticksExisted - 19) % 20 == 0) {
 //                ignitionChargeTimer = (behaviour == EnumBehaviour.LOW_HEALTH_STRATEGY ? 1000 : 2000) + rand.nextInt(600);
 //            }
@@ -553,9 +553,9 @@
 //                    }
 //                }
 //                if (closest != null) {
-//                    EntityGuardianProjectile charge = new EntityGuardianProjectile(worldObj, EntityGuardianProjectile.IGNITION_CHARGE, closest, 0, this);
+//                    EntityGuardianProjectile charge = new EntityGuardianProjectile(world, EntityGuardianProjectile.IGNITION_CHARGE, closest, 0, this);
 //                    charge.setPosition(dragonPartHead.posX + Math.cos((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2, dragonPartHead.posY + 1.5, dragonPartHead.posZ + Math.sin((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2);
-//                    worldObj.spawnEntityInWorld(charge);
+//                    world.spawnEntityInWorld(charge);
 //                }
 //            }
 //        }
@@ -565,7 +565,7 @@
 //    }
 //
 //    private void updateAttack() {
-//        if (worldObj.isRemote || behaviour == EnumBehaviour.DEAD) return;
+//        if (world.isRemote || behaviour == EnumBehaviour.DEAD) return;
 //
 //        if (behaviour == EnumBehaviour.FIREBOMB && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) {
 //            if (target == null || ticksExisted % 100 == 0) {
@@ -582,9 +582,9 @@
 //                }
 //
 //                if (ticksExisted % 2 == 0) {
-//                    EntityGuardianProjectile projectile = new EntityGuardianProjectile(worldObj, EntityGuardianProjectile.FIREBOMB, target instanceof EntityLivingBase ? (EntityLivingBase) target : null, 5F + (rand.nextFloat() * 8F), this);
+//                    EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, target instanceof EntityLivingBase ? (EntityLivingBase) target : null, 5F + (rand.nextFloat() * 8F), this);
 //                    projectile.setPosition(dragonPartHead.posX + Math.cos((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2, dragonPartHead.posY + 1.5, dragonPartHead.posZ + Math.sin((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2);
-//                    worldObj.spawnEntityInWorld(projectile);
+//                    world.spawnEntityInWorld(projectile);
 //                }
 //            }
 //
@@ -593,7 +593,7 @@
 //        else if (nextAttackTimer == 0) {
 //
 //            Entity attackTarget = target;
-//            @SuppressWarnings("unchecked") List<EntityPlayer> targets = attackTarget == null ? worldObj.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(100, 100, 100)) : null;
+//            @SuppressWarnings("unchecked") List<EntityPlayer> targets = attackTarget == null ? world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(100, 100, 100)) : null;
 //
 //            if (targets != null && targets.size() > 0) {
 //                Iterator<EntityPlayer> i = targets.iterator();
@@ -637,9 +637,9 @@
 //                    if (target == null && behaviour == EnumBehaviour.CHARGING) target = attackTarget;
 //                    if (Utils.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 10) {
 //                        if (attackTimer % 2 == 0) {
-//                            EntityGuardianProjectile projectile = new EntityGuardianProjectile(worldObj, EntityGuardianProjectile.FIREBOMB, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
+//                            EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
 //                            projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
-//                            worldObj.spawnEntityInWorld(projectile);
+//                            world.spawnEntityInWorld(projectile);
 //                        }
 //
 //                        double distance = Utils.getDistanceAtoB(attackTarget.posX, attackTarget.posZ, dragonPartHead.posX, dragonPartHead.posZ);
@@ -650,36 +650,36 @@
 //                    break;
 //                case ATTACK_FIREBALL_CHASER:
 //                    if (attackTimer % 10 == 0) {
-//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(worldObj, EntityGuardianProjectile.FIRE_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 2F), this);
+//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIRE_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 2F), this);
 //                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
-//                        worldObj.spawnEntityInWorld(projectile);
+//                        world.spawnEntityInWorld(projectile);
 //                    }
 //                    break;
 //                case ATTACK_ENERGY_CHASER:
 //                    if (attackTimer % 10 == 0) {
-//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(worldObj, EntityGuardianProjectile.ENERGY_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
+//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.ENERGY_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
 //                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
-//                        worldObj.spawnEntityInWorld(projectile);
+//                        world.spawnEntityInWorld(projectile);
 //                    }
 //                    break;
 //                case ATTACK_CHAOS_CHASER:
 //                    if (attackTimer % 10 == 0) {
-//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(worldObj, EntityGuardianProjectile.CHAOS_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
+//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.CHAOS_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
 //                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
-//                        worldObj.spawnEntityInWorld(projectile);
+//                        world.spawnEntityInWorld(projectile);
 //                    }
 //                    break;
 //                case ATTACK_TELEPORT:
-//                    if (target == null) target = worldObj.getClosestPlayer(posX, posY, posZ, 100, true);
+//                    if (target == null) target = world.getClosestPlayer(posX, posY, posZ, 100, true);
 //                    if (target == null) {
 //                        attackInProgress = -1;
 //                        return;
 //                    }
 //                    if (Utils.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 15) {
 //                        if (attackTimer % 2 == 0) {
-//                            EntityGuardianProjectile projectile = new EntityGuardianProjectile(worldObj, EntityGuardianProjectile.TELEPORT, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
+//                            EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.TELEPORT, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
 //                            projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
-//                            worldObj.spawnEntityInWorld(projectile);
+//                            world.spawnEntityInWorld(projectile);
 //                        }
 //
 //                        double distance = Utils.getDistanceAtoB(attackTarget.posX, attackTarget.posZ, dragonPartHead.posX, dragonPartHead.posZ);
@@ -718,7 +718,7 @@
 //    }
 //
 //    private void selectNewBehaviour() {
-//        if (worldObj.isRemote || behaviour == EnumBehaviour.DEAD) return;
+//        if (world.isRemote || behaviour == EnumBehaviour.DEAD) return;
 //        EnumBehaviour newBehaviour = behaviour;
 //        while (newBehaviour == behaviour)
 //            newBehaviour = WeightedRandom.getRandomItem(rand, weightedBehaviours).randomBehaviour;
@@ -804,18 +804,18 @@
 //                break;
 //            case CHARGING:
 //            case CIRCLE_PLAYER:
-//                this.target = worldObj.getClosestPlayer(homeX, homeY, homeZ, 200, true);
+//                this.target = world.getClosestPlayer(homeX, homeY, homeZ, 200, true);
 //                break;
 //            case LOW_HEALTH_STRATEGY:
 //
 //
 //                break;
 //            case FIREBOMB:
-//                @SuppressWarnings("unchecked") List<EntityPlayer> targets = worldObj.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().expand(150, 150, 150), EntitySelectors.CAN_AI_TARGET);
+//                @SuppressWarnings("unchecked") List<EntityPlayer> targets = world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().expand(150, 150, 150), EntitySelectors.CAN_AI_TARGET);
 //                target = null;
 //                while (targets.size() > 0 && target == null) {
 //                    EntityPlayer potentialTarget = targets.get(rand.nextInt(targets.size()));
-//                    if (worldObj.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(potentialTarget.posX, potentialTarget.posY, potentialTarget.posZ)) == null) {
+//                    if (world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(potentialTarget.posX, potentialTarget.posY, potentialTarget.posZ)) == null) {
 //                        target = potentialTarget;
 //                    } else targets.remove(potentialTarget);
 //                }
@@ -881,7 +881,7 @@
 //                if ((target == null && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0) {
 //                    selectNewBehaviour();
 //                }
-//                if (damageSource.getEntity() instanceof EntityPlayer && damageSource.getEntity() != target && worldObj.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getEntity().posX, damageSource.getEntity().posY, damageSource.getEntity().posZ)) == null) {
+//                if (damageSource.getEntity() instanceof EntityPlayer && damageSource.getEntity() != target && world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getEntity().posX, damageSource.getEntity().posY, damageSource.getEntity().posZ)) == null) {
 //                    target = damageSource.getEntity();
 //                }
 //                break;
@@ -962,7 +962,7 @@
 //    protected void onDeathUpdate() {
 //        if (deathTicks == 0) {
 //
-//            TileEntity tile = worldObj.getTileEntity(new BlockPos(homeX, homeY, homeZ));
+//            TileEntity tile = world.getTileEntity(new BlockPos(homeX, homeY, homeZ));
 //            if (tile instanceof TileChaosCrystal) {
 //                ((TileChaosCrystal) tile).setDefeated();
 //            } else {
@@ -971,7 +971,7 @@
 //                    for (int y = homeY - 100; y < homeY + 100; y++) {
 //                        if (y < 0 || y > 255) continue;
 //                        for (int z = homeZ - 100; z < homeZ + 100; z++) {
-//                            tile = worldObj.getTileEntity(new BlockPos(x, y, z));
+//                            tile = world.getTileEntity(new BlockPos(x, y, z));
 //                            if (tile instanceof TileChaosCrystal) {
 //                                ((TileChaosCrystal) tile).setDefeated();
 //                                breac = true;
@@ -997,29 +997,29 @@
 //            float f = (this.rand.nextFloat() - 0.5F) * 8.0F;
 //            float f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
 //            float f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-//            worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+//            world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
 //        }
 //
 //        int i;
 //        int j;
 //
 //        if (this.deathTicks == 1) {
-//            this.worldObj.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ENDERDRAGON_DEATH, SoundCategory.HOSTILE, 50.0F, 1F, false);
+//            this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ENDERDRAGON_DEATH, SoundCategory.HOSTILE, 50.0F, 1F, false);
 //        }
 //
 //        if (getDistance(homeX, homeY, homeZ) < 20 && deathTicks % 2 == 0) {
-//            EntityLightningBolt bolt = new EntityLightningBolt(worldObj, homeX, homeY + 1, homeZ, true);
+//            EntityLightningBolt bolt = new EntityLightningBolt(world, homeX, homeY + 1, homeZ, true);
 //            bolt.ignoreFrustumCheck = true;
-//            worldObj.addWeatherEffect(bolt);
+//            world.addWeatherEffect(bolt);
 //        }
 //
-//        if (getDistance(homeX, homeY, homeZ) < 5 && !this.worldObj.isRemote) {
+//        if (getDistance(homeX, homeY, homeZ) < 5 && !this.world.isRemote) {
 //            i = 200000;
 //
 //            while (i > 0) {
 //                j = EntityXPOrb.getXPSplit(i);
 //                i -= j;
-//                this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
+//                this.world.spawnEntityInWorld(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
 //            }
 //
 //            //spawnEgg();
@@ -1072,10 +1072,10 @@
 //    }
 //
 //    private void updateDragonEnderCrystal() {
-//        if (worldObj.isRemote) {
+//        if (world.isRemote) {
 //            BlockPos pos = getCrystalPos();
 //            if (healingChaosCrystal == null && pos != null && ticksExisted % 10 == 0) {
-//                List<EntityGuardianCrystal> list = worldObj.getEntitiesWithinAABB(EntityGuardianCrystal.class, new AxisAlignedBB(pos.add(-2, -2, -2), pos.add(3, 3, 3)));
+//                List<EntityGuardianCrystal> list = world.getEntitiesWithinAABB(EntityGuardianCrystal.class, new AxisAlignedBB(pos.add(-2, -2, -2), pos.add(3, 3, 3)));
 //                if (list.size() > 0) {
 //                    healingChaosCrystal = list.get(0);
 //                }
@@ -1144,12 +1144,12 @@
 //            for (int y = j; y <= i1; ++y) {
 //                for (int z = k; z <= j1; ++z) {
 //                    BlockPos pos = new BlockPos(x, y, z);
-//                    IBlockState state = this.worldObj.getBlockState(pos);
+//                    IBlockState state = this.world.getBlockState(pos);
 //                    Block block = state.getBlock();
 //
-//                    if (!worldObj.isAirBlock(pos)) {
-//                        if (block.canEntityDestroy(state, worldObj, pos, this) && this.worldObj.getGameRules().getBoolean("mobGriefing")) {
-//                            flag1 = this.worldObj.setBlockToAir(pos) || flag1;
+//                    if (!world.isAirBlock(pos)) {
+//                        if (block.canEntityDestroy(state, world, pos, this) && this.world.getGameRules().getBoolean("mobGriefing")) {
+//                            flag1 = this.world.setBlockToAir(pos) || flag1;
 //                        } else {
 //                            flag = true;
 //                        }
@@ -1162,7 +1162,7 @@
 //            double d1 = par1AxisAlignedBB.minX + (par1AxisAlignedBB.maxX - par1AxisAlignedBB.minX) * (double) this.rand.nextFloat();
 //            double d2 = par1AxisAlignedBB.minY + (par1AxisAlignedBB.maxY - par1AxisAlignedBB.minY) * (double) this.rand.nextFloat();
 //            double d0 = par1AxisAlignedBB.minZ + (par1AxisAlignedBB.maxZ - par1AxisAlignedBB.minZ) * (double) this.rand.nextFloat();
-//            this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, d1, d2, d0, 0.0D, 0.0D, 0.0D);
+//            this.world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, d1, d2, d0, 0.0D, 0.0D, 0.0D);
 //        }
 //
 //        return flag;
@@ -1181,13 +1181,13 @@
 ////			createEnderPortal(homeX, homeZ);
 ////		}
 ////		LogHelper.info("spawn egg");
-////		if (worldObj.getBlock(homeX, homeY + 1, homeZ) == Blocks.air) {
-////			worldObj.setBlock(homeX, homeY + 1, homeZ, Blocks.dragon_egg);
+////		if (world.getBlock(homeX, homeY + 1, homeZ) == Blocks.air) {
+////			world.setBlock(homeX, homeY + 1, homeZ, Blocks.dragon_egg);
 ////			LogHelper.info("spawn egg2 " + homeX + " " + homeY + " " + homeZ);
 ////		}else {
 ////			for (int i = homeY + 1; i < 250; i++) {
-////				if (worldObj.getBlock(homeX, i, homeZ) == Blocks.air) {
-////					worldObj.setBlock(homeX, i, homeZ, Blocks.dragon_egg);
+////				if (world.getBlock(homeX, i, homeZ) == Blocks.air) {
+////					world.setBlock(homeX, i, homeZ, Blocks.dragon_egg);
 ////					LogHelper.info("spawn egg3");
 ////					break;
 ////				}
@@ -1199,18 +1199,18 @@
 ////			for (int iZ = homeZ - 2; iZ <= homeZ + 2; iZ++)
 ////			{
 ////
-////				if (worldObj.getBlock(iX, homeY - 4, iZ) == Blocks.bedrock && !(iX == homeX && iZ == homeZ))
+////				if (world.getBlock(iX, homeY - 4, iZ) == Blocks.bedrock && !(iX == homeX && iZ == homeZ))
 ////				{
-////					worldObj.setBlock(iX, homeY - 3, iZ, Blocks.end_portal);
+////					world.setBlock(iX, homeY - 3, iZ, Blocks.end_portal);
 ////				}
 ////			}
 ////		}
 ////
 ////
-////		worldObj.setBlock(homeX - 1, homeY - 1, homeZ, Blocks.torch);
-////		worldObj.setBlock(homeX + 1, homeY - 1, homeZ, Blocks.torch);
-////		worldObj.setBlock(homeX, homeY - 1, homeZ - 1, Blocks.torch);
-////		worldObj.setBlock(homeX, homeY - 1, homeZ + 1, Blocks.torch);
+////		world.setBlock(homeX - 1, homeY - 1, homeZ, Blocks.torch);
+////		world.setBlock(homeX + 1, homeY - 1, homeZ, Blocks.torch);
+////		world.setBlock(homeX, homeY - 1, homeZ - 1, Blocks.torch);
+////		world.setBlock(homeX, homeY - 1, homeZ + 1, Blocks.torch);
 ////
 ////
 ////		BlockEndPortal.field_149948_a = false;
@@ -1230,22 +1230,22 @@
 ////                    if (d2 <= ((double) b1 - 0.5D) * ((double) b1 - 0.5D)) {
 ////                        if (k < b0) {
 ////                            if (d2 <= ((double) (b1 - 1) - 0.5D) * ((double) (b1 - 1) - 0.5D)) {
-////                                this.worldObj.setBlock(l, k, i1, Blocks.bedrock);
+////                                this.world.setBlock(l, k, i1, Blocks.bedrock);
 ////                            }
 ////                        } else if (k > b0) {
-////                            this.worldObj.setBlock(l, k, i1, Blocks.air);
+////                            this.world.setBlock(l, k, i1, Blocks.air);
 ////                        } else if (d2 > ((double) (b1 - 1) - 0.5D) * ((double) (b1 - 1) - 0.5D)) {
-////                            this.worldObj.setBlock(l, k, i1, Blocks.bedrock);
+////                            this.world.setBlock(l, k, i1, Blocks.bedrock);
 ////                        }
 ////                    }
 ////                }
 ////            }
 ////        }
 ////
-////        this.worldObj.setBlock(par1, b0 + 0, par2, Blocks.bedrock);
-////        this.worldObj.setBlock(par1, b0 + 1, par2, Blocks.bedrock);
-////        this.worldObj.setBlock(par1, b0 + 2, par2, Blocks.bedrock);
-////        this.worldObj.setBlock(par1, b0 + 3, par2, Blocks.bedrock);
+////        this.world.setBlock(par1, b0 + 0, par2, Blocks.bedrock);
+////        this.world.setBlock(par1, b0 + 1, par2, Blocks.bedrock);
+////        this.world.setBlock(par1, b0 + 2, par2, Blocks.bedrock);
+////        this.world.setBlock(par1, b0 + 3, par2, Blocks.bedrock);
 //    }
 //
 //    @Override

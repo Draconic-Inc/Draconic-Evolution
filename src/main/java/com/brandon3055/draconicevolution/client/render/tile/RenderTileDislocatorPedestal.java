@@ -40,7 +40,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 0.5, y, z + 0.5);
 
-        if (te.getStackInSlot(0) != null) {
+        if (!te.getStackInSlot(0).isEmpty()) {
             GlStateManager.pushMatrix();
             GL11.glScalef(1F, -1F, -1F);
             drawNameString(te.getStackInSlot(0), 0, te, partialTicks);
@@ -55,7 +55,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         ModelUtils.renderQuads(modelQuads);
 
 
-        if (te.getStackInSlot(0) != null) {
+        if (!te.getStackInSlot(0).isEmpty()) {
             GlStateManager.translate(0.5, 0.79, 0.52);
             GlStateManager.rotate(-67.5F, 1, 0, 0);
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
@@ -68,7 +68,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
     }
 
     private void drawNameString(ItemStack item, float rotation, TileDislocatorPedestal te, float f) {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
         RayTraceResult mop = player.rayTrace(10, f);
         boolean isCursorOver = mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK && mop.getBlockPos().equals(te.getPos());
         boolean isSneaking = player.isSneaking();
@@ -79,7 +79,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
 
         String s = item.hasDisplayName() ? item.getDisplayName() : "";
         if (item.getItem() instanceof DislocatorAdvanced) {
-            Teleporter.TeleportLocation location = ((DislocatorAdvanced)item.getItem()).getLocation(item);
+            Teleporter.TeleportLocation location = ((DislocatorAdvanced) item.getItem()).getLocation(item);
             if (location != null) {
                 s = location.getName();
             }

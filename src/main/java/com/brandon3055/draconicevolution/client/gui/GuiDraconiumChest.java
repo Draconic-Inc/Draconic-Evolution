@@ -16,7 +16,6 @@ import com.brandon3055.draconicevolution.client.render.tile.RenderTileDraconiumC
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.GlStateManager;
@@ -73,7 +72,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         manager.add(new MGuiBackground(this, guiLeft() + 44, guiTop() + 245, 0, 266, 0, 16, "draconicevolution:" + DETextures.GUI_DRACONIUM_CHEST) {
             @Override
             public boolean onUpdate() {
-                double progress = tile.energyStored.value / (double) tile.energyStorage.getMaxEnergyStored();
+                double progress = tile.energySync.value / (double) tile.energyStorage.getMaxEnergyStored();
                 xSize = (int) (90 * progress);
                 return super.onUpdate();
             }
@@ -83,7 +82,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             public List<String> getToolTip() {
                 List<String> list = new ArrayList<>();
                 list.add(InfoHelper.ITC() + I18n.format("gui.de.energyStorage.txt"));
-                list.add(InfoHelper.HITC() + Utils.formatNumber(tile.energyStored.value) + " / " + Utils.formatNumber(tile.energyStorage.getMaxEnergyStored()));
+                list.add(InfoHelper.HITC() + Utils.formatNumber(tile.energySync.value) + " / " + Utils.formatNumber(tile.energyStorage.getMaxEnergyStored()));
                 list.add(I18n.format("gui.draconiumChest.energyConsumption.info") + ": " + Utils.addCommas(tile.smeltEnergyPerTick.value) + " RF/t");
                 return list;
             }
@@ -194,7 +193,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             }
         }
         else if (element instanceof MGuiButton && ((MGuiButton) element).buttonName.equals("PICK_COLOUR")) {
-            MGuiColourPicker picker = new MGuiColourPicker(this, guiLeft() + (xSize() / 2) - 40, guiTop() + (ySize() / 2) - 40, element){
+            MGuiColourPicker picker = new MGuiColourPicker(this, guiLeft() + (xSize() / 2) - 40, guiTop() + (ySize() / 2) - 40, element) {
                 @Override
                 public void onMGuiEvent(String eventString, MGuiElementBase eventElement) {
                     super.onMGuiEvent(eventString, eventElement);
@@ -463,7 +462,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
                 }
             }
 
-            LogHelper.dev("Change: " + changeRegion);
+//            LogHelper.dev("Change: " + changeRegion);
 
             if (changeRegion != -1) {
                 setChildGroupEnabled("R_SELECTORS", false);
@@ -474,7 +473,11 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             }
 
             //Handles the start of a region click+drag selection
-            if (editingRegion >= 0 && editingRegion < tile.slotRegions.length && tile.slotRegions[editingRegion].enabled && GuiHelper.isInRect(guiLeft() + 6, guiTop() + 6, 26 * 18, 10 * 18, mouseX, mouseY)) {
+            if (editingRegion >= 0 && editingRegion < tile.slotRegions.length && GuiHelper.isInRect(guiLeft() + 6, guiTop() + 6, 26 * 18, 10 * 18, mouseX, mouseY)) {
+                if (!tile.slotRegions[editingRegion].enabled) {
+                    tile.slotRegions[editingRegion].enabled = true;
+                    return true;
+                }
                 selectStartX = selectEndX = ((mouseX - 6 - guiLeft()) / 18);
                 selectStartY = selectEndY = ((mouseY - 6 - guiTop()) / 18);
                 for (TileDraconiumChest.SlotRegion region : tile.slotRegions) {

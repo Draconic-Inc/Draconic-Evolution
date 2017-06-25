@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.itemblock;
 
-import com.brandon3055.brandonscore.blocks.ItemBlockBasic;
-import com.brandon3055.brandonscore.config.FeatureWrapper;
+import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.draconicevolution.DEFeatures;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,19 +15,15 @@ import static net.minecraft.client.resources.I18n.format;
 /**
  * Created by brandon3055 on 22/3/2016.
  */
-public class ItemDraconiumBlock extends ItemBlockBasic {
+public class ItemDraconiumBlock extends ItemBlockBCore {
 
-	public ItemDraconiumBlock(Block block) {
-		super(block);
-	}
+    public ItemDraconiumBlock(Block block) {
+        super(block);
+    }
 
-	public ItemDraconiumBlock(Block block, FeatureWrapper featureWrapper){
-		super(block, featureWrapper);
-	}
-
-	//region IEnergyContainerItem
-	protected final int capacity = 100000000;
-	protected final int maxReceive = 10000000;
+    //region IEnergyContainerItem
+    protected final int capacity = 100000000;
+    protected final int maxReceive = 10000000;
 
 //	@Override
 //	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
@@ -85,7 +80,7 @@ public class ItemDraconiumBlock extends ItemBlockBasic {
 //            list.add(Utils.addCommas(getEnergyStored(stack)) + " / " + Utils.addCommas(getMaxEnergyStored(stack)) + "RF");
 //        }
 
-        if (player.inventory.hasItemStack(DEFeatures.wyvernCapacitor) || player.inventory.hasItemStack(DEFeatures.draconicCapacitor) || player.inventory.hasItemStack(DEFeatures.creativeCapacitor)){
+        if (player.inventory.hasItemStack(DEFeatures.wyvernCapacitor) || player.inventory.hasItemStack(DEFeatures.draconicCapacitor) || player.inventory.hasItemStack(DEFeatures.creativeCapacitor)) {
             list.add(format("info.de.draconiumBlockCapacitorCharge.txt"));
         }
     }

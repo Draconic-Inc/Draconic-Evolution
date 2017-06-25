@@ -79,7 +79,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
 //        LogHelper.dev(index);
-        ItemStack itemstack = null;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack()) {
@@ -89,7 +89,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
             //Transferring from Main Container
             if (index < 260) {
                 if (!mergeItemStack(itemstack1, 277, inventorySlots.size(), false)) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
                 slot.onSlotChange(itemstack1, itemstack);
             }
@@ -99,7 +99,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
                 if (!mergeItemStack(itemstack1, 277, inventorySlots.size(), false)) {
                     //If that fails try the chest inventory
                     if (!mergeItemStack(itemstack1, 0, 259, false)) {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
                 }
                 slot.onSlotChange(itemstack1, itemstack);
@@ -109,24 +109,24 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
                 if (!mergeItemStack(itemstack1, 0, 259, false)) {
                     //If that fails try the chest inventory
                     if (!mergeItemStack(itemstack1, 277, inventorySlots.size(), false)) {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
                 }
                 slot.onSlotChange(itemstack1, itemstack);
             }
             //Transferring from Player Inventory
             else if (!DraconiumChest.isStackValid(itemstack1) || !mergeItemStack(itemstack1, 0, 259, false)) {
-                return null;
+                return ItemStack.EMPTY;
             }
 
-            if (itemstack1.stackSize == 0) {
-                slot.putStack(null);
+            if (itemstack1.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
             }
             else {
                 slot.onSlotChanged();
             }
 
-            slot.onPickupFromSlot(player, itemstack1);
+            slot.onTake(player, itemstack1);
         }
         return itemstack;
     }
@@ -189,7 +189,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         @Override
         public boolean isItemValid(ItemStack stack) {
             if (super.isItemValid(stack)) {
-                return stack != null && stack.getItem() instanceof ItemCore && stack.getItem() != DEFeatures.draconicCore;
+                return !stack.isEmpty() && stack.getItem() instanceof ItemCore && stack.getItem() != DEFeatures.draconicCore;
             }
             return false;
         }

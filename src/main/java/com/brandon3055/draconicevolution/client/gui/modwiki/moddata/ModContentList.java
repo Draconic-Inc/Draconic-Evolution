@@ -40,7 +40,6 @@ public class ModContentList {
         modDataEntries.clear();
 
 
-
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = docFactory.newDocumentBuilder();
         Element mod = builder.parse(xmlFile).getDocumentElement();
@@ -51,7 +50,8 @@ public class ModContentList {
 
         try {
             docRevision = Integer.parseInt(mod.getAttribute("docRevision"));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             e.printStackTrace();
             docRevision = 0;
         }

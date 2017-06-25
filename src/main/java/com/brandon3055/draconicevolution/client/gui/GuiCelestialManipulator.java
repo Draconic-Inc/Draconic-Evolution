@@ -8,7 +8,6 @@ import com.brandon3055.brandonscore.client.gui.modulargui.lib.ModuleBuilder.RawC
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.StackReference;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IJEIClearence;
@@ -72,7 +71,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
             }
         });
         manager.add(effectRenderer = new MGuiEffectRenderer(this).setParticleTexture(DEParticles.DE_SHEET.toString()));
-        manager.add(weatherMode = new MGuiButtonSolid(this, "WEATHER_MODE", guiLeft + 5, guiTop + 1, 50, 12, I18n.format("gui.de.celMod.weather")){
+        manager.add(weatherMode = new MGuiButtonSolid(this, "WEATHER_MODE", guiLeft + 5, guiTop + 1, 50, 12, I18n.format("gui.de.celMod.weather")) {
             @Override
             public int getTextColour(boolean hovered, boolean disabled) {
                 return disabled ? 0x90600000 : hovered ? 0x9080FFFF : 0x9060FF60;
@@ -84,7 +83,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
             }
 
         }.setColours(0x90000000, 0x90111111, 0x90222222));
-        manager.add(sunMode = new MGuiButtonSolid(this, "SUN_MODE", guiLeft + xSize - 55, guiTop + 1, 50, 12, I18n.format("gui.de.celMod.time")){
+        manager.add(sunMode = new MGuiButtonSolid(this, "SUN_MODE", guiLeft + xSize - 55, guiTop + 1, 50, 12, I18n.format("gui.de.celMod.time")) {
             @Override
             public int getTextColour(boolean hovered, boolean disabled) {
                 return disabled ? 0x90600000 : hovered ? 0x9080FFFF : 0x9060FF60;
@@ -122,17 +121,17 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
 
         manager.add(rsBackGround = new MGuiBorderedRect(this, guiLeft + xSize, guiTop + 97, 18, 18).setBorderColour(0xFF505050));
         rsBackGround.addChild(new MGuiStackIcon(this, rsBackGround.xPos, rsBackGround.yPos, rsBackGround.xSize, rsBackGround.ySize, new StackReference("redstone")).setToolTip(false));
-        manager.add(new MGuiButtonSolid(this, "TOGGLE_RS_PANEL", rsBackGround.xPos, rsBackGround.yPos, rsBackGround.xSize, rsBackGround.ySize, "").setColours(0, 0, 0).setToolTip(new String[] {I18n.format("generic.configureRedstone.txt")}).setToolTipDelay(2));
+        manager.add(new MGuiButtonSolid(this, "TOGGLE_RS_PANEL", rsBackGround.xPos, rsBackGround.yPos, rsBackGround.xSize, rsBackGround.ySize, "").setColours(0, 0, 0).setToolTip(new String[]{I18n.format("generic.configureRedstone.txt")}).setToolTipDelay(2));
 
         RawColumns builder = new RawColumns(rsBackGround.xPos, rsBackGround.yPos + 18, 3, 18, 3);
         for (int b = 0; b < rsControlButtons.length; b++) {
             builder.add(rsControlButtons[b] = new MGuiBackground(this, 1, 1, 36, 40 + b * 18, 18, 18, "draconicevolution:textures/gui/widgets.png"));
-            rsControlButtons[b].addChild(new MGuiButtonSolid(this, b, rsControlButtons[b].xPos - 1, rsControlButtons[b].yPos  - 1, 20, 20, ""){
+            rsControlButtons[b].addChild(new MGuiButtonSolid(this, b, rsControlButtons[b].xPos - 1, rsControlButtons[b].yPos - 1, 20, 20, "") {
                 @Override
                 public int getBorderColour(boolean hovering, boolean disabled) {
                     return disabled ? 0xFFf00000 : hovering ? 0xFF707070 : 0xFF505050;
                 }
-            }.setColours(0, 0xFF505050, 0xFF707070).setToolTip(new String[] {I18n.format("gui.de.celMod.rs." + b)}).addToGroup("RS_BUTTON"));
+            }.setColours(0, 0xFF505050, 0xFF707070).setToolTip(new String[]{I18n.format("gui.de.celMod.rs." + b)}).addToGroup("RS_BUTTON"));
         }
         builder.finish(manager, 0);
 
@@ -174,10 +173,10 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
                 rsTabEnabled = !rsTabEnabled;
             }
             else if (eventElement.isInGroup("RS_BUTTON")) {
-                tile.sendPacketToServer(new PacketTileMessage(tile, (byte) 1, ((MGuiButton) eventElement).buttonId, false));
+                tile.sendPacketToServer(output -> output.writeInt(((MGuiButton) eventElement).buttonId), 1);
             }
             else {
-                tile.sendPacketToServer(new PacketTileMessage(tile, (byte) 0, ((MGuiButton) eventElement).buttonName, false));
+                tile.sendPacketToServer(output -> output.writeString(((MGuiButton) eventElement).buttonName), 0);
             }
         }
     }
@@ -186,13 +185,13 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
 
     @Override
     public void updateScreen() {
-        energyBar.setEnergy(tile.energyStored.value);
+        energyBar.setEnergy(tile.energySync.value);
         int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 
         for (MGuiElementBase element : manager.getElements()) {
             if (element instanceof MGuiButton && (element.isMouseOver(mouseX, mouseY) || ((element == sunMode || element == weatherMode) && ((MGuiButton) element).disabled))) {
-                GuiParticle particle = new GuiParticle(mc.theWorld, element.xPos + 4 + mc.theWorld.rand.nextInt(element.xSize - 8), element.yPos + (element.ySize / 2));
+                GuiParticle particle = new GuiParticle(mc.world, element.xPos + 4 + mc.world.rand.nextInt(element.xSize - 8), element.yPos + (element.ySize / 2));
                 particle.setScale(0.1F);
                 particle.setRBGColorF(1, 1, 1);
                 effectRenderer.addEffect(particle);
@@ -201,7 +200,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
 
         updateControls();
 
-        effectRenderer.addEffect(new GuiParticle(mc.theWorld, guiLeft + xSize / 2, guiTop + 6));
+        effectRenderer.addEffect(new GuiParticle(mc.world, guiLeft + xSize / 2, guiTop + 6));
 
         if (rsTabEnabled && rsTabAnim < 1) {
             rsTabAnim += 0.2;
@@ -212,8 +211,8 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
         if (rsTabAnim > 1) rsTabAnim = 1;
         else if (rsTabAnim < 0) rsTabAnim = 0;
 
-        rsBackGround.xSize = 18 + (int)(rsTabAnim * 48);
-        rsBackGround.ySize = 18 + (int)(rsTabAnim * 84);
+        rsBackGround.xSize = 18 + (int) (rsTabAnim * 48);
+        rsBackGround.ySize = 18 + (int) (rsTabAnim * 84);
 
         animRect = new Rectangle(rsBackGround.xPos, rsBackGround.yPos, rsBackGround.xSize, rsBackGround.ySize);
 
@@ -245,7 +244,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
             super(world, posX, posY);
 
             float speed = 5F;
-            this.motionX = (-0.5F + rand.nextFloat()) * speed ;
+            this.motionX = (-0.5F + rand.nextFloat()) * speed;
             this.motionY = (-0.5F + rand.nextFloat()) * speed / 4F;
             this.particleMaxAge = 10 + rand.nextInt(10);
             this.particleScale = 0.5F;
@@ -268,10 +267,10 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
 
             particleTextureIndexX = rand.nextInt(5);
             int ttd = particleMaxAge - particleAge;
-            if (ttd < 10){
+            if (ttd < 10) {
                 particleScale = ttd / 10F;
             }
-            if (ttd == 1){
+            if (ttd == 1) {
                 particleScale = 0.5F;
                 setExpired();
             }

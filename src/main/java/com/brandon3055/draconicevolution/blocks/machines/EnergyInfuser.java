@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
@@ -11,7 +11,6 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -27,9 +26,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Created by brandon3055 on 30/05/2016.
  */
-public class EnergyInfuser extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class EnergyInfuser extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
-    public EnergyInfuser(){
+    public EnergyInfuser() {
         super(Material.IRON);
         setIsFullCube(false);
     }
@@ -42,7 +41,7 @@ public class EnergyInfuser extends BlockBCore implements ITileEntityProvider, IC
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_INFUSER, world, pos.getX(), pos.getY(), pos.getZ());
         }

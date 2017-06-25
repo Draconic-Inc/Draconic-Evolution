@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.render.state.GlStateManagerHelper;
+import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -137,11 +137,12 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
 
     public static class FXHandler implements IGLFXHandler {
 
-        public FXHandler() {}
+        public FXHandler() {
+        }
 
         @Override
         public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            GlStateManagerHelper.pushState();
+            GlStateTracker.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
             GlStateManager.glTexParameterf(3553, 10243, 10497.0F);
@@ -162,7 +163,7 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
             tessellator.draw();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 //            GlStateManager.enableTexture2D();
-            GlStateManagerHelper.popState();
+            GlStateTracker.popState();
         }
     }
 }

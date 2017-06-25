@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
@@ -10,7 +10,6 @@ import com.brandon3055.draconicevolution.client.render.tile.RenderTileDissEnchan
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -22,12 +21,10 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class DissEnchanter extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class DissEnchanter extends BlockBCore implements ITileEntityProvider, IRenderOverride {
     protected static final AxisAlignedBB AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.75D, 1.0D);
 
     public DissEnchanter() {
@@ -47,7 +44,7 @@ public class DissEnchanter extends BlockBCore implements ITileEntityProvider, IC
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
             playerIn.openGui(DraconicEvolution.instance, GuiHandler.GUIID_DISSENCHANTER, worldIn, pos.getX(), pos.getY(), pos.getZ());
         }

@@ -1,13 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.blocks.properties.PropertyString;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingPedestal;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileCraftingPedestal;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileCraftingInjector;
+import com.brandon3055.draconicevolution.lib.PropertyStringTemp;
 import net.minecraft.block.BlockDirectional;
-import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -22,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -30,20 +30,22 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
-
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class CraftingPedestal extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class CraftingInjector extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
-    public static final PropertyString TIER = new PropertyString("tier", "basic", "wyvern", "draconic", "chaotic");
+    public static final PropertyStringTemp TIER = new PropertyStringTemp("tier", "basic", "wyvern", "draconic", "chaotic");
     public static final PropertyDirection FACING = BlockDirectional.FACING;
 
-    public CraftingPedestal(){
+    public CraftingInjector() {
         super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(TIER, "basic").withProperty(FACING, EnumFacing.UP));
         setIsFullCube(false);
+        this.addName(0, "crafting_injector_basic");
+        this.addName(1, "crafting_injector_wyvern");
+        this.addName(2, "crafting_injector_draconic");
+        this.addName(3, "crafting_injector_chaotic");
     }
 
     //region BlockState
@@ -56,8 +58,8 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = worldIn.getTileEntity(pos);
 
-        if (tile instanceof TileCraftingPedestal){
-            return state.withProperty(FACING, EnumFacing.getFront(((TileCraftingPedestal) tile).facing.value));
+        if (tile instanceof TileCraftingInjector) {
+            return state.withProperty(FACING, EnumFacing.getFront(((TileCraftingInjector) tile).facing.value));
         }
 
         return state;
@@ -74,7 +76,7 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
     }
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
         list.add(new ItemStack(item, 1, 0));
         list.add(new ItemStack(item, 1, 1));
         list.add(new ItemStack(item, 1, 2));
@@ -88,8 +90,8 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
 
         TileEntity tile = world.getTileEntity(pos);
 
-        if (tile instanceof TileCraftingPedestal) {
-            ((TileCraftingPedestal) tile).facing.value = (byte) BlockPistonBase.getFacingFromEntity(pos, placer).getIndex();
+        if (tile instanceof TileCraftingInjector) {
+            ((TileCraftingInjector) tile).facing.value = (byte) EnumFacing.getDirectionFromEntityLiving(pos, placer).getIndex();
         }
     }
 
@@ -99,37 +101,38 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileCraftingPedestal();
+        return new TileCraftingInjector();
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return true;
         }
 
         TileEntity tile = world.getTileEntity(pos);
 
-        if (!(tile instanceof TileCraftingPedestal)) {
+        if (!(tile instanceof TileCraftingInjector)) {
             return false;
         }
 
-        TileCraftingPedestal craftingPedestal = (TileCraftingPedestal)tile;
+        TileCraftingInjector craftingPedestal = (TileCraftingInjector) tile;
 
-        if (craftingPedestal.getStackInSlot(0) != null){
-            if (player.getHeldItemMainhand() == null){
+        if (!craftingPedestal.getStackInSlot(0).isEmpty()) {
+            if (player.getHeldItemMainhand().isEmpty()) {
                 player.setHeldItem(EnumHand.MAIN_HAND, craftingPedestal.getStackInSlot(0));
-                craftingPedestal.setInventorySlotContents(0, null);
+                craftingPedestal.setInventorySlotContents(0, ItemStack.EMPTY);
             }
             else {
-                world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, craftingPedestal.getStackInSlot(0)));
-                craftingPedestal.setInventorySlotContents(0, null);
+                world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, craftingPedestal.getStackInSlot(0)));
+                craftingPedestal.setInventorySlotContents(0, ItemStack.EMPTY);
             }
 
-        }else {
+        }
+        else {
             ItemStack stack = player.getHeldItemMainhand();
             craftingPedestal.setInventorySlotContents(0, stack);
-            player.setHeldItem(EnumHand.MAIN_HAND, null);
+            player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
         }
 
         return true;
@@ -148,13 +151,19 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         EnumFacing facing = getActualState(state, source, pos).getValue(FACING);
 
-        switch (facing){
-            case DOWN:  return new AxisAlignedBB(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
-            case UP:    return new AxisAlignedBB(0.0625, 0, 0.0625, 0.9375, 0.625, 0.9375);
-            case NORTH: return new AxisAlignedBB(0.0625, 0.0625, 0.375, 0.9375, 0.9375, 1);
-            case SOUTH: return new AxisAlignedBB(0.0625, 0.0625, 0, 0.9375, 0.9375, 0.625);
-            case WEST:  return new AxisAlignedBB(0.375, 0.0625, 0.0625, 1, 0.9375, 0.9375);
-            case EAST:  return new AxisAlignedBB(0, 0.0625, 0.0625, 0.625, 0.9375, 0.9375);
+        switch (facing) {
+            case DOWN:
+                return new AxisAlignedBB(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
+            case UP:
+                return new AxisAlignedBB(0.0625, 0, 0.0625, 0.9375, 0.625, 0.9375);
+            case NORTH:
+                return new AxisAlignedBB(0.0625, 0.0625, 0.375, 0.9375, 0.9375, 1);
+            case SOUTH:
+                return new AxisAlignedBB(0.0625, 0.0625, 0, 0.9375, 0.9375, 0.625);
+            case WEST:
+                return new AxisAlignedBB(0.375, 0.0625, 0.0625, 1, 0.9375, 0.9375);
+            case EAST:
+                return new AxisAlignedBB(0, 0.0625, 0.0625, 0.625, 0.9375, 0.9375);
         }
 
         return super.getBoundingBox(state, source, pos);
@@ -163,7 +172,7 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCraftingPedestal.class, new RenderTileCraftingPedestal());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileCraftingInjector.class, new RenderTileCraftingInjector());
     }
 
     @Override

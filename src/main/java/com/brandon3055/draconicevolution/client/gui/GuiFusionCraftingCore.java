@@ -11,7 +11,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiSt
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
+
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
@@ -181,9 +181,9 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
     public void updateScreen() {
         super.updateScreen();
         boolean hasNoRecipe = currentRecipe == null;
-        currentRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(tile, player.worldObj, tile.getPos());
+        currentRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(tile, player.world, tile.getPos());
         if (currentRecipe != null) {
-            canCraft = currentRecipe.canCraft(tile, player.worldObj, tile.getPos());
+            canCraft = currentRecipe.canCraft(tile, player.world, tile.getPos());
             if (hasNoRecipe || currentRecipe != lastRecipe) {
                 lastRecipe = currentRecipe;
                 initRecipeComponents();
@@ -208,7 +208,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
                             double xPos = item.xPos + (rand.nextDouble() * 16);
                             double yPos = item.yPos + (rand.nextDouble() * 16);
                             double ty = centerY + (-20 + (rand.nextDouble() * 40));
-                            guiEffectRenderer.addEffect(new EnergyEffect(player.worldObj, xPos, yPos, centerX, ty, 0));
+                            guiEffectRenderer.addEffect(new EnergyEffect(player.world, xPos, yPos, centerX, ty, 0));
                         }
                     }
                 }
@@ -217,7 +217,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
             if (tile.craftingStage.value > 1000) {
                 double xPos = centerX - 8 + (rand.nextDouble() * 16);
                 double yTop = guiTop + 35 - 8 + (rand.nextDouble() * 16);
-                guiEffectRenderer.addEffect(new EnergyEffect(player.worldObj, xPos, yTop, centerX, guiTop + 78, 1));
+                guiEffectRenderer.addEffect(new EnergyEffect(player.world, xPos, yTop, centerX, guiTop + 78, 1));
             }
             guiEffectRenderer.updateEffects();
         }
@@ -247,9 +247,11 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
             if (canCraft != null && !canCraft.equals("true")) {
                 if (canCraft.equals("tierLow")) {
                     GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.tierLow.info"), (xSize / 2), 95, 0xAA00FF, false);
-                } else if (canCraft.equals("outputObstructed")) {
+                }
+                else if (canCraft.equals("outputObstructed")) {
                     GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.outputObstructed.info"), (xSize / 2), 95, 0xAA00FF, false);
-                } else {
+                }
+                else {
                     GlStateManager.translate(0, 0, 600);
                     GuiHelper.drawColouredRect(5, 88, xSize - 10, 20, 0xFFFF0000);
                     GuiHelper.drawColouredRect(6, 89, xSize - 12, 18, 0xFF000000);
@@ -339,7 +341,8 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        tile.sendPacketToServer(new PacketTileMessage(tile, (byte) button.id, true, false));
+        tile.sendPacketToServer(output -> {
+        }, button.id);
     }
 
 //    private void drawItemStack(ItemStack stack, int x, int y, String altText) {

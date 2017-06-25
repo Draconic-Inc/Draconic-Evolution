@@ -9,7 +9,7 @@ public interface IConfigurableItem {
 
     /**
      * Register your fields with the given ItemConfigFieldRegistry then return the registry.
-     * */
+     */
     ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry);
 
     int getProfileCount(ItemStack stack);

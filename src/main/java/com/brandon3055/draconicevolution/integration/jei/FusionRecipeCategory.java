@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
 import com.brandon3055.brandonscore.lib.StackReference;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.itemupgrade.FusionUpgradeRecipe;
@@ -49,6 +50,11 @@ public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix anima
     @Override
     public String getTitle() {
         return localizedName;
+    }
+
+    @Override
+    public String getModName() {
+        return DraconicEvolution.MODID;
     }
 
     @Nonnull
@@ -106,7 +112,7 @@ public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix anima
                 List<ItemStack> outputs = new LinkedList<>();
 
                 for (ItemStack stack : DEJEIPlugin.iUpgradables) {
-                    if (stack != null && stack.getItem() instanceof IUpgradableItem) {
+                    if (stack.getItem() instanceof IUpgradableItem) {
                         IUpgradableItem item = (IUpgradableItem) stack.getItem();
                         if (item.getValidUpgrades(stack).contains(fRecipe.upgrade) && item.getMaxUpgradeLevel(stack, fRecipe.upgrade) >= fRecipe.upgradeLevel) {
                             ItemStack input = stack.copy();

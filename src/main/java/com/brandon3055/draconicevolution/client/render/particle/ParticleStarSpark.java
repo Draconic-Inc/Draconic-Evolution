@@ -40,10 +40,10 @@ public class ParticleStarSpark extends BCParticle {
 
         particleTextureIndexX = rand.nextInt(5);
         int ttd = particleMaxAge - particleAge;
-        if (ttd < 10){
+        if (ttd < 10) {
             particleScale = (ttd / 10F) * baseScale;
         }
-        if (ttd < 1){
+        if (ttd < 1) {
             particleScale = sparkSize;
         }
 

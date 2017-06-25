@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -39,19 +40,19 @@ public class EntityChaosImplosion extends Entity {
 
     @Override
     public void onUpdate() {
-        if (!worldObj.isRemote){
+        if (!world.isRemote) {
             dataManager.set(TICKS, ticksExisted);
         }
 
         Vec3D pos = new Vec3D(posX, posY, posZ);
 
-        if (ticksExisted < 30 && ticksExisted % 5 == 0 && worldObj.isRemote){
-            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, worldObj, pos, pos, 1024D, 1);
-//            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(worldObj, posX, posY, posZ, false), 512);
+        if (ticksExisted < 30 && ticksExisted % 5 == 0 && world.isRemote) {
+            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 1);
+//            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, false), 512);
         }
-        if (ticksExisted >= 100 && ticksExisted < 130 && ticksExisted % 5 == 0 && worldObj.isRemote){
-            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, worldObj, pos, pos, 1024D, 2);
-//            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(worldObj, posX, posY, posZ, true), 512);
+        if (ticksExisted >= 100 && ticksExisted < 130 && ticksExisted % 5 == 0 && world.isRemote) {
+            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 2);
+//            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, true), 512);
         }
         if (ticksExisted < 100) {
             return;
@@ -62,21 +63,21 @@ public class EntityChaosImplosion extends Entity {
                 double x = posX - 18 + rand.nextDouble() * 36;
                 double y = posY - 8 + rand.nextDouble() * 16;
                 double z = posZ - 18 + rand.nextDouble() * 36;
-                if (worldObj.isRemote) {
-                    BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, worldObj, new Vec3D(x, y, z), pos, 512D, 0);
-//                DraconicEvolution.proxy.spawnParticle(new Particles.AdvancedSeekerParticle(worldObj, x, y, z, posX, posY, posZ, 2, 1f, 1f, 1f, 100), 128);
+                if (world.isRemote) {
+                    BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(x, y, z), pos, 512D, 0);
+//                DraconicEvolution.proxy.spawnParticle(new Particles.AdvancedSeekerParticle(world, x, y, z, posX, posY, posZ, 2, 1f, 1f, 1f, 100), 128);
                 }
             }
 
-            if (ticksExisted > 130 && worldObj.isRemote && ticksExisted % 2 == 0) {
+            if (ticksExisted > 130 && world.isRemote && ticksExisted % 2 == 0) {
                 shakeScreen();
             }
         }
 
-        if (ticksExisted == 700 && !worldObj.isRemote) {
-            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, worldObj, pos, pos, 1024D, 5);
+        if (ticksExisted == 700 && !world.isRemote) {
+            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
             //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.CHAOS_IMPLOSION, posX, posY, posZ), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 512));
-            ProcessHandler.addProcess(new ProcessChaosImplosion(worldObj, (int) posX, (int) posY, (int) posZ));
+            ProcessHandler.addProcess(new ProcessChaosImplosion(world, (int) posX, (int) posY, (int) posZ));
         }
 
         if (ticksExisted > 720) {
@@ -89,12 +90,12 @@ public class EntityChaosImplosion extends Entity {
         double intensity = (ticksExisted - 130) / 100D;
         if (intensity > 1D) intensity = 1D;
 
-        @SuppressWarnings("unchecked") List<EntityPlayer> players = worldObj.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().expand(200, 200, 200));
+        @SuppressWarnings("unchecked") List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().expand(200, 200, 200));
 
         for (EntityPlayer player : players) {
             double x = (rand.nextDouble() - 0.5) * 2 * intensity;
             double z = (rand.nextDouble() - 0.5) * 2 * intensity;
-            player.moveEntity(x / 5D, 0, z / 5D);
+            player.move(MoverType.SELF, x / 5D, 0, z / 5D);
             player.rotationYaw -= x * 2;
             player.rotationPitch -= z * 2;
         }

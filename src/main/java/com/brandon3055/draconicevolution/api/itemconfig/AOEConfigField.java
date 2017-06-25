@@ -25,7 +25,7 @@ public class AOEConfigField extends IntegerConfigField {
     public Map<Integer, String> getValues() {
         Map<Integer, String> values = new LinkedHashMap<Integer, String>();
 
-        for (int i = minValue; i <= maxValue; i++){
+        for (int i = minValue; i <= maxValue; i++) {
             String aoe = (1 + (i * 2)) + "x" + (1 + (i * 2));
             values.put(i, aoe);
         }
@@ -35,12 +35,12 @@ public class AOEConfigField extends IntegerConfigField {
 
     @Override
     public void handleButton(EnumButton button, int data) {
-        if (button == EnumButton.SELECTION){
+        if (button == EnumButton.SELECTION) {
             value = data;
-            if (value > maxValue){
+            if (value > maxValue) {
                 value = maxValue;
             }
-            else if (value < minValue){
+            else if (value < minValue) {
                 value = minValue;
             }
         }

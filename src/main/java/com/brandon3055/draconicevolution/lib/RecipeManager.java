@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.lib;
 
-import com.brandon3055.brandonscore.config.ModFeatureParser;
 import com.brandon3055.brandonscore.handlers.FileHandler;
 import com.brandon3055.brandonscore.lib.StackReference;
+import com.brandon3055.brandonscore.registry.ModFeatureParser;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeAPI;
@@ -427,7 +427,7 @@ public class RecipeManager {
 
     private static ItemStack getStackOld(String stackString) {
         ItemStack stack = OreDictHelper.resolveObject(getIngredientOld(stackString));
-        if (stack == null) {
+        if (stack.isEmpty()) {
             LogHelper.error("Could not find items stack: " + stackString);
         }
 

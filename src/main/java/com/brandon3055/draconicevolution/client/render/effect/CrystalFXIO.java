@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
-import codechicken.lib.render.state.GlStateManagerHelper;
+import codechicken.lib.render.state.GlStateTracker;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
@@ -184,7 +184,7 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
         @Override
         public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManagerHelper.pushState();
+            GlStateTracker.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
@@ -195,7 +195,7 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
         @Override
         public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
             tessellator.draw();
-            GlStateManagerHelper.popState();
+            GlStateTracker.popState();
         }
     }
 }

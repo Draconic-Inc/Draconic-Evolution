@@ -12,7 +12,7 @@ import java.util.List;
  * Created by brandon3055 on 25/11/2016.
  * Used by energy crystals in DE It should be possible to add custom crystals or blocks that can be linked to crystals using this interface.
  * TODO WAILA support
- *
+ * <p>
  * This interface is for tile entities only!
  */
 public interface ICrystalLink {
@@ -20,14 +20,16 @@ public interface ICrystalLink {
     /**
      * @return the positions of all linked crystals or ICrystalLink's.
      */
-    @Nonnull List<BlockPos> getLinks();
+    @Nonnull
+    List<BlockPos> getLinks();
 
 //     * @param returnLink If true this is a return link call meaning this was called by another crystals binderUsed method.
 //     * (This is to avoid a stack overflow from 2 crystals infinitely calling each others binderUsed methods)
 
     /**
      * Called when a player clicks another block with a binder that is linked to this block.
-     * @param player The player using the binder.
+     *
+     * @param player     The player using the binder.
      * @param linkTarget The clicked block pos. (Can be any block. Whatever block the player clicked on)
      * @return true if a successful operation occurred. (Controls hand swing)
      */
@@ -47,6 +49,7 @@ public interface ICrystalLink {
     /**
      * Break the link between this crystal and the target crystal.
      * Be sure to call this for both sides of the link to avoid ending up with invalid links!!
+     *
      * @param otherCrystal The position of the linked crystal. (Note: The other crystal may not exist!)
      */
     void breakLink(BlockPos otherCrystal);
@@ -55,7 +58,7 @@ public interface ICrystalLink {
      * 0 = Fill - accept all available energy until full.<br>
      * 1 = Balance - balance capacity with connected crystals.<br>
      * 2 = Drain - drain all energy from internal buffer into connected network until empty or network is full.<br><br>
-     *
+     * <p>
      * This should always be 1 for all types or energy crystal. The only time this would not be 1 is if you were implementing
      * this interface on some other tile that is not a crystal. All crystals even directIO crystals should balance
      */

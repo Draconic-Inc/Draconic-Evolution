@@ -37,7 +37,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
 /**
  * Created by brandon3055 on 7/06/2016.
  */
-public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.GuiResponder{//TODO add ability to rename config profiles
+public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.GuiResponder {//TODO add ability to rename config profiles
 
     private GuiToolConfig parent;
     private final EntityPlayer player;
@@ -104,9 +104,9 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
             fieldButtons[selected].field.readFromNBT(ToolConfigHelper.getFieldStorage(slot.getStackInSlot(player)));
         }
 
-        for (GuiButton button : buttonList){
-            if (button instanceof AdjusterButton){
-                ((AdjusterButton)button).onUpdate();
+        for (GuiButton button : buttonList) {
+            if (button instanceof AdjusterButton) {
+                ((AdjusterButton) button).onUpdate();
             }
         }
     }
@@ -333,14 +333,14 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                     case SLIDER:
                         break;
                     case SELECTIONS:
-                        if (dropDownPos == 1){
+                        if (dropDownPos == 1) {
                             Map<Integer, String> values = activeButton.field.getValues();
 
                             int i = 0;
                             for (Integer index : values.keySet()) {
                                 int cols = (values.size() / 8) + (values.size() % 8 > 0 ? 1 : 0);
 
-                                if (width - ((width / cols) * cols) >= width / cols){
+                                if (width - ((width / cols) * cols) >= width / cols) {
                                     cols++;
                                 }
 
@@ -386,19 +386,19 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                 case SLIDER:
                     double sliderPos = field.getFractionalValue();
 
-                    if (isDragging){
+                    if (isDragging) {
                         sliderPos = (mouseX - 3 - (xPosition + 4D)) / (width - 14D);
-                        if (sliderPos > 1){
+                        if (sliderPos > 1) {
                             sliderPos = 1;
                         }
-                        else if (sliderPos < 0){
+                        else if (sliderPos < 0) {
                             sliderPos = 0;
                         }
                         dragPos = releasePos = sliderPos;
                         dragTick = 20;
                     }
 
-                    if (dragTick > 0){
+                    if (dragTick > 0) {
                         if (dragTick < 10) {
                             double trans = 1D - (dragTick / 10D);
                             sliderPos = dragPos + (trans * (sliderPos - dragPos));
@@ -409,7 +409,7 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                         dragTick--;
                     }
 
-                    int pos = (int)((width - 14) * sliderPos);
+                    int pos = (int) ((width - 14) * sliderPos);
                     boolean mouseOver = GuiHelper.isInRect(xPosition + 3, yPosition + 3, width - 6, 12, mouseX, mouseY) || isDragging;
 
                     GuiHelper.drawColouredRect(xPosition + 4, yPosition + 8, width - 8, 2, 0xFF222222);
@@ -420,7 +420,7 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
 
 
                     int txtWidth = mc.fontRendererObj.getStringWidth(isDragging ? field.getValueFraction(sliderPos) : field.getReadableValue());
-                    GuiHelper.drawColouredRect(xPosition + width / 2 - txtWidth / 2, yPosition , txtWidth, 8, 0x88000000);
+                    GuiHelper.drawColouredRect(xPosition + width / 2 - txtWidth / 2, yPosition, txtWidth, 8, 0x88000000);
                     GuiHelper.drawCenteredString(mc.fontRendererObj, isDragging ? field.getValueFraction(sliderPos) : field.getReadableValue(), xPosition + width / 2, yPosition + 1, 0xFFFFFF, false);
                     break;
                 case SELECTIONS:
@@ -472,16 +472,17 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                     dropDownActive = false;
                     initSubButtons();
                 }
-            } else {
+            }
+            else {
                 activeButton = null;
                 buttonList.clear();
             }
         }
 
-        public void onUpdate(){
-            if (dropDownActive && dropDownPos < 1){
+        public void onUpdate() {
+            if (dropDownActive && dropDownPos < 1) {
                 dropDownPos += 0.2F;
-                if (dropDownPos > 1F){
+                if (dropDownPos > 1F) {
                     dropDownPos = 1F;
                 }
 
@@ -489,9 +490,9 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
 
                 initSubButtons();
             }
-            else if (!dropDownActive && dropDownPos > 0){
+            else if (!dropDownActive && dropDownPos > 0) {
                 dropDownPos -= 0.2F;
-                if (dropDownPos < 0){
+                if (dropDownPos < 0) {
                     dropDownPos = 0;
                 }
 
@@ -524,9 +525,9 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                 case PLUS1_MINUS1:
                     break;
                 case SLIDER:
-                //    int pos = (int)((xSize - 14) * activeButton.field.getFractionalValue());
+                    //    int pos = (int)((xSize - 14) * activeButton.field.getFractionalValue());
                     isDragging = GuiHelper.isInRect(xPosition + 3, yPosition + 3, width - 6, 12, mouseX, mouseY);
-                    if (isDragging){
+                    if (isDragging) {
                         mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     }
                     break;
@@ -552,11 +553,11 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                 case PLUS3_MINUS3:
                 case PLUS2_MINUS2:
                 case PLUS1_MINUS1:
-                break;
+                    break;
                 case SLIDER:
-                break;
+                    break;
                 case SELECTIONS:
-                break;
+                    break;
             }
         }
 
@@ -567,17 +568,17 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                     case PLUS3_MINUS3:
                     case PLUS2_MINUS2:
                     case PLUS1_MINUS1:
-                    break;
+                        break;
                     case SLIDER:
-                        if (isDragging){
+                        if (isDragging) {
                             double pos = (mouseX - 3 - (xPosition + 4D)) / (width - 14D);
                             int fieldIndex = gui.fieldRegistry.getIndexFromName(activeButton.field.getName());
-                            DraconicEvolution.network.sendToServer(new PacketConfigureTool(slot, fieldIndex, EnumButton.SLIDER.index, (int)(pos * 10000D)));
+                            DraconicEvolution.network.sendToServer(new PacketConfigureTool(slot, fieldIndex, EnumButton.SLIDER.index, (int) (pos * 10000D)));
                             mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 0.9F));
                         }
-                    break;
+                        break;
                     case SELECTIONS:
-                    break;
+                        break;
                 }
             }
             isDragging = false;

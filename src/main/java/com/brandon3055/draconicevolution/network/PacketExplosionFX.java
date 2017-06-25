@@ -22,7 +22,8 @@ public class PacketExplosionFX implements IMessage {
     private int radius;
     private boolean update;
 
-    public PacketExplosionFX(){}
+    public PacketExplosionFX() {
+    }
 
     public PacketExplosionFX(BlockPos pos, int radius, boolean update) {
         this.pos = pos;

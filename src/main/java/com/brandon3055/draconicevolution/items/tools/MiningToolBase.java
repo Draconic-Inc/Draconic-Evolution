@@ -69,8 +69,6 @@ public abstract class MiningToolBase extends ToolBase {
 
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
-        super.getFields(stack, registry);
-
         registry.register(stack, new IntegerConfigField("digSpeed", 100, 1, 100, "config.field.digSpeed.description", SLIDER).setExtension("%"));
         registry.register(stack, new BooleanConfigField("aoeSafeMode", false, "config.field.aoeSafeMode.description"));
         registry.register(stack, new BooleanConfigField("showDigAOE", false, "config.field.showDigAOE.description"));
@@ -159,25 +157,25 @@ public abstract class MiningToolBase extends ToolBase {
     public boolean breakAOEBlocks(ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, EntityPlayer player) {
         //Map<Block, Integer> blockMap = IConfigurableItem.ProfileHelper.getBoolean(stack, References.OBLITERATE, false) ? getObliterationList(stack) : new HashMap<Block, Integer>();
 
-        IBlockState blockState = player.worldObj.getBlockState(pos);
+        IBlockState blockState = player.world.getBlockState(pos);
 
         if (!isToolEffective(stack, blockState)) {
             return false;
         }
 
-        float refStrength = ForgeHooks.blockStrength(blockState, player, player.worldObj, pos);
+        float refStrength = ForgeHooks.blockStrength(blockState, player, player.world, pos);
 
         PairKV<BlockPos, BlockPos> aoe = getMiningArea(pos, player, breakRadius, breakDepth);
         List<BlockPos> aoeBlocks = Lists.newArrayList(BlockPos.getAllInBox(aoe.getKey(), aoe.getValue()));
 
         if (ToolConfigHelper.getBooleanField("aoeSafeMode", stack)) {
             for (BlockPos block : aoeBlocks) {
-                if (!player.worldObj.isAirBlock(block) && player.worldObj.getTileEntity(block) != null) {
-                    if (player.worldObj.isRemote) {
-                        player.addChatComponentMessage(new TextComponentTranslation("msg.de.baseSafeAOW.txt"));
+                if (!player.world.isAirBlock(block) && player.world.getTileEntity(block) != null) {
+                    if (player.world.isRemote) {
+                        player.sendMessage(new TextComponentTranslation("msg.de.baseSafeAOW.txt"));
                     }
-                    else{
-                        ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(((EntityPlayerMP) player).worldObj, block));
+                    else {
+                        ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(((EntityPlayerMP) player).world, block));
                     }
                     return true;
                 }
@@ -185,13 +183,13 @@ public abstract class MiningToolBase extends ToolBase {
         }
 
         for (BlockPos block : aoeBlocks) {
-            breakExtraBlock(stack, player.worldObj, block, player, refStrength, new HashMap<Block, Integer>());
+            breakExtraBlock(stack, player.world, block, player, refStrength, new HashMap<Block, Integer>());
         }
 
 
-        @SuppressWarnings("unchecked") List<EntityItem> items = player.worldObj.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(aoe.getKey(), aoe.getValue().add(1, 1, 1)));
+        @SuppressWarnings("unchecked") List<EntityItem> items = player.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(aoe.getKey(), aoe.getValue().add(1, 1, 1)));
         for (EntityItem item : items) {
-            if (!player.worldObj.isRemote) {
+            if (!player.world.isRemote) {
                 item.setPosition(player.posX, player.posY, player.posZ);
                 ((EntityPlayerMP) player).connection.sendPacket(new SPacketEntityTeleport(item));
                 item.setPickupDelay(0);
@@ -202,7 +200,7 @@ public abstract class MiningToolBase extends ToolBase {
             }
         }
 
-        player.worldObj.playEvent(2001, pos, Block.getStateId(blockState));
+        player.world.playEvent(2001, pos, Block.getStateId(blockState));
 
         return true;
     }
@@ -260,7 +258,8 @@ public abstract class MiningToolBase extends ToolBase {
 
             EntityPlayerMP mpPlayer = (EntityPlayerMP) player;
             mpPlayer.connection.sendPacket(new SPacketBlockChange(world, pos));
-        } else {
+        }
+        else {
             if (itemRand.nextInt(10) == 0) {
                 world.playEvent(2001, pos, Block.getStateId(state));
             }
@@ -279,7 +278,7 @@ public abstract class MiningToolBase extends ToolBase {
     //region New Code
 
     public boolean breakAOEBlocksNew(ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, EntityPlayer player) {
-        IBlockState blockState = player.worldObj.getBlockState(pos);
+        IBlockState blockState = player.world.getBlockState(pos);
 
         if (!isToolEffective(stack, blockState)) {
             return false;
@@ -287,57 +286,57 @@ public abstract class MiningToolBase extends ToolBase {
 
         InventoryDynamic inventoryDynamic = new InventoryDynamic();
 
-        float refStrength = ForgeHooks.blockStrength(blockState, player, player.worldObj, pos);
+        float refStrength = ForgeHooks.blockStrength(blockState, player, player.world, pos);
 
         PairKV<BlockPos, BlockPos> aoe = getMiningArea(pos, player, breakRadius, breakDepth);
         List<BlockPos> aoeBlocks = Lists.newArrayList(BlockPos.getAllInBox(aoe.getKey(), aoe.getValue()));
 
         if (ToolConfigHelper.getBooleanField("aoeSafeMode", stack)) {
             for (BlockPos block : aoeBlocks) {
-                if (!player.worldObj.isAirBlock(block) && player.worldObj.getTileEntity(block) != null) {
-                    if (player.worldObj.isRemote) {
-                        player.addChatComponentMessage(new TextComponentTranslation("msg.de.baseSafeAOW.txt"));
+                if (!player.world.isAirBlock(block) && player.world.getTileEntity(block) != null) {
+                    if (player.world.isRemote) {
+                        player.sendMessage(new TextComponentTranslation("msg.de.baseSafeAOW.txt"));
                     }
-                    else{
-                        ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(((EntityPlayerMP) player).worldObj, block));
+                    else {
+                        ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(((EntityPlayerMP) player).world, block));
                     }
                     return true;
                 }
             }
         }
 
-        player.worldObj.playEvent(2001, pos, Block.getStateId(blockState));
+        player.world.playEvent(2001, pos, Block.getStateId(blockState));
 
         for (BlockPos block : aoeBlocks) {
-            breakExtraBlockNew(stack, player.worldObj, block, player, refStrength, inventoryDynamic);
+            breakExtraBlockNew(stack, player.world, block, player, refStrength, inventoryDynamic);
         }
 
 
-        @SuppressWarnings("unchecked") List<EntityItem> items = player.worldObj.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(aoe.getKey(), aoe.getValue().add(1, 1, 1)));
+        @SuppressWarnings("unchecked") List<EntityItem> items = player.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(aoe.getKey(), aoe.getValue().add(1, 1, 1)));
         for (EntityItem item : items) {
-            if (!player.worldObj.isRemote && !item.isDead) {
+            if (!player.world.isRemote && !item.isDead) {
                 InventoryUtils.insertItem(inventoryDynamic, item.getEntityItem(), false);
                 item.setDead();
             }
         }
 
-        if (!player.worldObj.isRemote) {
+        if (!player.world.isRemote) {
             if (DEConfig.disableLootCores) {
                 for (int i = 0; i < inventoryDynamic.getSizeInventory(); i++) {
                     ItemStack sis = inventoryDynamic.getStackInSlot(i);
                     if (sis != null) {
-                        EntityItem item = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, sis);
+                        EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, sis);
                         item.setPickupDelay(0);
-                        player.worldObj.spawnEntityInWorld(item);
+                        player.world.spawnEntity(item);
                     }
                 }
                 player.addExperience(inventoryDynamic.xp);
                 inventoryDynamic.clear();
             }
             else {
-                EntityLootCore lootCore = new EntityLootCore(player.worldObj, inventoryDynamic);
+                EntityLootCore lootCore = new EntityLootCore(player.world, inventoryDynamic);
                 lootCore.setPosition(player.posX, player.posY, player.posZ);
-                player.worldObj.spawnEntityInWorld(lootCore);
+                player.world.spawnEntity(lootCore);
             }
         }
 
@@ -389,7 +388,8 @@ public abstract class MiningToolBase extends ToolBase {
 
             stack.onBlockDestroyed(world, state, pos, player);
             BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
-        } else {
+        }
+        else {
             if (itemRand.nextInt(10) == 0) {
                 world.playEvent(2001, pos, Block.getStateId(state));
             }
@@ -460,7 +460,7 @@ public abstract class MiningToolBase extends ToolBase {
                 break;
         }
 
-        if (breakRadius == 0){
+        if (breakRadius == 0) {
             yOffset = 0;
         }
 

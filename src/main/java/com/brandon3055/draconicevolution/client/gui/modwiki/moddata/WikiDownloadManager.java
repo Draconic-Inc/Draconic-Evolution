@@ -51,7 +51,7 @@ public class WikiDownloadManager {
                 return;
             }
 
-            LogHelper.dev("Checking Manifest: " +manifest);
+            LogHelper.dev("Checking Manifest: " + manifest);
 
             for (String url : entry.downloadToVersion.keySet()) {
                 try {
@@ -62,7 +62,7 @@ public class WikiDownloadManager {
                     }
 
                     if (WikiDocManager.modDocMap.containsKey(entry.modid) && WikiDocManager.modDocMap.get(entry.modid).langToVersion.containsKey(lang) && WikiDocManager.modDocMap.get(entry.modid).langToVersion.get(lang) >= entry.downloadToVersion.get(url)) {
-                        LogHelper.dev(entry.modName+": Current Doc Version Up To Date.");
+                        LogHelper.dev(entry.modName + ": Current Doc Version Up To Date.");
                         continue;
                     }
                     LogHelper.info("Found Doc update for %s downloading updated documentation.", entry.modName);

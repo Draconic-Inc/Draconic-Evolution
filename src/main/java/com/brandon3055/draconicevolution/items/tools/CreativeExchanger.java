@@ -64,36 +64,38 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
     //region Interaction
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
         RayTraceResult traceResult = RayTracer.retrace(player);
 
         if (traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
-            return super.onItemRightClick(stack, world, player, hand);
+            return super.onItemRightClick(world, player, hand);
         }
 
-        if (world.isRemote){
-            return super.onItemRightClick(stack, world, player, hand);
+        if (world.isRemote) {
+            return super.onItemRightClick(world, player, hand);
         }
 
-        if (player.isSneaking()){
-            player.addChatComponentMessage(new TextComponentString(TextFormatting.DARK_RED + "Clear Mode"));
+        if (player.isSneaking()) {
+            player.sendMessage(new TextComponentString(TextFormatting.DARK_RED + "Clear Mode"));
             ItemNBTHelper.setString(stack, "BlockName", "");
             ItemNBTHelper.setByte(stack, "BlockData", (byte) 0);
-            return super.onItemRightClick(stack, world, player, hand);
+            return super.onItemRightClick(world, player, hand);
         }
 
-        return super.onItemRightClick(stack, world, player, hand);
+        return super.onItemRightClick(world, player, hand);
     }
 
     @Override
-    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         if (world.isRemote) {
             return EnumActionResult.PASS;
         }
 
+        ItemStack stack = player.getHeldItem(hand);
         IBlockState prevState = world.getBlockState(pos);
 
-        if (player.isSneaking()){
+        if (player.isSneaking()) {
             String name = Block.REGISTRY.getNameForObject(prevState.getBlock()).toString();
             int data = prevState.getBlock().getMetaFromState(prevState);
 
@@ -103,7 +105,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
             Item item = Item.getItemFromBlock(prevState.getBlock());
 
             if (item != null) {
-                player.addChatComponentMessage(new TextComponentString("Selected: " + new TextComponentTranslation(item.getUnlocalizedName(new ItemStack(item, 1, data)) + ".name").getFormattedText()).setStyle(new Style().setColor(TextFormatting.GREEN)));
+                player.sendMessage(new TextComponentString("Selected: " + new TextComponentTranslation(item.getUnlocalizedName(new ItemStack(item, 1, data)) + ".name").getFormattedText()).setStyle(new Style().setColor(TextFormatting.GREEN)));
             }
             return EnumActionResult.SUCCESS;
         }
@@ -118,8 +120,8 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
                 replaced = true;
             }
 
-            if (replaced){
-                if (newState.getBlock() == Blocks.AIR){
+            if (replaced) {
+                if (newState.getBlock() == Blocks.AIR) {
                     world.playEvent(2001, pos, Block.getStateId(prevState));
                 }
                 else {
@@ -135,21 +137,21 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, EntityPlayer player) {
         Block newBlock = Block.REGISTRY.getObject(new ResourceLocation(ItemNBTHelper.getString(stack, "BlockName", "")));
-        if (newBlock == Blocks.AIR){
-            if (player.worldObj.isRemote) {
-                player.addChatComponentMessage(new TextComponentString("[ERROR-404] Set Block not Found").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
+        if (newBlock == Blocks.AIR) {
+            if (player.world.isRemote) {
+                player.sendMessage(new TextComponentString("[ERROR-404] Set Block not Found").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
             }
             return false;
         }
-        IBlockState currentState = player.worldObj.getBlockState(pos);
-        IBlockState newState = newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte)0));
-        if (newState == currentState){
+        IBlockState currentState = player.world.getBlockState(pos);
+        IBlockState newState = newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte) 0));
+        if (newState == currentState) {
             return false;
         }
 
-        player.worldObj.setBlockState(pos, newState);
-        player.worldObj.playEvent(2001, pos, Block.getStateId(newState));
-        player.worldObj.notifyBlockOfStateChange(pos, newBlock);
+        player.world.setBlockState(pos, newState);
+        player.world.playEvent(2001, pos, Block.getStateId(newState));
+        player.world.notifyNeighborsOfStateChange(pos, newBlock, true);
 
         return true;
     }
@@ -201,10 +203,10 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
 
     private static void scanBlocks(World world, BlockPos pos, BlockPos origin, IBlockState originState, EnumFacing side, int range, boolean replaceSame, boolean replaceVisible, boolean fillLogic, List<BlockPos> toReplace, List<BlockPos> scanned) {
 
-        for (EnumFacing dir : FacingUtils.getFacingsAroundAxis(side.getAxis())){
+        for (EnumFacing dir : FacingUtils.getFacingsAroundAxis(side.getAxis())) {
             BlockPos newPos = pos.offset(dir);
 
-            if (scanned.contains(newPos) || !isInRange(origin, newPos, range)){
+            if (scanned.contains(newPos) || !isInRange(origin, newPos, range)) {
                 continue;
             }
 
@@ -213,11 +215,11 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
 
             boolean validReplace = !world.isAirBlock(newPos) && (!replaceSame || state == originState) && (!replaceVisible || world.isAirBlock(newPos.offset(side)) || state.getBlock().isReplaceable(world, newPos.offset(side))) && (!fillLogic || state == originState);
 
-            if (validReplace){
+            if (validReplace) {
                 toReplace.add(newPos);
             }
 
-            if (!fillLogic || validReplace){
+            if (!fillLogic || validReplace) {
                 scanBlocks(world, newPos, origin, originState, side, range, replaceSame, replaceVisible, fillLogic, toReplace, scanned);
             }
         }
@@ -225,7 +227,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
 
     private static boolean isInRange(BlockPos origin, BlockPos pos, int range) {
         BlockPos diff = pos.subtract(origin);
-        return Math.abs(diff.getX()) <= range && Math.abs(diff.getY()) <= range &&Math.abs(diff.getZ()) <= range;
+        return Math.abs(diff.getX()) <= range && Math.abs(diff.getY()) <= range && Math.abs(diff.getZ()) <= range;
     }
 
     @Override
@@ -236,8 +238,8 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
         Block newBlock = Block.REGISTRY.getObject(new ResourceLocation(ItemNBTHelper.getString(stack, "BlockName", "")));
         String opMode = TextFormatting.DARK_RED + "Clear Mode";
 
-        if (newBlock != Blocks.AIR){
-            opMode = TextFormatting.GREEN + "Block: " + TextFormatting.GOLD + I18n.format(newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte)0)).getBlock().getUnlocalizedName() + ".name");
+        if (newBlock != Blocks.AIR) {
+            opMode = TextFormatting.GREEN + "Block: " + TextFormatting.GOLD + I18n.format(newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte) 0)).getBlock().getUnlocalizedName() + ".name");
         }
 
         displayList.add(TextFormatting.DARK_PURPLE + ToolConfigHelper.getProfileName(stack, ToolConfigHelper.getProfile(stack)));

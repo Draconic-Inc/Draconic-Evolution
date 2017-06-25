@@ -70,7 +70,8 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
             GlStateManager.scale(1.1, 1.1, 1.02);
             GlStateManager.scale(1.1, 1.1, 1.02);
             ModelUtils.renderQuadsARGB(arrowModel.getQuads(null, null, 0), 0x66FF0000);
-        } else {
+        }
+        else {
             TextureUtils.bindBlockTexture();
             ModelUtils.renderQuads(arrowModel.getQuads(null, null, 0));
         }

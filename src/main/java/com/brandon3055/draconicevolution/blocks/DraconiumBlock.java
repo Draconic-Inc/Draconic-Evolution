@@ -10,62 +10,63 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.List;
-
 /**
  * Created by brandon3055 on 18/3/2016.
  */
 public class DraconiumBlock extends BlockMobSafe {
-	public static PropertyBool CHARGED = PropertyBool.create("charged");
+    public static PropertyBool CHARGED = PropertyBool.create("charged");
 
-	public DraconiumBlock() {
-		super(Material.IRON);
-		this.setHarvestLevel("pickaxe", 3);
-		this.setDefaultState(blockState.getBaseState().withProperty(CHARGED, false));
-	}
+    public DraconiumBlock() {
+        super(Material.IRON);
+        this.setHarvestLevel("pickaxe", 3);
+        this.setDefaultState(blockState.getBaseState().withProperty(CHARGED, false));
+        this.addName(0, "draconium_block");
+        this.addName(1, "draconium_block_charged");
+    }
 
-	@Override
-	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
-		list.add(new ItemStack(item, 1, 0));
-		list.add(new ItemStack(item, 1, 1));
-	}
+    @Override
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+        list.add(new ItemStack(item, 1, 0));
+        list.add(new ItemStack(item, 1, 1));
+    }
 
-	//region BlockState
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, CHARGED);
-	}
+    //region BlockState
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, CHARGED);
+    }
 
-	@Override
-	public int getMetaFromState(IBlockState state) {
-		return state.getValue(CHARGED) ? 1 : 0;
-	}
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(CHARGED) ? 1 : 0;
+    }
 
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(CHARGED, meta == 1);
-	}
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(CHARGED, meta == 1);
+    }
 
-	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		return super.getActualState(state, worldIn, pos);
-	}
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        return super.getActualState(state, worldIn, pos);
+    }
 
-	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		world.setBlockState(pos, state.withProperty(CHARGED, stack.getItemDamage() == 1));
-	}
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        world.setBlockState(pos, state.withProperty(CHARGED, stack.getItemDamage() == 1));
+    }
 
-	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-		return new ItemStack(this, 1, world.getBlockState(pos).getValue(CHARGED) ? 1 : 0);
-	}
-	//endregion
+    @Override
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+        return new ItemStack(this, 1, world.getBlockState(pos).getValue(CHARGED) ? 1 : 0);
+    }
+    //endregion
 
 
     @Override

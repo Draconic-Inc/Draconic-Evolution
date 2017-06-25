@@ -85,39 +85,39 @@ public class DCStack extends DisplayComponentBase {
     public LinkedList<MGuiElementBase> getEditControls() {
         LinkedList<MGuiElementBase> list = super.getEditControls();
 
-        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
+        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Horizontal Alignment"}));
 
-        list.add(new MGuiButtonSolid(modularGui, "SELECT_STACK", 0, 0, 56, 12, "Pick Stack"){
+        list.add(new MGuiButtonSolid(modularGui, "SELECT_STACK", 0, 0, 56, 12, "Pick Stack") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
-        }.setListener(this).setToolTip(new String[] {"Select a stack from your inventory"}));
+        }.setListener(this).setToolTip(new String[]{"Select a stack from your inventory"}));
 
         String s = "Turn ToolTip: " + (toolTip ? "Off" : "On");
-        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_TOOLTIP", 0, 0, fontRenderer.getStringWidth(s) + 4, 12, s){
+        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_TOOLTIP", 0, 0, fontRenderer.getStringWidth(s) + 4, 12, s) {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
-        }.setListener(this).setToolTip(new String[] {"Toggle item tool tip on or off"}));
+        }.setListener(this).setToolTip(new String[]{"Toggle item tool tip on or off"}));
 
         s = "Turn Slot: " + (toolTip ? "Off" : "On");
-        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_SLOT", 0, 0, fontRenderer.getStringWidth(s) + 4, 12, s){
+        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_SLOT", 0, 0, fontRenderer.getStringWidth(s) + 4, 12, s) {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
-        }.setListener(this).setToolTip(new String[] {"Toggle Slot Renderer on or off"}));
+        }.setListener(this).setToolTip(new String[]{"Toggle Slot Renderer on or off"}));
 
         list.add(new MGuiLabel(modularGui, 0, 0, 30, 12, "Scale:").setAlignment(EnumAlignment.CENTER));
         MGuiTextField scaleField = new MGuiTextField(modularGui, 0, 0, 36, 12, fontRenderer).setListener(this).setMaxStringLength(2048).setText(String.valueOf(scale));
-        scaleField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the stack scale (100 = normal stack size)", TextFormatting.GOLD + "The size of the image will be limited by both this and the width of the GUI.", TextFormatting.GOLD + "Whichever value is smaller will take priority.", TextFormatting.GREEN + "Will save as you type."}, scaleField));
+        scaleField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Set the stack scale (100 = normal stack size)", TextFormatting.GOLD + "The size of the image will be limited by both this and the width of the GUI.", TextFormatting.GOLD + "Whichever value is smaller will take priority.", TextFormatting.GREEN + "Will save as you type."}, scaleField));
         scaleField.setId("SCALE");
         scaleField.setValidator(new Predicate<String>() {
             @Override
@@ -125,7 +125,8 @@ public class DCStack extends DisplayComponentBase {
                 try {
                     Integer.parseInt(input);
                 }
-                catch (Exception e) {}
+                catch (Exception e) {
+                }
                 return true;
             }
         });
@@ -148,7 +149,8 @@ public class DCStack extends DisplayComponentBase {
             try {
                 newScale = Integer.parseInt(((MGuiTextField) eventElement).getText());
             }
-            catch (Exception e) {}
+            catch (Exception e) {
+            }
 
             if (newScale < 30) {
                 newScale = 30;
@@ -175,14 +177,14 @@ public class DCStack extends DisplayComponentBase {
             save();
         }
         else if (eventElement instanceof MGuiButtonSolid && ((MGuiButtonSolid) eventElement).buttonName.equals("SELECT_STACK")) {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
             selector = new StackSelector(modularGui, list.xPos + list.leftPadding, list.yPos + list.topPadding, list.xSize - list.leftPadding - list.rightPadding, list.ySize - list.topPadding - list.bottomPadding);
             selector.setListener(this);
 
             List<ItemStack> stacks = new LinkedList<ItemStack>();
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack stack = player.inventory.getStackInSlot(i);
-                if (stack != null) {
+                if (!stack.isEmpty()) {
                     stacks.add(stack);
                 }
             }
@@ -197,7 +199,7 @@ public class DCStack extends DisplayComponentBase {
         else if (eventString.equals("SELECTOR_PICK")) {
             boolean shouldSave = false;
             if (eventElement instanceof MGuiStackIcon) {
-                StackReference reference = new StackReference(((MGuiStackIcon)eventElement).getStack());
+                StackReference reference = new StackReference(((MGuiStackIcon) eventElement).getStack());
                 stackIcon.setStack(reference);
                 element.setTextContent(reference.toString());
                 shouldSave = true;
@@ -239,7 +241,8 @@ public class DCStack extends DisplayComponentBase {
         try {
             scale = Integer.parseInt(element.getAttribute(ATTRIB_SCALE));
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+        }
 
         if (scale < 30) {
             scale = 30;

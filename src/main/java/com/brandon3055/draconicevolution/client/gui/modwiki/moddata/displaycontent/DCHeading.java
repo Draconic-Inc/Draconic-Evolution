@@ -49,7 +49,7 @@ public class DCHeading extends DisplayComponentBase {
         }
 
         float scaleFactor = 1F + (headingSize / 2F);
-        int split = fontRenderer.listFormattedStringToWidth(displayString, (int)(xSize / scaleFactor)).size();
+        int split = fontRenderer.listFormattedStringToWidth(displayString, (int) (xSize / scaleFactor)).size();
         ySize = (int) (fontRenderer.FONT_HEIGHT * scaleFactor * split);
     }
 
@@ -60,7 +60,7 @@ public class DCHeading extends DisplayComponentBase {
     @Override
     public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         float scaleFactor = 1F + (headingSize / 2F);
-        List<String> list = fontRenderer.listFormattedStringToWidth(displayString, (int)(xSize / scaleFactor));
+        List<String> list = fontRenderer.listFormattedStringToWidth(displayString, (int) (xSize / scaleFactor));
 
         for (String string : list) {
 
@@ -106,7 +106,7 @@ public class DCHeading extends DisplayComponentBase {
     public LinkedList<MGuiElementBase> getEditControls() {
         LinkedList<MGuiElementBase> list = super.getEditControls();
 
-        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
+        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
@@ -114,12 +114,12 @@ public class DCHeading extends DisplayComponentBase {
         }.setListener(this).setToolTip(new String[]{"Toggle Text Alignment"}));
         MGuiTextField textField = new MGuiTextField(modularGui, 0, 0, 100, 12, fontRenderer).setListener(this).setMaxStringLength(2048).setText(displayString);
         textField.setId("TEXT");
-        textField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Modify Heading Text", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, textField));
+        textField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Modify Heading Text", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, textField));
         list.add(textField);
 
         list.add(new MGuiLabel(modularGui, 0, 0, 37, 12, "Colour:").setAlignment(EnumAlignment.CENTER));
         MGuiTextField colourField = new MGuiTextField(modularGui, 0, 0, 45, 12, fontRenderer).setListener(this).setMaxStringLength(6).setText("FFFFFF");
-        colourField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the base colour. If left default this will be the text colour for the selected style", "If you change this the only way to to go back is to remove the colour attribute from the entry in the XML file."}, colourField));
+        colourField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Set the base colour. If left default this will be the text colour for the selected style", "If you change this the only way to to go back is to remove the colour attribute from the entry in the XML file."}, colourField));
         colourField.setId("COLOUR");
         colourField.setText(Integer.toHexString(getColour()));
         colourField.setValidator(new Predicate<String>() {
@@ -136,45 +136,45 @@ public class DCHeading extends DisplayComponentBase {
         });
         list.add(colourField);
 
-        list.add(new MGuiButtonSolid(modularGui, "CYCLE_SIZE", 0, 0, 20, 12, "H:"){
+        list.add(new MGuiButtonSolid(modularGui, "CYCLE_SIZE", 0, 0, 20, 12, "H:") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Cycle Trough Heading Sizes", "Hold Shift to reverse"}).setDisplayString("H:" + headingSize));
 
-        list.add(new MGuiButtonSolid(modularGui, "SHADOW", 0, 0, 10, 12, "S"){
+        list.add(new MGuiButtonSolid(modularGui, "SHADOW", 0, 0, 10, 12, "S") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Shadow"}));
 
-        list.add(new MGuiButtonSolid(modularGui, "OBFUSCATED", 0, 0, 10, 12, TextFormatting.OBFUSCATED + "O"){
+        list.add(new MGuiButtonSolid(modularGui, "OBFUSCATED", 0, 0, 10, 12, TextFormatting.OBFUSCATED + "O") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Obfuscated"}).addToGroup("STYLE"));
-        list.add(new MGuiButtonSolid(modularGui, "BOLD", 0, 0, 10, 12, TextFormatting.BOLD + "B"){
+        list.add(new MGuiButtonSolid(modularGui, "BOLD", 0, 0, 10, 12, TextFormatting.BOLD + "B") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Bold"}).addToGroup("STYLE"));
-        list.add(new MGuiButtonSolid(modularGui, "STRIKETHROUGH", 0, 0, 10, 12, TextFormatting.STRIKETHROUGH + "S"){
+        list.add(new MGuiButtonSolid(modularGui, "STRIKETHROUGH", 0, 0, 10, 12, TextFormatting.STRIKETHROUGH + "S") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Strike-through"}).addToGroup("STYLE"));
-        list.add(new MGuiButtonSolid(modularGui, "UNDERLINE", 0, 0, 10, 12, TextFormatting.UNDERLINE + "U"){
+        list.add(new MGuiButtonSolid(modularGui, "UNDERLINE", 0, 0, 10, 12, TextFormatting.UNDERLINE + "U") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Underline"}).addToGroup("STYLE"));
-        list.add(new MGuiButtonSolid(modularGui, "ITALIC", 0, 0, 10, 12, TextFormatting.ITALIC + "I"){
+        list.add(new MGuiButtonSolid(modularGui, "ITALIC", 0, 0, 10, 12, TextFormatting.ITALIC + "I") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
@@ -239,7 +239,7 @@ public class DCHeading extends DisplayComponentBase {
             }
         }
         else if (eventElement instanceof MGuiButton && eventElement.isInGroup("STYLE")) {
-            TextFormatting format = TextFormatting.valueOf(((MGuiButton)eventElement).buttonName);
+            TextFormatting format = TextFormatting.valueOf(((MGuiButton) eventElement).buttonName);
 
             if (displayString.contains(format.toString())) {
                 displayString = displayString.replace(format.toString(), "");

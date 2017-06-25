@@ -77,10 +77,10 @@ public class GuiFlowGate extends ModularGuiContainer implements IMGuiListener {
             maxField.setValidator(fieldValidator);
         }
 
-        manager.add(new MGuiLabel(this, guiLeft(), guiTop() + ySize - 12, xSize, 8, ""){
+        manager.add(new MGuiLabel(this, guiLeft(), guiTop() + ySize - 12, xSize, 8, "") {
             @Override
             public String getDisplayString() {
-                return  I18n.format("gui.de.flowGateCurrentFlow.name") + ": " + Utils.addCommas(tile.getFlow()) + tile.getUnits();
+                return I18n.format("gui.de.flowGateCurrentFlow.name") + ": " + Utils.addCommas(tile.getFlow()) + tile.getUnits();
             }
         }.setTextColour(0x2c2c2c).setShadow(false));
         manager.initElements();

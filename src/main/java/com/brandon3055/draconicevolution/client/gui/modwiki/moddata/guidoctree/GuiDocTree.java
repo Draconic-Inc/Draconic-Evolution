@@ -102,7 +102,8 @@ public class GuiDocTree {
 
     //region Filter
 
-    public void updateFilter() {}
+    public void updateFilter() {
+    }
 
     //endregion
 

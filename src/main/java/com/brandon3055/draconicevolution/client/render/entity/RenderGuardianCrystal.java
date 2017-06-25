@@ -56,7 +56,7 @@ public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
             GlStateManager.depthMask(false);
 
             float f2 = (float) crystal.ticksExisted + partialTicks;
-            float f3 = -f2 * 0.2F - (float) MathHelper.floor_float(-f2 * 0.1F);
+            float f3 = -f2 * 0.2F - (float) MathHelper.floor(-f2 * 0.1F);
             double size = 0.39F;
             double d30 = 0.2D - size;
             double d4 = 0.2D - size;

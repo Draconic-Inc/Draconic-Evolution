@@ -13,7 +13,7 @@ public class ProcessReactorExplosionOld implements IProcess {
 
     public static DamageSource fusionExplosion = new DamageSource("damage.de.fusionExplode").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute().setDamageAllowedInCreativeMode();
 
-    private World worldObj;
+    private World world;
     private int xCoord;
     private int yCoord;
     private int zCoord;
@@ -23,7 +23,7 @@ public class ProcessReactorExplosionOld implements IProcess {
     private double expansion = 0;
 
     public ProcessReactorExplosionOld(World world, int x, int y, int z, float power) {
-        this.worldObj = world;
+        this.world = world;
         this.xCoord = x;
         this.yCoord = y;
         this.zCoord = z;
@@ -44,7 +44,7 @@ public class ProcessReactorExplosionOld implements IProcess {
 //                if (dist < OD && dist >= ID) {
 //                    float tracePower = power - (float) (expansion / 10D);
 //                    tracePower *= 1F + ((random.nextFloat() - 0.5F) * 0.2);
-//                    ProcessHandler.addProcess(new ReactorExplosionTrace(worldObj, x, yCoord, z, tracePower, random));
+//                    ProcessHandler.addProcess(new ReactorExplosionTrace(world, x, yCoord, z, tracePower, random));
 //                }
 //            }
 //        }

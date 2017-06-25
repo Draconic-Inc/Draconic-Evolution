@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
+import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
@@ -19,10 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -83,8 +81,8 @@ public class WyvernAxe extends MiningToolBase {
     //region Harvest
 
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        ItemStack stack = player.getHeldItem(hand);
         if (world.getBlockState(pos).getBlock().isWood(world, pos) && !player.isSneaking()) {
             player.setActiveHand(hand);
             if (!world.isRemote) {
@@ -95,7 +93,7 @@ public class WyvernAxe extends MiningToolBase {
         }
 
 
-        return super.onItemUse(stack, player, world, pos, hand, facing, hitX, hitY, hitZ);
+        return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override
@@ -107,7 +105,8 @@ public class WyvernAxe extends MiningToolBase {
         IBlockState blockState = world.getBlockState(pos);
         if (!blockState.getBlock().isWood(world, pos)) {
             return false;
-        } else {
+        }
+        else {
             int treeTop = 0;
             for (int y = 0; y <= 50; y++) {
                 IBlockState state = world.getBlockState(pos.add(0, y, 0));
@@ -158,7 +157,7 @@ public class WyvernAxe extends MiningToolBase {
             this.player = player;
             this.stack = stack;
             this.axe = axe;
-            this.collector = new TreeCollector(player.worldObj, breakDown, connectRad, stack, player, axe);
+            this.collector = new TreeCollector(player.world, breakDown, connectRad, stack, player, axe);
             this.collector.setCollectionCallback(this);
             this.collector.collectTree(clicked);
             this.hand = player.getActiveHand();
@@ -169,7 +168,7 @@ public class WyvernAxe extends MiningToolBase {
         @Override
         public void call(BlockPos pos) {
             if (showHarvest) {
-                BCEffectHandler.spawnFX(DEParticles.AXE_SELECTION, player.worldObj, new Vec3D(pos), new Vec3D(), 64D);
+                BCEffectHandler.spawnFX(DEParticles.AXE_SELECTION, player.world, new Vec3D(pos), new Vec3D(), 64D);
             }
         }
 
@@ -195,11 +194,11 @@ public class WyvernAxe extends MiningToolBase {
         }
 
         private void finishHarvest() {
-            if (hasFinished || !(player.worldObj instanceof WorldServer)) {
+            if (hasFinished || !(player.world instanceof WorldServer)) {
                 return;
             }
 
-            DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1, 0.9F + player.worldObj.rand.nextFloat() * 0.2F, false, 16);
+            DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1, 0.9F + player.world.rand.nextFloat() * 0.2F, false, 16);
 
             if (!collector.isCollectionComplete()) {
                 collector.killCollector();
@@ -213,16 +212,16 @@ public class WyvernAxe extends MiningToolBase {
             InventoryDynamic inventory = collector.getCollected();
 
             if (inventory.getSizeInventory() > 2) {
-                EntityLootCore lootCore = new EntityLootCore(player.worldObj, inventory);
+                EntityLootCore lootCore = new EntityLootCore(player.world, inventory);
                 lootCore.setPosition(player.posX, player.posY, player.posZ);
-                player.worldObj.spawnEntityInWorld(lootCore);
+                player.world.spawnEntity(lootCore);
             }
             else {
                 for (int i = 0; i < inventory.getSizeInventory(); i++) {
                     ItemStack s = inventory.removeStackFromSlot(i);
                     if (s != null) {
-                        EntityItem item = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, s);
-                        player.worldObj.spawnEntityInWorld(item);
+                        EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, s);
+                        player.world.spawnEntity(item);
                     }
                 }
             }
@@ -232,4 +231,12 @@ public class WyvernAxe extends MiningToolBase {
 
     //endregion
 
+    //region Rendering
+
+    @Override
+    protected Set3<String, String, String> getTextureLocations() {
+        return Set3.of("items/tools/wyvern_axe", "items/tools/obj/wyvern_axe", "models/item/tools/wyvern_axe.obj");
+    }
+
+    //endregion
 }

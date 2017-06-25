@@ -21,7 +21,8 @@ public class PacketConfigureTool implements IMessage {
     public int button;
     public int data;
 
-    public PacketConfigureTool(){}
+    public PacketConfigureTool() {
+    }
 
     public PacketConfigureTool(PlayerSlot slot, int fieldIndex, int button, int data) {
 
@@ -52,14 +53,14 @@ public class PacketConfigureTool implements IMessage {
         @Override
         public IMessage handleMessage(PacketConfigureTool message, MessageContext ctx) {
             ItemStack stack = message.slot.getStackInSlot(ctx.getServerHandler().playerEntity);
-            if (stack == null || !(stack.getItem() instanceof IConfigurableItem)){
+            if (!(stack.getItem() instanceof IConfigurableItem)) {
                 return null;
             }
 
             IConfigurableItem item = (IConfigurableItem) stack.getItem();
             IItemConfigField field = item.getFields(stack, new ItemConfigFieldRegistry()).getField(message.fieldIndex);
 
-            if (field != null){
+            if (field != null) {
                 field.handleButton(IItemConfigField.EnumButton.getButton(message.button), message.data);
                 field.writeToNBT(ToolConfigHelper.getFieldStorage(stack));
             }

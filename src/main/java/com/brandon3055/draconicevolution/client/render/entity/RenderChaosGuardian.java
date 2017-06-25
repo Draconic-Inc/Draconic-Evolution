@@ -35,7 +35,7 @@ public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
     }
 
     @Override
-    protected void rotateCorpse(EntityChaosGuardian entityLiving, float p_77043_2_, float p_77043_3_, float partialTicks) {
+    protected void applyRotations(EntityChaosGuardian entityLiving, float p_77043_2_, float p_77043_3_, float partialTicks) {
         float f3 = (float) entityLiving.getMovementOffsets(7, partialTicks)[0];
         float f4 = (float) (entityLiving.getMovementOffsets(5, partialTicks)[1] - entityLiving.getMovementOffsets(10, partialTicks)[1]);
         GL11.glRotatef(-f3, 0.0F, 1.0F, 0.0F);
@@ -44,7 +44,7 @@ public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
 
         if (entityLiving.deathTime > 0) {
             float f5 = ((float) entityLiving.deathTime + partialTicks - 1.0F) / 20.0F * 1.6F;
-            f5 = MathHelper.sqrt_float(f5);
+            f5 = MathHelper.sqrt(f5);
 
             if (f5 > 1.0F) {
                 f5 = 1.0F;
@@ -94,8 +94,8 @@ public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
             float renderX = (float) (pos.getX() + 0.5 - chaosGuardian.posX - (chaosGuardian.prevPosX - chaosGuardian.posX) * (double) (1.0F - partialTicks));
             float renderY = (float) ((double) bob + pos.getY() - 1.0D - chaosGuardian.posY - (chaosGuardian.prevPosY - chaosGuardian.posY) * (double) (1.0F - partialTicks));
             float renderZ = (float) (pos.getZ() + 0.5 - chaosGuardian.posZ - (chaosGuardian.prevPosZ - chaosGuardian.posZ) * (double) (1.0F - partialTicks));
-            float f7 = MathHelper.sqrt_float(renderX * renderX + renderZ * renderZ);
-            float f8 = MathHelper.sqrt_float(renderX * renderX + renderY * renderY + renderZ * renderZ);
+            float f7 = MathHelper.sqrt(renderX * renderX + renderZ * renderZ);
+            float f8 = MathHelper.sqrt(renderX * renderX + renderY * renderY + renderZ * renderZ);
             GL11.glPushMatrix();
             GL11.glTranslatef((float) x, (float) y + 2.0F, (float) z);
             GL11.glRotatef((float) (-Math.atan2((double) renderZ, (double) renderX)) * 180.0F / (float) Math.PI - 90.0F, 0.0F, 1.0F, 0.0F);
@@ -107,7 +107,7 @@ public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
             this.bindTexture(ResourceHelperDE.getResourceRAW("textures/entity/endercrystal/endercrystal_beam.png"));
             GL11.glShadeModel(GL11.GL_SMOOTH);
             float f9 = 0.0F - ((float) chaosGuardian.ticksExisted + partialTicks) * 0.01F;
-            float f10 = MathHelper.sqrt_float(renderX * renderX + renderY * renderY + renderZ * renderZ) / 32.0F - ((float) chaosGuardian.ticksExisted + partialTicks) * 0.01F;
+            float f10 = MathHelper.sqrt(renderX * renderX + renderY * renderY + renderZ * renderZ) / 32.0F - ((float) chaosGuardian.ticksExisted + partialTicks) * 0.01F;
 
             buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
 

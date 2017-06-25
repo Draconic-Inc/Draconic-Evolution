@@ -38,7 +38,7 @@ public class BowHandler {
             player.setActiveHand(hand);
         }
 
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
     public static void onBowUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -84,7 +84,7 @@ public class BowHandler {
         }
 
         if (!world.isRemote) {
-            world.spawnEntityInWorld(customArrow);
+            world.spawnEntity(customArrow);
         }
 
         world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, (1.0F / (world.rand.nextFloat() * 0.4F + 1.2F) + (drawArrowSpeedModifier + (velocity / 40F)) * 0.5F));
@@ -203,12 +203,12 @@ public class BowHandler {
         }
 
         private void updateValues() {
-            arrowDamage = (float)ToolConfigHelper.getDoubleField("bowArrowDamage", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
-            arrowSpeed = 1F + (float)ToolConfigHelper.getIntegerField("bowArrowSpeedModifier", bow) / 100F;// IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowSpeedModifier", 0F);
-            explosionPower = (float)ToolConfigHelper.getDoubleField("bowExplosionPower", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowExplosionPower", 0F);
-            shockWavePower = (float)ToolConfigHelper.getDoubleField("bowShockPower", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowShockWavePower", 0F);
+            arrowDamage = (float) ToolConfigHelper.getDoubleField("bowArrowDamage", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
+            arrowSpeed = 1F + (float) ToolConfigHelper.getIntegerField("bowArrowSpeedModifier", bow) / 100F;// IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowSpeedModifier", 0F);
+            explosionPower = (float) ToolConfigHelper.getDoubleField("bowExplosionPower", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowExplosionPower", 0F);
+            shockWavePower = (float) ToolConfigHelper.getDoubleField("bowShockPower", bow);// IConfigurableItem.ProfileHelper.getFloat(bow, "BowShockWavePower", 0F);
             drawTimeReduction = UpgradeHelper.getUpgradeLevel(bow, ToolUpgrade.DRAW_SPEED);// IUpgradableItemd.EnumUpgrade.DRAW_SPEED.getUpgradePoints(bow);
-            zoomModifier = (float)ToolConfigHelper.getIntegerField("bowZoomModifier", bow) / 100F;// IConfigurableItem.ProfileHelper.getFloat(bow, "BowZoomModifier", 0F);
+            zoomModifier = (float) ToolConfigHelper.getIntegerField("bowZoomModifier", bow) / 100F;// IConfigurableItem.ProfileHelper.getFloat(bow, "BowZoomModifier", 0F);
             autoFire = ToolConfigHelper.getBooleanField("bowAutoFire", bow);// IConfigurableItem.ProfileHelper.getBoolean(bow, "BowAutoFire", false);
             energyBolt = ToolConfigHelper.getBooleanField("bowFireArrow", bow);// IConfigurableItem.ProfileHelper.getBoolean(bow, "BowEnergyBolt", false);
 //            arrowDamage = IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
@@ -233,7 +233,7 @@ public class BowHandler {
          */
         public boolean consumeArrowAndEnergy() {
 
-            if (!player.capabilities.isCreativeMode){
+            if (!player.capabilities.isCreativeMode) {
                 ((WyvernBow) bow.getItem()).modifyEnergy(bow, -calculateEnergyCost());
             }
 

@@ -43,13 +43,13 @@ public class DCVSpacer extends DisplayComponentBase {
     @Override
     public LinkedList<MGuiElementBase> getEditControls() {
         LinkedList<MGuiElementBase> list = super.getEditControls();
-        list.add(new MGuiButtonSolid(modularGui, "SIZE_+", 0, 0, 20, 12, "+"){
+        list.add(new MGuiButtonSolid(modularGui, "SIZE_+", 0, 0, 20, 12, "+") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Increase Spacer Size (Hold shift for fine adjustment)"}));
-        list.add(new MGuiButtonSolid(modularGui, "SIZE_-", 0, 0, 20, 12, "-"){
+        list.add(new MGuiButtonSolid(modularGui, "SIZE_-", 0, 0, 20, 12, "-") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;

@@ -44,17 +44,17 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         if (getLocation(stack) == null) {
-            if (player.worldObj.isRemote) {
-                player.addChatMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
+            if (player.world.isRemote) {
+                player.sendMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
             }
             return true;
         }
 
         int fuel = ItemNBTHelper.getInteger(stack, "Fuel", 0);
-        World world = player.worldObj;
+        World world = player.world;
 
         if (!player.capabilities.isCreativeMode && fuel <= 0) {
-            if (world.isRemote) player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
+            if (world.isRemote) player.sendMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
             return true;
         }
 
@@ -67,7 +67,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             }
             else {
                 if (world.isRemote) {
-                    player.addChatMessage(new TextComponentTranslation("msg.teleporterPlayerConsent.txt"));
+                    player.sendMessage(new TextComponentTranslation("msg.teleporterPlayerConsent.txt"));
                 }
             }
             return true;
@@ -77,18 +77,18 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             return true;
         }
 
-        if (!entity.worldObj.isRemote) {
-            DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+        if (!entity.world.isRemote) {
+            DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
 
         getLocation(stack).teleport(entity);
 
-        if (!entity.worldObj.isRemote) {
-            DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+        if (!entity.world.isRemote) {
+            DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
 
-        if (player.worldObj.isRemote) {
-            player.addChatMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) getLocation(stack).getXCoord() + " y:" + (int) getLocation(stack).getYCoord() + " z:" + (int) getLocation(stack).getZCoord() + " Dimension: " + getLocation(stack).getDimensionName()));
+        if (player.world.isRemote) {
+            player.sendMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) getLocation(stack).getXCoord() + " y:" + (int) getLocation(stack).getYCoord() + " z:" + (int) getLocation(stack).getZCoord() + " Dimension: " + getLocation(stack).getDimensionName()));
         }
 
         if (!player.capabilities.isCreativeMode && fuel > 0) {
@@ -99,7 +99,8 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
         int fuel = ItemNBTHelper.getInteger(stack, "Fuel", 0);
 
         if (player.isSneaking()) {
@@ -118,7 +119,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
             if (!player.capabilities.isCreativeMode && fuel <= 0) {
                 if (world.isRemote) {
-                    player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
+                    player.sendMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
                 }
                 return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
             }
@@ -128,11 +129,11 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             }
 
             if (!world.isRemote) {
-                DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
             getLocation(stack).teleport(player);
             if (!world.isRemote) {
-                DESoundHandler.playSoundFromServer(player.worldObj, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
         }
         return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
@@ -149,11 +150,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         if (compound == null) {
             return null;
         }
-        NBTTagList list = (NBTTagList) compound.getTag("Locations");
-        if (list == null) {
-            return null;
-        }
-
+        NBTTagList list = compound.getTagList("Locations", 10);
         Teleporter.TeleportLocation destination = new Teleporter.TeleportLocation();
         destination.readFromNBT(list.getCompoundTagAt(selected + selrctionOffset));
         if (destination.getName().isEmpty()) {
@@ -173,10 +170,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         int selrctionOffset = ItemNBTHelper.getInteger(stack, "SelectionOffset", 0);
         NBTTagCompound compound = ItemNBTHelper.getCompound(stack);
 
-        NBTTagList list = (NBTTagList) compound.getTag("Locations");
-        if (list == null) {
-            list = new NBTTagList();
-        }
+        NBTTagList list = compound.getTagList("Locations", 10);
         String selectedDest = list.getCompoundTagAt(selected + selrctionOffset).getString("Name");
 
         tooltip.add(TextFormatting.GOLD + "" + selectedDest);

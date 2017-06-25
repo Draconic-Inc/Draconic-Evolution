@@ -1,55 +1,43 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
-import com.brandon3055.brandonscore.api.IDataRetainerTile;
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.IChangeListener;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
-import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
-import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
-import com.brandon3055.brandonscore.network.wrappers.SyncableInt;
-import com.brandon3055.brandonscore.network.wrappers.SyncableObject;
-import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.draconicevolution.blocks.machines.FlowGate;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by brandon3055 on 15/11/2016.
  */
-public abstract class TileFlowGate extends TileBCBase implements IDataRetainerTile, ITickable, IChangeListener, IDEPeripheral {
+public abstract class TileFlowGate extends TileBCBase implements ITickable, IChangeListener, IDEPeripheral {
 
     protected int transferThisTick = 0;
 
-    public final SyncableInt minFlow = new SyncableInt(0, true, false);
-    public final SyncableInt maxFlow = new SyncableInt(0, true, false);
-    public final SyncableInt flowOverride = new SyncableInt(0, true, false);
-    public final SyncableBool flowOverridden = new SyncableBool(false, true, false);
-    public final SyncableByte rsSignal = new SyncableByte((byte) -1, true, false);
+    public final ManagedInt minFlow = register("minFlow", new ManagedInt(0)).syncViaTile().saveToTile().saveToItem().finish();
+    public final ManagedInt maxFlow = register("maxFlow", new ManagedInt(0)).syncViaTile().saveToTile().saveToItem().finish();
+    public final ManagedInt flowOverride = register("flowOverride", new ManagedInt(0)).syncViaTile().saveToTile().finish();
+    public final ManagedBool flowOverridden = register("flowOverridden", new ManagedBool(false)).syncViaTile().saveToTile().finish();
+    public final ManagedByte rsSignal = register("rsSignal", new ManagedByte((byte) -1)).syncViaTile().saveToTile().finish();
 
     public TileFlowGate() {
-        registerSyncableObject(minFlow, false);
-        registerSyncableObject(maxFlow, false);
-        registerSyncableObject(flowOverridden, true);
-        registerSyncableObject(rsSignal, true);
-        registerSyncableObject(flowOverride, true);
         setShouldRefreshOnBlockChange();
     }
 
     @Override
     public void update() {
-        detectAndSendChanges();
+        super.update();
         transferThisTick = 0;
     }
 
@@ -63,12 +51,12 @@ public abstract class TileFlowGate extends TileBCBase implements IDataRetainerTi
 
     @SideOnly(Side.CLIENT)
     public void setMin(String value) {
-        sendPacketToServer(new PacketTileMessage(this, (byte) 0, value, false));
+        sendPacketToServer(output -> output.writeString(value), 0);
     }
 
     @SideOnly(Side.CLIENT)
     public void setMax(String value) {
-        sendPacketToServer(new PacketTileMessage(this, (byte) 1, value, false));
+        sendPacketToServer(output -> output.writeString(value), 1);
     }
 
     public int getFlow() {
@@ -76,23 +64,23 @@ public abstract class TileFlowGate extends TileBCBase implements IDataRetainerTi
             return flowOverride.value;
         }
         if (rsSignal.value == -1) {
-            rsSignal.value = (byte) worldObj.isBlockIndirectlyGettingPowered(pos);
+            rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
         }
         return minFlow.value + (int) (((double) rsSignal.value / 15D) * (double) (maxFlow.value - minFlow.value));
     }
 
     //endregion
 
+
     @Override
-    public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
-        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(client, EnumHand.MAIN_HAND, client.getHeldItemMainhand(), pos, EnumFacing.UP, Vec3d.ZERO);
-        MinecraftForge.EVENT_BUS.post(event);
-        if (flowOverridden.value || event.isCanceled() || packet.stringValue == null || packet.stringValue.equals("")) {
+    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+        if (flowOverridden.value) {
             return;
         }
 
         try {
-            long l = Long.parseLong(packet.stringValue);
+            String value = data.readString();
+            long l = Long.parseLong(value);
             if (l < 0) {
                 l = 0;
             }
@@ -100,19 +88,20 @@ public abstract class TileFlowGate extends TileBCBase implements IDataRetainerTi
                 l = Integer.MAX_VALUE;
             }
 
-            if (packet.getIndex() == 0) {
+            if (id == 0) {
                 minFlow.value = (int) l;
             }
-            else if (packet.getIndex() == 1) {
+            else if (id == 1) {
                 maxFlow.value = (int) l;
             }
         }
-        catch (Exception ignored) {
+        catch (NumberFormatException ignored) {
         }
+
     }
 
     public TileEntity getTarget() {
-        return worldObj.getTileEntity(pos.offset(getDirection()));
+        return world.getTileEntity(pos.offset(getDirection()));
     }
 
     public EnumFacing getDirection() {
@@ -121,29 +110,29 @@ public abstract class TileFlowGate extends TileBCBase implements IDataRetainerTi
     }
 
     @Override
-    public void onNeighborChange() {
-        rsSignal.value = (byte) worldObj.isBlockIndirectlyGettingPowered(pos);
+    public void onNeighborChange(BlockPos neighbor) {
+        rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
     }
 
     //region Save
 
-    @Override
-    public void writeRetainedData(NBTTagCompound dataCompound) {
-        for (SyncableObject syncableObject : syncableObjectMap.values()) {
-            if (syncableObject != flowOverridden && syncableObject != rsSignal && syncableObject != flowOverride) {
-                syncableObject.toNBT(dataCompound);
-            }
-        }
-    }
-
-    @Override
-    public void readRetainedData(NBTTagCompound dataCompound) {
-        for (SyncableObject syncableObject : syncableObjectMap.values()) {
-            if (syncableObject != flowOverridden && syncableObject != rsSignal) {
-                syncableObject.fromNBT(dataCompound);
-            }
-        }
-    }
+//    @Override
+//    public void writeRetainedData(NBTTagCompound dataCompound) {
+//        for (SyncableObject syncableObject : syncableObjectMap.values()) {
+//            if (syncableObject != flowOverridden && syncableObject != rsSignal && syncableObject != flowOverride) {
+//                syncableObject.toNBT(dataCompound);
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void readRetainedData(NBTTagCompound dataCompound) {
+//        for (SyncableObject syncableObject : syncableObjectMap.values()) {
+//            if (syncableObject != flowOverridden && syncableObject != rsSignal) {
+//                syncableObject.fromNBT(dataCompound);
+//            }
+//        }
+//    }
 
     //endregion
 
@@ -160,33 +149,21 @@ public abstract class TileFlowGate extends TileBCBase implements IDataRetainerTi
             return new Object[]{getFlow()};
         }
         else if (method.equals("setOverrideEnabled")) {
-//            if (args.length == 0 || !(args[0] instanceof Boolean)) {
-//                throw new IllegalArgumentException("Expected Boolean got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
-//            }
             flowOverridden.value = args.checkBoolean(0);
         }
         else if (method.equals("getOverrideEnabled")) {
             return new Object[]{flowOverridden};
         }
         else if (method.equals("setFlowOverride")) {
-//            if (args.length == 0 || !(args[0] instanceof Number)) {
-//                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
-//            }
             flowOverride.value = args.checkInteger(0);
         }
         else if (method.equals("setSignalHighFlow")) {
-//            if (args.length == 0 || !(args[0] instanceof Number)) {
-//                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
-//            }
             maxFlow.value = args.checkInteger(0);
         }
         else if (method.equals("getSignalHighFlow")) {
             return new Object[]{maxFlow.value};
         }
         else if (method.equals("setSignalLowFlow")) {
-//            if (args.length == 0 || !(args[0] instanceof Number)) {
-//                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
-//            }
             minFlow.value = args.checkInteger(0);
         }
         else if (method.equals("getSignalLowFlow")) {

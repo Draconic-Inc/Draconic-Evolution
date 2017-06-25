@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.network;
 
 import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.network.MessageHandlerWrapper;
-import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import io.netty.buffer.ByteBuf;
@@ -47,8 +47,8 @@ public class PacketShieldHit implements IMessage {
         public IMessage handleMessage(PacketShieldHit message, MessageContext ctx) {
             Entity entity = BrandonsCore.proxy.getClientWorld().getEntityByID(message.playerID);
             if (entity instanceof EntityPlayer) {
-                ClientEventHandler.playerShieldStatus.put((EntityPlayer) entity, new DataUtils.XZPair<Float, Integer>(message.shieldPowerF, ClientEventHandler.elapsedTicks));
-                entity.worldObj.playSound(entity.posX + 0.5D, entity.posY + 0.5D, entity.posZ + 0.5D, DESoundHandler.shieldStrike, SoundCategory.PLAYERS, 0.9F, entity.worldObj.rand.nextFloat() * 0.1F + 0.5F + (0.3F * message.shieldPowerF), false);
+                ClientEventHandler.playerShieldStatus.put((EntityPlayer) entity, new PairKV<>(message.shieldPowerF, ClientEventHandler.elapsedTicks));
+                entity.world.playSound(entity.posX + 0.5D, entity.posY + 0.5D, entity.posZ + 0.5D, DESoundHandler.shieldStrike, SoundCategory.PLAYERS, 0.9F, entity.world.rand.nextFloat() * 0.1F + 0.5F + (0.3F * message.shieldPowerF), false);
             }
             return null;
         }

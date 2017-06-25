@@ -1,14 +1,14 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.blocks.properties.PropertyString;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.brandonscore.config.ITileRegisterer;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRegistryOverride;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileParticleGenerator;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileECStabilizer;
+import com.brandon3055.draconicevolution.lib.PropertyStringTemp;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -22,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -31,17 +32,17 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
-
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class ParticleGenerator extends BlockBCore implements ITileEntityProvider, ITileRegisterer, ICustomRender {
-    public static final PropertyString TYPE = new PropertyString("type", "normal", "inverted", "stabilizer", "stabilizer2");
+public class ParticleGenerator extends BlockBCore implements ITileEntityProvider, IRegistryOverride, IRenderOverride {
+    public static final PropertyStringTemp TYPE = new PropertyStringTemp("type", "normal", "inverted", "stabilizer", "stabilizer2");
 
     public ParticleGenerator() {
         super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "normal"));
+        this.addName(0, "particle_generator");
+        this.addName(1, "energy_core_stabilizer");
     }
 
     //region BlockState
@@ -70,7 +71,7 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
     //region Standard Block Methods
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
         list.add(new ItemStack(item, 1, 0));
         list.add(new ItemStack(item, 1, 2));
     }
@@ -108,7 +109,7 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
     @Override
     public int getLightValue(IBlockState state) {
         return (state.getValue(TYPE).equals("stabilizer") || state.getValue(TYPE).equals("stabilizer2")) ? 10 : 0;
-     }
+    }
 
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state) {
@@ -120,16 +121,18 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileEnergyCoreStabilizer) {
-            if (((TileEnergyCoreStabilizer)tile).isValidMultiBlock.value) {
+            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.value) {
                 AxisAlignedBB bb = new AxisAlignedBB(tile.getPos());
 
-                if (((TileEnergyCoreStabilizer)tile).multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {
-                    if (((TileEnergyCoreStabilizer)tile).multiBlockAxis == EnumFacing.Axis.X) {
+                if (((TileEnergyCoreStabilizer) tile).multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {
+                    if (((TileEnergyCoreStabilizer) tile).multiBlockAxis == EnumFacing.Axis.X) {
                         bb = bb.expand(0, 1, 1);
-                    } else {
+                    }
+                    else {
                         bb = bb.expand(1, 1, 0);
                     }
-                } else {
+                }
+                else {
                     bb = bb.expand(1, 0, 1);
                 }
                 return bb;
@@ -144,10 +147,11 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
     //region Place/Break stuff
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (state.getValue(TYPE).equals("normal") || state.getValue(TYPE).equals("inverted")) {
             world.setBlockState(pos, state.withProperty(TYPE, state.getValue(TYPE).equals("normal") ? "inverted" : "normal"));
-        } else {
+        }
+        else {
             TileEntity tile = world.getTileEntity(pos);
 
             if (tile instanceof TileEnergyCoreStabilizer) {
@@ -165,7 +169,7 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileEnergyCoreStabilizer) {
-            ((TileEnergyCoreStabilizer)tile).onPlaced();
+            ((TileEnergyCoreStabilizer) tile).onPlaced();
         }
     }
 
@@ -174,14 +178,14 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileEnergyCoreStabilizer) {
-            if (((TileEnergyCoreStabilizer)tile).isValidMultiBlock.value) {
-                ((TileEnergyCoreStabilizer)tile).deFormStructure();
+            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.value) {
+                ((TileEnergyCoreStabilizer) tile).deFormStructure();
             }
-            TileEnergyStorageCore core = ((TileEnergyCoreStabilizer)tile).getCore();
+            TileEnergyStorageCore core = ((TileEnergyCoreStabilizer) tile).getCore();
 
             if (core != null) {
                 world.removeTileEntity(pos);
-                ((TileEnergyCoreStabilizer)tile).validateStructure();
+                ((TileEnergyCoreStabilizer) tile).validateStructure();
             }
 
         }
@@ -189,19 +193,15 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         super.breakBlock(world, pos, state);
     }
 
-    @Override
-    public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        return super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
-    }
-
     //endregion
 
     //region Registry
 
+
     @Override
-    public void registerTiles(String modidPrefix, String blockName) {
-        GameRegistry.registerTileEntity(TileParticleGenerator.class, modidPrefix + blockName + ".particle");
-        GameRegistry.registerTileEntity(TileEnergyCoreStabilizer.class, modidPrefix + blockName + ".stabilize");
+    public void handleCustomRegistration(Feature feature) {
+        GameRegistry.registerTileEntity(TileParticleGenerator.class, feature.getRegistryName() + ".particle");
+        GameRegistry.registerTileEntity(TileEnergyCoreStabilizer.class, feature.getRegistryName() + ".stabilize");
     }
 
     @SideOnly(Side.CLIENT)

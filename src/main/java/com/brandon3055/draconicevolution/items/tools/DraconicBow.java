@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
@@ -41,5 +42,10 @@ public class DraconicBow extends WyvernBow {
     @Override
     public int getReaperLevel(ItemStack stack) {
         return 2;
+    }
+
+    @Override
+    protected Set3<String, String, String> getTextureLocations() {
+        return Set3.of("items/tools/draconic_bow00", "items/tools/obj/draconic_bow00", "models/item/tools/draconic_bow00.obj");
     }
 }

@@ -26,13 +26,13 @@ public class DETextureCache implements IIconRegister {
     @Override
     public void registerIcons(TextureMap textureMap) {
         textureCache.clear();
-        for (ResourceLocation location : locations){
+        for (ResourceLocation location : locations) {
             textureCache.put(location, textureMap.registerSprite(location));
         }
     }
 
 
-    public static TextureAtlasSprite getDETexture(String texture){
+    public static TextureAtlasSprite getDETexture(String texture) {
         return textureCache.get(new ResourceLocation(DraconicEvolution.MOD_PREFIX + texture));
     }
 

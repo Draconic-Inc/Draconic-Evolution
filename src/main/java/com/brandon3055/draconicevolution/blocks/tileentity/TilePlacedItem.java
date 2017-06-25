@@ -5,9 +5,8 @@ import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.*;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.network.PacketSyncableObject;
-import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
-import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.utils.FeatureUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.PlacedItem;
@@ -29,22 +28,18 @@ import java.util.List;
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider{
+public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider {
 
     private LinkedList<ItemStack> stacks = new LinkedList<ItemStack>();
-    public final SyncableByte displayCount = new SyncableByte((byte) 1, true, false, true);
-    public final SyncableBool toolDisplay = new SyncableBool(false, true, false, true);
-    public final SyncableByte[] rotation = new SyncableByte[4];
+    public final ManagedByte displayCount = register("displayCount", new ManagedByte(1)).saveToTile().syncViaTile().trigerUpdate().finish();
+    public final ManagedBool toolDisplay = register("toolDisplay", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
+    public final ManagedByte[] rotation = new ManagedByte[4];
     public EnumFacing facing = EnumFacing.NORTH;
-    private boolean[] isBlock = new boolean[] {false, false, false, false};
+    private boolean[] isBlock = new boolean[]{false, false, false, false};
 
     public TilePlacedItem() {
-        registerSyncableObject(displayCount, true);
-        registerSyncableObject(toolDisplay, true);
-
-        for (int i = 0; i < rotation.length; i++){
-            rotation[i] = new SyncableByte((byte)0, true, false, true);
-            registerSyncableObject(rotation[i], true);
+        for (int i = 0; i < rotation.length; i++) {
+            rotation[i] = register("rotation" + i, new ManagedByte(0)).saveToTile().syncViaTile().trigerUpdate().finish();
         }
     }
 
@@ -60,8 +55,8 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
 
             if (index >= 0 && index < rotation.length) {
                 rotation[index].value++;
-                DESoundHandler.playSoundFromServer(worldObj, Vec3D.getCenter(pos), SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + worldObj.rand.nextFloat() * 0.2F, false, 24);
-                detectAndSendChanges();
+                DESoundHandler.playSoundFromServer(world, Vec3D.getCenter(pos), SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + world.rand.nextFloat() * 0.2F, false, 24);
+                super.update();
             }
 
             return;
@@ -69,15 +64,15 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
 
         if (hit == 0) {
             for (int i = 0; i < getSizeInventory(); i++) {
-                FeatureUtils.dropItemNoDellay(getStackInSlot(i), worldObj, Vector3.fromEntity(player));
+                FeatureUtils.dropItemNoDellay(getStackInSlot(i), world, Vector3.fromEntity(player));
             }
             stacks.clear();
-            worldObj.setBlockToAir(pos);
+            world.setBlockToAir(pos);
         }
         else {
-            if (getStackInSlot(hit - 1) != null) {
-                FeatureUtils.dropItemNoDellay(getStackInSlot(hit - 1), worldObj, Vector3.fromEntity(player));
-                setInventorySlotContents(hit - 1, null);
+            if (!getStackInSlot(hit - 1).isEmpty()) {
+                FeatureUtils.dropItemNoDellay(getStackInSlot(hit - 1), world, Vector3.fromEntity(player));
+                setInventorySlotContents(hit - 1, ItemStack.EMPTY);
 
             }
         }
@@ -85,17 +80,17 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
 
     public void breakBlock() {
         for (int i = 0; i < getSizeInventory(); i++) {
-            FeatureUtils.dropItemNoDellay(getStackInSlot(i), worldObj, Vector3.fromTileCenter(this));
+            FeatureUtils.dropItemNoDellay(getStackInSlot(i), world, Vector3.fromTileCenter(this));
         }
         stacks.clear();
     }
 
     private IndexedCuboid6 blockBounds = new IndexedCuboid6(0, new Cuboid6(0, 0, 0, 1, 1, 1));
-    private List<IndexedCuboid6> indexedCuboids = new LinkedList<IndexedCuboid6>();
+    private List<IndexedCuboid6> indexedCuboids = new LinkedList<>();
 
     private void calculateBounds() {
 
-        IBlockState state = worldObj.getBlockState(getPos());
+        IBlockState state = world.getBlockState(getPos());
         Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center));
 
         int i = 0;
@@ -121,7 +116,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
     }
 
     private void recalculateCuboids() {
-        IBlockState state = worldObj.getBlockState(getPos());
+        IBlockState state = world.getBlockState(getPos());
         if (state.getBlock() != DEFeatures.placedItem) {
             return;
         }
@@ -137,14 +132,17 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
 
         if (displayCount.value == 1) {
             indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(rotation)));
-        } else if (displayCount.value == 2) {
+        }
+        else if (displayCount.value == 2) {
             indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(-offset, 0, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(offset, 0, 0).with(rotation))));
-        } else if (displayCount.value == 3) {
+        }
+        else if (displayCount.value == 3) {
             indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(0, offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(-offset, -offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(new Translation(offset, -offset, 0).with(rotation))));
-        } else if (displayCount.value == 4) {
+        }
+        else if (displayCount.value == 4) {
             indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(-offset, offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(offset, offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(new Translation(-offset, -offset, 0).with(rotation))));
@@ -181,20 +179,20 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
 
         int count = 0;
         for (int i = 0; i < getSizeInventory(); i++) {
-            if (getStackInSlot(i) != null) {
+            if (!getStackInSlot(i).isEmpty()) {
                 isBlock[i] = getStackInSlot(i).getItem() instanceof ItemBlock;
-
                 count++;
             }
         }
 
         if (count == 0) {
-            worldObj.setBlockToAir(getPos());
-        } else {
+            world.setBlockToAir(getPos());
+        }
+        else {
             displayCount.value = (byte) count;
             ItemStack stack0 = getStackInSlot(0);
-            toolDisplay.value = count == 1 && stack0 != null && stack0.getItem().isItemTool(stack0);
-            detectAndSendChanges();
+            toolDisplay.value = count == 1 && stack0.getItem().isEnchantable(stack0);
+            super.update();
             updateBlock();
         }
     }
@@ -206,16 +204,16 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return index >= 0 && index < stacks.size() ? stacks.get(index) : null;
+        return index >= 0 && index < stacks.size() && stacks.get(index) != null ? stacks.get(index) : ItemStack.EMPTY;
     }
 
     private void setSlot(int index, ItemStack stack) {
-        if (index < 0 || index >= 4){
+        if (index < 0 || index >= 4) {
             return;
         }
 
-        if (stack == null) {
-            if (index < stacks.size()){
+        if (stack.isEmpty()) {
+            if (index < stacks.size()) {
                 stacks.remove(index);
             }
         }
@@ -230,8 +228,8 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
     }
 
     @Override
-    public void receiveSyncPacketFromServer(PacketSyncableObject packet) {
-        super.receiveSyncPacketFromServer(packet);
+    public void updateBlock() {
+        super.updateBlock();
         recalculateCuboids();
     }
 
@@ -262,7 +260,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
         NBTTagList itemList = new NBTTagList();
 
         for (ItemStack stack : stacks) {
-            if (stack == null) {
+            if (stack.isEmpty()) {
                 continue;
             }
             itemList.appendTag(stack.writeToNBT(new NBTTagCompound()));
@@ -277,7 +275,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
         NBTTagList itemList = compound.getTagList("InventoryStacks", 10);
 
         for (int i = 0; i < itemList.tagCount(); i++) {
-            stacks.add(ItemStack.loadItemStackFromNBT(itemList.getCompoundTagAt(i)));
+            stacks.add(new ItemStack(itemList.getCompoundTagAt(i)));
         }
     }
 

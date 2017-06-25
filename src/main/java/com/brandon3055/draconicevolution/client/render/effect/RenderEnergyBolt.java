@@ -168,7 +168,7 @@ public class RenderEnergyBolt {
         float xd = (float) (p1.x - p2.x);
         float yd = (float) (p1.y - p2.y);
         float zd = (float) (p1.z - p2.z);
-        double var7 = (double) MathHelper.sqrt_double((double) (xd * xd + zd * zd));
+        double var7 = (double) MathHelper.sqrt((double) (xd * xd + zd * zd));
         float rotYaw = (float) (Math.atan2((double) xd, (double) zd) * 180.0D / 3.141592653589793D);
         float rotPitch = (float) (Math.atan2((double) yd, var7) * 180.0D / 3.141592653589793D);
 

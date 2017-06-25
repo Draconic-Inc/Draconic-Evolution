@@ -10,37 +10,59 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class ModelChaosGuardian extends ModelBase
-{
-    /** The head Model renderer of the dragon */
+public class ModelChaosGuardian extends ModelBase {
+    /**
+     * The head Model renderer of the dragon
+     */
     private ModelRenderer head;
-    /** The spine Model renderer of the dragon */
+    /**
+     * The spine Model renderer of the dragon
+     */
     private ModelRenderer spine;
-    /** The jaw Model renderer of the dragon */
+    /**
+     * The jaw Model renderer of the dragon
+     */
     private ModelRenderer jaw;
-    /** The body Model renderer of the dragon */
+    /**
+     * The body Model renderer of the dragon
+     */
     private ModelRenderer body;
-    /** The rear leg Model renderer of the dragon */
+    /**
+     * The rear leg Model renderer of the dragon
+     */
     private ModelRenderer rearLeg;
-    /** The front leg Model renderer of the dragon */
+    /**
+     * The front leg Model renderer of the dragon
+     */
     private ModelRenderer frontLeg;
-    /** The rear leg tip Model renderer of the dragon */
+    /**
+     * The rear leg tip Model renderer of the dragon
+     */
     private ModelRenderer rearLegTip;
-    /** The front leg tip Model renderer of the dragon */
+    /**
+     * The front leg tip Model renderer of the dragon
+     */
     private ModelRenderer frontLegTip;
-    /** The rear foot Model renderer of the dragon */
+    /**
+     * The rear foot Model renderer of the dragon
+     */
     private ModelRenderer rearFoot;
-    /** The front foot Model renderer of the dragon */
+    /**
+     * The front foot Model renderer of the dragon
+     */
     private ModelRenderer frontFoot;
-    /** The wing Model renderer of the dragon */
+    /**
+     * The wing Model renderer of the dragon
+     */
     private ModelRenderer wing;
-    /** The wing tip Model renderer of the dragon */
+    /**
+     * The wing tip Model renderer of the dragon
+     */
     private ModelRenderer wingTip;
     private float partialTicks;
     private static final String __OBFID = "CL_00000870";
 
-    public ModelChaosGuardian(float p_i1169_1_)
-    {
+    public ModelChaosGuardian(float p_i1169_1_) {
         this.textureWidth = 256;
         this.textureHeight = 256;
         this.setTextureOffset("body.body", 0, 0);
@@ -122,21 +144,19 @@ public class ModelChaosGuardian extends ModelBase
      * Used for easily adding entity-dependent animations. The second and third float params here are the same second
      * and third as in the setRotationAngles method.
      */
-    public void setLivingAnimations(EntityLivingBase p_78086_1_, float p_78086_2_, float p_78086_3_, float p_78086_4_)
-    {
+    public void setLivingAnimations(EntityLivingBase p_78086_1_, float p_78086_2_, float p_78086_3_, float p_78086_4_) {
         this.partialTicks = p_78086_4_;
     }
 
     /**
      * Sets the models various rotation angles then renders the model.
      */
-    public void render(Entity p_78088_1_, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float p_78088_7_)
-    {
+    public void render(Entity p_78088_1_, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float p_78088_7_) {
         GL11.glPushMatrix();
-        EntityChaosGuardian entitydragon = (EntityChaosGuardian)p_78088_1_;
+        EntityChaosGuardian entitydragon = (EntityChaosGuardian) p_78088_1_;
         float f6 = entitydragon.prevAnimTime + (entitydragon.animTime - entitydragon.prevAnimTime) * this.partialTicks;
-        this.jaw.rotateAngleX = (float)(Math.sin((double)(f6 * (float)Math.PI * 2.0F)) + 1.0D) * 0.2F;
-        float f7 = (float)(Math.sin((double)(f6 * (float)Math.PI * 2.0F - 1.0F)) + 1.0D);
+        this.jaw.rotateAngleX = (float) (Math.sin((double) (f6 * (float) Math.PI * 2.0F)) + 1.0D) * 0.2F;
+        float f7 = (float) (Math.sin((double) (f6 * (float) Math.PI * 2.0F - 1.0F)) + 1.0D);
         f7 = (f7 * f7 * 1.0F + f7 * 2.0F) * 0.05F;
         GL11.glTranslatef(0.0F, f7 - 2.0F, -3.0F);
         GL11.glRotatef(f7 * 2.0F, 1.0F, 0.0F, 0.0F);
@@ -145,26 +165,25 @@ public class ModelChaosGuardian extends ModelBase
         float f11 = 1.5F;
         double[] adouble = entitydragon.getMovementOffsets(6, this.partialTicks);
         float f12 = this.updateRotations(entitydragon.getMovementOffsets(5, this.partialTicks)[0] - entitydragon.getMovementOffsets(10, this.partialTicks)[0]);
-        float f13 = this.updateRotations(entitydragon.getMovementOffsets(5, this.partialTicks)[0] + (double)(f12 / 2.0F));
+        float f13 = this.updateRotations(entitydragon.getMovementOffsets(5, this.partialTicks)[0] + (double) (f12 / 2.0F));
         f8 += 2.0F;
-        float f14 = f6 * (float)Math.PI * 2.0F;
+        float f14 = f6 * (float) Math.PI * 2.0F;
         f8 = 20.0F;
         float f9 = -12.0F;
         float f15;
 
-        for (int i = 0; i < 5; ++i)
-        {
+        for (int i = 0; i < 5; ++i) {
             double[] adouble1 = entitydragon.getMovementOffsets(5 - i, this.partialTicks);
-            f15 = (float)Math.cos((double)((float)i * 0.45F + f14)) * 0.15F;
-            this.spine.rotateAngleY = this.updateRotations(adouble1[0] - adouble[0]) * (float)Math.PI / 180.0F * f11;
-            this.spine.rotateAngleX = f15 + (float)(adouble1[1] - adouble[1]) * (float)Math.PI / 180.0F * f11 * 5.0F;
-            this.spine.rotateAngleZ = -this.updateRotations(adouble1[0] - (double)f13) * (float)Math.PI / 180.0F * f11;
+            f15 = (float) Math.cos((double) ((float) i * 0.45F + f14)) * 0.15F;
+            this.spine.rotateAngleY = this.updateRotations(adouble1[0] - adouble[0]) * (float) Math.PI / 180.0F * f11;
+            this.spine.rotateAngleX = f15 + (float) (adouble1[1] - adouble[1]) * (float) Math.PI / 180.0F * f11 * 5.0F;
+            this.spine.rotateAngleZ = -this.updateRotations(adouble1[0] - (double) f13) * (float) Math.PI / 180.0F * f11;
             this.spine.rotationPointY = f8;
             this.spine.rotationPointZ = f9;
             this.spine.rotationPointX = f10;
-            f8 = (float)((double)f8 + Math.sin((double)this.spine.rotateAngleX) * 10.0D);
-            f9 = (float)((double)f9 - Math.cos((double)this.spine.rotateAngleY) * Math.cos((double)this.spine.rotateAngleX) * 10.0D);
-            f10 = (float)((double)f10 - Math.sin((double)this.spine.rotateAngleY) * Math.cos((double)this.spine.rotateAngleX) * 10.0D);
+            f8 = (float) ((double) f8 + Math.sin((double) this.spine.rotateAngleX) * 10.0D);
+            f9 = (float) ((double) f9 - Math.cos((double) this.spine.rotateAngleY) * Math.cos((double) this.spine.rotateAngleX) * 10.0D);
+            f10 = (float) ((double) f10 - Math.sin((double) this.spine.rotateAngleY) * Math.cos((double) this.spine.rotateAngleX) * 10.0D);
             this.spine.render(p_78088_7_);
         }
 
@@ -172,8 +191,8 @@ public class ModelChaosGuardian extends ModelBase
         this.head.rotationPointZ = f9;
         this.head.rotationPointX = f10;
         double[] adouble2 = entitydragon.getMovementOffsets(0, this.partialTicks);
-        this.head.rotateAngleY = this.updateRotations(adouble2[0] - adouble[0]) * (float)Math.PI / 180.0F * 1.0F;
-        this.head.rotateAngleZ = -this.updateRotations(adouble2[0] - (double)f13) * (float)Math.PI / 180.0F * 1.0F;
+        this.head.rotateAngleY = this.updateRotations(adouble2[0] - adouble[0]) * (float) Math.PI / 180.0F * 1.0F;
+        this.head.rotateAngleZ = -this.updateRotations(adouble2[0] - (double) f13) * (float) Math.PI / 180.0F * 1.0F;
         this.head.render(p_78088_7_);
         GL11.glPushMatrix();
         GL11.glTranslatef(0.0F, 1.0F, 0.0F);
@@ -182,14 +201,13 @@ public class ModelChaosGuardian extends ModelBase
         this.body.rotateAngleZ = 0.0F;
         this.body.render(p_78088_7_);
 
-        for (int j = 0; j < 2; ++j)
-        {
+        for (int j = 0; j < 2; ++j) {
             GL11.glEnable(GL11.GL_CULL_FACE);
-            f15 = f6 * (float)Math.PI * 2.0F;
-            this.wing.rotateAngleX = 0.125F - (float)Math.cos((double)f15) * 0.2F;
+            f15 = f6 * (float) Math.PI * 2.0F;
+            this.wing.rotateAngleX = 0.125F - (float) Math.cos((double) f15) * 0.2F;
             this.wing.rotateAngleY = 0.25F;
-            this.wing.rotateAngleZ = (float)(Math.sin((double)f15) + 0.125D) * 0.8F;
-            this.wingTip.rotateAngleZ = -((float)(Math.sin((double)(f15 + 2.0F)) + 0.5D)) * 0.75F;
+            this.wing.rotateAngleZ = (float) (Math.sin((double) f15) + 0.125D) * 0.8F;
+            this.wingTip.rotateAngleZ = -((float) (Math.sin((double) (f15 + 2.0F)) + 0.5D)) * 0.75F;
             this.rearLeg.rotateAngleX = 1.0F + f7 * 0.1F;
             this.rearLegTip.rotateAngleX = 0.5F + f7 * 0.1F;
             this.rearFoot.rotateAngleX = 0.75F + f7 * 0.1F;
@@ -201,8 +219,7 @@ public class ModelChaosGuardian extends ModelBase
             this.rearLeg.render(p_78088_7_);
             GL11.glScalef(-1.0F, 1.0F, 1.0F);
 
-            if (j == 0)
-            {
+            if (j == 0) {
                 GL11.glCullFace(GL11.GL_FRONT);
             }
         }
@@ -210,26 +227,25 @@ public class ModelChaosGuardian extends ModelBase
         GL11.glPopMatrix();
         GL11.glCullFace(GL11.GL_BACK);
         GL11.glDisable(GL11.GL_CULL_FACE);
-        float f16 = -((float)Math.sin((double)(f6 * (float)Math.PI * 2.0F))) * 0.0F;
-        f14 = f6 * (float)Math.PI * 2.0F;
+        float f16 = -((float) Math.sin((double) (f6 * (float) Math.PI * 2.0F))) * 0.0F;
+        f14 = f6 * (float) Math.PI * 2.0F;
         f8 = 10.0F;
         f9 = 60.0F;
         f10 = 0.0F;
         adouble = entitydragon.getMovementOffsets(11, this.partialTicks);
 
-        for (int k = 0; k < 12; ++k)
-        {
+        for (int k = 0; k < 12; ++k) {
             adouble2 = entitydragon.getMovementOffsets(12 + k, this.partialTicks);
-            f16 = (float)((double)f16 + Math.sin((double)((float)k * 0.45F + f14)) * 0.05000000074505806D);
-            this.spine.rotateAngleY = (this.updateRotations(adouble2[0] - adouble[0]) * f11 + 180.0F) * (float)Math.PI / 180.0F;
-            this.spine.rotateAngleX = f16 + (float)(adouble2[1] - adouble[1]) * (float)Math.PI / 180.0F * f11 * 5.0F;
-            this.spine.rotateAngleZ = this.updateRotations(adouble2[0] - (double)f13) * (float)Math.PI / 180.0F * f11;
+            f16 = (float) ((double) f16 + Math.sin((double) ((float) k * 0.45F + f14)) * 0.05000000074505806D);
+            this.spine.rotateAngleY = (this.updateRotations(adouble2[0] - adouble[0]) * f11 + 180.0F) * (float) Math.PI / 180.0F;
+            this.spine.rotateAngleX = f16 + (float) (adouble2[1] - adouble[1]) * (float) Math.PI / 180.0F * f11 * 5.0F;
+            this.spine.rotateAngleZ = this.updateRotations(adouble2[0] - (double) f13) * (float) Math.PI / 180.0F * f11;
             this.spine.rotationPointY = f8;
             this.spine.rotationPointZ = f9;
             this.spine.rotationPointX = f10;
-            f8 = (float)((double)f8 + Math.sin((double)this.spine.rotateAngleX) * 10.0D);
-            f9 = (float)((double)f9 - Math.cos((double)this.spine.rotateAngleY) * Math.cos((double)this.spine.rotateAngleX) * 10.0D);
-            f10 = (float)((double)f10 - Math.sin((double)this.spine.rotateAngleY) * Math.cos((double)this.spine.rotateAngleX) * 10.0D);
+            f8 = (float) ((double) f8 + Math.sin((double) this.spine.rotateAngleX) * 10.0D);
+            f9 = (float) ((double) f9 - Math.cos((double) this.spine.rotateAngleY) * Math.cos((double) this.spine.rotateAngleX) * 10.0D);
+            f10 = (float) ((double) f10 - Math.sin((double) this.spine.rotateAngleY) * Math.cos((double) this.spine.rotateAngleX) * 10.0D);
             this.spine.render(p_78088_7_);
         }
 
@@ -241,18 +257,15 @@ public class ModelChaosGuardian extends ModelBase
      * or subtracts 360 degrees, so that the appearance is the same, although the numbers are then simplified to range -
      * 180 to 180
      */
-    private float updateRotations(double p_78214_1_)
-    {
-        while (p_78214_1_ >= 180.0D)
-        {
+    private float updateRotations(double p_78214_1_) {
+        while (p_78214_1_ >= 180.0D) {
             p_78214_1_ -= 360.0D;
         }
 
-        while (p_78214_1_ < -180.0D)
-        {
+        while (p_78214_1_ < -180.0D) {
             p_78214_1_ += 360.0D;
         }
 
-        return (float)p_78214_1_;
+        return (float) p_78214_1_;
     }
 }

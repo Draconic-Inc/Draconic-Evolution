@@ -14,19 +14,19 @@ public interface IFusionCraftingInventory {
      * Gets the stack in the fusion crafting core. Also known as the crafting catalyst.<br>
      * slot 0 = Input Slot<br>
      * slot 1 == output slot
-     * */
+     */
     ItemStack getStackInCore(int slot);
 
     /**
      * Sets the stack in the specified slot.<br>
      * slot 0 = Input Slot<br>
      * slot 1 == output slot
-     * */
+     */
     void setStackInCore(int slot, ItemStack stack);
 
     /**
      * Returns a list of all valid crafting pedestals.
-     * */
+     */
     List<ICraftingPedestal> getPedestals();
 
     /**

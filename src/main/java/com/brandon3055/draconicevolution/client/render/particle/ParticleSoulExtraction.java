@@ -38,11 +38,11 @@ public class ParticleSoulExtraction extends BCParticle {
     }
 
     @Override
-	public void onUpdate() {
+    public void onUpdate() {
         if (clusterSize > 0) {
             for (; clusterSize > 0; clusterSize--) {
-                ParticleSoulExtraction particleSoulExtraction = new ParticleSoulExtraction(worldObj, new Vec3D(posX, posY, posZ), targetPos);
-                particleSoulExtraction.setColour(particleRed,  particleGreen, particleBlue);
+                ParticleSoulExtraction particleSoulExtraction = new ParticleSoulExtraction(world, new Vec3D(posX, posY, posZ), targetPos);
+                particleSoulExtraction.setColour(particleRed, particleGreen, particleBlue);
                 BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particleSoulExtraction);
             }
         }
@@ -71,30 +71,30 @@ public class ParticleSoulExtraction extends BCParticle {
         if (particleAge++ > particleMaxAge || Utils.getDistanceAtoB(posX, posY, posZ, targetPos.x, targetPos.y, targetPos.z) < 0.5) {
             setExpired();
         }
-	}
+    }
 
-	@Override
-	//@SideOnly(Side.CLIENT)
+    @Override
+    //@SideOnly(Side.CLIENT)
     public void renderParticle(VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
 
-        float minU = (float)this.particleTextureIndexX / 8.0F;
+        float minU = (float) this.particleTextureIndexX / 8.0F;
         float maxU = minU + 0.125F;
-        float minV = (float)this.particleTextureIndexY / 8.0F;
+        float minV = (float) this.particleTextureIndexY / 8.0F;
         float maxV = minV + 0.125F;
         float scale = 0.1F * this.particleScale;
 
-        float renderX = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
-        float renderY = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
-        float renderZ = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
+        float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+        float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+        float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
         int brightnessForRender = this.getBrightnessForRender(partialTicks);
         int j = brightnessForRender >> 16 & 65535;
         int k = brightnessForRender & 65535;
-        vertexbuffer.pos((double)(renderX - rotationX * scale - rotationXY * scale), (double)(renderY - rotationZ * scale), (double)(renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double)maxU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        vertexbuffer.pos((double)(renderX - rotationX * scale + rotationXY * scale), (double)(renderY + rotationZ * scale), (double)(renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double)maxU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        vertexbuffer.pos((double)(renderX + rotationX * scale + rotationXY * scale), (double)(renderY + rotationZ * scale), (double)(renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double)minU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        vertexbuffer.pos((double)(renderX + rotationX * scale - rotationXY * scale), (double)(renderY - rotationZ * scale), (double)(renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double)minU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        vertexbuffer.pos((double) (renderX - rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        vertexbuffer.pos((double) (renderX - rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        vertexbuffer.pos((double) (renderX + rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        vertexbuffer.pos((double) (renderX + rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
 
-	}
+    }
 
     public static class Factory implements IBCParticleFactory {
 

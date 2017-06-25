@@ -10,20 +10,20 @@ public class ToolConfigHelper {
 
     /**
      * Returns the current selected config profile.
-     * */
-    public static int getProfile(ItemStack stack){
-        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey("ToolProfile")){
+     */
+    public static int getProfile(ItemStack stack) {
+        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey("ToolProfile")) {
             return 0;
         }
         return stack.getTagCompound().getByte("ToolProfile");
     }
 
     public static String getProfileName(ItemStack stack, int profile) {
-        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey("ToolProfileName"+profile)){
+        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey("ToolProfileName" + profile)) {
             return "Profile " + (profile + 1);
         }
 
-        return stack.getTagCompound().getString("ToolProfileName"+profile);
+        return stack.getTagCompound().getString("ToolProfileName" + profile);
     }
 
     public static void setProfileName(ItemStack stack, int profile, String name) {
@@ -31,27 +31,27 @@ public class ToolConfigHelper {
             stack.setTagCompound(new NBTTagCompound());
         }
 
-        stack.getTagCompound().setString("ToolProfileName"+profile, name);
+        stack.getTagCompound().setString("ToolProfileName" + profile, name);
     }
 
 
     /**
      * Increments the current selected config profile.
-     * */
-    public static void incrementProfile(ItemStack stack){
+     */
+    public static void incrementProfile(ItemStack stack) {
         IConfigurableItem item = getTool(stack);
-        if (item == null || item.getProfileCount(stack) == 1){
+        if (item == null || item.getProfileCount(stack) == 1) {
             return;
         }
 
         int profile = getProfile(stack);
         profile++;
 
-        if (profile >= item.getProfileCount(stack)){
+        if (profile >= item.getProfileCount(stack)) {
             profile = 0;
         }
 
-        if (stack.getTagCompound() == null){
+        if (stack.getTagCompound() == null) {
             stack.setTagCompound(new NBTTagCompound());
         }
 
@@ -60,33 +60,33 @@ public class ToolConfigHelper {
 
     /**
      * Returns the compound to which the fields for the currently selected profile are saved.
-     * */
-    public static NBTTagCompound getFieldStorage(ItemStack stack){
-        String tag = "Profile_"+getProfile(stack);
-        return stack.getSubCompound(tag, true);
+     */
+    public static NBTTagCompound getFieldStorage(ItemStack stack) {
+        String tag = "Profile_" + getProfile(stack);
+        return stack.getOrCreateSubCompound(tag);
     }
 
     /**
      * Returns the value of the specified boolean field.
      * Or false if field is not found.
-     * */
-    public static boolean getBooleanField(String fieldName, ItemStack stack){
+     */
+    public static boolean getBooleanField(String fieldName, ItemStack stack) {
         IConfigurableItem item = getTool(stack);
-        if (item == null){
+        if (item == null) {
             return false;
         }
 
         ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
 
-        if (fieldRegistry.getField(fieldName) == null){
+        if (fieldRegistry.getField(fieldName) == null) {
             return false;
         }
 
         IItemConfigField field = fieldRegistry.getField(fieldName);
 
-        if (field instanceof BooleanConfigField){
+        if (field instanceof BooleanConfigField) {
             field.readFromNBT(getFieldStorage(stack));
-            return (Integer)field.getValue() == 1;
+            return (Integer) field.getValue() == 1;
         }
 
         return false;
@@ -95,22 +95,22 @@ public class ToolConfigHelper {
     /**
      * Returns the value of the specified integer field.
      * Or 0 if field is not found.
-     * */
-    public static int getIntegerField(String fieldName, ItemStack stack){
+     */
+    public static int getIntegerField(String fieldName, ItemStack stack) {
         IConfigurableItem item = getTool(stack);
-        if (item == null){
+        if (item == null) {
             return 0;
         }
 
         ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
 
-        if (fieldRegistry.getField(fieldName) == null){
+        if (fieldRegistry.getField(fieldName) == null) {
             return 0;
         }
 
         IItemConfigField field = fieldRegistry.getField(fieldName);
 
-        if (field instanceof IntegerConfigField){
+        if (field instanceof IntegerConfigField) {
             field.readFromNBT(getFieldStorage(stack));
             return (Integer) field.getValue();
         }
@@ -121,22 +121,22 @@ public class ToolConfigHelper {
     /**
      * Returns the value of the specified double field.
      * Or 0 if field is not found.
-     * */
-    public static double getDoubleField(String fieldName, ItemStack stack){
+     */
+    public static double getDoubleField(String fieldName, ItemStack stack) {
         IConfigurableItem item = getTool(stack);
-        if (item == null){
+        if (item == null) {
             return 0;
         }
 
         ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
 
-        if (fieldRegistry.getField(fieldName) == null){
+        if (fieldRegistry.getField(fieldName) == null) {
             return 0;
         }
 
         IItemConfigField field = fieldRegistry.getField(fieldName);
 
-        if (field instanceof DoubleConfigField){
+        if (field instanceof DoubleConfigField) {
             field.readFromNBT(getFieldStorage(stack));
             return (Double) field.getValue();
         }
@@ -145,7 +145,7 @@ public class ToolConfigHelper {
     }
 
     private static IConfigurableItem getTool(ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof IConfigurableItem)){
+        if (!(stack.getItem() instanceof IConfigurableItem)) {
             return null;
         }
 

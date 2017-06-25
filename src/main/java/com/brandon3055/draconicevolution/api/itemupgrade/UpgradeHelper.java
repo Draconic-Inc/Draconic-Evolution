@@ -20,7 +20,7 @@ public class UpgradeHelper {
     public static final String UPGRADE_TAG = "DEUpgrades";
 
     /**
-     * @param stack the stack.
+     * @param stack   the stack.
      * @param upgrade the upgrade string.
      * @return the upgrade level.
      */
@@ -29,24 +29,26 @@ public class UpgradeHelper {
             return 0;
         }
 
-        NBTTagCompound upgradeTag = stack.getSubCompound(UPGRADE_TAG, true);
+        NBTTagCompound upgradeTag = stack.getOrCreateSubCompound(UPGRADE_TAG);
         return upgradeTag.getByte(upgrade);
     }
 
     /**
      * Note: This method assumes that you have already done the required checks to make sure the upgrade and level are
      * valid for this item.
-     * @param stack the stack
+     *
+     * @param stack   the stack
      * @param upgrade the upgrade
-     * @param level the level
+     * @param level   the level
      */
     public static void setUpgradeLevel(ItemStack stack, String upgrade, int level) {
-        NBTTagCompound upgradeTag = stack.getSubCompound(UPGRADE_TAG, true);
-        upgradeTag.setByte(upgrade, (byte)level);
+        NBTTagCompound upgradeTag = stack.getOrCreateSubCompound(UPGRADE_TAG);
+        upgradeTag.setByte(upgrade, (byte) level);
     }
 
     /**
      * This returns a map of all upgrades and their level applied to a stack.
+     *
      * @param stack a stack.
      * @return a map of all upgrades and their levels applied to this stack.
      */
@@ -56,11 +58,11 @@ public class UpgradeHelper {
             return upgrades;
         }
 
-        NBTTagCompound upgradeTag = stack.getSubCompound(UPGRADE_TAG, true);
+        NBTTagCompound upgradeTag = stack.getOrCreateSubCompound(UPGRADE_TAG);
 
         for (String upgrade : upgradeTag.getKeySet()) {
             if (upgradeTag.hasKey(upgrade, 1)) {
-                upgrades.put(upgrade, (int)upgradeTag.getByte(upgrade));
+                upgrades.put(upgrade, (int) upgradeTag.getByte(upgrade));
             }
         }
 
@@ -72,11 +74,11 @@ public class UpgradeHelper {
      * Any upgrades already applied and do not exist in the given map will not be affected.
      * This will not apply an upgrade if the item dose not accept it.
      *
-     * @param stack The stack.
+     * @param stack    The stack.
      * @param upgrades A map of upgrates and their levels.
      */
     public static void setUpgrades(ItemStack stack, Map<String, Integer> upgrades) {
-        if (stack == null || !(stack.getItem() instanceof IUpgradableItem)) {
+        if (!(stack.getItem() instanceof IUpgradableItem)) {
             return;
         }
         IUpgradableItem item = (IUpgradableItem) stack.getItem();
@@ -92,8 +94,8 @@ public class UpgradeHelper {
     public static List<String> getUpgradeStats(ItemStack stack) {
         ArrayList<String> list = new ArrayList<String>();
 
-        if (stack != null && stack.getItem() instanceof IUpgradableItem){
-            for (String upgrade : ((IUpgradableItem) stack.getItem()).getValidUpgrades(stack)){
+        if (stack.getItem() instanceof IUpgradableItem) {
+            for (String upgrade : ((IUpgradableItem) stack.getItem()).getValidUpgrades(stack)) {
                 list.add(InfoHelper.ITC() + I18n.format("upgrade.de." + upgrade + ".name") + " " + InfoHelper.HITC() + I18n.format("upgrade.level." + getUpgradeLevel(stack, upgrade)));
             }
         }

@@ -3,13 +3,13 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import cofh.api.energy.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.network.wrappers.SyncableByte;
-import com.brandon3055.brandonscore.network.wrappers.SyncableInt;
-import com.brandon3055.brandonscore.network.wrappers.SyncableVec3I;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingPedestal;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
-import com.brandon3055.draconicevolution.blocks.machines.CraftingPedestal;
+import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,26 +17,23 @@ import net.minecraft.util.EnumFacing;
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class TileCraftingPedestal extends TileInventoryBase implements IEnergyReceiver, ICraftingPedestal {
+public class TileCraftingInjector extends TileInventoryBase implements IEnergyReceiver, ICraftingPedestal {
 
-    public final SyncableByte facing = new SyncableByte((byte)0, true, false, true);
-    private final SyncableInt energy = new SyncableInt(0, true, false);
-    private final SyncableVec3I lastCorePos = new SyncableVec3I(new Vec3I(0, 0, 0), true, false);
+    public final ManagedByte facing = register("facing", new ManagedByte(0)).syncViaTile().saveToTile().trigerUpdate().finish();
+    private final ManagedInt energy = register("energy", new ManagedInt(0)).syncViaTile().saveToTile().finish();
+    private final ManagedVec3I lastCorePos = register("lastCorePos", new ManagedVec3I(new Vec3I(0, 0, 0))).syncViaTile().saveToTile().finish();
     public IFusionCraftingInventory currentCraftingInventory = null;
     private int chargeSpeedModifier = 300;
 
-    public TileCraftingPedestal(){
+    public TileCraftingInjector() {
         this.setInventorySize(1);
-        registerSyncableObject(facing, true);
-        registerSyncableObject(energy, true);
-        registerSyncableObject(lastCorePos, true);
         setShouldRefreshOnBlockChange();
     }
 
     @Override
     public void updateBlock() {
         super.updateBlock();
-        detectAndSendChanges();
+        super.update();
     }
 
     //region IEnergy
@@ -44,15 +41,15 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
     @Override
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         validateCraftingInventory();
-        if (currentCraftingInventory != null){
+        if (currentCraftingInventory != null) {
             int maxRFPerTick = currentCraftingInventory.getRequiredCharge() / chargeSpeedModifier;
             int maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getRequiredCharge() - energy.value, maxRFPerTick));
 
-            if (!simulate){
+            if (!simulate) {
                 energy.value += maxAccept;
             }
 
-            detectAndSendChanges();
+            super.update();
             return maxAccept;
         }
 
@@ -80,8 +77,8 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
 
     @Override
     public int getPedestalTier() {
-        String tier = getState(DEFeatures.craftingPedestal).getValue(CraftingPedestal.TIER);
-        return CraftingPedestal.TIER.toMeta(tier);
+        String tier = getState(DEFeatures.craftingInjector).getValue(CraftingInjector.TIER);
+        return CraftingInjector.TIER.toMeta(tier);
     }
 
     @Override
@@ -100,7 +97,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
             currentCraftingInventory = null;
             return false;
         }
-        if (validateCraftingInventory() && !worldObj.isRemote) {
+        if (validateCraftingInventory() && !world.isRemote) {
             return false;
         }
         currentCraftingInventory = craftingInventory;
@@ -119,8 +116,8 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
         return energy.value;
     }
 
-    private boolean validateCraftingInventory(){
-        if (getStackInPedestal() != null && currentCraftingInventory != null && currentCraftingInventory.craftingInProgress() && !((TileEntity)currentCraftingInventory).isInvalid()){
+    private boolean validateCraftingInventory() {
+        if (getStackInPedestal() != null && currentCraftingInventory != null && currentCraftingInventory.craftingInProgress() && !((TileEntity) currentCraftingInventory).isInvalid()) {
             return true;
         }
 
@@ -131,7 +128,7 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
 
     @Override
     public void onCraft() {
-        if (currentCraftingInventory != null){
+        if (currentCraftingInventory != null) {
             energy.value = 0;
         }
     }
@@ -142,9 +139,9 @@ public class TileCraftingPedestal extends TileInventoryBase implements IEnergyRe
     public void setInventorySlotContents(int index, ItemStack stack) {
         super.setInventorySlotContents(index, stack);
 
-        TileEntity tile = worldObj.getTileEntity(lastCorePos.vec.getPos());
+        TileEntity tile = world.getTileEntity(lastCorePos.vec.getPos());
         if (tile instanceof IFusionCraftingInventory) {
-            worldObj.notifyNeighborsOfStateChange(tile.getPos(), tile.getBlockType());
+            world.notifyNeighborsOfStateChange(tile.getPos(), tile.getBlockType(), true);
         }
 
         updateBlock();

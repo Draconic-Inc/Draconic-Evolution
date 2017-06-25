@@ -22,10 +22,10 @@ public class DoubleConfigField implements IItemConfigField {
     private String prefix = "";
 
     /**
-     * @param name the name of the field
+     * @param name         the name of the field
      * @param defaultValue the default defaultValue of the field
-     * @param description a description for this field. This will be passed through I18n so it can be a localization key.
-     * @param controlType Valid control types are PLUS_MINUS 1, 2 or 3 and SLIDER
+     * @param description  a description for this field. This will be passed through I18n so it can be a localization key.
+     * @param controlType  Valid control types are PLUS_MINUS 1, 2 or 3 and SLIDER
      */
     public DoubleConfigField(String name, double defaultValue, double minValue, double maxValue, String description, EnumControlType controlType) {
         this.name = name;
@@ -94,7 +94,7 @@ public class DoubleConfigField implements IItemConfigField {
 
     @Override
     public void handleButton(EnumButton button, int data) {
-        switch (button){
+        switch (button) {
             case MINUS1:
                 value -= 0.01;
                 break;
@@ -129,7 +129,7 @@ public class DoubleConfigField implements IItemConfigField {
         if (value > maxValue) {
             value = maxValue;
         }
-        else if (value < minValue){
+        else if (value < minValue) {
             value = minValue;
         }
     }
@@ -142,11 +142,11 @@ public class DoubleConfigField implements IItemConfigField {
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         value = compound.getDouble(name);
-        if (value > maxValue){
+        if (value > maxValue) {
             value = maxValue;
             writeToNBT(compound);
         }
-        else if (value < minValue){
+        else if (value < minValue) {
             value = minValue;
             writeToNBT(compound);
         }

@@ -27,7 +27,7 @@ public class ParticlePortal extends BCParticle {
         this.motionZ = (target.z - start.z) * speed;
         this.particleMaxAge = 120;
         this.particleRed = this.particleGreen = this.particleBlue = 1.0f;
-        float baseSize = 0.05F + ((float) Minecraft.getMinecraft().thePlayer.getDistance(pos.x, pos.y, pos.z)) * 0.007F;
+        float baseSize = 0.05F + ((float) Minecraft.getMinecraft().player.getDistance(pos.x, pos.y, pos.z)) * 0.007F;
         this.baseScale = baseSize + (rand.nextFloat() * (baseSize * 2F));
         this.particleScale = 0;
         texturesPerRow = 8F;

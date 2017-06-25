@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyStorageCore;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
@@ -15,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -29,15 +28,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- *  Created by brandon3055 on 30/3/2016.
+ * Created by brandon3055 on 30/3/2016.
  */
-public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
     public static final PropertyInteger RENDER_TYPE = PropertyInteger.create("modelrender", 0, 2);
     public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
-    public EnergyStorageCore(){
+    public EnergyStorageCore() {
         super(Material.IRON);
+        setIsFullCube(false);
         this.setDefaultState(blockState.getBaseState().withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, false));
     }
 
@@ -61,7 +61,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity core = worldIn.getTileEntity(pos);
-        return state.withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, core instanceof TileEnergyStorageCore && ((TileEnergyStorageCore)core).active.value);
+        return state.withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, core instanceof TileEnergyStorageCore && ((TileEnergyStorageCore) core).active.value);
     }
 
     //endregion
@@ -69,8 +69,9 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
 
     //region Render Stuff
 
+
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getCollisionBoundingBox(state, worldIn, pos);
     }
 
@@ -80,29 +81,14 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
         return !state.getValue(ACTIVE);
     }
 
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public boolean isVisuallyOpaque() {
-        return false;
-    }
-
     //endregion
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity core = world.getTileEntity(pos);
 
-        if (core instanceof TileEnergyStorageCore && !world.isRemote){
-            ((TileEnergyStorageCore)core).onStructureClicked(world, pos, state, playerIn);
+        if (core instanceof TileEnergyStorageCore && !world.isRemote) {
+            ((TileEnergyStorageCore) core).onStructureClicked(world, pos, state, playerIn);
         }
 
         return true;
@@ -119,7 +105,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     @Override
     public void registerRenderer(Feature feature) {
         Item item = Item.getItemFromBlock(this);
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(ResourceHelperDE.RESOURCE_PREFIX + feature.registryName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(ResourceHelperDE.RESOURCE_PREFIX + feature.getName(), "inventory"));
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyStorageCore.class, new RenderTileEnergyStorageCore());
     }

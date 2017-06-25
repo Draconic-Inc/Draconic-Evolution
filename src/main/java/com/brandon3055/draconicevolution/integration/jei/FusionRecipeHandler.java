@@ -11,7 +11,8 @@ import javax.annotation.Nonnull;
  */
 public class FusionRecipeHandler implements IRecipeHandler<IFusionRecipe> {
 
-    public FusionRecipeHandler() {}
+    public FusionRecipeHandler() {
+    }
 
     @Nonnull
     @Override
@@ -19,11 +20,6 @@ public class FusionRecipeHandler implements IRecipeHandler<IFusionRecipe> {
         return IFusionRecipe.class;
     }
 
-    @Nonnull
-    @Override
-    public String getRecipeCategoryUid() {
-        return RecipeCategoryUids.FUSION_CRAFTING;
-    }
 
     @Nonnull
     @Override

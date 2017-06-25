@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.Set3;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -21,4 +22,13 @@ public class DraconicHoe extends WyvernHoe {
     public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
         return 3;
     }
+
+    //region Rendering
+
+    @Override
+    protected Set3<String, String, String> getTextureLocations() {
+        return Set3.of("items/tools/draconic_hoe", "items/tools/obj/draconic_hoe", "models/item/tools/draconic_hoe.obj");
+    }
+
+    //endregion
 }

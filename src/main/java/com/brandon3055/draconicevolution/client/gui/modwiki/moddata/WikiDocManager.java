@@ -147,7 +147,9 @@ public class WikiDocManager {
 
             File[] files = modFolder.listFiles(new FilenameFilter() {
                 @Override
-                public boolean accept(File dir, String name) { return name != null && name.endsWith(".xml"); }
+                public boolean accept(File dir, String name) {
+                    return name != null && name.endsWith(".xml");
+                }
             });
 
             if (files == null || files.length == 0) {
@@ -245,9 +247,10 @@ public class WikiDocManager {
 
     /**
      * Universal reload method.
-     * @param fromDisk If true will reload from disk.
+     *
+     * @param fromDisk   If true will reload from disk.
      * @param reloadTree If true will reload the doc tree (if the tree exists)
-     * @param reloadGui If true will reload the GUI (if the gui exists)
+     * @param reloadGui  If true will reload the GUI (if the gui exists)
      */
     public static void reload(boolean fromDisk, boolean reloadTree, boolean reloadGui) {
         if (fromDisk) {

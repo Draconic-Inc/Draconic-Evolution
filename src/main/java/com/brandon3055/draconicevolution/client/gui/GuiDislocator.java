@@ -69,8 +69,7 @@ public class GuiDislocator extends GuiScreen {
         drawTexturedModalRect(posX, posY, 0, 0, xSize, ySize);
 
         if (fuel <= 5) drawTexturedModalRect(posX + 169, posY + 86, 40, 150, 7, 7);
-        if (fuel <= 5 && showFuelLight || (fuel > 5 && fuel < 10))
-            drawTexturedModalRect(posX + 169, posY + 86, 40, 143, 7, 7);
+        if (fuel <= 5 && showFuelLight || (fuel > 5 && fuel < 10)) drawTexturedModalRect(posX + 169, posY + 86, 40, 143, 7, 7);
 
         drawArrows(x - posX, y - posY);
 
@@ -106,12 +105,11 @@ public class GuiDislocator extends GuiScreen {
             }
 
             if (getLocationSafely(i + selectionOffset).getWriteProtected()) {
-                if (GuiHelper.isInRect(102, 7 + i * 11, 6, 6, x, y))
-                    drawTexturedModalRect(posX + 102, posY + 7 + i * 11, 26, 149, 6, 6);
+                if (GuiHelper.isInRect(102, 7 + i * 11, 6, 6, x, y)) drawTexturedModalRect(posX + 102, posY + 7 + i * 11, 26, 149, 6, 6);
                 else drawTexturedModalRect(posX + 102, posY + 7 + i * 11, 26, 143, 6, 6);
-            } else {
-                if (GuiHelper.isInRect(101, 7 + i * 11, 8, 7, x, y))
-                    drawTexturedModalRect(posX + 101, posY + 7 + i * 11, 32, 150, 8, 7);
+            }
+            else {
+                if (GuiHelper.isInRect(101, 7 + i * 11, 8, 7, x, y)) drawTexturedModalRect(posX + 101, posY + 7 + i * 11, 32, 150, 8, 7);
                 else drawTexturedModalRect(posX + 101, posY + 7 + i * 11, 32, 143, 8, 7);
             }
         }
@@ -143,12 +141,14 @@ public class GuiDislocator extends GuiScreen {
             boolean highLighted = GuiHelper.isInRect(4, 4, 13, 15, x, y);
             if (highLighted) drawTexturedModalRect(posX + 4, posY + 4, 0, 158, 13, 15);
             else drawTexturedModalRect(posX + 4, posY + 4, 0, 143, 13, 15);
-        } else drawTexturedModalRect(posX + 4, posY + 4, 0, 173, 13, 15);
+        }
+        else drawTexturedModalRect(posX + 4, posY + 4, 0, 173, 13, 15);
         if (selectionOffset < maxOffset) {
             boolean highLighted = GuiHelper.isInRect(4, 122, 13, 15, x, y);
             if (highLighted) drawTexturedModalRect(posX + 4, posY + 122, 13, 158, 13, 15);
             else drawTexturedModalRect(posX + 4, posY + 122, 13, 143, 13, 15);
-        } else drawTexturedModalRect(posX + 4, posY + 122, 13, 173, 13, 15);
+        }
+        else drawTexturedModalRect(posX + 4, posY + 122, 13, 173, 13, 15);
 
         float percent = locations.size() <= 12 ? 1f : 12F / (float) locations.size();
         int drawSize = (int) (percent * 99F);
@@ -208,7 +208,7 @@ public class GuiDislocator extends GuiScreen {
                     if (locations.isEmpty()) return;
 
                     if (!player.capabilities.isCreativeMode && fuel <= 0) {
-                        player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
+                        player.sendMessage(new TextComponentTranslation("msg.teleporterOutOfFuel.txt"));
                     }
 
                     if (player.capabilities.isCreativeMode || fuel > 0) {
@@ -225,10 +225,8 @@ public class GuiDislocator extends GuiScreen {
         }
 
 
-        if (selectionChanged)
-            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.CHANGESELECTION, selected, false));
-        if (offsetChanged)
-            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.UPDATEOFFSET, selectionOffset, false));
+        if (selectionChanged) DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.CHANGESELECTION, selected, false));
+        if (offsetChanged) DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.UPDATEOFFSET, selectionOffset, false));
 
         updateButtons();
         super.mouseClicked(x, y, button);
@@ -258,10 +256,8 @@ public class GuiDislocator extends GuiScreen {
             updateButtons();
         }
 
-        if (selectionChanged)
-            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.CHANGESELECTION, selected, false));
-        if (offsetChanged)
-            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.UPDATEOFFSET, selectionOffset, false));
+        if (selectionChanged) DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.CHANGESELECTION, selected, false));
+        if (offsetChanged) DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.UPDATEOFFSET, selectionOffset, false));
 
         super.handleMouseInput();
     }
@@ -289,7 +285,8 @@ public class GuiDislocator extends GuiScreen {
             buttonList.get(0).enabled = false;
             buttonList.get(1).enabled = false;
             buttonList.get(2).enabled = false;
-        } else {
+        }
+        else {
             buttonList.get(0).enabled = true;
             buttonList.get(1).enabled = true;
             buttonList.get(2).enabled = true;
@@ -360,7 +357,8 @@ public class GuiDislocator extends GuiScreen {
                 textBeingEdited.setSelectionPos(0);
                 textBeingEdited.setFocused(true);
                 buttonList.get(6).visible = true;
-            } else {
+            }
+            else {
                 if (!textBeingEdited.getText().isEmpty()) {
                     getLocationSafely(selected + selectionOffset).setName(textBeingEdited.getText());
                     TeleportLocation location = new TeleportLocation();
@@ -395,7 +393,8 @@ public class GuiDislocator extends GuiScreen {
                     locations.set(selected + selectionOffset - 1, temp);
                     selected--;
                 }
-            } else {
+            }
+            else {
                 if (selected < Math.min(11, locations.size() - 1)) {
                     TeleportLocation temp = getLocationSafely(selected + selectionOffset);
                     locations.set(selected + selectionOffset, getLocationSafely(selected + selectionOffset + 1));
@@ -423,7 +422,8 @@ public class GuiDislocator extends GuiScreen {
                 textBeingEdited.setSelectionPos(0);
                 textBeingEdited.setFocused(true);
                 buttonList.get(6).visible = true;
-            } else {
+            }
+            else {
                 if (!textBeingEdited.getText().isEmpty()) {
                     addCurrentLocationToList(textBeingEdited.getText());
                     buttonList.get(4).displayString = I18n.format("button.de.addNew.txt");
@@ -439,16 +439,17 @@ public class GuiDislocator extends GuiScreen {
                 if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
                     DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.ADDFUEL, 1, false));
                     this.fuel += DEConfig.dislocatorUsesPerPearl;
-                } 
+                }
                 else if (hasPearls(16)) {
                     DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.ADDFUEL, 16, false));
                     this.fuel += DEConfig.dislocatorUsesPerPearl * 16;
-                } 
-                else {
-                    player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfPearls.txt"));
                 }
-            } else {
-                player.addChatMessage(new TextComponentTranslation("msg.teleporterOutOfPearls.txt"));
+                else {
+                    player.sendMessage(new TextComponentTranslation("msg.teleporterOutOfPearls.txt"));
+                }
+            }
+            else {
+                player.sendMessage(new TextComponentTranslation("msg.teleporterOutOfPearls.txt"));
             }
         }
         updateButtons();
@@ -459,8 +460,8 @@ public class GuiDislocator extends GuiScreen {
         ItemStack stack;
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             stack = player.inventory.getStackInSlot(i);
-            if (stack != null && stack.isItemEqual(new ItemStack(Items.ENDER_PEARL))) {
-                found += stack.stackSize;
+            if (!stack.isEmpty() && stack.isItemEqual(new ItemStack(Items.ENDER_PEARL))) {
+                found += stack.getCount();
             }
 
             if (found >= number) {
@@ -487,8 +488,7 @@ public class GuiDislocator extends GuiScreen {
         if (keyN == 28 && editingNew) {
             actionPerformed(buttonList.get(4));
         }
-        if (keyN == 28 && editingExisting) 
-            actionPerformed(buttonList.get(0));
+        if (keyN == 28 && editingExisting) actionPerformed(buttonList.get(0));
 
         if ((key == 'e' && (!editingExisting || !editingNew)) || key == '') {
             this.mc.displayGuiScreen(null);
@@ -527,13 +527,10 @@ public class GuiDislocator extends GuiScreen {
         locations.clear();
 
         NBTTagCompound compound = teleporter.getTagCompound();
-        if (compound == null || compound.getTagList("Locations", 0) == null) {
+        if (compound == null) {
             return;
         }
-        NBTTagList list = (NBTTagList) compound.getTag("Locations");
-        if (list == null) {
-            list = new NBTTagList();
-        }
+        NBTTagList list = compound.getTagList("Locations", 10);
 
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound tagLocation = list.getCompoundTagAt(i);

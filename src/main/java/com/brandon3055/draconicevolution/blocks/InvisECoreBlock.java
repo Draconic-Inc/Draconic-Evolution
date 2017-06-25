@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.api.IMultiBlock;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.blocks.tileentity.IMultiBlockPart;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
 import com.brandon3055.draconicevolution.world.EnergyCoreStructure;
@@ -17,10 +17,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -29,13 +26,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
 import java.util.Random;
 
 /**
  * Created by brandon3055 on 13/4/2016.
  */
-public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileEntityProvider {
+public class InvisECoreBlock extends BlockBCore implements IRenderOverride, ITileEntityProvider {
 
     public InvisECoreBlock() {
         this.setHardness(10F);
@@ -43,7 +39,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     }
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
     }
 
     @Override
@@ -51,9 +47,8 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
         return new TileInvisECoreBlock();
     }
 
-
     @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
         if (EnergyCoreStructure.coreForming) {
             return;
         }
@@ -66,14 +61,14 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
 
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileInvisECoreBlock) {
             return ((TileInvisECoreBlock) tile).onTileClicked(playerIn, state);
         }
 
-        return super.onBlockActivated(world, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(world, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
     }
 
     //region Drops
@@ -92,7 +87,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
             if (!((TileInvisECoreBlock) tile).blockName.isEmpty() && !player.capabilities.isCreativeMode) {
                 Block block = Block.REGISTRY.getObject(new ResourceLocation(((TileInvisECoreBlock) tile).blockName));
 
-                if (block != null) {
+                if (block != Blocks.AIR) {
                     if (((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:particle_generator")) {
                         spawnAsEntity(world, pos, new ItemStack(block, 1, 2));
                     }
@@ -102,7 +97,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
                 }
             }
 
-            IMultiBlock master = ((TileInvisECoreBlock) tile).getController();
+            IMultiBlockPart master = ((TileInvisECoreBlock) tile).getController();
             if (master != null) {
                 world.setBlockToAir(pos);
                 master.validateStructure();
@@ -132,7 +127,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
             }
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     //endregion
@@ -153,7 +148,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:particle_generator")) {
-            IMultiBlock controller = ((TileInvisECoreBlock) tile).getController();
+            IMultiBlockPart controller = ((TileInvisECoreBlock) tile).getController();
 
             if (controller instanceof TileEnergyCoreStabilizer) {
                 TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer) controller;
@@ -181,7 +176,7 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).blockName.equals("minecraft:glass")) {

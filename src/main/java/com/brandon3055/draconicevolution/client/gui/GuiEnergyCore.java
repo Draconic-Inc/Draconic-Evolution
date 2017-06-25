@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.client.gui;
 import com.brandon3055.brandonscore.client.gui.GuiButtonAHeight;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
@@ -73,7 +72,8 @@ public class GuiEnergyCore extends GuiContainer {
             GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.de.transfer.txt"), guiLeft + xSize / 2, guiTop + 59, 0xFFAA00, true);
             GuiHelper.drawCenteredString(fontRendererObj, transfer, guiLeft + xSize / 2, guiTop + 70, coreColour, tile.transferRate.value > 0);
 
-        } else {
+        }
+        else {
             int stabColour = tile.stabilizersOK.value ? 0x00FF00 : 0xFF0000;
             String stabText = I18n.format("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.value ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
             GuiHelper.drawCenteredString(fontRendererObj, stabText, guiLeft + xSize / 2, guiTop + 18, stabColour, tile.stabilizersOK.value);
@@ -127,7 +127,8 @@ public class GuiEnergyCore extends GuiContainer {
     private void updateButtonStates() {
         if (tile.active.value) {
             activate.displayString = I18n.format("button.de.deactivate.txt");
-        } else {
+        }
+        else {
             activate.displayString = I18n.format("button.de.activate.txt");
 
             toggleGuide.displayString = I18n.format("button.de.buildGuide.txt") + " " + (tile.buildGuide.value ? I18n.format("gui.de.active.txt") : I18n.format("gui.de.inactive.txt"));
@@ -143,6 +144,7 @@ public class GuiEnergyCore extends GuiContainer {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        tile.sendPacketToServer(new PacketTileMessage(tile, (byte) button.id, true, false));
+        tile.sendPacketToServer(output -> {
+        }, button.id);
     }
 }

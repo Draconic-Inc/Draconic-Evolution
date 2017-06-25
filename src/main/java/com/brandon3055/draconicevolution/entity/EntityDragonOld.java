@@ -131,12 +131,12 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 //        float f;
 //        float f1;
 //
-//        if (this.worldObj.isRemote) {
+//        if (this.world.isRemote) {
 //            f = MathHelper.cos(this.animTime * (float) Math.PI * 2.0F);
 //            f1 = MathHelper.cos(this.prevAnimTime * (float) Math.PI * 2.0F);
 //
 //            if (f1 <= -0.3F && f >= -0.3F) {
-//                this.worldObj.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ENDERDRAGON_FLAP, SoundCategory.HOSTILE, 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
+//                this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ENDERDRAGON_FLAP, SoundCategory.HOSTILE, 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
 //            }
 //        }
 //
@@ -147,7 +147,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 //            f = (this.rand.nextFloat() - 0.5F) * 8.0F;
 //            f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
 //            f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-//            this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+//            this.world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
 //        }
 //        else {
 //            this.updateDragonEnderCrystal();
@@ -182,7 +182,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 //            double d10;
 //            float f12;
 //
-//            if (this.worldObj.isRemote) {
+//            if (this.world.isRemote) {
 //                if (this.newPosRotationIncrements > 0) {
 //                    d10 = this.posX + (this.interpTargetX - this.posX) / (double) this.newPosRotationIncrements;
 //                    d0 = this.posY + (this.interpTargetY - this.posY) / (double) this.newPosRotationIncrements;
@@ -309,10 +309,10 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 //            this.dragonPartWing2.onUpdate();
 //            this.dragonPartWing2.setLocationAndAngles(this.posX - (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ - (double) (f11 * 4.5F), 0.0F, 0.0F);
 //
-//            if (!this.worldObj.isRemote && this.hurtTime == 0) {
-//                this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-//                this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-//                this.attackEntitiesInList(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.getEntityBoundingBox().expand(1.0D, 1.0D, 1.0D)));
+//            if (!this.world.isRemote && this.hurtTime == 0) {
+//                this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
+//                this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
+//                this.attackEntitiesInList(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.getEntityBoundingBox().expand(1.0D, 1.0D, 1.0D)));
 //            }
 //
 //            double[] adouble1 = this.getMovementOffsets(5, 1.0F);
@@ -347,7 +347,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 //                entitydragonpart.setLocationAndAngles(this.posX - (double) ((f11 * f17 + f15 * f18) * f2), this.posY + (adouble2[1] - adouble1[1]) * 1.0D - (double) ((f18 + f17) * f10) + 1.5D, this.posZ + (double) ((f4 * f17 + f16 * f18) * f2), 0.0F, 0.0F);
 //            }
 //
-//            if (!this.worldObj.isRemote) {
+//            if (!this.world.isRemote) {
 //                this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getEntityBoundingBox());
 //            }
 //        }
@@ -359,7 +359,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
     private void updateDragonEnderCrystal() {
         if (this.healingEnderCrystal != null) {
             if (this.healingEnderCrystal.isDead) {
-                if (!this.worldObj.isRemote) {
+                if (!this.world.isRemote) {
                     this.attackEntityFromPart(this.dragonPartHead, DamageSource.causeExplosionDamage((Explosion) null), 10.0F);
                 }
 
@@ -372,7 +372,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 
         if (this.rand.nextInt(10) == 0) {
             float f = 32.0F;
-            List list = this.worldObj.getEntitiesWithinAABB(EntityEnderCrystal.class, this.getEntityBoundingBox().expand((double) f, (double) f, (double) f));
+            List list = this.world.getEntitiesWithinAABB(EntityEnderCrystal.class, this.getEntityBoundingBox().expand((double) f, (double) f, (double) f));
             EntityEnderCrystal entityendercrystal = null;
             double d0 = Double.MAX_VALUE;
             Iterator iterator = list.iterator();
@@ -430,8 +430,8 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
     private void setNewTarget() {
         this.forceNewTarget = false;
 
-        if (this.rand.nextInt(2) == 0 && !this.worldObj.playerEntities.isEmpty()) {
-            this.target = (Entity) this.worldObj.playerEntities.get(this.rand.nextInt(this.worldObj.playerEntities.size()));
+        if (this.rand.nextInt(2) == 0 && !this.world.playerEntities.isEmpty()) {
+            this.target = (Entity) this.world.playerEntities.get(this.rand.nextInt(this.world.playerEntities.size()));
         }
         else {
             boolean flag = false;
@@ -463,12 +463,12 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
      * Destroys all blocks that aren't associated with 'The End' inside the given bounding box.
      */
     private boolean destroyBlocksInAABB(AxisAlignedBB p_70972_1_) {
-        int i = MathHelper.floor_double(p_70972_1_.minX);
-        int j = MathHelper.floor_double(p_70972_1_.minY);
-        int k = MathHelper.floor_double(p_70972_1_.minZ);
-        int l = MathHelper.floor_double(p_70972_1_.maxX);
-        int i1 = MathHelper.floor_double(p_70972_1_.maxY);
-        int j1 = MathHelper.floor_double(p_70972_1_.maxZ);
+        int i = MathHelper.floor(p_70972_1_.minX);
+        int j = MathHelper.floor(p_70972_1_.minY);
+        int k = MathHelper.floor(p_70972_1_.minZ);
+        int l = MathHelper.floor(p_70972_1_.maxX);
+        int i1 = MathHelper.floor(p_70972_1_.maxY);
+        int j1 = MathHelper.floor(p_70972_1_.maxZ);
         boolean flag = false;
         boolean flag1 = false;
 
@@ -476,12 +476,12 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
             for (int l1 = j; l1 <= i1; ++l1) {
                 for (int i2 = k; i2 <= j1; ++i2) {
                     BlockPos pos = new BlockPos(k1, l1, i2);
-                    IBlockState state = worldObj.getBlockState(pos);
-//                    Block block = this.worldObj.getBlock(k1, l1, i2);
+                    IBlockState state = world.getBlockState(pos);
+//                    Block block = this.world.getBlock(k1, l1, i2);
 
-                    if (!worldObj.isAirBlock(pos)) {
-                        if (state.getBlock().canEntityDestroy(state, worldObj, pos, this) && this.worldObj.getGameRules().getBoolean("mobGriefing")) {
-                            flag1 = this.worldObj.setBlockToAir(pos) || flag1;
+                    if (!world.isAirBlock(pos)) {
+                        if (state.getBlock().canEntityDestroy(state, world, pos, this) && this.world.getGameRules().getBoolean("mobGriefing")) {
+                            flag1 = this.world.setBlockToAir(pos) || flag1;
                         }
                         else {
                             flag = true;
@@ -495,7 +495,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
             double d1 = p_70972_1_.minX + (p_70972_1_.maxX - p_70972_1_.minX) * (double) this.rand.nextFloat();
             double d2 = p_70972_1_.minY + (p_70972_1_.maxY - p_70972_1_.minY) * (double) this.rand.nextFloat();
             double d0 = p_70972_1_.minZ + (p_70972_1_.maxZ - p_70972_1_.minZ) * (double) this.rand.nextFloat();
-            this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, d1, d2, d0, 0.0D, 0.0D, 0.0D);
+            this.world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, d1, d2, d0, 0.0D, 0.0D, 0.0D);
         }
 
         return flag;
@@ -503,7 +503,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 
     @Override
     public World getWorld() {
-        return worldObj;
+        return world;
     }
 
     @Override
@@ -546,41 +546,41 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
             float f = (this.rand.nextFloat() - 0.5F) * 8.0F;
             float f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
             float f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-            this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+            this.world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
         }
 
         int i;
         int j;
 
-        if (!this.worldObj.isRemote) {
+        if (!this.world.isRemote) {
             if (this.deathTicks > 150 && this.deathTicks % 5 == 0) {
                 i = 1000;
 
                 while (i > 0) {
                     j = EntityXPOrb.getXPSplit(i);
                     i -= j;
-                    this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
+                    this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
                 }
             }
 
             if (this.deathTicks == 1) {
-                this.worldObj.playBroadcastSound(1018, new BlockPos(this), 0);
+                this.world.playBroadcastSound(1018, new BlockPos(this), 0);
             }
         }
 
-        this.moveEntity(0.0D, 0.10000000149011612D, 0.0D);
+        this.move(MoverType.SELF, 0.0D, 0.10000000149011612D, 0.0D);
         this.renderYawOffset = this.rotationYaw += 20.0F;
 
-        if (this.deathTicks == 200 && !this.worldObj.isRemote) {
+        if (this.deathTicks == 200 && !this.world.isRemote) {
             i = 2000;
 
             while (i > 0) {
                 j = EntityXPOrb.getXPSplit(i);
                 i -= j;
-                this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
+                this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
             }
 
-            this.createEnderPortal(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posZ));
+            this.createEnderPortal(MathHelper.floor(this.posX), MathHelper.floor(this.posZ));
             this.setDead();
         }
     }
@@ -609,35 +609,35 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 //                        {
 //                            if (d2 <= ((double)(b1 - 1) - 0.5D) * ((double)(b1 - 1) - 0.5D))
 //                            {
-//                                this.worldObj.setBlock(l, k, i1, Blocks.bedrock);
+//                                this.world.setBlock(l, k, i1, Blocks.bedrock);
 //                            }
 //                        }
 //                        else if (k > b0)
 //                        {
-//                            this.worldObj.setBlock(l, k, i1, Blocks.air);
+//                            this.world.setBlock(l, k, i1, Blocks.air);
 //                        }
 //                        else if (d2 > ((double)(b1 - 1) - 0.5D) * ((double)(b1 - 1) - 0.5D))
 //                        {
-//                            this.worldObj.setBlock(l, k, i1, Blocks.bedrock);
+//                            this.world.setBlock(l, k, i1, Blocks.bedrock);
 //                        }
 //                        else
 //                        {
-//                            this.worldObj.setBlock(l, k, i1, Blocks.end_portal);
+//                            this.world.setBlock(l, k, i1, Blocks.end_portal);
 //                        }
 //                    }
 //                }
 //            }
 //        }
 //
-//        this.worldObj.setBlock(p_70975_1_, b0 + 0, p_70975_2_, Blocks.bedrock);
-//        this.worldObj.setBlock(p_70975_1_, b0 + 1, p_70975_2_, Blocks.bedrock);
-//        this.worldObj.setBlock(p_70975_1_, b0 + 2, p_70975_2_, Blocks.bedrock);
-//        this.worldObj.setBlock(p_70975_1_ - 1, b0 + 2, p_70975_2_, Blocks.torch);
-//        this.worldObj.setBlock(p_70975_1_ + 1, b0 + 2, p_70975_2_, Blocks.torch);
-//        this.worldObj.setBlock(p_70975_1_, b0 + 2, p_70975_2_ - 1, Blocks.torch);
-//        this.worldObj.setBlock(p_70975_1_, b0 + 2, p_70975_2_ + 1, Blocks.torch);
-//        this.worldObj.setBlock(p_70975_1_, b0 + 3, p_70975_2_, Blocks.bedrock);
-//        this.worldObj.setBlock(p_70975_1_, b0 + 4, p_70975_2_, Blocks.dragon_egg);
+//        this.world.setBlock(p_70975_1_, b0 + 0, p_70975_2_, Blocks.bedrock);
+//        this.world.setBlock(p_70975_1_, b0 + 1, p_70975_2_, Blocks.bedrock);
+//        this.world.setBlock(p_70975_1_, b0 + 2, p_70975_2_, Blocks.bedrock);
+//        this.world.setBlock(p_70975_1_ - 1, b0 + 2, p_70975_2_, Blocks.torch);
+//        this.world.setBlock(p_70975_1_ + 1, b0 + 2, p_70975_2_, Blocks.torch);
+//        this.world.setBlock(p_70975_1_, b0 + 2, p_70975_2_ - 1, Blocks.torch);
+//        this.world.setBlock(p_70975_1_, b0 + 2, p_70975_2_ + 1, Blocks.torch);
+//        this.world.setBlock(p_70975_1_, b0 + 3, p_70975_2_, Blocks.bedrock);
+//        this.world.setBlock(p_70975_1_, b0 + 4, p_70975_2_, Blocks.dragon_egg);
 //        BlockEndPortal.field_149948_a = false;
     }
 
@@ -665,14 +665,12 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
     }
 
     @Override
-    public SoundCategory getSoundCategory()
-    {
+    public SoundCategory getSoundCategory() {
         return SoundCategory.HOSTILE;
     }
 
     @Override
-    protected SoundEvent getAmbientSound()
-    {
+    protected SoundEvent getAmbientSound() {
         return SoundEvents.ENTITY_ENDERDRAGON_AMBIENT;
     }
 

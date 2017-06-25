@@ -11,8 +11,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketPlaySound implements IMessage
-{
+public class PacketPlaySound implements IMessage {
     public double x;
     public double y;
     public double z;
@@ -22,9 +21,10 @@ public class PacketPlaySound implements IMessage
     public float pitch;
     public boolean distanceDelay;
 
-    public PacketPlaySound() {}
+    public PacketPlaySound() {
+    }
 
-	public PacketPlaySound(double x, double y, double z, String sound, String category, float volume, float pitch, boolean distanceDelay) {
+    public PacketPlaySound(double x, double y, double z, String sound, String category, float volume, float pitch, boolean distanceDelay) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -37,10 +37,10 @@ public class PacketPlaySound implements IMessage
 
 
     @Override
-    public void toBytes(ByteBuf bytes){
-        bytes.writeFloat((float)x);
-        bytes.writeFloat((float)y);
-        bytes.writeFloat((float)z);
+    public void toBytes(ByteBuf bytes) {
+        bytes.writeFloat((float) x);
+        bytes.writeFloat((float) y);
+        bytes.writeFloat((float) z);
         ByteBufUtils.writeUTF8String(bytes, sound);
         ByteBufUtils.writeUTF8String(bytes, category);
         bytes.writeFloat(volume);
@@ -48,9 +48,9 @@ public class PacketPlaySound implements IMessage
         bytes.writeBoolean(distanceDelay);
     }
 
-	@Override
-	public void fromBytes(ByteBuf bytes){
-		x = bytes.readFloat();
+    @Override
+    public void fromBytes(ByteBuf bytes) {
+        x = bytes.readFloat();
         y = bytes.readFloat();
         z = bytes.readFloat();
         sound = ByteBufUtils.readUTF8String(bytes);
@@ -58,16 +58,16 @@ public class PacketPlaySound implements IMessage
         volume = bytes.readFloat();
         pitch = bytes.readFloat();
         distanceDelay = bytes.readBoolean();
-	}
+    }
 
-	public static class Handler extends MessageHandlerWrapper<PacketPlaySound, IMessage> {
+    public static class Handler extends MessageHandlerWrapper<PacketPlaySound, IMessage> {
 
         @Override
         public IMessage handleMessage(PacketPlaySound message, MessageContext ctx) {
             SoundEvent event = DESoundHandler.getSound(message.sound);
             SoundCategory category = SoundCategory.getByName(message.category);
 
-            if (event != null){
+            if (event != null) {
                 BrandonsCore.proxy.getClientWorld().playSound(message.x, message.y, message.z, event, category, message.volume, message.pitch, message.distanceDelay);
             }
             else {
@@ -76,5 +76,5 @@ public class PacketPlaySound implements IMessage
             return null;
         }
 
-	}
+    }
 }

@@ -6,34 +6,30 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 
 public class EIOSpawnerRecipesHandler implements IRecipeHandler<EIOSpawnerRecipesWrapper> {
-	private final IGuiHelper guiHelper;
+    private final IGuiHelper guiHelper;
 
-	public EIOSpawnerRecipesHandler(IGuiHelper guiHelper) {
-		this.guiHelper = guiHelper;
-	}
+    public EIOSpawnerRecipesHandler(IGuiHelper guiHelper) {
+        this.guiHelper = guiHelper;
+    }
 
-	@Override
-	public Class<EIOSpawnerRecipesWrapper> getRecipeClass() {
-		return EIOSpawnerRecipesWrapper.class;
-	}
+    @Override
+    public Class<EIOSpawnerRecipesWrapper> getRecipeClass() {
+        return EIOSpawnerRecipesWrapper.class;
+    }
 
-	@Override
-	public String getRecipeCategoryUid() {
-		return VanillaRecipeCategoryUid.CRAFTING;
-	}
 
-	@Override
-	public String getRecipeCategoryUid(EIOSpawnerRecipesWrapper recipe) {
-		return VanillaRecipeCategoryUid.CRAFTING;
-	}
+    @Override
+    public String getRecipeCategoryUid(EIOSpawnerRecipesWrapper recipe) {
+        return VanillaRecipeCategoryUid.CRAFTING;
+    }
 
-	@Override
-	public IRecipeWrapper getRecipeWrapper(EIOSpawnerRecipesWrapper wrapper) {
-		return wrapper;
-	}
+    @Override
+    public IRecipeWrapper getRecipeWrapper(EIOSpawnerRecipesWrapper wrapper) {
+        return wrapper;
+    }
 
-	@Override
-	public boolean isRecipeValid(EIOSpawnerRecipesWrapper recipe) {
-		return true;
-	}
+    @Override
+    public boolean isRecipeValid(EIOSpawnerRecipesWrapper recipe) {
+        return true;
+    }
 }

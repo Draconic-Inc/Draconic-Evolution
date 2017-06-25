@@ -39,7 +39,7 @@ public class DETextures {
 
     public static final String REACTOR_STABILIZER = "textures/models/reactor_stabilizer_core.png";
     public static final String REACTOR_STABILIZER_RING = "textures/models/reactor_stabilizer_ring.png";
-    public static final String REACTOR_INJECTOR= "textures/models/model_reactor_power_injector.png";
+    public static final String REACTOR_INJECTOR = "textures/models/model_reactor_power_injector.png";
 
     public static final String DRACONIUM_CHEST = "textures/models/draconium_chest.png";
 

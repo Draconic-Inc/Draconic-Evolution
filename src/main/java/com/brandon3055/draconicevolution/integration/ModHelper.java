@@ -27,26 +27,26 @@ public class ModHelper {
     public static boolean isAvaritiaInstalled;
     public static boolean isRotaryCraftInstalled;
     public static boolean isJEIInstalled;
-	private static Item cleaver;
+    private static Item cleaver;
     private static Item avaritiaSword;
     private static Item bedrockSword;
 
-	public static void init(){
-        isTConInstalled = Loader.isModLoaded("TConstruct");
-        isAvaritiaInstalled = Loader.isModLoaded("Avaritia");
-        isRotaryCraftInstalled = Loader.isModLoaded("RotaryCraft");
-        isJEIInstalled = Loader.isModLoaded("JEI");
-	}
+    public static void init() {
+        isTConInstalled = Loader.isModLoaded("tconstruct");
+        isAvaritiaInstalled = Loader.isModLoaded("avaritia");
+        isRotaryCraftInstalled = Loader.isModLoaded("rotarycraft");
+        isJEIInstalled = Loader.isModLoaded("jei");
+    }
 
-	public static boolean isHoldingCleaver(EntityPlayer player){
-		if (!isTConInstalled) {
-		    return false;
+    public static boolean isHoldingCleaver(EntityPlayer player) {
+        if (!isTConInstalled) {
+            return false;
         }
-		else if (cleaver == null) {
-		    cleaver = Item.REGISTRY.getObject(new ResourceLocation("tconstruct", "cleaver"));
+        else if (cleaver == null) {
+            cleaver = Item.REGISTRY.getObject(new ResourceLocation("tconstruct", "cleaver"));
         }
-		return cleaver != null && HandHelper.getItem(player, cleaver) != null;
-	}
+        return cleaver != null && HandHelper.getItem(player, cleaver) != null;
+    }
 
     public static boolean isHoldingAvaritiaSword(EntityPlayer player) {
         if (!isAvaritiaInstalled) {
@@ -71,16 +71,16 @@ public class ModHelper {
     }
 
     public static boolean canRemoveEnchants(ItemStack stack) {
-        if (stack == null) {
+        if (stack.isEmpty()) {
             return false;
         }
-	    ResourceLocation registry = stack.getItem().getRegistryName();
+        ResourceLocation registry = stack.getItem().getRegistryName();
         if (registry == null || registry.getResourceDomain().equals("tconstruct")) {
             return false;
         }
 
         return true;
-	}
+    }
 
     public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event) {
         if (summery == null) return event.getAmount();

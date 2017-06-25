@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.blocks.reactor;
 
 import codechicken.lib.model.ModelRegistryHelper;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemReactorComponent;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 6/11/2016.
  */
-public class ReactorCore extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class ReactorCore extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
     private static final AxisAlignedBB NO_AABB = new AxisAlignedBB(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
 

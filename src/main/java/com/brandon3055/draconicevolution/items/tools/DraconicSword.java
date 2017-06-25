@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.item.ItemStack;
@@ -37,9 +38,17 @@ public class DraconicSword extends WyvernSword {
 
     //endregion
 
-
     @Override
     public int getReaperLevel(ItemStack stack) {
         return 2;
     }
+
+    //region Rendering
+
+    @Override
+    protected Set3<String, String, String> getTextureLocations() {
+        return Set3.of("items/tools/draconic_sword", "items/tools/obj/draconic_sword", "models/item/tools/draconic_sword.obj");
+    }
+
+    //endregion
 }

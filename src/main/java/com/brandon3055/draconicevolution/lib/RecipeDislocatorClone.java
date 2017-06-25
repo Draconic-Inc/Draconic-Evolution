@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -30,15 +31,15 @@ public class RecipeDislocatorClone implements IRecipe {
         ItemStack source = inv.getStackInSlot(0);
         ItemStack target = inv.getStackInSlot(1);
 
-        if (source == null || target == null || !source.hasTagCompound() || !(source.getItem() instanceof Dislocator) || !(target.getItem() instanceof Dislocator)) {
-            return null;
+        if (source.isEmpty() || target.isEmpty() || !source.hasTagCompound() || !(source.getItem() instanceof Dislocator) || !(target.getItem() instanceof Dislocator)) {
+            return ItemStack.EMPTY;
         }
 
         ItemStack output = target.copy();
         NBTTagList sourceList = new NBTTagList();
 
         if (source.getItem() == DEFeatures.dislocator) {
-            TeleportLocation location = ((Dislocator)source.getItem()).getLocation(source);
+            TeleportLocation location = ((Dislocator) source.getItem()).getLocation(source);
             location.setName("*-Copy-*");
             NBTTagCompound compound = new NBTTagCompound();
             location.writeToNBT(compound);
@@ -49,9 +50,9 @@ public class RecipeDislocatorClone implements IRecipe {
         }
 
         if (output.getItem() == DEFeatures.dislocator) {
-            TeleportLocation location = ((Dislocator)source.getItem()).getLocation(source);
+            TeleportLocation location = ((Dislocator) source.getItem()).getLocation(source);
             if (location == null) {
-                return null;
+                return ItemStack.EMPTY;
             }
             NBTTagCompound compound = new NBTTagCompound();
             location.writeToNBT(compound);
@@ -97,12 +98,16 @@ public class RecipeDislocatorClone implements IRecipe {
     @Nullable
     @Override
     public ItemStack getRecipeOutput() {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
         ItemStack stack = inv.getStackInSlot(0);
-        return new ItemStack[] {stack != null ? stack.copy() : null, null};
+        NonNullList<ItemStack> list = NonNullList.withSize(2, ItemStack.EMPTY);
+        if (!stack.isEmpty()) {
+            list.set(0, stack.copy());
+        }
+        return list;
     }
 }

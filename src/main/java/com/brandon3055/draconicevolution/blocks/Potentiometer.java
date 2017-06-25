@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTilePotentiometer;
 import net.minecraft.block.Block;
@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class Potentiometer extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class Potentiometer extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
     protected static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0.0625D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 0.9375D);
@@ -49,8 +49,7 @@ public class Potentiometer extends BlockBCore implements ITileEntityProvider, IC
     public IBlockState getStateFromMeta(int meta) {
         EnumFacing enumfacing;
 
-        switch (meta)
-        {
+        switch (meta) {
             case 0:
                 enumfacing = EnumFacing.DOWN;
                 break;
@@ -77,8 +76,7 @@ public class Potentiometer extends BlockBCore implements ITileEntityProvider, IC
     public int getMetaFromState(IBlockState state) {
         int i;
 
-        switch (state.getValue(FACING))
-        {
+        switch (state.getValue(FACING)) {
             case EAST:
                 i = 1;
                 break;
@@ -121,35 +119,28 @@ public class Potentiometer extends BlockBCore implements ITileEntityProvider, IC
 
     //region place
 
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
-    {
+    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
         return canPlaceBlock(worldIn, pos, facing.getOpposite()) ? this.getDefaultState().withProperty(FACING, facing) : this.getDefaultState().withProperty(FACING, EnumFacing.DOWN);
     }
 
-    protected static boolean canPlaceBlock(World worldIn, BlockPos pos, EnumFacing direction)
-    {
+    protected static boolean canPlaceBlock(World worldIn, BlockPos pos, EnumFacing direction) {
         BlockPos blockpos = pos.offset(direction);
         return worldIn.getBlockState(blockpos).isSideSolid(worldIn, blockpos, direction.getOpposite());
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn)
-    {
-        if (this.checkForDrop(worldIn, pos, state) && !canPlaceBlock(worldIn, pos, ((EnumFacing)state.getValue(FACING)).getOpposite()))
-        {
-            this.dropBlockAsItem(worldIn, pos, state, 0);
-            worldIn.setBlockToAir(pos);
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        if (this.checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, ((EnumFacing) state.getValue(FACING)).getOpposite())) {
+            this.dropBlockAsItem(world, pos, state, 0);
+            world.setBlockToAir(pos);
         }
     }
 
-    private boolean checkForDrop(World worldIn, BlockPos pos, IBlockState state)
-    {
-        if (this.canPlaceBlockAt(worldIn, pos))
-        {
+    private boolean checkForDrop(World worldIn, BlockPos pos, IBlockState state) {
+        if (this.canPlaceBlockAt(worldIn, pos)) {
             return true;
         }
-        else
-        {
+        else {
             this.dropBlockAsItem(worldIn, pos, state, 0);
             worldIn.setBlockToAir(pos);
             return false;
@@ -157,18 +148,14 @@ public class Potentiometer extends BlockBCore implements ITileEntityProvider, IC
     }
 
     @Override
-    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side)
-    {
+    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side) {
         return canPlaceBlock(worldIn, pos, side.getOpposite());
     }
 
     @Override
-    public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
-    {
-        for (EnumFacing enumfacing : EnumFacing.values())
-        {
-            if (canPlaceBlock(worldIn, pos, enumfacing))
-            {
+    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
+        for (EnumFacing enumfacing : EnumFacing.values()) {
+            if (canPlaceBlock(worldIn, pos, enumfacing)) {
                 return true;
             }
         }
@@ -183,7 +170,6 @@ public class Potentiometer extends BlockBCore implements ITileEntityProvider, IC
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
-//        ModelRegistryHelper.register(new ModelResourceLocation(feature.registryName(), "normal"), new CCOverrideBakedBlockModel(""));
         ClientRegistry.bindTileEntitySpecialRenderer(TilePotentiometer.class, new RenderTilePotentiometer());
     }
 
@@ -193,17 +179,14 @@ public class Potentiometer extends BlockBCore implements ITileEntityProvider, IC
     }
 
     @Nullable
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
-    {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
         return NULL_AABB;
     }
 
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         EnumFacing enumfacing = state.getValue(FACING);
 
-        switch (enumfacing)
-        {
+        switch (enumfacing) {
             case EAST:
                 return AABB_EAST;
             case WEST:

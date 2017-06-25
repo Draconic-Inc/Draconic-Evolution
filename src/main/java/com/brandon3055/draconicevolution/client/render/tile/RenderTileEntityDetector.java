@@ -25,25 +25,25 @@ public class RenderTileEntityDetector extends TESRBase<TileEntityDetector> {
 
         GlStateManager.rotate(-h * (180F / (float) Math.PI) - 90, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-te.yRot * (180F / (float) Math.PI) + 90, 1, 0, 0);
-        GlStateManager.rotate(180, 0, 1, 0);
+//        GlStateManager.rotate(180, 0, 1, 0);
 
         renderItem(getRenderStack(te.isAdvanced()));
 
         GlStateManager.popMatrix();
     }
 
-    private ItemStack eye = null;
-    private ItemStack skull = null;
+    private ItemStack eye = ItemStack.EMPTY;
+    private ItemStack skull = ItemStack.EMPTY;
 
     private ItemStack getRenderStack(boolean advanced) {
         if (advanced) {
-            if (skull == null) {
+            if (skull.isEmpty()) {
                 skull = new ItemStack(Items.SKULL, 1, 1);
             }
             return skull;
         }
         else {
-            if (eye == null) {
+            if (eye.isEmpty()) {
                 eye = new ItemStack(Items.ENDER_EYE);
             }
             return eye;

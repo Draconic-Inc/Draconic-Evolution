@@ -5,12 +5,18 @@ package com.brandon3055.draconicevolution.integration.computers;
  */
 public interface IDEPeripheral {
 
-	/**Get the unique name for this peripheral type */
-	String getPeripheralName();
+    /**
+     * Get the unique name for this peripheral type
+     */
+    String getPeripheralName();
 
-	/**Get a list of methods for this peripheral*/
-	String[] getMethodNames();
+    /**
+     * Get a list of methods for this peripheral
+     */
+    String[] getMethodNames();
 
-	/**Call a method*/
-	Object[] callMethod(String method, ArgHelper args);
+    /**
+     * Call a method
+     */
+    Object[] callMethod(String method, ArgHelper args);
 }

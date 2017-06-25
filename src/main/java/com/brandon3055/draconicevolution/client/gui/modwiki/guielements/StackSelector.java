@@ -36,11 +36,11 @@ public class StackSelector extends MGuiElementBase {
 
     public void setStacks(List<ItemStack> stacks) {
         toRemove.addAll(selection);
-        int cols = (int)Math.floor(xSize / 19D);
+        int cols = (int) Math.floor(xSize / 19D);
 //        LogHelper.dev("Cols "+cols);
         int index = 0;
         for (ItemStack stack : stacks) {
-            if (stack != null) {
+            if (!stack.isEmpty()) {
                 int x = index % cols;
 //                LogHelper.dev(index+" Col "+x+" "+cols);
                 int y = index / cols;

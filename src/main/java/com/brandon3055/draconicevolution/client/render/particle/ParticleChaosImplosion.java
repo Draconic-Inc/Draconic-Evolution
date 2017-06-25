@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
@@ -46,7 +46,7 @@ public class ParticleChaosImplosion extends BCParticle {
         this.motionX = this.motionY = this.motionZ = 0;
 
         if (model == null) {
-            Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
+            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
             model = CCModel.combine(map.values());
             model.apply(new Scale(1, 0.5, 1));
         }
@@ -72,12 +72,13 @@ public class ParticleChaosImplosion extends BCParticle {
         if (isOrigin) {
             if (particleAge % 5 == 0) {
 
-                BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, worldObj, new Vec3D(posX, posY, posZ), target, 512D, contract ? 4 : 3);
+                BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(posX, posY, posZ), target, 512D, contract ? 4 : 3);
             }
             if (particleAge > 20) {
                 setExpired();
             }
-        } else if (isTracer) {
+        }
+        else if (isTracer) {
             double dist = Utils.getDistanceAtoB(target, new Vec3D(posX, posY, posZ));
             if (particleAge > 200 || dist < 0.1) {
                 setExpired();
@@ -91,16 +92,16 @@ public class ParticleChaosImplosion extends BCParticle {
 
             moveEntityNoClip(motionX, motionY, motionZ);
         }
-        else if (explosion){
+        else if (explosion) {
             int max = 1000;
-            if (particleAge > max){
+            if (particleAge > max) {
                 setExpired();
             }
 
-            particleAlpha = 0.4F ;
+            particleAlpha = 0.4F;
 
             float fadeOut = 400F;
-            if (particleAge > max - fadeOut){
+            if (particleAge > max - fadeOut) {
                 particleAlpha *= 1F - (particleAge - fadeOut) / fadeOut;
             }
 
@@ -117,12 +118,14 @@ public class ParticleChaosImplosion extends BCParticle {
 
     @Override
     public void renderParticle(VertexBuffer vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        CCRenderState ccrs = CCRenderState.instance();
         if (isTracer) {
+            ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
+            vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
             super.renderParticle(vertexbuffer, entity, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+            ccrs.draw();
             return;
         }
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.draw();
 
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
@@ -165,9 +168,6 @@ public class ParticleChaosImplosion extends BCParticle {
         GlStateManager.enableTexture2D();
         GlStateManager.enableCull();
         GlStateManager.popMatrix();
-
-        vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-
     }
 
     public static class Factory implements IBCParticleFactory {
@@ -179,19 +179,24 @@ public class ParticleChaosImplosion extends BCParticle {
             if (args.length > 0) {
                 if (args[0] == 0) {              //0 Tracer
                     particle.isTracer = true;
-                } else if (args[0] == 1) {         //1 Origin Expand
+                }
+                else if (args[0] == 1) {         //1 Origin Expand
                     particle.isOrigin = true;
                     particle.isTracer = false;
-                } else if (args[0] == 2) {         //2 Origin Contract
+                }
+                else if (args[0] == 2) {         //2 Origin Contract
                     particle.isOrigin = true;
                     particle.contract = true;
                     particle.isTracer = false;
-                } else if (args[0] == 3) {         //3 Expanding Wave
+                }
+                else if (args[0] == 3) {         //3 Expanding Wave
                     particle.isTracer = false;
-                } else if (args[0] == 4) {         //4 Contracting Wave
+                }
+                else if (args[0] == 4) {         //4 Contracting Wave
                     particle.contract = true;
                     particle.isTracer = false;
-                } else if (args[0] == 5) {         //5 The final boom!
+                }
+                else if (args[0] == 5) {         //5 The final boom!
                     particle.isTracer = false;
                     particle.explosion = true;
                 }

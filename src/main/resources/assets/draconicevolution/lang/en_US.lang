@@ -1,29 +1,23 @@
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
-tile.draconicevolution:x_ray_block.name=Distortion Flame
-tile.draconicevolution:sun_dial.name=Sun Dial
 tile.draconicevolution:celestial_manipulator.name=Celestial Manipulator
-tile.draconicevolution:draconium_ore.type.normal.name=Draconium Ore
-tile.draconicevolution:draconium_ore.type.nether.name=Nether Draconium Ore
-tile.draconicevolution:draconium_ore.type.end.name=Ender Draconium Ore
+tile.draconicevolution:draconium_ore_normal.name=Draconium Ore
+tile.draconicevolution:draconium_ore_nether.name=Nether Draconium Ore
+tile.draconicevolution:draconium_ore_end.name=Ender Draconium Ore
 tile.draconicevolution:grinder.name=Mob Grinder
 tile.draconicevolution:potentiometer.name=Potentiometer
 tile.draconicevolution:rain_sensor.name=Rain Sensor
-tile.draconicevolution:particle_generator.type.normal.name=Particle Generator
-tile.draconicevolution:particle_generator.type.inverted.name=Particle Generator
-tile.draconicevolution:particle_generator.type.stabilizer.name=Energy Core Stabilizer
+tile.draconicevolution:particle_generator.name=Particle Generator
+tile.draconicevolution:energy_core_stabilizer.name=Energy Core Stabilizer
 tile.draconicevolution:entity_detector.name=Entity Detector
-tile.draconicevolution:entity_detector.advanced.false.name=Entity Detector
-tile.draconicevolution:entity_detector.advanced.true.name=Advanced Entity Detector
-tile.draconicevolution:player_detectorAdvanced.name=Advanced Player Detector
+tile.draconicevolution:entity_detector_basic.name=Entity Detector
+tile.draconicevolution:entity_detector_advanced.name=Advanced Entity Detector
 tile.draconicevolution:energy_infuser.name=Energy Infuser
 tile.draconicevolution:draconic_spawner.name=Stabilized Mob Spawner
 tile.draconicevolution:generator.name=Generator
 tile.draconicevolution:energy_storage_core.name=Energy Core
 tile.draconicevolution:energy_pylon.name=Energy Pylon
-tile.draconicevolution:draconium_block.charged.false.name=Draconium Block
-tile.draconicevolution:draconium1.name=Resurrection Stone
-tile.draconicevolution:draconium_block.charged.true.name=Charged Draconium Block
-tile.draconicevolution:c_key_stone.name=Creative Key Stone
+tile.draconicevolution:draconium_block.name=Draconium Block
+tile.draconicevolution:draconium_block_charged.name=Charged Draconium Block
 tile.draconicevolution:diss_enchanter.name=Disenchanter
 tile.draconicevolution:dislocator_pedestal.name=Dislocator Pedestal
 tile.draconicevolution:draconium_chest.name=Draconium Chest
@@ -37,7 +31,6 @@ tile.draconicevolution:reactor_core.name=Draconic Reactor Core
 tile.draconicevolution:reactor_stabilizer.name=Reactor Stabilizer
 tile.draconicevolution:reactor_injector.name=Reactor Energy Injector
 tile.draconicevolution:chaos_crystal.name=Chaos Crystal
-tile.draconicevolution:upgrade_modifier.name=Upgrade Modifier
 
 tile.draconicevolution:energy_crystal.relay.basic.name=Basic Energy Relay Crystal
 tile.draconicevolution:energy_crystal.relay.wyvern.name=Wyvern Energy Relay Crystal
@@ -51,10 +44,10 @@ tile.draconicevolution:energy_crystal.wireless.draconic.name=Draconic Wireless E
 
 
 tile.draconicevolution:fusion_crafting_core.name=Fusion Crafting Core
-tile.draconicevolution:crafting_pedestal.facing.up.tier.basic.name=Basic Fusion Crafting Injector
-tile.draconicevolution:crafting_pedestal.facing.up.tier.wyvern.name=Wyvern Fusion Crafting Injector
-tile.draconicevolution:crafting_pedestal.facing.up.tier.draconic.name=Draconic Fusion Crafting Injector
-tile.draconicevolution:crafting_pedestal.facing.up.tier.chaotic.name=Chaotic Fusion Crafting Injector
+tile.draconicevolution:crafting_injector_basic.name=Basic Fusion Crafting Injector
+tile.draconicevolution:crafting_injector_wyvern.name=Wyvern Fusion Crafting Injector
+tile.draconicevolution:crafting_injector_draconic.name=Draconic Fusion Crafting Injector
+tile.draconicevolution:crafting_injector_chaotic.name=Chaotic Fusion Crafting Injector
 
 tile.draconicevolution:creative_rf_source.name=Creative RF Source
 
@@ -433,9 +426,9 @@ item.draconicevolution:draconicBoots.lore=2Stronger, faster, better than before\
 item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, true power!\none tool to do it all, mine, battle, and death!
 
 //Entity ----------------------------------------------------------------------------------------------------------------------------------------
-entity.draconicevolution.EnderDragon.name=Ender Dragon
-entity.draconicevolution.ChaosGuardian.name=Chaos Guardian
-entity.draconicevolution.lootCore.name=Loot Core
+entity.draconicevolution:EnderDragon.name=Ender Dragon
+entity.draconicevolution:ChaosGuardian.name=Chaos Guardian
+entity.draconicevolution:lootCore.name=Loot Core
 
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------

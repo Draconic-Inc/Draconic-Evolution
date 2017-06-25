@@ -29,16 +29,16 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
         if (te.facing.value == EnumFacing.SOUTH) {
             GlStateManager.rotate(180, 0, 1, 0);
         }
-        else if (te.facing.value == EnumFacing.EAST){
+        else if (te.facing.value == EnumFacing.EAST) {
             GlStateManager.rotate(-90, 0, 1, 0);
         }
-        else if (te.facing.value == EnumFacing.WEST){
+        else if (te.facing.value == EnumFacing.WEST) {
             GlStateManager.rotate(90, 0, 1, 0);
         }
-        else if (te.facing.value == EnumFacing.UP){
+        else if (te.facing.value == EnumFacing.UP) {
             GlStateManager.rotate(90, 1, 0, 0);
         }
-        else if (te.facing.value == EnumFacing.DOWN){
+        else if (te.facing.value == EnumFacing.DOWN) {
             GlStateManager.rotate(-90, 1, 0, 0);
         }
 

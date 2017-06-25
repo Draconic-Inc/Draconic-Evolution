@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
-import codechicken.lib.render.state.GlStateManagerHelper;
+import codechicken.lib.render.state.GlStateTracker;
 import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiStackIcon;
@@ -119,9 +119,9 @@ public class DCRecipe extends DisplayComponentBase {
             }
 
             drawBorderedRect(x, yPos + yOffset + fontRenderer.FONT_HEIGHT, renderer.getWidth() + 2, renderer.getHeight() + 2, 1, 0, 0xFF000000);
-            GlStateManagerHelper.pushState();
+            GlStateTracker.pushState();
             renderer.render(minecraft, x + 1, yPos + yOffset + fontRenderer.FONT_HEIGHT + 1, mouseX, mouseY);
-            GlStateManagerHelper.popState();
+            GlStateTracker.popState();
             yOffset += renderer.getHeight() + fontRenderer.FONT_HEIGHT + 4;
         }
 
@@ -152,19 +152,19 @@ public class DCRecipe extends DisplayComponentBase {
     public LinkedList<MGuiElementBase> getEditControls() {
         LinkedList<MGuiElementBase> list = super.getEditControls();
 
-        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
+        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
         }.setListener(this).setToolTip(new String[]{"Toggle Horizontal Alignment"}));
 
-        list.add(new MGuiButtonSolid(modularGui, "SELECT_STACK", 0, 0, 56, 12, "Pick Stack"){
+        list.add(new MGuiButtonSolid(modularGui, "SELECT_STACK", 0, 0, 56, 12, "Pick Stack") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
             }
-        }.setListener(this).setToolTip(new String[] {"Select a stack from your inventory"}));
+        }.setListener(this).setToolTip(new String[]{"Select a stack from your inventory"}));
 
         return list;
     }
@@ -174,14 +174,14 @@ public class DCRecipe extends DisplayComponentBase {
         super.onMGuiEvent(eventString, eventElement);
 
         if (eventElement instanceof MGuiButtonSolid && ((MGuiButtonSolid) eventElement).buttonName.equals("SELECT_STACK")) {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
             selector = new StackSelector(modularGui, list.xPos + list.leftPadding, list.yPos + list.topPadding, list.xSize - list.leftPadding - list.rightPadding, list.ySize - list.topPadding - list.bottomPadding);
             selector.setListener(this);
 
             List<ItemStack> stacks = new LinkedList<ItemStack>();
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack stack = player.inventory.getStackInSlot(i);
-                if (stack != null) {
+                if (!stack.isEmpty()) {
                     stacks.add(stack);
                 }
             }
@@ -196,7 +196,7 @@ public class DCRecipe extends DisplayComponentBase {
         else if (eventString.equals("SELECTOR_PICK")) {
             boolean shouldSave = false;
             if (eventElement instanceof MGuiStackIcon) {
-                StackReference reference = new StackReference(((MGuiStackIcon)eventElement).getStack());
+                StackReference reference = new StackReference(((MGuiStackIcon) eventElement).getStack());
 //                stackIcon.setStack(reference);
                 element.setTextContent(reference.toString());
                 shouldSave = true;
@@ -211,7 +211,8 @@ public class DCRecipe extends DisplayComponentBase {
     }
 
     @Override
-    public void onCreated() {   }
+    public void onCreated() {
+    }
 
     //endregion
 

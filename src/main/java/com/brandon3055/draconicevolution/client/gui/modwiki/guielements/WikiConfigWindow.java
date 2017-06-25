@@ -34,7 +34,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
 
         int size = (xSize - 34) / 3;
 
-        addChild(new MGuiButtonSolid(modularGui, "COLOUR_NAV", xPos + 15, yPos + 30, size, 12, I18n.format("modwiki.style.navWindow")){
+        addChild(new MGuiButtonSolid(modularGui, "COLOUR_NAV", xPos + 15, yPos + 30, size, 12, I18n.format("modwiki.style.navWindow")) {
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
                 return WikiConfig.NAV_WINDOW;
@@ -45,7 +45,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
                 return WikiConfig.NAV_WINDOW;
             }
         }.setListener(this));
-        addChild(new MGuiButtonSolid(modularGui, "COLOUR_MAIN", xPos + 17 + (size), yPos + 30, size, 12, I18n.format("modwiki.style.mainWindow")){
+        addChild(new MGuiButtonSolid(modularGui, "COLOUR_MAIN", xPos + 17 + (size), yPos + 30, size, 12, I18n.format("modwiki.style.mainWindow")) {
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
                 return WikiConfig.CONTENT_WINDOW;
@@ -56,7 +56,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
                 return WikiConfig.CONTENT_WINDOW;
             }
         }.setListener(this));
-        addChild(new MGuiButtonSolid(modularGui, "COLOUR_MENU", xPos + 19 + (size * 2), yPos + 30, size, 12, I18n.format("modwiki.style.menu")){
+        addChild(new MGuiButtonSolid(modularGui, "COLOUR_MENU", xPos + 19 + (size * 2), yPos + 30, size, 12, I18n.format("modwiki.style.menu")) {
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
                 return WikiConfig.MENU_BAR;
@@ -68,7 +68,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
             }
         }.setListener(this));
 
-        addChild(new MGuiButtonSolid(modularGui, "COLOUR_NAV_TEXT", xPos + 15, yPos + 44, size, 12, I18n.format("modwiki.style.navText")){
+        addChild(new MGuiButtonSolid(modularGui, "COLOUR_NAV_TEXT", xPos + 15, yPos + 44, size, 12, I18n.format("modwiki.style.navText")) {
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
                 return mixColours(WikiConfig.NAV_TEXT, 0xFF000000);
@@ -79,7 +79,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
                 return mixColours(WikiConfig.NAV_TEXT, 0xFF000000);
             }
         }.setListener(this));
-        addChild(new MGuiButtonSolid(modularGui, "COLOUR_MISC_TEXT", xPos + 17 + (size), yPos + 44, size, 12, I18n.format("modwiki.style.text")){
+        addChild(new MGuiButtonSolid(modularGui, "COLOUR_MISC_TEXT", xPos + 17 + (size), yPos + 44, size, 12, I18n.format("modwiki.style.text")) {
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
                 return mixColours(WikiConfig.TEXT_COLOUR, 0xFF000000);
@@ -90,7 +90,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
                 return mixColours(WikiConfig.TEXT_COLOUR, 0xFF000000);
             }
         }.setListener(this));
-        addChild(new MGuiButtonSolid(modularGui, "PRESETS", xPos + 19 + (size * 2), yPos + 44, size, 12, I18n.format("modwiki.style.presets")){
+        addChild(new MGuiButtonSolid(modularGui, "PRESETS", xPos + 19 + (size * 2), yPos + 44, size, 12, I18n.format("modwiki.style.presets")) {
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
                 return 0xFFFFFFFF;
@@ -103,7 +103,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
         }.setListener(this));
 
         if (!ObfMapping.obfuscated) {
-            addChild(new MGuiButtonSolid(modularGui, "TOGGLE_EDIT", xPos + 15, yPos + 77, size, 12, "Edit Mode"){
+            addChild(new MGuiButtonSolid(modularGui, "TOGGLE_EDIT", xPos + 15, yPos + 77, size, 12, "Edit Mode") {
                 @Override
                 public int getFillColour(boolean hovering, boolean disabled) {
                     return 0xFFFFFFFF;
@@ -249,7 +249,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
             modularGui.getManager().add(selector, displayLevel + 1);
         }
         else if (eventString.equals("SELECTOR_PICK") && eventElement.linkedObject instanceof StylePreset) {
-            ((StylePreset)eventElement.linkedObject).apply();
+            ((StylePreset) eventElement.linkedObject).apply();
             if (selector != null) {
                 modularGui.getManager().remove(selector);
                 selector = null;

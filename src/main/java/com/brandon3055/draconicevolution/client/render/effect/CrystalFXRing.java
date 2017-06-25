@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
-import codechicken.lib.render.state.GlStateManagerHelper;
+import codechicken.lib.render.state.GlStateTracker;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
@@ -37,7 +37,7 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
 
         float[] r = {0.0F, 0.8F, 1.0F};
         float[] g = {0.8F, 0.1F, 0.7F};
-        float[] b = {1F,   1F,   0.2F};
+        float[] b = {1F, 1F, 0.2F};
 
         particleRed = r[tile.getTier()];
         particleGreen = g[tile.getTier()];
@@ -155,7 +155,7 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
         @Override
         public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManagerHelper.pushState();
+            GlStateTracker.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
@@ -167,7 +167,7 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
         public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
             tessellator.getBuffer().sortVertexData(0, 0, 0);
             tessellator.draw();
-            GlStateManagerHelper.popState();
+            GlStateTracker.popState();
         }
     };
 }

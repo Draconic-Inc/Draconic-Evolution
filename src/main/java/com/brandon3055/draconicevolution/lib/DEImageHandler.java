@@ -25,196 +25,184 @@ import java.util.*;
  * This class handles images for the information tablet
  */
 public class DEImageHandler {
-	public static DEImageHandler instance = new DEImageHandler();
-	public static Map<String, ManualImageLocation> downloadedImages = new HashMap<String, ManualImageLocation>();
+    public static DEImageHandler instance = new DEImageHandler();
+    public static Map<String, ManualImageLocation> downloadedImages = new HashMap<String, ManualImageLocation>();
 
 
-	private static String savePath;
-	private static File saveFolder;
-	private static File imagesFolder;
-	private static DownloadThread downloadThread;
-	public static int downloadStatus = 0;
+    private static String savePath;
+    private static File saveFolder;
+    private static File imagesFolder;
+    private static DownloadThread downloadThread;
+    public static int downloadStatus = 0;
 
 
-	//-------------------- File Handling -----------------------//
+    //-------------------- File Handling -----------------------//
 
-	@SubscribeEvent
-	public void tick(TickEvent.ClientTickEvent event)
-	{
-		if (downloadThread != null && downloadThread.isFinished)
-		{
-			if (downloadThread.isReloadRequired()) LogHelperBC.info("Image Download Finished");
-			downloadStatus = downloadThread.wasSuccessful ? 1 : 2;
-			MinecraftForge.EVENT_BUS.unregister(this);
-			addRSPack(event != null);
-			downloadThread = null;
-		}
-	}
+    @SubscribeEvent
+    public void tick(TickEvent.ClientTickEvent event) {
+        if (downloadThread != null && downloadThread.isFinished) {
+            if (downloadThread.isReloadRequired()) LogHelperBC.info("Image Download Finished");
+            downloadStatus = downloadThread.wasSuccessful ? 1 : 2;
+            MinecraftForge.EVENT_BUS.unregister(this);
+            addRSPack(event != null);
+            downloadThread = null;
+        }
+    }
 
-	public static void init(FMLPreInitializationEvent event)
-	{
-		MinecraftForge.EVENT_BUS.register(instance);
+    public static void init(FMLPreInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(instance);
 
-		if (event != null) savePath = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/config/draconicevolution";
+        if (event != null) savePath = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/config/draconicevolution";
 //		GUIManual.loadPages();
 
 //		downloadThread = new DownloadThread(GUIManual.imageURLs);
 //		downloadThread.start();
-	}
+    }
 
 
-	public static class DownloadThread extends Thread
-	{
-		private List<String> imageURLs;
-		private boolean isFinished = false;
-		private boolean wasSuccessful = true;
-		private boolean reloadRequired = false;
+    public static class DownloadThread extends Thread {
+        private List<String> imageURLs;
+        private boolean isFinished = false;
+        private boolean wasSuccessful = true;
+        private boolean reloadRequired = false;
 
-		public DownloadThread(List<String> imageURLs)
-		{
-			this.imageURLs = new ArrayList<String>(imageURLs);
-		}
+        public DownloadThread(List<String> imageURLs) {
+            this.imageURLs = new ArrayList<String>(imageURLs);
+        }
 
-		@Override
-		public void run() {
+        @Override
+        public void run() {
 
-			for (String s : imageURLs)
-			{
-				if (!checkExistence(s)) if (downloadImage(s)) reloadRequired = true;
-				if (checkExistence(s))
-				{
-					try
-					{
-						URL url = new URL(s);
-						String fileName = url.getFile();
+            for (String s : imageURLs) {
+                if (!checkExistence(s)) if (downloadImage(s)) reloadRequired = true;
+                if (checkExistence(s)) {
+                    try {
+                        URL url = new URL(s);
+                        String fileName = url.getFile();
 
-						BufferedImage bi = ImageIO.read(new File(getImagesFolder(), FilenameUtils.getName(fileName)));
-						downloadedImages.put(FilenameUtils.getName(fileName), new ManualImageLocation(FilenameUtils.getName(fileName), bi.getWidth(), bi.getHeight()));
-					}
-					catch (MalformedURLException e)
-					{
-						LogHelperBC.error("Image Read Failed");
-						e.printStackTrace();
-					}
-					catch (IOException e)
-					{
-						LogHelperBC.error("Image Read Failed");
-						e.printStackTrace();
-					}
-				}
-			}
+                        BufferedImage bi = ImageIO.read(new File(getImagesFolder(), FilenameUtils.getName(fileName)));
+                        downloadedImages.put(FilenameUtils.getName(fileName), new ManualImageLocation(FilenameUtils.getName(fileName), bi.getWidth(), bi.getHeight()));
+                    }
+                    catch (MalformedURLException e) {
+                        LogHelperBC.error("Image Read Failed");
+                        e.printStackTrace();
+                    }
+                    catch (IOException e) {
+                        LogHelperBC.error("Image Read Failed");
+                        e.printStackTrace();
+                    }
+                }
+            }
 
-			isFinished = true;
-		}
+            isFinished = true;
+        }
 
-		private static boolean downloadImage(String urlString)
-		{
-			try {
-				URL url = new URL(urlString);
-				String fileName = url.getFile();
+        private static boolean downloadImage(String urlString) {
+            try {
+                URL url = new URL(urlString);
+                String fileName = url.getFile();
 
-				LogHelperBC.info("Downloading Image " + FilenameUtils.getName(fileName));
+                LogHelperBC.info("Downloading Image " + FilenameUtils.getName(fileName));
 
-				File dll = new File(getImagesFolder(), FilenameUtils.getName(fileName));
+                File dll = new File(getImagesFolder(), FilenameUtils.getName(fileName));
 
-				InputStream is = url.openStream();
-				OutputStream os = new FileOutputStream(dll);
+                InputStream is = url.openStream();
+                OutputStream os = new FileOutputStream(dll);
 
-				ByteStreams.copy(is, os);
+                ByteStreams.copy(is, os);
 
-				is.close();
-				os.close();
+                is.close();
+                os.close();
 
-			}catch (IOException e){
-				LogHelperBC.error("Download Failed");
-				e.printStackTrace();
-				return false;
-			}
-			return true;
-		}
+            }
+            catch (IOException e) {
+                LogHelperBC.error("Download Failed");
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
 
-		private static boolean checkExistence(String urlS)
-		{
-			try
-			{
-				URL url = new URL(urlS);
-				String fileName = url.getFile();
-				return Arrays.asList(getImagesFolder().list()).contains(FilenameUtils.getName(fileName));
-			}
-			catch (MalformedURLException e)
-			{
-				LogHelperBC.error("Unable to check files existence. Invalid URL: " + urlS);
-				e.printStackTrace();
-				return false;
-			}
-		}
+        private static boolean checkExistence(String urlS) {
+            try {
+                URL url = new URL(urlS);
+                String fileName = url.getFile();
+                return Arrays.asList(getImagesFolder().list()).contains(FilenameUtils.getName(fileName));
+            }
+            catch (MalformedURLException e) {
+                LogHelperBC.error("Unable to check files existence. Invalid URL: " + urlS);
+                e.printStackTrace();
+                return false;
+            }
+        }
 
-		public boolean isFinished() {
-			return isFinished;
-		}
+        public boolean isFinished() {
+            return isFinished;
+        }
 
-		public boolean wasSuccessful() {
-			return wasSuccessful;
-		}
+        public boolean wasSuccessful() {
+            return wasSuccessful;
+        }
 
-		public boolean isReloadRequired() {
-			return reloadRequired;
-		}
-	}
+        public boolean isReloadRequired() {
+            return reloadRequired;
+        }
+    }
 
-	private static void addRSPack(boolean refreash) {
-		File rspack = new File(getConfigFolder(), "/resources");
-		if (!rspack.exists()) return;
+    private static void addRSPack(boolean refreash) {
+        File rspack = new File(getConfigFolder(), "/resources");
+        if (!rspack.exists()) return;
 
-		if (!Arrays.asList(rspack.list()).contains("pack.mcmeta"))
-		{
-			try
-			{
-				JsonWriter writer = new JsonWriter(new FileWriter(new File(rspack, "pack.mcmeta")));
-				writer.beginObject();
-				writer.name("pack");
-				writer.beginObject();
-				writer.name("pack_format").value(1);
-				writer.name("description").value("Draconic Evolution GUI Images");
-				writer.endObject();
-				writer.endObject();
-				writer.close();
-			}
-			catch (IOException e)
-			{
-				LogHelperBC.error("Error creating pack.mcmeta");
-				e.printStackTrace();
-			}
-		}
+        if (!Arrays.asList(rspack.list()).contains("pack.mcmeta")) {
+            try {
+                JsonWriter writer = new JsonWriter(new FileWriter(new File(rspack, "pack.mcmeta")));
+                writer.beginObject();
+                writer.name("pack");
+                writer.beginObject();
+                writer.name("pack_format").value(1);
+                writer.name("description").value("Draconic Evolution GUI Images");
+                writer.endObject();
+                writer.endObject();
+                writer.close();
+            }
+            catch (IOException e) {
+                LogHelperBC.error("Error creating pack.mcmeta");
+                e.printStackTrace();
+            }
+        }
 
-		Field f = ReflectionHelper.findField(Minecraft.class, "defaultResourcePacks", "field_110449_ao");
-		f.setAccessible(true);
-		try {
-			List defaultResourcePacks = (List)f.get(Minecraft.getMinecraft());
-			defaultResourcePacks.add(new FolderResourcePack(rspack));
+        Field f = ReflectionHelper.findField(Minecraft.class, "defaultResourcePacks", "field_110449_ao");
+        f.setAccessible(true);
+        try {
+            List defaultResourcePacks = (List) f.get(Minecraft.getMinecraft());
+            defaultResourcePacks.add(new FolderResourcePack(rspack));
 
-			f.set(Minecraft.getMinecraft(), defaultResourcePacks);
-			LogHelperBC.info("RS Added");
-			if (refreash) Minecraft.getMinecraft().refreshResources();
-		}
-		catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-	}
+            f.set(Minecraft.getMinecraft(), defaultResourcePacks);
+            LogHelperBC.info("RS Added");
+            if (refreash) Minecraft.getMinecraft().refreshResources();
+        }
+        catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static File getConfigFolder() {
-		if (saveFolder == null) { saveFolder = new File(savePath); }
-		if (!saveFolder.exists()) saveFolder.mkdir();
+    public static File getConfigFolder() {
+        if (saveFolder == null) {
+            saveFolder = new File(savePath);
+        }
+        if (!saveFolder.exists()) saveFolder.mkdir();
 
-		return saveFolder;
-	}
+        return saveFolder;
+    }
 
-	public static File getImagesFolder() {
-		if (imagesFolder == null) { imagesFolder = new File(getConfigFolder(), "/resources/assets/draconicevolution/textures/gui/manualimages"); }
-		if (!imagesFolder.exists()) imagesFolder.mkdirs();
+    public static File getImagesFolder() {
+        if (imagesFolder == null) {
+            imagesFolder = new File(getConfigFolder(), "/resources/assets/draconicevolution/textures/gui/manualimages");
+        }
+        if (!imagesFolder.exists()) imagesFolder.mkdirs();
 
-		return imagesFolder;
-	}
+        return imagesFolder;
+    }
 
-	//----------------------------------------------------------//
+    //----------------------------------------------------------//
 }

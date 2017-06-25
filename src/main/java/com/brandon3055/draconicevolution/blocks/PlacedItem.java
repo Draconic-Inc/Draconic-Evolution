@@ -4,8 +4,8 @@ import codechicken.lib.raytracer.ICuboidProvider;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTilePlacedItem;
 import net.minecraft.block.ITileEntityProvider;
@@ -29,13 +29,10 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
@@ -50,7 +47,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
     //region Block state and stuff...
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
     }
 
     @Override
@@ -109,7 +106,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
     //region Interact
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return true;
         }
@@ -118,7 +115,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
         if (tile instanceof TilePlacedItem) {
 
             RayTraceResult hit = RayTracer.retraceBlock(world, player, pos);
-            RayTraceResult subHitResult = RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), ((TilePlacedItem) tile).getIndexedCuboids(), pos);
+            RayTraceResult subHitResult = RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), pos, ((TilePlacedItem) tile).getIndexedCuboids());
 
             if (subHitResult != null) {
                 hit = subHitResult;
@@ -147,7 +144,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
     public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof ICuboidProvider) {
-            return RayTracer.rayTraceCuboidsClosest(start, end, ((ICuboidProvider) tile).getIndexedCuboids(), pos);
+            return RayTracer.rayTraceCuboidsClosest(start, end, pos, ((ICuboidProvider) tile).getIndexedCuboids());
         }
         return super.collisionRayTrace(state, world, pos, start, end);
     }
@@ -167,13 +164,13 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
         if (tile instanceof TilePlacedItem) {
 
             RayTraceResult hit = target;
-            RayTraceResult subHitResult = RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), ((TilePlacedItem) tile).getIndexedCuboids(), pos);
+            RayTraceResult subHitResult = RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), pos, ((TilePlacedItem) tile).getIndexedCuboids());
 
             if (subHitResult != null) {
                 hit = subHitResult;
             }
             else if (hit == null) {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             if (hit.subHit > 0 && ((TilePlacedItem) tile).getStackInSlot(hit.subHit - 1) != null) {
@@ -181,7 +178,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
             }
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override

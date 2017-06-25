@@ -28,7 +28,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by brandon3055 on 11/03/2017.
@@ -91,15 +94,6 @@ public class ProcessExplosion implements IProcess {
         this.server = world.getMinecraftServer();
         this.minimumDelay = minimumDelayTime;
         this.angularResistance = new double[121];
-//        try {
-//            cacheFile = new File(FileHandler.brandon3055Folder, "explosion_" + origin.toString() + ".tmp");
-//            cacheFile.createNewFile();
-//            writer = new BufferedWriter(new FileWriter(cacheFile));
-////            cacheFile = new RandomAccessFile(file, "rws");
-//        }
-//        catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
         Arrays.fill(angularResistance, 100);
 
         LogHelper.info("Explosion Calculation Started for " + radius + " Block radius detonation!");
@@ -120,8 +114,6 @@ public class ProcessExplosion implements IProcess {
         server.currentTime = MinecraftServer.getCurrentTimeMillis();
         if (startTime == -1) {
             startTime = System.currentTimeMillis();
-//            thread = new ProcessThread(world);
-//            thread.start();
         }
 
         if (calcWait > 0) {
@@ -153,8 +145,6 @@ public class ProcessExplosion implements IProcess {
         BlockPos originPos = origin.getPos();
 
         double maxCoreHeight = 20D * (maxRadius / 150D);
-
-//        LogHelper.startTimer("Loop: " + radius);
 
         Vec3D posVecUp = new Vec3D();
         Vec3D posVecDown = new Vec3D();
@@ -197,26 +187,13 @@ public class ProcessExplosion implements IProcess {
         radius++;
         circumference = 2 * Math.PI * radius;
 
-//        try {
-//            for (int p : destroyedCache) {
-//                writer.write(p+"");
-//                writer.newLine();
-//            }
-//            writer.flush();
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         destroyedBlocks.add(destroyedCache);
         destroyedCache = new HashSet<>();
         scannedCache = new HashSet<>();
-//        LogHelper.stopTimer();
 
         if (radius >= maxRadius) {
             LogHelper.dev("Explosion Calculation Completed!");
             calculationComplete = true;
-//            IOUtils.closeQuietly(writer);
         }
     }
 
@@ -239,35 +216,7 @@ public class ProcessExplosion implements IProcess {
             theta += Math.PI * 2;
         }
 
-        double angle = ((theta / (Math.PI * 2)) * (double) angularResistance.length);
-
-//        if (MathHelper.floor(angle) + 1 % 45 == 0) {
-//            angle++;
-//            // /            angle += (world.rand.nextDouble() - 0.5) * 5;
-////            LogHelper.dev(angle);
-////            return angle;
-//            if (angle < 0) {
-//                angle += angularResistance.length;
-//            }
-//            else if (angle >= angularResistance.length) {
-//                angle -= angularResistance.length;
-//            }
-//        }
-//
-//        if (MathHelper.floor(angle) - 1 % 45 == 0) {
-//            angle--;
-//            // /            angle += (world.rand.nextDouble() - 0.5) * 5;
-////            LogHelper.dev(angle);
-////            return angle;
-//            if (angle < 0) {
-//                angle += angularResistance.length;
-//            }
-//            else if (angle >= angularResistance.length) {
-//                angle -= angularResistance.length;
-//            }
-//        }
-
-        return angle;
+        return ((theta / (Math.PI * 2)) * (double) angularResistance.length);
     }
 
     public double getRadialResistance(double radialPos) {
@@ -279,10 +228,6 @@ public class ProcessExplosion implements IProcess {
         if (max >= angularResistance.length) {
             max -= angularResistance.length;
         }
-
-//        if (true) {
-//            return (min % 2) * 1000;
-//        }
 
         double delta = radialPos - min;
 
@@ -318,9 +263,9 @@ public class ProcessExplosion implements IProcess {
         dist--;
         travel++;
         Integer iPos = shortPos.getIntPos(posVec);
-        posVec.add(0, traceDir, 0);
 
         if (scannedCache.contains(iPos) || destroyedCache.contains(iPos)) {
+            posVec.add(0, traceDir, 0);
             return trace(posVec, power, dist, traceDir, totalResist, travel);
         }
 
@@ -379,6 +324,7 @@ public class ProcessExplosion implements IProcess {
             scannedCache.add(iPos);
         }
 
+        posVec.add(0, traceDir, 0);
         return trace(posVec, power, dist, traceDir, totalResist, travel);
     }
 
@@ -406,43 +352,8 @@ public class ProcessExplosion implements IProcess {
 
         ExplosionHelper removalHelper = new ExplosionHelper(world, origin.getPos(), shortPos);
         int i = 0;
-//        try {
-//            BufferedReader reader = new BufferedReader(new FileReader(cacheFile));
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                removalHelper.addBlock(Integer.parseInt(line));
-//                i++;
-//            }
-////            Buffere while (cacheFile.getFilePointer() < cacheFile.length()) {
-////                removalHelper.addBlock(cacheFile.readInt());
-////
-////            }
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
         removalHelper.setBlocksForRemoval(destroyedBlocks);
-
-//        while (destroyedBlocks.size() > 0) {
-//            HashSet<Integer> list = destroyedBlocks.get(0);
-//            removalHelper.addBlocksForRemoval(list);
-//            i += list.size();
-//            destroyedBlocks.remove(0);
-//        }
-
-//        Iterator<HashSet<Integer>> iter = destroyedBlocks.iterator();
-//        while (iter.hasNext()) {
-//            HashSet<Integer> list = iter.next();
-//            iter.remove();
-//            removalHelper.addBlocksForRemoval(list);
-//            i += list.size();
-//        }
-        //        for (Collection<Integer> list : destroyedBlocks) {
-//            removalHelper.addBlocksForRemoval(list);
-//            destroyedBlocks.
-//            i += list.size();
-//        }
 
         LogHelper.stopTimer();
         LogHelper.startTimer("Adding Lava");
@@ -488,25 +399,25 @@ public class ProcessExplosion implements IProcess {
         return isDead;
     }
 
-    private class ProcessThread extends Thread {
-        private WorldServer world;
-
-        public ProcessThread(WorldServer world) {
-            super("DE Explosion Calculator");
-            this.world = world;
-            this.setDaemon(true);
-        }
-
-        @Override
-        public void run() {
-            long t = System.currentTimeMillis();
-            while (!ProcessExplosion.this.calculationComplete) {
-                LogHelper.dev("Calculation Progress: " + Utils.round((((double) radius / (double) maxRadius) * 100D), 100) + "% " + (Runtime.getRuntime().freeMemory() / 1000000));
-                ProcessExplosion.this.updateCalculation();
-            }
-            t = System.currentTimeMillis() - t;
-            LogHelper.dev("Threaded Explosion Calculation took " + t + "ms!");
-        }
-    }
+//    private class ProcessThread extends Thread {
+//        private WorldServer world;
+//
+//        public ProcessThread(WorldServer world) {
+//            super("DE Explosion Calculator");
+//            this.world = world;
+//            this.setDaemon(true);
+//        }
+//
+//        @Override
+//        public void run() {
+//            long t = System.currentTimeMillis();
+//            while (!ProcessExplosion.this.calculationComplete) {
+//                LogHelper.dev("Calculation Progress: " + Utils.round((((double) radius / (double) maxRadius) * 100D), 100) + "% " + (Runtime.getRuntime().freeMemory() / 1000000));
+//                ProcessExplosion.this.updateCalculation();
+//            }
+//            t = System.currentTimeMillis() - t;
+//            LogHelper.dev("Threaded Explosion Calculation took " + t + "ms!");
+//        }
+//    }
 
 }

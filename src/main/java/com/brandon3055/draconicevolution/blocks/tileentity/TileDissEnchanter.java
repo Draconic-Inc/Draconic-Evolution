@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
@@ -35,12 +35,12 @@ public class TileDissEnchanter extends TileInventoryBase {
     }
 
     @Override
-    public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP client) {
+    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int pid) {
         ItemStack input = getStackInSlot(0);
         ItemStack books = getStackInSlot(1);
         ItemStack output = getStackInSlot(2);
 
-        if (input == null || !input.isItemEnchanted() || books == null || books.stackSize <= 0 || output != null) {
+        if (input.isEmpty() || !input.isItemEnchanted() || books.isEmpty() || books.getCount() <= 0 || !output.isEmpty()) {
             return;
         }
 
@@ -49,7 +49,7 @@ public class TileDissEnchanter extends TileInventoryBase {
             return;
         }
 
-        int targetId = packet.intValue;
+        int targetId = data.readInt();
 
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound compound = list.getCompoundTagAt(i);
@@ -61,10 +61,10 @@ public class TileDissEnchanter extends TileInventoryBase {
                 continue;
             }
 
-            int cost = (int)(((double) lvl / (double) e.getMaxLevel()) * 20);
+            int cost = (int) (((double) lvl / (double) e.getMaxLevel()) * 20);
 
             if (!client.capabilities.isCreativeMode && cost > client.experienceLevel) {
-                client.addChatComponentMessage(new TextComponentTranslation("chat.dissEnchanter.notEnoughLevels.msg", cost).setStyle(new Style().setColor(TextFormatting.RED)));
+                client.sendMessage(new TextComponentTranslation("chat.dissEnchanter.notEnoughLevels.msg", cost).setStyle(new Style().setColor(TextFormatting.RED)));
                 return;
             }
 
@@ -77,13 +77,13 @@ public class TileDissEnchanter extends TileInventoryBase {
                 return;
             }
 
-            books.stackSize--;
-            if (books.stackSize <= 0) {
-                setInventorySlotContents(1, null);
+            books.shrink(1);
+            if (books.getCount() <= 0) {
+                setInventorySlotContents(1, ItemStack.EMPTY);
             }
 
             int repairCost = stackCompound.getInteger("RepairCost");
-            repairCost -= ((double)repairCost * (1D / list.tagCount()));
+            repairCost -= ((double) repairCost * (1D / list.tagCount()));
             stackCompound.setInteger("RepairCost", repairCost);
 
             ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);

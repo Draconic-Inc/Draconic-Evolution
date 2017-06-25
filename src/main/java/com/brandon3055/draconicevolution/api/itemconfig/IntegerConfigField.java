@@ -22,10 +22,10 @@ public class IntegerConfigField implements IItemConfigField {
     private String prefix = "";
 
     /**
-     * @param name the name of the field
+     * @param name         the name of the field
      * @param defaultValue the default defaultValue of the field
-     * @param description a description for this field. This will be passed through I18n so it can be a localization key.
-     * @param controlType Valid control types are PLUS_MINUS 1, 2 or 3, SLIDER or SELECTION
+     * @param description  a description for this field. This will be passed through I18n so it can be a localization key.
+     * @param controlType  Valid control types are PLUS_MINUS 1, 2 or 3, SLIDER or SELECTION
      */
     public IntegerConfigField(String name, int defaultValue, int minValue, int maxValue, String description, EnumControlType controlType) {
         this.name = name;
@@ -64,7 +64,7 @@ public class IntegerConfigField implements IItemConfigField {
 
     @Override
     public String getValueFraction(double percent) {
-        return String.valueOf((int)(minValue + (percent * (maxValue - minValue)))) + extension;
+        return String.valueOf((int) (minValue + (percent * (maxValue - minValue)))) + extension;
     }
 
     @Override
@@ -89,12 +89,12 @@ public class IntegerConfigField implements IItemConfigField {
 
     @Override
     public double getFractionalValue() {
-        return (double)(value - minValue) / (double)(maxValue - minValue);
+        return (double) (value - minValue) / (double) (maxValue - minValue);
     }
 
     @Override
     public void handleButton(EnumButton button, int data) {
-        switch (button){
+        switch (button) {
             case MINUS1:
                 value--;
                 break;
@@ -125,14 +125,14 @@ public class IntegerConfigField implements IItemConfigField {
             case SLIDER:
                 double range = maxValue - minValue;
                 double pos = (data / 10000D) * range;
-                value = (int)(minValue + pos);
+                value = (int) (minValue + pos);
                 break;
         }
 
         if (value > maxValue) {
             value = maxValue;
         }
-        else if (value < minValue){
+        else if (value < minValue) {
             value = minValue;
         }
     }
@@ -145,11 +145,11 @@ public class IntegerConfigField implements IItemConfigField {
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         value = compound.getInteger(name);
-        if (value > maxValue){
+        if (value > maxValue) {
             value = maxValue;
             writeToNBT(compound);
         }
-        else if (value < minValue){
+        else if (value < minValue) {
             value = minValue;
             writeToNBT(compound);
         }
@@ -164,8 +164,8 @@ public class IntegerConfigField implements IItemConfigField {
     public Map<Integer, String> getValues() {
         Map<Integer, String> list = new LinkedHashMap<Integer, String>();
 
-        if (controlType == EnumControlType.SELECTIONS){
-            for (int i = minValue; i <= maxValue; i++){
+        if (controlType == EnumControlType.SELECTIONS) {
+            for (int i = minValue; i <= maxValue; i++) {
                 list.put(i, i + extension);
             }
         }

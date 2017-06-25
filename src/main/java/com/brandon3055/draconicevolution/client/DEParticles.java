@@ -24,7 +24,7 @@ public class DEParticles {
     public static int SOUL_EXTRACTION;
     public static int ARROW_SHOCKWAVE;
 
-    public static void registerClient(){
+    public static void registerClient() {
         ENERGY_PARTICLE = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergy.Factory());
         ENERGY_CORE_FX = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergyCoreFX.Factory());
         LINE_INDICATOR = BCEffectHandler.registerFX(DE_SHEET, new ParticleLineIndicator.Factory());
@@ -38,7 +38,7 @@ public class DEParticles {
         ARROW_SHOCKWAVE = BCEffectHandler.registerFX(DE_SHEET, new ParticleArrowShockwave.Factory());
     }
 
-    public static void registerServer(){
+    public static void registerServer() {
         ENERGY_PARTICLE = BCEffectHandler.registerFXServer();
         ENERGY_CORE_FX = BCEffectHandler.registerFXServer();
         LINE_INDICATOR = BCEffectHandler.registerFXServer();

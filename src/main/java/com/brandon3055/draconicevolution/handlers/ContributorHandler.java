@@ -63,7 +63,8 @@ public class ContributorHandler {
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             ProcessHandlerClient.addProcess(process);
-        } else {
+        }
+        else {
             ProcessHandler.addProcess(process);
         }
     }
@@ -76,7 +77,7 @@ public class ContributorHandler {
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player instanceof EntityPlayerMP) {
             for (String contribName : ContributorHandler.contributors.keySet()) {
-                for (String name : FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()) {
+                for (String name : FMLCommonHandler.instance().getMinecraftServerInstance().getOnlinePlayerNames()) {
                     if (name.equals(contribName)) {
                         ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(contribName);
                         DraconicEvolution.network.sendTo(new PacketContributor(contribName, contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled), (EntityPlayerMP) event.player);

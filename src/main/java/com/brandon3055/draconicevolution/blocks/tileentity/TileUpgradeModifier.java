@@ -11,7 +11,7 @@ public class TileUpgradeModifier extends TileInventoryBase implements ITickable 
     public float rotationSpeed = 0;
     public float targetSpeed = 0;
 
-    public TileUpgradeModifier(){
+    public TileUpgradeModifier() {
         setInventorySize(1);
     }
 

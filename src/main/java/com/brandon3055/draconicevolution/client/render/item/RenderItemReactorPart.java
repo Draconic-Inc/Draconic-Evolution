@@ -1,27 +1,20 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.render.item.IItemRenderer;
+import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by brandon3055 on 21/11/2016.
@@ -38,39 +31,15 @@ public class RenderItemReactorPart implements IItemRenderer, IPerspectiveAwareMo
     }
 
     //region Unused
-    @Override
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-        return new ArrayList<>();
-    }
 
     @Override
     public boolean isAmbientOcclusion() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isGui3d() {
         return false;
-    }
-
-    @Override
-    public boolean isBuiltInRenderer() {
-        return true;
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return null;
-    }
-
-    @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return ItemCameraTransforms.DEFAULT;
-    }
-
-    @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.NONE;
     }
 
     //endregion
@@ -81,9 +50,23 @@ public class RenderItemReactorPart implements IItemRenderer, IPerspectiveAwareMo
     }
 
     @Override
-    public void renderItem(ItemStack item) {
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemStack stack, ItemCameraTransforms.TransformType cameraTransformType) {
+        return MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_BLOCK.getTransforms(), cameraTransformType);
+    }
+
+    @Override
+    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
         GlStateManager.pushMatrix();
+        GlStateTracker.pushState();
         GlStateManager.translate(0.5, 0.5, 0.5);
+
+//        ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER_RING);
+//        GlStateManager.rotate(90, 1, 0, 0);
+//        GlStateManager.translate(0, -0.58, 0);
+//        GlStateManager.scale(0.95, 0.95, 0.95);
+
+//        RenderTileReactorComponent.renderStabilizer(25, 0, 1F, 0, true, -1);
+
         switch (item.getItemDamage()) {
             case 0:
                 ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER);
@@ -120,6 +103,7 @@ public class RenderItemReactorPart implements IItemRenderer, IPerspectiveAwareMo
                 modelRing.render(null, -30, 1, 1, 0, 0, 1F / 16F);
                 break;
         }
+        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 }

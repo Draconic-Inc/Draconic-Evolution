@@ -46,7 +46,7 @@ public class ENetFXHandlerClient extends ENetFXHandler {
             }
 
             if (tile.flowRates.size() > beamFXList.indexOf(beam)) {
-                beam.updateFX((tile.flowRates.get((byte)beamFXList.indexOf(beam)) & 0xFF) / 255F);
+                beam.updateFX((tile.flowRates.get((byte) beamFXList.indexOf(beam)) & 0xFF) / 255F);
             }
         }
 

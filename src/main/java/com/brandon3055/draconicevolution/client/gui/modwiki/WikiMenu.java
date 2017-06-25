@@ -33,12 +33,12 @@ public class WikiMenu extends MGuiElementBase implements IMGuiListener {
 
         if (WikiConfig.editMode) {
             addChild(new MGuiButtonSolid(modularGui, "Reload", xPos + (xSize / 2), yPos + 3, 50, 12, "Reload").setColours(0xFF000000, 0xFF333333, 0xFF555555));
-            addChild(new MGuiButtonSolid(modularGui, "TOGGLE_EDIT_LINES", xPos + (xSize / 2) + 51, yPos + 3, 12, 12, "E").setColours(MENU_BAR, 0xFFFF0000, 0xFFFF0000).setListener(this).setToolTip(new String[] {"Toggle Edit. Edit lines and info."}));
+            addChild(new MGuiButtonSolid(modularGui, "TOGGLE_EDIT_LINES", xPos + (xSize / 2) + 51, yPos + 3, 12, 12, "E").setColours(MENU_BAR, 0xFFFF0000, 0xFFFF0000).setListener(this).setToolTip(new String[]{"Toggle Edit. Edit lines and info."}));
         }
 
         String s = I18n.format("generic.options.txt");
         int size = fontRenderer.getStringWidth(s);
-        addChild(new MGuiButtonSolid(modularGui, "OPTIONS", xPos + xSize - (size + 7), yPos + 4, size + 4, 12, s){
+        addChild(new MGuiButtonSolid(modularGui, "OPTIONS", xPos + xSize - (size + 7), yPos + 4, size + 4, 12, s) {
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
                 return hovering ? mixColours(MENU_BAR, 0x00151515) : MENU_BAR;
@@ -53,7 +53,7 @@ public class WikiMenu extends MGuiElementBase implements IMGuiListener {
             public int getTextColour(boolean hovered, boolean disabled) {
                 return TEXT_COLOUR;
             }
-        }.setListener(this).setToolTip(new String[] {"Open Options Window"}));//.setColours(0xFF888888, 0xFF000000, 0xFF222222)
+        }.setListener(this).setToolTip(new String[]{"Open Options Window"}));//.setColours(0xFF888888, 0xFF000000, 0xFF222222)
 
 
     }

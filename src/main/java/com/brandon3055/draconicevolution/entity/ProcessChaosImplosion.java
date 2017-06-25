@@ -18,9 +18,9 @@ import java.util.Random;
  */
 public class ProcessChaosImplosion implements IProcess {
 
-    public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute().setDamageAllowedInCreativeMode();
+    public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute();
 
-    private World worldObj;
+    private World world;
     private int xCoord;
     private int yCoord;
     private int zCoord;
@@ -30,7 +30,7 @@ public class ProcessChaosImplosion implements IProcess {
     private double expansion = 0;
 
     public ProcessChaosImplosion(World world, int x, int y, int z) {
-        this.worldObj = world;
+        this.world = world;
         this.xCoord = x;
         this.yCoord = y;
         this.zCoord = z;
@@ -40,7 +40,6 @@ public class ProcessChaosImplosion implements IProcess {
 
     @Override
     public void updateProcess() {
-
         int OD = (int) expansion;
         int ID = OD - 1;
         int size = (int) expansion;
@@ -51,7 +50,7 @@ public class ProcessChaosImplosion implements IProcess {
                 if (dist < OD && dist >= ID) {
                     float tracePower = power - (float) (expansion / 10D);
                     tracePower *= 1F + ((random.nextFloat() - 0.5F) * 0.2);
-                    ProcessHandler.addProcess(new ChaosImplosionTrace(worldObj, x, yCoord, z, tracePower, random));
+                    ProcessHandler.addProcess(new ChaosImplosionTrace(world, x, yCoord, z, tracePower, random));
                 }
             }
         }
@@ -69,7 +68,7 @@ public class ProcessChaosImplosion implements IProcess {
 
     public class ChaosImplosionTrace implements IProcess {
 
-        private World worldObj;
+        private World world;
         private int xCoord;
         private int yCoord;
         private int zCoord;
@@ -77,7 +76,7 @@ public class ProcessChaosImplosion implements IProcess {
         private Random random;
 
         public ChaosImplosionTrace(World world, int x, int y, int z, float power, Random random) {
-            this.worldObj = world;
+            this.world = world;
             this.xCoord = x;
             this.yCoord = y;
             this.zCoord = z;
@@ -91,26 +90,26 @@ public class ProcessChaosImplosion implements IProcess {
             float energy = power * 10;
 
             for (int y = yCoord; y >= 0 && energy > 0; y--) {
-                List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
                 for (Entity entity : entities) entity.attackEntityFrom(ProcessChaosImplosion.chaosImplosion, power * 100);
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
 
-                if (energy >= 0) worldObj.setBlockToAir(new BlockPos(xCoord, y, zCoord));
+                if (energy >= 0) world.setBlockToAir(new BlockPos(xCoord, y, zCoord));
                 energy -= 0.5F + (0.1F * (yCoord - y));
             }
 
             energy = power * 20;
             yCoord++;
             for (int y = yCoord; y < 255 && energy > 0; y++) {
-                List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
 
                 for (Entity entity : entities) {
                     entity.attackEntityFrom(DEDamageSources.CHAOS_ISLAND_IMPLOSION, power * 100);
                 }
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
-                if (energy >= 0) worldObj.setBlockToAir(new BlockPos(xCoord, y, zCoord));
+                if (energy >= 0) world.setBlockToAir(new BlockPos(xCoord, y, zCoord));
 
                 energy -= 0.5F + (0.1F * (y - yCoord));
             }

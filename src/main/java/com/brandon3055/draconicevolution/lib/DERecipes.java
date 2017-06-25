@@ -60,14 +60,14 @@ public class DERecipes {
         //Fusion Crafting Blocks
         addShaped(NORMAL, fusionCraftingCore, "ABA", "BCB", "ABA", 'A', "blockLapis", 'B', "gemDiamond", 'C', draconicCore);
         addShaped(HARD, fusionCraftingCore, "ABA", "BCB", "ABA", 'A', "blockLapis", 'B', "netherStar", 'C', draconicCore);
-        addShaped(NORMAL, craftingPedestal, "ABA", "CDC", "CCC", 'A', "gemDiamond", 'B', draconicCore, 'C', "stone", 'D', "blockIron");
-        addShaped(HARD, craftingPedestal, "ABA", "CDC", "ECE", 'A', "gemDiamond", 'B', draconicCore, 'C', "blockDraconium", 'D', "blockIron", 'E', "stone");
-        addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 1), new ItemStack(craftingPedestal), 32000, 0, wyvernCore, "gemDiamond", draconicCore, "gemDiamond", draconicCore, "gemDiamond", "blockDraconium", "gemDiamond");
-        addFusion(HARD, new ItemStack(craftingPedestal, 1, 1), new ItemStack(craftingPedestal), 256000, 0, wyvernCore, "netherStar", draconicCore, "netherStar", draconicCore, "netherStar", "blockDraconium", "netherStar");
-        addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 2), new ItemStack(craftingPedestal, 1, 1), 256000, 1, "gemDiamond", "gemDiamond", wyvernCore, "blockDraconiumAwakened", wyvernCore, "gemDiamond", "gemDiamond");
-        addFusion(HARD, new ItemStack(craftingPedestal, 1, 2), new ItemStack(craftingPedestal, 1, 1), 1000000, 1, "netherStar", "netherStar", wyvernCore, "blockDraconiumAwakened", wyvernCore, "netherStar", "netherStar", "dragonEgg");
-        addFusion(NORMAL, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 8000000, 2, "gemDiamond", "gemDiamond", chaoticCore, "dragonEgg", "gemDiamond", "gemDiamond");
-        addFusion(HARD, new ItemStack(craftingPedestal, 1, 3), new ItemStack(craftingPedestal, 1, 2), 23000000, 2, "netherStar", "netherStar", chaoticCore, "dragonEgg", chaoticCore, "netherStar", "netherStar", chaosShard);
+        addShaped(NORMAL, craftingInjector, "ABA", "CDC", "CCC", 'A', "gemDiamond", 'B', draconicCore, 'C', "stone", 'D', "blockIron");
+        addShaped(HARD, craftingInjector, "ABA", "CDC", "ECE", 'A', "gemDiamond", 'B', draconicCore, 'C', "blockDraconium", 'D', "blockIron", 'E', "stone");
+        addFusion(NORMAL, new ItemStack(craftingInjector, 1, 1), new ItemStack(craftingInjector), 32000, 0, wyvernCore, "gemDiamond", draconicCore, "gemDiamond", draconicCore, "gemDiamond", "blockDraconium", "gemDiamond");
+        addFusion(HARD, new ItemStack(craftingInjector, 1, 1), new ItemStack(craftingInjector), 256000, 0, wyvernCore, "netherStar", draconicCore, "netherStar", draconicCore, "netherStar", "blockDraconium", "netherStar");
+        addFusion(NORMAL, new ItemStack(craftingInjector, 1, 2), new ItemStack(craftingInjector, 1, 1), 256000, 1, "gemDiamond", "gemDiamond", wyvernCore, "blockDraconiumAwakened", wyvernCore, "gemDiamond", "gemDiamond");
+        addFusion(HARD, new ItemStack(craftingInjector, 1, 2), new ItemStack(craftingInjector, 1, 1), 1000000, 1, "netherStar", "netherStar", wyvernCore, "blockDraconiumAwakened", wyvernCore, "netherStar", "netherStar", "dragonEgg");
+        addFusion(NORMAL, new ItemStack(craftingInjector, 1, 3), new ItemStack(craftingInjector, 1, 2), 8000000, 2, "gemDiamond", "gemDiamond", chaoticCore, "dragonEgg", "gemDiamond", "gemDiamond");
+        addFusion(HARD, new ItemStack(craftingInjector, 1, 3), new ItemStack(craftingInjector, 1, 2), 23000000, 2, "netherStar", "netherStar", chaoticCore, "dragonEgg", chaoticCore, "netherStar", "netherStar", chaosShard);
 
         //Energy Net
         //Relay
@@ -136,8 +136,8 @@ public class DERecipes {
 
         //region Exotic Blocks
 
-        addFusion(NORMAL, new ItemStack(enderEnergyManipulator), new ItemStack(SKULL, 1, 1), 12000000, 1, "pearlEnderEye", "pearlEnderEye", "pearlEnderEye", "pearlEnderEye", "pearlEnderEye", "pearlEnderEye", draconicCore, wyvernCore, draconicCore, "pearlEnderEye");
-        addFusion(HARD, new ItemStack(enderEnergyManipulator), new ItemStack(SKULL, 1, 1), 32000000, 1, draconicCore, wyvernCore, "pearlEnderEye", wyvernCore, draconicCore, "pearlEnderEye", draconicCore, wyvernCore, draconicCore, "pearlEnderEye");
+        addFusion(NORMAL, new ItemStack(enderEnergyManipulator), new ItemStack(SKULL, 1, 1), 12000000, 1, ENDER_EYE, ENDER_EYE, ENDER_EYE, ENDER_EYE, ENDER_EYE, ENDER_EYE, draconicCore, wyvernCore, draconicCore, ENDER_EYE);
+        addFusion(HARD, new ItemStack(enderEnergyManipulator), new ItemStack(SKULL, 1, 1), 32000000, 1, draconicCore, wyvernCore, ENDER_EYE, wyvernCore, draconicCore, ENDER_EYE, draconicCore, wyvernCore, draconicCore, ENDER_EYE);
 
         //endregion
 
@@ -240,18 +240,18 @@ public class DERecipes {
         //endregion
 
         //region Upgrade Keys
-        addShaped(ALL, getKey(ToolUpgrade.RF_CAPACITY    ), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', wyvernEnergyCore);
-        addShaped(ALL, getKey(ToolUpgrade.DIG_SPEED      ), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_PICKAXE);
-        addShaped(ALL, getKey(ToolUpgrade.DIG_AOE        ), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', "enderpearl");
-        addShaped(ALL, getKey(ToolUpgrade.ATTACK_DAMAGE  ), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_SWORD);
-        addShaped(ALL, getKey(ToolUpgrade.ATTACK_AOE     ), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', DIAMOND_SWORD);
-        addShaped(ALL, getKey(ToolUpgrade.ARROW_DAMAGE   ), "ABC", "DED", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotGold", 'D', "ingotDraconium", 'E', ARROW);
-        addShaped(ALL, getKey(ToolUpgrade.DRAW_SPEED     ), "ABA", "CDC", "ABE", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', BOW, 'E', "ingotGold");
-        addShaped(ALL, getKey(ToolUpgrade.ARROW_SPEED    ), "ABC", "DED", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "feather", 'D', "ingotDraconium", 'E', ARROW);
+        addShaped(ALL, getKey(ToolUpgrade.RF_CAPACITY), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', wyvernEnergyCore);
+        addShaped(ALL, getKey(ToolUpgrade.DIG_SPEED), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_PICKAXE);
+        addShaped(ALL, getKey(ToolUpgrade.DIG_AOE), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', "enderpearl");
+        addShaped(ALL, getKey(ToolUpgrade.ATTACK_DAMAGE), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_SWORD);
+        addShaped(ALL, getKey(ToolUpgrade.ATTACK_AOE), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', DIAMOND_SWORD);
+        addShaped(ALL, getKey(ToolUpgrade.ARROW_DAMAGE), "ABC", "DED", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotGold", 'D', "ingotDraconium", 'E', ARROW);
+        addShaped(ALL, getKey(ToolUpgrade.DRAW_SPEED), "ABA", "CDC", "ABE", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', BOW, 'E', "ingotGold");
+        addShaped(ALL, getKey(ToolUpgrade.ARROW_SPEED), "ABC", "DED", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "feather", 'D', "ingotDraconium", 'E', ARROW);
         addShaped(ALL, getKey(ToolUpgrade.SHIELD_CAPACITY), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', DIAMOND_CHESTPLATE);
         addShaped(ALL, getKey(ToolUpgrade.SHIELD_RECOVERY), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_CHESTPLATE);
-        addShaped(ALL, getKey(ToolUpgrade.MOVE_SPEED     ), "ABA", "CDC", "AEA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_BOOTS, 'E', "blockRedstone");
-        addShaped(ALL, getKey(ToolUpgrade.JUMP_BOOST     ), "ABA", "CDC", "AEA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_BOOTS, 'E', "blockSlime");
+        addShaped(ALL, getKey(ToolUpgrade.MOVE_SPEED), "ABA", "CDC", "AEA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_BOOTS, 'E', "blockRedstone");
+        addShaped(ALL, getKey(ToolUpgrade.JUMP_BOOST), "ABA", "CDC", "AEA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', GOLDEN_BOOTS, 'E', "blockSlime");
         //endregion
 
         //region Misc
@@ -269,7 +269,7 @@ public class DERecipes {
         //endregion
 
         /* ------------------ Other ------------------ */
-        if (RecipeManager.isEnabled(DEFeatures.draconiumDust) && RecipeManager.isEnabled(DEFeatures.draconiumIngot)){
+        if (RecipeManager.isEnabled(DEFeatures.draconiumDust) && RecipeManager.isEnabled(DEFeatures.draconiumIngot)) {
             GameRegistry.addSmelting(DEFeatures.draconiumDust, new ItemStack(DEFeatures.draconiumIngot), 0);
         }
 

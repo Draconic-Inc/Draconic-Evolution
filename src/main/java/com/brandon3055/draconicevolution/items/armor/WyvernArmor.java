@@ -24,6 +24,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -66,7 +67,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     }
 
     @Override
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
         subItems.add(new ItemStack(itemIn));
         ItemStack stack = new ItemStack(itemIn);
         modifyEnergy(stack, getCapacity(stack));
@@ -103,12 +104,12 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
             int i = 100 + (100 * u) + (Math.max(u - 1, 0) * 50);
             registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         }
-        if (armorType == EntityEquipmentSlot.FEET){
+        if (armorType == EntityEquipmentSlot.FEET) {
             int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.JUMP_BOOST);
             int i = 100 + (100 * u) + (Math.max(u - 1, 0) * 50);
             registry.register(stack, new IntegerConfigField("armorJumpModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         }
-        if (armorType == EntityEquipmentSlot.FEET || armorType == EntityEquipmentSlot.LEGS){
+        if (armorType == EntityEquipmentSlot.FEET || armorType == EntityEquipmentSlot.LEGS) {
             registry.register(stack, new BooleanConfigField("sprintBoost", false, "config.field.sprintBoost.description"));
         }
 
@@ -188,8 +189,8 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
         this.model.isSneak = entityLiving.isSneaking();
         this.model.isRiding = entityLiving.isRiding();
         this.model.isChild = entityLiving.isChild();
-   //     this.model.aimedBow = false;
-   //     this.model.heldItemRight = (entityLiving.getHeldItem() != null ? 1 : 0);
+        //     this.model.aimedBow = false;
+        //     this.model.heldItemRight = (entityLiving.getHeldItem() != null ? 1 : 0);
 
 //                 this.model.bipedHead.showModel = (armorType == EntityEquipmentSlot.HEAD);
         this.model.bipedHeadwear.showModel = (armorType == EntityEquipmentSlot.HEAD);
@@ -223,7 +224,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     public float getSpeedModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorSpeedModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !player.isSprinting()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !player.isSprinting()) {
             modifier /= 5F;
         }
 
@@ -234,7 +235,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     public float getJumpModifier(ItemStack stack, EntityPlayer player) {
         float modifier = ToolConfigHelper.getIntegerField("armorJumpModifier", stack) / 100F;
 
-        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()){
+        if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()) {
             modifier /= 5F;
         }
 
@@ -292,11 +293,11 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
             return ToolStats.WYVERN_BASE_CAPACITY;
         }
         else {
-            return ToolStats.WYVERN_BASE_CAPACITY * (int)Math.pow(2, level + 1);
+            return ToolStats.WYVERN_BASE_CAPACITY * (int) Math.pow(2, level + 1);
         }
     }
 
-    protected int getMaxReceive(ItemStack stack){
+    protected int getMaxReceive(ItemStack stack) {
         return 512000;
     }
 
@@ -350,7 +351,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return 1D - ((double)getEnergyStored(stack) / (double)getMaxEnergyStored(stack));
+        return 1D - ((double) getEnergyStored(stack) / (double) getMaxEnergyStored(stack));
     }
 
     //endregion

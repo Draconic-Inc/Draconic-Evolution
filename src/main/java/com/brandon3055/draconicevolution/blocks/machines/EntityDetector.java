@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEntityDetector;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEntityDetector;
 import net.minecraft.block.ITileEntityProvider;
@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -22,12 +23,10 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
-
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class EntityDetector extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class EntityDetector extends BlockBCore implements ITileEntityProvider, IRenderOverride {
     public static final PropertyBool ADVANCED = PropertyBool.create("advanced");
     public static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 
@@ -35,12 +34,14 @@ public class EntityDetector extends BlockBCore implements ITileEntityProvider, I
         setDefaultState(blockState.getBaseState().withProperty(ADVANCED, false));
         this.canProvidePower = true;
         setIsFullCube(false);
+        this.addName(0, "entity_detector_basic");
+        this.addName(1, "entity_detector_advanced");
     }
 
     //region BlockState
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
         list.add(new ItemStack(item));
         list.add(new ItemStack(item, 1, 1));
     }

@@ -5,7 +5,6 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
-import com.brandon3055.brandonscore.network.PacketTileMessage;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
 import com.brandon3055.draconicevolution.inventory.ContainerDissEnchanter;
 import net.minecraft.client.resources.I18n;
@@ -101,7 +100,7 @@ public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter
                 }
 
                 String s = e.getTranslatedName(lvl);
-                int cost = (int)(((double) lvl / (double) e.getMaxLevel()) * 20);
+                int cost = (int) (((double) lvl / (double) e.getMaxLevel()) * 20);
                 String xp = (player.experienceLevel >= cost ? TextFormatting.GREEN : TextFormatting.RED) + "" + cost;
 
                 MGuiLabel label = new MGuiLabel(this, 0, 0, width, 12, xp).setAlignment(EnumAlignment.RIGHT);
@@ -129,11 +128,11 @@ public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter
         }
         else if (eventString.equals("SELECTOR_PICK")) {
             if (!(eventElement.linkedObject instanceof Integer)) {
-                player.addChatComponentMessage(new TextComponentString("[ERROR]").setStyle(new Style().setColor(TextFormatting.RED)));
+                player.sendMessage(new TextComponentString("[ERROR]").setStyle(new Style().setColor(TextFormatting.RED)));
                 return;
             }
 
-            tile.sendPacketToServer(new PacketTileMessage(tile, (byte)0, (Integer) eventElement.linkedObject, false));
+            tile.sendPacketToServer(output -> output.writeInt((Integer) eventElement.linkedObject), 0);
         }
     }
 
@@ -143,7 +142,7 @@ public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter
         ItemStack slot0 = tile.getStackInSlot(0);
         ItemStack slot1 = tile.getStackInSlot(1);
         ItemStack slot2 = tile.getStackInSlot(2);
-        extractButton.disabled = !(slot0 != null && slot0.isItemEnchanted() && slot1 != null && slot1.stackSize > 0 && slot1.getItem() == Items.BOOK && slot2 == null);
+        extractButton.disabled = !(!slot0.isEmpty() && slot0.isItemEnchanted() && !slot1.isEmpty() && slot1.getCount() > 0 && slot1.getItem() == Items.BOOK && slot2.isEmpty());
 
         if (extractButton.disabled && selector != null) {
             manager.remove(selector);

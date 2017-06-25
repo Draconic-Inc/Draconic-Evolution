@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileChaosCrystal;
@@ -32,7 +32,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 24/9/2015.
  */
-public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, ICustomRender{
+public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
     public ChaosCrystal() {
         this.setHardness(100.0F);
@@ -71,7 +71,8 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, ICu
     }
 
     @Override
-    public void onBlockDestroyedByExplosion(World worldIn, BlockPos pos, Explosion explosionIn) {}
+    public void onBlockDestroyedByExplosion(World worldIn, BlockPos pos, Explosion explosionIn) {
+    }
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
@@ -84,7 +85,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, ICu
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        if (placer instanceof EntityPlayer && ((EntityPlayer) placer).capabilities.isCreativeMode){
+        if (placer instanceof EntityPlayer && ((EntityPlayer) placer).capabilities.isCreativeMode) {
             TileEntity tile = world.getTileEntity(pos);
             if (!world.isRemote && tile instanceof TileChaosCrystal) {
                 ((TileChaosCrystal) tile).locationHash = ((TileChaosCrystal) tile).getLocationHash(pos, world.provider.getDimension());
@@ -104,17 +105,17 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, ICu
         List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).expand(15, 15, 15));
 
         for (EntityPlayer player : players) {
-            if (player.capabilities.isCreativeMode){
+            if (player.capabilities.isCreativeMode) {
                 return;
             }
-            if (player.getHeldItemMainhand() != null) {
+            if (!player.getHeldItemMainhand().isEmpty()) {
                 for (String s : naughtyList) {
                     if (player.getHeldItemMainhand().getUnlocalizedName().equals(s)) {
                         player.attackEntityFrom(punishment, Float.MAX_VALUE);
                     }
                 }
             }
-            if (player.getHeldItemOffhand() != null) {
+            if (!player.getHeldItemOffhand().isEmpty()) {
                 for (String s : naughtyList) {
                     if (player.getHeldItemOffhand().getUnlocalizedName().equals(s)) {
                         player.attackEntityFrom(punishment, Float.MAX_VALUE);

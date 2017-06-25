@@ -28,7 +28,7 @@ public interface IUpgradableItem {
     List<String> getValidUpgrades(ItemStack stack);
 
     /**
-     * @param stack The stack
+     * @param stack   The stack
      * @param upgrade The upgrade
      * @return Returns the max upgrade level this item can accept (1 = basic, 2 = wyvern, 3 = draconic, 4 = chaotic)
      */

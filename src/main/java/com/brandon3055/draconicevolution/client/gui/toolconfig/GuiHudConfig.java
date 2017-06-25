@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.toolconfig;
 
 import com.brandon3055.brandonscore.client.gui.ButtonColourRect;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.registry.ModConfigParser;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.HudHandler;
@@ -90,39 +91,50 @@ public class GuiHudConfig extends GuiScreen {
         if (button.id == 0) {
             Minecraft.getMinecraft().displayGuiScreen(parent);
             return;
-        } else if (button.id == 1 && DEConfig.hudSettings[4] < 300) {
+        }
+        else if (button.id == 1 && DEConfig.hudSettings[4] < 300) {
             DEConfig.hudSettings[4] += 10;
-        } else if (button.id == 2 && DEConfig.hudSettings[4] > 30) {
+        }
+        else if (button.id == 2 && DEConfig.hudSettings[4] > 30) {
             DEConfig.hudSettings[4] -= 10;
-        } else if (button.id == 3) {
+        }
+        else if (button.id == 3) {
             if (DEConfig.hudSettings[6] < 4) DEConfig.hudSettings[6]++;
             else DEConfig.hudSettings[6] = 0;
-        } else if (button.id == 4 && DEConfig.hudSettings[5] < 300) {
+        }
+        else if (button.id == 4 && DEConfig.hudSettings[5] < 300) {
             DEConfig.hudSettings[5] += 10;
-        } else if (button.id == 5 && DEConfig.hudSettings[5] > 30) {
+        }
+        else if (button.id == 5 && DEConfig.hudSettings[5] > 30) {
             DEConfig.hudSettings[5] -= 10;
-        } else if (button.id == 6) {
+        }
+        else if (button.id == 6) {
             if (DEConfig.hudSettings[7] < 4) DEConfig.hudSettings[7]++;
             else DEConfig.hudSettings[7] = 0;
-        } else if (button.id == 7) {
+        }
+        else if (button.id == 7) {
             if (DEConfig.hudSettings[9] == 0) DEConfig.hudSettings[9] = 1;
             else DEConfig.hudSettings[9] = 0;
-        } else if (button.id == 8) {
+        }
+        else if (button.id == 8) {
             if (DEConfig.hudSettings[8] == 0) DEConfig.hudSettings[8] = 1;
             else DEConfig.hudSettings[8] = 0;
-        } else if (button.id == 9) {
+        }
+        else if (button.id == 9) {
             if (DEConfig.hudSettings[10] == 0) DEConfig.hudSettings[10] = 1;
             else DEConfig.hudSettings[10] = 0;
-        } else if (button.id == 10) {
+        }
+        else if (button.id == 10) {
             if (DEConfig.hudSettings[11] == 0) DEConfig.hudSettings[11] = 1;
             else DEConfig.hudSettings[11] = 0;
         }
 
-        Property property = DraconicEvolution.configProcessor.findProperty("Client Settings", "hudSettings");
+        Property property = ModConfigParser.findUnwrappedProperty(DraconicEvolution.MODID, "hudSettings", "Client Settings");
         if (property != null) {
             property.set(DEConfig.hudSettings);
-            DraconicEvolution.configProcessor.saveConfig();
-        }else {
+            ModConfigParser.saveModConfig(DraconicEvolution.MODID);
+        }
+        else {
             LogHelper.error("Something went wrong when saving config values! Property could not be found");
         }
 
@@ -197,7 +209,8 @@ public class GuiHudConfig extends GuiScreen {
             dragOffsetX = hudX - x;
             dragOffsetY = hudY - y;
             return;
-        } else if (GuiHelper.isInRect(armorX - 19, armorY - 19, 39, 39, x, y)) {
+        }
+        else if (GuiHelper.isInRect(armorX - 19, armorY - 19, 39, 39, x, y)) {
             draggingArmor = true;
             dragOffsetX = armorX - x;
             dragOffsetY = armorY - y;
@@ -212,13 +225,16 @@ public class GuiHudConfig extends GuiScreen {
         super.mouseReleased(mouseX, mouseY, state);
         draggingHud = draggingArmor = false;
 
-        Property property = DraconicEvolution.configProcessor.findProperty("Client Settings", "hudSettings");
+
+        Property property = ModConfigParser.findUnwrappedProperty(DraconicEvolution.MODID, "hudSettings", "Client Settings");
         if (property != null) {
             property.set(DEConfig.hudSettings);
-            DraconicEvolution.configProcessor.saveConfig();
-        }else {
+            ModConfigParser.saveModConfig(DraconicEvolution.MODID);
+        }
+        else {
             LogHelper.error("Something went wrong when saving config values! Property could not be found");
         }
+
 //        DEConfig.config.get("Gui Stuff", "HUD Settings", new int[]{7, 874, 100, 100, 100, 100, 0, 0, 0, 0, 1, 1}, "Used to store the position of the armor ant tool HUD's. This should not be modified", Integer.MIN_VALUE, Integer.MAX_VALUE, true, 12).set(DEConfig.hudSettings);
 //        DEConfig.config.save();
     }
@@ -232,7 +248,8 @@ public class GuiHudConfig extends GuiScreen {
         if (draggingHud) {
             DEConfig.hudSettings[0] = x1;
             DEConfig.hudSettings[1] = y1;
-        } else if (draggingArmor) {
+        }
+        else if (draggingArmor) {
             DEConfig.hudSettings[2] = x1;
             DEConfig.hudSettings[3] = y1;
         }

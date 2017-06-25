@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCBase;
-import com.brandon3055.brandonscore.network.wrappers.SyncableBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.draconicevolution.entity.EntityChaosImplosion;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -15,56 +15,54 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Created by brandon3055 on 24/9/2015.
  */
-public class TileChaosCrystal extends TileBCBase implements ITickable{
+public class TileChaosCrystal extends TileBCBase implements ITickable {
 
     public int tick = 0;
-    public final SyncableBool guardianDefeated = new SyncableBool(false, true, false, true);
+    public final ManagedBool guardianDefeated = register("guardianDefeated", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
     private int soundTimer;
     public int locationHash = 0;
 
     public TileChaosCrystal() {
-        registerSyncableObject(guardianDefeated, true);
     }
 
     @Override
     public void update() {
         tick++;
 
-        if (tick > 1 && !worldObj.isRemote && locationHash != getLocationHash(pos, worldObj.provider.getDimension())) {
-            worldObj.setBlockToAir(pos);
+        if (tick > 1 && !world.isRemote && locationHash != getLocationHash(pos, world.provider.getDimension())) {
+            world.setBlockToAir(pos);
         }
 
-        if (worldObj.isRemote && soundTimer-- <= 0) {
-            soundTimer = 3600 + worldObj.rand.nextInt(1200);
-            worldObj.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESoundHandler.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, worldObj.rand.nextFloat() * 0.4F + 0.8F, false);
+        if (world.isRemote && soundTimer-- <= 0) {
+            soundTimer = 3600 + world.rand.nextInt(1200);
+            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESoundHandler.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, world.rand.nextFloat() * 0.4F + 0.8F, false);
         }
 
-        if (!worldObj.isRemote && guardianDefeated.value && worldObj.rand.nextInt(50) == 0) {
-            int x = 5 - worldObj.rand.nextInt(11);
-            int z = 5 - worldObj.rand.nextInt(11);
-            EntityLightningBolt bolt = new EntityLightningBolt(worldObj, pos.getX() + x, worldObj.getTopSolidOrLiquidBlock(pos.add(x, 0, z)).getY(), pos.getZ() + z, false);
+        if (!world.isRemote && guardianDefeated.value && world.rand.nextInt(50) == 0) {
+            int x = 5 - world.rand.nextInt(11);
+            int z = 5 - world.rand.nextInt(11);
+            EntityLightningBolt bolt = new EntityLightningBolt(world, pos.getX() + x, world.getTopSolidOrLiquidBlock(pos.add(x, 0, z)).getY(), pos.getZ() + z, false);
             bolt.ignoreFrustumCheck = true;
-            worldObj.addWeatherEffect(bolt);
+            world.addWeatherEffect(bolt);
         }
     }
 
     public void detonate() {
-        if (worldObj.isRemote){
+        if (world.isRemote) {
             return;
         }
 
-        if (locationHash != getLocationHash(pos, worldObj.provider.getDimension()))
-            worldObj.setBlockToAir(pos);
+        if (locationHash != getLocationHash(pos, world.provider.getDimension())) world.setBlockToAir(pos);
         else {
-            EntityChaosImplosion vortex = new EntityChaosImplosion(worldObj);
+            EntityChaosImplosion vortex = new EntityChaosImplosion(world);
             vortex.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-            worldObj.spawnEntityInWorld(vortex);
+            world.spawnEntity(vortex);
         }
     }
 
     public void setDefeated() {
         guardianDefeated.value = true;
-        detectAndSendChanges();
+        super.update();
     }
 
     @Override

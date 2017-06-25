@@ -9,9 +9,9 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringUtils;
-import net.minecraftforge.fml.common.Optional;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,7 +29,7 @@ public class JeiHelper {//TODO This Is Now Borked
         return checkJEDRuntime();
     }
 
-    @Optional.Method(modid = "JEI")
+//    @Optional.Method(modid = "JEI")
     public static boolean checkJEDRuntime() {
         return DEJEIPlugin.jeiRuntime != null;
     }
@@ -46,12 +46,14 @@ public class JeiHelper {//TODO This Is Now Borked
         return getRenderers(result);
     }
 
-    @Optional.Method(modid = "JEI")
+//    @Optional.Method(modid = "JEI")
     private static List<IRecipeRenderer> getRenderers(ItemStack result) {
         List<IRecipeRenderer> renderers = new ArrayList<>();
 
         IRecipeRegistry registry = DEJEIPlugin.jeiRuntime.getRecipeRegistry();
-        List<IRecipeCategory> categories = registry.getRecipeCategories(registry.createFocus(IFocus.Mode.NONE, result));//getRecipeCategoriesWithOutput(result);
+        List<IRecipeCategory> categories = new LinkedList<>();
+//        categories.addAll(registry.getRecipeCategories(registry.createFocus(IFocus.Mode.INPUT, result)));//getRecipeCategoriesWithOutput(result);TODO Verify this is correct.
+        categories.addAll(registry.getRecipeCategories(registry.createFocus(IFocus.Mode.OUTPUT, result)));
 
         for (IRecipeCategory category : categories) {
             List wrappers = registry.getRecipeWrappers(category, registry.createFocus(IFocus.Mode.OUTPUT, result));

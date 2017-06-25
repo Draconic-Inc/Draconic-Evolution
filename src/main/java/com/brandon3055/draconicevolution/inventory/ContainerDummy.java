@@ -19,6 +19,6 @@ public class ContainerDummy extends ContainerBCBase {
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return tile instanceof IInventory ? ((IInventory) tile).isUseableByPlayer(playerIn) : tile != null;
+        return tile instanceof IInventory ? ((IInventory) tile).isUsableByPlayer(playerIn) : tile != null;
     }
 }

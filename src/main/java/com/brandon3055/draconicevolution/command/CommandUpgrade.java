@@ -20,50 +20,50 @@ import java.util.List;
  */
 public class CommandUpgrade extends CommandBase {
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "de_upgrade";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "/de_upgrade";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 0){
-            sender.addChatMessage(new TextComponentString("/de_upgrade clear"));
-            sender.addChatMessage(new TextComponentString("/de_upgrade list"));
-            sender.addChatMessage(new TextComponentString("/de_upgrade <upgade> <level>"));
+        if (args.length == 0) {
+            sender.sendMessage(new TextComponentString("/de_upgrade clear"));
+            sender.sendMessage(new TextComponentString("/de_upgrade list"));
+            sender.sendMessage(new TextComponentString("/de_upgrade <upgade> <level>"));
             return;
         }
 
         ItemStack stack = getCommandSenderAsPlayer(sender).getHeldItemMainhand();
-        if (stack == null){
+        if (stack.isEmpty()) {
             throw new CommandException("Item Not Found");
         }
 
-        if (!(stack.getItem() instanceof IUpgradableItem)){
+        if (!(stack.getItem() instanceof IUpgradableItem)) {
             throw new CommandException("Item Not Upgradable");
         }
 
-        if (args.length == 1 && args[0].equals("clear")){
-            if (stack.hasTagCompound()){
+        if (args.length == 1 && args[0].equals("clear")) {
+            if (stack.hasTagCompound()) {
                 stack.getTagCompound().setTag(UpgradeHelper.UPGRADE_TAG, new NBTTagCompound());
             }
             return;
         }
 
-        if (args.length == 1 && args[0].equals("list")){
+        if (args.length == 1 && args[0].equals("list")) {
             for (String s : ((IUpgradableItem) stack.getItem()).getValidUpgrades(stack)) {
-                sender.addChatMessage(new TextComponentString(s));
+                sender.sendMessage(new TextComponentString(s));
             }
             return;
         }
 
         if (args.length == 2) {
             List<String> list = ((IUpgradableItem) stack.getItem()).getValidUpgrades(stack);
-            if (!list.contains(args[0])){
+            if (!list.contains(args[0])) {
                 throw new CommandException("Upgrade is invalid or not applicable for this item");
             }
 
@@ -73,29 +73,28 @@ public class CommandUpgrade extends CommandBase {
                 return;
             }
             catch (Exception e) {
-                throw new CommandException("Expected Number... Found "+args[1]);
+                throw new CommandException("Expected Number... Found " + args[1]);
             }
 
         }
 
-        sender.addChatMessage(new TextComponentString("/de_upgrade clear"));
-        sender.addChatMessage(new TextComponentString("/de_upgrade list"));
-        sender.addChatMessage(new TextComponentString("/de_upgrade <upgade> <level>"));
+        sender.sendMessage(new TextComponentString("/de_upgrade clear"));
+        sender.sendMessage(new TextComponentString("/de_upgrade list"));
+        sender.sendMessage(new TextComponentString("/de_upgrade <upgade> <level>"));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
-
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         try {
             ItemStack stack = getCommandSenderAsPlayer(sender).getHeldItemMainhand();
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add("clear");
             list.add("list");
             list.addAll(((IUpgradableItem) stack.getItem()).getValidUpgrades(stack));
             return getListOfStringsMatchingLastWord(args, list);
         }
-        catch (Exception e) {}
-
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        catch (Exception ignored) {
+        }
+        return super.getTabCompletions(server, sender, args, targetPos);
     }
 }

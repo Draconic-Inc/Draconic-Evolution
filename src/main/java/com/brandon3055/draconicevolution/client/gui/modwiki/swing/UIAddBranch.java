@@ -143,7 +143,7 @@ public class UIAddBranch extends JFrame implements ActionListener {
             }
 
             if (StringUtils.isNullOrEmpty(categoryField.getText())) {
-                int reply = JOptionPane.showOptionDialog(this, "Are you sure you want to leave the category field empty? I wont stop you but you may want to re consider.", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[] {"Yes", "No"}, "No");
+                int reply = JOptionPane.showOptionDialog(this, "Are you sure you want to leave the category field empty? I wont stop you but you may want to re consider.", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "No");
                 if (reply == 1) {
                     return;
                 }

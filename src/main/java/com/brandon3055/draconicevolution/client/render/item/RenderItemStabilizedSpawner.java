@@ -5,29 +5,25 @@ import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.client.render.TESRBase;
-import com.brandon3055.brandonscore.network.wrappers.SyncableEnum;
-import com.brandon3055.brandonscore.network.wrappers.SyncableStack;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.block.model.*;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -38,24 +34,17 @@ import static com.brandon3055.draconicevolution.client.render.tile.RenderTileSta
  */
 public class RenderItemStabilizedSpawner implements IItemRenderer, IPerspectiveAwareModel {
 
-    private static ItemStack[] CORE_RENDER_ITEMS = new ItemStack[] {new ItemStack(DEFeatures.draconicCore), new ItemStack(DEFeatures.wyvernCore), new ItemStack(DEFeatures.awakenedCore), new ItemStack(DEFeatures.chaoticCore)};
+    private static ItemStack[] CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEFeatures.draconicCore), new ItemStack(DEFeatures.wyvernCore), new ItemStack(DEFeatures.awakenedCore), new ItemStack(DEFeatures.chaoticCore)};
     private ItemCameraTransforms.TransformType transformType;
     private IBakedModel baseModel;
 
-    private SyncableEnum<TileStabilizedSpawner.SpawnerTier> syncableEnum = new SyncableEnum<>(TileStabilizedSpawner.SpawnerTier.BASIC, false, false);
-    private SyncableStack syncableStack = new SyncableStack(null, false, false);
-
     public RenderItemStabilizedSpawner(Function<IRegistry<ModelResourceLocation, IBakedModel>, IBakedModel> getter) {
         ModelRegistryHelper.registerPreBakeCallback(modelRegistry -> baseModel = getter.apply(modelRegistry));
-        syncableEnum.setIndex(0);
-        syncableStack.setIndex(1);
+//        syncableEnum.setIndex(0);
+//        syncableStack.setIndex(1);
     }
 
     //region Unused
-    @Override
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-        return new ArrayList<>();
-    }
 
     @Override
     public boolean isAmbientOcclusion() {
@@ -65,26 +54,6 @@ public class RenderItemStabilizedSpawner implements IItemRenderer, IPerspectiveA
     @Override
     public boolean isGui3d() {
         return true;
-    }
-
-    @Override
-    public boolean isBuiltInRenderer() {
-        return true;
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return null;
-    }
-
-    @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return ItemCameraTransforms.DEFAULT;
-    }
-
-    @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.NONE;
     }
 
     //endregion
@@ -97,21 +66,18 @@ public class RenderItemStabilizedSpawner implements IItemRenderer, IPerspectiveA
 
     //Remember GuiInventory.drawEntityOnScreen
     @Override
-    public void renderItem(ItemStack stack) {
+    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         Entity entity = null;
-        TileStabilizedSpawner.SpawnerTier tier = TileStabilizedSpawner.SpawnerTier.BASIC;
+        SpawnerTier tier = SpawnerTier.BASIC;
 
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("DETileData")) {
-            NBTTagCompound compound = stack.getSubCompound("DETileData", false);
-            syncableEnum.fromNBT(compound);
-            tier = syncableEnum.value;
-
-            syncableStack.value = null;
-            syncableStack.fromNBT(compound);
-
-            if (syncableStack.value != null) {
-                entity = DEFeatures.mobSoul.getRenderEntity(syncableStack.value);
+        if (stack.hasTagCompound() && stack.getOrCreateSubCompound("BCTileData").hasKey("BCManagedData", 10)) {
+            NBTTagCompound dataTag = stack.getOrCreateSubCompound("BCTileData").getCompoundTag("BCManagedData");
+            int tierIndex = dataTag.getByte("spawnerTier");
+            if (tierIndex >= 0 && tierIndex < SpawnerTier.values().length) {
+                tier = SpawnerTier.values()[tierIndex];
             }
+            String mobID = dataTag.getCompoundTag("mobSoul").getCompoundTag("tag").getString("EntityName");
+            entity = DEFeatures.mobSoul.getRenderEntity(mobID);
         }
 
         Minecraft.getMinecraft().getRenderItem().renderModel(baseModel, 0xFFFFFFFF);
@@ -120,14 +86,12 @@ public class RenderItemStabilizedSpawner implements IItemRenderer, IPerspectiveA
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0, 0.5F);
 
-        if (entity != null)
-        {
+        if (entity != null) {
             GlStateManager.pushMatrix();
             float f = 0.53125F;
             float f1 = Math.max(entity.width, entity.height);
 
-            if ((double)f1 > 1.0D)
-            {
+            if ((double) f1 > 1.0D) {
                 f /= f1;
             }
 

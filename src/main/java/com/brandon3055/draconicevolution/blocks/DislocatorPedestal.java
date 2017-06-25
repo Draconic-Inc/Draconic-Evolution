@@ -1,11 +1,10 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileDislocatorPedestal;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,37 +23,24 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class DislocatorPedestal extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class DislocatorPedestal extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
     public DislocatorPedestal() {
         setIsFullCube(false);
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntity tile = worldIn.getTileEntity(pos);
         if (tile instanceof TileDislocatorPedestal) {
-            ((TileDislocatorPedestal) tile).rotation.value = (int)(-(placer.rotationYawHead + 180 + 11.25) / 22.5F);
-            ((TileDislocatorPedestal) tile).detectAndSendChanges(true);
-        }
-
-        return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
-    }
-
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-    {
-        TileEntity tile = worldIn.getTileEntity(pos);
-        if (tile instanceof TileDislocatorPedestal) {
-            float f = (float) MathHelper.floor_float((MathHelper.wrapDegrees(placer.rotationYaw - 180.0F) + 11.25F) / 22.5F);
-            LogHelper.dev(f);
+            float f = (float) MathHelper.floor((MathHelper.wrapDegrees(placer.rotationYaw - 180.0F) + 11.25F) / 22.5F);
             ((TileDislocatorPedestal) tile).rotation.value = (int) f;
-            ((TileDislocatorPedestal) tile).detectAndSendChanges(true);
+            if (!worldIn.isRemote) {
+                ((TileDislocatorPedestal) tile).getDataManager().forceSync();
+            }
         }
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
     }
@@ -65,14 +51,14 @@ public class DislocatorPedestal extends BlockBCore implements ITileEntityProvide
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
 
         if (tileEntity instanceof TileDislocatorPedestal) {
             return ((TileDislocatorPedestal) tileEntity).onBlockActivated(playerIn);
         }
 
-        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
     }
 
     //region Render

@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.blocks;
 
 import codechicken.lib.model.ModelRegistryHelper;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -11,7 +11,6 @@ import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemDraconiumChest;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileDraconiumChest;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -35,12 +34,10 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class DraconiumChest extends BlockBCore implements ITileEntityProvider, ICustomRender {
+public class DraconiumChest extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
     protected static final AxisAlignedBB AABB = new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.875D, 0.9375D);
 
@@ -54,7 +51,7 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
             playerIn.openGui(DraconicEvolution.instance, GuiHandler.GUIID_DRACONIUM_CHEST, worldIn, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -62,7 +59,7 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
     }
 
     public static boolean isStackValid(ItemStack stack) {
-        if (stack == null || stack.getItem() == Item.getItemFromBlock(DEFeatures.draconiumChest)) {
+        if (stack.getItem() == Item.getItemFromBlock(DEFeatures.draconiumChest)) {
             return false;
         }
         return true;
@@ -73,20 +70,19 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
         return EnumBlockRenderType.INVISIBLE;
     }
 
+    @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         return AABB;
     }
 
+    @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
     }
 
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
-    }
-
+    @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        EnumFacing enumfacing = EnumFacing.getHorizontal(MathHelper.floor_double((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3).getOpposite();
+        EnumFacing enumfacing = EnumFacing.getHorizontal(MathHelper.floor((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3).getOpposite();
         TileEntity tile = worldIn.getTileEntity(pos);
 
         if (tile instanceof TileDraconiumChest) {
@@ -116,7 +112,7 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
         ClientRegistry.bindTileEntitySpecialRenderer(TileDraconiumChest.class, new RenderTileDraconiumChest());
 //        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemDraconiumChest());
 
-        ModelResourceLocation modelLocation = new ModelResourceLocation(DraconicEvolution.MOD_PREFIX + feature.registryName() + "#normal");
+        ModelResourceLocation modelLocation = new ModelResourceLocation(DraconicEvolution.MOD_PREFIX + feature.getName() + "#normal");
         ModelLoader.registerItemVariants(Item.getItemFromBlock(this), modelLocation);
         IBakedModel bakedModel = new RenderItemDraconiumChest();
         ModelRegistryHelper.register(modelLocation, bakedModel);
@@ -131,7 +127,6 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
 
 
     //endregion
-
 
     @Override
     public boolean overrideShareTag() {

@@ -11,44 +11,44 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketToolProfile implements IMessage
-{
+public class PacketToolProfile implements IMessage {
 
-	private PlayerSlot slot;
-	public String name = "";
+    private PlayerSlot slot;
+    public String name = "";
 
-	public PacketToolProfile() {}
+    public PacketToolProfile() {
+    }
 
-	public PacketToolProfile(PlayerSlot slot, String name) {
-		this.slot = slot;
-		this.name = name;
-	}
+    public PacketToolProfile(PlayerSlot slot, String name) {
+        this.slot = slot;
+        this.name = name;
+    }
 
-	@Override
-	public void fromBytes(ByteBuf bytes){
-		slot = PlayerSlot.fromBuff(bytes);
-		this.name = ByteBufUtils.readUTF8String(bytes);
-	}
+    @Override
+    public void fromBytes(ByteBuf bytes) {
+        slot = PlayerSlot.fromBuff(bytes);
+        this.name = ByteBufUtils.readUTF8String(bytes);
+    }
 
-	@Override
-	public void toBytes(ByteBuf bytes){
-		slot.toBuff(bytes);
-		ByteBufUtils.writeUTF8String(bytes, name);
-	}
+    @Override
+    public void toBytes(ByteBuf bytes) {
+        slot.toBuff(bytes);
+        ByteBufUtils.writeUTF8String(bytes, name);
+    }
 
-	public static class Handler extends MessageHandlerWrapper<PacketToolProfile, IMessage> {
+    public static class Handler extends MessageHandlerWrapper<PacketToolProfile, IMessage> {
 
         @Override
         public IMessage handleMessage(PacketToolProfile message, MessageContext ctx) {
-			EntityPlayer player = ctx.getServerHandler().playerEntity;
-			ItemStack stack = message.slot.getStackInSlot(player);
+            EntityPlayer player = ctx.getServerHandler().playerEntity;
+            ItemStack stack = message.slot.getStackInSlot(player);
 
-			if (stack != null && stack.getItem() instanceof IConfigurableItem) {
-				ToolConfigHelper.setProfileName(stack, ToolConfigHelper.getProfile(stack), message.name);
-			}
+            if (!stack.isEmpty() && stack.getItem() instanceof IConfigurableItem) {
+                ToolConfigHelper.setProfileName(stack, ToolConfigHelper.getProfile(stack), message.name);
+            }
 
             return null;
         }
 
-	}
+    }
 }

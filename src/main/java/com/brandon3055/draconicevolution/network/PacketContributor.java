@@ -55,7 +55,8 @@ public class PacketContributor implements IMessage {
                     contributor.patreonBadgeEnabled = message.badge;
                     ContributorHandler.saveContributorConfig();
                     DraconicEvolution.network.sendToAll(message);
-                } else {
+                }
+                else {
                     EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
                     if (!contributor.isUserValid(player) || message.contributor.equals(player.getName())) {
                         return null;

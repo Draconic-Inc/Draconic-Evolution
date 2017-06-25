@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
@@ -82,9 +83,17 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
 
     //endregion
 
-
     @Override
     public int getReaperLevel(ItemStack stack) {
         return 3;
     }
+
+    //region Rendering
+
+    @Override
+    protected Set3<String, String, String> getTextureLocations() {
+        return Set3.of("items/tools/draconic_staff_of_power", "items/tools/obj/draconic_staff_of_power", "models/item/tools/draconic_staff_of_power.obj");
+    }
+
+    //endregion
 }

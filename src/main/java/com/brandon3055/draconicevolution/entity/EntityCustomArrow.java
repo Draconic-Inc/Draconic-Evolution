@@ -23,15 +23,13 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class EntityCustomArrow extends EntityArrow {
@@ -74,7 +72,7 @@ public class EntityCustomArrow extends EntityArrow {
 
     @Override
     public void setThrowableHeading(double par1, double par3, double par5, float par7, float par8) {
-        float f2 = MathHelper.sqrt_double(par1 * par1 + par3 * par3 + par5 * par5);
+        float f2 = MathHelper.sqrt(par1 * par1 + par3 * par3 + par5 * par5);
         par1 /= f2;
         par3 /= f2;
         par5 /= f2;
@@ -87,7 +85,7 @@ public class EntityCustomArrow extends EntityArrow {
         this.motionX = par1;
         this.motionY = par3;
         this.motionZ = par5;
-        float f3 = MathHelper.sqrt_double(par1 * par1 + par5 * par5);
+        float f3 = MathHelper.sqrt(par1 * par1 + par5 * par5);
         this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(par1, par5) * 180.0D / Math.PI);
         this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(par3, f3) * 180.0D / Math.PI);
         this.ticksInGround = 0;
@@ -100,7 +98,7 @@ public class EntityCustomArrow extends EntityArrow {
 
 
         //region Entity Update And motion
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             bowProperties.energyBolt = dataManager.get(IS_ENERGY);
         }
         else {
@@ -121,12 +119,12 @@ public class EntityCustomArrow extends EntityArrow {
 //        //endregion
 //
 //        //region Block Collision Detection
-//        IBlockState iblockstate = this.worldObj.getBlockState(blockHitPos);
+//        IBlockState iblockstate = this.world.getBlockState(blockHitPos);
 //        Block block = iblockstate.getBlock();
 //
 //        if (iblockstate.getMaterial() != Material.AIR)
 //        {
-//            AxisAlignedBB axisalignedbb = iblockstate.getCollisionBoundingBox(this.worldObj, blockHitPos);
+//            AxisAlignedBB axisalignedbb = iblockstate.getCollisionBoundingBox(this.world, blockHitPos);
 //
 //            if (axisalignedbb != Block.NULL_AABB && axisalignedbb.offset(blockHitPos).isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
 //            {
@@ -136,7 +134,7 @@ public class EntityCustomArrow extends EntityArrow {
 //        //endregion
 //
 //        if (this.inGround) {
-//            IBlockState blockState = worldObj.getBlockState(blockHitPos);
+//            IBlockState blockState = world.getBlockState(blockHitPos);
 //            int j = blockState.getBlock().getMetaFromState(blockState);
 //
 //            if (block == this.blockHit && j == this.inData) {
@@ -159,7 +157,7 @@ public class EntityCustomArrow extends EntityArrow {
 //            ++this.ticksInAir;
 //            Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
 //            Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-//            RayTraceResult raytraceresult = this.worldObj.rayTraceBlocks(vec3d1, vec3d, false, true, false);
+//            RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
 //            vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
 //            vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 //
@@ -168,7 +166,7 @@ public class EntityCustomArrow extends EntityArrow {
 //            }
 
 //            Entity entity = null;
-//            List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+//            List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
 //            double d0 = 0.0D;
 //            int i;
 //            float f1;
@@ -237,7 +235,7 @@ public class EntityCustomArrow extends EntityArrow {
 //                        if (movingobjectposition.entityHit instanceof EntityLivingBase) {
 //                            EntityLivingBase entitylivingbase = (EntityLivingBase) movingobjectposition.entityHit;
 //
-//                            if (!this.worldObj.isRemote) {
+//                            if (!this.world.isRemote) {
 //                                entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
 //                            }
 //
@@ -263,7 +261,7 @@ public class EntityCustomArrow extends EntityArrow {
 //                        this.setDead();
 //
 //                    } else {
-//                        if (!(worldObj.isRemote && ticksInAir < 5)) { //Fix arrow wobble on fire due to client side collision with shooting entity
+//                        if (!(world.isRemote && ticksInAir < 5)) { //Fix arrow wobble on fire due to client side collision with shooting entity
 //                            this.motionX *= -0.10000000149011612D;
 //                            this.motionY *= -0.10000000149011612D;
 //                            this.motionZ *= -0.10000000149011612D;
@@ -276,9 +274,9 @@ public class EntityCustomArrow extends EntityArrow {
 //                    this.blockX = movingobjectposition.blockX;
 //                    this.blockY = movingobjectposition.blockY;
 //                    this.blockZ = movingobjectposition.blockZ;
-//                    block = this.worldObj.getBlock(this.blockX, this.blockY, this.blockZ);
+//                    block = this.world.getBlock(this.blockX, this.blockY, this.blockZ);
 //                    this.blockHit = block;
-//                    this.inData = this.worldObj.getBlockMetadata(this.blockX, this.blockY, this.blockZ);
+//                    this.inData = this.world.getBlockMetadata(this.blockX, this.blockY, this.blockZ);
 //                    this.motionX = ((float) (movingobjectposition.hitVec.xCoord - this.posX));
 //                    this.motionY = ((float) (movingobjectposition.hitVec.yCoord - this.posY));
 //                    this.motionZ = ((float) (movingobjectposition.hitVec.zCoord - this.posZ));
@@ -291,19 +289,19 @@ public class EntityCustomArrow extends EntityArrow {
 //                    this.arrowShake = 7;
 //
 //                    if (this.blockHit.getMaterial() != Material.air) {
-//                        this.blockHit.onEntityCollidedWithBlock(this.worldObj, this.blockX, this.blockY, this.blockZ, this);
+//                        this.blockHit.onEntityCollidedWithBlock(this.world, this.blockX, this.blockY, this.blockZ, this);
 //                    }
 //                }
 //            }
 //            //endregion
 //
 //            //region Motion
-//            if ((this.getIsCritical() || bowProperties.energyBolt) && worldObj.isRemote) {
+//            if ((this.getIsCritical() || bowProperties.energyBolt) && world.isRemote) {
 //                for (i = 0; i < 4; ++i) {
 //                    if (bowProperties.energyBolt) {
 //                        spawnArrowParticles();
 //                    } else {
-//                        this.worldObj.spawnParticle("crit", this.posX + this.motionX * i / 4.0D, this.posY + this.motionY * i / 4.0D, this.posZ + this.motionZ * i / 4.0D, -this.motionX, -this.motionY + 0.2D, -this.motionZ);
+//                        this.world.spawnParticle("crit", this.posX + this.motionX * i / 4.0D, this.posY + this.motionY * i / 4.0D, this.posZ + this.motionZ * i / 4.0D, -this.motionX, -this.motionY + 0.2D, -this.motionZ);
 //                    }
 //                }
 //            }
@@ -338,7 +336,7 @@ public class EntityCustomArrow extends EntityArrow {
 //            if (this.isInWater()) {
 //                for (int l = 0; l < 4; ++l) {
 //                    f4 = 0.25F;
-//                    this.worldObj.spawnParticle("bubble", this.posX - this.motionX * f4, this.posY - this.motionY * f4, this.posZ - this.motionZ * f4, this.motionX, this.motionY, this.motionZ);
+//                    this.world.spawnParticle("bubble", this.posX - this.motionX * f4, this.posY - this.motionY * f4, this.posZ - this.motionZ * f4, this.motionX, this.motionY, this.motionZ);
 //                }
 //
 //                f3 = 0.8F;
@@ -365,7 +363,7 @@ public class EntityCustomArrow extends EntityArrow {
 
     @Override
     public void onCollideWithPlayer(EntityPlayer entityIn) {
-        if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
+        if (!this.world.isRemote && this.inGround && this.arrowShake <= 0) {
             boolean flag = this.pickupStatus == EntityArrow.PickupStatus.ALLOWED || this.pickupStatus == EntityArrow.PickupStatus.CREATIVE_ONLY && entityIn.capabilities.isCreativeMode;
 
             if (this.pickupStatus == EntityArrow.PickupStatus.ALLOWED && !entityIn.inventory.addItemStackToInventory(getArrowStack())) {
@@ -382,9 +380,45 @@ public class EntityCustomArrow extends EntityArrow {
 
     //endregion
 
+    @Override
+    @Nullable
+    protected Entity findEntityOnPath(Vec3d start, Vec3d end)
+    {
+        if (world.isRemote) {
+            return null;
+        }
+        Entity entity = null;
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expandXyz(1.0D), ARROW_TARGETS);
+        double d0 = 0.0D;
+
+        for (int i = 0; i < list.size(); ++i)
+        {
+            Entity entity1 = (Entity)list.get(i);
+
+            if (entity1 != this.shootingEntity || this.ticksInAir >= 10)
+            {
+                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expandXyz(0.30000001192092896D);
+                RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
+
+                if (raytraceresult != null)
+                {
+                    double d1 = start.squareDistanceTo(raytraceresult.hitVec);
+
+                    if (d1 < d0 || d0 == 0.0D)
+                    {
+                        entity = entity1;
+                        d0 = d1;
+                    }
+                }
+            }
+        }
+
+        return entity;
+    }
+
     @SideOnly(Side.CLIENT)
     private void spawnArrowParticles() {
-//        Particles.ArrowParticle particle = new Particles.ArrowParticle(worldObj, posX - 0.25 + rand.nextDouble() * 0.5, posY + rand.nextDouble() * 0.5, posZ - 0.25 + rand.nextDouble() * 0.5, 0xff6000, 0.2F + rand.nextFloat() * 0.5f);
+//        Particles.ArrowParticle particle = new Particles.ArrowParticle(world, posX - 0.25 + rand.nextDouble() * 0.5, posY + rand.nextDouble() * 0.5, posZ - 0.25 + rand.nextDouble() * 0.5, 0xff6000, 0.2F + rand.nextFloat() * 0.5f);
 //        double mm = 0.2;
 //        particle.motionX = (rand.nextDouble() - 0.5) * mm;
 //        particle.motionY = (rand.nextDouble() - 0.5) * mm;
@@ -439,39 +473,37 @@ public class EntityCustomArrow extends EntityArrow {
     @Override
     protected void onHit(RayTraceResult traceResult) {
 
-        if (bowProperties.explosionPower > 0 && !worldObj.isRemote) {
-            Explosion explosion = new Explosion(worldObj, this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, false, DEConfig.bowBlockDamage) {
+        if (bowProperties.explosionPower > 0 && !world.isRemote) {
+            Explosion explosion = new Explosion(world, this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, false, DEConfig.bowBlockDamage) {
                 @Override
                 public EntityLivingBase getExplosivePlacedBy() {
                     return shootingEntity instanceof EntityLivingBase ? (EntityLivingBase) shootingEntity : null;
                 }
             };
-            if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(worldObj, explosion)) {
+            if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion)) {
                 explosion.doExplosionA();
                 explosion.doExplosionB(true);
                 explosion.clearAffectedBlockPositions();
 
-                for (EntityPlayer entityplayer : worldObj.playerEntities)
-                {
-                    if (entityplayer.getDistanceSq(prevPosX, prevPosY, prevPosZ) < 4096.0D)
-                    {
-                        ((EntityPlayerMP)entityplayer).connection.sendPacket(new SPacketExplosion(prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, explosion.getAffectedBlockPositions(), (Vec3d)explosion.getPlayerKnockbackMap().get(entityplayer)));
+                for (EntityPlayer entityplayer : world.playerEntities) {
+                    if (entityplayer.getDistanceSq(prevPosX, prevPosY, prevPosZ) < 4096.0D) {
+                        ((EntityPlayerMP) entityplayer).connection.sendPacket(new SPacketExplosion(prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, explosion.getAffectedBlockPositions(), (Vec3d) explosion.getPlayerKnockbackMap().get(entityplayer)));
                     }
                 }
             }
 
-//            worldObj.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, DEConfig.bowBlockDamage);
+//            world.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, DEConfig.bowBlockDamage);
             setDead();
         }
 
         //region Shock Wave
-        if (bowProperties.shockWavePower > 0 && !worldObj.isRemote) {
+        if (bowProperties.shockWavePower > 0 && !world.isRemote) {
             //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.ARROW_SHOCK_WAVE, posX, posY, posZ, (int) (bowProperties.shockWavePower * 100)), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 256));
-            //worldObj.playSoundEffect(posX, posY, posZ, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
-            BCEffectHandler.spawnFX(DEParticles.ARROW_SHOCKWAVE, worldObj, posX, posY, posZ, 0, 0, 0, 256D, (int) (bowProperties.shockWavePower * 100));
+            //world.playSoundEffect(posX, posY, posZ, "random.explode", 4.0F, (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F);
+            BCEffectHandler.spawnFX(DEParticles.ARROW_SHOCKWAVE, world, posX, posY, posZ, 0, 0, 0, 256D, (int) (bowProperties.shockWavePower * 100));
 
             double range = (double) bowProperties.shockWavePower + 5;
-            List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().expand(range, range, range));
+            List<Entity> list = world.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().expand(range, range, range));
 
             float damage = 40F * bowProperties.shockWavePower;
 
@@ -502,8 +534,8 @@ public class EntityCustomArrow extends EntityArrow {
 
             int actualDamage;
             //Calculate Damage
-            float velocity = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
-            actualDamage = MathHelper.ceiling_double_int(velocity * bowProperties.arrowDamage);
+            float velocity = MathHelper.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+            actualDamage = MathHelper.ceil(velocity * bowProperties.arrowDamage);
 
             if (bowProperties.energyBolt) {
                 actualDamage *= 1.1F;
@@ -521,7 +553,7 @@ public class EntityCustomArrow extends EntityArrow {
                 if (traceResult.entityHit instanceof EntityLivingBase) {
                     EntityLivingBase entitylivingbase = (EntityLivingBase) traceResult.entityHit;
 
-                    if (!this.worldObj.isRemote) {
+                    if (!this.world.isRemote) {
                         entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
                     }
 
@@ -544,6 +576,7 @@ public class EntityCustomArrow extends EntityArrow {
                 }
 
 //                this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+                playSound(SoundEvents.ENTITY_ARROW_HIT, 1.0F, 1.2F / (rand.nextFloat() * 0.2F + 0.9F));
                 this.setDead();
 
             }
@@ -553,13 +586,13 @@ public class EntityCustomArrow extends EntityArrow {
             xTile = blockpos.getX();
             yTile = blockpos.getY();
             zTile = blockpos.getZ();
-            IBlockState iblockstate = worldObj.getBlockState(blockpos);
+            IBlockState iblockstate = world.getBlockState(blockpos);
             inTile = iblockstate.getBlock();
             inData = inTile.getMetaFromState(iblockstate);
             motionX = (double) ((float) (traceResult.hitVec.xCoord - posX));
             motionY = (double) ((float) (traceResult.hitVec.yCoord - posY));
             motionZ = (double) ((float) (traceResult.hitVec.zCoord - posZ));
-            float f2 = MathHelper.sqrt_double(motionX * motionX + motionY * motionY + motionZ * motionZ);
+            float f2 = MathHelper.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
             posX -= motionX / (double) f2 * 0.05000000074505806D;
             posY -= motionY / (double) f2 * 0.05000000074505806D;
             posZ -= motionZ / (double) f2 * 0.05000000074505806D;
@@ -569,7 +602,7 @@ public class EntityCustomArrow extends EntityArrow {
             setIsCritical(false);
 
             if (iblockstate.getMaterial() != Material.AIR) {
-                inTile.onEntityCollidedWithBlock(worldObj, blockpos, iblockstate, this);
+                inTile.onEntityCollidedWithBlock(world, blockpos, iblockstate, this);
             }
         }
 

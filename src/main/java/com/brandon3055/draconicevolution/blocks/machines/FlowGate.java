@@ -2,12 +2,13 @@ package com.brandon3055.draconicevolution.blocks.machines;
 
 import codechicken.lib.util.RotationUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.blocks.properties.PropertyString;
-import com.brandon3055.brandonscore.config.ITileRegisterer;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRegistryOverride;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluxGate;
+import com.brandon3055.draconicevolution.lib.PropertyStringTemp;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -20,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
@@ -27,15 +29,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by brandon3055 on 14/11/2016.
  */
-public class FlowGate extends BlockBCore implements ITileRegisterer {
+public class FlowGate extends BlockBCore implements IRegistryOverride {
 
-    public static final PropertyString TYPE = new PropertyString("type", "flux", "fluid");
+    public static final PropertyStringTemp TYPE = new PropertyStringTemp("type", "flux", "fluid");
     public static final PropertyDirection FACING = BlockDirectional.FACING;
 
     public FlowGate() {
@@ -112,7 +111,7 @@ public class FlowGate extends BlockBCore implements ITileRegisterer {
     }
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
         list.add(new ItemStack(item, 1, 0));
         list.add(new ItemStack(item, 1, 8));
     }
@@ -141,13 +140,14 @@ public class FlowGate extends BlockBCore implements ITileRegisterer {
     }
 
     @Override
-    public void registerTiles(String modidPrefix, String blockName) {
-        GameRegistry.registerTileEntity(TileFluxGate.class, modidPrefix + "flux_gate");
-        GameRegistry.registerTileEntity(TileFluidGate.class, modidPrefix + "fluid_gate");
+    public void handleCustomRegistration(Feature feature) {
+        GameRegistry.registerTileEntity(TileFluxGate.class, feature.getModid() + ":flux_gate");
+        GameRegistry.registerTileEntity(TileFluidGate.class, feature.getModid() + ":fluid_gate");
     }
 
+
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
             FMLNetworkHandler.openGui(playerIn, DraconicEvolution.instance, GuiHandler.GUIID_FLOW_GATE, worldIn, pos.getX(), pos.getY(), pos.getZ());
         }

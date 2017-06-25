@@ -3,15 +3,15 @@ package com.brandon3055.draconicevolution.blocks.reactor;
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.util.RotationUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.blocks.properties.PropertyString;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.brandonscore.config.ITileRegisterer;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRegistryOverride;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorEnergyInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemReactorComponent;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorComponent;
+import com.brandon3055.draconicevolution.lib.PropertyStringTemp;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -26,6 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -36,15 +37,14 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class ReactorComponent extends BlockBCore implements ITileEntityProvider, ITileRegisterer, ICustomRender {
+public class ReactorComponent extends BlockBCore implements ITileEntityProvider, IRegistryOverride, IRenderOverride {
 
-    public static final PropertyString TYPE = new PropertyString("type", "stabilizer", "injector");
+    public static final PropertyStringTemp TYPE = new PropertyStringTemp("type", "stabilizer", "injector");
     private static final AxisAlignedBB AABB_INJ_DOWN = new AxisAlignedBB(0F, 0.885F, 0F, 1F, 1F, 1F);
     private static final AxisAlignedBB AABB_INJ_UP = new AxisAlignedBB(0F, 0F, 0F, 1F, 0.125F, 1F);
     private static final AxisAlignedBB AABB_INJ_NORTH = new AxisAlignedBB(0F, 0F, 0.885F, 1F, 1F, 1F);
@@ -78,7 +78,7 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
     }
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
         list.add(new ItemStack(item, 1, 0));
         list.add(new ItemStack(item, 1, 1));
     }
@@ -89,10 +89,11 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
     }
 
     @Override
-    public void registerTiles(String modidPrefix, String blockName) {
-        GameRegistry.registerTileEntity(TileReactorStabilizer.class, blockName + "_stabilizer");
-        GameRegistry.registerTileEntity(TileReactorEnergyInjector.class, blockName + "_injector");
+    public void handleCustomRegistration(Feature feature) {
+        GameRegistry.registerTileEntity(TileReactorStabilizer.class, feature.getRegistryName() + "_stabilizer");
+        GameRegistry.registerTileEntity(TileReactorEnergyInjector.class, feature.getRegistryName() + "_injector");
     }
+
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
@@ -100,12 +101,18 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
 
         if (tile instanceof TileReactorEnergyInjector) {
             switch (((TileReactorEnergyInjector) tile).facing.value) {
-                case DOWN: return AABB_INJ_DOWN;
-                case UP: return AABB_INJ_UP;
-                case NORTH: return AABB_INJ_NORTH;
-                case SOUTH: return AABB_INJ_SOUTH;
-                case WEST: return AABB_INJ_WEST;
-                case EAST: return AABB_INJ_EAST;
+                case DOWN:
+                    return AABB_INJ_DOWN;
+                case UP:
+                    return AABB_INJ_UP;
+                case NORTH:
+                    return AABB_INJ_NORTH;
+                case SOUTH:
+                    return AABB_INJ_SOUTH;
+                case WEST:
+                    return AABB_INJ_WEST;
+                case EAST:
+                    return AABB_INJ_EAST;
             }
         }
 
@@ -156,7 +163,7 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity te = world.getTileEntity(pos);
 
         if (te instanceof TileReactorComponent) {

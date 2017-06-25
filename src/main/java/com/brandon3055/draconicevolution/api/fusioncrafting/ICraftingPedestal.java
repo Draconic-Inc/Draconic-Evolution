@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 11/06/2016.
  * This interface is used to identify and interact with crafting pedestals.
- *
+ * <p>
  * This interface should only ever be implemented by tile entities so it should be of to safe cast an ICraftingPedestal
  * to a TileEntity if you need access to the world and position.
  */
@@ -16,7 +16,7 @@ public interface ICraftingPedestal {
 
     /**
      * @return The tier of the pedestal.
-     *
+     * <p>
      * Default tiers are:
      * 0 - Basic
      * 1 - Wyvern
@@ -44,7 +44,7 @@ public interface ICraftingPedestal {
 
     /**
      * Return the direction this pedestal is facing.
-     * */
+     */
     EnumFacing getDirection();
 
     /**

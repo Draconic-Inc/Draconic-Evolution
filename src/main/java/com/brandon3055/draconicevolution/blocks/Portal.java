@@ -92,12 +92,12 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
 
     @Nullable
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
         return NULL_AABB;//new AxisAlignedBB(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
         if (world.isRemote) {
             return;
         }

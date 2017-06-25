@@ -63,7 +63,7 @@ public class GuiRecipeBuilder extends GuiContainer {
         buttonList.add(genShapeless = new ButtonColourRect(11, "Shapeless", guiLeft + 61, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         buttonList.add(genOre = new ButtonColourRect(12, "Ore: true", guiLeft + 118, guiTop + 100, 56, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         buttonList.add(genFusion = new ButtonColourRect(13, "Gen Fusion", guiLeft + 18, guiTop + 100, 70, 12, 0xFF440000, 0xFF000066, 0xFF006600));
-        buttonList.add(new ButtonColourRect(100, "Reload Recipes", guiLeft - 90 , guiTop + ySize - 12, 90, 12, 0xFF440000, 0xFF000066, 0xFF006600));
+        buttonList.add(new ButtonColourRect(100, "Reload Recipes", guiLeft - 90, guiTop + ySize - 12, 90, 12, 0xFF440000, 0xFF000066, 0xFF006600));
         genFusion.visible = false;
     }
 
@@ -100,7 +100,8 @@ public class GuiRecipeBuilder extends GuiContainer {
                 }
             }
             GuiHelper.drawBorderedRect(guiLeft + 70 + 36, guiTop + posY + 18 - 1, 18, 18, 1, 0xFFAAAAAA, 0xFF444444);
-        } else {
+        }
+        else {
             GuiHelper.drawBorderedRect(guiLeft + 89 - 18, guiTop + 19, 18, 18, 1, 0xFFAAAAAA, 0xFF444444);
             GuiHelper.drawBorderedRect(guiLeft + 89 + 18, guiTop + 19, 18, 18, 1, 0xFFAAAAAA, 0xFF444444);
 
@@ -140,7 +141,8 @@ public class GuiRecipeBuilder extends GuiContainer {
             if (button.id == 0) {
                 genShaped.visible = genShapeless.visible = true;
                 genFusion.visible = false;
-            } else {
+            }
+            else {
                 genShaped.visible = genShapeless.visible = false;
                 genFusion.visible = true;
             }
@@ -201,39 +203,42 @@ public class GuiRecipeBuilder extends GuiContainer {
             return;
         }
 
-        String recipeString = "";
+        StringBuilder recipeString = new StringBuilder();
 
-        if (output.stackSize > 1 || output.getItemDamage() > 0) {
+        if (output.getCount() > 1 || output.getItemDamage() > 0) {
             if (output.getItemDamage() > 0) {
-                recipeString += String.format("new ItemStack(%s, %s, %s)", findItemString(output, false), output.stackSize, output.getItemDamage());
-            } else {
-                recipeString += String.format("new ItemStack(%s, %s)", findItemString(output, false), output.stackSize);
+                recipeString.append(String.format("new ItemStack(%s, %s, %s)", findItemString(output, false), output.getCount(), output.getItemDamage()));
             }
-        } else {
-            recipeString += findItemString(output, false);
+            else {
+                recipeString.append(String.format("new ItemStack(%s, %s)", findItemString(output, false), output.getCount()));
+            }
+        }
+        else {
+            recipeString.append(findItemString(output, false));
         }
 
         Map<String, String> charMap = new LinkedHashMap<String, String>();
         Map<String, ItemStack> stackMap = new HashMap<String, ItemStack>();
         char lastChar = 'A';
 
-        recipeString += ", \"";
+        recipeString.append(", \"");
         for (int i = 1; i < 10; i++) {
             ItemStack stack = container.inventoryCache.getStackInSlot(i);
 
-            if (stack == null) {
-                recipeString += " ";
-            } else {
+            if (stack.isEmpty()) {
+                recipeString.append(" ");
+            }
+            else {
                 if (!charMap.containsKey(stack.toString())) {
                     charMap.put(stack.toString(), String.valueOf(lastChar));
                     stackMap.put(stack.toString(), stack);
                     lastChar++;
                 }
-                recipeString += charMap.get(stack.toString());
+                recipeString.append(charMap.get(stack.toString()));
             }
 
             if (i % 3 == 0) {
-                recipeString += i == 9 ? "\", " : "\", \"";
+                recipeString.append(i == 9 ? "\", " : "\", \"");
             }
         }
 
@@ -241,37 +246,40 @@ public class GuiRecipeBuilder extends GuiContainer {
             String charString = charMap.get(stackString);
             ItemStack stack = stackMap.get(stackString);
 
-            recipeString += String.format("'%s', ", charString);
+            recipeString.append(String.format("'%s', ", charString));
 
             if (stack.getItemDamage() > 0) {
-                recipeString += String.format("new ItemStack(%s, 1, %s), ", findItemString(stack, false), stack.getItemDamage());
-            } else {
-                recipeString += findItemString(stack, ore) + ", ";
+                recipeString.append(String.format("new ItemStack(%s, 1, %s), ", findItemString(stack, false), stack.getItemDamage()));
+            }
+            else {
+                recipeString.append(findItemString(stack, ore)).append(", ");
             }
         }
 
-        recipeString = recipeString.substring(0, recipeString.lastIndexOf(","));
+        recipeString = new StringBuilder(recipeString.substring(0, recipeString.lastIndexOf(",")));
 
-        textField.setText(recipeString);
+        textField.setText(recipeString.toString());
     }
 
     private void buildShapeless(boolean ore) {
         ItemStack output = container.inventoryCache.getStackInSlot(0);
 
-        if (output == null) {
+        if (output.isEmpty()) {
             textField.setText("No Output Detected");
             return;
         }
 
         String recipeString = "";
 
-        if (output.stackSize > 1 || output.getItemDamage() > 0) {
+        if (output.getCount() > 1 || output.getItemDamage() > 0) {
             if (output.getItemDamage() > 0) {
-                recipeString += String.format("new ItemStack(%s, %s, %s)", findItemString(output, false), output.stackSize, output.getItemDamage());
-            } else {
-                recipeString += String.format("new ItemStack(%s, %s)", findItemString(output, false), output.stackSize);
+                recipeString += String.format("new ItemStack(%s, %s, %s)", findItemString(output, false), output.getCount(), output.getItemDamage());
             }
-        } else {
+            else {
+                recipeString += String.format("new ItemStack(%s, %s)", findItemString(output, false), output.getCount());
+            }
+        }
+        else {
             recipeString += findItemString(output, false);
         }
 
@@ -280,13 +288,14 @@ public class GuiRecipeBuilder extends GuiContainer {
         for (int i = 1; i < 10; i++) {
             ItemStack stack = container.inventoryCache.getStackInSlot(i);
 
-            if (stack == null) {
+            if (stack.isEmpty()) {
                 continue;
             }
 
             if (stack.getItemDamage() > 0) {
                 recipeString += String.format("new ItemStack(%s, 1, %s), ", findItemString(stack, false), stack.getItemDamage());
-            } else {
+            }
+            else {
                 recipeString += findItemString(stack, ore) + ", ";
             }
         }
@@ -299,54 +308,57 @@ public class GuiRecipeBuilder extends GuiContainer {
         ItemStack input = container.inventoryCache.getStackInSlot(0);
         ItemStack output = container.inventoryCache.getStackInSlot(1);
 
-        if (output == null || input == null) {
+        if (output.isEmpty() || input.isEmpty()) {
             textField.setText("No Output and or Input Detected");
             return;
         }
 
-        String recipeString = "";
+        StringBuilder recipeString = new StringBuilder();
 
-        if (output.stackSize > 1 || output.getItemDamage() > 0) {
+        if (output.getCount() > 1 || output.getItemDamage() > 0) {
             if (output.getItemDamage() > 0) {
-                recipeString += String.format("new ItemStack(%s, %s, %s)", findItemString(output, false), output.stackSize, output.getItemDamage());
-            } else {
-                recipeString += String.format("new ItemStack(%s, %s)", findItemString(output, false), output.stackSize);
+                recipeString.append(String.format("new ItemStack(%s, %s, %s)", findItemString(output, false), output.getCount(), output.getItemDamage()));
+            }
+            else {
+                recipeString.append(String.format("new ItemStack(%s, %s)", findItemString(output, false), output.getCount()));
             }
         }
         else {
-            recipeString += String.format("new ItemStack(%s)", findItemString(output, false));
+            recipeString.append(String.format("new ItemStack(%s)", findItemString(output, false)));
         }
 
-        recipeString += ", ";
-        if (input.stackSize > 1 || input.getItemDamage() > 0) {
+        recipeString.append(", ");
+        if (input.getCount() > 1 || input.getItemDamage() > 0) {
             if (input.getItemDamage() > 0) {
-                recipeString += String.format("new ItemStack(%s, %s, %s)", findItemString(input, false), input.stackSize, input.getItemDamage());
-            } else {
-                recipeString += String.format("new ItemStack(%s, %s)", findItemString(input, false), input.stackSize);
+                recipeString.append(String.format("new ItemStack(%s, %s, %s)", findItemString(input, false), input.getCount(), input.getItemDamage()));
+            }
+            else {
+                recipeString.append(String.format("new ItemStack(%s, %s)", findItemString(input, false), input.getCount()));
             }
         }
         else {
-            recipeString += String.format("new ItemStack(%s)", findItemString(input, false));
+            recipeString.append(String.format("new ItemStack(%s)", findItemString(input, false)));
         }
 
-        recipeString += ", [RF Cost], [Tier], ";
+        recipeString.append(", [RF Cost], [Tier], ");
 
         for (int i = 2; i < container.inventoryCache.getSizeInventory(); i++) {
             ItemStack stack = container.inventoryCache.getStackInSlot(i);
 
-            if (stack == null) {
+            if (stack.isEmpty()) {
                 continue;
             }
 
             if (stack.getItemDamage() > 0) {
-                recipeString += String.format("new ItemStack(%s, 1, %s), ", findItemString(stack, false), stack.getItemDamage());
-            } else {
-                recipeString += findItemString(stack, ore) + ", ";
+                recipeString.append(String.format("new ItemStack(%s, 1, %s), ", findItemString(stack, false), stack.getItemDamage()));
+            }
+            else {
+                recipeString.append(findItemString(stack, ore)).append(", ");
             }
         }
 
-        recipeString = recipeString.substring(0, recipeString.lastIndexOf(","));
-        textField.setText(recipeString);
+        recipeString = new StringBuilder(recipeString.substring(0, recipeString.lastIndexOf(",")));
+        textField.setText(recipeString.toString());
     }
 
     //FusionRecipeRegistry.addRecipe(new SimpleFusionRecipe(new ItemStack(Items.STONE_AXE), new ItemStack(Items.WOODEN_AXE), 1000, 0, new ItemStack(DEFeatures.draconicCore)));

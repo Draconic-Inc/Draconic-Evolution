@@ -41,8 +41,8 @@ public class DragonChunkLoader implements LoadingCallback {
 
         //Calculate the chunks to be loaded
         ArrayList<ChunkPos> dragonChunks = new ArrayList<>();
-        for (int xx = ((int)guardian.posX / 16) - 2; xx <= ((int)guardian.posX / 16) + 2; xx++) {
-            for (int zz = ((int)guardian.posZ / 16) - 2; zz <= ((int)guardian.posZ / 16) + 2; zz++) {
+        for (int xx = ((int) guardian.posX / 16) - 2; xx <= ((int) guardian.posX / 16) + 2; xx++) {
+            for (int zz = ((int) guardian.posZ / 16) - 2; zz <= ((int) guardian.posZ / 16) + 2; zz++) {
                 dragonChunks.add(new ChunkPos(xx, zz));
             }
         }
@@ -57,7 +57,7 @@ public class DragonChunkLoader implements LoadingCallback {
             ticket = ticketList.get(guardian);
             ForgeChunkManager.releaseTicket(ticket);
         }
-        ticket = ForgeChunkManager.requestTicket(DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
+        ticket = ForgeChunkManager.requestTicket(DraconicEvolution.instance, guardian.world, ForgeChunkManager.Type.ENTITY);
 
         if (ticket != null) {
             ticket.bindEntity(guardian);
@@ -97,7 +97,7 @@ public class DragonChunkLoader implements LoadingCallback {
 
 //        for (ChunkPos pos : ticket.getChunkList()) {
 //            ForgeChunkManager.unforceChunk(ticket, pos);
-//            ((WorldServer) guardian.worldObj).getChunkProvider().unload(guardian.worldObj.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos));
+//            ((WorldServer) guardian.world).getChunkProvider().unload(guardian.world.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos));
 //        }
 
         ForgeChunkManager.releaseTicket(ticket);

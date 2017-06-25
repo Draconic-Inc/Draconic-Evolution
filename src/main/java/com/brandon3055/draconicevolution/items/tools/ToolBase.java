@@ -1,12 +1,19 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import codechicken.lib.model.CCOverrideBakedModel;
 import codechicken.lib.model.ModelRegistryHelper;
+import codechicken.lib.model.bakery.CCBakeryModel;
+import codechicken.lib.model.bakery.IBakeryProvider;
+import codechicken.lib.model.bakery.ModelBakery;
+import codechicken.lib.model.bakery.generation.IBakery;
+import codechicken.lib.render.CCIconRegister;
 import com.brandon3055.brandonscore.asm.IEnchantmentOverride;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
+import com.brandon3055.brandonscore.lib.Set3;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
@@ -14,8 +21,10 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.client.model.ToolModelBakery;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
@@ -45,15 +54,15 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.ATTACK_DAMAGE;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, IUpgradableItem, IConfigurableItem, IEnchantmentOverride, IHudDisplay {
+public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride, IUpgradableItem, IConfigurableItem, IEnchantmentOverride, IHudDisplay, IBakeryProvider {
 
     private float baseAttackDamage;
     private float baseAttackSpeed;
     protected int energyPerOperation = 1024;//TODO Energy Cost
 
     public ToolBase(double attackDamage, double attackSpeed) {
-        this.baseAttackDamage = (float)attackDamage;
-        this.baseAttackSpeed = (float)attackSpeed;
+        this.baseAttackDamage = (float) attackDamage;
+        this.baseAttackSpeed = (float) attackSpeed;
         setMaxStackSize(1);
     }
 
@@ -65,7 +74,7 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     }
 
     @Override
-    public boolean isItemTool(ItemStack stack) {
+    public boolean isEnchantable(ItemStack stack) {
         return true;
     }
 
@@ -88,40 +97,15 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
         return 5;
     }
 
-    @Override
-    public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
-//        registry.register(stack, new DoubleConfigField("Test1", 0, 0, 100, "This is a description!", PLUS1_MINUS1));
-//        registry.register(stack, new IntegerConfigField("Test2", 0, 0, 100, "This is a description!", PLUS2_MINUS2));
-//        registry.register(stack, new BooleanConfigField("Test3", false, "This is a description!"));
-//        registry.register(stack, new BooleanConfigField("Test4", true, "This is a description!"));
-//        registry.register(stack, new DoubleConfigField("Test5", 22.53, 0, 100, "This is a description!", PLUS3_MINUS3));
-//        registry.register(stack, new IntegerConfigField("Slide", 43, 25, 100, "This is a description!", SLIDER));
-//        registry.register(stack, new DoubleConfigField("Slide2", 10, 0, 3453, "This is a description!", SLIDER));
-//        registry.register(stack, new DoubleConfigField("Slide3", 0, 0, 1, "This is a description!", SLIDER).setExtension(" Some extension here"));
-//        registry.register(stack, new BooleanConfigField("Test7", false, "This is a description!"));
-//        registry.register(stack, new BooleanConfigField("Test8", true, "This is a description!"));
-//        registry.register(stack, new BooleanConfigField("Test9", true, "This is a description!"));
-//        registry.register(stack, new BooleanConfigField("Test10", true, "This is a description!").setOnOffTxt("Some On Text Here...", "Some Off Text Here..."));
-//
-//        registry.register(stack, new BooleanConfigField("Test11", true, "This is a description!"));
-//        registry.register(stack, new BooleanConfigField("Test12", true, "This is a description!"));
-//
-//        String s = "This is going to be a very long description that will allow me to test how well line wrapping works. Now... I have no idea what to add to this description to make it longer... Perhaps i could talk about my plans for the config system? Naa that would take too long... Not to mention i dont want to have to support hundred line descriptions... Oh hay... This should be long enough :P";
-//
-//        registry.register(stack, new BooleanConfigField("Test13", true, s));
-//        registry.register(stack, new AOEConfigField("TestAOE", 1, 0, 50, s));
-//        registry.register(stack, new IntegerConfigField("TestSI", 43, 0, 150, "This is a description!", SELECTIONS));
-//        registry.register(stack, new IntegerConfigField("Test.", 43, 0, 150, s, PLUS3_MINUS3));
-        return registry;
-    }
-
     //endregion
 
     //region Upgrade
 
     @Override
     public List<String> getValidUpgrades(ItemStack stack) {
-        return new ArrayList<String>() {{ add(ToolUpgrade.RF_CAPACITY); }};
+        return new ArrayList<String>() {{
+            add(ToolUpgrade.RF_CAPACITY);
+        }};
     }
 
     @Override
@@ -134,9 +118,8 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     }
 
     public static void holdCTRLForUpgrades(List<String> list, ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof IUpgradableItem)) return;
-        if (!InfoHelper.isCtrlKeyDown())
-            list.add(I18n.format("upgrade.de.holdCtrlForUpgrades.info", TextFormatting.AQUA + "" + TextFormatting.ITALIC, TextFormatting.RESET + "" + TextFormatting.GRAY));
+        if (!(stack.getItem() instanceof IUpgradableItem)) return;
+        if (!InfoHelper.isCtrlKeyDown()) list.add(I18n.format("upgrade.de.holdCtrlForUpgrades.info", TextFormatting.AQUA + "" + TextFormatting.ITALIC, TextFormatting.RESET + "" + TextFormatting.GRAY));
         else {
             list.add(TextFormatting.GOLD + I18n.format("upgrade.de.upgrades.info"));
             list.addAll(UpgradeHelper.getUpgradeStats(stack));
@@ -151,7 +134,7 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
             return super.getCapacity(stack);
         }
         else {
-            return super.getCapacity(stack) * (int)Math.pow(2, level + 1);
+            return super.getCapacity(stack) * (int) Math.pow(2, level + 1);
         }
     }
 
@@ -159,22 +142,30 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
 
     //region Custom Item Rendering
 
-    public ModelResourceLocation modelLocation;
 
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {
-        //if (!DEConfig.disable3DModels) {
-            modelLocation = new ModelResourceLocation("draconicevolution:" + feature.registryName(), "inventory");
-            ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
-            ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.registryName(), "inventory"), new CCOverrideBakedModel());
-        //}
+        ModelResourceLocation modelLocation = new ModelResourceLocation("draconicevolution:" + feature.getName(), "inventory");
+        ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
+        ModelLoader.setCustomMeshDefinition(this, stack -> modelLocation);
+        ModelRegistryHelper.register(modelLocation, new CCBakeryModel(""));
+        ModelBakery.registerItemKeyGenerator(this, stack -> ModelBakery.defaultItemKeyGenerator.generateKey(stack) + "|" +  DEConfig.disable3DModels);
+
+        Set3<String, String, String> texLocs = getTextureLocations();
+        ToolModelBakery.createBakery(this, texLocs);
+        CCIconRegister.registerTexture(DraconicEvolution.MOD_PREFIX + texLocs.getA());
+        CCIconRegister.registerTexture(DraconicEvolution.MOD_PREFIX + texLocs.getB());
+        LogHelper.dev("Register Tool Model Texture: " + DraconicEvolution.MOD_PREFIX + texLocs.getB());
     }
 
     @Override
-    public boolean registerNormal(Feature feature) {
-        return false;//DEConfig.disable3DModels;
+    @SideOnly(Side.CLIENT)
+    public IBakery getBakery() {
+        return ToolModelBakery.getBakery(this);
     }
+
+    protected abstract Set3<String, String, String> getTextureLocations();
 
     //endregion
 
@@ -182,18 +173,18 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        if (this instanceof IAOEWeapon && player.getCooledAttackStrength(0.5F) >= 0.95F && ((IAOEWeapon)this).getWeaponAOE(stack) > 0) {
+        if (this instanceof IAOEWeapon && player.getCooledAttackStrength(0.5F) >= 0.95F && ((IAOEWeapon) this).getWeaponAOE(stack) > 0) {
 
-            List<EntityLivingBase> entities = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, entity.getEntityBoundingBox().expand(((IAOEWeapon)this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon)this).getWeaponAOE(stack)));
+            List<EntityLivingBase> entities = player.world.getEntitiesWithinAABB(EntityLivingBase.class, entity.getEntityBoundingBox().expand(((IAOEWeapon) this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon) this).getWeaponAOE(stack)));
 
             for (EntityLivingBase aoeEntity : entities) {
                 if (aoeEntity != player && aoeEntity != entity && !player.isOnSameTeam(entity) && extractAttackEnergy(stack, aoeEntity, player)) {
-                    aoeEntity.knockBack(player, 0.4F, (double) MathHelper.sin(player.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(player.rotationYaw * 0.017453292F)));
+                    aoeEntity.knockBack(player, 0.4F, (double) MathHelper.sin(player.rotationYaw * 0.017453292F), (double) (-MathHelper.cos(player.rotationYaw * 0.017453292F)));
                     aoeEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), getAttackDamage(stack));
                 }
             }
 
-            player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0F, 1.0F);
+            player.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0F, 1.0F);
             player.spawnSweepParticles();
         }
 
@@ -222,14 +213,12 @@ public abstract class ToolBase extends ItemEnergyBase implements ICustomRender, 
     }
 
     @Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot equipmentSlot, ItemStack stack)
-    {
+    public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot equipmentSlot, ItemStack stack) {
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
 
-        if (equipmentSlot == EntityEquipmentSlot.MAINHAND)
-        {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double)getAttackDamage(stack) - 1, 0));
-            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double)getAttackSpeed(stack), 0));
+        if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) getAttackDamage(stack) - 1, 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double) getAttackSpeed(stack), 0));
         }
 
         return multimap;

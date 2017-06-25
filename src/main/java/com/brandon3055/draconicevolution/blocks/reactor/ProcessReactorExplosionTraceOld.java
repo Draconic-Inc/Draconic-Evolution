@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public class ProcessReactorExplosionTraceOld implements IProcess {
 
-    private World worldObj;
+    private World world;
     private int xCoord;
     private int yCoord;
     private int zCoord;
@@ -18,7 +18,7 @@ public class ProcessReactorExplosionTraceOld implements IProcess {
     private Random random;
 
     public ProcessReactorExplosionTraceOld(World world, int x, int y, int z, float power, Random random) {
-        this.worldObj = world;
+        this.world = world;
         this.xCoord = x;
         this.yCoord = y;
         this.zCoord = z;
@@ -32,25 +32,25 @@ public class ProcessReactorExplosionTraceOld implements IProcess {
 //        float energy = power * 10;
 //
 //        for (int y = yCoord; y > 0 && energy > 0; y--) {
-//            Block block = worldObj.getBlock(xCoord, y, zCoord);
+//            Block block = world.getBlock(xCoord, y, zCoord);
 //
-//            List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+//            List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
 //            for (Entity entity : entities) entity.attackEntityFrom(ReactorExplosion.fusionExplosion, power * 100);
 //
 //            energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
 //
 //            boolean blockRemoved = false;
 //            if (energy >= 0 && block != Blocks.air) {
-//                worldObj.setBlockToAir(xCoord, y, zCoord);
+//                world.setBlockToAir(xCoord, y, zCoord);
 //                blockRemoved = true;
 //            }
 //            energy -= 0.5F + (0.1F * (yCoord - y));
 //
 //            if (energy <= 0 && random.nextInt(20) == 0 && blockRemoved) {
-//                if (random.nextInt(3) > 0) worldObj.setBlock(xCoord, y, zCoord, Blocks.fire);
+//                if (random.nextInt(3) > 0) world.setBlock(xCoord, y, zCoord, Blocks.fire);
 //                else {
-//                    worldObj.setBlock(xCoord, y, zCoord, Blocks.flowing_lava);
-//                    //worldObj.scheduleBlockUpdate(xCoord, y, zCoord, Blocks.flowing_lava, 100);
+//                    world.setBlock(xCoord, y, zCoord, Blocks.flowing_lava);
+//                    //world.scheduleBlockUpdate(xCoord, y, zCoord, Blocks.flowing_lava, 100);
 //                }
 //            }
 //        }
@@ -58,13 +58,13 @@ public class ProcessReactorExplosionTraceOld implements IProcess {
 //        energy = power * 20;
 //        yCoord++;
 //        for (int y = yCoord; y < 255 && energy > 0; y++) {
-//            Block block = worldObj.getBlock(xCoord, y, zCoord);
+//            Block block = world.getBlock(xCoord, y, zCoord);
 //
-//            List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+//            List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
 //            for (Entity entity : entities) entity.attackEntityFrom(ReactorExplosion.fusionExplosion, power * 100);
 //
 //            energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
-//            if (energy >= 0) worldObj.setBlockToAir(xCoord, y, zCoord);
+//            if (energy >= 0) world.setBlockToAir(xCoord, y, zCoord);
 //
 //            energy -= 0.5F + (0.1F * (y - yCoord));
 //        }

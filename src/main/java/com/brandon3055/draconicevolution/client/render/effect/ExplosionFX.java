@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.vec.Matrix4;
@@ -39,7 +39,7 @@ public class ExplosionFX extends BCParticle {
     private LinkedList<EffectPart> effectParts = new LinkedList<>();
 
     static {
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
+        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
         model = CCModel.combine(map.values());
         model_inv = model.backfacedCopy();
     }
@@ -94,7 +94,7 @@ public class ExplosionFX extends BCParticle {
         }
 
         if (age == 10) {
-            worldObj.playSound(posX, posY, posZ, DESoundHandler.fusionExplosion, SoundCategory.PLAYERS, 100, 0.9F, false);
+            world.playSound(posX, posY, posZ, DESoundHandler.fusionExplosion, SoundCategory.PLAYERS, 100, 0.9F, false);
         }
 
         particleAge++;
@@ -178,7 +178,7 @@ public class ExplosionFX extends BCParticle {
 
         public EffectPart(double scale) {
             this.scale = scale;
-            randOffset = Minecraft.getMinecraft().theWorld.rand.nextInt(3265324);
+            randOffset = Minecraft.getMinecraft().world.rand.nextInt(3265324);
         }
 
         public abstract void update();

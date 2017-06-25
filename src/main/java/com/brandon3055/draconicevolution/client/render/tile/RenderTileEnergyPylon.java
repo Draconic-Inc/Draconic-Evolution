@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
@@ -29,7 +29,7 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
     private static CCModel model;
 
     public RenderTileEnergyPylon() {
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/pylon_sphere.obj")); //Note dont generate the model evey render frame move this to constructor
+        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/pylon_sphere.obj")); //Note dont generate the model evey render frame move this to constructor
         model = CCModel.combine(map.values());
         model.apply(new Scale(0.35, 0.35, 0.35));
         model.computeNormals();
@@ -58,7 +58,8 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
 
             GlStateManager.enableCull();
 
-        } else {
+        }
+        else {
             float f = ((ClientEventHandler.elapsedTicks + partialTicks) % 30F) / 30F;
 
             if (te.isOutputMode.value) {

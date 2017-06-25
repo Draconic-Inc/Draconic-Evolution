@@ -1,10 +1,12 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.util.ArrayUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -25,10 +27,15 @@ public class InventoryCache implements IInventory {
         return inventoryStacks.length;
     }
 
-    @Nullable
+    @Override
+    public boolean isEmpty() {
+        return ArrayUtils.isEmpty(inventoryStacks);
+    }
+
+    @Nonnull
     @Override
     public ItemStack getStackInSlot(int index) {
-        return inventoryStacks[index];
+        return inventoryStacks[index] == null ? ItemStack.EMPTY : inventoryStacks[index];
     }
 
     @Nullable
@@ -36,12 +43,13 @@ public class InventoryCache implements IInventory {
     public ItemStack decrStackSize(int index, int count) {
         ItemStack itemstack = getStackInSlot(index);
 
-        if (itemstack != null) {
-            if (itemstack.stackSize <= count) {
+        if (!itemstack.isEmpty()) {
+            if (itemstack.getCount() <= count) {
                 setInventorySlotContents(index, null);
-            } else {
+            }
+            else {
                 itemstack = itemstack.splitStack(count);
-                if (itemstack.stackSize == 0) {
+                if (itemstack.getCount() == 0) {
                     setInventorySlotContents(index, null);
                 }
             }
@@ -54,7 +62,7 @@ public class InventoryCache implements IInventory {
     public ItemStack removeStackFromSlot(int index) {
         ItemStack item = getStackInSlot(index);
 
-        if (item != null) {
+        if (!item.isEmpty()) {
             setInventorySlotContents(index, null);
         }
 
@@ -62,15 +70,15 @@ public class InventoryCache implements IInventory {
     }
 
     @Override
-    public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
-        if (index < 0 || index >= inventoryStacks.length){
+    public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
+        if (index < 0 || index >= inventoryStacks.length) {
             return;
         }
 
         inventoryStacks[index] = stack;
 
-        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-            stack.stackSize = getInventoryStackLimit();
+        if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit()) {
+            stack.setCount(getInventoryStackLimit());
         }
     }
 
@@ -85,7 +93,7 @@ public class InventoryCache implements IInventory {
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(EntityPlayer player) {
         return true;
     }
 

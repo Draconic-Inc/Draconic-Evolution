@@ -131,14 +131,12 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
         @Override
         public IMessage handleMessage(PacketDislocator message, MessageContext ctx) {
             ItemStack teleporter = HandHelper.getItem(ctx.getServerHandler().playerEntity, DEFeatures.dislocatorAdvanced);
-            if (teleporter == null) {
+            if (teleporter.isEmpty()) {
                 return null;
             }
 
-            NBTTagCompound compound = teleporter.getTagCompound();
-            if (compound == null) compound = new NBTTagCompound();
-            NBTTagList list = (NBTTagList) compound.getTag("Locations");
-            if (list == null) list = new NBTTagList();
+            NBTTagCompound compound = ItemNBTHelper.getCompound(teleporter);
+            NBTTagList list = compound.getTagList("Locations", 10);
 
             if (message.function == ADDDESTINATION) {
                 NBTTagCompound tag = new NBTTagCompound();
@@ -213,17 +211,16 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
 
             if (message.function == TELEPORT) {
                 int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
-                if (!ctx.getServerHandler().playerEntity.capabilities.isCreativeMode)
-                    ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
+                if (!ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
                 TeleportLocation destination = new TeleportLocation();
                 destination.readFromNBT(list.getCompoundTagAt(message.data));
 
-                if (!ctx.getServerHandler().playerEntity.worldObj.isRemote) {
-                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().playerEntity.worldObj, ctx.getServerHandler().playerEntity.posX, ctx.getServerHandler().playerEntity.posY, ctx.getServerHandler().playerEntity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().playerEntity.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                if (!ctx.getServerHandler().playerEntity.world.isRemote) {
+                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().playerEntity.world, ctx.getServerHandler().playerEntity.posX, ctx.getServerHandler().playerEntity.posY, ctx.getServerHandler().playerEntity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().playerEntity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
                 destination.teleport(ctx.getServerHandler().playerEntity);
-                if (!ctx.getServerHandler().playerEntity.worldObj.isRemote) {
-                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().playerEntity.worldObj, ctx.getServerHandler().playerEntity.posX, ctx.getServerHandler().playerEntity.posY, ctx.getServerHandler().playerEntity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().playerEntity.worldObj.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                if (!ctx.getServerHandler().playerEntity.world.isRemote) {
+                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().playerEntity.world, ctx.getServerHandler().playerEntity.posX, ctx.getServerHandler().playerEntity.posY, ctx.getServerHandler().playerEntity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().playerEntity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
             }
 
@@ -243,7 +240,8 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
                         teleporter.setTagCompound(compound);
                         ItemNBTHelper.setShort(teleporter, "Selection", (short) (ItemNBTHelper.getShort(teleporter, "Selection", (short) 0) - 1));
                     }
-                } else //down
+                }
+                else //down
                 {
                     if (selected < maxSelect) {
                         NBTTagCompound temp = list.getCompoundTagAt(selected + selectionOffset);
@@ -263,7 +261,8 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
                     if (ctx.getServerHandler().playerEntity.inventory.hasItemStack(new ItemStack(Items.ENDER_PEARL))) {
                         ctx.getServerHandler().playerEntity.inventory.clearMatchingItems(Items.ENDER_PEARL, 0, 1, null);
                         count++;
-                    } else break;
+                    }
+                    else break;
                 }
                 ItemNBTHelper.setInteger(teleporter, "Fuel", fuel + (DEConfig.dislocatorUsesPerPearl * count));
             }

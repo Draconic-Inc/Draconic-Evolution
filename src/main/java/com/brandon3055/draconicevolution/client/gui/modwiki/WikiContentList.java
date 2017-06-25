@@ -57,7 +57,7 @@ public class WikiContentList extends MGuiList implements IMGuiListener {
             public int getTextColour(boolean hovered, boolean disabled) {
                 return mixColours(WikiConfig.NAV_WINDOW, (hovered ? 0x606060 : 0x404040));
             }
-        }.setListener(this).setToolTip(new String[] {"Toggle Navigation Window"})).setColours(0, 0, 0));
+        }.setListener(this).setToolTip(new String[]{"Toggle Navigation Window"})).setColours(0, 0, 0));
         addChild(navLabel = new MGuiLabel(modularGui, xPos, yPos, xSize, 12, I18n.format("guiwiki.label.navigation")) {
             @Override
             public int getTextColour() {
@@ -71,12 +71,12 @@ public class WikiContentList extends MGuiList implements IMGuiListener {
             }
         }.setShadow(false));
         addChild(buttonAddBranch = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "ADD_BRANCH", xPos + maxXSize - 40, yPos, 28, 12, "[§4add§r]") {
-                @Override
-                public int getTextColour(boolean hovered, boolean disabled) {
-                    return hovered ? 0xFFFFFF : 0xFF000000;
-                }
-            }.setColours(0, 0, 0).setShadow(false));
-        buttonAddBranch.setListener(this).setToolTip(new String[] {"Add new sub-branch to the selected branch", "Adds a new mod branch if on the Mods branch", "Otherwise adds a new sub branch."}).setEnabled(false);
+            @Override
+            public int getTextColour(boolean hovered, boolean disabled) {
+                return hovered ? 0xFFFFFF : 0xFF000000;
+            }
+        }.setColours(0, 0, 0).setShadow(false));
+        buttonAddBranch.setListener(this).setToolTip(new String[]{"Add new sub-branch to the selected branch", "Adds a new mod branch if on the Mods branch", "Otherwise adds a new sub branch."}).setEnabled(false);
         branchLabel.trim = true;
 
 //        addChild(new MGuiButton(modularGui, 0, 200, yPos + 10, 150, 18, "Test Text"));

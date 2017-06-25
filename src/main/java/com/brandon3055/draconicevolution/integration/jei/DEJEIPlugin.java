@@ -4,6 +4,7 @@ import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IJEIClearence;
+import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
 import com.brandon3055.draconicevolution.client.gui.GuiFusionCraftingCore;
@@ -14,6 +15,7 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import mezz.jei.api.*;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
+import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
@@ -39,7 +41,8 @@ public class DEJEIPlugin implements IModPlugin {
     public static IJeiRuntime jeiRuntime = null;
     public static List<ItemStack> iUpgradables = new ArrayList<>();
 
-    public DEJEIPlugin() {}
+    public DEJEIPlugin() {
+    }
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
@@ -50,16 +53,22 @@ public class DEJEIPlugin implements IModPlugin {
     }
 
     @Override
+    public void registerCategories(IRecipeCategoryRegistration registry) {
+        registry.addRecipeCategories(new FusionRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
+    }
+
+    @Override
     public void register(IModRegistry registry) {
+        LogHelper.dev("Register JEI");
         jeiHelpers = registry.getJeiHelpers();
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 
-        registry.addRecipeCategories(new FusionRecipeCategory(guiHelper));
-        registry.addRecipeHandlers(new FusionRecipeHandler(), new EIOSpawnerRecipesHandler(guiHelper));
+        registry.handleRecipes(EIOSpawnerRecipesWrapper.class, new EIOSpawnerRecipesWrapper.Factory(), VanillaRecipeCategoryUid.CRAFTING);
+        registry.handleRecipes(IFusionRecipe.class, new FusionRecipeWrapper.Factory(), RecipeCategoryUids.FUSION_CRAFTING);
 
-        registry.addRecipeCategoryCraftingItem(new ItemStack(DEFeatures.fusionCraftingCore), RecipeCategoryUids.FUSION_CRAFTING);
-        registry.addRecipeCategoryCraftingItem(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.CRAFTING);
-        registry.addRecipeCategoryCraftingItem(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.SMELTING);
+        registry.addRecipeCatalyst(new ItemStack(DEFeatures.fusionCraftingCore), RecipeCategoryUids.FUSION_CRAFTING);
+        registry.addRecipeCatalyst(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeCatalyst(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.SMELTING);
 
         registry.addRecipeClickArea(GuiFusionCraftingCore.class, 81, 45, 18, 22, RecipeCategoryUids.FUSION_CRAFTING);
         registry.addRecipeClickArea(GuiDraconiumChest.class, 394, 216, 22, 15, VanillaRecipeCategoryUid.CRAFTING);
@@ -79,10 +88,15 @@ public class DEJEIPlugin implements IModPlugin {
             }
 
             @Override
+            public boolean canHandle(ContainerDraconiumChest container) {
+                return true;
+            }
+
+            @Override
             public List<Slot> getRecipeSlots(ContainerDraconiumChest container) {
                 List<Slot> slots = new ArrayList<>();
                 for (Slot slot : container.inventorySlots) {
-                    if (slot.slotNumber >= 267 && slot.slotNumber <= 275){
+                    if (slot.slotNumber >= 267 && slot.slotNumber <= 275) {
                         slots.add(slot);
                     }
                 }
@@ -139,11 +153,12 @@ public class DEJEIPlugin implements IModPlugin {
         Iterator<ItemStack> i = registry.getIngredientRegistry().getIngredients(ItemStack.class).iterator();
         while (i.hasNext()) {
             ItemStack stack = i.next();
-            if (stack != null && stack.getItem() instanceof IUpgradableItem) {
+            if (!stack.isEmpty() && stack.getItem() instanceof IUpgradableItem) {
                 if ((stack.getItem() instanceof ItemEnergyBase || stack.getItem() instanceof WyvernArmor) && ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) == 0) {
                     continue;
                 }
 
+                LogHelper.dev("Add Upgradable: " + stack);
                 iUpgradables.add(stack);
             }
         }
@@ -155,8 +170,8 @@ public class DEJEIPlugin implements IModPlugin {
     }
 
     public static void reloadJEI() {
-        if (jeiHelpers != null) {
-            jeiHelpers.reload();
-        }
+//        if (jeiHelpers != null) {
+//            jeiHelpers.reload();
+//        }
     }
 }

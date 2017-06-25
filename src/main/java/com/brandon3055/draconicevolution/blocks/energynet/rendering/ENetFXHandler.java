@@ -22,7 +22,8 @@ public abstract class ENetFXHandler<T extends TileCrystalBase> {
 
     public abstract void update();
 
-    public void detectAndSendChanges() {}
+    public void detectAndSendChanges() {
+    }
 
     public void tileUnload() {
     }

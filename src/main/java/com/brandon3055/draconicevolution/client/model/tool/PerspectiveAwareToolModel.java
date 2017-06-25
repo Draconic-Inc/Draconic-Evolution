@@ -37,7 +37,7 @@ public class PerspectiveAwareToolModel implements IPerspectiveAwareModel {
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
         if (DEConfig.disable3DModels) {
-            if (cameraTransformType == ItemCameraTransforms.TransformType.GUI){
+            if (cameraTransformType == ItemCameraTransforms.TransformType.GUI) {
                 return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_TOOL.getTransforms(), cameraTransformType);
             }
             else if (cameraTransformType == ItemCameraTransforms.TransformType.GROUND) {
@@ -48,7 +48,7 @@ public class PerspectiveAwareToolModel implements IPerspectiveAwareModel {
             }
         }
 
-        if (cameraTransformType == ItemCameraTransforms.TransformType.GUI){
+        if (cameraTransformType == ItemCameraTransforms.TransformType.GUI) {
             return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, transformOverride.getOverride(cameraTransformType, TransformUtils.DEFAULT_TOOL).getTransforms(), cameraTransformType);
         }
         else if (cameraTransformType == ItemCameraTransforms.TransformType.GROUND) {

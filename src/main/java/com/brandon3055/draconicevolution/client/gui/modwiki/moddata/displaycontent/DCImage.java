@@ -151,7 +151,7 @@ public class DCImage extends DisplayComponentBase {
     public LinkedList<MGuiElementBase> getEditControls() {
         LinkedList<MGuiElementBase> list = super.getEditControls();
 
-        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align"){
+        list.add(new MGuiButtonSolid(modularGui, "TOGGLE_ALIGN", 0, 0, 26, 12, "Align") {
             @Override
             public int getBorderColour(boolean hovering, boolean disabled) {
                 return hovering ? 0xFF00FF00 : 0xFFFF0000;
@@ -160,13 +160,13 @@ public class DCImage extends DisplayComponentBase {
 
         list.add(new MGuiLabel(modularGui, 0, 0, 22, 12, "URL:").setAlignment(EnumAlignment.CENTER));
         MGuiTextField urlField = new MGuiTextField(modularGui, 0, 0, 150, 12, fontRenderer).setListener(this).setMaxStringLength(2048).setText(url);
-        urlField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the image URL. Note some URL's may not be supported.", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, urlField));
+        urlField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Set the image URL. Note some URL's may not be supported.", TextFormatting.GREEN + "Will Auto-Save 3 seconds after you stop typing."}, urlField));
         urlField.setId("URL");
         list.add(urlField);
 
         list.add(new MGuiLabel(modularGui, 0, 0, 30, 12, "Scale:").setAlignment(EnumAlignment.CENTER));
         MGuiTextField scaleField = new MGuiTextField(modularGui, 0, 0, 36, 12, fontRenderer).setListener(this).setMaxStringLength(2048).setText(String.valueOf(scale));
-        scaleField.addChild(new MGuiHoverPopup(modularGui, new String[] {"Set the image scale (As a percentage of the actual size)", TextFormatting.GOLD + "The size of the image will be limited by both this and the width of the GUI.", TextFormatting.GOLD + "Whichever value is smaller will take priority.", TextFormatting.GREEN + "Will save as you type."}, scaleField));
+        scaleField.addChild(new MGuiHoverPopup(modularGui, new String[]{"Set the image scale (As a percentage of the actual size)", TextFormatting.GOLD + "The size of the image will be limited by both this and the width of the GUI.", TextFormatting.GOLD + "Whichever value is smaller will take priority.", TextFormatting.GREEN + "Will save as you type."}, scaleField));
         scaleField.setId("SCALE");
         scaleField.setValidator(new Predicate<String>() {
             @Override
@@ -174,7 +174,8 @@ public class DCImage extends DisplayComponentBase {
                 try {
                     Integer.parseInt(input);
                 }
-                catch (Exception e) {}
+                catch (Exception e) {
+                }
                 return true;
             }
         });
@@ -196,7 +197,8 @@ public class DCImage extends DisplayComponentBase {
             try {
                 newScale = Integer.parseInt(((MGuiTextField) eventElement).getText());
             }
-            catch (Exception e) {}
+            catch (Exception e) {
+            }
 
             if (newScale < 1) {
                 newScale = 1;
@@ -286,7 +288,8 @@ public class DCImage extends DisplayComponentBase {
         try {
             scale = Integer.parseInt(element.getAttribute(ATTRIB_SCALE));
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+        }
         if (scale < 1) {
             scale = 1;
         }

@@ -11,7 +11,7 @@ import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingPedestal;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
@@ -47,7 +47,7 @@ public class EffectTrackerFusionCrafting {
     public Vec3D pos;
     public Vec3D prevPos = new Vec3D();
     public Vec3D circlePosition = new Vec3D();
-    private World worldObj;
+    private World world;
     private long boltSeed = 0;
 
     public float alpha = 0F;
@@ -57,7 +57,7 @@ public class EffectTrackerFusionCrafting {
     public float blue = 1F;
 
     public EffectTrackerFusionCrafting(World world, Vec3D pos, Vec3D corePos, IFusionCraftingInventory craftingInventory, int effectCount) {
-        this.worldObj = world;
+        this.world = world;
         this.corePos = corePos;
         this.craftingInventory = craftingInventory;
         this.effectCount = effectCount;
@@ -72,14 +72,14 @@ public class EffectTrackerFusionCrafting {
         prevPos.set(pos);
 
         //region Movement
-        if (isMoving){
-            if (pos.equals(startPos)){
-                worldObj.playSound(pos.x, pos.y, pos.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 0.5F, 0.5F, false);
+        if (isMoving) {
+            if (pos.equals(startPos)) {
+                world.playSound(pos.x, pos.y, pos.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 0.5F, 0.5F, false);
             }
 
             double distance = Utils.getDistanceAtoB(circlePosition, pos);
             if (distance > 0.1 && !positionLocked) {
-                if (scale > 1){
+                if (scale > 1) {
                     scale -= 0.05F;
                 }
 
@@ -89,8 +89,8 @@ public class EffectTrackerFusionCrafting {
                 pos.add(dir.x, dir.y, dir.z);
             }
             else {
-                if (!positionLocked){
-                    worldObj.playSound(pos.x, pos.y, pos.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 2F, 0.5F, false);
+                if (!positionLocked) {
+                    world.playSound(pos.x, pos.y, pos.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 2F, 0.5F, false);
                 }
                 positionLocked = true;
                 pos.set(circlePosition);
@@ -105,30 +105,30 @@ public class EffectTrackerFusionCrafting {
         //region Render Logic
 
         int chance = 22 - (int) ((craftingInventory.getCraftingStage() / 2000D) * 22);
-        if (chance < 1){
+        if (chance < 1) {
             chance = 1;
         }
 
-        if (rand.nextInt(chance) == 0){
-            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
+        if (rand.nextInt(chance) == 0) {
+            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, pos));
         }
 
         if (renderBolt > 0) {
             renderBolt--;
         }
 
-        if (rand.nextInt((chance * 2) + (int)(effectCount * 1.5)) == 0){
+        if (rand.nextInt((chance * 2) + (int) (effectCount * 1.5)) == 0) {
             renderBolt = 1;
             boltSeed = rand.nextLong();
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
-            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(worldObj, pos));
-            worldObj.playSound(pos.x, pos.y, pos.z, DESoundHandler.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
+            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, pos));
+            world.playSound(pos.x, pos.y, pos.z, DESoundHandler.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
         }
 
         if (craftingInventory.getCraftingStage() < 1000) {
-            TileEntity tile = worldObj.getTileEntity(pos.getPos());
-            if (tile instanceof TileCraftingPedestal && craftingInventory.getRequiredCharge() > 0) {
-                alpha = ((TileCraftingPedestal) tile).getCharge() / (float) craftingInventory.getRequiredCharge();
+            TileEntity tile = world.getTileEntity(pos.getPos());
+            if (tile instanceof TileCraftingInjector && craftingInventory.getRequiredCharge() > 0) {
+                alpha = ((TileCraftingInjector) tile).getCharge() / (float) craftingInventory.getRequiredCharge();
             }
         }
         else {
@@ -138,7 +138,7 @@ public class EffectTrackerFusionCrafting {
 //        alpha = craftingInventory.getCraftingStage() / 1000F;
 
         rotationSpeed = 1 + (craftingInventory.getCraftingStage() / 1000F) * 10;
-        if (alpha > 1){
+        if (alpha > 1) {
             alpha = 1;
         }
 
@@ -180,7 +180,7 @@ public class EffectTrackerFusionCrafting {
         GlStateManager.pushMatrix();
         GlStateManager.translate(relativeX, relativeY, relativeZ);
 
-        if (renderBolt > 0){
+        if (renderBolt > 0) {
             RenderEnergyBolt.renderBoltBetween(new Vec3D(), corePos.copy().subtract(correctX - 0.5, correctY - 0.5, correctZ - 0.5), 0.05, 1, 10, boltSeed, true);
         }
 
@@ -220,7 +220,7 @@ public class EffectTrackerFusionCrafting {
 
             particleTextureIndexX = rand.nextInt(5);
             int ttd = particleMaxAge - particleAge;
-            if (ttd < 10){
+            if (ttd < 10) {
                 particleScale = ttd / 10F;
             }
 
@@ -233,22 +233,22 @@ public class EffectTrackerFusionCrafting {
 
         @Override
         public void renderParticle(VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            float minU = (float)this.particleTextureIndexX / 8.0F;
+            float minU = (float) this.particleTextureIndexX / 8.0F;
             float maxU = minU + 0.125F;
-            float minV = (float)this.particleTextureIndexY / 8.0F;
+            float minV = (float) this.particleTextureIndexY / 8.0F;
             float maxV = minV + 0.125F;
             float scale = 0.1F * this.particleScale;
 
-            float renderX = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
-            float renderY = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
-            float renderZ = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
+            float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+            float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+            float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
             int brightnessForRender = this.getBrightnessForRender(partialTicks);
             int j = brightnessForRender >> 16 & 65535;
             int k = brightnessForRender & 65535;
-            vertexbuffer.pos((double)(renderX - rotationX * scale - rotationXY * scale), (double)(renderY - rotationZ * scale), (double)(renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double)maxU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double)(renderX - rotationX * scale + rotationXY * scale), (double)(renderY + rotationZ * scale), (double)(renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double)maxU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double)(renderX + rotationX * scale + rotationXY * scale), (double)(renderY + rotationZ * scale), (double)(renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double)minU, (double)minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double)(renderX + rotationX * scale - rotationXY * scale), (double)(renderY - rotationZ * scale), (double)(renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double)minU, (double)maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            vertexbuffer.pos((double) (renderX - rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            vertexbuffer.pos((double) (renderX - rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            vertexbuffer.pos((double) (renderX + rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            vertexbuffer.pos((double) (renderX + rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         }
     }
 }

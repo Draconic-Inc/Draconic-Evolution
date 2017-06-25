@@ -3,8 +3,9 @@ package com.brandon3055.draconicevolution.integration.computers.cc;
 /**
  * Created by brandon3055 on 21/9/2015.
  */
-public class CCAdapter {} /*implements IPeripheral {
-	private IDEPeripheral peripheral;
+public class CCAdapter {
+} /*implements IPeripheral {
+    private IDEPeripheral peripheral;
 
 	public CCAdapter(IDEPeripheral peripheral){
 		this.peripheral = peripheral;

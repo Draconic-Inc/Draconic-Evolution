@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.lib;
 
+import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner;
 import com.brandon3055.draconicevolution.items.ItemCore;
@@ -8,9 +9,12 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+
+import java.util.Objects;
 
 import static com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier.*;
 
@@ -36,7 +40,7 @@ public class RecipeEIOStabilization implements IRecipe {
             for (int j = 0; j < inv.getWidth(); ++j) {
                 ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
 
-                if (itemstack != null) {
+                if (!itemstack.isEmpty()) {
                     boolean flag = false;
 
                     if (itemstack.getItem() instanceof ItemCore && !foundCore) {
@@ -64,35 +68,35 @@ public class RecipeEIOStabilization implements IRecipe {
     @Nullable
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv) {
-        ItemStack spawner = null;
-        ItemStack core = null;
+        ItemStack spawner = ItemStack.EMPTY;
+        ItemStack core = ItemStack.EMPTY;
 
         for (int i = 0; i < inv.getHeight(); ++i) {
             for (int j = 0; j < inv.getWidth(); ++j) {
                 ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
 
-                if (itemstack != null) {
-                    LogHelper.dev(itemstack+" "+itemstack.getTagCompound());
+                if (!itemstack.isEmpty()) {
+                    LogHelper.dev(itemstack + " " + itemstack.getTagCompound());
                     boolean flag = false;
 
-                    if (itemstack.getItem() instanceof ItemCore && core == null) {
+                    if (itemstack.getItem() instanceof ItemCore && core.isEmpty()) {
                         core = itemstack;
                         flag = true;
                     }
-                    else if (itemstack.getItem() == brokenSpawner && spawner == null) {
+                    else if (itemstack.getItem() == brokenSpawner && spawner.isEmpty()) {
                         spawner = itemstack;
                         flag = true;
                     }
 
                     if (!flag) {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
                 }
             }
         }
 
-        if (spawner == null || core == null) {
-            return null;
+        if (spawner.isEmpty() || core.isEmpty()) {
+            return ItemStack.EMPTY;
         }
 
         ItemStack output = new ItemStack(DEFeatures.stabilizedSpawner);
@@ -117,15 +121,16 @@ public class RecipeEIOStabilization implements IRecipe {
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
         ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
 
-        for (int i = 0; i < aitemstack.length; ++i)
-        {
+        for (int i = 0; i < aitemstack.length; ++i) {
             ItemStack itemstack = inv.getStackInSlot(i);
             aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
         }
 
-        return aitemstack;
+        NonNullList<ItemStack> list = NonNullList.create();
+        DataUtils.forEachMatch(aitemstack, Objects::nonNull, list::add);
+        return list;
     }
 }

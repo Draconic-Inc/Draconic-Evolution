@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.items;
 
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -19,6 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,7 +30,7 @@ import java.util.*;
 /**
  * Created by brandon3055 on 26/06/2016.
  */
-public class ToolUpgrade extends ItemBCore implements ICustomRender {
+public class ToolUpgrade extends ItemBCore implements IRenderOverride {
 
     public static final Map<Integer, String> ID_TO_NAME = new HashMap<Integer, String>();
     public static final Map<String, Integer> NAME_TO_ID = new HashMap<String, Integer>();
@@ -123,7 +124,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
     }
 
     @Override
-    public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
+    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
         for (Integer meta : ID_TO_NAME.keySet()) {
             subItems.add(new ItemStack(item, 1, meta));
         }
@@ -135,6 +136,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
     }
 
     private int tick;
+
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
@@ -151,7 +153,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
             tooltip.add(InfoHelper.ITC() + I18n.format("upgrade.de.level.info") + ": " + InfoHelper.HITC() + I18n.format("upgrade.level." + (recipe.getRecipeTier() + 1)) + TextFormatting.DARK_GRAY + " " + (5 - tick % 100 / 20));
             for (Object o : recipe.getRecipeIngredients()) {
                 ItemStack ingredient = OreDictHelper.resolveObject(o);
-                if (ingredient != null) {
+                if (!ingredient.isEmpty()) {
                     tooltip.add("-" + ingredient.getDisplayName());
                 }
             }
@@ -164,7 +166,7 @@ public class ToolUpgrade extends ItemBCore implements ICustomRender {
     @Override
     public void registerRenderer(Feature feature) {
         for (Integer meta : ID_TO_NAME.keySet()) {
-            String fullName = DraconicEvolution.MODID.toLowerCase() + ":" + feature.registryName();
+            String fullName = DraconicEvolution.MODID + ":" + feature.getName();
             String variant = "type=" + ID_TO_NAME.get(meta).toLowerCase();
             ModelLoader.setCustomModelResourceLocation(this, meta, new ModelResourceLocation(fullName, variant));
         }

@@ -47,7 +47,7 @@ public class ContainerRecipeBuilder extends Container {
 
     public void arangeCraftingSlots(int craftingType) {
         for (Slot slot : craftingSlots) {
-            slot.xDisplayPosition = slot.yDisplayPosition = 1000;
+            slot.xPos = slot.yPos = 1000;
         }
 
         if (craftingType == 0) {
@@ -55,26 +55,26 @@ public class ContainerRecipeBuilder extends Container {
             int posY = 30;
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 3; x++) {
-                    craftingSlots.get(x + y * 3 + 1).xDisplayPosition = posX + 18 * x;
-                    craftingSlots.get(x + y * 3 + 1).yDisplayPosition = posY + y * 18;
+                    craftingSlots.get(x + y * 3 + 1).xPos = posX + 18 * x;
+                    craftingSlots.get(x + y * 3 + 1).yPos = posY + y * 18;
                 }
             }
 
-            craftingSlots.get(0).xDisplayPosition = 107;
-            craftingSlots.get(0).yDisplayPosition = posY + 18;
+            craftingSlots.get(0).xPos = 107;
+            craftingSlots.get(0).yPos = posY + 18;
         }
         else if (craftingType == 1) {
-            craftingSlots.get(0).xDisplayPosition = 90 - 18;
-            craftingSlots.get(0).yDisplayPosition = 20;
-            craftingSlots.get(1).xDisplayPosition = 90 + 18;
-            craftingSlots.get(1).yDisplayPosition = 20;
+            craftingSlots.get(0).xPos = 90 - 18;
+            craftingSlots.get(0).yPos = 20;
+            craftingSlots.get(1).xPos = 90 + 18;
+            craftingSlots.get(1).yPos = 20;
 
-            for (int i = 2; i < 11; i++){
-                craftingSlots.get(i).xDisplayPosition = 20 + (i - 2) * 18;
-                craftingSlots.get(i).yDisplayPosition = 50;
+            for (int i = 2; i < 11; i++) {
+                craftingSlots.get(i).xPos = 20 + (i - 2) * 18;
+                craftingSlots.get(i).yPos = 50;
 
-                craftingSlots.get(i + 9).xDisplayPosition = 20 + (i - 2) * 18;
-                craftingSlots.get(i + 9).yDisplayPosition = 68;
+                craftingSlots.get(i + 9).xPos = 20 + (i - 2) * 18;
+                craftingSlots.get(i + 9).yPos = 68;
             }
         }
     }
@@ -84,26 +84,27 @@ public class ContainerRecipeBuilder extends Container {
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         Slot slot = getSlot(index);
 
-        if (slot != null && slot.getHasStack())
-        {
+        if (slot.getHasStack()) {
             ItemStack stack = slot.getStack();
             ItemStack result = stack.copy();
 
-            if (index >= 36){
-                if (!mergeItemStack(stack, 0, 36, false)){
+            if (index >= 36) {
+                if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
                 }
-            }else if (TileEntityFurnace.getItemBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + inventoryCache.getSizeInventory(), false)){
+            }
+            else if (TileEntityFurnace.getItemBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + inventoryCache.getSizeInventory(), false)) {
                 return null;
             }
 
-            if (stack.stackSize == 0) {
-                slot.putStack(null);
-            }else{
+            if (stack.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
+            }
+            else {
                 slot.onSlotChanged();
             }
 
-            slot.onPickupFromSlot(player, stack);
+            slot.onTake(player, stack);
 
             return result;
         }

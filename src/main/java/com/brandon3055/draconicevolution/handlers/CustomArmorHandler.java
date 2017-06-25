@@ -14,6 +14,7 @@ import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -42,7 +43,7 @@ public class CustomArmorHandler {
 //		EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 //		ArmorSummery summery = new ArmorSummery().getSummery(player);
 //		if (summery == null || summery.protectionPoints <= 0) return;
-//		float newEntropy = Math.min(summery.entropy + Math.min(3, event.ammount/5) + player.worldObj.rand.nextFloat(), 100F);
+//		float newEntropy = Math.min(summery.entropy + Math.min(3, event.ammount/5) + player.world.rand.nextFloat(), 100F);
 //
 //		//Divide the damage between the armor peaces based on how many of the protection points each peace has
 //		float totalAbsorbed = 0;
@@ -110,7 +111,7 @@ public class CustomArmorHandler {
         int remainingPoints = 0;
         for (int i = 0; i < summery.allocation.length; i++) {
             if (summery.allocation[i] == 0) continue;
-            ItemStack armorPeace = summery.armorStacks[i];
+            ItemStack armorPeace = summery.armorStacks.get(i);
 
             float dmgShear = summery.allocation[i] / summery.protectionPoints;
             float dmg = dmgShear * hitAmount;
@@ -127,7 +128,8 @@ public class CustomArmorHandler {
 
         if (remainingPoints > 0) {
             player.hurtResistantTime = 20;
-        } else if (hitAmount - totalAbsorbed > 0) {
+        }
+        else if (hitAmount - totalAbsorbed > 0) {
             player.attackEntityFrom(event.getSource(), hitAmount - totalAbsorbed);
         }
     }
@@ -141,7 +143,9 @@ public class CustomArmorHandler {
         EntityPlayer player = (EntityPlayer) event.getEntityLiving();
         ArmorSummery summery = new ArmorSummery().getSummery(player);
 
-        if (summery == null || event.getSource() == ADMIN_KILL) return;
+        if (summery == null || event.getSource() == ADMIN_KILL) {
+            return;
+        }
 
         if (summery.protectionPoints > 500) {
             event.setCanceled(true);
@@ -149,26 +153,30 @@ public class CustomArmorHandler {
             return;
         }
 
-        if (!summery.hasDraconic) return;
+        if (!summery.hasDraconic) {
+            return;
+        }
 
-        int[] charge = new int[summery.armorStacks.length];
-        int totalCharge = 0;
-        for (int i = 0; i < summery.armorStacks.length; i++) {
-            if (summery.armorStacks[i] != null) {
-                charge[i] = ((ICustomArmor) summery.armorStacks[i].getItem()).getEnergyStored(summery.armorStacks[i]);
+        int[] charge = new int[summery.armorStacks.size()];
+        long totalCharge = 0;
+        for (int i = 0; i < summery.armorStacks.size(); i++) {
+            if (!summery.armorStacks.get(i).isEmpty()) {
+                charge[i] = ((ICustomArmor) summery.armorStacks.get(i).getItem()).getEnergyStored(summery.armorStacks.get(i));
                 totalCharge += charge[i];
             }
         }
 
-        if (totalCharge < 10000000) return;
+        if (totalCharge < 10000000) {
+            return;
+        }
 
-        for (int i = 0; i < summery.armorStacks.length; i++) {
-            if (summery.armorStacks[i] != null) {
-                ((ICustomArmor) summery.armorStacks[i].getItem()).modifyEnergy(summery.armorStacks[i], -(int) ((charge[i] / (double) totalCharge) * 10000000));
+        for (int i = 0; i < summery.armorStacks.size(); i++) {
+            if (!summery.armorStacks.get(i).isEmpty()) {
+                ((ICustomArmor) summery.armorStacks.get(i).getItem()).modifyEnergy(summery.armorStacks.get(i), -(int) ((charge[i] / (double) totalCharge) * 10000000L));
             }
         }
 
-        player.addChatComponentMessage(new TextComponentTranslation("msg.de.shieldDepleted.txt").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
+        player.sendMessage(new TextComponentTranslation("msg.de.shieldDepleted.txt").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
         event.setCanceled(true);
         player.setHealth(1);
     }
@@ -198,7 +206,7 @@ public class CustomArmorHandler {
     }
 
     public static void tickShield(ArmorSummery summery, EntityPlayer player) {
-        if (summery == null || (summery.maxProtectionPoints - summery.protectionPoints < 0.01 && summery.entropy == 0) || player.worldObj.isRemote) {
+        if (summery == null || (summery.maxProtectionPoints - summery.protectionPoints < 0.01 && summery.entropy == 0) || player.world.isRemote) {
             return;
         }
 
@@ -215,15 +223,15 @@ public class CustomArmorHandler {
             summery.entropy = 0;
         }
 
-        for (int i = 0; i < summery.armorStacks.length; i++) {
-            ItemStack stack = summery.armorStacks[i];
+        for (int i = 0; i < summery.armorStacks.size(); i++) {
+            ItemStack stack = summery.armorStacks.get(i);
 
-            if (stack == null || summery.totalEnergyStored <= 0) {
+            if (stack.isEmpty() || summery.totalEnergyStored <= 0) {
                 continue;
             }
 
             float maxForPeace = ((ICustomArmor) stack.getItem()).getProtectionPoints(stack);
-            int energyAmount = ((ICustomArmor) summery.armorStacks[i].getItem()).getEnergyPerProtectionPoint();
+            int energyAmount = ((ICustomArmor) summery.armorStacks.get(i).getItem()).getEnergyPerProtectionPoint();
             ((ICustomArmor) stack.getItem()).modifyEnergy(stack, -(int) (((double) summery.energyAllocation[i] / (double) summery.totalEnergyStored) * (totalPointsToAdd * energyAmount)));
             float pointsForPeace = (summery.pointsDown[i] / Math.max(1, summery.maxProtectionPoints - summery.protectionPoints)) * totalPointsToAdd;
             summery.allocation[i] += pointsForPeace;
@@ -249,7 +257,7 @@ public class CustomArmorHandler {
                 player.capabilities.allowFlying = true;
                 if (summery.flight[1]) player.capabilities.isFlying = true;
 
-                if (player.worldObj.isRemote) {
+                if (player.world.isRemote) {
                     setPlayerFlySpeed(player, 0.05F + (0.05F * summery.flightSpeedModifier));
                 }
 
@@ -271,12 +279,13 @@ public class CustomArmorHandler {
                     player.motionZ *= 0.5;
                 }
 
-            } else {
+            }
+            else {
                 if (!playersWithFlight.containsKey(player)) {
                     playersWithFlight.put(player, false);
                 }
 
-                if (playersWithFlight.get(player) && !player.worldObj.isRemote) {
+                if (playersWithFlight.get(player) && !player.world.isRemote) {
                     playersWithFlight.put(player, false);
 
                     if (!player.capabilities.isCreativeMode) {
@@ -286,7 +295,7 @@ public class CustomArmorHandler {
                     }
                 }
 
-                if (player.worldObj.isRemote && playersWithFlight.get(player)) {
+                if (player.world.isRemote && playersWithFlight.get(player)) {
                     playersWithFlight.put(player, false);
                     if (!player.capabilities.isCreativeMode) {
                         player.capabilities.allowFlying = false;
@@ -304,22 +313,23 @@ public class CustomArmorHandler {
         if (summery != null && summery.speedModifier > 0) {
             double value = summery.speedModifier;
             if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID) == null) {
-                player.getEntityAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getAttributeUnlocalizedName(), value, 1));
-            } else if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID).getAmount() != value) {
+                player.getEntityAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), value, 1));
+            }
+            else if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID).getAmount() != value) {
                 player.getEntityAttribute(speedAttr).removeModifier(player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID));
-                player.getEntityAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getAttributeUnlocalizedName(), value, 1));
+                player.getEntityAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), value, 1));
             }
 
-            if (!player.onGround && player.getRidingEntity() == null)
-                player.jumpMovementFactor = 0.02F + (0.02F * summery.speedModifier);
-        } else if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID) != null) {
+            if (!player.onGround && player.getRidingEntity() == null) player.jumpMovementFactor = 0.02F + (0.02F * summery.speedModifier);
+        }
+        else if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID) != null) {
             player.getEntityAttribute(speedAttr).removeModifier(player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID));
         }
 
         //endregion
 
         //region/*---------------- HillStep -----------------*/
-        if (summery != null && player.worldObj.isRemote) {
+        if (summery != null && player.world.isRemote) {
             boolean highStepListed = playersWithUphillStep.contains(player.getDisplayNameString()) && player.stepHeight >= 1f;
             boolean hasHighStep = summery.hasHillStep;
 
@@ -356,7 +366,7 @@ public class CustomArmorHandler {
             return true;
         }
 
-        if ((event.getSource().damageType.equals("inWall") || event.getSource().damageType.equals("drown")) && summery.armorStacks[3] != null) {
+        if ((event.getSource().damageType.equals("inWall") || event.getSource().damageType.equals("drown")) && !summery.armorStacks.get(3).isEmpty()) {
             if (event.getAmount() <= 2f) event.setCanceled(true);
             return true;
         }
@@ -389,7 +399,7 @@ public class CustomArmorHandler {
         /**
          * The armor peaces (Index will contain null if peace is not present)
          */
-        public ItemStack[] armorStacks;
+        public NonNullList<ItemStack> armorStacks;
         /**
          * Mean Fatigue
          */
@@ -421,24 +431,24 @@ public class CustomArmorHandler {
         public boolean hasDraconic = false;
 
         public ArmorSummery getSummery(EntityPlayer player) {
-            ItemStack[] armorSlots = player.inventory.armorInventory;
+            NonNullList<ItemStack> armorSlots = player.inventory.armorInventory;
             float totalEntropy = 0;
             float totalRecoveryPoints = 0;
 
-            allocation = new float[armorSlots.length];
-            armorStacks = new ItemStack[armorSlots.length];
-            pointsDown = new float[armorSlots.length];
-            energyAllocation = new int[armorSlots.length];
+            allocation = new float[armorSlots.size()];
+            armorStacks = NonNullList.withSize(armorSlots.size(), ItemStack.EMPTY);
+            pointsDown = new float[armorSlots.size()];
+            energyAllocation = new int[armorSlots.size()];
 
-            for (int i = 0; i < armorSlots.length; i++) {
-                ItemStack stack = armorSlots[i];
-                if (stack == null || !(stack.getItem() instanceof ICustomArmor)) continue;
+            for (int i = 0; i < armorSlots.size(); i++) {
+                ItemStack stack = armorSlots.get(i);
+                if (stack.isEmpty() || !(stack.getItem() instanceof ICustomArmor)) continue;
                 ICustomArmor armor = (ICustomArmor) stack.getItem();
                 peaces++;
                 allocation[i] = ItemNBTHelper.getFloat(stack, "ProtectionPoints", 0);
                 protectionPoints += allocation[i];
                 totalEntropy += ItemNBTHelper.getFloat(stack, "ShieldEntropy", 0);
-                armorStacks[i] = stack;
+                armorStacks.set(i, stack);
                 totalRecoveryPoints += armor.getRecoveryRate(stack);//UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY);
                 float maxPoints = armor.getProtectionPoints(stack);
                 pointsDown[i] = maxPoints - allocation[i];

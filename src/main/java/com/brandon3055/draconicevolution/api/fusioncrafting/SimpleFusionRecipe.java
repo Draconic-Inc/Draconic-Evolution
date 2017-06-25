@@ -27,7 +27,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
     public SimpleFusionRecipe(ItemStack result, ItemStack catalyst, int energyCost, int craftingTier, Object... ingredients) {
         this.result = result;
         this.catalyst = catalyst;
-        this.ingredients = new LinkedList<Object>();
+        this.ingredients = new LinkedList<>();
         Collections.addAll(this.ingredients, ingredients);
         this.energyCost = energyCost;
         this.craftingTier = craftingTier;
@@ -64,7 +64,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         pedestals.addAll(inventory.getPedestals());
 
         //Check the catalyst for this recipe
-        if (inventory.getStackInCore(0) == null || !inventory.getStackInCore(0).isItemEqual(catalyst) || inventory.getStackInCore(0).stackSize < catalyst.stackSize) {
+        if (inventory.getStackInCore(0).isEmpty() || !inventory.getStackInCore(0).isItemEqual(catalyst) || inventory.getStackInCore(0).getCount() < catalyst.getCount()) {
             return false;
         }
 
@@ -78,9 +78,9 @@ public class SimpleFusionRecipe implements IFusionRecipe {
             boolean foundIngredient = false;
 
             for (ICraftingPedestal pedestal : pedestals) {
-                if (pedestal.getStackInPedestal() != null && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal())) {
+                if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal())) {
                     ItemStack i = OreDictHelper.resolveObject(ingredient);
-                    if (i != null && i.hasTagCompound() && !ItemStack.areItemStackTagsEqual(i, pedestal.getStackInPedestal())) {
+                    if (i.hasTagCompound() && !ItemStack.areItemStackTagsEqual(i, pedestal.getStackInPedestal())) {
                         continue;
                     }
 
@@ -97,7 +97,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
 
         //Check that there are no extra items that are not part of the recipe.
         for (ICraftingPedestal pedestal : pedestals) {
-            if (pedestal.getStackInPedestal() != null) {
+            if (!pedestal.getStackInPedestal().isEmpty()) {
                 return false;
             }
         }
@@ -112,21 +112,22 @@ public class SimpleFusionRecipe implements IFusionRecipe {
             return;
         }
 
-        List<ICraftingPedestal> pedestals = new ArrayList<ICraftingPedestal>();
+        List<ICraftingPedestal> pedestals = new ArrayList<>();
         pedestals.addAll(inventory.getPedestals());
 
         //Use Ingredients
         for (Object ingredient : ingredients) {
             for (ICraftingPedestal pedestal : pedestals) {
-                if (pedestal.getStackInPedestal() != null && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal()) && pedestal.getPedestalTier() >= craftingTier) {
+                if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal()) && pedestal.getPedestalTier() >= craftingTier) {
 
                     ItemStack stack = pedestal.getStackInPedestal();
                     if (stack.getItem().hasContainerItem(stack)) {
                         stack = stack.getItem().getContainerItem(stack);
-                    } else {
-                        stack.stackSize--;
-                        if (stack.stackSize <= 0) {
-                            stack = null;
+                    }
+                    else {
+                        stack.shrink(1);
+                        if (stack.getCount() <= 0) {
+                            stack = ItemStack.EMPTY;
                         }
                     }
 
@@ -138,10 +139,10 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         }
 
         ItemStack catalyst = inventory.getStackInCore(0);
-        catalyst.stackSize -= this.catalyst.stackSize;
+        catalyst.shrink(this.catalyst.getCount());
 
-        if (catalyst.stackSize <= 0){
-            catalyst = null;
+        if (catalyst.getCount() <= 0) {
+            catalyst = ItemStack.EMPTY;
         }
 
         inventory.setStackInCore(0, catalyst);
@@ -160,7 +161,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
     @Override
     public String canCraft(IFusionCraftingInventory inventory, World world, BlockPos pos) {
 
-        if (inventory.getStackInCore(1) != null){
+        if (!inventory.getStackInCore(1).isEmpty()) {
             return "outputObstructed";
         }
 
@@ -168,7 +169,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         pedestals.addAll(inventory.getPedestals());
 
         for (ICraftingPedestal pedestal : pedestals) {
-            if (pedestal.getStackInPedestal() != null && pedestal.getPedestalTier() < craftingTier) {
+            if (!pedestal.getStackInPedestal().isEmpty() && pedestal.getPedestalTier() < craftingTier) {
                 return "tierLow";
             }
         }

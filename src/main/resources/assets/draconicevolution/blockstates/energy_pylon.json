@@ -30,7 +30,7 @@
       "false": {}
     },
     "facing":{
-      "unknown":{},
+      "null":{},
       "up":{
         "textures": {
           "up": "draconicevolution:blocks/energy_pylon/energy_pylon_active_face"

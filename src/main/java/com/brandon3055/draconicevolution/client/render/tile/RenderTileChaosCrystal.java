@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
@@ -29,7 +29,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
     private CCModel model;
 
     public RenderTileChaosCrystal() {
-        Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/chaos_crystal.obj"));
+        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/chaos_crystal.obj"));
         model = CCModel.combine(map.values());
     }
 
@@ -65,10 +65,10 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 //                int height = 2;//mc.displayHeight;
 //
 ////                int x = program.getUniformLoc("yaw");//ARBShaderObjects.glGetUniformLocationARB(shader, "yaw");
-////                ARBShaderObjects.glUniform1fARB(x, (float) ((mc.thePlayer.rotationYaw * 2 * Math.PI) / 360.0));
+////                ARBShaderObjects.glUniform1fARB(x, (float) ((mc.player.rotationYaw * 2 * Math.PI) / 360.0));
 ////
 ////                int z = program.getUniformLoc("pitch");//ARBShaderObjects.glGetUniformLocationARB(shader, "pitch");
-////                ARBShaderObjects.glUniform1fARB(z, -(float) ((mc.thePlayer.rotationPitch * 2 * Math.PI) / 360.0));
+////                ARBShaderObjects.glUniform1fARB(z, -(float) ((mc.player.rotationPitch * 2 * Math.PI) / 360.0));
 //
 //                int time = program.getUniformLoc("time");
 //                ARBShaderObjects.glUniform1fARB(time, ClientEventHandler.elapsedTicks / 50F);
@@ -167,7 +167,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
             GlStateManager.disableCull();
             OpenGlHelper.glBlendFunc(770, 1, 1, 0);
             float f2 = (float) ClientEventHandler.elapsedTicks + partialTicks;
-            float f3 = -f2 * 0.2F - (float) MathHelper.floor_float(-f2 * 0.1F);
+            float f3 = -f2 * 0.2F - (float) MathHelper.floor(-f2 * 0.1F);
             GlStateManager.enableBlend();
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
             GlStateManager.depthMask(false);

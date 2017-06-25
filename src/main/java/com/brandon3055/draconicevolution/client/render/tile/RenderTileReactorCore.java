@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCOBJParser;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.state.GlStateManagerHelper;
+import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
@@ -34,9 +34,9 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
 
     public RenderTileReactorCore() {
         if (model == null) {
-            Map<String, CCModel> map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
+            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
             model = CCModel.combine(map.values());
-            map = CCOBJParser.parseObjModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
+            map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
             model_no_shade = CCModel.combine(map.values());
         }
     }
@@ -44,7 +44,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
     @Override
     public void renderTileEntityAt(TileReactorCore te, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.pushMatrix();
-        GlStateManagerHelper.pushState();
+        GlStateTracker.pushState();
         GlStateManager.disableLighting();
 
         setLighting(200);
@@ -75,13 +75,13 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         }
 
         resetLighting();
-        GlStateManagerHelper.popState();
+        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 
     public void renderItem() {
         GlStateManager.pushMatrix();
-        GlStateManagerHelper.pushState();
+        GlStateTracker.pushState();
         GlStateManager.disableLighting();
         setLighting(200);
         float scale = 1.3F;
@@ -90,13 +90,13 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         renderCore(0, 0, 0, 0, intensity, scale, DEShaders.useShaders());
 
         resetLighting();
-        GlStateManagerHelper.popState();
+        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 
     public static void renderGUI(TileReactorCore te, int x, int y) {
         GlStateManager.pushMatrix();
-        GlStateManagerHelper.pushState();
+        GlStateTracker.pushState();
 
         double diameter = 100;
         float t = (float) (te.temperature.value / MAX_TEMPERATURE);
@@ -111,7 +111,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         renderCore(x - 0.5, y, 100, 0, intensity, diameter, DEShaders.useShaders());
         renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.value), diameter, DEShaders.useShaders());
 
-        GlStateManagerHelper.popState();
+        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 

@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution;
 
-import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.client.model.ILoadingBakery;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.ContributorHandler;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
@@ -23,6 +23,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -37,78 +38,76 @@ import java.util.Iterator;
 
 public class CommonProxy {
 
-	public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event) {
         RecipeManager.initialize();
 //		ConfigHandler.init(event.getSuggestedConfigurationFile());
-		registerEventListeners(event.getSide());
+        registerEventListeners(event.getSide());
 //		ModBlocks.init();
 //		ModItems.init();
-		ContributorHandler.init();
-		registerTileEntities();
-		initializeNetwork();
-		registerOres();
+        ContributorHandler.init();
+        registerTileEntities();
+        initializeNetwork();
+        registerOres();
 
-		EnchantmentReaper.init();
+        EnchantmentReaper.init();
 
 
-		Achievements.addModAchievements();
-		LogHelper.info("Finished PreInitialization");
-	}
+        Achievements.addModAchievements();
+        LogHelper.info("Finished PreInitialization");
+    }
 
-	public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event) {
 //		CraftingHandler.init();
-		registerGuiHandeler();
-		registerEntities();
+        registerGuiHandeler();
+        registerEntities();
 //		PotionHandler.init();
-		CCOCIntegration.init();
-		ModHelper.init();
-		DragonChunkLoader.init();
-		RecipeManager.loadRecipes();
+        CCOCIntegration.init();
+        ModHelper.init();
+        DragonChunkLoader.init();
+        RecipeManager.loadRecipes();
 
-		LogHelper.info("Finished Initialization");
-	}
+        LogHelper.info("Finished Initialization");
+    }
 
-	public void postInit(FMLPostInitializationEvent event) {
-		OreDoublingRegistry.init();
-		Achievements.registerAchievementPane();
+    public void postInit(FMLPostInitializationEvent event) {
+        OreDoublingRegistry.init();
+        Achievements.registerAchievementPane();
 
-		if (DEConfig.expensiveDragonRitual) {
-			java.util.List<IRecipe> list = CraftingManager.getInstance().getRecipeList();
+        if (DEConfig.expensiveDragonRitual) {
+            java.util.List<IRecipe> list = CraftingManager.getInstance().getRecipeList();
 
-			boolean removed = false;
-			Iterator<IRecipe> i = list.iterator();
-			while (i.hasNext()) {
-				IRecipe recipe = i.next();
-				if (recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() == Items.END_CRYSTAL) {
-					i.remove();
-					removed = true;
-				}
-			}
+            boolean removed = false;
+            Iterator<IRecipe> i = list.iterator();
+            while (i.hasNext()) {
+                IRecipe recipe = i.next();
+                if (recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() == Items.END_CRYSTAL) {
+                    i.remove();
+                    removed = true;
+                }
+            }
 
-			if (removed) {
-				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR));
-			}
-		}
+            if (removed) {
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR));
+            }
+        }
 
-		LogHelper.info("Finished PostInitialization");
-	}
+        LogHelper.info("Finished PostInitialization");
+    }
 
-	public void initializeNetwork() {
-		PacketCustom.assignHandler("DE", new CCLNetworkTest());
-
-		DraconicEvolution.network = NetworkRegistry.INSTANCE.newSimpleChannel(DraconicEvolution.networkChannelName);
-		DraconicEvolution.network.registerMessage(PacketSimpleBoolean.Handler.class, PacketSimpleBoolean.class, 0, Side.SERVER);
+    public void initializeNetwork() {
+        DraconicEvolution.network = NetworkRegistry.INSTANCE.newSimpleChannel(DraconicEvolution.networkChannelName);
+        DraconicEvolution.network.registerMessage(PacketSimpleBoolean.Handler.class, PacketSimpleBoolean.class, 0, Side.SERVER);
         DraconicEvolution.network.registerMessage(PacketConfigureTool.Handler.class, PacketConfigureTool.class, 1, Side.SERVER);
         DraconicEvolution.network.registerMessage(PacketPlaySound.Handler.class, PacketPlaySound.class, 2, Side.CLIENT);
         DraconicEvolution.network.registerMessage(PacketShieldHit.Handler.class, PacketShieldHit.class, 3, Side.CLIENT);
         DraconicEvolution.network.registerMessage(PacketDislocator.Handler.class, PacketDislocator.class, 4, Side.SERVER);
         DraconicEvolution.network.registerMessage(PacketPlaceItem.Handler.class, PacketPlaceItem.class, 5, Side.SERVER);
-		DraconicEvolution.network.registerMessage(PacketLootSync.Handler.class, PacketLootSync.class, 6, Side.CLIENT);
-		DraconicEvolution.network.registerMessage(PacketToolProfile.Handler.class, PacketToolProfile.class, 7, Side.SERVER);
-		DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 8, Side.CLIENT);
-		DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 9, Side.SERVER);
-		DraconicEvolution.network.registerMessage(CrystalUpdateBatcher.Handler.class, CrystalUpdateBatcher.class, 10, Side.CLIENT);
-		DraconicEvolution.network.registerMessage(PacketExplosionFX.Handler.class, PacketExplosionFX.class, 11, Side.CLIENT);
+        DraconicEvolution.network.registerMessage(PacketLootSync.Handler.class, PacketLootSync.class, 6, Side.CLIENT);
+        DraconicEvolution.network.registerMessage(PacketToolProfile.Handler.class, PacketToolProfile.class, 7, Side.SERVER);
+        DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 8, Side.CLIENT);
+        DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 9, Side.SERVER);
+        DraconicEvolution.network.registerMessage(CrystalUpdateBatcher.Handler.class, CrystalUpdateBatcher.class, 10, Side.CLIENT);
+        DraconicEvolution.network.registerMessage(PacketExplosionFX.Handler.class, PacketExplosionFX.class, 11, Side.CLIENT);
 //		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlacedItemPacket.Handler.class, PlacedItemPacket.class, 2, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);
@@ -128,9 +127,9 @@ public class CommonProxy {
 //		DraconicEvolution.network.registerMessage(ContributorPacket.Handler.class, ContributorPacket.class, 17, Side.CLIENT);
 //		DraconicEvolution.network.registerMessage(ContributorPacket.Handler.class, ContributorPacket.class, 18, Side.SERVER);
 
-	}
+    }
 
-	public void registerTileEntities() {
+    public void registerTileEntities() {
 //		GameRegistry.registerTileEntity(TileWeatherController.class, References.RESOURCESPREFIX + "TileWeatherController");
 //		GameRegistry.registerTileEntity(TileSunDial.class, References.RESOURCESPREFIX + "TileSunDial");
 //		GameRegistry.registerTileEntity(TileGrinder.class, References.RESOURCESPREFIX + "TileGrinder");
@@ -166,20 +165,20 @@ public class CommonProxy {
 //			GameRegistry.registerTileEntity(TileTestBlock.class, References.RESOURCESPREFIX + "TileTestBlock");
 //			GameRegistry.registerTileEntity(TileContainerTemplate.class, References.RESOURCESPREFIX + "TileContainerTemplate");
 //		}
-	}
+    }
 
-	public void registerEventListeners(Side s) {
-		MinecraftForge.EVENT_BUS.register(new DEEventHandler());
+    public void registerEventListeners(Side s) {
+        MinecraftForge.EVENT_BUS.register(new DEEventHandler());
         MinecraftForge.EVENT_BUS.register(new Achievements());
         MinecraftForge.EVENT_BUS.register(new CustomArmorHandler());
 //		FMLCommonHandler.instance().bus().register(new FMLEventHandler());
-	}
+    }
 
-	public void registerGuiHandeler() {
+    public void registerGuiHandeler() {
 //		new GuiHandler();
-	}
+    }
 
-	public void registerOres(){
+    public void registerOres() {
 //		if (ModBlocks.isEnabled(ModBlocks.draconiumOre)) OreDictionary.registerOre("oreDraconium", ModBlocks.draconiumOre);
 //		if (ModBlocks.isEnabled(ModBlocks.draconiumBlock)) OreDictionary.registerOre("blockDraconium", new ItemStack(ModBlocks.draconiumBlock));
 //		if (ModBlocks.isEnabled(ModBlocks.draconicBlock)) OreDictionary.registerOre("blockDraconiumAwakened", new ItemStack(ModBlocks.draconicBlock));
@@ -191,40 +190,44 @@ public class CommonProxy {
 //			OreDictionary.registerOre("nuggetDraconium", ModItems.nuggetDraconium.copy());
 //			OreDictionary.registerOre("nuggetDraconiumAwakened", ModItems.nuggetAwakened.copy());
 //		}
-	}
+    }
 
-	//@Callback
-	public void registerEntities() {
+    //@Callback
+    public void registerEntities() {
 //		EntityRegistry.registerModEntity(EntityCustomDragon.class, "EnderDragon", 0, DraconicEvolution.instance, 256, 3, true);
-		EntityRegistry.registerModEntity(EntityPersistentItem.class, "PersistentItem", 1, DraconicEvolution.instance, 64, 5, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "PersistentItem"), EntityPersistentItem.class, "draconicevolution:PersistentItem", 1, DraconicEvolution.instance, 64, 5, true);
 //		EntityRegistry.registerModEntity(EntityDraconicArrow.class, "Arrow", 2, DraconicEvolution.instance, 32, 5, true);
 //		EntityRegistry.registerModEntity(EntityEnderArrow.class, "Ender Arrow", 3, DraconicEvolution.instance, 32, 1, true);
-		EntityRegistry.registerModEntity(EntityDragonHeart.class, "DragonHeartItem", 5, DraconicEvolution.instance, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityChaosGuardian.class, "ChaosGuardian", 6, DraconicEvolution.instance, 512, 1, true);
-		EntityRegistry.registerModEntity(EntityGuardianProjectile.class, "GuardianProjectile", 7, DraconicEvolution.instance, 256, 1, true);
-		EntityRegistry.registerModEntity(EntityGuardianCrystal.class, "GuardianCrystal", 8, DraconicEvolution.instance, 256, 5, false);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "DragonHeartItem"), EntityDragonHeart.class, "draconicevolution:DragonHeartItem", 5, DraconicEvolution.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "ChaosGuardian"), EntityChaosGuardian.class, "draconicevolution:ChaosGuardian", 6, DraconicEvolution.instance, 512, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "GuardianProjectile"), EntityGuardianProjectile.class, "draconicevolution:GuardianProjectile", 7, DraconicEvolution.instance, 256, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "GuardianCrystal"), EntityGuardianCrystal.class, "draconicevolution:GuardianCrystal", 8, DraconicEvolution.instance, 256, 5, false);
 //		EntityRegistry.registerModEntity(EntityChaosBolt.class, "ChaosBolt", 9, DraconicEvolution.instance, 32, 5, true);
-		EntityRegistry.registerModEntity(EntityChaosImplosion.class, "EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
-		EntityRegistry.registerModEntity(EntityCustomArrow.class, "CustomArrow", 11, DraconicEvolution.instance, 128, 1, true);
-		EntityRegistry.registerModEntity(EntityLootCore.class, "LootCore", 12, DraconicEvolution.instance, 64, 5, true);
-		EntityRegistry.registerModEntity(EntityEnderEnergyManipulator.class, "EnderEnergyManipulator", 13, DraconicEvolution.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "EntityChaosEnergyVortex"), EntityChaosImplosion.class, "draconicevolution:EntityChaosEnergyVortex", 10, DraconicEvolution.instance, 512, 5, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "CustomArrow"), EntityCustomArrow.class, "draconicevolution:CustomArrow", 11, DraconicEvolution.instance, 128, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "LootCore"), EntityLootCore.class, "draconicevolution:LootCore", 12, DraconicEvolution.instance, 64, 5, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "EnderEnergyManipulator"), EntityEnderEnergyManipulator.class, "draconicevolution:EnderEnergyManipulator", 13, DraconicEvolution.instance, 128, 5, true);
 
-	}
+    }
 
     public void registerParticles() {
         DEParticles.registerServer();
     }
 
     public ENetFXHandler createENetFXHandler(TileCrystalBase tile) {
-    	return tile.createServerFXHandler();
-	}
+        return tile.createServerFXHandler();
+    }
 
-	public ReactorEffectHandler createReactorFXHandler(TileReactorCore tile) {
-		return null;
-	}
+    public ReactorEffectHandler createReactorFXHandler(TileReactorCore tile) {
+        return null;
+    }
 
-	public ISound playISound(ISound sound){
-		return null;
-	}
+    public ISound playISound(ISound sound) {
+        return null;
+    }
+
+    public void registerLoadingBakery(ILoadingBakery bakery) {
+
+    }
 
 }

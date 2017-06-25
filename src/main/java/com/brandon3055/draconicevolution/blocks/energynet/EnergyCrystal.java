@@ -5,9 +5,9 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.config.Feature;
-import com.brandon3055.brandonscore.config.ICustomRender;
-import com.brandon3055.brandonscore.config.ITileRegisterer;
+import com.brandon3055.brandonscore.registry.Feature;
+import com.brandon3055.brandonscore.registry.IRegistryOverride;
+import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
@@ -24,13 +24,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -47,7 +47,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 19/11/2016.
  */
-public class EnergyCrystal extends BlockBCore implements ICustomRender, ITileRegisterer, IHudDisplay {
+public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegistryOverride, IHudDisplay {
 
     public static final PropertyEnum<CrystalType> TYPE = PropertyEnum.create("type", CrystalType.class);
     public static final PropertyInteger TIER = PropertyInteger.create("tier", 0, 2);
@@ -66,8 +66,9 @@ public class EnergyCrystal extends BlockBCore implements ICustomRender, ITileReg
 
     //region Block
 
+
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
         for (int i = 0; i < 9; i++) {
             list.add(new ItemStack(item, 1, i));
         }
@@ -100,34 +101,6 @@ public class EnergyCrystal extends BlockBCore implements ICustomRender, ITileReg
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         return super.getActualState(state, worldIn, pos);
-    }
-
-    @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack stack) {
-
-
-        return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, stack);//getDefaultState().withProperty(TYPE, Type.fromMeta(meta));
-    }
-
-    @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-//        TileEntity tile = world.getTileEntity(pos);
-//
-//        if (tile instanceof TileCrystalIO) {
-//            LogHelper.info("2 " + state);
-////            ((TileCrystalIO) tile).facing.value = ((IExtendedBlockState) state).getValue(FACING);
-//            //            RayTraceResult result = RayTracer.retrace((EntityPlayer) placer);
-////            if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
-////                ((TileCrystalIO) tile).facing.value = result.sideHit.getOpposite();
-////            }
-//        }
-
-        super.onBlockPlacedBy(world, pos, state, placer, stack);
     }
 
     //endregion
@@ -166,10 +139,10 @@ public class EnergyCrystal extends BlockBCore implements ICustomRender, ITileReg
     }
 
     @Override
-    public void registerTiles(String modidPrefix, String blockName) {
-        GameRegistry.registerTileEntity(TileCrystalRelay.class, modidPrefix + "energy_relay");
-        GameRegistry.registerTileEntity(TileCrystalDirectIO.class, modidPrefix + "energy_io");
-        GameRegistry.registerTileEntity(TileCrystalWirelessIO.class, modidPrefix + "energy_wireless");
+    public void handleCustomRegistration(Feature feature) {
+        GameRegistry.registerTileEntity(TileCrystalRelay.class, feature.getModid() + ":energy_relay");
+        GameRegistry.registerTileEntity(TileCrystalDirectIO.class, feature.getModid() + ":energy_io");
+        GameRegistry.registerTileEntity(TileCrystalWirelessIO.class, feature.getModid() + ":energy_wireless");
     }
 
     @Override
@@ -217,14 +190,12 @@ public class EnergyCrystal extends BlockBCore implements ICustomRender, ITileReg
             public TileEntity createTile() {
                 return new TileCrystalRelay();
             }
-        },
-        CRYSTAL_IO(1) {
+        }, CRYSTAL_IO(1) {
             @Override
             public TileEntity createTile() {
                 return new TileCrystalDirectIO();
             }
-        },
-        WIRELESS(2) {
+        }, WIRELESS(2) {
             @Override
             public TileEntity createTile() {
                 return new TileCrystalWirelessIO();

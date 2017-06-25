@@ -123,7 +123,7 @@ public class UIAddModBranch extends JFrame implements ActionListener {
                 }
                 catch (Exception e1) {
                     LogHelper.error("####################################################################################################################################################################################");
-                    LogHelper.error("Looks like something went wrong! Error: ["+e1.getMessage()+"]");
+                    LogHelper.error("Looks like something went wrong! Error: [" + e1.getMessage() + "]");
                     LogHelper.error("");
                     e1.printStackTrace();
                     LogHelper.error("");

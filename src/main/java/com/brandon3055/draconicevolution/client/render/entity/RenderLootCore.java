@@ -43,8 +43,8 @@ public class RenderLootCore extends Render<EntityLootCore> {
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
         ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
-        float yOffset =  MathHelper.sin(((float)ClientEventHandler.elapsedTicks + partialTicks) / 10.0F) * 0.1F + 0.1F;
-        Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y + (entity.height / 2) + yOffset, z), new Rotation(((float)(ClientEventHandler.elapsedTicks + entity.timeOffset) + partialTicks) / 30F, new Vector3(entity.rotX, entity.rotY, 0).normalize()), 0.1);
+        float yOffset = MathHelper.sin(((float) ClientEventHandler.elapsedTicks + partialTicks) / 10.0F) * 0.1F + 0.1F;
+        Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y + (entity.height / 2) + yOffset, z), new Rotation(((float) (ClientEventHandler.elapsedTicks + entity.timeOffset) + partialTicks) / 30F, new Vector3(entity.rotX, entity.rotY, 0).normalize()), 0.1);
         CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
         ccrs.draw();
 
@@ -54,17 +54,16 @@ public class RenderLootCore extends Render<EntityLootCore> {
             float f = this.renderManager.playerViewY;
             float f1 = this.renderManager.playerViewX;
             boolean flag1 = this.renderManager.options.thirdPersonView == 2;
-            renderLabel(entity, this.getFontRendererFromRenderManager(), (float)x, (float)y, (float)z, f, f1, flag1);
+            renderLabel(entity, this.getFontRendererFromRenderManager(), (float) x, (float) y, (float) z, f, f1, flag1);
         }
     }
 
-    public void renderLabel(EntityLootCore lootCore, FontRenderer renderer, float x, float y, float z, float viewY, float viewX, boolean thirdPerson)
-    {
+    public void renderLabel(EntityLootCore lootCore, FontRenderer renderer, float x, float y, float z, float viewY, float viewX, boolean thirdPerson) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-viewY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((float)(thirdPerson ? -1 : 1) * viewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate((float) (thirdPerson ? -1 : 1) * viewX, 1.0F, 0.0F, 0.0F);
         GlStateManager.scale(-0.025F, -0.025F, 0.025F);
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
@@ -109,7 +108,7 @@ public class RenderLootCore extends Render<EntityLootCore> {
 
             int row = 0;
             for (ItemStack stack : lootCore.displayMap.keySet()) {
-                int rowY = (int)yPos + row * 8 + 4;
+                int rowY = (int) yPos + row * 8 + 4;
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(-5, rowY, 0);
                 GlStateManager.scale(9, 9, 9);

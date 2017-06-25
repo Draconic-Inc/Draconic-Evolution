@@ -82,25 +82,24 @@ public class ModelContributorWings extends ModelBase {
 
         float animation = (float) Math.sin(((float) ClientEventHandler.elapsedTicks + Minecraft.getMinecraft().getRenderPartialTicks()) / 40) * 0.5F;
 
-        if (entity instanceof EntityLivingBase && ((EntityLivingBase)entity).isElytraFlying())
-        {
+        if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
             float f4 = 1.0F;
 
-            if (entity.motionY < 0.0D)
-            {
+            if (entity.motionY < 0.0D) {
                 Vec3d vec3d = (new Vec3d(entity.motionX, entity.motionY, entity.motionZ)).normalize();
-                f4 = 1.0F - (float)Math.pow(-vec3d.yCoord, 1.5D);
+                f4 = 1.0F - (float) Math.pow(-vec3d.yCoord, 1.5D);
             }
 
             float f1 = 0;
-            f1 = f4 * ((float)Math.PI / 2F) + (1.0F - f4) * f1;
+            f1 = f4 * ((float) Math.PI / 2F) + (1.0F - f4) * f1;
             animation = -3 + (f1 * 2);
         }
 
         if (entity.isSneaking()) {
             this.leftBaseStem.rotateAngleX = 0.5F;
             this.rightBaseStem.rotateAngleX = 0.5F;
-        } else {
+        }
+        else {
             this.leftBaseStem.rotateAngleX = 0F;
             this.rightBaseStem.rotateAngleX = 0F;
         }

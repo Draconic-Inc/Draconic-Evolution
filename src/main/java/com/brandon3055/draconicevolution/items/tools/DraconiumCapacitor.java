@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
@@ -45,7 +46,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     //region Item
 
     @Override
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
         subItems.add(new ItemStack(DEFeatures.draconiumCapacitor, 1, 0));
         subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 0), "Energy", wyvernBaseCap));
 
@@ -121,7 +122,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-        if (container.getItemDamage() == 2){
+        if (container.getItemDamage() == 2) {
             return maxReceive;
         }
 
@@ -130,7 +131,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
     @Override
     public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-        if (container.getItemDamage() == 2){
+        if (container.getItemDamage() == 2) {
             return maxExtract;
         }
 
@@ -142,15 +143,15 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     //region Activation
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             int mode = ItemNBTHelper.getShort(stack, "Mode", (short) 0);
             int newMode = mode == 3 ? 0 : mode + 1;
             ItemNBTHelper.setShort(stack, "Mode", (short) newMode);
-            if (world.isRemote)
-                player.addChatComponentMessage(new TextComponentTranslation(InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt")));
+            if (world.isRemote) player.sendMessage(new TextComponentTranslation(InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt")));
         }
-        return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+        return new ActionResult<>(EnumActionResult.PASS, stack);
     }
 
     @Override
@@ -158,17 +159,17 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         if (!(entity instanceof EntityPlayer)) return;
         EntityPlayer player = (EntityPlayer) entity;
 
-        int mode = ItemNBTHelper.getShort(container, "Mode", (short)0);
+        int mode = ItemNBTHelper.getShort(container, "Mode", (short) 0);
 
-        if (mode == 1 || mode == 3){ //Charge Armor
-            for (ItemStack stack : player.getArmorInventoryList()){
+        if (mode == 1 || mode == 3) { //Charge Armor
+            for (ItemStack stack : player.getArmorInventoryList()) {
                 int max = Math.min(getEnergyStored(container), getMaxExtract(container));
 
 
                 if (EnergyHelper.canReceiveEnergy(stack)) {
                     Item item = stack.getItem();
 
-                    if (item instanceof IInvCharge && !((IInvCharge)item).canCharge(stack, player)){
+                    if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player)) {
                         continue;
                     }
 
@@ -177,14 +178,14 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
             }
         }
 
-        if (mode == 2 || mode == 3){ //Charge Held Items
-            for (ItemStack stack : player.getHeldEquipment()){
+        if (mode == 2 || mode == 3) { //Charge Held Items
+            for (ItemStack stack : player.getHeldEquipment()) {
                 int max = Math.min(getEnergyStored(container), getMaxExtract(container));
 
                 if (EnergyHelper.canReceiveEnergy(stack)) {
                     Item item = stack.getItem();
 
-                    if (item instanceof IInvCharge && !((IInvCharge)item).canCharge(stack, player)){
+                    if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player)) {
                         continue;
                     }
 
@@ -205,7 +206,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
     @Override
     public boolean hasEffect(ItemStack stack) {
-        return ItemNBTHelper.getShort(stack, "Mode", (short)0) > 0;
+        return ItemNBTHelper.getShort(stack, "Mode", (short) 0) > 0;
     }
 
     @Override
@@ -219,8 +220,8 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         ToolBase.holdCTRLForUpgrades(tooltip, stack);
 
         InfoHelper.addEnergyInfo(stack, tooltip);
-        if (stack.getItemDamage() == 2){
-            tooltip.add(InfoHelper.HITC()+I18n.format("info.creativeCapacitor.txt")+" "+ Utils.formatNumber(Integer.MAX_VALUE/2)+" RF/t");
+        if (stack.getItemDamage() == 2) {
+            tooltip.add(InfoHelper.HITC() + I18n.format("info.creativeCapacitor.txt") + " " + Utils.formatNumber(Integer.MAX_VALUE / 2) + " RF/t");
         }
     }
 
@@ -230,13 +231,14 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
     @Override
     public List<String> getValidUpgrades(ItemStack stack) {
-        return new ArrayList<String>() {{ add(ToolUpgrade.RF_CAPACITY); }};
+        return new ArrayList<String>() {{
+            add(ToolUpgrade.RF_CAPACITY);
+        }};
     }
 
     @Override
     public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
-        return stack.getItemDamage() == 0 ? 3 :
-                stack.getItemDamage() == 1 ? 6 : 0;
+        return stack.getItemDamage() == 0 ? 3 : stack.getItemDamage() == 1 ? 6 : 0;
     }
 
     //endregion

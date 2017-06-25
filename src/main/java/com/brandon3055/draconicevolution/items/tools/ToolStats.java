@@ -1,11 +1,15 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.config.ModConfigProperty;
+
+import com.brandon3055.brandonscore.registry.ModConfigContainer;
+import com.brandon3055.brandonscore.registry.ModConfigProperty;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 
 /**
  * Created by brandon3055 on 30/06/2016.
  * This class holds all of the base stats for the tools
  */
+@ModConfigContainer(modid = DraconicEvolution.MODID)
 public class ToolStats {
     //Common
     @ModConfigProperty(category = "Stat Tweaks", name = "wyvernBaseRFCapacity")
@@ -42,12 +46,12 @@ public class ToolStats {
     //Wyvern Hoe
 //    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
     public static double WYV_HOE_ATTACK_DAMAGE = 8D;
-//    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
+    //    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
     public static double WYV_HOE_ATTACK_SPEED = 0;
     //Wyvern Sword
 //    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
     public static double WYV_SWORD_ATTACK_DAMAGE = 15D;
-//    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
+    //    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
     public static double WYV_SWORD_ATTACK_SPEED = -2.2D;
 
     //Draconic Shovel

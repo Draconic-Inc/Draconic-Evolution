@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -38,7 +39,7 @@ public class Magnet extends ItemBCore {
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
-    public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
+    public void getSubItems(Item item, CreativeTabs p_150895_2_, NonNullList<ItemStack> list) {
         list.add(new ItemStack(item, 1, 0));
         list.add(new ItemStack(item, 1, 1));
     }
@@ -108,7 +109,7 @@ public class Magnet extends ItemBCore {
             }
 
             if (flag) {
-                world.playSound((EntityPlayer)null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
+                world.playSound((EntityPlayer) null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
             }
 
 
@@ -122,7 +123,7 @@ public class Magnet extends ItemBCore {
                         if (MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, orb))) {
                             continue;
                         }
-                        world.playSound((EntityPlayer)null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
+                        world.playSound((EntityPlayer) null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
                         player.onItemPickup(orb, 1);
                         player.addExperience(orb.xpValue);
                         orb.setDead();
@@ -133,11 +134,12 @@ public class Magnet extends ItemBCore {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             toggleEnabled(stack);
         }
-        return super.onItemRightClick(stack, world, player, hand);
+        return super.onItemRightClick(world, player, hand);
     }
 
 //    @Override
