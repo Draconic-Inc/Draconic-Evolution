@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileChaosCrystal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -48,6 +50,8 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
         return super.getBlockHardness(blockState, world, pos);
     }
 
+    @Override
+    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {}
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {

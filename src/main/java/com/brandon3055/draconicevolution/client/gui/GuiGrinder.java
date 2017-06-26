@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.inventory.ContainerGrinder;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -14,7 +15,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class GuiGrinder extends GuiContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int X, int Y) {
-        GL11.glColor4f(1, 1, 1, 1);
+        GlStateManager.color(1, 1, 1, 1);
 
         ResourceHelperDE.bindTexture(DETextures.GUI_GRINDER);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);

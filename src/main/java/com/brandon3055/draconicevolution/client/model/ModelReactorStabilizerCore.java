@@ -2,9 +2,9 @@ package com.brandon3055.draconicevolution.client.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 
 /**
  * ReactorStabilizerCore - brandon3055
@@ -253,12 +253,12 @@ public class ModelReactorStabilizerCore extends ModelBase {
 
     @Override
     public void render(Entity entity, float rotation, float brightness, float invRender, float f3, float f4, float f5) {
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
         this.basePlate.render(f5);
-        GL11.glRotatef(rotation, 0F, 0F, 1F);
+        GlStateManager.rotate(rotation, 0F, 0F, 1F);
         this.hub1.render(f5);
-        GL11.glRotatef(rotation * 2F, 0F, 0F, -1F);
+        GlStateManager.rotate(rotation * 2F, 0F, 0F, -1F);
         this.hub2.render(f5);
 
         float lastBrightnessX = OpenGlHelper.lastBrightnessX;
@@ -268,21 +268,21 @@ public class ModelReactorStabilizerCore extends ModelBase {
         float colour = Math.min(2F, (brightness * 2F) + 0.1F);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
         if (brightness > 0F && invRender == 0) {
-            GL11.glDisable(GL11.GL_LIGHTING);
+            GlStateManager.disableLighting();
         }
 
-        GL11.glColor4f(colour, colour, colour, 1F);
+        GlStateManager.color(colour, colour, colour, 1F);
         this.rotor2R.render(f5);
-        GL11.glRotatef(rotation * 2F, 0F, 0F, 1F);
+        GlStateManager.rotate(rotation * 2F, 0F, 0F, 1F);
         this.rotor1R.render(f5);
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GlStateManager.rotate(1F, 1F, 1F, 1F);
 
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
         if (brightness > 0F && invRender == 0) {
-            GL11.glEnable(GL11.GL_LIGHTING);
+            GlStateManager.enableLighting();
         }
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     /**

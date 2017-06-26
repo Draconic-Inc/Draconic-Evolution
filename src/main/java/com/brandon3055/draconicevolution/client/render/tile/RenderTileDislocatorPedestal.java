@@ -42,7 +42,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
 
         if (!te.getStackInSlot(0).isEmpty()) {
             GlStateManager.pushMatrix();
-            GL11.glScalef(1F, -1F, -1F);
+            GlStateManager.scale(1F, -1F, -1F);
             drawNameString(te.getStackInSlot(0), 0, te, partialTicks);
             GlStateManager.popMatrix();
         }

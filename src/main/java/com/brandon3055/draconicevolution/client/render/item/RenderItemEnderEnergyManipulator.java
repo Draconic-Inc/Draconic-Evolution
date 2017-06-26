@@ -5,12 +5,14 @@ import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
+import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelSkeletonHead;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -19,9 +21,11 @@ import javax.vecmath.Matrix4f;
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemEnderEnergyManipulator implements IItemRenderer, IPerspectiveAwareModel {
+public class RenderItemEnderEnergyManipulator implements IItemRenderer {
 
-    private static ItemStack stack = new ItemStack(Items.SKULL, 1, 1);
+    private final ModelSkeletonHead skeletonHead = new ModelSkeletonHead(0, 0, 64, 32);
+    private static final ResourceLocation WITHER_SKELETON_TEXTURES = new ResourceLocation("textures/entity/skeleton/wither_skeleton.png");
+//    private static ItemStack stack = new ItemStack(Items.SKULL, 1, 1);
 
     private static ShaderProgram shaderProgram;
 
@@ -43,8 +47,8 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer, IPerspec
     //endregion
 
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        return MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_ITEM.getTransforms(), cameraTransformType);
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemStack stack, ItemCameraTransforms.TransformType cameraTransformType) {
+        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_ITEM.getTransforms(), cameraTransformType);
     }
 
     @Override
@@ -53,7 +57,11 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer, IPerspec
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5, 0.5, 0.5);
 
-        mc.getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+        if (transformType == ItemCameraTransforms.TransformType.FIXED) {
+            GlStateManager.rotate(180, 0, 1, 0);
+        }
+
+        renderSkull();
 
         if (DEShaders.useShaders()) {
             if (shaderProgram == null) {
@@ -64,16 +72,24 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer, IPerspec
                 cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / -100F);
                 cache.glUniform1F("intensity", 0.09F);
             });
-            mc.getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-
+            renderSkull();
             shaderProgram.useShader(cache -> {
                 cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F);
                 cache.glUniform1F("intensity", 0.02F);
             });
-            mc.getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+            renderSkull();
             shaderProgram.releaseShader();
         }
 
+        GlStateManager.popMatrix();
+    }
+
+    private void renderSkull() {
+        GlStateManager.pushMatrix();
+        ResourceHelperDE.bindTexture(WITHER_SKELETON_TEXTURES);
+        GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+        GlStateManager.translate(0, 0.25, 0);
+        skeletonHead.render(null, 0, 0, 0, 180, 0, 0.0625F);
         GlStateManager.popMatrix();
     }
 }

@@ -11,12 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.config.Property;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -162,10 +161,10 @@ public class GuiHudConfig extends GuiScreen {
         drawCenteredString(fontRendererObj, DEConfig.hudSettings[5] + "%", width / 2 + 97, height / 2 - 1, 0xFFFFFF);
         super.drawScreen(x, y, partial);
 
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.disableRescaleNormal();
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
 
         GuiHelper.drawGradientRect(hudX - 19, hudY - 19, hudX + 20, hudY + 20, 0x20FF00FF, 0x20FF00FF, 1F, 1D);
         GuiHelper.drawGradientRect(hudX - 4, hudY, hudX + 5, hudY + 1, 0xFFFFFFFF, 0xFFFFFFFF, 1F, 1D);
@@ -183,10 +182,10 @@ public class GuiHudConfig extends GuiScreen {
         GuiHelper.drawGradientRect(armorX - 19, armorY - 19, armorX - 18, armorY + 20, 0xFFFFFFFF, 0xFFFFFFFF, 1F, 1D);
         GuiHelper.drawGradientRect(armorX + 19, armorY - 19, armorX + 20, armorY + 20, 0xFFFFFFFF, 0xFFFFFFFF, 1F, 1D);
 
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
         RenderHelper.enableStandardItemLighting();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.enableRescaleNormal();
 
         if (GuiHelper.isInRect(armorX - 19, armorY - 19, 39, 39, x, y) || GuiHelper.isInRect(hudX - 19, hudY - 19, 39, 39, x, y)) {
             drawHoveringText(new ArrayList<String>() {{

@@ -1,6 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import codechicken.lib.render.*;
+import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
+import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.render.state.GlStateTracker;
@@ -18,7 +21,6 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel.MapWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
@@ -70,7 +72,7 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
 
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();
-        GlStateManager.disableLighting();
+//        GlStateManager.disableLighting();
         CCRenderState ccrs = CCRenderState.instance();
         Matrix4 mat = RenderUtils.getMatrix(new Vector3(0.5, type == CrystalType.CRYSTAL_IO ? 0 : 0.5, 0.5), new Rotation(0, 0, 0, 0), 1);
         ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_BASE);
