@@ -39,9 +39,9 @@ public class ReactorBeamFX extends BCParticle {
     private static Colour energyBeamColour = new ColourARGB(0xff0000);
     private int boltSeed = -1;
 
-    private static ShaderProgram beam_E;
-    private static ShaderProgram beam_O;
-    private static ShaderProgram beam_I;
+    public static ShaderProgram beam_E;
+    public static ShaderProgram beam_O;
+    public static ShaderProgram beam_I;
 
     public ReactorBeamFX(World worldIn, Vec3D pos, EnumFacing facing, TileReactorCore tile, boolean isInjectorEffect) {
         super(worldIn, pos);
@@ -103,17 +103,22 @@ public class ReactorBeamFX extends BCParticle {
             if (beam_E == null) {
                 beam_E = new ShaderProgram();
                 beam_E.attachShader(DEShaders.reactorBeamE);
+                beam_E.addGlobalUniformCallback(cache -> {
+                    cache.glUniform1F("power", fxState);
+                    cache.glUniform1F("startup", fxState);
+                });
             }
 
             beam_E.useShader(cache -> {
                 cache.glUniform1F("time", animation);
-                cache.glUniform1F("power", fxState);
                 cache.glUniform1F("fade", 1);
-                cache.glUniform1F("startup", fxState);
             });
             pos2 = pos1.copy().offset(facing, 0.6D);
             renderShaderBeam(buffer, pos1, 0.1F, 0.1F, 0.6D, 0, 0, true, energyBeamColour);
-            beam_E.releaseShader();
+            beam_E.useShader(cache -> {
+                cache.glUniform1F("time", animation);
+                cache.glUniform1F("fade", 0);
+            });
             renderShaderBeam(buffer, pos2, 0.1F, coreSize / 1.5, dist - (coreSize * 1.3), 0, 0, false, energyBeamColour);
             beam_E.releaseShader();
         }
@@ -123,42 +128,42 @@ public class ReactorBeamFX extends BCParticle {
             //Draw Inner
             if (beam_O == null) {
                 beam_O = new ShaderProgram();
-                beam_O.attachShader(DEShaders.reactorBeamE);
+                beam_O.attachShader(DEShaders.reactorBeamO);
+                beam_O.addGlobalUniformCallback(cache -> {
+                    cache.glUniform1F("power", (float) tile.animExtractState.value);
+                    cache.glUniform1F("startup", (float) tile.animExtractState.value);
+                });
             }
 
             beam_O.useShader(cache -> {
                 cache.glUniform1F("time", animation);
-                cache.glUniform1F("power", (float) tile.animExtractState.value);
                 cache.glUniform1F("fade", 1);
-                cache.glUniform1F("startup", (float) tile.animExtractState.value);
             });
             renderShaderBeam(buffer, pos1, 0.263F, 0.263F, 0.8D, texOffset, 0, true, extractBeamColour);
             beam_O.useShader(cache -> {
                 cache.glUniform1F("time", animation);
-                cache.glUniform1F("power", (float) tile.animExtractState.value);
                 cache.glUniform1F("fade", 0);
-                cache.glUniform1F("startup", (float) tile.animExtractState.value);
             });
             renderShaderBeam(buffer, pos2, 0.263F, coreSize / 2, dist - (coreSize * 1.3), texOffset, 0, false, extractBeamColour);
 
             //Draw Outer
             if (beam_I == null) {
                 beam_I = new ShaderProgram();
-                beam_I.attachShader(DEShaders.reactorBeamE);
+                beam_I.attachShader(DEShaders.reactorBeamI);
+                beam_I.addGlobalUniformCallback(cache -> {
+                    cache.glUniform1F("power", fxState);
+                    cache.glUniform1F("startup", fxState);
+                });
             }
 
             beam_I.useShader(cache -> {
                 cache.glUniform1F("time", animation);
-                cache.glUniform1F("power", fxState);
                 cache.glUniform1F("fade", 1);
-                cache.glUniform1F("startup", fxState);
             });
             renderShaderBeam(buffer, pos1, 0.355D, 0.355D, 0.8D, texOffset, 0, true, fieldBeamColour);
             beam_I.useShader(cache -> {
                 cache.glUniform1F("time", animation);
-                cache.glUniform1F("power", fxState);
                 cache.glUniform1F("fade", 0);
-                cache.glUniform1F("startup", fxState);
             });
             renderShaderBeam(buffer, pos2, 0.355D, coreSize, dist - coreSize, texOffset, 0, false, fieldBeamColour);
             beam_I.releaseShader();

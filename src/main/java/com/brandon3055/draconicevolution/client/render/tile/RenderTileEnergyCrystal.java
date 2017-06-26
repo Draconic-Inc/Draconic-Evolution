@@ -180,7 +180,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
     }
 
     private void releaseShader() {
-        if (DEShaders.useShaders() && DEConfig.useCrystalShaders) {
+        if (DEShaders.useShaders() && DEConfig.useCrystalShaders && shaderProgram != null) {
             shaderProgram.releaseShader();
         }
     }
