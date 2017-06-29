@@ -1,15 +1,22 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import codechicken.lib.model.bakery.ModelBakery;
+import codechicken.lib.util.ItemNBTUtils;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IFOVModifierItem;
+import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.lib.Set3;
+import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.client.model.tool.ToolModelBakery;
 import com.brandon3055.draconicevolution.handlers.BowHandler;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -21,6 +28,7 @@ import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -117,17 +125,16 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
 
     //region Render
 
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-////        ModelResourceLocation modelLocation = new ModelResourceLocation("draconicevolution:" + feature.getName(), "inventory");
-////        ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
-////        //ModelRegistryHelper.register(new ModelResourceLocation("draconicevolution:" + feature.getName(), "inventory"), new SimpleOverrideBakedModel(new BowModelOverrideList()));
-//    }
+    @Override
+    public void registerRenderer(Feature feature) {
+        super.registerRenderer(feature);
+        ToolModelBakery.registerItemKeyGenerator(this, stack -> ModelBakery.defaultItemKeyGenerator + "|" + ItemNBTUtils.getByte(stack, "render:bow_pull"));
+    }
 
     @Override
-    protected Set3<String, String, String> getTextureLocations() {
-        return Set3.of("items/tools/wyvern_bow00", "items/tools/obj/wyvern_bow00", "models/item/tools/wyvern_bow00.obj");
+    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        byte pull = ItemNBTUtils.getByte(stack, "render:bow_pull");
+        return new PairKV<>(DETextures.WYVERN_BOW[pull], new ResourceLocation("draconicevolution", String.format("models/item/tools/wyvern_bow0%s.obj", pull)));
     }
 
     @SideOnly(Side.CLIENT)

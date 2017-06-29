@@ -1,10 +1,14 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.lib.Set3;
+import codechicken.lib.util.ItemNBTUtils;
+import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
+import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.EnumControlType.SLIDER;
 
@@ -45,7 +49,8 @@ public class DraconicBow extends WyvernBow {
     }
 
     @Override
-    protected Set3<String, String, String> getTextureLocations() {
-        return Set3.of("items/tools/draconic_bow00", "items/tools/obj/draconic_bow00", "models/item/tools/draconic_bow00.obj");
+    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        byte pull = ItemNBTUtils.getByte(stack, "render:bow_pull");
+        return new PairKV<>(DETextures.DRACONIC_BOW[pull], new ResourceLocation("draconicevolution", String.format("models/item/tools/draconic_bow0%s.obj", pull)));
     }
 }

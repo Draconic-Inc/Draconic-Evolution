@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.common.model.IModelState;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
@@ -32,10 +33,9 @@ import static com.brandon3055.draconicevolution.client.render.tile.RenderTileSta
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemStabilizedSpawner implements IItemRenderer, IPerspectiveAwareModel {
+public class RenderItemStabilizedSpawner implements IItemRenderer {
 
     private static ItemStack[] CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEFeatures.draconicCore), new ItemStack(DEFeatures.wyvernCore), new ItemStack(DEFeatures.awakenedCore), new ItemStack(DEFeatures.chaoticCore)};
-    private ItemCameraTransforms.TransformType transformType;
     private IBakedModel baseModel;
 
     public RenderItemStabilizedSpawner(Function<IRegistry<ModelResourceLocation, IBakedModel>, IBakedModel> getter) {
@@ -59,9 +59,8 @@ public class RenderItemStabilizedSpawner implements IItemRenderer, IPerspectiveA
     //endregion
 
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        transformType = cameraTransformType;
-        return MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_BLOCK.getTransforms(), cameraTransformType);
+    public IModelState getTransforms() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     //Remember GuiInventory.drawEntityOnScreen

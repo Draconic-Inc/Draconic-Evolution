@@ -1,7 +1,11 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.lib.Set3;
+import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by brandon3055 on 5/06/2016.
@@ -29,8 +33,8 @@ public class DraconicPick extends WyvernPick {
     //region Rendering
 
     @Override
-    protected Set3<String, String, String> getTextureLocations() {
-        return Set3.of("items/tools/draconic_pickaxe", "items/tools/obj/draconic_pickaxe", "models/item/tools/draconic_pickaxe.obj");
+    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new PairKV<>(DETextures.DRACONIC_PICKAXE, new ResourceLocation("draconicevolution", "models/item/tools/draconic_pickaxe.obj"));
     }
 
     //endregion

@@ -12,6 +12,7 @@ import java.util.HashMap;
 /**
  * Created by covers1624 on 7/25/2016.
  */
+@Deprecated// Needs to be merged with DETextures.
 public class DETextureCache implements IIconRegister {
 
 

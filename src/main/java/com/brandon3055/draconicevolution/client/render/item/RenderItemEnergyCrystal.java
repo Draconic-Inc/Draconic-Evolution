@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.IPerspectiveAwareModel.MapWrapper;
+import net.minecraftforge.common.model.IModelState;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
@@ -60,10 +61,6 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
 
     //endregion
 
-    @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemStack stack, ItemCameraTransforms.TransformType cameraTransformType) {
-        return MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_BLOCK.getTransforms(), cameraTransformType);
-    }
 
     @Override
     public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
@@ -106,6 +103,11 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
 
         GlStateTracker.popState();
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    public IModelState getTransforms() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     private static float[] r = {0.0F, 0.47F, 1.0F};

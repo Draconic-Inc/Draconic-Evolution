@@ -3,20 +3,23 @@ package com.brandon3055.draconicevolution.client.model.tool;
 import codechicken.lib.render.CCModelState;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.vecmath.Vector3f;
 
+import static codechicken.lib.util.TransformUtils.get;
+import static codechicken.lib.util.TransformUtils.leftify;
+
 /**
  * Created by brandon3055 on 1/09/2016.
  */
-public class ToolTransformOverride {
+public class ToolTransforms {
 
-    private final String key;
     public static final CCModelState STAFF_STATE;
     public static final CCModelState DR_SWORD_STATE;
     public static final CCModelState WY_SWORD_STATE;
-    private static final TRSRTransformation flipX = new TRSRTransformation(null, null, new Vector3f(-1, 1, 1), null);
 
     static {
         TRSRTransformation thirdPerson = get(0, 3, 1, 0, 0, 0, 0.55f);
@@ -54,32 +57,6 @@ public class ToolTransformOverride {
         defaultItemBuilder.put(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, firstPerson);
         defaultItemBuilder.put(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, leftify(firstPerson));
         WY_SWORD_STATE = new CCModelState(defaultItemBuilder.build());
-    }
-
-    public ToolTransformOverride(String key) {
-        this.key = key;
-    }
-
-    public CCModelState getOverride(ItemCameraTransforms.TransformType cameraTransformType, CCModelState state) {
-        if (key.equals("draconic_staff_of_power")) {
-            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? STAFF_STATE : state;
-        }
-        else if (key.equals("draconic_sword")) {
-            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? DR_SWORD_STATE : state;
-        }
-        else if (key.equals("wyvern_sword")) {
-            return cameraTransformType == ItemCameraTransforms.TransformType.FIXED || cameraTransformType == ItemCameraTransforms.TransformType.GROUND ? WY_SWORD_STATE : state;
-        }
-
-        return state;
-    }
-
-    private static TRSRTransformation get(float tx, float ty, float tz, float rx, float ry, float rz, float s) {
-        return TRSRTransformation.blockCenterToCorner(new TRSRTransformation(new Vector3f(tx / 16, ty / 16, tz / 16), TRSRTransformation.quatFromXYZDegrees(new Vector3f(rx, ry, rz)), new Vector3f(s, s, s), null));
-    }
-
-    private static TRSRTransformation leftify(TRSRTransformation transform) {
-        return TRSRTransformation.blockCenterToCorner(flipX.compose(TRSRTransformation.blockCornerToCenter(transform)).compose(flipX));
     }
 
 }

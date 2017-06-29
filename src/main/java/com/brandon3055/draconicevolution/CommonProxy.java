@@ -6,7 +6,6 @@ import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystal
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.DEParticles;
-import com.brandon3055.draconicevolution.client.model.ILoadingBakery;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.ContributorHandler;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
@@ -224,10 +223,6 @@ public class CommonProxy {
 
     public ISound playISound(ISound sound) {
         return null;
-    }
-
-    public void registerLoadingBakery(ILoadingBakery bakery) {
-
     }
 
 }

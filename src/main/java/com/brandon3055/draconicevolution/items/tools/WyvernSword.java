@@ -1,20 +1,30 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.lib.Set3;
+import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.client.model.tool.ToolOverrideList;
+import com.brandon3055.draconicevolution.client.model.tool.ToolTransforms;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -99,8 +109,20 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     //region Rendering
 
     @Override
-    protected Set3<String, String, String> getTextureLocations() {
-        return Set3.of("items/tools/wyvern_sword", "items/tools/obj/wyvern_sword", "models/item/tools/wyvern_sword.obj");
+    public void registerRenderer(Feature feature) {
+        super.registerRenderer(feature);
+        ToolOverrideList.putOverride(this, WyvernSword::handleTransforms);
+    }
+
+    @SideOnly (Side.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
+    private static IModelState handleTransforms(TransformType transformType, IModelState state) {
+        return transformType == TransformType.FIXED || transformType == TransformType.GROUND ? ToolTransforms.WY_SWORD_STATE : state;
+    }
+
+    @Override
+    @SideOnly (Side.CLIENT)
+    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new PairKV<>(DETextures.WYVERN_SWORD, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_sword.obj"));
     }
 
     //endregion

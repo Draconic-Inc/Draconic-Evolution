@@ -1,20 +1,31 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.lib.Set3;
+import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.client.model.tool.ToolOverrideList;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+
+import static com.brandon3055.draconicevolution.client.model.tool.ToolTransforms.STAFF_STATE;
 
 /**
  * Created by brandon3055 on 5/06/2016.
@@ -92,8 +103,19 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
     //region Rendering
 
     @Override
-    protected Set3<String, String, String> getTextureLocations() {
-        return Set3.of("items/tools/draconic_staff_of_power", "items/tools/obj/draconic_staff_of_power", "models/item/tools/draconic_staff_of_power.obj");
+    public void registerRenderer(Feature feature) {
+        super.registerRenderer(feature);
+        ToolOverrideList.putOverride(this, DraconicStaffOfPower::handleTransforms);
+    }
+
+    @SideOnly (Side.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
+    private static IModelState handleTransforms(TransformType transformType, IModelState state) {
+        return transformType == TransformType.FIXED || transformType == TransformType.GROUND ? STAFF_STATE : state;
+    }
+
+    @Override
+    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new PairKV<>(DETextures.DRACONIC_STAFF_OF_POWER, new ResourceLocation("draconicevolution", "models/item/tools/draconic_staff_of_power.obj"));
     }
 
     //endregion

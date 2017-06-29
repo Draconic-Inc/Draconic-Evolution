@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.common.model.IModelState;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
@@ -20,9 +21,7 @@ import javax.vecmath.Matrix4f;
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemMobSoul implements IItemRenderer, IPerspectiveAwareModel {
-
-    private ItemCameraTransforms.TransformType transformType;
+public class RenderItemMobSoul implements IItemRenderer {
 
     public RenderItemMobSoul() {
     }
@@ -42,9 +41,8 @@ public class RenderItemMobSoul implements IItemRenderer, IPerspectiveAwareModel 
     //endregion
 
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        transformType = cameraTransformType;
-        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_ITEM.getTransforms(), cameraTransformType);
+    public IModelState getTransforms() {
+        return TransformUtils.DEFAULT_ITEM;
     }
 
     //Remember GuiInventory.drawEntityOnScreen

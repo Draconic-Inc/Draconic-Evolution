@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.common.model.IModelState;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
@@ -47,11 +48,6 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer {
     //endregion
 
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemStack stack, ItemCameraTransforms.TransformType cameraTransformType) {
-        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_ITEM.getTransforms(), cameraTransformType);
-    }
-
-    @Override
     public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
         Minecraft mc = Minecraft.getMinecraft();
         GlStateManager.pushMatrix();
@@ -82,6 +78,11 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer {
         }
 
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    public IModelState getTransforms() {
+        return TransformUtils.DEFAULT_ITEM;
     }
 
     private void renderSkull() {

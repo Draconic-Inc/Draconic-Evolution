@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.common.model.IModelState;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
@@ -21,7 +22,7 @@ import javax.vecmath.Matrix4f;
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public class RenderItemReactorComponent implements IItemRenderer, IPerspectiveAwareModel {
+public class RenderItemReactorComponent implements IItemRenderer {
 
     private static RenderTileReactorCore coreRenderer = new RenderTileReactorCore();
 
@@ -43,8 +44,8 @@ public class RenderItemReactorComponent implements IItemRenderer, IPerspectiveAw
     //endregion
 
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        return MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_BLOCK.getTransforms(), cameraTransformType);
+    public IModelState getTransforms() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override

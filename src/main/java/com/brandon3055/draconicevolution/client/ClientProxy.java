@@ -13,10 +13,10 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.ArmorModelHelper;
-import com.brandon3055.draconicevolution.client.model.ILoadingBakery;
 import com.brandon3055.draconicevolution.client.render.entity.*;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -39,12 +39,11 @@ public class ClientProxy extends CommonProxy {
     //	public static List<LayerElytra> elytra = new ArrayList<>();
     public static LayerContributorWings layerWings;
 
-    public Set<ILoadingBakery> loadingBakeries = new HashSet<>();
-
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
         OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);
+        TextureUtils.addIconRegister(new DETextures());
 
         DEImageHandler.init(event);
 
@@ -81,14 +80,7 @@ public class ClientProxy extends CommonProxy {
 //		ResourceHandler.instance.tick(null);
     }
 
-    @Override
-    public void registerLoadingBakery(ILoadingBakery bakery) {
-       loadingBakeries.add(bakery);
-    }
-
     public void registerRendering() {
-
-        loadingBakeries.forEach(ILoadingBakery::load);
 
 		//Entities
         RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, new RenderChaosGuardian.Factory());

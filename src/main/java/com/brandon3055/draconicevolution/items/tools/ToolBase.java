@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import codechicken.lib.model.ModelRegistryHelper;
+import codechicken.lib.model.bakedmodels.OverrideListModel;
 import codechicken.lib.model.bakery.CCBakeryModel;
 import codechicken.lib.model.bakery.IBakeryProvider;
 import codechicken.lib.model.bakery.ModelBakery;
@@ -20,7 +21,9 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.ToolModelBakery;
+import com.brandon3055.draconicevolution.client.model.tool.IToolModelProvider;
+import com.brandon3055.draconicevolution.client.model.tool.ToolModelBakery;
+import com.brandon3055.draconicevolution.client.model.tool.ToolOverrideList;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -53,7 +56,7 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.ATTACK_DAMAGE;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride, IUpgradableItem, IConfigurableItem, IHudDisplay, IBakeryProvider {
+public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride, IUpgradableItem, IConfigurableItem, IHudDisplay, IToolModelProvider {
 
     private float baseAttackDamage;
     private float baseAttackSpeed;
@@ -148,23 +151,8 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
         ModelResourceLocation modelLocation = new ModelResourceLocation("draconicevolution:" + feature.getName(), "inventory");
         ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
         ModelLoader.setCustomMeshDefinition(this, stack -> modelLocation);
-        ModelRegistryHelper.register(modelLocation, new CCBakeryModel(""));
-        ModelBakery.registerItemKeyGenerator(this, stack -> ModelBakery.defaultItemKeyGenerator.generateKey(stack) + "|" +  DEConfig.disable3DModels);
-
-        Set3<String, String, String> texLocs = getTextureLocations();
-        ToolModelBakery.createBakery(this, texLocs);
-        CCIconRegister.registerTexture(DraconicEvolution.MOD_PREFIX + texLocs.getA());
-        CCIconRegister.registerTexture(DraconicEvolution.MOD_PREFIX + texLocs.getB());
-        LogHelper.dev("Register Tool Model Texture: " + DraconicEvolution.MOD_PREFIX + texLocs.getB());
+        ModelRegistryHelper.register(modelLocation, new OverrideListModel(new ToolOverrideList()));
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IBakery getBakery() {
-        return ToolModelBakery.getBakery(this);
-    }
-
-    protected abstract Set3<String, String, String> getTextureLocations();
 
     //endregion
 

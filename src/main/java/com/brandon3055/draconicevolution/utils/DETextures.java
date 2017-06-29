@@ -1,9 +1,108 @@
 package com.brandon3055.draconicevolution.utils;
 
+import codechicken.lib.texture.TextureUtils.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
+
 /**
  * Created by brandon3055 on 31/08/2016.
  */
-public class DETextures {
+public class DETextures implements IIconRegister {
+
+    private static TextureMap map;
+
+    @Override
+    public void registerIcons(TextureMap textureMap) {
+        map = textureMap;
+
+        //@formatter:off
+        WYVERN_AXE =                register(TOOLS_ + "wyvern_axe");
+        WYVERN_BOW00 =              register(TOOLS_ + "wyvern_bow00");
+        WYVERN_BOW01 =              register(TOOLS_ + "wyvern_bow01");
+        WYVERN_BOW02 =              register(TOOLS_ + "wyvern_bow02");
+        WYVERN_BOW03 =              register(TOOLS_ + "wyvern_bow03");
+        WYVERN_PICKAXE =            register(TOOLS_ + "wyvern_pickaxe");
+        WYVERN_SHOVEL =             register(TOOLS_ + "wyvern_shovel");
+        WYVERN_SWORD =              register(TOOLS_ + "wyvern_sword");
+        DRACONIC_AXE =              register(TOOLS_ + "draconic_axe");
+        DRACONIC_BOW00 =            register(TOOLS_ + "draconic_bow00");
+        DRACONIC_BOW01 =            register(TOOLS_ + "draconic_bow01");
+        DRACONIC_BOW02 =            register(TOOLS_ + "draconic_bow02");
+        DRACONIC_BOW03 =            register(TOOLS_ + "draconic_bow03");
+        DRACONIC_HOE =              register(TOOLS_ + "draconic_hoe");
+        DRACONIC_PICKAXE =          register(TOOLS_ + "draconic_pickaxe");
+        DRACONIC_SHOVEL =           register(TOOLS_ + "draconic_shovel");
+        DRACONIC_STAFF_OF_POWER =   register(TOOLS_ + "draconic_staff_of_power");
+        DRACONIC_SWORD =            register(TOOLS_ + "draconic_sword");
+
+        //OBJ textures. Just need to be registered, never accessed by us through here.
+        register(TOOLS_OBJ_ + "wyvern_axe");
+        register(TOOLS_OBJ_ + "wyvern_bow00");
+        register(TOOLS_OBJ_ + "wyvern_bow01");
+        register(TOOLS_OBJ_ + "wyvern_bow02");
+        register(TOOLS_OBJ_ + "wyvern_bow03");
+        register(TOOLS_OBJ_ + "wyvern_pickaxe");
+        register(TOOLS_OBJ_ + "wyvern_shovel");
+        register(TOOLS_OBJ_ + "wyvern_sword");
+        register(TOOLS_OBJ_ + "draconic_axe");
+        register(TOOLS_OBJ_ + "draconic_bow00");
+        register(TOOLS_OBJ_ + "draconic_bow01");
+        register(TOOLS_OBJ_ + "draconic_bow02");
+        register(TOOLS_OBJ_ + "draconic_bow03");
+        register(TOOLS_OBJ_ + "draconic_hoe");
+        register(TOOLS_OBJ_ + "draconic_pickaxe");
+        register(TOOLS_OBJ_ + "draconic_shovel");
+        register(TOOLS_OBJ_ + "draconic_staff_of_power");
+        register(TOOLS_OBJ_ + "draconic_sword");
+
+        WYVERN_BOW = new TextureAtlasSprite[] {
+                WYVERN_BOW00,
+                WYVERN_BOW01,
+                WYVERN_BOW02,
+                WYVERN_BOW03
+        };
+        DRACONIC_BOW = new TextureAtlasSprite[] {
+                DRACONIC_BOW00,
+                DRACONIC_BOW01,
+                DRACONIC_BOW02,
+                DRACONIC_BOW03
+        };
+        //@formatter:on
+    }
+
+    // Bouncer to make the class readable.
+    private static TextureAtlasSprite register(String sprite) {
+
+        return map.registerSprite(new ResourceLocation(sprite));
+    }
+
+    //These are BELLOW register icons because readability.
+    private static final String ITEMS_ = "draconicevolution:items/";
+    private static final String TOOLS_ = ITEMS_ + "tools/";
+    private static final String TOOLS_OBJ_ = TOOLS_ + "obj/";
+
+    public static TextureAtlasSprite WYVERN_AXE;
+    public static TextureAtlasSprite WYVERN_BOW00;
+    public static TextureAtlasSprite WYVERN_BOW01;
+    public static TextureAtlasSprite WYVERN_BOW02;
+    public static TextureAtlasSprite WYVERN_BOW03;
+    public static TextureAtlasSprite WYVERN_PICKAXE;
+    public static TextureAtlasSprite WYVERN_SHOVEL;
+    public static TextureAtlasSprite WYVERN_SWORD;
+    public static TextureAtlasSprite DRACONIC_AXE;
+    public static TextureAtlasSprite DRACONIC_BOW00;
+    public static TextureAtlasSprite DRACONIC_BOW01;
+    public static TextureAtlasSprite DRACONIC_BOW02;
+    public static TextureAtlasSprite DRACONIC_BOW03;
+    public static TextureAtlasSprite DRACONIC_HOE;
+    public static TextureAtlasSprite DRACONIC_PICKAXE;
+    public static TextureAtlasSprite DRACONIC_SHOVEL;
+    public static TextureAtlasSprite DRACONIC_STAFF_OF_POWER;
+    public static TextureAtlasSprite DRACONIC_SWORD;
+
+    public static TextureAtlasSprite[] WYVERN_BOW;
+    public static TextureAtlasSprite[] DRACONIC_BOW;
 
     //TODO in 1.11 or 1.12 make there full names with mod prefix and ether remove texture cache or have it auto detect when the modid is already present.
     public static final String ENERGY_INFUSER_DECORATION = "textures/blocks/energy_infuser/energy_infuser_decoration.png";

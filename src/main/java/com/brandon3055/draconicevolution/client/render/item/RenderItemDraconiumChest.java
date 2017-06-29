@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.common.model.IModelState;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
@@ -18,7 +19,7 @@ import javax.vecmath.Matrix4f;
 /**
  * Created by brandon3055 on 18/04/2017.
  */
-public class RenderItemDraconiumChest implements IItemRenderer, IPerspectiveAwareModel {
+public class RenderItemDraconiumChest implements IItemRenderer {
 
     public RenderItemDraconiumChest() {
     }
@@ -43,8 +44,8 @@ public class RenderItemDraconiumChest implements IItemRenderer, IPerspectiveAwar
     //endregion
 
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        return MapWrapper.handlePerspective(this, TransformUtils.DEFAULT_BLOCK.getTransforms(), cameraTransformType);
+    public IModelState getTransforms() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
     //Remember GuiInventory.drawEntityOnScreen

@@ -1,7 +1,11 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.lib.Set3;
+import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by brandon3055 on 5/06/2016.
@@ -28,10 +32,9 @@ public class DraconicShovel extends WyvernShovel {
     //region Rendering
 
     @Override
-    protected Set3<String, String, String> getTextureLocations() {
-        return Set3.of("items/tools/draconic_shovel", "items/tools/obj/draconic_shovel", "models/item/tools/draconic_shovel.obj");
+    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new PairKV<>(DETextures.DRACONIC_SHOVEL, new ResourceLocation("draconicevolution", "models/item/tools/draconic_shovel.obj"));
     }
-
 
     //endregion
 }

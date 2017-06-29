@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
+import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
@@ -12,8 +13,10 @@ import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -234,8 +237,8 @@ public class WyvernAxe extends MiningToolBase {
     //region Rendering
 
     @Override
-    protected Set3<String, String, String> getTextureLocations() {
-        return Set3.of("items/tools/wyvern_axe", "items/tools/obj/wyvern_axe", "models/item/tools/wyvern_axe.obj");
+    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new PairKV<>(DETextures.WYVERN_AXE, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_axe.obj"));
     }
 
     //endregion

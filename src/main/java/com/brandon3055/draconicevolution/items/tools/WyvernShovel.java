@@ -1,8 +1,12 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.lib.Set3;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Set;
 
@@ -36,8 +40,8 @@ public class WyvernShovel extends MiningToolBase {
     //region Rendering
 
     @Override
-    protected Set3<String, String, String> getTextureLocations() {
-        return Set3.of("items/tools/wyvern_shovel", "items/tools/obj/wyvern_shovel", "models/item/tools/wyvern_shovel.obj");
+    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new PairKV<>(DETextures.WYVERN_SHOVEL, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_shovel.obj"));
     }
 
     //endregion
