@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class EntityCustomArrow extends EntityArrow {
@@ -381,6 +382,16 @@ public class EntityCustomArrow extends EntityArrow {
     }
 
     //endregion
+
+
+    @Nullable
+    @Override
+    protected Entity findEntityOnPath(Vec3d start, Vec3d end) {
+        if (worldObj.isRemote) {
+            return null;
+        }
+        return super.findEntityOnPath(start, end);
+    }
 
     @SideOnly(Side.CLIENT)
     private void spawnArrowParticles() {
