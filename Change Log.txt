@@ -1,6 +1,9 @@
 ######## 2.2.0.x (1.11.2 Initial Port) ########
+-Ported Draconic Evolution directly from 1.10.2 to 1.11.2. At this point the 1.10 and 1.11 versions are feature identical.
+-Added support for in-game mod configuration. (I am referring to the actual mod config not tool config)
+-Added automatic config synchronization between client and server.
 
-######## 2.1.0.x (1.10.2 Feature Complete) ########
+######## 2.1.0.232 (1.10.2 Feature Complete) ########
 -Switched from java 7 to java 8
 -Fixed arrow shockwave effect not rendering.
 -Fixed capacitors not charging FE items in your inventory.
