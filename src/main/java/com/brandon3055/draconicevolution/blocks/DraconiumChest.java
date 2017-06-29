@@ -62,6 +62,12 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
         if (stack.getItem() == Item.getItemFromBlock(DEFeatures.draconiumChest)) {
             return false;
         }
+        else if (!stack.isEmpty()) {
+            String name = stack.getUnlocalizedName().toLowerCase();
+            if (name.contains("pouch") || name.contains("bag") || name.contains("strongbox") || name.contains("shulker_box")) {
+                return false;
+            }
+        }
         return true;
     }
 

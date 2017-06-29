@@ -44,7 +44,7 @@ public class FusionCraftingCore extends BlockBCore implements IRenderOverride, I
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileFusionCraftingCore) {
-            ((TileFusionCraftingCore) tile).updatePedestals();
+            ((TileFusionCraftingCore) tile).updateInjectors();
         }
 
         if (!world.isRemote) {
@@ -69,7 +69,8 @@ public class FusionCraftingCore extends BlockBCore implements IRenderOverride, I
         return new AxisAlignedBB(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
     }
 
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
+    @Override
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
         if (!world.isRemote) {
             if (world.isBlockPowered(pos)) {
                 TileEntity tile = world.getTileEntity(pos);

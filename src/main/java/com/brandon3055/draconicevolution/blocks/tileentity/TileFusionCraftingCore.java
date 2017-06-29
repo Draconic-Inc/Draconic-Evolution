@@ -8,7 +8,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingPedestal;
+import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.DEParticles;
@@ -19,7 +19,6 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
@@ -47,14 +46,14 @@ import java.util.List;
  */
 public class TileFusionCraftingCore extends TileInventoryBase implements IFusionCraftingInventory, ITickable, ISidedInventory {
 
-    public List<ICraftingPedestal> pedestals = new ArrayList<ICraftingPedestal>();
+    public List<ICraftingInjector> pedestals = new ArrayList<ICraftingInjector>();
     public final ManagedBool isCrafting = register("isCrafting", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
     /**
      * 0 = Not crafting<br>
      * 1 -> 1000 = Charge percentage<br>
      * 1000 -> 2000 = Crafting progress
      */
-    public final ManagedShort craftingStage = register("craftingStage", new ManagedShort(0)).syncViaTile().finish();
+    public final ManagedShort craftingStage = register("craftingStage", new ManagedShort(0)).syncViaTile().saveToTile().finish();
     public IFusionRecipe activeRecipe = null;
     private int craftingSpeedBoost = 0;
 
@@ -76,15 +75,16 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
         if (world.isRemote) {
             updateEffects();
+            return;
         }
 
         //Update Crafting
-        if (isCrafting.value && !world.isRemote) {
+        if (isCrafting.value) {
             if (DEEventHandler.serverTicks % 10 == 0) {
                 world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
             }
 
-            for (ICraftingPedestal pedestal : pedestals) {
+            for (ICraftingInjector pedestal : pedestals) {
                 if (((TileEntity) pedestal).isInvalid()) {
                     invalidateCrafting();
                     return;
@@ -98,8 +98,8 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
             long totalCharge = 0;
 
-            for (ICraftingPedestal pedestal : pedestals) {
-                if (pedestal.getStackInPedestal() == null) {
+            for (ICraftingInjector pedestal : pedestals) {
+                if (pedestal.getStackInPedestal().isEmpty()) {
                     continue;
                 }
                 totalCharge += pedestal.getCharge();
@@ -113,47 +113,47 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 if (craftingStage.value == 0 && percentage > 0) {
                     craftingStage.value = 1;
                 }
-            }
-            else if (craftingStage.value < 2000) {
+            } else if (craftingStage.value < 2000) {
                 craftingStage.value += 2 + craftingSpeedBoost;
-            }
-            else if (craftingStage.value >= 2000) {
+            } else if (craftingStage.value >= 2000) {
                 activeRecipe.craft(this, world, pos);
 
-                for (ICraftingPedestal pedestal : pedestals) {
+                for (ICraftingInjector pedestal : pedestals) {
                     pedestal.onCraft();
                 }
 
-                if (!world.isRemote) {
-                    isCrafting.value = false;
-                }
+                isCrafting.value = false;
             }
-        }
-        else if (!world.isRemote && !isCrafting.value && craftingStage.value > 0) {
+        } else if (craftingStage.value > 0) {
             craftingStage.value = 0;
         }
     }
 
     public void attemptStartCrafting() {
-        updatePedestals();
+        if (world.isRemote) {
+            return;
+        }
+        updateInjectors();
         activeRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, world, pos);
 
         if (activeRecipe != null && activeRecipe.canCraft(this, world, pos) != null && activeRecipe.canCraft(this, world, pos).equals("true")) {
             int minTier = 3;
-            for (ICraftingPedestal pedestal : pedestals) {
-                if (pedestal.getStackInPedestal() != null && pedestal.getPedestalTier() < minTier) {
+            for (ICraftingInjector pedestal : pedestals) {
+                if (!pedestal.getStackInPedestal().isEmpty() && pedestal.getPedestalTier() < minTier) {
                     minTier = pedestal.getPedestalTier();
                 }
                 craftingSpeedBoost = minTier == 0 ? 0 : minTier == 1 ? 1 : minTier == 2 ? 3 : minTier == 3 ? 5 : 0;
             }
             isCrafting.value = true;
-        }
-        else {
+        } else {
             activeRecipe = null;
         }
     }
 
     private void invalidateCrafting() {
+        if (world.isRemote) {
+            return;
+        }
         isCrafting.value = false;
         activeRecipe = null;
         craftingStage.value = 0;
@@ -164,7 +164,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     /**
      * Clears the pedestal list and then re acquires all valid pedestals.
      */
-    public void updatePedestals() {
+    public void updateInjectors() {
         if (isCrafting.value) {
             return;
         }
@@ -183,8 +183,8 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         for (BlockPos checkPos : positions) {
             TileEntity tile = world.getTileEntity(checkPos);
 
-            if (tile instanceof ICraftingPedestal) {
-                ICraftingPedestal pedestal = (ICraftingPedestal) tile;
+            if (tile instanceof ICraftingInjector) {
+                ICraftingInjector pedestal = (ICraftingInjector) tile;
                 Vec3D dirVec = new Vec3D(tile.getPos()).subtract(pos);
                 double dist = Utils.getDistanceAtoB(new Vec3D(tile.getPos()), new Vec3D(pos));
 
@@ -195,7 +195,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
                     boolean obstructed = false;
                     for (BlockPos bp : checkList) {
-                        if (!world.isAirBlock(bp) && (world.getBlockState(bp).isFullCube() || world.getTileEntity(bp) instanceof ICraftingPedestal)) {
+                        if (!world.isAirBlock(bp) && (world.getBlockState(bp).isFullCube() || world.getTileEntity(bp) instanceof ICraftingInjector)) {
                             obstructed = true;
                             break;
                         }
@@ -203,8 +203,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
                     if (!obstructed) {
                         pedestals.add(pedestal);
-                    }
-                    else {
+                    } else {
                         pedestal.setCraftingInventory(null);
                     }
                 }
@@ -226,8 +225,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     public int getRequiredCharge() {
         if (activeRecipe == null) {
             return 0;
-        }
-        else {
+        } else {
             return activeRecipe.getEnergyCost();
         }
     }
@@ -258,7 +256,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     }
 
     @Override
-    public List<ICraftingPedestal> getPedestals() {
+    public List<ICraftingInjector> getInjectors() {
         return pedestals;
     }
 
@@ -297,19 +295,19 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         for (BlockPos checkPos : positions) {
             TileEntity tile = world.getTileEntity(checkPos);
 
-            if (tile instanceof ICraftingPedestal) {
-                ICraftingPedestal pedestal = (ICraftingPedestal) tile;
+            if (tile instanceof ICraftingInjector) {
+                ICraftingInjector pedestal = (ICraftingInjector) tile;
                 Vec3D dirVec = new Vec3D(tile.getPos()).subtract(pos);
                 double dist = Utils.getDistanceAtoB(new Vec3D(tile.getPos()), new Vec3D(pos));
 
                 if (dist >= 2 && EnumFacing.getFacingFromVector((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
                     BlockPos pPos = tile.getPos();
                     EnumFacing facing = pedestal.getDirection();
-                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBox(pPos.offset(facing), pPos.offset(facing, FacingUtils.destanceInDirection(pPos, pos, facing) - 2)));
+                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBox(pPos.offset(facing), pPos.offset(facing, FacingUtils.destanceInDirection(pPos, pos, facing) - 1)));
 
                     boolean obstructed = false;
                     for (BlockPos bp : checkList) {
-                        if (!world.isAirBlock(bp) && (world.getBlockState(bp).isFullCube() || world.getTileEntity(bp) instanceof ICraftingPedestal)) {
+                        if (!world.isAirBlock(bp) && (world.getBlockState(bp).isFullCube() || world.getTileEntity(bp) instanceof ICraftingInjector)) {
                             obstructed = true;
                             break;
                         }
@@ -317,8 +315,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
                     if (!obstructed) {
                         pedestals.add(pedestal);
-                    }
-                    else {
+                    } else {
                         pedestal.setCraftingInventory(null);
                     }
                 }
@@ -334,8 +331,8 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
         effects = new LinkedList<>();
 
-        for (ICraftingPedestal pedestal : pedestals) {
-            if (pedestal.getStackInPedestal() == null) {
+        for (ICraftingInjector pedestal : pedestals) {
+            if (pedestal.getStackInPedestal().isEmpty()) {
                 continue;
             }
 
@@ -478,18 +475,14 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     //endregion
 
     public int getComparatorOutput() {
-        updatePedestals();
-        if (getStackInCore(1) != null) {
+        updateInjectors();
+        if (!getStackInCore(1).isEmpty()) {
             return 15;
-        }
-        else if (craftingStage.value > 0) {
+        } else if (craftingStage.value > 0) {
             return (int) Math.max(1, ((craftingStage.value / 2000D) * 15D));
-        }
-        else if (RecipeManager.FUSION_REGISTRY.findRecipe(this, world, pos) != null) {
+        } else if (RecipeManager.FUSION_REGISTRY.findRecipe(this, world, pos) != null) {
             return 1;
         }
-
-        LogHelper.dev(getStackInCore(0) + " " + RecipeManager.FUSION_REGISTRY.findRecipe(this, world, pos));
         return 0;
     }
 

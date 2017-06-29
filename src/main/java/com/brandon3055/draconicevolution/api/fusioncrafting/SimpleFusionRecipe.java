@@ -60,8 +60,8 @@ public class SimpleFusionRecipe implements IFusionRecipe {
 
     @Override
     public boolean matches(IFusionCraftingInventory inventory, World world, BlockPos pos) {
-        List<ICraftingPedestal> pedestals = new ArrayList<ICraftingPedestal>();
-        pedestals.addAll(inventory.getPedestals());
+        List<ICraftingInjector> pedestals = new ArrayList<ICraftingInjector>();
+        pedestals.addAll(inventory.getInjectors());
 
         //Check the catalyst for this recipe
         if (inventory.getStackInCore(0).isEmpty() || !inventory.getStackInCore(0).isItemEqual(catalyst) || inventory.getStackInCore(0).getCount() < catalyst.getCount()) {
@@ -77,7 +77,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         for (Object ingredient : ingredients) {
             boolean foundIngredient = false;
 
-            for (ICraftingPedestal pedestal : pedestals) {
+            for (ICraftingInjector pedestal : pedestals) {
                 if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal())) {
                     ItemStack i = OreDictHelper.resolveObject(ingredient);
                     if (i.hasTagCompound() && !ItemStack.areItemStackTagsEqual(i, pedestal.getStackInPedestal())) {
@@ -96,7 +96,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         }
 
         //Check that there are no extra items that are not part of the recipe.
-        for (ICraftingPedestal pedestal : pedestals) {
+        for (ICraftingInjector pedestal : pedestals) {
             if (!pedestal.getStackInPedestal().isEmpty()) {
                 return false;
             }
@@ -112,12 +112,12 @@ public class SimpleFusionRecipe implements IFusionRecipe {
             return;
         }
 
-        List<ICraftingPedestal> pedestals = new ArrayList<>();
-        pedestals.addAll(inventory.getPedestals());
+        List<ICraftingInjector> pedestals = new ArrayList<>();
+        pedestals.addAll(inventory.getInjectors());
 
         //Use Ingredients
         for (Object ingredient : ingredients) {
-            for (ICraftingPedestal pedestal : pedestals) {
+            for (ICraftingInjector pedestal : pedestals) {
                 if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal()) && pedestal.getPedestalTier() >= craftingTier) {
 
                     ItemStack stack = pedestal.getStackInPedestal();
@@ -165,10 +165,10 @@ public class SimpleFusionRecipe implements IFusionRecipe {
             return "outputObstructed";
         }
 
-        List<ICraftingPedestal> pedestals = new ArrayList<ICraftingPedestal>();
-        pedestals.addAll(inventory.getPedestals());
+        List<ICraftingInjector> pedestals = new ArrayList<ICraftingInjector>();
+        pedestals.addAll(inventory.getInjectors());
 
-        for (ICraftingPedestal pedestal : pedestals) {
+        for (ICraftingInjector pedestal : pedestals) {
             if (!pedestal.getStackInPedestal().isEmpty() && pedestal.getPedestalTier() < craftingTier) {
                 return "tierLow";
             }

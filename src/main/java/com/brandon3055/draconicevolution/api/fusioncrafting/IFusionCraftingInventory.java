@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.fusioncrafting;
 
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -15,19 +16,19 @@ public interface IFusionCraftingInventory {
      * slot 0 = Input Slot<br>
      * slot 1 == output slot
      */
-    ItemStack getStackInCore(int slot);
+    @Nonnull ItemStack getStackInCore(int slot);
 
     /**
      * Sets the stack in the specified slot.<br>
      * slot 0 = Input Slot<br>
      * slot 1 == output slot
      */
-    void setStackInCore(int slot, ItemStack stack);
+    void setStackInCore(int slot, @Nonnull ItemStack stack);
 
     /**
-     * Returns a list of all valid crafting pedestals.
+     * Returns a list of all valid crafting injectors.
      */
-    List<ICraftingPedestal> getPedestals();
+    List<ICraftingInjector> getInjectors();
 
     /**
      * @return The charge required for the current crafting recipe or 0 if there is no active recipe.

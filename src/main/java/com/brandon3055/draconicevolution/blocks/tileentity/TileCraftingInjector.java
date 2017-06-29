@@ -7,7 +7,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingPedestal;
+import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ import net.minecraft.util.EnumFacing;
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class TileCraftingInjector extends TileInventoryBase implements IEnergyReceiver, ICraftingPedestal {
+public class TileCraftingInjector extends TileInventoryBase implements IEnergyReceiver, ICraftingInjector {
 
     public final ManagedByte facing = register("facing", new ManagedByte(0)).syncViaTile().saveToTile().trigerUpdate().finish();
     private final ManagedInt energy = register("energy", new ManagedInt(0)).syncViaTile().saveToTile().finish();
@@ -117,7 +117,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     }
 
     private boolean validateCraftingInventory() {
-        if (getStackInPedestal() != null && currentCraftingInventory != null && currentCraftingInventory.craftingInProgress() && !((TileEntity) currentCraftingInventory).isInvalid()) {
+        if (!getStackInPedestal().isEmpty() && currentCraftingInventory != null && currentCraftingInventory.craftingInProgress() && !((TileEntity) currentCraftingInventory).isInvalid()) {
             return true;
         }
 

@@ -5,7 +5,6 @@ import codechicken.lib.util.ItemNBTUtils;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IFOVModifierItem;
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -128,7 +127,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     @Override
     public void registerRenderer(Feature feature) {
         super.registerRenderer(feature);
-        ToolModelBakery.registerItemKeyGenerator(this, stack -> ModelBakery.defaultItemKeyGenerator + "|" + ItemNBTUtils.getByte(stack, "render:bow_pull"));
+        ToolModelBakery.registerItemKeyGenerator(this, stack -> ModelBakery.defaultItemKeyGenerator.generateKey(stack) + "|" + ItemNBTUtils.getByte(stack, "render:bow_pull"));
     }
 
     @Override
@@ -139,7 +138,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
+    public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList)  {
         super.addDisplayData(stack, world, pos, displayList);
 
         if (BrandonsCore.proxy.getClientPlayer() != null) {
@@ -149,7 +148,6 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
                 displayList.add(TextFormatting.DARK_RED + I18n.format(properties.cantFireMessage));
             }
         }
-        displayList.add(TextFormatting.DARK_RED+"Yes. I know the animation is broken.");
     }
 
     //endregion

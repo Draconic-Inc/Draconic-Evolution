@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
  * This interface should only ever be implemented by tile entities so it should be of to safe cast an ICraftingPedestal
  * to a TileEntity if you need access to the world and position.
  */
-public interface ICraftingPedestal {
+public interface ICraftingInjector {
 
     /**
      * @return The tier of the pedestal.

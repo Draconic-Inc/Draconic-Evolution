@@ -40,7 +40,7 @@ public class MobSoul extends ItemBCore implements IRenderOverride {
 
     private static Map<String, Entity> renderEntityMap = new HashMap<>();
     private static Map<String, String> entityNameCache = new HashMap<>();
-    private static List<String> randomDisplayList = null;
+    public static List<String> randomDisplayList = null;
     private static Map<String, ResourceLocation> rlCache = new WeakHashMap<>();
 
     @Override

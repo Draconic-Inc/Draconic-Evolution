@@ -33,13 +33,13 @@ public class FusionRecipeRegistry implements FusionRegistry {
 
     @Override
     public List<IFusionRecipe> getRecipes() {
-        return new ArrayList<IFusionRecipe>(REGISTRY);
+        return new ArrayList<>(REGISTRY);
     }
 
     //endregion
 
     public IFusionRecipe findRecipeForCatalyst(ItemStack catalyst) {
-        if (catalyst == null) {
+        if (catalyst.isEmpty()) {
             return null;
         }
 
@@ -53,7 +53,7 @@ public class FusionRecipeRegistry implements FusionRegistry {
     }
 
     public IFusionRecipe findRecipe(IFusionCraftingInventory inventory, World world, BlockPos corePos) {
-        if (inventory == null || inventory.getStackInCore(0) == null) {
+        if (inventory == null || inventory.getStackInCore(0).isEmpty()) {
             return null;
         }
 

@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Created by Brandon on 4/07/2014.
  */
-public class EntityChaosGuardian extends EntityDragonOld {//summon DraconicEvolution.ChaosGuardian
+public class EntityChaosGuardian extends EntityDragonOld {
 
 
     private static final List<Block> DESTRUCTION_BLACKLIST = ImmutableList.of(Blocks.END_STONE, Blocks.OBSIDIAN);
