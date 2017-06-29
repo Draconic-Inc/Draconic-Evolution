@@ -1,4 +1,8 @@
 ######## 2.1.2.x ########
+-Fixed chaos island implosion effects not rendering.
+-Fixed Ender Energy Manipulator breaking mipmap
+-Fixed a potential crash with mob soul.
+-Fixed elusive fusion crafting desync bug (only occurs when injectors are 1 block from the core).
 
 ######## 2.1.1.235 ########
 -Fixed the draconium capacitor not charging items.

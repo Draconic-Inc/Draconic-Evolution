@@ -89,10 +89,11 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
         if (worldObj.isRemote) {
             updateEffects();
+            return;
         }
 
         //Update Crafting
-        if (isCrafting.value && !worldObj.isRemote) {
+        if (isCrafting.value) {
             if (DEEventHandler.serverTicks % 10 == 0) {
                 worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
             }
@@ -137,17 +138,19 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                     pedestal.onCraft();
                 }
 
-                if (!worldObj.isRemote) {
-                    isCrafting.value = false;
-                }
+                isCrafting.value = false;
             }
         }
-        else if (!worldObj.isRemote && !isCrafting.value && craftingStage.value > 0) {
+        else if (craftingStage.value > 0) {
             craftingStage.value = 0;
         }
     }
 
     public void attemptStartCrafting() {
+        if (worldObj.isRemote) {
+            return;
+        }
+        LogHelper.dev("FusionCrafting: Try Start Crafting");
         updatePedestals();
         activeRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, pos);
 
@@ -166,6 +169,10 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     }
 
     private void invalidateCrafting() {
+        if (worldObj.isRemote) {
+            return;
+        }
+        LogHelper.dev("FusionCrafting: Invalidate Crafting");
         isCrafting.value = false;
         activeRecipe = null;
         craftingStage.value = 0;
@@ -181,6 +188,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             return;
         }
 
+        LogHelper.dev("FusionCrafting: Update Injectors");
         pedestals.clear();
         int range = 16;
 
@@ -294,6 +302,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     @SideOnly(Side.CLIENT)
     public void initializeEffects() {
+        LogHelper.dev("FusionCrafting: Initialize Effects");
         pedestals.clear();
         int range = 16;
 
@@ -316,7 +325,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 if (dist >= 2 && EnumFacing.getFacingFromVector((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
                     BlockPos pPos = tile.getPos();
                     EnumFacing facing = pedestal.getDirection();
-                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBox(pPos.offset(facing), pPos.offset(facing, FacingUtils.destanceInDirection(pPos, pos, facing) - 2)));
+                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBox(pPos.offset(facing), pPos.offset(facing, FacingUtils.destanceInDirection(pPos, pos, facing) - 1)));
 
                     boolean obstructed = false;
                     for (BlockPos bp : checkList) {
@@ -442,6 +451,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         allLocked = flag;
 
         if (!isCrafting.value){
+            LogHelper.dev("FusionCrafting: End Effects");
             for (int i = 0; i < 100 ; i++) {
                 BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerFusionCrafting.SubParticle(worldObj, new Vec3D(pos).add(0.5, 0.5, 0.5)));
             }

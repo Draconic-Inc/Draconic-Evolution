@@ -11,7 +11,6 @@ import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemDraconiumChest;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileDraconiumChest;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -62,8 +61,14 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
     }
 
     public static boolean isStackValid(ItemStack stack) {
-        if (stack == null || stack.getItem() == Item.getItemFromBlock(DEFeatures.draconiumChest)) {
+        if (stack != null && stack.getItem() == Item.getItemFromBlock(DEFeatures.draconiumChest)) {
             return false;
+        }
+        else if (stack != null) {
+            String name = stack.getUnlocalizedName().toLowerCase();
+            if (name.contains("pouch") || name.contains("bag") || name.contains("strongbox") || name.contains("shulker_box")) {
+                return false;
+            }
         }
         return true;
     }

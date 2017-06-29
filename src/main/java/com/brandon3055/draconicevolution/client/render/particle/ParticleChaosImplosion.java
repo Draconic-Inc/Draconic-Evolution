@@ -117,12 +117,14 @@ public class ParticleChaosImplosion extends BCParticle {
 
     @Override
     public void renderParticle(VertexBuffer vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        CCRenderState ccrs = CCRenderState.instance();
         if (isTracer) {
+            ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
+            vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
             super.renderParticle(vertexbuffer, entity, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+            ccrs.draw();
             return;
         }
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.draw();
 
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
@@ -165,9 +167,6 @@ public class ParticleChaosImplosion extends BCParticle {
         GlStateManager.enableTexture2D();
         GlStateManager.enableCull();
         GlStateManager.popMatrix();
-
-        vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-
     }
 
     public static class Factory implements IBCParticleFactory {

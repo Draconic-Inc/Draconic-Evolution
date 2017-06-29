@@ -5,6 +5,7 @@ import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.items.MobSoul;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -115,7 +116,13 @@ public class RenderItemMobSoul implements IItemRenderer, IPerspectiveAwareModel 
             GlStateManager.popMatrix();
         }
         catch (Throwable e) {
-            MobSoul.randomDisplayList.remove(EntityList.getEntityString(mob));
+            if (MobSoul.randomDisplayList != null) {
+                MobSoul.randomDisplayList.remove(EntityList.getEntityString(mob));
+            }
+            else {
+                LogHelper.error("Error rendering mob soul! " + mob);
+                e.printStackTrace();
+            }
         }
     }
 }
