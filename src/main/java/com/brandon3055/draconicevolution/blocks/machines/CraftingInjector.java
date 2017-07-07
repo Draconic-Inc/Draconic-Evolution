@@ -6,7 +6,6 @@ import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileCraftingInjector;
 import com.brandon3055.draconicevolution.lib.PropertyStringTemp;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -141,7 +140,6 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
 
     @Override
     public int damageDropped(IBlockState state) {
-        LogHelper.dev("DD");
         return getMetaFromState(state);
     }
 
