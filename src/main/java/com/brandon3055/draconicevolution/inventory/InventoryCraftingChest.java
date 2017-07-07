@@ -40,7 +40,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
     @Override
     public ItemStack getStackInSlot(int slot) {
         // the 9 slots + 1 output slot that's not accessible, we therefore have to add 1 to the slot accessed
-        return slot >= getSizeInventory() ? null : tile.getStackInCraftingSlot(slot + 1);
+        return slot >= getSizeInventory() ? ItemStack.EMPTY : tile.getStackInCraftingSlot(slot + 1);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
             return getStackInSlot(k);
         }
         else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
@@ -64,7 +64,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
 
     @Override
     public ItemStack removeStackFromSlot(int par1) {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     /**
@@ -80,7 +80,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
             if (stack.getCount() <= par2) {
                 itemstack = stack.copy();
                 stack = ItemStack.EMPTY;
-                tile.setInventoryCraftingSlotContents(slotID + 1, null);
+                tile.setInventoryCraftingSlotContents(slotID + 1, ItemStack.EMPTY);
                 eventHandler.onCraftMatrixChanged(this);
                 return itemstack;
             }

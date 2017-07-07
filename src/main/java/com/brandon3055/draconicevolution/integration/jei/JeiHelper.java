@@ -9,6 +9,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringUtils;
+import net.minecraftforge.fml.common.Optional;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ public class JeiHelper {//TODO This Is Now Borked
         return checkJEDRuntime();
     }
 
-//    @Optional.Method(modid = "JEI")
+    @Optional.Method(modid = "jei")
     public static boolean checkJEDRuntime() {
         return DEJEIPlugin.jeiRuntime != null;
     }
@@ -46,7 +47,7 @@ public class JeiHelper {//TODO This Is Now Borked
         return getRenderers(result);
     }
 
-//    @Optional.Method(modid = "JEI")
+    @Optional.Method(modid = "jei")
     private static List<IRecipeRenderer> getRenderers(ItemStack result) {
         List<IRecipeRenderer> renderers = new ArrayList<>();
 

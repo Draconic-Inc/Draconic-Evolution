@@ -90,11 +90,11 @@ public class ContainerRecipeBuilder extends Container {
 
             if (index >= 36) {
                 if (!mergeItemStack(stack, 0, 36, false)) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if (TileEntityFurnace.getItemBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + inventoryCache.getSizeInventory(), false)) {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             if (stack.getCount() == 0) {
@@ -109,7 +109,7 @@ public class ContainerRecipeBuilder extends Container {
             return result;
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override

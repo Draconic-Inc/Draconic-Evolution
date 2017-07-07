@@ -40,17 +40,17 @@ public class ContainerDissEnchanter extends ContainerBCBase<TileDissEnchanter> {
 
             if (i >= 36) {
                 if (!mergeItemStack(stack, 0, 36, false)) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else {
                 if (stack.getItem() == Items.BOOK) {
                     if (!mergeItemStack(stack, 36, 36 + 2, false)) {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
                 }
                 else if (!tile.isItemValidForSlot(0, stack) || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
 
@@ -66,6 +66,6 @@ public class ContainerDissEnchanter extends ContainerBCBase<TileDissEnchanter> {
             return result;
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 }

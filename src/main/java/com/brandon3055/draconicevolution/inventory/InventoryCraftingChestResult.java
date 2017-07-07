@@ -55,12 +55,11 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
     public ItemStack decrStackSize(int par1, int par2) {
         ItemStack stack = tile.getStackInCraftingSlot(0);
         if (!stack.isEmpty()) {
-            ItemStack itemstack = stack;
-            tile.setInventoryCraftingSlotContents(0, null);
-            return itemstack;
+            tile.setInventoryCraftingSlotContents(0, ItemStack.EMPTY);
+            return stack;
         }
         else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
@@ -71,7 +70,7 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
      */
     @Override
     public ItemStack removeStackFromSlot(int par1) {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     /**

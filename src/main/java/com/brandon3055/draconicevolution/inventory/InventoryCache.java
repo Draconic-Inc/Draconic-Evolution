@@ -45,12 +45,12 @@ public class InventoryCache implements IInventory {
 
         if (!itemstack.isEmpty()) {
             if (itemstack.getCount() <= count) {
-                setInventorySlotContents(index, null);
+                setInventorySlotContents(index, ItemStack.EMPTY);
             }
             else {
                 itemstack = itemstack.splitStack(count);
                 if (itemstack.getCount() == 0) {
-                    setInventorySlotContents(index, null);
+                    setInventorySlotContents(index, ItemStack.EMPTY);
                 }
             }
         }
@@ -63,7 +63,7 @@ public class InventoryCache implements IInventory {
         ItemStack item = getStackInSlot(index);
 
         if (!item.isEmpty()) {
-            setInventorySlotContents(index, null);
+            setInventorySlotContents(index, ItemStack.EMPTY);
         }
 
         return item;
@@ -130,7 +130,7 @@ public class InventoryCache implements IInventory {
     @Override
     public void clear() {
         for (int i = 0; i < inventoryStacks.length; i++) {
-            inventoryStacks[i] = null;
+            inventoryStacks[i] = ItemStack.EMPTY;
         }
     }
 

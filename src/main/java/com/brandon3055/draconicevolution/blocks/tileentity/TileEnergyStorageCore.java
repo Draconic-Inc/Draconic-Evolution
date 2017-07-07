@@ -75,7 +75,6 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
 
     @Override
     public void update() {
-        super.update();
         if (!world.isRemote) {
             flowArray[ticksElapsed % 20] = (energy.value - energy.lastTickValue);
             long total = 0;
@@ -87,6 +86,8 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
         else {
             rotation++;
         }
+
+        super.update();
 
         if (ticksElapsed % 20 == 0 && !world.isRemote && transferRate.detectChanges()) {
             dataManager.forceSync(transferRate);

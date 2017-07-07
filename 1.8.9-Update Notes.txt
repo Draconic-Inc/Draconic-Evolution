@@ -1,4 +1,0 @@
-#Draconium Ore
- -Normal drops 4-6 Dust or 4-14 with fortune 3
- -Nether drops 3-5 Dust or 3-13 with fortune 3
- -Ender  drops 2-4 Dust or 2-12 with fortune 3

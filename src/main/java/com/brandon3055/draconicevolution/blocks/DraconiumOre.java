@@ -34,7 +34,7 @@ public class DraconiumOre extends BlockBCore {
         this.setDefaultState(blockState.getBaseState().withProperty(ORE_TYPE, EnumType.NORMAL));
         this.addName(0, "draconium_ore_normal");
         this.addName(1, "draconium_ore_nether");
-        this.addName(1, "draconium_ore_end");
+        this.addName(2, "draconium_ore_end");
     }
 
     @Override
@@ -108,14 +108,14 @@ public class DraconiumOre extends BlockBCore {
         }
     }
 
-    public static enum EnumType implements IStringSerializable {
+    public enum EnumType implements IStringSerializable {
         NORMAL(0, "normal"), NETHER(1, "nether"), END(2, "end");
 
         private static final EnumType[] META_LOOKUP = new EnumType[values().length];
         private final int meta;
         private final String name;
 
-        private EnumType(int meta, String name) {
+        EnumType(int meta, String name) {
             this.meta = meta;
             this.name = name;
         }

@@ -68,7 +68,7 @@ public class GuiEnergyCore extends GuiContainer {
             GuiHelper.drawCenteredString(fontRendererObj, Utils.formatNumber(tile.getExtendedStorage()) + "RF [" + energyValue.format(percent) + "%]", guiLeft + xSize / 2, guiTop + 49, 0x555555, false);
 
             int coreColour = tile.transferRate.value > 0 ? 0x00FF00 : tile.transferRate.value < 0 ? 0xFF0000 : 0x222222;
-            String transfer = (tile.transferRate.value > 0 ? "+" : "") + Utils.formatNumber(tile.transferRate.value) + " RF/t";
+            String transfer = (tile.transferRate.value > 0 ? "+" : "-") + Utils.formatNumber(Math.abs(tile.transferRate.value)) + " RF/t";
             GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.de.transfer.txt"), guiLeft + xSize / 2, guiTop + 59, 0xFFAA00, true);
             GuiHelper.drawCenteredString(fontRendererObj, transfer, guiLeft + xSize / 2, guiTop + 70, coreColour, tile.transferRate.value > 0);
 

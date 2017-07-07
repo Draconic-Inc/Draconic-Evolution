@@ -33,11 +33,11 @@ public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
 
             if (i >= 36) {
                 if (!mergeItemStack(stack, 0, 36, false)) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if (!mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             if (stack.getCount() == 0) {
@@ -52,6 +52,6 @@ public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
             return result;
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 }

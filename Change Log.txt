@@ -1,4 +1,9 @@
-######## 2.2.0.x (1.11.2 Initial Port) ########
+######## 2.2.1.x ########
+-Fixed mob soul crash
+-Fixed issue with some blocks dropping incorrect items.
+-Fixed energy core transfer per tick display.
+
+######## 2.2.0.244 (1.11.2 Initial Port) ########
 -Ported Draconic Evolution directly from 1.10.2 to 1.11.2. At this point the 1.10 and 1.11 versions are feature identical.
 -Added support for in-game mod configuration. (I am referring to the actual mod config not tool config)
 -Added automatic config synchronization between client and server.

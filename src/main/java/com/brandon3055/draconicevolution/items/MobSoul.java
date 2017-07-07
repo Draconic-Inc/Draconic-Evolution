@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items;
 
 import codechicken.lib.model.ModelRegistryHelper;
 import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.brandonscore.lib.FakeWorld;
 import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
@@ -92,13 +91,18 @@ public class MobSoul extends ItemBCore implements IRenderOverride {
         entityNameCache.clear();
 
         String localizedName = entityNameCache.computeIfAbsent(eString + eModifier, s -> {
-            Entity entity = EntityList.createEntityByIDFromName(getCachedRegName(eString), FakeWorld.instance);
-            if (entity == null) {
-                entity = new EntityPig(FakeWorld.instance);
-            }
+            try {
+                Entity entity = EntityList.createEntityByIDFromName(getCachedRegName(eString), null);
+                if (entity == null) {
+                    entity = new EntityPig(null);
+                }
 
-            loadAdditionalEntityInfo(stack, entity);
-            return entity.getName();
+                loadAdditionalEntityInfo(stack, entity);
+                return entity.getName();
+            }
+            catch (Throwable e) {
+                return "Name-Error";
+            }
         });
 
 
