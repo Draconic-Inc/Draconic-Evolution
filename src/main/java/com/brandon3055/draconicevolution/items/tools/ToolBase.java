@@ -104,6 +104,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     @Override
     public abstract int getMaxUpgradeLevel(ItemStack stack, String upgrade);
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         holdCTRLForUpgrades(tooltip, stack);

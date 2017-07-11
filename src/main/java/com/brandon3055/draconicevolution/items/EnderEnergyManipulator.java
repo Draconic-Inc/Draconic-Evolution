@@ -75,6 +75,7 @@ public class EnderEnergyManipulator extends ItemBCore implements IRenderOverride
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         tooltip.add(I18n.format("info.de.ender_energy_manipulator.info.txt"));

@@ -145,6 +145,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
         return 2;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         ToolBase.holdCTRLForUpgrades(tooltip, stack);

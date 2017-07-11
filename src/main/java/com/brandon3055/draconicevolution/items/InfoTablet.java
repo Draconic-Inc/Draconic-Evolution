@@ -33,6 +33,7 @@ public class InfoTablet extends ItemBCore {
         Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, world, tooltip, advanced);

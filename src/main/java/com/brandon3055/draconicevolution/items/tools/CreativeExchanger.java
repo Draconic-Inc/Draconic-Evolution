@@ -24,6 +24,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
         return true;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         tooltip.add(TextFormatting.BLUE + "Use tool config gui to configure. " + TextFormatting.GOLD + "Key: \"" + KeyBindings.toolConfig.getDisplayName() + "\"");

@@ -151,6 +151,7 @@ public class Magnet extends ItemBCore {
 //        return stack;
 //    }
 
+    @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
     public void addInformation(ItemStack stack, World p_77624_2_, List list, ITooltipFlag p_77624_4_) {
