@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.lib;
 
-import cofh.api.energy.IEnergyContainerItem;
+import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.SimpleFusionRecipe;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;

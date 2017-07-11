@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
-import cofh.api.energy.IEnergyReceiver;
+import cofh.redstoneflux.api.IEnergyReceiver;
 import net.minecraft.util.EnumFacing;
 
 /**

@@ -1,17 +1,13 @@
 buildscript {
     repositories {
         jcenter()
-        //maven {
-        //    name = "covers1624"
-        //    url = "http://maven.covers1624.net/"
-        //}
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -19,14 +15,10 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 repositories {
-//    maven {
-//        name 'Covers1624 maven'
-//        url "http://adel.podgeweb.com:1616/maven/"
-//    }
-//    maven {
-//        name 'Covers1624 maven'
-//        url "http://172.17.5.4:1616/maven/"
-//    }
+	maven {
+        name = "CoFH Maven"
+        url = "http://maven.covers1624.net"
+    }
     maven {
         name 'CB Maven'
         url "http://chickenbones.net/maven/"
@@ -80,6 +72,7 @@ dependencies {
     compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
     compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
     compile "mezz.jei:jei_${config.mc_version}:${config.jei_version}"
+	compile "cofh:RedstoneFlux:${config.mc_version}-${config.rf_version}:deobf"
 
     //deobfCompile "mezz.jei:jei_${config.mc_version}:${config.jei_version}:api"
     //runtime "mezz.jei:jei_${config.mc_version}:${config.jei_version}"

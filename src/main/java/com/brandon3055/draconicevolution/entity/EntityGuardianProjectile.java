@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.entity;
 
-import cofh.api.energy.IEnergyContainerItem;
+import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.utils.FilterUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;

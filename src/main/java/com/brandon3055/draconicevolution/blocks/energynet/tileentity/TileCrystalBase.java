@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.packet.PacketCustom;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
+import cofh.redstoneflux.api.IEnergyHandler;
+import cofh.redstoneflux.impl.EnergyStorage;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.*;
 import com.brandon3055.brandonscore.utils.Utils;

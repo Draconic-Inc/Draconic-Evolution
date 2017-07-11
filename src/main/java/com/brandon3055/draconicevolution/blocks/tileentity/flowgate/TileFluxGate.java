@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
-import cofh.api.energy.IEnergyReceiver;
+import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.lib.EnergyHandlerWrapper;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
 import net.minecraft.tileentity.TileEntity;

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items;
 
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import cofh.api.energy.IEnergyContainerItem;
+import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IJEIClearence;

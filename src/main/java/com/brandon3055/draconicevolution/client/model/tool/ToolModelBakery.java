@@ -6,6 +6,7 @@ import codechicken.lib.model.PerspectiveAwareModelProperties;
 import codechicken.lib.model.bakedmodels.PerspectiveAwareBakedModel;
 import codechicken.lib.model.bakery.key.IItemStackKeyGenerator;
 import codechicken.lib.texture.TextureUtils;
+import codechicken.lib.util.ResourceUtils;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Preconditions;
@@ -75,6 +76,6 @@ public class ToolModelBakery {
     }
 
     public static void initialize() {
-        TextureUtils.registerReloadListener(resourceManager -> modelCache.clear());
+        ResourceUtils.registerReloadListener(resourceManager -> modelCache.clear());
     }
 }

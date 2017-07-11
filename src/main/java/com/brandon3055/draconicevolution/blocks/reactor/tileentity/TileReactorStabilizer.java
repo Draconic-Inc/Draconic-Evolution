@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
-import cofh.api.energy.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyProvider;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
