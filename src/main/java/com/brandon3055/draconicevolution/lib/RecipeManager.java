@@ -59,30 +59,14 @@ public class RecipeManager {
         if (DEConfig.expensiveDragonRitual) {
             List<IRecipe> replacements = new LinkedList<>();
             event.getRegistry().getEntries().forEach(entry -> {
-                if (entry.getValue().getRecipeOutput().getItem() == Items.NETHER_STAR) {
-                    NonNullList<Ingredient> ingreds = buildInput(new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR);
-                    ShapedRecipes recipe = new ShapedRecipes(entry.getValue().getGroup(), 3, 3, ingreds, new ItemStack(Items.NETHER_STAR));
+                if (entry.getValue().getRecipeOutput().getItem() == Items.END_CRYSTAL) {
+                    ShapedOreRecipe recipe = new ShapedOreRecipe(new ResourceLocation(entry.getValue().getGroup()), new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR);
+                    recipe.setRegistryName(entry.getValue().getRegistryName());
                     replacements.add(recipe);
                 }
             });
 
             replacements.forEach(GameData::register_impl);
-//
-//            boolean removed = false;
-//            Iterator<IRecipe> i = CraftingManager.REGISTRY.iterator();
-//            while (i.hasNext()) {
-//                IRecipe recipe = i.next();
-//                if (!recipe.getRecipeOutput().isEmpty() && recipe.getRecipeOutput().getItem() == Items.END_CRYSTAL) {
-//                    i.remove();
-//                    removed = true;
-//                }
-//            }
-
-
-
-//            if (removed) {
-////                CraftingManager.REGISTRY.register("draconicevolution:hard_crystal_recipe", new ResourceLocation("draconicevolution:hard_crystal_recipe"), new ShapedOreRecipe(null, new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR));
-//            }
         }
     }
 

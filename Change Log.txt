@@ -1,7 +1,5 @@
-######## 2.2.2.x ########
--Fixed energy core stabilizer name.
--Fixed Open Computers integration
--Fixed achivements.
+######## 2.3.0.252 ########
+-FInitial 1.12 release
 
 ######## 2.2.1.248 ########
 -Fixed mob soul crash

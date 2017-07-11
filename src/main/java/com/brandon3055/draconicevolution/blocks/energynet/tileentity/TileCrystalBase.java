@@ -53,7 +53,7 @@ import static com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.ID_
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceListener, ICrystalLink, IEnergyHandler, ITickable, IActivatableTile {
+public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceListener, ICrystalLink, ITickable, IActivatableTile, IEnergyHandler {
 
     //region Stats
 
