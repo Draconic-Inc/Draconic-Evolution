@@ -1,4 +1,9 @@
-######## 2.2.1.x ########
+######## 2.2.2.x ########
+-Fixed energy core stabilizer name.
+-Fixed Open Computers integration
+-Fixed achivements.
+
+######## 2.2.1.248 ########
 -Fixed mob soul crash
 -Fixed issue with some blocks dropping incorrect items.
 -Fixed energy core transfer per tick display.

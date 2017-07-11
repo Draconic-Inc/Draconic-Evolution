@@ -42,7 +42,7 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "normal"));
         this.addName(0, "particle_generator");
-        this.addName(1, "energy_core_stabilizer");
+        this.addName(2, "energy_core_stabilizer");
     }
 
     //region BlockState

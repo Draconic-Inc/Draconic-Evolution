@@ -64,10 +64,10 @@ public class ModHelper {
             return false;
         }
         else if (bedrockSword == null) {
-            bedrockSword = Item.REGISTRY.getObject(new ResourceLocation("RotaryCraft", "rotarycraft_item_bedsword"));
+            bedrockSword = Item.REGISTRY.getObject(new ResourceLocation("rotarycraft", "rotarycraft_item_bedsword"));
         }
 
-        return bedrockSword != null && player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem().equals(bedrockSword);
+        return bedrockSword != null && !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem().equals(bedrockSword);
     }
 
     public static boolean canRemoveEnchants(ItemStack stack) {

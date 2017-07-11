@@ -18,20 +18,20 @@ import net.minecraftforge.fml.common.Optional;
 public class CCOCIntegration {
 
     public static void init() {
-        if (Loader.isModLoaded("ComputerCraft")) {
+        if (Loader.isModLoaded("computercraft")) {
             initCC();
         }
-        if (Loader.isModLoaded("OpenComputers")) {
+        if (Loader.isModLoaded("opencomputers")) {
             initOC();
         }
     }
 
-    @Optional.Method(modid = "ComputerCraft")
+    @Optional.Method(modid = "computercraft")
     public static void initCC() {
         //ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
     }
 
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public static void initOC() {
         Driver.add(new OCAdapter());
         Driver.add(new OCExtendedRFAdapter());

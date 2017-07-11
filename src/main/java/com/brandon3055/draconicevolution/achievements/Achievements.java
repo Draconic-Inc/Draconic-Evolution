@@ -57,45 +57,45 @@ public class Achievements {
         int x = 5;
         addAchievement("draconicevolution.dust", new Achievement("draconicevolution.dust", "draconicevolution.dust", -10 + x, 0, DEFeatures.draconiumDust, null).initIndependentStat().setSpecial(), "pickup");
         addAchievement("draconicevolution.ingot", new Achievement("draconicevolution.ingot", "draconicevolution.ingot", -8 + x, 0, DEFeatures.draconiumIngot, getAchievement("draconicevolution.dust")), "smelt");
-        addAchievement("draconicevolution.core", new Achievement("draconicevolution.core", "draconicevolution.core", -6 + x, 0, DEFeatures.draconicCore, getAchievement("draconicevolution.ingot")), "craft");
-        addAchievement("draconicevolution.core2", new Achievement("draconicevolution.core2", "draconicevolution.core2", -4 + x, 0, DEFeatures.wyvernCore, getAchievement("draconicevolution.core")).setSpecial(), "craft");
+        addAchievement("draconicevolution.core", new Achievement("draconicevolution.core", "draconicevolution.core", -6 + x, 0, DEFeatures.draconicCore, getAchievement("draconicevolution.ingot")), "craftpickup");
+        addAchievement("draconicevolution.core2", new Achievement("draconicevolution.core2", "draconicevolution.core2", -4 + x, 0, DEFeatures.wyvernCore, getAchievement("draconicevolution.core")).setSpecial(), "craftpickup");
 
         addAchievement("draconicevolution.dislocator", new Achievement("draconicevolution.dislocator", "draconicevolution.dislocator", -8 + x, 1, DEFeatures.dislocator, getAchievement("draconicevolution.dust")), "craft");
 //		addAchievement("draconicevolution.chest", new Achievement("draconicevolution.chest", "draconicevolution.chest", -5+x, 2, DEFeatures.draconiumChest, getAchievement("draconicevolution.core")), "craft");
         addAchievement("draconicevolution.particles", new Achievement("draconicevolution.particles", "draconicevolution.particles", -7 + x, 2, DEFeatures.particleGenerator, getAchievement("draconicevolution.core")), "craft");
         addAchievement("draconicevolution.weather", new Achievement("draconicevolution.weather", "draconicevolution.weather", -5 + x, -2, DEFeatures.celestialManipulator, getAchievement("draconicevolution.core")), "craft");
         addAchievement("draconicevolution.dissenchanter", new Achievement("draconicevolution.dissenchanter", "draconicevolution.dissenchanter", -7 + x, -2, DEFeatures.dissEnchanter, getAchievement("draconicevolution.core")), "craft");
-        addAchievement("draconicevolution.ecore", new Achievement("draconicevolution.ecore", "draconicevolution.ecore", -4 + x, -6, DEFeatures.energyStorageCore, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.wpick", new Achievement("draconicevolution.wpick", "draconicevolution.wpick", -2 + x, 1, DEFeatures.wyvernPick, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.wshovel", new Achievement("draconicevolution.wshovel", "draconicevolution.wshovel", -2 + x, -1, DEFeatures.wyvernShovel, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.wsword", new Achievement("draconicevolution.wsword", "draconicevolution.wsword", -2 + x, 2, DEFeatures.wyvernSword, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.wbow", new Achievement("draconicevolution.wbow", "draconicevolution.wbow", -2 + x, -2, DEFeatures.wyvernBow, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.whelm", new Achievement("draconicevolution.whelm", "draconicevolution.whelm", -2 + x, -4, DEFeatures.wyvernHelm, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.wchest", new Achievement("draconicevolution.wchest", "draconicevolution.wchest", -2 + x, -3, DEFeatures.wyvernChest, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.wleggs", new Achievement("draconicevolution.wleggs", "draconicevolution.wleggs", -2 + x, 3, DEFeatures.wyvernLegs, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.wboots", new Achievement("draconicevolution.wboots", "draconicevolution.wboots", -2 + x, 4, DEFeatures.wyvernBoots, getAchievement("draconicevolution.core2")), "craft");
+        addAchievement("draconicevolution.ecore", new Achievement("draconicevolution.ecore", "draconicevolution.ecore", -4 + x, -6, DEFeatures.energyStorageCore, getAchievement("draconicevolution.core2")), "craftpickup");
+        addAchievement("draconicevolution.wpick", new Achievement("draconicevolution.wpick", "draconicevolution.wpick", -2 + x, 1, DEFeatures.wyvernPick, getAchievement("draconicevolution.core2")), "craftpickup");
+        addAchievement("draconicevolution.wshovel", new Achievement("draconicevolution.wshovel", "draconicevolution.wshovel", -2 + x, -1, DEFeatures.wyvernShovel, getAchievement("draconicevolution.core2")), "craftpickup");
+        addAchievement("draconicevolution.wsword", new Achievement("draconicevolution.wsword", "draconicevolution.wsword", -2 + x, 2, DEFeatures.wyvernSword, getAchievement("draconicevolution.core2")), "craftpickup");
+        addAchievement("draconicevolution.wbow", new Achievement("draconicevolution.wbow", "draconicevolution.wbow", -2 + x, -2, DEFeatures.wyvernBow, getAchievement("draconicevolution.core2")), "craftpickup");
+        addAchievement("draconicevolution.whelm", new Achievement("draconicevolution.whelm", "draconicevolution.whelm", -2 + x, -4, DEFeatures.wyvernHelm, getAchievement("draconicevolution.core2")), "craftpickup");
+        addAchievement("draconicevolution.wchest", new Achievement("draconicevolution.wchest", "draconicevolution.wchest", -2 + x, -3, DEFeatures.wyvernChest, getAchievement("draconicevolution.core2")), "craftpickup");
+        addAchievement("draconicevolution.wleggs", new Achievement("draconicevolution.wleggs", "draconicevolution.wleggs", -2 + x, 3, DEFeatures.wyvernLegs, getAchievement("draconicevolution.core2")), "craftpickup");
+        addAchievement("draconicevolution.wboots", new Achievement("draconicevolution.wboots", "draconicevolution.wboots", -2 + x, 4, DEFeatures.wyvernBoots, getAchievement("draconicevolution.core2")), "craftpickup");
 //		addAchievement("draconicevolution.resurrection", new Achievement("draconicevolution.resurrection", "draconicevolution.resurrection", -4+x, 6, DEFeatures.resurrectionStone, getAchievement("draconicevolution.core2")), "craft");
         addAchievement("draconicevolution.dislocator2", new Achievement("draconicevolution.dislocator2", "draconicevolution.dislocator2", -2 + x, -5, DEFeatures.dislocatorAdvanced, getAchievement("draconicevolution.core2")), "craft");
-        addAchievement("draconicevolution.flux", new Achievement("draconicevolution.flux", "draconicevolution.flux", -2 + x, 5, DEFeatures.wyvernCapacitor, getAchievement("draconicevolution.core2")), "craft");
+        addAchievement("draconicevolution.flux", new Achievement("draconicevolution.flux", "draconicevolution.flux", -2 + x, 5, DEFeatures.wyvernCapacitor, getAchievement("draconicevolution.core2")), "craftpickup");
 
         addAchievement("draconicevolution.heart", new Achievement("draconicevolution.heart", "draconicevolution.heart", 0 + x, 0, DEFeatures.dragonHeart, getAchievement("draconicevolution.core2")).setSpecial(), "pickup");
-        addAchievement("draconicevolution.awakenedblock", new Achievement("draconicevolution.awakenedblock", "draconicevolution.awakenedblock", 2 + x, 0, DEFeatures.draconicBlock, getAchievement("draconicevolution.heart")), "pickup");
-        addAchievement("draconicevolution.core3", new Achievement("draconicevolution.core3", "draconicevolution.core3", 4 + x, 0, DEFeatures.awakenedCore, getAchievement("draconicevolution.awakenedblock")).setSpecial(), "craft");
+        addAchievement("draconicevolution.awakenedblock", new Achievement("draconicevolution.awakenedblock", "draconicevolution.awakenedblock", 2 + x, 0, DEFeatures.draconicBlock, getAchievement("draconicevolution.heart")), "craftpickup");
+        addAchievement("draconicevolution.core3", new Achievement("draconicevolution.core3", "draconicevolution.core3", 4 + x, 0, DEFeatures.awakenedCore, getAchievement("draconicevolution.awakenedblock")).setSpecial(), "craftpickup");
 
-        addAchievement("draconicevolution.dhelm", new Achievement("draconicevolution.dhelm", "draconicevolution.dhelm", 2 + x, -3, DEFeatures.draconicHelm, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.dChest", new Achievement("draconicevolution.dChest", "draconicevolution.dChest", 2 + x, -2, DEFeatures.draconicChest, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.dleggs", new Achievement("draconicevolution.dleggs", "draconicevolution.dleggs", 2 + x, 2, DEFeatures.draconicLegs, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.dboots", new Achievement("draconicevolution.dboots", "draconicevolution.dboots", 2 + x, 3, DEFeatures.draconicBoots, getAchievement("draconicevolution.core3")), "craft");
+        addAchievement("draconicevolution.dhelm", new Achievement("draconicevolution.dhelm", "draconicevolution.dhelm", 2 + x, -3, DEFeatures.draconicHelm, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.dChest", new Achievement("draconicevolution.dChest", "draconicevolution.dChest", 2 + x, -2, DEFeatures.draconicChest, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.dleggs", new Achievement("draconicevolution.dleggs", "draconicevolution.dleggs", 2 + x, 2, DEFeatures.draconicLegs, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.dboots", new Achievement("draconicevolution.dboots", "draconicevolution.dboots", 2 + x, 3, DEFeatures.draconicBoots, getAchievement("draconicevolution.core3")), "craftpickup");
 
-        addAchievement("draconicevolution.dpick", new Achievement("draconicevolution.dpick", "draconicevolution.dpick", 6 + x, 0, DEFeatures.draconicPick, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.dshovel", new Achievement("draconicevolution.dshovel", "draconicevolution.dshovel", 6 + x, -1, DEFeatures.draconicShovel, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.daxe", new Achievement("draconicevolution.daxe", "draconicevolution.daxe", 6 + x, 1, DEFeatures.draconicAxe, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.dsword", new Achievement("draconicevolution.dsword", "draconicevolution.dsword", 6 + x, -2, DEFeatures.draconicSword, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.dbow", new Achievement("draconicevolution.dbow", "draconicevolution.dbow", 6 + x, 2, DEFeatures.draconicBow, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.flux2", new Achievement("draconicevolution.flux2", "draconicevolution.flux2", 6 + x, -3, DEFeatures.draconicCapacitor, getAchievement("draconicevolution.core3")), "craft");
-        addAchievement("draconicevolution.dhoe", new Achievement("draconicevolution.dhoe", "draconicevolution.dhoe", 6 + x, 3, DEFeatures.draconicHoe, getAchievement("draconicevolution.core3")), "craft");
+        addAchievement("draconicevolution.dpick", new Achievement("draconicevolution.dpick", "draconicevolution.dpick", 6 + x, 0, DEFeatures.draconicPick, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.dshovel", new Achievement("draconicevolution.dshovel", "draconicevolution.dshovel", 6 + x, -1, DEFeatures.draconicShovel, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.daxe", new Achievement("draconicevolution.daxe", "draconicevolution.daxe", 6 + x, 1, DEFeatures.draconicAxe, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.dsword", new Achievement("draconicevolution.dsword", "draconicevolution.dsword", 6 + x, -2, DEFeatures.draconicSword, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.dbow", new Achievement("draconicevolution.dbow", "draconicevolution.dbow", 6 + x, 2, DEFeatures.draconicBow, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.flux2", new Achievement("draconicevolution.flux2", "draconicevolution.flux2", 6 + x, -3, DEFeatures.draconicCapacitor, getAchievement("draconicevolution.core3")), "craftpickup");
+        addAchievement("draconicevolution.dhoe", new Achievement("draconicevolution.dhoe", "draconicevolution.dhoe", 6 + x, 3, DEFeatures.draconicHoe, getAchievement("draconicevolution.core3")), "craftpickup");
 
-        addAchievement("draconicevolution.dstaff", new Achievement("draconicevolution.dstaff", "draconicevolution.dstaff", 8 + x, 0, DEFeatures.draconicStaffOfPower, getAchievement("draconicevolution.dpick")).setSpecial(), "craft");
+        addAchievement("draconicevolution.dstaff", new Achievement("draconicevolution.dstaff", "draconicevolution.dstaff", 8 + x, 0, DEFeatures.draconicStaffOfPower, getAchievement("draconicevolution.dpick")).setSpecial(), "craftpickup");
 
         ItemStack mobSoul = new ItemStack(DEFeatures.mobSoul);
         ItemNBTHelper.setString(mobSoul, "Name", "[Random-Display]");
@@ -149,7 +149,7 @@ public class Achievements {
         }
 
         public boolean isCorrectCondition(String s) {
-            return s.equals(condition);
+            return s.contains(condition);
         }
 
         public String getName() {

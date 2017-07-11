@@ -80,7 +80,7 @@ public class ContributorHandler {
                 for (String name : FMLCommonHandler.instance().getMinecraftServerInstance().getOnlinePlayerNames()) {
                     if (name.equals(contribName)) {
                         ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(contribName);
-                        DraconicEvolution.network.sendTo(new PacketContributor(contribName, contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled), (EntityPlayerMP) event.player);
+                        DraconicEvolution.network.sendTo(new PacketContributor(contribName, contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled, contributor.lolnetBadgeEnabled), (EntityPlayerMP) event.player);
                     }
                 }
             }
@@ -110,12 +110,24 @@ public class ContributorHandler {
                 while (reader.hasNext()) {
                     String name = reader.nextName();
 
-                    if (name.equals("name")) contributor.name = reader.nextString();
-                    else if (name.equals("ign")) contributor.ign = reader.nextString();
-                    else if (name.equals("contribution")) contributor.contribution = reader.nextString();
-                    else if (name.equals("details")) contributor.details = reader.nextString();
-                    else if (name.equals("website")) contributor.website = reader.nextString();
-                    else if (name.equals("contributionLevel")) contributor.contributionLevel = reader.nextInt();
+                    if (name.equals("name")) {
+                        contributor.name = reader.nextString();
+                    }
+                    else if (name.equals("ign")) {
+                        contributor.ign = reader.nextString();
+                    }
+                    else if (name.equals("contribution")) {
+                        contributor.setContribution(reader.nextString());
+                    }
+                    else if (name.equals("details")) {
+                        contributor.setDetails(reader.nextString());
+                    }
+                    else if (name.equals("website")) {
+                        contributor.website = reader.nextString();
+                    }
+                    else if (name.equals("contributionLevel")) {
+                        contributor.setContributionLevel(reader.nextInt());
+                    }
                 }
 
                 contributors.put(contributor.ign, contributor);
@@ -192,10 +204,12 @@ public class ContributorHandler {
                 reader.beginArray();
                 boolean wings = reader.nextBoolean();
                 boolean badge = reader.nextBoolean();
+                boolean lbadge = reader.nextBoolean();
 
                 if (contributors.containsKey(name)) {
                     contributors.get(name).contributorWingsEnabled = wings;
                     contributors.get(name).patreonBadgeEnabled = badge;
+                    contributors.get(name).lolnetBadgeEnabled = lbadge;
                 }
 
                 reader.endArray();
@@ -223,6 +237,7 @@ public class ContributorHandler {
                 writer.beginArray();
                 writer.value(contributors.get(name).contributorWingsEnabled);
                 writer.value(contributors.get(name).patreonBadgeEnabled);
+                writer.value(contributors.get(name).lolnetBadgeEnabled);
                 writer.endArray();
             }
 
@@ -237,17 +252,24 @@ public class ContributorHandler {
     public static class Contributor {
         public String name;
         public String ign;
-        public String contribution;
-        public String details;
+        public String contribution = "";
+        public String details = "";
         public String website;
-        public int contributionLevel;
-        /**
-         * 0=Disabled, 1=Enabled when flying, 2=Always Enabled
-         */
+        private int contributionLevel;
         public boolean contributorWingsEnabled = true;
         public boolean patreonBadgeEnabled = true;
         private boolean validated = false;
         private boolean isValid;
+
+        public boolean hasWings = false;
+        public boolean isPatreonSupporter = false;
+
+        /**
+         * As a big supporter of the lolnet.co.nz Minecraft Community i have offered to support
+         * their upcoming donation drive but offering lolnet badges and temporary contributor wings to everyone who donates.
+         */
+        public boolean lolnetBadgeEnabled = true;
+        public boolean isLolnetContributor = false;
 
         public Contributor() {
         }
@@ -261,6 +283,31 @@ public class ContributorHandler {
                 validated = true;
             }
             return isValid;
+        }
+
+        public void setContribution(String contribution) {
+            this.contribution = contribution;
+
+            if (contribution.toLowerCase().contains("lolnet")) {
+                isLolnetContributor = true;
+            }
+            if (contribution.toLowerCase().contains("patreon")) {
+                isPatreonSupporter = true;
+            }
+        }
+
+        public void setDetails(String details) {
+            this.details = details;
+            if (details.toLowerCase().contains("lolnet")) {
+                isLolnetContributor = true;
+            }
+        }
+
+        public void setContributionLevel(int contributionLevel) {
+            this.contributionLevel = contributionLevel;
+            if (contributionLevel >= 1) {
+                hasWings = true;
+            }
         }
 
         @Override
