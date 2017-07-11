@@ -15,7 +15,7 @@ public class RenderTileEntityDetector extends TESRBase<TileEntityDetector> {
     }
 
     @Override
-    public void renderTileEntityAt(TileEntityDetector te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileEntityDetector te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 0.5, y + 0.73, z + 0.5);
         double scale = te.isAdvanced() ? 0.5 : 0.35;

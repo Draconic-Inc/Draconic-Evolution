@@ -82,7 +82,7 @@ public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter
 
                 String s = e.getTranslatedName(lvl);
 
-                int w = fontRendererObj.getStringWidth(s) + 4 + 20;
+                int w = fontRenderer.getStringWidth(s) + 4 + 20;
                 if (width < w) {
                     width = w;
                 }
@@ -105,9 +105,9 @@ public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter
 
                 MGuiLabel label = new MGuiLabel(this, 0, 0, width, 12, xp).setAlignment(EnumAlignment.RIGHT);
                 label.linkedObject = id;
-                label.addChild(new MGuiButtonSolid(this, "PICK", 0, 0, fontRendererObj.getStringWidth(s) + 4 + 15, 12, s).setColours(0xFF707070, 0xFF707070, 0xFF707070).setAlignment(EnumAlignment.LEFT));
+                label.addChild(new MGuiButtonSolid(this, "PICK", 0, 0, fontRenderer.getStringWidth(s) + 4 + 15, 12, s).setColours(0xFF707070, 0xFF707070, 0xFF707070).setAlignment(EnumAlignment.LEFT));
 
-                MGuiButtonSolid option = (MGuiButtonSolid) new MGuiButtonSolid(this, "PICK", 0, 0, fontRendererObj.getStringWidth(s) + 4 + 15, 12, s).setColours(0xFF707070, 0xFF707070, 0xFF707070).setAlignment(EnumAlignment.LEFT);
+                MGuiButtonSolid option = (MGuiButtonSolid) new MGuiButtonSolid(this, "PICK", 0, 0, fontRenderer.getStringWidth(s) + 4 + 15, 12, s).setColours(0xFF707070, 0xFF707070, 0xFF707070).setAlignment(EnumAlignment.LEFT);
                 option.addChild(new MGuiLabel(this, 0, 0, option.xSize, option.ySize, "Test").setAlignment(EnumAlignment.RIGHT));
                 selector.ySize += label.ySize;
                 optionList.add(label);

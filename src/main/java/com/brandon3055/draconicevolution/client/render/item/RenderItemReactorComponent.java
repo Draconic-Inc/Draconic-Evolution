@@ -9,15 +9,10 @@ import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCom
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.IModelState;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.vecmath.Matrix4f;
 
 /**
  * Created by brandon3055 on 21/11/2016.

@@ -43,7 +43,7 @@ public class PacketPlaceItem implements IMessage {
 
         @Override
         public IMessage handleMessage(PacketPlaceItem message, MessageContext ctx) {
-            EntityPlayer player = ctx.getServerHandler().playerEntity;
+            EntityPlayer player = ctx.getServerHandler().player;
             RayTraceResult traceResult = RayTracer.retrace(player);
             World world = player.world;
 
@@ -81,7 +81,7 @@ public class PacketPlaceItem implements IMessage {
                 }
                 else if (world.isAirBlock(posHit.offset(traceResult.sideHit))) {
                     BlockPos pos = posHit.offset(traceResult.sideHit);
-                    BlockEvent.PlaceEvent event = ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(world, pos, DEFeatures.placedItem.getDefaultState()), traceResult.sideHit);
+                    BlockEvent.PlaceEvent event = ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(world, pos, DEFeatures.placedItem.getDefaultState()), traceResult.sideHit, player.getActiveHand());
 
                     if (event.isCanceled()) {
                         return null;

@@ -254,7 +254,7 @@ public class WikiContentList extends MGuiList implements IMGuiListener {
         int currentLength = 0;
 
         while (branch != null) {
-            int height = guiModWiki.getMinecraft().fontRendererObj.getStringWidth(branch.branchName) + 6;
+            int height = guiModWiki.getMinecraft().fontRenderer.getStringWidth(branch.branchName) + 6;
             if (currentLength + height > yPos + ySize - bottomPadding) {
                 break;
             }

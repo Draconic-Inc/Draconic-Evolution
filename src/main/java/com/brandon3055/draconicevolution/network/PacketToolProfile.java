@@ -40,7 +40,7 @@ public class PacketToolProfile implements IMessage {
 
         @Override
         public IMessage handleMessage(PacketToolProfile message, MessageContext ctx) {
-            EntityPlayer player = ctx.getServerHandler().playerEntity;
+            EntityPlayer player = ctx.getServerHandler().player;
             ItemStack stack = message.slot.getStackInSlot(player);
 
             if (!stack.isEmpty() && stack.getItem() instanceof IConfigurableItem) {

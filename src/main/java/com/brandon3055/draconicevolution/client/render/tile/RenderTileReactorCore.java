@@ -46,7 +46,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
     }
 
     @Override
-    public void renderTileEntityAt(TileReactorCore te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileReactorCore te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();
         GlStateManager.disableLighting();

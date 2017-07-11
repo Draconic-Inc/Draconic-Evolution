@@ -191,7 +191,7 @@ public class EntityGuardianCrystal extends EntityLivingBase {
         if (this.isEntityInvulnerable(source)) {
             return false;
         }
-        else if (source.getEntity() instanceof EntityPlayer) {
+        else if (source.getTrueSource() instanceof EntityPlayer) {
             if (shieldTime <= 0 && getHealth() > 0 && !this.world.isRemote) {
                 setHealth(getHealth() - Math.min(getHealth(), dmg));
                 if (getHealth() <= 0) {
@@ -202,7 +202,7 @@ public class EntityGuardianCrystal extends EntityLivingBase {
                     DESoundHandler.playSoundFromServer(world, posX + 0.5D, posY + 0.5D, posZ + 0.5D, DESoundHandler.shieldUp, SoundCategory.HOSTILE, 10.0F, rand.nextFloat() * 0.1F + 1.055F, false, 128);
                 }
                 if (getGuardian() != null) {
-                    getGuardian().onCrystalTargeted((EntityPlayer) source.getEntity(), getHealth() <= 0);
+                    getGuardian().onCrystalTargeted((EntityPlayer) source.getTrueSource(), getHealth() <= 0);
                 }
                 return true;
             }

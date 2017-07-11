@@ -83,7 +83,7 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
                 Entity entity = DEFeatures.mobSoul.createEntity(world, mobSoul.value);
                 entity.setPositionAndRotation(spawnX, spawnY, spawnZ, 0, 0);
 
-                int nearby = world.getEntitiesWithinAABB(entity.getClass(), (new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), (pos.getX() + 1), (pos.getY() + 1), (pos.getZ() + 1))).expandXyz(spawnRange)).size();
+                int nearby = world.getEntitiesWithinAABB(entity.getClass(), (new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), (pos.getX() + 1), (pos.getY() + 1), (pos.getZ() + 1))).grow(spawnRange)).size();
 
                 if (nearby >= spawnerTier.value.getMaxCluster()) {
                     this.resetTimer();

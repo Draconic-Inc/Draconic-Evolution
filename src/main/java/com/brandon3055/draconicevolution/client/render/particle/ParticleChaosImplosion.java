@@ -18,7 +18,7 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -58,7 +58,7 @@ public class ParticleChaosImplosion extends BCParticle {
     }
 
     @Override
-    public boolean isTransparent() {
+    public boolean shouldDisableDepth() {
         return true;
     }
 
@@ -117,7 +117,7 @@ public class ParticleChaosImplosion extends BCParticle {
     }
 
     @Override
-    public void renderParticle(VertexBuffer vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         CCRenderState ccrs = CCRenderState.instance();
         if (isTracer) {
             ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);

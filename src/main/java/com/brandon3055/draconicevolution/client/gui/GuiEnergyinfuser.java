@@ -41,7 +41,7 @@ public class GuiEnergyinfuser extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         //GuiHelper.drawGuiBaseBackground(this, guiLeft, guiTop, xSize, ySize);
         //GuiHelper.drawPlayerSlots(this, guiLeft + (xSize / 2), guiTop + 115, true);
-        drawCenteredString(fontRendererObj, DEFeatures.energyInfuser.getLocalizedName(), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
+        drawCenteredString(fontRenderer, DEFeatures.energyInfuser.getLocalizedName(), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
 
         GlStateManager.color(1, 1, 1, 1);
         ResourceHelperDE.bindTexture(DETextures.GUI_ENERGY_INFUSER);
@@ -74,7 +74,7 @@ public class GuiEnergyinfuser extends GuiContainer {
             ArrayList<String> internal = new ArrayList<>();
             internal.add(I18n.translateToLocal("gui.de.internalStorage.txt"));
             internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(tile.energySync.value) + "/" + Utils.addCommas(tile.energyStorage.getMaxEnergyStored()));
-            drawHoveringText(internal, x, y, fontRendererObj);
+            drawHoveringText(internal, x, y, fontRenderer);
         }
 
         if (GuiHelper.isInRect(118, 6, 10, 46, x, y) && tile.running.value && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
@@ -82,7 +82,7 @@ public class GuiEnergyinfuser extends GuiContainer {
             ArrayList<String> internal = new ArrayList<>();
             internal.add(I18n.translateToLocal("gui.de.itemStorage.txt"));
             internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(item.getEnergyStored(tile.getStackInSlot(0))) + "/" + Utils.addCommas(item.getMaxEnergyStored(tile.getStackInSlot(0))));
-            drawHoveringText(internal, x, y, fontRendererObj);
+            drawHoveringText(internal, x, y, fontRenderer);
         }
     }
 

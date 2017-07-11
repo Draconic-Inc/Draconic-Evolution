@@ -66,11 +66,11 @@ public class GuiFlowGate extends ModularGuiContainer implements IMGuiListener {
         }
         else {
             manager.add(new MGuiLabel(this, guiLeft(), guiTop() + 16, xSize, 8, I18n.format("gui.de.flowGateRSHigh.name")).setTextColour(0xff0000).setShadow(false).setAlignment(EnumAlignment.LEFT));
-            manager.add(maxField = new MGuiTextField(this, guiLeft() + 4, guiTop() + 26, xSize - 44, 16, fontRendererObj));
+            manager.add(maxField = new MGuiTextField(this, guiLeft() + 4, guiTop() + 26, xSize - 44, 16, fontRenderer));
             manager.add(new MGuiButton(this, "SAVE_HIGH", guiLeft() + xSize - 39, guiTop() + 26, 35, 16, I18n.format("gui.button.save")));
 
             manager.add(new MGuiLabel(this, guiLeft(), guiTop() + 44, xSize, 8, I18n.format("gui.de.flowGateRSLow.name")).setTextColour(0x660000).setShadow(false).setAlignment(EnumAlignment.LEFT));
-            manager.add(minField = new MGuiTextField(this, guiLeft() + 4, guiTop() + 54, xSize - 44, 16, fontRendererObj));
+            manager.add(minField = new MGuiTextField(this, guiLeft() + 4, guiTop() + 54, xSize - 44, 16, fontRenderer));
             manager.add(new MGuiButton(this, "SAVE_LOW", guiLeft() + xSize - 39, guiTop() + 54, 35, 16, I18n.format("gui.button.save")));
 
             minField.setValidator(fieldValidator);

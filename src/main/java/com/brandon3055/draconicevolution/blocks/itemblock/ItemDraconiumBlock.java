@@ -3,11 +3,15 @@ package com.brandon3055.draconicevolution.blocks.itemblock;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.draconicevolution.DEFeatures;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.minecraft.client.resources.I18n.format;
@@ -75,12 +79,14 @@ public class ItemDraconiumBlock extends ItemBlockBCore {
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_) {
+    public void addInformation(ItemStack stack, @Nullable World world, List list, ITooltipFlag p_77624_4_) {
 //        if (stack.hasTagCompound()) {
 //            list.add(Utils.addCommas(getEnergyStored(stack)) + " / " + Utils.addCommas(getMaxEnergyStored(stack)) + "RF");
 //        }
+        EntityPlayer player = Minecraft.getMinecraft().player;
 
-        if (player.inventory.hasItemStack(DEFeatures.wyvernCapacitor) || player.inventory.hasItemStack(DEFeatures.draconicCapacitor) || player.inventory.hasItemStack(DEFeatures.creativeCapacitor)) {
+
+        if (player != null && (Minecraft.getMinecraft().player.inventory.hasItemStack(DEFeatures.wyvernCapacitor) || player.inventory.hasItemStack(DEFeatures.draconicCapacitor) || player.inventory.hasItemStack(DEFeatures.creativeCapacitor))) {
             list.add(format("info.de.draconiumBlockCapacitorCharge.txt"));
         }
     }

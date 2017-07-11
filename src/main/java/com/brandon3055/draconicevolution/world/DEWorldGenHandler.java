@@ -12,8 +12,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
@@ -126,7 +126,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
         NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(DATA_TAG);
 
         if (tag != null && tag.getBoolean("Populating")) {
-            populatingChunks.add(new ChunkReference(dim, event.getChunk().xPosition, event.getChunk().zPosition));
+            populatingChunks.add(new ChunkReference(dim, event.getChunk().x, event.getChunk().z));
             tag.removeTag("Populating");
             return;
         }
@@ -135,7 +135,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
             return;
         }
 
-        if (event.getChunk().getAreLevelsEmpty(0, 128)) return;
+        if (event.getChunk().isEmptyBetween(0, 128)) return;
 
         if (DEConfig.enableRetroGen) {
             ArrayDeque<ChunkPos> chunks = WorldTickHandler.chunksToGen.get(dim);
@@ -145,7 +145,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
                 chunks = WorldTickHandler.chunksToGen.get(dim);
             }
             if (chunks != null) {
-                chunks.addLast(new ChunkPos(event.getChunk().xPosition, event.getChunk().zPosition));
+                chunks.addLast(new ChunkPos(event.getChunk().x, event.getChunk().z));
                 WorldTickHandler.chunksToGen.put(dim, chunks);
             }
         }
@@ -155,7 +155,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
     public void chunkSaveEvent(ChunkDataEvent.Save event) {
         NBTTagCompound genTag = event.getData().getCompoundTag(DATA_TAG);
 
-        if (populatingChunks.contains(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunk().xPosition, event.getChunk().zPosition))) {
+        if (populatingChunks.contains(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunk().x, event.getChunk().z))) {
             genTag.setBoolean("Generated", true);
             genTag.setBoolean("Populating", true);
             return;
@@ -191,7 +191,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
             if (o == null || o.getClass() != getClass()) {
                 if (o instanceof Chunk) {
                     Chunk other = (Chunk) o;
-                    return xPos == other.xPosition && zPos == other.zPosition && dimension == other.getWorld().provider.getDimension();
+                    return xPos == other.x && zPos == other.z && dimension == other.getWorld().provider.getDimension();
                 }
                 return false;
             }

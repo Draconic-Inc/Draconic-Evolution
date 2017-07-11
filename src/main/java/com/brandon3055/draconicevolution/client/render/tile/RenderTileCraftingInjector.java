@@ -8,7 +8,7 @@ import net.minecraft.util.EnumFacing;
 
 public class RenderTileCraftingInjector extends TESRBase<TileCraftingInjector> {
     @Override
-    public void renderTileEntityAt(TileCraftingInjector te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileCraftingInjector te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         if (te.currentCraftingInventory != null && te.currentCraftingInventory.getCraftingStage() > 1000) {
             return;
         }

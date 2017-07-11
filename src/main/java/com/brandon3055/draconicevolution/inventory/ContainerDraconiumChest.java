@@ -72,7 +72,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
 
     @Override
     public void onCraftMatrixChanged(IInventory inventory) {
-        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, tile.getWorld()));
+        craftResult.setInventorySlotContents(0, CraftingManager.findMatchingResult(craftMatrix, tile.getWorld()));
     }
 
     @Nullable

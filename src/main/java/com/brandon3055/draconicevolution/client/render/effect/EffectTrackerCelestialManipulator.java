@@ -14,7 +14,7 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -80,7 +80,7 @@ public class EffectTrackerCelestialManipulator {
     }
 
     public void renderEffect(Tessellator tessellator, float partialTicks) {
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
         CCRenderState ccrs = CCRenderState.instance();
         //region Icosahedron
 
@@ -156,7 +156,7 @@ public class EffectTrackerCelestialManipulator {
         }
 
         @Override
-        public boolean isTransparent() {
+        public boolean shouldDisableDepth() {
             return true;
         }
 
@@ -180,7 +180,7 @@ public class EffectTrackerCelestialManipulator {
         }
 
         @Override
-        public void renderParticle(VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void renderParticle(BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
             if (particleAge == 0) {
                 return;
             }
@@ -236,7 +236,7 @@ public class EffectTrackerCelestialManipulator {
         }
 
         @Override
-        public boolean isTransparent() {
+        public boolean shouldDisableDepth() {
             return true;
         }
 
@@ -290,7 +290,7 @@ public class EffectTrackerCelestialManipulator {
         }
 
         @Override
-        public void renderParticle(VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void renderParticle(BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
             if (particleAge == 0) {
                 return;
             }

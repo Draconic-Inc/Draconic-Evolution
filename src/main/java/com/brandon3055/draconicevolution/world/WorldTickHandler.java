@@ -44,8 +44,8 @@ public class WorldTickHandler {
                 Random rand = new Random(worldSeed);
                 long xSeed = rand.nextLong() >> 2 + 1L;
                 long zSeed = rand.nextLong() >> 2 + 1L;
-                rand.setSeed(xSeed * chunkPos.chunkXPos + zSeed * chunkPos.chunkZPos ^ worldSeed);
-                DEWorldGenHandler.instance.addOreGen(rand, chunkPos.chunkXPos, chunkPos.chunkZPos, world);
+                rand.setSeed(xSeed * chunkPos.x + zSeed * chunkPos.z ^ worldSeed);
+                DEWorldGenHandler.instance.addOreGen(rand, chunkPos.x, chunkPos.z, world);
                 chunksToGen.put(dimension, chunks);
             }
             else if (chunks != null) {

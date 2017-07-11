@@ -12,7 +12,7 @@ import codechicken.lib.vec.uv.UVTransformation;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.client.model.animation.FastTESR;
 
@@ -62,12 +62,12 @@ public class RenderTilePotentiometer extends FastTESR<TilePotentiometer> {
     }
 
     @Override
-    public void renderTileEntityFast(TilePotentiometer te, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer vertexBuffer) {
+    public void renderTileEntityFast(TilePotentiometer te, double x, double y, double z, float partialTicks, int destroyStage, float partial, BufferBuilder buffer) {
         TextureAtlasSprite stoneTex = TextureUtils.getBlockTexture("planks_oak");
         UVTransformation iconTransform = new IconTransformation(stoneTex);
         CCRenderState state = CCRenderState.instance();
         state.reset();
-        state.bind(vertexBuffer);
+        state.bind(buffer);
         state.setBrightness(te.getWorld(), te.getPos());
         double pxl = 1D / 16D;
 

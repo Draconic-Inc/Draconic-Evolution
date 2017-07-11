@@ -4,7 +4,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 /**
  * Created by Brandon on 17/11/2014.
@@ -21,7 +21,7 @@ public class EnchantmentReaper extends Enchantment {
 
     public static void init() {
         instance = new EnchantmentReaper();
-        GameRegistry.register(instance);
+        ForgeRegistries.ENCHANTMENTS.register(instance);
     }
 
     @Override

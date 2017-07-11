@@ -13,7 +13,7 @@ import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -34,7 +34,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     }
 
     @Override
-    public void renderTileEntityAt(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         //region Build Guide
 
         if (te.buildGuide.value && MinecraftForgeClient.getRenderPass() == 0) {
@@ -115,13 +115,6 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
         //endregion
     }
 
-    @Override
-    public void renderTileEntityFast(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer buffer) {
-
-
-        super.renderTileEntityFast(te, x, y, z, partialTicks, destroyStage, buffer);
-    }
-
     private void renderStabilizers(TileEnergyStorageCore te, boolean renderStage, float partialTick) {
         if (!te.stabilizersOK.value) {
             return;
@@ -172,7 +165,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     private void renderStabilizerBeam(TileEnergyStorageCore te, Vec3I vec, boolean renderStage, float partialTick) {
         ResourceHelperDE.bindTexture(DETextures.STABILIZER_BEAM);
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexBuffer = tessellator.getBuffer();
+        BufferBuilder vertexBuffer = tessellator.getBuffer();
         GL11.glPushMatrix();
         GlStateManager.rotate(180, 0, 0, 1);
 

@@ -36,7 +36,7 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
     }
 
     @Override
-    public void renderTileEntityAt(TileEnergyPylon te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileEnergyPylon te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         if (!te.structureValid.value) {
             return;
         }

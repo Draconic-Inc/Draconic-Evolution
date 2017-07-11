@@ -71,8 +71,8 @@ public class TreeBranchContent extends TreeBranchRoot {
             addChild(icon = stackIcon);
             addChild(iconBackground = back);
 
-            int line = modularGui.getMinecraft().fontRendererObj.listFormattedStringToWidth(branchName, label.xSize - 28).size();
-            ySize = Math.max(22, (line * modularGui.getMinecraft().fontRendererObj.FONT_HEIGHT) + 7);
+            int line = modularGui.getMinecraft().fontRenderer.listFormattedStringToWidth(branchName, label.xSize - 28).size();
+            ySize = Math.max(22, (line * modularGui.getMinecraft().fontRenderer.FONT_HEIGHT) + 7);
             label.ySize = ySize;
             stackIcon.yOffset = (ySize - 18) / 2;
             stackIcon.xOffset = 3;
@@ -142,8 +142,8 @@ public class TreeBranchContent extends TreeBranchRoot {
             GlStateManager.translate(xPos, yPos, 100);
             GlStateManager.scale(0.6, 0.6, 1);
             String s = "W:§f" + sortingWeight;
-            drawString(minecraft.fontRendererObj, s, 0, 0, 0xFF0000, false);
-            drawColouredRect(0, 0, minecraft.fontRendererObj.getStringWidth(s), 8, 0xAA000000);
+            drawString(minecraft.fontRenderer, s, 0, 0, 0xFF0000, false);
+            drawColouredRect(0, 0, minecraft.fontRenderer.getStringWidth(s), 8, 0xAA000000);
             GlStateManager.popMatrix();
         }
 
@@ -153,7 +153,7 @@ public class TreeBranchContent extends TreeBranchRoot {
     @Override
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (WikiConfig.editMode && isMouseOver(mouseX, mouseY)) {
-            drawHoveringText(Collections.singletonList(TextFormatting.RED + "[Right click to edit]"), mouseX, mouseY, minecraft.fontRendererObj, modularGui.screenWidth(), modularGui.screenHeight());
+            drawHoveringText(Collections.singletonList(TextFormatting.RED + "[Right click to edit]"), mouseX, mouseY, minecraft.fontRenderer, modularGui.screenWidth(), modularGui.screenHeight());
             return true;
         }
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);

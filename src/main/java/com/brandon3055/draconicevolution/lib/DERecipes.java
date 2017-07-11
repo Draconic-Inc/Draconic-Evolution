@@ -273,11 +273,11 @@ public class DERecipes {
             GameRegistry.addSmelting(DEFeatures.draconiumDust, new ItemStack(DEFeatures.draconiumIngot), 0);
         }
 
-        RecipeManager.addRecipe(new RecipeDislocatorClone());
+        RecipeManager.addRecipe(new RecipeDislocatorClone().setRegistryName(new ResourceLocation("draconicevolution:recipe_dislocator_clone")));
 
         Item borkedSpawner = Item.REGISTRY.getObject(new ResourceLocation("enderio:itemBrokenSpawner"));
         if (borkedSpawner != null) {
-            RecipeManager.addRecipe(new RecipeEIOStabilization(borkedSpawner));
+            RecipeManager.addRecipe(new RecipeEIOStabilization(borkedSpawner).setRegistryName(new ResourceLocation("draconicevolution:eio_spawner")));
         }
     }
 

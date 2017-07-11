@@ -110,11 +110,6 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
         return ItemStack.EMPTY;
     }
 
-    @Override
-    protected void retrySlotClick(int slotId, int clickedButton, boolean mode, EntityPlayer playerIn) {
-        super.retrySlotClick(slotId, clickedButton, mode, playerIn);
-    }
-
     private int getFuelValue(ItemStack stack) {
         if (stack.isEmpty()) {
             return 0;

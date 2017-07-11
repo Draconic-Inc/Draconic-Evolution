@@ -39,7 +39,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     public final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, -1, 0))).syncViaTile().saveToTile().finish();
     public final ManagedBool sphereOnTop = register("sphereOnTop", new ManagedBool(true)).syncViaTile().saveToTile().finish();
     private final ManagedBool hasCoreLock = register("hasCoreLock", new ManagedBool(false)).syncViaTile().saveToTile().finish();
-    private final ManagedByte particleRate = register("particleRate", new ManagedByte(0)).syncViaTile().finish();
+    private final ManagedByte particleRate = register("particleRate", new ManagedByte(0)).syncViaTile().saveToTile().finish();
     private TileEnergyStorageCore core = null;
     private int coreSelection = 0;
     private int tick = 0;
@@ -114,7 +114,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     }
 
     private List<TileEnergyStorageCore> findActiveCores() {
-        List<TileEnergyStorageCore> list = new LinkedHashList<TileEnergyStorageCore>();
+        List<TileEnergyStorageCore> list = new LinkedHashList<>();
         int yMod = sphereOnTop.value ? 18 : -18;
         int range = 18;
 

@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -105,7 +106,7 @@ public class Dislocator extends ItemBCore {
                     ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
                     ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
                     ItemNBTHelper.setBoolean(stack, "IsSet", true);
-                    ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().worldServerForDimension(player.dimension).provider.getDimensionType().getName());//TODO Is this really needed?
+                    ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().getWorld(player.dimension).provider.getDimensionType().getName());//TODO Is this really needed?
                 }
                 return new ActionResult<>(EnumActionResult.PASS, stack);
             }
@@ -150,7 +151,7 @@ public class Dislocator extends ItemBCore {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         if (!ItemNBTHelper.getBoolean(stack, "IsSet", false)) {
             tooltip.add(TextFormatting.RED + I18n.format("info.teleporterInfUnset1.txt"));
             tooltip.add(TextFormatting.WHITE + I18n.format("info.teleporterInfUnset2.txt"));

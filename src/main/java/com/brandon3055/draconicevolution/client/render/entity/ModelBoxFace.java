@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.render.entity;
 
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 
 /**
  * Created by brandon3055 on 31/10/2016.
@@ -17,7 +17,7 @@ public class ModelBoxFace extends ModelBox {
     }
 
     @Override
-    public void render(VertexBuffer renderer, float scale) {
+    public void render(BufferBuilder renderer, float scale) {
         quadList[face].draw(renderer, scale);
     }
 }

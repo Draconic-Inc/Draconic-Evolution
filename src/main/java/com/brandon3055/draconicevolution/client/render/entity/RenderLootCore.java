@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -75,7 +75,7 @@ public class RenderLootCore extends Render<EntityLootCore> {
 
         GlStateManager.disableTexture2D();
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
         double scale = lootCore.lookAnimation;
@@ -129,7 +129,7 @@ public class RenderLootCore extends Render<EntityLootCore> {
         GlStateManager.popMatrix();
     }
 
-    private void renderBox(VertexBuffer buffer, double x, double y, double width, double height, int colour) {
+    private void renderBox(BufferBuilder buffer, double x, double y, double width, double height, int colour) {
         ColourARGB colourARGB = new ColourARGB(colour);
         double zLevel = 0;
         buffer.pos(x, y + height, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();

@@ -13,7 +13,7 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -60,7 +60,7 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
     }
 
     @Override
-    public void renderParticle(VertexBuffer buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         double scale = 0.1 + (timeout * 0.005);
         Vector3 source = new Vector3(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
         Vector3 target = linkTarget.toVector3().subtract(interpPosX, interpPosY, interpPosZ);
@@ -121,7 +121,7 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
         }
     }
 
-    private void bufferQuad(VertexBuffer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, double anim, double dist) {
+    private void bufferQuad(BufferBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, double anim, double dist) {
         buffer.pos(p1.x, p1.y, p1.z).tex(0.5, anim).endVertex();
         buffer.pos(p2.x, p2.y, p2.z).tex(0.5, dist + anim).endVertex();
         buffer.pos(p4.x, p4.y, p4.z).tex(1.0, dist + anim).endVertex();
@@ -141,7 +141,7 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
         }
 
         @Override
-        public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
             GlStateTracker.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
@@ -159,7 +159,7 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
         }
 
         @Override
-        public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
+        public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
             tessellator.draw();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 //            GlStateManager.enableTexture2D();

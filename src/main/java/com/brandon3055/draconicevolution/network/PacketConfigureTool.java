@@ -52,7 +52,7 @@ public class PacketConfigureTool implements IMessage {
 
         @Override
         public IMessage handleMessage(PacketConfigureTool message, MessageContext ctx) {
-            ItemStack stack = message.slot.getStackInSlot(ctx.getServerHandler().playerEntity);
+            ItemStack stack = message.slot.getStackInSlot(ctx.getServerHandler().player);
             if (!(stack.getItem() instanceof IConfigurableItem)) {
                 return null;
             }

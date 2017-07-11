@@ -261,7 +261,7 @@ public class ClientEventHandler {
             List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, mc.objectMouseOver.getBlockPos(), world, mc.objectMouseOver.sideHit);
 
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.getBuffer();
 
             double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks;
             double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
@@ -321,7 +321,7 @@ public class ClientEventHandler {
         PairKV<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
         List<BlockPos> blocks = Lists.newArrayList(BlockPos.getAllInBox(aoe.getKey(), aoe.getValue()));
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks;
         double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
@@ -348,7 +348,7 @@ public class ClientEventHandler {
             double renderY = block.getY() - offsetY;
             double renderZ = block.getZ() - offsetZ;
 
-            AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).contract(0.49D);
+            AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).shrink(0.49D);
 
             double rDist = Utils.getDistanceSq(pos.getX(), pos.getY(), pos.getZ(), block.getX(), block.getY(), block.getZ());
 
@@ -494,7 +494,7 @@ public class ClientEventHandler {
 //        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 //        GlStateManager.shadeModel(GL11.GL_SMOOTH);
 //        Tessellator tessellator = Tessellator.getInstance();
-//        VertexBuffer vertexbuffer = tessellator.getBuffer();
+//        BufferBuilder vertexbuffer = tessellator.getBuffer();
 //        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 //        vertexbuffer.pos((double) right, (double) top, -500).color(1F, 1F, 1F, alpha).endVertex();
 //        vertexbuffer.pos((double) left, (double) top, -500).color(1F, 1F, 1F, alpha).endVertex();

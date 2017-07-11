@@ -316,7 +316,7 @@ public abstract class MiningToolBase extends ToolBase {
         @SuppressWarnings("unchecked") List<EntityItem> items = player.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(aoe.getKey(), aoe.getValue().add(1, 1, 1)));
         for (EntityItem item : items) {
             if (!player.world.isRemote && !item.isDead) {
-                InventoryUtils.insertItem(inventoryDynamic, item.getEntityItem(), false);
+                InventoryUtils.insertItem(inventoryDynamic, item.getItem(), false);
                 item.setDead();
             }
         }

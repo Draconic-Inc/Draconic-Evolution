@@ -82,7 +82,7 @@ public class GuiDislocator extends GuiScreen {
         String colour = TextFormatting.GREEN + "";
         if (fuel < 10) colour = TextFormatting.YELLOW + "";
         if (fuel == 0) colour = TextFormatting.DARK_RED + "";
-        fontRendererObj.drawString(colour + I18n.format("info.teleporterInfFuel.txt") + " " + fuel, posX + 115, posY + 87, 0x000000);
+        fontRenderer.drawString(colour + I18n.format("info.teleporterInfFuel.txt") + " " + fuel, posX + 115, posY + 87, 0x000000);
 
         super.drawScreen(x, y, f);
 
@@ -90,7 +90,7 @@ public class GuiDislocator extends GuiScreen {
             if (GuiHelper.isInRect(17, 6 + i * 11, 80, 10, x - posX, y - posY)) {
                 List l = new ArrayList();
                 l.add(I18n.format("info.de.rightClickToTeleport.txt"));
-                drawHoveringText(l, x, y, fontRendererObj);
+                drawHoveringText(l, x, y, fontRenderer);
             }
         }
     }
@@ -119,16 +119,16 @@ public class GuiDislocator extends GuiScreen {
         int yl = 0;
         for (int i = selectionOffset; i < locations.size() && i < selectionOffset + 12; i++) {
             String s = getLocationSafely(i).getName();
-            if (fontRendererObj.getStringWidth(s) > 80) {
+            if (fontRenderer.getStringWidth(s) > 80) {
                 int safety = 0;
-                while (fontRendererObj.getStringWidth(s) > 70) {
+                while (fontRenderer.getStringWidth(s) > 70) {
                     s = s.substring(0, s.length() - 1);
                     safety++;
                     if (safety > 200) break;
                 }
                 s = s + "...";
             }
-            fontRendererObj.drawString(s, posX + 21, posY + 7 + (yl * 11), 0x000000);
+            fontRenderer.drawString(s, posX + 21, posY + 7 + (yl * 11), 0x000000);
             yl++;
         }
     }
@@ -163,10 +163,10 @@ public class GuiDislocator extends GuiScreen {
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;
         if (locations.size() <= 0) return;
-        fontRendererObj.drawString(TextFormatting.GOLD + "X: " + (int) getLocationSafely(selected + selectionOffset).getXCoord(), posX + 114, posY + 7, 0x000000);
-        fontRendererObj.drawString(TextFormatting.GOLD + "Y: " + (int) getLocationSafely(selected + selectionOffset).getYCoord(), posX + 114, posY + 16, 0x000000);
-        fontRendererObj.drawString(TextFormatting.GOLD + "Z: " + (int) getLocationSafely(selected + selectionOffset).getZCoord(), posX + 114, posY + 25, 0x000000);
-        fontRendererObj.drawString(TextFormatting.GOLD + "" + getLocationSafely(selected + selectionOffset).getDimensionName(), posX + 114, posY + 34, 0x000000);
+        fontRenderer.drawString(TextFormatting.GOLD + "X: " + (int) getLocationSafely(selected + selectionOffset).getXCoord(), posX + 114, posY + 7, 0x000000);
+        fontRenderer.drawString(TextFormatting.GOLD + "Y: " + (int) getLocationSafely(selected + selectionOffset).getYCoord(), posX + 114, posY + 16, 0x000000);
+        fontRenderer.drawString(TextFormatting.GOLD + "Z: " + (int) getLocationSafely(selected + selectionOffset).getZCoord(), posX + 114, posY + 25, 0x000000);
+        fontRenderer.drawString(TextFormatting.GOLD + "" + getLocationSafely(selected + selectionOffset).getDimensionName(), posX + 114, posY + 34, 0x000000);
     }
 
     @Override
@@ -329,7 +329,7 @@ public class GuiDislocator extends GuiScreen {
         buttonList.add(new GuiButtonAHeight(7, posX + 112 + 34, posY + 99, 33, 12, I18n.format("button.de.DOWN.txt")));
         ((GuiButton) buttonList.get(6)).visible = false;
 
-        textBeingEdited = new GuiTextField(0, fontRendererObj, posX + 3, posY - 14, xSize - 67, 12);
+        textBeingEdited = new GuiTextField(0, fontRenderer, posX + 3, posY - 14, xSize - 67, 12);
         textBeingEdited.setTextColor(-1);
         textBeingEdited.setDisabledTextColour(-1);
         textBeingEdited.setEnableBackgroundDrawing(true);

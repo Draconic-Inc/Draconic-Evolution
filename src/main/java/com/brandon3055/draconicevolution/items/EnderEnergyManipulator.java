@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.client.render.item.RenderItemEnderEnerg
 import com.brandon3055.draconicevolution.entity.EntityEnderEnergyManipulator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -74,7 +76,7 @@ public class EnderEnergyManipulator extends ItemBCore implements IRenderOverride
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         tooltip.add(I18n.format("info.de.ender_energy_manipulator.info.txt"));
         tooltip.add(I18n.format("info.de.ender_energy_manipulator.info2.txt"));
     }

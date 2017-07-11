@@ -15,7 +15,7 @@ import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -84,7 +84,7 @@ public class ReactorBeamFX extends BCParticle {
     }
 
     @Override
-    public void renderParticle(VertexBuffer buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         Vec3D pos1 = new Vec3D(posX - interpPosX, posY - interpPosY, posZ - interpPosZ).offset(facing, -0.35D);
         Vec3D pos2;
         double texOffset = (ClientEventHandler.elapsedTicks + partialTicks) / -150D;
@@ -170,7 +170,7 @@ public class ReactorBeamFX extends BCParticle {
         }
     }
 
-    public void renderWithoutShaders(VertexBuffer buffer, Vec3D pos1, double coreSize, double texOffset) {
+    public void renderWithoutShaders(BufferBuilder buffer, Vec3D pos1, double coreSize, double texOffset) {
         Vec3D pos2;
         if (isInjectorEffect) {
             ResourceHelperDE.bindTexture("textures/particle/reactor_energy_beam.png");
@@ -190,7 +190,7 @@ public class ReactorBeamFX extends BCParticle {
         }
     }
 
-    public void renderBeam(VertexBuffer buffer, Vec3D pos, double widthStart, double widthEnd, double length, double beamAnimation, double beamRotation, boolean fadeReverse, Colour colour) {
+    public void renderBeam(BufferBuilder buffer, Vec3D pos, double widthStart, double widthEnd, double length, double beamAnimation, double beamRotation, boolean fadeReverse, Colour colour) {
         buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
         double sides = 16;
         float r = (colour.r & 0xFF) / 255F, g = (colour.g & 0xFF) / 255F, b = (colour.b & 0xFF) / 255F;
@@ -207,7 +207,7 @@ public class ReactorBeamFX extends BCParticle {
         Tessellator.getInstance().draw();
     }
 
-    public void renderShaderBeam(VertexBuffer buffer, Vec3D pos, double widthStart, double widthEnd, double length, double beamAnimation, double beamRotation, boolean fadeReverse, Colour colour) {
+    public void renderShaderBeam(BufferBuilder buffer, Vec3D pos, double widthStart, double widthEnd, double length, double beamAnimation, double beamRotation, boolean fadeReverse, Colour colour) {
         buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
         double sides = 16;
         for (int i = 0; i < sides; i++) {
@@ -232,7 +232,7 @@ public class ReactorBeamFX extends BCParticle {
 
     public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
         @Override
-        public void preDraw(int layer, VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
             ResourceHelperDE.bindTexture("textures/particle/reactor_beam.png");
             GlStateManager.disableCull();
             GlStateManager.depthMask(false);
@@ -247,7 +247,7 @@ public class ReactorBeamFX extends BCParticle {
         }
 
         @Override
-        public void postDraw(int layer, VertexBuffer vertexbuffer, Tessellator tessellator) {
+        public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 
             GlStateManager.enableCull();

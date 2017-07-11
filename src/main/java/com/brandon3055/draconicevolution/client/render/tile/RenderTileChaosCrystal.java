@@ -15,7 +15,7 @@ import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
@@ -102,7 +102,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////                new Framebuffer()
 //
 ////                Tessellator tess = Tessellator.getInstance();
-////                VertexBuffer buffer = tess.getBuffer();
+////                BufferBuilder buffer = tess.getBuffer();
 //
 //                int min = 0;
 ////                width -= 400;
@@ -147,7 +147,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 
 
     @Override
-    public void renderTileEntityAt(TileChaosCrystal te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileChaosCrystal te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         CCRenderState ccrs = CCRenderState.instance();
         ResourceHelperDE.bindTexture(DETextures.CHAOS_CRYSTAL);
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
@@ -159,7 +159,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, -4.5, 0);
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.getBuffer();
             ResourceHelperDE.bindTexture(ResourceHelperDE.getResourceRAW("textures/entity/beacon_beam.png"));
             GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
             GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
@@ -220,7 +220,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////
 ////        ResourceHelperDE.bindTexture("textures/models/reactor_core.png");
 ////        Tessellator tess = Tessellator.getInstance();
-////        VertexBuffer buffer = tess.getBuffer();
+////        BufferBuilder buffer = tess.getBuffer();
 ////
 //////        GlStateManager.enableBlend();
 ////        program.bindShader();
@@ -246,7 +246,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////        RANDOM.setSeed(31100L);
 ////
 ////        Tessellator tess = Tessellator.getInstance();
-////        VertexBuffer buffer = tess.getBuffer();
+////        BufferBuilder buffer = tess.getBuffer();
 ////
 ////        GlStateManager.disableLighting();
 ////        GlStateManager.enableBlend();

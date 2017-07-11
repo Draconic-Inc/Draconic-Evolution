@@ -29,6 +29,7 @@ public class ENetFXHandlerServer extends ENetFXHandler {
 
     @Override
     public void detectAndSendChanges() {
+        lastTickIndexToFlow.clear();
         BatchedCrystalUpdate update = new BatchedCrystalUpdate(tile.getIDHash(), tile.getEnergyStored());
         for (byte i = 0; i < tile.flowRates.size(); i++) {
             byte flow = tile.flowRates.get(i);
@@ -55,7 +56,8 @@ public class ENetFXHandlerServer extends ENetFXHandler {
     }
 
     private void sendUpdate() {
-        PlayerChunkMapEntry playerChunkMap = ((WorldServer) tile.getWorld()).getPlayerChunkMap().getEntry(tile.getPos().getX() >> 4, tile.getPos().getY() >> 4);
+        WorldServer worldServer = ((WorldServer) tile.getWorld());
+        PlayerChunkMapEntry playerChunkMap = worldServer.getPlayerChunkMap().getEntry(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4);
         if (playerChunkMap != null) {
             playerChunkMap.players.forEach(playerMP -> CrystalUpdateBatcher.queData(batchedUpdate, playerMP));
         }

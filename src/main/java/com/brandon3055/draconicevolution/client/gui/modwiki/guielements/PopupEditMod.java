@@ -40,7 +40,7 @@ public class PopupEditMod extends MGuiPopUpDialog implements IMGuiListener {
         MGuiLabel label = new MGuiLabel(modularGui, xPos, y, xSize, 12, "Edit Name").setAlignment(EnumAlignment.LEFT);
         y += 12;
         addChild(label);
-        addChild(nameField = new MGuiTextField(modularGui, xPos + 2, y, xSize - 4, 16, modularGui.getMinecraft().fontRendererObj));
+        addChild(nameField = new MGuiTextField(modularGui, xPos + 2, y, xSize - 4, 16, modularGui.getMinecraft().fontRenderer));
         nameField.setText(branch.branchName);
         y += 30;
         addChild(okButton = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "OK", xPos + 2, y, (xSize / 2) - 2, 14, "OK").setColours(0xFF00a000, 0xFF000000, 0xFFFFFFFF).setListener(this));

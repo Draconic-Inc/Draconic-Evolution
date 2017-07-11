@@ -16,16 +16,22 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.*;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.GameData;
 
 import java.io.File;
 import java.io.FileReader;
@@ -46,6 +52,40 @@ public class RecipeManager {
     private static List<IRecipe> activeCrafting = new ArrayList<IRecipe>();
     private static List<IFusionRecipe> activeFusion = new ArrayList<IFusionRecipe>();
 
+    @SubscribeEvent
+    public void registerEvent(RegistryEvent.Register<IRecipe> event) {
+        loadRecipes();
+
+        if (DEConfig.expensiveDragonRitual) {
+            List<IRecipe> replacements = new LinkedList<>();
+            event.getRegistry().getEntries().forEach(entry -> {
+                if (entry.getValue().getRecipeOutput().getItem() == Items.NETHER_STAR) {
+                    NonNullList<Ingredient> ingreds = buildInput(new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR);
+                    ShapedRecipes recipe = new ShapedRecipes(entry.getValue().getGroup(), 3, 3, ingreds, new ItemStack(Items.NETHER_STAR));
+                    replacements.add(recipe);
+                }
+            });
+
+            replacements.forEach(GameData::register_impl);
+//
+//            boolean removed = false;
+//            Iterator<IRecipe> i = CraftingManager.REGISTRY.iterator();
+//            while (i.hasNext()) {
+//                IRecipe recipe = i.next();
+//                if (!recipe.getRecipeOutput().isEmpty() && recipe.getRecipeOutput().getItem() == Items.END_CRYSTAL) {
+//                    i.remove();
+//                    removed = true;
+//                }
+//            }
+
+
+
+//            if (removed) {
+////                CraftingManager.REGISTRY.register("draconicevolution:hard_crystal_recipe", new ResourceLocation("draconicevolution:hard_crystal_recipe"), new ShapedOreRecipe(null, new ItemStack(Items.END_CRYSTAL), "AAA", "ABA", "ACA", 'A', "paneGlassColorless", 'B', "netherStar", 'C', Items.GHAST_TEAR));
+//            }
+        }
+    }
+
     //region Initialization
 
     /**
@@ -53,13 +93,14 @@ public class RecipeManager {
      */
     public static void initialize() {
         FusionRecipeAPI.registry = FUSION_REGISTRY;
+        MinecraftForge.EVENT_BUS.register(new RecipeManager());
     }
 
     /**
      * Loads all recipes from {@link DERecipes} If recipes have already been loaded
      * it will first remove all currently loaded recipes before reloading.
      */
-    public static void loadRecipes() {
+    private static void loadRecipes() {
         if (DEConfig.hardMode) {
             LogHelper.info("Loading Hard Mode Recipes...");
         }
@@ -67,11 +108,11 @@ public class RecipeManager {
             LogHelper.info("Loading Default Recipes...");
         }
 
-        if (!activeCrafting.isEmpty()) {
-            for (IRecipe recipe : activeCrafting) {
-                CraftingManager.getInstance().getRecipeList().remove(recipe);
-            }
-        }
+//        if (!activeCrafting.isEmpty()) {
+//            for (IRecipe recipe : activeCrafting) {
+//                CraftingManager.getInstance().getRecipeList().remove(recipe);
+//            }
+//        }
 
         activeCrafting.clear();
 
@@ -483,8 +524,6 @@ public class RecipeManager {
         }
     }
 
-
-    //Warning! This method will break your eyes if you look at it!
     private static void genInfoFile() {
         File file = new File(FileHandler.brandon3055Folder, "Custom Fusion Recipe Info.txt");
         if (file.exists()) {
@@ -538,12 +577,17 @@ public class RecipeManager {
         }
 
         if (isOre) {
-            IRecipe iRecipe = new ShapedOreRecipe(result, recipe);
-            activeCrafting.add(iRecipe);
-            GameRegistry.addRecipe(iRecipe);
+            ResourceLocation location = getNameForRecipe(result);
+            ShapedOreRecipe shapedOreRecipe = new ShapedOreRecipe(location, result, recipe);
+            shapedOreRecipe.setRegistryName(location);
+            GameData.register_impl(shapedOreRecipe);
         }
         else {
-            activeCrafting.add(GameRegistry.addShapedRecipe(result, recipe));
+            ResourceLocation location = getNameForRecipe(result);
+            CraftingHelper.ShapedPrimer primer = CraftingHelper.parseShaped(recipe);
+            ShapedRecipes shapedRecipes = new ShapedRecipes(result.getItem().getRegistryName().toString(), primer.width, primer.height, primer.input, result);
+            shapedRecipes.setRegistryName(location);
+            GameData.register_impl(shapedRecipes);
         }
     }
 
@@ -577,9 +621,10 @@ public class RecipeManager {
         }
 
         if (isOre) {
-            IRecipe iRecipe = new ShapelessOreRecipe(result, recipe);
-            activeCrafting.add(iRecipe);
-            GameRegistry.addRecipe(iRecipe);
+            ResourceLocation location = getNameForRecipe(result);
+            ShapelessOreRecipe oreRecipe = new ShapelessOreRecipe(location, result, recipe);
+            oreRecipe.setRegistryName(location);
+            GameData.register_impl(oreRecipe);
         }
         else {
             List<ItemStack> list = new ArrayList<ItemStack>();
@@ -600,10 +645,10 @@ public class RecipeManager {
                 }
             }
 
-            IRecipe iRecipe = new ShapelessRecipes(result, list);
-            activeCrafting.add(iRecipe);
-
-            GameRegistry.addRecipe(iRecipe);
+            ResourceLocation location = getNameForRecipe(result);
+            ShapelessRecipes shapelessRecipe = new ShapelessRecipes(location.getResourceDomain(), result, buildInput(recipe));
+            shapelessRecipe.setRegistryName(location);
+            GameData.register_impl(shapelessRecipe);
         }
     }
 
@@ -649,7 +694,8 @@ public class RecipeManager {
 
     public static void addRecipe(IRecipe recipe) {
         activeCrafting.add(recipe);
-        GameRegistry.addRecipe(recipe);
+        GameData.register_impl(recipe);
+//        GameRegistry.addRecipe(recipe);
     }
 
     public static boolean isEnabled(Object stack) {
@@ -662,6 +708,38 @@ public class RecipeManager {
             return !ModFeatureParser.isFeature(stack) || ModFeatureParser.isEnabled(stack);
         }
         return true;
+    }
+
+    public static ResourceLocation getNameForRecipe(ItemStack output) {
+        ModContainer activeContainer = Loader.instance().activeModContainer();
+        ResourceLocation baseLoc = new ResourceLocation(activeContainer.getModId(), output.getItem().getRegistryName().getResourcePath());
+        ResourceLocation recipeLoc = baseLoc;
+        int index = 0;
+        while (CraftingManager.REGISTRY.containsKey(recipeLoc)) {
+            index++;
+            recipeLoc = new ResourceLocation(activeContainer.getModId(), baseLoc.getResourcePath() + "_" + index);
+        }
+        return recipeLoc;
+    }
+
+
+    public static NonNullList<Ingredient> buildInput(Object... input) {
+
+        NonNullList<Ingredient> list = NonNullList.create();
+
+        for (Object obj : input) {
+            if (obj instanceof Ingredient) {
+                list.add((Ingredient) obj);
+            } else {
+                Ingredient ingredient = CraftingHelper.getIngredient(obj);
+
+                if (ingredient == null) {
+                    ingredient = Ingredient.EMPTY;
+                }
+                list.add(ingredient);
+            }
+        }
+        return list;
     }
 
     public static enum RecipeDifficulty {

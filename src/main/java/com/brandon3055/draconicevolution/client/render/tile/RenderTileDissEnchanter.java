@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderTileDissEnchanter extends TESRBase<TileDissEnchanter> {
     @Override
-    public void renderTileEntityAt(TileDissEnchanter te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileDissEnchanter te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         ItemStack input = te.getStackInSlot(0);
 
         if (input != null) {

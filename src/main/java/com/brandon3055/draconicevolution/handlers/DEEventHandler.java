@@ -231,7 +231,7 @@ public class DEEventHandler {
         }
 
         EntityLivingBase entity = event.getEntityLiving();
-        Entity attacker = event.getSource().getEntity();
+        Entity attacker = event.getSource().getTrueSource();
 
         if (attacker == null || !(attacker instanceof EntityPlayer)) {
             return;

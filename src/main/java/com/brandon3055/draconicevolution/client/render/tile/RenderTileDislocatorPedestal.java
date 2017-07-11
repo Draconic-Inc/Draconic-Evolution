@@ -14,7 +14,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -31,7 +31,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
     public static List<BakedQuad> modelQuads = null;
 
     @Override
-    public void renderTileEntityAt(TileDislocatorPedestal te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileDislocatorPedestal te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         if (modelQuads == null) {
             modelQuads = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(DEFeatures.dislocatorPedestal.getDefaultState()).getQuads(DEFeatures.dislocatorPedestal.getDefaultState(), null, 0);
         }
@@ -89,7 +89,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         }
 
 
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
         Tessellator tess = Tessellator.getInstance();
 
         GlStateManager.pushMatrix();
@@ -116,7 +116,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         GlStateManager.color(0f, 0f, 0f, 0.5f);
         GlStateManager.disableTexture2D();
 
-        VertexBuffer buffer = tess.getBuffer();
+        BufferBuilder buffer = tess.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         buffer.pos(xmin, ymax, 0).tex(xmin / 64, 1).endVertex();
         buffer.pos(xmax, ymax, 0).tex(xmax / 64, 1).endVertex();

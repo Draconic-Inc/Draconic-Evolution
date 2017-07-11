@@ -12,7 +12,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 
 public class RenderTileFusionCraftingCore extends TESRBase<TileFusionCraftingCore> {
     @Override
-    public void renderTileEntityAt(TileFusionCraftingCore te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileFusionCraftingCore te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         if (MinecraftForgeClient.getRenderPass() == 0) {
             ItemStack stack = !te.getStackInCore(1).isEmpty() ? te.getStackInCore(1) : te.getStackInCore(0);
             if (!stack.isEmpty()) {

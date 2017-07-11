@@ -84,7 +84,7 @@ public class ModHelper {
 
     public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event) {
         if (summery == null) return event.getAmount();
-        EntityPlayer attacker = event.getSource().getEntity() instanceof EntityPlayer ? (EntityPlayer) event.getSource().getEntity() : null;
+        EntityPlayer attacker = event.getSource().getTrueSource() instanceof EntityPlayer ? (EntityPlayer) event.getSource().getTrueSource() : null;
 
         if (attacker == null) {
             return event.getAmount();

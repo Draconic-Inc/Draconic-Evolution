@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.IModelState;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * Handles switching between the 3d variant and 2d variant based on transform type.
  * Suppliers are used so we can dynamically re-bake models runtime.
  */
-public class ToolBakedModel extends AbstractBakedPropertiesModel implements IPerspectiveAwareModel {
+public class ToolBakedModel extends AbstractBakedPropertiesModel {
 
     private Supplier<IBakedModel> simpleModel;
     private Supplier<IBakedModel> fancyModel;
@@ -76,6 +76,6 @@ public class ToolBakedModel extends AbstractBakedPropertiesModel implements IPer
             state = fancyOverrideProcessor.apply(transformType, state);
         }
 
-        return MapWrapper.handlePerspective(model, state, transformType);
+        return PerspectiveMapWrapper.handlePerspective(model, state, transformType);
     }
 }

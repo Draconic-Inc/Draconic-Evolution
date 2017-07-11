@@ -14,7 +14,7 @@ import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInven
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.RenderEnergyBolt;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -50,11 +50,6 @@ public class ParticleFusionCrafting extends BCParticle {
         this.aRandomFloat = rand.nextFloat();
         this.rotYAngle = rand.nextFloat() * 1000;
         this.particleScale = 1F;
-    }
-
-    @Override
-    public boolean isTransparent() {
-        return true;
     }
 
     @Override
@@ -141,7 +136,12 @@ public class ParticleFusionCrafting extends BCParticle {
     }
 
     @Override
-    public void renderParticle(VertexBuffer vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public boolean shouldDisableDepth() {
+        return true;
+    }
+
+    @Override
+    public void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.draw(); //End Draw
         //region Icosahedron
@@ -218,7 +218,7 @@ public class ParticleFusionCrafting extends BCParticle {
         }
 
         @Override
-        public boolean isTransparent() {
+        public boolean shouldDisableDepth() {
             return true;
         }
 
@@ -242,7 +242,7 @@ public class ParticleFusionCrafting extends BCParticle {
         }
 
         @Override
-        public void renderParticle(VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void renderParticle(BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
             float minU = (float) this.particleTextureIndexX / 8.0F;
             float maxU = minU + 0.125F;
             float minV = (float) this.particleTextureIndexY / 8.0F;

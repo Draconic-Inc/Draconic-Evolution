@@ -50,7 +50,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
     }
 
     @Override
-    public void renderTileEntityAt(TileCrystalBase te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileCrystalBase te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         te.getFxHandler().renderCooldown = 5;
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();

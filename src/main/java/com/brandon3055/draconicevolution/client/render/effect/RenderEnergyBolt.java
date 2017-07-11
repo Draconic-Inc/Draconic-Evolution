@@ -5,7 +5,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
@@ -159,7 +159,7 @@ public class RenderEnergyBolt {
 
 
     private static void drawBoltSegment(Tessellator tessellator, Vec3D p1, Vec3D p2, float scale) {
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(p1.x, p1.y, p1.z);

@@ -51,7 +51,7 @@ public class PacketContributor implements IMessage {
                 ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(message.contributor);
 
                 if (ctx.side == Side.SERVER) {
-                    if (!contributor.isUserValid(ctx.getServerHandler().playerEntity)) {
+                    if (!contributor.isUserValid(ctx.getServerHandler().player)) {
                         return null;
                     }
 

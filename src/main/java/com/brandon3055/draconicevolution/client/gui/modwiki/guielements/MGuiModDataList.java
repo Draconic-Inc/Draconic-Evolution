@@ -37,7 +37,7 @@ public class MGuiModDataList extends MGuiListEntry {
     @Override
     public void initElement() {
         childElements.clear();
-        ySize = (modularGui.getMinecraft().fontRendererObj.listFormattedStringToWidth(modEntry.modName, xSize - 10).size() * 8) + 10;
+        ySize = (modularGui.getMinecraft().fontRenderer.listFormattedStringToWidth(modEntry.modName, xSize - 10).size() * 8) + 10;
         addChild(label = new MGuiLabel(modularGui, xPos, yPos, xSize, getEntryHeight(), modEntry.modName) {
             @Override
             public int getTextColour() {
@@ -50,7 +50,7 @@ public class MGuiModDataList extends MGuiListEntry {
     @Override
     public int getEntryHeight() {
         if (ySize == 0) {
-            ySize = (modularGui.getMinecraft().fontRendererObj.listFormattedStringToWidth(modEntry.modName, xSize - 10).size() * 8) + 10;
+            ySize = (modularGui.getMinecraft().fontRenderer.listFormattedStringToWidth(modEntry.modName, xSize - 10).size() * 8) + 10;
         }
 
         return ySize;

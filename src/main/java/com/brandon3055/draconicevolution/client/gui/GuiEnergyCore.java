@@ -54,36 +54,36 @@ public class GuiEnergyCore extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GuiHelper.drawGuiBaseBackground(this, guiLeft, guiTop, xSize, ySize);
         GuiHelper.drawPlayerSlots(this, guiLeft + (xSize / 2), guiTop + 115, true);
-        drawCenteredString(fontRendererObj, I18n.format("gui.de.energyStorageCore.name", tile.tier.toString()), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
+        drawCenteredString(fontRenderer, I18n.format("gui.de.energyStorageCore.name", tile.tier.toString()), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
 
         if (tile.active.value) {
-            GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.de.capacity.txt"), guiLeft + xSize / 2, guiTop + 16, 0xFFAA00, true);
+            GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.de.capacity.txt"), guiLeft + xSize / 2, guiTop + 16, 0xFFAA00, true);
             String capText = tile.tier.value == 8 ? I18n.format("gui.de.almostInfinite.txt") : Utils.formatNumber(tile.getExtendedCapacity());
-            GuiHelper.drawCenteredString(fontRendererObj, capText, guiLeft + xSize / 2, guiTop + 27, 0x555555, false);
+            GuiHelper.drawCenteredString(fontRenderer, capText, guiLeft + xSize / 2, guiTop + 27, 0x555555, false);
 
             DecimalFormat energyValue = new DecimalFormat("###.###");
             double percent = (double) tile.getExtendedStorage() / (double) tile.getExtendedCapacity() * 100D;
-            GuiHelper.drawCenteredString(fontRendererObj, I18n.format("info.bc.charge.txt"), guiLeft + xSize / 2, guiTop + 38, 0xFFAA00, true);
-            GuiHelper.drawCenteredString(fontRendererObj, Utils.formatNumber(tile.getExtendedStorage()) + "RF [" + energyValue.format(percent) + "%]", guiLeft + xSize / 2, guiTop + 49, 0x555555, false);
+            GuiHelper.drawCenteredString(fontRenderer, I18n.format("info.bc.charge.txt"), guiLeft + xSize / 2, guiTop + 38, 0xFFAA00, true);
+            GuiHelper.drawCenteredString(fontRenderer, Utils.formatNumber(tile.getExtendedStorage()) + "RF [" + energyValue.format(percent) + "%]", guiLeft + xSize / 2, guiTop + 49, 0x555555, false);
 
             int coreColour = tile.transferRate.value > 0 ? 0x00FF00 : tile.transferRate.value < 0 ? 0xFF0000 : 0x222222;
             String transfer = (tile.transferRate.value > 0 ? "+" : tile.transferRate.value < 0 ? "-" : "") + Utils.formatNumber(Math.abs(tile.transferRate.value)) + " RF/t";
-            GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.de.transfer.txt"), guiLeft + xSize / 2, guiTop + 59, 0xFFAA00, true);
-            GuiHelper.drawCenteredString(fontRendererObj, transfer, guiLeft + xSize / 2, guiTop + 70, coreColour, tile.transferRate.value > 0);
+            GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.de.transfer.txt"), guiLeft + xSize / 2, guiTop + 59, 0xFFAA00, true);
+            GuiHelper.drawCenteredString(fontRenderer, transfer, guiLeft + xSize / 2, guiTop + 70, coreColour, tile.transferRate.value > 0);
         }
         else {
             int stabColour = tile.stabilizersOK.value ? 0x00FF00 : 0xFF0000;
             String stabText = I18n.format("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.value ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
-            GuiHelper.drawCenteredString(fontRendererObj, stabText, guiLeft + xSize / 2, guiTop + 18, stabColour, tile.stabilizersOK.value);
+            GuiHelper.drawCenteredString(fontRenderer, stabText, guiLeft + xSize / 2, guiTop + 18, stabColour, tile.stabilizersOK.value);
             if (tile.tier.value >= 5) {
-                GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.de.advancedStabilizersRequired.txt"), guiLeft + xSize / 2, guiTop + 28, 0x777777, false);
+                GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.de.advancedStabilizersRequired.txt"), guiLeft + xSize / 2, guiTop + 28, 0x777777, false);
             }
 
             int coreColour = tile.coreValid.value ? 0x00FF00 : 0xFF0000;
             String coreText = I18n.format("gui.de.core.txt") + ": " + (tile.coreValid.value ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
-            GuiHelper.drawCenteredString(fontRendererObj, coreText, guiLeft + xSize / 2, guiTop + 36, coreColour, tile.coreValid.value);
+            GuiHelper.drawCenteredString(fontRenderer, coreText, guiLeft + xSize / 2, guiTop + 36, coreColour, tile.coreValid.value);
             if (!tile.coreValid.value) {
-                GuiHelper.drawCenteredSplitString(fontRendererObj, tile.invalidMessage.value, guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.value);
+                GuiHelper.drawCenteredSplitString(fontRenderer, tile.invalidMessage.value, guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.value);
             }
         }
     }

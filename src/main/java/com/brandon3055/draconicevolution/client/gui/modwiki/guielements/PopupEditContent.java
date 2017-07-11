@@ -65,7 +65,7 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
 
         MGuiLabel nameLabel = new MGuiLabel(modularGui, xPos, yPos + 2, xSize, 12, "Edit Name").setAlignment(EnumAlignment.LEFT);
         addChild(nameLabel);
-        addChild(nameField = new MGuiTextField(modularGui, xPos + 2, nameLabel.yPos + 12, xSize - 4, 16, modularGui.getMinecraft().fontRendererObj));
+        addChild(nameField = new MGuiTextField(modularGui, xPos + 2, nameLabel.yPos + 12, xSize - 4, 16, modularGui.getMinecraft().fontRenderer));
         nameField.setMaxStringLength(512);
         nameField.setText(branch.branchName);
 
@@ -81,7 +81,7 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
             toolTip.add("Display stack not set");
             stackRef = new StackReference(new ItemStack(Blocks.BARRIER));
         }
-        addChild(stackString = new MGuiTextField(modularGui, xPos + 2, iconLabel.yPos + 12, xSize - 4, 16, modularGui.getMinecraft().fontRendererObj));
+        addChild(stackString = new MGuiTextField(modularGui, xPos + 2, iconLabel.yPos + 12, xSize - 4, 16, modularGui.getMinecraft().fontRenderer));
         stackString.setMaxStringLength(512);
         stackString.setText(toolTip.size() > 0 ? "" : stackRef.toString());
         addChild(stackIcon = new MGuiStackIcon(modularGui, xPos + 3, stackString.yPos + 18, 18, 18, stackRef));
@@ -106,7 +106,7 @@ public class PopupEditContent extends MGuiPopUpDialog implements IMGuiListener {
         addChild(new MGuiButtonSolid(modularGui, "COPY_ID", xPos + 2, stackIcon.yPos + 64, xSize - 4, 14, "Copy ID for link").setColours(0xFF00a000, 0xFF000000, 0xFFFFFFFF).setListener(this).setToolTip(new String[]{"Copies this branch's id to your clipboard. It can then be used in links to link back to this branch."}));
 
         addChild(new MGuiLabel(modularGui, xPos, yPos + 140, xSize, 12, "Sorting Weight").setAlignment(EnumAlignment.LEFT));
-        addChild(weightField = new MGuiTextField(modularGui, xPos + 2, yPos + 152, xSize - 4, 16, modularGui.getMinecraft().fontRendererObj));
+        addChild(weightField = new MGuiTextField(modularGui, xPos + 2, yPos + 152, xSize - 4, 16, modularGui.getMinecraft().fontRenderer));
         weightField.setMaxStringLength(10);
         weightField.setText(String.valueOf(branch.sortingWeight));
         weightField.setId("SET_WEIGHT");

@@ -8,8 +8,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -388,7 +388,7 @@ public class EntityCustomArrow extends EntityArrow {
             return null;
         }
         Entity entity = null;
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expandXyz(1.0D), ARROW_TARGETS);
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().grow(this.motionX, this.motionY, this.motionZ).grow(1.0D), ARROW_TARGETS);
         double d0 = 0.0D;
 
         for (int i = 0; i < list.size(); ++i)
@@ -397,7 +397,7 @@ public class EntityCustomArrow extends EntityArrow {
 
             if (entity1 != this.shootingEntity || this.ticksInAir >= 10)
             {
-                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expandXyz(0.30000001192092896D);
+                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(0.30000001192092896D);
                 RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
 
                 if (raytraceresult != null)
@@ -545,8 +545,8 @@ public class EntityCustomArrow extends EntityArrow {
                 traceResult.entityHit.hurtResistantTime = 0;
             }
 
-            if (traceResult.entityHit instanceof EntityDragonPart && ((EntityDragonPart) traceResult.entityHit).entityDragonObj instanceof EntityDragon && bowProperties.energyBolt) {
-                ((EntityDragon) ((EntityDragonPart) traceResult.entityHit).entityDragonObj).hurtResistantTime = 0;
+            if (traceResult.entityHit instanceof MultiPartEntityPart && ((MultiPartEntityPart) traceResult.entityHit).parent instanceof EntityDragon && bowProperties.energyBolt) {
+                ((EntityDragon) ((MultiPartEntityPart) traceResult.entityHit).parent).hurtResistantTime = 0;
             }
 
             if (traceResult.entityHit.attackEntityFrom(getDamageSource(), actualDamage)) {
@@ -589,9 +589,9 @@ public class EntityCustomArrow extends EntityArrow {
             IBlockState iblockstate = world.getBlockState(blockpos);
             inTile = iblockstate.getBlock();
             inData = inTile.getMetaFromState(iblockstate);
-            motionX = (double) ((float) (traceResult.hitVec.xCoord - posX));
-            motionY = (double) ((float) (traceResult.hitVec.yCoord - posY));
-            motionZ = (double) ((float) (traceResult.hitVec.zCoord - posZ));
+            motionX = (double) ((float) (traceResult.hitVec.x - posX));
+            motionY = (double) ((float) (traceResult.hitVec.y - posY));
+            motionZ = (double) ((float) (traceResult.hitVec.z - posZ));
             float f2 = MathHelper.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
             posX -= motionX / (double) f2 * 0.05000000074505806D;
             posY -= motionY / (double) f2 * 0.05000000074505806D;

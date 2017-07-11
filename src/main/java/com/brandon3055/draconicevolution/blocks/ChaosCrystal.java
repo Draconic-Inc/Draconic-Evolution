@@ -51,7 +51,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
     }
 
     @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {}
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {}
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {

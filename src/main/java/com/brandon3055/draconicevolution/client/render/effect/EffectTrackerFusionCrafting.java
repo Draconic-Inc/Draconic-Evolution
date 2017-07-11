@@ -17,7 +17,7 @@ import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -148,7 +148,7 @@ public class EffectTrackerFusionCrafting {
     }
 
     public void renderEffect(Tessellator tessellator, float partialTicks) {
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
         CCRenderState ccrs = CCRenderState.instance();
         //region Icosahedron
 
@@ -208,7 +208,7 @@ public class EffectTrackerFusionCrafting {
         }
 
         @Override
-        public boolean isTransparent() {
+        public boolean shouldDisableDepth() {
             return true;
         }
 
@@ -232,7 +232,7 @@ public class EffectTrackerFusionCrafting {
         }
 
         @Override
-        public void renderParticle(VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void renderParticle(BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
             float minU = (float) this.particleTextureIndexX / 8.0F;
             float maxU = minU + 0.125F;
             float minV = (float) this.particleTextureIndexY / 8.0F;

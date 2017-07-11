@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.entity;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
-import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.IMob;
@@ -40,20 +39,20 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
     /**
      * An array containing all body parts of this dragon
      */
-    public EntityDragonPart[] dragonPartArray;
+    public MultiPartEntityPart[] dragonPartArray;
     /**
      * The head bounding box of a dragon
      */
-    public EntityDragonPart dragonPartHead;
+    public MultiPartEntityPart dragonPartHead;
     /**
      * The body bounding box of a dragon
      */
-    public EntityDragonPart dragonPartBody;
-    public EntityDragonPart dragonPartTail1;
-    public EntityDragonPart dragonPartTail2;
-    public EntityDragonPart dragonPartTail3;
-    public EntityDragonPart dragonPartWing1;
-    public EntityDragonPart dragonPartWing2;
+    public MultiPartEntityPart dragonPartBody;
+    public MultiPartEntityPart dragonPartTail1;
+    public MultiPartEntityPart dragonPartTail2;
+    public MultiPartEntityPart dragonPartTail3;
+    public MultiPartEntityPart dragonPartWing1;
+    public MultiPartEntityPart dragonPartWing2;
     /**
      * Animation time at previous tick.
      */
@@ -79,7 +78,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 
     public EntityDragonOld(World p_i1700_1_) {
         super(p_i1700_1_);
-        this.dragonPartArray = new EntityDragonPart[]{this.dragonPartHead = new EntityDragonPart(this, "head", 6.0F, 6.0F), this.dragonPartBody = new EntityDragonPart(this, "body", 8.0F, 8.0F), this.dragonPartTail1 = new EntityDragonPart(this, "tail", 4.0F, 4.0F), this.dragonPartTail2 = new EntityDragonPart(this, "tail", 4.0F, 4.0F), this.dragonPartTail3 = new EntityDragonPart(this, "tail", 4.0F, 4.0F), this.dragonPartWing1 = new EntityDragonPart(this, "wing", 4.0F, 4.0F), this.dragonPartWing2 = new EntityDragonPart(this, "wing", 4.0F, 4.0F)};
+        this.dragonPartArray = new MultiPartEntityPart[]{this.dragonPartHead = new MultiPartEntityPart(this, "head", 6.0F, 6.0F), this.dragonPartBody = new MultiPartEntityPart(this, "body", 8.0F, 8.0F), this.dragonPartTail1 = new MultiPartEntityPart(this, "tail", 4.0F, 4.0F), this.dragonPartTail2 = new MultiPartEntityPart(this, "tail", 4.0F, 4.0F), this.dragonPartTail3 = new MultiPartEntityPart(this, "tail", 4.0F, 4.0F), this.dragonPartWing1 = new MultiPartEntityPart(this, "wing", 4.0F, 4.0F), this.dragonPartWing2 = new MultiPartEntityPart(this, "wing", 4.0F, 4.0F)};
         this.setHealth(this.getMaxHealth());
         this.setSize(16.0F, 8.0F);
         this.noClip = true;
@@ -507,7 +506,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
     }
 
     @Override
-    public boolean attackEntityFromPart(EntityDragonPart p_70965_1_, DamageSource p_70965_2_, float p_70965_3_) {
+    public boolean attackEntityFromPart(MultiPartEntityPart p_70965_1_, DamageSource p_70965_2_, float p_70965_3_) {
         if (p_70965_1_ != this.dragonPartHead) {
             p_70965_3_ = p_70965_3_ / 4.0F + 1.0F;
         }
@@ -520,7 +519,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
         this.targetZ = this.posZ - (double) (f3 * 5.0F) + (double) ((this.rand.nextFloat() - 0.5F) * 2.0F);
         this.target = null;
 
-        if (p_70965_2_.getEntity() instanceof EntityPlayer || p_70965_2_.isExplosion()) {
+        if (p_70965_2_.getTrueSource() instanceof EntityPlayer || p_70965_2_.isExplosion()) {
             this.attackEntityFrom(p_70965_2_, p_70965_3_);
         }
 
@@ -678,7 +677,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
      * Returns the sound this mob makes when it is hurt.
      */
     @Override
-    protected SoundEvent getHurtSound() {
+    protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
         return SoundEvents.ENTITY_ENDERDRAGON_HURT;
     }
 

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -23,7 +23,7 @@ public class ParticleStarSpark extends BCParticle {
     }
 
     @Override
-    public boolean isTransparent() {
+    public boolean shouldDisableDepth() {
         return true;
     }
 
@@ -55,7 +55,7 @@ public class ParticleStarSpark extends BCParticle {
     }
 
     @Override
-    public void renderParticle(VertexBuffer vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         if (particleAge == 0) {
             return;
         }

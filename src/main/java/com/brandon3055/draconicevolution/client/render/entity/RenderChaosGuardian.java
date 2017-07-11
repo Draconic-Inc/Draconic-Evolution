@@ -101,7 +101,7 @@ public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
             GL11.glRotatef((float) (-Math.atan2((double) renderZ, (double) renderX)) * 180.0F / (float) Math.PI - 90.0F, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef((float) (-Math.atan2((double) f7, (double) renderY)) * 180.0F / (float) Math.PI - 90.0F, 1.0F, 0.0F, 0.0F);
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.getBuffer();
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_CULL_FACE);
             this.bindTexture(ResourceHelperDE.getResourceRAW("textures/entity/endercrystal/endercrystal_beam.png"));
@@ -238,7 +238,7 @@ public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
             GlStateManager.enableLighting();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.dragonRenderer.getMainModel().render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-            this.dragonRenderer.setLightmap(entitylivingbaseIn, partialTicks);
+            this.dragonRenderer.setLightmap(entitylivingbaseIn);
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
             GlStateManager.depthFunc(515);

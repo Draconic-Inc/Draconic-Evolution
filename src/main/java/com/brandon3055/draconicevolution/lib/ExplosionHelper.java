@@ -214,7 +214,7 @@ public class ExplosionHelper {
                 chunk.setModified(true);
                 chunk.generateSkylightMap(); //This is where this falls short. It can calculate basic sky lighting for blocks exposed to the sky but thats it.
 
-                PlayerChunkMapEntry watcher = playerChunkMap.getEntry(chunk.xPosition, chunk.zPosition);
+                PlayerChunkMapEntry watcher = playerChunkMap.getEntry(chunk.x, chunk.z);
                 if (watcher != null) {//TODO Change chunk mask to only the sub chunks changed.
                     watcher.sendPacket(new SPacketChunkData(chunk, 65535));
                 }

@@ -8,7 +8,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 
 public class RenderTileCelestialManipulator extends TESRBase<TileCelestialManipulator> {
     @Override
-    public void renderTileEntityAt(TileCelestialManipulator te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileCelestialManipulator te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player == null) {
             return;

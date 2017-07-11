@@ -20,7 +20,7 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
     }
 
     @Override
-    public void renderTileEntityAt(TileEnergyCoreStabilizer te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileEnergyCoreStabilizer te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
         GlStateManager.disableBlend();

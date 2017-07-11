@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.boss.EntityDragonPart;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.SoundEvents;
@@ -188,7 +188,7 @@ public class EntityGuardianProjectile extends Entity {
         double targetDistance = Utils.getDistanceAtoB(posX, posY, posZ, target.posX, target.posY, target.posZ);
 
         Entity entityHit = getHitEntity();
-        if (entityHit instanceof EntityDragonPart) {
+        if (entityHit instanceof MultiPartEntityPart) {
             entityHit = null;
         }
 
@@ -297,7 +297,7 @@ public class EntityGuardianProjectile extends Entity {
         Vec3d vec3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
         Entity entityHit = null;
-        List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+        List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
         double d0 = 0.0D;
         int i;
         float f1;
@@ -349,11 +349,11 @@ public class EntityGuardianProjectile extends Entity {
         if (heath <= 0) {
             return false;
         }
-        if ((source.getEntity() instanceof EntityPlayer || source.getEntity() instanceof EntityArrow) && ticksExisted > 5) {
+        if ((source.getTrueSource() instanceof EntityPlayer || source.getTrueSource() instanceof EntityArrow) && ticksExisted > 5) {
             heath -= dmg;
         }
-        if (source.getSourceOfDamage() instanceof EntityArrow) {
-            source.getSourceOfDamage().setDead();
+        if (source.getImmediateSource() instanceof EntityArrow) {
+            source.getImmediateSource().setDead();
         }
 
         if (heath <= 0) {

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.guielements;
 
-import codechicken.lib.asm.ObfMapping;
+import codechicken.lib.reflect.ObfMapping;
 import com.brandon3055.brandonscore.client.gui.modulargui.IModularGui;
 import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
@@ -115,7 +115,7 @@ public class WikiConfigWindow extends MGuiElementBase implements IMGuiListener {
                 }
             }.setListener(this));
             addChild(new MGuiLabel(modularGui, xPos + 17 + size, yPos + 77, size, 12, "Edit Directory"));
-            addChild(new MGuiTextField(modularGui, xPos + 15, yPos + 91, size * 3 + 4, 12, modularGui.getMinecraft().fontRendererObj).setMaxStringLength(1024).setText(WikiConfig.docLocation).setListener(this));
+            addChild(new MGuiTextField(modularGui, xPos + 15, yPos + 91, size * 3 + 4, 12, modularGui.getMinecraft().fontRenderer).setMaxStringLength(1024).setText(WikiConfig.docLocation).setListener(this));
         }
 
         super.initElement();

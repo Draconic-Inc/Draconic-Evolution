@@ -152,13 +152,13 @@ public class GuiHudConfig extends GuiScreen {
         int armorX = (int) ((pos[2] / 1000D) * width);
         int armorY = (int) ((pos[3] / 1000D) * height);
 
-        drawCenteredString(fontRendererObj, I18n.format("gui.de.configureGuiElements.txt"), width / 2, height / 2 - 90, 0x00FFFF);
-        drawCenteredString(fontRendererObj, I18n.format("gui.de.hudDisplaySettings.txt"), width / 2, height / 2 - 77, 0xFFFFFF);
-        drawCenteredString(fontRendererObj, I18n.format("gui.de.shieldDisplaySettings.txt"), width / 2, height / 2 - 15, 0xFFFFFF);
-        drawCenteredString(fontRendererObj, I18n.format("gui.de.clickAndDragPurpleBoxes.txt"), width / 2, height / 2 + 85, 0xFFFFFF);
+        drawCenteredString(fontRenderer, I18n.format("gui.de.configureGuiElements.txt"), width / 2, height / 2 - 90, 0x00FFFF);
+        drawCenteredString(fontRenderer, I18n.format("gui.de.hudDisplaySettings.txt"), width / 2, height / 2 - 77, 0xFFFFFF);
+        drawCenteredString(fontRenderer, I18n.format("gui.de.shieldDisplaySettings.txt"), width / 2, height / 2 - 15, 0xFFFFFF);
+        drawCenteredString(fontRenderer, I18n.format("gui.de.clickAndDragPurpleBoxes.txt"), width / 2, height / 2 + 85, 0xFFFFFF);
 
-        drawCenteredString(fontRendererObj, DEConfig.hudSettings[4] + "%", width / 2 + 97, height / 2 - 63, 0xFFFFFF);
-        drawCenteredString(fontRendererObj, DEConfig.hudSettings[5] + "%", width / 2 + 97, height / 2 - 1, 0xFFFFFF);
+        drawCenteredString(fontRenderer, DEConfig.hudSettings[4] + "%", width / 2 + 97, height / 2 - 63, 0xFFFFFF);
+        drawCenteredString(fontRenderer, DEConfig.hudSettings[5] + "%", width / 2 + 97, height / 2 - 1, 0xFFFFFF);
         super.drawScreen(x, y, partial);
 
         GlStateManager.disableRescaleNormal();
@@ -190,7 +190,7 @@ public class GuiHudConfig extends GuiScreen {
         if (GuiHelper.isInRect(armorX - 19, armorY - 19, 39, 39, x, y) || GuiHelper.isInRect(hudX - 19, hudY - 19, 39, 39, x, y)) {
             drawHoveringText(new ArrayList<String>() {{
                 add(I18n.format("info.de.hudDisplayConfigTxt2.txt"));
-            }}, x, y, fontRendererObj);
+            }}, x, y, fontRenderer);
         }
 
     }

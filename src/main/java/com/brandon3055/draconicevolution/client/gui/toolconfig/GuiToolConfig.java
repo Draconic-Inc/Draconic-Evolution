@@ -226,16 +226,16 @@ public class GuiToolConfig extends GuiScreen {
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float pt) {
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             // super.drawButton(mc, mouseX, mouseY);
 
             if (!stack.isEmpty()) {
                 if (hovered && stack.getItem() instanceof IConfigurableItem) {
                     GlStateManager.disableLighting();
                     GlStateManager.disableDepth();
-                    int j1 = xPosition;
-                    int k1 = yPosition;
+                    int j1 = x;
+                    int k1 = y;
                     GlStateManager.colorMask(true, true, true, false);
                     this.drawGradientRect(j1, k1, j1 + 18, k1 + 18, 0x3000ffff, 0x3000ffff);
                     GlStateManager.colorMask(true, true, true, true);
@@ -243,25 +243,25 @@ public class GuiToolConfig extends GuiScreen {
                     GlStateManager.enableDepth();
                 }
 
-                mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, xPosition + 1, yPosition + 1);
-                mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRendererObj, stack, xPosition + 1, yPosition + 1, stack.getCount() > 1 ? String.valueOf(stack.getCount()) : "");
+                mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, x + 1, y + 1);
+                mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, stack, x + 1, y + 1, stack.getCount() > 1 ? String.valueOf(stack.getCount()) : "");
             }
 
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
             GlStateManager.colorMask(true, true, true, false);
             if (stack.isEmpty() || !(stack.getItem() instanceof IConfigurableItem)) {
-                this.drawGradientRect(xPosition, yPosition, xPosition + 18, yPosition + 18, 0xB0000000, 0xB0000000);
-                GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, 1, 16, 0x55FF0000);
-                GuiHelper.drawColouredRect(xPosition + 16, yPosition + 1, 1, 16, 0x55FF0000);
-                GuiHelper.drawColouredRect(xPosition + 2, yPosition + 1, 14, 1, 0x55FF0000);
-                GuiHelper.drawColouredRect(xPosition + 2, yPosition + 16, 14, 1, 0x55FF0000);
+                this.drawGradientRect(x, y, x + 18, y + 18, 0xB0000000, 0xB0000000);
+                GuiHelper.drawColouredRect(x + 1, y + 1, 1, 16, 0x55FF0000);
+                GuiHelper.drawColouredRect(x + 16, y + 1, 1, 16, 0x55FF0000);
+                GuiHelper.drawColouredRect(x + 2, y + 1, 14, 1, 0x55FF0000);
+                GuiHelper.drawColouredRect(x + 2, y + 16, 14, 1, 0x55FF0000);
             }
             else {
-                GuiHelper.drawColouredRect(xPosition, yPosition, 1, 18, 0x8800FF00);
-                GuiHelper.drawColouredRect(xPosition + 17, yPosition, 1, 18, 0x8800FF00);
-                GuiHelper.drawColouredRect(xPosition + 1, yPosition, 16, 1, 0x8800FF00);
-                GuiHelper.drawColouredRect(xPosition + 1, yPosition + 17, 16, 1, 0x8800FF00);
+                GuiHelper.drawColouredRect(x, y, 1, 18, 0x8800FF00);
+                GuiHelper.drawColouredRect(x + 17, y, 1, 18, 0x8800FF00);
+                GuiHelper.drawColouredRect(x + 1, y, 16, 1, 0x8800FF00);
+                GuiHelper.drawColouredRect(x + 1, y + 17, 16, 1, 0x8800FF00);
             }
             GlStateManager.colorMask(true, true, true, true);
             GlStateManager.enableLighting();

@@ -20,7 +20,7 @@ import java.util.List;
 public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
 
     @Override
-    public void renderTileEntityAt(TilePlacedItem te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TilePlacedItem te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();
         GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);

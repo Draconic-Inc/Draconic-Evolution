@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -165,7 +166,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
     //region Misc
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+    public void addInformation(ItemStack stack, World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         short selected = ItemNBTHelper.getShort(stack, "Selection", (short) 0);
         int selrctionOffset = ItemNBTHelper.getInteger(stack, "SelectionOffset", 0);
         NBTTagCompound compound = ItemNBTHelper.getCompound(stack);

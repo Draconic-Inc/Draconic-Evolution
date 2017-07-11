@@ -9,11 +9,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.boss.EntityDragonPart;
+import net.minecraft.entity.*;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -391,7 +387,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
             this.rotationYaw += this.randomYawVelocity * 0.1F;
             float f7 = (float) (2.0D / (d9 + 1.0D));
             float f8 = 0.06F;
-            this.moveRelative(0.0F, -1.0F, f8 * (f5 * f7 + (1.0F - f7)));
+            this.moveRelative(0.0F, 0.0F, -1.0F, 0.06F * (f7 * f8 + (1.0F - f8)));
 
             if (this.slowed) {
                 this.move(MoverType.SELF, this.motionX * 0.800000011920929D * moveSpeedMultiplier, this.motionY * 0.800000011920929D * moveSpeedMultiplier, this.motionZ * 0.800000011920929D * moveSpeedMultiplier);
@@ -446,7 +442,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
         this.dragonPartHead.setLocationAndAngles(this.posX + (double) (f12 * 5.5F * f2), this.posY + (adouble[1] - adouble1[1]) * 1.0D + (double) (f10 * 5.5F), this.posZ - (double) (f13 * 5.5F * f2), 0.0F, 0.0F);
 
         for (int j = 0; j < 3; ++j) {
-            EntityDragonPart entitydragonpart = null;
+            MultiPartEntityPart entitydragonpart = null;
 
             if (j == 0) {
                 entitydragonpart = this.dragonPartTail1;
@@ -868,7 +864,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
     }
 
     @Override
-    public boolean attackEntityFromPart(EntityDragonPart part, DamageSource damageSource, float dmg) {
+    public boolean attackEntityFromPart(MultiPartEntityPart part, DamageSource damageSource, float dmg) {
         if (behaviour == EnumBehaviour.DEAD) return false;
 
         if (part != this.dragonPartHead) {
@@ -899,14 +895,14 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 if (rand.nextInt(6) == 0 && getHealth() >= getMaxHealth() * 0.2F) {
                     selectNewBehaviour();
                 }
-                if (damageSource.getEntity() instanceof EntityPlayer && attackInProgress != ATTACK_TELEPORT) {
+                if (damageSource.getTrueSource() instanceof EntityPlayer && attackInProgress != ATTACK_TELEPORT) {
                     int escape = 0;
                     boolean flag = false;
                     while (!flag && escape < 50) {
                         targetX = homeX + ((rand.nextDouble() - 0.5D) * 260D);
                         targetY = homeY + 20 + (rand.nextDouble() - 0.5D) * 50D;
                         targetZ = homeZ + ((rand.nextDouble() - 0.5D) * 260D);
-                        if (this.getDistanceToEntity(damageSource.getEntity()) >= 70) {
+                        if (this.getDistanceToEntity(damageSource.getImmediateSource()) >= 70) {
                             flag = true;
                         }
                         escape++;
@@ -919,20 +915,20 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 if ((target == null && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0) {
                     selectNewBehaviour();
                 }
-                if (damageSource.getEntity() instanceof EntityPlayer && damageSource.getEntity() != target && world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getEntity().posX, damageSource.getEntity().posY, damageSource.getEntity().posZ)) == null) {
-                    target = damageSource.getEntity();
+                if (damageSource.getTrueSource() instanceof EntityPlayer && damageSource.getTrueSource() != target && world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getTrueSource().posX, damageSource.getTrueSource().posY, damageSource.getTrueSource().posZ)) == null) {
+                    target = damageSource.getTrueSource();
                 }
                 break;
             case DEAD:
                 break;
         }
 
-        if ((damageSource.getEntity() instanceof EntityPlayer || damageSource.isExplosion()) && healingChaosCrystal == null)//tod reanable this
+        if ((damageSource.getTrueSource() instanceof EntityPlayer || damageSource.isExplosion()) && healingChaosCrystal == null)//tod reanable this
         {
             super.attackEntityFrom(damageSource, dmg);
         }
-        else if (damageSource.getEntity() instanceof EntityPlayer) {
-            ((EntityPlayer) damageSource.getEntity()).sendMessage(new TextComponentTranslation("msg.de.guardianAttackBlocked.txt").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)));
+        else if (damageSource.getTrueSource() instanceof EntityPlayer) {
+            ((EntityPlayer) damageSource.getTrueSource()).sendMessage(new TextComponentTranslation("msg.de.guardianAttackBlocked.txt").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)));
         }
 
         return true;
@@ -1094,7 +1090,6 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 Entity entity = (Entity) par1List.get(i);
 
                 if (entity instanceof EntityPlayer) {
-                    ((EntityLivingBase) entity).setLastAttacker(this);
                     entity.attackEntityFrom(new DEDamageSources.DamageSourceChaos(this), 50F);
                     hasAttacked = true;
                 }

@@ -7,6 +7,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -69,7 +70,7 @@ public class TileDissEnchanter extends TileInventoryBase {
             }
 
             if (!client.capabilities.isCreativeMode) {
-                client.removeExperienceLevel(cost);
+                client.addExperienceLevel(-cost);
             }
 
             NBTTagCompound stackCompound = input.getTagCompound();
@@ -87,7 +88,7 @@ public class TileDissEnchanter extends TileInventoryBase {
             stackCompound.setInteger("RepairCost", repairCost);
 
             ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
-            Items.ENCHANTED_BOOK.addEnchantment(book, new EnchantmentData(e, lvl));
+            ItemEnchantedBook.addEnchantment(book, new EnchantmentData(e, lvl));
             setInventorySlotContents(2, book);
             list.removeTag(i);
 

@@ -298,7 +298,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                 if (stageTime == 300) {
                     List<Entity> list = world.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
                     for (Entity entity : list) {
-                        if (entity instanceof EntityEnderman || (entity instanceof EntityItem && ((EntityItem) entity).getEntityItem().getItem() == Items.ENDER_PEARL) || entity instanceof EntityAreaEffectCloud) {
+                        if (entity instanceof EntityEnderman || (entity instanceof EntityItem && ((EntityItem) entity).getItem().getItem() == Items.ENDER_PEARL) || entity instanceof EntityAreaEffectCloud) {
                             entity.setDead();
                         }
                     }

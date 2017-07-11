@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.client.gui.ButtonColourRect;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerRecipeBuilder;
-import com.brandon3055.draconicevolution.lib.RecipeManager;
 import com.google.common.base.CaseFormat;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -49,7 +48,7 @@ public class GuiRecipeBuilder extends GuiContainer {
     @Override
     public void initGui() {
         super.initGui();
-        textField = new GuiTextField(0, fontRendererObj, 1, guiTop + 119, guiLeft + xSize, 12);
+        textField = new GuiTextField(0, fontRenderer, 1, guiTop + 119, guiLeft + xSize, 12);
         textField.setEnableBackgroundDrawing(false);
         textField.setTextColor(0x00FF00);
         textField.setMaxStringLength(1000);
@@ -126,7 +125,7 @@ public class GuiRecipeBuilder extends GuiContainer {
         textField.drawTextBox();
         GlStateManager.pushMatrix();
         GlStateManager.scale(0.666, 0.666, 0.666);
-        fontRendererObj.drawSplitString(textField.getText(), 5, 5, (int) ((guiLeft + xSize - 10) * 1.5D), 0xFFFFFF);
+        fontRenderer.drawSplitString(textField.getText(), 5, 5, (int) ((guiLeft + xSize - 10) * 1.5D), 0xFFFFFF);
         GlStateManager.popMatrix();
     }
 
@@ -173,7 +172,7 @@ public class GuiRecipeBuilder extends GuiContainer {
             }
         }
         else if (button.id == 100) {
-            RecipeManager.loadRecipes();
+//            RecipeManager.loadRecipes();
             ModHelper.reloadJEI();
         }
     }

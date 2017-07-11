@@ -53,11 +53,11 @@ public class PacketSimpleBoolean implements IMessage {
             switch (message.id) {
 
                 case ID_TOOL_CONFIG: {
-                    ctx.getServerHandler().playerEntity.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().playerEntity.world, (int) ctx.getServerHandler().playerEntity.posX, (int) ctx.getServerHandler().playerEntity.posY, (int) ctx.getServerHandler().playerEntity.posZ);
+                    ctx.getServerHandler().player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().player.world, (int) ctx.getServerHandler().player.posX, (int) ctx.getServerHandler().player.posY, (int) ctx.getServerHandler().player.posZ);
                     break;
                 }
                 case ID_TOOL_PROFILE_CHANGE: {
-                    ItemStack stack = HandHelper.getMainFirst(ctx.getServerHandler().playerEntity);
+                    ItemStack stack = HandHelper.getMainFirst(ctx.getServerHandler().player);
                     if (!stack.isEmpty() && stack.getItem() instanceof IConfigurableItem) {
                         ToolConfigHelper.incrementProfile(stack);
                     }

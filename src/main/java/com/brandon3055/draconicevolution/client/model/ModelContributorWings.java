@@ -87,7 +87,7 @@ public class ModelContributorWings extends ModelBase {
 
             if (entity.motionY < 0.0D) {
                 Vec3d vec3d = (new Vec3d(entity.motionX, entity.motionY, entity.motionZ)).normalize();
-                f4 = 1.0F - (float) Math.pow(-vec3d.yCoord, 1.5D);
+                f4 = 1.0F - (float) Math.pow(-vec3d.y, 1.5D);
             }
 
             float f1 = 0;

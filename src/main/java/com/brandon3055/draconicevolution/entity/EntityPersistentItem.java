@@ -23,7 +23,7 @@ public class EntityPersistentItem extends EntityItem {
 
     public EntityPersistentItem(World par1World, double par2, double par4, double par6, ItemStack par8ItemStack) {
         this(par1World, par2, par4, par6);
-        this.setEntityItemStack(par8ItemStack);
+        this.setItem(par8ItemStack);
         this.lifespan = 72000;
     }
 
@@ -44,7 +44,7 @@ public class EntityPersistentItem extends EntityItem {
         this.motionX = original.motionX;
         this.motionY = original.motionY;
         this.motionZ = original.motionZ;
-        this.setEntityItemStack(stack);
+        this.setItem(stack);
         this.lifespan = 72000;
     }
 

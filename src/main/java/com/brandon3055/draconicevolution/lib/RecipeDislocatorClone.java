@@ -10,6 +10,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -18,6 +19,8 @@ import javax.annotation.Nullable;
  * Created by brandon3055 on 27/07/2016.
  */
 public class RecipeDislocatorClone implements IRecipe {
+    private ResourceLocation name;
+
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn) {
         ItemStack slot1 = inv.getStackInSlot(0);
@@ -90,11 +93,6 @@ public class RecipeDislocatorClone implements IRecipe {
         return output;
     }
 
-    @Override
-    public int getRecipeSize() {
-        return 2;
-    }
-
     @Nullable
     @Override
     public ItemStack getRecipeOutput() {
@@ -109,5 +107,50 @@ public class RecipeDislocatorClone implements IRecipe {
             list.set(0, stack.copy());
         }
         return list;
+    }
+
+
+    @Override
+    public boolean canFit(int width, int height) {
+        return width >= 2;
+    }
+
+    /**
+     * Sets a unique name for this Item. This should be used for uniquely identify the instance of the Item.
+     * This is the valid replacement for the atrocious 'getUnlocalizedName().substring(6)' stuff that everyone does.
+     * Unlocalized names have NOTHING to do with unique identifiers. As demonstrated by vanilla blocks and items.
+     * <p>
+     * The supplied name will be prefixed with the currently active mod's modId.
+     * If the supplied name already has a prefix that is different, it will be used and a warning will be logged.
+     * <p>
+     * If a name already exists, or this Item is already registered in a registry, then an IllegalStateException is thrown.
+     * <p>
+     * Returns 'this' to allow for chaining.
+     *
+     * @param name Unique registry name
+     * @return This instance
+     */
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name) {
+        this.name = name;
+        return this;
+    }
+
+    /**
+     * A unique identifier for this entry, if this entry is registered already it will return it's official registry name.
+     * Otherwise it will return the name set in setRegistryName().
+     * If neither are valid null is returned.
+     *
+     * @return Unique identifier or null.
+     */
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return name;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType() {
+        return IRecipe.class;
     }
 }

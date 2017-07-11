@@ -130,7 +130,7 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
 
         @Override
         public IMessage handleMessage(PacketDislocator message, MessageContext ctx) {
-            ItemStack teleporter = HandHelper.getItem(ctx.getServerHandler().playerEntity, DEFeatures.dislocatorAdvanced);
+            ItemStack teleporter = HandHelper.getItem(ctx.getServerHandler().player, DEFeatures.dislocatorAdvanced);
             if (teleporter.isEmpty()) {
                 return null;
             }
@@ -140,11 +140,11 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
 
             if (message.function == ADDDESTINATION) {
                 NBTTagCompound tag = new NBTTagCompound();
-                message.location.setDimensionName(BrandonsCore.proxy.getMCServer().worldServerForDimension(message.location.getDimension()).provider.getDimensionType().getName());
+                message.location.setDimensionName(BrandonsCore.proxy.getMCServer().getWorld(message.location.getDimension()).provider.getDimensionType().getName());
 
-                message.location.setXCoord(ctx.getServerHandler().playerEntity.posX);
-                message.location.setYCoord(ctx.getServerHandler().playerEntity.posY);
-                message.location.setZCoord(ctx.getServerHandler().playerEntity.posZ);
+                message.location.setXCoord(ctx.getServerHandler().player.posX);
+                message.location.setYCoord(ctx.getServerHandler().player.posY);
+                message.location.setZCoord(ctx.getServerHandler().player.posZ);
 
                 message.location.writeToNBT(tag);
                 list.appendTag(tag);
@@ -179,11 +179,11 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
 
             if (message.function == UPDATEDESTINATION) {
                 NBTTagCompound tag = list.getCompoundTagAt(message.data);
-                message.location.setDimensionName(BrandonsCore.proxy.getMCServer().worldServerForDimension(message.location.getDimension()).provider.getDimensionType().getName());
+                message.location.setDimensionName(BrandonsCore.proxy.getMCServer().getWorld(message.location.getDimension()).provider.getDimensionType().getName());
 
-                message.location.setXCoord(ctx.getServerHandler().playerEntity.posX);
-                message.location.setYCoord(ctx.getServerHandler().playerEntity.posY);
-                message.location.setZCoord(ctx.getServerHandler().playerEntity.posZ);
+                message.location.setXCoord(ctx.getServerHandler().player.posX);
+                message.location.setYCoord(ctx.getServerHandler().player.posY);
+                message.location.setZCoord(ctx.getServerHandler().player.posZ);
 
                 message.location.writeToNBT(tag);
                 list.set(message.data, tag);
@@ -211,16 +211,16 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
 
             if (message.function == TELEPORT) {
                 int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
-                if (!ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
+                if (!ctx.getServerHandler().player.capabilities.isCreativeMode) ItemNBTHelper.setInteger(teleporter, "Fuel", fuel - 1);
                 TeleportLocation destination = new TeleportLocation();
                 destination.readFromNBT(list.getCompoundTagAt(message.data));
 
-                if (!ctx.getServerHandler().playerEntity.world.isRemote) {
-                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().playerEntity.world, ctx.getServerHandler().playerEntity.posX, ctx.getServerHandler().playerEntity.posY, ctx.getServerHandler().playerEntity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().playerEntity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                if (!ctx.getServerHandler().player.world.isRemote) {
+                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().player.world, ctx.getServerHandler().player.posX, ctx.getServerHandler().player.posY, ctx.getServerHandler().player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
-                destination.teleport(ctx.getServerHandler().playerEntity);
-                if (!ctx.getServerHandler().playerEntity.world.isRemote) {
-                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().playerEntity.world, ctx.getServerHandler().playerEntity.posX, ctx.getServerHandler().playerEntity.posY, ctx.getServerHandler().playerEntity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().playerEntity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                destination.teleport(ctx.getServerHandler().player);
+                if (!ctx.getServerHandler().player.world.isRemote) {
+                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().player.world, ctx.getServerHandler().player.posX, ctx.getServerHandler().player.posY, ctx.getServerHandler().player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
             }
 
@@ -258,8 +258,8 @@ public class PacketDislocator implements IMessage { //TODO Re Write this mess!!!
                 int fuel = ItemNBTHelper.getInteger(teleporter, "Fuel", 0);
                 int count = 0;
                 for (int i = 0; i < message.data; i++) {
-                    if (ctx.getServerHandler().playerEntity.inventory.hasItemStack(new ItemStack(Items.ENDER_PEARL))) {
-                        ctx.getServerHandler().playerEntity.inventory.clearMatchingItems(Items.ENDER_PEARL, 0, 1, null);
+                    if (ctx.getServerHandler().player.inventory.hasItemStack(new ItemStack(Items.ENDER_PEARL))) {
+                        ctx.getServerHandler().player.inventory.clearMatchingItems(Items.ENDER_PEARL, 0, 1, null);
                         count++;
                     }
                     else break;

@@ -28,7 +28,7 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -128,7 +128,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
 
         //endregion
 
-        drawCenteredString(fontRendererObj, I18n.format("gui.de.fusionCraftingCore.name"), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
+        drawCenteredString(fontRenderer, I18n.format("gui.de.fusionCraftingCore.name"), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
         GlStateManager.color(1F, 1F, 1F, 1F);
 
         ResourceHelperDE.bindTexture(DETextures.GUI_FUSION_CRAFTING);
@@ -171,7 +171,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
                 int state = tile.craftingStage.value;
                 String status = state > 1000 ? I18n.format("gui.fusionCrafting.crafting.info") : I18n.format("gui.fusionCrafting.charging.info");
                 double d = state > 1000 ? (state - 1000F) / 1000D : state / 1000D;
-                drawCenteredString(fontRendererObj, status + ": " + TextFormatting.GOLD + ((int) (d * 100) + "%"), width / 2, guiTop + 95, state < 1000 ? 0x00FF00 : 0x00FFFF);
+                drawCenteredString(fontRenderer, status + ": " + TextFormatting.GOLD + ((int) (d * 100) + "%"), width / 2, guiTop + 95, state < 1000 ? 0x00FF00 : 0x00FFFF);
             }
         }
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
@@ -246,23 +246,23 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         if (currentRecipe != null) {
             if (canCraft != null && !canCraft.equals("true")) {
                 if (canCraft.equals("tierLow")) {
-                    GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.tierLow.info"), (xSize / 2), 95, 0xAA00FF, false);
+                    GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.fusionCrafting.tierLow.info"), (xSize / 2), 95, 0xAA00FF, false);
                 }
                 else if (canCraft.equals("outputObstructed")) {
-                    GuiHelper.drawCenteredString(fontRendererObj, I18n.format("gui.fusionCrafting.outputObstructed.info"), (xSize / 2), 95, 0xAA00FF, false);
+                    GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.fusionCrafting.outputObstructed.info"), (xSize / 2), 95, 0xAA00FF, false);
                 }
                 else {
                     GlStateManager.translate(0, 0, 600);
                     GuiHelper.drawColouredRect(5, 88, xSize - 10, 20, 0xFFFF0000);
                     GuiHelper.drawColouredRect(6, 89, xSize - 12, 18, 0xFF000000);
-                    GuiHelper.drawCenteredSplitString(fontRendererObj, I18n.format(canCraft), (xSize / 2), 90, xSize - 10, 0xAA00FF, false);
+                    GuiHelper.drawCenteredSplitString(fontRenderer, I18n.format(canCraft), (xSize / 2), 90, xSize - 10, 0xAA00FF, false);
                     GlStateManager.translate(0, 0, -600);
                 }
             }
         }
         else if (ModHelper.isJEIInstalled) {
             GuiHelper.drawBorderedRect(81, 45, 18, 22, 1, 0xFF101010, 0xFF303030);
-            fontRendererObj.drawString("R", 87, 52, 0xA0A0A0, false);
+            fontRenderer.drawString("R", 87, 52, 0xA0A0A0, false);
         }
     }
 
@@ -426,7 +426,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
             float scale = 8F * this.particleScale;
 
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer vertexbuffer = tessellator.getBuffer();
+            BufferBuilder vertexbuffer = tessellator.getBuffer();
             vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
             float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks);
@@ -449,20 +449,20 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float pt) {
             if (visible) {
-                this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+                this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
                 int back = 0xFF000000;
-                GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, width - 2, height - 2, back);
+                GuiHelper.drawColouredRect(x + 1, y + 1, width - 2, height - 2, back);
                 //int border = hovered ? 0xFF009999 : 0xFF220033;
                 int border = hovered ? 0xFF009999 : 0xFF8800bb;
-                GuiHelper.drawColouredRect(xPosition, yPosition, width, 1, border);
-                GuiHelper.drawColouredRect(xPosition, yPosition + height - 1, width, 1, border);
-                GuiHelper.drawColouredRect(xPosition, yPosition, 1, height, border);
-                GuiHelper.drawColouredRect(xPosition + width - 1, yPosition, 1, height, border);
+                GuiHelper.drawColouredRect(x, y, width, 1, border);
+                GuiHelper.drawColouredRect(x, y + height - 1, width, 1, border);
+                GuiHelper.drawColouredRect(x, y, 1, height, border);
+                GuiHelper.drawColouredRect(x + width - 1, y, 1, height, border);
 
-                GuiHelper.drawCenteredString(mc.fontRendererObj, displayString, xPosition + width / 2, yPosition + (height / 2) - (mc.fontRendererObj.FONT_HEIGHT / 2), 0xFFFFFF, false);
+                GuiHelper.drawCenteredString(mc.fontRenderer, displayString, x + width / 2, y + (height / 2) - (mc.fontRenderer.FONT_HEIGHT / 2), 0xFFFFFF, false);
             }
         }
 

@@ -56,7 +56,7 @@ public class HudHandler {
         ScaledResolution resolution = event.getResolution();
         width = resolution.getScaledWidth();
         height = resolution.getScaledHeight();
-        FontRenderer fontRenderer = mc.fontRendererObj;
+        FontRenderer fontRenderer = mc.fontRenderer;
 
         if (DEConfig.hudSettings[10] == 1 && hudList != null && toolTipFadeOut > 0) {
             int x = (int) (((float) DEConfig.hudSettings[0] / 1000F) * (float) width);
@@ -184,7 +184,7 @@ public class HudHandler {
 
 
         if (DEConfig.hudSettings[9] == 1) {
-            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
             GlStateManager.translate(x, y, 0);
             if (rotated) GlStateManager.rotate(90, 0, 0, -1);
             GlStateManager.translate(-x, -y, 0);

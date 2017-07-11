@@ -2,18 +2,10 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.model.bakedmodels.OverrideListModel;
-import codechicken.lib.model.bakery.CCBakeryModel;
-import codechicken.lib.model.bakery.IBakeryProvider;
-import codechicken.lib.model.bakery.ModelBakery;
-import codechicken.lib.model.bakery.generation.IBakery;
-import codechicken.lib.render.CCIconRegister;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
-import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InfoHelper;
-import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
@@ -22,14 +14,13 @@ import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.tool.IToolModelProvider;
-import com.brandon3055.draconicevolution.client.model.tool.ToolModelBakery;
 import com.brandon3055.draconicevolution.client.model.tool.ToolOverrideList;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -114,7 +105,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     public abstract int getMaxUpgradeLevel(ItemStack stack, String upgrade);
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         holdCTRLForUpgrades(tooltip, stack);
         super.addInformation(stack, playerIn, tooltip, advanced);
     }

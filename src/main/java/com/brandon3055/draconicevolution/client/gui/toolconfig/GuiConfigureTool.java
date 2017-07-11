@@ -90,7 +90,7 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
 
         buttonList.add(new AdjusterButton(i, centerX - 160, centerY - 6, 320, 18, this));
 
-        profileField = new GuiTextField(0, fontRendererObj, centerX + 50, centerY - 115, 105, 14);
+        profileField = new GuiTextField(0, fontRenderer, centerX + 50, centerY - 115, 105, 14);
         profileField.setEnableBackgroundDrawing(false);
         profileField.setText(ToolConfigHelper.getProfileName(stack, ToolConfigHelper.getProfile(stack)));
         profileField.setMaxStringLength(20);
@@ -173,16 +173,16 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
 
         renderItem(centerX, centerY - 60, partialTicks);
 
-        drawCenteredString(fontRendererObj, I18n.format("gui.de.configureItem.txt"), centerX, centerY - 116, InfoHelper.GUI_TITLE);
+        drawCenteredString(fontRenderer, I18n.format("gui.de.configureItem.txt"), centerX, centerY - 116, InfoHelper.GUI_TITLE);
 
         //endregion
 
         //region Draw Description
 
         if (selected != -1 && fieldButtons != null && selected >= 0 && selected < fieldButtons.length) {
-            List<String> lines = fontRendererObj.listFormattedStringToWidth(I18n.format(fieldButtons[selected].field.getDescription()), 310);
+            List<String> lines = fontRenderer.listFormattedStringToWidth(I18n.format(fieldButtons[selected].field.getDescription()), 310);
             for (String line : lines) {
-                fontRendererObj.drawString(line, centerX - 159, centerY + 16 + (lines.indexOf(line) * 12), 0xFFFFFF);
+                fontRenderer.drawString(line, centerX - 159, centerY + 16 + (lines.indexOf(line) * 12), 0xFFFFFF);
             }
         }
 
@@ -267,19 +267,19 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float pt) {
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
 
             int back = 0xFF000000;
-            GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, width - 2, height - 2, back);
+            GuiHelper.drawColouredRect(x + 1, y + 1, width - 2, height - 2, back);
             int border = hovered || gui.selected == id ? 0xFF009999 : 0xFF220033;
-            GuiHelper.drawColouredRect(xPosition, yPosition, width, 1, border);
-            GuiHelper.drawColouredRect(xPosition, yPosition + height - 1, width, 1, border);
-            GuiHelper.drawColouredRect(xPosition, yPosition, 1, height, border);
-            GuiHelper.drawColouredRect(xPosition + width - 1, yPosition, 1, height, border);
+            GuiHelper.drawColouredRect(x, y, width, 1, border);
+            GuiHelper.drawColouredRect(x, y + height - 1, width, 1, border);
+            GuiHelper.drawColouredRect(x, y, 1, height, border);
+            GuiHelper.drawColouredRect(x + width - 1, y, 1, height, border);
 
-            GuiHelper.drawCenteredString(mc.fontRendererObj, I18n.format(field.getUnlocalizedName()), xPosition + width / 2, yPosition + (height / 2) - (mc.fontRendererObj.FONT_HEIGHT / 2), 0xFFFFFF, false);
+            GuiHelper.drawCenteredString(mc.fontRenderer, I18n.format(field.getUnlocalizedName()), x + width / 2, y + (height / 2) - (mc.fontRenderer.FONT_HEIGHT / 2), 0xFFFFFF, false);
         }
 
         public void drawToolTips(Minecraft mc, int mouseX, int mouseY) {
@@ -319,16 +319,16 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
             if (activeButton != null && activeButton.field != null) {
                 switch (activeButton.field.getType()) {
                     case PLUS3_MINUS3:
-                        buttonList.add(new Button(0, xPosition + 31, yPosition + 1, 18, 16, "<<<", MINUS3));
-                        buttonList.add(new Button(1, xPosition + width - 49, yPosition + 1, 18, 16, ">>>", PLUS3));
+                        buttonList.add(new Button(0, x + 31, y + 1, 18, 16, "<<<", MINUS3));
+                        buttonList.add(new Button(1, x + width - 49, y + 1, 18, 16, ">>>", PLUS3));
                     case PLUS2_MINUS2:
-                        buttonList.add(new Button(2, xPosition + 50, yPosition + 1, 14, 16, "<<", MINUS2));
-                        buttonList.add(new Button(3, xPosition + width - 64, yPosition + 1, 14, 16, ">>", PLUS2));
+                        buttonList.add(new Button(2, x + 50, y + 1, 14, 16, "<<", MINUS2));
+                        buttonList.add(new Button(3, x + width - 64, y + 1, 14, 16, ">>", PLUS2));
                     case PLUS1_MINUS1:
-                        buttonList.add(new Button(4, xPosition + 65, yPosition + 1, 10, 16, "<", MINUS1));
-                        buttonList.add(new Button(5, xPosition + width - 75, yPosition + 1, 10, 16, ">", PLUS1));
-                        buttonList.add(new Button(6, xPosition + 1, yPosition + 1, 16, 16, "<*", MIN));
-                        buttonList.add(new Button(7, xPosition + width - 17, yPosition + 1, 16, 16, "*>", MAX));
+                        buttonList.add(new Button(4, x + 65, y + 1, 10, 16, "<", MINUS1));
+                        buttonList.add(new Button(5, x + width - 75, y + 1, 10, 16, ">", PLUS1));
+                        buttonList.add(new Button(6, x + 1, y + 1, 16, 16, "<*", MIN));
+                        buttonList.add(new Button(7, x + width - 17, y + 1, 16, 16, "*>", MAX));
                         break;
                     case SLIDER:
                         break;
@@ -345,18 +345,18 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                                 }
 
                                 int col = i % cols;
-                                int xPos = xPosition + ((width / cols) * col);
+                                int xPos = x + ((width / cols) * col);
                                 int xSize = width / cols + 1;
 
-                                int y = 5 + yPosition + 18 + i / cols * 12;
+                                int yp = 5 + y + 18 + i / cols * 12;
 
-                                buttonList.add(new Button(9 + i, xPos + 1, y, xSize - 2, 11, values.get(index), SELECTION, index));
+                                buttonList.add(new Button(9 + i, xPos + 1, yp, xSize - 2, 11, values.get(index), SELECTION, index));
                                 i++;
                             }
                         }
                         break;
                     case TOGGLE:
-                        buttonList.add(new Button(8, xPosition + width / 2 - 159, yPosition + 1, 318, 16, "", TOGGLE));
+                        buttonList.add(new Button(8, x + width / 2 - 159, y + 1, 318, 16, "", TOGGLE));
                         break;
                 }
             }
@@ -367,7 +367,7 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
         //region Draw & Refresh
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float pt) {
             updateActiveButton();
 
             if (activeButton == null) {
@@ -380,14 +380,14 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                 case PLUS3_MINUS3:
                 case PLUS2_MINUS2:
                 case PLUS1_MINUS1:
-                    GuiHelper.drawCenteredString(mc.fontRendererObj, field.getReadableValue(), xPosition + width / 2, yPosition + 1, 0xFFFFFF, false);
-                    GuiHelper.drawCenteredString(mc.fontRendererObj, I18n.format("gui.de.min.txt") + ": " + field.getMin() + " - " + I18n.format("gui.de.max.txt") + ": " + field.getMax(), xPosition + width / 2, yPosition + 10, 0xFFFFFF, false);
+                    GuiHelper.drawCenteredString(mc.fontRenderer, field.getReadableValue(), x + width / 2, y + 1, 0xFFFFFF, false);
+                    GuiHelper.drawCenteredString(mc.fontRenderer, I18n.format("gui.de.min.txt") + ": " + field.getMin() + " - " + I18n.format("gui.de.max.txt") + ": " + field.getMax(), x + width / 2, y + 10, 0xFFFFFF, false);
                     break;
                 case SLIDER:
                     double sliderPos = field.getFractionalValue();
 
                     if (isDragging) {
-                        sliderPos = (mouseX - 3 - (xPosition + 4D)) / (width - 14D);
+                        sliderPos = (mouseX - 3 - (x + 4D)) / (width - 14D);
                         if (sliderPos > 1) {
                             sliderPos = 1;
                         }
@@ -410,27 +410,27 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                     }
 
                     int pos = (int) ((width - 14) * sliderPos);
-                    boolean mouseOver = GuiHelper.isInRect(xPosition + 3, yPosition + 3, width - 6, 12, mouseX, mouseY) || isDragging;
+                    boolean mouseOver = GuiHelper.isInRect(x + 3, y + 3, width - 6, 12, mouseX, mouseY) || isDragging;
 
-                    GuiHelper.drawColouredRect(xPosition + 4, yPosition + 8, width - 8, 2, 0xFF222222);
-                    GuiHelper.drawColouredRect(xPosition + 1, yPosition + 2, 3, 14, 0xFF770000);
-                    GuiHelper.drawColouredRect(xPosition + width - 4, yPosition + 2, 3, 14, 0xFF770000);
-                    GuiHelper.drawColouredRect(xPosition + 4 + pos, yPosition + 3, 6, 12, mouseOver ? 0xFF00FF00 : 0xFFFF0000);
-                    GuiHelper.drawColouredRect(xPosition + 5 + pos, yPosition + 4, 4, 10, 0xFF000000);
+                    GuiHelper.drawColouredRect(x + 4, y + 8, width - 8, 2, 0xFF222222);
+                    GuiHelper.drawColouredRect(x + 1, y + 2, 3, 14, 0xFF770000);
+                    GuiHelper.drawColouredRect(x + width - 4, y + 2, 3, 14, 0xFF770000);
+                    GuiHelper.drawColouredRect(x + 4 + pos, y + 3, 6, 12, mouseOver ? 0xFF00FF00 : 0xFFFF0000);
+                    GuiHelper.drawColouredRect(x + 5 + pos, y + 4, 4, 10, 0xFF000000);
 
 
-                    int txtWidth = mc.fontRendererObj.getStringWidth(isDragging ? field.getValueFraction(sliderPos) : field.getReadableValue());
-                    GuiHelper.drawColouredRect(xPosition + width / 2 - txtWidth / 2, yPosition, txtWidth, 8, 0x88000000);
-                    GuiHelper.drawCenteredString(mc.fontRendererObj, isDragging ? field.getValueFraction(sliderPos) : field.getReadableValue(), xPosition + width / 2, yPosition + 1, 0xFFFFFF, false);
+                    int txtWidth = mc.fontRenderer.getStringWidth(isDragging ? field.getValueFraction(sliderPos) : field.getReadableValue());
+                    GuiHelper.drawColouredRect(x + width / 2 - txtWidth / 2, y, txtWidth, 8, 0x88000000);
+                    GuiHelper.drawCenteredString(mc.fontRenderer, isDragging ? field.getValueFraction(sliderPos) : field.getReadableValue(), x + width / 2, y + 1, 0xFFFFFF, false);
                     break;
                 case SELECTIONS:
-                    mouseOver = GuiHelper.isInRect(xPosition + 1, yPosition + 1, width - 2, 16, mouseX, mouseY);
+                    mouseOver = GuiHelper.isInRect(x + 1, y + 1, width - 2, 16, mouseX, mouseY);
 
                     int border = mouseOver ? 0xFF009999 : 0xFF220033;
-                    GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, width - 2, 16, border);
-                    GuiHelper.drawColouredRect(xPosition + 2, yPosition + 2, width - 4, 14, 0xFF000000);
+                    GuiHelper.drawColouredRect(x + 1, y + 1, width - 2, 16, border);
+                    GuiHelper.drawColouredRect(x + 2, y + 2, width - 4, 14, 0xFF000000);
 
-                    GuiHelper.drawCenteredString(mc.fontRendererObj, field.getReadableValue(), xPosition + width / 2, yPosition + 5, 0xFFFFFF, false);
+                    GuiHelper.drawCenteredString(mc.fontRenderer, field.getReadableValue(), x + width / 2, y + 5, 0xFFFFFF, false);
                     break;
                 case TOGGLE:
                     break;
@@ -438,11 +438,11 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
 
             if (dropDownPos > 0) {
                 int h = (dropDownPos < 1F ? (int) ((float) height + partialTick) : height) - 20;
-                GuiHelper.drawColouredRect(xPosition, yPosition + 20, width, h, 0xFF000000);
-                //GuiHelper.drawColouredRect(xPosition, yPosition + 18, xSize, 1, 0xFFFF0000);
-                //GuiHelper.drawColouredRect(xPosition, yPosition + ySize - (int)(1 * dropDownPos), xSize, 1, 0xFFFF0000);
-                //GuiHelper.drawColouredRect(xPosition, yPosition + 18, 1, ySize - 18, 0xFFFF0000);
-                //GuiHelper.drawColouredRect(xPosition + xSize - 1, yPosition + 18, 1, ySize - 18, 0xFFFF0000);
+                GuiHelper.drawColouredRect(x, y + 20, width, h, 0xFF000000);
+                //GuiHelper.drawColouredRect(x, y + 18, xSize, 1, 0xFFFF0000);
+                //GuiHelper.drawColouredRect(x, y + ySize - (int)(1 * dropDownPos), xSize, 1, 0xFFFF0000);
+                //GuiHelper.drawColouredRect(x, y + 18, 1, ySize - 18, 0xFFFF0000);
+                //GuiHelper.drawColouredRect(x + xSize - 1, y + 18, 1, ySize - 18, 0xFFFF0000);
             }
 
             for (Button button : buttonList) {
@@ -459,7 +459,7 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
 
             switch (activeButton.field.getType()) {
                 case TOGGLE:
-                    GuiHelper.drawCenteredString(mc.fontRendererObj, field.getReadableValue(), xPosition + width / 2, yPosition + 5, 0xFFFFFF, false);
+                    GuiHelper.drawCenteredString(mc.fontRenderer, field.getReadableValue(), x + width / 2, y + 5, 0xFFFFFF, false);
                     break;
             }
         }
@@ -526,13 +526,13 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                     break;
                 case SLIDER:
                     //    int pos = (int)((xSize - 14) * activeButton.field.getFractionalValue());
-                    isDragging = GuiHelper.isInRect(xPosition + 3, yPosition + 3, width - 6, 12, mouseX, mouseY);
+                    isDragging = GuiHelper.isInRect(x + 3, y + 3, width - 6, 12, mouseX, mouseY);
                     if (isDragging) {
                         mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     }
                     break;
                 case SELECTIONS:
-                    if (GuiHelper.isInRect(xPosition, yPosition, width, 18, mouseX, mouseY)) {
+                    if (GuiHelper.isInRect(x, y, width, 18, mouseX, mouseY)) {
                         dropDownActive = !dropDownActive;
                         super.playPressSound(mc.getSoundHandler());
                     }
@@ -571,7 +571,7 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                         break;
                     case SLIDER:
                         if (isDragging) {
-                            double pos = (mouseX - 3 - (xPosition + 4D)) / (width - 14D);
+                            double pos = (mouseX - 3 - (x + 4D)) / (width - 14D);
                             int fieldIndex = gui.fieldRegistry.getIndexFromName(activeButton.field.getName());
                             DraconicEvolution.network.sendToServer(new PacketConfigureTool(slot, fieldIndex, EnumButton.SLIDER.index, (int) (pos * 10000D)));
                             mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 0.9F));
@@ -612,8 +612,8 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
 
         public class Button {
             public final int id;
-            public final int xPosition;
-            public final int yPosition;
+            public final int x;
+            public final int y;
             public final int width;
             public final int height;
             public final String text;
@@ -621,10 +621,10 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
             public final EnumButton enumButton;
             public int selectionIndex;
 
-            public Button(int id, int xPosition, int yPosition, int width, int height, String text, EnumButton enumButton) {
+            public Button(int id, int x, int y, int width, int height, String text, EnumButton enumButton) {
                 this.id = id;
-                this.xPosition = xPosition;
-                this.yPosition = yPosition;
+                this.x = x;
+                this.y = y;
                 this.width = width;
                 this.height = height;
                 this.text = text;
@@ -632,24 +632,24 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                 this.selectionIndex = 0;
             }
 
-            public Button(int id, int xPosition, int yPosition, int width, int height, String text, EnumButton enumButton, int selectionIndex) {
-                this(id, xPosition, yPosition, width, height, text, enumButton);
+            public Button(int id, int x, int y, int width, int height, String text, EnumButton enumButton, int selectionIndex) {
+                this(id, x, y, width, height, text, enumButton);
                 this.selectionIndex = selectionIndex;
             }
 
             public void drawButton(Minecraft mc, int mouseX, int mouseY) {
                 if (enabled) {
-                    boolean mouseOver = GuiHelper.isInRect(xPosition, yPosition, width, height, mouseX, mouseY);
+                    boolean mouseOver = GuiHelper.isInRect(x, y, width, height, mouseX, mouseY);
 
                     int border = mouseOver ? 0xFF00A000 : 0xFFA00000;
-                    GuiHelper.drawColouredRect(xPosition, yPosition, width, height, border);
-                    GuiHelper.drawColouredRect(xPosition + 1, yPosition + 1, width - 2, height - 2, 0xFF000000);
-                    GuiHelper.drawCenteredString(mc.fontRendererObj, text, xPosition + width / 2, yPosition + (height / 2) - (mc.fontRendererObj.FONT_HEIGHT / 2) + 1, 0xFFFFFF, false);
+                    GuiHelper.drawColouredRect(x, y, width, height, border);
+                    GuiHelper.drawColouredRect(x + 1, y + 1, width - 2, height - 2, 0xFF000000);
+                    GuiHelper.drawCenteredString(mc.fontRenderer, text, x + width / 2, y + (height / 2) - (mc.fontRenderer.FONT_HEIGHT / 2) + 1, 0xFFFFFF, false);
                 }
             }
 
             public boolean buttonPressed(Minecraft mc, int mouseX, int mouseY) {
-                return GuiHelper.isInRect(xPosition, yPosition, width, height, mouseX, mouseY);
+                return GuiHelper.isInRect(x, y, width, height, mouseX, mouseY);
             }
         }
     }

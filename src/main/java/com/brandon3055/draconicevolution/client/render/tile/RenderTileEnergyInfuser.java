@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
 //    @Override
-//    public void renderTileEntityFast(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer buffer) {
+//    public void renderTileEntityFast(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer) {
 ////
 //        CCRenderState.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
 //        CCRenderState.bind(buffer);
@@ -34,7 +34,7 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
     private static float pxl = 1F / 128F;
 
     @Override
-    public void renderTileEntityAt(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
 
         GlStateManager.translate((float) x, (float) y, (float) z);
@@ -118,7 +118,7 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
     public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
         double pix = 1D / 64D;
-        VertexBuffer buffer = tess.getBuffer();
+        BufferBuilder buffer = tess.getBuffer();
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 

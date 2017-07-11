@@ -5,7 +5,7 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -50,7 +50,7 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
         float f2 = projectile.type == EntityGuardianProjectile.MINI_CHAOS_CHASER ? projectile.power / 10 : projectile.power / 5;
         GlStateManager.scale(f2 / 1.0F, f2 / 1.0F, f2 / 1.0F);
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
         float f3 = 0;
         float f4 = 1;
         float f5 = height;

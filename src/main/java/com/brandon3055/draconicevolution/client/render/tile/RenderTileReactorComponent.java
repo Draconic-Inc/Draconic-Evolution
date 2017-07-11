@@ -22,7 +22,7 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
     public static ModelReactorEnergyInjector injectorModel = new ModelReactorEnergyInjector();
 
     @Override
-    public void renderTileEntityAt(TileReactorComponent te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileReactorComponent te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
 
