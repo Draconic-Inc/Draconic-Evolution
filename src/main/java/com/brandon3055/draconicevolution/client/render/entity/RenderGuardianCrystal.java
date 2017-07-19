@@ -5,16 +5,15 @@ import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -23,7 +22,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
     private ModelBase model;
 
-    protected RenderGuardianCrystal(RenderManager renderManager) {
+    public RenderGuardianCrystal(RenderManager renderManager) {
         super(renderManager);
         this.shadowSize = 0.5F;
         this.model = new ModelGuardianCrystal(true);
@@ -102,10 +101,4 @@ public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
         return ResourceHelperDE.getResource(DETextures.CHAOS_GUARDIAN_CRYSTAL);
     }
 
-    public static class Factory implements IRenderFactory<EntityGuardianCrystal> {
-        @Override
-        public Render<? super EntityGuardianCrystal> createRenderFor(RenderManager manager) {
-            return new RenderGuardianCrystal(manager);
-        }
-    }
 }

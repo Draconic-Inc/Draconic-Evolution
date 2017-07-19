@@ -233,7 +233,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             //region Collect Souls
             case COLLECT_SOULS: {
                 if (stageTime % 20 == 0) {
-                    List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
+                    List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().grow(300, 300, 300), EntitySelectors.IS_ALIVE);
 
                     if (list.size() < 20) {
                         spawnNewEnderman();
@@ -283,7 +283,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
             }//endregion
             case EXTRACT: {
                 if (stageTime % 20 == 0) {
-                    List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
+                    List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().grow(300, 300, 300), EntitySelectors.IS_ALIVE);
                     for (EntityEnderman enderman : list) {
                         enderman.setAttackTarget(this);
                     }
@@ -296,7 +296,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
                 }
 
                 if (stageTime == 300) {
-                    List<Entity> list = world.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().expand(300, 300, 300), EntitySelectors.IS_ALIVE);
+                    List<Entity> list = world.getEntitiesWithinAABB(Entity.class, getEntityBoundingBox().grow(300, 300, 300), EntitySelectors.IS_ALIVE);
                     for (Entity entity : list) {
                         if (entity instanceof EntityEnderman || (entity instanceof EntityItem && ((EntityItem) entity).getItem().getItem() == Items.ENDER_PEARL) || entity instanceof EntityAreaEffectCloud) {
                             entity.setDead();
@@ -366,7 +366,7 @@ public class EntityEnderEnergyManipulator extends EntityLivingBase {
         if (world.isRemote) {
             return;
         }
-        List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().expand(8, 15, 8), EntitySelectors.IS_ALIVE);
+        List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class, getEntityBoundingBox().grow(8, 15, 8), EntitySelectors.IS_ALIVE);
         if (!list.isEmpty()) {
             EntityEnderman enderman = list.get(rand.nextInt(list.size()));
             enderman.captureDrops = true;

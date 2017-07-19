@@ -74,6 +74,10 @@ public class DEJEIPlugin implements IModPlugin {
         registry.addRecipeClickArea(GuiDraconiumChest.class, 394, 216, 22, 15, VanillaRecipeCategoryUid.CRAFTING);
         registry.addRecipeClickArea(GuiDraconiumChest.class, 140, 202, 15, 22, VanillaRecipeCategoryUid.SMELTING);
 
+        jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(DEFeatures.chaosCrystal));
+        jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(DEFeatures.placedItem));
+        jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(DEFeatures.invisECoreBlock));
+        jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(DEFeatures.chaosShardAtmos));
 
         IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
         recipeTransferRegistry.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest>() {

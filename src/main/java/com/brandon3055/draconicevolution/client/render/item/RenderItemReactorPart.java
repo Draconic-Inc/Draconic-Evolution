@@ -8,14 +8,9 @@ import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.IModelState;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.vecmath.Matrix4f;
 
 /**
  * Created by brandon3055 on 21/11/2016.
@@ -44,11 +39,6 @@ public class RenderItemReactorPart implements IItemRenderer {
     }
 
     //endregion
-
-    @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        return PerspectiveMapWrapper.handlePerspective(this, TransformUtils.DEFAULT_BLOCK, cameraTransformType);
-    }
 
     @Override
     public IModelState getTransforms() {

@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -26,7 +25,7 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
     private IBakedModel arrowModel = null;
     private TextureAtlasSprite fullSprite = new FullAtlasSprite();
 
-    protected RenderCustomArrow(RenderManager renderManager) {
+    public RenderCustomArrow(RenderManager renderManager) {
         super(renderManager);
     }
 
@@ -88,10 +87,4 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
         return arrow.bowProperties.energyBolt ? ResourceHelperDE.getResource(DETextures.REACTOR_CORE) : ResourceHelperDE.getResource("items/tools/obj/arrow_common");
     }
 
-    public static class Factory implements IRenderFactory<EntityCustomArrow> {
-        @Override
-        public Render<? super EntityCustomArrow> createRenderFor(RenderManager manager) {
-            return new RenderCustomArrow(manager);
-        }
-    }
 }

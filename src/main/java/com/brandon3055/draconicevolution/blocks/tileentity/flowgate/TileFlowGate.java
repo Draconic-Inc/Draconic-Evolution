@@ -97,7 +97,6 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
         }
         catch (NumberFormatException ignored) {
         }
-
     }
 
     public TileEntity getTarget() {

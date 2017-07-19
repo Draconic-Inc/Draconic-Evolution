@@ -119,6 +119,7 @@ public class GuiRecipeBuilder extends GuiContainer {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         GlStateManager.disableLighting();
         GlStateManager.disableBlend();
@@ -127,6 +128,7 @@ public class GuiRecipeBuilder extends GuiContainer {
         GlStateManager.scale(0.666, 0.666, 0.666);
         fontRenderer.drawSplitString(textField.getText(), 5, 5, (int) ((guiLeft + xSize - 10) * 1.5D), 0xFFFFFF);
         GlStateManager.popMatrix();
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 
     //endregion

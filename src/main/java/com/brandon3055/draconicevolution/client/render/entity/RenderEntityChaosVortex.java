@@ -7,7 +7,6 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 import java.util.Map;
 
@@ -50,10 +49,4 @@ public class RenderEntityChaosVortex extends Render<EntityChaosImplosion> {
         return null;
     }
 
-    public static class Factory implements IRenderFactory<EntityChaosImplosion> {
-        @Override
-        public Render<? super EntityChaosImplosion> createRenderFor(RenderManager manager) {
-            return new RenderEntityChaosVortex(manager);
-        }
-    }
 }

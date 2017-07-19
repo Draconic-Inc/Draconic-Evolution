@@ -125,14 +125,14 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
 
                 if (((TileEnergyCoreStabilizer) tile).multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {
                     if (((TileEnergyCoreStabilizer) tile).multiBlockAxis == EnumFacing.Axis.X) {
-                        bb = bb.expand(0, 1, 1);
+                        bb = bb.grow(0, 1, 1);
                     }
                     else {
-                        bb = bb.expand(1, 1, 0);
+                        bb = bb.grow(1, 1, 0);
                     }
                 }
                 else {
-                    bb = bb.expand(1, 0, 1);
+                    bb = bb.grow(1, 0, 1);
                 }
                 return bb;
             }

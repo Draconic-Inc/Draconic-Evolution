@@ -5,15 +5,14 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -21,7 +20,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderDragonHeart extends Render<EntityDragonHeart> {
 
-    protected RenderDragonHeart(RenderManager renderManager) {
+    public RenderDragonHeart(RenderManager renderManager) {
         super(renderManager);
     }
 
@@ -77,12 +76,5 @@ public class RenderDragonHeart extends Render<EntityDragonHeart> {
     @Override
     protected ResourceLocation getEntityTexture(EntityDragonHeart entity) {
         return ResourceHelperDE.getResource(DETextures.DRAGON_HEART);
-    }
-
-    public static class Factory implements IRenderFactory<EntityDragonHeart> {
-        @Override
-        public Render<? super EntityDragonHeart> createRenderFor(RenderManager manager) {
-            return new RenderDragonHeart(manager);
-        }
     }
 }

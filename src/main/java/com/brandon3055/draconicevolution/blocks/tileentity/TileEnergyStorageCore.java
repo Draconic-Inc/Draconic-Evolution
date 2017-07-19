@@ -94,7 +94,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
         }
 
         if (world.isRemote && active.value) {
-            List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).expand(10, 10, 10));
+            List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(10, 10, 10));
             for (EntityPlayer player : players) {
                 double dist = player.getDistance(pos.getX() + 0.5, pos.getY() - 0.4, pos.getZ() + 0.5);
                 double distNext = player.getDistance(pos.getX() + player.motionX + 0.5, pos.getY() + player.motionY - 0.4, pos.getZ() + player.motionZ + 0.5);

@@ -215,7 +215,7 @@ public class EntityGuardianCrystal extends EntityLivingBase {
 
     private EntityChaosGuardian getGuardian() {
         if (guardian == null) {
-            @SuppressWarnings("unchecked") List<EntityChaosGuardian> list = world.getEntitiesWithinAABB(EntityChaosGuardian.class, new AxisAlignedBB(posX, posY, posZ, posX, posY, posZ).expand(512, 512, 512));
+            @SuppressWarnings("unchecked") List<EntityChaosGuardian> list = world.getEntitiesWithinAABB(EntityChaosGuardian.class, new AxisAlignedBB(posX, posY, posZ, posX, posY, posZ).grow(512, 512, 512));
             if (list.size() > 0) guardian = list.get(0);
             if (guardian != null && guardian.crystals != null && !guardian.crystals.contains(this)) {
                 guardian.crystals.add(this);

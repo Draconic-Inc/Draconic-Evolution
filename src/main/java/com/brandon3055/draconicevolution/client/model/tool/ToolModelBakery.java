@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
-import codechicken.lib.model.BakedModelProperties;
 import codechicken.lib.model.ItemQuadBakery;
-import codechicken.lib.model.PerspectiveAwareModelProperties;
+import codechicken.lib.model.bakedmodels.ModelProperties;
 import codechicken.lib.model.bakedmodels.PerspectiveAwareBakedModel;
 import codechicken.lib.model.bakery.key.IItemStackKeyGenerator;
 import codechicken.lib.texture.TextureUtils;
+import codechicken.lib.util.ResourceUtils;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Preconditions;
@@ -32,7 +32,7 @@ public class ToolModelBakery {
     private static Map<String, IBakedModel> modelCache = new HashMap<>();
     private static Map<Item, IItemStackKeyGenerator> itemKeyGeneratorMap = new HashMap<>();
 
-    private static PerspectiveAwareModelProperties props2D = new PerspectiveAwareModelProperties(TransformUtils.DEFAULT_TOOL, BakedModelProperties.DEFAULT_ITEM);
+    private static ModelProperties.PerspectiveProperties props2D = new ModelProperties.PerspectiveProperties(TransformUtils.DEFAULT_TOOL, ModelProperties.DEFAULT_ITEM);
 
     public static IItemStackKeyGenerator getKeyGenerator(Item item) {
         if (itemKeyGeneratorMap.containsKey(item)) {
@@ -75,6 +75,6 @@ public class ToolModelBakery {
     }
 
     public static void initialize() {
-        TextureUtils.registerReloadListener(resourceManager -> modelCache.clear());
+        ResourceUtils.registerReloadListener(resourceManager -> modelCache.clear());
     }
 }

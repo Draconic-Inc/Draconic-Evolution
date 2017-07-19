@@ -249,7 +249,7 @@ public class EntityGuardianProjectile extends Entity {
                     world.playSound(posX, posY, posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
                     int i = 3 + rand.nextInt(3);
                     EntityGuardianProjectile newProjectile;
-                    @SuppressWarnings("unchecked") List<Entity> list = world.getEntitiesInAABBexcluding(shooter, getEntityBoundingBox().expand(60, 60, 60), FilterUtils.IS_PLAYER);
+                    @SuppressWarnings("unchecked") List<Entity> list = world.getEntitiesInAABBexcluding(shooter, getEntityBoundingBox().grow(60, 60, 60), FilterUtils.IS_PLAYER);
                     for (i = i; i > 0; i--) {
                         Entity target = list.size() > 0 ? list.get(rand.nextInt(list.size())) : null;
 
@@ -297,7 +297,7 @@ public class EntityGuardianProjectile extends Entity {
         Vec3d vec3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
         Entity entityHit = null;
-        List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+        List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(this.motionX, this.motionY, this.motionZ).grow(1.0D, 1.0D, 1.0D));
         double d0 = 0.0D;
         int i;
         float f1;
@@ -307,7 +307,7 @@ public class EntityGuardianProjectile extends Entity {
 
             if (entity1.canBeCollidedWith() && (entity1 != this.shooter || this.ticksExisted >= 5)) {
                 f1 = 1F;
-                AxisAlignedBB axisalignedbb1 = entity1.getEntityBoundingBox().expand(f1, f1, f1);
+                AxisAlignedBB axisalignedbb1 = entity1.getEntityBoundingBox().grow(f1, f1, f1);
                 RayTraceResult traceResult = axisalignedbb1.calculateIntercept(vec31, vec3);
 
                 if (traceResult != null) {
@@ -326,7 +326,7 @@ public class EntityGuardianProjectile extends Entity {
 
     private void damageEntitiesInRadius(DamageSource source, double radius, float damage) {
         if (world.isRemote) return;
-        @SuppressWarnings("unchecked") List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(posX, posY, posZ, posX, posY, posZ).expand(radius, radius, radius));
+        @SuppressWarnings("unchecked") List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(posX, posY, posZ, posX, posY, posZ).grow(radius, radius, radius));
 
         for (EntityLivingBase entityLivingBase : entities) {
             if (entityLivingBase == shooter) {

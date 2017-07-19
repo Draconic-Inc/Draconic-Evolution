@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
-import codechicken.lib.model.BakedModelProperties;
 import codechicken.lib.model.bakedmodels.AbstractBakedPropertiesModel;
+import codechicken.lib.model.bakedmodels.ModelProperties;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import net.minecraft.block.state.IBlockState;
@@ -31,7 +31,7 @@ public class ToolBakedModel extends AbstractBakedPropertiesModel {
     private Supplier<IBakedModel> fancyModel;
     private BiFunction<TransformType, IModelState, IModelState> fancyOverrideProcessor;
 
-    public ToolBakedModel(BakedModelProperties properties, Supplier<IBakedModel> simpleModel, Supplier<IBakedModel> fancyModel, BiFunction<TransformType, IModelState, IModelState> fancyOverrideProcessor) {
+    public ToolBakedModel(ModelProperties properties, Supplier<IBakedModel> simpleModel, Supplier<IBakedModel> fancyModel, BiFunction<TransformType, IModelState, IModelState> fancyOverrideProcessor) {
         super(properties);
         this.simpleModel = simpleModel;
         this.fancyModel = fancyModel;

@@ -157,14 +157,14 @@ public class InvisECoreBlock extends BlockBCore implements IRenderOverride, ITil
 
                     if (stabilizer.multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {
                         if (stabilizer.multiBlockAxis == EnumFacing.Axis.X) {
-                            bb = bb.expand(0, 1, 1);
+                            bb = bb.grow(0, 1, 1);
                         }
                         else {
-                            bb = bb.expand(1, 1, 0);
+                            bb = bb.grow(1, 1, 0);
                         }
                     }
                     else {
-                        bb = bb.expand(1, 0, 1);
+                        bb = bb.grow(1, 0, 1);
                     }
                     return bb;
                 }

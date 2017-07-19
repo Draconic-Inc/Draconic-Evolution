@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 /**
  * Created by Brandon on 21/11/2014.
@@ -25,7 +24,7 @@ public class RenderEntityEnderEnergyManipulator extends Render<EntityEnderEnergy
 
     private static ShaderProgram shaderProgram;
 
-    protected RenderEntityEnderEnergyManipulator(RenderManager renderManager) {
+    public RenderEntityEnderEnergyManipulator(RenderManager renderManager) {
         super(renderManager);
     }
 
@@ -65,12 +64,5 @@ public class RenderEntityEnderEnergyManipulator extends Render<EntityEnderEnergy
     @Override
     protected ResourceLocation getEntityTexture(EntityEnderEnergyManipulator entity) {
         return ResourceHelperDE.getResource(DETextures.DRAGON_HEART);
-    }
-
-    public static class Factory implements IRenderFactory<EntityEnderEnergyManipulator> {
-        @Override
-        public Render<? super EntityEnderEnergyManipulator> createRenderFor(RenderManager manager) {
-            return new RenderEntityEnderEnergyManipulator(manager);
-        }
     }
 }

@@ -106,7 +106,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
 
     @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-        List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).expand(15, 15, 15));
+        List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(15, 15, 15));
 
         for (EntityPlayer player : players) {
             if (player.capabilities.isCreativeMode) {

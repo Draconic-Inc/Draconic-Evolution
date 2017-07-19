@@ -1,5 +1,10 @@
+######## 2.3.1.x ########
+-Fixed Wireless energy crystal particles sometimes not rendering
+-Fixed Item Dislocator
+-Fixed item tool tips not rendering in some gui's
+
 ######## 2.3.0.252 ########
--FInitial 1.12 release
+-Initial 1.12 release
 
 ######## 2.2.1.248 ########
 -Fixed mob soul crash

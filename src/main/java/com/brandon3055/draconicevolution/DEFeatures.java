@@ -310,7 +310,7 @@ public class DEFeatures implements IModFeatures {
 
     //region Exotic Items
 
-    @ModFeature(name = "creative_exchanger", stateOverride = "simple_components#type=chaoticCore", cTab = 1)
+    @ModFeature(name = "creative_exchanger", stateOverride = "misc#type=creative_exchanger", cTab = 1)
     public static CreativeExchanger creativeExchanger = new CreativeExchanger();
 
     @ModFeature(name = "ender_energy_manipulator", cTab = 1)

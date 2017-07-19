@@ -90,7 +90,7 @@ public class EntityChaosImplosion extends Entity {
         double intensity = (ticksExisted - 130) / 100D;
         if (intensity > 1D) intensity = 1D;
 
-        @SuppressWarnings("unchecked") List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().expand(200, 200, 200));
+        @SuppressWarnings("unchecked") List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().grow(200, 200, 200));
 
         for (EntityPlayer player : players) {
             double x = (rand.nextDouble() - 0.5) * 2 * intensity;

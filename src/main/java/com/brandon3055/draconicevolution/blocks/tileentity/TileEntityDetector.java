@@ -116,7 +116,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     private void updateAnimation() {
         //region Targeting
 
-        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).expand(RANGE.value, RANGE.value, RANGE.value)));
+        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(RANGE.value, RANGE.value, RANGE.value)));
         Entity closest = null;
         double closestDist = -1;
 
@@ -210,7 +210,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     }
 
     public void doScanPulse() {
-        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).expand(RANGE.value, RANGE.value, RANGE.value)));
+        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(RANGE.value, RANGE.value, RANGE.value)));
 
         double min = RS_MIN_DETECTION.value - 1;
         double max = RS_MAX_DETECTION.value;

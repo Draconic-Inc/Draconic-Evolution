@@ -155,7 +155,9 @@ public class FlowGate extends BlockBCore implements IRegistryOverride {
 
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        return new ItemStack(this, 1, state.getValue(TYPE).equals("flux") ? 0 : 8);
+        ItemStack stack = super.getPickBlock(state, target, world, pos, player);
+        stack.setItemDamage(state.getValue(TYPE).equals("flux") ? 0 : 8);
+        return stack;
     }
 
     @Override

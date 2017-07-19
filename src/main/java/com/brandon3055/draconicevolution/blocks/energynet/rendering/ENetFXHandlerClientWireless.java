@@ -72,7 +72,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
             }
         }
 
-        if (requiresUpdate || tile.getLinks().size() != beamFXList.size()) {
+        if (requiresUpdate || tile.getReceivers().size() != transferFXList.size()) {
             reloadConnections();//TODO Make This Better. If needed...
         }
         //endregion

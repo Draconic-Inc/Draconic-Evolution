@@ -80,14 +80,14 @@ public class ClientProxy extends CommonProxy {
     public void registerRendering() {
 
 		//Entities
-        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, new RenderChaosGuardian.Factory());
-        RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart.Factory());
-        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianProjectile.class, new RenderGuardianProjectile.Factory());
-        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianCrystal.class, new RenderGuardianCrystal.Factory());
-        RenderingRegistry.registerEntityRenderingHandler(EntityChaosImplosion.class, new RenderEntityChaosVortex.Factory());
-        RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, new RenderCustomArrow.Factory());
-        RenderingRegistry.registerEntityRenderingHandler(EntityLootCore.class, new RenderLootCore.Factory());
-        RenderingRegistry.registerEntityRenderingHandler(EntityEnderEnergyManipulator.class, new RenderEntityEnderEnergyManipulator.Factory());
+        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, RenderDragonHeart::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianProjectile.class, RenderGuardianProjectile::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianCrystal.class, RenderGuardianCrystal::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityChaosImplosion.class, RenderEntityChaosVortex::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, RenderCustomArrow::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityLootCore.class, RenderLootCore::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityEnderEnergyManipulator.class, RenderEntityEnderEnergyManipulator::new);
     }
 
     @Override

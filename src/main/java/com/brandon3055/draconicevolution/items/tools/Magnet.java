@@ -63,7 +63,7 @@ public class Magnet extends ItemBCore {
         if (!entity.isSneaking() && entity.ticksExisted % 5 == 0 && isEnabled(stack) && entity instanceof EntityPlayer) {
             int range = stack.getItemDamage() == 0 ? 8 : 32;
 
-            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).expand(range, range, range));
+            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(range, range, range));
 
             boolean flag = false;
 
@@ -95,7 +95,7 @@ public class Magnet extends ItemBCore {
                 }
             }
 
-            List<EntityLootCore> cores = world.getEntitiesWithinAABB(EntityLootCore.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).expand(range, range, range));
+            List<EntityLootCore> cores = world.getEntitiesWithinAABB(EntityLootCore.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(range, range, range));
 
             for (EntityLootCore core : cores) {
                 EntityPlayer closest = world.getClosestPlayerToEntity(core, 4);
@@ -115,7 +115,7 @@ public class Magnet extends ItemBCore {
             }
 
 
-            List<EntityXPOrb> xp = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).expand(4, 4, 4));
+            List<EntityXPOrb> xp = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(4, 4, 4));
 
             EntityPlayer player = (EntityPlayer) entity;
 

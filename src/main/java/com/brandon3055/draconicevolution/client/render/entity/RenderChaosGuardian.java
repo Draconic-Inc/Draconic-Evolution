@@ -6,7 +6,6 @@ import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -14,7 +13,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -246,13 +244,6 @@ public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
 
         public boolean shouldCombineTextures() {
             return false;
-        }
-    }
-
-    public static class Factory implements IRenderFactory<EntityChaosGuardian> {
-        @Override
-        public Render<? super EntityChaosGuardian> createRenderFor(RenderManager manager) {
-            return new RenderChaosGuardian(manager);
         }
     }
 }

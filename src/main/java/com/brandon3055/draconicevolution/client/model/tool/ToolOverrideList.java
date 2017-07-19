@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.model.BakedModelProperties;
+import codechicken.lib.model.bakedmodels.ModelProperties;
 import codechicken.lib.util.ItemNBTUtils;
 import com.brandon3055.draconicevolution.handlers.BowHandler.BowProperties;
 import com.brandon3055.draconicevolution.items.tools.DraconicBow;
@@ -50,6 +50,6 @@ public class ToolOverrideList extends ItemOverrideList {
         } else {
             renderStack = stack;
         }
-        return new ToolBakedModel(BakedModelProperties.DEFAULT_ITEM, () -> ToolModelBakery.get2DModel(renderStack), () -> ToolModelBakery.get3DModel(renderStack), toolOverrides.get(stack.getItem()));
+        return new ToolBakedModel(ModelProperties.DEFAULT_ITEM, () -> ToolModelBakery.get2DModel(renderStack), () -> ToolModelBakery.get3DModel(renderStack), toolOverrides.get(stack.getItem()));
     }
 }

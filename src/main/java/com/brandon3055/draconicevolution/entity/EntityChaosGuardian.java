@@ -429,9 +429,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
         this.dragonPartWing2.setLocationAndAngles(this.posX - (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ - (double) (f11 * 4.5F), 0.0F, 0.0F);
 
         if (!this.world.isRemote && this.hurtTime == 0) {
-            this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-            this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-            this.attackEntitiesInList(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.getEntityBoundingBox().expand(1.0D, 1.0D, 1.0D)));
+            this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getEntityBoundingBox().grow(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
+            this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.getEntityBoundingBox().grow(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
+            this.attackEntitiesInList(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D)));
         }
 
         double[] adouble1 = this.getMovementOffsets(5, 1.0F);
@@ -497,7 +497,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
     public void updateCrystals() {
         if (crystals == null) crystals = new ArrayList<EntityGuardianCrystal>();
-        List<EntityGuardianCrystal> list = world.getEntitiesWithinAABB(EntityGuardianCrystal.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(200, 200, 200));
+        List<EntityGuardianCrystal> list = world.getEntitiesWithinAABB(EntityGuardianCrystal.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).grow(200, 200, 200));
         activeCrystals = 0;
         for (EntityGuardianCrystal crystal : list) {
             if (!crystals.contains(crystal)) crystals.add(crystal);
@@ -629,7 +629,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
         else if (nextAttackTimer == 0) {
 
             Entity attackTarget = target;
-            @SuppressWarnings("unchecked") List<EntityPlayer> targets = attackTarget == null ? world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(100, 100, 100)) : null;
+            @SuppressWarnings("unchecked") List<EntityPlayer> targets = attackTarget == null ? world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).grow(100, 100, 100)) : null;
 
             if (targets != null && targets.size() > 0) {
                 targets.removeIf(player -> player.capabilities.isCreativeMode);
@@ -844,7 +844,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
                 break;
             case FIREBOMB:
-                @SuppressWarnings("unchecked") List<EntityPlayer> targets = world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().expand(150, 150, 150), EntitySelectors.CAN_AI_TARGET);
+                @SuppressWarnings("unchecked") List<EntityPlayer> targets = world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().grow(150, 150, 150), EntitySelectors.CAN_AI_TARGET);
                 target = null;
                 while (targets.size() > 0 && target == null) {
                     EntityPlayer potentialTarget = targets.get(rand.nextInt(targets.size()));

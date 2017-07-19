@@ -133,7 +133,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         //If a mob was killed reduce the despawn time of any xp dropped.
         if (coolDown == 2) {
-            List<EntityXPOrb> xp = world.getEntitiesWithinAABB(EntityXPOrb.class, killBox.expand(4, 4, 4));
+            List<EntityXPOrb> xp = world.getEntitiesWithinAABB(EntityXPOrb.class, killBox.grow(4, 4, 4));
             for (EntityXPOrb orb : xp) {
                 if (orb.xpOrbAge < 5400) {
                     orb.xpOrbAge = 5700;

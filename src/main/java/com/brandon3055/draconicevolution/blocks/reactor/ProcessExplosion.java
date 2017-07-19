@@ -380,7 +380,7 @@ public class ProcessExplosion implements IProcess {
         new DelayedExecutor(30) {
             @Override
             public void execute(Object[] args) {
-                List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).expand(radius * 2.5, radius * 2.5, radius * 2.5));
+                List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(radius * 2.5, radius * 2.5, radius * 2.5));
 
                 for (Entity e : list) {
                     double dist = e.getDistance(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);

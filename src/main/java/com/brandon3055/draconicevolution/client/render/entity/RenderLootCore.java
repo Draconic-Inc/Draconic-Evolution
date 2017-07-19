@@ -12,9 +12,9 @@ import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -23,7 +23,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -31,7 +30,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderLootCore extends Render<EntityLootCore> {
 
-    protected RenderLootCore(RenderManager renderManager) {
+    public RenderLootCore(RenderManager renderManager) {
         super(renderManager);
     }
 
@@ -143,10 +142,4 @@ public class RenderLootCore extends Render<EntityLootCore> {
         return ResourceHelperDE.getResource("textures/items/loot_core.png");
     }
 
-    public static class Factory implements IRenderFactory<EntityLootCore> {
-        @Override
-        public Render<? super EntityLootCore> createRenderFor(RenderManager manager) {
-            return new RenderLootCore(manager);
-        }
-    }
 }

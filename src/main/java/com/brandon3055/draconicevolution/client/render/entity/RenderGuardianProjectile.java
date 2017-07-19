@@ -3,14 +3,13 @@ package com.brandon3055.draconicevolution.client.render.entity;
 import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -18,7 +17,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
 
-    protected RenderGuardianProjectile(RenderManager renderManager) {
+    public RenderGuardianProjectile(RenderManager renderManager) {
         super(renderManager);
     }
 
@@ -108,10 +107,4 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
         }
     }
 
-    public static class Factory implements IRenderFactory<EntityGuardianProjectile> {
-        @Override
-        public Render<? super EntityGuardianProjectile> createRenderFor(RenderManager manager) {
-            return new RenderGuardianProjectile(manager);
-        }
-    }
 }

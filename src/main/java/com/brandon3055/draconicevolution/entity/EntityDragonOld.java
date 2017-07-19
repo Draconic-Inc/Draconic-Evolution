@@ -371,7 +371,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 
         if (this.rand.nextInt(10) == 0) {
             float f = 32.0F;
-            List list = this.world.getEntitiesWithinAABB(EntityEnderCrystal.class, this.getEntityBoundingBox().expand((double) f, (double) f, (double) f));
+            List list = this.world.getEntitiesWithinAABB(EntityEnderCrystal.class, this.getEntityBoundingBox().grow((double) f, (double) f, (double) f));
             EntityEnderCrystal entityendercrystal = null;
             double d0 = Double.MAX_VALUE;
             Iterator iterator = list.iterator();

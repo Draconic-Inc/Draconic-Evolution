@@ -79,7 +79,7 @@ public class TileChaosCrystal extends TileBCBase implements ITickable {
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return super.getRenderBoundingBox().expand(1, 3, 1);
+        return super.getRenderBoundingBox().grow(1, 3, 1);
     }
 
     public int getLocationHash(BlockPos location, int dimension) {
