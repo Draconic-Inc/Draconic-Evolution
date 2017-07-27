@@ -614,8 +614,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
         }
         else if (containerEnergyFlow.size() > linkedCrystals.size()) {
             containerEnergyFlow.clear();
-            sendUpdateToListeners(listeners, sendPacketToClient(output -> {
-            }, 1));
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(new NBTTagCompound()), 1));
         }
     }
 

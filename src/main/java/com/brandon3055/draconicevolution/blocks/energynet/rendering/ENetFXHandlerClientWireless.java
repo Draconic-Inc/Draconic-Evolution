@@ -61,6 +61,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         //endregion
 
         //region Update ReceiverFX
+//        LogHelper.dev(transferFXList.size() + " " + tile.getReceivers().size()+" "+tile.receiverFlowRates.size());
         for (CrystalGLFXBase transFX : transferFXList) {
             if (!transFX.isAlive()) {
                 requiresUpdate = true;
@@ -72,7 +73,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
             }
         }
 
-        if (requiresUpdate || tile.getLinks().size() != beamFXList.size()) {
+        if (requiresUpdate || tile.getReceivers().size() != transferFXList.size()) {
             reloadConnections();//TODO Make This Better. If needed...
         }
         //endregion

@@ -1,7 +1,13 @@
 ######## 2.2.2.x ########
 -Fixed energy core stabilizer name.
 -Fixed Open Computers integration
--Fixed achivements.
+-Fixed achievements.
+-Fixed Wireless energy crystal particles sometimes not rendering.
+-Added support for Torchmaster to the stabilized spawner.
+-Updated Computercraft Support.
+-Fixed reactor beams sometimes not rendering.
+-Fixed an issue with the chaos chamber that made it impossible to actually move around within the chamber.
+-Fixed chaos crystal dropping the chaos crystal block instead of chaos shards.
 
 ######## 2.2.1.248 ########
 -Fixed mob soul crash

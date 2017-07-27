@@ -59,15 +59,7 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalBase> {
             setExpired();
         }
 
-//        float[] r = {0.0F, 0.8F, 1.0F};
-//        float[] g = {0.8F, 0.1F, 0.7F};
-//        float[] b = {1F, 1F, 0.2F};
-
-//        particleRed = r[tile.getTier()];
-//        particleGreen = g[tile.getTier()];
-//        particleBlue = b[tile.getTier()];
         particleRed = particleGreen = particleBlue = particleAlpha = 1;
-
         powerLevel = (float) MathHelper.approachExp(powerLevel, fxState, 0.05);
 
         Iterator<PTracker> i = trackers.iterator();
@@ -81,8 +73,6 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalBase> {
             }
         }
 
-//        if (ClientEventHandler.elapsedTicks % 10 == 0) {
-//            LogHelper.dev(targetBB);
         int ps = Minecraft.getMinecraft().gameSettings.particleSetting;
         if (particleAge % 2 == 0 && powerLevel > rand.nextFloat() && (ps == 0 || (ps == 1 && rand.nextInt(3) == 0) || (ps == 2 && rand.nextInt(10) == 0))) {
             double travel = 50 + rand.nextInt(50);
@@ -92,13 +82,11 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalBase> {
         }
 
         particleTextureIndexX = ClientEventHandler.elapsedTicks % 5;
+        particleAge++;
     }
 
     @Override
     public void renderParticle(VertexBuffer buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-//        if (powerLevel <= 0) {
-//            return;
-//        }
         double scale = 0.08;// * powerLevel;
 
         float minU = (float) this.particleTextureIndexX / texturesPerRow;

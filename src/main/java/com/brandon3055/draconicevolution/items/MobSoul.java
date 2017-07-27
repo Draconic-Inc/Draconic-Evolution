@@ -164,6 +164,7 @@ public class MobSoul extends ItemBCore implements IRenderOverride {
                     }
                 }
             }
+            entity.addTag("IsSpawnerMob");
             return entity;
         }
         catch (Throwable e) {

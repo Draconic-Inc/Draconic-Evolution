@@ -73,14 +73,6 @@ public class ReactorBeamFX extends BCParticle {
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
-
-//        if (rand.nextInt(10) == 0) {
-//            boltSeed = rand.nextInt();
-//        }
-//        else {
-//            boltSeed = -1;
-//        }
-
     }
 
     @Override
@@ -103,20 +95,17 @@ public class ReactorBeamFX extends BCParticle {
             if (beam_E == null) {
                 beam_E = new ShaderProgram();
                 beam_E.attachShader(DEShaders.reactorBeamE);
-                beam_E.addGlobalUniformCallback(cache -> {
-                    cache.glUniform1F("power", fxState);
-                    cache.glUniform1F("startup", fxState);
-                });
             }
 
             beam_E.useShader(cache -> {
                 cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 1);
+                cache.glUniform1F("power", fxState);
+                cache.glUniform1F("startup", fxState);
             });
             pos2 = pos1.copy().offset(facing, 0.6D);
             renderShaderBeam(buffer, pos1, 0.1F, 0.1F, 0.6D, 0, 0, true, energyBeamColour);
             beam_E.useShader(cache -> {
-                cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 0);
             });
             renderShaderBeam(buffer, pos2, 0.1F, coreSize / 1.5, dist - (coreSize * 1.3), 0, 0, false, energyBeamColour);
@@ -129,19 +118,16 @@ public class ReactorBeamFX extends BCParticle {
             if (beam_O == null) {
                 beam_O = new ShaderProgram();
                 beam_O.attachShader(DEShaders.reactorBeamO);
-                beam_O.addGlobalUniformCallback(cache -> {
-                    cache.glUniform1F("power", (float) tile.animExtractState.value);
-                    cache.glUniform1F("startup", (float) tile.animExtractState.value);
-                });
             }
 
             beam_O.useShader(cache -> {
                 cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 1);
+                cache.glUniform1F("power", (float) tile.animExtractState.value);
+                cache.glUniform1F("startup", (float) tile.animExtractState.value);
             });
             renderShaderBeam(buffer, pos1, 0.263F, 0.263F, 0.8D, texOffset, 0, true, extractBeamColour);
             beam_O.useShader(cache -> {
-                cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 0);
             });
             renderShaderBeam(buffer, pos2, 0.263F, coreSize / 2, dist - (coreSize * 1.3), texOffset, 0, false, extractBeamColour);
@@ -150,19 +136,16 @@ public class ReactorBeamFX extends BCParticle {
             if (beam_I == null) {
                 beam_I = new ShaderProgram();
                 beam_I.attachShader(DEShaders.reactorBeamI);
-                beam_I.addGlobalUniformCallback(cache -> {
-                    cache.glUniform1F("power", fxState);
-                    cache.glUniform1F("startup", fxState);
-                });
             }
 
             beam_I.useShader(cache -> {
                 cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 1);
+                cache.glUniform1F("power", fxState);
+                cache.glUniform1F("startup", fxState);
             });
             renderShaderBeam(buffer, pos1, 0.355D, 0.355D, 0.8D, texOffset, 0, true, fieldBeamColour);
             beam_I.useShader(cache -> {
-                cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 0);
             });
             renderShaderBeam(buffer, pos2, 0.355D, coreSize, dist - coreSize, texOffset, 0, false, fieldBeamColour);

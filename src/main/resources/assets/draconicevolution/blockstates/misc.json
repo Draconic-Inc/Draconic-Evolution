@@ -9,6 +9,7 @@
     "type":{
       "magnet_basic": { "textures": { "layer0": "draconicevolution:items/magnet_basic"      } },
       "magnet_advanced":{ "textures": { "layer0": "draconicevolution:items/magnet_advanced" } },
+      "creative_exchanger":{ "textures": { "layer0": "draconicevolution:items/block_exchanger" } },
       "crystal_binder":{
         "transform": "ccl:default-tool",
         "textures": { "layer0": "draconicevolution:items/crystal_binder" }

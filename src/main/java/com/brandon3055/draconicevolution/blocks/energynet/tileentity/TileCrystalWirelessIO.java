@@ -390,8 +390,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
         else if (containerReceiverFlow.size() > linkedReceivers.size()) {
             containerReceiverFlow.clear();
-            sendUpdateToListeners(listeners, sendPacketToClient(output -> {
-            }, 1));
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(new NBTTagCompound()), 1));
         }
     }
 

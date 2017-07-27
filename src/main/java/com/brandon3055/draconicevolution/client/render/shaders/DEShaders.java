@@ -1,18 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.shaders;
 
 import codechicken.lib.render.shader.ShaderObject;
-import codechicken.lib.render.shader.ShaderProgram;
 import com.brandon3055.draconicevolution.DEConfig;
-import gnu.trove.map.hash.TObjectFloatHashMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
-import org.lwjgl.opengl.ARBShaderObjects;
 
 import java.io.IOException;
 
-import static codechicken.lib.render.shader.ShaderHelper.*;
-import static codechicken.lib.render.shader.ShaderObject.ShaderType.*;
+import static codechicken.lib.render.shader.ShaderHelper.getStream;
+import static codechicken.lib.render.shader.ShaderHelper.readShader;
+import static codechicken.lib.render.shader.ShaderObject.ShaderType.FRAGMENT;
+import static codechicken.lib.render.shader.ShaderObject.ShaderType.VERTEX;
 
 /**
  * Created by brandon3055 on 6/11/2016.
@@ -50,7 +47,7 @@ public class DEShaders {
     //public static ExplosionWaveOp explosionWaveOp;
 
     static {
-        if (OpenGlHelper.shadersSupported) {
+        if (OpenGlHelper.shadersSupported && DEConfig.useShaders) {
             try {
                 initShaders();
             } catch (IOException e) {
