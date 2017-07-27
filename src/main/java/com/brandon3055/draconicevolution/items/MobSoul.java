@@ -162,6 +162,7 @@ public class MobSoul extends ItemBCore implements ICustomRender {
                     }
                 }
             }
+            entity.addTag("IsSpawnerMob");
             return entity;
         }
         catch (Throwable e) {

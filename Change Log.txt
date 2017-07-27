@@ -1,4 +1,7 @@
-######## 2.1.3.x ########
+######## 2.1.3.256 ########
+-Fixed Wireless energy crystal particles sometimes not rendering.
+-Fixed edge case shader initialisation crash with systems that dont support DE's shaders.
+-Updated Computercraft Support.
 
 ######## 2.1.2.245 ########
 -Fixed chaos island implosion effects not rendering.

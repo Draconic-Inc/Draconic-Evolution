@@ -384,7 +384,7 @@ public class TileReactorCore extends TileBCBase implements ITickable, IDataRetai
         //endregion ======
     }
 
-    public void updateCriticalState() {
+    public void updateCriticalState()   {
         if (!(worldObj instanceof WorldServer)) {
             return;
         }

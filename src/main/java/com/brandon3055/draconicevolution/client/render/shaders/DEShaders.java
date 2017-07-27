@@ -41,7 +41,7 @@ public class DEShaders {
     public static ExplosionWaveOp explosionWaveOp;
 
     static {
-        if (OpenGlHelper.shadersSupported) {
+        if (OpenGlHelper.shadersSupported && DEConfig.useShaders) {
             initReactorShader();
             initReactorShieldShader();
             initEnergyCrystalShader();

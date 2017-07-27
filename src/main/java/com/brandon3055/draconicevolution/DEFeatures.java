@@ -298,7 +298,7 @@ public class DEFeatures {
 
     //region Exotic Items
 
-    @Feature(registryName = "creative_exchanger", stateOverride = "simple_components#type=chaoticCore", cTab = 1)
+    @Feature(registryName = "creative_exchanger", stateOverride = "misc#type=creative_exchanger", cTab = 1)
     public static CreativeExchanger creativeExchanger = new CreativeExchanger();
 
     @Feature(registryName = "ender_energy_manipulator", cTab = 1)

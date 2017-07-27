@@ -222,7 +222,7 @@ public class ContributorHandler {
         }
     }
 
-    public static void saveContributorConfig() {
+    public static void saveContributorConfig()  {
         try {
             File file = new File(FileHandler.brandon3055Folder, "contributor_settings.json");
             if (!file.exists()) {

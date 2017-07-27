@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -96,23 +97,19 @@ public class LayerContributorPerkRenderer implements LayerRenderer<AbstractClien
     }
 
 
-    public void renderBadge(AbstractClientPlayer entitylivingbaseIn) {
-//        if (entitylivingbaseIn.isElytraFlying()) {
-//            return;
-//        }
-
+    public void renderBadge(AbstractClientPlayer player) {
         ResourceHelperDE.bindTexture("textures/special/patreon_badge.png");
         Tessellator tess = Tessellator.getInstance();
         GlStateManager.pushMatrix();
 
-        if (entitylivingbaseIn.isSneaking()) {
+        if (player.isSneaking()) {
             GlStateManager.rotate(29.0F, 1.0F, 0.0F, 0F);
             GlStateManager.translate(0, 0.15, -0.1);
         }
 
         double x = 0.01;
         double y = 0.04;
-        double z = -0.13;
+        double z = -0.13 - (player.isWearing(EnumPlayerModelParts.JACKET) ? 0.02 : 0);
         double xSize = 0.22;
         double ySize = 0.22;
 
@@ -177,23 +174,19 @@ public class LayerContributorPerkRenderer implements LayerRenderer<AbstractClien
         GlStateManager.popMatrix();
     }
 
-    public void renderLolnetBadge(AbstractClientPlayer entitylivingbaseIn, boolean offset) {
-//        if (entitylivingbaseIn.isElytraFlying()) {
-//            return;
-//        }
-//
+    public void renderLolnetBadge(AbstractClientPlayer player, boolean offset) {
         ResourceHelperDE.bindTexture("textures/special/lolnet_badge.png");
         Tessellator tess = Tessellator.getInstance();
         GlStateManager.pushMatrix();
 
-        if (entitylivingbaseIn.isSneaking()) {
+        if (player.isSneaking()) {
             GlStateManager.rotate(29.0F, 1.0F, 0.0F, 0F);
             GlStateManager.translate(0, 0.15, -0.1);
         }
 
         double x = 0.01;
         double y = 0.04 + (offset ? 0.25 : 0);
-        double z = -0.13;
+        double z = -0.13 - (player.isWearing(EnumPlayerModelParts.JACKET) ? 0.02 : 0);
         double xSize = 0.22;
         double ySize = 0.22;
 

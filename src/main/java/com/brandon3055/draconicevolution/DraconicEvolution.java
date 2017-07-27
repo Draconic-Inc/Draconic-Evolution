@@ -71,13 +71,14 @@ public class DraconicEvolution {
 
         proxy.preInit(event);
         proxy.registerParticles();
+
+        OreHandler.initialize();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         DEWorldGenHandler.initialize();
         GuiHandler.initialize();
-        OreHandler.initialize();
 
         proxy.init(event);
     }

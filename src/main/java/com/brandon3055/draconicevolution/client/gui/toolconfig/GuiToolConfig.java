@@ -186,7 +186,7 @@ public class GuiToolConfig extends GuiScreen {
                 contributor.patreonBadgeEnabled = !contributor.patreonBadgeEnabled;
                 button.displayString = "Patreon Badge: " + (contributor.patreonBadgeEnabled ? "Enabled" : "Disabled");
             }else if (button.id == 46) {
-                contributor.patreonBadgeEnabled = !contributor.patreonBadgeEnabled;
+                contributor.lolnetBadgeEnabled = !contributor.lolnetBadgeEnabled;
                 button.displayString = "Lolnet Badge: " + (contributor.lolnetBadgeEnabled ? "Enabled" : "Disabled");
             }
 
