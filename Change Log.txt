@@ -1,4 +1,12 @@
-######## 2.3.1.x ########
+######## 2.3.2.258 ########
+-Fixed issue with wireless energy crystal beams.
+-Added support for Torchmaster to the stabilized spawner.
+-Fixed reactor beams sometimes not rendering.
+-Fixed an issue with the chaos chamber that made it impossible to actually move around within the chamber.
+-Fixed chaos crystal dropping the chaos crystal block instead of chaos shards.
+-Re implemented Computercraft integration.
+
+######## 2.3.1.255 ########
 -Fixed Wireless energy crystal particles sometimes not rendering
 -Fixed Item Dislocator
 -Fixed item tool tips not rendering in some gui's

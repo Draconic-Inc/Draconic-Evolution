@@ -13,9 +13,9 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -73,14 +73,6 @@ public class ReactorBeamFX extends BCParticle {
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
-
-//        if (rand.nextInt(10) == 0) {
-//            boltSeed = rand.nextInt();
-//        }
-//        else {
-//            boltSeed = -1;
-//        }
-
     }
 
     @Override
@@ -96,29 +88,23 @@ public class ReactorBeamFX extends BCParticle {
         }
 
         float animation = (ClientEventHandler.elapsedTicks + partialTicks) * 0.02F;
-
         texOffset = 0;
 
         if (isInjectorEffect) {
             if (beam_E == null) {
                 beam_E = new ShaderProgram();
                 beam_E.attachShader(DEShaders.reactorBeamE);
-                beam_E.addGlobalUniformCallback(cache -> {
-                    cache.glUniform1F("power", fxState);
-                    cache.glUniform1F("startup", fxState);
-                });
             }
 
             beam_E.useShader(cache -> {
                 cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 1);
+                cache.glUniform1F("power", fxState);
+                cache.glUniform1F("startup", fxState);
             });
             pos2 = pos1.copy().offset(facing, 0.6D);
             renderShaderBeam(buffer, pos1, 0.1F, 0.1F, 0.6D, 0, 0, true, energyBeamColour);
-            beam_E.useShader(cache -> {
-                cache.glUniform1F("time", animation);
-                cache.glUniform1F("fade", 0);
-            });
+            beam_E.useShader(cache -> cache.glUniform1F("fade", 0));
             renderShaderBeam(buffer, pos2, 0.1F, coreSize / 1.5, dist - (coreSize * 1.3), 0, 0, false, energyBeamColour);
             beam_E.releaseShader();
         }
@@ -129,42 +115,32 @@ public class ReactorBeamFX extends BCParticle {
             if (beam_O == null) {
                 beam_O = new ShaderProgram();
                 beam_O.attachShader(DEShaders.reactorBeamO);
-                beam_O.addGlobalUniformCallback(cache -> {
-                    cache.glUniform1F("power", (float) tile.animExtractState.value);
-                    cache.glUniform1F("startup", (float) tile.animExtractState.value);
-                });
             }
 
             beam_O.useShader(cache -> {
                 cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 1);
+                cache.glUniform1F("power", (float) tile.animExtractState.value);
+                cache.glUniform1F("startup", (float) tile.animExtractState.value);
             });
             renderShaderBeam(buffer, pos1, 0.263F, 0.263F, 0.8D, texOffset, 0, true, extractBeamColour);
-            beam_O.useShader(cache -> {
-                cache.glUniform1F("time", animation);
-                cache.glUniform1F("fade", 0);
-            });
+            beam_O.useShader(cache -> cache.glUniform1F("fade", 0));
             renderShaderBeam(buffer, pos2, 0.263F, coreSize / 2, dist - (coreSize * 1.3), texOffset, 0, false, extractBeamColour);
 
             //Draw Outer
             if (beam_I == null) {
                 beam_I = new ShaderProgram();
                 beam_I.attachShader(DEShaders.reactorBeamI);
-                beam_I.addGlobalUniformCallback(cache -> {
-                    cache.glUniform1F("power", fxState);
-                    cache.glUniform1F("startup", fxState);
-                });
             }
 
             beam_I.useShader(cache -> {
                 cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 1);
+                cache.glUniform1F("power", fxState);
+                cache.glUniform1F("startup", fxState);
             });
             renderShaderBeam(buffer, pos1, 0.355D, 0.355D, 0.8D, texOffset, 0, true, fieldBeamColour);
-            beam_I.useShader(cache -> {
-                cache.glUniform1F("time", animation);
-                cache.glUniform1F("fade", 0);
-            });
+            beam_I.useShader(cache -> cache.glUniform1F("fade", 0));
             renderShaderBeam(buffer, pos2, 0.355D, coreSize, dist - coreSize, texOffset, 0, false, fieldBeamColour);
             beam_I.releaseShader();
         }
@@ -238,7 +214,7 @@ public class ReactorBeamFX extends BCParticle {
             GlStateManager.depthMask(false);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
 
-            if (!DEShaders.useShaders()) {
+            if (!DEShaders.useShaders() || !DEConfig.useReactorBeamShaders) {
                 GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
                 GlStateManager.glTexParameterf(3553, 10243, 10497.0F);
                 GlStateManager.enableBlend();
@@ -251,7 +227,7 @@ public class ReactorBeamFX extends BCParticle {
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 
             GlStateManager.enableCull();
-            if (!DEShaders.useShaders()) {
+            if (!DEShaders.useShaders() || !DEConfig.useReactorBeamShaders) {
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             }
         }

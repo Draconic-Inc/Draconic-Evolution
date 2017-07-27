@@ -99,10 +99,14 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
                 flowRates.add(calculateFlow(i));
             }
             fxHandler.detectAndSendChanges();
+
+//            if (Utils.getClosestPlayer(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 2) != null) {
+//                LogHelper.dev(flowRates + " " + linkedCrystals);
+//            }
         }
 
-//        if (world.getClosestPlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, false) != null) {
-//            LogHelper.dev(flowRates+" "+linkedCrystals);
+//        if (Utils.getClosestPlayer(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 2) != null) {
+//            LogHelper.dev(flowRates + " " + linkedCrystals);
 //        }
 
         tick++;

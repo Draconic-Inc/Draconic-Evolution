@@ -1,10 +1,16 @@
 package com.brandon3055.draconicevolution.integration.computers.cc;
 
+import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
+
 /**
  * Created by brandon3055 on 21/9/2015.
  */
-public class CCAdapter {
-} /*implements IPeripheral {
+public class CCAdapter implements IPeripheral {
     private IDEPeripheral peripheral;
 
 	public CCAdapter(IDEPeripheral peripheral){
@@ -13,7 +19,7 @@ public class CCAdapter {
 
 	@Override
 	public String getType() {
-		return peripheral.getName();
+		return peripheral.getPeripheralName();
 	}
 
 	@Override
@@ -25,7 +31,7 @@ public class CCAdapter {
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		try
 		{
-			return peripheral.callMethod(peripheral.getMethodNames()[method], arguments);
+			return peripheral.callMethod(peripheral.getMethodNames()[method], new ArgHelper(arguments));
 		}
 		catch (Exception e)
 		{
@@ -44,4 +50,4 @@ public class CCAdapter {
 		return false;
 	}
 }
-*/
+

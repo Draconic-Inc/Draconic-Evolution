@@ -22,7 +22,6 @@ import java.util.Random;
  * Created by brandon3055 on 30/9/2015.
  */
 public class ChaosShardAtmos extends BlockBCore {
-
     public ChaosShardAtmos() {
         super(Material.AIR);
         this.setTickRandomly(true);
@@ -65,30 +64,37 @@ public class ChaosShardAtmos extends BlockBCore {
 
     //region Air Block Stuff
 
+    @Override
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.INVISIBLE;
     }
 
     @Nullable
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
         return null;
     }
 
+    @Override
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
+    @Override
     public boolean canCollideCheck(IBlockState state, boolean hitIfLiquid) {
         return false;
     }
 
+    @Override
     public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
     }
 
+    @Override
     public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
         return true;
     }
 
+    @Override
     public boolean isFullCube(IBlockState state) {
         return false;
     }

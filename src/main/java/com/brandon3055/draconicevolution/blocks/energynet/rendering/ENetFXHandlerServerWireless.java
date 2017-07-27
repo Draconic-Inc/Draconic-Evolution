@@ -65,7 +65,7 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
     }
 
     private void sendUpdate() {
-        PlayerChunkMapEntry playerChunkMap = ((WorldServer) tile.getWorld()).getPlayerChunkMap().getEntry(tile.getPos().getX() >> 4, tile.getPos().getY() >> 4);
+        PlayerChunkMapEntry playerChunkMap = ((WorldServer) tile.getWorld()).getPlayerChunkMap().getEntry(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4);
         if (playerChunkMap != null) {
             playerChunkMap.players.forEach(playerMP -> CrystalUpdateBatcher.queData(batchedUpdate, playerMP));
         }

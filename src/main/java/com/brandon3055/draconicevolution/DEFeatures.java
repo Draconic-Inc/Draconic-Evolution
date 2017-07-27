@@ -79,7 +79,7 @@ public class DEFeatures implements IModFeatures {
     @ModFeature(name = "grinder", tileEntity = TileGrinder.class, itemBlock = ItemBlockBCore.class, cTab = 1)
     public static Grinder grinder = new Grinder();
 
-    @ModFeature(name = "particle_generator", variantMap = {"0:type=normal", "1:type=inverted", "2:type=stabilizer"}, cTab = 1, itemBlock = ItemBlockBCore.class)
+    @ModFeature(name = "particle_generator", variantMap = {"0:type=normal", "1:type=inverted", "2:type=stabilizer", "3:type=stabilizer"}, cTab = 1, itemBlock = ItemBlockBCore.class)
     public static ParticleGenerator particleGenerator = new ParticleGenerator();
 
     @ModFeature(name = "energy_infuser", tileEntity = TileEnergyInfuser.class, itemBlock = ItemBlockBCore.class, cTab = 1)

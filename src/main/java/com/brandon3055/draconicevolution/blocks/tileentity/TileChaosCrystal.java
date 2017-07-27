@@ -85,4 +85,9 @@ public class TileChaosCrystal extends TileBCBase implements ITickable {
     public int getLocationHash(BlockPos location, int dimension) {
         return (location.toString() + String.valueOf(dimension)).hashCode();
     }
+
+    @Override
+    public boolean saveToItem() {
+        return false;
+    }
 }
