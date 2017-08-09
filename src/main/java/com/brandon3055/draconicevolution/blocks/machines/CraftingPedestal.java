@@ -43,7 +43,11 @@ public class CraftingPedestal extends BlockBCore implements ITileEntityProvider,
     public CraftingPedestal(){
         super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(TIER, "basic").withProperty(FACING, EnumFacing.UP));
-        setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     //region BlockState

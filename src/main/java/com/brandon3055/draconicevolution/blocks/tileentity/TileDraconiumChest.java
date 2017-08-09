@@ -601,13 +601,13 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
         checkIOCache();
-        return canInsert[direction.getIndex()][index];
+        return index < 260 && canInsert[direction.getIndex()][index];
     }
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         checkIOCache();
-        return canExtract[direction.getIndex()][index];
+        return index < 260 && canExtract[direction.getIndex()][index];
     }
 
     //endregion

@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandle
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.client.gui.GuiPSA;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
@@ -60,6 +61,8 @@ public class ClientProxy extends CommonProxy {
 
         registerRendering();
 		WikiDocManager.initialize();
+
+		GuiPSA.init(event);
 	}
 
 	@Override

@@ -1,3 +1,8 @@
+######## 2.1.4.x ########
+-Fixed armor damage sound firing when 0 damage is actually taken.
+-Fixed crash when inserting items into draconic chest.
+-Fixed solid blocks allowing light to pass through them.
+
 ######## 2.1.3.256 ########
 -Fixed Wireless energy crystal particles sometimes not rendering.
 -Fixed edge case shader initialisation crash with systems that dont support DE's shaders.

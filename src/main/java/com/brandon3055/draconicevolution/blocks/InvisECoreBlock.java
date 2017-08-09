@@ -39,7 +39,11 @@ public class InvisECoreBlock extends BlockBCore implements ICustomRender, ITileE
 
     public InvisECoreBlock() {
         this.setHardness(10F);
-        setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

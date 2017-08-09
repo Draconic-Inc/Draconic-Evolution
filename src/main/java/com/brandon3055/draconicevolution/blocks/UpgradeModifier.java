@@ -31,7 +31,11 @@ public class UpgradeModifier extends BlockBCore implements ITileEntityProvider, 
 
     public UpgradeModifier(){
         super(Material.IRON);
-        setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     //region Block

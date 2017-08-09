@@ -38,7 +38,6 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, ICu
         this.setHardness(100.0F);
         this.setResistance(4000.0F);
         this.setBlockUnbreakable();
-        this.setIsFullCube(false);
     }
 
     @Override
@@ -48,6 +47,10 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, ICu
         return super.getBlockHardness(blockState, world, pos);
     }
 
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {

@@ -30,11 +30,14 @@ import javax.annotation.Nullable;
 public class DissEnchanter extends BlockBCore implements ITileEntityProvider, ICustomRender {
     protected static final AxisAlignedBB AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.75D, 1.0D);
 
-    public DissEnchanter() {
-        setIsFullCube(false);
-    }
+    public DissEnchanter() {}
 
     //region Block
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {

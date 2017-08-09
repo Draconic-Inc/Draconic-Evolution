@@ -31,8 +31,11 @@ import javax.annotation.Nullable;
  */
 public class DislocatorPedestal extends BlockBCore implements ITileEntityProvider, ICustomRender {
 
-    public DislocatorPedestal() {
-        setIsFullCube(false);
+    public DislocatorPedestal() {}
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

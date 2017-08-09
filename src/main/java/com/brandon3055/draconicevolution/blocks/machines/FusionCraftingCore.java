@@ -34,7 +34,11 @@ public class FusionCraftingCore extends BlockBCore implements ICustomRender, ITi
 
     public FusionCraftingCore(){
         super(Material.IRON);
-        setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

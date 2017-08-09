@@ -44,10 +44,14 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, ICust
         this.setHarvestLevel("pickaxe", 0);
         this.setHardness(1.5F).setResistance(10.0F);
         this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.UP));
-        this.setIsFullCube(false);
     }
 
     //region Block state and stuff...
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {

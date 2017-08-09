@@ -32,10 +32,12 @@ public class ReactorCore extends BlockBCore implements ITileEntityProvider, ICus
 
     private static final AxisAlignedBB NO_AABB = new AxisAlignedBB(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
 
-    public ReactorCore() {
-        setIsFullCube(false);
-    }
+    public ReactorCore() {}
 
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {

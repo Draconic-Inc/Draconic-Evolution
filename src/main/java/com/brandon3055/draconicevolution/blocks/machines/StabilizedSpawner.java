@@ -36,8 +36,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class StabilizedSpawner extends BlockBCore implements ITileEntityProvider, ICustomRender {
 
-    public StabilizedSpawner() {
-        setIsFullCube(false);
+    public StabilizedSpawner() {}
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

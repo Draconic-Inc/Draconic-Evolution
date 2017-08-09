@@ -55,12 +55,16 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
     public ReactorComponent() {
         this.setHardness(25F);
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "stabilizer"));
-        this.setIsFullCube(false);
         this.addName(0, "reactor_stabilizer");
         this.addName(1, "reactor_injector");
     }
 
     //region Block & Registry
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
     @Override
     protected BlockStateContainer createBlockState() {
