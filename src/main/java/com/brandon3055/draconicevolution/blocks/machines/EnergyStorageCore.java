@@ -37,8 +37,12 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
 
     public EnergyStorageCore() {
         super(Material.IRON);
-        setIsFullCube(false);
         this.setDefaultState(blockState.getBaseState().withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, false));
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     //region BlockState

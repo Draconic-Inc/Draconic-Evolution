@@ -29,7 +29,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class DislocatorPedestal extends BlockBCore implements ITileEntityProvider, IRenderOverride {
 
     public DislocatorPedestal() {
-        setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

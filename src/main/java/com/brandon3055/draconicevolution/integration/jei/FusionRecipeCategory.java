@@ -16,7 +16,6 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -28,7 +27,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 24/07/2016.
  */
-public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix animation in PI
+public class FusionRecipeCategory extends BlankRecipeCategory<FusionRecipeWrapper> { //TODO Fix animation in PI
 
     private final IDrawable background;
     private final String localizedName;
@@ -64,10 +63,10 @@ public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix anima
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) { //TODO JEI Update
+    public void setRecipe(IRecipeLayout recipeLayout, FusionRecipeWrapper recipeWrapper, IIngredients ingredients) { //TODO JEI Update
         try {
 
-            IFusionRecipe recipe = ((FusionRecipeWrapper) recipeWrapper).recipe;
+            IFusionRecipe recipe = recipeWrapper.recipe;
 
             IGuiItemStackGroup stackGroup = recipeLayout.getItemStacks();
             stackGroup.init(0, true, xSize / 2 - 9, ySize / 2 - 9 - 23);

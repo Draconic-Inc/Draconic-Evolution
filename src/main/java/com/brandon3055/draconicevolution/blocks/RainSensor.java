@@ -27,10 +27,14 @@ public class RainSensor extends BlockBCore {
 
     public RainSensor() {
         setDefaultState(blockState.getBaseState().withProperty(ACTIVE, false));
-        setIsFullCube(false);
     }
 
     //region BlockState
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {

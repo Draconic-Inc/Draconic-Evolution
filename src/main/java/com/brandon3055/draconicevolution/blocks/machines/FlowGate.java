@@ -39,12 +39,17 @@ public class FlowGate extends BlockBCore implements IRegistryOverride {
 
     public FlowGate() {
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "flux").withProperty(FACING, EnumFacing.NORTH));
-        this.setIsFullCube(false);
         this.addName(0, "flux_gate");
         this.addName(8, "fluid_gate");
     }
 
     //region BlockState
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
+
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, TYPE, FACING);

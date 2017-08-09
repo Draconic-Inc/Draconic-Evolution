@@ -1,4 +1,10 @@
-######## 2.2.2.x ########
+######## 2.2.3.x ########
+-Fixed armor damage sound firing when 0 damage is actually taken.
+-Fixed crash when inserting items into draconic chest.
+-Fixed solid blocks allowing light to pass through them.
+-Fixed Draconium Chest colour showing as black when world loads until chest is opened.
+
+######## 2.2.2.257 ########
 -Fixed energy core stabilizer name.
 -Fixed Open Computers integration
 -Fixed achievements.

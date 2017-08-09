@@ -64,7 +64,7 @@ public class DEJEIPlugin implements IModPlugin {
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 
         registry.handleRecipes(EIOSpawnerRecipesWrapper.class, new EIOSpawnerRecipesWrapper.Factory(), VanillaRecipeCategoryUid.CRAFTING);
-        registry.handleRecipes(IFusionRecipe.class, new FusionRecipeWrapper.Factory(), RecipeCategoryUids.FUSION_CRAFTING);
+        registry.handleRecipes(IFusionRecipe.class, FusionRecipeWrapper::new, RecipeCategoryUids.FUSION_CRAFTING);
 
         registry.addRecipeCatalyst(new ItemStack(DEFeatures.fusionCraftingCore), RecipeCategoryUids.FUSION_CRAFTING);
         registry.addRecipeCatalyst(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.CRAFTING);
@@ -116,7 +116,7 @@ public class DEJEIPlugin implements IModPlugin {
             }
         });
 
-        registry.addRecipes(RecipeManager.FUSION_REGISTRY.getRecipes());
+        registry.addRecipes(RecipeManager.FUSION_REGISTRY.getRecipes(), RecipeCategoryUids.FUSION_CRAFTING);
         registry.addAdvancedGuiHandlers(new IAdvancedGuiHandler() {
             @Override
             public Class getGuiContainerClass() {

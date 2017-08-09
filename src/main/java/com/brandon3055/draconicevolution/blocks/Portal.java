@@ -33,11 +33,15 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
     public static final PropertyBool DRAW_WEST = PropertyBool.create("drawwest");
 
     public Portal() {
-        this.setIsFullCube(false);
         this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, X).withProperty(DRAW_UP, true).withProperty(DRAW_DOWN, true).withProperty(DRAW_EAST, true).withProperty(DRAW_WEST, true));
     }
 
     //region Block State
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
     @Override
     public int getMetaFromState(IBlockState state) {

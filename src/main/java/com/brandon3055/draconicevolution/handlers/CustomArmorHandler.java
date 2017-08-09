@@ -81,7 +81,7 @@ public class CustomArmorHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerAttacked(LivingAttackEvent event) {
-        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled()) {
+        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled() || event.getAmount() <= 0) {
             return;
         }
 

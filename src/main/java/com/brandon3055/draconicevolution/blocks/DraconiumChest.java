@@ -42,7 +42,11 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
     protected static final AxisAlignedBB AABB = new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.875D, 0.9375D);
 
     public DraconiumChest() {
-        this.setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

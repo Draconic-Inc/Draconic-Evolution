@@ -30,8 +30,12 @@ public class CelestialManipulator extends BlockBCore implements ITileEntityProvi
     private AxisAlignedBB AABB = new AxisAlignedBB(0.0625, 0, 0.0625, 0.9375, 0.8125, 0.9375);
 
     public CelestialManipulator() {
-        setIsFullCube(false);
         canProvidePower = true;
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override
