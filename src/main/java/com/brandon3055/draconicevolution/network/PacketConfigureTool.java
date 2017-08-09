@@ -63,6 +63,7 @@ public class PacketConfigureTool implements IMessage {
             if (field != null) {
                 field.handleButton(IItemConfigField.EnumButton.getButton(message.button), message.data);
                 field.writeToNBT(ToolConfigHelper.getFieldStorage(stack));
+                item.onFieldChanged(stack, field);
             }
 
             return null;

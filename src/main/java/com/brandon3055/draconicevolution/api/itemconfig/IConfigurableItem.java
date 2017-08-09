@@ -12,5 +12,7 @@ public interface IConfigurableItem {
      */
     ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry);
 
+    default void onFieldChanged(ItemStack stack, IItemConfigField field) {}
+
     int getProfileCount(ItemStack stack);
 }

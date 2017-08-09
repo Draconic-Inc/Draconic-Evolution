@@ -61,10 +61,63 @@ public class DEJEIPlugin implements IModPlugin {
     public void register(IModRegistry registry) {
         LogHelper.dev("Register JEI");
         jeiHelpers = registry.getJeiHelpers();
-        IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 
-        registry.handleRecipes(EIOSpawnerRecipesWrapper.class, new EIOSpawnerRecipesWrapper.Factory(), VanillaRecipeCategoryUid.CRAFTING);
-        registry.handleRecipes(IFusionRecipe.class, new FusionRecipeWrapper.Factory(), RecipeCategoryUids.FUSION_CRAFTING);
+//        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new IRecipeTransferHandler<ContainerFusionCraftingCore>() {
+//            @Override
+//            public Class<ContainerFusionCraftingCore> getContainerClass() {
+//                return ContainerFusionCraftingCore.class;
+//            }
+//
+//            @Nullable
+//            @Override
+//            public IRecipeTransferError transferRecipe(ContainerFusionCraftingCore container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
+//                LogHelper.dev("Transfer Recipe");
+//                IRecipeTransferError error = new IRecipeTransferError() {
+//                    @Override
+//                    public Type getType() {
+//                        return Type.USER_FACING;
+//                    }
+//
+//                    @Override
+//                    public void showError(Minecraft minecraft, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX, int recipeY) {
+//
+//
+//                    }
+//                };
+//
+//                return error;
+//            }
+//        }, RecipeCategoryUids.FUSION_CRAFTING);
+
+//        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new IRecipeTransferInfo<Container>() {
+//            @Override
+//            public Class<Container> getContainerClass() {
+//                return null;
+//            }
+//
+//            @Override
+//            public String getRecipeCategoryUid() {
+//                return null;
+//            }
+//
+//            @Override
+//            public boolean canHandle(Container container) {
+//                return false;
+//            }
+//
+//            @Override
+//            public List<Slot> getRecipeSlots(Container container) {
+//                return null;
+//            }
+//
+//            @Override
+//            public List<Slot> getInventorySlots(Container container) {
+//                return null;
+//            }
+//        });
+
+        registry.handleRecipes(EIOSpawnerRecipesWrapper.class, recipe -> recipe, VanillaRecipeCategoryUid.CRAFTING);
+        registry.handleRecipes(IFusionRecipe.class, FusionRecipeWrapper::new, RecipeCategoryUids.FUSION_CRAFTING);
 
         registry.addRecipeCatalyst(new ItemStack(DEFeatures.fusionCraftingCore), RecipeCategoryUids.FUSION_CRAFTING);
         registry.addRecipeCatalyst(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.CRAFTING);

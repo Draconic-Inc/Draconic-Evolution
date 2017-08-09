@@ -40,7 +40,11 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
         this.setHardness(100.0F);
         this.setResistance(4000.0F);
         this.setBlockUnbreakable();
-        this.setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

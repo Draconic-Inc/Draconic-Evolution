@@ -32,9 +32,13 @@ public class EntityDetector extends BlockBCore implements ITileEntityProvider, I
     public EntityDetector() {
         setDefaultState(blockState.getBaseState().withProperty(ADVANCED, false));
         this.canProvidePower = true;
-        setIsFullCube(false);
         this.addName(0, "entity_detector_basic");
         this.addName(1, "entity_detector_advanced");
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     //region BlockState

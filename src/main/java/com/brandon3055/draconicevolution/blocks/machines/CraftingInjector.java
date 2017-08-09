@@ -40,11 +40,15 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
     public CraftingInjector() {
         super(Material.IRON);
         this.setDefaultState(blockState.getBaseState().withProperty(TIER, "basic").withProperty(FACING, EnumFacing.UP));
-        setIsFullCube(false);
         this.addName(0, "crafting_injector_basic");
         this.addName(1, "crafting_injector_wyvern");
         this.addName(2, "crafting_injector_draconic");
         this.addName(3, "crafting_injector_chaotic");
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     //region BlockState

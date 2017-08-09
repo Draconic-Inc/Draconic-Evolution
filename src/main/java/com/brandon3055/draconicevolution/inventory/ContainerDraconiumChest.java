@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import com.brandon3055.draconicevolution.items.ItemCore;
+import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
@@ -17,6 +18,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 4/06/2017.
  */
+@ChestContainer(isLargeChest = true, rowSize = 26)
 public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest> {
 
     public InventoryCrafting craftMatrix;

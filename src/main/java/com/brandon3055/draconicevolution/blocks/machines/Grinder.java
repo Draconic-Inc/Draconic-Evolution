@@ -141,7 +141,7 @@ public class Grinder extends BlockMobSafe implements ITileEntityProvider {
         return true;
     }
 
-//    @Override
+    //    @Override
 //    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
 //        super.neighborChanged(state, worldIn, pos, blockIn);
 //    }

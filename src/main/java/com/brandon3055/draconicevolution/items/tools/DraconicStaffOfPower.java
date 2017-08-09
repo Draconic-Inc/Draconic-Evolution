@@ -62,6 +62,9 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        if (getDisabledEnchants(stack).containsKey(enchantment)) {
+            return false;
+        }
         return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment.type == EnumEnchantmentType.WEAPON;
     }
 

@@ -5,6 +5,7 @@ import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
@@ -16,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -23,6 +25,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.network.play.server.SPacketEntityTeleport;
@@ -82,7 +86,99 @@ public abstract class MiningToolBase extends ToolBase {
             registry.register(stack, new IntegerConfigField("digDepth", 0, 0, depth, "config.field.digDepth.description", SLIDER));
         }
 
+        Map<Enchantment, Integer> enchants = getAllEnchants(stack);
+        Map<Enchantment, Integer> disEnchants = getDisabledEnchants(stack);
+        enchants.forEach((enchantment, integer) -> {
+            ToolConfigHelper.getFieldStorage(stack).removeTag(enchantment.getName());
+            registry.register(stack, new BooleanConfigField(enchantment.getName(), !disEnchants.containsKey(enchantment), "config.field.toggleEnchant.description"){
+                @Override
+                public String getUnlocalizedName() {
+                    return enchantment.getTranslatedName(integer);
+                }
+
+                @Override
+                public void readFromNBT(NBTTagCompound compound) {
+                    super.readFromNBT(compound);
+                }
+
+                @Override
+                public void writeToNBT(NBTTagCompound compound) {
+                    super.writeToNBT(compound);
+                }
+
+                @Override
+                public Integer getValue() {
+                    EnchantmentHelper.getEnchantments(stack).containsKey(enchantment);
+                    return super.getValue();
+                }
+            });
+        });
+
         return registry;
+    }
+
+    @Override
+    public void onFieldChanged(ItemStack stack, IItemConfigField field) {
+        if (field instanceof BooleanConfigField && field.getDescription().equals("config.field.toggleEnchant.description")) {
+            String target = field.getName();
+            if (((BooleanConfigField) field).getValue() == 0) {
+                Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
+                for (Enchantment enchantment : enchants.keySet()) {
+                    if (enchantment.getName().equals(target)) {
+                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+                        NBTTagCompound ench = new NBTTagCompound();
+                        ench.setShort("id", (short) Enchantment.getEnchantmentID(enchantment));
+                        ench.setShort("lvl", enchants.get(enchantment).shortValue());
+                        list.appendTag(ench);
+                        ItemNBTHelper.getCompound(stack).setTag("disableEnchants", list);
+                        enchants.remove(enchantment);
+                        EnchantmentHelper.setEnchantments(enchants, stack);
+
+                        ToolConfigHelper.getFieldStorage(stack).setBoolean(field.getName(), false);
+                        return;
+                    }
+                }
+            }
+            else {
+                Map<Enchantment, Integer> enchants = getDisabledEnchants(stack);
+                for (Enchantment enchantment : enchants.keySet()) {
+                    if (enchantment.getName().equals(target)) {
+                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+                        for (int i = 0; i < list.tagCount(); i++) {
+                            Enchantment e = Enchantment.getEnchantmentByID(list.getCompoundTagAt(i).getShort("id"));
+                            if (e == enchantment) {
+                                list.removeTag(i);
+                                break;
+                            }
+                        }
+
+                        stack.addEnchantment(enchantment, enchants.get(enchantment));
+
+                        ToolConfigHelper.getFieldStorage(stack).setBoolean(field.getName(), true);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public Map<Enchantment, Integer> getDisabledEnchants(ItemStack stack) {
+        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+        Map<Enchantment, Integer> disEnch = new HashMap<>();
+        for (int i = 0; i < list.tagCount(); i++) {
+            Enchantment enchantment = Enchantment.getEnchantmentByID(list.getCompoundTagAt(i).getShort("id"));
+            int level = list.getCompoundTagAt(i).getShort("lvl");
+            disEnch.put(enchantment, level);
+        }
+        return disEnch;
+    }
+
+    public Map<Enchantment, Integer> getAllEnchants(ItemStack stack) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        enchants.putAll(getDisabledEnchants(stack));
+        enchants.putAll(EnchantmentHelper.getEnchantments(stack));
+
+        return enchants;
     }
 
     //endregion
@@ -133,6 +229,9 @@ public abstract class MiningToolBase extends ToolBase {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        if (getDisabledEnchants(stack).containsKey(enchantment)) {
+            return false;
+        }
         return enchantment.type == EnumEnchantmentType.DIGGER || enchantment.type == EnumEnchantmentType.ALL;
     }
 

@@ -1,3 +1,10 @@
+######## 2.3.3.60 ########
+-Fixed armor damage sound firing when 0 damage is actually taken.
+-Fixed crash when inserting items into draconic chest.
+-Fixed solid blocks allowing light to pass through them.
+-Fixed Draconium Chest colour showing as black when world loads until chest is opened.
+-Added ability to disable enchantments on tools via tool config.
+
 ######## 2.3.2.258 ########
 -Fixed issue with wireless energy crystal beams.
 -Added support for Torchmaster to the stabilized spawner.

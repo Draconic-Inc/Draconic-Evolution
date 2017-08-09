@@ -30,7 +30,11 @@ public class EnergyInfuser extends BlockBCore implements ITileEntityProvider, IR
 
     public EnergyInfuser() {
         super(Material.IRON);
-        setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     //region Block

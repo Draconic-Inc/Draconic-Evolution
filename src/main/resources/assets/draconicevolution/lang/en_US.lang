@@ -641,6 +641,8 @@ config.field.digDepth.description=This function only works with
 config.field.showDigAOE.entry=Show Dig A.O.E
 config.field.showDigAOE.description=When enabled shows all of the blocks covered by this tools mining AOE.
 
+config.field.toggleEnchant.description=Allows you deactivate/activate a previously applied enchantment. Note: this setting is not profile specific meaning you can not have different profiles with different enchantment settings.
+
 config.field.armorSpeedModifier.entry=Speed Modifier
 config.field.armorSpeedModifier.description=This allows you to adjust the speed boost given by this armor piece.
 config.field.armorJumpModifier.entry=Jump Modifier

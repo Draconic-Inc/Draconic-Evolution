@@ -90,11 +90,12 @@ public abstract class WyvernHoe extends ToolBase {
                 }
             }
 
-            boolean canRemoveAbove = world.getBlockState(aoePos.up()).getBlock() == Blocks.DIRT || world.getBlockState(aoePos.up()).getBlock() == Blocks.GRASS || world.getBlockState(aoePos.up()).getBlock() == Blocks.FARMLAND || world.getBlockState(aoePos.up()).getBlock().isReplaceable(world, aoePos.up());
+            boolean canDropAbove = world.getBlockState(aoePos.up()).getBlock() == Blocks.DIRT || world.getBlockState(aoePos.up()).getBlock() == Blocks.GRASS || world.getBlockState(aoePos.up()).getBlock() == Blocks.FARMLAND;
+            boolean canRemoveAbove = canDropAbove || world.getBlockState(aoePos.up()).getBlock().isReplaceable(world, aoePos.up());
             boolean up2OK = world.isAirBlock(aoePos.up().up()) || world.getBlockState(aoePos.up().up()).getBlock().isReplaceable(world, aoePos.up().up());
 
             if (fill && !world.isAirBlock(aoePos.up()) && canRemoveAbove && up2OK) {
-                if (world.getBlockState(aoePos.up()).getBlock() == Blocks.DIRT) {
+                if (canDropAbove) {
                     world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Blocks.DIRT)));
                 }
                 world.setBlockToAir(aoePos.up());

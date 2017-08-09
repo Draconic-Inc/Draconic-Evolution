@@ -49,7 +49,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     public ManagedBool isSmelting = register("isSmelting", new ManagedBool(false)).saveToTile().saveToItem().finish();
     public ManagedBool furnaceOutputBlocked = register("furnaceOutputBlocked", new ManagedBool(false)).saveToTile().saveToItem().finish();
     public ManagedInt smeltEnergyPerTick = register("smeltEnergyPerTick", new ManagedInt(256)).syncViaContainer().saveToTile().saveToItem().finish();
-    public ManagedInt colour = register("colour", new ManagedInt(0x640096)).syncViaContainer().saveToTile().saveToItem().finish();
+    public ManagedInt colour = register("colour", new ManagedInt(0x640096)).syncViaTile().saveToTile().saveToItem().finish();
     public ManagedShort numPlayersUsing = register("numPlayersUsing", new ManagedShort(0)).syncViaTile().finish();
     /**
      * The number of ticks it takes to complete 1 smelting operation.
@@ -637,13 +637,13 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
         checkIOCache();
-        return canInsert[direction.getIndex()][index];
+        return index < 260 && canInsert[direction.getIndex()][index];
     }
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         checkIOCache();
-        return canExtract[direction.getIndex()][index];
+        return index < 260 && canExtract[direction.getIndex()][index];
     }
 
     //endregion

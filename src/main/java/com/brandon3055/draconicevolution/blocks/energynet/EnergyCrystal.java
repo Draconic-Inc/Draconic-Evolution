@@ -55,7 +55,6 @@ public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegis
     public EnergyCrystal() {
         super(Material.GLASS);
         this.setDefaultState(blockState.getBaseState().withProperty(TYPE, CrystalType.RELAY).withProperty(TIER, 0));
-        this.setIsFullCube(false);
         this.setHarvestLevel("pickaxe", 0);
         for (CrystalType type : CrystalType.values()) {
             for (int i = 0; i < 3; i++) {
@@ -66,6 +65,10 @@ public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegis
 
     //region Block
 
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {

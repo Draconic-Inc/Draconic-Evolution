@@ -35,7 +35,11 @@ public class InvisECoreBlock extends BlockBCore implements IRenderOverride, ITil
 
     public InvisECoreBlock() {
         this.setHardness(10F);
-        setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

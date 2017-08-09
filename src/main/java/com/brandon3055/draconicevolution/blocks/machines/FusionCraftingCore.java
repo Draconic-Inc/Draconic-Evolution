@@ -31,7 +31,11 @@ public class FusionCraftingCore extends BlockBCore implements IRenderOverride, I
 
     public FusionCraftingCore() {
         super(Material.IRON);
-        setIsFullCube(false);
+    }
+
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
     }
 
     @Override

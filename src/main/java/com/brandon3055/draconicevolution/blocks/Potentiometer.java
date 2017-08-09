@@ -37,14 +37,17 @@ public class Potentiometer extends BlockBCore implements ITileEntityProvider, IR
     protected static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(0.0D, 0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.9375D);
 
     public Potentiometer() {
-        setIsFullCube(false);
         setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.UP));
         this.canProvidePower = true;
         this.setHardness(2F);
     }
 
-    //region Blockstate
+    @Override
+    public boolean uberIsBlockFullCube() {
+        return false;
+    }
 
+    //region Blockstate
 
     public IBlockState getStateFromMeta(int meta) {
         EnumFacing enumfacing;
