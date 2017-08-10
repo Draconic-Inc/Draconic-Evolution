@@ -53,7 +53,7 @@ public class GuiPSA extends GuiScreen {
         int center = width / 2;
         int y = (height / 2) - 100;
 
-        drawCenteredSplitString(fontRendererObj, TextFormatting.GOLD + "PSA from CodeChickenLib", center, y, 255, 0xFF0000, false);
+        drawCenteredSplitString(fontRendererObj, TextFormatting.GOLD + "PSA from Draconic Evolution", center, y, 255, 0xFF0000, false);
 
         drawCenteredSplitString(fontRendererObj, "Websites are §creposting unsafe versions of mods§r.\n" +
                 "Some popular examples are §c9minecraft.net§r and §cminecraftdl.com§r but there are hundreds more.\n" +
@@ -61,6 +61,7 @@ public class GuiPSA extends GuiScreen {
                 "Visit §3stopmodreposts.org§r to learn where you can safely download mods.", center, y + 25, 350, 0xFFFFFF, false);
 
         fontRendererObj.drawSplitString("Stay Safe\n" + TextFormatting.GOLD + "-brandon3055, covers1624 and the modding community.", center - 190, y + 95, 380, 0xFFFFFF);
+//        fontRendererObj.drawSplitString(TextFormatting.GRAY + "", center - 190, y + 145, 380, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -89,20 +90,18 @@ public class GuiPSA extends GuiScreen {
         }
         else if (button.id == 1) {
             mc.displayGuiScreen(parent);
-        }
-        else if (button.id == 2) {
-            mc.displayGuiScreen(parent);
-            File marker = new File(configDir, "cclPSAMarker.txt");
+            File marker = new File(configDir, "DEPSAMarker.txt");
             FileWriter writer = new FileWriter(marker);
-            writer.append("This is a marker for CCL's Stop Mod Reposts public service announcement. Deleting this file will re enable the announcement.");
+            writer.append("This is a marker for DE's Stop Mod Reposts public service announcement. Deleting this file will re enable the announcement.");
             writer.close();
         }
+
         super.actionPerformed(button);
     }
 
     public static void init(FMLPreInitializationEvent event) {
         configDir = event.getModConfigurationDirectory();
-        File marker = new File(configDir, "cclPSAMarker.txt");
+        File marker = new File(configDir, "DEPSAMarker.txt");
         if (!marker.exists()) {
             MinecraftForge.EVENT_BUS.register(new GuiPSA(null));
         }

@@ -1,4 +1,8 @@
-######## 2.1.4.x ########
+######## 2.1.5.x ########
+-Fixed PSA gui showing every time the game launched
+The previous version of DE had a test version of this gui build for ccl which was not meant to be released in DE and as a result it showed every time you started the game. Sorry if that annoyed you please don't blame covers1624 for that.
+
+######## 2.1.4.259 ########
 -Fixed armor damage sound firing when 0 damage is actually taken.
 -Fixed crash when inserting items into draconic chest.
 -Fixed solid blocks allowing light to pass through them.
