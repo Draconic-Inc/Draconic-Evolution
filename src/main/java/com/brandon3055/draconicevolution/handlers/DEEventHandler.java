@@ -16,6 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
@@ -38,14 +39,12 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class DEEventHandler {
 
+    private static WeakHashMap<EntityLiving, Long> deSpawnedMobs = new WeakHashMap<>();
     private static Random random = new Random();
 
     public static int serverTicks = 0;
@@ -62,10 +61,75 @@ public class DEEventHandler {
         if (event.phase == TickEvent.Phase.END) {
             CrystalUpdateBatcher.tickEnd();
             serverTicks++;
+
+            if (!deSpawnedMobs.isEmpty()) {
+                List<EntityLiving> toRemove = new ArrayList<>();
+                long time = System.currentTimeMillis();
+
+                deSpawnedMobs.forEach((entity, aLong) -> {
+                    if (time - aLong > 30000) {
+                        entity.persistenceRequired = false;
+                        toRemove.add(entity);
+                    }
+                });
+
+                toRemove.forEach(entity -> deSpawnedMobs.remove(entity));
+            }
         }
     }
 
+    public static void onMobSpawnedBySpawner(EntityLiving entity) {
+        deSpawnedMobs.put(entity, System.currentTimeMillis());
+    }
+
     //endregion
+
+//    @SubscribeEvent
+//    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+//        Entity entity = event.getEntityLiving();
+//
+//        if (entity.getEntityData().hasKey("DESpawnedMob") && entity instanceof EntityLiving) {
+//            long spawnTime = entity.getEntityData().getLong("DESpawnedMob");
+//            long livedFor = entity.worldObj.getTotalWorldTime() - spawnTime;
+//
+//            ((EntityLiving) entity).enablePersistence();
+//
+//            if (livedFor > 600 && persistenceRequired != null) {
+//                try {
+//                    persistenceRequired.setBoolean(entity, false);
+//                    entity.getEntityData().removeTag("DESpawnedMob");
+//                }
+//                catch (Exception e) {
+//                    LogHelper.warn("Error occured while resetting entity persistence: " + e);
+//                    entity.getEntityData().removeTag("DESpawnedMob");
+//                }
+//            }
+//        }
+//
+//
+//        if (!event.getEntity()Living.worldObj.isRemote || !(event.getEntity()Living instanceof EntityPlayerSP)) return;
+//        EntityPlayerSP player = (EntityPlayerSP) entity;
+//
+//        double motionX = player.motionX;
+//        double motionZ = player.motionZ;
+//        double motion = Math.sqrt((motionX * motionX + motionZ * motionZ));
+//        double reduction = motion - maxSpeed;
+//
+//        if (motion > maxSpeed && (player.onGround || player.capabilities.isFlying)) {
+//            player.motionX -= motionX * reduction;
+//            player.motionZ -= motionZ * reduction;
+//        }
+//
+//        if (speedNeedsUpdating) {
+//            if (ticksSinceRequest == 0) {
+//                DraconicEvolution.network.sendToServer(new SpeedRequestPacket());
+//                LogHelper.info("Requesting speed packet from server");
+//            }
+//            ticksSinceRequest++;
+//            if (ticksSinceRequest > 500) ticksSinceRequest = 0;
+//        }
+//    }
+
 
     //region C
 /*
@@ -96,49 +160,6 @@ public class DEEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-        EntityLivingBase entity = event.getEntity()Living;
-
-        if (entity.getEntityData().hasKey("SpawnedByDESpawner")) {
-            long spawnTime = entity.getEntityData().getLong("SpawnedByDESpawner");
-            long livedFor = entity.worldObj.getTotalWorldTime() - spawnTime;
-
-            if (livedFor > 600 && persistenceRequired != null) {
-                try {
-                    persistenceRequired.setBoolean(entity, false);
-                    entity.getEntityData().removeTag("SpawnedByDESpawner");
-                }
-                catch (Exception e) {
-                    LogHelper.warn("Error occured while resetting entity persistence: " + e);
-                    entity.getEntityData().removeTag("SpawnedByDESpawner");
-                }
-            }
-        }
-
-
-        if (!event.getEntity()Living.worldObj.isRemote || !(event.getEntity()Living instanceof EntityPlayerSP)) return;
-        EntityPlayerSP player = (EntityPlayerSP) entity;
-
-        double motionX = player.motionX;
-        double motionZ = player.motionZ;
-        double motion = Math.sqrt((motionX * motionX + motionZ * motionZ));
-        double reduction = motion - maxSpeed;
-
-        if (motion > maxSpeed && (player.onGround || player.capabilities.isFlying)) {
-            player.motionX -= motionX * reduction;
-            player.motionZ -= motionZ * reduction;
-        }
-
-        if (speedNeedsUpdating) {
-            if (ticksSinceRequest == 0) {
-                DraconicEvolution.network.sendToServer(new SpeedRequestPacket());
-                LogHelper.info("Requesting speed packet from server");
-            }
-            ticksSinceRequest++;
-            if (ticksSinceRequest > 500) ticksSinceRequest = 0;
-        }
-    }
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {

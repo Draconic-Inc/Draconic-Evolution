@@ -35,9 +35,20 @@ public class OreDoublingRegistry {
             }
 
             List<ItemStack> ingots = OreDictionary.getOres(ingot);
+            int oreId = OreDictionary.getOreID(oreName);
             ItemStack stack = null;
 
             for (ItemStack candidate : ingots) {
+                boolean invalid = false;
+                for (int id : OreDictionary.getOreIDs(candidate)) {
+                    if (id == oreId) {
+                        invalid = true;
+                        break;
+                    }
+                }
+                if (invalid) {
+                    continue;
+                }
                 stack = candidate;
                 ResourceLocation registryName = candidate.getItem().getRegistryName();
                 if (registryName != null && registryName.getResourceDomain().equals("thermalfoundation")) {

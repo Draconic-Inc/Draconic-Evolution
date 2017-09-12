@@ -114,6 +114,8 @@ public class EntityDragonHeart extends Entity {
         else {
             FeatureUtils.dropItemNoDellay(new ItemStack(DEFeatures.dragonHeart), worldObj, new Vec3D(this).toVector3());
         }
+
+        setDead();
     }
 
     @Override

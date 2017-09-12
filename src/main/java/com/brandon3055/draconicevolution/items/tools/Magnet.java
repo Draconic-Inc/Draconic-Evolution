@@ -117,7 +117,7 @@ public class Magnet extends ItemBCore {
             EntityPlayer player = (EntityPlayer) entity;
 
             for (EntityXPOrb orb : xp) {
-                if (!world.isRemote) {
+                if (!world.isRemote && !orb.isDead) {
                     if (orb.delayBeforeCanPickup == 0) {
                         if (MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, orb))) {
                             continue;

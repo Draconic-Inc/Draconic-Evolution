@@ -1,4 +1,13 @@
-######## 2.1.5.x ########
+######## 2.1.6.x ########
+-Fixed mob grinder not updating its kill area when rotated with a wrench.
+-Fixed edge case issue where magnet may duplicate xp orbs.
+-Fixed potential edge case issue where the reactor gui JEI integration may crash.
+-Fixed Fluid gate inserting into the wrong side of the target block which caused a crash when 2 fluid gates face each other.
+-Fixed core not being consumed when stabilizing a spawner.
+-Fixed energy pylon not supporting Forge Energy.
+-Fixed mobs spawned by wyvern tier or higher spawner instantly despawning if no player is around. Mobs are now persistent for 30 seconds.
+
+######## 2.1.5.262 ########
 -Fixed PSA gui showing every time the game launched
 The previous version of DE had a test version of this gui build for ccl which was not meant to be released in DE and as a result it showed every time you started the game. Sorry if that annoyed you please don't blame covers1624 for that.
 

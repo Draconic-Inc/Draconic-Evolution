@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.network.wrappers.*;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -113,6 +114,11 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
                 }
 
                 if (canSpawn) {
+                    if (!spawnerTier.value.requiresPlayer && entity instanceof EntityLiving) {
+                        ((EntityLiving) entity).enablePersistence();
+                        entity.getEntityData().setLong("DESpawnedMob", System.currentTimeMillis()); //Leaving this in case some mod wants to use it.
+                        DEEventHandler.onMobSpawnedBySpawner((EntityLiving) entity);
+                    }
                     AnvilChunkLoader.spawnEntity(entity, worldObj);
                     worldObj.playEvent(2004, pos, 0);
                     if (entityliving != null) {
