@@ -1,0 +1,19 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube",
+    "textures": {
+      "particle": "draconicevolution:blocks/item_dislocation_inhibitor_side",
+      "down": "draconicevolution:blocks/machine_side",
+      "up": "draconicevolution:blocks/machine_top",
+      "north": "draconicevolution:blocks/item_dislocation_inhibitor_side",
+      "south": "draconicevolution:blocks/item_dislocation_inhibitor_side",
+      "east": "draconicevolution:blocks/item_dislocation_inhibitor_side",
+      "west": "draconicevolution:blocks/item_dislocation_inhibitor_side"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{}]
+  }
+}

@@ -56,6 +56,7 @@ public class DERecipes {
         addShaped(ALL, new ItemStack(entityDetector, 1, 1), "ABA", "CDC", "EFE", 'A', "blockRedstone", 'B', new ItemStack(SKULL, 1, 1), 'C', "blockLapis", 'D', "gemDiamond", 'E', "ingotDraconium", 'F', entityDetector);
         addShaped(ALL, new ItemStack(flowGate, 1, 8), "ABA", "CDC", "AEA", 'A', "ingotIron", 'B', potentiometer, 'C', BUCKET, 'D', draconicCore, 'E', COMPARATOR);
         addShaped(ALL, flowGate, "ABA", "CDC", "AEA", 'A', "ingotIron", 'B', potentiometer, 'C', "blockRedstone", 'D', draconicCore, 'E', COMPARATOR);
+        addShaped(ALL, itemDislocationInhibitor, "AAA", "BCB", "AAA", 'A', "ingotIron", 'B', IRON_BARS, 'C', new ItemStack(magnet, 1, 0));
 
         //Fusion Crafting Blocks
         addShaped(NORMAL, fusionCraftingCore, "ABA", "BCB", "ABA", 'A', "blockLapis", 'B', "gemDiamond", 'C', draconicCore);

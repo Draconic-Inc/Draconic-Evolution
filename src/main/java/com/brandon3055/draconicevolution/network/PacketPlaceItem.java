@@ -43,6 +43,10 @@ public class PacketPlaceItem implements IMessage {
 
         @Override
         public IMessage handleMessage(PacketPlaceItem message, MessageContext ctx) {
+            if (!DEFeatures.placedItem.isBlockEnabled()) {
+                return null;
+            }
+
             EntityPlayer player = ctx.getServerHandler().player;
             RayTraceResult traceResult = RayTracer.retrace(player);
             World world = player.world;

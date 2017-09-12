@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.items.tools;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -17,6 +18,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
@@ -84,6 +86,19 @@ public class Magnet extends ItemBCore {
                     continue;
                 }
 
+                BlockPos pos = new BlockPos(itemEntity);
+                boolean blocked = false;
+                for (BlockPos checkPos : BlockPos.getAllInBox(pos.add(-5, -5, -5), pos.add(5, 5, 5))) {
+                    if (world.getBlockState(checkPos).getBlock() == DEFeatures.itemDislocationInhibitor) {
+                        blocked = true;
+                        break;
+                    }
+                }
+
+                if (blocked) {
+                    continue;
+                }
+
                 flag = true;
 
                 if (!world.isRemote) {
@@ -120,7 +135,7 @@ public class Magnet extends ItemBCore {
             EntityPlayer player = (EntityPlayer) entity;
 
             for (EntityXPOrb orb : xp) {
-                if (!world.isRemote) {
+                if (!world.isRemote && !orb.isDead) {
                     if (orb.delayBeforeCanPickup == 0) {
                         if (MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, orb))) {
                             continue;

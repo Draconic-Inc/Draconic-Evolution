@@ -49,9 +49,9 @@ public class ToolStats {
     //    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
     public static double WYV_HOE_ATTACK_SPEED = 0;
     //Wyvern Sword
-//    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
+    @ModConfigProperty(category = "Stat Tweaks", name = "wyvernSwordAttackDMG")
     public static double WYV_SWORD_ATTACK_DAMAGE = 15D;
-    //    @ModConfigProperty(category = "Stat Tweaks", name = "", comment = "")
+    @ModConfigProperty(category = "Stat Tweaks", name = "wyvernSwordAttackSpeed")
     public static double WYV_SWORD_ATTACK_SPEED = -2.2D;
 
     //Draconic Shovel

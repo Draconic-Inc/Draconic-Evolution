@@ -340,7 +340,7 @@ public class CustomArmorHandler {
 
             if (!hasHighStep && highStepListed) {
                 playersWithUphillStep.remove(player.getDisplayNameString());
-                player.stepHeight = 0.5F;
+                player.stepHeight = 0.6F;
             }
         }
         //endregion

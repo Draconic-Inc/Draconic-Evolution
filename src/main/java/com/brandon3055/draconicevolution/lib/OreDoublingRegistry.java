@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.lib;
 
+import com.brandon3055.draconicevolution.DEConfig;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -21,7 +22,7 @@ public class OreDoublingRegistry {
 
     public static void init() {
         for (String oreName : OreDictionary.getOreNames()) {
-            if (!oreName.startsWith("ore")) {
+            if (!oreName.startsWith("ore") || DEConfig.oreBlacklist.contains(oreName)) {
                 continue;
             }
 
@@ -35,9 +36,20 @@ public class OreDoublingRegistry {
             }
 
             List<ItemStack> ingots = OreDictionary.getOres(ingot);
+            int oreId = OreDictionary.getOreID(oreName);
             ItemStack stack = ItemStack.EMPTY;
 
             for (ItemStack candidate : ingots) {
+                boolean invalid = false;
+                for (int id : OreDictionary.getOreIDs(candidate)) {
+                    if (id == oreId) {
+                        invalid = true;
+                        break;
+                    }
+                }
+                if (invalid) {
+                    continue;
+                }
                 stack = candidate;
                 ResourceLocation registryName = candidate.getItem().getRegistryName();
                 if (registryName != null && registryName.getResourceDomain().equals("thermalfoundation")) {

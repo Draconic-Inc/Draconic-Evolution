@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier;
 import net.minecraft.entity.item.EntityItem;
@@ -40,6 +41,7 @@ public class ItemCore extends ItemBCore {
 
                 world.setBlockToAir(pos);
                 world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, spawner));
+                InventoryUtils.consumeHeldItem(playerIn, playerIn.getHeldItem(hand), hand);
             }
             return EnumActionResult.SUCCESS;
         }

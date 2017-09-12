@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.integration.jei;
 
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
+import com.brandon3055.brandonscore.registry.ModFeatureParser;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IJEIClearence;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
@@ -19,6 +20,7 @@ import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -119,18 +121,22 @@ public class DEJEIPlugin implements IModPlugin {
         registry.handleRecipes(EIOSpawnerRecipesWrapper.class, recipe -> recipe, VanillaRecipeCategoryUid.CRAFTING);
         registry.handleRecipes(IFusionRecipe.class, FusionRecipeWrapper::new, RecipeCategoryUids.FUSION_CRAFTING);
 
-        registry.addRecipeCatalyst(new ItemStack(DEFeatures.fusionCraftingCore), RecipeCategoryUids.FUSION_CRAFTING);
-        registry.addRecipeCatalyst(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.CRAFTING);
-        registry.addRecipeCatalyst(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.SMELTING);
+        if (DEFeatures.fusionCraftingCore.isBlockEnabled()){
+            registry.addRecipeCatalyst(new ItemStack(DEFeatures.fusionCraftingCore), RecipeCategoryUids.FUSION_CRAFTING);
+        }
+        if (DEFeatures.draconiumChest.isBlockEnabled()) {
+            registry.addRecipeCatalyst(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.CRAFTING);
+            registry.addRecipeCatalyst(new ItemStack(DEFeatures.draconiumChest), VanillaRecipeCategoryUid.SMELTING);
+        }
 
         registry.addRecipeClickArea(GuiFusionCraftingCore.class, 81, 45, 18, 22, RecipeCategoryUids.FUSION_CRAFTING);
         registry.addRecipeClickArea(GuiDraconiumChest.class, 394, 216, 22, 15, VanillaRecipeCategoryUid.CRAFTING);
         registry.addRecipeClickArea(GuiDraconiumChest.class, 140, 202, 15, 22, VanillaRecipeCategoryUid.SMELTING);
 
-        jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(DEFeatures.chaosCrystal));
-        jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(DEFeatures.placedItem));
-        jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(DEFeatures.invisECoreBlock));
-        jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(DEFeatures.chaosShardAtmos));
+        hideFeature(DEFeatures.chaosCrystal);
+        hideFeature(DEFeatures.placedItem);
+        hideFeature(DEFeatures.invisECoreBlock);
+        hideFeature(DEFeatures.chaosShardAtmos);
 
         IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
         recipeTransferRegistry.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest>() {
@@ -217,6 +223,17 @@ public class DEJEIPlugin implements IModPlugin {
 
                 LogHelper.dev("Add Upgradable: " + stack);
                 iUpgradables.add(stack);
+            }
+        }
+    }
+
+    private void hideFeature(Object feature) {
+        if (ModFeatureParser.isEnabled(feature)) {
+            if (feature instanceof Item) {
+                jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack((Item) feature));
+            }
+            else if (feature instanceof Block) {
+                jeiHelpers.getIngredientBlacklist().addIngredientToBlacklist(new ItemStack((Block) feature));
             }
         }
     }

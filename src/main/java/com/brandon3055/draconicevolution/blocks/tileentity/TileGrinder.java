@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Predicate;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.state.IBlockState;
@@ -161,6 +162,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
     public void updateKillBox() {
         IBlockState state = world.getBlockState(pos);
         EnumFacing facing = state.getValue(Grinder.FACING);
+        LogHelper.dev("Update Kill Box: " + facing);
         BlockPos pos1 = pos.add(-3, -3, -3);
         BlockPos pos2 = pos.add(4, 4, 4);
         pos1 = pos1.add(facing.getFrontOffsetX() * 4, 0, facing.getFrontOffsetZ() * 4);

@@ -73,7 +73,7 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
                 tier = SpawnerTier.values()[tierIndex];
             }
             String mobID = dataTag.getCompoundTag("mobSoul").getCompoundTag("tag").getString("EntityName");
-            entity = DEFeatures.mobSoul.getRenderEntity(mobID);
+            entity = mobID.isEmpty() ? null : DEFeatures.mobSoul.getRenderEntity(mobID);
         }
 
         Minecraft.getMinecraft().getRenderItem().renderModel(baseModel, 0xFFFFFFFF);

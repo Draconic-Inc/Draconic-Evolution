@@ -31,6 +31,7 @@ tile.draconicevolution:reactor_core.name=Draconic Reactor Core
 tile.draconicevolution:reactor_stabilizer.name=Reactor Stabilizer
 tile.draconicevolution:reactor_injector.name=Reactor Energy Injector
 tile.draconicevolution:chaos_crystal.name=Chaos Crystal
+tile.draconicevolution:item_dislocation_inhibitor.name=Dislocation Normalization Field Projector
 
 tile.draconicevolution:energy_crystal.relay.basic.name=Basic Energy Relay Crystal
 tile.draconicevolution:energy_crystal.relay.wyvern.name=Wyvern Energy Relay Crystal
@@ -221,6 +222,7 @@ info.teleporterInfSet2.txt=Uses remaining
 info.de.rightClickToTeleport.txt=Right click to teleport
 info.de.draconiumBlockCapacitorCharge.txt=Hold item and sneak to charge from capacitor.
 info.creativeCapacitor.txt=Can source or sink
+info.de.itemDislocationInhibitor.txt=Prevents items dropped within 5 block from being collected by Item Dislocators.
 
 info.draconicAxe1.txt=Timber!!!!!!
 info.draconicAxe2.txt=Will fall an entire tree

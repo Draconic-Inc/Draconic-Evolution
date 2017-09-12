@@ -69,6 +69,10 @@ public class DEFeatures implements IModFeatures {
 
     @ModFeature(name = "portal", tileEntity = TilePortal.class)
     public static Portal portal = new Portal();
+
+    @ModFeature(name = "item_dislocation_inhibitor")
+    public static ItemDislocationInhibitor itemDislocationInhibitor = new ItemDislocationInhibitor();
+
     //endregion
 
     //region Machines
