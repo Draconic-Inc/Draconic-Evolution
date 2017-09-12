@@ -16,6 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
@@ -38,14 +39,12 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class DEEventHandler {
 
+    private static WeakHashMap<EntityLiving, Long> deSpawnedMobs = new WeakHashMap<>();
     private static Random random = new Random();
 
     public static int serverTicks = 0;
@@ -62,7 +61,25 @@ public class DEEventHandler {
         if (event.phase == TickEvent.Phase.END) {
             CrystalUpdateBatcher.tickEnd();
             serverTicks++;
+
+            if (!deSpawnedMobs.isEmpty()) {
+                List<EntityLiving> toRemove = new ArrayList<>();
+                long time = System.currentTimeMillis();
+
+                deSpawnedMobs.forEach((entity, aLong) -> {
+                    if (time - aLong > 30000) {
+                        entity.persistenceRequired = false;
+                        toRemove.add(entity);
+                    }
+                });
+
+                toRemove.forEach(entity -> deSpawnedMobs.remove(entity));
+            }
         }
+    }
+
+    public static void onMobSpawnedBySpawner(EntityLiving entity) {
+        deSpawnedMobs.put(entity, System.currentTimeMillis());
     }
 
     //endregion

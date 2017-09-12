@@ -5,12 +5,15 @@ import com.brandon3055.brandonscore.handlers.FileHandler;
 import com.brandon3055.brandonscore.registry.IModConfigHelper;
 import com.brandon3055.brandonscore.registry.ModConfigContainer;
 import com.brandon3055.brandonscore.registry.ModConfigProperty;
+import com.google.common.collect.Sets;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by brandon3055 on 24/3/2016.
@@ -143,6 +146,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "spawnerDelays", comment = "Sets the min and max spawn delay in ticks for each spawner tier. Order is as follows.\nBasic MIN, MAX, Wyvern MIN, MAX, Draconic MIN, MAX, Chaotic MIN MAX")
     public static int[] spawnerDelays = new int[]{200, 800, 100, 400, 50, 200, 25, 100};
 
+    @ModConfigProperty(category = "Tweaks", name = "oreDoublingBlacklist", comment = "Add ore names (e.g. oreIron) to this list to prevent them from being doubled by the DE chest")
+    public static String[] oreDoublingBlacklist = {};
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")
@@ -175,6 +181,8 @@ public class DEConfig implements IModConfigHelper {
     public static boolean chaosGuardianLoading = true;
 
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
+    public static Set<String> oreBlacklist = new HashSet<>();
+
 
     @Override
     public void onConfigLoaded() {
@@ -187,6 +195,8 @@ public class DEConfig implements IModConfigHelper {
                 itemDislocatorBlacklistMap.put(s, -1);
             }
         }
+
+        oreBlacklist = Sets.newHashSet(oreDoublingBlacklist);
     }
 }
 

@@ -40,7 +40,7 @@ public class EnderEnergyManipulator extends ItemBCore implements IRenderOverride
         ItemStack stack = player.getHeldItem(hand);
         IBlockState state = world.getBlockState(pos);
         List<EntityEnderEnergyManipulator> list = world.getEntities(EntityEnderEnergyManipulator.class, EntitySelectors.IS_ALIVE);
-        if (world.provider.getDimension() == 1 && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, 66, 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
+        if (world.provider.getDimension() == 1 && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, pos.getY(), 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
             if (!world.isRemote) {
                 EntityEnderEnergyManipulator entity = new EntityEnderEnergyManipulator(world);
                 entity.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
