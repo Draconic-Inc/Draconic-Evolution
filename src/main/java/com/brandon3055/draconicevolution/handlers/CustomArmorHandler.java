@@ -368,7 +368,7 @@ public class CustomArmorHandler {
         if (event.getSource().damageType.equals("fall") && summery.jumpModifier > 0F) {
             if (event.getAmount() < summery.jumpModifier * 5F) {
                 event.setCanceled(true);
-                return true;
+                return true; 
             }
         }
 
