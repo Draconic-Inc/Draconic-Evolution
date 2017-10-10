@@ -366,7 +366,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
 
     @Override
     public int getEnergyStored(EnumFacing from) {
-        if (!hasCoreLock.value) {
+        if (!hasCoreLock.value || getCore() == null) {
             return 0;
         }
         return (int) Math.min(getCore().getExtendedStorage(), Integer.MAX_VALUE);

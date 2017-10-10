@@ -1,12 +1,13 @@
 ## Description
 
 ## Base information
-* Minecraft version:
+* DE version:
+* Brandon's Core Version:
+* CCL Version:
 * Minecraft Forge version:
 * Mod Pack and pack version: (if applicable)
 
-## Crash report
-```
-CRASH REPORT HERE (if applicable)
-Please try to use a paste service such as pastebin.com as opposed to just pasting the log in the issue.
-```
+### Some general rules when creating a github issue.
+- If the issue is a crash always include the crash report and never paste it directly into github. Use a service like pastebin or gist.
+- Give as much detail as possible not just "It does not work plz fix!"
+- Provide screenshots of your setup if possible especially when dealing with multiblock structures.
