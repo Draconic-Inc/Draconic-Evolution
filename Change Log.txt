@@ -1,4 +1,6 @@
-######## 2.2.4.x ########
+######## 2.2.5.x ########
+
+######## 2.2.4.264 ########
 -Fixed mob grinder not updating its kill area when rotated with a wrench.
 -Fixed edge case issue where magnet may duplicate xp orbs.
 -Fixed potential edge case issue where the reactor gui JEI integration may crash.

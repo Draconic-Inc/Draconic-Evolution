@@ -111,7 +111,7 @@ public class DEConfig implements IModConfigHelper {
     public static boolean expensiveDragonRitual = true;
 
     @ModConfigProperty(category = "Tweaks", name = "itemDislocatorBlacklist", comment = "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4")
-    public static String[] itemDislocatorBlacklist = new String[]{"appliedenergistics2:item.ItemCrystalSeed"};
+    public static String[] itemDislocatorBlacklist = new String[]{"appliedenergistics2:crystal_seed"};
 
     @ModConfigProperty(category = "Tweaks", name = "reactorOutputMultiplier", comment = "Adjusts the energy output multiplier of the reactor")
     public static double reactorOutputMultiplier = 1;
