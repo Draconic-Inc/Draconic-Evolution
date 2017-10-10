@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.utils.LinkedHashList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -8,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 
 import javax.annotation.Nullable;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -17,7 +17,7 @@ public class ContainerRecipeBuilder extends Container {
 
     private EntityPlayer player;
     public InventoryCache inventoryCache = new InventoryCache(20);
-    private List<Slot> craftingSlots = new LinkedHashList<Slot>();
+    private List<Slot> craftingSlots = new LinkedList<>();
 
     public ContainerRecipeBuilder(EntityPlayer player) {
         this.player = player;

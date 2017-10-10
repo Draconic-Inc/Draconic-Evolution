@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
 import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
 import com.brandon3055.draconicevolution.inventory.ContainerDissEnchanter;
 import net.minecraft.client.resources.I18n;
@@ -100,7 +101,7 @@ public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter
                 }
 
                 String s = e.getTranslatedName(lvl);
-                int cost = (int) (((double) lvl / (double) e.getMaxLevel()) * 20);
+                int cost = (int) ((((double) lvl / (double) e.getMaxLevel()) * 20) * DEConfig.disenchnaterCostMultiplyer);
                 String xp = (player.experienceLevel >= cost ? TextFormatting.GREEN : TextFormatting.RED) + "" + cost;
 
                 MGuiLabel label = new MGuiLabel(this, 0, 0, width, 12, xp).setAlignment(EnumAlignment.RIGHT);

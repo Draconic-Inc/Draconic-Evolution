@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.ICustomArmor;
 import com.brandon3055.draconicevolution.network.PacketShieldHit;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -84,6 +85,8 @@ public class CustomArmorHandler {
         if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled() || event.getAmount() <= 0) {
             return;
         }
+
+        LogHelper.dev("Attack");
 
         EntityPlayer player = (EntityPlayer) event.getEntityLiving();
         ArmorSummery summery = new ArmorSummery().getSummery(player);
@@ -350,6 +353,9 @@ public class CustomArmorHandler {
         player.capabilities.setFlySpeed(speed);
     }
 
+    /**
+     * @return true if the damage was blocked
+     */
     private static boolean applyArmorDamageBlocking(LivingAttackEvent event, ArmorSummery summery) {
         if (summery == null) return false;
 
@@ -362,12 +368,14 @@ public class CustomArmorHandler {
         if (event.getSource().damageType.equals("fall") && summery.jumpModifier > 0F) {
             if (event.getAmount() < summery.jumpModifier * 5F) {
                 event.setCanceled(true);
+                return true;
             }
-            return true;
         }
 
         if ((event.getSource().damageType.equals("inWall") || event.getSource().damageType.equals("drown")) && !summery.armorStacks.get(3).isEmpty()) {
-            if (event.getAmount() <= 2f) event.setCanceled(true);
+            if (event.getAmount() <= 2f) {
+                event.setCanceled(true);
+            }
             return true;
         }
 

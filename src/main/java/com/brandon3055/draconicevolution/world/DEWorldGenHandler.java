@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.world;
 
-import com.brandon3055.brandonscore.utils.LinkedHashList;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.DraconiumOre;
@@ -16,13 +15,13 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -33,8 +32,10 @@ import java.util.Random;
 public class DEWorldGenHandler implements IWorldGenerator {
     public static DEWorldGenHandler instance = new DEWorldGenHandler();
     private static String DATA_TAG = "DEWorldGen";
-    private static LinkedHashList<ChunkReference> populatingChunks = new LinkedHashList<ChunkReference>();
+    private static LinkedList<ChunkReference> retroGenerating = new LinkedList<ChunkReference>();
 
+    //Pop Pre -> Pop Post -> Generate
+    //Save/load are not directly linked load is not called when generating
 
     public static void initialize() {
         if (DEConfig.worldGenEnabled) {
@@ -65,9 +66,15 @@ public class DEWorldGenHandler implements IWorldGenerator {
                 int x1 = actualX + random.nextInt(16);
                 int y = 20 + random.nextInt(170);
                 int z1 = actualZ + random.nextInt(16);
-                if (DEConfig.generateEnderComets && Math.sqrt(actualX * actualX + actualZ * actualZ) > 200 && random.nextInt(Math.max(1, DEConfig.cometRarity)) == 0) new WorldGenEnderComet().generate(world, random, new BlockPos(x1, y, z1));
-                if (DEConfig.generateChaosIslands) ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, null, random);
-                if (!DEConfig.disableOreSpawnEnd) addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.END), Blocks.END_STONE.getDefaultState(), world, random, actualX, actualZ, 4, 5, 10, 1, 70);
+                if (DEConfig.generateEnderComets && Math.sqrt(actualX * actualX + actualZ * actualZ) > 200 && random.nextInt(Math.max(1, DEConfig.cometRarity)) == 0) {
+                    new WorldGenEnderComet().generate(world, random, new BlockPos(x1, y, z1));
+                }
+                if (DEConfig.generateChaosIslands) {
+                    ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, null, random);
+                }
+                if (!DEConfig.disableOreSpawnEnd) {
+                    addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.END), Blocks.END_STONE.getDefaultState(), world, random, actualX, actualZ, 4, 5, 10, 1, 70);
+                }
 
                 break;
             case -1:
@@ -109,71 +116,60 @@ public class DEWorldGenHandler implements IWorldGenerator {
     }
 
     @SubscribeEvent
-    public void populateChunkEvent(PopulateChunkEvent.Pre event) {
-        populatingChunks.add(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunkX(), event.getChunkZ()));
-    }
-
-    @SubscribeEvent
-    public void populateChunkEvent(PopulateChunkEvent.Post event) {
-        populatingChunks.remove(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunkX(), event.getChunkZ()));
-    }
-
-    @SubscribeEvent
     public void chunkLoadEvent(ChunkDataEvent.Load event) {
-
         int dim = event.getWorld().provider.getDimension();
 
-        NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(DATA_TAG);
+        NBTTagCompound tag = event.getData().getCompoundTag(DATA_TAG);
 
-        if (tag != null && tag.getBoolean("Populating")) {
-            populatingChunks.add(new ChunkReference(dim, event.getChunk().x, event.getChunk().z));
-            tag.removeTag("Populating");
+        if (tag.getBoolean("Generated") || tag.getBoolean("Loaded")) {
             return;
         }
 
-        if (tag != null && tag.getBoolean("Generated")) {
+        tag.setBoolean("Loaded", true);
+        event.getData().setTag(DATA_TAG, tag);
+
+        if (event.getChunk().isEmptyBetween(0, 128) && dim != 1) {
             return;
         }
-
-        if (event.getChunk().isEmptyBetween(0, 128)) return;
 
         if (DEConfig.enableRetroGen) {
             ArrayDeque<ChunkPos> chunks = WorldTickHandler.chunksToGen.get(dim);
 
             if (chunks == null) {
-                WorldTickHandler.chunksToGen.put(dim, new ArrayDeque<ChunkPos>(128));
+                WorldTickHandler.chunksToGen.put(dim, new ArrayDeque<>(128));
                 chunks = WorldTickHandler.chunksToGen.get(dim);
             }
             if (chunks != null) {
                 chunks.addLast(new ChunkPos(event.getChunk().x, event.getChunk().z));
+                retroGenerating.add(new ChunkReference(dim, event.getChunk().x, event.getChunk().z));
                 WorldTickHandler.chunksToGen.put(dim, chunks);
             }
         }
+    }
+
+    public void retroGenComplete(int dim, int chunkX, int chunkZ) {
+        retroGenerating.remove(new ChunkReference(dim, chunkX, chunkZ));
     }
 
     @SubscribeEvent
     public void chunkSaveEvent(ChunkDataEvent.Save event) {
         NBTTagCompound genTag = event.getData().getCompoundTag(DATA_TAG);
 
-        if (populatingChunks.contains(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunk().x, event.getChunk().z))) {
+        if (!retroGenerating.contains(new ChunkReference(event.getWorld().provider.getDimension(), event.getChunk().x, event.getChunk().z))) {
             genTag.setBoolean("Generated", true);
-            genTag.setBoolean("Populating", true);
-            return;
         }
 
-        genTag.setBoolean("Generated", true);
+        genTag.removeTag("Loaded");
         event.getData().setTag(DATA_TAG, genTag);
     }
 
 
     private static class ChunkReference {
-
         public final int dimension;
         public final int xPos;
         public final int zPos;
 
         public ChunkReference(int dim, int x, int z) {
-
             dimension = dim;
             xPos = x;
             zPos = z;
@@ -181,13 +177,11 @@ public class DEWorldGenHandler implements IWorldGenerator {
 
         @Override
         public int hashCode() {
-
             return xPos * 43 + zPos * 3 + dimension;
         }
 
         @Override
         public boolean equals(Object o) {
-
             if (o == null || o.getClass() != getClass()) {
                 if (o instanceof Chunk) {
                     Chunk other = (Chunk) o;

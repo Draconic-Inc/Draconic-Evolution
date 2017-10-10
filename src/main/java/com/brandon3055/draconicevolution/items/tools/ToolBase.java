@@ -136,7 +136,6 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
 
     //region Custom Item Rendering
 
-
     @SideOnly(Side.CLIENT)
     @Override
     public void registerRenderer(Feature feature) {

@@ -37,7 +37,7 @@ public class WorldTickHandler {
                 ChunkPos chunkPos = chunks.pollFirst();
 
                 if (tick++ % 20 == 0) {
-                    LogHelper.info("Retroactively adding ore to {dim: " + dimension + ", chunkPos: " + chunkPos.toString() + ", chunksToGo: " + chunks.size() + "}");
+                    LogHelper.dev("Retroactively adding ore to {dim: " + dimension + ", chunkPos: " + chunkPos.toString() + ", chunksToGo: " + chunks.size() + "}");
                 }
 
                 long worldSeed = world.getSeed();
@@ -46,6 +46,7 @@ public class WorldTickHandler {
                 long zSeed = rand.nextLong() >> 2 + 1L;
                 rand.setSeed(xSeed * chunkPos.x + zSeed * chunkPos.z ^ worldSeed);
                 DEWorldGenHandler.instance.addOreGen(rand, chunkPos.x, chunkPos.z, world);
+                DEWorldGenHandler.instance.retroGenComplete(dimension, chunkPos.x, chunkPos.z);
                 chunksToGen.put(dimension, chunks);
             }
             else if (chunks != null) {

@@ -22,6 +22,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -393,6 +394,32 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
         }
 
         return advanced;
+    }
+
+    @Override
+    public void writeExtraNBT(NBTTagCompound compound) {
+        super.writeExtraNBT(compound);
+        entityFilter.writeToNBT(compound);
+    }
+
+    @Override
+    public void readExtraNBT(NBTTagCompound compound) {
+        super.readExtraNBT(compound);
+        entityFilter.readFromNBT(compound);
+    }
+
+    @Override
+    public NBTTagCompound writeToItemStack(ItemStack stack, boolean willHarvest) {
+        NBTTagCompound compound = super.writeToItemStack(stack, willHarvest);
+        entityFilter.writeToNBT(compound);
+        return compound;
+    }
+
+    @Override
+    public NBTTagCompound readFromItemStack(ItemStack stack) {
+        NBTTagCompound compound = super.readFromItemStack(stack);
+        entityFilter.readFromNBT(compound);
+        return compound;
     }
 
     //endregion

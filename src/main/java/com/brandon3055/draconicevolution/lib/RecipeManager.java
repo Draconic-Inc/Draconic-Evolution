@@ -56,6 +56,8 @@ public class RecipeManager {
     public void registerEvent(RegistryEvent.Register<IRecipe> event) {
         loadRecipes();
 
+        ModContainer container = Loader.instance().activeModContainer();
+        Loader.instance().setActiveModContainer(Loader.instance().getMinecraftModContainer());
         if (DEConfig.expensiveDragonRitual) {
             List<IRecipe> replacements = new LinkedList<>();
             event.getRegistry().getEntries().forEach(entry -> {
@@ -68,6 +70,7 @@ public class RecipeManager {
 
             replacements.forEach(GameData::register_impl);
         }
+        Loader.instance().setActiveModContainer(container);
     }
 
     //region Initialization

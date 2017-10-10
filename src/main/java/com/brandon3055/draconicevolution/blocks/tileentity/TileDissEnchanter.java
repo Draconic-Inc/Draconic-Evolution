@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
@@ -19,6 +20,8 @@ import net.minecraft.util.text.TextFormatting;
  * Created by brandon3055 on 28/09/2016.
  */
 public class TileDissEnchanter extends TileInventoryBase {
+
+
 
     public TileDissEnchanter() {
         setInventorySize(3);
@@ -62,7 +65,7 @@ public class TileDissEnchanter extends TileInventoryBase {
                 continue;
             }
 
-            int cost = (int) (((double) lvl / (double) e.getMaxLevel()) * 20);
+            int cost = (int) ((((double) lvl / (double) e.getMaxLevel()) * 20) * DEConfig.disenchnaterCostMultiplyer);
 
             if (!client.capabilities.isCreativeMode && cost > client.experienceLevel) {
                 client.sendMessage(new TextComponentTranslation("chat.dissEnchanter.notEnoughLevels.msg", cost).setStyle(new Style().setColor(TextFormatting.RED)));

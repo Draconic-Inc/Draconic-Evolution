@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata;
 
 import com.brandon3055.brandonscore.handlers.FileHandler;
-import com.brandon3055.brandonscore.utils.LinkedHashList;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
@@ -22,10 +21,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 29/08/2016.
@@ -55,7 +51,7 @@ public class WikiDocManager {
     public static File modDocsFolder;
 
     public static Map<String, ModDocContainer> modDocMap = new LinkedHashMap<String, ModDocContainer>();
-    public static List<String> loadedCategories = new LinkedHashList<String>();
+    public static List<String> loadedCategories = new LinkedList<>();
     public static Map<Document, File> documentToFileMap = new HashMap<Document, File>();
     public static ModDocContainer projectIntelContainer;
 

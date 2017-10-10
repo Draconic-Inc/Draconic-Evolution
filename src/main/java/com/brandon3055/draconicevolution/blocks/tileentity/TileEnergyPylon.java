@@ -11,7 +11,6 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
-import com.brandon3055.brandonscore.utils.LinkedHashList;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
@@ -30,6 +29,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -117,7 +117,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     }
 
     private List<TileEnergyStorageCore> findActiveCores() {
-        List<TileEnergyStorageCore> list = new LinkedHashList<>();
+        List<TileEnergyStorageCore> list = new LinkedList<>();
         int yMod = sphereOnTop.value ? 18 : -18;
         int range = 18;
 
@@ -340,7 +340,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
 
     @Override
     public int getEnergyStored(EnumFacing from) {
-        if (!hasCoreLock.value) {
+        if (!hasCoreLock.value || getCore() == null) {
             return 0;
         }
         return (int) Math.min(getCore().getExtendedStorage(), Integer.MAX_VALUE);

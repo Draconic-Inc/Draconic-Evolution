@@ -1,4 +1,11 @@
-######## 2.3.4.x ########
+######## 2.3.5.x ########
+-Fixed some minor issues with retrogen and disabled retrogen console spam.
+-Added config option to adjust the dissenchanter xp cost.
+-Fixed entity detector not saving its filter configuration.
+-Removed "Dangerous alternative prefix" warning related to the ender crystal recipe override. (Was never an issue just an annoying warning)
+-Fixed edge case crash with guardian crystals.
+
+######## 2.3.4.265 ########
 -Fixed mob grinder not updating its kill area when rotated with a wrench.
 -Fixed edge case issue where magnet may duplicate xp orbs.
 -Fixed potential edge case issue where the reactor gui JEI integration may crash.
@@ -8,7 +15,7 @@
 -Fixed energy pylon not supporting Forge Energy.
 -Fixed mobs spawned by wyvern tier or higher spawner instantly despawning if no player is around. Mobs are now persistent for 30 seconds.
 -Fixed placed items not respecting the config field to disable them.
--Added the Dislocation Normalization Field Projector (Prevents item dislocator collecting items within 5 blocks.)
+-Added the Dislocation Normalization Field Projector (Prevents item dislocator collecting items within 5 blocks)
 
 ######## 2.3.3.261 ########
 -Fixed armor damage sound firing when 0 damage is actually taken.
@@ -48,6 +55,7 @@
 -Fixed arrow shockwave effect not rendering.
 -Fixed capacitors not charging FE items in your inventory.
 -Updated Mob Soul.
+
 -Updated Stabilized Spawner.
 -Updated and Upgraded Draconium Chest.
 -Fixed generator not respecting sides when sending energy (Prevented generator sending to IO crystals)

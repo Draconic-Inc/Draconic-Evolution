@@ -86,7 +86,8 @@ public class EntityGuardianCrystal extends EntityLivingBase {
         }
         else {
             shieldTime = dataManager.get(SHIELD_TIME);
-            health = dataManager.get(HEALTH);
+             //noinspection RedundantCast
+            health = ((Number) dataManager.get(HEALTH)).floatValue();
         }
         //setHealth(0);
         if (health > 0) {
