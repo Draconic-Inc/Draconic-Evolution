@@ -90,7 +90,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
 
     private void calculateBounds() {
 
-        IBlockState state = world.getBlockState(getPos());
+        IBlockState state = getState(DEFeatures.placedItem);//world.getBlockState(getPos());
         Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center));
 
         int i = 0;

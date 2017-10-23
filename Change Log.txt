@@ -4,6 +4,8 @@
 -Fixed entity detector not saving its filter configuration.
 -Removed "Dangerous alternative prefix" warning related to the ender crystal recipe override. (Was never an issue just an annoying warning)
 -Fixed edge case crash with guardian crystals.
+-Fixed shield not absorbing fall damage when jump boost is active.
+-Stopped the magnet taking items from IE belts.
 
 ######## 2.3.4.265 ########
 -Fixed mob grinder not updating its kill area when rotated with a wrench.
