@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.ICustomArmor;
+import com.brandon3055.draconicevolution.items.tools.ToolStats;
 import com.brandon3055.draconicevolution.network.PacketShieldHit;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -258,7 +259,7 @@ public class CustomArmorHandler {
                 if (summery.flight[1]) player.capabilities.isFlying = true;
 
                 if (player.world.isRemote) {
-                    setPlayerFlySpeed(player, 0.05F + (0.05F * summery.flightSpeedModifier));
+                    setPlayerFlySpeed(player, 0.05F + (0.05F * summery.flightSpeedModifier * (float) ToolStats.FLIGHT_SPEED_MODIFIER));
                 }
 
                 if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && summery.flightVModifier > 0) {
