@@ -89,16 +89,16 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "disableGuardianCrystalRespawn", comment = "(Wuss mode) Setting this to true will disable the chaos guardians ability to respawn healing crystals.")
     public static boolean disableGuardianCrystalRespawn = false;
 
-    @ModConfigProperty(category = "Tweaks", name = "enableFlight", comment = "Set this to false if you would like to disable the draconic armors flight.")
+    @ModConfigProperty(category = "Tweaks", name = "enableFlight", comment = "Set this to false if you would like to disable the draconic armors flight.", autoSync = true)
     public static boolean enableFlight = true;
 
     @ModConfigProperty(category = "Tweaks", name = "dislocatorUsesPerPearl", comment = "Sets the number of teleports you get per ender pearl with the Advanced Dislocator")
     public static int dislocatorUsesPerPearl = 1;
 
-    @ModConfigProperty(category = "Tweaks", name = "hardMode", comment = "When true everything is just a little harder. (Currently only effects recipes but that will probably change in the future)")
+    @ModConfigProperty(category = "Tweaks", name = "hardMode", comment = "When true everything is just a little harder. (Currently only effects recipes but that will probably change in the future)", requiresMCRestart = true, requiresSync = true)
     public static boolean hardMode = false;
 
-    @ModConfigProperty(category = "Tweaks", name = "bowBlockDamage", comment = "Set to false to prevent the bows explosion effect breaking blocks")
+    @ModConfigProperty(category = "Tweaks", name = "bowBlockDamage", comment = "Set to false to prevent the bows explosion effect breaking blocks", autoSync = true)
     public static boolean bowBlockDamage = true;
 
     @ModConfigProperty(category = "Tweaks", name = "grinderEnergyPerHeart", comment = "Sets the energy per use per heart of damage for the grinder.")
@@ -107,7 +107,7 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "dragonEggSpawnOverride", comment = "By default the dragon egg only ever spawns once. This forces it to spawn every time the dragon is killed.")
     public static boolean dragonEggSpawnOverride = true;
 
-    @ModConfigProperty(category = "Tweaks", name = "expensiveDragonRitual", comment = "Lets face it. The biggest issue with the new dragon ritual is it is too darn cheap! This modifies the recipe to make it a bit more expensive.")
+    @ModConfigProperty(category = "Tweaks", name = "expensiveDragonRitual", comment = "Lets face it. The biggest issue with the new dragon ritual is it is too darn cheap! This modifies the recipe to make it a bit more expensive.", requiresSync = true, requiresMCRestart = true)
     public static boolean expensiveDragonRitual = true;
 
     @ModConfigProperty(category = "Tweaks", name = "itemDislocatorBlacklist", comment = "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4")
