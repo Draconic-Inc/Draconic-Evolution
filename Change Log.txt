@@ -1,6 +1,6 @@
 ######## 2.2.5.x ########
 -Fixed shield not absorbing fall damage when jump boost is active.
--Stopped the magnet taking items from IE belts.
+-Stopped the magnet taking items from IE belts. 
 
 ######## 2.2.4.264 ########
 -Fixed mob grinder not updating its kill area when rotated with a wrench.
