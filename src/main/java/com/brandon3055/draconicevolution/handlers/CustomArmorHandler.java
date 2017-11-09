@@ -241,7 +241,6 @@ public class CustomArmorHandler {
     }
 
     public static void tickArmorEffects(ArmorSummery summery, EntityPlayer player) {
-
         //region/*----------------- Flight ------------------*/
         if (DEConfig.enableFlight) {
             if (summery != null && summery.flight[0]) {

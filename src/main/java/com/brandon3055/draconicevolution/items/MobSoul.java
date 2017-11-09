@@ -216,25 +216,6 @@ public class MobSoul extends ItemBCore implements ICustomRender {
         }
 
         String finalEName = eName;
-//        return renderEntityMap.computeIfAbsent(eName + eModifier, s -> {
-//            World world = Minecraft.getMinecraft().theWorld;
-//            Entity entity;
-//            try {
-//                entity = EntityList.createEntityByName(finalEName, world);
-//
-//                if (entity == null) {
-//                    entity = new EntityPig(world);
-//                }
-//                else {
-//                    loadAdditionalEntityInfo(stack, entity);
-//                }
-//            }
-//            catch (Throwable e) {
-//                entity = new EntityPig(world);
-//            }
-//
-//            return entity;
-//        });
 
         if (!renderEntityMap.containsKey(eName + eModifier)) {
             World world = Minecraft.getMinecraft().theWorld;

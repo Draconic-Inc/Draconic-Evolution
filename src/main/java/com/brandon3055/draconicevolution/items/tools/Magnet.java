@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -69,6 +70,11 @@ public class Magnet extends ItemBCore {
 
                 String name = item.getItem().getRegistryName().toString();
                 if (DEConfig.itemDislocatorBlacklistMap.containsKey(name) && (DEConfig.itemDislocatorBlacklistMap.get(name) == -1 || DEConfig.itemDislocatorBlacklistMap.get(name) == item.getItemDamage())) {
+                    continue;
+                }
+
+                NBTTagCompound itemTag = item.getTagCompound();
+                if (itemTag != null && itemTag.hasKey("PreventRemoteMovement")) {
                     continue;
                 }
 
