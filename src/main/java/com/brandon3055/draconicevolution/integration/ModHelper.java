@@ -122,6 +122,11 @@ public class ModHelper {
         }
     }
 
+    public static boolean isWrench(ItemStack stack) {
+        String name = String.valueOf(stack.getItem().getRegistryName()).toLowerCase();
+        return name.contains("wrench") || name.contains("binder") || name.contains("hammer");
+    }
+
     /**
      * @return a map of Modid to Mod Name for all loaded mods
      */

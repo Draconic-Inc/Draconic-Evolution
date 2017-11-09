@@ -97,4 +97,6 @@ public class ToolStats {
     //Armor
     @ModConfigProperty(category = "Stat Tweaks", name = "flightSpeedModifier", autoSync = true)
     public static double FLIGHT_SPEED_MODIFIER = 1D;
+    @ModConfigProperty(category = "Stat Tweaks", name = "lastStandEnergyRequirement", autoSync = true)
+    public static int LAST_STAND_ENERGY = 10000000;
 }

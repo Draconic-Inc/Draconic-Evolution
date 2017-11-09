@@ -6,7 +6,8 @@
 -Fixed edge case crash with guardian crystals.
 -Fixed shield not absorbing fall damage when jump boost is active.
 -Stopped the magnet taking items from IE belts.
--Added ability to tweak armor flight speed
+-Added ability to tweak some of the armor stats.
+-Added ability to have single placed items render full size by right clicking with a wrench.
 
 ######## 2.3.4.265 ########
 -Fixed mob grinder not updating its kill area when rotated with a wrench.

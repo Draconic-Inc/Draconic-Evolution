@@ -10,7 +10,9 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.utils.FeatureUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.PlacedItem;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -33,6 +35,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
     private LinkedList<ItemStack> stacks = new LinkedList<ItemStack>();
     public final ManagedByte displayCount = register("displayCount", new ManagedByte(1)).saveToTile().syncViaTile().trigerUpdate().finish();
     public final ManagedBool toolDisplay = register("toolDisplay", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
+    public final ManagedBool altRenderMode = register("altRenderMode", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
     public final ManagedByte[] rotation = new ManagedByte[4];
     public EnumFacing facing = EnumFacing.NORTH;
     private boolean[] isBlock = new boolean[]{false, false, false, false};
@@ -46,6 +49,13 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
     //region Bounds / Interaction
 
     public void handleClick(int hit, EntityPlayer player) {
+        if (!player.getHeldItemMainhand().isEmpty() && ModHelper.isWrench(player.getHeldItemMainhand())) {
+            altRenderMode.value = !altRenderMode.value;
+            LogHelper.dev(altRenderMode);
+            super.update();
+            return;
+        }
+
         if (player.isSneaking()) {
             if (hit == -1) {
                 return;
@@ -122,7 +132,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
         }
         indexedCuboids.clear();
 
-        double scale = toolDisplay.value ? 0.2 : 0.32;
+        double scale = displayCount.value == 1 && (toolDisplay.value || altRenderMode.value) ? 0.2 : 0.32;
 
         Transformation rotation = rotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center);
 

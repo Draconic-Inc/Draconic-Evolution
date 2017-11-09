@@ -11,9 +11,9 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -30,8 +30,7 @@ import java.util.List;
 public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore> {
     private static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
-    public RenderTileEnergyStorageCore() {
-    }
+    public RenderTileEnergyStorageCore() {}
 
     @Override
     public void render(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
@@ -49,7 +48,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
         //endregion
 
         //region Do Calculations
-        float rotation = (ClientEventHandler.elapsedTicks + (partialTicks)) / 2F;
+        float rotation = (ClientEventHandler.elapsedTicks + partialTicks) / 2F;
         float brightness = (float) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
         double scale = SCALES[te.tier.value - 1];
 

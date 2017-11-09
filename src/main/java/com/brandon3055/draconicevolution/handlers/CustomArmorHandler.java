@@ -167,7 +167,7 @@ public class CustomArmorHandler {
             }
         }
 
-        if (totalCharge < 10000000) {
+        if (totalCharge < ToolStats.LAST_STAND_ENERGY) {
             return;
         }
 
