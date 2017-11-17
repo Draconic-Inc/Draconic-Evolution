@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.blocks.PlacedItem;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -98,7 +99,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
     private IndexedCuboid6 blockBounds = new IndexedCuboid6(0, new Cuboid6(0, 0, 0, 1, 1, 1));
     private List<IndexedCuboid6> indexedCuboids = new LinkedList<>();
 
-    private void calculateBounds() {
+    private synchronized void calculateBounds() {
 
         IBlockState state = getState(DEFeatures.placedItem);//world.getBlockState(getPos());
         Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center));
@@ -125,12 +126,12 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
         blockBounds = new IndexedCuboid6(0, box);
     }
 
-    private void recalculateCuboids() {
+    private synchronized void recalculateCuboids() {
         IBlockState state = world.getBlockState(getPos());
         if (state.getBlock() != DEFeatures.placedItem) {
             return;
         }
-        indexedCuboids.clear();
+        indexedCuboids = new ArrayList<>();
 
         double scale = displayCount.value == 1 && (toolDisplay.value || altRenderMode.value) ? 0.2 : 0.32;
 
@@ -158,11 +159,12 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
             indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(new Translation(-offset, -offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(4, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[3] ? blockH : itemH).apply(new Translation(offset, -offset, 0).with(rotation))));
         }
+        indexedCuboids = ImmutableList.copyOf(indexedCuboids);
     }
 
     private static final Transformation[] rotations = new Transformation[]{Rotation.sideRotations[3], Rotation.sideRotations[2], Rotation.sideRotations[0], Rotation.sideRotations[1], Rotation.quarterRotations[3], Rotation.quarterRotations[1],};
 
-    public List<IndexedCuboid6> getCachedRenderCuboids() {
+    public synchronized List<IndexedCuboid6> getCachedRenderCuboids() {
         if (indexedCuboids.isEmpty()) {
             recalculateCuboids();
         }
@@ -170,7 +172,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
     }
 
     @Override
-    public List<IndexedCuboid6> getIndexedCuboids() {
+    public synchronized List<IndexedCuboid6> getIndexedCuboids() {
         recalculateCuboids();
         calculateBounds();
         List<IndexedCuboid6> list = new ArrayList<IndexedCuboid6>();

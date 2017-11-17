@@ -1,4 +1,7 @@
-######## 2.3.5.x ########
+######## 2.3.6.x ########
+-Switched to proper metric extensions for large energy values (Giga RF 'G', Tera RF 'T', Peta RF 'P', Exa RF 'E')
+
+######## 2.3.5.269 ########
 -Fixed some minor issues with retrogen and disabled retrogen console spam.
 -Added config option to adjust the dissenchanter xp cost.
 -Fixed entity detector not saving its filter configuration.
