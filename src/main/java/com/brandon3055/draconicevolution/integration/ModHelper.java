@@ -3,8 +3,10 @@ package com.brandon3055.draconicevolution.integration;
 import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler.ArmorSummery;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.common.blocks.GT_TileEntity_Ores;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 /**
@@ -15,6 +17,7 @@ public class ModHelper {
     public static boolean isTConInstalled;
     public static boolean isAvaritiaInstalled;
     public static boolean isRotaryCraftInstalled;
+    public static boolean isGregTechInstalled;
     private static Item cleaver;
     private static Item avaritiaSword;
     private static Item bedrockSword;
@@ -23,6 +26,7 @@ public class ModHelper {
         isTConInstalled = Loader.isModLoaded("TConstruct");
         isAvaritiaInstalled = Loader.isModLoaded("Avaritia");
         isRotaryCraftInstalled = Loader.isModLoaded("RotaryCraft");
+        isGregTechInstalled = Loader.isModLoaded("gregtech");
     }
 
     public static boolean isHoldingCleaver(EntityPlayer player) {
@@ -76,6 +80,12 @@ public class ModHelper {
         }
 
         return event.ammount;
+    }
+
+    public static boolean isGregTechTileEntityOre(TileEntity te) {
+        if (!isGregTechInstalled) return false;
+        else if (te instanceof gregtech.common.blocks.GT_TileEntity_Ores) return true;
+        else return false;
     }
 
 }
