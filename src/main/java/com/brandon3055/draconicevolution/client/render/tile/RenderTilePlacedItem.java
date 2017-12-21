@@ -5,11 +5,14 @@ import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
+import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.google.common.base.Joiner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
 import java.util.List;
@@ -74,17 +77,15 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
                 GlStateManager.popMatrix();
             }
             index++;
+
+            if (index == 4) {
+                LogHelper.bigError("Detected illegal render state for placed item at " + te.getPos() + " Index: " + index);
+                LogHelper.error("Tile NBT Dump: " + te.writeToNBT(new NBTTagCompound()));
+                LogHelper.error("Cuboid List: " + cuboids.size() + " " + Joiner.on(", ").join(cuboids));
+                LogHelper.error("Thread: " + Thread.currentThread().getName());
+                index = 3;
+            }
         }
-
-
-//        GlStateManager.enableRescaleNormal();
-//        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-//        GlStateManager.disableTexture2D();
-//        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-//        GlStateManager.disableLighting();
-
-//        GlStateManager.enableBlend();
-//        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
         GlStateTracker.popState();
         GlStateManager.popMatrix();

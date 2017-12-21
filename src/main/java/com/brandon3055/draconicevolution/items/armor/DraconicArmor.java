@@ -91,6 +91,8 @@ public class DraconicArmor extends WyvernArmor {
             registry.register(stack, new BooleanConfigField("sprintBoost", false, "config.field.sprintBoost.description"));
         }
 
+        registry.register(stack, new BooleanConfigField("hideArmor", false, "config.field.hideArmor.description"));
+
         return registry;
     }
 
@@ -100,14 +102,28 @@ public class DraconicArmor extends WyvernArmor {
 
     @SideOnly(Side.CLIENT)
     public ModelBiped model;
+    @SideOnly(Side.CLIENT)
+    public ModelBiped model_invisible;
 
     @SideOnly(Side.CLIENT)
     @Override
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
+        if (ToolConfigHelper.getBooleanField("hideArmor", itemStack)) {
+            if (model_invisible == null) {
+                model_invisible = new ModelBiped() {
+                    @Override
+                    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {}
+                };
+            }
+
+            return model_invisible;
+        }
+
         if (DEConfig.disable3DModels) {
             return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
         }
 
+//        model = null;
         if (model == null) {
             if (armorType == HEAD) model = new ModelDraconicArmor(1F, true, false, false, false);
             else if (armorType == CHEST) model = new ModelDraconicArmor(1F, false, true, false, false);

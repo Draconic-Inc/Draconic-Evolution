@@ -696,6 +696,8 @@ config.field.enableJunkFilter.description=Allows you to enable/disable the junk 
 config.field.junkNbtSens.entry=Junk NBT Sensitive
 config.field.junkNbtSens.description=When disabled the junk filter will ignore when filtering filtering items.
 
+config.field.hideArmor.entry=Hide Armor
+config.field.hideArmor.description=When enabled this armor peace will be completely invisible.
 
 config.field.AOE.entry=A.O.E
 config.field.replaceSame.entry=Replace Same Blocks

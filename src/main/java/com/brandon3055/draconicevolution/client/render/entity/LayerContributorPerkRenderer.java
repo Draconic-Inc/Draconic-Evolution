@@ -61,8 +61,8 @@ public class LayerContributorPerkRenderer implements LayerRenderer<AbstractClien
         }
     }
 
-    public static void renderEnchantedGlint(RenderLivingBase<?> livingBase, EntityLivingBase entity, ModelBase model, float p_188364_3_, float p_188364_4_, float p_188364_5_, float p_188364_6_, float p_188364_7_, float p_188364_8_, float p_188364_9_) {
-        float f = (float) entity.ticksExisted + p_188364_5_;
+    public static void renderEnchantedGlint(RenderLivingBase<?> livingBase, EntityLivingBase entity, ModelBase model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        float f = (float) entity.ticksExisted + partialTicks;
         livingBase.bindTexture(ENCHANTED_ITEM_GLINT_RES);
         GlStateManager.enableBlend();
         GlStateManager.depthFunc(514);
@@ -80,7 +80,7 @@ public class LayerContributorPerkRenderer implements LayerRenderer<AbstractClien
             GlStateManager.rotate(30.0F - (float) i * 60.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.translate(0F, f * (0.003F + (float) i * 0.003F) * -20.0F, 0F);
             GlStateManager.matrixMode(5888);
-            model.render(entity, 0, p_188364_4_, p_188364_6_, p_188364_7_, p_188364_8_, p_188364_9_);
+            model.render(entity, 0, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         }
 
         GlStateManager.matrixMode(5890);
