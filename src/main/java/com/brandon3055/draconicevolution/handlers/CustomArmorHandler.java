@@ -309,8 +309,9 @@ public class CustomArmorHandler {
                 player.getEntityAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getAttributeUnlocalizedName(), value, 1));
             }
 
-            if (!player.onGround && player.getRidingEntity() == null)
+            if (!player.onGround && player.getRidingEntity() == null) {
                 player.jumpMovementFactor = 0.02F + (0.02F * summery.speedModifier);
+            }
         } else if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID) != null) {
             player.getEntityAttribute(speedAttr).removeModifier(player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID));
         }
@@ -329,7 +330,7 @@ public class CustomArmorHandler {
 
             if (!hasHighStep && highStepListed) {
                 playersWithUphillStep.remove(player.getDisplayNameString());
-                player.stepHeight = 0.5F;
+                player.stepHeight = 0.6F;
             }
         }
         //endregion

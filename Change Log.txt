@@ -1,4 +1,7 @@
-######## 2.1.7.x ########
+######## 2.1.8.x ########
+-Fixed weird name related crash in entity detector config gui.
+
+######## 2.1.7.266 ########
 -Fixed shield not absorbing fall damage when jump boost is active.
 -Stopped the magnet taking items from IE belts.
 
