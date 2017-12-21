@@ -134,6 +134,10 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        if (!(source instanceof World)) {
+            return NULL_AABB;
+        }
+
         TileEntity tile = source.getTileEntity(pos);
 
         if (tile instanceof ICuboidProvider) {

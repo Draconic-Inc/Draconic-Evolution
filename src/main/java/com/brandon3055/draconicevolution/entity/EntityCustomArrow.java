@@ -60,7 +60,7 @@ public class EntityCustomArrow extends EntityArrow {
     }
 
     @Override
-    public void setThrowableHeading(double par1, double par3, double par5, float par7, float par8) {
+    public void shoot(double par1, double par3, double par5, float par7, float par8) {
         float f2 = MathHelper.sqrt(par1 * par1 + par3 * par3 + par5 * par5);
         par1 /= f2;
         par3 /= f2;
@@ -251,11 +251,11 @@ public class EntityCustomArrow extends EntityArrow {
             for (Entity e : list) {
                 if (e instanceof EntityLivingBase) {
                     Entity entity = e;
-                    float distanceModifier = 1F - (entity.getDistanceToEntity(this) / (float) range);
+                    float distanceModifier = 1F - (entity.getDistance(this) / (float) range);
 
                     if (e instanceof EntityDragon) {
                         entity = ((EntityDragon) entity).dragonPartBody;
-                        distanceModifier = 1F - (entity.getDistanceToEntity(this) / (bowProperties.shockWavePower * 4));
+                        distanceModifier = 1F - (entity.getDistance(this) / (bowProperties.shockWavePower * 4));
                     }
 
 

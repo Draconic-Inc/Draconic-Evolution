@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -52,7 +53,8 @@ public class PacketConfigureTool implements IMessage {
 
         @Override
         public IMessage handleMessage(PacketConfigureTool message, MessageContext ctx) {
-            ItemStack stack = message.slot.getStackInSlot(ctx.getServerHandler().player);
+            EntityPlayer player = ctx.getServerHandler().player;
+            ItemStack stack = message.slot.getStackInSlot(player);
             if (!(stack.getItem() instanceof IConfigurableItem)) {
                 return null;
             }
@@ -61,7 +63,7 @@ public class PacketConfigureTool implements IMessage {
             IItemConfigField field = item.getFields(stack, new ItemConfigFieldRegistry()).getField(message.fieldIndex);
 
             if (field != null) {
-                field.handleButton(IItemConfigField.EnumButton.getButton(message.button), message.data);
+                field.handleButton(IItemConfigField.EnumButton.getButton(message.button), message.data, player, message.slot);
                 field.writeToNBT(ToolConfigHelper.getFieldStorage(stack));
                 item.onFieldChanged(stack, field);
             }

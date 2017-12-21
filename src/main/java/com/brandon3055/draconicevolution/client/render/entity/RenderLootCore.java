@@ -101,9 +101,9 @@ public class RenderLootCore extends Render<EntityLootCore> {
             GlStateManager.scale(9, 9, 9);
             GlStateManager.rotate(180, 1, 0, 0);
             GlStateManager.popMatrix();
-            String name = I18n.format("entity.draconicevolution.lootCore.name");
+            String name = I18n.format("entity.draconicevolution:lootCore.name");
             int w = renderer.getStringWidth(name);
-            renderer.drawString(name, 11 - (w / 2), -17, -1);
+            renderer.drawString(name, 11 - (w / 2), (int) yPos - 10, -1);
 
             int row = 0;
             for (ItemStack stack : lootCore.displayMap.keySet()) {

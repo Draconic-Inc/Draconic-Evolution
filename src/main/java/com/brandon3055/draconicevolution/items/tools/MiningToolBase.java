@@ -7,6 +7,8 @@ import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
@@ -29,15 +31,22 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.server.SPacketBlockChange;
-import net.minecraft.network.play.server.SPacketEntityTeleport;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.EnumControlType.SLIDER;
@@ -59,6 +68,29 @@ public abstract class MiningToolBase extends ToolBase {
     public MiningToolBase(double attackDamage, double attackSpeed, Set effectiveBlocks) {
         super(attackDamage, attackSpeed);
         this.effectiveBlocks.addAll(effectiveBlocks);
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+        ICapabilityProvider parent = super.initCapabilities(stack, nbt);
+        ItemStackHandler itemHandler = new ItemStackHandler(9 * (getToolTier(stack) + 1)){
+            @Override
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                for (ItemStack check : stacks) {
+                    if (stack.isItemEqual(check) && ItemStack.areItemStackTagsEqual(stack, check)) {
+                        return stack;
+                    }
+                }
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
+        return new ItemCapProvider(parent, itemHandler);
     }
 
     //region Upgrades and Config
@@ -114,6 +146,11 @@ public abstract class MiningToolBase extends ToolBase {
             });
         });
 
+        if (!(this instanceof WyvernAxe)) {
+            registry.register(stack, new ExternalConfigField("junkFilter", "config.field.junkFilter.description", DraconicEvolution.instance, GuiHandler.GUIID_JUNK_FILTER, "config.field.junkFilter.button"));
+            registry.register(stack, new BooleanConfigField("enableJunkFilter", true, "config.field.enableJunkFilter.description"));
+            registry.register(stack, new BooleanConfigField("junkNbtSens", true, "config.field.junkNbtSens.description"));
+        }
         return registry;
     }
 
@@ -192,11 +229,12 @@ public abstract class MiningToolBase extends ToolBase {
         int totalBlocks = rad * depth;
 
         if (getEnergyStored(stack) < (energyPerOperation * totalBlocks)) {
+
             return super.onBlockStartBreak(stack, pos, player);
         }
 
         if (rad > 0 || depth > 0) {
-            return breakAOEBlocksNew(stack, pos, rad, depth, player);
+            return breakAOEBlocks(stack, pos, rad, depth, player);
         }
 
         return super.onBlockStartBreak(stack, pos, player);
@@ -210,7 +248,7 @@ public abstract class MiningToolBase extends ToolBase {
     }
 
     @Override
-    public float getStrVsBlock(ItemStack stack, IBlockState state) {
+    public float getDestroySpeed(ItemStack stack, IBlockState state) {
         if (getEnergyStored(stack) < energyPerOperation) {
             return 1F;
         }
@@ -239,145 +277,9 @@ public abstract class MiningToolBase extends ToolBase {
 
     //region AOE Mining Code
 
-    /*
-    * TODO Serious Optimization!
-    * Idea: Create a dummy inventory to store all of the drops. (Also stores an XP counter)
-    * Create a method that gets the stack dropped from a block.
-    * Add each block stack to the dummy inventory using CCL's inventory utils.
-    * Add the xp for each block to the inventory's xp counter.
-    * Drop the contents of the dummy inventory at the players feet with 0 pickup delay.
-    * Add the inventories xp to the player's xp.
-    *
-    * Note: Do not want to attempt to add the items directly to the players inventory because that may break
-    * things like forestry backpacks that require the player pickup item event... Unless i fire that event manually...
-    * */
-
-    //region Old Code
-
-    public boolean breakAOEBlocks(ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, EntityPlayer player) {
-        //Map<Block, Integer> blockMap = IConfigurableItem.ProfileHelper.getBoolean(stack, References.OBLITERATE, false) ? getObliterationList(stack) : new HashMap<Block, Integer>();
-
-        IBlockState blockState = player.world.getBlockState(pos);
-
-        if (!isToolEffective(stack, blockState)) {
-            return false;
-        }
-
-        float refStrength = ForgeHooks.blockStrength(blockState, player, player.world, pos);
-
-        PairKV<BlockPos, BlockPos> aoe = getMiningArea(pos, player, breakRadius, breakDepth);
-        List<BlockPos> aoeBlocks = Lists.newArrayList(BlockPos.getAllInBox(aoe.getKey(), aoe.getValue()));
-
-        if (ToolConfigHelper.getBooleanField("aoeSafeMode", stack)) {
-            for (BlockPos block : aoeBlocks) {
-                if (!player.world.isAirBlock(block) && player.world.getTileEntity(block) != null) {
-                    if (player.world.isRemote) {
-                        player.sendMessage(new TextComponentTranslation("msg.de.baseSafeAOW.txt"));
-                    }
-                    else {
-                        ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(((EntityPlayerMP) player).world, block));
-                    }
-                    return true;
-                }
-            }
-        }
-
-        for (BlockPos block : aoeBlocks) {
-            breakExtraBlock(stack, player.world, block, player, refStrength, new HashMap<Block, Integer>());
-        }
-
-
-        @SuppressWarnings("unchecked") List<EntityItem> items = player.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(aoe.getKey(), aoe.getValue().add(1, 1, 1)));
-        for (EntityItem item : items) {
-            if (!player.world.isRemote) {
-                item.setPosition(player.posX, player.posY, player.posZ);
-                ((EntityPlayerMP) player).connection.sendPacket(new SPacketEntityTeleport(item));
-                item.setPickupDelay(0);
-
-                if (DEConfig.rapidDespawnAOEMinedItems) {
-                    item.lifespan = 100;
-                }
-            }
-        }
-
-        player.world.playEvent(2001, pos, Block.getStateId(blockState));
-
-        return true;
-    }
-
-    protected void breakExtraBlock(ItemStack stack, World world, BlockPos pos, EntityPlayer player, float refStrength, Map<Block, Integer> blockMap) {
-        if (world.isAirBlock(pos)) {
-            return;
-        }
-
-        IBlockState state = world.getBlockState(pos);
-        Block block = state.getBlock();
-
-        if (!isToolEffective(stack, state)) {
-            return;
-        }
-
-        float strength = ForgeHooks.blockStrength(state, player, world, pos);
-
-        if (!ForgeHooks.canHarvestBlock(block, player, world, pos) || refStrength / strength > 10f) {
-            return;
-        }
-
-        if (player.capabilities.isCreativeMode) {
-            block.onBlockHarvested(world, pos, state, player);
-            if (block.removedByPlayer(state, world, pos, player, false)) {
-                block.onBlockDestroyedByPlayer(world, pos, state);
-            }
-
-            if (!world.isRemote) {
-                ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(world, pos));
-            }
-            else {
-                if (itemRand.nextInt(10) == 0) {
-                    world.playEvent(2001, pos, Block.getStateId(state));
-                }
-            }
-            return;
-        }
-
-        if (!world.isRemote) {
-            int xp = ForgeHooks.onBlockBreakEvent(world, ((EntityPlayerMP) player).interactionManager.getGameType(), (EntityPlayerMP) player, pos);
-            if (xp == -1) {
-                return;
-            }
-
-            TileEntity tileEntity = world.getTileEntity(pos);
-
-            if (block.removedByPlayer(state, world, pos, player, true)) {
-                block.onBlockDestroyedByPlayer(world, pos, state);
-                block.harvestBlock(world, player, pos, state, tileEntity, stack);
-                block.dropXpOnBlockBreak(world, pos, xp);
-            }
-
-            stack.onBlockDestroyed(world, state, pos, player);
-
-            EntityPlayerMP mpPlayer = (EntityPlayerMP) player;
-            mpPlayer.connection.sendPacket(new SPacketBlockChange(world, pos));
-        }
-        else {
-            if (itemRand.nextInt(10) == 0) {
-                world.playEvent(2001, pos, Block.getStateId(state));
-            }
-            if (block.removedByPlayer(state, world, pos, player, true)) {
-                block.onBlockDestroyedByPlayer(world, pos, state);
-            }
-
-            stack.onBlockDestroyed(world, state, pos, player);
-
-            Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, Minecraft.getMinecraft().objectMouseOver.sideHit));
-        }
-    }
-
-    //endregion
-
     //region New Code
 
-    public boolean breakAOEBlocksNew(ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, EntityPlayer player) {
+    public boolean breakAOEBlocks(ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, EntityPlayer player) {
         IBlockState blockState = player.world.getBlockState(pos);
 
         if (!isToolEffective(stack, blockState)) {
@@ -408,7 +310,7 @@ public abstract class MiningToolBase extends ToolBase {
         player.world.playEvent(2001, pos, Block.getStateId(blockState));
 
         for (BlockPos block : aoeBlocks) {
-            breakExtraBlockNew(stack, player.world, block, player, refStrength, inventoryDynamic);
+            breakAOEBlock(stack, player.world, block, player, refStrength, inventoryDynamic, itemRand.nextInt(Math.max(5, (breakRadius * breakDepth) / 5)) == 0);
         }
 
 
@@ -418,6 +320,19 @@ public abstract class MiningToolBase extends ToolBase {
                 InventoryUtils.insertItem(inventoryDynamic, item.getItem(), false);
                 item.setDead();
             }
+        }
+
+        Set<ItemStack> junkFilter = getJunkFilter(stack);
+        if (junkFilter != null) {
+            boolean nbtSens = ToolConfigHelper.getBooleanField("junkNbtSens", stack);
+            inventoryDynamic.removeIf(check -> {
+                for (ItemStack junk : junkFilter) {
+                    if (junk.isItemEqual(check) && (!nbtSens || ItemStack.areItemStackTagsEqual(junk, check))) {
+                        return true;
+                    }
+                }
+                return false;
+            });
         }
 
         if (!player.world.isRemote) {
@@ -443,7 +358,7 @@ public abstract class MiningToolBase extends ToolBase {
         return true;
     }
 
-    protected void breakExtraBlockNew(ItemStack stack, World world, BlockPos pos, EntityPlayer player, float refStrength, InventoryDynamic inventory) {
+    protected void breakAOEBlock(ItemStack stack, World world, BlockPos pos, EntityPlayer player, float refStrength, InventoryDynamic inventory, boolean breakFX) {
         if (world.isAirBlock(pos)) {
             return;
         }
@@ -490,7 +405,7 @@ public abstract class MiningToolBase extends ToolBase {
             BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
         }
         else {
-            if (itemRand.nextInt(10) == 0) {
+            if (breakFX) {
                 world.playEvent(2001, pos, Block.getStateId(state));
             }
             if (block.removedByPlayer(state, world, pos, player, true)) {
@@ -502,7 +417,6 @@ public abstract class MiningToolBase extends ToolBase {
             Minecraft.getMinecraft().getConnection().sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, Minecraft.getMinecraft().objectMouseOver.sideHit));
         }
     }
-
 
     //endregion
 
@@ -567,7 +481,6 @@ public abstract class MiningToolBase extends ToolBase {
         return new PairKV<>(pos.add(-xMin, yOffset - yMin, -zMin), pos.add(xMax, yOffset + yMax, zMax));
     }
 
-
     //endregion
 
     //region Setters, Getters & Helpers
@@ -612,6 +525,63 @@ public abstract class MiningToolBase extends ToolBase {
         return false;
     }
 
+    public Set<ItemStack> getJunkFilter(ItemStack stack) {
+        if (ToolConfigHelper.getBooleanField("enableJunkFilter", stack) && stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+            IItemHandler itemHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            Set<ItemStack> junkFilter = new HashSet<>();
+
+            if (itemHandler != null) {
+                for (int i = 0; i < itemHandler.getSlots(); i++) {
+                    ItemStack junk = itemHandler.getStackInSlot(i);
+                    if (!junk.isEmpty()) {
+                        junkFilter.add(junk);
+                    }
+                }
+            }
+
+            return junkFilter.isEmpty() ? null : junkFilter;
+        }
+        return null;
+    }
+
     //endregion
+
+
+    private static class ItemCapProvider implements ICapabilitySerializable<NBTTagCompound> {
+        private ICapabilityProvider parentProvider;
+        private ItemStackHandler itemHandler;
+
+        public ItemCapProvider(ICapabilityProvider parentProvider, ItemStackHandler iItemHandler){
+            this.parentProvider = parentProvider;
+            this.itemHandler = iItemHandler;
+        }
+
+        @Override
+        public NBTTagCompound serializeNBT() {
+            return itemHandler.serializeNBT();
+        }
+
+        @Override
+        public void deserializeNBT(NBTTagCompound nbt) {
+            itemHandler.deserializeNBT(nbt);
+        }
+
+        @Override
+        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+                return true;
+            }
+            return (parentProvider != null && parentProvider.hasCapability(capability, facing));
+        }
+
+        @Nullable
+        @Override
+        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemHandler);
+            }
+            return parentProvider == null ? null : parentProvider.getCapability(capability, facing);
+        }
+    }
 
 }

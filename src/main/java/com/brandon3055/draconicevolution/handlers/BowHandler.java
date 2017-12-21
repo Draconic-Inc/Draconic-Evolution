@@ -69,7 +69,7 @@ public class BowHandler {
         float velocity = properties.arrowSpeed * drawArrowSpeedModifier * 3F; //2F is the speed of a vanilla arrow
 
         EntityCustomArrow customArrow = new EntityCustomArrow(properties, world, player);
-        customArrow.setAim(player, player.rotationPitch, player.rotationYaw, 0.0F, velocity, 1.0F);
+        customArrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, velocity, 1.0F);
         customArrow.bowProperties = properties;
 
         if (drawArrowSpeedModifier == 1.0F) {

@@ -1,18 +1,24 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.client.gui.*;
+import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiJunkFilter;
 import com.brandon3055.draconicevolution.inventory.*;
+import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -36,6 +42,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int GUIID_ENERGY_CORE = 16;
     public static final int GUIID_FUSION_CRAFTING = 17;
     public static final int GUIID_ENERGY_CRYSTAL = 18;
+    public static final int GUIID_JUNK_FILTER = 19;
 
     public static final int GUIID_CONTAINER_TEMPLATE = 100;
 
@@ -111,6 +118,14 @@ public class GuiHandler implements IGuiHandler {
             case GUIID_ENERGY_CRYSTAL:
                 if (tile instanceof TileCrystalBase) {
                     return new ContainerEnergyCrystal(player, (TileCrystalBase) tile);
+                }
+                break;
+            case GUIID_JUNK_FILTER:
+                PlayerSlot slot = PlayerSlot.fromIndexes(x, y);
+                ItemStack stack = slot.getStackInSlot(player);
+                if (stack.getItem() instanceof MiningToolBase && stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+                    IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+                    return new ContainerJunkFilter(player, slot, handler);
                 }
                 break;
 
@@ -203,6 +218,16 @@ public class GuiHandler implements IGuiHandler {
                     return new GuiEnergyCrystal(player, (TileCrystalBase) tile);
                 }
                 break;
+            case GUIID_JUNK_FILTER:
+                PlayerSlot slot = PlayerSlot.fromIndexes(x, y);
+                ItemStack stack = slot.getStackInSlot(player);
+                if (stack.getItem() instanceof MiningToolBase && stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+                    IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+                    return new GuiJunkFilter(player, slot, handler);
+                }
+                break;
+
+
 //			case GUIID_CONTAINER_TEMPLATE:
 //				if (containerTemp != null && containerTemp instanceof TileContainerTemplate) {
 //					return new GUIContainerTemplate(player.inventory, (TileContainerTemplate) containerTemp);

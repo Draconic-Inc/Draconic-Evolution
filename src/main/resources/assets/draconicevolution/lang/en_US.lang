@@ -313,6 +313,7 @@ info.de.wirelessConnections.txt=Wireless Connections
 info.infusedObsidian.txt=This block is wither resistant
 
 enchantment.draconicevolution.reaperEnchant=Reaper
+enchantment.draconicevolution.enchant_reaper.desc=When applied to a weapon this enchant increases that chance that a mob killed by sad weapon will drop their soul. This enchantment is best applied to Draconic Evolution weapons as it stacks with their built in reaper modifier.
 
 //Achievements ----------------------------------------------------------------------------------------------------------------------------------------
 draconicevolution.achievementPage.name=Draconic Evolution
@@ -680,18 +681,21 @@ config.field.bowFireArrow.entry=Arrow of Draconic Fire
 config.field.bowFireArrow.description=Fire an arrow made of pure energy. Removes the need for ammunition and unlocks the Shock Wave effect.
 config.field.bowShockPower.entry=Shock Wave Power
 config.field.bowShockPower.description=Creates a powerful Shock Wave on impact that does more damage to entities than an equivelent explosion but without damaging blocks.
-
 config.field.attackAOE.entry=Attack Radius
 config.field.attackAOE.description=Allows you to adjust the area covered by this weapon's swing.
-
 config.field.showHarvestIndicator.entry=Harvest Indicator
 config.field.showHarvestIndicator.description=Shows where the axe is currently harvesting blocks.
-
 config.field.landFill.entry=Land Fill
 config.field.landFill.description=Will automatically use dirt from your inventory to fill up to a 1 block deep hole in order to create a flat tilled area. Will also harvest up to 1 block above the area to be tilled if needed.
 
-config.field..entry=
-config.field..description=
+config.field.junkFilter.entry=Configure Junk Filter
+config.field.junkFilter.description=Opens a junk filter that allows you to specify blocks that are to be deleted when mined. The junk filter is persistent between config profiles and only works in AOE mode.
+config.field.junkFilter.button=Open Junk Filter
+config.field.enableJunkFilter.entry=Enable Junk Filter
+config.field.enableJunkFilter.description=Allows you to enable/disable the junk filter.
+config.field.junkNbtSens.entry=Junk NBT Sensitive
+config.field.junkNbtSens.description=When disabled the junk filter will ignore when filtering filtering items.
+
 
 config.field.AOE.entry=A.O.E
 config.field.replaceSame.entry=Replace Same Blocks
@@ -744,6 +748,7 @@ chat.dissEnchanter.notEnoughLevels.msg=You require %s levels to extract that enc
 //---- GUI Buttons ----//
 gui.de.toolConfig.hud.txt=HUD
 gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
+button.de.open=Open
 
 //---- Celestial Manipulato ----//
 gui.de.celMod.weather=Weather
@@ -937,6 +942,9 @@ gui.draconiumChest.ioState0.btn=Disabled
 gui.draconiumChest.ioState1.btn=Input Only
 gui.draconiumChest.ioState2.btn=Output Only
 gui.draconiumChest.ioState3.btn=Input & Output
+
+//---- Gui Junk Filter ----//
+gui.de.junkFilter.name=Tool Junk Filter
 
 //---- Misc Info Text ----//
 info.de.shiftReversePlaceLogic.txt=Hold Shift to reverse placement logic.

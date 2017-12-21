@@ -378,7 +378,7 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
 
             while (iterator.hasNext()) {
                 EntityEnderCrystal entityendercrystal1 = (EntityEnderCrystal) iterator.next();
-                double d1 = entityendercrystal1.getDistanceSqToEntity(this);
+                double d1 = entityendercrystal1.getDistanceSq(this);
 
                 if (d1 < d0) {
                     d0 = d1;

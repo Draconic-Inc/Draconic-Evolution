@@ -7,10 +7,7 @@ import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
-import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
-import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
-import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.tool.IToolModelProvider;
@@ -217,6 +214,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
         displayList.add(TextFormatting.DARK_PURPLE + ToolConfigHelper.getProfileName(stack, ToolConfigHelper.getProfile(stack)));
 
         for (IItemConfigField field : registry.getFields()) {
+            if (field instanceof ExternalConfigField) continue;
             displayList.add(InfoHelper.ITC() + I18n.format(field.getUnlocalizedName()) + ": " + InfoHelper.HITC() + field.getReadableValue());
         }
     }

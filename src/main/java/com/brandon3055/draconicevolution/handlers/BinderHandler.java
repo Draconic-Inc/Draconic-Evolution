@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Cuboid6;
 import com.brandon3055.brandonscore.lib.ChatHelper;
@@ -12,7 +12,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -121,7 +120,7 @@ public class BinderHandler {
         double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
 
         IBlockState state = world.getBlockState(pos);
-        CCModel model = modelForAABB(state.getBlock().getBoundingBox(state, world, pos));
+        Cuboid6 cuboid6 = new Cuboid6(state.getBlock().getBoundingBox(state, world, pos));
 
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();
@@ -132,11 +131,7 @@ public class BinderHandler {
         GlStateManager.color(valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
         GlStateManager.disableDepth();
 
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        model.render(ccrs);
-        ccrs.draw();
-
+        RenderUtils.drawCuboidOutline(cuboid6);
 
         GlStateManager.enableDepth();
         GlStateManager.disableBlend();

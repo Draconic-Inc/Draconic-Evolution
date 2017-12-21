@@ -336,7 +336,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 this.targetZ += this.rand.nextGaussian() * 2.0D;
             }
 
-            if (this.forceNewTarget || d2 < 100.0D || d2 > 22500.0D || this.isCollidedHorizontally || this.isCollidedVertically) {
+            if (this.forceNewTarget || d2 < 100.0D || d2 > 22500.0D || this.collidedHorizontally || this.collidedVertically) {
                 this.setNewTarget();
             }
 
@@ -583,7 +583,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
             if (activeCrystals < crystals.size() && ticksExisted % 10 == 0) {
                 EntityGuardianCrystal closest = null;
                 for (EntityGuardianCrystal crystal : crystals) {
-                    if (!crystal.isAlive() && (closest == null || getDistanceToEntity(crystal) < getDistanceToEntity(closest))) {
+                    if (!crystal.isAlive() && (closest == null || getDistance(crystal) < getDistance(closest))) {
                         closest = crystal;
                     }
                 }
@@ -902,7 +902,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
                         targetX = homeX + ((rand.nextDouble() - 0.5D) * 260D);
                         targetY = homeY + 20 + (rand.nextDouble() - 0.5D) * 50D;
                         targetZ = homeZ + ((rand.nextDouble() - 0.5D) * 260D);
-                        if (this.getDistanceToEntity(damageSource.getImmediateSource()) >= 70) {
+                        if (this.getDistance(damageSource.getImmediateSource()) >= 70) {
                             flag = true;
                         }
                         escape++;
@@ -1137,7 +1137,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
         if (this.rand.nextInt(10) == 0) {
             EntityGuardianCrystal closest = null;
             for (EntityGuardianCrystal crystal : crystals)
-                if (crystal.isAlive() && (closest == null || getDistanceToEntity(crystal) < getDistanceToEntity(closest))) closest = crystal;
+                if (crystal.isAlive() && (closest == null || getDistance(crystal) < getDistance(closest))) closest = crystal;
             healingChaosCrystal = closest;
             if (healingChaosCrystal != null) {
 //				connectedCrystalID = healingChaosCrystal.getEntityId();

@@ -196,7 +196,7 @@ public class EntityGuardianProjectile extends Entity {
 
         switch (type) {
             case FIREBOMB:
-                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power) || isCollided || ticksExisted > 600 || heath <= 0) {
+                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power) || collided || ticksExisted > 600 || heath <= 0) {
                     setDead();
                     world.newExplosion(shooter, this.posX, this.posY, this.posZ, 2F, true, true);
                     damageEntitiesInRadius(damageFireball, power, power * 2);
@@ -220,13 +220,13 @@ public class EntityGuardianProjectile extends Entity {
                     hit.attackEntityFrom(DamageSource.FALL, 10F);
 
                 }
-                else if (isCollided || ticksExisted > 400 || heath <= 0) {
+                else if (collided || ticksExisted > 400 || heath <= 0) {
                     setDead();
                 }
                 break;
             case FIRE_CHASER:
                 noClip = ticksExisted < 60;
-                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power / 2) || (isCollided && ticksExisted > 60) || ticksExisted > 400 || heath <= 0) {
+                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power / 2) || (collided && ticksExisted > 60) || ticksExisted > 400 || heath <= 0) {
                     setDead();
                     world.newExplosion(shooter, this.posX, this.posY, this.posZ, 2F, true, true);
                     damageEntitiesInRadius(damageFireball, power, power * 2);

@@ -36,7 +36,7 @@ public class EntityPersistentItem extends EntityItem {
     public EntityPersistentItem(World world, Entity original, ItemStack stack) {
         this(world, original.posX, original.posY, original.posZ);
         if (original instanceof EntityItem) {
-            this.delayBeforeCanPickup = ((EntityItem) original).delayBeforeCanPickup;
+            this.pickupDelay = ((EntityItem) original).pickupDelay;
         }
         else {
             setDefaultPickupDelay();
@@ -50,10 +50,6 @@ public class EntityPersistentItem extends EntityItem {
 
     @Override
     public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-//        if (getEntityItem().getItem() instanceof DragonHeart && par1DamageSource.isExplosion() && par2 > 10f && !this.isDead) {
-//            world.spawnEntityInWorld(new EntityDragonHeart(world, posX, posY, posZ));
-//            this.setDead();
-//        }
         if (par1DamageSource.getDamageType().equals("outOfWorld")) {
             setDead();
             return true;
@@ -71,90 +67,6 @@ public class EntityPersistentItem extends EntityItem {
 
     @Override
     public void onUpdate() {
-//        if (age + 10 >= lifespan) age = 0;
-//        boolean flag2 = false;
-//        if (this.world.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY - 1), MathHelper.floor_double(this.posZ))).getBlock() == Blocks.END_PORTAL) {
-//            flag2 = true;
-//        }
-//        ItemStack stack = this.getDataManager().get(ITEM).orNull();
-//        if (stack != null && stack.getItem() != null) {
-//            if (stack.getItem().onEntityItemUpdate(this)) {
-//                return;
-//            }
-//        }
-//
-//        if (this.getEntityItem() == null) {
-//            this.setDead();
-//        } else {
-//            super.onEntityUpdate();
-//
-//            if (this.delayBeforeCanPickup > 0) {
-//                --this.delayBeforeCanPickup;
-//            }
-//
-//            this.prevPosX = this.posX;
-//            this.prevPosY = this.posY;
-//            this.prevPosZ = this.posZ;
-//            this.motionY -= 0.03999999910593033D;
-//            if (flag2) {
-//                motionX = 0;
-//                motionY = 0;
-//                motionZ = 0;
-//            }
-//            this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
-//            this.moveEntity(this.motionX, this.motionY, this.motionZ);
-//            boolean flag = (int) this.prevPosX != (int) this.posX || (int) this.prevPosY != (int) this.posY || (int) this.prevPosZ != (int) this.posZ;
-//
-//            if (flag || this.ticksExisted % 25 == 0) {
-//                if (this.world.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava) {
-//                    this.motionY = 0.20000000298023224D;
-//                    this.motionX = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-//                    this.motionZ = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-//                    this.playSound("random.fizz", 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
-//                }
-//            }
-//
-//            float f = 0.98F;
-//
-//            if (this.onGround) {
-//                f = this.world.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
-//            }
-//
-//            this.motionX *= (double) f;
-//            this.motionY *= 0.9800000190734863D;
-//            this.motionZ *= (double) f;
-//            if (flag2) {
-//                motionX = 0;
-//                motionY = 0;
-//                motionZ = 0;
-//            }
-//
-//            if (this.onGround) {
-//                this.motionY *= -0.5D;
-//            }
-//
-//            ++this.age;
-//
-//            ItemStack item = getDataWatcher().getWatchableObjectItemStack(10);
-//
-//            if (!this.world.isRemote && this.age >= lifespan) {
-//                if (item != null) {
-//                    ItemExpireEvent event = new ItemExpireEvent(this, (item.getItem() == null ? 6000 : item.getItem().getEntityLifespan(item, world)));
-//                    if (MinecraftForge.EVENT_BUS.post(event)) {
-//                        lifespan += event.extraLife;
-//                    } else {
-//                        this.setDead();
-//                    }
-//                } else {
-//                    this.setDead();
-//                }
-//            }
-//
-//            if (item != null && item.stackSize <= 0) {
-//                this.setDead();
-//            }
-//        }
-
         if (age + 10 >= lifespan) {
             age = 0;
         }
@@ -167,10 +79,10 @@ public class EntityPersistentItem extends EntityItem {
             this.setDead();
         }
         else {
-            super.onUpdate();
+            super.onEntityUpdate();
 
-            if (this.delayBeforeCanPickup > 0 && this.delayBeforeCanPickup != 32767) {
-                --this.delayBeforeCanPickup;
+            if (this.pickupDelay > 0 && this.pickupDelay != 32767) {
+                --this.pickupDelay;
             }
 
             this.prevPosX = this.posX;

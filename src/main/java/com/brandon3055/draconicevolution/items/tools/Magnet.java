@@ -83,7 +83,7 @@ public class Magnet extends ItemBCore {
                     continue;
                 }
 
-                if (itemEntity.getThrower() != null && itemEntity.getThrower().equals(entity.getName()) && itemEntity.delayBeforeCanPickup > 0) {
+                if (itemEntity.getThrower() != null && itemEntity.getThrower().equals(entity.getName()) && itemEntity.pickupDelay > 0) {
                     continue;
                 }
 
@@ -108,8 +108,8 @@ public class Magnet extends ItemBCore {
                 flag = true;
 
                 if (!world.isRemote) {
-                    if (itemEntity.delayBeforeCanPickup > 0) {
-                        itemEntity.delayBeforeCanPickup = 0;
+                    if (itemEntity.pickupDelay > 0) {
+                        itemEntity.pickupDelay = 0;
                     }
                     itemEntity.motionX = itemEntity.motionY = itemEntity.motionZ = 0;
                     itemEntity.setPosition(entity.posX - 0.2 + (world.rand.nextDouble() * 0.4), entity.posY - 0.6, entity.posZ - 0.2 + (world.rand.nextDouble() * 0.4));
@@ -117,7 +117,6 @@ public class Magnet extends ItemBCore {
             }
 
             List<EntityLootCore> cores = world.getEntitiesWithinAABB(EntityLootCore.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(range, range, range));
-
             for (EntityLootCore core : cores) {
                 EntityPlayer closest = world.getClosestPlayerToEntity(core, 4);
                 if (closest != null && closest != entity) {
@@ -134,7 +133,6 @@ public class Magnet extends ItemBCore {
             if (flag) {
                 world.playSound((EntityPlayer) null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
             }
-
 
             List<EntityXPOrb> xp = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(4, 4, 4));
 

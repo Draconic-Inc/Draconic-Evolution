@@ -115,6 +115,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             BlockPos searchPos = pos.offset(facing.value, i);
             if (!world.isAirBlock(searchPos)) {
                 TileEntity tile = world.getTileEntity(searchPos);
+                LogHelper.dev("Reactor-Comp: Check: " + tile);
                 LogHelper.dev("Reactor-Comp: Try Poke Core | Found: " + tile);
 
                 if (tile instanceof TileReactorCore && i > 1) {
@@ -159,7 +160,6 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
 
         pokeCore();
         TileReactorCore core = checkAndGetCore();
-        LogHelper.dev("Gui? " + core);
         if (core != null) {
             core.onComponentClicked(player, this);
         }
@@ -229,6 +229,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
      */
     protected TileReactorCore checkAndGetCore() {
         if (!isBound.value) {
+            LogHelper.dev("Reactor-Comp: Not Bound");
             return null;
         }
 
@@ -241,6 +242,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             invalidateComponent();
         }
 
+        LogHelper.dev("Reactor-Comp: Core Connection Lost");
         return null;
     }
 

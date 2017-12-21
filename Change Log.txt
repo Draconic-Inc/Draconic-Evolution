@@ -1,5 +1,11 @@
 ######## 2.3.6.x ########
 -Switched to proper metric extensions for large energy values (Giga RF 'G', Tera RF 'T', Peta RF 'P', Exa RF 'E')
+-Tweaked the Crystal Binder selection renderer.
+-Fixed broken loot core tool tip.
+-Fixed issue where custom item entities added by mods show up as different entities entities in the entity detectors filter.
+-Re implemented junk filter in tools.
+-Fixed tool items entity accelerated physics issie.
+-Fixed potential name related crash in entity detector config gui.
 
 ######## 2.3.5.269 ########
 -Fixed some minor issues with retrogen and disabled retrogen console spam.

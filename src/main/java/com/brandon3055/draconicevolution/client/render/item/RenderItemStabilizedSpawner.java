@@ -98,7 +98,7 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
             GlStateManager.rotate(-30.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.scale(f, f, f);
             entity.setLocationAndAngles(0, 0, 0, 0.0F, 0.0F);
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicks, false);
+            Minecraft.getMinecraft().getRenderManager().renderEntity(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicks, false);
             GlStateManager.popMatrix();
 
             if (transformType != ItemCameraTransforms.TransformType.GROUND) {

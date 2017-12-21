@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,6 +43,5 @@ public class BooleanConfigField extends IntegerConfigField {
     @Override
     public void handleButton(EnumButton button, int data) {
         value = value == 0 ? 1 : 0;
-        LogHelper.dev(value);
     }
 }

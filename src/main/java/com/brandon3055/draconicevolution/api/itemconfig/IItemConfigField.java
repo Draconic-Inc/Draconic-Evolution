@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
+import com.brandon3055.brandonscore.inventory.PlayerSlot;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
@@ -68,7 +70,20 @@ public interface IItemConfigField {
      * @param button The button that was pressed.
      * @param data   Data associated with the button if applicable (See the doc for each button in EnumButton for details)
      */
+    @Deprecated
     void handleButton(EnumButton button, int data);
+
+    /**
+     * Called to handle a button press inside the config GUI. Note: This is called server side so you dont need
+     * to worry about client -> server synchronization.
+     *
+     * @param button The button that was pressed.
+     * @param data   Data associated with the button if applicable (See the doc for each button in EnumButton for details)
+     * @param player The player configuring the item.
+     */
+    default void handleButton(EnumButton button, int data, EntityPlayer player, PlayerSlot itemSlot) {
+        handleButton(button, data);
+    }
 
     /**
      * Write this fields value to the given NBTTagCompound with the fields name as the key.

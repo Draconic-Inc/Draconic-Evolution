@@ -60,7 +60,7 @@ public class RenderItemMobSoul implements IItemRenderer {
             }
 
             RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
-            rendermanager.doRenderEntity(mob, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
+            rendermanager.renderEntity(mob, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
 
             if (transformType != ItemCameraTransforms.TransformType.GROUND && transformType != ItemCameraTransforms.TransformType.FIXED) {
                 GlStateManager.enableRescaleNormal();
