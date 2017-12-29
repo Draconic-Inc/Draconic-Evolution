@@ -39,8 +39,18 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
 
     @Override
     public void update() {
+        if (tile.roller != null) {
+            xPosF = (float) tile.roller.pos.x;
+            yPosF = (float) tile.roller.pos.y;
+            zPosF = (float) tile.roller.pos.z;
+        }
+        else {
+            xPosF = (float) tile.getPos().getX() + 0.5F;
+            yPosF = (float) tile.getPos().getY() + 0.5F;
+            zPosF = (float) tile.getPos().getZ() + 0.5F;
+        }
+
         pitch = (float) MathHelper.approachExp(pitch, targetPitch, 0.05);
-//        donePlaying = true;
         if (tile.reactorState.value == TileReactorCore.ReactorState.WARMING_UP || tile.reactorState.value == TileReactorCore.ReactorState.STOPPING || tile.reactorState.value == TileReactorCore.ReactorState.COOLING) {
             targetPitch = 0.5F + (tile.shieldAnimationState / 2F);
         }

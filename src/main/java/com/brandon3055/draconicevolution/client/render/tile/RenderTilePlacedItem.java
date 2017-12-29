@@ -33,6 +33,14 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
 
         List<IndexedCuboid6> cuboids = te.getCachedRenderCuboids();
         for (IndexedCuboid6 cuboid : cuboids) {
+            if (index == 4) {
+                LogHelper.bigError("Detected illegal render state for placed item at " + te.getPos() + " Index: " + index);
+                LogHelper.error("Tile NBT Dump: " + te.writeToNBT(new NBTTagCompound()));
+                LogHelper.error("Cuboid List: " + cuboids.size() + " " + Joiner.on(", ").join(cuboids));
+                LogHelper.error("Thread: " + Thread.currentThread().getName());
+                index = 3;
+            }
+
             ItemStack stack = stacks[(Integer) cuboid.data - 1];
             if (!stack.isEmpty()) {
                 GlStateManager.pushMatrix();
@@ -76,15 +84,8 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
 
                 GlStateManager.popMatrix();
             }
-            index++;
 
-            if (index == 4) {
-                LogHelper.bigError("Detected illegal render state for placed item at " + te.getPos() + " Index: " + index);
-                LogHelper.error("Tile NBT Dump: " + te.writeToNBT(new NBTTagCompound()));
-                LogHelper.error("Cuboid List: " + cuboids.size() + " " + Joiner.on(", ").join(cuboids));
-                LogHelper.error("Thread: " + Thread.currentThread().getName());
-                index = 3;
-            }
+            index++;
         }
 
         GlStateTracker.popState();

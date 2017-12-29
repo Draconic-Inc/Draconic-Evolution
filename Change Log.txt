@@ -1,4 +1,7 @@
-######## 2.3.6.x ########
+######## 2.3.7. ########
+-Fixed console spam from placed items due to incorrect implementation of a safety check.
+
+######## 2.3.6.257 ########
 -Switched to proper metric extensions for large energy values (Giga RF 'G', Tera RF 'T', Peta RF 'P', Exa RF 'E')
 -Tweaked the Crystal Binder selection renderer.
 -Fixed broken loot core tool tip.

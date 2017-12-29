@@ -10,14 +10,20 @@ import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.render.TESRBase;
+import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 
@@ -50,6 +56,35 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();
         GlStateManager.disableLighting();
+
+        if (HolidayHelper.isAprilFools()) {
+            Frustum frustum = new Frustum();
+            Minecraft mc = Minecraft.getMinecraft();
+            Entity entity = mc.getRenderViewEntity();
+            double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double) mc.getRenderPartialTicks();
+            double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double) mc.getRenderPartialTicks();
+            double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double) mc.getRenderPartialTicks();
+            frustum.setPosition(d0, d1, d2);
+            te.inView = frustum.isBoundingBoxInFrustum(new AxisAlignedBB(te.roller == null ? te.getPos() : te.roller.pos.getPos()).grow(3, 3, 3));
+
+            if (te.roller != null) {
+                Vec3D pos = te.roller.pos;
+                Vec3D lastPos = te.roller.lastPos;
+                Vec3D tePos = Vec3D.getCenter(te);
+                double xOffset = (pos.x - tePos.x) + ((pos.x - lastPos.x) * partialTicks);
+                double yOffset = (pos.y - tePos.y) + ((pos.y - lastPos.y) * partialTicks);
+                double zOffset = (pos.z - tePos.z) + ((pos.z - lastPos.z) * partialTicks);
+
+                x += xOffset;
+                y += yOffset;
+                z += zOffset;
+
+                float travel = (float) Utils.getDistanceAtoB(te.getPos().getX(), te.getPos().getZ(), pos.x, pos.z);
+                GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
+                GlStateManager.rotate(travel * (360 / (float) (te.getCoreDiameter() * Math.PI)), (float) Math.sin(te.roller.direction), 0, (float) Math.cos(te.roller.direction) * -1);
+                GlStateManager.translate(-(x + 0.5), -(y + 0.5), -(z + 0.5));
+            }
+        }
 
         setLighting(200);
         double diameter = te.getCoreDiameter();
@@ -174,4 +209,8 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         }
     }
 
+    @Override
+    public boolean isGlobalRenderer(TileReactorCore te) {
+        return true;
+    }
 }

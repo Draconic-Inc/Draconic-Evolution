@@ -77,6 +77,10 @@ public class ReactorBeamFX extends BCParticle {
 
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        if (tile.roller != null) {
+            return;
+        }
+
         Vec3D pos1 = new Vec3D(posX - interpPosX, posY - interpPosY, posZ - interpPosZ).offset(facing, -0.35D);
         Vec3D pos2;
         double texOffset = (ClientEventHandler.elapsedTicks + partialTicks) / -150D;

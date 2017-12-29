@@ -9,8 +9,10 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.FacingUtils;
+import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
@@ -37,6 +39,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -140,6 +143,31 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
         if (world.isRemote && effectHandler != null) {
             effectHandler.updateEffects();
+
+            if (HolidayHelper.isAprilFools()) {
+                if (inView) {
+                    viewTicks++;
+                    if (viewTicks > 100 && roller == null) {
+                        if (world.rand.nextInt(25) == 0) {
+                            roller = new Roller(Vec3D.getCenter(this), world, getCoreDiameter());
+                        }
+                        else {
+                            viewTicks = 0;
+                        }
+                    }
+                }
+                else {
+                    if (viewTicks > 0 && roller != null && roller.age > 100) {
+                        roller = null;
+                    }
+
+                    viewTicks = 0;
+                }
+
+                if (roller != null) {
+                    roller.update();
+                }
+            }
         }
 
         tick++;
@@ -965,12 +993,82 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
     //endregion
 
+    public boolean inView = false;
+    public int viewTicks = 0;
+    public Roller roller = null;
+
+    public static class Roller {
+        public Vec3D pos;
+        public Vec3D lastPos;
+        public double direction;
+        private World world;
+        private double diameter;
+        public double fallVelocity = 0;
+        public double speed = 0;
+        public int age = 0;
+
+        public Roller(Vec3D pos, World world, double diameter) {
+            this.pos = pos;
+            this.lastPos = pos.copy();
+            this.direction = world.rand.nextDouble() * Math.PI * 2;
+            this.world = world;
+            this.diameter = (diameter / 2) + 1;
+            this.speed = -0.3;
+        }
+
+        public void update() {
+            lastPos = pos.copy();
+            double x = Math.cos(direction);
+            double z = Math.sin(direction);
+
+            BlockPos p = pos.getPos();
+            if (world.isAirBlock(p) || world.getBlockState(p).getBlock() == DEFeatures.reactorCore) {
+                while ((world.isAirBlock(p) || world.getBlockState(p).getBlock() == DEFeatures.reactorCore) && p.getY() > 0) {
+                    p = p.down();
+                }
+            }
+            else {
+                while (!world.isAirBlock(p)) p = p.up();
+            }
+
+            int y = p.getY();
+
+            if (pos.y > y + diameter) {
+                fallVelocity += 0.1;
+            }
+            else {
+                fallVelocity = 0;
+            }
+
+            pos.y -= fallVelocity;
+            if (pos.y < y + diameter && fallVelocity > 0) {
+                pos.y = y + diameter;
+            }
+
+            if (y + diameter > pos.y) {
+                pos.y += ((y + diameter) - pos.y) * Math.max(speed, 0.1);
+            }
+
+            if (speed < 0.5 && fallVelocity == 0) {
+                speed += 0.01;
+            }
+
+            if (speed > 0) {
+                pos.add(x * speed, 0, z * speed);
+            }
+
+            age++;
+        }
+    }
+
     public enum ReactorState {
-        INVALID(false), /**
+        INVALID(false),
+        /**
          * The reactor is offline and cold.
          * In this state it is possible to add/remove fuel.
          */
-        COLD(false), /**
+        COLD(false),
+        /**
          * Reactor is heating up in preparation for startup.
          */
         WARMING_UP(true),
@@ -978,13 +1076,16 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         /**
          * Reactor is online.
          */
-        RUNNING(true), /**
+        RUNNING(true),
+        /**
          * The reactor is shutting down..
          */
-        STOPPING(true), /**
+        STOPPING(true),
+        /**
          * The reactor is offline but is still cooling down.
          */
-        COOLING(true), BEYOND_HOPE(true);
+        COOLING(true),
+        BEYOND_HOPE(true);
 
         private final boolean shieldActive;
 
