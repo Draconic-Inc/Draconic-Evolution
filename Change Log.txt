@@ -1,4 +1,8 @@
-######## 2.3.7. ########
+######## 2.3.8.x ########
+-Re added toggle flight key binding
+-Fixed entity path finding crash related to placed items.
+
+######## 2.3.7.278 ########
 -Fixed console spam from placed items due to incorrect implementation of a safety check.
 
 ######## 2.3.6.257 ########

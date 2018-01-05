@@ -15,10 +15,13 @@ public class KeyBindings {
     public static KeyBinding placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_P, DraconicEvolution.MODNAME);
     public static KeyBinding toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_C, DraconicEvolution.MODNAME);
     public static KeyBinding toolProfileChange = new KeyBinding("key.toolProfileChange", Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
+    public static KeyBinding toggleFlight = new KeyBinding("key.toggleFlight", Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+
 
     public static void init() {
         ClientRegistry.registerKeyBinding(placeItem);
         ClientRegistry.registerKeyBinding(toolConfig);
         ClientRegistry.registerKeyBinding(toolProfileChange);
+        ClientRegistry.registerKeyBinding(toggleFlight);
     }
 }

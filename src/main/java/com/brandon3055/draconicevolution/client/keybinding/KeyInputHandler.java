@@ -35,17 +35,25 @@ public class KeyInputHandler {
         }
         else if (KeyBindings.toolConfig.isPressed()) {
             Minecraft.getMinecraft().displayGuiScreen(new GuiToolConfig(player));
-            //DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_CONFIG, true));
         }
         else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
             DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_PROFILE_CHANGE, false));
-
-            ItemStack stack = HandHelper.getMainFirst(player);
-//			if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem)stack.getItem()).hasProfiles()){
-//				int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
-//				if (++preset >= 5) preset = 0;
-//				ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);
-//			}
+        }
+        else if (KeyBindings.toggleFlight.isPressed()) {
+            if (player.capabilities.allowFlying) {
+                if (player.capabilities.isFlying) {
+                    player.capabilities.isFlying = false;
+                    player.sendPlayerAbilities();
+                }
+                else {
+                    player.capabilities.isFlying = true;
+                    if (player.onGround) {
+                        player.setPosition(player.posX, player.posY + 0.05D, player.posZ);
+                        player.motionY = 0;
+                    }
+                    player.sendPlayerAbilities();
+                }
+            }
         }
     }
 
