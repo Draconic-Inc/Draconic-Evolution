@@ -1,4 +1,6 @@
-######## 2.3.8.x ########
+######## 2.3.9.x ########
+
+######## 2.3.8.279 ########
 -Re added toggle flight key binding
 -Fixed entity path finding crash related to placed items.
 

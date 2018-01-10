@@ -421,7 +421,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         }
 
         minExplosionDelay--;
-
+        
         if (!explosionProcess.isCalculationComplete()) {
             return;
         }

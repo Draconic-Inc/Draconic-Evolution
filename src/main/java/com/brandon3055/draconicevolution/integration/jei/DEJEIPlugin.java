@@ -159,7 +159,7 @@ public class DEJEIPlugin implements IModPlugin {
             public List<Slot> getRecipeSlots(ContainerDraconiumChest container) {
                 List<Slot> slots = new ArrayList<>();
                 for (Slot slot : container.inventorySlots) {
-                    if (slot.slotNumber >= 267 && slot.slotNumber <= 275) {
+                    if (slot.slotNumber >= 268 && slot.slotNumber <= 276) {
                         slots.add(slot);
                     }
                 }

@@ -204,8 +204,8 @@ public class DERecipes {
 
         addShaped(NORMAL, draconiumCapacitor, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', wyvernEnergyCore, 'C', wyvernCore);
         addShaped(HARD, draconiumCapacitor, "ABA", "BCB", "ABA", 'A', "blockDraconium", 'B', wyvernEnergyCore, 'C', wyvernCore);
-        addShaped(NORMAL, new ItemStack(draconiumCapacitor, 1, 1), "ABA", "CDC", "ACA", 'A', draconicEnergyCore, 'B', awakenedCore, 'C', "ingotDraconiumAwakened", 'D', draconiumCapacitor);
-        addShaped(HARD, new ItemStack(draconiumCapacitor, 1, 1), "ABA", "CDC", "ACA", 'A', draconicEnergyCore, 'B', awakenedCore, 'C', "blockDraconiumAwakened", 'D', draconiumCapacitor);
+        addShaped(NORMAL, new ItemStack(draconiumCapacitor, 1, 1), "ABA", "CDC", "ACA", 'A', draconicEnergyCore, 'B', awakenedCore, 'C', "ingotDraconiumAwakened", 'D', new ItemStack(draconiumCapacitor, 1, 0));
+        addShaped(HARD, new ItemStack(draconiumCapacitor, 1, 1), "ABA", "CDC", "ACA", 'A', draconicEnergyCore, 'B', awakenedCore, 'C', "blockDraconiumAwakened", 'D', new ItemStack(draconiumCapacitor, 1, 0));
 
         addShaped(NORMAL, dislocator, "ABA", "BCB", "ABA", 'A', BLAZE_POWDER, 'B', "dustDraconium", 'C', ENDER_EYE);
         addShaped(HARD, dislocator, "ABA", "BCB", "ABA", 'A', BLAZE_POWDER, 'B', "dustDraconium", 'C', CHORUS_FLOWER);

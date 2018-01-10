@@ -12,9 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 
-import static net.minecraft.util.EnumFacing.Axis.X;
-import static net.minecraft.util.EnumFacing.Axis.Y;
-import static net.minecraft.util.EnumFacing.Axis.Z;
+import static net.minecraft.util.EnumFacing.Axis.*;
 
 /**
  * Created by brandon3055 on 16/07/2016.
