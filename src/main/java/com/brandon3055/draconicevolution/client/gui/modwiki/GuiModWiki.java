@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiScreen;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButton;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.ModularGuiScreen;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.IMGuiListener;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiButton;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDownloadManager;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.GuiDocTree;

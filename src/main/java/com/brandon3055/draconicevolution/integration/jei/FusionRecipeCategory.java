@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.*;
 import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.OreDictHelper;

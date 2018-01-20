@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.guielements;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.IModularGui;
-import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiStackIcon;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.IModularGui;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.IMGuiListener;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiStackIcon;
 import com.brandon3055.brandonscore.lib.StackReference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;

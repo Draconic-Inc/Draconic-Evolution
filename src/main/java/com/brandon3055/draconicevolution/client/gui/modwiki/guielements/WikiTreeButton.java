@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.guielements;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.IModularGui;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiVerticalButton;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.IModularGui;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiVerticalButton;
 import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
 import net.minecraft.client.Minecraft;

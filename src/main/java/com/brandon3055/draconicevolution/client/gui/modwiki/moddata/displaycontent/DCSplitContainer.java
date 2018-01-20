@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment.Vertical;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.Vertical;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.*;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.WikiContentWindow;
@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment.CENTER;
-import static com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment.LEFT;
-import static com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment.Vertical.*;
+import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.CENTER;
+import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.LEFT;
+import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.Vertical.*;
 import static com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager.ATTRIB_TYPE;
 
 /**

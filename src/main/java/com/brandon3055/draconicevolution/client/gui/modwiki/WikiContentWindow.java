@@ -2,10 +2,10 @@ package com.brandon3055.draconicevolution.client.gui.modwiki;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourARGB;
-import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.*;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.IMGuiListener;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.*;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent.DisplayComponentBase;

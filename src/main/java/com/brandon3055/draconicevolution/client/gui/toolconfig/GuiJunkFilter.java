@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui.toolconfig;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiBorderedRect;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.ModularGuiContainer;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiBorderedRect;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiLabel;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerJunkFilter;

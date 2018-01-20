@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.guielements;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.IModularGui;
-import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiLabel;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiList;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiListEntry;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.IModularGui;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiList;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiListEntry;
 import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.ModContentList;
 import net.minecraft.client.Minecraft;

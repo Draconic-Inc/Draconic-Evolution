@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiHoverPopup;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiLabel;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiTextField;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiButtonSolid;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiHoverPopup;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiTextField;
 import com.brandon3055.brandonscore.lib.DLRSCache;
 import com.brandon3055.brandonscore.lib.DLResourceLocation;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
@@ -27,8 +27,8 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment.CENTER;
-import static com.brandon3055.brandonscore.client.gui.modulargui.lib.EnumAlignment.LEFT;
+import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.CENTER;
+import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.LEFT;
 
 /**
  * Created by brandon3055 on 8/09/2016.

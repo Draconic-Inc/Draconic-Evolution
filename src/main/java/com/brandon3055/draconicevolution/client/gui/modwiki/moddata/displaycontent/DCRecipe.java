@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
 import codechicken.lib.render.state.GlStateTracker;
-import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiStackIcon;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiButtonSolid;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiStackIcon;
 import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.client.gui.modwiki.guielements.StackSelector;

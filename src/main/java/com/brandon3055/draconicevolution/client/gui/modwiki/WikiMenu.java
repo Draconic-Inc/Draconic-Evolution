@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki;
 
-import com.brandon3055.brandonscore.client.gui.modulargui.MGuiElementBase;
-import com.brandon3055.brandonscore.client.gui.modulargui.lib.IMGuiListener;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButton;
-import com.brandon3055.brandonscore.client.gui.modulargui.modularelements.MGuiButtonSolid;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.IMGuiListener;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiButton;
+import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiButtonSolid;
 import com.brandon3055.draconicevolution.client.gui.modwiki.guielements.WikiConfigWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
