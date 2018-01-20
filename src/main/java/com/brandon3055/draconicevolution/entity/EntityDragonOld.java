@@ -668,10 +668,10 @@ public class EntityDragonOld extends EntityLiving implements IEntityMultiPart, I
         return SoundCategory.HOSTILE;
     }
 
-    @Override
-    protected SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_ENDERDRAGON_AMBIENT;
-    }
+//    @Override
+//    protected SoundEvent getAmbientSound() {
+//        return SoundEvents.ENTITY_ENDERDRAGON_AMBIENT;
+//    }
 
     /**
      * Returns the sound this mob makes when it is hurt.

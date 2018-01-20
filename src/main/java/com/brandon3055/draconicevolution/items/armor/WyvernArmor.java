@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.items.armor;
 
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IFOVModifierItem;
+import com.brandon3055.brandonscore.lib.EnergyContainerWrapper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -24,8 +25,10 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -358,6 +361,11 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
         return 1D - ((double) getEnergyStored(stack) / (double) getMaxEnergyStored(stack));
     }
 
+    @Override
+    public ICapabilityProvider initCapabilities(final ItemStack stack, NBTTagCompound nbt) {
+        return new EnergyContainerWrapper(stack);
+    }
+
     //endregion
 
     @Override
@@ -385,4 +393,5 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     public Entity createEntity(World world, Entity location, ItemStack itemstack) {
         return new EntityPersistentItem(world, location, itemstack);
     }
+
 }
