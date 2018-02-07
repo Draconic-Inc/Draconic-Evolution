@@ -33,7 +33,7 @@ public class OreHandler {
         }
 
         if (ModFeatureParser.isEnabled(DEFeatures.draconiumOre)) {
-            OreDictionary.registerOre("oreDraconium", DEFeatures.draconiumOre);
+            OreDictionary.registerOre("oreDraconium", new ItemStack(DEFeatures.draconiumOre, 1, OreDictionary.WILDCARD_VALUE));
         }
 
         if (ModFeatureParser.isEnabled(DEFeatures.draconiumBlock)) {

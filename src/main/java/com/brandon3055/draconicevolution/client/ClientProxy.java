@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client;
 
+import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.render.CCRenderEventHandler;
 import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
@@ -49,7 +50,9 @@ public class ClientProxy extends CommonProxy {
 
 
         registerRendering();
-        WikiDocManager.initialize();
+        if (ObfMapping.obfuscated) {
+            WikiDocManager.initialize();
+        }
     }
 
     @Override
@@ -97,7 +100,7 @@ public class ClientProxy extends CommonProxy {
 
     public boolean isOp(String paramString) {
         return Minecraft.getMinecraft().world.getWorldInfo().getGameType().isCreative();
-    }
+    } //
 
     @Override
     public ENetFXHandler createENetFXHandler(TileCrystalBase tile) {

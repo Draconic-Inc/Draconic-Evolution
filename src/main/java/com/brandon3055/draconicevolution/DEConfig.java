@@ -76,6 +76,7 @@ public class DEConfig implements IModConfigHelper {
     public static int cometRarity = 10000;
 
     @ModConfigProperty(category = "World", name = "chaosIslandSeparation", comment = "This is the distance between chaos islands")
+    @ModConfigProperty.MinMax(min = "500", max = "1000000")
     public static int chaosIslandSeparation = 10000;
 
     @ModConfigProperty(category = "World", name = "oreGenDimentionBlacklist", comment = "Add the dimension id of any mod dimension's you dont want draconium ore generated in")

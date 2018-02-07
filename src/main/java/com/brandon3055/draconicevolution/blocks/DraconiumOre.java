@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -74,6 +75,18 @@ public class DraconiumOre extends BlockBCore {
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
         return new ItemStack(this, 1, world.getBlockState(pos).getValue(ORE_TYPE).getMeta());
     }
+
+    @Override
+    public ItemStack getItem(World world, BlockPos pos, IBlockState state) {
+        return new ItemStack(this, 1, world.getBlockState(pos).getValue(ORE_TYPE).getMeta());
+    }
+
+    @Override
+    public int getExpDrop(IBlockState state, net.minecraft.world.IBlockAccess world, BlockPos pos, int fortune) {
+        Random rand = world instanceof World ? ((World)world).rand : new Random();
+        return MathHelper.getInt(rand, 3, 7) * fortune;
+    }
+
     //endregion
 
     //region Drops
