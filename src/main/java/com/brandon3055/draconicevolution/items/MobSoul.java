@@ -88,13 +88,11 @@ public class MobSoul extends ItemBCore implements IRenderOverride {
             eModifier = "-Husk";
         }
 
-        entityNameCache.clear();
-
         String localizedName = entityNameCache.computeIfAbsent(eString + eModifier, s -> {
             try {
                 Entity entity = EntityList.createEntityByIDFromName(getCachedRegName(eString), null);
                 if (entity == null) {
-                    entity = new EntityPig(null);
+                    return I18n.translateToLocal("entity." + EntityList.getTranslationName(getCachedRegName(eString)) + ".name");
                 }
 
                 loadAdditionalEntityInfo(stack, entity);

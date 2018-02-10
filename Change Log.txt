@@ -1,5 +1,10 @@
 ######## 2.3.9.x ########
 -Fixed draconium chest recipe shift clicking from jei.
+-Fixed missing ore dictionary entries for nether and end draconium ore.
+-Fixed missing FE support on armor.
+-Added config option do disable item dislocator pickup sound.
+-Fixed some console spam when taking damage with DE armor.
+-Fixed some mob soul name issues.
 
 ######## 2.3.8.279 ########
 -Re added toggle flight key binding

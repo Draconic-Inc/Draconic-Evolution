@@ -87,6 +87,10 @@ public class CustomArmorHandler {
         }
 
         EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+        if (!player.isServerWorld()) {
+            return;
+        }
+
         ArmorSummery summery = new ArmorSummery().getSummery(player);
 
         float hitAmount = ModHelper.applyModDamageAdjustments(summery, event);
@@ -142,6 +146,10 @@ public class CustomArmorHandler {
         }
 
         EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+        if (!player.isServerWorld()) {
+            return;
+        }
+
         ArmorSummery summery = new ArmorSummery().getSummery(player);
 
         if (summery == null || event.getSource() == ADMIN_KILL) {

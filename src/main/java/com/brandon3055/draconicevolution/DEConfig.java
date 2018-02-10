@@ -176,6 +176,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Client Settings", name = "disableLoudCelestialManipulator", comment = "If true the range of the celestial manipulator sound effect will be significantly reduced.")
     public static boolean disableLoudCelestialManipulator = false;
 
+    @ModConfigProperty(category = "Client Settings", name = "disableDislocatorSound", comment = "If true the item dislocator will not make the pickup sound when it collects items..")
+    public static boolean disableDislocatorSound = false;
+
     //Category Misc
 
     @ModConfigProperty(category = "Misc", name = "devLog", comment = "This enables dev log output. I primarily use this for development purposes so it wont be very useful to regular users.")

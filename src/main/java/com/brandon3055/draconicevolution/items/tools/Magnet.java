@@ -130,7 +130,7 @@ public class Magnet extends ItemBCore {
                 }
             }
 
-            if (flag) {
+            if (flag || !DEConfig.disableDislocatorSound) {
                 world.playSound((EntityPlayer) null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
             }
 
@@ -144,7 +144,9 @@ public class Magnet extends ItemBCore {
                         if (MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, orb))) {
                             continue;
                         }
-                        world.playSound((EntityPlayer) null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
+                        if (!DEConfig.disableDislocatorSound) {
+                            world.playSound((EntityPlayer) null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
+                        }
                         player.onItemPickup(orb, 1);
                         player.addExperience(orb.xpValue);
                         orb.setDead();

@@ -1,6 +1,3 @@
-#This localization was provided by InterPlay02 via github
-#https://github.com/brandon3055/Draconic-Evolution/issues/995
-
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:celestial_manipulator.name=Manipulador Celestial
 tile.draconicevolution:draconium_ore_normal.name=Minério de Dracônio
@@ -50,21 +47,21 @@ tile.draconicevolution:energy_crystal.wireless.draconic.name=Cristal Draconiano 
 tile.draconicevolution:fusion_crafting_core.name=Núcleo de Fabricação por Fusão
 tile.draconicevolution:crafting_injector_basic.name=Injetor para Fabricação por Fusão
 tile.draconicevolution:crafting_injector_wyvern.name=Injetor Wyvern para Fabricação por Fusão
-tile.draconicevolution:crafting_injector_draconic.name=Injeteor Draconiano para Fabricação por Fusão
+tile.draconicevolution:crafting_injector_draconic.name=Injetor Draconiano para Fabricação por Fusão 
 tile.draconicevolution:crafting_injector_chaotic.name=Injetor Caótico para Fabricação por Fusão
 
 tile.draconicevolution:creative_rf_source.name=Fonte de RF Criativa
 
 
 //Item Information ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:awakened_core.name=Núcleo Evoluído
+item.draconicevolution:awakened_core.name=Núcleo Draconiano
 item.draconicevolution:draconium_ingot.name=Lingote de Dracônio
 item.draconicevolution:draconium_dust.name=Pó de Dracônio
 item.draconicevolution:draconium_blend.name=Mistura de Dracônio (Depreciada)
 item.draconicevolution:dragon_heart.name=Coração de Dragão
 item.draconicevolution:wyvern_core.name=Núcleo Wyvern
 item.draconicevolution:sun_focus.name=Foco Solar
-item.draconicevolution:draconic_core.name=Núcleo Draconiano
+item.draconicevolution:draconic_core.name=Núcleo Evoluído
 item.draconicevolution:dislocator.name=Esfera de Dislocamento
 item.draconicevolution:dislocator_advanced.name=Esfera de Dislocamento Melhorada
 
@@ -88,8 +85,8 @@ item.draconicevolution:draconic_sword.name=Espada Draconiana
 item.draconicevolution:draconic_bow.name=Arco Draconiano
 item.draconicevolution:draconic_helm.name=Elmo Draconiano
 item.draconicevolution:draconic_chest.name=Armadura Draconiana
-item.draconicevolution:draconic_legs.name=Calças Evoluídas
-item.draconicevolution:draconic_boots.name=Botas Evoluídas
+item.draconicevolution:draconic_legs.name=Calças Draconianas
+item.draconicevolution:draconic_boots.name=Botas Draconianas
 item.draconicevolution:draconic_staff_of_power.name=Cajado Draconiano do Poder
 item.draconicevolution:mob_soul.name=(Alma)
 item.draconicevolution:ender_arrow.name=Flecha do End
@@ -325,9 +322,9 @@ achievement.draconicevolution.dust.desc=Colete pó de Dracônio
 achievement.draconicevolution.ingot=Melhor que diamante!
 achievement.draconicevolution.ingot.desc=Faça ligotes de dracônio
 achievement.draconicevolution.core=E é aqui que a coisa começa
-achievement.draconicevolution.core.desc=Faça um núcleo draconiano
+achievement.draconicevolution.core.desc=Faça um núcleo evoluído
 achievement.draconicevolution.core2=Não é bom o suficiente!
-achievement.draconicevolution.core2.desc=Atualize o núcleo draconiano para Wyvern
+achievement.draconicevolution.core2.desc=Atualize o núcleo evoluído para Wyvern
 
 achievement.draconicevolution.dislocator=Endermen não conseguiu nada
 achievement.draconicevolution.dislocator.desc=Criar um dislocador
@@ -595,7 +592,7 @@ gui.fusionCrafting.tierLow.info=Nível dos pedestais\nmuito baixo
 gui.fusionCrafting.outputObstructed.info=Saída obstruída
 gui.fusionCrafting.crafting.info=Fabricando
 gui.fusionCrafting.charging.info=Carregando
-gui.jeiFusion.tier.0=Nível: Draconiano
+gui.jeiFusion.tier.0=Nível: Evoluído
 gui.jeiFusion.tier.1=Nível: Wyvern
 gui.jeiFusion.tier.2=Nível: Draconiano
 gui.jeiFusion.tier.3=Nível: Caótico
