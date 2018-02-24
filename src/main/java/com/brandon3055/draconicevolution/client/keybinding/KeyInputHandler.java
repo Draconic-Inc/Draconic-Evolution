@@ -96,8 +96,7 @@ public class KeyInputHandler {
 
         ItemStack item = player.inventory.getStackInSlot(player.inventory.currentItem);
         if (item.getItem() == DEFeatures.dislocatorAdvanced) {
-            if (event.isCancelable())
-                event.setCanceled(true);
+            event.setCanceled(true);
             DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, change < 0 ? -1 : 1,
                     false));
         }
