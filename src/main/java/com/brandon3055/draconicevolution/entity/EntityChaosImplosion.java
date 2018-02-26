@@ -65,7 +65,6 @@ public class EntityChaosImplosion extends Entity {
                 double z = posZ - 18 + rand.nextDouble() * 36;
                 if (world.isRemote) {
                     BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(x, y, z), pos, 512D, 0);
-//                DraconicEvolution.proxy.spawnParticle(new Particles.AdvancedSeekerParticle(world, x, y, z, posX, posY, posZ, 2, 1f, 1f, 1f, 100), 128);
                 }
             }
 
@@ -76,7 +75,6 @@ public class EntityChaosImplosion extends Entity {
 
         if (ticksExisted == 700 && !world.isRemote) {
             BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
-            //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.CHAOS_IMPLOSION, posX, posY, posZ), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 512));
             ProcessHandler.addProcess(new ProcessChaosImplosion(world, (int) posX, (int) posY, (int) posZ));
         }
 

@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.raytracer.ICuboidProvider;
 import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.*;
-import com.brandon3055.brandonscore.blocks.TileInventoryBase;
+import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
@@ -17,12 +17,15 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -31,15 +34,15 @@ import java.util.List;
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider {
+public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
 
-    private LinkedList<ItemStack> stacks = new LinkedList<ItemStack>();
     public final ManagedByte displayCount = register("displayCount", new ManagedByte(1)).saveToTile().syncViaTile().trigerUpdate().finish();
     public final ManagedBool toolDisplay = register("toolDisplay", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
     public final ManagedBool altRenderMode = register("altRenderMode", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
     public final ManagedByte[] rotation = new ManagedByte[4];
     public EnumFacing facing = EnumFacing.NORTH;
     private boolean[] isBlock = new boolean[]{false, false, false, false};
+    public PlacedItemInventory inventory = new PlacedItemInventory(this);
 
     public TilePlacedItem() {
         for (int i = 0; i < rotation.length; i++) {
@@ -74,26 +77,25 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
         }
 
         if (hit == 0) {
-            for (int i = 0; i < getSizeInventory(); i++) {
-                FeatureUtils.dropItemNoDellay(getStackInSlot(i), world, Vector3.fromEntity(player));
+            for (int i = 0; i < inventory.getSizeInventory(); i++) {
+                FeatureUtils.dropItemNoDellay(inventory.getStackInSlot(i), world, Vector3.fromEntity(player));
             }
-            stacks.clear();
+            inventory.stacks.clear();
             world.setBlockToAir(pos);
         }
         else {
-            if (!getStackInSlot(hit - 1).isEmpty()) {
-                FeatureUtils.dropItemNoDellay(getStackInSlot(hit - 1), world, Vector3.fromEntity(player));
-                setInventorySlotContents(hit - 1, ItemStack.EMPTY);
-
+            if (!inventory.getStackInSlot(hit - 1).isEmpty()) {
+                FeatureUtils.dropItemNoDellay(inventory.getStackInSlot(hit - 1), world, Vector3.fromEntity(player));
+                inventory.setInventorySlotContents(hit - 1, ItemStack.EMPTY);
             }
         }
     }
 
     public void breakBlock() {
-        for (int i = 0; i < getSizeInventory(); i++) {
-            FeatureUtils.dropItemNoDellay(getStackInSlot(i), world, Vector3.fromTileCenter(this));
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            FeatureUtils.dropItemNoDellay(inventory.getStackInSlot(i), world, Vector3.fromTileCenter(this));
         }
-        stacks.clear();
+        inventory.stacks.clear();
     }
 
     private IndexedCuboid6 blockBounds = new IndexedCuboid6(0, new Cuboid6(0, 0, 0, 1, 1, 1));
@@ -186,60 +188,6 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
     //region inventory
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        setSlot(index, stack);
-
-        int count = 0;
-        for (int i = 0; i < getSizeInventory(); i++) {
-            if (!getStackInSlot(i).isEmpty()) {
-                isBlock[i] = getStackInSlot(i).getItem() instanceof ItemBlock;
-                count++;
-            }
-        }
-
-        if (count == 0) {
-            world.setBlockToAir(getPos());
-        }
-        else {
-            displayCount.value = (byte) count;
-            ItemStack stack0 = getStackInSlot(0);
-            toolDisplay.value = count == 1 && stack0.getItem().isEnchantable(stack0);
-            super.update();
-            updateBlock();
-        }
-    }
-
-    @Override
-    public int getSizeInventory() {
-        return 4;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return index >= 0 && index < stacks.size() && stacks.get(index) != null ? stacks.get(index) : ItemStack.EMPTY;
-    }
-
-    private void setSlot(int index, ItemStack stack) {
-        if (index < 0 || index >= 4) {
-            return;
-        }
-
-        if (stack.isEmpty()) {
-            if (index < stacks.size()) {
-                stacks.remove(index);
-            }
-        }
-        else if (index < stacks.size()) {
-            stacks.set(index, stack);
-        }
-        else {
-            stacks.add(stack);
-        }
-
-        markDirty();
-    }
-
-    @Override
     public void updateBlock() {
         super.updateBlock();
         recalculateCuboids();
@@ -256,6 +204,7 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
         for (int i = 0; i < isBlock.length; i++) {
             compound.setBoolean("IsBlock" + i, isBlock[i]);
         }
+        inventory.toNBT(compound);
     }
 
     @Override
@@ -265,31 +214,190 @@ public class TilePlacedItem extends TileInventoryBase implements ICuboidProvider
         for (int i = 0; i < isBlock.length; i++) {
             isBlock[i] = compound.getBoolean("IsBlock" + i);
         }
-    }
-
-    @Override
-    protected void writeInventoryToNBT(NBTTagCompound compound) {
-        NBTTagList itemList = new NBTTagList();
-
-        for (ItemStack stack : stacks) {
-            if (stack.isEmpty()) {
-                continue;
-            }
-            itemList.appendTag(stack.writeToNBT(new NBTTagCompound()));
-        }
-
-        compound.setTag("InventoryStacks", itemList);
-    }
-
-    @Override
-    protected void readInventoryFromNBT(NBTTagCompound compound) {
-        stacks.clear();
-        NBTTagList itemList = compound.getTagList("InventoryStacks", 10);
-
-        for (int i = 0; i < itemList.tagCount(); i++) {
-            stacks.add(new ItemStack(itemList.getCompoundTagAt(i)));
-        }
+        inventory.fromNBT(compound);
     }
 
     //endregion
+
+    public static class PlacedItemInventory implements IInventory {
+        private LinkedList<ItemStack> stacks = new LinkedList<ItemStack>();
+        private TilePlacedItem tile;
+
+        public PlacedItemInventory(TilePlacedItem tile) {
+            this.tile = tile;
+        }
+
+        @Override
+        public void setInventorySlotContents(int index, ItemStack stack) {
+            setSlot(index, stack);
+
+            int count = 0;
+            for (int i = 0; i < getSizeInventory(); i++) {
+                if (!getStackInSlot(i).isEmpty()) {
+                    tile.isBlock[i] = getStackInSlot(i).getItem() instanceof ItemBlock;
+                    count++;
+                }
+            }
+
+            if (count == 0) {
+                tile.world.setBlockToAir(tile.getPos());
+            }
+            else {
+                tile.displayCount.value = (byte) count;
+                ItemStack stack0 = getStackInSlot(0);
+                tile.toolDisplay.value = count == 1 && stack0.getItem().isEnchantable(stack0);
+                tile.update();
+                tile.updateBlock();
+            }
+        }
+
+        @Override
+        public int getSizeInventory() {
+            return 4;
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int index) {
+            return index >= 0 && index < stacks.size() && stacks.get(index) != null ? stacks.get(index) : ItemStack.EMPTY;
+        }
+
+        private void setSlot(int index, ItemStack stack) {
+            if (index < 0 || index >= 4) {
+                return;
+            }
+
+            if (stack.isEmpty()) {
+                if (index < stacks.size()) {
+                    stacks.remove(index);
+                }
+            }
+            else if (index < stacks.size()) {
+                stacks.set(index, stack);
+            }
+            else {
+                stacks.add(stack);
+            }
+
+            markDirty();
+        }
+
+        protected void toNBT(NBTTagCompound compound) {
+            NBTTagList itemList = new NBTTagList();
+
+            for (ItemStack stack : stacks) {
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                itemList.appendTag(stack.writeToNBT(new NBTTagCompound()));
+            }
+
+            compound.setTag("InventoryStacks", itemList);
+        }
+
+        protected void fromNBT(NBTTagCompound compound) {
+            stacks.clear();
+            NBTTagList itemList = compound.getTagList("InventoryStacks", 10);
+
+            for (int i = 0; i < itemList.tagCount(); i++) {
+                stacks.add(new ItemStack(itemList.getCompoundTagAt(i)));
+            }
+        }
+
+        @Override
+        public ItemStack removeStackFromSlot(int index) {
+            ItemStack stack = getStackInSlot(index);
+            setInventorySlotContents(index, ItemStack.EMPTY);
+            return stack;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return stacks.isEmpty();
+        }
+
+        @Override
+        public ItemStack decrStackSize(int index, int count) {
+            ItemStack stack;
+
+            if (index >= 0 && index < stacks.size() && !stacks.get(index).isEmpty() && count > 0) {
+                stack = stacks.get(index).splitStack(count);
+            }
+            else {
+                stack = ItemStack.EMPTY;
+            }
+
+            if (!stack.isEmpty()) {
+                markDirty();
+            }
+
+            return stack;
+        }
+
+
+        @Override
+        public int getInventoryStackLimit() {
+            return 64;
+        }
+
+        @Override
+        public void markDirty() {
+            tile.markDirty();
+        }
+
+        @Override
+        public boolean isUsableByPlayer(EntityPlayer player) {
+            return true;
+        }
+
+        @Override
+        public void openInventory(EntityPlayer player) {
+
+        }
+
+        @Override
+        public void closeInventory(EntityPlayer player) {
+
+        }
+
+        @Override
+        public boolean isItemValidForSlot(int index, ItemStack stack) {
+            return true;
+        }
+
+        @Override
+        public int getField(int id) {
+            return 0;
+        }
+
+        @Override
+        public void setField(int id, int value) {
+
+        }
+
+        @Override
+        public int getFieldCount() {
+            return 0;
+        }
+
+        @Override
+        public void clear() {
+            stacks.clear();
+            tile.world.setBlockToAir(tile.getPos());
+        }
+
+        @Override
+        public String getName() {
+            return "";
+        }
+
+        @Override
+        public boolean hasCustomName() {
+            return false;
+        }
+
+        @Override
+        public ITextComponent getDisplayName() {
+            return new TextComponentString("");
+        }
+    }
 }

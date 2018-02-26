@@ -12,6 +12,8 @@ import com.brandon3055.draconicevolution.client.model.tool.ToolOverrideList;
 import com.brandon3055.draconicevolution.client.model.tool.ToolTransforms;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.enchantment.Enchantment;
@@ -40,6 +42,17 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     public WyvernSword() {
         super(ToolStats.WYV_SWORD_ATTACK_DAMAGE, ToolStats.WYV_SWORD_ATTACK_SPEED);
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
+    }
+
+    @Override
+    public float getDestroySpeed(ItemStack stack, IBlockState state) {
+        return 25F;
+    }
+
+    @Override
+    public boolean canHarvestBlock(IBlockState state, ItemStack stack) {
+        Material mat = state.getMaterial();
+        return mat.isReplaceable() || mat == Material.WEB || mat == Material.CLOTH || mat == Material.CARPET || mat == Material.LEAVES || mat == Material.PLANTS;
     }
 
     @Override
@@ -114,13 +127,13 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
         ToolOverrideList.putOverride(this, WyvernSword::handleTransforms);
     }
 
-    @SideOnly (Side.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
+    @SideOnly(Side.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
     private static IModelState handleTransforms(TransformType transformType, IModelState state) {
         return transformType == TransformType.FIXED || transformType == TransformType.GROUND ? ToolTransforms.WY_SWORD_STATE : state;
     }
 
     @Override
-    @SideOnly (Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
         return new PairKV<>(DETextures.WYVERN_SWORD, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_sword.obj"));
     }

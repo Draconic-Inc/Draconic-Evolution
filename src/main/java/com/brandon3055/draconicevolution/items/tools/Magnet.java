@@ -130,7 +130,7 @@ public class Magnet extends ItemBCore {
                 }
             }
 
-            if (flag || !DEConfig.disableDislocatorSound) {
+            if (flag && !DEConfig.disableDislocatorSound) {
                 world.playSound((EntityPlayer) null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
             }
 

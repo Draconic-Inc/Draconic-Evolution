@@ -61,7 +61,7 @@ public class PacketPlaceItem implements IMessage {
                     return null;
                 }
 
-                if (tileHit instanceof TilePlacedItem && InventoryUtils.insertItem((TilePlacedItem) tileHit, stack, true) == 0) {
+                if (tileHit instanceof TilePlacedItem && InventoryUtils.insertItem(((TilePlacedItem) tileHit).inventory, stack, true) == 0) {
                     PlayerInteractEvent event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, posHit, traceResult.sideHit, traceResult.hitVec);
                     MinecraftForge.EVENT_BUS.post(event);
 
@@ -69,10 +69,10 @@ public class PacketPlaceItem implements IMessage {
                         return null;
                     }
 
-                    InventoryUtils.insertItem((TilePlacedItem) tileHit, stack, false);
+                    InventoryUtils.insertItem(((TilePlacedItem) tileHit).inventory, stack, false);
                     player.inventory.deleteStack(stack);
                 }
-                else if (tileOnSide instanceof TilePlacedItem && InventoryUtils.insertItem((TilePlacedItem) tileOnSide, stack, true) == 0) {
+                else if (tileOnSide instanceof TilePlacedItem && InventoryUtils.insertItem(((TilePlacedItem) tileOnSide).inventory, stack, true) == 0) {
                     PlayerInteractEvent event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, posHit, traceResult.sideHit, traceResult.hitVec);
                     MinecraftForge.EVENT_BUS.post(event);
 
@@ -80,7 +80,7 @@ public class PacketPlaceItem implements IMessage {
                         return null;
                     }
 
-                    InventoryUtils.insertItem((TilePlacedItem) tileOnSide, stack, false);
+                    InventoryUtils.insertItem(((TilePlacedItem) tileOnSide).inventory, stack, false);
                     player.inventory.deleteStack(stack);
                 }
                 else if (world.isAirBlock(posHit.offset(traceResult.sideHit))) {
@@ -95,7 +95,7 @@ public class PacketPlaceItem implements IMessage {
                     TileEntity tile = world.getTileEntity(traceResult.getBlockPos().offset(traceResult.sideHit));
                     if (tile instanceof TilePlacedItem) {
                         ((TilePlacedItem) tile).facing = traceResult.sideHit.getOpposite();
-                        ((TilePlacedItem) tile).setInventorySlotContents(0, stack);
+                        ((TilePlacedItem) tile).inventory.setInventorySlotContents(0, stack);
                         player.inventory.deleteStack(stack);
                     }
                 }

@@ -10,6 +10,8 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -18,6 +20,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+
+import java.util.Random;
 
 import static net.minecraft.util.EnumFacing.Axis.*;
 
@@ -33,6 +37,7 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
     public static final PropertyBool DRAW_WEST = PropertyBool.create("drawwest");
 
     public Portal() {
+        this.setBlockUnbreakable();
         this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, X).withProperty(DRAW_UP, true).withProperty(DRAW_DOWN, true).withProperty(DRAW_EAST, true).withProperty(DRAW_WEST, true));
     }
 
@@ -78,6 +83,11 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
         }
 
         return state;
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return Items.AIR;
     }
 
     //endregion

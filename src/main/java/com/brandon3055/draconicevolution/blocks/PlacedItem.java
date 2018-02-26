@@ -180,8 +180,8 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
                 return ItemStack.EMPTY;
             }
 
-            if (hit.subHit > 0 && ((TilePlacedItem) tile).getStackInSlot(hit.subHit - 1) != null) {
-                return ((TilePlacedItem) tile).getStackInSlot(hit.subHit - 1);
+            if (hit.subHit > 0 && ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1) != null) {
+                return ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1);
             }
         }
 

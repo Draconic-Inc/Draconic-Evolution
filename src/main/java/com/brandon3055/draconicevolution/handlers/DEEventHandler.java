@@ -389,7 +389,7 @@ public class DEEventHandler {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void itemTooltipEvent(ItemTooltipEvent event) {
-        if (DEConfig.expensiveDragonRitual && event.getItemStack() != null && event.getItemStack().getItem() == Items.END_CRYSTAL) {
+        if (DEConfig.expensiveDragonRitual && !event.getItemStack().isEmpty() && event.getItemStack().getItem() == Items.END_CRYSTAL) {
             event.getToolTip().add(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution.");
         }
 

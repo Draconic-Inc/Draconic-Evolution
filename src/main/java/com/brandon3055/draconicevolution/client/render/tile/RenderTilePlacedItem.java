@@ -28,7 +28,7 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
         GlStateTracker.pushState();
         GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
 
-        ItemStack[] stacks = new ItemStack[]{te.getStackInSlot(0), te.getStackInSlot(1), te.getStackInSlot(2), te.getStackInSlot(3)};
+        ItemStack[] stacks = new ItemStack[]{te.inventory.getStackInSlot(0), te.inventory.getStackInSlot(1), te.inventory.getStackInSlot(2), te.inventory.getStackInSlot(3)};
         int index = 0;
 
         List<IndexedCuboid6> cuboids = te.getCachedRenderCuboids();
