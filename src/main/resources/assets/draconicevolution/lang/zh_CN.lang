@@ -242,7 +242,7 @@ info.arrowInfo0.txt=对于一把普通弓来说太重了
 //ender_extraction_core
 info.de.ender_energy_manipulator.info.txt=一种十分可怕的东西，它可以像末影龙那样吸收末影水晶的能量。
 info.de.ender_energy_manipulator.info2.txt=并吸收掉周围'几个'末影人的灵魂，来从末影龙那里创造一颗龙蛋。
-info.de.ender_energy_manipulator.location.msg=必须放在末地传送门上！
+info.de.ender_energy_manipulator.location.msg=必须放在终末之池上！
 info.de.ender_energy_manipulator.dead.msg=找不到末影龙！
 info.de.ender_energy_manipulator.running.msg=你必须等待当前操纵过程完成！
 
