@@ -17,6 +17,21 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
  */
 public class DraconicBow extends WyvernBow {
     public DraconicBow() {
+//        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return 0;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return 1;
+    }
+
+    @Override
+    public void loadEnergyStats() {
         setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
     }
 

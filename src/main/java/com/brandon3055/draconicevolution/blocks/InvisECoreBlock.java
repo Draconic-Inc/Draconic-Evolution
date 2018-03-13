@@ -35,6 +35,7 @@ public class InvisECoreBlock extends BlockBCore implements IRenderOverride, ITil
 
     public InvisECoreBlock() {
         this.setHardness(10F);
+        this.setLightLevel(1F);
     }
 
     @Override

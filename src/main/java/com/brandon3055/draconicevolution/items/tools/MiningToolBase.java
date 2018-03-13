@@ -65,8 +65,8 @@ public abstract class MiningToolBase extends ToolBase {
     protected float baseMiningSpeed = 1F;
     protected int baseAOE = 0;
 
-    public MiningToolBase(double attackDamage, double attackSpeed, Set effectiveBlocks) {
-        super(attackDamage, attackSpeed);
+    public MiningToolBase(/*double attackDamage, double attackSpeed, */Set effectiveBlocks) {
+//        super(attackDamage, attackSpeed);
         this.effectiveBlocks.addAll(effectiveBlocks);
     }
 
@@ -91,6 +91,17 @@ public abstract class MiningToolBase extends ToolBase {
             }
         };
         return new ItemCapProvider(parent, itemHandler);
+    }
+
+    public abstract double getBaseMinSpeedConfig();
+
+    public abstract int getBaseMinAOEConfig();
+
+    @Override
+    public void loadStatConfig() {
+        super.loadStatConfig();
+        baseMiningSpeed = (float) getBaseMinSpeedConfig();
+        baseAOE = getBaseMinAOEConfig();
     }
 
     //region Upgrades and Config

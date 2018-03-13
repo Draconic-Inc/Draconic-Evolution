@@ -18,6 +18,7 @@ import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -29,6 +30,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -36,7 +38,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEnergyProvider, ITickable, IMultiBlockPart, IExtendedRFStorage, IDEPeripheral {
+public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEnergyProvider, ITickable, IMultiBlockPart, IExtendedRFStorage, IDEPeripheral, IMovableStructure {
     public final ManagedBool isOutputMode = register("isOutputMode", new ManagedBool(false)).syncViaTile().trigerUpdate().saveToTile().finish();
     public final ManagedBool structureValid = register("structureValid", new ManagedBool(false)).syncViaTile().trigerUpdate().saveToTile().finish();
     public final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, -1, 0))).syncViaTile().saveToTile().finish();
@@ -425,4 +427,13 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     }
 
     //endregion
+
+
+    @Override
+    public Iterable<BlockPos> getBlocksForFrameMove() {
+        if (structureValid.value) {
+            return Collections.singleton(sphereOnTop.value ? pos.up() : pos.down());
+        }
+        return Collections.emptyList();
+    }
 }

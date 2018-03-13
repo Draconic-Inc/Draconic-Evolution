@@ -15,6 +15,7 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
     private TileReactorCore tile;
     private float targetPitch;
     private float targetVolume;
+    private int stopTimer = 0;
 
     public ReactorSound(TileReactorCore tile) {
         super(DESoundHandler.coreSound, SoundCategory.BLOCKS);
@@ -27,7 +28,8 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
             this.volume = 10F;
         }
         else {
-            this.volume = 1.5F;
+//            this.volume = 1.5F;
+            this.volume = 3.5F;
         }
         this.targetPitch = 1F;
     }
@@ -68,8 +70,10 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
 
 
         if (tile.isInvalid() || !tile.getWorld().getChunkFromBlockCoords(tile.getPos()).isLoaded()) {// || player == null || tile.getDistanceFrom(player.posX, player.posY, player.posZ) > 512){
-            donePlaying = true;
-            repeat = false;
+//            if (stopTimer++ == 60) {
+                donePlaying = true;
+                repeat = false;
+//            }
         }
     }
 }

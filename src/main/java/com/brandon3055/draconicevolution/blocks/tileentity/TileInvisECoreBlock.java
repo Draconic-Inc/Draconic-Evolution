@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.ParticleGenerator;
+import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,13 +15,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.Collections;
 
 /**
  * Created by brandon3055 on 13/4/2016.
  */
-public class TileInvisECoreBlock extends TileBCBase implements IMultiBlockPart {
+public class TileInvisECoreBlock extends TileBCBase implements IMultiBlockPart, IMovableStructure {
 
     public final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, -1, 0))).syncViaContainer().saveToTile().trigerUpdate().finish();
     public String blockName = "";
@@ -121,4 +125,24 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlockPart {
         blockName = compound.getString("BlockName");
     }
 
+    @Override
+    public Iterable<BlockPos> getBlocksForFrameMove() {
+        IMultiBlockPart controller = getController();
+        if (controller instanceof TileEnergyCoreStabilizer) {
+            return ((TileEnergyCoreStabilizer) controller).getBlocksForFrameMove();
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public EnumActionResult canMove() {
+        IMultiBlockPart controller = getController();
+        if (controller instanceof TileEnergyCoreStabilizer) {
+            return ((TileEnergyCoreStabilizer) controller).canMove();
+        }
+        else if (blockName.equals("draconicevolution:particle_generator")) {
+            return EnumActionResult.FAIL;
+        }
+        return EnumActionResult.SUCCESS;
+    }
 }

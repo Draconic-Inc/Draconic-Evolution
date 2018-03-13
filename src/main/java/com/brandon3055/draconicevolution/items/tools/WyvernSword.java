@@ -35,12 +35,27 @@ import java.util.List;
  */
 public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
 
-    public WyvernSword(double attackDamage, double attackSpeed) {
-        super(attackDamage, attackSpeed);
-    }
+//    public WyvernSword(double attackDamage, double attackSpeed) {
+//        super(attackDamage, attackSpeed);
+//    }
 
     public WyvernSword() {
-        super(ToolStats.WYV_SWORD_ATTACK_DAMAGE, ToolStats.WYV_SWORD_ATTACK_SPEED);
+//        super(ToolStats.WYV_SWORD_ATTACK_DAMAGE, ToolStats.WYV_SWORD_ATTACK_SPEED);
+//        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return ToolStats.WYV_SWORD_ATTACK_SPEED;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return ToolStats.WYV_SWORD_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public void loadEnergyStats() {
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
     }
 

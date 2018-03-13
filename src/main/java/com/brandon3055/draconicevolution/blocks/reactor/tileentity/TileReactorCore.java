@@ -55,6 +55,10 @@ import java.util.Map;
  */
 public class TileReactorCore extends TileBCBase implements ITickable {
 
+    //Frame Movement
+    public int frameMoveContactPoints = 0;
+    public boolean isFrameMoving = false;
+    public boolean moveBlocksProvided = false;
     //region =========== Structure Fields ============
 
     public static final int COMPONENT_MAX_DISTANCE = 8;
@@ -140,6 +144,9 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     public void update() {
         super.update();
         updateCoreLogic();
+        frameMoveContactPoints = 0;
+        isFrameMoving = false;
+        moveBlocksProvided = false;
 
         if (world.isRemote && effectHandler != null) {
             effectHandler.updateEffects();

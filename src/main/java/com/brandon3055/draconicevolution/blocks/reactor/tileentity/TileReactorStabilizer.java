@@ -2,13 +2,14 @@ package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
 import cofh.redstoneflux.api.IEnergyProvider;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
+import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class TileReactorStabilizer extends TileReactorComponent implements IEnergyProvider {
+public class TileReactorStabilizer extends TileReactorComponent implements IEnergyProvider, IMovableStructure {
 
     @Override
     public void update() {

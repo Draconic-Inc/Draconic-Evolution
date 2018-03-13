@@ -31,6 +31,11 @@ import java.util.List;
  */
 public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExtendedRFStorage, IMultiBlockPart {
 
+    //Frame Movement
+    public int frameMoveContactPoints = 0;
+    public boolean isFrameMoving = false;
+    public boolean moveBlocksProvided = false;
+
     //region Constant Fields
 
     public static final byte ORIENT_UNKNOWN = 0;
@@ -252,7 +257,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
         boolean flag = true;
         if (stabilizersOK.value) {
             for (ManagedVec3I offset : stabOffsets) {
-                BlockPos tilePos = pos.add(-offset.vec.x, -offset.vec.y, -offset.vec.z);
+                BlockPos tilePos = pos.subtract(offset.vec.getPos());
                 TileEntity tile = world.getTileEntity(tilePos);
 
                 if (!(tile instanceof TileEnergyCoreStabilizer) || !((TileEnergyCoreStabilizer) tile).hasCoreLock.value || ((TileEnergyCoreStabilizer) tile).getCore() != this || !((TileEnergyCoreStabilizer) tile).isStabilizerValid(tier.value, this)) {

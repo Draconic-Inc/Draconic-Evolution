@@ -34,6 +34,8 @@ public class DEConfig implements IModConfigHelper {
         comments.put("Misc", "Just some misc settings.");
     }
 
+
+
     @Override
     public Configuration createConfiguration(FMLPreInitializationEvent event) {
         return new Configuration(new File(FileHandler.brandon3055Folder, "DraconicEvolution.cfg"), true);
@@ -46,7 +48,7 @@ public class DEConfig implements IModConfigHelper {
 
     @Override
     public void onConfigChanged(String propertyName, String propertyCategory) {
-
+        loadToolStats();
     }
 
     //Category World
@@ -203,6 +205,22 @@ public class DEConfig implements IModConfigHelper {
         }
 
         oreBlacklist = Sets.newHashSet(oreDoublingBlacklist);
+        loadToolStats();
+    }
+
+    private void loadToolStats() {
+        DEFeatures.draconicAxe.loadStatConfig();
+        DEFeatures.draconicBow.loadStatConfig();
+        DEFeatures.draconicHoe.loadStatConfig();
+        DEFeatures.draconicPick.loadStatConfig();
+        DEFeatures.draconicShovel.loadStatConfig();
+        DEFeatures.draconicStaffOfPower.loadStatConfig();
+        DEFeatures.draconicSword.loadStatConfig();
+        DEFeatures.wyvernAxe.loadStatConfig();
+        DEFeatures.wyvernBow.loadStatConfig();
+        DEFeatures.wyvernPick.loadStatConfig();
+        DEFeatures.wyvernShovel.loadStatConfig();
+        DEFeatures.wyvernSword.loadStatConfig();
     }
 }
 

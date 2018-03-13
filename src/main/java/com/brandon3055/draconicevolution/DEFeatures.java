@@ -266,6 +266,9 @@ public class DEFeatures implements IModFeatures {
     @ModFeature(name = "dislocator_advanced", cTab = 1)
     public static DislocatorAdvanced dislocatorAdvanced = new DislocatorAdvanced();
 
+    @ModFeature(name = "dislocator_bound", cTab = 1)
+    public static DislocatorBound dislocatorBound = new DislocatorBound();
+
     @ModFeature(name = "magnet", cTab = 1, stateOverride = "misc", variantMap = {"0:type=magnet_basic", "1:type=magnet_advanced"})
     public static Magnet magnet = new Magnet();
 

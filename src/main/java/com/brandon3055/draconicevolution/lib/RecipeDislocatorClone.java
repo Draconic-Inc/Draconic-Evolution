@@ -42,7 +42,7 @@ public class RecipeDislocatorClone implements IRecipe {
         NBTTagList sourceList = new NBTTagList();
 
         if (source.getItem() == DEFeatures.dislocator) {
-            TeleportLocation location = ((Dislocator) source.getItem()).getLocation(source);
+            TeleportLocation location = ((Dislocator) source.getItem()).getLocation(source, null);
             location.setName("*-Copy-*");
             NBTTagCompound compound = new NBTTagCompound();
             location.writeToNBT(compound);
@@ -53,7 +53,7 @@ public class RecipeDislocatorClone implements IRecipe {
         }
 
         if (output.getItem() == DEFeatures.dislocator) {
-            TeleportLocation location = ((Dislocator) source.getItem()).getLocation(source);
+            TeleportLocation location = ((Dislocator) source.getItem()).getLocation(source, null);
             if (location == null) {
                 return ItemStack.EMPTY;
             }

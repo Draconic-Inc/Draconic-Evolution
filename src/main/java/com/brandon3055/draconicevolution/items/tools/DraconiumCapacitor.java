@@ -1,6 +1,10 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
+import baubles.api.cap.IBaublesItemHandler;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
+import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
@@ -15,6 +19,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,18 +27,24 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by brandon3055 on 31/05/2016.
  */
-public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IUpgradableItem {
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IUpgradableItem, IBauble {
 
     public static final int wyvernTransfer = 8000000;
     public static final int wyvernBaseCap = 64000000;
@@ -152,9 +163,12 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             int mode = ItemNBTHelper.getShort(stack, "Mode", (short) 0);
-            int newMode = mode == 3 ? 0 : mode + 1;
+            int newMode = mode == 4 ? 0 : mode + 1;
             ItemNBTHelper.setShort(stack, "Mode", (short) newMode);
-            if (world.isRemote) player.sendMessage(new TextComponentTranslation(InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt")));
+            if (world.isRemote) {
+                ChatHelper.indexedMsg(player, InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt"), -442611624);
+//                player.sendMessage(new TextComponentTranslation(InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt")));
+            }
         }
         return new ActionResult<>(EnumActionResult.PASS, stack);
     }
@@ -162,40 +176,38 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     @Override
     public void onUpdate(ItemStack container, World world, Entity entity, int itemSlot, boolean isSelected) {
         if (!(entity instanceof EntityPlayer)) return;
-        EntityPlayer player = (EntityPlayer) entity;
+        updateEnergy(container, (EntityPlayer) entity, new ArrayList<>());
+    }
 
-        int mode = ItemNBTHelper.getShort(container, "Mode", (short) 0);
+    public void updateEnergy(ItemStack capacitor, EntityPlayer player, List<ItemStack> stacks) {
+        int mode = ItemNBTHelper.getShort(capacitor, "Mode", (short) 0);
 
-        if (mode == 1 || mode == 3) { //Charge Armor
-            for (ItemStack stack : player.getArmorInventoryList()) {
-                int max = Math.min(getEnergyStored(container), getMaxExtract(container));
-
-
-                if (EnergyHelper.canReceiveEnergy(stack)) {
-                    Item item = stack.getItem();
-
-                    if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player)) {
-                        continue;
-                    }
-
-                    extractEnergy(container, EnergyHelper.insertEnergy(stack, max, false), false);
-                }
+        if (mode == 4) { //Charge All
+            stacks.addAll(player.inventory.armorInventory);
+            stacks.addAll(player.inventory.mainInventory);
+            stacks.addAll(player.inventory.offHandInventory);
+        }
+        else {
+            if (mode == 1 || mode == 3) { //Charge Armor
+                stacks.addAll(player.inventory.armorInventory);
+            }
+            if (mode == 2 || mode == 3) { //Charge Held Items
+                stacks.add(player.getHeldItemOffhand());
+                stacks.add(player.getHeldItemMainhand());
             }
         }
 
-        if (mode == 2 || mode == 3) { //Charge Held Items
-            for (ItemStack stack : player.getHeldEquipment()) {
-                int max = Math.min(getEnergyStored(container), getMaxExtract(container));
+        for (ItemStack stack : stacks) {
+            int max = Math.min(getEnergyStored(capacitor), getMaxExtract(capacitor));
 
-                if (EnergyHelper.canReceiveEnergy(stack)) {
-                    Item item = stack.getItem();
+            if (EnergyHelper.canReceiveEnergy(stack)) {
+                Item item = stack.getItem();
 
-                    if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player)) {
-                        continue;
-                    }
-
-                    extractEnergy(container, EnergyHelper.insertEnergy(stack, max, false), false);
+                if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player)) {
+                    continue;
                 }
+
+                extractEnergy(capacitor, EnergyHelper.insertEnergy(stack, max, false), false);
             }
         }
     }
@@ -248,4 +260,33 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     }
 
     //endregion
+
+    @Override
+    @Optional.Method(modid = "baubles")
+    public BaubleType getBaubleType(ItemStack itemstack) {
+        return BaubleType.TRINKET;
+    }
+
+    @Override
+    @Optional.Method(modid = "baubles")
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        if (!(player instanceof EntityPlayer)) return;
+        updateEnergy(itemstack, (EntityPlayer) player, getBaubles(player));
+    }
+
+    /* BAUBLES */
+    @CapabilityInject(IBaublesItemHandler.class)
+    private static Capability<IBaublesItemHandler> CAPABILITY_BAUBLES = null;
+
+    private static List<ItemStack> getBaubles(Entity entity) {
+        if (CAPABILITY_BAUBLES == null) {
+            return Collections.emptyList();
+        }
+        IBaublesItemHandler handler = entity.getCapability(CAPABILITY_BAUBLES, null);
+
+        if (handler == null) {
+            return Collections.emptyList();
+        }
+        return IntStream.range(0, handler.getSlots()).mapToObj(handler::getStackInSlot).filter(stack -> !stack.isEmpty()).collect(Collectors.toList());
+    }
 }

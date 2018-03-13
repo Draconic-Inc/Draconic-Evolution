@@ -36,15 +36,30 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.DIG_AOE;
 public abstract class WyvernHoe extends ToolBase {
     protected int baseAOE;
 
-    public WyvernHoe(double attackDamage, double attackSpeed) {
-        super(attackDamage, attackSpeed);
-        this.baseAOE = 2;
-    }
+//    public WyvernHoe(/*double attackDamage, double attackSpeed*/) {
+////        super(attackDamage, attackSpeed);
+//        this.baseAOE = 2;
+//    }
 
     public WyvernHoe() {
-        super(ToolStats.WYV_HOE_ATTACK_DAMAGE, ToolStats.WYV_HOE_ATTACK_SPEED);
-        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
+//        super(ToolStats.WYV_HOE_ATTACK_DAMAGE, ToolStats.WYV_HOE_ATTACK_SPEED);
+//        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
         this.baseAOE = 1;
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return ToolStats.WYV_HOE_ATTACK_SPEED;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return ToolStats.WYV_HOE_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public void loadEnergyStats() {
+        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
     }
 
     //region Hoe

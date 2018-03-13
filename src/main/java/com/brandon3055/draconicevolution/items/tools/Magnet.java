@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -8,6 +10,7 @@ import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -31,7 +35,8 @@ import java.util.List;
 /**
  * Created by brandon3055 on 9/3/2016.
  */
-public class Magnet extends ItemBCore {
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class Magnet extends ItemBCore implements IBauble {
 
     public Magnet() {
         this.setMaxStackSize(1);
@@ -63,7 +68,12 @@ public class Magnet extends ItemBCore {
     @SuppressWarnings("unchecked")
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean hotbar) {
+        updateMagnet(stack, entity);
+    }
+
+    private void updateMagnet(ItemStack stack, Entity entity) {
         if (!entity.isSneaking() && entity.ticksExisted % 5 == 0 && isEnabled(stack) && entity instanceof EntityPlayer) {
+            World world = entity.getEntityWorld();
             int range = stack.getItemDamage() == 0 ? 8 : 32;
 
             List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(range, range, range));
@@ -187,5 +197,18 @@ public class Magnet extends ItemBCore {
 
     public void toggleEnabled(ItemStack stack) {
         ItemNBTHelper.setBoolean(stack, "IsActive", !isEnabled(stack));
+    }
+
+    @Optional.Method(modid = "baubles")
+    @Override
+    public BaubleType getBaubleType(ItemStack itemstack) {
+        return BaubleType.TRINKET;
+    }
+
+    @Override
+    @Optional.Method(modid = "baubles")
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        if (!(player instanceof EntityPlayer)) return;
+        updateMagnet(itemstack, player);
     }
 }

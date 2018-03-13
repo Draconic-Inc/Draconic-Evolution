@@ -45,12 +45,27 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
  */
 public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem {
 
-    public WyvernBow(float attackDamage, float attackSpeed) {
-        super(attackDamage, attackSpeed);
-    }
+//    public WyvernBow(float attackDamage, float attackSpeed) {
+//        super(attackDamage, attackSpeed);
+//    }
 
     public WyvernBow() {
-        super(1, 0);
+//        super(1, 0);
+//        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return 0;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return 1;
+    }
+
+    @Override
+    public void loadEnergyStats() {
         setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
     }
 

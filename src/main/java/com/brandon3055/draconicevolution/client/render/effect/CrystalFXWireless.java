@@ -4,16 +4,16 @@ import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -28,14 +28,14 @@ import java.util.List;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalBase> {
+public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalWirelessIO> {
 
     private final BlockPos linkTarget;
     private final AxisAlignedBB targetBB;
     private float powerLevel = 0;
     private List<PTracker> trackers = new ArrayList<>();
 
-    public CrystalFXWireless(World worldIn, TileCrystalBase tile, BlockPos linkTarget) {
+    public CrystalFXWireless(World worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
         super(worldIn, tile);
         this.particleTextureIndexX = 3 + tile.getTier();
         this.particleAge = worldIn.rand.nextInt(1024);
@@ -77,7 +77,6 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalBase> {
         if (particleAge % 2 == 0 && powerLevel > rand.nextFloat() && (ps == 0 || (ps == 1 && rand.nextInt(3) == 0) || (ps == 2 && rand.nextInt(10) == 0))) {
             double travel = 50 + rand.nextInt(50);
             travel *= (1.4F - powerLevel);
-
             trackers.add(new PTracker((int) travel, new Vector3(targetBB.minX + (rand.nextDouble() * (targetBB.maxX - targetBB.minX)), targetBB.minY + (rand.nextDouble() * (targetBB.maxY - targetBB.minY)), targetBB.minZ + (rand.nextDouble() * (targetBB.maxZ - targetBB.minZ)))));
         }
 
@@ -88,6 +87,7 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalBase> {
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         double scale = 0.08;// * powerLevel;
+        boolean output = !tile.inputMode.value;
 
         float minU = (float) this.particleTextureIndexX / texturesPerRow;
         float maxU = minU + 1F / texturesPerRow;
@@ -99,12 +99,13 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalBase> {
 
         for (PTracker tracker : trackers) {
             double progress = ((double) tracker.ticksActive + partialTicks) / (double) tracker.travelTime;
-            if (progress >= 1) {
+            if (!output) progress = 1 - progress;
+            if (progress >= 1 || progress <= 0) {
                 continue;
             }
-            Vector3 pathVec = target.copy().add(tracker.tOffset).subtract(source);
+            Vector3 pathVec = target.copy().subtract(source);
+            pathVec.add(tracker.tOffset);
             pathVec.multiply(progress);
-
             pathVec.add(source);
 
             buffer.pos((pathVec.x - rotationX * scale - rotationXY * scale), (pathVec.y - rotationZ * scale), (pathVec.z - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();

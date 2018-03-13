@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandle
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -39,17 +41,15 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     protected LinkedList<Vec3B> linkedReceivers = new LinkedList<>();
     protected LinkedList<BlockPos> receiverCache = null;
     protected Map<BlockPos, EnumFacing> receiverFaceCache = null;
-    protected List<LinkedReceiver> fastList = new ArrayList<>();
-    protected List<LinkedReceiver> slowList = new ArrayList<>();
+    protected List<LinkedDevice> fastList = new ArrayList<>();
+    protected List<LinkedDevice> slowList = new ArrayList<>();
     public LinkedList<int[]> receiverTransferRates = new LinkedList<>();
     public LinkedList<Byte> receiverFlowRates = new LinkedList<>();
     public final ManagedBool useUpdateOptimisation = dataManager.register("transportState", new ManagedBool(true)).syncViaContainer().saveToTile().saveToItem().finish();
+    public final ManagedBool inputMode = dataManager.register("inputMode", new ManagedBool(false)).syncViaTile().saveToTile().saveToItem().finish();
 
-//    public final ManagedBool useUpdateOptimisation = new ManagedBool(true, false, true);
 
-    public TileCrystalWirelessIO() {
-        super();
-    }
+    public TileCrystalWirelessIO() {}
 
     //region Energy Update
 
@@ -69,9 +69,9 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
         getReceiversFaces();//Called to update caches if caches need to be updated.
 
-        List<LinkedReceiver> moveToSlow = new ArrayList<>();
-        for (LinkedReceiver receiver : fastList) {
-            if (!updateReceiver(receiver)) {
+        List<LinkedDevice> moveToSlow = new ArrayList<>();
+        for (LinkedDevice receiver : fastList) {
+            if (!updateDevice(receiver)) {
                 removeReceiver(receiver.pos);
                 return;
             }
@@ -82,9 +82,9 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         if (tick % 80 == 0) {
-            List<LinkedReceiver> moveToFast = new ArrayList<>();
-            for (LinkedReceiver receiver : slowList) {
-                if (!updateReceiver(receiver)) {
+            List<LinkedDevice> moveToFast = new ArrayList<>();
+            for (LinkedDevice receiver : slowList) {
+                if (!updateDevice(receiver)) {
                     removeReceiver(receiver.pos);
                     return;
                 }
@@ -113,13 +113,23 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
     }
 
+    @Override
+    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (player.isSneaking()) {
+            inputMode.value = !inputMode.value;
+            return true;
+        }
+        return super.onBlockActivated(state, player, hand, side, hitX, hitY, hitZ);
+    }
+
     /**
      * Attempts to send energy to this receiver. Returns false if the receiver is nolonger valid.
      */
-    protected boolean updateReceiver(LinkedReceiver receiver) {
+    protected boolean updateDevice(LinkedDevice receiver) {
         if (!receiver.isLinkValid(world)) {
-            return false;
+            return receiver.invalidTime++ < 100;
         }
+        receiver.invalidTime = 0;
 
         TileEntity tile = receiver.getCachedTile();
         if (tile == null) {
@@ -132,17 +142,24 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             return true;
         }
 
-        int inserted = EnergyHelper.insertEnergy(tile, energyStorage.extractEnergy(getMaxWirelessTransfer(), true), receiver.side, false);
-        energyStorage.extractEnergy(inserted, false);
+        int transfered;
+        if (inputMode.value) {
+            transfered = EnergyHelper.extractEnergy(tile, energyStorage.receiveEnergy(getMaxWirelessTransfer(), true), receiver.side, false);
+            energyStorage.receiveEnergy(transfered, false);
+        }
+        else {
+            transfered = EnergyHelper.insertEnergy(tile, energyStorage.extractEnergy(getMaxWirelessTransfer(), true), receiver.side, false);
+            energyStorage.extractEnergy(transfered, false);
+        }
 
-        if (inserted > 0) {
+        if (transfered > 0) {
             receiver.timeOut = 0;
         }
         else {
             receiver.timeOut++;
         }
 
-        receiverTransferRates.get(receiver.index)[tick % 20] = inserted;
+        receiverTransferRates.get(receiver.index)[tick % 20] = transfered;
 
         return true;
     }
@@ -237,7 +254,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         for (Vec3B offset : linkedReceivers) {
             receiverCache.add(fromOffset(offset));
             receiverFaceCache.put(fromOffset(offset), receiverSideMap.get(offset));
-            fastList.add(new LinkedReceiver(linkedReceivers.indexOf(offset), fromOffset(offset), receiverSideMap.get(offset)));
+            fastList.add(new LinkedDevice(linkedReceivers.indexOf(offset), fromOffset(offset), receiverSideMap.get(offset)));
         }
 
         updateBlock();
@@ -299,9 +316,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
         displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudWirelessLinks.info") + ": " + getReceivers().size() + " / " + getMaxReceivers());
+        TextFormatting colour = !inputMode.value ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
+        displayList.add(I18n.format("eNet.de.IOOutput_" + !inputMode.value + ".info", colour));
     }
 
     //endregion
@@ -433,14 +453,15 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     //region Subs
 
-    private class LinkedReceiver {
+    private class LinkedDevice {
         public final int index;
         public final BlockPos pos;
         private EnumFacing side;
         public int timeOut = 0;
         private TileEntity tileCache = null;
+        private int invalidTime = 0;
 
-        public LinkedReceiver(int index, BlockPos pos, EnumFacing side) {
+        public LinkedDevice(int index, BlockPos pos, EnumFacing side) {
             this.index = index;
             this.pos = pos;
             this.side = side;

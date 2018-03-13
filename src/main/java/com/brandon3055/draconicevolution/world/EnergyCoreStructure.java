@@ -147,6 +147,10 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         }
     }
 
+    public MultiBlockStorage getStorageForTier(int tier) {
+        return structureTiers[tier - 1];
+    }
+
     @Override
     public void forBlock(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
         if (name.isEmpty() || name.equals("draconicevolution:energy_storage_core")) {
@@ -1100,7 +1104,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         }
     }
 
-    private BlockPos getCoreOffset(int tier) {
+    public BlockPos getCoreOffset(int tier) {
         int offset = tier == 1 ? 0 : tier == 2 || tier == 3 ? -1 : -(tier - 2);
         return new BlockPos(offset, offset, offset);
     }

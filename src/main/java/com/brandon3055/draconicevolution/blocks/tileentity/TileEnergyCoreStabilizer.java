@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import com.brandon3055.brandonscore.lib.MultiBlockStorage;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
@@ -12,12 +13,15 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.ParticleGenerator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
+import com.brandon3055.draconicevolution.world.EnergyCoreStructure;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -28,10 +32,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, IMultiBlockPart {
+public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, IMultiBlockPart, IMovableStructure {
 
     public final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, -1, 0))).syncViaTile().saveToTile().finish();
     public final ManagedBool hasCoreLock = register("hasCoreLock", new ManagedBool(false)).syncViaTile().saveToTile().finish();
@@ -41,6 +49,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     public EnumFacing coreDirection = EnumFacing.DOWN;
     public float rotation = 0;
     public float rotationSpeed = 0;
+    private boolean moveCheckComplete = false;
 
     //region Beam
 
@@ -365,4 +374,64 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     }
 
     //endregion
+
+    //Frame Movement
+
+    private Set<BlockPos> getStabilizerBlocks() {
+        Set<BlockPos> blocks = new HashSet<>();
+        blocks.add(pos);
+        if (isValidMultiBlock.value) {
+            for (BlockPos offset : FacingUtils.getAroundAxis(multiBlockAxis)) {
+                blocks.add(pos.add(offset));
+            }
+        }
+
+        return blocks;
+    }
+
+    @Override
+    public Iterable<BlockPos> getBlocksForFrameMove() {
+        TileEnergyStorageCore core = getCore();
+        if (core != null && !core.moveBlocksProvided) {
+            HashSet<BlockPos> blocks = new HashSet<>();
+
+            for (ManagedVec3I offset : core.stabOffsets) {
+                BlockPos stabPos = core.getPos().subtract(offset.vec.getPos());
+                TileEntity tile = world.getTileEntity(stabPos);
+                if (tile instanceof TileEnergyCoreStabilizer) {
+                    blocks.addAll(((TileEnergyCoreStabilizer) tile).getStabilizerBlocks());
+                }
+            }
+
+            EnergyCoreStructure structure = core.coreStructure;
+            MultiBlockStorage storage = structure.getStorageForTier(core.tier.value);
+            BlockPos start = core.getPos().add(structure.getCoreOffset(core.tier.value));
+            storage.forEachBlock(start, blocks::add);
+
+            return blocks;
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public EnumActionResult canMove() {
+        TileEnergyStorageCore core = getCore();
+        if (core != null && core.structureValid.value && core.active.value) {
+            if (core.isFrameMoving) {
+                return EnumActionResult.SUCCESS;
+            }
+            if (!moveCheckComplete) {
+                core.frameMoveContactPoints++;
+            }
+
+            moveCheckComplete = true;
+            if (core.frameMoveContactPoints == 4) {
+                core.frameMoveContactPoints = 0;
+                core.isFrameMoving = true;
+                return EnumActionResult.SUCCESS;
+            }
+        }
+
+        return EnumActionResult.FAIL;
+    }
 }

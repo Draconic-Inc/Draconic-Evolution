@@ -213,6 +213,11 @@ public class DERecipes {
         addFusion(NORMAL, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 1000000, 1, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", wyvernCore, "ingotDraconium");
         addFusion(HARD, new ItemStack(dislocatorAdvanced), new ItemStack(dislocator), 10000000, 2, "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "enderpearl", "ingotDraconium", "dragonEgg", "ingotDraconium");
 
+        addShapeless(NORMAL, new ItemStack(dislocatorBound, 1, 1), dislocator, draconicCore, dislocator, GHAST_TEAR);
+        addShapeless(HARD, new ItemStack(dislocatorBound, 1, 1), dislocator, wyvernCore, dislocator, GHAST_TEAR);
+        addShapeless(NORMAL, new ItemStack(dislocatorBound, 1, 2), dislocator, draconicCore, GHAST_TEAR);
+        addShapeless(HARD, new ItemStack(dislocatorBound, 1, 2), dislocator, wyvernCore, GHAST_TEAR);
+
         //Other
         addShaped(ALL, crystalBinder, " AB", " CA", "D  ", 'A', "ingotDraconium", 'B', "gemDiamond", 'C', BLAZE_ROD, 'D', draconicCore);
 

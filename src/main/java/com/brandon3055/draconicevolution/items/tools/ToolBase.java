@@ -50,10 +50,22 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     private float baseAttackSpeed;
     protected int energyPerOperation = 1024;//TODO Energy Cost
 
-    public ToolBase(double attackDamage, double attackSpeed) {
-        this.baseAttackDamage = (float) attackDamage;
-        this.baseAttackSpeed = (float) attackSpeed;
+    public ToolBase(/*double attackDamage, double attackSpeed*/) {
+//        this.baseAttackDamage = (float) attackDamage;
+//        this.baseAttackSpeed = (float) attackSpeed;
         setMaxStackSize(1);
+    }
+
+    public abstract double getBaseAttackSpeedConfig();
+
+    public abstract double getBaseAttackDamageConfig();
+
+    public abstract void loadEnergyStats();
+
+    public void loadStatConfig() {
+        baseAttackDamage = (float) getBaseAttackDamageConfig();
+        baseAttackSpeed = (float) getBaseAttackSpeedConfig();
+        loadEnergyStats();
     }
 
     //region Basic Item

@@ -20,7 +20,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class DraconicSword extends WyvernSword {
     public DraconicSword() {
-        super(ToolStats.DRA_SWORD_ATTACK_DAMAGE, ToolStats.DRA_SWORD_ATTACK_SPEED);
+//        super(ToolStats.DRA_SWORD_ATTACK_DAMAGE, ToolStats.DRA_SWORD_ATTACK_SPEED);
+//        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return ToolStats.DRA_SWORD_ATTACK_SPEED;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return ToolStats.DRA_SWORD_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public void loadEnergyStats() {
         setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
     }
 

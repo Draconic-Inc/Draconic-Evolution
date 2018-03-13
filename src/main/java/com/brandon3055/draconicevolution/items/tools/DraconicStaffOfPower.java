@@ -35,14 +35,39 @@ import static com.brandon3055.draconicevolution.client.model.tool.ToolTransforms
  */
 public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, IReaperItem {
     public DraconicStaffOfPower() {
-        super(ToolStats.DRA_STAFF_ATTACK_DAMAGE, ToolStats.DRA_STAFF_ATTACK_SPEED, PICKAXE_OVERRIDES);
-        this.baseMiningSpeed = (float) ToolStats.DRA_STAFF_MINING_SPEED;
-        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE + 1;
-        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY * 3, 16000000, 0);
+        super(/*ToolStats.DRA_STAFF_ATTACK_DAMAGE, ToolStats.DRA_STAFF_ATTACK_SPEED, */PICKAXE_OVERRIDES);
+//        this.baseMiningSpeed = (float) ToolStats.DRA_STAFF_MINING_SPEED;
+//        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE + 1;
+//        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY * 3, 16000000, 0);
 //        this.setHarvestLevel("all", 10);
         this.setHarvestLevel("pickaxe", 10);
         this.setHarvestLevel("axe", 10);
         this.setHarvestLevel("shovel", 10);
+    }
+
+    @Override
+    public double getBaseMinSpeedConfig() {
+        return ToolStats.DRA_STAFF_MINING_SPEED;
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return ToolStats.DRA_STAFF_ATTACK_SPEED;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return ToolStats.DRA_STAFF_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public int getBaseMinAOEConfig() {
+        return ToolStats.BASE_DRACONIC_MINING_AOE + 1;
+    }
+
+    @Override
+    public void loadEnergyStats() {
+        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY * 3, 16000000, 0);
     }
 
     @Override

@@ -12,11 +12,36 @@ import net.minecraft.util.ResourceLocation;
  */
 public class DraconicShovel extends WyvernShovel {
     public DraconicShovel() {
-        super(ToolStats.DRA_SHOVEL_ATTACK_DAMAGE, ToolStats.DRA_SHOVEL_ATTACK_SPEED, SHOVEL_OVERRIDES);
-        this.baseMiningSpeed = (float) ToolStats.DRA_SHOVEL_MINING_SPEED;
-        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
-        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
+        super(/*ToolStats.DRA_SHOVEL_ATTACK_DAMAGE, ToolStats.DRA_SHOVEL_ATTACK_SPEED, */SHOVEL_OVERRIDES);
+//        this.baseMiningSpeed = (float) ToolStats.DRA_SHOVEL_MINING_SPEED;
+//        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
+//        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
         this.setHarvestLevel("shovel", 10);
+    }
+
+    @Override
+    public double getBaseMinSpeedConfig() {
+        return ToolStats.DRA_SHOVEL_MINING_SPEED;
+    }
+
+    @Override
+    public int getBaseMinAOEConfig() {
+        return ToolStats.BASE_DRACONIC_MINING_AOE;
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return ToolStats.DRA_SHOVEL_ATTACK_SPEED;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return ToolStats.DRA_SHOVEL_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public void loadEnergyStats() {
+        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
     }
 
     @Override

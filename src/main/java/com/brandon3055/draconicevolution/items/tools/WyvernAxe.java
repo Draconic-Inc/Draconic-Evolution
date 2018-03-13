@@ -5,7 +5,6 @@ import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.brandonscore.lib.Set3;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
@@ -35,16 +34,41 @@ import java.util.Set;
  */
 public class WyvernAxe extends MiningToolBase {
 
-    public WyvernAxe(double attackDamage, double attackSpeed, Set effectiveBlocks) {
-        super(attackDamage, attackSpeed, effectiveBlocks);
+    public WyvernAxe(/*double attackDamage, double attackSpeed, */Set effectiveBlocks) {
+        super(/*attackDamage, attackSpeed, */effectiveBlocks);
     }
 
     public WyvernAxe() {
-        super(ToolStats.WYV_AXE_ATTACK_DAMAGE, ToolStats.WYV_AXE_ATTACK_SPEED, AXE_OVERRIDES);
-        this.baseMiningSpeed = (float) ToolStats.WYV_AXE_MINING_SPEED;
-        this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
-        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
+        super(/*ToolStats.WYV_AXE_ATTACK_DAMAGE, ToolStats.WYV_AXE_ATTACK_SPEED, */AXE_OVERRIDES);
+//        this.baseMiningSpeed = (float) ToolStats.WYV_AXE_MINING_SPEED;
+//        this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
+//        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
         this.setHarvestLevel("axe", 10);
+    }
+
+    @Override
+    public double getBaseMinSpeedConfig() {
+        return ToolStats.WYV_AXE_MINING_SPEED;
+    }
+
+    @Override
+    public int getBaseMinAOEConfig() {
+        return ToolStats.BASE_WYVERN_MINING_AOE;
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return ToolStats.WYV_AXE_ATTACK_SPEED;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return ToolStats.WYV_AXE_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public void loadEnergyStats() {
+        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
     }
 
     //region Item

@@ -69,6 +69,8 @@ public class CommonProxy {
         DraconicEvolution.network.registerMessage(PacketContributor.Handler.class, PacketContributor.class, 9, Side.SERVER);
         DraconicEvolution.network.registerMessage(CrystalUpdateBatcher.Handler.class, CrystalUpdateBatcher.class, 10, Side.CLIENT);
         DraconicEvolution.network.registerMessage(PacketExplosionFX.Handler.class, PacketExplosionFX.class, 11, Side.CLIENT);
+        DraconicEvolution.network.registerMessage(PacketDislocatorUpdateRequest.Handler.class, PacketDislocatorUpdateRequest.class, 12, Side.CLIENT);
+        DraconicEvolution.network.registerMessage(PacketDislocatorUpdateRequest.Handler.class, PacketDislocatorUpdateRequest.class, 13, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(ParticleGenPacket.Handler.class, ParticleGenPacket.class, 1, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlacedItemPacket.Handler.class, PlacedItemPacket.class, 2, Side.SERVER);
 //		DraconicEvolution.network.registerMessage(PlayerDetectorButtonPacket.Handler.class, PlayerDetectorButtonPacket.class, 3, Side.SERVER);

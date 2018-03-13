@@ -10,17 +10,21 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.COMPONENT_MAX_DISTANCE;
@@ -29,7 +33,7 @@ import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileRe
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public abstract class TileReactorComponent extends TileEnergyBase implements ITickable, IDEPeripheral {
+public abstract class TileReactorComponent extends TileEnergyBase implements ITickable, IDEPeripheral, IMovableStructure {
 
     private final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, 0, 0))).saveToTile().syncViaTile().finish();
     public final ManagedEnum<EnumFacing> facing = register("facing", new ManagedEnum<>(EnumFacing.UP)).saveToTile().syncViaTile().finish();
@@ -40,12 +44,14 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     public float animRotationSpeed = 0;
     private TileReactorCore cachedCore = null;
     public boolean coreFalureIminent = false;
+    private boolean moveCheckComplete = false;
 
     //region update
 
     @Override
     public void update() {
         super.update();
+        moveCheckComplete = false;
 
         if (world.isRemote) {
             TileReactorCore core = tryGetCore();
@@ -180,37 +186,6 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             setRSMode(client, RSMode.valueOf(data.readString()));
         }
     }
-
-//    protected boolean verifyPlayerPermission(EntityPlayer player) {
-//        PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, null, pos, EnumFacing.UP, player.getLookVec());
-//        MinecraftForge.EVENT_BUS.post(event);
-//        return !event.isCanceled();
-//    }
-
-    //endregion
-
-    //region //Logic
-
-//    public boolean isActive() {
-//        return isBound.value;
-//    }
-//
-//    public String getRedstoneModeString() {
-//        return "msg.de.reactorRSMode." + rsMode.value + ".txt";
-//    }
-//
-//    public void changeRedstoneMode() {
-//        if (rsMode.value == RMODE_FUEL_INV) {
-//            rsMode.value = 0;
-//        }
-//        else {
-//            rsMode.value++;
-//        }
-//    }
-//
-//    public int getRedstoneMode() {
-//        return rsMode.value;
-//    }
 
     //endregion
 
@@ -368,12 +343,14 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             public int getRSSignal(TileReactorCore tile) {
                 return (int) ((tile.temperature.value / MAX_TEMPERATURE) * 15D);
             }
-        }, TEMP_INV {
+        },
+        TEMP_INV {
             @Override
             public int getRSSignal(TileReactorCore tile) {
                 return 15 - TEMP.getRSSignal(tile);
             }
-        }, FIELD {
+        },
+        FIELD {
             @Override
             public int getRSSignal(TileReactorCore tile) {
                 double value = tile.shieldCharge.value / tile.maxShieldCharge.value;
@@ -381,22 +358,26 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
                 value *= 1.2;
                 return (int) (value * 15);
             }
-        }, FIELD_INV {
+        },
+        FIELD_INV {
             @Override
             public int getRSSignal(TileReactorCore tile) {
                 return 15 - FIELD.getRSSignal(tile);
             }
-        }, SAT {
+        },
+        SAT {
             @Override
             public int getRSSignal(TileReactorCore tile) {
                 return (int) (((double) tile.saturation.value / (double) tile.maxSaturation.value) * 15D);
             }
-        }, SAT_INV {
+        },
+        SAT_INV {
             @Override
             public int getRSSignal(TileReactorCore tile) {
                 return 15 - SAT.getRSSignal(tile);
             }
-        }, FUEL {
+        },
+        FUEL {
             @Override
             public int getRSSignal(TileReactorCore tile) {
                 double value = tile.convertedFuel.value / (tile.convertedFuel.value + tile.reactableFuel.value);
@@ -404,7 +385,8 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
                 value = Utils.map(value, 0.1, 1, 0, 1);
                 return (int) (value * 15);
             }
-        }, FUEL_INV {
+        },
+        FUEL_INV {
             @Override
             public int getRSSignal(TileReactorCore tile) {
                 return 15 - FUEL.getRSSignal(tile);
@@ -412,5 +394,55 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         };
 
         public abstract int getRSSignal(TileReactorCore tile);
+    }
+
+    //Frame movement
+
+    @Override
+    public Iterable<BlockPos> getBlocksForFrameMove() {
+        TileReactorCore core = getCachedCore();
+        if (core != null && !core.moveBlocksProvided) {
+            HashSet<BlockPos> blocks = new HashSet<>();
+            for (EnumFacing facing : EnumFacing.values()) {
+                TileReactorComponent comp = core.getComponent(facing);
+                if (comp != null) {
+                    blocks.add(comp.getPos());
+                }
+            }
+
+            blocks.add(core.getPos());
+            core.moveBlocksProvided = true;
+            return blocks;
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public EnumActionResult canMove() {
+        TileReactorCore core = getCachedCore();
+        if (core != null) {
+            if (core.isFrameMoving) {
+                return EnumActionResult.SUCCESS;
+            }
+            if (!moveCheckComplete) {
+                core.frameMoveContactPoints++;
+            }
+            HashSet<BlockPos> blocks = new HashSet<>();
+            for (EnumFacing facing : EnumFacing.values()) {
+                TileReactorComponent comp = core.getComponent(facing);
+                if (comp != null) {
+                    blocks.add(comp.getPos());
+                }
+            }
+
+            moveCheckComplete = true;
+            if (core.frameMoveContactPoints == blocks.size()) {
+                core.frameMoveContactPoints = 0;
+                core.isFrameMoving = true;
+                return EnumActionResult.SUCCESS;
+            }
+        }
+
+        return EnumActionResult.FAIL;
     }
 }

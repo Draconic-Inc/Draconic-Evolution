@@ -15,14 +15,15 @@ import net.minecraft.util.math.BlockPos;
  * Created by brandon3055 on 16/07/2016.
  */
 public class TilePortal extends TileBCBase {
-    public final ManagedVec3I masterPos = register("masterPos", new ManagedVec3I(new Vec3I(0, -1, 0))).saveToTile().finish();
+    private final ManagedVec3I masterPos = register("masterPos", new ManagedVec3I(new Vec3I(0, -9999, 0))).saveToTile().finish();
+    public boolean frameMoving = false;
 
     public void validatePortal() {
-        if (masterPos.vec.y == -1) {
+        if (masterPos.vec.y == -9999 || frameMoving) {
             return;
         }
 
-        TileEntity tile = world.getTileEntity(masterPos.vec.getPos());
+        TileEntity tile = world.getTileEntity(getMasterPos());
 
         if (tile instanceof TileDislocatorReceptacle) {
             if (((TileDislocatorReceptacle) tile).igniting) {
@@ -49,11 +50,17 @@ public class TilePortal extends TileBCBase {
     }
 
     public void setMasterPos(BlockPos masterPos) {
-        this.masterPos.vec.set(masterPos);
+        this.masterPos.vec.set(pos.subtract(masterPos));
+    }
+
+    protected BlockPos getMasterPos() {
+        return pos.subtract(masterPos.vec.getPos());
     }
 
     public TileDislocatorReceptacle getMaster() {
-        TileEntity tile = world.getTileEntity(masterPos.vec.getPos());
+        TileEntity tile = world.getTileEntity(getMasterPos());
         return tile instanceof TileDislocatorReceptacle ? (TileDislocatorReceptacle) tile : null;
     }
+
+
 }

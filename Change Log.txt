@@ -1,4 +1,9 @@
-######## 2.3.10.x ########
+######## 2.3.11.x ########
+-Fixed tool stats config not getting applied properly.
+-Added ability to move portals, reactors and energy cores with Funky Locomotion.
+-Added baubles support to magnet and capacitor.
+
+######## 2.3.10.284 ########
 -Fixed issue with item dislocator pickup sound playing continuously.
 -Fixed swords being ineffective against blocks like web and leaves.
 -Fixed issue were portal blocks could be broken and placed in survival.
