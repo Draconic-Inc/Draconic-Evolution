@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MG
 import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiSlotRender;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiStackIcon;
 import com.brandon3055.brandonscore.lib.StackReference;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.client.gui.modwiki.WikiConfig;
 import com.brandon3055.draconicevolution.client.gui.modwiki.guielements.PopupEditContent;
@@ -141,7 +142,7 @@ public class TreeBranchContent extends TreeBranchRoot {
             GlStateManager.pushMatrix();
             GlStateManager.translate(xPos, yPos, 100);
             GlStateManager.scale(0.6, 0.6, 1);
-            String s = "W:§f" + sortingWeight;
+            String s = "W:" + Utils.SELECT + "f" + sortingWeight;
             drawString(minecraft.fontRenderer, s, 0, 0, 0xFF0000, false);
             drawColouredRect(0, 0, minecraft.fontRenderer.getStringWidth(s), 8, 0xAA000000);
             GlStateManager.popMatrix();

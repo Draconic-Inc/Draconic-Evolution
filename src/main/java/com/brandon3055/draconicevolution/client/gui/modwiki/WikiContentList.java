@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.IMGuiListener;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.*;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.client.gui.modwiki.guielements.WikiTreeButton;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
@@ -70,7 +71,7 @@ public class WikiContentList extends MGuiList implements IMGuiListener {
                 return WikiConfig.TEXT_COLOUR;
             }
         }.setShadow(false));
-        addChild(buttonAddBranch = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "ADD_BRANCH", xPos + maxXSize - 40, yPos, 28, 12, "[§4add§r]") {
+        addChild(buttonAddBranch = (MGuiButtonSolid) new MGuiButtonSolid(modularGui, "ADD_BRANCH", xPos + maxXSize - 40, yPos, 28, 12, "[" + Utils.SELECT + "4add" + Utils.SELECT + "r]") {
             @Override
             public int getTextColour(boolean hovered, boolean disabled) {
                 return hovered ? 0xFFFFFF : 0xFF000000;
