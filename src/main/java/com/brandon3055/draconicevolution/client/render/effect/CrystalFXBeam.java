@@ -7,7 +7,7 @@ import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXBeam extends CrystalGLFXBase<TileCrystalBase> {
+public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
 
     private final Vec3D linkTarget;
     private final boolean terminateSource;
@@ -32,13 +32,13 @@ public class CrystalFXBeam extends CrystalGLFXBase<TileCrystalBase> {
     private boolean bolt = false;
     private float powerLevel = 0;
 
-    public CrystalFXBeam(World worldIn, TileCrystalBase tile, ICrystalLink linkTarget) {
+    public CrystalFXBeam(World worldIn, IENetEffectTile tile, ICrystalLink linkTarget) {
         super(worldIn, tile);
         this.particleTextureIndexX = 3 + tile.getTier();
         this.particleAge = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(((TileEntity) linkTarget).getPos()));
         this.terminateSource = tile.renderBeamTermination();
-        this.linkTarget = linkTarget.getBeamLinkPos(tile.getPos());
+        this.linkTarget = linkTarget.getBeamLinkPos(((TileEntity) tile).getPos());
         this.terminateTarget = linkTarget.renderBeamTermination();
     }
 

@@ -141,6 +141,7 @@ public class RecipeManager {
         int failedToRemove = 0;
 
         JsonReader reader = new JsonReader(new FileReader(jsonFile));
+        reader.setLenient(true);
         JsonArray jsonArray = new JsonParser().parse(reader).getAsJsonArray();
 
         for (JsonElement e : jsonArray) {

@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.draconicevolution.achievements.Achievements;
+import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.DEParticles;
@@ -120,7 +120,7 @@ public class CommonProxy {
         DEParticles.registerServer();
     }
 
-    public ENetFXHandler createENetFXHandler(TileCrystalBase tile) {
+    public ENetFXHandler createENetFXHandler(IENetEffectTile tile) {
         return tile.createServerFXHandler();
     }
 

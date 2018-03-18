@@ -80,7 +80,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
         String linkID = dislocatorBound.getLinkID(stack);
 
         LinkData link = data.linkDataMap.computeIfAbsent(linkID, s -> new LinkData(linkID, data));
-        link.setTarget(player.getGameProfile().getId().toString(), player.dimension);
+        link.setTarget(player.getGameProfile().getId().toString());
     }
 
     public static void removeLink(World world, ItemStack stack) {
@@ -136,6 +136,32 @@ public class DislocatorLinkHandler extends WorldSavedData {
             }
             else {
                 return getTileOrEntityPos(link, linkID);
+            }
+        }
+
+        return null;
+    }
+
+    public static TileEntity getTargetTile(World world, ItemStack stack) {
+        DislocatorLinkHandler data = getDataInstance(world);
+        if (data == null || !dislocatorBound.isValid(stack)) {
+            return null;
+        }
+
+        if (!dislocatorBound.isPlayer(stack)) {
+            String linkID = dislocatorBound.getLinkToID(stack);
+            LinkData link = data.linkDataMap.get(linkID);
+            if (link != null && !link.isPlayer) {
+                MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+                if (server == null || !DimensionManager.isDimensionRegistered(link.dimension)) {
+                    return null;
+                }
+                World targetWorld = server.getWorld(link.dimension);
+
+                TileEntity tile = targetWorld.getTileEntity(link.pos);
+                if (tile instanceof ITeleportEndPoint) {
+                    return tile;
+                }
             }
         }
 
@@ -237,7 +263,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
     public static class LinkData {
         private String linkID;
         public DislocatorLinkHandler handler;
-        public BlockPos pos = new BlockPos(0, 0, 0);
+        public BlockPos pos = new BlockPos(0, 128, 0);
         public int dimension = 0;
         private String playerUUID;
         public boolean isPlayer = false;
@@ -256,7 +282,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
             handler.markDirty();
         }
 
-        public void setTarget(String playerUUID, int dimension) {
+        public void setTarget(String playerUUID) {
             this.playerUUID = playerUUID;
             isPlayer = true;
             handler.markDirty();
@@ -266,6 +292,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
             compound.setString("LinkID", linkID);
             compound.setBoolean("IsPlayer", isPlayer);
             compound.setInteger("Dim", dimension);
+
             if (isPlayer) {
                 compound.setString("PlayerID", playerUUID);
             }
@@ -279,6 +306,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
             linkID = compound.getString("LinkID");
             isPlayer = compound.getBoolean("IsPlayer");
             dimension = compound.getInteger("Dim");
+
             if (isPlayer) {
                 playerUUID = compound.getString("PlayerID");
             }

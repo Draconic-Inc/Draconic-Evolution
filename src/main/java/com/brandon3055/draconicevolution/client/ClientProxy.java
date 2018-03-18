@@ -5,8 +5,8 @@ import codechicken.lib.render.CCRenderEventHandler;
 import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.WikiDocManager;
@@ -103,7 +103,7 @@ public class ClientProxy extends CommonProxy {
     } //
 
     @Override
-    public ENetFXHandler createENetFXHandler(TileCrystalBase tile) {
+    public ENetFXHandler createENetFXHandler(IENetEffectTile tile) {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
             return super.createENetFXHandler(tile);
         }

@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
+import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
@@ -53,7 +54,7 @@ import static com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.ID_
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceListener, ICrystalLink, ITickable, IActivatableTile, IEnergyHandler {
+public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceListener, ICrystalLink, ITickable, IActivatableTile, IEnergyHandler, IENetEffectTile {
 
     //region Stats
 
@@ -349,6 +350,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
         energyStorage.modifyEnergyStored(energy);
     }
 
+    @Override
     public int getTier() {
         if (crystalTier == -1) {
             crystalTier = getState(getBlockTypeSafe(DEFeatures.energyCrystal)).getValue(EnergyCrystal.TIER);
@@ -451,6 +453,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
         return pass == 0 || !DEShaders.useShaders();
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public abstract CrystalGLFXBase createStaticFX();
 
@@ -472,10 +475,12 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
 //        }
     }
 
+    @Override
     public ENetFXHandler createServerFXHandler() {
         return new ENetFXHandlerServer(this);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public ENetFXHandler createClientFXHandler() {
         return new ENetFXHandlerClient(this);
@@ -555,6 +560,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
     boolean hashCached = false;
     int hashID = 0;
 
+    @Override
     public int getIDHash() {
         if (!hashCached) {
             hashID = pos.hashCode();
@@ -702,6 +708,11 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
     }
 
     //endregion
+
+    @Override
+    public LinkedList<Byte> getFlowRates() {
+        return flowRates;
+    }
 
     public static class LinkData {
         public String displayName;

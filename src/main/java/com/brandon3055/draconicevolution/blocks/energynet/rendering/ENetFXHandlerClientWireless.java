@@ -33,12 +33,14 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
     @Override
     public void update() {
         //region Update Static FX
-        if (staticFX == null || !staticFX.isAlive()) {
-            staticFX = tile.createStaticFX();
-            BCEffectHandler.spawnGLParticle(staticFX.getFXHandler(), staticFX);
+        if (tile.hasStaticFX()) {
+            if (staticFX == null || !staticFX.isAlive()) {
+                staticFX = tile.createStaticFX();
+                BCEffectHandler.spawnGLParticle(staticFX.getFXHandler(), staticFX);
+            }
+            staticFX.updateFX(0.5F);
+            staticFX.renderEnabled = renderCooldown > 0;
         }
-        staticFX.updateFX(0.5F);
-        staticFX.renderEnabled = renderCooldown > 0;
         if (renderCooldown > 0) {
             renderCooldown--;
         }
