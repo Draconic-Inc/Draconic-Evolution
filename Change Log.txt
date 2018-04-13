@@ -5,6 +5,8 @@
 -Added config to disable chaos island explosion.
 -Fixed swords being able to mine any block that does not require a tool.
 -Fixed missing FE capability on Fusion Crafting Injector.
+-Added ability to link energy crystals via bound portals.
+-Added input mode option to wireless energy crystals.
 
 
 ######## 2.3.10.284 ########
