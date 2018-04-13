@@ -1394,4 +1394,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
     protected ResourceLocation getLootTable() {
         return null;
     }
+
+    @Override
+    public double getMountedYOffset() {
+        return height * 0.37;
+    }
 }

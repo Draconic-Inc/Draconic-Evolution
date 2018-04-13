@@ -2,6 +2,10 @@
 -Fixed tool stats config not getting applied properly.
 -Added ability to move portals, reactors and energy cores with Funky Locomotion.
 -Added baubles support to magnet and capacitor.
+-Added config to disable chaos island explosion.
+-Fixed swords being able to mine any block that does not require a tool.
+-Fixed missing FE capability on Fusion Crafting Injector.
+
 
 ######## 2.3.10.284 ########
 -Fixed issue with item dislocator pickup sound playing continuously.
@@ -32,7 +36,7 @@
 -Re implemented junk filter in tools.
 -Fixed tool items entity accelerated physics issie.
 -Fixed potential name related crash in entity detector config gui.
--Added ability to make draconic armor invisible.
+-Added ability to make draconic armor invisible.e
 -Added some error checking for placed items that may help find the cause of recent issues.
 
 ######## 2.3.5.269 ########

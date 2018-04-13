@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
+import com.brandon3055.brandonscore.lib.EnergyHandlerWrapper;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
@@ -13,6 +14,8 @@ import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 
 /**
  * Created by brandon3055 on 10/06/2016.
@@ -69,6 +72,20 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
         return from != EnumFacing.getFront(facing.value);
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(new EnergyHandlerWrapper(this, facing));
+        }
+
+        return super.getCapability(capability, facing);
     }
 
     //endregion

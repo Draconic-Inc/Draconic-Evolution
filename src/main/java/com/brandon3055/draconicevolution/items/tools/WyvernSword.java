@@ -61,7 +61,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
 
     @Override
     public float getDestroySpeed(ItemStack stack, IBlockState state) {
-        return 25F;
+        return canHarvestBlock(state, stack) ? 25F : 1;
     }
 
     @Override

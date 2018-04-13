@@ -4,15 +4,18 @@ import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
+import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -48,9 +51,36 @@ public class Debugger extends ItemBCore {
     }
 
     @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+        World world = player.world;
+        EntityChaosGuardian guardian = DataUtils.firstMatch(world.getEntitiesWithinAABB(EntityChaosGuardian.class, player.getEntityBoundingBox().grow(300)), entityChaosGuardian -> true);
+        if (guardian != null) {
+            guardian.removePassengers();
+            if (entity instanceof EntityCreeper) {
+                ((EntityCreeper) entity).enablePersistence();
+            }
+            entity.startRiding(guardian, true);
+            LogHelper.dev("Success");
+        }
+
+
+        return super.onLeftClickEntity(stack, player, entity);
+    }
+
+    @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 
-        if (worldIn.isRemote && ClientEventHandler.elapsedTicks % 40 == 0) {
+        if (!worldIn.isRemote && ClientEventHandler.elapsedTicks % 500 == 0) {
+//            EntityPlayerMP player = (EntityPlayerMP) entityIn;
+//
+//            for (StatBase stat : StatList.ALL_STATS) {
+//                int value = player.getStatFile().readStat(stat);
+//                if (value != 0) {
+//                    LogHelper.dev(stat.statId + ": " + value);
+//                }
+//            }
+
+
 ////            DEShaders.initReactorShader();
 //            DEShaders.initReactorShieldShader();
 //            DEShaders.initEnergyCrystalShader();
@@ -902,17 +932,17 @@ public class Debugger extends ItemBCore {
 
     private void destroyUniverse(EntityPlayer player) {
         /*
-        * == Logic Design ideas ==
-        * Zones:
-        * -Z1 <= 10% rad.
-        *   Nothing survives unless its indestructible.
-        *
-        * //-Z2 10 -> 50~% rad. (Will vary depending on the resistance of the blocks destroyed though)
-        * //-Z1 <= 10% rad.
-        * Dont think zones are going to work out except for zone 1.
-        *
-        * Resistance:
-        * -The resistance of each block will be divided by the radius of the trace.
+         * == Logic Design ideas ==
+         * Zones:
+         * -Z1 <= 10% rad.
+         *   Nothing survives unless its indestructible.
+         *
+         * //-Z2 10 -> 50~% rad. (Will vary depending on the resistance of the blocks destroyed though)
+         * //-Z1 <= 10% rad.
+         * Dont think zones are going to work out except for zone 1.
+         *
+         * Resistance:
+         * -The resistance of each block will be divided by the radius of the trace.
          */
 
 

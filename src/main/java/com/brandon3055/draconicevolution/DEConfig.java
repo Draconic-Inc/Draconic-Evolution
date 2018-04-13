@@ -86,8 +86,8 @@ public class DEConfig implements IModConfigHelper {
 
     //Category Tweak
 
-    @ModConfigProperty(category = "Tweaks", name = "rapidDespawnAOEMinedItems", comment = "If set to true items dropped by tools in AOE mode will despawn after 5 seconds if not picked up.")
-    public static boolean rapidDespawnAOEMinedItems = false;
+//    @ModConfigProperty(category = "Tweaks", name = "rapidDespawnAOEMinedItems", comment = "If set to true items dropped by tools in AOE mode will despawn after 5 seconds if not picked up.")
+//    public static boolean rapidDespawnAOEMinedItems = false;
 
     @ModConfigProperty(category = "Tweaks", name = "disableGuardianCrystalRespawn", comment = "(Wuss mode) Setting this to true will disable the chaos guardians ability to respawn healing crystals.")
     public static boolean disableGuardianCrystalRespawn = false;
@@ -127,6 +127,9 @@ public class DEConfig implements IModConfigHelper {
 
     @ModConfigProperty(category = "Tweaks", name = "disableLargeReactorBoom", comment = "If true will disable the massive reactor explosion and replace it with a much smaller one.")
     public static boolean disableLargeReactorBoom = false;
+
+    @ModConfigProperty(category = "Tweaks", name = "disableChaosIslandExplosion", comment = "If true will disable the destruction of chaos islands after the chaos crystal is broken.")
+    public static boolean disableChaosIslandExplosion = false;
 
     @ModConfigProperty(category = "Tweaks", name = "disableLootCores", comment = "This will disable loot cores (The \"Blobs\" of items dropped by the tools.).")
     public static boolean disableLootCores = false;

@@ -28,8 +28,8 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
             this.volume = 10F;
         }
         else {
-//            this.volume = 1.5F;
-            this.volume = 3.5F;
+            this.volume = 1.5F;
+//            this.volume = 3.5F;
         }
         this.targetPitch = 1F;
     }
