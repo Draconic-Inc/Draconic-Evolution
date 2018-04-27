@@ -1,4 +1,6 @@
-######## 2.3.11.x ########
+######## 2.3.12.x ########
+
+######## 2.3.11.290 ########
 -Fixed tool stats config not getting applied properly.
 -Added ability to move portals, reactors and energy cores with Funky Locomotion.
 -Added baubles support to magnet and capacitor.
@@ -7,7 +9,6 @@
 -Fixed missing FE capability on Fusion Crafting Injector.
 -Added ability to link energy crystals via bound portals.
 -Added input mode option to wireless energy crystals.
-
 
 ######## 2.3.10.284 ########
 -Fixed issue with item dislocator pickup sound playing continuously.

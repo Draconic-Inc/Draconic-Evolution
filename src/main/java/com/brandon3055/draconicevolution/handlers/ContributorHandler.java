@@ -17,10 +17,10 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import org.apache.commons.io.IOUtils;
 
-import java.io.*;
-import java.net.URL;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -159,16 +159,8 @@ public class ContributorHandler {
             super.run();
 
             try {
-                URL url = new URL("http://www.brandon3055.com/json/DEContributors.json");
                 File cFile = new File(FileHandler.brandon3055Folder, "contributors.json");
-
-                InputStream is = url.openStream();
-                OutputStream os = new FileOutputStream(cFile);
-
-                IOUtils.copy(is, os);
-
-                is.close();
-                os.close();
+                FileHandler.downloadFile("http://www.brandon3055.com/json/DEContributors.json", cFile);
                 finished = true;
             }
             catch (Exception e) {
