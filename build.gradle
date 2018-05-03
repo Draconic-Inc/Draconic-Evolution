@@ -25,6 +25,7 @@ repositories {
 }
 
 apply plugin: 'forge'
+apply plugin: 'signing'
 
 // Define properties file
 ext.configFile = file "build.properties"
@@ -98,4 +99,19 @@ artifacts {
    archives deobfJar
    archives sourceJar
    archives jar
+}
+
+task signJar(dependsOn: 'reobf'){
+    doLast {
+        ant.signjar(
+            destDir: jar.destinationDir,
+            jar: jar.getArchivePath(),
+            alias: findProperty('keyStoreAlias') ?: '',
+            keystore: findProperty('keyStore') ?: '',
+            storepass: findProperty('keyStorePass') ?: '',
+            digestalg: findProperty('signDigestAlg') ?: '',
+            tsaurl: findProperty('signTSAurl') ?: '',
+            verbose: true
+            )
+    }
 }
