@@ -61,7 +61,6 @@ public class GUIWeatherController extends GuiContainer {
     public static final String STORM_TEXT = "Thunder Storm";
     public static String text;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         super.initGui();

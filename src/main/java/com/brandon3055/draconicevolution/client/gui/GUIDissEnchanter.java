@@ -52,7 +52,6 @@ public class GUIDissEnchanter extends GuiContainer {
         fontRendererObj.drawString("Damage: " + (40 - tile.bookPower) + "%", 5, 49, 0x0000ff);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         super.initGui();

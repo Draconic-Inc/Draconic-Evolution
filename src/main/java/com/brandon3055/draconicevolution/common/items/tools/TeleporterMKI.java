@@ -111,7 +111,6 @@ public class TeleporterMKI extends ItemDE {
 
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
         if (!ItemNBTHelper.getBoolean(stack, "IsSet", false)) {

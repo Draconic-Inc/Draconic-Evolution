@@ -51,7 +51,6 @@ public class ContainerPlayerDetector extends Container {
         addSlotToContainer(new SlotOpaqueBlock(tileDetector, 0, 145, 15));
     }
 
-    @SuppressWarnings("unchecked")
     public void updateContainerSlots() {
         if (gui == null) {
             return;

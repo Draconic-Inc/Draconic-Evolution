@@ -147,7 +147,6 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
         }
     }
 
-    @SuppressWarnings("unchecked")
     public boolean killNextEntity() {
         if (worldObj.isRemote) return false;
         //fakePlayer = null;

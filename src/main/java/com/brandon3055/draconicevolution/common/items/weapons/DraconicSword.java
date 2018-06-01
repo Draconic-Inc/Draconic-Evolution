@@ -87,7 +87,6 @@ public class DraconicSword extends ItemSword implements IEnergyContainerWeaponIt
         return true;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
         if (InfoHelper.holdShiftForDetails(list)) {

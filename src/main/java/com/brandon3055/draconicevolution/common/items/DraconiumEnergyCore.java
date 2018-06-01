@@ -40,7 +40,6 @@ public class DraconiumEnergyCore extends ItemDE {
     }
 
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         list.add(new ItemStack(item, 1, 0));

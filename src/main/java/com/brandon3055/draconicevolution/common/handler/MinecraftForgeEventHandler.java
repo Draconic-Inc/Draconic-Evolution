@@ -64,7 +64,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
-@SuppressWarnings("unused")
 public class MinecraftForgeEventHandler {
 
     Random random = new Random();

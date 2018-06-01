@@ -25,7 +25,7 @@ public class UpdateChecker {
         thread.start();
     }
 
-
+    @SuppressWarnings({"unused"})
     @SubscribeEvent
     public void tickStart(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;

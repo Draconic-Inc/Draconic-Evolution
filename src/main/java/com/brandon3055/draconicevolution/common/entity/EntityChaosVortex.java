@@ -66,7 +66,7 @@ public class EntityChaosVortex extends Entity {
         double intensity = (ticksExisted - 130) / 100D;
         if (intensity > 1D) intensity = 1D;
 
-        @SuppressWarnings("unchecked") List<EntityPlayer> players = worldObj.getEntitiesWithinAABB(EntityPlayer.class, boundingBox.expand(200, 200, 200));
+        List<EntityPlayer> players = worldObj.getEntitiesWithinAABB(EntityPlayer.class, boundingBox.expand(200, 200, 200));
 
         for (EntityPlayer player : players) {
             double x = (rand.nextDouble() - 0.5) * 2 * intensity;

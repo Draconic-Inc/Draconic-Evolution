@@ -179,7 +179,6 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
         InfoHelper.addEnergyInfo(stack, list);

@@ -443,6 +443,9 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
             case GUARDING:
                 break;
 
+            case FIREBOMB:   
+            	break;
+            	
             case CHARGING:
                 if (Utills.getDistanceAtoB(posX, posZ, homeX, homeZ) > 300) behaviour = EnumBehaviour.GO_HOME;
                 break;
@@ -530,7 +533,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
         else if (nextAttackTimer == 0) {
 
             Entity attackTarget = target;
-            @SuppressWarnings("unchecked") List<EntityPlayer> targets = attackTarget == null ? worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(100, 100, 100)) : null;
+            List<EntityPlayer> targets = attackTarget == null ? worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(100, 100, 100)) : null;
 
             if (targets != null && targets.size() > 0) {
                 Iterator<EntityPlayer> i = targets.iterator();
@@ -748,7 +751,7 @@ public class EntityChaosGuardian extends EntityDragon {//summon DraconicEvolutio
 
                 break;
             case FIREBOMB:
-                @SuppressWarnings("unchecked") List<EntityPlayer> targets = worldObj.getEntitiesWithinAABB(EntityPlayer.class, boundingBox.expand(150, 150, 150));
+                List<EntityPlayer> targets = worldObj.getEntitiesWithinAABB(EntityPlayer.class, boundingBox.expand(150, 150, 150));
                 target = null;
                 while (targets.size() > 0 && target == null) {
                     EntityPlayer potentialTarget = targets.get(rand.nextInt(targets.size()));

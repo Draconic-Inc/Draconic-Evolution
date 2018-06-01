@@ -101,7 +101,6 @@ public class AdminSpawnEgg extends ItemDE {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_) {

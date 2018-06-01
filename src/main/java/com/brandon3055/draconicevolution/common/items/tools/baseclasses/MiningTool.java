@@ -15,14 +15,17 @@ import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 
+import cpw.mods.fml.common.Loader;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,6 +43,7 @@ import net.minecraftforge.event.world.BlockEvent;
 
 /**
  * Created by Brandon on 2/01/2015.
+ * Modified by bartimaeusnek on 23/05/2018
  */
 public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 
@@ -176,15 +180,26 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
             }
         }
 
+        
+       
         for (int xPos = x - xMin; xPos <= x + xMax; xPos++) {
             for (int yPos = y + yOffset - yMin; yPos <= y + yOffset + yMax; yPos++) {
                 for (int zPos = z - zMin; zPos <= z + zMax; zPos++) {
+                	player.worldObj.getChunkFromBlockCoords(xPos, zPos).sendUpdates=false;
                     breakExtraBlock(stack, player.worldObj, xPos, yPos, zPos, breakRadius * ((breakDepth / 2) + 1), player, refStrength, Math.abs(x - xPos) <= 1 && Math.abs(y - yPos) <= 1 && Math.abs(z - zPos) <= 1, blockMap);
                 }
             }
         }
-
-        @SuppressWarnings("unchecked") List<EntityItem> items = player.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x - xMin, y + yOffset - yMin, z - zMin, x + xMax + 1, y + yOffset + yMax + 1, z + zMax + 1));
+        for (int xPos = x - xMin; xPos <= x + xMax; xPos++) {
+            for (int yPos = y + yOffset - yMin; yPos <= y + yOffset + yMax; yPos++) {
+                for (int zPos = z - zMin; zPos <= z + zMax; zPos++) {
+                	player.worldObj.getChunkFromBlockCoords(x, z).sendUpdates=true;
+                	player.worldObj.getChunkFromBlockCoords(x, z).isModified=true;
+                }
+            }
+        }
+        
+        List<EntityItem> items = player.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x - xMin, y + yOffset - yMin, z - zMin, x + xMax + 1, y + yOffset + yMax + 1, z + zMax + 1));
         for (EntityItem item : items) {
             if (!player.worldObj.isRemote) {
                 item.setLocationAndAngles(player.posX, player.posY, player.posZ, 0, 0);
@@ -196,7 +211,7 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 
         return true;
     }
-
+    
     protected void breakExtraBlock(ItemStack stack, World world, int x, int y, int z, int totalSize, EntityPlayer player, float refStrength, boolean breakSound, Map<Block, Integer> blockMap) {
         if (world.isAirBlock(x, y, z)) return;
 
@@ -247,23 +262,35 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
         extractEnergy(stack, scaledPower, false);
 
         if (!world.isRemote) {
-
+        	
             block.onBlockHarvested(world, x, y, z, meta, player);
-
-            if (block.removedByPlayer(world, player, x, y, z, true)) {
-                block.onBlockDestroyedByPlayer(world, x, y, z, meta);
-                block.harvestBlock(world, player, x, y, z, meta);
-                player.addExhaustion(-0.025F);
-                if (block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)) > 0)
-                    player.addExperience(block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)));
-            }
-
+            
+            ArrayList<ItemStack> drops = block.getDrops(world, x, y, z, meta, EnchantmentHelper.getFortuneModifier(player));
+            for (ItemStack is : drops) {
+            	if (!player.inventory.addItemStackToInventory(is)) {
+            			if (world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots){
+            				float f = 0.7F;
+            				double d0 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            				double d1 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            				double d2 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            				EntityItem entityitem = new EntityItem(world, (double)x + d0, (double)y + d1, (double)z + d2, is);
+            				entityitem.delayBeforeCanPickup = 10;
+            				world.spawnEntityInWorld(entityitem);
+            			}
+            	}
+            }	
+            block.onBlockDestroyedByPlayer(world, x, y, z, meta);
+        	world.setBlock(x, y, z, Blocks.air, 0, 2);
+            player.addExhaustion(-0.025F);
+            if (block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)) > 0)
+            	player.addExperience(block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)));
             EntityPlayerMP mpPlayer = (EntityPlayerMP) player;
             mpPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
+            
         } else {
             if (breakSound) world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
-            if (block.removedByPlayer(world, player, x, y, z, true)) {
-                block.onBlockDestroyedByPlayer(world, x, y, z, meta);
+            if (block.removedByPlayer(world, player, x, y, z, false)) {
+            	block.onBlockDestroyedByPlayer(world, x, y, z, meta);
             }
 
             Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C07PacketPlayerDigging(2, x, y, z, Minecraft.getMinecraft().objectMouseOver.sideHit));

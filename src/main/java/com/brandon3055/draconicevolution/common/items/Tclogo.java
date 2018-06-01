@@ -479,7 +479,6 @@ public class Tclogo extends ItemDE {
 
     @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
         list.add(EnumChatFormatting.RED + "Warning! this is an item used to test random bits of code. You should not play with it");
         list.add(EnumChatFormatting.RED + "because depending on what i used it for last it could do anything.");

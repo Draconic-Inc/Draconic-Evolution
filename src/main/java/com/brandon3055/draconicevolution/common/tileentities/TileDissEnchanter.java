@@ -77,7 +77,6 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
-    @SuppressWarnings("unchecked")
     public void buttonClick(EntityPlayer player) {
         if (!isValidRecipe) return;
         if (player.experienceLevel < dissenchantCost && !player.capabilities.isCreativeMode) return;

@@ -231,7 +231,6 @@ public class GUIUpgradeModifier extends GuiContainer {
         fontRendererObj.drawString(">" + (coreSlots - usedSlots), guiLeft + 4, guiTop + 67, 0x000000);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void drawScreen(int x, int y, float f) {
         super.drawScreen(x, y, f);

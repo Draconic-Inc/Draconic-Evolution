@@ -28,7 +28,6 @@ public class CreativeStructureSpawner extends ItemDE {
     }
 
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
     @Override
     public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
         list.add(new ItemStack(item, 1, 0));
@@ -107,7 +106,6 @@ public class CreativeStructureSpawner extends ItemDE {
     }
 
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
     @Override
     public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
         if (stack.getItemDamage() == 1)

@@ -69,7 +69,6 @@ public class DraconiumBlock extends BlockDE {
         return icons[meta];
     }
 
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
     @Override
     public void getSubBlocks(Item item, CreativeTabs p_149666_2_, List list) {

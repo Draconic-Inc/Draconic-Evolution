@@ -380,7 +380,6 @@ public class ComponentManualPage extends ComponentScrollingBase {
             }
         }
 
-        @SuppressWarnings("unchecked")
         private Object[] getRecipeInput(IRecipe recipe) {
             if (recipe instanceof ShapelessOreRecipe) return ((ShapelessOreRecipe) recipe).getInput().toArray();
             else if (recipe instanceof ShapedOreRecipe) return getShapedOreRecipe((ShapedOreRecipe) recipe);

@@ -72,7 +72,6 @@ public class Wrench extends ItemDE implements IHudDisplayItem {
             player.addChatComponentMessage(new ChatComponentTranslation("msg.de.wrenchMode." + currentMode + ".txt"));
     }
 
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean bool) {

@@ -325,7 +325,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
             List<String> content;
 
             reader.beginArray();
-
+            
             //Read next page
             while (reader.hasNext()) {
                 String name;
@@ -335,13 +335,16 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
                 content = new ArrayList<String>();
 
                 reader.beginObject();
-
+                
                 //Read page name
                 String s = reader.nextName();
                 if (s.equals("name")) {
                     name = reader.nextString();
-                } else
-                    throw new IOException("Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
+                } else {
+                	reader.close();
+                	throw new IOException("Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
+                }
+                    
 
                 //Read page images
                 s = reader.nextName();
@@ -362,9 +365,10 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
                         if (!imageURLs.contains(url)) imageURLs.add(url);
                     }
                     reader.endArray();
-                } else
-                    throw new IOException("Error reading manual.json (invalid name in place of \"images\" [Found:\"" + s + "\"])");
-
+                } else{
+                	reader.close();
+            	throw new IOException("Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
+            	}
                 //Read page content
                 s = reader.nextName();
                 if (s.equals("content")) {
@@ -373,17 +377,17 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
                         content.add(reader.nextString());
                     }
                     reader.endArray();
-                } else
-                    throw new IOException("Error reading manual.json (invalid name in place of \"content\" [Found:\"" + s + "\"])");
-
+                } else{
+                	reader.close();
+            	throw new IOException("Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
+            	}
                 reader.endObject();
 
                 if (isValidPage(name))
                     pageList.add(new ManualPage(name, images.toArray(new String[images.size()]), content.toArray(new String[content.size()]), nameL, meta));
             }
-
             reader.endArray();
-
+            reader.close();
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -391,6 +395,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
         catch (IOException e) {
             e.printStackTrace();
         }
+        
     }
 
     @Override

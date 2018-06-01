@@ -108,7 +108,6 @@ public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem {
     }
 
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void addInformation(final ItemStack teleporter, final EntityPlayer player, final List list2, final boolean extraInformation) {
         short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);

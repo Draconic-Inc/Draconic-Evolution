@@ -114,7 +114,7 @@ public class EntityDragonHeart extends Entity {
                     }
                     break;
                 }
-                @SuppressWarnings("unchecked") List<EntityItem> items = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
+                List<EntityItem> items = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
                 for (EntityItem item : items) {
                     ItemStack stack = item.getEntityItem();
                     if (Utills.getDistanceAtoB(posX, posY + 0.5, posZ, item.posX, item.posY, item.posZ) < 1) {

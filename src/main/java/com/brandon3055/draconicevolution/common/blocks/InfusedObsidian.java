@@ -68,7 +68,6 @@ public class InfusedObsidian extends BlockDE {
         }
 
         @SideOnly(Side.CLIENT)
-        @SuppressWarnings("unchecked")
         @Override
         public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
             list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("info.infusedObsidian.txt"));

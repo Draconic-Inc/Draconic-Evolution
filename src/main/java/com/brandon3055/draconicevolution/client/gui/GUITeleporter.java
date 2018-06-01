@@ -302,7 +302,6 @@ public class GUITeleporter extends GuiScreen {
         else if (!editingNew) ((GuiButton) buttonList.get(4)).enabled = true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         buttonList.clear();

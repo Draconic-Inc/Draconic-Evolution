@@ -61,7 +61,6 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         if (quantity != 0) moveIngredients(gui, assignedIngredients, quantity);
     }
 
-    @SuppressWarnings("unchecked")
     private boolean clearIngredients(GuiContainer gui, List<PositionedStack> ingreds) {
         int offsetx = getOffsetX(gui);
         int offsety = getOffsetY(gui);
@@ -77,7 +76,6 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     private void moveIngredients(GuiContainer gui, List<IngredientDistribution> assignedIngredients, int quantity) {
         for (IngredientDistribution distrib : assignedIngredients) {
             ItemStack pstack = distrib.permutation;
@@ -212,7 +210,6 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         return assignedIngredients;
     }
 
-    @SuppressWarnings("unchecked")
     private void findInventoryQuantities(GuiContainer gui, List<DistributedIngred> ingredStacks) {
         for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots)//work out how much we have to go round
         {
@@ -241,7 +238,6 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         return slot.inventory instanceof InventoryPlayer || slot.inventory instanceof TileDraconiumChest;
     }
 
-    @SuppressWarnings("unchecked")
     public Slot[][] mapIngredSlots(GuiContainer gui, List<PositionedStack> ingredients) {
         int offsetx = getOffsetX(gui);
         int offsety = getOffsetY(gui);

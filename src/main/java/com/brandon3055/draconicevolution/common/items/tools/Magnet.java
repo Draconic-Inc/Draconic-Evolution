@@ -57,7 +57,6 @@ public class Magnet extends ItemDE {
     }
 
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
     @Override
     public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
         list.add(new ItemStack(item, 1, 0));
@@ -75,7 +74,6 @@ public class Magnet extends ItemDE {
         return ItemNBTHelper.getBoolean(stack, "MagnetEnabled", false);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean hotbar) {
         if (!entity.isSneaking() && entity.ticksExisted % 5 == 0 && ItemNBTHelper.getBoolean(stack, "MagnetEnabled", false) && entity instanceof EntityPlayer) {
@@ -128,7 +126,6 @@ public class Magnet extends ItemDE {
         return stack;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
         list.add(StatCollector.translateToLocal("info.de.shiftRightClickToActivate.txt"));

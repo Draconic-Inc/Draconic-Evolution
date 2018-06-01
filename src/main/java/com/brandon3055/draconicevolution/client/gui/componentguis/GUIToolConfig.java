@@ -48,7 +48,6 @@ public class GUIToolConfig extends GUIBase {
         addDependentComponents();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         super.initGui();

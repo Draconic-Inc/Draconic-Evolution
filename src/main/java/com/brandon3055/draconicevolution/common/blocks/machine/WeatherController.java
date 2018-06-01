@@ -95,7 +95,6 @@ public class WeatherController extends BlockCustomDrop {
         else return icon_top;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     @Override
     public void getSubBlocks(final Item item, final CreativeTabs tab, final List par3list) {
