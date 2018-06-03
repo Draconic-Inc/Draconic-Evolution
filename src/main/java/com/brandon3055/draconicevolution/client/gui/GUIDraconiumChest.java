@@ -117,7 +117,6 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
         RenderHelper.enableGUIStandardItemLighting();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         super.initGui();

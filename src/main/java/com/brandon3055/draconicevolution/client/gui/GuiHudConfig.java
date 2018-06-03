@@ -30,7 +30,6 @@ public class GuiHudConfig extends GuiScreen {
         this.parent = parent;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         super.initGui();

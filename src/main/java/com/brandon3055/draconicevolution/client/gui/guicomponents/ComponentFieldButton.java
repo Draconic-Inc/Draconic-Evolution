@@ -71,7 +71,6 @@ public class ComponentFieldButton extends ComponentBase {
         drawString(fontRendererObj, field.getLocalizedName(), x + offsetX + 2, y + offsetY + (getHeight() / 2) - (fontRendererObj.FONT_HEIGHT / 2), 0xffffff);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void renderFinal(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
         if (isMouseOver(mouseX, mouseY)) {

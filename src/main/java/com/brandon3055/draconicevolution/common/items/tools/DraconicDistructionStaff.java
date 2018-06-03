@@ -88,7 +88,6 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
         return super.onItemRightClick(stack, world, player);
     }
 
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean extended) {

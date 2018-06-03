@@ -48,7 +48,6 @@ public class GUISunDial extends GuiContainer {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         super.initGui();

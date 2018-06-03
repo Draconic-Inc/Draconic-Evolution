@@ -65,7 +65,6 @@ public class Generator extends BlockCustomDrop {
 
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     @Override
     public void getSubBlocks(final Item item, final CreativeTabs tab, final List par3list) {

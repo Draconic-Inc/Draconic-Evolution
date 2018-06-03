@@ -94,7 +94,6 @@ public class EntityCustomArrow extends EntityArrow {
         this.ticksInGround = 0;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public void onUpdate() {
         //region Entity Update And motion

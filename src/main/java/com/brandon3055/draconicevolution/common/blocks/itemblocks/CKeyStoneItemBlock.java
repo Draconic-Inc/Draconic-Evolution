@@ -19,7 +19,6 @@ public class CKeyStoneItemBlock extends ItemBlock {
         setHasSubtypes(true);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
         list.add(new ItemStack(item, 1, 0));

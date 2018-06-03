@@ -125,7 +125,6 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
     }
 
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));

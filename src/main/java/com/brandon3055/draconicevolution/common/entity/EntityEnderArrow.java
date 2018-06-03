@@ -102,7 +102,6 @@ public class EntityEnderArrow extends EntityDraconicArrow {
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public void onUpdate() {
         for (int i = 0; i < 10; i++)

@@ -116,7 +116,6 @@ public class GUIParticleGenerator extends GuiScreen {
         super.mouseClicked(x, y, button);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         int posX = (this.width - xSize) / 2;
@@ -524,7 +523,6 @@ public class GUIParticleGenerator extends GuiScreen {
         fontRendererObj.drawString("> " + random_scale1, col2, posY + ln2 + 7 * 22, 0x000000, false);
     }
 
-    @SuppressWarnings("unchecked")
     private void page1Buttons() {
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;
@@ -616,7 +614,6 @@ public class GUIParticleGenerator extends GuiScreen {
 
     }
 
-    @SuppressWarnings("unchecked")
     private void page2Buttons() {
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;
@@ -689,7 +686,6 @@ public class GUIParticleGenerator extends GuiScreen {
 
     }
 
-    @SuppressWarnings("unchecked")
     private void page3Buttons() {
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;

@@ -122,7 +122,6 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
 
     @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
         boolean show = InfoHelper.holdShiftForDetails(list);
         if (show) {
@@ -137,7 +136,6 @@ public class WyvernBow extends ItemBow implements IInventoryTool, IUpgradableIte
     }
 
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         list.add(ItemNBTHelper.setInteger(new ItemStack(item, 1, 0), "Energy", 0));

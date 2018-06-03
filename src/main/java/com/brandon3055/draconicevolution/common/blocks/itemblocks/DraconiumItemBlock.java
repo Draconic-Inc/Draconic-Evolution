@@ -29,7 +29,6 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
     protected int maxReceive = BalanceConfigHandler.draconiumBlockChargingSpeed;
     protected int maxExtract = BalanceConfigHandler.draconiumBlockChargingSpeed;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
         list.add(new ItemStack(item, 1, 0));
@@ -94,7 +93,6 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
     }
 
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
     @Override
     public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
         if (stack.hasTagCompound()) list.add(getEnergyStored(stack) + " / " + getMaxEnergyStored(stack) + "RF");

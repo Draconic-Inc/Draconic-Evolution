@@ -63,7 +63,6 @@ public class Grinder extends BlockCustomDrop {
     public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     @Override
     public void getSubBlocks(final Item item, final CreativeTabs tab, final List par3list) {

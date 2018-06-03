@@ -201,7 +201,6 @@ public class ToolHandler {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unused"})
     public static void AOEAttack(EntityPlayer player, Entity entity, ItemStack stack, int range) {
         World world = player.worldObj;
         AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);

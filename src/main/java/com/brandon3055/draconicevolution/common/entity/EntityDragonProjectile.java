@@ -216,8 +216,8 @@ public class EntityDragonProjectile extends Entity {
                     worldObj.playSoundEffect(posX, posY, posZ, "random.explode", 4.0F, (1.0F + (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
                     int i = 3 + rand.nextInt(3);
                     EntityDragonProjectile newProjectile;
-                    @SuppressWarnings("unchecked") List<EntityLivingBase> list = worldObj.getEntitiesWithinAABBExcludingEntity(shooter, boundingBox.expand(60, 60, 60), Utills.selectPlayer);
-                    for (i = i; i > 0; i--) {
+                    List<EntityLivingBase> list = worldObj.getEntitiesWithinAABBExcludingEntity(shooter, boundingBox.expand(60, 60, 60), Utills.selectPlayer);
+                    for (i =+ 0; i > 0; i--) {
                         newProjectile = new EntityDragonProjectile(worldObj, MINI_CHAOS_CHASER, list.size() > 0 ? list.get(rand.nextInt(list.size())) : null, power / 2F, shooter);
                         newProjectile.motionY = 0;
                         int randDir = rand.nextInt();
@@ -285,7 +285,7 @@ public class EntityDragonProjectile extends Entity {
 
     private void damageEntitiesInRadius(DamageSource source, double radius, float damage) {
         if (worldObj.isRemote) return;
-        @SuppressWarnings("unchecked") List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(radius, radius, radius));
+        List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(radius, radius, radius));
 
         for (EntityLivingBase entityLivingBase : entities) {
             if (entityLivingBase == shooter) continue;

@@ -47,7 +47,6 @@ public class EnergyCrystal extends BlockDE implements IHudDisplayBlock {
         ModBlocks.register(this, EnergyCrystalItemBlock.class);
     }
 
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
     @Override
     public void getSubBlocks(Item item, CreativeTabs p_149666_2_, List list) {

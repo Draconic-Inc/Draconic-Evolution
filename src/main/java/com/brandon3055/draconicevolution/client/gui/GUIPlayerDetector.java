@@ -84,7 +84,6 @@ public class GUIPlayerDetector extends GuiContainer {
             drawHoveringText(lines, x, y, fontRendererObj);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         super.initGui();

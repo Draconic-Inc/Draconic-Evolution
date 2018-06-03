@@ -75,7 +75,6 @@ public class ToolBase extends RFItemBase {
         return efficiencyOnProperMaterial;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void setHarvestLevel(String toolClass, int level) {
         if (toolClass.equals("pickaxe")) blockOverrides.addAll(PICKAXE_OVERRIDES);
@@ -234,7 +233,6 @@ public class ToolBase extends RFItemBase {
         return toolMaterial;
     }
 
-    @SuppressWarnings("unchecked")
     public static void holdCTRLForUpgrades(List list, ItemStack stack) {
         if (stack == null || !(stack.getItem() instanceof IUpgradableItem)) return;
         if (!InfoHelper.isCtrlKeyDown())

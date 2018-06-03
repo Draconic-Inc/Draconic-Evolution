@@ -72,7 +72,6 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
         return b;
     }
 
-    @SuppressWarnings({"unchecked"})
     private void findEntitys() {
         double x1 = xCoord + 0.5 - range;
         double y1 = yCoord + 0.5 - range;

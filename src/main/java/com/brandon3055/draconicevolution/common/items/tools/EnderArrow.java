@@ -28,7 +28,6 @@ public class EnderArrow extends ItemDE {
         itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "ender_arrow");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
         list.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.arrowInfo.txt"));

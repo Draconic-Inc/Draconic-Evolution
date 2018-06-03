@@ -40,7 +40,6 @@ public class SafetyMatch extends ItemDE {
         else return super.getUnlocalizedName(itemStack) + "Box";
     }
 
-    @SuppressWarnings("ALL")
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
@@ -116,7 +115,6 @@ public class SafetyMatch extends ItemDE {
         }
     }
 
-    @SuppressWarnings("ALL")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {

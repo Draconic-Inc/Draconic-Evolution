@@ -92,7 +92,6 @@ public class DraconicArmor
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void getSubItems(Item item, CreativeTabs p_150895_2_, List list) {
         list.add(ItemNBTHelper.setInteger(new ItemStack(item), "Energy", 0));
@@ -213,7 +212,6 @@ public class DraconicArmor
         }
     }
 
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
@@ -221,7 +219,6 @@ public class DraconicArmor
         ToolBase.holdCTRLForUpgrades(list, stack);
     }
 
-    @SuppressWarnings("unchecked")
     public boolean clearNegativeEffects(Entity par3Entity) {
         boolean flag = false;
         if (par3Entity.ticksExisted % 20 == 0) {
@@ -240,7 +237,7 @@ public class DraconicArmor
                 }
                 for (PotionEffect potion : potions) {
                     int id = potion.getPotionID();
-                    if (ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[id], new String[]{"isBadEffect", "field_76418_K", "J"})) {
+                    if ((Boolean) ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[id], new String[]{"isBadEffect", "field_76418_K", "J"})) {
                         if (potion.getPotionID() == Potion.digSlowdown.id && ModHelper.isHoldingCleaver(player)) break;
                         if ((player.getHeldItem() == null || (player.getHeldItem().getItem() != ModItems.wyvernBow && player.getHeldItem().getItem() != ModItems.draconicBow)) || id != 2) {
                             player.removePotionEffect(id);
