@@ -121,7 +121,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
             TileEntity linkedTile = world.getTileEntity(linkedPos);
 
             if (!(linkedTile instanceof ICrystalLink)) {
-                if (world.getChunkFromBlockCoords(linkedPos).isLoaded()) {
+                if (world.isBlockLoaded(linkedPos)) {
                     breakLink(linkedPos);
                     return;
                 }
@@ -534,21 +534,23 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
     }
 
     @Override
-    public NBTTagCompound writeToItemStack(ItemStack stack, boolean willHarvest) {
-        NBTTagCompound compound = super.writeToItemStack(stack, willHarvest);
-        compound.setByte("Tier", (byte) getTier());
-        energyStorage.writeToNBT(compound);
-        return compound;
+    public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
+        super.writeToItemStack(tileCompound, willHarvest);
+        if (energyStorage.getEnergyStored() > 0){
+            tileCompound.setByte("Tier", (byte) getTier());
+            energyStorage.writeToNBT(tileCompound);
+        }
     }
 
     @Nullable
     @Override
-    public NBTTagCompound readFromItemStack(ItemStack stack) {
-        NBTTagCompound compound = super.readFromItemStack(stack);
-        int cap = getCapacityForTier(compound.getByte("Tier"));
-        energyStorage.setCapacity(cap).setMaxTransfer(cap);
-        energyStorage.readFromNBT(compound);
-        return compound;
+    public void readFromItemStack(NBTTagCompound tileCompound) {
+        super.readFromItemStack(tileCompound);
+        if (tileCompound.hasKey("Tier")) {
+            int cap = getCapacityForTier(tileCompound.getByte("Tier"));
+            energyStorage.setCapacity(cap).setMaxTransfer(cap);
+            energyStorage.readFromNBT(tileCompound);
+        }
     }
 
     @Override

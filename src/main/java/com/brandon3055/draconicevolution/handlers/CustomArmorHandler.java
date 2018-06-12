@@ -87,7 +87,7 @@ public class CustomArmorHandler {
         }
 
         EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-        if (!player.isServerWorld()) {
+        if (player.world.isRemote) {
             return;
         }
 

@@ -14,6 +14,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -103,7 +105,7 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
                     canSpawn = isNotColliding(entity) && (result == Event.Result.DEFAULT || result == Event.Result.ALLOW);
                 }
                 else {
-                    canSpawn = ForgeEventFactory.canEntitySpawnSpawner(entityliving, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ);
+                    canSpawn = canEntitySpawnSpawner(entityliving, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ);
                 }
 
                 if (canSpawn) {
@@ -134,6 +136,15 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
             }
         }
 
+    }
+
+    private boolean canEntitySpawnSpawner(EntityLiving entity, World world, float x, float y, float z) {
+        Event.Result result = ForgeEventFactory.canEntitySpawn(entity, world, x, y, z, true);
+        if (result == Event.Result.DEFAULT) {
+            boolean isSlime = entity instanceof EntitySlime;
+            return (isSlime ||entity.getCanSpawnHere()) && entity.isNotColliding();
+        }
+        else return result == Event.Result.ALLOW;
     }
 
     public boolean isNotColliding(Entity entity) {
@@ -233,11 +244,11 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
     }
 
     @Override
-    public NBTTagCompound writeToItemStack(ItemStack stack, boolean willHarvest) {
+    public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
         if (willHarvest) {
             mobSoul.value = ItemStack.EMPTY;
         }
-        return super.writeToItemStack(stack, willHarvest);
+        super.writeToItemStack(tileCompound, willHarvest);
     }
 
     //region Render
@@ -258,7 +269,10 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
     //region Spawner Tier
 
     public enum SpawnerTier {
-        BASIC(4, true, false), WYVERN(6, false, false), DRACONIC(8, false, true), CHAOTIC(12, false, true);
+        BASIC(4, true, false),
+        WYVERN(6, false, false),
+        DRACONIC(8, false, true),
+        CHAOTIC(12, false, true);
 
         private int spawnCount;
         private boolean requiresPlayer;

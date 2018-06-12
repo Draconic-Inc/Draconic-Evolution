@@ -125,7 +125,7 @@ public class JeiHelper {//TODO This Is Now Borked
                 DEJEIPlugin.jeiRuntime.getRecipesGui().show(f);
             }
 
-            return false;//layout.handleClick(minecraft, mouseX, mouseY, mouseButton);
+            return false;//layout.handleRecipeClick(minecraft, mouseX, mouseY, mouseButton);
         }
 
         @Override

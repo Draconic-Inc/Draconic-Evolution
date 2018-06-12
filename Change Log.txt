@@ -1,4 +1,9 @@
 ######## 2.3.12.x ########
+-Fixed spawner not spawning slime outside of slime chunks.
+-Fixed broken crystal logic causing unintended chunk loading.
+-Fixed issue with contributor downloader throwing errors
+-Fixed generator consuming fuel container items.
+-Reduced NBT clutter on tiles when harvested.
 
 ######## 2.3.11.290 ########
 -Fixed tool stats config not getting applied properly.

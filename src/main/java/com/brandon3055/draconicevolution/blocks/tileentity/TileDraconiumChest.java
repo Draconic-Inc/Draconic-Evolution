@@ -8,7 +8,6 @@ import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.DataUtils;
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
@@ -479,18 +478,18 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
 
 
     @Override
-    public NBTTagCompound writeToItemStack(ItemStack stack, boolean willHarvest) {
-        NBTTagCompound compound = super.writeToItemStack(stack, willHarvest);
-        writeRegions(compound);
-        ItemNBTHelper.setInteger(stack, "ChestColour", colour.value);
-        return compound;
+    public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
+        super.writeToItemStack(tileCompound, willHarvest);
+        writeRegions(tileCompound);
+        if (colour.value != 0x640096){
+            tileCompound.setInteger("ChestColour", colour.value);
+        }
     }
 
     @Override
-    public NBTTagCompound readFromItemStack(ItemStack stack) {
-        NBTTagCompound compound = super.readFromItemStack(stack);
-        readRegions(compound);
-        return compound;
+    public void readFromItemStack(NBTTagCompound tileCompound) {
+        super.readFromItemStack(tileCompound);
+        readRegions(tileCompound);
     }
 
     @Override
