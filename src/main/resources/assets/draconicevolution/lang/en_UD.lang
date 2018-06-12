@@ -1,0 +1,921 @@
+tile.draconicevolution:celestial_manipulator.name=ɹoʇɐꞁndᴉuɐW ꞁɐᴉʇsǝꞁǝƆ
+tile.draconicevolution:draconium_ore_normal.name=ǝɹO ɯnᴉuoɔɐɹᗡ
+tile.draconicevolution:draconium_ore_nether.name=ǝɹO ɯnᴉuoɔɐɹᗡ ɹǝɥʇǝN
+tile.draconicevolution:draconium_ore_end.name=ǝɹO ɯnᴉuoɔɐɹᗡ ɹǝpuƎ
+tile.draconicevolution:grinder.name=ɹǝpuᴉɹ⅁ qoW
+tile.draconicevolution:potentiometer.name=ɹǝʇǝɯoᴉʇuǝʇoԀ
+tile.draconicevolution:rain_sensor.name=ɹosuǝS uᴉɐᴚ
+tile.draconicevolution:particle_generator.name=ɹoʇɐɹǝuǝ⅁ ǝꞁɔᴉʇɹɐԀ
+tile.draconicevolution:energy_core_stabilizer.name=ɹǝzᴉꞁᴉqɐʇS ǝɹoƆ ʎᵷɹǝuƎ
+tile.draconicevolution:entity_detector.name=ɹoʇɔǝʇǝᗡ ʎʇᴉʇuƎ
+tile.draconicevolution:entity_detector_basic.name=ɹoʇɔǝʇǝᗡ ʎʇᴉʇuƎ
+tile.draconicevolution:entity_detector_advanced.name=ɹoʇɔǝʇǝᗡ ʎʇᴉʇuƎ pǝɔuɐʌpⱯ
+tile.draconicevolution:energy_infuser.name=ɹǝsnɟuI ʎᵷɹǝuƎ
+tile.draconicevolution:draconic_spawner.name=ɹǝuʍɐdS qoW pǝzᴉꞁᴉqɐʇS
+tile.draconicevolution:generator.name=ɹoʇɐɹǝuǝ⅁
+tile.draconicevolution:energy_storage_core.name=ǝɹoƆ ʎᵷɹǝuƎ
+tile.draconicevolution:energy_pylon.name=uoꞁʎԀ ʎᵷɹǝuƎ
+tile.draconicevolution:draconium_block.name=ʞɔoꞁᗺ ɯnᴉuoɔɐɹᗡ
+tile.draconicevolution:draconium_block_charged.name=ʞɔoꞁᗺ ɯnᴉuoɔɐɹᗡ pǝᵷɹɐɥƆ
+tile.draconicevolution:diss_enchanter.name=ɹǝʇuɐɥɔuǝsᴉᗡ
+tile.draconicevolution:dislocator_pedestal.name=ꞁɐʇsǝpǝԀ ɹoʇɐɔoꞁsᴉᗡ
+tile.draconicevolution:draconium_chest.name=ʇsǝɥƆ ɯnᴉuoɔɐɹᗡ
+tile.draconicevolution:draconic_block.name=ʞɔoꞁᗺ ɯnᴉuoɔɐɹᗡ pǝuǝʞɐʍⱯ
+tile.draconicevolution:infused_obsidian.name=uɐᴉpᴉsqO pǝsnɟuI ɯnᴉuoɔɐɹᗡ
+tile.draconicevolution:dislocator_receptacle.name=ǝꞁɔɐʇdǝɔǝᴚ ɹoʇɐɔoꞁsᴉᗡ
+tile.draconicevolution:portal.name=ꞁɐʇɹoԀ
+tile.draconicevolution:flux_gate.name=ǝʇɐ⅁ xnꞁℲ
+tile.draconicevolution:fluid_gate.name=ǝʇɐ⅁ pᴉnꞁℲ
+tile.draconicevolution:reactor_core.name=ǝɹoƆ ɹoʇɔɐǝᴚ ɔᴉuoɔɐɹᗡ
+tile.draconicevolution:reactor_stabilizer.name=ɹǝzᴉꞁᴉqɐʇS ɹoʇɔɐǝᴚ
+tile.draconicevolution:reactor_injector.name=ɹoʇɔǝɾuI ʎᵷɹǝuƎ ɹoʇɔɐǝᴚ
+tile.draconicevolution:chaos_crystal.name=ꞁɐʇsʎɹƆ soɐɥƆ
+tile.draconicevolution:item_dislocation_inhibitor.name=ɹoʇɔǝɾoɹԀ pꞁǝᴉℲ uoᴉʇɐzᴉꞁɐɯɹoN uoᴉʇɐɔoꞁsᴉᗡ
+
+tile.draconicevolution:energy_crystal.relay.basic.name=ꞁɐʇsʎɹƆ ʎɐꞁǝᴚ ʎᵷɹǝuƎ ɔᴉsɐᗺ
+tile.draconicevolution:energy_crystal.relay.wyvern.name=ꞁɐʇsʎɹƆ ʎɐꞁǝᴚ ʎᵷɹǝuƎ uɹǝʌʎM
+tile.draconicevolution:energy_crystal.relay.draconic.name=ꞁɐʇsʎɹƆ ʎɐꞁǝᴚ ʎᵷɹǝuƎ ɔᴉuoɔɐɹᗡ
+tile.draconicevolution:energy_crystal.crystal_io.basic.name=ꞁɐʇsʎɹƆ O/I ʎᵷɹǝuƎ ɔᴉsɐᗺ
+tile.draconicevolution:energy_crystal.crystal_io.wyvern.name=ꞁɐʇsʎɹƆ O/I ʎᵷɹǝuƎ uɹǝʌʎM
+tile.draconicevolution:energy_crystal.crystal_io.draconic.name=ꞁɐʇsʎɹƆ O/I ʎᵷɹǝuƎ ɔᴉuoɔɐɹᗡ
+tile.draconicevolution:energy_crystal.wireless.basic.name=ꞁɐʇsʎɹƆ ʎᵷɹǝuƎ ssǝꞁǝɹᴉM ɔᴉsɐᗺ
+tile.draconicevolution:energy_crystal.wireless.wyvern.name=ꞁɐʇsʎɹƆ ʎᵷɹǝuƎ ssǝꞁǝɹᴉM uɹǝʌʎM
+tile.draconicevolution:energy_crystal.wireless.draconic.name=ꞁɐʇsʎɹƆ ʎᵷɹǝuƎ ssǝꞁǝɹᴉM ɔᴉuoɔɐɹᗡ
+
+
+tile.draconicevolution:fusion_crafting_core.name=ǝɹoƆ ᵷuᴉʇɟɐɹƆ uoᴉsnℲ
+tile.draconicevolution:crafting_injector_basic.name=ɹoʇɔǝɾuI ᵷuᴉʇɟɐɹƆ uoᴉsnℲ ɔᴉsɐᗺ
+tile.draconicevolution:crafting_injector_wyvern.name=ɹoʇɔǝɾuI ᵷuᴉʇɟɐɹƆ uoᴉsnℲ uɹǝʌʎM
+tile.draconicevolution:crafting_injector_draconic.name=ɹoʇɔǝɾuI ᵷuᴉʇɟɐɹƆ uoᴉsnℲ ɔᴉuoɔɐɹᗡ
+tile.draconicevolution:crafting_injector_chaotic.name=ɹoʇɔǝɾuI ᵷuᴉʇɟɐɹƆ uoᴉsnℲ ɔᴉʇoɐɥƆ
+
+tile.draconicevolution:creative_rf_source.name=ǝɔɹnoS Ⅎᴚ ǝʌᴉʇɐǝɹƆ
+
+
+item.draconicevolution:awakened_core.name=ǝɹoƆ pǝuǝʞɐʍⱯ
+item.draconicevolution:draconium_ingot.name=ʇoᵷuI ɯnᴉuoɔɐɹᗡ
+item.draconicevolution:draconium_dust.name=ʇsnᗡ ɯnᴉuoɔɐɹᗡ
+item.draconicevolution:draconium_blend.name=(pǝʇɐᴉɔǝɹdǝᗡ) puǝꞁᗺ ɯnᴉuoɔɐɹᗡ
+item.draconicevolution:dragon_heart.name=ʇɹɐǝH uoᵷɐɹᗡ
+item.draconicevolution:wyvern_core.name=ǝɹoƆ uɹǝʌʎM
+item.draconicevolution:sun_focus.name=snɔoℲ ɹɐꞁoS
+item.draconicevolution:draconic_core.name=ǝɹoƆ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:dislocator.name=ɹoʇɐɔoꞁsᴉᗡ
+item.draconicevolution:dislocator_advanced.name=ɹoʇɐɔoꞁsᴉᗡ pǝɔuɐʌpⱯ
+
+info.teleporterInfGUI.txt=ᴉnᵷ uǝdo oʇ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ + ʇɟᴉɥS
+info.teleporterInfScroll.txt=suoᴉʇɐuᴉʇsǝp ǝꞁɔʎɔ oʇ ꞁꞁoɹɔs + ʇɟᴉɥS
+
+item.draconicevolution:wyvern_pick.name=uɹǝʌʎM ǝɥʇ ɟo ǝxɐʞɔᴉԀ
+item.draconicevolution:wyvern_axe.name=uɹǝʌʎM ǝɥʇ ɟo ǝxⱯ
+item.draconicevolution:wyvern_shovel.name=uɹǝʌʎM ǝɥʇ ɟo ꞁǝʌoɥS
+item.draconicevolution:wyvern_sword.name=uɹǝʌʎM ǝɥʇ ɟo pɹoʍS
+item.draconicevolution:wyvern_bow.name=uɹǝʌʎM ǝɥʇ ɟo ʍoᗺ
+item.draconicevolution:wyvern_helm.name=ɯꞁǝH uɹǝʌʎM
+item.draconicevolution:wyvern_chest.name=ǝʇɐꞁdʇsǝɥƆ uɹǝʌʎM
+item.draconicevolution:wyvern_legs.name=sᵷuᴉᵷᵷǝꞀ uɹǝʌʎM
+item.draconicevolution:wyvern_boots.name=sʇooᗺ uɹǝʌʎM
+item.draconicevolution:draconic_pick.name=ǝxɐʞɔᴉԀ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_axe.name=ǝxⱯ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_shovel.name=ꞁǝʌoɥS ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_hoe.name=ǝoH ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_sword.name=pɹoʍS ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_bow.name=ʍoᗺ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_helm.name=ɯꞁǝH ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_chest.name=ǝʇɐꞁdʇsǝɥƆ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_legs.name=sᵷuᴉᵷᵷǝꞀ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_boots.name=sʇooᗺ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconic_staff_of_power.name=ɹǝʍoԀ ɟo ɟɟɐʇS ɔᴉuoɔɐɹᗡ
+item.draconicevolution:mob_soul.name=ꞁnoS
+item.draconicevolution:ender_arrow.name=ʍoɹɹⱯ ɹǝpuƎ
+item.draconicevolution:safety_match.name=ɥɔʇɐW ʎʇǝɟɐS
+item.draconicevolution:safety_match_box.name=sǝɥɔʇɐW ʎʇǝɟɐS ɟo xoᗺ
+item.draconicevolution:key.name=ʎǝʞ
+item.draconicevolution:wyvern_energy_core.name=ǝɹoƆ ʎᵷɹǝuƎ uɹǝʌʎM
+item.draconicevolution:draconic_energy_core.name=ǝɹoƆ ʎᵷɹǝuƎ ɔᴉuoɔɐɹᗡ
+
+item.draconicevolution:draconium_capacitor.wyvern.name=ɹoʇᴉɔɐdɐƆ xnꞁℲ uɹǝʌʎM
+item.draconicevolution:draconium_capacitor.draconic.name=ɹoʇᴉɔɐdɐƆ xnꞁℲ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:draconium_capacitor.creative.name=ɹoʇᴉɔɐdɐƆ xnꞁℲ ǝʌᴉʇɐǝɹƆ
+
+item.draconicevolution:draconic_ingot.name=ʇoᵷuI ɯnᴉuoɔɐɹᗡ pǝuǝʞɐʍⱯ
+item.draconicevolution:creative_structure_spawner_comet.name=ʇǝɯoƆ uʍɐdS
+item.draconicevolution:creative_structure_spawner_ender_island.name=puɐꞁsI ɹǝpuƎ uʍɐdS
+item.draconicevolution:info_tablet.name=ʇǝꞁqɐ⟘ uoᴉʇɐɯɹoɟuI uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ
+item.draconicevolution:crystal_binder.name=ɹǝpuᴉᗺ ꞁɐʇsʎɹƆ
+item.draconicevolution:dezils_marshmallow.name=ʍoꞁꞁɐɯɥsɹɐW s,ꞁᴉzǝᗡ
+item.draconicevolution:reactor_part.stabilizer_frame.name=ǝɯɐɹℲ ɹǝzᴉꞁᴉqɐʇS ɹoʇɔɐǝᴚ
+item.draconicevolution:reactor_part.inner_rotor.name=ɹoʇoᴚ ɹǝuuI ɹǝzᴉꞁᴉqɐʇS ɹoʇɔɐǝᴚ
+item.draconicevolution:reactor_part.outer_rotor.name=ɹoʇoᴚ ɹǝʇnO ɹǝzᴉꞁᴉqɐʇS ɹoʇɔɐǝᴚ
+item.draconicevolution:reactor_part.rotor_assembly.name=ʎꞁqɯǝssⱯ ɹoʇoᴚ ɹǝzᴉꞁᴉqɐʇS ɹoʇɔɐǝᴚ
+item.draconicevolution:reactor_part.focus_ring.name=ᵷuᴉᴚ snɔoℲ ɹǝzᴉꞁᴉqɐʇS ɹoʇɔɐǝᴚ
+item.draconicevolution:chaotic_core.name=ǝɹoƆ ɔᴉʇoɐɥƆ
+item.draconicevolution:chaos_shard.shard.name=pɹɐɥS soɐɥƆ
+item.draconicevolution:chaos_shard.fragSmall.name=ʇuǝɯᵷɐɹℲ soɐɥƆ ʎuᴉ⟘
+item.draconicevolution:chaos_shard.fragMedium.name=ʇuǝɯᵷɐɹℲ soɐɥƆ ꞁꞁɐɯS
+item.draconicevolution:chaos_shard.fragLarge.name=ʇuǝɯᵷɐɹℲ soɐɥƆ ǝᵷɹɐꞀ
+item.draconicevolution:nugget.draconium.name=ʇǝᵷᵷnN ɯnᴉuoɔɐɹᗡ
+item.draconicevolution:nugget.awakened.name=ʇǝᵷᵷnN ɯnᴉuoɔɐɹᗡ pǝuǝʞɐʍⱯ
+item.draconicevolution:magnet.basic.name=ɹoʇɐɔoꞁsᴉᗡ ɯǝʇI
+item.draconicevolution:magnet.advanced.name=ɹoʇɐɔoꞁsᴉᗡ ɯǝʇI pǝuǝʞɐʍⱯ
+
+item.draconicevolution:tool_upgrade.rfCap.name=(ʎʇᴉɔɐdɐƆ Ⅎᴚ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.digSpeed.name=(pǝǝdS ᵷᴉᗡ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.digAOE.name=(ƎOⱯ ᵷᴉᗡ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.digDepth.name=(ɥʇdǝᗡ ᵷᴉᗡ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.attackDmg.name=(ǝᵷɐɯɐᗡ ʞɔɐʇʇⱯ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.attackAOE.name=(ƎOⱯ ʞɔɐʇʇⱯ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.arrowDmg.name=(ǝᵷɐɯɐᗡ ʍoɹɹⱯ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.drawSpeed.name=(pǝǝdS ʍɐɹᗡ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.arrowSpeed.name=(pǝǝdS ʍoɹɹⱯ) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.shieldCap.name=(ʎʇᴉɔɐdɐƆ pꞁǝᴉɥS) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.shieldRec.name=(ʎɹǝʌoɔǝᴚ pꞁǝᴉɥS) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.moveSpeed.name=(pǝǝdS ʇuǝɯǝʌoW) ʎǝʞ ǝpɐɹᵷd∩
+item.draconicevolution:tool_upgrade.jumpBoost.name=(ʇsooᗺ dɯnՐ) ʎǝʞ ǝpɐɹᵷd∩
+
+item.draconicevolution:creative_exchanger.name=ɹǝᵷuɐɥɔxƎ ʞɔoꞁᗺ ǝʌᴉʇɐǝɹƆ
+item.draconicevolution:ender_energy_manipulator.name=ɹoʇɐꞁndᴉuɐW ʎᵷɹǝuƎ ɹǝpuƎ
+
+itemGroup.toolsAndWeapons=suodɐǝʍ ⅋ sꞁoo⟘ uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ
+itemGroup.blocksAndItems=sɯǝʇI ⅋ sʞɔoꞁᗺ uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ
+
+msg.size0.txt=ʞɔoꞁᗺ ǝꞁᵷuᴉS :ǝpoW ꞁoo⟘
+msg.size1.txt=ƐxƐ :ǝpoW ꞁoo⟘
+msg.size2.txt=5x5 :ǝpoW ꞁoo⟘
+msg.size3.txt=ⱢxⱢ :ǝpoW ꞁoo⟘
+msg.size4.txt=6x6 :ǝpoW ꞁoo⟘
+msg.oblittrue.txt=§4ǝʌᴉʇɔⱯ§a :ǝpoW uoᴉʇɐɹǝʇᴉꞁqO§f
+msg.oblitfalse.txt=§2ǝʌᴉʇɔɐuI§a :ǝpoW uoᴉʇɐɹǝʇᴉꞁqO§f
+msg.bowmoderapidfire.txt=§6ǝɹᴉℲ pᴉdɐᴚ§3 :ǝpoW ǝɹᴉℲ§f
+msg.bowmodesharpshooter.txt=§6ɹǝʇooɥS dɹɐɥS§3 :ǝpoW ǝɹᴉℲ§f
+msg.bowmodeexplosive.txt=§6ǝʌᴉsoꞁdxƎ§3 :ǝpoW ǝɹᴉℲ§f
+msg.bowmodedevistation.txt=§6(ʎꞁuO ǝʌᴉʇɐǝɹƆ) ¡¡¡uoᴉʇɐʇsɐʌǝᗡ§3 :ǝpoW ǝɹᴉℲ§f
+msg.bowoutofgunpowder.txt=§4ǝpoɯ ǝʌᴉsoꞁdxǝ ǝsn oʇ ɹǝpʍodunᵷ ᔭ pǝǝu no⅄§f
+msg.teleporterUnSet.txt=§c(ʞɔᴉꞁɔ ʇɥᵷᴉᴚ + ʇɟᴉɥS) ʇɹodǝꞁǝʇ uɐɔ noʎ ǝɹoɟǝq uoᴉʇɐuᴉʇsǝp ǝɥʇ ʇǝs ʇsɹᴉɟ ʇsnɯ no⅄§f
+msg.teleporterBound.txt=§a:oʇ punoq ɹǝʇɹodǝꞁǝ⟘§f
+msg.teleporterLowHealth.txt=§c¡ɥʇꞁɐǝɥ uo ʍoꞁ oʇ ǝɹɐ no⅄§f
+msg.teleporterSentMob.txt=oʇ ʇuǝs uǝǝq sɐɥ ʎʇᴉʇuǝ ǝɥ⟘
+msg.teleporterEntityDimensional.txt=§c¡suoᴉsuǝɯᴉp ssoɹɔɐ sqoɯ puǝs ʇou uɐɔ no⅄§f
+msg.teleporterAlreadySet.txt=§cuoᴉʇɐɔoꞁ ǝuo oʇ punoq ǝq ʎꞁuo uɐɔ ɯɹɐɥɔ sᴉɥʇ ɹoɹɹƎ§f
+msg.teleporterOutOfFuel.txt=§c¡¡¡ꞀƎ∩Ⅎ ℲO ⟘∩O§f
+msg.teleporterOutOfPearls.txt=§c¡¡¡sꞁɹɐǝԀ ɹǝpuƎ ɟo ʇnO§f
+msg.teleporterPlayerT1.txt=ʇɐɥʇ op oʇ ɹoʇɐɔoꞁsᴉp ꞁnɟɹǝʍod ǝɹoɯ ɐ pǝǝu no⅄
+msg.teleporterPlayerConsent.txt=ᵷuᴉʞɐǝus ʎq ʇuǝsuoɔ ɹᴉǝɥʇ ǝʌᴉᵷ ʇsnɯ ɹǝʎɐꞁd ǝɥ⟘
+msg.spawnerInfo1.txt=ǝdʎ⟘ qoW
+msg.spawnerInfo2.txt=ɹǝʎɐꞁԀ sǝɹᴉnbǝᴚ
+msg.spawnerInfo3.txt=sʇuǝɯǝɹᴉnbǝᴚ uʍɐdS ǝɹouᵷI
+msg.spawnerInfo4.txt=ɹǝᴉ⟘ ɹǝuʍɐdS
+msg.spawnerInfo5.txt=§3oɟuᴉ ǝpɐɹᵷdn ɹoɟ ʇɟᴉɥs pꞁoH§f
+msg.spawnerInfo6.txt=§3ɹɐʇS ɹǝɥʇǝN§f :sɹǝʎɐꞁd sǝɹᴉnbǝᴚ
+msg.spawnerInfo7.txt=§3ǝꞁddⱯ ɥɔʇoN§f :sʇuǝɯǝɹᴉnbǝᴚ uʍɐdS ǝɹouᵷI
+msg.spawnerInfo8.txt=§3ǝɹoƆ uɹǝʌʎM§f :ᘔ ɹǝᴉ⟘
+msg.spawnerInfo9.txt=§3ǝɹoƆ pǝuǝʞɐʍⱯ §f:Ɛ ɹǝᴉ⟘
+msg.dislocatorUnsafe.txt=uᴉɐᵷⱯ ʎɹ⟘ ǝsɐǝꞁԀ ǝɟɐsu∩ uoᴉʇɐuᴉʇsǝᗡ
+msg.dislocatorNoGround.txt=punoɟ ʇou pꞁɹoʍ ɹoɹɹƎ
+msg.range.txt=:ǝᵷuɐᴚ
+msg.energyStorageCoreUTA.txt=(uoᴉʇɐɹnᵷᴉɟuoƆ pᴉꞁɐʌuI) ǝʇɐʌᴉʇɔɐ oʇ ǝꞁqɐu∩
+msg.SpawnDragonToFarFrom00.txt=0'0 ɯoɹɟ ɹɐɟ oʇ [ᴚOᴚᴚƎ]
+msg.SpawnDragonMustBeInTheEnd.txt=¡uoᴉsuǝɯᴉp puƎ ǝɥʇ uᴉ ꞁɐnʇᴉɹ sᴉɥʇ ɯɹoɟɹǝd ʇsnɯ no⅄
+msg.wrongKey.txt=ʞɔoꞁ sᴉɥʇ ʇᴉɟ ʇou sǝop ʎǝʞ sᴉɥ⟘
+msg.cKeyStoneType0.txt=(ʎǝʞ ǝɯnsuoƆ) uoᴉʇɐʌᴉʇɔⱯ ʇuǝuɐɯɹǝԀ
+msg.cKeyStoneType1.txt=uoᴉʇɐʌᴉʇɔⱯ uoʇʇnᗺ
+msg.cKeyStoneType2.txt=uoᴉʇɐʌᴉʇɔⱯ ǝꞁᵷᵷo⟘
+msg.cKeyStoneType3.txt=(ʎǝʞ ǝɯnsuoƆ) uoᴉʇɐʌᴉʇɔⱯ uoʇʇnᗺ
+msg.draconiumChestEditmode.txt== ǝpoɯ ʇᴉpǝ ɹnoꞁoƆ
+msg.draconiumChestRed.txt== pǝᴚ
+msg.draconiumChestGreen.txt== uǝǝɹ⅁
+msg.draconiumChestBlue.txt== ǝnꞁᗺ
+msg.draconiumChestEditL1.txt=ɹnoꞁoɔ ǝɥʇ ʇsnɾpɐ oʇ ǝʎp ǝnꞁq ɹo uǝǝɹᵷ pǝɹ ɥʇᴉʍ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ
+msg.draconiumChestEditL2.txt=ǝnꞁɐʌ ǝɥʇ ǝsɐǝɹɔuᴉ oʇ ʇsǝɥɔ ǝɥʇ ɟo ɟꞁɐɥ doʇ ǝɥʇ ʞɔᴉꞁƆ
+msg.draconiumChestEditL3.txt=ǝnꞁɐʌ ǝɥʇ ǝsɐǝɹɔǝp oʇ ʇsǝɥɔ ǝɥʇ ɟo ɟꞁɐɥ ɯoʇʇoq ǝɥʇ ɹO
+msg.draconiumChestEditL4.txt=sʇsǝɥɔ ɹǝɥʇo oʇ ɹnoꞁoɔ ǝɥʇ ʎdoɔ oʇ ɹǝdɐd ɥʇᴉʍ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ
+msg.draconiumChestEdit2.txt=ɹǝdɐd ɟo ǝɔɐǝd ǝꞁᵷuᴉs ɐ ǝsn ǝsɐǝꞁԀ
+msg.de.dragonDeath.txt=§5ɥʇɐǝp§5 ǝʌᴉsoꞁdxǝ suoᵷɐɹp ǝɥʇ ʎq pǝuǝʞɐʍɐ ʎꞁᴉɹɐɹodɯǝʇ sᴉ ʇɹɐǝɥ ǝɥ⟘§f
+msg.de.baseSafeAOW.txt=§cpǝʇɔǝʇǝp§c sɐʍ§c ʎʇᴉʇuǝ§c ǝꞁᴉʇ§c ɐ§c ǝsnɐɔǝq§c pǝꞁǝɔuɐƆ§c uoᴉʇɐɹǝdO§9 (§apǝꞁqɐuǝ§a sᴉ§a ǝpoW§a ǝɟɐS§a ƎOⱯ§9)§f
+msg.de.guardianAttackBlocked.txt=¡sꞁɐʇsʎɹɔ suɐᴉpɹɐnᵷ ǝɥʇ ʎq pǝʞɔoꞁq sᴉ ʞɔɐʇʇɐ ɹno⅄
+msg.de.shieldDepleted.txt=¡¡¡ǝᵷɐɯɐᗡ ꞁɐɔᴉʇᴉɹƆ ᵷuᴉuɹɐM
+msg.de.shockWaveForEnergyBoltsOnly.txt=ǝɹᴉℲ ɔᴉuoɔɐɹᗡ ɟo ʍoɹɹⱯ ɥʇᴉʍ ǝꞁqᴉssod ʎꞁuo sᴉ ǝʌɐM ʞɔoɥS
+msg.de.explosiveNotForEnergyBolts.txt=ǝɹᴉℲ ɔᴉuoɔɐɹᗡ ɟo ʍoɹɹⱯ ɥʇᴉʍ ǝꞁqᴉssod ʇou sᴉ ǝʌᴉsoꞁdxƎ
+msg.de.insufficientPowerToFire.txt=ǝɹᴉℲ oʇ ɹǝʍoԀ ʇuǝᴉɔᴉɟɟnsuI
+msg.de.outOfArrows.txt=¡¡¡sʍoɹɹⱯ ɟo ʇnO
+msg.de.coreNotFound.txt=¡punoℲ ʇoN ǝɹoƆ [ᔭ0ᔭ :ɹoɹɹƎ]
+msg.de.notRaining.txt=¡ᵷuᴉuᴉɐɹ ʎꞁʇuǝɹɹnɔ ʇou sʇI
+msg.de.alreadyRaining.txt=¡ᵷuᴉuᴉɐɹ ʎpɐǝɹꞁɐ sʇI
+msg.de.alreadyStorm.txt=¡ᵷuᴉɹǝpunɥʇ ʎpɐǝɹꞁɐ sʇI
+msg.de.insufficientPower.txt=¡ɹǝʍoԀ ʇuǝᴉɔᴉɟɟnsuI
+msg.de.alreadyRunning.txt=¡ᵷuᴉuunᴚ ʎpɐǝɹꞁⱯ
+
+info.teleporterInfUnset1.txt=punoqu∩
+info.teleporterInfUnset2.txt=ʇuǝɹɹnɔ ɹnoʎ puᴉq oʇ ʞɔᴉꞁɔ ʇɥᵷᴉɹ ʇɟᴉɥS
+info.teleporterInfUnset3.txt=sǝʇɐuᴉpɹooɔ z 'ʎ 'x
+info.teleporterInfUnset4.txt=ᵷuᴉɔɐɟ ǝɹɐ noʎ uoᴉʇɔǝɹᴉp ǝɥʇ sɐ ꞁꞁǝʍ sⱯ
+info.teleporterInfUnset5.txt=uᴉ ʎꞁʇuǝɹɹnɔ ǝɹɐ noʎ uoᴉsuǝɯᴉp ǝɥʇ puⱯ
+info.teleporterInfDest.txt=uoᴉʇɐuᴉʇsǝᗡ
+info.teleporterInfFuel.txt=:ꞁǝnℲ
+info.teleporterInfSet1.txt=oʇ punoᗺ
+info.teleporterInfSet2.txt=ᵷuᴉuᴉɐɯǝɹ sǝs∩
+info.de.rightClickToTeleport.txt=ʇɹodǝꞁǝʇ oʇ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ
+info.de.draconiumBlockCapacitorCharge.txt=˙ɹoʇᴉɔɐdɐɔ ɯoɹɟ ǝᵷɹɐɥɔ oʇ ʞɐǝus puɐ ɯǝʇᴉ pꞁoH
+info.creativeCapacitor.txt=ʞuᴉs ɹo ǝɔɹnos uɐƆ
+info.de.itemDislocationInhibitor.txt=˙sɹoʇɐɔoꞁsᴉᗡ ɯǝʇI ʎq pǝʇɔǝꞁꞁoɔ ᵷuᴉǝq ɯoɹɟ ʞɔoꞁq 5 uᴉɥʇᴉʍ pǝddoɹp sɯǝʇᴉ sʇuǝʌǝɹԀ
+
+info.draconicAxe1.txt=¡¡¡¡¡¡ɹǝqɯᴉ⟘
+info.draconicAxe2.txt=ǝǝɹʇ ǝɹᴉʇuǝ uɐ ꞁꞁɐɟ ꞁꞁᴉM
+info.draconicAxe3.txt=˙pooʍ ᵷuᴉɥʇʎuɐ ɟo ʞunɥɔ 5x5x5 ɐ ʇno ʞɐǝɹq ɹo
+info.draconicAxe4.txt=˙ʞɔoꞁq ǝꞁᵷuᴉs ɐ ǝuᴉɯ oʇ ʇɟᴉɥs pꞁoH
+
+info.draconicCore.txt=uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ ɹoɟ ʇuǝuodɯoɔ ᵷuᴉʇɟɐɹɔ ǝɹoɔ ǝɥ⟘
+info.draconicCore1.txt=sɹǝuʍɐds qoɯ ǝzᴉꞁᴉqɐʇs oʇ pǝsn ǝq uɐƆ
+
+info.mobSoul1.txt=ǝdʎʇ ǝɥʇ ʇǝs oʇ ɹǝuʍɐds pǝzᴉꞁᴉqɐʇs ɐ uo pǝsn ǝq uɐƆ
+info.mobSoul2.txt=qoɯ ɐ uʍɐds oʇ ʞɔᴉꞁɔ ʇɥᵷᴉɹ ʇɟᴉɥs ɹO
+info.mobSoul3.txt=(ǝs∩ ǝꞁᵷuᴉS)
+
+info.arrowInfo.txt=ǝpᴉᴚ ꞁnɟuᴉɐԀ Ɐ
+info.arrowInfo0.txt=ʍoq ɹɐꞁnᵷǝɹ ɐ ɹoɟ ʎʌɐǝɥ oo⟘
+
+info.de.ender_energy_manipulator.info.txt=˙sꞁɐʇsʎɹɔ ᵷuᴉꞁɐǝɥ uʍo suoᵷɐɹp ǝɥʇ ɟo ʎᵷɹǝuǝ ǝɥʇ oʇuᴉ sdɐʇ ǝɔᴉʌǝp ꞁɐɔᴉʇsʎɯ ʎdǝǝɹɔ ʎꞁʇɥᵷᴉꞁs sᴉɥ⟘
+info.de.ender_energy_manipulator.info2.txt=˙uoᵷɐɹᗡ ɹǝpuƎ ǝɥʇ ɯoɹɟ ᵷᵷǝ uɐ ʇɔɐɹʇxǝ oʇ ʎᵷɹǝuǝ ʇɐɥʇ sǝsn uɐɯɹǝpuƎ ʎqɹɐǝu ʍǝɟ ɐ ɟo sꞁnos ǝɥʇ ɥʇᴉʍ ᵷuoꞁɐ puⱯ
+info.de.ender_energy_manipulator.location.msg=¡ʎɐʍǝʇɐᵷ puǝ ǝɥʇ uo pǝɔɐꞁd ǝq ʇsnW
+info.de.ender_energy_manipulator.dead.msg=¡punoɟ ǝq ʇou pꞁnoɔ uoᵷɐɹᗡ ɹǝpuƎ ǝɥ⟘
+info.de.ender_energy_manipulator.running.msg=¡pǝɥsᴉuᴉɟ sᴉ ɹoʇɐꞁndᴉuɐɯ ʇuǝɹɹnɔ ǝɥʇ ꞁᴉʇun ʇᴉɐʍ ʇsnɯ no⅄
+
+info.de.obliterationMode.txt=ǝpoW uoᴉʇɐɹǝʇᴉꞁqO
+info.de.obliterationModetrue.txt=ǝʌᴉʇɔⱯ
+info.de.obliterationModefalse.txt=ǝʌᴉʇɔɐuI
+info.de.miningMode.txt=ǝpoW ᵷuᴉuᴉW
+info.de.changeMiningMode.txt=ǝpoɯ ᵷuᴉuᴉɯ ǝᵷuɐɥɔ oʇ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ ʇɟᴉɥS
+info.de.toggleOblit.txt=ǝpoɯ uoᴉʇɐɹǝʇᴉꞁqO ǝꞁᵷᵷoʇ oʇ ʞɔᴉꞁɔ-ʇɥᵷᴉᴚ
+info.de.oblitInfo.txt=sʞɔoꞁq ǝnꞁɐʌ ʍoꞁ sʎoɹʇsǝp ǝpoɯ uoᴉʇɐɹǝʇᴉꞁqO
+info.de.attackDamage.txt=ǝᵷɐɯɐᗡ ʞɔɐʇʇⱯ
+info.de.bonusHealthDamage.txt=ɥʇꞁɐǝH qoW
+info.de.press.txt=ssǝɹԀ
+info.de.toOpenConfigGUI.txt=I∩⅁ ᵷᴉɟuoɔ uǝdo o⟘
+info.de.shiftToPause.txt=ǝpᴉꞁs ǝsnɐd oʇ ʇɟᴉɥs pꞁoH
+info.de.power.txt=ɹǝʍoԀ
+
+info.de.sword.txt=¡ɹǝᵷuoɹʇs ǝpɐꞁq sᴉɥʇ sǝʞɐɯ ɥʇᵷuǝɹʇs s,ʎɯǝuǝ ɹno⅄
+
+info.de.safetyMatch.txt=¡uʍop ǝsnoɥ ɹnoʎ uɹnq ⟘ON ꞁꞁᴉʍ ʇɐɥʇ ǝɹᴉɟ ɐ ʇɥᵷᴉꞀ
+
+info.draconiumChestInfo1.txt=puɐɥ ʎʇdɯǝ uɐ ɥʇᴉʍ ʞɔᴉꞁɔ ʇɥᵷᴉɹ ʇɟᴉɥS
+info.draconiumChestInfo2.txt=suoᴉʇdo ɹnoꞁoɔ ssǝɔɔɐ oʇ
+
+info.de.capacitorMode.txt=ǝpoW
+info.de.capacitorMode0.txt=ǝʌᴉʇɔɐuI
+info.de.capacitorMode1.txt=ɹoɯɹⱯ ǝᵷɹɐɥƆ
+info.de.capacitorMode2.txt=sɯǝʇI pꞁǝH ǝᵷɹɐɥƆ
+info.de.capacitorMode3.txt=sɯǝʇI pꞁǝH ⅋ ɹoɯɹⱯ ǝᵷɹɐɥƆ
+info.de.changwMode.txt=ǝpoɯ ǝᵷuɐɥɔ oʇ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ ʇɟᴉɥS
+
+info.de.toolInventoryOblit.txt=sʇuɐɥɔuƎ ⅋ ɹǝʇꞁᴉɟ ʞunՐ
+info.de.toolInventoryEnch.txt=sʇuɐɥɔuƎ
+
+info.de.hudDisplayConfigTxt1.txt=#### ʎɐꞁdsᴉᗡ ᗡ∩H ####
+info.de.hudDisplayConfigTxt2.txt=ǝʌoɯ oʇ ᵷɐɹp puɐ ʞɔᴉꞁƆ
+info.de.hudDisplayConfigTxt3.txt=###################
+info.de.hudDisplayConfigInfo1.txt=ᗡ∩H ᵷɐɹp puɐ ʞɔᴉꞁƆ
+info.de.hudDisplayConfigInfo2.txt=uoᴉʇɐɔoꞁ ǝᵷuɐɥɔ oʇ
+
+
+info.de.manual.introTxt.txt=˙ǝɔɐꞁd ǝuo uᴉ ꞁꞁⱯ ˙ʍouʞ oʇ pǝǝu noʎ ᵷuᴉɥʇʎɹǝʌƎ
+info.de.manual.indexButton.txt=xǝpuI
+info.de.manual.indexButtonTip.txt=ǝᵷɐd xǝpuᴉ oʇ o⅁
+info.de.manual.contributors.txt=sɹoʇnqᴉɹʇuoƆ uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ
+info.de.manual.name.txt=ǝɯɐN
+info.de.manual.contribution.txt=uoᴉʇnqᴉɹʇuoƆ
+info.de.manual.clickToGoToSite.txt=(ǝʇᴉsqǝʍ uǝdo oʇ ǝɯɐu ʞɔᴉꞁƆ)
+info.de.manual.contributorsButton.txt=sɹoʇnqᴉɹʇuoƆ
+info.de.manual.contributorsButtonInfo.txt=uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ oʇ pǝʇnqᴉɹʇuoɔ ǝʌɐɥ oɥʍ ǝꞁdoǝd ɟo ʇsᴉꞁ Ɐ
+info.de.shiftRightClickToActivate.txt=˙ǝʇɐʌᴉʇɔɐ oʇ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ-ʇɟᴉɥS
+info.de.blockRange.txt=˙ǝᵷuɐᴚ ʞɔoꞁᗺ
+info.de.hasSavedData.txt=¡pǝʌɐS sʇuǝʇuoƆ
+info.de.energyBuffer.txt=ɹǝɟɟnᗺ ʎᵷɹǝuƎ
+
+info.de.manual.nav1.txt=sdᴉ⟘ uoᴉʇɐᵷᴉʌɐN
+info.de.manual.nav2.txt=˙ǝᵷɐd snoᴉʌǝɹd ǝɥʇ oʇ oᵷ oʇ ǝɔɐdsʞɔɐᗺ ssǝɹԀ
+info.de.manual.nav3.txt=˙ɹǝʇsɐɟ ꞁꞁoɹɔs oʇ ʇɟᴉɥs pꞁoH
+
+info.de.modeIn.txt=ʇnduI :ǝpoW
+info.de.modeOut.txt=ʇndʇnO :ǝpoW
+info.de.5xTransfer.txt=(ɹǝɟsuɐɹ⟘ x5) 
+info.de.connections.txt=suoᴉʇɔǝuuoƆ
+info.de.wirelessConnections.txt=suoᴉʇɔǝuuoƆ ssǝꞁǝɹᴉM
+
+
+info.infusedObsidian.txt=ʇuɐʇsᴉsǝɹ ɹǝɥʇᴉʍ sᴉ ʞɔoꞁq sᴉɥ⟘
+
+enchantment.draconicevolution.reaperEnchant=ɹǝdɐǝᴚ
+enchantment.draconicevolution.enchant_reaper.desc=˙ɹǝᴉɟᴉpoɯ ɹǝdɐǝɹ uᴉ ʇꞁᴉnq ɹᴉǝɥʇ ɥʇᴉʍ sʞɔɐʇs ʇᴉ sɐ suodɐǝʍ uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ oʇ pǝᴉꞁddɐ ʇsǝq sᴉ ʇuǝɯʇuɐɥɔuǝ sᴉɥ⟘ ˙ꞁnos ɹᴉǝɥʇ doɹp ꞁꞁᴉʍ uodɐǝʍ pɐs ʎq pǝꞁꞁᴉʞ qoɯ ɐ ʇɐɥʇ ǝɔuɐɥɔ ʇɐɥʇ sǝsɐǝɹɔuᴉ ʇuɐɥɔuǝ sᴉɥʇ uodɐǝʍ ɐ oʇ pǝᴉꞁddɐ uǝɥM
+
+draconicevolution.achievementPage.name=uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ
+
+achievement.draconicevolution.dust=¡⅁Iᗺ ᵷuᴉɥʇǝɯos ɟo ʇɹɐʇS ǝɥ⟘
+achievement.draconicevolution.dust.desc=ʇsnp ɯnᴉuoɔɐɹᗡ ʇɔǝꞁꞁoƆ
+achievement.draconicevolution.ingot=¡puoɯɐᴉᗡ uɐɥʇ ɹǝʇʇǝᗺ
+achievement.draconicevolution.ingot.desc=ʇoᵷuI ɯnᴉuoɔɐɹᗡ ɐ oʇuᴉ ʇsnᗡ ɯnᴉuoɔɐɹᗡ ɐ ʇꞁǝɯS
+achievement.draconicevolution.core=suᴉᵷǝq ʇᴉ ǝɹǝɥʍ sᴉ sᴉɥ⟘
+achievement.draconicevolution.core.desc=ǝɹoƆ ɔᴉuoɔɐɹᗡ ɐ ʇɟɐɹƆ
+achievement.draconicevolution.core2=¡ɥᵷnouƎ poo⅁ ʇoN
+achievement.draconicevolution.core2.desc=uɹǝʌʎM oʇ ǝɹoƆ ɔᴉuoɔɐɹᗡ ǝpɐɹᵷd∩
+
+achievement.draconicevolution.dislocator=’uᴉɥʇou ʇoᵷ uǝɯɹǝpuƎ
+achievement.draconicevolution.dislocator.desc=ɹoʇɐɔoꞁsᴉp ɐ ǝʇɐǝɹƆ
+achievement.draconicevolution.chest=¡ǝᵷɐɹoʇS ɥᵷnouǝ ɹǝʌǝN
+achievement.draconicevolution.chest.desc=ʇsǝɥƆ ɔᴉuoɔɐɹᗡ ɐ ʇɟɐɹƆ
+achievement.draconicevolution.particles=¡sǝꞁʞɹɐdS HOOOO
+achievement.draconicevolution.particles.desc=ɹoʇɐɹǝuǝᵷ ǝꞁɔᴉʇɹɐd ɐ ǝʇɐǝɹƆ
+achievement.draconicevolution.weather=ǝɹnʇɐN ɹǝɥʇoW spǝǝN oɥM
+achievement.draconicevolution.weather.desc=ɹǝꞁꞁoɹʇuoɔ ɹǝɥʇɐǝʍ ɐ ʇɟɐɹƆ
+achievement.draconicevolution.dissenchanter=¡ʇuɐM I ʇɐɥM ʎꞁuO
+achievement.draconicevolution.dissenchanter.desc=˙ɹǝʇuɐɥɔuǝsᴉp ɐ ǝʇɐǝɹƆ
+achievement.draconicevolution.ecore=ᵷuᴉoᵷ puɐ 'ᵷuᴉoᵷ puɐ 'ᵷuᴉoᵷ sdǝǝʞ ʇI
+achievement.draconicevolution.ecore.desc=ǝɹoƆ ʎᵷɹǝuƎ ǝɥʇ pꞁᴉnᗺ
+achievement.draconicevolution.wpick=puoɯɐᴉᗡ ǝʞᴉꞁ ᵷuᴉɥʇoN
+achievement.draconicevolution.wpick.desc=ʞɔᴉd uɹǝʌʎʍ ɐ oʇ ǝpɐɹᵷd∩
+achievement.draconicevolution.wshovel=¡ɹǝᵷᵷᴉᗡ oɹԀ
+achievement.draconicevolution.wshovel.desc=ꞁǝʌoɥs uɹǝʌʎM ɐ ʇɟɐɹƆ
+achievement.draconicevolution.wsword=ʎɹuodɐǝM ɹǝʇʇǝᗺ
+achievement.draconicevolution.wsword.desc=pɹoʍs uɹǝʌʎM ɐ ʇɟɐɹƆ
+achievement.draconicevolution.wbow=¡ʎpɐǝᴚ ǝɥʇ ʇɐ sɹǝdᴉuS
+achievement.draconicevolution.wbow.desc=ʍoᗺ uɹǝʌʎM ǝɥʇ ʇɟɐɹƆ
+achievement.draconicevolution.whelm=¡ᵷuᴉɥʇɐǝɹᗺ ǝǝɹℲ
+achievement.draconicevolution.whelm.desc=ɯꞁǝH uɹǝʌʎM ǝɥʇ ʇɟɐɹƆ
+achievement.draconicevolution.wchest=ǝɔuɐʇsᴉsǝᴚ ɥᵷᴉH
+achievement.draconicevolution.wchest.desc=ǝʇɐꞁdʇsǝɥƆ uɹǝʌʎM ɐ ʇɟɐɹƆ
+achievement.draconicevolution.wleggs=puᴉʍ ǝɥʇ ǝʞᴉꞁ unᴚ
+achievement.draconicevolution.wleggs.desc=sᵷuᴉᵷᵷǝꞁ uɹǝʌʎM ʇɟɐɹƆ
+achievement.draconicevolution.wboots=ꞁꞁɐℲ ɹǝɥʇɐǝℲ
+achievement.draconicevolution.wboots.desc=sʇooq uɹǝʌʎM ʇɟɐɹƆ
+achievement.draconicevolution.resurrection=¡uoᴉʇɐd-ᴉɔᴉʇuⱯ ɥʇᴉʍ ᵷuᴉɯɯᴉɹᗺ
+achievement.draconicevolution.resurrection.desc=ǝuoʇS uoᴉʇɔǝɹɹnsǝᴚ ǝɥʇ ʇɟɐɹƆ
+achievement.draconicevolution.dislocator2=¡ɹǝꞁnɹ-ɹǝpuƎ
+achievement.draconicevolution.dislocator2.desc=ɹoʇɐɔoꞁsᴉᗡ pǝɔuɐʌpⱯ ǝɥʇ ʇɟɐɹƆ
+achievement.draconicevolution.flux=¡sʇʇɐʍɐᵷᵷᴉɾ ⥝ᘔ˙⥝
+achievement.draconicevolution.flux.desc=ɹoʇᴉɔɐdɐƆ xnꞁℲ uɹǝʌʎM ǝɥʇ ʇɟɐɹƆ
+
+achievement.draconicevolution.heart=¡uoᵷɐɹᗡ ǝɥʇ ɟo ʇɹɐǝH
+achievement.draconicevolution.heart.desc=˙ʇɹɐǝɥ s’ʇᴉ ɯᴉɐꞁɔ puɐ uoᵷɐɹᗡ ɐ ꞁꞁᴉʞ
+achievement.draconicevolution.awakenedblock=¡ꞁɐnʇᴉɹ ǝɥʇ uᴉ ꞁꞁɐ s’ʇI
+achievement.draconicevolution.awakenedblock.desc=ɯnᴉuoɔɐɹᗡ pǝuǝʞɐʍⱯ ǝʇɐǝɹƆ
+achievement.draconicevolution.core3=ɹǝʍoԀ ˙sʌ ǝsuǝdxƎ
+achievement.draconicevolution.core3.desc=pǝuǝʞɐʍⱯ oʇ ǝɹoƆ uɹǝʌʎM ǝpɐɹᵷd∩
+
+achievement.draconicevolution.dhelm=¡ɹǝʇɐʍ ɥᵷnoɹɥʇ ᵷuᴉpᴉꞁ⅁
+achievement.draconicevolution.dhelm.desc=ɯꞁǝH ɔᴉuoɔɐɹᗡ ǝɥʇ oʇ ǝpɐɹᵷd∩
+achievement.draconicevolution.dChest=¡ǝꞁᵷɐǝ uɐ ǝʞᴉꞁ ʎꞁℲ
+achievement.draconicevolution.dChest.desc=ǝʇɐꞁԀ ʇsǝɥƆ ɔᴉuoɔɐɹᗡ ǝɥʇ ʇɟɐɹƆ
+achievement.draconicevolution.dleggs=¡ʎꞁɟɹǝʇʇnᗺ ɐ ǝʞᴉꞁ ǝɔuɐᗡ
+achievement.draconicevolution.dleggs.desc=sᵷuᴉᵷᵷǝꞀ ɔᴉuoɔɐɹᗡ ʇɟɐɹƆ
+achievement.draconicevolution.dboots=¡ɹǝɥᵷᴉH puɐ ɹǝɥᵷᴉH
+achievement.draconicevolution.dboots.desc=˙sʇooᗺ ɔᴉuoɔɐɹᗡ oʇ ǝpɐɹᵷd∩
+
+achievement.draconicevolution.dpick=¡ʎʇᴉɹoɥʇnⱯ ɥʇᴉM ǝuᴉW
+achievement.draconicevolution.dpick.desc=ʞɔᴉԀ ɔᴉuoɔɐɹᗡ ɐ ʇɟɐɹƆ
+achievement.draconicevolution.dshovel=suᴉɐʇunoW ᵷuᴉʌoW
+achievement.draconicevolution.dshovel.desc=ꞁǝʌoɥS uɹǝʌʎM ǝpɐɹᵷd∩
+achievement.draconicevolution.daxe=¡puᴉʞ ǝǝɹʇ ɹoɟ doɥƆ ʇuɐᴉᵷ ǝuO
+achievement.draconicevolution.daxe.desc=ǝxⱯ ɔᴉuoɔɐɹᗡ ǝɥʇ ʇɟɐɹƆ
+achievement.draconicevolution.dsword=¡ǝǝᗺ ɐ ǝʞᴉꞀ ᵷuᴉʇS
+achievement.draconicevolution.dsword.desc=pɹoʍS ɔᴉuoɔɐɹᗡ ǝɥʇ oʇ ǝpɐɹᵷd∩
+achievement.draconicevolution.dbow=¡ɹǝʍoԀ ɥʇᴉʍ ᵷuᴉʎɐꞁd ǝɹ’noʎ ʍoN
+achievement.draconicevolution.dbow.desc=˙ʍoᗺ ɔᴉuoɔɐɹᗡ ǝɥʇ ʇɟɐɹƆ
+achievement.draconicevolution.flux2=˙ǝɔɐds ᵷuᴉʌᴉꞁ ʎʇʇᴉq ʎʇʇᴉ ¡ɹǝʍoԀ ɔᴉɯsoƆ ꞁɐuǝɯouǝɥԀ
+achievement.draconicevolution.flux2.desc=ɹoʇᴉɔɐdɐƆ xnꞁℲ ɔᴉuoɔɐɹᗡ ǝɥʇ ʇɟɐɹƆ
+achievement.draconicevolution.dhoe=-WⱯᗺ- ¡ɥɔʇoN ɐ dn ʇᴉ ʞɔᴉʞ
+achievement.draconicevolution.dhoe.desc=ǝoH ɔᴉuoɔɐɹᗡ ǝɥʇ ʇɟɐɹƆ
+
+achievement.draconicevolution.dstaff=¡pǝuᴉqɯoɔ sɹǝʍod ɹnoʎ ɥʇᴉM
+achievement.draconicevolution.dstaff.desc=ɟɟɐʇS ɔᴉuoɔɐɹᗡ ǝɥʇ ǝʇɐǝɹƆ
+
+achievement.draconicevolution.soul=¡¡¡¡ɹǝdɐǝᴚ
+achievement.draconicevolution.soul.desc=˙qoɯ ᵷuᴉʇɔǝdsnsun uɐ ɟo ꞁnos ǝɥʇ ǝɹᴉnbɔⱯ
+achievement.draconicevolution.sundial=ɹǝdǝǝʞǝɯᴉ⟘
+achievement.draconicevolution.sundial.desc=ʎɐp puɐ ʇɥᵷᴉu ɟo ꞁoɹʇuoɔ ǝʞɐʇ puɐ ꞁɐᴉp uns ɐ ʇɟɐɹƆ
+achievement.draconicevolution.manual=¡xɐW ǝɥʇ oʇ ǝᵷpǝꞁʍouʞ
+achievement.draconicevolution.manual.desc=ʇǝꞁqɐ⟘ ɔᴉuoɔɐɹᗡ ǝɥʇ ʇɟɐɹƆ
+
+item.draconicevolution:wyvernPick.lore=˙ǝuᴉɯ oʇ pǝǝds puɐ ɐǝɹɐ ǝɥʇ ǝsɐǝɹɔuᴉ noʎ 'ɯnᴉuoɔɐɹᗡ ɥᵷnoɹɥʇ\nʞɐǝʍ os ǝɹɐ sʞɔᴉd ǝuɐpunWᘔ
+item.draconicevolution:wyvernShovel.lore=¡ʇɹɐʇs ɐ sᴉ sᴉɥʇ 'ɐǝɹɐ ɹǝᵷɹɐꞁ 'ɹǝʇsɐɟ\n¡ɯnᴉuoɔɐɹᗡ ɥʇᴉʍ ʇoN ¿ǝɯᴉʇ ɐ ʇɐ ʞɔoꞁq ǝuOᘔ
+item.draconicevolution:wyvernSword.lore=˙sǝʌoɹdɯᴉ pɹoʍs ǝɥʇ ɟo ɥʇᵷuǝɹʇs puɐ ɐǝɹɐ ǝɥʇ\nꞁɐᴉʇuǝʇod s’pɹoʍs ǝɥʇ ʞɔoꞁun oʇ suᴉᵷǝq ɯnᴉuoɔɐɹᗡᘔ
+item.draconicevolution:wyvernBow.lore=˙ɹǝʍod ǝɹoɯ ɥʇᴉʍ puɐ ɹǝʇsɐɟ ʇooɥs oʇ noʎ sʍoꞁꞁɐ\nʍoq ǝuɐpunɯ ɐ uᴉ ɯnᴉuoɔɐɹᗡ ᵷuᴉsnɟuIᘔ
+
+item.draconicevolution:wyvernHelm.lore=sʍoꞁq ɹǝʇɐǝɹᵷ uǝʌǝ puɐʇsɥʇᴉʍ ʍou uɐɔ noʎ\npuoɯɐᴉp uɐɥʇ ɹǝᵷuoɹʇSᘔ
+item.draconicevolution:wyvernChest.lore=ǝɔuɐʇsᴉsǝɹ sʇᴉ ǝʌoɹdɯᴉ ʎꞁʇsɐʌ noʎ\nɯnᴉuoɔɐɹᗡ ɥʇᴉʍ ɹoɯɹɐ ǝɥʇ ᵷuᴉsnɟuIᘔ
+item.draconicevolution:wyvernLeggs.lore=ɯnᴉuoɔɐɹᗡ ɥʇᴉʍ sᵷǝꞁ puoɯɐᴉp pǝsnɟuᴉ ǝʌɐɥ noʎ ʇɐɥʇ\nʍou ɹǝʇsɐɟ puɐ ɹǝᵷuoɹʇs uǝʌǝ ꞁǝǝɟ no⅄ᘔ
+item.draconicevolution:wyvernBoots.lore=ʎʇᴉꞁᴉᵷɐ\nɹǝʇɐǝɹᵷ noʎ uǝʌᴉᵷ ǝʌɐɥ oʇ sɯǝǝs ɯnᴉuoɔɐɹᗡ\nsʇooq ǝɥʇ ǝʌoɹdɯᴉ oʇ uɹɐǝꞁ no⅄ᘔ
+
+item.draconicevolution:draconicPick.lore=sɐǝɹɐ ɹǝᵷɹɐꞁ uǝʌǝ ǝuᴉɯ oʇ noʎ pǝʍoꞁꞁɐ\nsɐɥ ɥɔɹɐǝsǝɹ puɐ ǝɹɐɔ ʇɐǝɹ⅁ᘔ
+item.draconicevolution:draconicAxe.lore=ʎɹʇ ǝuo ɥʇᴉʍ ǝǝɹʇ ǝɹᴉʇuǝ uɐ ꞁǝǝɟ ʍou uɐɔ noʎ\nɹoɹɹǝ puɐ ꞁɐᴉɹʇ ɟo sʇoꞁ ɹǝʇɟⱯᘔ
+item.draconicevolution:draconicShovel.lore=ɐǝɹɐ ɹǝᵷɹɐꞁ uǝʌǝ uɐ ᵷᴉp uɐɔ noʎ\nʇuǝᴉɔᴉɟɟǝ ǝɹoɯ uǝʌƎᘔ
+item.draconicevolution:draconicHoe.lore=ʞɔᴉꞁɔ ǝꞁᵷuᴉs ɐ uᴉ pǝɔɐꞁd puɐ pǝꞁꞁᴉʇ ǝq uɐɔ sɐǝɹɐ ǝɹᴉʇuǝ\nᵷuᴉɯɹɐɟ sǝʌoɹdɯᴉ uǝʌǝ ɯnᴉuoɔɐɹᗡᘔ
+item.draconicevolution:draconicSword.lore=sǝᴉɯǝuǝ ǝɹoɯ ʇᴉɥ puɐ ꞁnɟɹǝʍod ǝɹoɯ uǝʌǝ ǝɹɐ\nsuodɐǝʍ ɔᴉuoɔɐɹp ʇnq 'pooᵷ sɐʍ uɹǝʌʎMᘔ
+item.draconicevolution:draconicBow.lore=¿ʇuɐʍ noʎ pꞁnoɔ ǝɹoɯ ʇɐɥʍ 'sʍoɹɹɐ ǝʌᴉsoꞁdxǝ\n'ᵷuᴉʇooɥs ɹǝʇsɐɟ uoᴉʇɔǝɟɹǝd pǝᵷuɐɹ ɟo ʞɐǝd ǝɥ⟘ᘔ
+
+item.draconicevolution:draconicHelm.lore=ǝɹǝɥʇ ʇno sᴉ ʇɐɥʍ ɟo\nssǝꞁpɹɐᵷǝɹ ǝɯᴉʇ ǝɥʇ ꞁꞁɐ ǝǝs uɐɔ ʍou noʎ\nʇɥᵷᴉu ǝɥʇ ɹɐǝɟ noʎ op ɹǝᵷuoꞁ oNᘔ
+item.draconicevolution:draconicChest.lore=ʇɥᵷᴉꞁɟ ɟo ʇɟᴉᵷ ǝɥʇ ǝʌɐɥ puɐ ɹǝᵷuoɹʇs ǝɹɐ noʎ\nuoᵷɐɹp ɐ ɟo ʇɹɐǝɥ ǝɥʇ ᵷuᴉs∩ᘔ
+item.draconicevolution:draconicLeggs.lore=ɹǝʇsɐɟ uǝʌǝ noʎ sǝʌoɯ puɐ noʎ sʇɔǝʇoɹd uoᵷɐɹp ɐ ɟo ꞁnos ǝɥʇ\nɹoɯɹɐ ɹǝᵷuoɹʇs uǝʌƎᘔ
+item.draconicevolution:draconicBoots.lore=ᵷuᴉdɯnɾ ɹǝɥᵷᴉɥ\nnoʎ sʇuɐɹᵷ uoᵷɐɹp ɐ ɟo ʇɹɐǝɥ ǝɥʇ\nǝɹoɟǝq uɐɥʇ ɹǝʇʇǝq 'ɹǝʇsɐɟ 'ɹǝᵷuoɹʇSᘔ
+
+item.draconicevolution:draconicDistructionStaff.lore=¡ɥʇɐǝp puɐ 'ǝꞁʇʇɐq 'ǝuᴉɯ 'ꞁꞁɐ ʇᴉ op oʇ ꞁooʇ ǝuo\n¡ɹǝʍod ǝnɹʇ 'pɐoɹ snopɹɐ puɐ ᵷuoꞁ Ɐᘔ
+
+entity.draconicevolution:EnderDragon.name=uoᵷɐɹᗡ ɹǝpuƎ
+entity.draconicevolution:ChaosGuardian.name=uɐᴉpɹɐn⅁ soɐɥƆ
+entity.draconicevolution:lootCore.name=ǝɹoƆ ʇooꞀ
+
+
+key.placeItem=pꞁɹoʍ uᴉ ɯǝʇI ǝɔɐꞁԀ
+key.toolConfig=I∩⅁ ᵷᴉɟuoƆ ɹoɯɹⱯ ⅋ ꞁoo⟘
+key.toolProfileChange=ǝꞁᴉɟoɹԀ ᵷᴉɟuoƆ ꞁoo⟘ ǝᵷuɐɥƆ
+key.toggleFlight=ʇɥᵷᴉꞁℲ ǝʌᴉʇɐǝɹƆ ǝꞁᵷᵷo⟘
+
+death.attack.chaos=uɐᴉpɹɐn⅁ soɐɥƆ ɐ ʎq ʇɹɐdɐ uɹoʇ sɐʍ %1$s
+death.attack.damage.de.fusionExplode=uoᴉsoꞁdxǝ uoᴉsnɟ ʎᵷɹǝuǝ ɥᵷᴉɥ ɐ ʎq pǝzᴉɹodɐʌ sɐʍ %1$s
+death.attack.chaosBurst=ʎᵷɹǝuǝ ʞɹɐp ʎq pǝʎoɹʇsǝp sɐʍ %1$s
+death.attack.de.islandImplode=puɐꞁsᴉ soɐɥɔ ǝɥʇ ɟo uoᴉsoꞁdɯᴉ ǝɥʇ ʎq pǝɯnsuoɔ sɐʍ puɐ ɥᵷnouǝ ʇsɐɟ unɹ ʇou pᴉp %1$s
+
+death.attack.de.GuardianFireball=uɐᴉpɹɐn⅁ soɐɥƆ ɐ ʎq pǝqɯoqǝɹᴉɟ sɐʍ %1$s
+death.attack.de.GuardianEnergyBall=uɐᴉpɹɐn⅁ soɐɥƆ ɐ ʎq ᵷnq ɐ ǝʞᴉꞁ pǝddɐz sɐʍ %1$s
+death.attack.de.GuardianChaosBall=ʎᵷɹǝuǝ ʞɹɐp ᵷuᴉsn uɐᴉpɹɐn⅁ soɐɥƆ ɐ ʎq pǝʇɐꞁᴉɥᴉuuɐ sɐʍ %1$s
+
+death.attack.chaosImplosion=uoᴉʌᴉꞁqo oʇuᴉ pǝɥsnɹɔ puɐ xǝʇɹoʌ ʎᵷɹǝuǝ uɐ oʇuᴉ pǝꞁꞁnd sɐʍ %1$s
+death.attack.chrystalMoved=¡uoᴉʇnꞁoʌƎ ɔᴉuoɔɐɹᗡ ʎq pǝɥsᴉund uǝǝq sɐɥ puɐ ʎʇɥᵷnɐu sɐʍ %1$s
+
+death.attack.administrative.kill=ǝɔɹoɟ ǝꞁqɐʌᴉʌɹnsun uɐ ʎq uʍop ʞɔnɹʇs sɐʍ %1$s
+
+button.de.chestAutoFeed0.txt=pǝꞁqɐsᴉᗡ pǝǝℲ oʇnⱯ˙ℲℲO
+button.de.chestAutoFeed1.txt=ꞁꞁnɟ sʞɔɐʇs ʇuǝɹɹnɔ ǝɥʇ dǝǝʞ˙ꞀꞀIℲ
+button.de.chestAutoFeed2.txt=ʎɹoʇuǝʌuᴉ ǝɥʇ ɯoɹɟ sɯǝʇᴉ ᵷuᴉʇꞁǝɯs ʎꞁʇuǝɹɹnɔ ǝɥʇ ꞁꞁnd ʎꞁuO˙ʞƆOꞀ
+button.de.chestAutoFeed3.txt=ʎɹoʇuǝʌuᴉ ǝɥʇ ɯoɹɟ sɯǝʇᴉ ǝꞁqɐʇꞁǝɯs ʎuɐ ꞁꞁnԀ˙ꞀꞀⱯ
+button.de.chestLockOutput.txt=sʇoꞁs 5 ʇsɐꞁ ǝɥʇ oʇuᴉ pǝʇɹǝsuᴉ ᵷuᴉǝq sɯǝʇᴉ sʞɔoꞁᗺ˙ʇndʇnO ʞɔoꞀ
+button.de.previous.txt===>
+button.de.next.txt=<==
+button.de.backToIndex.txt=xǝpuI oʇ ʞɔɐᗺ
+button.de.back.txt=ʞɔɐᗺ
+button.de.goToIndex.txt=ǝᵷɐԀ xǝpuI
+button.de.addNew.txt=ʍǝN ppⱯ
+button.de.rename.txt=ǝɯɐuǝᴚ
+button.de.commit.txt=ʇᴉɯɯoƆ
+button.de.setHere.txt=ǝɹǝH ʇǝS
+button.de.remove.txt=ǝʌoɯǝᴚ
+button.de.addFuel.txt=ꞁǝnℲ ppⱯ
+button.de.cancel.txt=ꞁǝɔuɐƆ
+button.de.UP.txt=Ԁ∩
+button.de.DOWN.txt=NMOᗡ
+button.de.toggleHidden.txt=uǝppᴉH ǝꞁᵷᵷo⟘
+
+button.de.stats.txt=sʇɐʇS
+button.de.statsShow.txt=ʍoɥS
+button.de.statsHide.txt=ǝpᴉH
+button.de.scaleUp.txt=+ ǝꞁɐɔS
+button.de.scaleDown.txt=- ǝꞁɐɔS
+button.de.fadeMode0.txt=ɟɟO :ʇnO ǝpɐℲ
+button.de.fadeMode1.txt=%%5ᘔ :ʇnO ǝpɐℲ
+button.de.fadeMode2.txt=%%05 :ʇnO ǝpɐℲ
+button.de.fadeMode3.txt=%%5Ɫ :ʇnO ǝpɐℲ
+button.de.fadeMode4.txt=ꞁꞁnℲ :ʇnO ǝpɐℲ
+button.de.rotate.txt=ǝʇɐʇoᴚ
+button.de.numeric.txt=:ɔᴉɹǝɯnN
+button.de.buildGuide.txt=:ǝpᴉn⅁ pꞁᴉnᗺ
+button.de.tierUp.txt=d∩ ɹǝᴉ⟘
+button.de.tierDown.txt=uʍoᗡ ɹǝᴉ⟘
+
+button.de.activate.txt=ǝʇɐʌᴉʇɔⱯ
+button.de.deactivate.txt=ǝʇɐʌᴉʇɔɐǝᗡ
+
+
+gui.de.flowGate.name=ꞁoɹʇuoƆ ʍoꞁℲ
+gui.de.flowGatePartialSignal.name=˙ʞɔoꞁq ǝɥʇ oʇ pǝᴉꞁddns ᵷuᴉǝq ꞁɐuᵷᴉs ǝuoʇspǝɹ ǝɥʇ ɟo ɥʇᵷuǝɹʇs ǝɥʇ uo ᵷuᴉpuǝdǝp sǝnꞁɐʌ uǝʌᴉᵷ oʍʇ ǝɥʇ uǝǝʍʇǝq ʎɹɐʌ ꞁꞁᴉʍ ʍoꞁɟ ꞁɐnʇɔɐ ǝɥ⟘
+gui.de.flowGateCurrentFlow.name=ʍoꞁℲ
+gui.de.flowGateRSLow.name=ʍoꞀ ꞁɐuᵷᴉS ǝuoʇspǝᴚ
+gui.de.flowGateRSHigh.name=ɥᵷᴉH ꞁɐuᵷᴉS ǝuoʇspǝᴚ
+gui.de.flowGateOverridden.txt=pǝꞁqɐuƎ ǝpᴉɹɹǝʌO ɹǝʇndɯoƆ
+gui.de.increment.name=ʎq ǝnꞁɐʌ ʇuǝɯǝɹɔuI
+gui.de.decrement.name=ʎq ǝnꞁɐʌ ʇuǝɯǝɹɔǝᗡ
+gui.de.ctrlAndShift.name=˙ʇunoɯɐ ʇuǝɯǝɹɔuᴉ ǝɥʇ ǝᵷuɐɥɔ oʇ ʇɟᴉɥS puɐ ꞁɹʇƆ ǝsn uɐɔ no⅄
+gui.de.pressOrScroll.name=ꞁꞁoɹɔS ɹO ssǝɹԀ
+gui.de.configureItem.txt=ɯǝʇI ǝɹnᵷᴉɟuoƆ
+gui.de.min.txt=uᴉW
+gui.de.max.txt=xɐW
+
+gui.de.insert.txt=ʇɹǝsuI
+gui.de.extract.txt=ʇɔɐɹʇxƎ
+gui.de.fuel.txt=ꞁǝnℲ
+gui.de.internalStorage.txt=ǝᵷɐɹoʇS ꞁɐuɹǝʇuI
+gui.de.itemStorage.txt=ǝᵷɐɹoʇS ɯǝʇI
+gui.de.addCore.txt=ǝɹoƆ ppⱯ
+gui.de.removeCore.txt=ǝɹoƆ ǝʌoɯǝᴚ
+gui.de.cores.txt=sǝɹoƆ
+gui.de.cap.txt=dɐƆ
+gui.de.installed.txt=pǝꞁꞁɐʇsuI
+gui.de.free.txt=ǝǝɹℲ
+gui.de.max.txt=xɐW
+gui.de.on.txt=uO
+gui.de.off.txt=ɟɟO
+gui.de.basePoints.txt=sʇuᴉoԀ ǝsɐᗺ
+gui.de.maxPoints.txt=sʇuᴉoԀ xɐW
+gui.de.pointCost.txt=ʇsoƆ ʇuᴉoԀ
+gui.de.value.txt=ǝnꞁɐᴧ
+gui.de.points.txt=sʇuᴉoԀ
+gui.de.point.txt=ʇuᴉoԀ
+gui.de.itemInventory.txt=ʎɹoʇuǝʌuI ɯǝʇI
+gui.de.configureGuiElements.txt=sʇuǝɯǝꞁƎ ᗡ∩H ǝɹnᵷᴉɟuoƆ
+gui.de.hudDisplaySettings.txt=sᵷuᴉʇʇǝS ʎɐꞁdsᴉᗡ ᗡ∩H
+gui.de.shieldDisplaySettings.txt=sᵷuᴉʇʇǝS ʎɐꞁdsᴉᗡ pꞁǝᴉɥS
+gui.de.clickAndDragPurpleBoxes.txt=sʎɐꞁdsᴉp ǝɥʇ ǝʌoɯ oʇ sǝxoq ǝꞁdɹnd ǝɥʇ ᵷɐɹp puɐ ʞɔᴉꞁƆ
+gui.de.profile.txt=ǝꞁᴉɟoɹԀ
+gui.de.maxDamage.txt=ǝᵷɐɯɐᗡ xɐW
+gui.de.rfPerShot.txt=ʇoɥS/Ⅎᴚ
+gui.de.tier.txt=ɹǝᴉ⟘
+gui.de.inactive.txt=ǝʌᴉʇɔɐuI
+gui.de.active.txt=ǝʌᴉʇɔⱯ
+gui.de.energyStorage.txt=ǝᵷɐɹoʇS ʎᵷɹǝuƎ
+gui.de.capacity.txt=ʎʇᴉɔɐdɐƆ
+gui.de.maxStorage.txt=>> ǝᵷɐɹoʇS xɐW <<
+gui.de.stabilizers.txt=sɹǝzᴉꞁᴉqɐʇS
+gui.de.invalid.txt=pᴉꞁɐʌuI
+gui.de.valid.txt=pᴉꞁɐᴧ
+gui.de.advancedStabilizersRequired.txt=pǝɹᴉnbǝᴚ sɹǝzᴉꞁᴉqɐʇS pǝɔuɐʌpⱯ
+gui.de.core.txt=ǝɹoƆ
+gui.de.almostInfinite.txt=¡ǝʇᴉuᴉɟuI ʇsoɯꞁⱯ
+gui.de.transfer.txt=ɹǝɟsuɐɹ⟘
+
+gui.de.RFCapacity.txt=ʎʇᴉɔɐdɐƆ Ⅎᴚ
+gui.de.DigSpeed.txt=pǝǝdS ᵷᴉᗡ
+gui.de.DigAOE.txt=Ǝ˙O˙Ɐ ᵷᴉᗡ
+gui.de.DigDepth.txt=ɥʇdǝᗡ ᵷᴉᗡ
+gui.de.AttackDamage.txt=ǝᵷɐɯɐᗡ ʞɔɐʇʇⱯ
+gui.de.AttackAOE.txt=Ǝ˙O˙Ɐ ʞɔɐʇʇⱯ
+gui.de.ArrowDamage.txt=ǝᵷɐɯɐᗡ ǝsɐᗺ
+gui.de.DrawSpeed.txt=pǝǝdS ʍɐɹᗡ
+gui.de.ArrowSpeed.txt=ʎʇᴉɔoꞁǝᴧ ʍoɹɹⱯ
+gui.de.ShieldCapacity.txt=ʎʇᴉɔɐdɐƆ pꞁǝᴉɥS
+gui.de.ShieldRecovery.txt=ʎɹǝʌoɔǝᴚ pꞁǝᴉɥS
+gui.de.MoveSpeed.txt=pǝǝdS ǝʌoW
+gui.de.JumpBoost.txt=ʇsooᗺ dɯnՐ
+
+
+potion.de.effect.txt=ʇɔǝɟɟƎ
+potion.de.flight.txt=ʇɥᵷᴉꞁℲ
+potion.de.highStep.txt=dǝʇS ɥᵷᴉH
+potion.de.swiftness.txt=ssǝuʇɟᴉʍS
+potion.de.fireImmune.txt=ʎʇᴉunɯɯI ǝɹᴉℲ
+potion.de.jumpBoost.txt=ʇsooᗺ dɯnՐ
+
+
+
+
+
+gui.de.energyStorageCore.name=ǝɹoƆ ʎᵷɹǝuƎ %s ɹǝᴉ⟘
+gui.de.fusionCraftingCore.name=ᵷuᴉʇɟɐɹƆ uoᴉsnℲ
+gui.de.dissEnchanter.name=ɹǝʇuɐɥɔuǝsᴉᗡ
+
+
+gui.fusionCrafting.tierLow.info=ʍoꞀ oo⟘ ɹǝᴉ⟘ ꞁɐʇsǝpǝԀ
+gui.fusionCrafting.outputObstructed.info=pǝʇɔnɹʇsqO ʇndʇnO
+gui.fusionCrafting.crafting.info=ᵷuᴉʇɟɐɹƆ
+gui.fusionCrafting.charging.info=ᵷuᴉᵷɹɐɥƆ
+gui.jeiFusion.tier.0=ɔᴉsɐᗺ :ɹǝᴉ⟘
+gui.jeiFusion.tier.1=uɹǝʌʎM :ɹǝᴉ⟘
+gui.jeiFusion.tier.2=ɔᴉuoɔɐɹᗡ :ɹǝᴉ⟘
+gui.jeiFusion.tier.3=ɔᴉʇoɐɥƆ :ɹǝᴉ⟘
+
+
+upgrade.de.upgrades.info=sǝpɐɹᵷd∩
+upgrade.de.upgradeNA.info=ɯǝʇᴉ sᴉɥʇ ɹoɟ ǝꞁqɐɔᴉꞁddⱯ ʇoN ǝpɐɹᵷd∩
+upgrade.de.upgradeLevelToHigh.info=ɯǝʇᴉ sᴉɥʇ ɹoɟ ɥᵷᴉɥ ooʇ ꞁǝʌǝꞁ ǝpɐɹᵷd∩
+upgrade.de.upgradeApplied.info=pǝᴉꞁddⱯ ǝpɐɹᵷd∩
+upgrade.de.upgradePrevLevelRequired.info=ʇsɹᴉɟ pǝᴉꞁddɐ ǝq ʇsnɯ ꞁǝʌǝꞁ snoᴉʌǝɹԀ
+upgrade.de.holdCtrlForUpgrades.info=sǝpɐɹᵷd∩ ɹoɟ %2$sꞀᴚ⟘Ɔ%1$s pꞁoH
+upgrade.de.holdShiftForRecipes.info=sǝdᴉɔǝᴚ ɹoɟ %2$sʇɟᴉɥS%1$s pꞁoH
+upgrade.de.holdCTRLToPause.info=ǝsnɐԀ oʇ Ꞁᴚ⟘Ɔ
+upgrade.de.level.info=ꞁǝʌǝꞀ
+
+upgrade.de.rfCap.name=ʎʇᴉɔɐdɐƆ Ⅎᴚ
+upgrade.de.digSpeed.name=pǝǝdS ᵷᴉᗡ
+upgrade.de.digAOE.name=ƎOⱯ ᵷᴉᗡ
+upgrade.de.digDepth.name=ɥʇdǝᗡ ᵷᴉᗡ
+upgrade.de.attackDmg.name=ǝᵷɐɯɐᗡ ʞɔɐʇʇⱯ
+upgrade.de.attackAOE.name=ƎOⱯ ʞɔɐʇʇⱯ
+upgrade.de.arrowDmg.name=ǝᵷɐɯɐᗡ ʍoɹɹⱯ
+upgrade.de.drawSpeed.name=pǝǝdS ʍɐɹᗡ
+upgrade.de.arrowSpeed.name=pǝǝdS ʍoɹɹⱯ
+upgrade.de.shieldCap.name=ʎʇᴉɔɐdɐƆ pꞁǝᴉɥS
+upgrade.de.shieldRec.name=ʎɹǝʌoɔǝᴚ pꞁǝᴉɥS
+upgrade.de.moveSpeed.name=pǝǝdS ʇuǝɯǝʌoW
+upgrade.de.jumpBoost.name=ʇsooᗺ dɯnՐ
+
+upgrade.level.0=-
+upgrade.level.1=ɔᴉsɐᗺ
+upgrade.level.2=uɹǝʌʎM
+upgrade.level.3=ɔᴉuoɔɐɹᗡ
+upgrade.level.4=ɔᴉʇoɐɥƆ
+
+config.field.on.state=uO
+config.field.off.state=ɟɟO
+config.field.digSpeed.entry=ɹǝᴉꞁdᴉʇꞁnW pǝǝdS ᵷᴉᗡ
+config.field.digSpeed.description=˙pǝǝds ɹǝʌo uoᴉsᴉɔǝɹd pǝǝu noʎ ɟᴉ ꞁnɟǝs∩ ˙sʞɔoꞁq sʞɐǝɹq ꞁooʇ sᴉɥʇ ʇsɐɟ ʍoɥ ʇsnɾpɐ oʇ noʎ sʍoꞁꞁⱯ
+config.field.digAOE.entry=Ǝ˙O˙Ɐ ᵷᴉᗡ
+config.field.digAOE.description=˙ʇɔǝɟɟǝ ɟo ɐǝɹɐ ᵷuᴉuᴉɯ sꞁooʇ sᴉɥʇ ʇsnɾpɐ oʇ noʎ sʍoꞁꞁⱯ
+config.field.aoeSafeMode.entry=ǝpoW ǝɟɐS Ǝ˙O˙Ɐ
+config.field.aoeSafeMode.description=˙ʞɔᴉꞁɔ ssᴉɯ ǝꞁᵷuᴉs ɐ ɥʇᴉʍ ǝsɐq ɹnoʎ ɟꞁɐɥ ᵷuᴉʞɐǝɹq ʎꞁꞁɐʇuǝpᴉɔɔɐ ɯoɹɟ noʎ ʇuǝʌǝɹd dꞁǝɥ uɐɔ sᴉɥ⟘ ˙ǝᵷuɐɹ ƎOⱯ sʇᴉ uᴉɥʇᴉʍ ʎʇᴉʇuǝ ǝꞁᴉʇ ɐ sʇɔǝʇǝp ʇᴉ ɟᴉ ᵷuᴉɥʇʎuɐ ʞɐǝɹq ʇou ꞁꞁᴉʍ ꞁooʇ sᴉɥʇ pǝꞁqɐuǝ uǝɥM
+config.field.digDepth.entry=ɥʇdǝᗡ ᵷᴉᗡ
+config.field.digDepth.description=ɥʇᴉʍ sʞɹoʍ ʎꞁuo uoᴉʇɔunɟ sᴉɥ⟘
+config.field.showDigAOE.entry=Ǝ˙O˙Ɐ ᵷᴉᗡ ʍoɥS
+config.field.showDigAOE.description=˙ƎOⱯ ᵷuᴉuᴉɯ sꞁooʇ sᴉɥʇ ʎq pǝɹǝʌoɔ sʞɔoꞁq ǝɥʇ ɟo ꞁꞁɐ sʍoɥs pǝꞁqɐuǝ uǝɥM
+
+config.field.toggleEnchant.description=˙sᵷuᴉʇʇǝs ʇuǝɯʇuɐɥɔuǝ ʇuǝɹǝɟɟᴉp ɥʇᴉʍ sǝꞁᴉɟoɹd ʇuǝɹǝɟɟᴉp ǝʌɐɥ ʇou uɐɔ noʎ ᵷuᴉuɐǝɯ ɔᴉɟᴉɔǝds ǝꞁᴉɟoɹd ʇou sᴉ ᵷuᴉʇʇǝs sᴉɥʇ :ǝʇoN ˙ʇuǝɯʇuɐɥɔuǝ pǝᴉꞁddɐ ʎꞁsnoᴉʌǝɹd ɐ ǝʇɐʌᴉʇɔɐ/ǝʇɐʌᴉʇɔɐǝp noʎ sʍoꞁꞁⱯ
+
+config.field.armorSpeedModifier.entry=ɹǝᴉɟᴉpoW pǝǝdS
+config.field.armorSpeedModifier.description=˙ǝɔǝᴉd ɹoɯɹɐ sᴉɥʇ ʎq uǝʌᴉᵷ ʇsooq pǝǝds ǝɥʇ ʇsnɾpɐ oʇ noʎ sʍoꞁꞁɐ sᴉɥ⟘
+config.field.armorJumpModifier.entry=ɹǝᴉɟᴉpoW dɯnՐ
+config.field.armorJumpModifier.description=˙ǝɔǝᴉd ɹoɯɹɐ sᴉɥʇ ʎq uǝʌᴉᵷ ʇsooq dɯnɾ ǝɥʇ ʇsnɾpɐ oʇ noʎ sʍoꞁꞁɐ sᴉɥ⟘
+config.field.sprintBoost.entry=ʇuᴉɹdS uo ʇsooᗺ
+config.field.sprintBoost.description=˙ᵷuᴉʇuᴉɹds ⟘ON ǝɹɐ noʎ uǝɥʍ pǝɔnpǝɹ ǝq ꞁꞁᴉʍ ʇǝs ǝʌɐɥ noʎ sɹǝᴉɟᴉpoɯ ǝɥʇ pǝꞁqɐuǝ uǝɥM
+config.field.armorNV.entry=uoᴉsᴉᴧ ʇɥᵷᴉN
+config.field.armorNV.description=˙ɐǝɹɐ ʞɹɐp ɐ uᴉ ǝɹɐ noʎ uǝɥʍ pǝᴉꞁddɐ ǝq ʎꞁuo ꞁꞁᴉʍ uoᴉsᴉʌ ʇɥᵷᴉu ǝɥʇ ʇꞁnɐɟǝp ǝᗺ ˙uoᴉsᴉʌ ʇɥᵷᴉu ǝꞁqɐsᴉp ɹo ǝꞁqɐuƎ
+config.field.armorNVLock.entry=ʞɔoꞀ uoᴉsᴉᴧ ʇɥᵷᴉN
+config.field.armorNVLock.description=˙uᴉ ǝɹɐ noʎ ꞁǝʌǝꞁ ʇɥᵷᴉꞁ ǝɥʇ ɟo ssǝꞁpɹɐᵷǝɹ ǝʌᴉʇɔɐ oʇ uoᴉsᴉʌ ʇɥᵷᴉu sʞɔoꞁ sᴉɥ⟘
+config.field.armorFSpeedModifier.entry=ɹǝᴉɟᴉpoW pǝǝdS ʇɥᵷᴉꞁℲ
+config.field.armorFSpeedModifier.description=˙ᵷuᴉʎꞁɟ ǝꞁᴉɥʍ ɹoɯɹɐ sᴉɥʇ ʎq pǝᴉꞁddɐ ʇsooq pǝǝds ǝɥʇ ʇsnɾpɐ oʇ noʎ sʍoꞁꞁⱯ
+config.field.armorFlightLock.entry=ʞɔoꞀ ʇɥᵷᴉꞁℲ
+config.field.armorFlightLock.description=˙ǝʌᴉʇɔɐ sʎɐʍꞁɐ sᴉ ʇᴉ ʇɐɥʇ os ʇɥᵷᴉꞁɟ ǝʌᴉʇɐǝɹɔ ʞɔoꞁ oʇ noʎ sʍoꞁꞁⱯ
+config.field.armorVFSpeedModifier.entry=ʇsooᗺ ꞁɐɔᴉʇɹǝᴧ
+config.field.armorVFSpeedModifier.description=˙ᵷuᴉʎꞁɟ ǝꞁᴉɥʍ puǝɔsǝp/puǝɔsɐ noʎ ɥɔᴉɥʍ ʇɐ pǝǝds ǝɥʇ ǝsɐǝɹɔuᴉ oʇ noʎ sʍoꞁꞁɐ sᴉɥ⟘
+config.field.armorInertiaCancel.entry=uoᴉʇɐꞁꞁǝɔuɐƆ ɐᴉʇɹǝuI
+config.field.armorInertiaCancel.description=˙ʎǝʞ ǝʌoɯ ǝɥʇ ɟo oᵷ ʇǝꞁ noʎ uǝɥʍ ʎꞁʇuɐʇsuᴉ ʇsoɯꞁɐ doʇs oʇ noʎ ǝɔɹoɟ ꞁꞁᴉʍ sᴉɥʇ spǝǝds ɥᵷᴉɥ ʇɐ ᵷuᴉʎꞁɟ uǝɥM
+config.field.armorHillStep.entry=ʇsᴉssⱯ dǝʇS
+config.field.armorHillStep.description=˙ᵷuᴉdɯnɾ ʇnoɥʇᴉʍ ʞɔoꞁq ꞁꞁnɟ ⥝ dn dǝʇs oʇ noʎ sʍoꞁꞁⱯ
+
+config.field.bowArrowDamage.entry=ǝᵷɐɯɐᗡ ǝsɐᗺ ʍoɹɹⱯ
+config.field.bowArrowDamage.description=˙ǝᵷɐɯɐp ꞁɐnʇɔɐ ǝɥʇ ʇǝᵷ oʇ ʎʇᴉɔoꞁǝʌ ʍoɹɹɐ ʎq pǝᴉꞁdᴉʇꞁnɯ sᴉ ǝᵷɐɯɐp ǝsɐq ǝʇoN ˙sʍoɹɹɐ ɹnoʎ ʎq pǝʇɔᴉꞁɟuᴉ ǝᵷɐɯɐp ǝsɐq ǝɥʇ ʇsnɾpɐ oʇ noʎ sʍoꞁꞁⱯ
+config.field.bowArrowSpeedModifier.entry=ɹǝᴉɟᴉpoW ʎʇᴉɔoꞁǝᴧ ʍoɹɹⱯ
+config.field.bowArrowSpeedModifier.description=˙ǝɔuɐʇsᴉp puɐ ǝᵷɐɯɐp sʇɔǝɟɟɐ sᴉɥ⟘ ˙sʍoɹɹɐ ɹnoʎ ɟo ʎʇᴉɔoꞁǝʌ ǝɥʇ sǝᴉɟᴉpoW
+config.field.bowAutoFire.entry=ǝɹᴉℲ oʇnⱯ
+config.field.bowAutoFire.description=pǝᵷɹɐɥɔ ʎꞁꞁnɟ uǝɥʍ ʎꞁꞁɐɔᴉʇɐɯoʇnɐ sǝɹᴉℲ
+config.field.bowExplosionPower.entry=ɹǝʍoԀ uoᴉsoꞁdxƎ
+config.field.bowExplosionPower.description=˙sʍoɹɹɐ ɹnoʎ ɟo ɹǝʍod uoᴉsoꞁdxǝ ǝɥʇ sʇsnɾpⱯ
+config.field.bowZoomModifier.entry=uoᴉʇɐɔᴉɟᴉuᵷɐW
+config.field.bowZoomModifier.description=sʇoɥs ǝᵷuɐɹ ᵷuoꞁ uoᴉsᴉɔǝɹd ǝʞɐʇ oʇ pǝsn ǝq uɐƆ
+config.field.bowFireArrow.entry=ǝɹᴉℲ ɔᴉuoɔɐɹᗡ ɟo ʍoɹɹⱯ
+config.field.bowFireArrow.description=˙ʇɔǝɟɟǝ ǝʌɐM ʞɔoɥS ǝɥʇ sʞɔoꞁun puɐ uoᴉʇᴉunɯɯɐ ɹoɟ pǝǝu ǝɥʇ sǝʌoɯǝᴚ ˙ʎᵷɹǝuǝ ǝɹnd ɟo ǝpɐɯ ʍoɹɹɐ uɐ ǝɹᴉℲ
+config.field.bowShockPower.entry=ɹǝʍoԀ ǝʌɐM ʞɔoɥS
+config.field.bowShockPower.description=˙sʞɔoꞁq ᵷuᴉᵷɐɯɐp ʇnoɥʇᴉʍ ʇnq uoᴉsoꞁdxǝ ʇuǝꞁǝʌᴉnbǝ uɐ uɐɥʇ sǝᴉʇᴉʇuǝ oʇ ǝᵷɐɯɐp ǝɹoɯ sǝop ʇɐɥʇ ʇɔɐdɯᴉ uo ǝʌɐM ʞɔoɥS ꞁnɟɹǝʍod ɐ sǝʇɐǝɹƆ
+config.field.attackAOE.entry=snᴉpɐᴚ ʞɔɐʇʇⱯ
+config.field.attackAOE.description=˙ᵷuᴉʍs s,uodɐǝʍ sᴉɥʇ ʎq pǝɹǝʌoɔ ɐǝɹɐ ǝɥʇ ʇsnɾpɐ oʇ noʎ sʍoꞁꞁⱯ
+config.field.showHarvestIndicator.entry=ɹoʇɐɔᴉpuI ʇsǝʌɹɐH
+config.field.showHarvestIndicator.description=˙sʞɔoꞁq ᵷuᴉʇsǝʌɹɐɥ ʎꞁʇuǝɹɹnɔ sᴉ ǝxɐ ǝɥʇ ǝɹǝɥʍ sʍoɥS
+config.field.landFill.entry=ꞁꞁᴉℲ puɐꞀ
+config.field.landFill.description=˙pǝpǝǝu ɟᴉ pǝꞁꞁᴉʇ ǝq oʇ ɐǝɹɐ ǝɥʇ ǝʌoqɐ ʞɔoꞁq ⥝ oʇ dn ʇsǝʌɹɐɥ osꞁɐ ꞁꞁᴉM ˙ɐǝɹɐ pǝꞁꞁᴉʇ ʇɐꞁɟ ɐ ǝʇɐǝɹɔ oʇ ɹǝpɹo uᴉ ǝꞁoɥ dǝǝp ʞɔoꞁq ⥝ ɐ oʇ dn ꞁꞁᴉɟ oʇ ʎɹoʇuǝʌuᴉ ɹnoʎ ɯoɹɟ ʇɹᴉp ǝsn ʎꞁꞁɐɔᴉʇɐɯoʇnɐ ꞁꞁᴉM
+
+config.field.junkFilter.entry=ɹǝʇꞁᴉℲ ʞunՐ ǝɹnᵷᴉɟuoƆ
+config.field.junkFilter.description=˙ǝpoɯ ƎOⱯ uᴉ sʞɹoʍ ʎꞁuo puɐ sǝꞁᴉɟoɹd ᵷᴉɟuoɔ uǝǝʍʇǝq ʇuǝʇsᴉsɹǝd sᴉ ɹǝʇꞁᴉɟ ʞunɾ ǝɥ⟘ ˙pǝuᴉɯ uǝɥʍ pǝʇǝꞁǝp ǝq oʇ ǝɹɐ ʇɐɥʇ sʞɔoꞁq ʎɟᴉɔǝds oʇ noʎ sʍoꞁꞁɐ ʇɐɥʇ ɹǝʇꞁᴉɟ ʞunɾ ɐ suǝdO
+config.field.junkFilter.button=ɹǝʇꞁᴉℲ ʞunՐ uǝdO
+config.field.enableJunkFilter.entry=ɹǝʇꞁᴉℲ ʞunՐ ǝꞁqɐuƎ
+config.field.enableJunkFilter.description=˙ɹǝʇꞁᴉɟ ʞunɾ ǝɥʇ ǝꞁqɐsᴉp/ǝꞁqɐuǝ oʇ noʎ sʍoꞁꞁⱯ
+config.field.junkNbtSens.entry=ǝʌᴉʇᴉsuǝS ⟘ᗺN ʞunՐ
+config.field.junkNbtSens.description=˙sɯǝʇᴉ ᵷuᴉɹǝʇꞁᴉɟ ᵷuᴉɹǝʇꞁᴉɟ uǝɥʍ ǝɹouᵷᴉ ꞁꞁᴉʍ ɹǝʇꞁᴉɟ ʞunɾ ǝɥʇ pǝꞁqɐsᴉp uǝɥM
+
+config.field.hideArmor.entry=ɹoɯɹⱯ ǝpᴉH
+config.field.hideArmor.description=˙ǝꞁqᴉsᴉʌuᴉ ʎꞁǝʇǝꞁdɯoɔ ǝq ꞁꞁᴉʍ ǝɔɐǝd ɹoɯɹɐ sᴉɥʇ pǝꞁqɐuǝ uǝɥM
+
+config.field.AOE.entry=Ǝ˙O˙Ɐ
+config.field.replaceSame.entry=sʞɔoꞁᗺ ǝɯɐS ǝɔɐꞁdǝᴚ
+config.field.replaceVisible.entry=ǝꞁqᴉsᴉᴧ ǝɔɐꞁdǝᴚ
+config.field.fillLogic.entry=ɔᴉᵷoꞀ ꞁꞁᴉℲ
+
+
+button.de.ArmorNVActive.name=uoᴉsᴉᴧ ʇɥᵷᴉN
+button.de.ArmorNVLock.name=uoᴉsᴉᴧ ʇɥᵷᴉN ʞɔoꞀ
+button.de.ArmorFlightLock.name=ʇɥᵷᴉꞁℲ ʞɔoꞀ
+button.de.ArmorInertiaCancellation.name=uoᴉʇɐꞁꞁǝɔuɐƆ ɐᴉʇɹǝuI
+button.de.ArmorSpeedMult.name=ɹǝᴉɟᴉpoW pǝǝdS ǝʌoW
+button.de.ArmorJumpMult.name=ɹǝᴉɟᴉpoW ʇɥᵷᴉǝH dɯnՐ
+button.de.ArmorHillStep.name=dǝʇS ꞁꞁᴉH
+button.de.ArmorSprintOnly.name=ᵷuᴉʞꞁɐM uǝɥM ǝɔnpǝᴚ
+button.de.ArmorFlightSpeedMult.name=ɹǝᴉɟᴉpoW pǝǝdS ʇɥᵷᴉꞁℲ
+button.de.ToolDigMultiplier.name=pǝǝdS ᵷᴉᗡ
+button.de.ToolDigAOE.name=ǝzᴉS
+button.de.ToolDigDepth.name=ɥʇdǝᗡ ᵷᴉᗡ
+button.de.WeaponAttackAOE.name=Ǝ˙O˙Ɐ ʞɔɐʇʇⱯ
+button.de.ToolVoidJunk.name=ʞunՐ pᴉoᴧ
+button.de.AxeTreeMode.name=ǝpoW ǝǝɹ⟘
+button.de.BaseSafeAOE.name=ǝpoW ǝɟɐS ƎOⱯ
+button.de.VerticalAcceleration.name=uoᴉʇɐɹǝꞁǝɔɔⱯ ꞁɐɔᴉʇɹǝᴧ
+button.de.EffectiveOnSprint.name=ᵷuᴉʇuᴉɹds ǝꞁᴉɥʍ ǝʌᴉʇɔǝɟɟƎ
+button.de.GogglesOfRevealing.name=ǝsuǝS ꞁɐɔᴉᵷɐW
+button.de.BowArrowSpeedModifier.name=ɹǝᴉɟᴉpoW ʎʇᴉɔoꞁǝᴧ ʍoɹɹⱯ
+button.de.BowAutoFire.name=ǝɹᴉℲ oʇnⱯ
+button.de.BowArrowDamage.name=ǝᵷɐɯɐᗡ ǝsɐᗺ
+button.de.BowExplosionPower.name=ɹǝʍoԀ ǝʌᴉsoꞁdxƎ
+button.de.BowShockWavePower.name=ɹǝʍoԀ ǝʌɐM ʞɔoɥS
+button.de.BowEnergyBolt.name=ǝɹᴉℲ ɔᴉuoɔɐɹᗡ ɟo ʍoɹɹⱯ
+button.de.BowZoomModifier.name=uoᴉʇɐɔᴉɟᴉuᵷɐW
+
+
+info.bc.holdShiftForDetails.txt=sꞁᴉɐʇǝᗡ ɹoɟ %2$sʇɟᴉɥS%1$s pꞁoH
+info.bc.charge.txt=ǝᵷɹɐɥƆ
+
+info.bc.hold.txt=pꞁoH
+info.bc.shift.txt=ʇɟᴉɥS
+info.bc.forDetails.txt=sꞁᴉɐʇǝᗡ ɹoɟ
+info.bc.ctrl.txt=Ꞁᴚ⟘Ɔ
+
+chat.toolConfig.thatItemNotConfigurable.msg=ǝꞁqɐɹnᵷᴉɟuoɔ ʇou sᴉ ɯǝʇᴉ ʇɐɥ⟘
+chat.dissEnchanter.notEnoughLevels.msg=¡ʇuǝɯʇuɐɥɔuǝ ʇɐɥʇ ʇɔɐɹʇxǝ oʇ sꞁǝʌǝꞁ %s ǝɹᴉnbǝɹ no⅄
+
+
+gui.de.toolConfig.hud.txt=ᗡ∩H
+gui.de.toolConfig.hudDesc.txt=I∩⅁ uoᴉʇɐɹnᵷᴉɟuoƆ ᗡ∩H uǝdO
+button.de.open=uǝdO
+
+gui.de.celMod.weather=ɹǝɥʇɐǝM
+gui.de.celMod.time=ǝɯᴉ⟘
+gui.de.celMod.stopRain=uᴉɐᴚ doʇS
+gui.de.celMod.startRain=uᴉɐᴚ ʇɹɐʇS
+gui.de.celMod.startStorm=ɯɹoʇS ʇɹɐʇS
+gui.de.celMod.skipTo=˙˙˙o⟘ dᴉʞS
+gui.de.celMod.sunRise=ǝsᴉᴚ unS
+gui.de.celMod.midDay=ʎɐᗡ pᴉW
+gui.de.celMod.sunSet=ʇǝS unS
+gui.de.celMod.moonRise=ǝsᴉᴚ uooW
+gui.de.celMod.midnight=ʇɥᵷᴉupᴉW
+gui.de.celMod.moonSet=ʇǝS uooW
+gui.de.celMod.skipToTime=ǝɯᴉ⟘ o⟘ dᴉʞS
+gui.de.celMod.skip24=ᔭᘔ dᴉʞS
+gui.de.celMod.stop=doʇS
+gui.de.celMod.rs.0=uᴉɐᴚ doʇS
+gui.de.celMod.rs.1=uᴉɐᴚ ʇɹɐʇS
+gui.de.celMod.rs.2=ɯɹoʇS ʇɹɐʇS
+gui.de.celMod.rs.3=ǝsᴉᴚ unS
+gui.de.celMod.rs.4=ʎɐᗡ pᴉW
+gui.de.celMod.rs.5=ʇǝS unS
+gui.de.celMod.rs.6=ǝsᴉᴚ uooW
+gui.de.celMod.rs.7=ʇɥᵷᴉupᴉW
+gui.de.celMod.rs.8=ʇǝS uooW
+gui.de.celMod.rs.9=˙sdoʇs ꞁɐuᵷᴉs ǝuoʇsǝɹ ꞁᴉʇun ɹO ʎɐp ʇɟɐɹɔǝuᴉW ꞁꞁnɟ ⥝ ǝꞁɔʎƆ
+
+guiwiki.label.navigation=uoᴉʇɐᵷᴉʌɐN
+guiwiki.label.mods=spoW
+modwiki.label.style=ǝꞁʎʇS
+
+modwiki.style.navWindow=ʍopuᴉM ʌɐN
+modwiki.style.mainWindow=ʍopuᴉM uᴉɐW
+modwiki.style.menu=nuǝW
+modwiki.style.presets=sʇǝsǝɹԀ
+modwiki.style.navText=ʇxǝ⟘ ʌɐN
+modwiki.style.text=ʇxǝ⟘
+
+modwiki.style.preset.intellij=ɾᴉꞁꞁǝʇuI
+modwiki.style.preset.black&white=ǝʇᴉɥM ⅋ ʞɔɐꞁᗺ
+modwiki.style.preset.white&black=ʞɔɐꞁᗺ ⅋ ǝʇᴉɥM
+modwiki.style.preset.purple=ǝꞁdɹnԀ
+modwiki.style.preset.draconic=ɔᴉuoɔɐɹᗡ
+modwiki.style.preset.transparent=ʇuǝɹɐdsuɐɹ⟘
+
+guiwiki.button.home=ǝɯoH
+
+gui.entityDetector.pulseDelay=ʎɐꞁǝᗡ ǝsꞁnԀ
+gui.entityDetector.pulseDelay.info=˙sǝᴉʇᴉʇuǝ ʎqɹɐǝu ɹoɟ sʞɔǝɥɔ ʞɔoꞁq ǝɥʇ uǝɥʍ sᴉ ǝsꞁnd ᵷuᴉuuɐɔs ǝɥ⟘ ˙sǝsꞁnd ᵷuᴉuuɐɔs uǝǝʍʇǝq ʎɐꞁǝp ǝɥ⟘
+gui.entityDetector.outputPulse=ǝpoW ʇndʇnO ǝsꞁnԀ
+gui.entityDetector.outputContin=ǝpoW ʇndʇnO pǝxᴉℲ
+gui.entityDetector.output.info=˙ǝsꞁnd ᵷuᴉuuɐɔs ʎɹǝʌǝ ᵷuᴉʇɐpdn ꞁɐuᵷᴉs snonuᴉʇuoɔ ɐ ʇᴉɯɯǝ ꞁꞁᴉʍ ǝpoɯ pǝxᴉℲ˙ǝsꞁnd ᵷuᴉuuɐɔs ʎɹǝʌǝ ǝsꞁnd ʞɔᴉʇ ⥝ ɐ ʇᴉɯɯǝ ꞁꞁᴉʍ ǝpoɯ ǝsꞁnԀ ˙sᵷuᴉʇʇǝs xɐW Sᴚ puɐ uᴉW Sᴚ ǝɥʇ puɐ pǝʇɔǝʇǝp sǝᴉʇᴉʇuǝ pᴉꞁɐʌ ɟo ɹǝqɯnu ǝɥʇ ʎq pǝuᴉɯɹǝʇǝp sᴉ ʇndʇno ǝɥʇ ɟo ɥʇᵷuǝɹʇs ǝɥ⟘
+gui.entityDetector.range=ǝᵷuɐᴚ
+gui.entityDetector.range.info=ǝsꞁnd ᵷuᴉuuɐɔs ɥɔɐǝ ɹoɟ ʇsoɔ ʎᵷɹǝuǝ ǝɥʇ sǝsɐǝɹɔuᴉ ǝᵷuɐɹ ǝɥʇ ᵷuᴉsɐǝɹɔuI˙sʞɔoꞁq uᴉ ǝᵷuɐɹ ᵷuᴉuuɐɔs ǝɥ⟘
+gui.entityDetector.rsMin=pꞁoɥsǝɹɥ⟘ uᴉW Sᴚ
+gui.entityDetector.rsMin.info=˙⥝ ɟo ꞁɐuᵷᴉs ǝuoʇspǝɹ ɐ ǝɔnpoɹd oʇ pǝɹᴉnbǝɹ sǝᴉʇᴉʇuǝ pǝʇɔǝʇǝp ɟo ɹǝqɯnu ɯnɯᴉuᴉɯ ǝɥ⟘
+gui.entityDetector.rsMax=pꞁoɥsǝɹɥ⟘ xɐW Sᴚ
+gui.entityDetector.rsMax.info=˙5⥝ ɟo ꞁɐuᵷᴉs ǝuoʇspǝɹ ɐ ǝɔnpoɹd oʇ pǝɹᴉnbǝɹ sǝᴉʇᴉʇuǝ pǝʇɔǝʇǝp ɟo ɹǝqɯnu ɯnɯᴉuᴉɯ ǝɥ⟘
+gui.entityDetector.energyCost=ǝsꞁnԀ ɹǝԀ ʎᵷɹǝuƎ
+gui.entityDetector.energyCost.info=˙ǝᵷuɐɹ ǝɥʇ ǝsɐǝɹɔuᴉ noʎ sɐ ʎꞁꞁɐᴉʇuǝuodxǝ sǝsɐǝɹɔuᴉ ʇsoɔ ʎᵷɹǝuǝ ǝɥʇ suɐǝɯ sᴉɥ⟘ 5˙⥝^ǝᵷuɐɹ * 5ᘔ⥝ sᴉ sǝɹᴉnbǝɹ ʎᵷɹǝuǝ ǝɥ⟘ ˙ǝsꞁnd ᵷuᴉuuɐɔs ɥɔɐǝ ɹoɟ pǝɹᴉnbǝɹ ʎᵷɹǝuǝ ɟo ʇunoɯɐ ǝɥʇ sᴉ sᴉɥ⟘
+gui.entityDetector.filter=ɹoʇɐɹnᵷᴉɟuoƆ ɹǝʇꞁᴉℲ ʎʇᴉʇuƎ uǝdO
+
+eNet.de.posSavedToTool.info=(ɹɐǝꞁɔ oʇ ɹᴉɐ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ-ʞɐǝuS) ˙ꞁooʇ oʇ pǝʌɐs uoᴉʇᴉsoԀ ʞɔoꞁᗺ
+eNet.de.posCleared.info=pǝɹɐǝꞁƆ uoᴉʇᴉsoԀ
+eNet.de.toolNotBound.info=˙puᴉq oʇ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ+ʞɐǝuS ¡punoq ʇou ꞁoo⟘
+eNet.de.boundToInvalid.info=¡ʞɔoꞁq pᴉꞁɐʌuᴉ uɐ oʇ punoq sᴉ ꞁooʇ ǝɥ⟘
+eNet.de.linkBroken.info=¡uǝʞoɹᗺ ʞuᴉꞀ
+eNet.de.devicesLinked.info=¡pǝʞuᴉꞀ sǝɔᴉʌǝᗡ
+eNet.de.linkLimitReachedThis.info=¡ʇᴉɯᴉꞁ uoᴉʇɔǝuuoɔ sʇᴉ pǝɥɔɐǝɹ sɐɥ ǝɔᴉʌǝp sᴉɥ⟘
+eNet.de.linkLimitReachedTarget.info=¡ʇᴉɯᴉꞁ uoᴉʇɔǝuuoɔ sʇᴉ pǝɥɔɐǝɹ sɐɥ ǝɔᴉʌǝp ʇǝᵷɹɐʇ ǝɥ⟘
+eNet.de.thisRangeLimit.info=¡ʎɐʍɐ ɹɐɟ ooʇ sᴉ ǝɔᴉʌǝp ʇǝᵷɹɐʇ ǝɥ⟘
+eNet.de.targetRangeLimit.info=¡ǝɔᴉʌǝp ʇǝᵷɹɐʇ ǝɥʇ ɯoɹɟ ɹɐɟ ooʇ sᴉ ǝɔᴉʌǝp sᴉɥ⟘
+eNet.de.deviceInvalid.info=¡ǝɔᴉʌǝp pᴉꞁɐʌ ɐ ʇou sᴉ ʇɐɥ⟘
+eNet.de.linkFailedUnknown.info=[˙˙˙uʍouʞu∩ uosɐǝᴚ] ¡pǝꞁᴉɐℲ ʞuᴉꞀ
+eNet.de.linkToSelf.info=˙˙˙ɟꞁǝsʇᴉ oʇ ǝɔᴉʌǝp ɐ ʞuᴉꞁ ʇou uɐɔ no⅄
+eNet.de.hudCharge.info=ǝᵷɹɐɥƆ
+eNet.de.hudLinks.info=sʞuᴉꞀ
+eNet.de.hudWirelessLinks.info=sʞuᴉꞀ ssǝꞁǝɹᴉM
+eNet.de.IOOutput_true.info=ʇndʇnO %s:ǝpoW O/I
+eNet.de.IOOutput_false.info=ʇnduI %s:ǝpoW O/I
+eNet.de.sideCanNotReceive.info=˙¡ǝpᴉs ʇɐɥʇ uo ʎᵷɹǝuǝ ǝʌᴉǝɔǝɹ ʇou uɐɔ ǝꞁᴉʇ ʇɐɥ⟘
+eNet.de.maxReceivers.info=¡pǝɥɔɐǝᴚ ʇᴉɯᴉꞀ ɹǝʌᴉǝɔǝᴚ
+eNet.de.hudWirelessLinks.info=sʞuᴉꞀ ssǝꞁǝɹᴉM
+eNet.de.output.info=ʇndʇnO
+eNet.de.identify.gui=ʎɟᴉʇuǝpI
+eNet.de.unlink.gui=ʞuᴉꞀu∩
+eNet.de.clearLinks.gui=sʞuᴉꞀ ɹɐǝꞁƆ
+eNet.de.clearReceivers.gui=sɹǝʌᴉǝɔǝᴚ ɹɐǝꞁƆ
+
+gui.reactor.draconicReactor.txt=ɹoʇɔɐǝᴚ ɔᴉuoɔɐɹᗡ
+gui.reactor.fuelIn.txt=(uᴉ) ꞁǝnℲ
+gui.reactor.chaosOut.txt=(ʇno) soɐɥƆ
+gui.reactor.tempLoadFactor.txt=˙ʎꞁꞁɐᴉʇuǝuodxǝ ǝsɐǝɹɔuᴉ ꞁꞁᴉʍ sᴉɥʇ 000'8 sǝssɐd dɯǝʇ ɹoʇɔɐǝɹ ǝɥʇ ɟI ˙ǝɹnʇɐɹǝdɯǝʇ sɹoʇɔɐǝɹ ǝɥʇ ʎq pꞁǝᴉɟ ʇuǝɯuᴉɐʇuoɔ ǝɥʇ uo pǝɔɐꞁd ᵷuᴉǝq sᴉ pɐoꞁ ɥɔnɯ ʍoɥ sʍoɥs sᴉɥ⟘
+gui.reactor.coreVolume.txt=˙ꞁǝnɟ ǝʌoɯǝɹ ɹo ppɐ noʎ uǝɥʍ ǝᵷuɐɥɔ ʎꞁuo ꞁꞁᴉʍ ǝnꞁɐʌ sᴉɥʇ os soɐɥɔ + ɯnᴉuoɔɐɹp ǝɥʇ s,ʇɐɥ⟘ ˙sǝɹʇǝɯ ɔᴉqnɔ uᴉ ɹoʇɔɐǝɹ ǝɥʇ uᴉɥʇᴉʍ ɹǝʇʇɐɯ ɟo ǝɯnꞁoʌ ꞁɐʇoʇ ǝɥʇ ʍoɥs sᴉɥ⟘
+gui.reactor.genRate.txt=˙ɹoʇɔɐǝɹ ǝɥʇ ʎq pǝʇɐɹǝuǝᵷ ᵷuᴉǝq ʇ/Ⅎᴚ ʇuǝɹɹnɔ ǝɥʇ sᴉ sᴉɥ⟘
+gui.reactor.inputRate.txt=˙ʎꞁꞁɐᴉʇuǝuodxǝ ǝsɐǝɹɔuᴉ ꞁꞁᴉʍ sᴉɥʇ sǝsɐǝɹɔuᴉ ɥʇᵷuǝɹʇs pꞁǝᴉɟ sⱯ ˙ɥʇᵷuǝɹʇs pꞁǝᴉɟ ʇuǝɹɹnɔ ǝɥʇ uᴉɐʇuᴉɐɯ oʇ pǝɹᴉnbǝɹ ʇnduᴉ ʇ/Ⅎᴚ ʇɔɐxǝ ǝɥʇ sᴉ sᴉɥ⟘
+gui.reactor.conversionRate.txt=˙uʍop oᵷ ꞁꞁᴉʍ sᴉɥʇ sǝsɐǝɹɔuᴉ uoᴉʇɐɹnʇɐs ɹoʇɔɐǝɹ ǝɥʇ sⱯ ˙ꞁǝnɟ ᵷuᴉsn ʎꞁʇuǝɹɹnɔ sᴉ ɹoʇɔɐǝɹ ǝɥʇ ʇsɐɟ ʍoɥ sᴉ sᴉɥ⟘
+gui.reactor.redstoneMode.txt=˙ʇuǝuodɯoɔ ɹoʇɔɐǝɹ sᴉɥʇ ɹoɟ ʇndʇno ɹoʇɐɹɐdɯoɔ ǝɥʇ ǝɹnᵷᴉɟuoƆ
+gui.reactor.rsMode_temp.txt=0000⥝ oʇ dn sǝsᴉɹ ǝɹnʇɐɹǝdɯǝʇ sɐ 5⥝ oʇ 0 ɯoɹɟ ꞁɐuᵷᴉs ɐ ʇndʇno ꞁꞁᴉM
+gui.reactor.rsMode_temp_inv.txt=˙pǝʇɹǝʌuᴉ sᴉ ꞁɐuᵷᴉs ǝɥʇ ʇdǝɔxǝ ǝɹnʇɐɹǝdɯǝ⟘ sɐ ǝɯɐs ǝɥʇ sᴉ sᴉɥ⟘
+gui.reactor.rsMode_field.txt=˙ɹǝʍod pꞁǝᴉɥs %06 =< = 5⥝ ɟo ꞁɐuᵷᴉS puɐ pꞁǝᴉɥs %0⥝ < = ⥝ ɟo ꞁɐuᵷᴉS '%00⥝ puɐ 0 uǝǝʍʇǝq sǝʇɐnʇɔnꞁɟ ɥʇᵷuǝɹʇs pꞁǝᴉɥs ǝɥʇ sɐ 5⥝ oʇ 0 ɯoɹɟ ꞁɐuᵷᴉs ɐ ʇndʇno ꞁꞁᴉM
+gui.reactor.rsMode_field_inv.txt=˙pǝʇɹǝʌuᴉ sᴉ ꞁɐuᵷᴉs ǝɥʇ ʇdǝɔxǝ pꞁǝᴉɥS sɐ ǝɯɐs ǝɥʇ sᴉ sᴉɥ⟘
+gui.reactor.rsMode_sat.txt=%00⥝ puɐ 0 uǝǝʍʇǝq sǝʇɐnʇɔnꞁɟ ꞁǝʌǝꞁ uoᴉʇɐɹnʇɐs ǝɥʇ sɐ 5⥝ oʇ 0 ɯoɹɟ ꞁɐuᵷᴉs ɐ ʇndʇno ꞁꞁᴉM
+gui.reactor.rsMode_sat_inv.txt=˙pǝʇɹǝʌuᴉ sᴉ ꞁɐuᵷᴉs ǝɥʇ ʇdǝɔxǝ uoᴉʇɐɹnʇɐS sɐ ǝɯɐs ǝɥʇ sᴉ sᴉɥ⟘
+gui.reactor.rsMode_fuel.txt=˙uoᴉsɹǝʌuoƆ %06 =< = 5⥝ ɟo ꞁɐuᵷᴉS '%00⥝ oʇ 0 ɯoɹɟ sǝsɐǝɹɔuᴉ ꞁǝʌǝꞁ uoᴉsɹǝʌuoɔ ꞁǝnɟ ǝɥʇ sɐ 5⥝ oʇ 0 ɯoɹɟ ꞁɐuᵷᴉs ɐ ʇndʇno ꞁꞁᴉM
+gui.reactor.rsMode_fuel_inv.txt=˙pǝʇɹǝʌuᴉ sᴉ ꞁɐuᵷᴉs ǝɥʇ ʇdǝɔxǝ uoᴉsɹǝʌuoƆ sɐ ǝɯɐs ǝɥʇ sᴉ sᴉɥ⟘
+gui.reactor.failSafe.txt=˙pǝꞁǝnɟǝɹ ǝq oʇ spǝǝu ʇᴉ uǝɥʍ ʇsnɾ ɹo uoᴉʇɔunɟꞁɐɯ ɐ ɟo ʇuǝʌǝ ǝɥʇ uᴉ ɹoʇɔɐǝɹ ɹnoʎ uʍopʇnɥs ʎꞁꞁɐɔᴉʇɐɯoʇnɐ oʇ pǝsn ǝq uɐɔ sᴉɥ⟘ %66 sǝɥɔɐǝɹ uoᴉʇɐɹnʇɐS puɐ Ɔ005ᘔ ʍoꞁꞁǝq sdoɹp ǝɹnʇɐɹǝdɯǝ⟘ ǝɥʇ uǝɥʍ uʍopʇnɥs ǝʇɐᴉʇᴉuᴉ ʎꞁꞁɐɔᴉʇɐɯoʇnɐ ꞁꞁᴉʍ ɹoʇɔɐǝɹ ǝɥʇ pǝꞁqɐuǝ uǝɥM
+
+gui.reactor.reactionTemp.info=ǝɹnʇɐɹǝdɯǝ⟘ ǝɹoƆ
+gui.reactor.fieldStrength.info=ɥʇᵷuǝɹʇS pꞁǝᴉℲ ʇuǝɯuᴉɐʇuoƆ
+gui.reactor.energySaturation.info=uoᴉʇɐɹnʇɐS ʎᵷɹǝuƎ
+gui.reactor.fuelConversion.info=ꞁǝʌǝꞀ uoᴉsɹǝʌuoƆ ꞁǝnℲ
+gui.reactor.tempLoad.info=ɹoʇɔɐℲ pɐoꞀ ǝɹnʇɐɹǝdɯǝ⟘
+gui.reactor.coreVolume.info=ǝɯnꞁoᴧ ǝɹoƆ
+gui.reactor.genRate.info=ǝʇɐᴚ uoᴉʇɐɹǝuǝ⅁
+gui.reactor.fieldInputRate.info=ǝʇɐᴚ ʇnduI pꞁǝᴉℲ
+gui.reactor.fuelConversionRate.info=ǝʇɐᴚ uoᴉsɹǝʌuoƆ ꞁǝnℲ
+gui.reactor.status.info=snʇɐʇS
+gui.reactor.status.invalid.info=dnʇǝS pᴉꞁɐʌuI
+gui.reactor.status.cold.info=ǝuᴉꞁɟɟO
+gui.reactor.status.warming_up.info=d∩ ᵷuᴉɯɹɐM
+gui.reactor.status.running.info=ǝuᴉꞁuO
+gui.reactor.status.stopping.info=ᵷuᴉddoʇS
+gui.reactor.status.cooling.info=uʍoᗡ ᵷuᴉꞁooƆ
+gui.reactor.status.beyond_hope.info=¡¡¡ʇuǝuᴉɯɯI uoᴉsoꞁdxƎ
+
+gui.reactor.charge.btn=ǝᵷɹɐɥƆ
+gui.reactor.activate.btn=ǝʇɐʌᴉʇɔⱯ
+gui.reactor.shutdown.btn=uʍopʇnɥS
+gui.reactor.rsMode.btn=ǝpoW\nǝuoʇspǝᴚ
+gui.reactor.failSafe.btn=ǝɟɐS-ꞁᴉɐℲ
+
+gui.reactor.rsMode_temp.btn=dɯǝ⟘
+gui.reactor.rsMode_temp_inv.btn=dɯǝ⟘-
+gui.reactor.rsMode_field.btn=pꞁǝᴉɥS
+gui.reactor.rsMode_field_inv.btn=pꞁǝᴉɥS-
+gui.reactor.rsMode_sat.btn=uoᴉʇɐɹnʇɐS
+gui.reactor.rsMode_sat_inv.btn=uoᴉʇɐɹnʇɐS-
+gui.reactor.rsMode_fuel.btn=uoᴉsɹǝʌuoƆ
+gui.reactor.rsMode_fuel_inv.btn=uoᴉsɹǝʌuoƆ-
+
+msg.de.reactorRSMode.0.txt=ǝɹnʇɐɹǝdɯǝ⟘ :ǝpoW ɹoʇɐɹɐdɯoƆ
+msg.de.reactorRSMode.1.txt=[pǝʇɹǝʌuI] ǝɹnʇɐɹǝdɯǝ⟘ :ǝpoW ɹoʇɐɹɐdɯoƆ
+msg.de.reactorRSMode.2.txt=pꞁǝᴉℲ ʇuǝɯuᴉɐʇuoƆ :ǝpoW ɹoʇɐɹɐdɯoƆ
+msg.de.reactorRSMode.3.txt=[pǝʇɹǝʌuI] pꞁǝᴉℲ ʇuǝɯuᴉɐʇuoƆ :ǝpoW ɹoʇɐɹɐdɯoƆ
+msg.de.reactorRSMode.4.txt=uoᴉʇɐɹnʇɐS ʎᵷɹǝuƎ :ǝpoW ɹoʇɐɹɐdɯoƆ
+msg.de.reactorRSMode.5.txt=[pǝʇɹǝʌuI] uoᴉʇɐɹnʇɐS ʎᵷɹǝuƎ :ǝpoW ɹoʇɐɹɐdɯoƆ
+msg.de.reactorRSMode.6.txt=uoᴉsɹǝʌuoƆ ꞁǝnℲ :ǝpoW ɹoʇɐɹɐdɯoƆ
+msg.de.reactorRSMode.7.txt=[pǝʇɹǝʌuI] uoᴉsɹǝʌuoƆ ꞁǝnℲ :ǝpoW ɹoʇɐɹɐdɯoƆ
+gui.de.coreMass.txt=ssɐW ǝɹoƆ
+
+gui.draconiumChest.name=ʇsǝɥƆ ɯnᴉuoɔɐɹᗡ
+gui.draconiumChest.fMode.btn=pǝǝℲ oʇnⱯ
+gui.draconiumChest.fMode.info=˙sǝpoɯ pǝǝɟ ǝꞁqɐꞁᴉɐʌɐ ʍǝᴉʌ oʇ ʞɔᴉꞁƆ ˙ʎɹoʇuǝʌuᴉ ǝɥʇ uᴉ sɯǝʇᴉ ʇꞁǝɯs ʎꞁꞁɐɔᴉʇɐɯoʇnɐ oʇ noʎ sʍoꞁꞁɐ pǝǝℲ oʇnⱯ
+gui.draconiumChest.fMode.off.btn=ɟɟO
+gui.draconiumChest.fMode.off.info=˙pǝꞁqɐsᴉp sᴉ pǝǝɟ oʇnⱯ
+gui.draconiumChest.fMode.fill.btn=ꞁꞁᴉℲ
+gui.draconiumChest.fMode.fill.info=˙ʎɹoʇuǝʌuᴉ ʇsǝɥɔ ǝɥʇ ɯoɹɟ ᵷuᴉʇꞁǝɯs ʎpɐǝɹꞁɐ ǝɹɐ ʇɐɥʇ sʞɔɐʇs ʎuɐ ꞁꞁᴉɟ ꞁꞁᴉM
+gui.draconiumChest.fMode.lock.btn=ʞɔoꞀ
+gui.draconiumChest.fMode.lock.info=˙ǝɔɐuɹnɟ ǝɥʇ ᵷuᴉpǝǝɟ ǝnuᴉʇuoɔ oʇ pǝsn ǝq ꞁꞁᴉʍ ʎǝɥʇ ǝꞁqɐꞁᴉɐʌɐ ǝɹɐ ɯǝʇᴉ ʇɐɥʇ ɟo ǝɹoɯ sɐ uoos sɐ os ɯǝʇᴉ ʇsɐꞁ ǝɥʇ ʇꞁǝɯs ʇou ꞁꞁᴉʍ ʇdǝɔxǝ ꞁꞁᴉɟ oʇ ɹɐꞁᴉɯᴉS
+gui.draconiumChest.fMode.all.btn=ꞁꞁⱯ
+gui.draconiumChest.fMode.all.info=˙ʎɹoʇuǝʌuᴉ ʇsǝɥɔ ǝɥʇ uᴉ sɯǝʇᴉ ǝꞁqɐʇꞁǝɯs ꞁꞁɐ puɐ ʎuɐ ʇꞁǝɯs oʇnɐ ꞁꞁᴉM
+gui.draconiumChest.speedBoost.info=˙uoᴉʇdɯnsuoɔ ʎᵷɹǝuǝ pǝsɐǝɹɔuᴉ ʎꞁʇuɐɔᴉɟᴉuᵷᴉs ɟo ʇsoɔ ǝɥʇ ʇɐ ǝɹo ǝꞁqnop puɐ pǝǝds ʇsooq oʇ ǝɹoɔ ɹǝᴉʇ ɹǝɥᵷᴉɥ ɹo uɹǝʌʎM ɐ ʇɹǝsuI
+gui.draconiumChest.energyConsumption.info=uoᴉʇdɯnsuoƆ ʎᵷɹǝuƎ
+gui.draconiumChest.processTime.info=pǝǝdS ssǝɔoɹԀ
+gui.draconiumChest.editRegion.btn=uoᴉᵷǝᴚ ʇᴉpƎ
+gui.draconiumChest.editDefaultRegion.btn=sʇoꞁS pǝuᵷᴉssɐun ɹoɟ OI ʇᴉpƎ
+gui.draconiumChest.enableRegion.btn=uoᴉᵷǝᴚ ǝꞁqɐuƎ
+gui.draconiumChest.disableRegion.btn=uoᴉᵷǝᴚ ǝꞁqɐsᴉᗡ
+gui.draconiumChest.regionSelect.info=˙dɐꞁɹǝʌo ʇou uɐɔ suoᴉᵷǝɹ puɐ ʇsɹᴉɟ pǝꞁqɐuǝ ǝq ʇsnɯ uoᴉᵷǝᴚ ˙uoᴉᵷǝɹ sᴉɥʇ oʇ pǝuᵷᴉssɐ ǝɹɐ sʇoꞁs ɥɔᴉɥʍ ǝᵷuɐɥɔ oʇ ʎɹoʇuǝʌuᴉ ʇsǝɥɔ ǝɥʇ uᴉ ᵷɐɹp puɐ ʞɔᴉꞁƆ
+gui.draconiumChest.ioRegions.btn=suoᴉᵷǝᴚ O/I
+gui.draconiumChest.ioRegions.info=˙ʇsǝɥɔ ǝɥʇ ɟo ǝpᴉs ʇɥᵷᴉɹ ǝɥʇ ɯoɹɟ pǝʇɔɐɹʇxǝ ǝq uǝɥʇ uɐɔ puɐ ᘔ uoᴉᵷǝɹ oʇ sʇndʇno ǝɔɐuɹnℲ 'ǝɔɐuɹnɟ ǝɥʇ ʎq pǝʇꞁǝɯs ǝɹɐ puɐ ⥝ uoᴉᵷǝɹ oʇ oᵷ ʇsǝɥɔ ǝɥʇ ɟo ǝpᴉs ʇɟǝꞁ ǝɥʇ ᵷuᴉɹǝʇuǝ sɯǝʇI :ǝᵷɐsn ǝꞁdɯɐxǝ uⱯ ˙ǝsn uɐɔ ǝɔɐuɹnɟ uᴉ ʇꞁᴉnq ǝɥʇ sʇoꞁs ɥɔᴉɥʍ ʎɟᴉɔǝds osꞁɐ uɐɔ no⅄ ˙oᴉ pǝpᴉs ǝꞁqɐɹnᵷᴉɟuoɔ ɥʇᴉʍ sʇoꞁs ɟo sdnoɹᵷ ǝʇɐǝɹɔ oʇ noʎ ʍoꞁꞁɐ suoᴉᵷǝɹ OI ˙suoᴉᵷǝɹ O/I ǝɹnᵷᴉɟuoɔ oʇ ǝɹǝɥ ʞɔᴉꞁƆ
+gui.draconiumChest.pickColour.btn=ɹnoꞁoƆ ʇsǝɥƆ
+gui.draconiumChest.pickColour.info=˙ʇsǝɥɔ ǝɥʇ ɟo ɹnoꞁoɔ ǝɥʇ ʎɟᴉpoɯ oʇ noʎ sʍoꞁꞁⱯ
+
+gui.draconiumChest.toggleIOMode.down.btn=˙ǝpoɯ OI ɯoʇʇoᗺ ǝꞁᵷᵷo⟘
+gui.draconiumChest.toggleIOMode.up.btn=˙ǝpoɯ OI do⟘ ǝꞁᵷᵷo⟘
+gui.draconiumChest.toggleIOMode.north.btn=˙ǝpoɯ OI ʇuoɹℲ ǝꞁᵷᵷo⟘
+gui.draconiumChest.toggleIOMode.south.btn=˙ǝpoɯ OI ʞɔɐᗺ ǝꞁᵷᵷo⟘
+gui.draconiumChest.toggleIOMode.west.btn=˙ǝpoɯ OI ʇɥᵷᴉᴚ ǝꞁᵷᵷo⟘
+gui.draconiumChest.toggleIOMode.east.btn=˙ǝpoɯ OI ʇɟǝꞀ ǝꞁᵷᵷo⟘
+gui.draconiumChest.toggleIOMode.furnace.btn=˙ǝpoɯ OI ǝɔɐuɹnℲ ǝꞁᵷᵷo⟘
+
+gui.draconiumChest.ioState0.btn=pǝꞁqɐsᴉᗡ
+gui.draconiumChest.ioState1.btn=ʎꞁuO ʇnduI
+gui.draconiumChest.ioState2.btn=ʎꞁuO ʇndʇnO
+gui.draconiumChest.ioState3.btn=ʇndʇnO ⅋ ʇnduI
+
+gui.de.junkFilter.name=ɹǝʇꞁᴉℲ ʞunՐ ꞁoo⟘
+
+info.de.shiftReversePlaceLogic.txt=˙ɔᴉᵷoꞁ ʇuǝɯǝɔɐꞁd ǝsɹǝʌǝɹ oʇ ʇɟᴉɥS pꞁoH
