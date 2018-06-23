@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
@@ -102,64 +103,11 @@ public class ClientEventHandler {
         if (player != null) {
             playerHoldingWrench = (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ICrystalBinder) || (!player.getHeldItemOffhand().isEmpty() && player.getHeldItemOffhand().getItem() instanceof ICrystalBinder);
         }
-
-//        if (mc == null) { TODO Do i really want to reimplement this?
-//            mc = Minecraft.getMinecraft();
-//        }
-//        else if (mc.world != null) {
-//            if (bowZoom && !lastTickBowZoom) {
-//                previousSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-//                Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity / 3;
-//            }
-//            else if (!bowZoom && lastTickBowZoom) {
-//                Minecraft.getMinecraft().gameSettings.mouseSensitivity = previousSensitivity;
-//            }
-//
-//            lastTickBowZoom = bowZoom;
-//            if (elapsedTicks - tickSet > 10) bowZoom = false;
-//
-//            if (energyCrystalAlphaValue < energyCrystalAlphaTarget) energyCrystalAlphaValue += 0.01f;
-//            if (energyCrystalAlphaValue > energyCrystalAlphaTarget) energyCrystalAlphaValue -= 0.01f;
-//
-//            if (Math.abs(energyCrystalAlphaTarget - energyCrystalAlphaValue) <= 0.02f) energyCrystalAlphaTarget = rand.nextFloat();
-//        }
-    }
-
-    @SubscribeEvent
-    public void fovUpdate(FOVUpdateEvent event) {
-
-        //region Bow FOV Update
-//		if (event.entity.getHeldItem()!= null && (event.entity.getHeldItem().getItem() instanceof WyvernBow || event.entity.getHeldItem().getItem() instanceof DraconicBow) && Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed()){
-//
-//			BowHandler.BowProperties properties = new BowHandler.BowProperties(event.entity.getHeldItem(), event.entity);
-//
-//			event.newfov = ((6 - properties.zoomModifier) / 6) * event.fov;
-//
-////			if (ItemNBTHelper.getString(event.entity.getItemInUse(), "mode", "").equals("sharpshooter")){
-////				if (event.entity.getItemInUse().getItem() instanceof WyvernBow) zMax = 1.35f;
-////				else if (event.entity.getItemInUse().getItem() instanceof DraconicBow) zMax = 2.5f;
-////				bowZoom = true;
-////				tickSet = elapsedTicks;
-////			}
-//
-//		}
-//		//endregion
-//
-//		//region Armor move speed FOV effect cancellation
-//		CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.entity);
-//
-//		if (summery != null && summery.speedModifier > 0){
-//			IAttributeInstance iattributeinstance = event.entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
-//			float f = (float)((iattributeinstance.getAttributeValue() / (double)event.entity.capabilities.getWalkSpeed() + 1.0D) / 2.0D);
-//			event.newfov /= f;
-//		}
-
-        //endregion
     }
 
     @SubscribeEvent
     public void renderPlayerEvent(RenderPlayerEvent.Post event) {
-        if (playerShieldStatus.containsKey(event.getEntityPlayer())) {
+        if (!DEConfig.disableShieldHitEffect &&  playerShieldStatus.containsKey(event.getEntityPlayer())) {
             if (shieldModel == null) {
                 try {
                     shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);

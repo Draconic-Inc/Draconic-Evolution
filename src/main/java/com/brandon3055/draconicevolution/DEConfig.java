@@ -158,6 +158,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "dissenchnaterCostMultiplier", comment = "Allows you to adjust the cost of dissenchanting items via the dissenchanter", autoSync = true)
     public static double disenchnaterCostMultiplyer = 1;
 
+    @ModConfigProperty(category = "Tweaks", name = "forceDroppedItemOwner", comment = "For some reason forge decided not to set the owner of an item when dropped from an inventory screen.\nDE overrides this and sets the stack owner when possible.\nIf this causes issues set this value to false.", autoSync = true)
+    public static boolean forceDroppedItemOwner = true;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")
@@ -183,6 +186,13 @@ public class DEConfig implements IModConfigHelper {
 
     @ModConfigProperty(category = "Client Settings", name = "disableDislocatorSound", comment = "If true the item dislocator will not make the pickup sound when it collects items..")
     public static boolean disableDislocatorSound = false;
+
+    @ModConfigProperty(category = "Client Settings", name = "disableShieldHitEffect", comment = "If true the armor shield will not render when you taker damage (this is only a visual change).")
+    public static boolean disableShieldHitEffect = false;
+
+    @ModConfigProperty(category = "Client Settings", name = "disableShieldHitSound", comment = "If true the armor shield hit sound will be disabled.")
+    public static boolean disableShieldHitSound = false;
+
 
     //Category Misc
 

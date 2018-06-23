@@ -31,6 +31,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.feature.WorldGenEndPodium;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -50,11 +51,7 @@ public class DEEventHandler {
     private static Random random = new Random();
 
     public static int serverTicks = 0;
-//    @SubscribeEvent
-//    public void explodeEvent(ExplosionEvent event) {
-////        event.setCanceled(true);
-////        LogHelper.dev("Event Canceled");
-//    }
+
 
     //region Ticking
 
@@ -85,112 +82,6 @@ public class DEEventHandler {
     }
 
     //endregion
-
-    //region C
-/*
-    @SubscribeEvent
-    public void entityJoinWorld(EntityJoinWorldEvent event) {
-
-    }
-
-
-
-
-
-
-    private static Method becomeAngryAt;
-
-    public static double maxSpeed = 10F;
-    public static int ticksSinceRequest = 0;
-    public static boolean speedNeedsUpdating = true;
-
-    private Field persistenceRequired = null;
-
-    public MinecraftForgeEventHandler() {
-        try {
-            persistenceRequired = ReflectionHelper.findField(EntityLiving.class, "field_82179_bU", "persistenceRequired");
-        }
-        catch (Exception e) {
-            LogHelper.error("Unable to find field \"persistenceRequired\"");
-        }
-    }
-
-    @SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-        EntityLivingBase entity = event.getEntity()Living;
-
-        if (entity.getEntityData().hasKey("SpawnedByDESpawner")) {
-            long spawnTime = entity.getEntityData().getLong("SpawnedByDESpawner");
-            long livedFor = entity.world.getTotalWorldTime() - spawnTime;
-
-            if (livedFor > 600 && persistenceRequired != null) {
-                try {
-                    persistenceRequired.setBoolean(entity, false);
-                    entity.getEntityData().removeTag("SpawnedByDESpawner");
-                }
-                catch (Exception e) {
-                    LogHelper.warn("Error occured while resetting entity persistence: " + e);
-                    entity.getEntityData().removeTag("SpawnedByDESpawner");
-                }
-            }
-        }
-
-
-        if (!event.getEntity()Living.world.isRemote || !(event.getEntity()Living instanceof EntityPlayerSP)) return;
-        EntityPlayerSP player = (EntityPlayerSP) entity;
-
-        double motionX = player.motionX;
-        double motionZ = player.motionZ;
-        double motion = Math.sqrt((motionX * motionX + motionZ * motionZ));
-        double reduction = motion - maxSpeed;
-
-        if (motion > maxSpeed && (player.onGround || player.capabilities.isFlying)) {
-            player.motionX -= motionX * reduction;
-            player.motionZ -= motionZ * reduction;
-        }
-
-        if (speedNeedsUpdating) {
-            if (ticksSinceRequest == 0) {
-                DraconicEvolution.network.sendToServer(new SpeedRequestPacket());
-                LogHelper.info("Requesting speed packet from server");
-            }
-            ticksSinceRequest++;
-            if (ticksSinceRequest > 500) ticksSinceRequest = 0;
-        }
-    }
-
-    @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event) {
-        if (event.getEntity()Living instanceof EntityPlayer) {
-            CustomArmorHandler.onPlayerHurt(event);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onLivingDeath(LivingDeathEvent event) {
-        if (event.getEntity()Living instanceof EntityPlayer) {
-            CustomArmorHandler.onPlayerDeath(event);
-        }
-    }
-
-    @SubscribeEvent
-    public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
-        if (!(event.getEntity()Living instanceof EntityPlayer)) return;
-        EntityPlayer player = (EntityPlayer) event.getEntity()Living;
-        CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(player);
-
-        if (summery != null && summery.jumpModifier > 0) {
-            player.motionY += (double) (summery.jumpModifier * 0.1F);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onLivingAttack(LivingAttackEvent event) {
-        if (!(event.getEntity()Living instanceof EntityPlayer)) return;
-
-        CustomArmorHandler.onPlayerAttacked(event);
-    }*/
-//endregion
 
     //region Mob Drops
 
@@ -314,14 +205,16 @@ public class DEEventHandler {
         }
     }
 
-
-//    @SubscribeEvent
-//    public void onEntityConstructing(EntityEvent.EntityConstructing event) {
-//        if (event.getEntity() instanceof EntityPlayer && ExtendedPlayer.get((EntityPlayer) event.getEntity()) == null)
-//            ExtendedPlayer.register((EntityPlayer) event.getEntity());
-//    }
-
     //endregion
+
+    @SubscribeEvent
+    public void itemToss(ItemTossEvent event) {
+        EntityItem item = event.getEntityItem();
+        EntityPlayer player = event.getPlayer();
+        if (DEConfig.forceDroppedItemOwner && player != null && (item.getThrower() == null || item.getThrower().isEmpty())){
+            item.setThrower(player.getName());
+        }
+    }
 
     //region Crystal Binder
 
@@ -421,61 +314,6 @@ public class DEEventHandler {
 //        }
     }
 
-    //region C
-/*
-    @SubscribeEvent
-    public void stopUsingEvent(PlayerUseItemEvent.Start event) {
-        if (!ConfigHandler.pigmenBloodRage || event.item == null || event.item.getItem() == null) return;
-        if (event.item.getItem() == Items.porkchop || event.item.getItem() == Items.cooked_porkchop) {
-            World world = event.getEntity()Player.world;
-            if (world.isRemote) return;
-            EntityPlayer player = event.getEntity()Player;
-            List list = world.getEntitiesWithinAABB(EntityPigZombie.class, AxisAlignedBB.getBoundingBox(player.posX - 32, player.posY - 32, player.posZ - 32, player.posX + 32, player.posY + 32, player.posZ + 32));
-
-            EntityZombie entityAtPlayer = new EntityPigZombie(world);
-            entityAtPlayer.setPosition(player.posX, player.posY, player.posZ);
-
-            boolean flag = false;
-
-            for (Object o : list) {
-                if (o instanceof EntityPigZombie) {
-                    EntityPigZombie zombie = (EntityPigZombie) o;
-                    if (becomeAngryAt == null) {
-                        becomeAngryAt = ReflectionHelper.findMethod(EntityPigZombie.class, zombie, new String[]{"becomeAngryAt", "func_70835_c"}, Entity.class);
-                        becomeAngryAt.setAccessible(true);
-                    }
-
-                    try {
-                        becomeAngryAt.invoke(zombie, player);
-                    }
-                    catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                    catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (Math.abs(zombie.posX - player.posX) < 14 && Math.abs(zombie.posY - player.posY) < 14 && Math.abs(zombie.posZ - player.posZ) < 14)
-                        flag = true;
-                    zombie.addPotionEffect(new PotionEffect(5, 10000, 3));
-                    zombie.addPotionEffect(new PotionEffect(11, 10000, 2));
-                }
-            }
-
-            if (flag) player.addPotionEffect(new PotionEffect(2, 500, 3));
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void joinWorld(EntityJoinWorldEvent event) {
-        if (event.getEntity() instanceof EntityPlayerSP) {
-            speedNeedsUpdating = true;
-            DraconicEvolution.network.sendToServer(new MountUpdatePacket(0));
-        }
-    }
-*/
-//endregion
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
@@ -504,38 +342,6 @@ public class DEEventHandler {
         }
     }
 
-    //region C
-    /*
-    @SubscribeEvent
-    public void worldUnload(WorldEvent.Unload e) {
-        TileGrinder.fakePlayer = null;
-    }
-
-    @SubscribeEvent
-    public void playerInteract(PlayerInteractEvent event) {
-        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-            ForgeDirection face = ForgeDirection.getOrientation(event.face);
-            int x = event.x + face.offsetX;
-            int y = event.y + face.offsetY;
-            int z = event.z + face.offsetZ;
-            if (event.world.getBlock(x, y, z) == ModBlocks.safetyFlame) {
-                event.world.setBlockToAir(x, y, z);
-                event.world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "random.fizz", 1F, event.world.rand.nextFloat() * 0.1F + 2F);
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void entityJoinWorld(EntityJoinWorldEvent event) {
-        if (!event.world.isRemote && event.getEntity() instanceof EntityEnderCrystal && event.getEntity().dimension == 1) {
-            DataUtills.XZPair<Integer, Integer> location = ChaosWorldGenHandler.getClosestChaosSpawn((int) event.getEntity().posX / 16, (int) event.getEntity().posZ / 16);
-            if ((location.x != 0 || location.z != 0) && Utills.getDistanceAtoB(event.getEntity().posX, event.getEntity().posZ, location.x, location.z) < 500) {
-                ProcessHandler.addProcess(new ChaosWorldGenHandler.CrystalRemover(event.getEntity()));
-            }
-        }
-    }*/
-    //endregion
 
     @SubscribeEvent
     public void login(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event) {
