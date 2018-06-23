@@ -79,18 +79,19 @@ public class StabilizedSpawner extends BlockBCore implements ITileEntityProvider
     }
 
     public void setStackDataTier(ItemStack stack, TileStabilizedSpawner.SpawnerTier tier) {
-        NBTTagCompound managedData = new NBTTagCompound();
-        stack.getOrCreateSubCompound("BCTileData").setTag("BCManagedData", managedData);
+        NBTTagCompound managedData = stack.getOrCreateSubCompound("BCTileData").getCompoundTag("BCManagedData");
         managedData.setByte("spawnerTier", (byte) tier.ordinal());
+        stack.getOrCreateSubCompound("BCTileData").setTag("BCManagedData", managedData);
     }
 
     public void setStackDataEntity(ItemStack stack, String entityString) {
         if (entityString != null) {
             ItemStack soul = new ItemStack(DEFeatures.mobSoul);
             DEFeatures.mobSoul.setEntity(MobSoul.getCachedRegName(entityString), soul);
-            NBTTagCompound managedData = new NBTTagCompound();
-            stack.getOrCreateSubCompound("BCTileData").setTag("BCManagedData", managedData);
+            NBTTagCompound managedData = stack.getOrCreateSubCompound("BCTileData").getCompoundTag("BCManagedData");
+            stack.getOrCreateSubCompound("BCTileData").getCompoundTag("BCManagedData");
             managedData.setTag("mobSoul", soul.serializeNBT());
+            stack.getOrCreateSubCompound("BCTileData").setTag("BCManagedData", managedData);
         }
     }
 

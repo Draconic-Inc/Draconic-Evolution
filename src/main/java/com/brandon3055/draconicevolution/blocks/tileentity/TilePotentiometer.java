@@ -63,7 +63,7 @@ public class TilePotentiometer extends TileBCBase implements IRedstoneEmitter, I
         }
 
         if (world.isRemote) {
-            ChatHelper.indexedMsg(player, POWER.toString(), -442611624);
+            ChatHelper.indexedMsg(player, POWER.toString());
         }
         else {
             world.playSound(null, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (POWER.value / 20F));

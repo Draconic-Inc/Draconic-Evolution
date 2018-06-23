@@ -166,8 +166,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
             int newMode = mode == 4 ? 0 : mode + 1;
             ItemNBTHelper.setShort(stack, "Mode", (short) newMode);
             if (world.isRemote) {
-                ChatHelper.indexedMsg(player, InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt"), -442611624);
-//                player.sendMessage(new TextComponentTranslation(InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt")));
+                ChatHelper.indexedMsg(player, InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt"));
             }
         }
         return new ActionResult<>(EnumActionResult.PASS, stack);

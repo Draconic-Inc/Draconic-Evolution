@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client;
 
+import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.render.CCRenderEventHandler;
 import codechicken.lib.texture.TextureUtils;
@@ -17,6 +18,7 @@ import com.brandon3055.draconicevolution.client.model.ArmorModelHelper;
 import com.brandon3055.draconicevolution.client.render.entity.*;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
+import com.brandon3055.draconicevolution.network.ccnetwork.ClientPacketHandler;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -78,6 +80,12 @@ public class ClientProxy extends CommonProxy {
         }
 
 //		ResourceHandler.instance.tick(null);
+    }
+
+    @Override
+    public void initializeNetwork() {
+        super.initializeNetwork();
+        PacketCustom.assignHandler("DEPCChannel", new ClientPacketHandler());
     }
 
     public void registerRendering() {
