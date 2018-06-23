@@ -5,15 +5,14 @@ import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -73,7 +72,7 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
         planeB.multiply(scale);
         planeC.multiply(scale);
         planeD.multiply(scale);
-        double dist = 0.2 * Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
+        double dist = 0.2 * source.copy().subtract(target).mag();//Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
         double anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15D;
 
         Vector3 p1 = source.copy().add(planeA);

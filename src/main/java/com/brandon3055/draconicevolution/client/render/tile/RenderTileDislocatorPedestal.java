@@ -12,9 +12,9 @@ import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -35,7 +35,6 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         if (modelQuads == null) {
             modelQuads = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(DEFeatures.dislocatorPedestal.getDefaultState()).getQuads(DEFeatures.dislocatorPedestal.getDefaultState(), null, 0);
         }
-
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 0.5, y, z + 0.5);

@@ -34,7 +34,7 @@ public class DERecipes {
         addShaped(NORMAL, grinder, "ABA", "CDC", "AEA", 'A', "ingotIron", 'B', "ingotDraconium", 'C', DIAMOND_SWORD, 'D', draconicCore, 'E', FURNACE);
         addShaped(HARD, grinder, "ABA", "CDC", "AEA", 'A', "ingotIron", 'B', "ingotDraconium", 'C', wyvernSword, 'D', draconicCore, 'E', FURNACE);
         addShaped(NORMAL, energyInfuser, "ABA", "CDC", "ACA", 'A', "ingotDraconium", 'B', new ItemStack(particleGenerator, 1, 2), 'C', draconicCore, 'D', ENCHANTING_TABLE);
-        addShaped(HARD, energyInfuser, "ABA", "CDC", "AEA", 'A', "ingotDraconium", 'B', new ItemStack(particleGenerator, 1, 2), 'C', wyvernCore, 'D', ENCHANTING_TABLE, 'E', draconicCore);
+        addShaped(HARD, energyInfuser, "ABA", "CDC", "AEA", 'A', "ingotDraconium", 'B', new ItemStack(particleGenerator, 1, 0), 'C', wyvernCore, 'D', ENCHANTING_TABLE, 'E', draconicCore);
         addShaped(ALL, new ItemStack(particleGenerator, 1, 0), "ABA", "BCB", "ABA", 'A', "blockRedstone", 'B', BLAZE_ROD, 'C', draconicCore);
         addShaped(NORMAL, new ItemStack(particleGenerator, 1, 2), "A A", " B ", "A A", 'A', "gemDiamond", 'B', new ItemStack(particleGenerator, 1, 0));
         addFusion(HARD, new ItemStack(particleGenerator, 1, 2), new ItemStack(particleGenerator), 80000, 1, "gemDiamond", wyvernCore, "gemDiamond", wyvernCore, "gemDiamond", "gemDiamond");

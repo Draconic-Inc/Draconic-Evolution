@@ -56,9 +56,11 @@ public class LayerContributorPerkRenderer implements LayerRenderer<AbstractClien
             renderBadge(player);
         }
 
-        if (contributor.isLolnetContributor && contributor.patreonBadgeEnabled) {
+        if (contributor.isLolnetContributor && contributor.lolnetBadgeEnabled) {
             renderLolnetBadge(player, contributor.isPatreonSupporter && contributor.patreonBadgeEnabled);
         }
+
+        GlStateManager.color(1F, 1F, 1F, 1.0F);
     }
 
     public static void renderEnchantedGlint(RenderLivingBase<?> livingBase, EntityLivingBase entity, ModelBase model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
