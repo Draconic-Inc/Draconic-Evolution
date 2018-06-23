@@ -16,6 +16,7 @@ public class KeyBindings {
     public static KeyBinding toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_C, DraconicEvolution.MODNAME);
     public static KeyBinding toolProfileChange = new KeyBinding("key.toolProfileChange", Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
     public static KeyBinding toggleFlight = new KeyBinding("key.toggleFlight", Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+    public static KeyBinding toggleDislocator = new KeyBinding("key.toggleDislocator", Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
 
 
     public static void init() {
@@ -23,5 +24,6 @@ public class KeyBindings {
         ClientRegistry.registerKeyBinding(toolConfig);
         ClientRegistry.registerKeyBinding(toolProfileChange);
         ClientRegistry.registerKeyBinding(toggleFlight);
+        ClientRegistry.registerKeyBinding(toggleDislocator);
     }
 }

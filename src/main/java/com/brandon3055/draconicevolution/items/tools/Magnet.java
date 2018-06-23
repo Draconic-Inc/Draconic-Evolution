@@ -175,13 +175,6 @@ public class Magnet extends ItemBCore implements IBauble {
         return super.onItemRightClick(world, player, hand);
     }
 
-//    @Override
-//    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-//        if (player.isSneaking())
-//            ItemNBTHelper.setBoolean(stack, "MagnetEnabled", !ItemNBTHelper.getBoolean(stack, "MagnetEnabled", false));
-//        return stack;
-//    }
-
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
@@ -191,11 +184,11 @@ public class Magnet extends ItemBCore implements IBauble {
 //        list.add(InfoHelper.HITC() + range + InfoHelper.ITC() + " " + StatCollector.translateToLocal("info.de.blockRange.txt"));
     }
 
-    public boolean isEnabled(ItemStack stack) {
+    public static boolean isEnabled(ItemStack stack) {
         return ItemNBTHelper.getBoolean(stack, "IsActive", false);
     }
 
-    public void toggleEnabled(ItemStack stack) {
+    public static void toggleEnabled(ItemStack stack) {
         ItemNBTHelper.setBoolean(stack, "IsActive", !isEnabled(stack));
     }
 
