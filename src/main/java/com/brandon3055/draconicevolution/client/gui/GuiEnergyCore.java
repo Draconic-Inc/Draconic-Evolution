@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.gui.GuiButtonAHeight;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
@@ -29,6 +30,9 @@ public class GuiEnergyCore extends GuiContainer {
     private GuiButton tierDown;
     private GuiButton toggleGuide;
     private GuiButton creativeBuild;
+    private GuiButton layerPlus;
+    private GuiButton layerMinus;
+    public static int layer = -1;
 
     public GuiEnergyCore(EntityPlayer player, TileEnergyStorageCore tile) {
         super(new ContainerBCBase<TileEnergyStorageCore>(player, tile).addPlayerSlots(10, 116));
@@ -47,7 +51,13 @@ public class GuiEnergyCore extends GuiContainer {
         buttonList.add(tierDown = new GuiButtonAHeight(2, guiLeft + 9, guiTop + 86, 80, 12, I18n.format("button.de.tierDown.txt")));
         buttonList.add(toggleGuide = new GuiButtonAHeight(3, guiLeft + 9, guiTop + 73, 162, 12, I18n.format("button.de.buildGuide.txt")));
         buttonList.add(creativeBuild = new GuiButtonAHeight(4, guiLeft + 9, guiTop + ySize, 162, 12, "Creative Build"));
-        updateButtonStates();
+
+        buttonList.add(layerMinus = new GuiButtonAHeight(5, guiLeft + 5, guiTop - 13, 70, 12, "Layer-"));
+        buttonList.add(layerPlus = new GuiButtonAHeight(6, guiLeft + 105, guiTop - 13, 70, 12, "Layer+"));
+        layerPlus.visible = tile.buildGuide.value;
+        layerMinus.visible = tile.buildGuide.value;
+
+                updateButtonStates();
     }
 
     @Override
@@ -116,6 +126,10 @@ public class GuiEnergyCore extends GuiContainer {
             }
         }
 
+        if (tile.buildGuide.value) {
+            drawCenteredString(fontRenderer, layer == -1 ? "All" : layer + "", guiLeft + (xSize / 2), guiTop - 10, 0xFFFFFF);
+        }
+
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 
@@ -141,11 +155,24 @@ public class GuiEnergyCore extends GuiContainer {
 
         tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.value;
         creativeBuild.visible = player.capabilities.isCreativeMode && !tile.active.value;
+
+        layerPlus.visible = tile.buildGuide.value;
+        layerMinus.visible = tile.buildGuide.value;
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        tile.sendPacketToServer(output -> {
-        }, button.id);
+        if (button.id < 5) {
+            tile.sendPacketToServer(output -> {}, button.id);
+        }
+        else {
+            if (button == layerPlus) {
+                layer++;
+            }
+            else {
+                layer--;
+            }
+            layer = MathHelper.clip(layer, -1, 6);
+        }
     }
 }

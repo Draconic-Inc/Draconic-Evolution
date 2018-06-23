@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
+import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
@@ -200,6 +201,10 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         double dist = Utils.getDistanceAtoB(corePos, Vec3D.getCenter(pos));
         double pDist = Minecraft.getMinecraft().player.getDistance(corePos.x, corePos.y, corePos.z);
 
+        if (GuiEnergyCore.layer != -1) {
+            pDist = GuiEnergyCore.layer + 2;
+        }
+
         IBlockState atPos = world.getBlockState(pos);
         boolean invalid = !world.isAirBlock(pos) && (atPos.getBlock().getRegistryName() == null || !atPos.getBlock().getRegistryName().toString().equals(name));
 
@@ -225,12 +230,16 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         GlStateManager.translate(translation.getX(), translation.getY(), translation.getZ());
         if (invalid) {
             GlStateManager.disableDepth();
-            GlStateManager.enableBlend();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+            double s = Math.sin(ClientEventHandler.elapsedTicks / 10D) * 0.1D;
+            GlStateManager.scale(0.8 + s, 0.8 + s, 0.8 + s);
+            GlStateManager.translate(0.1 - s, 0.1 - s, 0.1 - s);
+        }
+        else {
+            GlStateManager.scale(0.8, 0.8, 0.8);
+            GlStateManager.translate(0.1, 0.1, 0.1);
         }
 
-        GlStateManager.scale(0.8, 0.8, 0.8);
-        GlStateManager.translate(0.1, 0.1, 0.1);
         float brightnessX = OpenGlHelper.lastBrightnessX;
         float brightnessY = OpenGlHelper.lastBrightnessY;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 150f, 150f);
@@ -241,7 +250,6 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         if (invalid) {
             GlStateManager.enableDepth();
-            GlStateManager.disableBlend();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         }
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
