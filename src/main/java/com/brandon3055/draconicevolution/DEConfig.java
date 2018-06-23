@@ -161,6 +161,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "forceDroppedItemOwner", comment = "For some reason forge decided not to set the owner of an item when dropped from an inventory screen.\nDE overrides this and sets the stack owner when possible.\nIf this causes issues set this value to false.", autoSync = true)
     public static boolean forceDroppedItemOwner = true;
 
+    @ModConfigProperty(category = "Tweaks", name = "clearDataRecipes", comment = "Adds recipes to clear all nbt data from items such as energy crystals and crafting injectors.", requiresMCRestart = true, requiresSync = true)
+    public static boolean clearDataRecipes = false;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")
