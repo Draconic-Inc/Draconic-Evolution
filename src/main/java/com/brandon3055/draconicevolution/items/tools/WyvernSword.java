@@ -119,6 +119,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
         registry.register(stack, new DoubleConfigField("attackAOE", getMaxAttackAOE(stack), 0, getMaxAttackAOE(stack), "config.field.attackAOE.description", IItemConfigField.EnumControlType.SLIDER));
+        addEnchantConfig(stack, registry);
         return registry;
     }
 

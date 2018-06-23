@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
@@ -18,6 +19,8 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -26,7 +29,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
@@ -37,7 +43,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.brandon3055.draconicevolution.items.ToolUpgrade.ATTACK_DAMAGE;
 
@@ -97,6 +105,148 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     @Override
     public int getProfileCount(ItemStack stack) {
         return 5;
+    }
+
+    protected void addEnchantConfig(ItemStack stack, ItemConfigFieldRegistry registry) {
+        Map<Enchantment, Integer> enchants = getAllEnchants(stack);
+        Map<Enchantment, Integer> disEnchants = getDisabledEnchants(stack);
+        enchants.forEach((enchantment, integer) -> {
+            ToolConfigHelper.getFieldStorage(stack).removeTag(enchantment.getName());
+            registry.register(stack, new BooleanConfigField(enchantment.getRegistryName() + "", false/*!disEnchants.containsKey(enchantment)*/, "config.field.toggleEnchant.description"){
+                @Override
+                public String getUnlocalizedName() {
+                    return enchantment.getTranslatedName(integer);
+                }
+
+                @Override
+                public void readFromNBT(NBTTagCompound compound) {
+                    super.readFromNBT(compound);
+                }
+
+                @Override
+                public void writeToNBT(NBTTagCompound compound) {
+                    super.writeToNBT(compound);
+                }
+
+                @Override
+                public Integer getValue() {
+//                    return EnchantmentHelper.getEnchantments(stack).containsKey(enchantment) ? 1 : 0;
+                    return super.getValue();
+                }
+
+                @Override
+                public String getReadableValue() {
+                    return super.getReadableValue();
+                }
+            });
+        });
+    }
+
+    public Map<Enchantment, Integer> getDisabledEnchants(ItemStack stack) {
+        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+        Map<Enchantment, Integer> disEnch = new HashMap<>();
+        for (int i = 0; i < list.tagCount(); i++) {
+            Enchantment enchantment = Enchantment.getEnchantmentByID(list.getCompoundTagAt(i).getShort("id"));
+            int level = list.getCompoundTagAt(i).getShort("lvl");
+            disEnch.put(enchantment, level);
+        }
+        return disEnch;
+    }
+
+    public Map<Enchantment, Integer> getAllEnchants(ItemStack stack) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        enchants.putAll(getDisabledEnchants(stack));
+        enchants.putAll(EnchantmentHelper.getEnchantments(stack));
+        return enchants;
+    }
+
+    @Override
+    public void onFieldChanged(ItemStack stack, IItemConfigField field) {
+        if (field instanceof BooleanConfigField && field.getDescription().equals("config.field.toggleEnchant.description")) {
+            Enchantment target = Enchantment.REGISTRY.getObject(new ResourceLocation(field.getName()));
+
+            if (EnchantmentHelper.getEnchantments(stack).containsKey(target)) {
+                Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
+                for (Enchantment enchantment : enchants.keySet()) {
+                    if (enchantment == target) {
+                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+                        NBTTagCompound ench = new NBTTagCompound();
+                        ench.setShort("id", (short) Enchantment.getEnchantmentID(enchantment));
+                        ench.setShort("lvl", enchants.get(enchantment).shortValue());
+                        list.appendTag(ench);
+                        ItemNBTHelper.getCompound(stack).setTag("disableEnchants", list);
+                        enchants.remove(enchantment);
+                        EnchantmentHelper.setEnchantments(enchants, stack);
+
+                        ToolConfigHelper.getFieldStorage(stack).setBoolean(field.getName(), false);
+                        return;
+                    }
+                }
+            }
+            else {
+                Map<Enchantment, Integer> enchants = getDisabledEnchants(stack);
+                for (Enchantment enchantment : enchants.keySet()) {
+                    if (enchantment == target) {
+                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+                        for (int i = 0; i < list.tagCount(); i++) {
+                            Enchantment e = Enchantment.getEnchantmentByID(list.getCompoundTagAt(i).getShort("id"));
+                            if (e == enchantment) {
+                                list.removeTag(i);
+                                break;
+                            }
+                        }
+
+                        stack.addEnchantment(enchantment, enchants.get(enchantment));
+                        ToolConfigHelper.getFieldStorage(stack).setBoolean(field.getName(), true);
+                        return;
+                    }
+                }
+            }
+
+
+//            if (((BooleanConfigField) field).getValue() == 0) {
+//                Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
+//                for (Enchantment enchantment : enchants.keySet()) {
+//                    if (enchantment.getName().equals(target)) {
+//                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+//                        NBTTagCompound ench = new NBTTagCompound();
+//                        ench.setShort("id", (short) Enchantment.getEnchantmentID(enchantment));
+//                        ench.setShort("lvl", enchants.get(enchantment).shortValue());
+//                        list.appendTag(ench);
+//                        ItemNBTHelper.getCompound(stack).setTag("disableEnchants", list);
+//                        enchants.remove(enchantment);
+//                        EnchantmentHelper.setEnchantments(enchants, stack);
+//
+//                        ToolConfigHelper.getFieldStorage(stack).setBoolean(field.getName(), false);
+//                        return;
+//                    }
+//                }
+//            }
+//            else {
+//                Map<Enchantment, Integer> enchants = getDisabledEnchants(stack);
+//                for (Enchantment enchantment : enchants.keySet()) {
+//                    if (enchantment.getName().equals(target)) {
+//                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+//                        for (int i = 0; i < list.tagCount(); i++) {
+//                            Enchantment e = Enchantment.getEnchantmentByID(list.getCompoundTagAt(i).getShort("id"));
+//                            if (e == enchantment) {
+//                                list.removeTag(i);
+//                                break;
+//                            }
+//                        }
+//
+//                        stack.addEnchantment(enchantment, enchants.get(enchantment));
+//                        ToolConfigHelper.getFieldStorage(stack).setBoolean(field.getName(), true);
+//                        return;
+//                    }
+//                }
+//            }
+        }
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return !getDisabledEnchants(stack).containsKey(enchantment);
     }
 
     //endregion

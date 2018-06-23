@@ -27,7 +27,7 @@ public class BooleanConfigField extends IntegerConfigField {
     @SideOnly(Side.CLIENT)
     @Override
     public String getReadableValue() {
-        return value == 1 ? I18n.format(onTxt) : I18n.format(offTxt);
+        return getValue() == 1 ? I18n.format(onTxt) : I18n.format(offTxt);
     }
 
     @Override
