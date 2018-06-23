@@ -107,7 +107,7 @@ public class CustomArmorHandler {
             player.attackEntityFrom(ADMIN_KILL, Float.MAX_VALUE);
             return;
         }
-//        if ((float) player.hurtResistantTime > (float) player.maxHurtResistantTime / 2.0F) return;
+        if ((float) player.hurtResistantTime > (float) player.maxHurtResistantTime - 4) return;
 
         float newEntropy = Math.min(summery.entropy + 1 + (hitAmount / 20), 100F);
 
