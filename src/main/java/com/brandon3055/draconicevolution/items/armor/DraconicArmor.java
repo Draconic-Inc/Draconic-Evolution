@@ -187,10 +187,11 @@ public class DraconicArmor extends WyvernArmor {
                 return;
             }
 
+            PotionEffect active = player.getActivePotionEffect(nv);
             if (ToolConfigHelper.getBooleanField("armorNV", stack) && (player.world.getLightBrightness(new BlockPos((int) Math.floor(player.posX), (int) player.posY + 1, (int) Math.floor(player.posZ))) < 0.1F || ToolConfigHelper.getBooleanField("armorNVLock", stack))) {
-                player.addPotionEffect(new PotionEffect(nv, 419, 0, false, false));
+                player.addPotionEffect(new PotionEffect(nv, 500, 0, false, false));
             }
-            else if (player.isPotionActive(nv)) {
+            else if (active != null && ToolConfigHelper.getBooleanField("armorNVLock", stack)) {
                 player.removePotionEffect(nv);
             }
         }
