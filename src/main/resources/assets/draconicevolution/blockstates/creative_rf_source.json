@@ -3,7 +3,7 @@
   "defaults": {
     "model": "minecraft:cube_all",
     "textures": {
-      "all": "draconicevolution:blocks/animated/infused_obsidian"
+      "all": "draconicevolution:blocks/animated/creative_rf_source"
     },
     "transform": "forge:default-block"
   },

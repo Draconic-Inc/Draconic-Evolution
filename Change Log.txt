@@ -13,6 +13,7 @@
 -Reduced the rate at which the armor shield can be attacked to once every 4 ticks.
 -Fixed EIO broken spawner -> stabilized spawner conversion recipe.
 -Attempted to fix issue with enchantment config toggling the wrong enchantment.
+-Added config option to enable recipes that clear nbt from crystals, injectors, etc..
 
 ######## 2.3.11.290 ########
 -Fixed tool stats config not getting applied properly.
