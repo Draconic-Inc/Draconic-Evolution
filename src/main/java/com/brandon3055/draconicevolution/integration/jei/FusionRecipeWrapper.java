@@ -69,7 +69,7 @@ public class FusionRecipeWrapper extends BlankRecipeWrapper {
         if (minecraft.fontRenderer != null) {
             GuiHelper.drawCenteredString(minecraft.fontRenderer, I18n.format("gui.jeiFusion.tier." + recipe.getRecipeTier()), xSize / 2, 5, 0xFF6600, false);
             GuiHelper.drawCenteredString(minecraft.fontRenderer, I18n.format("generic.de.energyCost.txt"), xSize / 2, ySize - 20, 0x4444FF, false);
-            GuiHelper.drawCenteredString(minecraft.fontRenderer, Utils.addCommas(recipe.getEnergyCost() * recipe.getRecipeIngredients().size()) + "RF", xSize / 2, ySize - 10, 0x44AAFF, false);
+            GuiHelper.drawCenteredString(minecraft.fontRenderer, Utils.addCommas((long) recipe.getEnergyCost() * recipe.getRecipeIngredients().size()) + "RF", xSize / 2, ySize - 10, 0x44AAFF, false);
         }
 
         drawAnimations(minecraft, recipeWidth, recipeHeight);

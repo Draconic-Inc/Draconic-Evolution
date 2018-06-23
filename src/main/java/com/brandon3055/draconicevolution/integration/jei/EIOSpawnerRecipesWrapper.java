@@ -29,7 +29,6 @@ public class EIOSpawnerRecipesWrapper extends BlankRecipeWrapper implements ICus
     private ItemStack output;
 
     public EIOSpawnerRecipesWrapper(IGuiHelper guiHelper, ItemCore core, Item brokenSpawner) {
-        super();
         this.core = core;
         craftingGridHelper = guiHelper.createCraftingGridHelper(craftInputSlot1, craftOutputSlot);
         this.brokenSpawner = brokenSpawner;

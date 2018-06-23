@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.lib;
 
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.inventory.InventoryCrafting;
@@ -14,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-
 import java.util.Objects;
 
 import static com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier.*;
@@ -104,7 +103,7 @@ public class RecipeEIOStabilization implements IRecipe {
         ItemStack output = new ItemStack(DEFeatures.stabilizedSpawner);
 
         String name = spawner.hasTagCompound() && spawner.getTagCompound().hasKey("entityId") ? spawner.getTagCompound().getString("entityId") : null;
-        TileStabilizedSpawner.SpawnerTier tier = core.getItem() == DEFeatures.draconicCore ? BASIC : core.getItem() == DEFeatures.wyvernCore ? WYVERN : core.getItem() == DEFeatures.awakenedCore ? DRACONIC : CHAOTIC;
+        SpawnerTier tier = core.getItem() == DEFeatures.draconicCore ? BASIC : core.getItem() == DEFeatures.wyvernCore ? WYVERN : core.getItem() == DEFeatures.awakenedCore ? DRACONIC : CHAOTIC;
         DEFeatures.stabilizedSpawner.setStackData(output, name, tier);
 
         cachedCore = core.getItem();

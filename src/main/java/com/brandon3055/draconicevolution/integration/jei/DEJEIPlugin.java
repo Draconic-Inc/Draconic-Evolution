@@ -64,60 +64,6 @@ public class DEJEIPlugin implements IModPlugin {
         LogHelper.dev("Register JEI");
         jeiHelpers = registry.getJeiHelpers();
 
-//        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new IRecipeTransferHandler<ContainerFusionCraftingCore>() {
-//            @Override
-//            public Class<ContainerFusionCraftingCore> getContainerClass() {
-//                return ContainerFusionCraftingCore.class;
-//            }
-//
-//            @Nullable
-//            @Override
-//            public IRecipeTransferError transferRecipe(ContainerFusionCraftingCore container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
-//                LogHelper.dev("Transfer Recipe");
-//                IRecipeTransferError error = new IRecipeTransferError() {
-//                    @Override
-//                    public Type getType() {
-//                        return Type.USER_FACING;
-//                    }
-//
-//                    @Override
-//                    public void showError(Minecraft minecraft, int mouseX, int mouseY, IRecipeLayout recipeLayout, int recipeX, int recipeY) {
-//
-//
-//                    }
-//                };
-//
-//                return error;
-//            }
-//        }, RecipeCategoryUids.FUSION_CRAFTING);
-
-//        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new IRecipeTransferInfo<Container>() {
-//            @Override
-//            public Class<Container> getContainerClass() {
-//                return null;
-//            }
-//
-//            @Override
-//            public String getRecipeCategoryUid() {
-//                return null;
-//            }
-//
-//            @Override
-//            public boolean canHandle(Container container) {
-//                return false;
-//            }
-//
-//            @Override
-//            public List<Slot> getRecipeSlots(Container container) {
-//                return null;
-//            }
-//
-//            @Override
-//            public List<Slot> getInventorySlots(Container container) {
-//                return null;
-//            }
-//        });
-
         registry.handleRecipes(EIOSpawnerRecipesWrapper.class, recipe -> recipe, VanillaRecipeCategoryUid.CRAFTING);
         registry.handleRecipes(IFusionRecipe.class, FusionRecipeWrapper::new, RecipeCategoryUids.FUSION_CRAFTING);
 
@@ -202,7 +148,7 @@ public class DEJEIPlugin implements IModPlugin {
             }
         });
 
-        Item borkedSpawner = Item.REGISTRY.getObject(new ResourceLocation("enderio:itemBrokenSpawner"));
+        Item borkedSpawner = Item.REGISTRY.getObject(new ResourceLocation("enderio:item_broken_spawner"));
         if (borkedSpawner != null) {
             List<EIOSpawnerRecipesWrapper> wrappers = new ArrayList<>();
             wrappers.add(new EIOSpawnerRecipesWrapper(jeiHelpers.getGuiHelper(), DEFeatures.draconicCore, borkedSpawner));
