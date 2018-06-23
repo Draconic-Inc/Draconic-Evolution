@@ -4,6 +4,14 @@
 -Fixed issue with contributor downloader throwing errors
 -Fixed generator consuming fuel container items.
 -Reduced NBT clutter on tiles when harvested.
+-Fixed jei fusion recipe integer overflow with expensive custom recipes.
+-Added configs to disable the armor hit sound and renderer.
+-Added optional key binding to toggle item dislocator.
+-DE now forcibly sets the thrower of item stacks where forge for whatever reason does not (can be disabled) This is needed for the Item Dislocator.
+-Tweaked Draconic Helmet NV logic. Helmet will now only clear NV effect if lock mode is enabled end night vision is disabled.
+-Added "Layer" view to the energy core build guide.
+-Reduced the rate at which the armor shield can be attacked to once every 4 ticks.
+-Fixed EIO broken spawner -> stabilized spawner conversion recipe.
 
 ######## 2.3.11.290 ########
 -Fixed tool stats config not getting applied properly.
@@ -14,6 +22,7 @@
 -Fixed missing FE capability on Fusion Crafting Injector.
 -Added ability to link energy crystals via bound portals.
 -Added input mode option to wireless energy crystals.
+-Added optional key binding to toggle item dislocator.
 
 ######## 2.3.10.284 ########
 -Fixed issue with item dislocator pickup sound playing continuously.
