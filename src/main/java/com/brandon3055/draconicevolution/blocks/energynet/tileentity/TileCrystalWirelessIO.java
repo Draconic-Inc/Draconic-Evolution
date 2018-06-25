@@ -205,25 +205,36 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
         if (linkedReceivers.contains(offset)) {
             removeReceiver(linkTarget);
-            ChatHelper.indexedTrans(player, "eNet.de.linkBroken.info", TextFormatting.GREEN, -442611624);
+            ChatHelper.indexedTrans(player, "eNet.de.linkBroken.info", TextFormatting.GREEN);
             return true;
         }
 
-        if (!EnergyHelper.canReceiveEnergy(tile, sideClicked)) {
-            if (EnergyHelper.isEnergyTile(tile)) {
-                ChatHelper.indexedTrans(player, "eNet.de.sideCanNotReceive.info", TextFormatting.RED, -442611624);
-                return false;
+        if (inputMode.value) {
+            if (!EnergyHelper.canExtractEnergy(tile, sideClicked)) {
+                if (EnergyHelper.isEnergyTile(tile)) {
+                    ChatHelper.indexedTrans(player, "eNet.de.sideCanNotExtract.info", TextFormatting.RED);
+                    return false;
+                }
+                return super.binderUsed(player, linkTarget, sideClicked);
             }
-            return super.binderUsed(player, linkTarget, sideClicked);
+        }
+        else {
+            if (!EnergyHelper.canReceiveEnergy(tile, sideClicked)) {
+                if (EnergyHelper.isEnergyTile(tile)) {
+                    ChatHelper.indexedTrans(player, "eNet.de.sideCanNotReceive.info", TextFormatting.RED);
+                    return false;
+                }
+                return super.binderUsed(player, linkTarget, sideClicked);
+            }
         }
 
         if (linkedReceivers.size() >= getMaxReceivers()) {
-            ChatHelper.indexedTrans(player, "eNet.de.maxReceivers.info", TextFormatting.RED, -442611624);
+            ChatHelper.indexedTrans(player, "eNet.de.maxReceivers.info", TextFormatting.RED);
             return false;
         }
 
         addReceiver(linkTarget, sideClicked);
-        ChatHelper.indexedTrans(player, "eNet.de.devicesLinked.info", TextFormatting.GREEN, -442611624);
+        ChatHelper.indexedTrans(player, "eNet.de.devicesLinked.info", TextFormatting.GREEN);
 
         return true;
     }

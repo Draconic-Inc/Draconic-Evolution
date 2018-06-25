@@ -4,6 +4,7 @@ import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.EnergyHandlerWrapper;
 import com.brandon3055.brandonscore.lib.Vec3I;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
@@ -25,6 +26,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     public final ManagedByte facing = register("facing", new ManagedByte(0)).syncViaTile().saveToTile().trigerUpdate().finish();
     private final ManagedInt energy = register("energy", new ManagedInt(0)).syncViaTile().saveToTile().finish();
     private final ManagedVec3I lastCorePos = register("lastCorePos", new ManagedVec3I(new Vec3I(0, 0, 0))).syncViaTile().saveToTile().finish();
+    public final ManagedBool singleItem = register("singleItem", new ManagedBool(false)).syncViaTile().saveToTile().finish();
     public IFusionCraftingInventory currentCraftingInventory = null;
     private int chargeSpeedModifier = 300;
 
@@ -151,6 +153,12 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     }
 
     //endregion
+
+
+    @Override
+    public int getInventoryStackLimit() {
+        return singleItem.value ? 1 : 64;
+    }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {

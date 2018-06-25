@@ -1,8 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
+import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.registry.IRenderOverride;
+import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileCraftingInjector;
 import com.brandon3055.draconicevolution.lib.PropertyStringTemp;
@@ -12,6 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -29,10 +34,13 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class CraftingInjector extends BlockBCore implements ITileEntityProvider, IRenderOverride {
+public class CraftingInjector extends BlockBCore implements ITileEntityProvider, IRenderOverride, IHudDisplay {
 
     public static final PropertyStringTemp TIER = new PropertyStringTemp("tier", "basic", "wyvern", "draconic", "chaotic");
     public static final PropertyDirection FACING = BlockDirectional.FACING;
@@ -121,6 +129,13 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
 
         TileCraftingInjector craftingPedestal = (TileCraftingInjector) tile;
 
+        if (player.isSneaking()) {
+            craftingPedestal.singleItem.value = !craftingPedestal.singleItem.value;
+            ChatHelper.indexedTrans(player, "msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.value ? "On" : "Off") + ".txt");
+            craftingPedestal.getDataManager().detectAndSendChanges();
+            return true;
+        }
+
         if (!craftingPedestal.getStackInSlot(0).isEmpty()) {
             if (player.getHeldItemMainhand().isEmpty()) {
                 player.setHeldItem(EnumHand.MAIN_HAND, craftingPedestal.getStackInSlot(0));
@@ -130,12 +145,12 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
                 world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, craftingPedestal.getStackInSlot(0)));
                 craftingPedestal.setInventorySlotContents(0, ItemStack.EMPTY);
             }
-
         }
         else {
             ItemStack stack = player.getHeldItemMainhand();
-            craftingPedestal.setInventorySlotContents(0, stack);
-            player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+            int remainder = InventoryUtils.insertItem(craftingPedestal, stack, false);
+            stack.setCount(remainder);
+            player.setHeldItem(EnumHand.MAIN_HAND, stack);
         }
 
         return true;
@@ -181,6 +196,18 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
     @Override
     public boolean registerNormal(Feature feature) {
         return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
+        TileEntity te = world.getTileEntity(pos);
+
+        if (!(te instanceof TileCraftingInjector)) {
+            return;
+        }
+
+        displayList.add(InfoHelper.HITC() + I18n.format("msg.craftingInjector.singleItem" + (((TileCraftingInjector) te).singleItem.value ? "On" : "Off") + ".txt"));
     }
 
     //endregion
