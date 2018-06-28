@@ -8,7 +8,6 @@ import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
@@ -70,7 +69,7 @@ public class Debugger extends ItemBCore {
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 
-        if (!worldIn.isRemote && ClientEventHandler.elapsedTicks % 500 == 0) {
+//        if (!worldIn.isRemote % 500 == 0) {
 //            EntityPlayerMP player = (EntityPlayerMP) entityIn;
 //
 //            for (StatBase stat : StatList.ALL_STATS) {
@@ -111,7 +110,7 @@ public class Debugger extends ItemBCore {
 //
 //            LogHelper.dev(n+" "+s+" "+e+" "+w);
 //            LogHelper.dev(Integer.toBinaryString(Byte.toUnsignedInt(b)));
-        }
+//        }
 
     }
 

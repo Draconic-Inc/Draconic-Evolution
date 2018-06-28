@@ -162,7 +162,8 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        super.setInventorySlotContents(index, stack);
+        inventoryStacks.set(index, stack);
+        markDirty();
 
         TileEntity tile = world.getTileEntity(lastCorePos.vec.getPos());
         if (tile instanceof IFusionCraftingInventory) {

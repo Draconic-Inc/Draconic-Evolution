@@ -1,6 +1,7 @@
 ######## 2.3.13.x ########
 -Fixed wireless energy crystals in input mode not allowing connections to devices that only output energy.
 -Added a single item mode to the fusion crafting injectors that restricts the max stack size to 1 (useful for automation)
+-Fixed fusion crafting injectors voiding excess items when switched to single item mode while they contain more than one item.
 
 ######## 2.3.12.297 ########
 -Dropped support for mc 1.12 (Now requires mc 1.12.2)
