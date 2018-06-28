@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
@@ -18,17 +19,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class PacketConfigureTool implements IMessage {
 
     public PlayerSlot slot;
-    public int fieldIndex;
+    public String field;
     public int button;
     public int data;
 
     public PacketConfigureTool() {
     }
 
-    public PacketConfigureTool(PlayerSlot slot, int fieldIndex, int button, int data) {
+    public PacketConfigureTool(PlayerSlot slot, String field, int button, int data) {
 
         this.slot = slot;
-        this.fieldIndex = fieldIndex;
+        this.field = field;
         this.button = button;
         this.data = data;
     }
@@ -36,7 +37,7 @@ public class PacketConfigureTool implements IMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         slot.toBuff(buf);
-        buf.writeByte(fieldIndex);
+        ByteBufUtils.writeUTF8String(buf, field);
         buf.writeByte(button);
         buf.writeShort(data);
     }
@@ -44,7 +45,7 @@ public class PacketConfigureTool implements IMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         slot = PlayerSlot.fromBuff(buf);
-        fieldIndex = buf.readByte();
+        field = ByteBufUtils.readUTF8String(buf);
         button = buf.readByte();
         data = buf.readShort();
     }
@@ -60,7 +61,7 @@ public class PacketConfigureTool implements IMessage {
             }
 
             IConfigurableItem item = (IConfigurableItem) stack.getItem();
-            IItemConfigField field = item.getFields(stack, new ItemConfigFieldRegistry()).getField(message.fieldIndex);
+            IItemConfigField field = item.getFields(stack, new ItemConfigFieldRegistry()).getField(message.field);
 
             if (field != null) {
                 field.handleButton(IItemConfigField.EnumButton.getButton(message.button), message.data, player, message.slot);

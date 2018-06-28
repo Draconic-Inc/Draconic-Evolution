@@ -572,8 +572,7 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                     case SLIDER:
                         if (isDragging) {
                             double pos = (mouseX - 3 - (x + 4D)) / (width - 14D);
-                            int fieldIndex = gui.fieldRegistry.getIndexFromName(activeButton.field.getName());
-                            DraconicEvolution.network.sendToServer(new PacketConfigureTool(slot, fieldIndex, EnumButton.SLIDER.index, (int) (pos * 10000D)));
+                            DraconicEvolution.network.sendToServer(new PacketConfigureTool(slot, activeButton.field.getName(), EnumButton.SLIDER.index, (int) (pos * 10000D)));
                             mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 0.9F));
                         }
                         break;
@@ -601,9 +600,7 @@ public class GuiConfigureTool extends GuiScreen implements GuiPageButtonList.Gui
                 return;
             }
 
-            int fieldIndex = gui.fieldRegistry.getIndexFromName(activeButton.field.getName());
-
-            DraconicEvolution.network.sendToServer(new PacketConfigureTool(slot, fieldIndex, button.enumButton.index, button.selectionIndex));
+            DraconicEvolution.network.sendToServer(new PacketConfigureTool(slot, activeButton.field.getName(), button.enumButton.index, button.selectionIndex));
 
             mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
