@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Map;
  * A simple map wrapper for handling IItemConfigField's
  */
 public class ItemConfigFieldRegistry {
-    private Map<String, IItemConfigField> fields = new HashMap<>();
+    private Map<String, IItemConfigField> fields = new LinkedHashMap<>();
 
     /**
      * Adds a field to the registry and reads its current value from the given item stack.
