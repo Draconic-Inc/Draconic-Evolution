@@ -938,5 +938,30 @@ gui.draconiumChest.ioState1.btn=Somente Entrada
 gui.draconiumChest.ioState2.btn=Saída Apenas
 gui.draconiumChest.ioState3.btn=Entrada e Saída
 
+//---- Particle Generator ----//
+gui.particleGenerator.name=Gerador de Partículas
+gui.particleGenerator.red=Vermelho
+gui.particleGenerator.green=Verde
+gui.particleGenerator.blue=Azul
+gui.particleGenerator.alpha=Transparência
+gui.particleGenerator.spawnX=Posição X
+gui.particleGenerator.spawnY=Posição Y
+gui.particleGenerator.spawnZ=Posição Z
+gui.particleGenerator.motionX=Velocidade X
+gui.particleGenerator.motionY=Velocidade Y
+gui.particleGenerator.motionZ=Velocidade Z
+gui.particleGenerator.gravity=Gravidade
+gui.particleGenerator.scale=Escala
+gui.particleGenerator.delay=Tempo
+gui.particleGenerator.life=Vida
+gui.particleGenerator.fade=Desvanecimento
+gui.particleGenerator.collision=Colisão
+gui.particleGenerator.type=Tipo
+gui.particleGenerator.type0=Orbe
+gui.particleGenerator.type1=Quadrado
+gui.particleGenerator.type2=Orbe Negra
+gui.particleGenerator.type3=Orbe 2
+gui.particleGenerator.type4=Estrela
+
 //---- Misc Info Text ----//
 info.de.shiftReversePlaceLogic.txt=Segure Shift para reverter a Lógica de Colocamento.

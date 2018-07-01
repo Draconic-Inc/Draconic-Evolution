@@ -161,8 +161,10 @@ public class GuiHandler implements IGuiHandler {
                     return new GuiGrinder(player.inventory, (TileGrinder) tile);
                 }
                 break;
-//			case GUIID_PARTICLEGEN:
-//				return (gen != null && gen instanceof TileParticleGenerator) ? new GUIParticleGenerator((TileParticleGenerator) gen, player) : null;
+            case GUIID_PARTICLEGEN:
+                if (tile instanceof TileParticleGenerator) {
+                    return new GuiParticleGenerator(player, (TileParticleGenerator) tile);
+                }
             case GUIID_ENTITY_DETECTOR:
                 if (tile instanceof TileEntityDetector) {
                     return new GuiEntityDetector(player, (TileEntityDetector) tile);
