@@ -164,6 +164,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "clearDataRecipes", comment = "Adds recipes to clear all nbt data from items such as energy crystals and crafting injectors.", requiresMCRestart = true, requiresSync = true)
     public static boolean clearDataRecipes = false;
 
+    @ModConfigProperty(category = "Tweaks", name = "chaosGuardianHealth", comment = "Allows you to tweak the chaos guardians health (will only affect new guardians)")
+    public static int chaosGuardianHealth = 2000;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")

@@ -95,10 +95,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
     public int activeCrystals = 0;
 
     public EntityGuardianCrystal healingChaosCrystal;
-    //	public int connectedCrystalID = -1;
-//    public int crystalX = 0;
-//    public int crystalY = -1;
-//    public int crystalZ = 0;
+
 
     private static final int ATTACK_FIREBALL_CHARGE = 0;
     private static final int ATTACK_FIREBALL_CHASER = 1;
@@ -137,7 +134,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(2000);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(DEConfig.chaosGuardianHealth);
     }
 
     @Override
