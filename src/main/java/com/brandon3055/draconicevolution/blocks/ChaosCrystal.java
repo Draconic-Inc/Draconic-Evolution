@@ -96,7 +96,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
         if (placer instanceof EntityPlayer && ((EntityPlayer) placer).capabilities.isCreativeMode) {
             TileEntity tile = world.getTileEntity(pos);
             if (!world.isRemote && tile instanceof TileChaosCrystal) {
-                ((TileChaosCrystal) tile).locationHash = ((TileChaosCrystal) tile).getLocationHash(pos, world.provider.getDimension());
+                ((TileChaosCrystal) tile).setLockPos();
                 ((TileChaosCrystal) tile).guardianDefeated.value = true;
             }
         }

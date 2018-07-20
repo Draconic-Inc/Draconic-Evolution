@@ -117,7 +117,7 @@ public class ChaosWorldGenHandler {
 
         world.setBlockState(center, DEFeatures.chaosCrystal.getDefaultState());
         TileChaosCrystal tileChaosShard = (TileChaosCrystal) world.getTileEntity(center);
-        tileChaosShard.locationHash = tileChaosShard.getLocationHash(center, world.provider.getDimension());
+        tileChaosShard.setLockPos();
 
         EntityChaosGuardian guardian = new EntityChaosGuardian(world);
 //		List<EntityPlayer> list = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(islandCenter.x - 1000, 0, islandCenter.z - 1000, islandCenter.x + 1000, 255, islandCenter.z + 1000));
