@@ -5,6 +5,7 @@ import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
@@ -49,6 +50,7 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
 
     @Override
     public void onUpdate() {
+        BCProfiler.TICK.start("crystal_beam_fx_update");
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
@@ -63,6 +65,7 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
         particleBlue = b[tile.getTier()];
 
         powerLevel = (float) MathHelper.approachExp(powerLevel, fxState, 0.05);
+        BCProfiler.TICK.stop();
     }
 
     @Override
@@ -70,6 +73,8 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
         if (powerLevel <= 0 && !ClientEventHandler.playerHoldingWrench) {
             return;
         }
+        BCProfiler.RENDER.start("crystal_beam_fx");
+
         double scale = 0.1 * powerLevel;
         if (ClientEventHandler.playerHoldingWrench) {
             scale = 0.1;
@@ -132,13 +137,17 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
             buffer.pos((target.x + rotationX * scale + rotationXY * scale), (target.y + rotationZ * scale), (target.z + rotationYZ * scale + rotationXZ * scale)).tex(minU, minV).endVertex();
             buffer.pos((target.x + rotationX * scale - rotationXY * scale), (target.y - rotationZ * scale), (target.z + rotationYZ * scale - rotationXZ * scale)).tex(minU, maxV).endVertex();
         }
+
+        BCProfiler.RENDER.stop();
     }
 
     private void bufferQuad(BufferBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, double anim, double dist) {
+        BCProfiler.RENDER.start("buffer_quad");
         buffer.pos(p1.x, p1.y, p1.z).tex(0.5, anim).endVertex();
         buffer.pos(p2.x, p2.y, p2.z).tex(0.5, dist + anim).endVertex();
         buffer.pos(p4.x, p4.y, p4.z).tex(1.0, dist + anim).endVertex();
         buffer.pos(p3.x, p3.y, p3.z).tex(1.0, anim).endVertex();
+        BCProfiler.RENDER.stop();
     }
 
     @Override

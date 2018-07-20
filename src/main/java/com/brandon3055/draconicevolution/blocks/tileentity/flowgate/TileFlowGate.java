@@ -113,28 +113,6 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
         rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
     }
 
-    //region Save
-
-//    @Override
-//    public void writeRetainedData(NBTTagCompound dataCompound) {
-//        for (SyncableObject syncableObject : syncableObjectMap.values()) {
-//            if (syncableObject != flowOverridden && syncableObject != rsSignal && syncableObject != flowOverride) {
-//                syncableObject.toNBT(dataCompound);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void readRetainedData(NBTTagCompound dataCompound) {
-//        for (SyncableObject syncableObject : syncableObjectMap.values()) {
-//            if (syncableObject != flowOverridden && syncableObject != rsSignal) {
-//                syncableObject.fromNBT(dataCompound);
-//            }
-//        }
-//    }
-
-    //endregion
-
     //region Peripheral
 
     @Override
@@ -144,29 +122,27 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
 
     @Override
     public Object[] callMethod(String method, ArgHelper args) {
-        if (method.equals("getFlow")) {
-            return new Object[]{getFlow()};
-        }
-        else if (method.equals("setOverrideEnabled")) {
-            flowOverridden.value = args.checkBoolean(0);
-        }
-        else if (method.equals("getOverrideEnabled")) {
-            return new Object[]{flowOverridden};
-        }
-        else if (method.equals("setFlowOverride")) {
-            flowOverride.value = args.checkInteger(0);
-        }
-        else if (method.equals("setSignalHighFlow")) {
-            maxFlow.value = args.checkInteger(0);
-        }
-        else if (method.equals("getSignalHighFlow")) {
-            return new Object[]{maxFlow.value};
-        }
-        else if (method.equals("setSignalLowFlow")) {
-            minFlow.value = args.checkInteger(0);
-        }
-        else if (method.equals("getSignalLowFlow")) {
-            return new Object[]{minFlow.value};
+        switch (method) {
+            case "getFlow":
+                return new Object[]{getFlow()};
+            case "setOverrideEnabled":
+                flowOverridden.value = args.checkBoolean(0);
+                break;
+            case "getOverrideEnabled":
+                return new Object[]{flowOverridden};
+            case "setFlowOverride":
+                flowOverride.value = args.checkInteger(0);
+                break;
+            case "setSignalHighFlow":
+                maxFlow.value = args.checkInteger(0);
+                break;
+            case "getSignalHighFlow":
+                return new Object[]{maxFlow.value};
+            case "setSignalLowFlow":
+                minFlow.value = args.checkInteger(0);
+                break;
+            case "getSignalLowFlow":
+                return new Object[]{minFlow.value};
         }
 
         return new Object[0];

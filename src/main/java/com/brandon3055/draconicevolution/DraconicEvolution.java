@@ -49,7 +49,6 @@ public class DraconicEvolution {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-//        configuration = new Configuration(new File(FileHandler.brandon3055Folder, "DraconicEvolution.cfg"));
         ModFeatureParser.registerModFeatures(MODID);
         proxy.preInit(event);
         proxy.registerParticles();

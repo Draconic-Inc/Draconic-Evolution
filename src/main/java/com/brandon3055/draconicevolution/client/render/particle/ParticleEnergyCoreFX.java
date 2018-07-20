@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import net.minecraft.client.particle.Particle;
@@ -44,6 +45,7 @@ public class ParticleEnergyCoreFX extends BCParticle {
 
     @Override
     public void onUpdate() {
+        BCProfiler.TICK.start("core_fx_update");
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
@@ -78,10 +80,12 @@ public class ParticleEnergyCoreFX extends BCParticle {
         if (particleAge++ > particleMaxAge || Utils.getDistanceAtoB(posX, posY, posZ, tPos.x, tPos.y, tPos.z) < 0.2) {
             setExpired();
         }
+        BCProfiler.TICK.stop();
     }
 
     @Override
     public void renderParticle(BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        BCProfiler.RENDER.start("core_fx");
         float minU = (float) this.particleTextureIndexX / 8.0F;
         float maxU = minU + 0.125F;
         float minV = (float) this.particleTextureIndexY / 8.0F;
@@ -98,6 +102,7 @@ public class ParticleEnergyCoreFX extends BCParticle {
         vertexbuffer.pos((double) (renderX - rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         vertexbuffer.pos((double) (renderX + rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         vertexbuffer.pos((double) (renderX + rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        BCProfiler.RENDER.stop();
     }
 
     public static class Factory implements IBCParticleFactory {
