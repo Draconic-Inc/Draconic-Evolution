@@ -221,11 +221,11 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
+        ItemStack prev = getStackInSlot(0);
         super.setInventorySlotContents(index, stack);
 
-        ItemStack prev = getStackInSlot(0);
         if (dislocatorBound.isValid(prev) && !dislocatorBound.isPlayer(prev)) {
-            DislocatorLinkHandler.removeLink(world, stack);
+            DislocatorLinkHandler.removeLink(world, prev);
         }
 
         IS_BOUND.value = false;
@@ -236,6 +236,27 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             attemptIgnition();
             checkIn();
         }
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        ItemStack prev = getStackInSlot(0);
+        ItemStack ret = super.decrStackSize(index, count);
+
+        if (dislocatorBound.isValid(prev) && !dislocatorBound.isPlayer(prev)) {
+            DislocatorLinkHandler.removeLink(world, prev);
+        }
+
+        IS_BOUND.value = false;
+        if (getStackInSlot(0).isEmpty() && ACTIVE.value) {
+            deactivate();
+        }
+        else if (!getStackInSlot(0).isEmpty()) {
+            attemptIgnition();
+            checkIn();
+        }
+
+        return ret;
     }
 
     private void checkIn() {
