@@ -481,7 +481,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         public boolean isLinkValid(World world) {
             tileCache = world.getTileEntity(pos);
 
-            if ((tileCache == null || !EnergyHelper.isEnergyTile(tileCache)) && world.getChunkFromBlockCoords(pos).isLoaded()) {
+            if ((tileCache == null || !EnergyHelper.isEnergyTile(tileCache, side)) && world.getChunkFromBlockCoords(pos).isLoaded()) {
                 return false;
             }
 
