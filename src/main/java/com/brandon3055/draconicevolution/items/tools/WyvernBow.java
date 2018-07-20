@@ -45,10 +45,6 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
  */
 public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem {
 
-//    public WyvernBow(float attackDamage, float attackSpeed) {
-//        super(attackDamage, attackSpeed);
-//    }
-
     public WyvernBow() {
 //        super(1, 0);
 //        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
@@ -174,8 +170,8 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
         double maxDamage = 2 + getToolTier(stack) + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_DAMAGE) * 2);
         int maxSpeed = 100 + (getToolTier(stack) * 100) + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_SPEED) * 100;
 
-        registry.register(stack, new DoubleConfigField("bowArrowDamage", 2, 0, maxDamage, "config.field.bowArrowDamage.description", SLIDER));
-        registry.register(stack, new IntegerConfigField("bowArrowSpeedModifier", 0, 0, maxSpeed, "config.field.bowArrowSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
+        registry.register(stack, new DoubleConfigField("bowArrowDamage", maxDamage, 0, maxDamage, "config.field.bowArrowDamage.description", SLIDER));
+        registry.register(stack, new IntegerConfigField("bowArrowSpeedModifier", maxSpeed, 0, maxSpeed, "config.field.bowArrowSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         registry.register(stack, new BooleanConfigField("bowAutoFire", false, "config.field.bowAutoFire.description"));
         registry.register(stack, new DoubleConfigField("bowExplosionPower", 0, 0, 4, "config.field.bowExplosionPower.description", SLIDER));
         registry.register(stack, new IntegerConfigField("bowZoomModifier", 0, 0, (int) (getMaxZoomModifier(stack) * 100), "config.field.bowZoomModifier.description", SLIDER));
