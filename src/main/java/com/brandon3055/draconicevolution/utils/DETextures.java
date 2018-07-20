@@ -1,14 +1,17 @@
 package com.brandon3055.draconicevolution.utils;
 
 import codechicken.lib.texture.TextureUtils.IIconRegister;
+import com.brandon3055.draconicevolution.client.model.GlassParticleDummyModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by brandon3055 on 31/08/2016.
  */
-public class DETextures implements IIconRegister {
+public class DETextures implements IIconRegister, IResourceManagerReloadListener {
 
     private static TextureMap map;
 
@@ -142,4 +145,8 @@ public class DETextures implements IIconRegister {
 
     public static final String DRACONIUM_CHEST = "textures/models/draconium_chest.png";
 
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager) {
+        GlassParticleDummyModel.INSTANCE.sprite = null;
+    }
 }

@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystal
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalRelay;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
+import com.brandon3055.draconicevolution.client.model.GlassParticleDummyModel;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemEnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCrystal;
 import net.minecraft.block.material.Material;
@@ -21,6 +22,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
@@ -117,6 +119,7 @@ public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegis
         ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalDirectIO.class, new RenderTileEnergyCrystal());
         ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalWirelessIO.class, new RenderTileEnergyCrystal());
         ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemEnergyCrystal());
+        ModelRegistryHelper.register(new ModelResourceLocation(feature.getRegistryName(), "normal"), GlassParticleDummyModel.INSTANCE);
         StateMap deviceStateMap = new StateMap.Builder().ignore(TIER).ignore(TYPE).build();
         ModelLoader.setCustomStateMapper(this, deviceStateMap);
     }

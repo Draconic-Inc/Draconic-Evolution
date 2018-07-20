@@ -4,6 +4,7 @@ import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.render.CCRenderEventHandler;
 import codechicken.lib.texture.TextureUtils;
+import codechicken.lib.util.ResourceUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
@@ -44,12 +45,12 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);
         TextureUtils.addIconRegister(new DETextures());
+        ResourceUtils.registerReloadListener(new DETextures());
 
         DEImageHandler.init(event);
 
         TextureUtils.addIconRegister(new ArmorModelHelper());
         TextureUtils.addIconRegister(new DETextureCache());
-
 
         registerRendering();
         if (ObfMapping.obfuscated) {
