@@ -160,12 +160,6 @@ public class DEEventHandler {
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
             ItemStack soul = DEFeatures.mobSoul.getSoulFromEntity(entity, false);
-//            String registryName = EntityList.getEntityString(entity);
-//            ItemNBTHelper.setString(soul, "EntityName", registryName);
-//            if (entity instanceof EntitySkeleton) {
-//                ItemNBTHelper.setString(soul, "SkeletonType", ((EntitySkeleton) entity).getSkeletonType());
-//            }
-
             world.spawnEntity(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
             Achievements.triggerAchievement((EntityPlayer) attacker, "draconicevolution.soul");
         }
@@ -186,7 +180,7 @@ public class DEEventHandler {
     }
 
     private boolean isValidEntity(EntityLivingBase entity) {
-        if (!entity.isNonBoss()) {
+        if (!entity.isNonBoss() && !DEConfig.allowBossSouls) {
             return false;
         }
         for (int i = 0; i < DEConfig.spawnerList.length; i++) {
@@ -197,12 +191,7 @@ public class DEEventHandler {
                 return false;
             }
         }
-        if (DEConfig.spawnerListWhiteList) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return !DEConfig.spawnerListWhiteList;
     }
 
     //endregion

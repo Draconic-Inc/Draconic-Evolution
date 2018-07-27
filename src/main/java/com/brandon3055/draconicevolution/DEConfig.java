@@ -149,6 +149,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "spawnerListWhiteList", comment = "Changes the spawner list to a whitelist as opposed to the default blacklist.", autoSync = true)
     public static boolean spawnerListWhiteList = false;
 
+    @ModConfigProperty(category = "Tweaks", name = "allowBossSouls", comment = "Enabling this allows boss souls to drop. Use with caution!")
+    public static boolean allowBossSouls = false;
+
     @ModConfigProperty(category = "Tweaks", name = "spawnerDelays", comment = "Sets the min and max spawn delay in ticks for each spawner tier. Order is as follows.\nBasic MIN, MAX, Wyvern MIN, MAX, Draconic MIN, MAX, Chaotic MIN MAX")
     public static int[] spawnerDelays = new int[]{200, 800, 100, 400, 50, 200, 25, 100};
 

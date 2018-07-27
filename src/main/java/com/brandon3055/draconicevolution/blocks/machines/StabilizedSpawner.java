@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import codechicken.lib.model.ModelRegistryHelper;
-import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.BlockMobSafe;
 import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.DEFeatures;
@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.client.render.item.RenderItemStabilized
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileStabilizedSpawner;
 import com.brandon3055.draconicevolution.items.MobSoul;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -31,9 +32,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class StabilizedSpawner extends BlockBCore implements ITileEntityProvider, IRenderOverride {
+public class StabilizedSpawner extends BlockMobSafe implements ITileEntityProvider, IRenderOverride {
 
     public StabilizedSpawner() {
+        super(Material.ROCK);
     }
 
     @Override
