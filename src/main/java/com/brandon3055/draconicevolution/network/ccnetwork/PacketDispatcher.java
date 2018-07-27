@@ -12,4 +12,10 @@ public class PacketDispatcher {
         PacketCustom packet = new PacketCustom(NET_CHANNEL, 1);
         packet.sendToServer();
     }
+
+    public static void dispatchToolProfileChange(boolean armor) {
+        PacketCustom packet = new PacketCustom(NET_CHANNEL, 2);
+        packet.writeBoolean(armor);
+        packet.sendToServer();
+    }
 }

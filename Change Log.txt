@@ -2,6 +2,16 @@
 -Fixed wireless energy crystals in input mode not allowing connections to devices that only output energy.
 -Added a single item mode to the fusion crafting injectors that restricts the max stack size to 1 (useful for automation)
 -Fixed fusion crafting injectors voiding excess items when switched to single item mode while they contain more than one item.
+-Fixed wireless energy crystal not respecting sided energy tiles when validating links.
+-Added config for chaos guardian health because someone wanted it.
+-Changed default arrow velocity and damage settings for bows to max.
+-The tier of fusion recipes shown in JEI are now colour coded.
+-Fixed Dislocator Receptacle not properly detecting when a dislocator is inserted/removed
+-Fixed integer underflow energy dupe bug caused by the insertion of a negative energy value.
+-Added config option to limit armor flight speed.
+-Fixed shovels not being able to create grass paths.
+-Added a config option to allow boss soul drops.
+-Added key binding to cycle armor profiles.
 
 ######## 2.3.12.297 ########
 -Dropped support for mc 1.12 (Now requires mc 1.12.2)

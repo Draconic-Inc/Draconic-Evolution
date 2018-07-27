@@ -6,7 +6,6 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiToolConfig;
 import com.brandon3055.draconicevolution.network.PacketDislocator;
 import com.brandon3055.draconicevolution.network.PacketPlaceItem;
-import com.brandon3055.draconicevolution.network.PacketSimpleBoolean;
 import com.brandon3055.draconicevolution.network.ccnetwork.PacketDispatcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -79,7 +78,7 @@ public class KeyInputHandler {
             Minecraft.getMinecraft().displayGuiScreen(new GuiToolConfig(player));
         }
         else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
-            DraconicEvolution.network.sendToServer(new PacketSimpleBoolean(PacketSimpleBoolean.ID_TOOL_PROFILE_CHANGE, false));
+            PacketDispatcher.dispatchToolProfileChange(false);
         }
         else if (KeyBindings.toggleFlight.isPressed()) {
             if (player.capabilities.allowFlying) {
@@ -99,6 +98,9 @@ public class KeyInputHandler {
         }
         else if (KeyBindings.toggleDislocator.isPressed()) {
             PacketDispatcher.dispatchToggleDislocators();
+        }
+        else if (KeyBindings.armorProfileChange.isPressed()) {
+            PacketDispatcher.dispatchToolProfileChange(true);
         }
     }
 

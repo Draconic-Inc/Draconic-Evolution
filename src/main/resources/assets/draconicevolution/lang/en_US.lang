@@ -442,6 +442,7 @@ entity.draconicevolution:lootCore.name=Loot Core
 key.placeItem=Place Item in world
 key.toolConfig=Tool & Armor Config GUI
 key.toolProfileChange=Change Tool Config Profile
+key.armorProfileChange=Change Armor Config Profiles
 key.toggleFlight=Toggle Creative Flight
 key.toggleDislocator=Toggle Item Dislocator
 
@@ -739,6 +740,10 @@ button.de.BowShockWavePower.name=Shock Wave Power
 button.de.BowEnergyBolt.name=Arrow of Draconic Fire
 button.de.BowZoomModifier.name=Magnification
 
+config.de.armor_profile_0.msg=Helmet Profile:
+config.de.armor_profile_1.msg=Chestplate Profile:
+config.de.armor_profile_2.msg=Leggings Profile:
+config.de.armor_profile_3.msg=Boots Profile:
 
 //---- Info Helper ----//TODO Move this to BrandonsCore
 info.bc.holdShiftForDetails.txt=Hold %sShift%s for Details

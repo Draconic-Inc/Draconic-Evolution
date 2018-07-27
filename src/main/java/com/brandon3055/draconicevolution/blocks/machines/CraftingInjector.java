@@ -131,7 +131,7 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
 
         if (player.isSneaking()) {
             craftingPedestal.singleItem.value = !craftingPedestal.singleItem.value;
-            ChatHelper.indexedTrans(player, "msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.value ? "On" : "Off") + ".txt");
+            ChatHelper.indexedTrans(player, "msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.value ? "On" : "Off") + ".txt", -30553055);
             craftingPedestal.getDataManager().detectAndSendChanges();
             return true;
         }

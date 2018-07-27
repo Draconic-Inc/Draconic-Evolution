@@ -23,7 +23,12 @@ public class InfoTablet extends ItemBCore {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
         if (worldIn.isRemote) {
-            openGui();
+//            if (PiAPI.isAPIAvalible()) {
+//                PiAPI.openModPage(DraconicEvolution.MODID);
+//            }
+//            else {
+                openGui();
+//            }
         }
         return super.onItemRightClick(worldIn, playerIn, hand);
     }
