@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.armor;
 
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
@@ -71,7 +72,7 @@ public class DraconicArmor extends WyvernArmor {
             //TODO RE Integrate thaumcraft
         }
         if (armorType == CHEST) {
-            registry.register(stack, new IntegerConfigField("armorFSpeedModifier", 0, 0, 600, "config.field.armorFSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
+            registry.register(stack, new IntegerConfigField("armorFSpeedModifier", 0, 0, MathHelper.clip(DEConfig.flightSpeedLimit != -1 ? DEConfig.flightSpeedLimit : 600, 0, 1200), "config.field.armorFSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
 //            registry.register(stack, new IntegerConfigField("armorVFSpeedModifier", 0, 0, 600, "config.field.armorVFSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
             registry.register(stack, new BooleanConfigField("armorInertiaCancel", false, "config.field.armorInertiaCancel.description"));
             registry.register(stack, new BooleanConfigField("armorFlightLock", false, "config.field.armorFlightLock.description"));
@@ -244,7 +245,12 @@ public class DraconicArmor extends WyvernArmor {
 
     @Override
     public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player) {
-        float modifier = ToolConfigHelper.getIntegerField("armorFSpeedModifier", stack) / 100F;
+        int value = ToolConfigHelper.getIntegerField("armorFSpeedModifier", stack);
+        if (DEConfig.flightSpeedLimit > -1 && value > DEConfig.flightSpeedLimit) {
+            value = DEConfig.flightSpeedLimit;
+        }
+
+        float modifier = value / 100F;
 
         if (ToolConfigHelper.getBooleanField("sprintBoost", stack) && !BrandonsCore.proxy.isSprintKeyDown()) {
             modifier /= 5F;

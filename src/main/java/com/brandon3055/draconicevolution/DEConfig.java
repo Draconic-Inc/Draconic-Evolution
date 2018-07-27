@@ -167,6 +167,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "chaosGuardianHealth", comment = "Allows you to tweak the chaos guardians health (will only affect new guardians)")
     public static int chaosGuardianHealth = 2000;
 
+    @ModConfigProperty(category = "Tweaks", name = "flightSpeedLimit", autoSync = true, comment = "Use this to limit the max flight speed modifier a player can set on the draconic chestplate.\nSetting this to 200 for example would limit the flight speed to +200%.\nDefault -1 removes the limit and allows the full +600% flight speed.")
+    public static int flightSpeedLimit = -1;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")
@@ -205,7 +208,7 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Misc", name = "devLog", comment = "This enables dev log output. I primarily use this for development purposes so it wont be very useful to regular users.")
     public static boolean devLog = false;
 
-    @ModConfigProperty(category = "Misc", name = "chaosGuardianLoading", comment = "Set this to false to disable chaos guardian chunkloading.\nNote. The chaos guardian is ONLY loaded when a player is within a couple hundred blocks.\nThis is to avoid issues where the guardian would flu out of the loaded chunks and freeze\nwhich is especial an issue on servers with reduced render distance.")
+    @ModConfigProperty(category = "Misc", name = "chaosGuardianLoading", comment = "Set this to false to disable chaos guardian chunkloading.\nNote. The chaos guardian is ONLY loaded when a player is within a couple hundred blocks.\nThis is to avoid issues where the guardian would fly out of the loaded chunks and freeze\nwhich is especial an issue on servers with reduced render distance.")
     public static boolean chaosGuardianLoading = true;
 
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
