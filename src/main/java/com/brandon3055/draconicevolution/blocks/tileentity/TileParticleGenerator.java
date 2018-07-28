@@ -18,6 +18,7 @@ import java.util.Random;
  */
 public class TileParticleGenerator extends TileBCBase implements ITickable {
 
+    //@formatter:off
     public final ManagedInt           RED       = register("RED", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
     public final ManagedInt           GREEN     = register("GREEN", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
     public final ManagedInt           BLUE      = register("BLUE", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
@@ -49,6 +50,7 @@ public class TileParticleGenerator extends TileBCBase implements ITickable {
     public final ManagedInt           DELAY     = register("DELAY", new ManagedInt(40)).saveToTile().saveToItem().syncViaTile().finish();
     public final ManagedInt           TYPE      = register("TYPE", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
     public final ManagedBool          COLLISION = register("COLLISION", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().finish();
+    //@formatter:on
 
     private int tick = 0;
 
@@ -56,7 +58,7 @@ public class TileParticleGenerator extends TileBCBase implements ITickable {
     public void update() {
         super.update();
 
-        if (world.isRemote && (getBlockMetadata() == 1 != world.isBlockIndirectlyGettingPowered(getPos())>0)) {
+        if (world.isRemote && (getBlockMetadata() == 1 != world.isBlockIndirectlyGettingPowered(getPos()) > 0)) {
             if (tick >= DELAY.value) {
                 Random rand = world.rand;
 

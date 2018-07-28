@@ -12,6 +12,7 @@
 -Fixed shovels not being able to create grass paths.
 -Added a config option to allow boss soul drops.
 -Added key binding to cycle armor profiles.
+-Pulled PR to re implement the particle generator: https://github.com/brandon3055/Draconic-Evolution/pull/1122
 
 ######## 2.3.12.297 ########
 -Dropped support for mc 1.12 (Now requires mc 1.12.2)
