@@ -10,7 +10,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import org.lwjgl.opengl.GL11;
@@ -22,12 +21,12 @@ public class GuiParticleGenerator extends GuiScreen {
 
     private final int xSize = 210;
     private final int ySize = 145;
-    private int page = 1;
+    private static int page = 1;
+    private boolean requiresInit = false;
 
     private TileParticleGenerator tile;
 
-    public GuiParticleGenerator(EntityPlayer player, TileParticleGenerator tile) {
-        super();
+    public GuiParticleGenerator(TileParticleGenerator tile) {
         this.tile = tile;
     }
 
@@ -96,11 +95,11 @@ public class GuiParticleGenerator extends GuiScreen {
 
             case 100:
                 page--;
-                initGui();
+                requiresInit = true;
                 break;
             case 101:
                 page++;
-                initGui();
+                requiresInit = true;
                 break;
         }
     }
@@ -151,6 +150,10 @@ public class GuiParticleGenerator extends GuiScreen {
         if (selectedButton instanceof GuiRangeSlider && state == 1) {
             ((GuiRangeSlider) selectedButton).rightReleased(mouseX, mouseY);
             selectedButton = null;
+        }
+        else if (requiresInit) {
+            requiresInit = false;
+            initGui();
         }
     }
 
