@@ -960,6 +960,31 @@ gui.draconiumChest.ioState1.btn=Input Only
 gui.draconiumChest.ioState2.btn=Output Only
 gui.draconiumChest.ioState3.btn=Input & Output
 
+//---- Particle Generator ----//
+gui.particleGenerator.name=Particle Generator
+gui.particleGenerator.red=Red
+gui.particleGenerator.green=Green
+gui.particleGenerator.blue=Blue
+gui.particleGenerator.alpha=Alpha
+gui.particleGenerator.spawnX=Spawn X
+gui.particleGenerator.spawnY=Spawn Y
+gui.particleGenerator.spawnZ=Spawn Z
+gui.particleGenerator.motionX=X Velocity
+gui.particleGenerator.motionY=Y Velocity
+gui.particleGenerator.motionZ=Z Velocity
+gui.particleGenerator.gravity=Gravity
+gui.particleGenerator.scale=Scale
+gui.particleGenerator.delay=Delay
+gui.particleGenerator.life=Life
+gui.particleGenerator.fade=Fade
+gui.particleGenerator.collision=Collision
+gui.particleGenerator.type=Type
+gui.particleGenerator.type0=Orb
+gui.particleGenerator.type1=Square
+gui.particleGenerator.type2=Dark Orb
+gui.particleGenerator.type3=Orb 2
+gui.particleGenerator.type4=Star
+
 //---- Gui Junk Filter ----//
 gui.de.junkFilter.name=Tool Junk Filter
 

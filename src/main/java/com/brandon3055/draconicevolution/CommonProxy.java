@@ -73,6 +73,7 @@ public class CommonProxy {
         DraconicEvolution.network.registerMessage(PacketExplosionFX.Handler.class, PacketExplosionFX.class, 11, Side.CLIENT);
         DraconicEvolution.network.registerMessage(PacketDislocatorUpdateRequest.Handler.class, PacketDislocatorUpdateRequest.class, 12, Side.CLIENT);
         DraconicEvolution.network.registerMessage(PacketDislocatorUpdateRequest.Handler.class, PacketDislocatorUpdateRequest.class, 13, Side.SERVER);
+        DraconicEvolution.network.registerMessage(PacketParticleGenerator.Handler.class, PacketParticleGenerator.class, 14, Side.SERVER);
 
         PacketCustom.assignHandler("DEPCChannel", new ServerPacketHandler());
     }

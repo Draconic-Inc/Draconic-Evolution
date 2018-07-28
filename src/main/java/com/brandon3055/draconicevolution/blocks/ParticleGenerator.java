@@ -4,6 +4,8 @@ import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.registry.IRegistryOverride;
 import com.brandon3055.brandonscore.registry.IRenderOverride;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileParticleGenerator;
@@ -100,6 +102,11 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         return (meta == 0 || meta == 1) ? new TileParticleGenerator() : meta == 2 || meta == 3 ? new TileEnergyCoreStabilizer() : null;
     }
 
+    @Override
+    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return state.getValue(TYPE).equals("normal") || state.getValue(TYPE).equals("inverted");
+    }
+
     //endregion
 
     //region Render
@@ -148,7 +155,11 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (state.getValue(TYPE).equals("normal") || state.getValue(TYPE).equals("inverted")) {
-            world.setBlockState(pos, state.withProperty(TYPE, state.getValue(TYPE).equals("normal") ? "inverted" : "normal"));
+            if (player.isSneaking()) {
+                world.setBlockState(pos, state.withProperty(TYPE, state.getValue(TYPE).equals("normal") ? "inverted" : "normal"));
+            } else if (world.isRemote) {
+                player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_PARTICLEGEN, world, pos.getX(), pos.getY(), pos.getZ());
+            }
         }
         else {
             TileEntity tile = world.getTileEntity(pos);

@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class DEParticles {
     public static final ResourceLocation DE_SHEET = ResourceHelperDE.getResource("textures/particle/particles.png");
+    public static final ResourceLocation CUSTOM_SHEET = ResourceHelperDE.getResource("textures/particle/particle_generator.png");
 
     public static int ENERGY_PARTICLE;
     public static int ENERGY_CORE_FX;
@@ -23,6 +24,7 @@ public class DEParticles {
     public static int AXE_SELECTION;
     public static int SOUL_EXTRACTION;
     public static int ARROW_SHOCKWAVE;
+    public static int CUSTOM;
 
     public static void registerClient() {
         ENERGY_PARTICLE = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergy.Factory());
@@ -36,6 +38,7 @@ public class DEParticles {
         AXE_SELECTION = BCEffectHandler.registerFX(new ResourceLocation("textures/items/diamond_axe.png"), new ParticleAxeSelection.Factory());
         SOUL_EXTRACTION = BCEffectHandler.registerFX(DE_SHEET, new ParticleSoulExtraction.Factory());
         ARROW_SHOCKWAVE = BCEffectHandler.registerFX(DE_SHEET, new ParticleArrowShockwave.Factory());
+        CUSTOM = BCEffectHandler.registerFX(CUSTOM_SHEET, new ParticleCustom.Factory());
     }
 
     public static void registerServer() {
@@ -50,5 +53,6 @@ public class DEParticles {
         AXE_SELECTION = BCEffectHandler.registerFXServer();
         SOUL_EXTRACTION = BCEffectHandler.registerFXServer();
         ARROW_SHOCKWAVE = BCEffectHandler.registerFXServer();
+        CUSTOM = BCEffectHandler.registerFXServer();
     }
 }
