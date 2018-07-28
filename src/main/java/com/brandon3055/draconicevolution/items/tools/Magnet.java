@@ -72,7 +72,7 @@ public class Magnet extends ItemBCore implements IBauble {
     }
 
     private void updateMagnet(ItemStack stack, Entity entity) {
-        if (!entity.isSneaking() && entity.ticksExisted % 5 == 0 && isEnabled(stack) && entity instanceof EntityPlayer) {
+        if (!entity.isSneaking() && entity.ticksExisted % 10 == 0 && isEnabled(stack) && entity instanceof EntityPlayer) {
             World world = entity.getEntityWorld();
             int range = stack.getItemDamage() == 0 ? 8 : 32;
 
@@ -84,7 +84,7 @@ public class Magnet extends ItemBCore implements IBauble {
                 ItemStack item = itemEntity.getItem();
 
                 String name = item.getItem().getRegistryName().toString();
-                if (DEConfig.itemDislocatorBlacklistMap.containsKey(name) && (DEConfig.itemDislocatorBlacklistMap.get(name) == -1 || DEConfig.itemDislocatorBlacklistMap.get(name) == item.getItemDamage())) {
+                if (itemEntity.isDead || (DEConfig.itemDislocatorBlacklistMap.containsKey(name) && (DEConfig.itemDislocatorBlacklistMap.get(name) == -1 || DEConfig.itemDislocatorBlacklistMap.get(name) == item.getItemDamage()))) {
                     continue;
                 }
 
