@@ -40,6 +40,11 @@ public class ParticleCustom extends BCParticle {
         move(motionX, motionY, motionZ);
     }
 
+    @Override
+    public boolean shouldDisableDepth() {
+        return true;
+    }
+
     public static class Factory implements IBCParticleFactory {
 
         @Override
