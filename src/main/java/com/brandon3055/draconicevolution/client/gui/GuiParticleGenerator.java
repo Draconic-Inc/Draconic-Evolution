@@ -38,11 +38,12 @@ public class GuiParticleGenerator extends GuiScreen {
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;
         drawTexturedModalRect(posX, posY, 0, 0, xSize, ySize);
-        drawCenteredString(fontRenderer, I18n.format(I18N_PREFIX + "name"), width/2, posY+6, 0x00FFFF);
-        drawCenteredString(fontRenderer, page + "/4", width/2, posY+ySize-19, 0xFFFFFF);
+        drawCenteredString(fontRenderer, I18n.format(I18N_PREFIX + "name"), width / 2, posY + 6, 0x00FFFF);
+        drawCenteredString(fontRenderer, page + "/4", width / 2, posY + ySize - 19, 0xFFFFFF);
 
         super.drawScreen(x, y, f);
     }
+
 
     @Override
     public void initGui() {
@@ -62,10 +63,10 @@ public class GuiParticleGenerator extends GuiScreen {
                 buttonList.add(new GuiRangeSliderI(3, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "alpha"), 0, 255, tile.ALPHA.value, tile.RANDOM_ALPHA.value));
                 break;
             case 2:
-                buttonList.add(new GuiRangeSlider(10, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "motionX"), -2, 2, tile.MOTION_X.value, tile.RANDOM_MOTION_X.value));
-                buttonList.add(new GuiRangeSlider(11, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "motionY"), -2, 2, tile.MOTION_Y.value, tile.RANDOM_MOTION_Y.value));
-                buttonList.add(new GuiRangeSlider(12, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "motionZ"), -2, 2, tile.MOTION_Z.value, tile.RANDOM_MOTION_Z.value));
-                buttonList.add(new GuiRangeSlider(6, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "gravity"), 0, 1, tile.GRAVITY.value, tile.RANDOM_GRAVITY.value));
+                buttonList.add(new GuiRangeSlider(10, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "motionX"), -2, 2, tile.MOTION_X.value, tile.RANDOM_MOTION_X.value).setPrecision(3));
+                buttonList.add(new GuiRangeSlider(11, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "motionY"), -2, 2, tile.MOTION_Y.value, tile.RANDOM_MOTION_Y.value).setPrecision(3));
+                buttonList.add(new GuiRangeSlider(12, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "motionZ"), -2, 2, tile.MOTION_Z.value, tile.RANDOM_MOTION_Z.value).setPrecision(3));
+                buttonList.add(new GuiRangeSlider(6, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "gravity"), -0.2, 0.2, tile.GRAVITY.value, tile.RANDOM_GRAVITY.value).setPrecision(3));
                 break;
             case 3:
                 buttonList.add(new GuiRangeSlider(13, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "spawnX"), -10, 10, tile.SPAWN_X.value, tile.RANDOM_SPAWN_X.value));
@@ -87,10 +88,10 @@ public class GuiParticleGenerator extends GuiScreen {
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 8:
-                DraconicEvolution.network.sendToServer(new PacketParticleGenerator(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), (byte) button.id, ((GuiButtonToggle) button).getIndex(),0));
+                DraconicEvolution.network.sendToServer(new PacketParticleGenerator(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), (byte) button.id, ((GuiButtonToggle) button).getIndex(), 0));
                 break;
             case 9:
-                DraconicEvolution.network.sendToServer(new PacketParticleGenerator(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), (byte) button.id, ((GuiButtonToggle) button).getIndex(),0));
+                DraconicEvolution.network.sendToServer(new PacketParticleGenerator(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), (byte) button.id, ((GuiButtonToggle) button).getIndex(), 0));
                 break;
 
             case 100:
@@ -105,7 +106,8 @@ public class GuiParticleGenerator extends GuiScreen {
     }
 
     @Override
-    public void keyTyped(char key, int keyN) {
+    public void keyTyped(char key, int keyN) throws IOException {
+        super.keyTyped(key, keyN);
         if ((key == 'e') || key == '') {
             this.mc.displayGuiScreen(null);
             this.mc.setIngameFocus();
@@ -121,17 +123,13 @@ public class GuiParticleGenerator extends GuiScreen {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
-        if (mouseButton == 1)
-        {
-            for (int i = 0; i < this.buttonList.size(); ++i)
-            {
+        if (mouseButton == 1) {
+            for (int i = 0; i < this.buttonList.size(); ++i) {
                 GuiButton guibutton = this.buttonList.get(i);
 
-                if (guibutton instanceof GuiRangeSlider && ((GuiRangeSlider) guibutton).rightClick(this.mc, mouseX, mouseY))
-                {
+                if (guibutton instanceof GuiRangeSlider && ((GuiRangeSlider) guibutton).rightClick(this.mc, mouseX, mouseY)) {
                     net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre event = new net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre(this, guibutton, this.buttonList);
-                    if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event))
-                        break;
+                    if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) break;
                     guibutton = event.getButton();
                     this.selectedButton = guibutton;
                     guibutton.playPressSound(this.mc.getSoundHandler());
@@ -166,7 +164,7 @@ public class GuiParticleGenerator extends GuiScreen {
         @Override
         public void mouseReleased(int par1, int par2) {
             super.mouseReleased(par1, par2);
-            DraconicEvolution.network.sendToServer(new PacketParticleGenerator(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), (byte) id, getValueInt(),0));
+            DraconicEvolution.network.sendToServer(new PacketParticleGenerator(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), (byte) id, getValueInt(), 0));
         }
     }
 
@@ -174,12 +172,19 @@ public class GuiParticleGenerator extends GuiScreen {
 
         public double rangeValue = 1.0;
         private boolean rightDragging = false;
+        private int dragFrom = 0;
+        private double fromValue = 0;
 
         public GuiRangeSlider(int id, int xPos, int yPos, String displayStr, double minVal, double maxVal, double currentVal, double currentRandom) {
             super(id, xPos, yPos, 200, 20, displayStr + ": ", "", minVal, maxVal, currentVal, true, true, slider -> {});
             setRandomValue(currentRandom);
             precision = 2;
             updateSlider();
+        }
+
+        public GuiRangeSlider setPrecision(int precision) {
+            this.precision = precision;
+            return this;
         }
 
         @Override
@@ -217,7 +222,8 @@ public class GuiParticleGenerator extends GuiScreen {
                     if (val.endsWith(".")) {
                         val = val.substring(0, val.indexOf(".") + precision);
                     }
-                } else {
+                }
+                else {
                     while (val.substring(val.indexOf(".") + 1).length() < precision) {
                         val += "0";
                     }
@@ -229,17 +235,19 @@ public class GuiParticleGenerator extends GuiScreen {
                     if (valR.endsWith(".")) {
                         valR = valR.substring(0, valR.indexOf(".") + precision);
                     }
-                } else {
+                }
+                else {
                     while (valR.substring(valR.indexOf(".") + 1).length() < precision) {
                         valR += "0";
                     }
                 }
-            } else {
+            }
+            else {
                 val = Integer.toString(getValueInt());
                 valR = Integer.toString(getRangeValueInt());
             }
 
-            if(drawString) {
+            if (drawString) {
                 displayString = dispString + val + " - " + valR + suffix;
             }
 
@@ -248,28 +256,64 @@ public class GuiParticleGenerator extends GuiScreen {
             }
         }
 
+        @Override
+        public boolean mousePressed(Minecraft par1Minecraft, int mouseX, int par3) {
+            if (super.mousePressed(par1Minecraft, mouseX, par3)) {
+                dragFrom = mouseX;
+                fromValue = rangeValue;
+                this.sliderValue = (float) (mouseX - (this.x + 4)) / (float) (this.width - 8);
+                updateSlider();
+                this.dragging = true;
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
         public boolean rightClick(Minecraft mc, int mouseX, int mouseY) {
             if (this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
-                rangeValue = (float)(mouseX - (this.x + 4)) / (float)(this.width - 8);
+                dragFrom = mouseX;
+                fromValue = rangeValue;
+                rangeValue = (float) (mouseX - (this.x + 4)) / (float) (this.width - 8);
                 updateSlider();
                 rightDragging = true;
                 return true;
-            } else return false;
+            }
+            else return false;
         }
 
         @Override
         protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
-            super.mouseDragged(mc, mouseX, mouseY);
-
-            if (visible) {
-                if (rightDragging) {
-                    rangeValue = (mouseX - (this.x + 4)) / (float)(this.width - 8);
+            if (this.visible) {
+                if (this.dragging) {
+                    if (isShiftKeyDown()) {
+                        sliderValue = fromValue + ((mouseX - dragFrom) / 1000D);
+                    }
+                    else {
+                        sliderValue = (mouseX - (this.x + 4)) / (float) (this.width - 8);
+                        dragFrom = mouseX;
+                        fromValue = sliderValue;
+                    }
+                    updateSlider();
+                }
+                else if (rightDragging) {
+                    if (isShiftKeyDown()) {
+                        rangeValue = fromValue + ((mouseX - dragFrom) / 1000D);
+                    }
+                    else {
+                        rangeValue = (mouseX - (this.x + 4)) / (float) (this.width - 8);
+                        dragFrom = mouseX;
+                        fromValue = rangeValue;
+                    }
                     updateSlider();
                 }
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                this.drawTexturedModalRect(this.x + (int)(rangeValue * (float)(this.width - 8)), this.y, 0, 66, 4, 20);
-                this.drawTexturedModalRect(this.x + (int)(rangeValue * (float)(this.width - 8)) + 4, this.y, 196, 66, 4, 20);
+                this.drawTexturedModalRect(this.x + (int) (rangeValue * (float) (this.width - 8)), this.y, 0, 66, 4, 20);
+                this.drawTexturedModalRect(this.x + (int) (rangeValue * (float) (this.width - 8)) + 4, this.y, 196, 66, 4, 20);
+                this.drawTexturedModalRect(this.x + (int) (this.sliderValue * (float) (this.width - 8)), this.y, 0, 66, 4, 20);
+                this.drawTexturedModalRect(this.x + (int) (this.sliderValue * (float) (this.width - 8)) + 4, this.y, 196, 66, 4, 20);
             }
         }
 
@@ -285,11 +329,11 @@ public class GuiParticleGenerator extends GuiScreen {
         }
 
         void sendPacket() {
-            DraconicEvolution.network.sendToServer(new PacketParticleGenerator(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), (byte) id, (int) Math.round(getValue()*10000), (int) Math.round(getRandomValue()*10000)));
+            DraconicEvolution.network.sendToServer(new PacketParticleGenerator(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), (byte) id, (int) Math.round(getValue() * 10000), (int) Math.round(getRandomValue() * 10000)));
         }
 
         public int getRangeValueInt() {
-            return (int)Math.round(rangeValue * (maxValue - minValue) + minValue);
+            return (int) Math.round(rangeValue * (maxValue - minValue) + minValue);
         }
 
         public double getRangeValue() {
@@ -348,7 +392,8 @@ public class GuiParticleGenerator extends GuiScreen {
                 if (index >= options.length) index = 0;
                 update();
                 return true;
-            } else return false;
+            }
+            else return false;
         }
 
         public void update() {
