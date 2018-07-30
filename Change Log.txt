@@ -2,6 +2,7 @@
 -Fixed particle generator transparency issue.
 -Enabled negative gravity for particles.
 -Added ability to shift click-drag decimal sliders in particle generator for precise more adjustment.
+-Fixed tools (and hopefully bows) resetting when their NBT changes due to charging.
 
 ######## 2.3.13.403 ########
 -Fixed wireless energy crystals in input mode not allowing connections to devices that only output energy.

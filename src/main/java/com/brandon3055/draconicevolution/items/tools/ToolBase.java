@@ -76,6 +76,11 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
         loadEnergyStats();
     }
 
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return !(newStack.getItem() == oldStack.getItem());
+    }
+
     //region Basic Item
 
     @Override
