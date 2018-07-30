@@ -18,7 +18,7 @@ tile.draconicevolution:energy_storage_core.name=에너지 코어
 tile.draconicevolution:energy_pylon.name=에너지 파일론
 tile.draconicevolution:draconium_block.name=드라코늄 블록
 tile.draconicevolution:draconium_block_charged.name=충전된 드라코늄 블록
-tile.draconicevolution:diss_enchanter.name=디스인챈터
+tile.draconicevolution:diss_enchanter.name=반인첸트기
 tile.draconicevolution:dislocator_pedestal.name=이동기 받침대
 tile.draconicevolution:draconium_chest.name=드라코늄 상자
 tile.draconicevolution:draconic_block.name깨어난 드라코늄 블록
@@ -213,8 +213,8 @@ msg.de.insufficientPower.txt=전력이 부족합니다!
 msg.de.alreadyRunning.txt=이미 작동하고 있습니다!
 
 //Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
-info.teleporterInfUnset1.txt=Unbound
-info.teleporterInfUnset2.txt=Shift right click to bind your current
+info.teleporterInfUnset1.txt=해방
+info.teleporterInfUnset2.txt=흐름을 멈추고 싶으면 쉬프트+우클릭을 하세요.
 info.teleporterInfUnset3.txt=x, y, z coordinates
 info.teleporterInfUnset4.txt=As well as the direction you are facing
 info.teleporterInfUnset5.txt=And the dimension you are currently in
