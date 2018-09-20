@@ -33,8 +33,8 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiDislocator extends GuiScreen {
-    private final int xSize = 182;
-    private final int ySize = 141;
+    public final int xSize = 182;
+    public final int ySize = 141;
     private ItemStack dislocatorStack;
     protected List<TeleportLocation> locations = new ArrayList<TeleportLocation>(0);
 
@@ -69,7 +69,8 @@ public class GuiDislocator extends GuiScreen {
         drawTexturedModalRect(posX, posY, 0, 0, xSize, ySize);
 
         if (fuel <= 5) drawTexturedModalRect(posX + 169, posY + 86, 40, 150, 7, 7);
-        if (fuel <= 5 && showFuelLight || (fuel > 5 && fuel < 10)) drawTexturedModalRect(posX + 169, posY + 86, 40, 143, 7, 7);
+        if (fuel <= 5 && showFuelLight || (fuel > 5 && fuel < 10))
+            drawTexturedModalRect(posX + 169, posY + 86, 40, 143, 7, 7);
 
         drawArrows(x - posX, y - posY);
 
@@ -105,11 +106,13 @@ public class GuiDislocator extends GuiScreen {
             }
 
             if (getLocationSafely(i + selectionOffset).getWriteProtected()) {
-                if (GuiHelper.isInRect(102, 7 + i * 11, 6, 6, x, y)) drawTexturedModalRect(posX + 102, posY + 7 + i * 11, 26, 149, 6, 6);
+                if (GuiHelper.isInRect(102, 7 + i * 11, 6, 6, x, y))
+                    drawTexturedModalRect(posX + 102, posY + 7 + i * 11, 26, 149, 6, 6);
                 else drawTexturedModalRect(posX + 102, posY + 7 + i * 11, 26, 143, 6, 6);
             }
             else {
-                if (GuiHelper.isInRect(101, 7 + i * 11, 8, 7, x, y)) drawTexturedModalRect(posX + 101, posY + 7 + i * 11, 32, 150, 8, 7);
+                if (GuiHelper.isInRect(101, 7 + i * 11, 8, 7, x, y))
+                    drawTexturedModalRect(posX + 101, posY + 7 + i * 11, 32, 150, 8, 7);
                 else drawTexturedModalRect(posX + 101, posY + 7 + i * 11, 32, 143, 8, 7);
             }
         }
@@ -225,8 +228,10 @@ public class GuiDislocator extends GuiScreen {
         }
 
 
-        if (selectionChanged) DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.CHANGESELECTION, selected, false));
-        if (offsetChanged) DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.UPDATEOFFSET, selectionOffset, false));
+        if (selectionChanged)
+            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.CHANGESELECTION, selected, false));
+        if (offsetChanged)
+            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.UPDATEOFFSET, selectionOffset, false));
 
         updateButtons();
         super.mouseClicked(x, y, button);
@@ -256,8 +261,10 @@ public class GuiDislocator extends GuiScreen {
             updateButtons();
         }
 
-        if (selectionChanged) DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.CHANGESELECTION, selected, false));
-        if (offsetChanged) DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.UPDATEOFFSET, selectionOffset, false));
+        if (selectionChanged)
+            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.CHANGESELECTION, selected, false));
+        if (offsetChanged)
+            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.UPDATEOFFSET, selectionOffset, false));
 
         super.handleMouseInput();
     }
@@ -311,8 +318,8 @@ public class GuiDislocator extends GuiScreen {
     @Override
     public void initGui() {
         buttonList.clear();
-        int posX = (this.width - xSize) / 2;
-        int posY = (this.height - ySize) / 2;
+        int posX = guiLeft();
+        int posY = guiTop();
 
         //updateTeleporter();
 
@@ -337,6 +344,14 @@ public class GuiDislocator extends GuiScreen {
         textBeingEdited.setVisible(false);
 
         updateButtons();
+    }
+
+    public int guiLeft() {
+        return (this.width - xSize) / 2;
+    }
+
+    public int guiTop() {
+        return (this.height - ySize) / 2;
     }
 
     @Override

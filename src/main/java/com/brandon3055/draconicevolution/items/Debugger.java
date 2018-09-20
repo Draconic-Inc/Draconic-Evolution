@@ -3,12 +3,12 @@ package com.brandon3055.draconicevolution.items;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
+import com.brandon3055.draconicevolution.integration.PIIntegration;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -24,12 +24,12 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.NoiseGeneratorSimplex;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by brandon3055 on 4/4/2016.
@@ -37,6 +37,7 @@ import java.util.Map;
 public class Debugger extends ItemBCore {
 
     private static final Map<Integer, String> MODES = new HashMap<Integer, String>();
+    private static Random rand = new Random();
 
     static {
         MODES.put(0, "Complete Crafting");
@@ -47,6 +48,7 @@ public class Debugger extends ItemBCore {
         MODES.put(5, "Clear");
         MODES.put(6, "Mod Wiki");
         MODES.put(7, "Explode");
+        MODES.put(8, "Light");
     }
 
     @Override
@@ -407,6 +409,7 @@ public class Debugger extends ItemBCore {
         MODES.put(5, "Clear");
         MODES.put(6, "Mod Wiki");
         MODES.put(7, "Explode");
+        MODES.put(8, "Light");
 
         handleRightClick(itemStack, world, player, hand);
 
@@ -634,133 +637,133 @@ public class Debugger extends ItemBCore {
 
     public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 
-
+//
+////
+////
+//        if (false) {
+//
+//            int posX = (int) player.posX;
+//            double posY = (int) player.posY;
+//            int posZ = (int) player.posZ;
+//
+//            int rayCount = 500;
+//
+//            NoiseGeneratorSimplex ng = new NoiseGeneratorSimplex();
+//
+//            for (int ray = rayCount; ray > 0; ray--) {
+//
+//                double pc = ray / (double) rayCount;
+//                double direction = Math.PI * 2 * pc;
+//                int rayDist = 20 + itemRand.nextInt(10);
+//
+//                double x = posX + itemRand.nextGaussian() * 5;
+//                double y = posY + itemRand.nextGaussian() * 5;
+//                double z = posZ + itemRand.nextGaussian() * 5;
+//
+//                double r = 1 + itemRand.nextDouble();
+//
+//                for (int rayD = 0; rayD < rayDist; rayD++) {
+//                    double dpc = 1D - (rayD / (double) rayDist);
+//
+//                    double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
+//                    x += Math.cos(d2);
+//                    z += Math.sin(d2);
+//
+//                    int prevY = (int) y;
+//                    y += itemRand.nextGaussian() + (dpc * 1.3);
+//                    if ((int) y - prevY > 1) y--;
+//                    if ((int) y - prevY < -1) y++;
+//
+//                    BlockPos pos = new BlockPos((int) x, (int) y, (int) z);
+//
+//                    world.setBlockState(pos, Blocks.LOG.getDefaultState());
+//
+//                    for (EnumFacing facing : EnumFacing.VALUES) {
+//                        BlockPos pos2 = pos.offset(facing);
+//                        if (world.isAirBlock(pos2)) {
+//                            world.setBlockState(pos2, Blocks.LEAVES.getDefaultState());
+//                        }
+//                    }
+//                }
+//            }
+//
+//            rayCount = 200;
 //
 //
-        if (false) {
-
-            int posX = (int) player.posX;
-            double posY = (int) player.posY;
-            int posZ = (int) player.posZ;
-
-            int rayCount = 500;
-
-            NoiseGeneratorSimplex ng = new NoiseGeneratorSimplex();
-
-            for (int ray = rayCount; ray > 0; ray--) {
-
-                double pc = ray / (double) rayCount;
-                double direction = Math.PI * 2 * pc;
-                int rayDist = 20 + itemRand.nextInt(10);
-
-                double x = posX + itemRand.nextGaussian() * 5;
-                double y = posY + itemRand.nextGaussian() * 5;
-                double z = posZ + itemRand.nextGaussian() * 5;
-
-                double r = 1 + itemRand.nextDouble();
-
-                for (int rayD = 0; rayD < rayDist; rayD++) {
-                    double dpc = 1D - (rayD / (double) rayDist);
-
-                    double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
-                    x += Math.cos(d2);
-                    z += Math.sin(d2);
-
-                    int prevY = (int) y;
-                    y += itemRand.nextGaussian() + (dpc * 1.3);
-                    if ((int) y - prevY > 1) y--;
-                    if ((int) y - prevY < -1) y++;
-
-                    BlockPos pos = new BlockPos((int) x, (int) y, (int) z);
-
-                    world.setBlockState(pos, Blocks.LOG.getDefaultState());
-
-                    for (EnumFacing facing : EnumFacing.VALUES) {
-                        BlockPos pos2 = pos.offset(facing);
-                        if (world.isAirBlock(pos2)) {
-                            world.setBlockState(pos2, Blocks.LEAVES.getDefaultState());
-                        }
-                    }
-                }
-            }
-
-            rayCount = 200;
-
-
-            for (; rayCount > 0; rayCount--) {
-
-                double pc = rayCount / 100D;
-                double direction = Math.PI * 2 * pc;
-                int rayDist = 15 + itemRand.nextInt(5);
-
-                Vec3I vec = new Vec3I(posX, (int) posY, posZ);
-                double x = posX + itemRand.nextDouble() * 10;
-                double y = posY + itemRand.nextDouble() * 10;
-                double z = posZ + itemRand.nextDouble() * 10;
-
-                double r = 1 + itemRand.nextDouble();
-
-                for (int rayD = 0; rayD < rayDist; rayD++) {
-                    double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
-                    x += Math.cos(d2);
-                    z += Math.sin(d2);
-
-                    int prevY = (int) y;
-                    y += itemRand.nextGaussian();
-                    if ((int) y - prevY > 1) y--;
-                    if ((int) y - prevY < -1) y++;
-
-                    vec.set((int) x, (int) y, (int) z);
-
-                    world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
-
-                    for (EnumFacing facing : EnumFacing.VALUES) {
-                        BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
-                        if (world.isAirBlock(pos)) {
-                            world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
-                        }
-                    }
-                }
-            }
-
-            posX = (int) player.posX;
-            posY = (int) player.posY;
-            posZ = (int) player.posZ;
-
-            rayCount = 100;
-
-            for (; rayCount > 0; rayCount--) {
-
-                double pc = rayCount / 100D;
-                double direction = Math.PI * 2 * pc;
-                int rayDist = 35 + itemRand.nextInt(10);
-
-                Vec3I vec = new Vec3I(posX, (int) posY, posZ);
-                double x = posX + itemRand.nextDouble() * 10;
-                double y = posY + itemRand.nextDouble() * 10;
-                double z = posZ + itemRand.nextDouble() * 10;
-
-                for (int rayD = 0; rayD < rayDist; rayD++) {
-                    double d2 = direction + itemRand.nextDouble();
-                    x += Math.cos(d2);
-                    z += Math.sin(d2);
-                    y += itemRand.nextGaussian();
-
-                    vec.set((int) x, (int) y, (int) z);
-
-                    world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
-
-                    for (EnumFacing facing : EnumFacing.VALUES) {
-                        BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
-                        if (world.isAirBlock(pos)) {
-                            world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
-                        }
-                    }
-                }
-            }
-
-
-        }
+//            for (; rayCount > 0; rayCount--) {
+//
+//                double pc = rayCount / 100D;
+//                double direction = Math.PI * 2 * pc;
+//                int rayDist = 15 + itemRand.nextInt(5);
+//
+//                Vec3I vec = new Vec3I(posX, (int) posY, posZ);
+//                double x = posX + itemRand.nextDouble() * 10;
+//                double y = posY + itemRand.nextDouble() * 10;
+//                double z = posZ + itemRand.nextDouble() * 10;
+//
+//                double r = 1 + itemRand.nextDouble();
+//
+//                for (int rayD = 0; rayD < rayDist; rayD++) {
+//                    double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
+//                    x += Math.cos(d2);
+//                    z += Math.sin(d2);
+//
+//                    int prevY = (int) y;
+//                    y += itemRand.nextGaussian();
+//                    if ((int) y - prevY > 1) y--;
+//                    if ((int) y - prevY < -1) y++;
+//
+//                    vec.set((int) x, (int) y, (int) z);
+//
+//                    world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
+//
+//                    for (EnumFacing facing : EnumFacing.VALUES) {
+//                        BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
+//                        if (world.isAirBlock(pos)) {
+//                            world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
+//                        }
+//                    }
+//                }
+//            }
+//
+//            posX = (int) player.posX;
+//            posY = (int) player.posY;
+//            posZ = (int) player.posZ;
+//
+//            rayCount = 100;
+//
+//            for (; rayCount > 0; rayCount--) {
+//
+//                double pc = rayCount / 100D;
+//                double direction = Math.PI * 2 * pc;
+//                int rayDist = 35 + itemRand.nextInt(10);
+//
+//                Vec3I vec = new Vec3I(posX, (int) posY, posZ);
+//                double x = posX + itemRand.nextDouble() * 10;
+//                double y = posY + itemRand.nextDouble() * 10;
+//                double z = posZ + itemRand.nextDouble() * 10;
+//
+//                for (int rayD = 0; rayD < rayDist; rayD++) {
+//                    double d2 = direction + itemRand.nextDouble();
+//                    x += Math.cos(d2);
+//                    z += Math.sin(d2);
+//                    y += itemRand.nextGaussian();
+//
+//                    vec.set((int) x, (int) y, (int) z);
+//
+//                    world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
+//
+//                    for (EnumFacing facing : EnumFacing.VALUES) {
+//                        BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
+//                        if (world.isAirBlock(pos)) {
+//                            world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
+//                        }
+//                    }
+//                }
+//            }
+//
+//
+//        }
 
 
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
@@ -794,6 +797,7 @@ public class Debugger extends ItemBCore {
                 }
                 break;
             case 4:
+                PIIntegration.loadPIIntegration();
                 if (!world.isRemote) {
                     player.openGui(DraconicEvolution.instance, 2016, world, 0, 0, 0);
                 }
@@ -807,6 +811,11 @@ public class Debugger extends ItemBCore {
             case 7:
                 if (!world.isRemote) {
                     destroyUniverse(player);
+                }
+                break;
+            case 8:
+                if (!world.isRemote) {
+//                    lightingTest(world, new BlockPos(player));
                 }
                 break;
         }
@@ -1048,6 +1057,7 @@ public class Debugger extends ItemBCore {
 
 
     }
+
 
     //endregion
 }

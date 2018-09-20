@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * Created by brandon3055 on 15/11/2016.
  */
 public class GuiFlowGate extends ModularGuiContainer implements IMGuiListener {
-    private TileFlowGate tile;
+    public TileFlowGate tile;
     private MGuiTextField minField;
     private MGuiTextField maxField;
     private int ltMin = -1;

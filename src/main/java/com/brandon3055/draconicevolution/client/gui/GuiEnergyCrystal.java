@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class GuiEnergyCrystal extends ModularGuiContainer<ContainerEnergyCrystal> implements IMGuiListener {
     private final EntityPlayer player;
-    private final TileCrystalBase tile;
+    public final TileCrystalBase tile;
     private MGuiList linkData;
 
     public GuiEnergyCrystal(EntityPlayer player, TileCrystalBase tile) {

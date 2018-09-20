@@ -18,6 +18,7 @@ import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.ArmorModelHelper;
 import com.brandon3055.draconicevolution.client.render.entity.*;
 import com.brandon3055.draconicevolution.entity.*;
+import com.brandon3055.draconicevolution.integration.PIIntegration;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import com.brandon3055.draconicevolution.network.ccnetwork.ClientPacketHandler;
 import com.brandon3055.draconicevolution.utils.DETextures;
@@ -35,14 +36,13 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
-
-    public static String downloadLocation;
-    //	public static List<LayerElytra> elytra = new ArrayList<>();
+    
     public static LayerContributorPerkRenderer layerWings;
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+
         OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);
         TextureUtils.addIconRegister(new DETextures());
         ResourceUtils.registerReloadListener(new DETextures());
@@ -51,6 +51,8 @@ public class ClientProxy extends CommonProxy {
 
         TextureUtils.addIconRegister(new ArmorModelHelper());
         TextureUtils.addIconRegister(new DETextureCache());
+
+        PIIntegration.loadPIIntegration();
 
         registerRendering();
         if (ObfMapping.obfuscated) {
@@ -64,12 +66,8 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
         MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
-//		if (ConfigHandler.enableVersionChecker) FMLCommonHandler.instance().bus().register(new UpdateChecker());
-//		MinecraftForge.EVENT_BUS.register(new HudHandler());
-//		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         KeyBindings.init();
         CCRenderEventHandler.init();
-//		ResourceHandler.instance.tick(null);
     }
 
     @Override
@@ -79,8 +77,6 @@ public class ClientProxy extends CommonProxy {
         for (RenderPlayer renderPlayer : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
             renderPlayer.addLayer(layerWings = new LayerContributorPerkRenderer(renderPlayer));
         }
-
-//		ResourceHandler.instance.tick(null);
     }
 
     @Override
@@ -109,7 +105,7 @@ public class ClientProxy extends CommonProxy {
 
     public boolean isOp(String paramString) {
         return Minecraft.getMinecraft().world.getWorldInfo().getGameType().isCreative();
-    } //
+    }
 
     @Override
     public ENetFXHandler createENetFXHandler(IENetEffectTile tile) {

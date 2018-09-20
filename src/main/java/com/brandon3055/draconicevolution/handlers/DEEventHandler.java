@@ -38,6 +38,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -333,7 +334,20 @@ public class DEEventHandler {
 
 
     @SubscribeEvent
-    public void login(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event) {
+    public void login(PlayerLoggedInEvent event) {
+//        if (event.player instanceof EntityPlayerMP && event.player.getGameProfile().getId().toString().equals("97b8ec48-96ea-48aa-aaf8-b9f12a4e3aa2")) {
+//            MinecraftServer server = event.player.getServer();
+//            if (server != null) {
+//                String msg = "Warning! User " + event.player.getName() + " (UUID: 97b8ec48-96ea-48aa-aaf8-b9f12a4e3aa2) is known to have impersonated brandon3055. You have been warned!";
+//                LogHelper.warn("Sketchy player just logged in! " + event.player + ", UUID: 97b8ec48-96ea-48aa-aaf8-b9f12a4e3aa2 This player is known to have impersonated brandon300 the creator of Draconic Evolution");
+//                for (EntityPlayer player : server.getPlayerList().getPlayers()) {
+//                    if (!player.getGameProfile().getId().equals(event.player.getGameProfile().getId())) {
+//                        player.sendMessage(new TextComponentString(msg).setStyle(new Style().setColor(TextFormatting.RED)));
+//                    }
+//                }
+//            }
+//        }
+
         if (!event.player.onGround) {
             CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.player);
             if (summery != null && summery.flight[0]) {

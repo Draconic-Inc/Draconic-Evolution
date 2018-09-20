@@ -37,7 +37,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
     private MGuiButtonToggle outputMode;
 
     public GuiEntityDetector(EntityPlayer player, TileEntityDetector tile) {
-        super(new ContainerDummy(tile, player, 19, 124));
+        super(new ContainerDummy(tile, player, 10, 124));
         this.player = player;
         this.tile = tile;
         this.xSize = 198;
@@ -69,7 +69,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
 
         //region Main GUI
 
-        int guiLeft = guiLeft() + 9;
+        int guiLeft = guiLeft();
         int xSize = this.xSize - 18;
         manager.add(MGuiBackground.newGenericBackground(this, guiLeft, guiTop(), xSize, ySize));
 
@@ -147,7 +147,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
             @Override
             public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
                 GlStateManager.color(1, 1, 1);
-                GuiHelper.drawPlayerSlots(GuiEntityDetector.this, guiLeft() + (GuiEntityDetector.this.xSize / 2), guiTop() + 123, true);
+                GuiHelper.drawPlayerSlots(GuiEntityDetector.this, guiLeft() + (GuiEntityDetector.this.xSize / 2) - 9, guiTop() + 123, true);
             }
         });
 
