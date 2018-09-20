@@ -184,24 +184,6 @@ public class ExplosionHelper {
                 isDead = true;
                 updateBlocks();
             }
-
-
-//            LogHelper.dev("Processing chunks ar rad: " + index);
-//            if (helper.radialRemovalMap.containsKey(index)) {
-//                List<Integer> list = helper.radialRemovalMap.get(index);
-//                for (int pos : list) {
-//                    helper.removeBlock(helper.shortPos.getActualPos(pos));
-//                }
-//                helper.radialRemovalMap.remove(index);
-//                finishChunks();
-//            }
-//
-//            if (helper.radialRemovalMap.isEmpty()) {
-//                isDead = true;
-//                updateBlocks();
-//            }
-//
-//            index++;
         }
 
         public void finishChunks() {

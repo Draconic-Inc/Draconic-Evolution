@@ -74,6 +74,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "World", name = "generateChaosIslands", comment = "Set to false to disable the generation of Chaos Islands")
     public static boolean generateChaosIslands = true;
 
+    @ModConfigProperty(category = "World", name = "chaosIslandVoidMode", comment = "If true the chaos guardian, Crystal and healing crystals will spawn but absolutely no other blocks will be placed. (This only exists because someone wanted it for some reason)")
+    public static boolean chaosIslandVoidMode = false;
+
     @ModConfigProperty(category = "World", name = "cometRarity", comment = "Ender Comets have a 1 in {this number} chance to spawn in each chunk")
     public static int cometRarity = 10000;
 

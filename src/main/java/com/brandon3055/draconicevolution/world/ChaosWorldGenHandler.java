@@ -45,48 +45,51 @@ public class ChaosWorldGenHandler {
 
         //long l = System.nanoTime();
 
-        for (int trueX = posX; trueX < posX + 16; trueX++) {
-            for (int y = 0; y < 255; y++) {
-                for (int trueZ = posZ; trueZ < posZ + 16; trueZ++) {
-                    int x = trueX - closestSpawn.x;
-                    int z = trueZ - closestSpawn.z;
-                    int size = 80;
-                    double dist = Math.sqrt(x * x + (y - 16) * (y - 16) + z * z);
-                    double xd, yd, zd;
-                    double density, centerFalloff, plateauFalloff, heightMapFalloff;
+        if (!DEConfig.chaosIslandVoidMode) {
+            for (int trueX = posX; trueX < posX + 16; trueX++) {
+                for (int y = 0; y < 255; y++) {
+                    for (int trueZ = posZ; trueZ < posZ + 16; trueZ++) {
+                        int x = trueX - closestSpawn.x;
+                        int z = trueZ - closestSpawn.z;
+                        int size = 80;
+                        double dist = Math.sqrt(x * x + (y - 16) * (y - 16) + z * z);
+                        double xd, yd, zd;
+                        double density, centerFalloff, plateauFalloff, heightMapFalloff;
 
-                    xd = (double) x / size;
-                    yd = (double) y / (32);
-                    zd = (double) z / size;
+                        xd = (double) x / size;
+                        yd = (double) y / (32);
+                        zd = (double) z / size;
 
-                    //Calculate Center Falloff
-                    double diameterScale = 150D;
-                    centerFalloff = 1D / (dist * 0.05D);
-                    if (centerFalloff < 0) centerFalloff = 0;
+                        //Calculate Center Falloff
+                        double diameterScale = 150D;
+                        centerFalloff = 1D / (dist * 0.05D);
+                        if (centerFalloff < 0) centerFalloff = 0;
 
-                    //Calculate Plateau Falloff
-                    if (yd < 0.4D) plateauFalloff = yd * 2.5D;
-                    else if (yd <= 0.6D) plateauFalloff = 1D;
-                    else if (yd > 0.6D && yd < 1D) plateauFalloff = 1D - (yd - 0.6D) * 2.5D;
-                    else plateauFalloff = 0;
+                        //Calculate Plateau Falloff
+                        if (yd < 0.4D) plateauFalloff = yd * 2.5D;
+                        else if (yd <= 0.6D) plateauFalloff = 1D;
+                        else if (yd > 0.6D && yd < 1D) plateauFalloff = 1D - (yd - 0.6D) * 2.5D;
+                        else plateauFalloff = 0;
 
-                    //Trim Further calculations
-                    if (plateauFalloff == 0 || centerFalloff == 0) continue;
+                        //Trim Further calculations
+                        if (plateauFalloff == 0 || centerFalloff == 0) continue;
 
-                    //Calculate heightMapFalloff
-                    heightMapFalloff = 0;
-                    for (int octave = 1; octave < 5; octave++) heightMapFalloff += ((SimplexNoise.noise(xd * octave + closestSpawn.x, zd * octave + closestSpawn.z) + 1) * 0.5D) * 0.01D * (octave * 10D * 1 - (dist * 0.001D));
-                    if (heightMapFalloff <= 0) heightMapFalloff = 0;
-                    heightMapFalloff += ((0.5D - Math.abs(yd - 0.5D)) * 0.15D);
-                    if (heightMapFalloff == 0) continue;
+                        //Calculate heightMapFalloff
+                        heightMapFalloff = 0;
+                        for (int octave = 1; octave < 5; octave++)
+                            heightMapFalloff += ((SimplexNoise.noise(xd * octave + closestSpawn.x, zd * octave + closestSpawn.z) + 1) * 0.5D) * 0.01D * (octave * 10D * 1 - (dist * 0.001D));
+                        if (heightMapFalloff <= 0) heightMapFalloff = 0;
+                        heightMapFalloff += ((0.5D - Math.abs(yd - 0.5D)) * 0.15D);
+                        if (heightMapFalloff == 0) continue;
 
-                    density = centerFalloff * plateauFalloff * heightMapFalloff;
+                        density = centerFalloff * plateauFalloff * heightMapFalloff;
 
-                    BlockPos pos = new BlockPos(x + closestSpawn.x, y + 64, z + closestSpawn.z);
-                    if (density > 0.1 && (world.isAirBlock(pos) && world.getBlockState(pos).getBlock() != DEFeatures.chaosShardAtmos)) {
-                        world.setBlockState(pos, (dist > 60 || dist > random.nextInt(60)) ? Blocks.END_STONE.getDefaultState() : Blocks.OBSIDIAN.getDefaultState());
+                        BlockPos pos = new BlockPos(x + closestSpawn.x, y + 64, z + closestSpawn.z);
+                        if (density > 0.1 && (world.isAirBlock(pos) && world.getBlockState(pos).getBlock() != DEFeatures.chaosShardAtmos)) {
+                            world.setBlockState(pos, (dist > 60 || dist > random.nextInt(60)) ? Blocks.END_STONE.getDefaultState() : Blocks.OBSIDIAN.getDefaultState());
+                        }
+
                     }
-
                 }
             }
         }
@@ -94,7 +97,6 @@ public class ChaosWorldGenHandler {
 
     public static void generateStructures(World world, PairXZ<Integer, Integer> islandCenter, Random random) {
         int outerRadius = 330;
-
 
         //Gen Chaos Cavern
         int shardY = 80;
@@ -120,14 +122,8 @@ public class ChaosWorldGenHandler {
         tileChaosShard.setLockPos();
 
         EntityChaosGuardian guardian = new EntityChaosGuardian(world);
-//		List<EntityPlayer> list = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(islandCenter.x - 1000, 0, islandCenter.z - 1000, islandCenter.x + 1000, 255, islandCenter.z + 1000));
-//		for (EntityPlayer player : list) {
-//			player.addChatComponentMessage(new TextComponentString("[Chaos Guardian]:").setStyle(new Style().setColor(TextFormatting.GOLD)).appendSibling(new TextComponentString(" Just a heads up. My creator has not got around to fixing all of my 1.10.2 bugs yet so i may be a little broken. You have been warned! Now come and get wrecked!!!!").setStyle(new Style().setColor(TextFormatting.RED))));
-//		}
-
         guardian.setPosition(islandCenter.x, shardY, islandCenter.z);
         world.spawnEntity(guardian);
-
 
         //Gen Ring
         int rings = 4;
@@ -151,6 +147,7 @@ public class ChaosWorldGenHandler {
     }
 
     public static void genCoreSlice(World world, int xi, int yi, int zi, int ringRadius, int yc, int coreRadious, boolean fillIn, Random rand) {
+        if (DEConfig.chaosIslandVoidMode) return;
         for (int x = xi - coreRadious; x <= xi + coreRadious; x++) {
             for (int z = zi - coreRadious; z <= zi + coreRadious; z++) {
                 double dist = Utils.getDistanceAtoB(x, yi, z, xi, yc, zi);
@@ -205,6 +202,7 @@ public class ChaosWorldGenHandler {
                 crystal.setPosition(x1 + 0.5, y1 + 21, z1 + 0.5);
                 world.spawnEntity(crystal);
             }
+            if (DEConfig.chaosIslandVoidMode) return;
             for (int y = y1; y < y1 + 20; y++) {
                 world.setBlockState(new BlockPos(x1, y, z1), Blocks.OBSIDIAN.getDefaultState());
                 world.setBlockState(new BlockPos(x1 + 1, y, z1), Blocks.OBSIDIAN.getDefaultState());
@@ -224,6 +222,7 @@ public class ChaosWorldGenHandler {
                 crystal.setPosition(x1 + 0.5, y1 + 41, z1 + 0.5);
                 world.spawnEntity(crystal);
             }
+            if (DEConfig.chaosIslandVoidMode) return;
             int diff = 0;
             for (int y = y1 + 20; y < y1 + 40; y++) {
                 diff++;
