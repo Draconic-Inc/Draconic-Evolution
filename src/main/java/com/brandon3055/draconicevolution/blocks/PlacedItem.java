@@ -181,7 +181,11 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
             }
 
             if (hit.subHit > 0 && ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1) != null) {
-                return ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1);
+                ItemStack stack = ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1).copy();
+                if (stack.hasTagCompound()) {
+                    stack.getTagCompound().removeTag("BlockEntityTag");
+                }
+                return stack;
             }
         }
 
