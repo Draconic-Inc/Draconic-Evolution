@@ -339,7 +339,7 @@ public abstract class MiningToolBase extends ToolBase {
     //endregion
 
     public PairKV<BlockPos, BlockPos> getMiningArea(BlockPos pos, EntityPlayer player, int breakRadius, int breakDepth) {
-        RayTraceResult traceResult = RayTracer.retrace(player, 4.5);
+        RayTraceResult traceResult = RayTracer.retrace(player);
 
         if (traceResult == null || traceResult.typeOfHit != RayTraceResult.Type.BLOCK) {
             return new PairKV<>(pos, pos);
