@@ -52,7 +52,7 @@ public class OreDoublingRegistry {
                 }
                 stack = candidate;
                 ResourceLocation registryName = candidate.getItem().getRegistryName();
-                if (registryName != null && registryName.getResourceDomain().equals("thermalfoundation")) {
+                if (registryName != null && registryName.getResourceDomain().equals(DEConfig.oreDoublingOutputPriority)) {
                     break;
                 }
             }

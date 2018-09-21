@@ -176,6 +176,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "flightSpeedLimit", autoSync = true, comment = "Use this to limit the max flight speed modifier a player can set on the draconic chestplate.\nSetting this to 200 for example would limit the flight speed to +200%.\nDefault -1 removes the limit and allows the full +600% flight speed.")
     public static int flightSpeedLimit = -1;
 
+    @ModConfigProperty(category = "Tweaks", name = "oreDoublingOutputPriority", comment = "When doubling ores with the Draconium Chest the output will prioritise thermal ingots if TF is installed. This allows you to change that by specifying a different mod id to target.")
+    public static String oreDoublingOutputPriority = "thermalfoundation";
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")
