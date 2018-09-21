@@ -16,10 +16,15 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.model.IModelState;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by brandon3055 on 18/04/2017.
  */
 public class RenderItemMobSoul implements IItemRenderer {
+
+    private static Set<Entity> brokenMobs = new HashSet<>();
 
     public RenderItemMobSoul() {
     }
@@ -47,6 +52,7 @@ public class RenderItemMobSoul implements IItemRenderer {
     @Override
     public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
         Entity mob = DEFeatures.mobSoul.getRenderEntity(item);
+        if (brokenMobs.contains(mob)) return;
 
         try {
             GlStateManager.pushMatrix();
@@ -79,6 +85,7 @@ public class RenderItemMobSoul implements IItemRenderer {
             if (MobSoul.randomDisplayList != null) {
                 MobSoul.randomDisplayList.remove(EntityList.getEntityString(mob));
             } else {
+                brokenMobs.add(mob);
                 LogHelper.error("Error rendering mob soul! " + mob);
                 e.printStackTrace();
             }
