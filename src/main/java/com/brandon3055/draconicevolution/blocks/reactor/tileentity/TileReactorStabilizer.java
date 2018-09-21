@@ -23,20 +23,11 @@ public class TileReactorStabilizer extends TileReactorComponent implements IEner
 
         if (tile != null && tile.reactorState.value == TileReactorCore.ReactorState.RUNNING) {
             TileEntity output = world.getTileEntity(pos.offset(facing.value.getOpposite()));
-            if (output != null && EnergyHelper.canReceiveEnergy(output)) {
+            if (output != null && EnergyHelper.canReceiveEnergy(output, facing.value)) {
                 int sent = EnergyHelper.insertEnergy(output, tile.saturation.value, facing.value, false);
                 tile.saturation.value -= sent;
             }
         }
-
-//        if (!world.isRemote && master instanceof TileReactorCore) {
-//            rs = ((TileReactorCore) master).getComparatorOutput(redstoneMode);
-//            if (rs != rsCach) {
-//                rsCach = rs;
-//                Utills.updateNeabourBlocks(world, xCoord, yCoord, zCoord);
-//            }
-//        }
-
     }
 
     @Override
