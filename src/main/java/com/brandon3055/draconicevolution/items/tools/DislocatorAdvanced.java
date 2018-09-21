@@ -46,7 +46,8 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        if (getLocation(stack) == null) {
+        Teleporter.TeleportLocation location = getLocation(stack, player.world);
+        if (location == null) {
             if (player.world.isRemote) {
                 player.sendMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
             }
@@ -63,7 +64,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
         if (entity instanceof EntityPlayer) {
             if (entity.isSneaking()) {
-                getLocation(stack).teleport(entity);
+                location.teleport(entity);
                 if (!player.capabilities.isCreativeMode && fuel > 0) {
                     ItemNBTHelper.setInteger(stack, "Fuel", fuel - 1);
                 }
@@ -84,14 +85,14 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
 
-        getLocation(stack).teleport(entity);
+        location.teleport(entity);
 
         if (!entity.world.isRemote) {
             DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
 
         if (player.world.isRemote) {
-            player.sendMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) getLocation(stack).getXCoord() + " y:" + (int) getLocation(stack).getYCoord() + " z:" + (int) getLocation(stack).getZCoord() + " Dimension: " + getLocation(stack).getDimensionName()));
+            player.sendMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()));
         }
 
         if (!player.capabilities.isCreativeMode && fuel > 0) {
@@ -113,7 +114,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         }
         else {
 
-            if (getLocation(stack) == null) {
+            if (getLocation(stack, world) == null) {
                 if (world.isRemote) {
                     FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
                 }
@@ -134,7 +135,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             if (!world.isRemote) {
                 DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
-            getLocation(stack).teleport(player);
+            getLocation(stack, world).teleport(player);
             if (!world.isRemote) {
                 DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
@@ -146,7 +147,8 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
     //region Teleporter
 
-    public Teleporter.TeleportLocation getLocation(ItemStack stack) {
+    @Override
+    public Teleporter.TeleportLocation getLocation(ItemStack stack, World world) {
         short selected = ItemNBTHelper.getShort(stack, "Selection", (short) 0);
         int selrctionOffset = ItemNBTHelper.getInteger(stack, "SelectionOffset", 0);
         NBTTagCompound compound = stack.getTagCompound();
@@ -197,7 +199,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
     @Override
     public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayData) {
-        Teleporter.TeleportLocation location = getLocation(stack);
+        Teleporter.TeleportLocation location = getLocation(stack, world);
         if (location != null) {
             displayData.add(location.getName());
         }

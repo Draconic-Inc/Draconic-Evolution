@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
+import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -78,7 +79,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
 
         String s = item.hasDisplayName() ? item.getDisplayName() : "";
         if (item.getItem() instanceof DislocatorAdvanced) {
-            Teleporter.TeleportLocation location = ((DislocatorAdvanced) item.getItem()).getLocation(item);
+            Teleporter.TeleportLocation location = ((Dislocator) item.getItem()).getLocation(item, te.getWorld());
             if (location != null) {
                 s = location.getName();
             }

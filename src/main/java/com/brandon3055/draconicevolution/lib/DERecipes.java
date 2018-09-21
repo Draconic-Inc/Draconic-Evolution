@@ -305,8 +305,6 @@ public class DERecipes {
         }
     }
 
-    //region Helpers
-
     public static ItemStack getKey(String name) {
         return new ItemStack(DEFeatures.toolUpgrade, 1, ToolUpgrade.NAME_TO_ID.get(name));
     }
@@ -314,7 +312,4 @@ public class DERecipes {
     public static void addUpgradeKey(ItemStack input, String name) {
         addShaped(ALL, new ItemStack(DEFeatures.toolUpgrade, 1, ToolUpgrade.NAME_TO_ID.get(name)), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', draconicCore, 'C', "ingotDraconium", 'D', input);
     }
-
-
-    //endregion
 }
