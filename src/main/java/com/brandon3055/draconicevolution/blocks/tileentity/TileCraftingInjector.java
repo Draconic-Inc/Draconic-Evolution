@@ -144,6 +144,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
         return false;
     }
 
+
     @Override
     public void onCraft() {
         if (currentCraftingInventory != null) {

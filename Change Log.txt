@@ -1,17 +1,17 @@
-######## 2.3.15.x ########
+######## 2.3.14.x ########
 -Fixed AOE mining not taking modified player reach distance into account.
 -Fixed reactor not handling IO sides properly when outputting energy.
 -Attempted top fix broken gui's caused by broken mob souls courtesy of Headcrumbs.
 -Fixed Advanced Dislocator not working in portal or pedestal.
 -Fixed crash when using CTRL-Pick Block on placed items.
 
-######## 2.3.14.306 ########
+######## 2.3.13.306 ########
 -Fixed particle generator transparency issue.
 -Enabled negative gravity for particles.
 -Added ability to shift click-drag decimal sliders in particle generator for precise more adjustment.
 -Fixed tools (and hopefully bows) resetting when their NBT changes due to charging.
 
-######## 2.3.13.403 ########
+######## 2.3.12.304 ########
 -Fixed wireless energy crystals in input mode not allowing connections to devices that only output energy.
 -Added a single item mode to the fusion crafting injectors that restricts the max stack size to 1 (useful for automation)
 -Fixed fusion crafting injectors voiding excess items when switched to single item mode while they contain more than one item.
