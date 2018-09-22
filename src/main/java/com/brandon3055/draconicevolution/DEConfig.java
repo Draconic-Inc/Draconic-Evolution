@@ -34,8 +34,6 @@ public class DEConfig implements IModConfigHelper {
         comments.put("Misc", "Just some misc settings.");
     }
 
-
-
     @Override
     public Configuration createConfiguration(FMLPreInitializationEvent event) {
         return new Configuration(new File(FileHandler.brandon3055Folder, "DraconicEvolution.cfg"), true);
@@ -179,6 +177,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "oreDoublingOutputPriority", comment = "When doubling ores with the Draconium Chest the output will prioritise thermal ingots if TF is installed. This allows you to change that by specifying a different mod id to target.")
     public static String oreDoublingOutputPriority = "thermalfoundation";
 
+    @ModConfigProperty(category = "Tweaks", name = "grinderBlackList", comment = "This allows you to prevent the mob grinder from attempting to kill specific entities.")
+    public static String[] grinderBlackList = {"evilcraft:vengeance_spirit"};
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")
@@ -222,10 +223,12 @@ public class DEConfig implements IModConfigHelper {
 
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
     public static Set<String> oreBlacklist = new HashSet<>();
+    public static Set<String> grinderBlacklist = new HashSet<>();
 
     @Override
     public void onConfigLoaded() {
         itemDislocatorBlacklistMap.clear();
+        grinderBlacklist.clear();
         for (String s : itemDislocatorBlacklist) {
             if (s.contains("|")) {
                 itemDislocatorBlacklistMap.put(s.substring(0, s.indexOf("|")), Integer.parseInt(s.substring(s.indexOf("|") + 1)));
@@ -236,6 +239,7 @@ public class DEConfig implements IModConfigHelper {
         }
 
         oreBlacklist = Sets.newHashSet(oreDoublingBlacklist);
+        grinderBlacklist = Sets.newHashSet(grinderBlackList);
         loadToolStats();
     }
 

@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Predicate;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -153,14 +154,20 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         List<EntityLivingBase> entitiesInRange = world.getEntitiesWithinAABB(EntityLivingBase.class, killBox, grinderPredicate);
 
+        EntityLivingBase found = null;
         for (EntityLivingBase livingBase : entitiesInRange) {
-            if (livingBase.isEntityAlive()) {
+            if (livingBase.isEntityAlive() && (DEConfig.grinderBlacklist.isEmpty() || !DEConfig.grinderBlacklist.contains(EntityList.getEntityString(livingBase)))) {
+                found = livingBase;
                 LogHelper.dev("Grinder: Found next target: " + livingBase);
-                return livingBase;
+                if (found.getIsInvulnerable()) {
+                    LogHelper.dev("Grinder: Target is invulnerable! searching for softer target...");
+                    continue;
+                }
+                return found;
             }
         }
 
-        return null;
+        return found;
     }
 
     public void updateKillBox() {

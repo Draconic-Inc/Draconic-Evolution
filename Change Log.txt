@@ -1,3 +1,7 @@
+######## 2.3.15.x ########
+-Fixed grinder getting stuck on invulnerable mobs.
+-Added grinder blacklist.
+
 ######## 2.3.14.307 ########
 -Fixed AOE mining not taking modified player reach distance into account.
 -Fixed reactor not handling IO sides properly when outputting energy.
