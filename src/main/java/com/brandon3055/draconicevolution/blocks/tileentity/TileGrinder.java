@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -132,7 +133,8 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
             coolDown = 2;
         }
         else {
-            LogHelper.dev("Grinder: Failed to deal damage to entity: " + target + " Waiting 3 ticks...");
+            LogHelper.dev("Grinder: Failed to deal damage to entity: " + EntityList.getEntityString(target) + " Waiting 3 ticks...");
+            LogHelper.dev("Grinder: Blacklisted Entities: " + DEConfig.grinderBlacklist);
             coolDown = 3;
         }
 
@@ -156,7 +158,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         EntityLivingBase found = null;
         for (EntityLivingBase livingBase : entitiesInRange) {
-            if (livingBase.isEntityAlive() && (DEConfig.grinderBlacklist.isEmpty() || !DEConfig.grinderBlacklist.contains(EntityList.getEntityString(livingBase)))) {
+            if (livingBase.isEntityAlive() && !isBlackListed(livingBase)) {
                 found = livingBase;
                 LogHelper.dev("Grinder: Found next target: " + livingBase);
                 if (found.getIsInvulnerable()) {
@@ -168,6 +170,12 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
         }
 
         return found;
+    }
+
+    private boolean isBlackListed(EntityLivingBase livingBase) {
+        if (DEConfig.grinderBlacklist.isEmpty()) return false;
+        ResourceLocation reg = EntityList.getKey(livingBase);
+        return reg != null && DEConfig.grinderBlacklist.contains(reg.toString());
     }
 
     public void updateKillBox() {
