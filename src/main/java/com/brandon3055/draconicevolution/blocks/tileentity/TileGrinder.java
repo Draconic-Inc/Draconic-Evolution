@@ -91,6 +91,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         //If no target was found go back into cooldown mode for 5 seconds
         if (target == null) {
+            LogHelper.dev("Grinder: No targets found. Waiting 5 seconds...");
             coolDown = 100;
             return;
         }
@@ -125,10 +126,12 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         //Attack the mob and enter cooldown mode for 5 ticks is successful. Else cooldown for 3 ticks.
         if (target.attackEntityFrom(source, damage)) {
+            LogHelper.dev("Grinder: Dealt " + damage + " damage to entity: " + target);
             energyStorage.modifyEnergyStored(-cost);
             coolDown = 2;
         }
         else {
+            LogHelper.dev("Grinder: Failed to deal damage to entity: " + target + " Waiting 3 ticks...");
             coolDown = 3;
         }
 
@@ -152,6 +155,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         for (EntityLivingBase livingBase : entitiesInRange) {
             if (livingBase.isEntityAlive()) {
+                LogHelper.dev("Grinder: Found next target: " + livingBase);
                 return livingBase;
             }
         }
