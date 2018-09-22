@@ -18,7 +18,6 @@ import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.ArmorModelHelper;
 import com.brandon3055.draconicevolution.client.render.entity.*;
 import com.brandon3055.draconicevolution.entity.*;
-import com.brandon3055.draconicevolution.integration.PIIntegration;
 import com.brandon3055.draconicevolution.lib.DEImageHandler;
 import com.brandon3055.draconicevolution.network.ccnetwork.ClientPacketHandler;
 import com.brandon3055.draconicevolution.utils.DETextures;
@@ -51,8 +50,6 @@ public class ClientProxy extends CommonProxy {
 
         TextureUtils.addIconRegister(new ArmorModelHelper());
         TextureUtils.addIconRegister(new DETextureCache());
-
-        PIIntegration.loadPIIntegration();
 
         registerRendering();
         if (ObfMapping.obfuscated) {

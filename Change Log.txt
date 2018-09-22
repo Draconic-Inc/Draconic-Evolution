@@ -1,4 +1,4 @@
-######## 2.3.14.x ########
+######## 2.3.14.307 ########
 -Fixed AOE mining not taking modified player reach distance into account.
 -Fixed reactor not handling IO sides properly when outputting energy.
 -Attempted top fix broken gui's caused by broken mob souls courtesy of Headcrumbs.

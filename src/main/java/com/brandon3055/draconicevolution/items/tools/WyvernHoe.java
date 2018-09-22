@@ -198,6 +198,9 @@ public abstract class WyvernHoe extends ToolBase {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        if (getDisabledEnchants(stack).containsKey(enchantment)) {
+            return false;
+        }
         return enchantment.type == EnumEnchantmentType.ALL;
     }
 

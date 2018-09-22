@@ -8,7 +8,6 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
-import com.brandon3055.draconicevolution.integration.PIIntegration;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -797,7 +796,6 @@ public class Debugger extends ItemBCore {
                 }
                 break;
             case 4:
-                PIIntegration.loadPIIntegration();
                 if (!world.isRemote) {
                     player.openGui(DraconicEvolution.instance, 2016, world, 0, 0, 0);
                 }
