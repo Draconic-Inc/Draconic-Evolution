@@ -95,12 +95,6 @@ public class RecipeManager {
             LogHelper.info("Loading Default Recipes...");
         }
 
-//        if (!activeCrafting.isEmpty()) {
-//            for (IRecipe recipe : activeCrafting) {
-//                CraftingManager.getInstance().getRecipeList().remove(recipe);
-//            }
-//        }
-
         activeCrafting.clear();
 
         if (!activeFusion.isEmpty()) {
@@ -112,6 +106,13 @@ public class RecipeManager {
         activeFusion.clear();
         activeFusion.addAll(ToolUpgrade.createUpgradeRecipes());
         DERecipes.addRecipes();
+    }
+
+    //endregion
+
+    //region Config Recipes
+
+    public static void loadJsonRecipeModifications() {
         try {
             loadRecipesFromConfig();
         }
@@ -121,11 +122,7 @@ public class RecipeManager {
         }
     }
 
-    //endregion
-
-    //region Config Recipes
-
-    public static void loadRecipesFromConfig() throws Exception {
+    private static void loadRecipesFromConfig() throws Exception {
         File jsonFile = new File(FileHandler.brandon3055Folder, "CustomFusionRecipes.json");
 
         if (!jsonFile.exists()) {
@@ -230,119 +227,6 @@ public class RecipeManager {
         }
 
         reader.close();
-
-//
-//
-//        reader.beginArray();
-//        while (reader.hasNext()) {
-//            reader.beginObject();
-//            boolean failed = false;
-//            boolean remove = false;
-//            ItemStack result = null;
-//            ItemStack catalyst = null;
-//            int energy = 0;
-//            int tier = 0;
-//            List<Object> ingredients = null;
-//
-//            while (reader.hasNext()) {
-//                String name = reader.nextName();
-//                switch (name) {
-//                    case "mode":
-//                        remove = reader.nextString().toLowerCase().equals("remove");
-//                        break;
-//                    case "result":
-//                        result = getStackOld(reader.nextString());
-//                        break;
-//                    case "catalyst":
-//                        catalyst = getStackOld(reader.nextString());
-//                        break;
-//                    case "energy":
-//                        energy = reader.nextInt();
-//                        break;
-//                    case "tier":
-//                        tier = reader.nextInt();
-//                        break;
-//                    case "ingredients":
-//                        reader.beginArray();
-//                        ingredients = new ArrayList<>();
-//                        while (reader.hasNext()) {
-//                            String next = reader.nextString();
-//                            Object o = getIngredientOld(next);
-//                            if (o == null) {
-//                                LogHelper.error("Failed to find ingredient! - " + next);
-//                                failed = true;
-//                            }
-//                            else {
-//                                ingredients.add(o);
-//                            }
-//                        }
-//                        reader.endArray();
-//                        break;
-//                }
-//            }
-//
-//            if (failed || catalyst == null || result == null) {
-//                if (remove) {
-//                    failedToRemove++;
-//                }
-//                else {
-//                    failedToAdd++;
-//                }
-//                reader.endObject();
-//                continue;
-//            }
-//
-//            if (remove) {
-//                boolean found1 = false;
-//                for (IFusionRecipe recipe : FUSION_REGISTRY.getRecipes()) {
-//                    if (recipe.getRecipeCatalyst() == null || !recipe.getRecipeCatalyst().isItemEqual(catalyst)) {
-//                        continue;
-//                    }
-//                    if (!recipe.getRecipeOutput(catalyst).isItemEqual(result)) {
-//                        continue;
-//                    }
-//                    if (ingredients != null) {
-//                        boolean isRecipeValid = true;
-//                        for (Object rIng : recipe.getRecipeIngredients()) {
-//                            boolean found = false;
-//                            for (Object tIng : recipe.getRecipeIngredients()) {
-//                                ItemStack stack1 = OreDictHelper.resolveObject(rIng);
-//                                ItemStack stack2 = OreDictHelper.resolveObject(tIng);
-//                                if (stack1 != null && stack2 != null && stack1.isItemEqual(stack2)) {
-//                                    found = true;
-//                                    break;
-//                                }
-//                            }
-//                            if (!found) {
-//                                isRecipeValid = false;
-//                                break;
-//                            }
-//                        }
-//                        if (!isRecipeValid) {
-//                            continue;
-//                        }
-//                    }
-//                    found1 = true;
-//                    toRemove.add(recipe);
-//                }
-//                if (!found1) {
-//                    LogHelper.warn("Did not find a recipe matching \"Catalyst:" + catalyst + ", Result:" + result + ", Ingredients:" + ingredients + "\" to remove.");
-//                    failedToRemove++;
-//                }
-//            }
-//            else {
-//                if (ingredients == null) {
-//                    LogHelper.error("No ingredients found for recipe! Catalyst:" + catalyst + " = Result:" + result);
-//                    failedToAdd++;
-//                }
-//
-//                toAdd.add(new SimpleFusionRecipe(result, catalyst, energy, tier, ingredients.toArray()));
-//            }
-//
-//            reader.endObject();
-//        }
-//        reader.endArray();
-//        reader.close();
 
         for (IFusionRecipe recipe : toRemove) {
             activeFusion.remove(recipe);

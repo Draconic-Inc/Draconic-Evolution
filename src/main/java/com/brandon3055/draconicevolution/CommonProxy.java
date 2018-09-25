@@ -53,6 +53,7 @@ public class CommonProxy {
     public void postInit(FMLPostInitializationEvent event) {
         OreDoublingRegistry.init();
         Achievements.registerAchievementPane();
+        RecipeManager.loadJsonRecipeModifications();
 
         LogHelper.info("Finished PostInitialization");
     }
