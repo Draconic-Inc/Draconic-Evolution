@@ -2,14 +2,16 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import cofh.redstoneflux.api.IEnergyProvider;
 import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
+import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 
-public class TileGenerator extends TileEnergyInventoryBase implements IEnergyProvider, ITickable {
+public class TileGenerator extends TileEnergyInventoryBase implements IEnergyProvider, ITickable, IChangeListener {
 
     private int burnSpeed = 6;
     /**
@@ -21,6 +23,7 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
     public final ManagedInt burnTime = register("burnTime", new ManagedInt(1)).saveToTile().saveToItem().syncViaContainer().finish();
     public final ManagedInt burnTimeRemaining = register("burnTimeRemaining", new ManagedInt(0)).saveToTile().saveToItem().syncViaContainer().finish();
     public final ManagedBool active = register("active", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().trigerUpdate().finish();
+    public final ManagedBool powered = register("powered", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().trigerUpdate().finish();
 
     public TileGenerator() {
         setInventorySize(1);
@@ -42,7 +45,8 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
             burnTimeRemaining.value -= burnSpeed;
             energyStorage.modifyEnergyStored(burnSpeed * EPBT);
         }
-        if (burnTimeRemaining.value <= 0 && getEnergyStored() < getMaxEnergyStored()) {
+
+        if (burnTimeRemaining.value <= 0 && getEnergyStored() < getMaxEnergyStored() && !powered.value) {
             tryRefuel();
         }
 
@@ -94,5 +98,10 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return TileEntityFurnace.getItemBurnTime(stack) > 0;
+    }
+
+    @Override
+    public void onNeighborChange(BlockPos neighbor) {
+        powered.value = world.isBlockPowered(pos);
     }
 }
