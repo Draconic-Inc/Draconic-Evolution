@@ -153,6 +153,7 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
 
     private void resetTimer() {
         spawnDelay.value = (short) Math.min(spawnerTier.value.getRandomSpawnDelay(world.rand), Short.MAX_VALUE);
+        startSpawnDelay.value = spawnDelay.value;
     }
 
     private boolean isActive() {
@@ -183,14 +184,16 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
             return true;
         }
         else if (stack.getItem() == Items.SPAWN_EGG) {
-            NBTTagCompound compound = stack.getSubCompound("EntityTag");
-            if (compound != null && compound.hasKey("id")) {
-                String name = compound.getString("id");
-                ItemStack soul = new ItemStack(DEFeatures.mobSoul);
-                DEFeatures.mobSoul.setEntity(MobSoul.getCachedRegName(name), soul);
-                mobSoul.value = soul;
-                if (!player.isCreative()) {
-                    InventoryUtils.consumeHeldItem(player, stack, hand);
+            if (player.capabilities.isCreativeMode) {
+                NBTTagCompound compound = stack.getSubCompound("EntityTag");
+                if (compound != null && compound.hasKey("id")) {
+                    String name = compound.getString("id");
+                    ItemStack soul = new ItemStack(DEFeatures.mobSoul);
+                    DEFeatures.mobSoul.setEntity(MobSoul.getCachedRegName(name), soul);
+                    mobSoul.value = soul;
+                    if (!player.isCreative()) {
+                        InventoryUtils.consumeHeldItem(player, stack, hand);
+                    }
                 }
             }
             return true;
