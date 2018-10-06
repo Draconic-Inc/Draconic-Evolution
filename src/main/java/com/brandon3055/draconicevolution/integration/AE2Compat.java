@@ -32,7 +32,6 @@ public class AE2Compat {
             FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", "com.brandon3055.draconicevolution.blocks.tileentity.TileParticleGenerator");
             FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", "com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem");
             FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", "com.brandon3055.draconicevolution.blocks.tileentity.TilePortal");
-            FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", "com.brandon3055.draconicevolution.blocks.tileentity.TilePortalClient");
             FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", "com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer");
             FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", "com.brandon3055.draconicevolution.blocks.tileentity.TileRainSensor");
             FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", "com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner");
