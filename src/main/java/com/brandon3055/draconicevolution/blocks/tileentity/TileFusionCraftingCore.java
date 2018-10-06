@@ -123,6 +123,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 }
 
                 isCrafting.value = false;
+                updateBlock();
             }
         } else if (craftingStage.value > 0) {
             craftingStage.value = 0;

@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.ContributorHandler;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
+import com.brandon3055.draconicevolution.integration.AE2Compat;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
 import com.brandon3055.draconicevolution.lib.OreDoublingRegistry;
@@ -37,6 +38,7 @@ public class CommonProxy {
         ContributorHandler.init();
         initializeNetwork();
         EnchantmentReaper.init();
+        AE2Compat.init();
 
         LogHelper.info("Finished PreInitialization");
     }

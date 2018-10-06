@@ -59,7 +59,6 @@ public class DraconicEvolution {
     public void init(FMLInitializationEvent event) {
         DEWorldGenHandler.initialize();
         GuiHandler.initialize();
-
         proxy.init(event);
     }
 
