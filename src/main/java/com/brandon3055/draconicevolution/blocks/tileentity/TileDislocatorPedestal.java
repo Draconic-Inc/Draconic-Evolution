@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import appeng.api.movable.IMovableTile;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
@@ -16,13 +17,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.Optional;
 
 import static com.brandon3055.draconicevolution.DEFeatures.dislocatorBound;
 
 /**
  * Created by brandon3055 on 27/09/2016.
  */
-public class TileDislocatorPedestal extends TileInventoryBase implements ITeleportEndPoint {
+@Optional.Interface(modid = "appliedenergistics2", iface = "appeng.api.movable.IMovableTile")
+public class TileDislocatorPedestal extends TileInventoryBase implements ITeleportEndPoint, IMovableTile {
 
     public final ManagedInt rotation = register("rotation", new ManagedInt(0)).saveToTile().syncViaTile().trigerUpdate().finish();
 
@@ -113,4 +116,15 @@ public class TileDislocatorPedestal extends TileInventoryBase implements ITelepo
         }
     }
 
+    @Override
+    @Optional.Method(modid = "appliedenergistics2")
+    public boolean prepareToMove() {
+        return true;
+    }
+
+    @Override
+    @Optional.Method(modid = "appliedenergistics2")
+    public void doneMoving() {
+        checkIn();
+    }
 }

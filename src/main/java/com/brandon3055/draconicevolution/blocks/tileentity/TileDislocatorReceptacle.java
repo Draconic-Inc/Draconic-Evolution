@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import appeng.api.movable.IMovableTile;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.PairKV;
@@ -41,6 +42,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -53,7 +55,8 @@ import static com.brandon3055.draconicevolution.DEFeatures.dislocatorBound;
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class TileDislocatorReceptacle extends TileInventoryBase implements ITickable, ITeleportEndPoint, IMovableStructure, ICrystalLink, IENetEffectTile {
+@Optional.Interface(modid = "appliedenergistics2", iface = "appeng.api.movable.IMovableTile")
+public class TileDislocatorReceptacle extends TileInventoryBase implements ITickable, ITeleportEndPoint, IMovableStructure, ICrystalLink, IENetEffectTile, IMovableTile {
 
     //used to update existing portals to the new offset based portal positions
     //TODO change these names to lowercase in 1.13 (this is a breaking change)
@@ -559,6 +562,18 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     protected BlockPos getLinkPos() {
         return pos.subtract(CRYSTAL_LINK_POS.vec.getPos());
+    }
+
+    @Override
+    @Optional.Method(modid = "appliedenergistics2")
+    public boolean prepareToMove() {
+        return true;
+    }
+
+    @Override
+    @Optional.Method(modid = "appliedenergistics2")
+    public void doneMoving() {
+        checkIn();
     }
 
     private static class PassengerHelper {
