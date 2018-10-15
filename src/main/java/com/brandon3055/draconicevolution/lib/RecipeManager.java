@@ -117,6 +117,9 @@ public class RecipeManager {
             loadRecipesFromConfig();
         }
         catch (Exception e) {
+            if (e instanceof WTFException) {
+                throw (WTFException) e;
+            }
             LogHelper.error("Something when wrong while attempting to load recipes from CustomFusionRecipes.json");
             e.printStackTrace();
         }
@@ -153,7 +156,7 @@ public class RecipeManager {
                 boolean add = entry.get("mode").getAsString().toUpperCase().equals("ADD");
                 Object result = readStackEntry(entry.get("result").getAsString());
                 Object catalyst = readStackEntry(entry.get("catalyst").getAsString());
-                int energy = entry.has("energy") ? entry.get("energy").getAsInt() : 0;
+                long energy = entry.has("energy") ? entry.get("energy").getAsLong() : 0;
                 int tier = entry.has("tier") ? entry.get("tier").getAsInt() : 0;
                 JsonArray ingredients = entry.has("ingredients") ? entry.get("ingredients").getAsJsonArray() : null;
 
@@ -221,6 +224,9 @@ public class RecipeManager {
                 }
             }
             catch (Exception exception) {
+                if (exception instanceof WTFException) {
+                    throw exception;
+                }
                 LogHelper.error("An exception was thrown while reading a custom recipe!");
                 exception.printStackTrace();
             }
@@ -309,7 +315,7 @@ public class RecipeManager {
         return true;
     }
 
-    private static boolean validateRecipe(boolean add, Object result, Object catalyst, int energy, int tier) {
+    private static boolean validateRecipe(boolean add, Object result, Object catalyst, long energy, int tier) {
         if (result == null) {
             LogHelper.error("Recipe result could not be found! Recipe will not be added/removed");
             return false;

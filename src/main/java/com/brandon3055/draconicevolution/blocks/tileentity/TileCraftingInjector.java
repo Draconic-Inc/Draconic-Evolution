@@ -4,11 +4,9 @@ import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.EnergyHandlerWrapper;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
@@ -21,10 +19,10 @@ import net.minecraftforge.energy.CapabilityEnergy;
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class TileCraftingInjector extends TileInventoryBase implements IEnergyReceiver, ICraftingInjector {
+public class TileCraftingInjector extends TileInventoryBase implements IEnergyReceiver, ICraftingInjector, IExtendedRFStorage {
 
     public final ManagedByte facing = register("facing", new ManagedByte(0)).syncViaTile().saveToTile().trigerUpdate().finish();
-    private final ManagedInt energy = register("energy", new ManagedInt(0)).syncViaTile().saveToTile().finish();
+    private final ManagedLong energy = register("energy", new ManagedLong(0)).syncViaTile().saveToTile().finish();
     private final ManagedVec3I lastCorePos = register("lastCorePos", new ManagedVec3I(new Vec3I(0, 0, 0))).syncViaTile().saveToTile().finish();
     public final ManagedBool singleItem = register("singleItem", new ManagedBool(false)).syncViaTile().saveToTile().finish();
     public IFusionCraftingInventory currentCraftingInventory = null;
@@ -47,15 +45,15 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         validateCraftingInventory();
         if (currentCraftingInventory != null) {
-            int maxRFPerTick = currentCraftingInventory.getRequiredCharge() / chargeSpeedModifier;
-            int maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getRequiredCharge() - energy.value, maxRFPerTick));
+            long maxRFPerTick = currentCraftingInventory.getIngredientEnergyCost() / chargeSpeedModifier;
+            long maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getIngredientEnergyCost() - energy.value, maxRFPerTick));
 
             if (!simulate) {
                 energy.value += maxAccept;
             }
 
             super.update();
-            return maxAccept;
+            return (int) maxAccept;
         }
 
         return 0;
@@ -63,12 +61,12 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public int getEnergyStored(EnumFacing from) {
-        return energy.value;
+        return (int) Math.min(Integer.MAX_VALUE, getExtendedStorage());
     }
 
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
-        return Integer.MAX_VALUE;
+        return (int) Math.min(Integer.MAX_VALUE, getExtendedCapacity());
     }
 
     @Override
@@ -131,7 +129,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     }
 
     @Override
-    public int getCharge() {
+    public long getInjectorCharge() {
         return energy.value;
     }
 
@@ -171,5 +169,19 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
         }
 
         updateBlock();
+    }
+
+    @Override
+    public long getExtendedStorage() {
+        return energy.value;
+    }
+
+    @Override
+    public long getExtendedCapacity() {
+        validateCraftingInventory();
+        if (currentCraftingInventory != null) {
+            currentCraftingInventory.getIngredientEnergyCost();
+        }
+        return 0;
     }
 }

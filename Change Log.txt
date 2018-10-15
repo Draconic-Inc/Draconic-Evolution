@@ -2,6 +2,8 @@
 -Moved Json recipe loading top post init to ensure all recipes added by DE and other mods are loaded before the json is parsed.
 -Added ability to turn off the basic generator with a redstone signal.
 -Added AE2 Spacial IO Compat.
+-Added auto feed function to Draconic Helmet
+-Added long support for custom fusion recipe energy cost.
 
 ######## 2.3.15.311 ########
 -Fixed grinder getting stuck on invulnerable mobs.

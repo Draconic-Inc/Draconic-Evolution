@@ -1,11 +1,14 @@
 package com.brandon3055.draconicevolution.api.fusioncrafting;
 
 import com.brandon3055.draconicevolution.api.OreDictHelper;
+import com.brandon3055.draconicevolution.lib.WTFException;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -18,19 +21,29 @@ public class SimpleFusionRecipe implements IFusionRecipe {
     protected ItemStack result;
     protected ItemStack catalyst;
     protected List<Object> ingredients;
-    protected int energyCost;
+    protected long energyCost;
     protected int craftingTier;
 
     /**
      * tier 0 = basic, tier 1 = wyvern, tier 2 = awakened, tier 3 = chaotic
      */
-    public SimpleFusionRecipe(ItemStack result, ItemStack catalyst, int energyCost, int craftingTier, Object... ingredients) {
+    public SimpleFusionRecipe(ItemStack result, ItemStack catalyst, long energyCost, int craftingTier, Object... ingredients) {
         this.result = result;
         this.catalyst = catalyst;
         this.ingredients = new LinkedList<>();
         Collections.addAll(this.ingredients, ingredients);
         this.energyCost = energyCost;
         this.craftingTier = craftingTier;
+
+        long maxCost = Long.MAX_VALUE / ingredients.length;
+        if (energyCost > maxCost) {
+            String r = "Result: " + result + "\nCatalyst: " + catalyst + "\nTier: " + craftingTier + "\nEnergy: (per ingredient) " + energyCost + ", (total) " + BigInteger.valueOf(energyCost).multiply(BigInteger.valueOf(ingredients.length));
+            for (Object i : ingredients) {
+                r += "\n" + i;
+            }
+            LogHelper.error("An error occurred while registering the following recipe. \n"+ r);
+            throw new WTFException("Invalid Recipe: The combined energy cost of your recipe exceeds Long.MAX_VALUE (" + Long.MAX_VALUE + ") WTF are you doing?");
+        }
     }
 
     @Override
@@ -150,7 +163,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public int getEnergyCost() {
+    public long getIngredientEnergyCost() {
         return energyCost;
     }
 

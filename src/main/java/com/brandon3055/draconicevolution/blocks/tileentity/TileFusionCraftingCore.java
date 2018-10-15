@@ -102,11 +102,11 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 if (pedestal.getStackInPedestal().isEmpty()) {
                     continue;
                 }
-                totalCharge += pedestal.getCharge();
+                totalCharge += pedestal.getInjectorCharge();
             }
 
-            int averageCharge = (int) (totalCharge / activeRecipe.getRecipeIngredients().size());
-            double percentage = averageCharge / (double) activeRecipe.getEnergyCost();
+            long averageCharge = totalCharge / activeRecipe.getRecipeIngredients().size();
+            double percentage = averageCharge / (double) activeRecipe.getIngredientEnergyCost();
 
             if (percentage <= 1D && craftingStage.value < 1000) {
                 craftingStage.value = (short) (percentage * 1000D);
@@ -223,11 +223,11 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     }
 
     @Override
-    public int getRequiredCharge() {
+    public long getIngredientEnergyCost() {
         if (activeRecipe == null) {
             return 0;
         } else {
-            return activeRecipe.getEnergyCost();
+            return activeRecipe.getIngredientEnergyCost();
         }
     }
 
@@ -244,6 +244,13 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     public void setInventorySlotContents(int index, ItemStack stack) {
         super.setInventorySlotContents(index, stack);
         updateBlock();
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        ItemStack ret = super.decrStackSize(index, count);
+        updateBlock();
+        return ret;
     }
 
     @Override

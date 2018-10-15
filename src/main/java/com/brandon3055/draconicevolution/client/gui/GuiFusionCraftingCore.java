@@ -15,6 +15,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
+import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.render.effect.RenderEnergyBolt;
@@ -171,7 +172,22 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
                 int state = tile.craftingStage.value;
                 String status = state > 1000 ? I18n.format("gui.fusionCrafting.crafting.info") : I18n.format("gui.fusionCrafting.charging.info");
                 double d = state > 1000 ? (state - 1000F) / 1000D : state / 1000D;
-                drawCenteredString(fontRenderer, status + ": " + TextFormatting.GOLD + ((int) (d * 100) + "%"), width / 2, guiTop + 95, state < 1000 ? 0x00FF00 : 0x00FFFF);
+                String progress = ((int) (d * 100) + "%");
+                if (isShiftKeyDown()) {
+                    long totalCharge = 0;
+
+                    for (ICraftingInjector pedestal : tile.getInjectors()) {
+                        if (pedestal.getStackInPedestal().isEmpty()) {
+                            continue;
+                        }
+                        totalCharge += pedestal.getInjectorCharge();
+                    }
+
+                    long averageCharge = totalCharge / tile.activeRecipe.getRecipeIngredients().size();
+                    double percentage = averageCharge / (double) tile.activeRecipe.getIngredientEnergyCost();
+                    progress = (((int) (percentage * 100000D)) / 1000D) + "%";
+                }
+                drawCenteredString(fontRenderer, status + ": " + TextFormatting.GOLD + progress, width / 2, guiTop + 95, state < 1000 ? 0x00FF00 : 0x00FFFF);
             }
         }
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
@@ -270,73 +286,6 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
         guiEffectRenderer.renderEffects(partialTicks);
-//
-//
-//        if (currentRecipe != null && canCraft != null) {
-//            List<Object> ingredients = currentRecipe.getRecipeIngredients();
-//
-//            int centerX = guiLeft + xSize / 2;
-//            int centerY = guiTop + ySize / 2 - 45;
-//
-//            for (int i = 0; i < ingredients.size(); i++) {
-//                boolean isLeft = i % 2 == 0;
-//                boolean isOdd = ingredients.size() % 2 == 1;
-//                int sideCount = ingredients.size() / 2;
-//
-//                if (isOdd && !isLeft) {
-//                    sideCount--;
-//                }
-//
-//                int xPos;
-//                int yPos;
-//
-//
-//                if (isLeft) {
-//                    xPos = centerX - 65;
-//                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
-//
-//                    int sideIndex = i / 2;
-//
-//                    if (sideCount <= 1 && (!isOdd || ingredients.size() == 1)) {
-//                        sideIndex = 1;
-//                        ySize = 40;
-//                    }
-//
-//                    yPos = centerY - 40 + (sideIndex * ySize);
-//                } else {
-//                    xPos = centerX + 65;
-//
-//                    int ySize = 80 / Math.max(sideCount - (isOdd ? 0 : 1), 1);
-//
-//                    int sideIndex = i / 2;
-//
-//                    if (isOdd) {
-//                        sideCount++;
-//                    }
-//
-//                    if (sideCount <= 1) {
-//                        sideIndex = 1;
-//                        ySize = 40;
-//                    }
-//
-//                    yPos = centerY - 40 + (sideIndex * ySize);
-//                }
-//
-//                if (GuiHelper.isInRect(xPos - 9, yPos - 9, 18, 18, mouseX, mouseY)){
-//                    ItemStack stack = OreDictHelper.resolveObject(ingredients.get(i));
-//                    if (stack != null) {
-//                        renderToolTip(stack, mouseX, mouseY);
-//                    }
-//                }
-//            }
-//
-//            if (GuiHelper.isInRect(centerX - 8, guiTop + 70, 18, 18, mouseX, mouseY)){
-//                ItemStack stack = currentRecipe.getRecipeOutput(tile.getStackInCore(0));
-//                if (stack != null) {
-//                    renderToolTip(stack, mouseX, mouseY);
-//                }
-//            }
-//        }
     }
 
     @Override
@@ -344,19 +293,6 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         tile.sendPacketToServer(output -> {
         }, button.id);
     }
-
-//    private void drawItemStack(ItemStack stack, int x, int y, String altText) {
-////        GlStateManager.translate(0.0F, 0.0F, 32.0F);
-////        this.zLevel = 200.0F;
-////        this.itemRender.zLevel = 200.0F;
-////        net.minecraft.client.gui.FontRenderer font = null;
-////        if (stack != null) font = stack.getItem().getFontRenderer(stack);
-////        if (font == null) font = fontRendererObj;
-////        this.itemRender.renderItemAndEffectIntoGUI(stack, x, y);
-////        this.itemRender.renderItemOverlayIntoGUI(font, stack, x, y, altText);
-////        this.zLevel = 0.0F;
-////        this.itemRender.zLevel = 0.0F;
-//    }
 
     public static class EnergyEffect extends GuiEffect {
 

@@ -50,7 +50,17 @@ public interface ICraftingInjector {
     /**
      * @return the current charge stored in this pedestal.
      */
-    int getCharge();
+    @Deprecated // use getInjectorCharge
+    default int getCharge() {
+        return 0;
+    }
+
+    /**
+     * @return the current charge stored in this pedestal.
+     */
+    default long getInjectorCharge() {
+        return getCharge();
+    }
 
     /**
      * Called when crafting occurs. Use this event to clear the pedestals energy buffer.

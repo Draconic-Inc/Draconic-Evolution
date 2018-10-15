@@ -127,8 +127,8 @@ public class EffectTrackerFusionCrafting {
 
         if (craftingInventory.getCraftingStage() < 1000) {
             TileEntity tile = world.getTileEntity(pos.getPos());
-            if (tile instanceof TileCraftingInjector && craftingInventory.getRequiredCharge() > 0) {
-                alpha = ((TileCraftingInjector) tile).getCharge() / (float) craftingInventory.getRequiredCharge();
+            if (tile instanceof TileCraftingInjector && craftingInventory.getIngredientEnergyCost() > 0) {
+                alpha = (float) (((TileCraftingInjector) tile).getInjectorCharge() / (double) craftingInventory.getIngredientEnergyCost());
             }
         }
         else {

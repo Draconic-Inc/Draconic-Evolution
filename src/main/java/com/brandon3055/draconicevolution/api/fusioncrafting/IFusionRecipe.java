@@ -68,7 +68,18 @@ public interface IFusionRecipe {
      * This is the energy cost for each item to be fused (the items in the pedestals). So this will be multiplied
      * by the number of crafting ingredients (not including the item in the crafting core)
      */
-    int getEnergyCost();
+    @Deprecated //Use the long method getIngredientEnergyCost()
+    default int getEnergyCost() {
+        return 0;
+    }
+
+    /**
+     * This is the energy cost for each item to be fused (the items in the pedestals). So this will be multiplied
+     * by the number of crafting ingredients (not including the item in the crafting core)
+     */
+    default long getIngredientEnergyCost() {
+        return getEnergyCost();
+    }
 
     /**
      * This method is called every tick during the crafting process.

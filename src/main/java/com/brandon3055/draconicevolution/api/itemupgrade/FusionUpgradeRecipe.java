@@ -24,12 +24,12 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
     public final ItemStack upgradeKey;
     public final String upgrade;
     protected List<Object> ingredients;
-    protected int energyCost;
+    protected long energyCost;
     protected int craftingTier;
     private static Item[] tools = new Item[]{DEFeatures.wyvernAxe, DEFeatures.draconicAxe, DEFeatures.wyvernShovel, DEFeatures.draconicShovel, DEFeatures.wyvernPick, DEFeatures.draconicPick, DEFeatures.wyvernSword, DEFeatures.draconicSword, DEFeatures.wyvernBow, DEFeatures.draconicBow, DEFeatures.draconicStaffOfPower};
     private static Random rand = new Random();
 
-    public FusionUpgradeRecipe(String upgrade, ItemStack upgradeKey, int energyCost, int craftingTier, int upgradeLevel, Object... ingredients) {
+    public FusionUpgradeRecipe(String upgrade, ItemStack upgradeKey, long energyCost, int craftingTier, int upgradeLevel, Object... ingredients) {
         this.upgrade = upgrade;
         this.upgradeLevel = upgradeLevel;
         this.upgradeKey = upgradeKey;
@@ -198,7 +198,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
     }
 
     @Override
-    public int getEnergyCost() {
+    public long getIngredientEnergyCost() {
         return energyCost;
     }
 

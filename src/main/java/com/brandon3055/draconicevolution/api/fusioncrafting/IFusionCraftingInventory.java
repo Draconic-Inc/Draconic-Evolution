@@ -33,7 +33,17 @@ public interface IFusionCraftingInventory {
     /**
      * @return The charge required for the current crafting recipe or 0 if there is no active recipe.
      */
-    int getRequiredCharge();
+    @Deprecated //use getIngredientEnergyCost
+    default int getRequiredCharge() {
+        return 0;
+    }
+
+    /**
+     * @return The required =er ingredient energy for the current crafting recipe or 0 if there is no active recipe.
+     */
+    default long getIngredientEnergyCost() {
+        return getRequiredCharge();
+    }
 
     /**
      * @return true if currently crafting an item.
