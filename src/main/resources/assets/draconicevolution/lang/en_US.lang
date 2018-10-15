@@ -664,6 +664,9 @@ config.field.armorNV.entry=Night Vision
 config.field.armorNV.description=Enable or disable night vision. Be default the night vision will only be applied when you are in a dark area.
 config.field.armorNVLock.entry=Night Vision Lock
 config.field.armorNVLock.description=This locks night vision to active regardless of the light level you are in.
+config.field.armorAutoFeed.entry=Auto Feed
+config.field.armorAutoFeed.description=When this feature is enabled your helmet will automatically stuff your face with food from your inventory whenever you are hungry!.
+
 config.field.armorFSpeedModifier.entry=Flight Speed Modifier
 config.field.armorFSpeedModifier.description=Allows you to adjust the speed boost applied by this armor while flying.
 config.field.armorFlightLock.entry=Flight Lock

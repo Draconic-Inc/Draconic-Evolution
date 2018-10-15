@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.items.armor;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.lib.DelayedTask;
+import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
@@ -20,14 +22,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.FoodStats;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.Collection;
 
@@ -69,6 +76,7 @@ public class DraconicArmor extends WyvernArmor {
         if (armorType == HEAD) {
             registry.register(stack, new BooleanConfigField("armorNV", false, "config.field.armorNV.description"));
             registry.register(stack, new BooleanConfigField("armorNVLock", false, "config.field.armorNVLock.description"));
+            registry.register(stack, new BooleanConfigField("armorAutoFeed", false, "config.field.armorAutoFeed.description"));
             //TODO RE Integrate thaumcraft
         }
         if (armorType == CHEST) {
@@ -113,7 +121,8 @@ public class DraconicArmor extends WyvernArmor {
             if (model_invisible == null) {
                 model_invisible = new ModelBiped() {
                     @Override
-                    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {}
+                    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+                    }
                 };
             }
 
@@ -180,6 +189,49 @@ public class DraconicArmor extends WyvernArmor {
 
             if (this.getEnergyStored(stack) >= 5000 && clearNegativeEffects(player)) {
                 this.modifyEnergy(stack, -5000);
+            }
+
+            FoodStats foodStats = player.getFoodStats();
+            if (player.ticksExisted % 100 == 0 && ToolConfigHelper.getBooleanField("armorAutoFeed", stack) && foodStats.needFood() && this.getEnergyStored(stack) >= 500) {
+                IItemHandler handler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+                if (handler != null) {
+                    for (int i = 0; i < handler.getSlots(); i++) {
+                        ItemStack candidate = handler.extractItem(i, 1, true);
+                        if (!candidate.isEmpty() && candidate.getItem() instanceof ItemFood) {
+                            ItemFood food = (ItemFood) candidate.getItem();
+                            int amount = food.getHealAmount(candidate);
+                            if (amount > 0 && food.getHealAmount(candidate) + foodStats.getFoodLevel() <= 20) {
+                                ItemStack container = food.getContainerItem(candidate);
+                                ItemStack foodStack = handler.extractItem(i, 1, false);
+
+                                if (ItemStack.areItemStacksEqual(foodStack, candidate) && ItemStack.areItemStackTagsEqual(foodStack, candidate)) {
+                                    foodStats.addStats(food, foodStack);
+                                    food.onFoodEaten(foodStack, world, player);
+                                    if (world.rand.nextInt(3) == 0) {
+                                        DelayedTask.run(20, () -> world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, .5F, world.rand.nextFloat() * 0.1F + 0.9F));
+                                    }
+
+                                    world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.PLAYERS, 0.5F + 0.5F * (float)world.rand.nextInt(2), (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F + 1.0F);
+
+                                    if (!container.isEmpty()) {
+                                        if (handler.getStackInSlot(i).isEmpty()) {
+                                            handler.insertItem(i, container, false);
+                                        }
+                                        else {
+                                            InventoryUtils.givePlayerStack(player, container);
+                                        }
+                                    }
+                                    this.modifyEnergy(stack, -500);
+                                    break;
+                                }
+                                else {
+                                    handler.insertItem(i, foodStack, false);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             Potion nv = Potion.getPotionFromResourceLocation("night_vision");
