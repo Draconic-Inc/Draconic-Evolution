@@ -273,7 +273,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        return index == 1;
+        return index == 0 || index == 1;
     }
 
     //endregion
