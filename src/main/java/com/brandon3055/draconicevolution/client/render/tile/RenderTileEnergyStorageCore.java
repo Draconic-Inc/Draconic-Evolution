@@ -69,6 +69,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
         GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
+        GlStateManager.color(1F, 1F, 1F, 1F);
 
         //GlStateManager.disableCull();
 
