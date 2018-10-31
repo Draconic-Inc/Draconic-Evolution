@@ -40,7 +40,6 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
         this.craftingTier = craftingTier;
     }
 
-
     @Override
     public ItemStack getRecipeOutput(@Nonnull ItemStack catalyst) {
         if (catalyst.isEmpty()) {

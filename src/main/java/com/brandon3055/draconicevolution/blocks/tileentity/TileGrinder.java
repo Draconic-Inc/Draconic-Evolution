@@ -93,7 +93,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
         //If no target was found go back into cooldown mode for 5 seconds
         if (target == null) {
-            LogHelper.dev("Grinder: No targets found. Waiting 5 seconds...");
+//            LogHelper.dev("Grinder: No targets found. Waiting 5 seconds...");
             coolDown = 100;
             return;
         }

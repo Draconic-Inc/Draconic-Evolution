@@ -648,7 +648,7 @@ config.field.digAOE.description=Allows you to adjust this tools mining area of e
 config.field.aoeSafeMode.entry=A.O.E Safe Mode
 config.field.aoeSafeMode.description=When enabled this tool will not break anything if it detects a tile entity within its AOE range. This can help prevent you from accidentally breaking half your base with a single miss click.
 config.field.digDepth.entry=Dig Depth
-config.field.digDepth.description=This function only works with
+config.field.digDepth.description=This function only works with an AOE of 3x3 or greater.
 config.field.showDigAOE.entry=Show Dig A.O.E
 config.field.showDigAOE.description=When enabled shows all of the blocks covered by this tools mining AOE.
 
