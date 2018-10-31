@@ -36,4 +36,9 @@ public class ToolUpgradeRecipe extends SimpleFusionRecipe {
 
         return stack;
     }
+
+    @Override
+    public String toString() {
+        return String.format("ToolUpgradeRecipe: {Result: %s, Catalyst: %s}", result, catalyst);
+    }
 }

@@ -152,6 +152,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         }
 
         ItemStack catalyst = inventory.getStackInCore(0);
+        ItemStack result = getRecipeOutput(catalyst);
         catalyst.shrink(this.catalyst.getCount());
 
         if (catalyst.getCount() <= 0) {
