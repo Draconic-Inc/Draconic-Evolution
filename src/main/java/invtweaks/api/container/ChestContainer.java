@@ -1,4 +1,3 @@
-
 package invtweaks.api.container;
 
 import java.lang.annotation.ElementType;
@@ -31,7 +30,7 @@ public @interface ChestContainer {
     }
 
     // Annotation for method to get size of a chest row if it is not a fixed size for this container class
-    // Signature int func()
+    // Signature boolean func()
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @interface IsLargeCallback {

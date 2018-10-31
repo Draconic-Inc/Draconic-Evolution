@@ -8,12 +8,18 @@ import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import invtweaks.api.container.ChestContainer;
+import invtweaks.api.container.ContainerSection;
+import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 4/06/2017.
@@ -23,6 +29,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
 
     public InventoryCrafting craftMatrix;
     public IInventory craftResult;
+    private List<Slot> mainInventorySlots = new ArrayList<>();
 
 
     public ContainerDraconiumChest(EntityPlayer player, TileDraconiumChest tile) {
@@ -36,7 +43,9 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         //Slots 0 -> 259 Main Inventory
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 26; x++) {
-                addSlotToContainer(new SlotCheckValid(tile, slotIndex++, 7 + (x * 18), 7 + (y * 18)));
+                Slot slot = new SlotCheckValid(tile, slotIndex++, 7 + (x * 18), 7 + (y * 18));
+                mainInventorySlots.add(slot);
+                addSlotToContainer(slot);
             }
         }
 
@@ -80,10 +89,8 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
     @Nullable
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-//        LogHelper.dev(index);
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
-
         if (slot != null && slot.getHasStack()) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
@@ -149,6 +156,13 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
     public void onContainerClosed(EntityPlayer playerIn) {
         super.onContainerClosed(playerIn);
         tile.closeInventory(playerIn);
+    }
+
+    @ContainerSectionCallback
+    public Map<ContainerSection, List<Slot>> getContainerSelection() {
+        Map<ContainerSection, List<Slot>> map = new LinkedHashMap<>();
+        map.put(ContainerSection.CHEST, mainInventorySlots);
+        return map;
     }
 
     public class SlotSmeltable extends Slot {

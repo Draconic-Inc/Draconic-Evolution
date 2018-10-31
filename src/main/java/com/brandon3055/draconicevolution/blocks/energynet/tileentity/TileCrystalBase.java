@@ -698,12 +698,12 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
+        return (capability == CapabilityEnergy.ENERGY && (facing == null || canConnectEnergy(facing))) || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityEnergy.ENERGY) {
+        if (capability == CapabilityEnergy.ENERGY && (facing == null || canConnectEnergy(facing))) {
             return CapabilityEnergy.ENERGY.cast(new EnergyHandlerWrapper(this, facing));
         }
 
