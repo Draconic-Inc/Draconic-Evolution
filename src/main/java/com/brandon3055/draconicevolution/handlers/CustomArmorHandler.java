@@ -139,7 +139,7 @@ public class CustomArmorHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(LivingDeathEvent event) {
         if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled()) {
             return;
