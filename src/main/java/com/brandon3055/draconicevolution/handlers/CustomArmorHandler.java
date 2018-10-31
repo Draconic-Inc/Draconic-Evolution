@@ -192,6 +192,7 @@ public class CustomArmorHandler {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
 
         EntityPlayer player = event.player;
         ArmorSummery summery = new ArmorSummery().getSummery(player);
@@ -257,6 +258,7 @@ public class CustomArmorHandler {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static void tickArmorEffects(ArmorSummery summery, EntityPlayer player) {
 
         //region/*----------------- Flight ------------------*/
@@ -329,7 +331,9 @@ public class CustomArmorHandler {
                 player.getEntityAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), value, 1));
             }
 
-            if (!player.onGround && player.getRidingEntity() == null) player.jumpMovementFactor = 0.02F + (0.02F * summery.speedModifier);
+            if (!player.onGround && player.getRidingEntity() == null) {
+                player.jumpMovementFactor = 0.02F + (0.02F * summery.speedModifier);
+            }
         }
         else if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID) != null) {
             player.getEntityAttribute(speedAttr).removeModifier(player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID));

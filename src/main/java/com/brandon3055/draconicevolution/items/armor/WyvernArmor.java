@@ -19,6 +19,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.EnumControlType.SLIDER;
+import static com.brandon3055.draconicevolution.handlers.CustomArmorHandler.WALK_SPEED_UUID;
 
 /**
  * Created by brandon3055 on 6/06/2016.
@@ -109,8 +112,8 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
             int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.MOVE_SPEED);
             int i = 100 + (100 * u) + (Math.max(u - 1, 0) * 50);
             registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
-        }
-        if (armorType == EntityEquipmentSlot.FEET) {
+            registry.register(stack, new BooleanConfigField("armorSpeedFOVWarp", false, "config.field.armorSpeedFOVWarp.description"));
+        } if (armorType == EntityEquipmentSlot.FEET) {
             int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.JUMP_BOOST);
             int i = 100 + (100 * u) + (Math.max(u - 1, 0) * 50);
             registry.register(stack, new IntegerConfigField("armorJumpModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
@@ -176,8 +179,10 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
         if (model == null) {
             if (armorType == EntityEquipmentSlot.HEAD) model = new ModelWyvernArmor(0.5F, true, false, false, false);
-            else if (armorType == EntityEquipmentSlot.CHEST) model = new ModelWyvernArmor(1.5F, false, true, false, false);
-            else if (armorType == EntityEquipmentSlot.LEGS) model = new ModelWyvernArmor(1.5F, false, false, true, false);
+            else if (armorType == EntityEquipmentSlot.CHEST)
+                model = new ModelWyvernArmor(1.5F, false, true, false, false);
+            else if (armorType == EntityEquipmentSlot.LEGS)
+                model = new ModelWyvernArmor(1.5F, false, false, true, false);
             else model = new ModelWyvernArmor(1F, false, false, false, true);
             this.model.bipedHead.showModel = (armorType == EntityEquipmentSlot.HEAD);
             this.model.bipedHeadwear.showModel = (armorType == EntityEquipmentSlot.HEAD);
@@ -370,14 +375,21 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     @Override
     public float getNewFOV(EntityPlayer player, ItemStack stack, float currentFOV, float originalFOV, EntityEquipmentSlot slot) {
-        if (slot == EntityEquipmentSlot.LEGS) {
-            float speedModifier = getSpeedModifier(stack, player);
-            float newFov = currentFOV - ((speedModifier / 2F) * 1F);
-            newFov += speedModifier * 0.02F;
+        AttributeModifier modifier = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getModifier(WALK_SPEED_UUID);
+        if (slot == EntityEquipmentSlot.LEGS && modifier != null) {
+            boolean fly = player.capabilities.isFlying;
+            float speedModifier = (float) modifier.getAmount() / (player.isSprinting() ? (fly ? 1.35F : 1.5F) : (fly ? 1.8181818F : 2F));
+            float newFov = (currentFOV - speedModifier); //Completely remove the fov effect added by the speed modifier
 
+            if (!ToolConfigHelper.getBooleanField("armorSpeedFOVWarp", stack)) {
+                newFov += speedModifier * 0.25F; //Re apply 25% of what vanilla would normally apply
+            }
+
+            //Just in case some other mod has already removed the fov modifier. Would not want to decrease the fov further.
             if (newFov < 1F && player.getActivePotionEffect(MobEffects.SLOWNESS) == null) {
                 newFov = 1F;
             }
+
             return newFov;
         }
 

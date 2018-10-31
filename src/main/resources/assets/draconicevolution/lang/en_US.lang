@@ -661,6 +661,8 @@ config.field.toggleEnchant.description=Allows you deactivate/activate a previous
 
 config.field.armorSpeedModifier.entry=Speed Modifier
 config.field.armorSpeedModifier.description=This allows you to adjust the speed boost given by this armor piece.
+config.field.armorSpeedFOVWarp.entry=Disable FOV Warp
+config.field.armorSpeedFOVWarp.description=When enabled the FOV warp created by this armors speed effect will be removed.
 config.field.armorJumpModifier.entry=Jump Modifier
 config.field.armorJumpModifier.description=This allows you to adjust the jump boost given by this armor piece.
 config.field.sprintBoost.entry=Boost on Sprint

@@ -89,6 +89,7 @@ public class DraconicArmor extends WyvernArmor {
             int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.MOVE_SPEED);
             int i = 200 + (100 * u) + (Math.max(u - 1, 0) * 100) + (Math.max(u - 2, 0) * 100);
             registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
+            registry.register(stack, new BooleanConfigField("armorSpeedFOVWarp", false, "config.field.armorSpeedFOVWarp.description"));
         }
         if (armorType == FEET) {
             int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.JUMP_BOOST);
@@ -246,6 +247,8 @@ public class DraconicArmor extends WyvernArmor {
                 player.removePotionEffect(nv);
             }
         }
+
+        super.onArmorTick(world, player, stack);
     }
 
     @SuppressWarnings("unchecked")
