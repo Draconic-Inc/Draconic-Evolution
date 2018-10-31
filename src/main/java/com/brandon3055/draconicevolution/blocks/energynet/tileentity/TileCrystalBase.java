@@ -353,6 +353,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
     @Override
     public int getTier() {
         if (crystalTier == -1) {
+            //TODO 1.13. REMOVE ALL BLOCK STATE USAGE FROM TILE ENTITIES! The number of stupid crashes caused by stupid mods doing stupid things is ridiculous. Not to mention the vanilla issues...
             crystalTier = getState(getBlockTypeSafe(DEFeatures.energyCrystal)).getValue(EnergyCrystal.TIER);
         }
         return crystalTier;

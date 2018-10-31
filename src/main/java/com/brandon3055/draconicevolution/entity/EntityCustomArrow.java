@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.handlers.BowHandler.BowProperties;
@@ -26,8 +27,6 @@ import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.math.*;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -153,29 +152,10 @@ public class EntityCustomArrow extends EntityArrow {
         return entity;
     }
 
-    @SideOnly(Side.CLIENT)
-    private void spawnArrowParticles() {
-//        Particles.ArrowParticle particle = new Particles.ArrowParticle(world, posX - 0.25 + rand.nextDouble() * 0.5, posY + rand.nextDouble() * 0.5, posZ - 0.25 + rand.nextDouble() * 0.5, 0xff6000, 0.2F + rand.nextFloat() * 0.5f);
-//        double mm = 0.2;
-//        particle.motionX = (rand.nextDouble() - 0.5) * mm;
-//        particle.motionY = (rand.nextDouble() - 0.5) * mm;
-//        particle.motionZ = (rand.nextDouble() - 0.5) * mm;
-//        ParticleHandler.spawnCustomParticle(particle, 64);
-    }
-
     //region Save
 
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
-//        compound.setShort("xTile", (short) blockHitPos.getX());
-//        compound.setShort("yTile", (short) blockHitPos.getY());
-//        compound.setShort("zTile", (short) blockHitPos.getZ());
-//        compound.setShort("life", (short) this.ticksInGround);
-//        compound.setByte("inTile", (byte) Block.getIdFromBlock(this.blockHit));
-//        compound.setByte("inData", (byte) this.inData);
-//        compound.setByte("shake", (byte) this.arrowShake);
-//        compound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
-//        compound.setByte("pickup", (byte) pickupStatus.ordinal());
         super.writeEntityToNBT(compound);
         if (bowProperties != null) {
             bowProperties.writeToNBT(compound);
@@ -184,21 +164,6 @@ public class EntityCustomArrow extends EntityArrow {
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
-//        blockHitPos = new BlockPos(compound.getShort("xTile"), compound.getShort("yTile"), compound.getShort("zTile"));
-//        this.ticksInGround = compound.getShort("life");
-//        this.blockHit = Block.getBlockById(compound.getByte("inTile") & 255);
-//        this.inData = compound.getByte("inData") & 255;
-//        this.arrowShake = compound.getByte("shake") & 255;
-//        this.inGround = compound.getByte("inGround") == 1;
-//
-//        if (compound.hasKey("pickup", 99))
-//        {
-//            this.pickupStatus = EntityArrow.PickupStatus.getByOrdinal(compound.getByte("pickup"));
-//        }
-//        else if (compound.hasKey("player", 99))
-//        {
-//            this.pickupStatus = compound.getBoolean("player") ? EntityArrow.PickupStatus.ALLOWED : EntityArrow.PickupStatus.DISALLOWED;
-//        }
         super.readEntityFromNBT(compound);
         if (bowProperties != null) {
             bowProperties.readFromNBT(compound);
@@ -229,22 +194,17 @@ public class EntityCustomArrow extends EntityArrow {
                 }
             }
 
-//            world.createExplosion(this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, DEConfig.bowBlockDamage);
             setDead();
         }
 
-        //region Shock Wave
+        //region Shock Wavee
         if (bowProperties.shockWavePower > 0 && !world.isRemote) {
-            //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.ARROW_SHOCK_WAVE, posX, posY, posZ, (int) (bowProperties.shockWavePower * 100)), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 256));
-            //world.playSoundEffect(posX, posY, posZ, "random.explode", 4.0F, (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F);
-            BCEffectHandler.spawnFX(DEParticles.ARROW_SHOCKWAVE, world, posX, posY, posZ, 0, 0, 0, 256D, (int) (bowProperties.shockWavePower * 100));
+            Vec3D hitPos = traceResult.typeOfHit == RayTraceResult.Type.BLOCK ? Vec3D.getCenter(traceResult.getBlockPos()) : traceResult.typeOfHit == RayTraceResult.Type.ENTITY ? new Vec3D(traceResult.entityHit) : new Vec3D(this);
 
-//            posX += motionX;
-//            posY += motionY;
-//            posZ += motionZ;
+            BCEffectHandler.spawnFX(DEParticles.ARROW_SHOCKWAVE, world, hitPos.x, hitPos.y, hitPos.z, 0, 0, 0, 256D, (int) (bowProperties.shockWavePower * 100));
 
             double range = (double) (bowProperties.shockWavePower + 5) * 1.5;
-            List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(posX, posY, posZ, posX, posY, posZ).grow(range * 2));
+            List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(hitPos.x, hitPos.y, hitPos.z, hitPos.x, hitPos.y, hitPos.z).grow(range * 2));
 
             float damage = 40F * bowProperties.shockWavePower;
 
@@ -258,9 +218,9 @@ public class EntityCustomArrow extends EntityArrow {
                         distanceModifier = 1F - (entity.getDistance(this) / (bowProperties.shockWavePower * 4));
                     }
 
-
                     if (distanceModifier > 0) {
-                        entity.attackEntityFrom(getDamageSource(), distanceModifier * damage);
+                        DamageSource source = new EntityDamageSourceIndirect("customArrowEnergy", this, shootingEntity != null ? shootingEntity : this).setProjectile().setExplosion().setDamageIsAbsolute();
+                        entity.attackEntityFrom(source, distanceModifier * damage);
                     }
                 }
             }
@@ -347,8 +307,6 @@ public class EntityCustomArrow extends EntityArrow {
                 inTile.onEntityCollidedWithBlock(world, blockpos, iblockstate, this);
             }
         }
-
-
     }
 
 

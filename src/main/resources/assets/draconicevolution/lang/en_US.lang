@@ -461,6 +461,11 @@ death.attack.chrystalMoved=%1$s was naughty and has been punished by Draconic Ev
 
 death.attack.administrative.kill=%1$s was struck down by an unsurvivable force
 
+death.attack.chaos=%1$s was torn apart by a Chaos Guardian
+
+death.attack.customArrowEnergy=%1$s was shot by %2$s
+death.attack.customArrowEnergy.item=%1$s was shot by %2$s using %3$s
+
 //Buttons ----------------------------------------------------------------------------------------------------------------------------------------
 button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
 button.de.chestAutoFeed1.txt=FILL.Keep the current stacks full

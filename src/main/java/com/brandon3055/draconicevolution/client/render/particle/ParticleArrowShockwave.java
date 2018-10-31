@@ -14,11 +14,12 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -48,8 +49,18 @@ public class ParticleArrowShockwave extends BCParticle {
 
     @Override
     public void onUpdate() {
+        if (size == 0) {
+            for (int i = 0; i < 100; i++) {
+                double rotation = rand.nextFloat() * Math.PI * 2;
+                float renderRadius = rand.nextFloat() * 7;
+                double ox = Math.sin(rotation) * renderRadius;
+                double oy = (rand.nextGaussian() - 0.3) * 2;
+                double oz = Math.cos(rotation) * renderRadius;
+                world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, posX + ox, posY + oy, posZ + oz, ox * 0.05, oy * 0.05, oz * 0.05);
+            }
+        }
         particleAge++;
-        size += 1.2;
+        size += 0.8;
         if (size > maxSize * 1.2) {
             setExpired();
         }
