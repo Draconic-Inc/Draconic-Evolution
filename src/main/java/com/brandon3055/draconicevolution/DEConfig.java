@@ -82,6 +82,7 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty.MinMax(min = "500", max = "1000000")
     public static int chaosIslandSeparation = 10000;
 
+    //TODO Fix typo in 1.13 [Dimention -> Dimension] (Not going to bother with it now because it would only break existing configs)
     @ModConfigProperty(category = "World", name = "oreGenDimentionBlacklist", comment = "Add the dimension id of any mod dimension's you dont want draconium ore generated in")
     public static int[] oreGenDimentionBlacklist = new int[0];
 
