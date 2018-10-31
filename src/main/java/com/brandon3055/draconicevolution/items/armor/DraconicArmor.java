@@ -197,36 +197,34 @@ public class DraconicArmor extends WyvernArmor {
 
                 if (handler != null) {
                     for (int i = 0; i < handler.getSlots(); i++) {
-                        ItemStack candidate = handler.extractItem(i, 1, true);
+                        ItemStack candidate = handler.getStackInSlot(i);
                         if (!candidate.isEmpty() && candidate.getItem() instanceof ItemFood) {
                             ItemFood food = (ItemFood) candidate.getItem();
                             int amount = food.getHealAmount(candidate);
                             if (amount > 0 && food.getHealAmount(candidate) + foodStats.getFoodLevel() <= 20) {
-                                ItemStack container = food.getContainerItem(candidate);
-                                ItemStack foodStack = handler.extractItem(i, 1, false);
+                                candidate = candidate.copy();
+                                ItemStack foodStack = handler.extractItem(i, candidate.getCount(), false);
 
-                                if (ItemStack.areItemStacksEqual(foodStack, candidate) && ItemStack.areItemStackTagsEqual(foodStack, candidate)) {
+                                if (ItemStack.areItemStacksEqual(foodStack, candidate)) {
                                     foodStats.addStats(food, foodStack);
-                                    food.onFoodEaten(foodStack, world, player);
+                                    foodStack = food.onItemUseFinish(foodStack, world, player);
                                     if (world.rand.nextInt(3) == 0) {
                                         DelayedTask.run(20, () -> world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, .5F, world.rand.nextFloat() * 0.1F + 0.9F));
                                     }
 
                                     world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.PLAYERS, 0.5F + 0.5F * (float)world.rand.nextInt(2), (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F + 1.0F);
-
-                                    if (!container.isEmpty()) {
-                                        if (handler.getStackInSlot(i).isEmpty()) {
-                                            handler.insertItem(i, container, false);
-                                        }
-                                        else {
-                                            InventoryUtils.givePlayerStack(player, container);
-                                        }
-                                    }
+                                    foodStack = handler.insertItem(i, foodStack, false);
                                     this.modifyEnergy(stack, -500);
+                                    if (!foodStack.isEmpty()) {
+                                        InventoryUtils.givePlayerStack(player, foodStack.copy());//I miss being able to just do setStackInSlot...
+                                    }
                                     break;
                                 }
                                 else {
-                                    handler.insertItem(i, foodStack, false);
+                                    foodStack = handler.insertItem(i, foodStack, false);
+                                    if (!foodStack.isEmpty()) {
+                                        InventoryUtils.givePlayerStack(player, foodStack.copy());
+                                    }
                                 }
                             }
                         }
