@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorReceptacle;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePortal;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePortalClient;
 import net.minecraft.block.Block;
@@ -34,10 +35,17 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
     public static final PropertyBool DRAW_DOWN = PropertyBool.create("drawdown");
     public static final PropertyBool DRAW_EAST = PropertyBool.create("draweast");
     public static final PropertyBool DRAW_WEST = PropertyBool.create("drawwest");
+    public static final PropertyBool VISIBLE = PropertyBool.create("visible");
 
     public Portal() {
         setHardness(Float.MAX_VALUE);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, X).withProperty(DRAW_UP, true).withProperty(DRAW_DOWN, true).withProperty(DRAW_EAST, true).withProperty(DRAW_WEST, true));
+        this.setDefaultState(this.blockState.getBaseState() //
+                .withProperty(AXIS, X) //
+                .withProperty(DRAW_UP, true) //
+                .withProperty(DRAW_DOWN, true) //
+                .withProperty(DRAW_EAST, true) //
+                .withProperty(DRAW_WEST, true) //
+                .withProperty(VISIBLE, true));
     }
 
     @Override
@@ -59,18 +67,29 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, AXIS, DRAW_UP, DRAW_DOWN, DRAW_EAST, DRAW_WEST);
+        return new BlockStateContainer(this, AXIS, DRAW_UP, DRAW_DOWN, DRAW_EAST, DRAW_WEST, VISIBLE);
     }
 
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
         EnumFacing.Axis axix = state.getValue(AXIS);
-        IBlockState north = worldIn.getBlockState(pos.add(0, 0, -1));
-        IBlockState south = worldIn.getBlockState(pos.add(0, 0, 1));
-        IBlockState east = worldIn.getBlockState(pos.add(1, 0, 0));
-        IBlockState west = worldIn.getBlockState(pos.add(-1, 0, 0));
-        IBlockState up = worldIn.getBlockState(pos.add(0, 1, 0));
-        IBlockState down = worldIn.getBlockState(pos.add(0, -1, 0));
+        IBlockState north = world.getBlockState(pos.add(0, 0, -1));
+        IBlockState south = world.getBlockState(pos.add(0, 0, 1));
+        IBlockState east = world.getBlockState(pos.add(1, 0, 0));
+        IBlockState west = world.getBlockState(pos.add(-1, 0, 0));
+        IBlockState up = world.getBlockState(pos.add(0, 1, 0));
+        IBlockState down = world.getBlockState(pos.add(0, -1, 0));
+
+
+        boolean visible = true;
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TilePortal) {
+            TileDislocatorReceptacle receptacle = ((TilePortal) tile).getMaster();
+            visible = receptacle == null || receptacle.hiddenTime == 0;
+            ((TilePortal) tile).disabled = !visible;
+        }
+        state = state.withProperty(VISIBLE, visible);
+
 
         switch (axix) {
             case X:
@@ -85,13 +104,16 @@ public class Portal extends BlockBCore implements ITileEntityProvider {
     }
 
     @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {}
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+    }
 
     @Override
-    public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {}
+    public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
+    }
 
     @Override
-    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, ItemStack heldStack) {}
+    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, ItemStack heldStack) {
+    }
 
     //endregion
 

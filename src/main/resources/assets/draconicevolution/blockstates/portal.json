@@ -5,10 +5,13 @@
       "particle": "draconicevolution:blocks/portal",
       "all": "draconicevolution:blocks/portal"
     },
-    "model": "draconicevolution:portal",
     "transform": "forge:default-block"
   },
   "variants": {
+    "visible": {
+      "true": { "model": "draconicevolution:portal" },
+      "false": { "model": "draconicevolution:null_model" }
+    },
     "axis": {
       "x":{ "x": 90, "y": 90 },
       "y":{},

@@ -15,8 +15,12 @@ import net.minecraft.util.math.BlockPos;
  * Created by brandon3055 on 16/07/2016.
  */
 public class TilePortal extends TileBCBase {
-    private final ManagedVec3I masterPos = register("masterPos", new ManagedVec3I(new Vec3I(0, -9999, 0))).saveToTile().finish();
+    private final ManagedVec3I masterPos = register("masterPos", new ManagedVec3I(new Vec3I(0, -9999, 0))).saveToTile().syncViaTile().finish();
     public boolean frameMoving = false;
+    public boolean disabled = false;
+    public long updateTime = 0;
+
+    public void propRenderUpdate(long triggerTime, boolean reignite) {}
 
     public void validatePortal() {
         if (masterPos.vec.y == -9999 || frameMoving) {
@@ -43,6 +47,7 @@ public class TilePortal extends TileBCBase {
                     world.setBlockToAir(pos);
                 }
             }
+            dataManager.detectAndSendChanges();
         }
         else {
             world.setBlockToAir(pos);
