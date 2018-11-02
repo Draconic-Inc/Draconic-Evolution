@@ -406,7 +406,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
             EnergyCoreStructure structure = core.coreStructure;
             MultiBlockStorage storage = structure.getStorageForTier(core.tier.value);
             BlockPos start = core.getPos().add(structure.getCoreOffset(core.tier.value));
-            storage.forEachBlock(start, blocks::add);
+            storage.forEachBlock(start, (e, e2) -> blocks.add(e));
 
             return blocks;
         }

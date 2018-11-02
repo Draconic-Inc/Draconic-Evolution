@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
+import com.brandon3055.draconicevolution.lib.EnergyCoreBuilder;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.EnergyCoreStructure;
 import net.minecraft.block.state.IBlockState;
@@ -18,6 +19,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,6 +28,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.minecraft.util.text.TextFormatting.RED;
 
 /**
  * Created by brandon3055 on 30/3/2016.
@@ -43,7 +48,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
     public static final byte ORIENT_NORTH_SOUTH = 2;
     public static final byte ORIENT_EAST_WEST = 3;
 
-    public static final EnumFacing[][] STAB_ORIENTATIONS = new EnumFacing[][]{{},                                                                     // ORIENT_UNKNOWN
+    public static final EnumFacing[][] STAB_ORIENTATIONS = new EnumFacing[][]{{},   // ORIENT_UNKNOWN
             EnumFacing.HORIZONTALS,                                                 // ORIENT_UP_DOWN
             {EnumFacing.UP, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.WEST},     // ORIENT_NORTH_SOUTH
             {EnumFacing.UP, EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.SOUTH}    // ORIENT_EAST_WEST
@@ -65,9 +70,9 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
     public final ManagedVec3I[] stabOffsets = new ManagedVec3I[4];
     public final ManagedLong transferRate = register("transferRate", new ManagedLong(0)).syncViaContainer().finish();
 
-
     private int ticksElapsed = 0;
     private long[] flowArray = new long[20];
+    private EnergyCoreBuilder activeBuilder = null;
     public float rotation = 0;
 
     public TileEnergyStorageCore() {
@@ -87,6 +92,19 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
                 total += i;
             }
             transferRate.value = total / 20L;
+
+            if (activeBuilder != null) {
+                if (activeBuilder.isDead()) {
+                    activeBuilder = null;
+                }
+                else {
+                    activeBuilder.updateProcess();
+                }
+            }
+
+            if (ticksElapsed % 500 == 0) {
+                validateStructure();
+            }
         }
         else {
             rotation++;
@@ -195,14 +213,21 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
                 buildGuide.value = !buildGuide.value;
             }
         }
-        else if (id == 4) { //Toggle Guide
-            if (!active.value && client.capabilities.isCreativeMode) {
-                coreStructure.placeTier(tier.value);
-                validateStructure();
+        else if (id == 4) { //Build
+            if (!active.value) {
+                startBuilder(client);
             }
         }
     }
 
+    private void startBuilder(EntityPlayer player) {
+        if (activeBuilder != null && !activeBuilder.isDead()) {
+            player.sendMessage(new TextComponentTranslation("ecore.de.already_assembling.txt").setStyle(new Style().setColor(RED)));
+        }
+        else {
+            activeBuilder = new EnergyCoreBuilder(this, player);
+        }
+    }
 
     /**
      * Sets the "isCoreActive" value in each of the stabilizers
@@ -373,27 +398,10 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
         return structureValid.value;
     }
 
-    //
-//    @Override
-//    public boolean isController() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean hasSatelliteStructures() {
-//        return false;
-//    }
-//
     @Override
     public IMultiBlockPart getController() {
         return this;
     }
-//
-//    @Override
-//    public LinkedList<IMultiBlock> getSatelliteControllers() {
-//        return null;
-//    }
-
 
     //endregion
 

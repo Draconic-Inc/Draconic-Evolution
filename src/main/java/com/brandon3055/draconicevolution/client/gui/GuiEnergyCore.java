@@ -29,7 +29,7 @@ public class GuiEnergyCore extends GuiContainer {
     private GuiButton tierUp;
     private GuiButton tierDown;
     private GuiButton toggleGuide;
-    private GuiButton creativeBuild;
+    private GuiButton assembleCore;
     private GuiButton layerPlus;
     private GuiButton layerMinus;
     public static int layer = -1;
@@ -50,14 +50,14 @@ public class GuiEnergyCore extends GuiContainer {
         buttonList.add(tierUp = new GuiButtonAHeight(1, guiLeft + 91, guiTop + 86, 80, 12, I18n.format("button.de.tierUp.txt")));
         buttonList.add(tierDown = new GuiButtonAHeight(2, guiLeft + 9, guiTop + 86, 80, 12, I18n.format("button.de.tierDown.txt")));
         buttonList.add(toggleGuide = new GuiButtonAHeight(3, guiLeft + 9, guiTop + 73, 162, 12, I18n.format("button.de.buildGuide.txt")));
-        buttonList.add(creativeBuild = new GuiButtonAHeight(4, guiLeft + 9, guiTop + ySize, 162, 12, "Creative Build"));
+        buttonList.add(assembleCore = new GuiButtonAHeight(4, guiLeft + 9, guiTop + 99, 162, 12, I18n.format("button.de.assembleCore.txt")));
 
         buttonList.add(layerMinus = new GuiButtonAHeight(5, guiLeft + 5, guiTop - 13, 70, 12, "Layer-"));
         buttonList.add(layerPlus = new GuiButtonAHeight(6, guiLeft + 105, guiTop - 13, 70, 12, "Layer+"));
         layerPlus.visible = tile.buildGuide.value;
         layerMinus.visible = tile.buildGuide.value;
 
-                updateButtonStates();
+        updateButtonStates();
     }
 
     @Override
@@ -145,16 +145,15 @@ public class GuiEnergyCore extends GuiContainer {
         }
         else {
             activate.displayString = I18n.format("button.de.activate.txt");
-
             toggleGuide.displayString = I18n.format("button.de.buildGuide.txt") + " " + (tile.buildGuide.value ? I18n.format("gui.de.active.txt") : I18n.format("gui.de.inactive.txt"));
-
             tierUp.enabled = tile.tier.value < 8;
             tierDown.enabled = tile.tier.value > 1;
         }
 
 
         tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.value;
-        creativeBuild.visible = player.capabilities.isCreativeMode && !tile.active.value;
+        assembleCore.visible = !tile.coreValid.value;
+        activate.visible = tile.coreValid.value;
 
         layerPlus.visible = tile.buildGuide.value;
         layerMinus.visible = tile.buildGuide.value;
@@ -163,7 +162,8 @@ public class GuiEnergyCore extends GuiContainer {
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if (button.id < 5) {
-            tile.sendPacketToServer(output -> {}, button.id);
+            tile.sendPacketToServer(output -> {
+            }, button.id);
         }
         else {
             if (button == layerPlus) {

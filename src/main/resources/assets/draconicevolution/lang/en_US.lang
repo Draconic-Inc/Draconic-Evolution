@@ -501,12 +501,6 @@ button.de.fadeMode3.txt=Fade Out: 75%%
 button.de.fadeMode4.txt=Fade Out: Full
 button.de.rotate.txt=Rotate
 button.de.numeric.txt=Numeric:
-button.de.buildGuide.txt=Build Guide:
-button.de.tierUp.txt=Tier Up
-button.de.tierDown.txt=Tier Down
-
-button.de.activate.txt=Activate
-button.de.deactivate.txt=Deactivate
 
 //Gui ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -868,6 +862,18 @@ eNet.de.identify.gui=Identify
 eNet.de.unlink.gui=UnLink
 eNet.de.clearLinks.gui=Clear Links
 eNet.de.clearReceivers.gui=Clear Receivers
+
+//---- Energy Core ----//
+button.de.buildGuide.txt=Build Guide:
+button.de.assembleCore.txt=Assemble Core
+button.de.tierUp.txt=Tier Up
+button.de.tierDown.txt=Tier Down
+button.de.activate.txt=Activate
+button.de.deactivate.txt=Deactivate
+ecore.de.already_assembling.txt=Assembly already in progress!
+ecore.de.assemble_found_invalid.txt=Error found invalid block within build area! %s at %s
+ecore.de.assemble_error_expected_air.txt=An error occurred while building structure! Expected air block at %s
+ecore.de.assemble_missing_required.txt=Unable to complete structure! Missing required block(s) %s
 
 //---- Reactor ----//
 gui.reactor.draconicReactor.txt=Draconic Reactor
