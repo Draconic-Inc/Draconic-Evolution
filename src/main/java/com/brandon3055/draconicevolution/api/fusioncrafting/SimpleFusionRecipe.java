@@ -41,7 +41,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
             for (Object i : ingredients) {
                 r += "\n" + i;
             }
-            LogHelper.error("An error occurred while registering the following recipe. \n"+ r);
+            LogHelper.error("An error occurred while registering the following recipe. \n" + r);
             throw new WTFException("Invalid Recipe: The combined energy cost of your recipe exceeds Long.MAX_VALUE (" + Long.MAX_VALUE + ") WTF are you doing?");
         }
     }
@@ -51,7 +51,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         this(result, catalyst, (long) energyCost, craftingTier, ingredients);
     }
 
-        @Override
+    @Override
     public ItemStack getRecipeOutput(@Nullable ItemStack catalyst) {
         return result;
     }

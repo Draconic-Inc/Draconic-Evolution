@@ -1,4 +1,5 @@
-######## 2.3.17.x ########
+######## 2.3.17.321 ########
+-Fixed breaking change to Fusion Crafting API. (fixed crash with Solar Flux Reborn)
 
 ######## 2.3.16.319 ########
 -Moved Json recipe loading top post init to ensure all recipes added by DE and other mods are loaded before the json is parsed.
