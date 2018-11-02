@@ -46,7 +46,12 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         }
     }
 
-    @Override
+    @Deprecated
+    public SimpleFusionRecipe(ItemStack result, ItemStack catalyst, int energyCost, int craftingTier, Object... ingredients) {
+        this(result, catalyst, (long) energyCost, craftingTier, ingredients);
+    }
+
+        @Override
     public ItemStack getRecipeOutput(@Nullable ItemStack catalyst) {
         return result;
     }

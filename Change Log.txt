@@ -16,6 +16,7 @@
 -Bound portals now deactivate temporarily (client side only) on arrival to avoid disorienting the player.
 -Fixed chat never ending spam from bound portal when destination can not be found.
 -Fixed bound dislocators allowing teleportation to an inactive destination portal.
+-Added "auto assemble" feature to Energy Core.
 
 ######## 2.3.15.311 ########
 -Fixed grinder getting stuck on invulnerable mobs.
