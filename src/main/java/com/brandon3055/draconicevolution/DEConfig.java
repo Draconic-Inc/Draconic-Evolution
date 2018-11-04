@@ -136,7 +136,7 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "disableLootCores", comment = "This will disable loot cores (The \"Blobs\" of items dropped by the tools.).")
     public static boolean disableLootCores = false;
 
-    @ModConfigProperty(category = "Tweaks", name = "reactorExplosionScale", comment = "Allows you to adjust the overall scale of the reactor explosion. use \"disableLargeReactorBoom\" to diaable explosion completely.")
+    @ModConfigProperty(category = "Tweaks", name = "reactorExplosionScale", comment = "Allows you to adjust the overall scale of the reactor explosion. use \"disableLargeReactorBoom\" to disable explosion completely.")
     public static double reactorExplosionScale = 1;
 
     @ModConfigProperty(category = "Tweaks", name = "soulDropChance", comment = "Mobs have a 1 in this number chance to drop a soul")
