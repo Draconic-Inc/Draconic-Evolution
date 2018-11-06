@@ -39,7 +39,7 @@ public class CustomArmorHandler {
     public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
     public static List<String> playersWithUphillStep = new ArrayList<String>();  //TODO Switch to UUID
 
-    @SubscribeEvent
+//    @SubscribeEvent
     public void onPlayerHurt(LivingHurtEvent event) {
 //		EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 //		ArmorSummery summery = new ArmorSummery().getSummery(player);

@@ -414,15 +414,14 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             }
         }
 
+        NBTTagCompound compound = new NBTTagCompound();
         if (!list.hasNoTags()) {
-            NBTTagCompound compound = new NBTTagCompound();
             compound.setTag("L", list);
             sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(compound), 1));
         }
         else if (containerReceiverFlow.size() > linkedReceivers.size()) {
             containerReceiverFlow.clear();
-            sendUpdateToListeners(listeners, sendPacketToClient(output -> {
-            }, 1));
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(compound), 1));
         }
     }
 
