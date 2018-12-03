@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.brandonscore.registry.ModFeatureParser;
 import com.brandon3055.draconicevolution.client.creativetab.DETab;
+import com.brandon3055.draconicevolution.command.CommandReloadFusion;
 import com.brandon3055.draconicevolution.command.CommandUpgrade;
 import com.brandon3055.draconicevolution.lib.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -45,6 +46,7 @@ public class DraconicEvolution {
     @Mod.EventHandler
     public void serverStart(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandUpgrade());
+        event.registerServerCommand(new CommandReloadFusion());
     }
 
     @Mod.EventHandler

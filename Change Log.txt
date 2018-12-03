@@ -1,3 +1,7 @@
+######## 2.3.18.x ########
+-Fixed IndexOutOfBounds exception thrown by wireless crystals.
+-Added command to reload custom fusion recipes.
+
 ######## 2.3.17.321 ########
 -Fixed breaking change to Fusion Crafting API. (fixed crash with Solar Flux Reborn)
 

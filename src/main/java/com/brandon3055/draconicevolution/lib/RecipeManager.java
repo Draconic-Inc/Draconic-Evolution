@@ -49,8 +49,10 @@ public class RecipeManager {
 
     public static final FusionRecipeRegistry FUSION_REGISTRY = new FusionRecipeRegistry();
 
-    private static List<IRecipe> activeCrafting = new ArrayList<IRecipe>();
-    private static List<IFusionRecipe> activeFusion = new ArrayList<IFusionRecipe>();
+    private static List<IRecipe> activeCrafting = new ArrayList<>();
+    private static List<IFusionRecipe> activeFusion = new ArrayList<>();
+    private static List<IFusionRecipe> customFusionAdded = new ArrayList<>();
+    private static List<IFusionRecipe> customFusionRemoved = new ArrayList<>();
 
     @SubscribeEvent
     public void registerEvent(RegistryEvent.Register<IRecipe> event) {
@@ -106,6 +108,14 @@ public class RecipeManager {
         activeFusion.clear();
         activeFusion.addAll(ToolUpgrade.createUpgradeRecipes());
         DERecipes.addRecipes();
+    }
+
+    public static void reloadCustomFusionRecipes() throws Exception {
+        customFusionRemoved.forEach(FUSION_REGISTRY::add);
+        customFusionAdded.forEach(FUSION_REGISTRY::remove);
+        customFusionRemoved.clear();
+        customFusionAdded.clear();
+        loadRecipesFromConfig();
     }
 
     //endregion
@@ -245,6 +255,9 @@ public class RecipeManager {
             FUSION_REGISTRY.add(recipe);
         }
         LogHelper.info("Successfully added " + toAdd.size() + " Fusion Recipe(s)");
+
+        customFusionAdded.addAll(toAdd);
+        customFusionRemoved.addAll(toRemove);
 
         if (failedToRemove > 0) {
             LogHelper.warn("Failed to remove " + failedToRemove + " Fusion Recipe(s)");
