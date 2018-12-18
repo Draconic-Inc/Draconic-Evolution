@@ -88,7 +88,7 @@ public class Magnet extends ItemBCore implements IBauble {
                     continue;
                 }
 
-                NBTTagCompound itemTag = item.getTagCompound();
+                NBTTagCompound itemTag = itemEntity.getTagCompound();
                 if (itemTag != null && itemTag.hasKey("PreventRemoteMovement")) {
                     continue;
                 }
