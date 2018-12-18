@@ -1,8 +1,11 @@
 package com.brandon3055.draconicevolution.world;
 
+import codechicken.lib.reflect.ObfMapping;
+import codechicken.lib.reflect.ReflectionManager;
 import com.brandon3055.draconicevolution.blocks.DraconiumOre;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
@@ -21,6 +24,10 @@ public class WorldGenEnderComet extends WorldGenerator {
     private int tailZ;
     private int size;
 
+    public WorldGenEnderComet() {
+        super(false);
+    }
+
     private void initialize(Random rand, int x, int y, int z) {
         spawnX = x;
         spawnY = y;
@@ -38,10 +45,26 @@ public class WorldGenEnderComet extends WorldGenerator {
     @Override
     public boolean generate(World world, Random random, BlockPos pos) {
         initialize(random, pos.getX(), pos.getY(), pos.getZ());
+//        Cuboid6 bb = new Cuboid6(Math.min(spawnX, tailX), Math.min(spawnY, tailY), Math.min(spawnZ, tailZ), Math.max(spawnX, tailX), Math.max(spawnY, tailY), Math.max(spawnZ, tailZ));
+//        bb.expand(size + 5);
+//        for (int x = (int) bb.min.x; x <= bb.max.x; x++) {
+//            for (int y = (int) bb.min.y; y <= bb.max.y; y++) {
+//                for (int z = (int) bb.min.z; z <= bb.max.z; z++) {
+//                    int sm = ((x == bb.min.x || x == bb.max.x) ? 1 : 0) + ((y == bb.min.y || y == bb.max.y) ? 1 : 0) + ((z == bb.min.z || z == bb.max.z) ? 1 : 0);
+//                    if (sm > 1) {
+//                        setBlockAndNotifyAdequately(world, new BlockPos(x, y, z), Blocks.GLOWSTONE.getDefaultState());
+////                        world.setBlockState();
+//                    }
+//                }
+//            }
+//        }
+
+        setCascadingWarningEnabled(false);
 
         generateCore(world, random, size);
         generateTrail(world, random);
 
+        setCascadingWarningEnabled(true);
         return true;
     }
 
@@ -53,13 +76,13 @@ public class WorldGenEnderComet extends WorldGenerator {
                         float genP = rand.nextFloat();
                         BlockPos pos = new BlockPos(x, y, z);
                         if (0.1F > genP) {
-                            world.setBlockState(pos, DraconiumOre.getEnd());
+                            setBlockAndNotifyAdequately(world, pos, DraconiumOre.getEnd());
                         }
                         else if (0.4F > genP) {
-                            world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
+                            setBlockAndNotifyAdequately(world, pos, Blocks.OBSIDIAN.getDefaultState());
                         }
                         else {
-                            world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
+                            setBlockAndNotifyAdequately(world, pos, Blocks.OBSIDIAN.getDefaultState());
                         }
                     }
                 }
@@ -88,7 +111,7 @@ public class WorldGenEnderComet extends WorldGenerator {
         }
     }
 
-    public static void generateTrailSphere(World world, int xi, int yi, int zi, int r, int density, Random rand) {
+    public void generateTrailSphere(World world, int xi, int yi, int zi, int r, int density, Random rand) {
         if (density <= 0) return;
         if (density > 10000) density = 10000;
         for (int x = xi - r; x <= xi + r; x++) {
@@ -96,9 +119,15 @@ public class WorldGenEnderComet extends WorldGenerator {
                 for (int y = yi - r; y <= yi + r; y++) {
                     BlockPos pos = new BlockPos(x, y, z);
                     if ((density >= rand.nextInt(10000)) && world.isAirBlock(pos) && (int) (getDistance(x, y, z, xi, yi, zi)) == r) {
-                        if (0.9F >= rand.nextFloat()) world.setBlockState(pos, Blocks.END_STONE.getDefaultState());
-                        else if (rand.nextBoolean()) world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
-                        else world.setBlockState(pos, DraconiumOre.getEnd());
+                        if (0.9F >= rand.nextFloat()) {
+                            setBlockAndNotifyAdequately(world, pos, Blocks.END_STONE.getDefaultState());
+                        }
+                        else if (rand.nextBoolean()) {
+                            setBlockAndNotifyAdequately(world, pos, Blocks.OBSIDIAN.getDefaultState());
+                        }
+                        else {
+                            setBlockAndNotifyAdequately(world, pos, DraconiumOre.getEnd());
+                        }
                     }
                 }
             }
@@ -110,6 +139,26 @@ public class WorldGenEnderComet extends WorldGenerator {
         int dy = y1 - y2;
         int dz = z1 - z2;
         return Math.sqrt((dx * dx + dy * dy + dz * dz));
+    }
+
+    private static ChunkPos popPos = null;
+    private static ObfMapping mapping = new ObfMapping("net/minecraft/world/chunk/Chunk", "populating");
+
+    //Given the rarity of the comets i can almost guarantee cascading world gen will never cause any actual problems.
+    //If you dont like it feel free to suggest a working solution.
+    private static void setCascadingWarningEnabled(boolean enabled) {
+        try {
+            if (enabled) {
+                ReflectionManager.setField(mapping, null, popPos);
+                popPos = null;
+            }
+            else {
+                popPos = ReflectionManager.getField(mapping, null, ChunkPos.class);
+                ReflectionManager.setField(mapping, null, null);
+            }
+        } catch (Throwable ignored) {
+            //oops
+        }
     }
 }
 

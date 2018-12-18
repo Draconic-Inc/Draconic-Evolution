@@ -4,6 +4,7 @@ import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
@@ -53,8 +54,6 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
             {EnumFacing.UP, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.WEST},     // ORIENT_NORTH_SOUTH
             {EnumFacing.UP, EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.SOUTH}    // ORIENT_EAST_WEST
     };
-
-    public static final long[] CAPACITY = new long[]{45500000L, 273000000L, 1640000000L, 9880000000L, 59300000000L, 356000000000L, 2140000000000L, Long.MAX_VALUE};
 
     //endregion
 
@@ -183,7 +182,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
             LogHelper.error("Tier not valid! WTF!!!");
             return 0;
         }
-        return CAPACITY[tier.value - 1];
+        return (long) DEConfig.coreCapacity[tier.value - 1];
     }
 
     @Override

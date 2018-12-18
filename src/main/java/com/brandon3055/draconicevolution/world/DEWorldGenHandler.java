@@ -67,7 +67,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
                 int y = 20 + random.nextInt(170);
                 int z1 = actualZ + random.nextInt(16);
                 if (DEConfig.generateEnderComets && Math.sqrt(actualX * actualX + actualZ * actualZ) > 200 && random.nextInt(Math.max(1, DEConfig.cometRarity)) == 0) {
-                    new WorldGenEnderComet().generate(world, random, new BlockPos(x1, y, z1));
+                    new WorldGenEnderComet().generate(world, random, new BlockPos(actualX + 8, y, actualZ + 8));
                 }
                 if (DEConfig.generateChaosIslands) {
                     ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, null, random);

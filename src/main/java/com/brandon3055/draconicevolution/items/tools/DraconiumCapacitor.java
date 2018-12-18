@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
@@ -47,9 +48,7 @@ import java.util.stream.IntStream;
 public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IUpgradableItem, IBauble {
 
     public static final int wyvernTransfer = 8000000;
-    public static final int wyvernBaseCap = 64000000;
     public static final int draconicTransfer = 64000000;
-    public static final int draconicBaseCap = 256000000;
 
     public DraconiumCapacitor() {
         this.setHasSubtypes(true);
@@ -63,10 +62,10 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
         if (isInCreativeTab(tab)) {
             subItems.add(new ItemStack(DEFeatures.draconiumCapacitor, 1, 0));
-            subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 0), "Energy", wyvernBaseCap));
+            subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 0), "Energy", DEConfig.wyvernFluxCapBaseCap));
 
             subItems.add(new ItemStack(DEFeatures.draconiumCapacitor, 1, 1));
-            subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 1), "Energy", draconicBaseCap));
+            subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 1), "Energy", DEConfig.draconicFluxCapBaseCap));
 
             subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 2), "Energy", Integer.MAX_VALUE / 2));
         }
@@ -94,9 +93,9 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
         switch (tier) {
             case 0:
-                return wyvernBaseCap + (upgrade * (wyvernBaseCap / 2));
+                return DEConfig.wyvernFluxCapBaseCap + (upgrade * (DEConfig.wyvernFluxCapBaseCap / 2));
             case 1:
-                return draconicBaseCap + (upgrade * (draconicBaseCap / 2));
+                return DEConfig.draconicFluxCapBaseCap + (upgrade * (DEConfig.draconicFluxCapBaseCap / 2));
             case 2:
                 return Integer.MAX_VALUE;
         }

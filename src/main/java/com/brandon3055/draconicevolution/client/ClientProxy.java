@@ -6,6 +6,7 @@ import codechicken.lib.render.CCRenderEventHandler;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.ResourceUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
@@ -23,7 +24,10 @@ import com.brandon3055.draconicevolution.network.ccnetwork.ClientPacketHandler;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.client.renderer.entity.RenderArrow;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.RenderTippedArrow;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -35,7 +39,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
-    
+
     public static LayerContributorPerkRenderer layerWings;
 
     @Override
@@ -84,13 +88,25 @@ public class ClientProxy extends CommonProxy {
 
     public void registerRendering() {
 
-		//Entities
+        //Entities
         RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, RenderDragonHeart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityGuardianProjectile.class, RenderGuardianProjectile::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityGuardianCrystal.class, RenderGuardianCrystal::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityChaosImplosion.class, RenderEntityChaosVortex::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, RenderCustomArrow::new);
+
+        if (DEConfig.disableCustomArrowModel) {
+            RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, manager -> new RenderArrow<EntityCustomArrow>(manager) {
+                @Override
+                protected ResourceLocation getEntityTexture(EntityCustomArrow entity) {
+                    return RenderTippedArrow.RES_ARROW;
+                }
+            });
+        }
+        else {
+            RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, RenderCustomArrow::new);
+        }
+
         RenderingRegistry.registerEntityRenderingHandler(EntityLootCore.class, RenderLootCore::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityEnderEnergyManipulator.class, RenderEntityEnderEnergyManipulator::new);
     }

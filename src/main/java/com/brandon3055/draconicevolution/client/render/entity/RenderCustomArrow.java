@@ -78,7 +78,6 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
-
     }
 
 

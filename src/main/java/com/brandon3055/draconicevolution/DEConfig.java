@@ -76,11 +76,16 @@ public class DEConfig implements IModConfigHelper {
     public static boolean chaosIslandVoidMode = false;
 
     @ModConfigProperty(category = "World", name = "cometRarity", comment = "Ender Comets have a 1 in {this number} chance to spawn in each chunk")
+    @ModConfigProperty.MinMax(min = "500", max = "1000000")
     public static int cometRarity = 10000;
 
     @ModConfigProperty(category = "World", name = "chaosIslandSeparation", comment = "This is the distance between chaos islands")
     @ModConfigProperty.MinMax(min = "500", max = "1000000")
     public static int chaosIslandSeparation = 10000;
+
+    @ModConfigProperty(category = "World", name = "chaosIslandYOffset", comment = "This allows you to offset the y position of chaos islands.")
+    @ModConfigProperty.MinMax(min = "-50", max = "150")
+    public static int chaosIslandYOffset = 0;
 
     //TODO Fix typo in 1.13 [Dimention -> Dimension] (Not going to bother with it now because it would only break existing configs)
     @ModConfigProperty(category = "World", name = "oreGenDimentionBlacklist", comment = "Add the dimension id of any mod dimension's you dont want draconium ore generated in")
@@ -181,9 +186,18 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "grinderBlackList", comment = "This allows you to prevent the mob grinder from attempting to kill specific entities.")
     public static String[] grinderBlackList = {"evilcraft:vengeance_spirit"};
 
+    @ModConfigProperty(category = "Tweaks", name = "coreCapacity", comment = "Allows you to adjust the capacity of each energy core tier.\nWarning changing the number entries in this list will crash our game.")
+    public static double[] coreCapacity = new double[]{45500000L, 273000000L, 1640000000L, 9880000000L, 59300000000L, 356000000000L, 2140000000000L, Long.MAX_VALUE};
+
+    @ModConfigProperty(category = "Tweaks", name = "wyvernFluxCapBaseCap", comment = "This allows you to adjust the base capacity of the wyvern flux capacitor")
+    public static int wyvernFluxCapBaseCap = 64000000;
+
+    @ModConfigProperty(category = "Tweaks", name = "draconicFluxCapBaseCap", comment = "This allows you to adjust the base capacity of the draconic flux capacitor")
+    public static int draconicFluxCapBaseCap = 256000000;
+
     //Category Client
 
-    @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.")
+    @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.\nWarning changing the number entries in this list will crash our game.")
     public static int[] hudSettings = new int[]{996, 825, 69, 907, 90, 100, 3, 0, 1, 1, 1, 1}; //x, y, x, y, scale, scale, fademode, fademode, rotateArmor, armorText, hudEnabled, shieldEnabled
 
     @ModConfigProperty(category = "Client Settings", name = "disable3DModels", comment = "Disables the 3D tool and armor models. This is required if you want to use a 2D resource pack.)")
@@ -213,6 +227,8 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Client Settings", name = "disableShieldHitSound", comment = "If true the armor shield hit sound will be disabled.")
     public static boolean disableShieldHitSound = false;
 
+    @ModConfigProperty(category = "Client Settings", name = "disableCustomArrowModel", comment = "If true the custom arrow models used by DE will be replaced by the vanilla model.", requiresMCRestart = true)
+    public static boolean disableCustomArrowModel = false;
 
     //Category Misc
 
