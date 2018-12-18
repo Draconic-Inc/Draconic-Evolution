@@ -60,16 +60,14 @@ public class InfoTablet extends ItemBCore {
 
     @SideOnly(Side.CLIENT)
     private void openGui() {
-        if (nagShown) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
-        }
-        else {
-            nagShown = false;
+        GuiModWiki guiModWiki = new GuiModWiki();
+        Minecraft.getMinecraft().displayGuiScreen(guiModWiki);
+        if (!nagShown) {
+            nagShown = true;
             try {
-                ObfMapping mapping = new ObfMapping("net/minecraft/client/gui/GuiScreen", "field_175286_t");
-                GuiModWiki guiModWiki = new GuiModWiki();
-                ReflectionManager.setField(mapping, guiModWiki, new URI("https://minecraft.curseforge.com/projects/project-intelligence"));
 
+                ObfMapping mapping = new ObfMapping("net/minecraft/client/gui/GuiScreen", "field_175286_t");
+                ReflectionManager.setField(mapping, guiModWiki, new URI("https://minecraft.curseforge.com/projects/project-intelligence"));
                 GuiConfirmOpenLink guiConfirm = new GuiConfirmOpenLink(guiModWiki, "https://minecraft.curseforge.com/projects/project-intelligence", 31102009, true) {
                     @Override
                     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
