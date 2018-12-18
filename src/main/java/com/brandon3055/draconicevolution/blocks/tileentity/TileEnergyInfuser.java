@@ -4,6 +4,7 @@ import cofh.redstoneflux.api.IEnergyContainerItem;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.draconicevolution.client.DEParticles;
@@ -38,14 +39,13 @@ public class TileEnergyInfuser extends TileEnergyInventoryBase implements IEnerg
         else {
             super.update();
             ItemStack stack = getStackInSlot(0);
-            if (stack.getItem() instanceof IEnergyContainerItem) {
-                IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
+            if (EnergyHelper.canReceiveEnergy(stack)) {
 
-                int maxAccept = item.receiveEnergy(stack, energyStorage.getMaxExtract(), true);
+                int maxAccept = EnergyHelper.insertEnergy(stack, energyStorage.getMaxExtract(), true);
                 running.value = maxAccept > 0;
 
-                int transfer = energyStorage.extractEnergy(item.receiveEnergy(stack, Math.min(energyStorage.getEnergyStored(), energyStorage.getMaxExtract()), false), false);
-                charging.value = transfer > 0;
+                int transferred = energyStorage.extractEnergy(EnergyHelper.insertEnergy(stack, Math.min(energyStorage.getEnergyStored(), energyStorage.getMaxExtract()), false), false);
+                charging.value = transferred > 0;
             }
             else {
                 running.value = charging.value = false;
