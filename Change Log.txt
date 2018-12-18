@@ -1,4 +1,4 @@
-######## 2.3.18.x ########
+######## 2.3.18.329 ########
 -Fixed IndexOutOfBounds exception thrown by wireless crystals.
 -Added command to reload custom fusion recipes.
 -Fixed fusion crafting crash.
@@ -9,6 +9,7 @@
 -Added config to adjust chaos island spawn y level.
 -Fixed syncing issue where XP shows as 0 after using DE teleportation.
 -Added config to adjust energy core and flux capacitor capacity.
+-Pulled some PR's
 
 ######## 2.3.17.321 ########
 -Fixed breaking change to Fusion Crafting API. (fixed crash with Solar Flux Reborn)
