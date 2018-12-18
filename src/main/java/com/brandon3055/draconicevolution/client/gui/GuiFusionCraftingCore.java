@@ -173,7 +173,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
                 String status = state > 1000 ? I18n.format("gui.fusionCrafting.crafting.info") : I18n.format("gui.fusionCrafting.charging.info");
                 double d = state > 1000 ? (state - 1000F) / 1000D : state / 1000D;
                 String progress = ((int) (d * 100) + "%");
-                if (isShiftKeyDown()) {
+                if (state < 1000 && isShiftKeyDown()) {
                     long totalCharge = 0;
 
                     for (ICraftingInjector pedestal : tile.getInjectors()) {
@@ -183,8 +183,8 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
                         totalCharge += pedestal.getInjectorCharge();
                     }
 
-                    long averageCharge = totalCharge / tile.activeRecipe.getRecipeIngredients().size();
-                    double percentage = averageCharge / (double) tile.activeRecipe.getIngredientEnergyCost();
+                    long averageCharge = totalCharge / currentRecipe.getRecipeIngredients().size();
+                    double percentage = averageCharge / (double) currentRecipe.getIngredientEnergyCost();
                     progress = (((int) (percentage * 100000D)) / 1000D) + "%";
                 }
                 drawCenteredString(fontRenderer, status + ": " + TextFormatting.GOLD + progress, width / 2, guiTop + 95, state < 1000 ? 0x00FF00 : 0x00FFFF);
