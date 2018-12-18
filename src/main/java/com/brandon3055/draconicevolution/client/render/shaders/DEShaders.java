@@ -19,32 +19,18 @@ public class DEShaders {
     public static ShaderObject reactor;
     public static ShaderObject reactorShield;
 
-
-    //public static int reactorOpID;
-    //public static ShaderProgram reactor;
-    //public static ShaderProgram reactorShield;
-    //public static ReactorOperation reactorOp;
-
-    //public static int reactorBeamOpID;
     public static ShaderObject reactorBeamI;
     public static ShaderObject reactorBeamO;
     public static ShaderObject reactorBeamE;
-    //public static ReactorBeamOperation reactorBeamOp;
 
-    //public static int crystalOpID;
     public static ShaderObject energyCrystal_V;
     public static ShaderObject energyCrystal_F;
-    //public static ECrystalOperation eCrystalOp;
 
-    //public static int explosionOverlayOpID;
     public static ShaderObject explosionOverlay;
-    //public static ExplosionOverlayOp explosionOverlayOp;
 
-    //public static int explosionWaveOpID;
     public static ShaderObject explosionBlastWave;
     public static ShaderObject explosionLeadingWave;
     public static ShaderObject explosionCoreEffect;
-    //public static ExplosionWaveOp explosionWaveOp;
 
     static {
         if (OpenGlHelper.shadersSupported && DEConfig.useShaders) {
@@ -56,6 +42,7 @@ public class DEShaders {
         }
     }
 
+    //Used in dev to reload shaders runtime
     public static void initShaders() throws IOException {
         dispose(reactor);
         dispose(reactorShield);
@@ -89,46 +76,6 @@ public class DEShaders {
         explosionLeadingWave = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/explosion_leading_wave.frag")));
         explosionCoreEffect = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/explosion_core_effect.frag")));
     }
-
-//    public static class ExplosionWaveOp implements IShaderOperation {
-//        float time = 0;
-//        float scale = 0;
-//        float alpha = 1;
-//
-//        @Override
-//        public boolean load(ShaderProgram program) {
-//            return true;
-//        }
-//
-//        @Override
-//        public void operate(ShaderProgram program) {
-//            int t = program.getUniformLoc("time");
-//            ARBShaderObjects.glUniform1fARB(t, time);
-//
-//            int s = program.getUniformLoc("scale");
-//            ARBShaderObjects.glUniform1fARB(s, scale);
-//
-//            int a = program.getUniformLoc("alpha");
-//            ARBShaderObjects.glUniform1fARB(a, alpha);
-//        }
-//
-//        @Override
-//        public int operationID() {
-//            return reactorOpID;
-//        }
-//
-//        public void setTime(float time) {
-//            this.time = time;
-//        }
-//
-//        public void setScale(float scale) {
-//            this.scale = scale;
-//        }
-//
-//        public void setAlpha(float alpha) {
-//            this.alpha = alpha;
-//        }
-//    }
 
     public static boolean useShaders() {
         return OpenGlHelper.shadersSupported && DEConfig.useShaders;

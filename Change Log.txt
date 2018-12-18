@@ -1,6 +1,14 @@
 ######## 2.3.18.x ########
 -Fixed IndexOutOfBounds exception thrown by wireless crystals.
 -Added command to reload custom fusion recipes.
+-Fixed fusion crafting crash.
+-Added FE support to energy infuser (Not sure how that went un noticed so long)
+-Disabled cascading world gen warning for Ender Comets. (Due to the rarity of comets this should not cause any actual issues)
+-Fixed minor display bug when holding shift inside an active fusion crafting core's gui.
+-Added config option to disable custom arrow model.
+-Added config to adjust chaos island spawn y level.
+-Fixed syncing issue where XP shows as 0 after using DE teleportation.
+-Added config to adjust energy core and flux capacitor capacity.
 
 ######## 2.3.17.321 ########
 -Fixed breaking change to Fusion Crafting API. (fixed crash with Solar Flux Reborn)

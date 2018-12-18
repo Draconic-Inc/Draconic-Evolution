@@ -24,8 +24,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -218,6 +221,13 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
     }
 
     //endregion
+
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(pos.add(-1, -1, -1), pos.add(2, 2, 2));
+    }
 
     public static class PlacedItemInventory implements IInventory {
         private LinkedList<ItemStack> stacks = new LinkedList<ItemStack>();
