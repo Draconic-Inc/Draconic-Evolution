@@ -40,11 +40,12 @@ public class CommonProxy {
         EnchantmentReaper.init();
         AE2Compat.init();
 
+        registerEntities();
+
         LogHelper.info("Finished PreInitialization");
     }
 
     public void init(FMLInitializationEvent event) {
-        registerEntities();
         CCOCIntegration.init();
         ModHelper.init();
         DragonChunkLoader.init();
