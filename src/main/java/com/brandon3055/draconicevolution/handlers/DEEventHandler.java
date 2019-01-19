@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
+import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -354,6 +355,13 @@ public class DEEventHandler {
                 event.player.capabilities.isFlying = true;
                 event.player.sendPlayerAbilities();
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void entityInteract(PlayerInteractEvent.EntityInteract event) {
+        if (event.getTarget() instanceof EntityGuardianCrystal) {
+            event.setCanceled(true);
         }
     }
 }

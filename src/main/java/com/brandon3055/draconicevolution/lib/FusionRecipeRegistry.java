@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.lib;
 import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRegistry;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -58,6 +59,9 @@ public class FusionRecipeRegistry implements FusionRegistry {
         }
 
         for (IFusionRecipe recipe : REGISTRY) {
+            if (REGISTRY.indexOf(recipe) == 74) {
+                LogHelper.dev("Here!");
+            }
             if (recipe.matches(inventory, world, corePos)) {
                 return recipe;
             }

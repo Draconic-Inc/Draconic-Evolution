@@ -142,6 +142,11 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
     @Override
     public void update() {
+//        reactorState.value = ReactorState.COLD;
+//        if (explosionProcess != null) {
+//            explosionProcess.isDead = true;
+//            explosionProcess = null;
+//        }
         super.update();
         updateCoreLogic();
         frameMoveContactPoints = 0;

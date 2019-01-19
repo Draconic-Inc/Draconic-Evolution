@@ -1,3 +1,6 @@
+######## 2.3.19.x ########
+-Blocked right click interaction with GuardianCrystals to prevent them from being picked up by things like soul vials.
+
 ######## 2.3.18.329 ########
 -Fixed IndexOutOfBounds exception thrown by wireless crystals.
 -Added command to reload custom fusion recipes.
@@ -9,7 +12,11 @@
 -Added config to adjust chaos island spawn y level.
 -Fixed syncing issue where XP shows as 0 after using DE teleportation.
 -Added config to adjust energy core and flux capacitor capacity.
--Pulled some PR's
+-Pulled PR's
+ * #1210 Update ru_RU.lang
+ * #1205 Update DEConfig.java
+ * #1154 Fix Magnet with conveyors
+ * #1150 Create ko_KR.lang
 
 ######## 2.3.17.321 ########
 -Fixed breaking change to Fusion Crafting API. (fixed crash with Solar Flux Reborn)
