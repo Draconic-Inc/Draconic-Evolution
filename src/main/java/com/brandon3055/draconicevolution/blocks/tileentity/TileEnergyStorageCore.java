@@ -362,6 +362,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
 
         if (!simulate) {
             energy.value += energyReceived;
+            markDirty();
         }
         return (int) energyReceived;
     }
@@ -374,6 +375,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
 
         if (!simulate) {
             energy.value -= energyExtracted;
+            markDirty();
         }
         return (int) energyExtracted;
     }
