@@ -76,7 +76,8 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
         }
     }
 
-    protected float getProtectionShare() {
+    @SuppressWarnings("incomplete-switch")
+	protected float getProtectionShare() {
         switch (armorType) {
             case HEAD:
                 return 0.15F;
@@ -216,13 +217,13 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     @Override
     public float getProtectionPoints(ItemStack stack) {
         int upgradeLevel = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_CAPACITY);
-        float points = (float)DEConfig.wyvernBaseShieldCapacity * getProtectionShare() * (upgradeLevel + 1);
+        float points = ArmorStats.wyvernBaseShieldCapacity * getProtectionShare() * (upgradeLevel + 1);
         return points;
     }
 
     @Override
     public float getRecoveryRate(ItemStack stack) {
-        return (float)DEConfig.wyvernShieldRecovery * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
+        return (float)ArmorStats.wyvernShieldRecovery * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
     }
 
     @Override
@@ -252,7 +253,8 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
         return false;
     }
 
-    @Override
+    @SuppressWarnings("incomplete-switch")
+	@Override
     public float getFireResistance(ItemStack stack) {
         switch (armorType) {
             case HEAD:
@@ -284,7 +286,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     @Override
     public int getEnergyPerProtectionPoint() {
-        return DEConfig.wyvernShieldRechargeCost;
+        return ArmorStats.wyvernShieldRechargeCost;
     }
 
     //endregion
@@ -303,7 +305,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     }
 
     protected int getMaxReceive(ItemStack stack) {
-        return 512000;
+        return ArmorStats.wyvernMaxRecieve;
     }
 
     @Override

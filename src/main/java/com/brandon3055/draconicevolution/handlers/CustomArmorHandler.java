@@ -258,7 +258,6 @@ public class CustomArmorHandler {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     public static void tickArmorEffects(ArmorSummery summery, EntityPlayer player) {
 
         //region/*----------------- Flight ------------------*/
