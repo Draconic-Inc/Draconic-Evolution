@@ -49,21 +49,14 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     private static ArmorMaterial wyvernMaterial = EnumHelper.addArmorMaterial("wyvernArmor", "draconicevolution:wyvern_armor", -1, new int[]{3, 6, 8, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.0F);
 
-    protected float baseProtectionPoints;
-    protected float baseRecovery;
-
     public WyvernArmor(int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
         super(wyvernMaterial, renderIndexIn, equipmentSlotIn);
         this.setMaxDamage(-1);
-        this.baseProtectionPoints = 256F;
-        this.baseRecovery = 2F;
     }
 
     public WyvernArmor(ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
         super(materialIn, renderIndexIn, equipmentSlotIn);
         this.setMaxDamage(-1);
-        this.baseProtectionPoints = 256F;
-        this.baseRecovery = 2F;
     }
 
     //region Armor Logic
@@ -223,13 +216,13 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     @Override
     public float getProtectionPoints(ItemStack stack) {
         int upgradeLevel = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_CAPACITY);
-        float points = baseProtectionPoints * getProtectionShare() * (upgradeLevel + 1);
+        float points = (float)DEConfig.wyvernBaseShieldCapacity * getProtectionShare() * (upgradeLevel + 1);
         return points;
     }
 
     @Override
     public float getRecoveryRate(ItemStack stack) {
-        return baseRecovery * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
+        return (float)DEConfig.wyvernShieldRecovery * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
     }
 
     @Override
@@ -291,7 +284,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     @Override
     public int getEnergyPerProtectionPoint() {
-        return 1000;
+        return DEConfig.wyvernShieldRechargeCost;
     }
 
     //endregion

@@ -50,14 +50,10 @@ public class DraconicArmor extends WyvernArmor {
 
     public DraconicArmor(int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
         super(draconicMaterial, renderIndexIn, equipmentSlotIn);
-        this.baseProtectionPoints = 512F;
-        this.baseRecovery = 4F;
     }
 
     public DraconicArmor(ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
         super(materialIn, renderIndexIn, equipmentSlotIn);
-        this.baseProtectionPoints = 512F;
-        this.baseRecovery = 4F;
     }
 
     //region Upgrade
@@ -176,6 +172,17 @@ public class DraconicArmor extends WyvernArmor {
 
     //region ICustomArmor
 
+    @Override
+    public float getProtectionPoints(ItemStack stack) {
+        int upgradeLevel = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_CAPACITY);
+        float points = (float)DEConfig.draconicBaseShieldCapacity * getProtectionShare() * (upgradeLevel + 1);
+        return points;
+    }
+    
+    @Override
+    public float getRecoveryRate(ItemStack stack) {
+        return (float)DEConfig.draconicShieldRecovery * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
+    }
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
@@ -325,7 +332,7 @@ public class DraconicArmor extends WyvernArmor {
 
     @Override
     public int getEnergyPerProtectionPoint() {
-        return 1000;
+        return DEConfig.draconicShieldRechargeCost;
     }
 
     //endregion
