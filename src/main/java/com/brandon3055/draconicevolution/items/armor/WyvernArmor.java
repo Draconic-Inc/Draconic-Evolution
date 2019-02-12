@@ -216,13 +216,13 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     @Override
     public float getProtectionPoints(ItemStack stack) {
         int upgradeLevel = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_CAPACITY);
-        float points = (float)DEConfig.wyvernBaseShieldCapacity * getProtectionShare() * (upgradeLevel + 1);
+        float points = ToolStats.WYVERN_BASE_SHIELD_CAPACITY * getProtectionShare() * (upgradeLevel + 1);
         return points;
     }
 
     @Override
     public float getRecoveryRate(ItemStack stack) {
-        return (float)DEConfig.wyvernShieldRecovery * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
+        return (float)ToolStats.WYVERN_SHIELD_RECOVERY * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
     }
 
     @Override
@@ -284,7 +284,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     @Override
     public int getEnergyPerProtectionPoint() {
-        return DEConfig.wyvernShieldRechargeCost;
+        return ToolStats.WYVERN_SHIELD_RECHARGE_COST;
     }
 
     //endregion
@@ -303,7 +303,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     }
 
     protected int getMaxReceive(ItemStack stack) {
-        return 512000;
+        return ToolStats.WYVERN_MAX_RECIEVE;
     }
 
     @Override

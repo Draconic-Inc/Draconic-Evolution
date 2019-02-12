@@ -194,24 +194,6 @@ public class DEConfig implements IModConfigHelper {
 
     @ModConfigProperty(category = "Tweaks", name = "draconicFluxCapBaseCap", comment = "This allows you to adjust the base capacity of the Draconic Flux Capacitor.")
     public static int draconicFluxCapBaseCap = 256000000;
-    
-    @ModConfigProperty(category = "Tweaks", name = "wyvernBaseShieldCapacity", comment = "Allows you to adjust the total shield capacity of a full set of Wyvern Armor.", autoSync = true)
-    public static double wyvernBaseShieldCapacity = 256D;
-    
-    @ModConfigProperty(category = "Tweaks", name = "draconicBaseShieldCapacity", comment = "Allows you to adjust the total shield capacity of a full set of Draconic Armor.", autoSync = true)
-    public static double draconicBaseShieldCapacity = 512D;
-    
-    @ModConfigProperty(category = "Tweaks", name = "wyvernShieldRechargeCost", comment = "Allows you to adjust the amount of RF that Wyvern Armor requires to recharge 1 shield point.", autoSync = true)
-    public static int wyvernShieldRechargeCost = 1000;
-
-    @ModConfigProperty(category = "Tweaks", name = "draconicShieldRechargeCost", comment = "Allows you to adjust the amount of RF that Draconic Armor requires to recharge 1 shield point.", autoSync = true)
-    public static int draconicShieldRechargeCost = 1000;
-    
-    @ModConfigProperty(category = "Tweaks", name = "wyvernShieldRecovery", comment = "Allows you to adjust how fast Wyvern Armor is able to recover entropy.", autoSync = true)
-    public static double wyvernShieldRecovery = 2D;
-
-    @ModConfigProperty(category = "Tweaks", name = "draconicShieldRecovery", comment = "Allows you to adjust how fast Draconic Armor is able to recover entropy.", autoSync = true)
-    public static double draconicShieldRecovery = 4D;
 
     //Category Client
 

@@ -175,13 +175,13 @@ public class DraconicArmor extends WyvernArmor {
     @Override
     public float getProtectionPoints(ItemStack stack) {
         int upgradeLevel = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_CAPACITY);
-        float points = (float)DEConfig.draconicBaseShieldCapacity * getProtectionShare() * (upgradeLevel + 1);
+        float points = ToolStats.DRACONIC_BASE_SHIELD_CAPACITY * getProtectionShare() * (upgradeLevel + 1);
         return points;
     }
     
     @Override
     public float getRecoveryRate(ItemStack stack) {
-        return (float)DEConfig.draconicShieldRecovery * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
+        return (float)ToolStats.DRACONIC_SHIELD_RECOVERY * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
     }
 
     @Override
@@ -332,7 +332,7 @@ public class DraconicArmor extends WyvernArmor {
 
     @Override
     public int getEnergyPerProtectionPoint() {
-        return DEConfig.draconicShieldRechargeCost;
+        return ToolStats.DRACONIC_SHIELD_RECHARGE_COST;
     }
 
     //endregion
@@ -353,7 +353,7 @@ public class DraconicArmor extends WyvernArmor {
 
     @Override
     protected int getMaxReceive(ItemStack stack) {
-        return 1000000;
+        return ToolStats.DRACONIC_MAX_RECIEVE;
     }
 
     //endregion
