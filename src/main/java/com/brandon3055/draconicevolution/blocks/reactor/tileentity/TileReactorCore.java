@@ -395,6 +395,11 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             }
         }
         //endregion ======
+
+        //Worst case it rolls back a second
+        if (tick % 20 == 0) {
+            markDirty();
+        }
     }
 
     public void updateCriticalState() {

@@ -33,7 +33,9 @@ public class OreHandler {
         }
 
         if (ModFeatureParser.isEnabled(DEFeatures.draconiumOre)) {
-            OreDictionary.registerOre("oreDraconium", new ItemStack(DEFeatures.draconiumOre, 1, OreDictionary.WILDCARD_VALUE));
+            OreDictionary.registerOre("oreDraconium", new ItemStack(DEFeatures.draconiumOre, 1, 0));
+//            OreDictionary.registerOre("oreDraconiumNether", new ItemStack(DEFeatures.draconiumOre, 1, 1));
+//            OreDictionary.registerOre("oreDraconiumEnd", new ItemStack(DEFeatures.draconiumOre, 1, 2));
         }
 
         if (ModFeatureParser.isEnabled(DEFeatures.draconiumBlock)) {

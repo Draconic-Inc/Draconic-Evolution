@@ -1,5 +1,11 @@
 ######## 2.3.19.x ########
 -Blocked right click interaction with GuardianCrystals to prevent them from being picked up by things like soul vials.
+-Removed ore dict entries for Nether and End Draconium Ore. oreDraconium is now deprecated.
+  This is because the ores are not equivalent. Overworld ore drops significantly more dust than Nether ore which itself drops
+  slightly more then Overworld ore. Players can exploit this using any ore converter to converting stacks of end ore to overworld ore.
+  If you are using the oreDraconium entry for recipes please switch to the item with wildcard meta.
+-Pulled PR to fix energy core not saving its data properly.
+-Made a change that may fix issues with the reactor's state getting reset on server reboot.
 
 ######## 2.3.18.329 ########
 -Fixed IndexOutOfBounds exception thrown by wireless crystals.
