@@ -1,4 +1,4 @@
-######## 2.3.19.x ########
+######## 2.3.19.330 ########
 -Blocked right click interaction with GuardianCrystals to prevent them from being picked up by things like soul vials.
 -Removed ore dict entries for Nether and End Draconium Ore. oreDraconium is now deprecated.
   This is because the ores are not equivalent. Overworld ore drops significantly more dust than Nether ore which itself drops
