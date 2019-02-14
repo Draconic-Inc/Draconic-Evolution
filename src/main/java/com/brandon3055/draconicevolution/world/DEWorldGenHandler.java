@@ -57,7 +57,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
         switch (world.provider.getDimension()) {
             case 0:
                 if (!DEConfig.disableOreSpawnOverworld) {
-                    addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.STONE.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
+                    addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NORMAL), Blocks.STONE.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 6, 10, 2, 2, 8);
                 }
                 break;
             case 1:
@@ -79,7 +79,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
                 break;
             case -1:
                 if (!DEConfig.disableOreSpawnNether) {
-                    addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NETHER), Blocks.NETHERRACK.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 3, 4, 5, 1, 125);
+                    addOreSpawn(DEFeatures.draconiumOre.getDefaultState().withProperty(DraconiumOre.ORE_TYPE, DraconiumOre.EnumType.NETHER), Blocks.NETHERRACK.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 5, 7, 5, 1, 125);
                 }
                 break;
             default:
