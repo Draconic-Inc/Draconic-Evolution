@@ -10,5 +10,3 @@ public class VersionHandler {
 
     public static final String FULL_VERSION = VERSION + (SNAPSHOT > 0 ? "-snapshot_" + SNAPSHOT : "");
 }
-
-
