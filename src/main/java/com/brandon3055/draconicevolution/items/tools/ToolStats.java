@@ -99,4 +99,28 @@ public class ToolStats {
     public static double FLIGHT_SPEED_MODIFIER = 1D;
     @ModConfigProperty(category = "Stat Tweaks", name = "lastStandEnergyRequirement", requiresSync = true)
     public static int LAST_STAND_ENERGY = 10000000;
+    @ModConfigProperty(category = "Stat Tweaks", name = "wyvernBaseShieldCapacity", comment = "Allows you to adjust the total shield capacity of a full set of Wyvern Armor.", autoSync = true)
+    @ModConfigProperty.MinMax(min = "0", max = "2147483647")
+    public static int WYVERN_BASE_SHIELD_CAPACITY = 256;
+    @ModConfigProperty(category = "Stat Tweaks", name = "wyvernShieldRechargeCost", comment = "Allows you to adjust the amount of RF that Wyvern Armor requires to recharge 1 shield point.", autoSync = true)
+    @ModConfigProperty.MinMax(min = "0", max = "2147483647")
+    public static int WYVERN_SHIELD_RECHARGE_COST = 1000;
+    @ModConfigProperty(category = "Stat Tweaks", name = "wyvernShieldRecovery", comment = "Allows you to adjust how fast Wyvern Armor is able to recover entropy.  Value is {this number}% every 5 seconds.", autoSync = true)
+    @ModConfigProperty.MinMax(min = "0", max = "2147483647")
+    public static double WYVERN_SHIELD_RECOVERY = 2D;
+    @ModConfigProperty(category = "Stat Tweaks", name = "wyvernMaxRecieve", comment = "Allows you to adjust how fast Wyvern Armor is able to recieve RF/tick.", autoSync = true)
+    @ModConfigProperty.MinMax(min = "0", max = "2147483647")
+    public static int WYVERN_MAX_RECIEVE = 512000;
+    @ModConfigProperty(category = "Stat Tweaks", name = "draconicBaseShieldCapacity", comment = "Allows you to adjust the total shield capacity of a full set of Draconic Armor.", autoSync = true)
+    @ModConfigProperty.MinMax(min = "0", max = "2147483647")
+    public static int DRACONIC_BASE_SHIELD_CAPACITY = 512;
+    @ModConfigProperty(category = "Stat Tweaks", name = "draconicShieldRechargeCost", comment = "Allows you to adjust the amount of RF that Draconic Armor requires to recharge 1 shield point.", autoSync = true)
+    @ModConfigProperty.MinMax(min = "0", max = "2147483647")
+    public static int DRACONIC_SHIELD_RECHARGE_COST = 1000;
+    @ModConfigProperty(category = "Stat Tweaks", name = "draconicShieldRecovery", comment = "Allows you to adjust how fast Draconic Armor is able to recover entropy.  Value is {this number}% every 5 seconds.", autoSync = true)
+    @ModConfigProperty.MinMax(min = "0", max = "2147483647")
+    public static double DRACONIC_SHIELD_RECOVERY = 4D;
+    @ModConfigProperty(category = "Stat Tweaks", name = "draconicMaxRecieve", comment = "Allows you to adjust how fast Draconic Armor is able to recieve RF/tick.", autoSync = true)
+    @ModConfigProperty.MinMax(min = "0", max = "2147483647")
+    public static int DRACONIC_MAX_RECIEVE = 1000000;
 }
