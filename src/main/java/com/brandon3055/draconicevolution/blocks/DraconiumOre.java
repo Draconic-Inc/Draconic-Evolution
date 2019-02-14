@@ -98,7 +98,7 @@ public class DraconiumOre extends BlockBCore {
 
     @Override
     public int quantityDropped(IBlockState state, int fortune, Random random) {
-        return 4 - state.getValue(ORE_TYPE).getMeta() + random.nextInt(2 + (fortune * 2));
+        return 2 + random.nextInt(2 + (fortune * 2));
     }
 
     //endregion
