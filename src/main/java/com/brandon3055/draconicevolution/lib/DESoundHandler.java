@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.lib;
 
+import codechicken.lib.reflect.ObfMapping;
+import codechicken.lib.reflect.ReflectionManager;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
@@ -10,7 +12,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,7 @@ public class DESoundHandler {
     public static final SoundEvent shieldStrike;
     public static final SoundEvent electricBuzz;
     public static final SoundEvent sunDialEffect;
+    public static ObfMapping soundNameMapping = new ObfMapping("net/minecraft/util/SoundEvent", "field_187506_b");
 
     static {
         if (!Bootstrap.isRegistered()) {
@@ -90,16 +92,11 @@ public class DESoundHandler {
         playSoundFromServer(world, pos.x, pos.y, pos.z, soundIn, category, volume, pitch, distanceDelay, range);
     }
 
-
     public static void playSoundFromServer(World world, double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay, double range) {
-        Object o = ReflectionHelper.getPrivateValue(SoundEvent.class, soundIn, "field_187506_b", "soundName");
+        ResourceLocation soundName = ReflectionManager.getField(soundNameMapping, soundIn, ResourceLocation.class);
 
-        if (o instanceof ResourceLocation) {
-            o = o.toString();
-        }
-
-        if (o instanceof String) {
-            String soundId = (String) o;
+        if (soundName != null) {
+            String soundId = soundName.toString();
             String categoryName = category.getName();
             DraconicEvolution.network.sendToAllAround(new PacketPlaySound(x, y, z, soundId, categoryName, volume, pitch, distanceDelay), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, range));
         }
