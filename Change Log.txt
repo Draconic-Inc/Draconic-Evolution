@@ -1,4 +1,4 @@
-######## 2.3.20.x ########
+######## 2.3.20.331 ########
 -Fixed crash crashing/broken dislocators.
 -Re added ore dict for nether and end draconium.
 -Made nether, end and overworld draconium ore equivalent. (they all have the same drop rate for dusts)
