@@ -51,7 +51,7 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 minecraft {
-    version = config.mc_version + "-" + config.forge_version
+    version = config.mc_version + "-latest"
     runDir = "run"
     mappings = "${config.mappings}"
     replace '${mod_version}', project.config.mod_version
