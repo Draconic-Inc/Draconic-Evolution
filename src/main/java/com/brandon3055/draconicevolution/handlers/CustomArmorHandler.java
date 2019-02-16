@@ -9,6 +9,10 @@ import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.ICustomArmor;
 import com.brandon3055.draconicevolution.items.tools.ToolStats;
 import com.brandon3055.draconicevolution.network.PacketShieldHit;
+
+import baubles.api.BaublesApi;
+import baubles.api.IBauble;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -23,6 +27,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -130,13 +135,30 @@ public class CustomArmorHandler {
         }
 
         DraconicEvolution.network.sendToAllAround(new PacketShieldHit(player, remainingPoints / summery.maxProtectionPoints), new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 64));
-
+        replaceBaubles(summery, player);
         if (remainingPoints > 0) {
             player.hurtResistantTime = 20;
         }
         else if (hitAmount - totalAbsorbed > 0) {
             player.attackEntityFrom(event.getSource(), hitAmount - totalAbsorbed);
         }
+    }
+    
+    private void replaceBaubles(ArmorSummery summery, EntityPlayer player) {
+    	if (summery != null) {
+    		if (Loader.isModLoaded("baubles") && summery.armorStacks.size() > 4) {
+        		for (int i = 0; i < summery.armorStacks.size(); i++) {
+        			ItemStack stack = summery.armorStacks.get(i);
+        			if (stack.getItem() instanceof IBauble) {
+        				IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+                		for (int ii = 0; ii < baubles.getSlots(); ii++) {
+                			if (!baubles.getStackInSlot(ii).isEmpty() && baubles.getStackInSlot(ii).getItem().equals(stack.getItem()))
+                				baubles.setStackInSlot(ii, stack);
+                		}
+        			}
+        		}
+        	}
+    	}
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -188,6 +210,7 @@ public class CustomArmorHandler {
         player.sendMessage(new TextComponentTranslation("msg.de.shieldDepleted.txt").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
         event.setCanceled(true);
         player.setHealth(1);
+        replaceBaubles(summery, player);
     }
 
     @SubscribeEvent
@@ -199,6 +222,7 @@ public class CustomArmorHandler {
 
         tickShield(summery, player);
         tickArmorEffects(summery, player);
+        replaceBaubles(summery, player);
     }
 
     @SubscribeEvent
@@ -403,7 +427,7 @@ public class CustomArmorHandler {
          */
         public float protectionPoints = 0F;
         /**
-         * Number of quipped armor peaces
+         * Number of equipped armor peaces
          */
         public int peaces = 0;
         /**
@@ -449,17 +473,28 @@ public class CustomArmorHandler {
         public boolean hasDraconic = false;
 
         public ArmorSummery getSummery(EntityPlayer player) {
-            NonNullList<ItemStack> armorSlots = player.inventory.armorInventory;
+        	List<ItemStack> slots = new ArrayList<ItemStack>();
+        	NonNullList<ItemStack> armorSlots = player.inventory.armorInventory;
+        	for (int i = 0; i < armorSlots.size(); i++) {
+        		slots.add(armorSlots.get(i));
+        	}
+        	if (Loader.isModLoaded("baubles")) {
+        		IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+            	for (int i = 0; i < baubles.getSlots(); i++) {
+            		if (!baubles.getStackInSlot(i).isEmpty() && baubles.getStackInSlot(i).getItem() instanceof ICustomArmor)
+            			slots.add(baubles.getStackInSlot(i).copy());
+            	}
+        	}
             float totalEntropy = 0;
             float totalRecoveryPoints = 0;
 
-            allocation = new float[armorSlots.size()];
-            armorStacks = NonNullList.withSize(armorSlots.size(), ItemStack.EMPTY);
-            pointsDown = new float[armorSlots.size()];
-            energyAllocation = new int[armorSlots.size()];
+            allocation = new float[slots.size()];
+            armorStacks = NonNullList.withSize(slots.size(), ItemStack.EMPTY);
+            pointsDown = new float[slots.size()];
+            energyAllocation = new int[slots.size()];
 
-            for (int i = 0; i < armorSlots.size(); i++) {
-                ItemStack stack = armorSlots.get(i);
+            for (int i = 0; i < slots.size(); i++) {
+                ItemStack stack = slots.get(i);
                 if (stack.isEmpty() || !(stack.getItem() instanceof ICustomArmor)) continue;
                 ICustomArmor armor = (ICustomArmor) stack.getItem();
                 peaces++;
