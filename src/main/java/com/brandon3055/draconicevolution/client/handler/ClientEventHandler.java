@@ -1,13 +1,15 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 
-import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.render.RenderUtils;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.texture.TextureUtils;
-import codechicken.lib.util.TransformUtils;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Vector3;
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
@@ -24,6 +26,14 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import com.google.common.collect.Lists;
+
+import codechicken.lib.colour.ColourRGBA;
+import codechicken.lib.render.RenderUtils;
+import codechicken.lib.render.shader.ShaderProgram;
+import codechicken.lib.texture.TextureUtils;
+import codechicken.lib.util.TransformUtils;
+import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Vector3;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -42,18 +52,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
-
-import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by Brandon on 28/10/2014.
@@ -170,7 +172,7 @@ public class ClientEventHandler {
             try {
                 String s = rand.nextBoolean() ? "Icosahedrons proudly brought to you by CCL!!!" : Utils.addCommas(Long.MAX_VALUE) + " RF!!!!";
 
-                ReflectionHelper.setPrivateValue(GuiMainMenu.class, (GuiMainMenu) event.getGui(), s, "splashText", "field_110353_x");
+                ObfuscationReflectionHelper.setPrivateValue(GuiMainMenu.class, (GuiMainMenu) event.getGui(), s, "splashText");
             }
             catch (Exception e) {
             }

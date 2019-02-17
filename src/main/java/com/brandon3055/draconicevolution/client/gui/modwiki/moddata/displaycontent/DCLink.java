@@ -1,5 +1,15 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import org.w3c.dom.Element;
+
 import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.*;
@@ -8,21 +18,14 @@ import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Predicate;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.w3c.dom.Element;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 /**
  * Created by brandon3055 on 8/09/2016.
@@ -164,7 +167,7 @@ public class DCLink extends DisplayComponentBase {
             }
             else if (linkTarget.equals(TARGET_WEB)) {
                 try {
-                    ReflectionHelper.setPrivateValue(GuiScreen.class, branch.guiWiki, new URI(link), "clickedLinkURI", "field_175286_t");
+                    ObfuscationReflectionHelper.setPrivateValue(GuiScreen.class, branch.guiWiki, new URI(link), "clickedLinkURI");
                     this.mc.displayGuiScreen(new GuiConfirmOpenLink(branch.guiWiki, link, 31102009, false));
                 }
                 catch (URISyntaxException e) {

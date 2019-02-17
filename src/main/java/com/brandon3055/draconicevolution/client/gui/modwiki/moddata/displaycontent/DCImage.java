@@ -1,5 +1,18 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
+import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.CENTER;
+import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.LEFT;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import org.w3c.dom.Element;
+
 import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiButtonSolid;
@@ -11,24 +24,14 @@ import com.brandon3055.brandonscore.lib.DLResourceLocation;
 import com.brandon3055.draconicevolution.client.gui.modwiki.GuiModWiki;
 import com.brandon3055.draconicevolution.client.gui.modwiki.moddata.guidoctree.TreeBranchRoot;
 import com.google.common.base.Predicate;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.w3c.dom.Element;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
-
-import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.CENTER;
-import static com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment.LEFT;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 /**
  * Created by brandon3055 on 8/09/2016.
@@ -131,7 +134,7 @@ public class DCImage extends DisplayComponentBase {
             }
             else if (resourceLocation.dlFinished && mouseButton == 1) {
                 try {
-                    ReflectionHelper.setPrivateValue(GuiScreen.class, branch.guiWiki, new URI(url), "clickedLinkURI", "field_175286_t");
+                    ObfuscationReflectionHelper.setPrivateValue(GuiScreen.class, branch.guiWiki, new URI(url), "clickedLinkURI");
                     this.mc.displayGuiScreen(new GuiConfirmOpenLink(branch.guiWiki, url, 31102009, false));
                 }
                 catch (URISyntaxException e) {

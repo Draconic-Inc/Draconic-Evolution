@@ -1,24 +1,27 @@
 package com.brandon3055.draconicevolution.lib;
 
-import com.brandon3055.brandonscore.utils.LogHelperBC;
-import com.google.common.io.ByteStreams;
-import com.google.gson.stream.JsonWriter;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.FolderResourcePack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.apache.commons.io.FilenameUtils;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FilenameUtils;
+
+import com.brandon3055.brandonscore.utils.LogHelperBC;
+import com.google.common.io.ByteStreams;
+import com.google.gson.stream.JsonWriter;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.FolderResourcePack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
  * Created by Brandon on 8/02/2015.
@@ -171,7 +174,7 @@ public class DEImageHandler {
             }
         }
 
-        Field f = ReflectionHelper.findField(Minecraft.class, "defaultResourcePacks", "field_110449_ao");
+        Field f = ObfuscationReflectionHelper.findField(Minecraft.class, "defaultResourcePacks");//"field_110449_ao"
         f.setAccessible(true);
         try {
             List defaultResourcePacks = (List) f.get(Minecraft.getMinecraft());

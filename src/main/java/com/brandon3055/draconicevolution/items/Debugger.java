@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.items;
 
-import cofh.redstoneflux.api.IEnergyProvider;
-import cofh.redstoneflux.api.IEnergyReceiver;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
@@ -9,6 +11,9 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyReceiver;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -25,10 +30,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by brandon3055 on 4/4/2016.
@@ -783,7 +784,7 @@ public class Debugger extends ItemBCore {
                 break;
             case 3:
                 if (world.isRemote) {
-//                    Map<ResourceLocation, ArrayDeque<Particle>[][]> texturedRenderQueue = ReflectionHelper.getPrivateValue(BCEffectRenderer.class, BCEffectHandler.effectRenderer, "texturedRenderQueue");
+//                    Map<ResourceLocation, ArrayDeque<Particle>[][]> texturedRenderQueue = ObfuscationReflectionHelper.getPrivateValue(BCEffectRenderer.class, BCEffectHandler.effectRenderer, "texturedRenderQueue");
 //
 //                    for (ArrayDeque<Particle>[][] array : texturedRenderQueue.values()) {
 //                        for (ArrayDeque<Particle>[] array2 : array) {
