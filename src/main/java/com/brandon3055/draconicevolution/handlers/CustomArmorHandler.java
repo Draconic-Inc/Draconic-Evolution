@@ -473,18 +473,19 @@ public class CustomArmorHandler {
         public boolean hasDraconic = false;
 
         public ArmorSummery getSummery(EntityPlayer player) {
-        	List<ItemStack> slots = new ArrayList<ItemStack>();
-        	NonNullList<ItemStack> armorSlots = player.inventory.armorInventory;
-        	for (int i = 0; i < armorSlots.size(); i++) {
-        		slots.add(armorSlots.get(i));
-        	}
-        	if (Loader.isModLoaded("baubles")) {
-        		IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-            	for (int i = 0; i < baubles.getSlots(); i++) {
-            		if (!baubles.getStackInSlot(i).isEmpty() && baubles.getStackInSlot(i).getItem() instanceof ICustomArmor)
-            			slots.add(baubles.getStackInSlot(i).copy());
-            	}
-        	}
+            List<ItemStack> slots = new ArrayList<ItemStack>();
+            NonNullList<ItemStack> armorSlots = player.inventory.armorInventory;
+            for (int i = 0; i < armorSlots.size(); i++) {
+                slots.add(armorSlots.get(i));
+            }
+            if (Loader.isModLoaded("baubles")) {
+                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+                for (int i = 0; i < baubles.getSlots(); i++) {
+                    if (!baubles.getStackInSlot(i).isEmpty() && baubles.getStackInSlot(i).getItem() instanceof ICustomArmor) {
+            	        slots.add(baubles.getStackInSlot(i).copy());
+                    }
+                }
+            }
             float totalEntropy = 0;
             float totalRecoveryPoints = 0;
 
