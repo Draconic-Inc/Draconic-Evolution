@@ -15,10 +15,9 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
@@ -28,6 +27,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by brandon3055 on 12/02/2017.
@@ -37,6 +37,7 @@ public class ExplosionFX extends BCParticle {
     public static CCModel model_inv;
     public CoreEffect coreEffect;
     private LinkedList<EffectPart> effectParts = new LinkedList<>();
+    private static final Random rand = new Random();
 
     private static ShaderProgram leadingWaveProgram;
     private static ShaderProgram blastWaveProgram;
@@ -175,7 +176,7 @@ public class ExplosionFX extends BCParticle {
 
         public EffectPart(double scale) {
             this.scale = scale;
-            randOffset = Minecraft.getMinecraft().world.rand.nextInt(3265324);
+            randOffset = rand.nextInt(3265324);
         }
 
         public abstract void update();
