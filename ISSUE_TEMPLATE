@@ -13,6 +13,8 @@ Please note assuming the issue is a crash something like this
 ```Error: net.minecraftforge.fml.common.LoaderExceptionModCrash: Caught exception from Some Mod```
 
 Is NOT a crash report!</br>
+Attache the crash report as a txt file to your issue or use a link service like pastebin.</br>
+
 I need the full crash report which you can find in the crash-reports folder in the minecraft folder.</br>
 Failing that please give me your entire minecraft log from the session when the crash occurred.</br>
 If you do not provide these your issue will be insta-closed.
