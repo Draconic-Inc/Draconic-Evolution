@@ -27,6 +27,7 @@ public class ModHelper {
     public static boolean isAvaritiaInstalled;
     public static boolean isRotaryCraftInstalled;
     public static boolean isJEIInstalled;
+    public static boolean isBaublesInstalled;
     private static Item cleaver;
     private static Item avaritiaSword;
     private static Item bedrockSword;
@@ -36,6 +37,7 @@ public class ModHelper {
         isAvaritiaInstalled = Loader.isModLoaded("avaritia");
         isRotaryCraftInstalled = Loader.isModLoaded("rotarycraft");
         isJEIInstalled = Loader.isModLoaded("jei");
+        isBaublesInstalled = Loader.isModLoaded("baubles");
     }
 
     public static boolean isHoldingCleaver(EntityPlayer player) {

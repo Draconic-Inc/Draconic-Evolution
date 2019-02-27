@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Created by brandon3055 on 5/2/2016.
+ * //TODO (DE3) Split this up into separate interfaces e.g. IShieldProvider
+ * //Also add methods to modify things like protection points because that should be handled by the item not CustomArmorHandler
  */
 public interface ICustomArmor extends IEnergyContainerItem {
 
@@ -47,9 +49,11 @@ public interface ICustomArmor extends IEnergyContainerItem {
     float getFireResistance(ItemStack stack);
 
     /**
-     * Returns {true, false} if this armor gives the player flight
-     * Returns {true, true} if flight lock is also enables on this armor
-     *///TODO make this more sane
+     * Returns an array of 3 booleans.
+     * The first allows you to enable or disable flight
+     * The second allows you to enable or disable flight lock
+     * And the second allows you to enable or disable inertia cancellation
+     *///TODO (DE3) make this more sane
     boolean[] hasFlight(ItemStack stack);
 
     float getFlightSpeedModifier(ItemStack stack, EntityPlayer player);

@@ -1,8 +1,13 @@
-######## 2.3.20.331 ########
+######## 2.3.21.x ########
+-Fixed impossible null pointer exception in ExplosionFX
+-Added compatibility between ICustomArmor and Baubles (Allows other mods to add baubles DE armor abilities)
+
+######## 2.3.20.333 ########
 -Fixed crash crashing/broken dislocators.
 -Re added ore dict for nether and end draconium.
 -Made nether, end and overworld draconium ore equivalent. (they all have the same drop rate for dusts)
 -Increased the cluster size for overworld and nether draconium ore.
+-Pulled PR to add shield-related config values and fixed spelling/grammar in config file
 
 ######## 2.3.19.330 ########
 -Blocked right click interaction with GuardianCrystals to prevent them from being picked up by things like soul vials.
