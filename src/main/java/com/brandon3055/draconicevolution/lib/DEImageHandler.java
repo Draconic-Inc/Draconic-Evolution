@@ -1,21 +1,22 @@
 package com.brandon3055.draconicevolution.lib;
 
+import codechicken.lib.reflect.ObfMapping;
+import codechicken.lib.reflect.ReflectionManager;
 import com.brandon3055.brandonscore.utils.LogHelperBC;
 import com.google.common.io.ByteStreams;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.FolderResourcePack;
+import net.minecraft.client.resources.IResourcePack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -24,10 +25,11 @@ import java.util.*;
  * Created by Brandon on 8/02/2015.
  * This class handles images for the information tablet
  */
+@Deprecated
 public class DEImageHandler {
     public static DEImageHandler instance = new DEImageHandler();
     public static Map<String, ManualImageLocation> downloadedImages = new HashMap<String, ManualImageLocation>();
-
+    public static ObfMapping defaultResourcePacksMapping = new ObfMapping("net/minecraft/client/Minecraft", "field_110449_ao");
 
     private static String savePath;
     private static File saveFolder;
@@ -171,17 +173,16 @@ public class DEImageHandler {
             }
         }
 
-        Field f = ReflectionHelper.findField(Minecraft.class, "defaultResourcePacks", "field_110449_ao");
-        f.setAccessible(true);
         try {
-            List defaultResourcePacks = (List) f.get(Minecraft.getMinecraft());
+            List<IResourcePack> defaultResourcePacks = ReflectionManager.getField(defaultResourcePacksMapping, Minecraft.getMinecraft(), List.class);
             defaultResourcePacks.add(new FolderResourcePack(rspack));
 
-            f.set(Minecraft.getMinecraft(), defaultResourcePacks);
             LogHelperBC.info("RS Added");
-            if (refreash) Minecraft.getMinecraft().refreshResources();
+            if (refreash) {
+                Minecraft.getMinecraft().refreshResources();
+            }
         }
-        catch (IllegalAccessException e) {
+        catch (Throwable e) {
             e.printStackTrace();
         }
     }

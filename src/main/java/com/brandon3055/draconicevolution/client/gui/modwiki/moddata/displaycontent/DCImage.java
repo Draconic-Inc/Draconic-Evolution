@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.modwiki.moddata.displaycontent;
 
+import codechicken.lib.reflect.ObfMapping;
+import codechicken.lib.reflect.ReflectionManager;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.MGuiElementBase;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.EnumAlignment;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.MGuiButtonSolid;
@@ -17,7 +19,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.w3c.dom.Element;
 
 import javax.annotation.Nullable;
@@ -37,6 +38,7 @@ public class DCImage extends DisplayComponentBase {
 
     public static final String ATTRIB_URL = "imgURL";
     public static final String ATTRIB_SCALE = "scale";
+    public static ObfMapping linkURIMapping = new ObfMapping("net/minecraft/client/gui/GuiScreen", "field_175286_t");
 
     public String url;
     public int scale;
@@ -131,7 +133,7 @@ public class DCImage extends DisplayComponentBase {
             }
             else if (resourceLocation.dlFinished && mouseButton == 1) {
                 try {
-                    ReflectionHelper.setPrivateValue(GuiScreen.class, branch.guiWiki, new URI(url), "clickedLinkURI", "field_175286_t");
+                    ReflectionManager.setField(linkURIMapping, branch.guiWiki, new URI(url));
                     this.mc.displayGuiScreen(new GuiConfirmOpenLink(branch.guiWiki, url, 31102009, false));
                 }
                 catch (URISyntaxException e) {

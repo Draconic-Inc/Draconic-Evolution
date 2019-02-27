@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.client.handler;
 
 
 import codechicken.lib.colour.ColourRGBA;
+import codechicken.lib.reflect.ObfMapping;
+import codechicken.lib.reflect.ReflectionManager;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.texture.TextureUtils;
@@ -39,12 +41,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -60,7 +64,7 @@ import java.util.Random;
  */
 public class ClientEventHandler {
     public static Map<EntityPlayer, PairKV<Float, Integer>> playerShieldStatus = new HashMap<EntityPlayer, PairKV<Float, Integer>>();
-
+    public static ObfMapping splashTextMapping = new ObfMapping("net/minecraft/client/gui/GuiMainMenu", "field_110353_x");
     public static FloatBuffer winPos = GLAllocation.createDirectFloatBuffer(3);
     public static volatile int elapsedTicks;
     public static boolean playerHoldingWrench = false;
@@ -169,8 +173,7 @@ public class ClientEventHandler {
         if (event.getGui() instanceof GuiMainMenu && rand.nextInt(150) == 0) {
             try {
                 String s = rand.nextBoolean() ? "Icosahedrons proudly brought to you by CCL!!!" : Utils.addCommas(Long.MAX_VALUE) + " RF!!!!";
-
-                ReflectionHelper.setPrivateValue(GuiMainMenu.class, (GuiMainMenu) event.getGui(), s, "splashText", "field_110353_x");
+                ReflectionManager.setField(splashTextMapping, event.getGui(), s);
             }
             catch (Exception e) {
             }
