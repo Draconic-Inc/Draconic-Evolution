@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -162,7 +163,12 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             int mode = ItemNBTHelper.getShort(stack, "Mode", (short) 0);
-            int newMode = mode == 4 ? 0 : mode + 1;
+            int newMode;
+            if (ModHelper.isBaublesInstalled) newMode = mode >= 9 ? 0 : mode + 1;
+            else {
+            	newMode = mode >= 4 ? 0 : mode + 1;
+            	if (newMode == 4) newMode = 9;
+            }
             ItemNBTHelper.setShort(stack, "Mode", (short) newMode);
             if (world.isRemote) {
                 ChatHelper.indexedMsg(player, InfoHelper.ITC() + I18n.format("info.de.capacitorMode.txt") + ": " + InfoHelper.HITC() + I18n.format("info.de.capacitorMode" + ItemNBTHelper.getShort(stack, "Mode", (short) 0) + ".txt"));
@@ -174,22 +180,26 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     @Override
     public void onUpdate(ItemStack container, World world, Entity entity, int itemSlot, boolean isSelected) {
         if (!(entity instanceof EntityPlayer)) return;
-        updateEnergy(container, (EntityPlayer) entity, new ArrayList<>());
+        updateEnergy(container, (EntityPlayer) entity);
     }
 
-    public void updateEnergy(ItemStack capacitor, EntityPlayer player, List<ItemStack> stacks) {
+    public void updateEnergy(ItemStack capacitor, EntityPlayer player) {
+    	List<ItemStack> stacks = new ArrayList<>();
         int mode = ItemNBTHelper.getShort(capacitor, "Mode", (short) 0);
-
-        if (mode == 4) { //Charge All
+        
+        if (mode > 4 && ModHelper.isBaublesInstalled) { //Charge Baubles
+        	stacks = getBaubles(player);
+        }
+        if (mode == 4 || mode == 9) { //Charge Visible Inventory
             stacks.addAll(player.inventory.armorInventory);
             stacks.addAll(player.inventory.mainInventory);
             stacks.addAll(player.inventory.offHandInventory);
         }
         else {
-            if (mode == 1 || mode == 3) { //Charge Armor
+            if (mode == 1 || mode == 3 || mode == 6 || mode == 8) { //Charge Armor
                 stacks.addAll(player.inventory.armorInventory);
             }
-            if (mode == 2 || mode == 3) { //Charge Held Items
+            if (mode == 2 || mode == 3 || mode == 7 || mode == 8) { //Charge Held Items
                 stacks.add(player.getHeldItemOffhand());
                 stacks.add(player.getHeldItemMainhand());
             }
@@ -269,7 +279,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     @Optional.Method(modid = "baubles")
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
         if (!(player instanceof EntityPlayer)) return;
-        updateEnergy(itemstack, (EntityPlayer) player, getBaubles(player));
+        updateEnergy(itemstack, (EntityPlayer) player);
     }
 
     /* BAUBLES */

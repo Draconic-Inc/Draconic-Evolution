@@ -1,4 +1,4 @@
-//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
+﻿//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:celestial_manipulator.name=Celestial Manipulator
 tile.draconicevolution:draconium_ore_normal.name=Draconium Ore
 tile.draconicevolution:draconium_ore_nether.name=Nether Draconium Ore
@@ -275,7 +275,12 @@ info.de.capacitorMode0.txt=Inactive
 info.de.capacitorMode1.txt=Charge Armor
 info.de.capacitorMode2.txt=Charge Held Items
 info.de.capacitorMode3.txt=Charge Armor & Held Items
-info.de.capacitorMode4.txt=Charge All
+info.de.capacitorMode4.txt=Charge Vanilla Inventory
+info.de.capacitorMode5.txt=Charge Baubles
+info.de.capacitorMode6.txt=Charge Armor & Baubles
+info.de.capacitorMode7.txt=Charge Held Items & Baubles
+info.de.capacitorMode8.txt=Charge Armor, Held Items, & Baubles
+info.de.capacitorMode9.txt=Charge All
 info.de.changwMode.txt=Shift Right click to change mode
 
 info.de.toolInventoryOblit.txt=Junk filter & Enchants
