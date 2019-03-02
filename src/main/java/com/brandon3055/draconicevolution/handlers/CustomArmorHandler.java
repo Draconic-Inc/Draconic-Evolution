@@ -455,28 +455,34 @@ public class CustomArmorHandler {
                     case 3: //Head
                         break;
                     case 2: //Chest
-                        flight = armor.hasFlight(stack);
+                    	for (int ii = 0; ii < 3; ii++) {
+                    		if (armor.hasFlight(stack)[ii]) {
+                    			flight[ii] = armor.hasFlight(stack)[ii];
+                    		}
+                    	}
                         if (flight[0]) {
-                            flightVModifier = armor.getFlightVModifier(stack, player);
-                            flightSpeedModifier = armor.getFlightSpeedModifier(stack, player);
+                            flightVModifier += armor.getFlightVModifier(stack, player);
+                            flightSpeedModifier += armor.getFlightSpeedModifier(stack, player);
                         }
                         break;
                     case 1: //Legs
-                        speedModifier = armor.getSpeedModifier(stack, player);
+                        speedModifier += armor.getSpeedModifier(stack, player);
                         break;
                     case 0: //Feet
-                        hasHillStep = armor.hasHillStep(stack, player);
-                        jumpModifier = armor.getJumpModifier(stack, player);
+                    	if (armor.hasHillStep(stack, player)) hasHillStep = armor.hasHillStep(stack, player);
+                        jumpModifier += armor.getJumpModifier(stack, player);
                         break;
                     default: //Baubles
-                        flight = armor.hasFlight(stack);
-                        if (flight[0]) {
-                            flightVModifier = armor.getFlightVModifier(stack, player);
-                            flightSpeedModifier = armor.getFlightSpeedModifier(stack, player);
-                        }
-                        speedModifier = armor.getSpeedModifier(stack, player);
-                        hasHillStep = armor.hasHillStep(stack, player);
-                        jumpModifier = armor.getJumpModifier(stack, player);
+                    	for (int ii = 0; ii < 3; ii++) {
+                    		if (armor.hasFlight(stack)[ii]) {
+                    			flight[ii] = armor.hasFlight(stack)[ii];
+                    		}
+                    	}
+                        flightVModifier += armor.getFlightVModifier(stack, player);
+                        flightSpeedModifier += armor.getFlightSpeedModifier(stack, player);
+                        speedModifier += armor.getSpeedModifier(stack, player);
+                        if (armor.hasHillStep(stack, player)) hasHillStep = armor.hasHillStep(stack, player);
+                        jumpModifier += armor.getJumpModifier(stack, player);
                         break;
                 }
             }
