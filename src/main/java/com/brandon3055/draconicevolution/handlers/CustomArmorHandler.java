@@ -451,32 +451,41 @@ public class CustomArmorHandler {
 
                 fireResistance += armor.getFireResistance(stack);
 
+                //TODO in 1.13 the armor pieces should have more control over what effects they can supply. That would make this switch unnecessary.
                 switch (i) {
                     case 3: //Head
                         break;
                     case 2: //Chest
-                        flight = armor.hasFlight(stack);
+                        boolean[] fa = armor.hasFlight(stack);
+                        flight[0] = flight[0] || fa[0];
+                        flight[1] = flight[1] || fa[1];
+                        flight[2] = flight[2] || fa[2];
+
                         if (flight[0]) {
-                            flightVModifier = armor.getFlightVModifier(stack, player);
-                            flightSpeedModifier = armor.getFlightSpeedModifier(stack, player);
+                            flightVModifier = Math.max(flightVModifier, armor.getFlightVModifier(stack, player));
+                            flightSpeedModifier = Math.max(flightVModifier, armor.getFlightSpeedModifier(stack, player));
                         }
                         break;
                     case 1: //Legs
-                        speedModifier = armor.getSpeedModifier(stack, player);
+                        speedModifier = Math.max(speedModifier, armor.getSpeedModifier(stack, player));
                         break;
                     case 0: //Feet
-                        hasHillStep = armor.hasHillStep(stack, player);
-                        jumpModifier = armor.getJumpModifier(stack, player);
+                        hasHillStep = hasHillStep || armor.hasHillStep(stack, player);
+                        jumpModifier = Math.max(jumpModifier, armor.getJumpModifier(stack, player));
                         break;
                     default: //Baubles
-                        flight = armor.hasFlight(stack);
+                        fa = armor.hasFlight(stack);
+                        flight[0] = flight[0] || fa[0];
+                        flight[1] = flight[1] || fa[1];
+                        flight[2] = flight[2] || fa[2];
+
                         if (flight[0]) {
-                            flightVModifier = armor.getFlightVModifier(stack, player);
-                            flightSpeedModifier = armor.getFlightSpeedModifier(stack, player);
+                            flightVModifier = Math.max(flightVModifier, armor.getFlightVModifier(stack, player));
+                            flightSpeedModifier = Math.max(flightSpeedModifier, armor.getFlightSpeedModifier(stack, player));
                         }
-                        speedModifier = armor.getSpeedModifier(stack, player);
-                        hasHillStep = armor.hasHillStep(stack, player);
-                        jumpModifier = armor.getJumpModifier(stack, player);
+                        speedModifier = Math.max(speedModifier, armor.getSpeedModifier(stack, player));
+                        hasHillStep = hasHillStep || armor.hasHillStep(stack, player);
+                        jumpModifier = Math.max(jumpModifier, armor.getJumpModifier(stack, player));
                         break;
                 }
             }
