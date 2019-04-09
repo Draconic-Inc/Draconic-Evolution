@@ -1,6 +1,8 @@
 ######## 2.3.21.x ########
 -Fixed impossible null pointer exception in ExplosionFX
 -Added compatibility between ICustomArmor and Baubles (Allows other mods to add baubles DE armor abilities)
+-Fixed capacitor only charging baubles when in a baubles slot.
+-Fixed capacitor always charging baubles when in a baubles slot. (even when disabled)
 
 ######## 2.3.20.333 ########
 -Fixed crash crashing/broken dislocators.

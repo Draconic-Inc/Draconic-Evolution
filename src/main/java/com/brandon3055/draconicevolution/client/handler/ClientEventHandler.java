@@ -175,8 +175,7 @@ public class ClientEventHandler {
                 String s = rand.nextBoolean() ? "Icosahedrons proudly brought to you by CCL!!!" : Utils.addCommas(Long.MAX_VALUE) + " RF!!!!";
                 ReflectionManager.setField(splashTextMapping, event.getGui(), s);
             }
-            catch (Exception e) {
-            }
+            catch (Exception e) {}
         }
     }
 

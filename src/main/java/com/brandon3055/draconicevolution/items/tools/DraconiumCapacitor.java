@@ -174,11 +174,15 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     @Override
     public void onUpdate(ItemStack container, World world, Entity entity, int itemSlot, boolean isSelected) {
         if (!(entity instanceof EntityPlayer)) return;
-        updateEnergy(container, (EntityPlayer) entity, new ArrayList<>());
+        updateEnergy(container, (EntityPlayer) entity, getBaubles(entity));
     }
 
     public void updateEnergy(ItemStack capacitor, EntityPlayer player, List<ItemStack> stacks) {
         int mode = ItemNBTHelper.getShort(capacitor, "Mode", (short) 0);
+
+        if (mode == 0){
+            return;
+        }
 
         if (mode == 4) { //Charge All
             stacks.addAll(player.inventory.armorInventory);
@@ -188,6 +192,9 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         else {
             if (mode == 1 || mode == 3) { //Charge Armor
                 stacks.addAll(player.inventory.armorInventory);
+            }
+            else {
+                stacks.clear(); // Dont charge baubles
             }
             if (mode == 2 || mode == 3) { //Charge Held Items
                 stacks.add(player.getHeldItemOffhand());
