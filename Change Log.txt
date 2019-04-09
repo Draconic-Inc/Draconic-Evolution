@@ -12,6 +12,7 @@
 -Shift clicking to add fuel to a Dislocator now adds 64 at a time.
 -Fixed out of order rows in GuiToolConfig
 -Fixed ore generating in chaos island rings when ore gen is disabled.
+-Fixed fusion crafter comparator output not accounting for injector tier.
 
 ######## 2.3.20.333 ########
 -Fixed crash crashing/broken dislocators.

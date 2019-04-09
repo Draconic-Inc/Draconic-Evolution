@@ -137,7 +137,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
         updateInjectors();
         activeRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, world, pos);
 
-        if (activeRecipe != null && activeRecipe.canCraft(this, world, pos) != null && activeRecipe.canCraft(this, world, pos).equals("true")) {
+        if (activeRecipe != null && activeRecipe.canCraft(this, world, pos).equals("true")) {
             int minTier = 3;
             for (ICraftingInjector pedestal : pedestals) {
                 if (!pedestal.getStackInPedestal().isEmpty() && pedestal.getPedestalTier() < minTier) {
@@ -488,10 +488,15 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             return 15;
         } else if (craftingStage.value > 0) {
             return (int) Math.max(1, ((craftingStage.value / 2000D) * 15D));
-        } else if (RecipeManager.FUSION_REGISTRY.findRecipe(this, world, pos) != null) {
-            return 1;
+        } else {
+            IFusionRecipe recipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, world, pos);
+            if (recipe != null && recipe.canCraft(this, world, pos).equals("true")) {
+                return 1;
+            }
+            
+            return 0;
         }
-        return 0;
+
     }
 
 //    @Override
