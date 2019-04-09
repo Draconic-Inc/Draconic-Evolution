@@ -11,11 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Mouse;
 
 /**
  * Created by Brandon on 14/08/2014.
@@ -43,30 +43,21 @@ public class KeyInputHandler {
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void onMouseInput(InputEvent.MouseInputEvent event) {
+    public void onMouseInput(MouseEvent event) {
         EntityPlayer player = Minecraft.getMinecraft().player;
         if (player == null) {
             return;
         }
 
         onInput(player);
-
-        int change = Mouse.getEventDWheel();
+        
+        int change = event.getDwheel();
         if (change == 0 || !player.isSneaking()) return;
 
-        if (change > 0) {
-            ItemStack item = player.inventory.getStackInSlot(previouseSlot(1, player.inventory.currentItem));
-            if (!item.isEmpty() && item.getItem() == DEFeatures.dislocatorAdvanced) {
-                player.inventory.currentItem = previouseSlot(1, player.inventory.currentItem);
-                DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, -1, false));
-            }
-        }
-        else if (change < 0) {
-            ItemStack item = player.inventory.getStackInSlot(previouseSlot(-1, player.inventory.currentItem));
-            if (!item.isEmpty() && item.getItem() == DEFeatures.dislocatorAdvanced) {
-                player.inventory.currentItem = previouseSlot(-1, player.inventory.currentItem);
-                DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, 1, false));
-            }
+        ItemStack item = player.inventory.getStackInSlot(player.inventory.currentItem);
+        if (item.getItem() == DEFeatures.dislocatorAdvanced) {
+            event.setCanceled(true);
+            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, change < 0 ? -1 : 1, false));
         }
     }
 
