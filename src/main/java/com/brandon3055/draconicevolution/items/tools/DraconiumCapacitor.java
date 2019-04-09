@@ -62,12 +62,30 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
         if (isInCreativeTab(tab)) {
             subItems.add(new ItemStack(DEFeatures.draconiumCapacitor, 1, 0));
-            subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 0), "Energy", DEConfig.wyvernFluxCapBaseCap));
+            ItemStack wyvernCharged = new ItemStack(DEFeatures.draconiumCapacitor, 1, 0);
+            setEnergy(wyvernCharged, getMaxEnergyStored(wyvernCharged));
+            subItems.add(wyvernCharged);
+
+            ItemStack uberWyvern = new ItemStack(DEFeatures.draconiumCapacitor, 1, 0);
+            for (String upgrade : getValidUpgrades(uberWyvern)) {
+                UpgradeHelper.setUpgradeLevel(uberWyvern, upgrade, getMaxUpgradeLevel(uberWyvern, upgrade));
+            }
+            setEnergy(uberWyvern, getCapacity(uberWyvern));
+            subItems.add(uberWyvern);
 
             subItems.add(new ItemStack(DEFeatures.draconiumCapacitor, 1, 1));
-            subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 1), "Energy", DEConfig.draconicFluxCapBaseCap));
+            ItemStack draconicCharged = new ItemStack(DEFeatures.draconiumCapacitor, 1, 1);
+            setEnergy(draconicCharged, getMaxEnergyStored(wyvernCharged));
+            subItems.add(draconicCharged);
 
-            subItems.add(ItemNBTHelper.setInteger(new ItemStack(DEFeatures.draconiumCapacitor, 1, 2), "Energy", Integer.MAX_VALUE / 2));
+            ItemStack uberDraconic = new ItemStack(DEFeatures.draconiumCapacitor, 1, 1);
+            for (String upgrade : getValidUpgrades(uberDraconic)) {
+                UpgradeHelper.setUpgradeLevel(uberDraconic, upgrade, getMaxUpgradeLevel(uberDraconic, upgrade));
+            }
+            setEnergy(uberDraconic, getCapacity(uberDraconic));
+            subItems.add(uberDraconic);
+
+            subItems.add(new ItemStack(DEFeatures.draconiumCapacitor, 1, 2));
         }
     }
 
@@ -180,7 +198,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     public void updateEnergy(ItemStack capacitor, EntityPlayer player, List<ItemStack> stacks) {
         int mode = ItemNBTHelper.getShort(capacitor, "Mode", (short) 0);
 
-        if (mode == 0){
+        if (mode == 0) {
             return;
         }
 
@@ -261,7 +279,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
     @Override
     public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
-        return stack.getItemDamage() == 0 ? 3 : stack.getItemDamage() == 1 ? 6 : 0;
+        return stack.getItemDamage() == 0 ? 3 : stack.getItemDamage() == 1 ? 4 : 0;
     }
 
     //endregion

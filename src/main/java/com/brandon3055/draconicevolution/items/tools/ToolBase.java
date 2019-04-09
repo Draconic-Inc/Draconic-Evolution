@@ -19,6 +19,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -32,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -74,6 +76,22 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
         baseAttackDamage = (float) getBaseAttackDamageConfig();
         baseAttackSpeed = (float) getBaseAttackSpeedConfig();
         loadEnergyStats();
+    }
+
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
+        super.getSubItems(tab, subItems);
+
+        if (isInCreativeTab(tab)) {
+            ItemStack uberStack = new ItemStack(this);
+
+            for (String upgrade : getValidUpgrades(uberStack)) {
+                UpgradeHelper.setUpgradeLevel(uberStack, upgrade, getMaxUpgradeLevel(uberStack, upgrade));
+            }
+
+            setEnergy(uberStack, getCapacity(uberStack));
+            subItems.add(uberStack);
+        }
     }
 
     @Override

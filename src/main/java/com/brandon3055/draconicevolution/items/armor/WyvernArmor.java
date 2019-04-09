@@ -73,6 +73,15 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
             ItemStack stack = new ItemStack(this);
             modifyEnergy(stack, getCapacity(stack));
             subItems.add(stack);
+
+            ItemStack uberStack = new ItemStack(this);
+
+            for (String upgrade : getValidUpgrades(uberStack)) {
+                UpgradeHelper.setUpgradeLevel(uberStack, upgrade, getMaxUpgradeLevel(uberStack, upgrade));
+            }
+
+            modifyEnergy(uberStack, getCapacity(uberStack));
+            subItems.add(uberStack);
         }
     }
 
@@ -106,7 +115,8 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
             int i = 100 + (100 * u) + (Math.max(u - 1, 0) * 50);
             registry.register(stack, new IntegerConfigField("armorSpeedModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
             registry.register(stack, new BooleanConfigField("armorSpeedFOVWarp", false, "config.field.armorSpeedFOVWarp.description"));
-        } if (armorType == EntityEquipmentSlot.FEET) {
+        }
+        if (armorType == EntityEquipmentSlot.FEET) {
             int u = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.JUMP_BOOST);
             int i = 100 + (100 * u) + (Math.max(u - 1, 0) * 50);
             registry.register(stack, new IntegerConfigField("armorJumpModifier", 0, 0, i, "config.field.armorSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
@@ -172,10 +182,8 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
         if (model == null) {
             if (armorType == EntityEquipmentSlot.HEAD) model = new ModelWyvernArmor(0.5F, true, false, false, false);
-            else if (armorType == EntityEquipmentSlot.CHEST)
-                model = new ModelWyvernArmor(1.5F, false, true, false, false);
-            else if (armorType == EntityEquipmentSlot.LEGS)
-                model = new ModelWyvernArmor(1.5F, false, false, true, false);
+            else if (armorType == EntityEquipmentSlot.CHEST) model = new ModelWyvernArmor(1.5F, false, true, false, false);
+            else if (armorType == EntityEquipmentSlot.LEGS) model = new ModelWyvernArmor(1.5F, false, false, true, false);
             else model = new ModelWyvernArmor(1F, false, false, false, true);
             this.model.bipedHead.showModel = (armorType == EntityEquipmentSlot.HEAD);
             this.model.bipedHeadwear.showModel = (armorType == EntityEquipmentSlot.HEAD);
@@ -222,7 +230,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     @Override
     public float getRecoveryRate(ItemStack stack) {
-        return (float)ToolStats.WYVERN_SHIELD_RECOVERY * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
+        return (float) ToolStats.WYVERN_SHIELD_RECOVERY * (1F + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY));//TODO Balance
     }
 
     @Override
