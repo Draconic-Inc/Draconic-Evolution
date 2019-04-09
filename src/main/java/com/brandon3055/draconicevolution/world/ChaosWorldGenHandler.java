@@ -159,7 +159,7 @@ public class ChaosWorldGenHandler {
                         if (0.1F > random.nextFloat()) {
                             world.setBlockState(pos, Blocks.END_STONE.getDefaultState());
                         }
-                        if (0.001F > random.nextFloat()) {
+                        if (0.001F > random.nextFloat() && !DEConfig.disableOreSpawnEnd) {
                             world.setBlockState(pos, DraconiumOre.getEnd());
                         }
                     }
