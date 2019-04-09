@@ -19,10 +19,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ITickable;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -30,6 +28,7 @@ import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
@@ -42,6 +41,54 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
     public ManagedBool isPowered = register("isPowered", new ManagedBool(false)).saveToTile().syncViaTile().finish();
     public ManagedShort spawnDelay = register("spawnDelay", new ManagedShort(100)).saveToTile().syncViaTile().finish();
     public ManagedInt startSpawnDelay = register("startSpawnDelay", new ManagedInt(100)).saveToTile().syncViaTile().finish();
+    private MobSpawnerBaseLogic dummyLogic = new MobSpawnerBaseLogic() {
+        @Override
+        public void broadcastEvent(int id) {
+
+        }
+
+        @Override
+        public World getSpawnerWorld() {
+            return world;
+        }
+
+        @Override
+        public BlockPos getSpawnerPosition() {
+            return pos;
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation getEntityId() {
+            return new ResourceLocation(DEFeatures.mobSoul.getEntityString(mobSoul.value));
+        }
+
+        @Override
+        public void updateSpawner() {
+        }
+
+        @Override
+        public void setEntityId(@Nullable ResourceLocation id) {
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound nbt) {
+        }
+
+        @Override
+        public NBTTagCompound writeToNBT(NBTTagCompound p_189530_1_) {
+            return p_189530_1_;
+        }
+
+        @Override
+        public boolean setDelayToMin(int delay) {
+            return false;
+        }
+
+        @Override
+        public void setNextSpawnData(WeightedSpawnerEntity p_184993_1_) {
+        }
+    };
 
     private int activatingRangeFromPlayer = 24;
     private int spawnRange = 4;
@@ -101,7 +148,7 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
 
                 boolean canSpawn;
                 if (spawnerTier.value.ignoreSpawnReq) {
-                    Event.Result result = ForgeEventFactory.canEntitySpawn(entityliving, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ);
+                    Event.Result result = ForgeEventFactory.canEntitySpawn(entityliving, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ, dummyLogic);
                     canSpawn = isNotColliding(entity) && (result == Event.Result.DEFAULT || result == Event.Result.ALLOW);
                 }
                 else {
