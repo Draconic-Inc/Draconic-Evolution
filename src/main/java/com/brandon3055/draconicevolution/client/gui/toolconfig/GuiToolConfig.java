@@ -62,9 +62,12 @@ public class GuiToolConfig extends GuiScreen {
         for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
             ItemStack stack = player.inventory.mainInventory.get(i);
             int x = -81 + centerX + i % 9 * 18;
-            int y = +30 + centerY - i / 9 * 18;
+            int y;
             if (i < 9) {
-                y += 1;
+                y = centerY + 31;
+            }
+            else {
+                y = (centerY - 24) + ((i / 9) - 1) * 18;
             }
             buttonList.add(inventory[i] = new ToolButton(id, x, y, 18, 18, stack, new PlayerSlot(i, MAIN)));
             id++;

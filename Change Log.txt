@@ -10,6 +10,7 @@
 -Fixed Particle gen tile not getting removed when the tile is destroyed.
 -Fixed upgrading tools not copying enchantments.
 -Shift clicking to add fuel to a Dislocator now adds 64 at a time.
+-Fixed out of order rows in GuiToolConfig
 
 ######## 2.3.20.333 ########
 -Fixed crash crashing/broken dislocators.
