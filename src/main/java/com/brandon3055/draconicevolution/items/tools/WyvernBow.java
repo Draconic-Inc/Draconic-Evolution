@@ -167,20 +167,20 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
 
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
-        double maxDamage = 2 + getToolTier(stack) + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_DAMAGE) * 2);
-        int maxSpeed = 100 + (getToolTier(stack) * 100) + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_SPEED) * 100;
+        double maxDamage = ToolStats.BOW_BASE_DAMAGE + (getToolTier(stack) * ToolStats.BOW_TIER_MULT_DAMAGE) + (UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_DAMAGE) * ToolStats.BOW_MULT_DAMAGE);
+        int maxSpeed = ToolStats.BOW_BASE_SPEED + (getToolTier(stack) * ToolStats.BOW_TIER_MULT_SPEED) + UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ARROW_SPEED) * ToolStats.BOW_MULT_SPEED;
 
         registry.register(stack, new DoubleConfigField("bowArrowDamage", maxDamage, 0, maxDamage, "config.field.bowArrowDamage.description", SLIDER));
         registry.register(stack, new IntegerConfigField("bowArrowSpeedModifier", maxSpeed, 0, maxSpeed, "config.field.bowArrowSpeedModifier.description", SLIDER).setPrefix("+").setExtension("%"));
         registry.register(stack, new BooleanConfigField("bowAutoFire", false, "config.field.bowAutoFire.description"));
         registry.register(stack, new DoubleConfigField("bowExplosionPower", 0, 0, 4, "config.field.bowExplosionPower.description", SLIDER));
-        registry.register(stack, new IntegerConfigField("bowZoomModifier", 0, 0, (int) (getMaxZoomModifier(stack) * 100), "config.field.bowZoomModifier.description", SLIDER));
+        registry.register(stack, new IntegerConfigField("bowZoomModifier", 0, 0, getMaxZoomModifier(stack), "config.field.bowZoomModifier.description", SLIDER));
 
         return registry;
     }
 
-    public float getMaxZoomModifier(ItemStack stack) {
-        return 3;
+    public int getMaxZoomModifier(ItemStack stack) {
+        return ToolStats.BOW_WYVERN_MAX_ZOOM;
     }
 
     @Override

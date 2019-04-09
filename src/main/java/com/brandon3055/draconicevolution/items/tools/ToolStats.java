@@ -85,6 +85,26 @@ public class ToolStats {
     public static double DRA_SWORD_ATTACK_DAMAGE = 35D;
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicSwordAttackSpeed", requiresSync = true)
     public static double DRA_SWORD_ATTACK_SPEED = -2D;
+    
+    //Bow
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowBaseDamage", requiresSync = true)
+    public static int BOW_BASE_DAMAGE = 2;
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowUpgradeMultiplierDamage", requiresSync = true)
+    public static int BOW_MULT_DAMAGE = 2;
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowTierMultiplierDamage", requiresSync = true)
+    public static int BOW_TIER_MULT_DAMAGE = 1;
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowBaseSpeed", requiresSync = true)
+    public static int BOW_BASE_SPEED = 100;
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowUpgradeMultiplierSpeed", requiresSync = true)
+    public static int BOW_MULT_SPEED = 100;
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowTierMultiplierSpeed", requiresSync = true)
+    public static int BOW_TIER_MULT_SPEED = 100;
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowMaxExplosionPower", requiresSync = true)
+    public static int BOW_MAX_EXPLOSION_POWER = 4;
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowWyvernMaxZoom", requiresSync = true)
+    public static int BOW_WYVERN_MAX_ZOOM = 300;
+    @ModConfigProperty(category = "Stat Tweaks", name = "bowDraconicMaxZoom", requiresSync = true)
+    public static int BOW_DRACONIC_MAX_ZOOM = 600;
 
     //Staff
     @ModConfigProperty(category = "Stat Tweaks", name = "draconicStaffMineSpeed", requiresSync = true)
