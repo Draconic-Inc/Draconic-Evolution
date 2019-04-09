@@ -6,6 +6,8 @@
 -Added optional key bindings to cycle tool AOE.
 -Added fully upgraded versions of all tools and armor to creative menu (and JEI).
 -Added item blacklist for draconium chest.
+-Particle gen render distance now depends on particle sale.
+-Fixed Particle gen tile not getting removed when the tile is destroyed.
 
 ######## 2.3.20.333 ########
 -Fixed crash crashing/broken dislocators.

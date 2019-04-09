@@ -181,6 +181,9 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         if (tile instanceof TileEnergyCoreStabilizer) {
             ((TileEnergyCoreStabilizer) tile).onPlaced();
         }
+        else {
+            super.onBlockPlacedBy(world, pos, state, placer, stack);
+        }
     }
 
     @Override

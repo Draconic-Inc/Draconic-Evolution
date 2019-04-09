@@ -6,10 +6,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedDouble;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.draconicevolution.client.DEParticles;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.Random;
 
@@ -54,6 +51,10 @@ public class TileParticleGenerator extends TileBCBase implements ITickable {
 
     private int tick = 0;
 
+    public TileParticleGenerator() {
+        setShouldRefreshOnBlockChange();
+    }
+
     @Override
     public void update() {
         super.update();
@@ -77,17 +78,12 @@ public class TileParticleGenerator extends TileBCBase implements ITickable {
                 final int gravity = (int) Math.round((GRAVITY.value + RANDOM_GRAVITY.value * rand.nextDouble()) * 10000);
                 final int fade = FADE.value + rand.nextInt(RANDOM_FADE.value + 1);
 
-                BCEffectHandler.spawnFX(DEParticles.CUSTOM, world, X, Y, Z, MX, MY, MZ, R, G, B, alpha, scale, life, gravity, fade, TYPE.value, COLLISION.value ? 1 : 0);
+                BCEffectHandler.spawnFX(DEParticles.CUSTOM, world, X, Y, Z, MX, MY, MZ, 32 * Math.max(1, SCALE.value), R, G, B, alpha, scale, life, gravity, fade, TYPE.value, COLLISION.value ? 1 : 0);
 
                 tick = 0;
             }
 
             tick++;
         }
-    }
-
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
-        return false;
     }
 }
