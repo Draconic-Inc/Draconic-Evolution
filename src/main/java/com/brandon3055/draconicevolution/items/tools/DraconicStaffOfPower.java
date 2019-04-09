@@ -108,7 +108,8 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
 
     //region Attack Stats
 
-    protected double getMaxAttackAOE(ItemStack stack) {
+    @Override
+    public double getMaxWeaponAOE(ItemStack stack) {
         int level = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ATTACK_AOE);
         if (level == 0) return 2;
         else if (level == 1) return 3;
@@ -120,13 +121,18 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
 
     @Override
     public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
-        registry.register(stack, new DoubleConfigField("attackAOE", getMaxAttackAOE(stack), 0, getMaxAttackAOE(stack), "config.field.attackAOE.description", IItemConfigField.EnumControlType.SLIDER));
+        registry.register(stack, new DoubleConfigField("attackAOE", getMaxWeaponAOE(stack), 0, getMaxWeaponAOE(stack), "config.field.attackAOE.description", IItemConfigField.EnumControlType.SLIDER));
         return super.getFields(stack, registry);
     }
 
     @Override
     public double getWeaponAOE(ItemStack stack) {
         return ToolConfigHelper.getDoubleField("attackAOE", stack);
+    }
+
+    @Override
+    public void setWeaponAOE(ItemStack stack, double value) {
+        ToolConfigHelper.setDoubleField("attackAOE", stack, value);
     }
 
     //endregion

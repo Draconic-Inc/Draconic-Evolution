@@ -21,6 +21,8 @@ public class KeyBindings {
     public static KeyBinding armorProfileChange = new KeyBinding("key.armorProfileChange", UNIVERSAL, KeyModifier.ALT, Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
     public static KeyBinding toggleFlight = new KeyBinding("key.toggleFlight", Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
     public static KeyBinding toggleDislocator = new KeyBinding("key.toggleDislocator", Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+    public static KeyBinding cycleDigAOE = new KeyBinding("key.cycleDigAOE", Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+    public static KeyBinding cycleAttackAOE = new KeyBinding("key.cycleAttackAOE", Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
 
 
     public static void init() {
@@ -30,5 +32,7 @@ public class KeyBindings {
         ClientRegistry.registerKeyBinding(armorProfileChange);
         ClientRegistry.registerKeyBinding(toggleFlight);
         ClientRegistry.registerKeyBinding(toggleDislocator);
+        ClientRegistry.registerKeyBinding(cycleDigAOE);
+        ClientRegistry.registerKeyBinding(cycleAttackAOE);
     }
 }

@@ -120,11 +120,11 @@ public abstract class MiningToolBase extends ToolBase {
         registry.register(stack, new BooleanConfigField("aoeSafeMode", false, "config.field.aoeSafeMode.description"));
         registry.register(stack, new BooleanConfigField("showDigAOE", false, "config.field.showDigAOE.description"));
 
-        int maxAOE = baseAOE + UpgradeHelper.getUpgradeLevel(stack, DIG_AOE);
+        int maxAOE = getMaxDigAOE(stack);
         registry.register(stack, new AOEConfigField("digAOE", 0, 0, maxAOE, "config.field.digAOE.description"));
 
         if (getToolTier(stack) > 0) {
-            int depth = (maxAOE * 2) + 1;
+            int depth = getMaxDigDepth(stack);
             registry.register(stack, new IntegerConfigField("digDepth", 0, 0, depth, "config.field.digDepth.description", SLIDER));
         }
 
@@ -425,8 +425,24 @@ public abstract class MiningToolBase extends ToolBase {
         return ToolConfigHelper.getIntegerField("digAOE", stack);
     }
 
+    public int getMaxDigAOE(ItemStack stack) {
+        return baseAOE + UpgradeHelper.getUpgradeLevel(stack, DIG_AOE);
+    }
+
+    public void setMiningAOE(ItemStack stack, int value) {
+        ToolConfigHelper.setIntegerField("digAOE", stack, value);
+    }
+
     public int getDigDepth(ItemStack stack) {
         return ToolConfigHelper.getIntegerField("digDepth", stack);
+    }
+
+    public int getMaxDigDepth(ItemStack stack) {
+        return (getMaxDigAOE(stack) * 2) + 1;
+    }
+
+    public void setMiningDepth(ItemStack stack, int value) {
+        ToolConfigHelper.setIntegerField("digDepth", stack, value);
     }
 
     public boolean isToolEffective(ItemStack stack, IBlockState state) {

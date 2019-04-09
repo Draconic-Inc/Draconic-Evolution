@@ -3,6 +3,7 @@
 -Added compatibility between ICustomArmor and Baubles (Allows other mods to add baubles DE armor abilities)
 -Fixed capacitor only charging baubles when in a baubles slot.
 -Fixed capacitor always charging baubles when in a baubles slot. (even when disabled)
+-Added optional key bindings to cycle tool AOE.
 
 ######## 2.3.20.333 ########
 -Fixed crash crashing/broken dislocators.

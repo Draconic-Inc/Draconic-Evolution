@@ -102,6 +102,12 @@ public class KeyInputHandler {
         else if (KeyBindings.armorProfileChange.isPressed()) {
             PacketDispatcher.dispatchToolProfileChange(true);
         }
+        else if (KeyBindings.cycleDigAOE.isPressed()) {
+            PacketDispatcher.dispatchCycleDigAOE(player.isSneaking());
+        }
+        else if (KeyBindings.cycleAttackAOE.isPressed()) {
+            PacketDispatcher.dispatchCycleAttackAOE(player.isSneaking());
+        }
     }
 
     private int previouseSlot(int i, int c) {

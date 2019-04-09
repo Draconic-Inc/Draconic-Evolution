@@ -92,6 +92,29 @@ public class ToolConfigHelper {
         return false;
     }
 
+    public static boolean setBooleanField(String fieldName, ItemStack stack, boolean value) {
+        IConfigurableItem item = getTool(stack);
+        if (item == null) {
+            return false;
+        }
+
+        ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
+
+        if (fieldRegistry.getField(fieldName) == null) {
+            return false;
+        }
+
+        IItemConfigField field = fieldRegistry.getField(fieldName);
+
+        if (field instanceof BooleanConfigField) {
+            ((BooleanConfigField) field).value = value ? 1 : 0;
+            field.writeToNBT(getFieldStorage(stack));
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Returns the value of the specified integer field.
      * Or 0 if field is not found.
@@ -118,6 +141,29 @@ public class ToolConfigHelper {
         return 0;
     }
 
+    public static boolean setIntegerField(String fieldName, ItemStack stack, int value) {
+        IConfigurableItem item = getTool(stack);
+        if (item == null) {
+            return false;
+        }
+
+        ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
+
+        if (fieldRegistry.getField(fieldName) == null) {
+            return false;
+        }
+
+        IItemConfigField field = fieldRegistry.getField(fieldName);
+
+        if (field instanceof IntegerConfigField) {
+            ((IntegerConfigField) field).value = value;
+            field.writeToNBT(getFieldStorage(stack));
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Returns the value of the specified double field.
      * Or 0 if field is not found.
@@ -142,6 +188,29 @@ public class ToolConfigHelper {
         }
 
         return 0;
+    }
+
+    public static boolean setDoubleField(String fieldName, ItemStack stack, double value) {
+        IConfigurableItem item = getTool(stack);
+        if (item == null) {
+            return false;
+        }
+
+        ItemConfigFieldRegistry fieldRegistry = item.getFields(stack, new ItemConfigFieldRegistry());
+
+        if (fieldRegistry.getField(fieldName) == null) {
+            return false;
+        }
+
+        IItemConfigField field = fieldRegistry.getField(fieldName);
+
+        if (field instanceof DoubleConfigField) {
+            ((DoubleConfigField) field).value = value;
+            field.writeToNBT(getFieldStorage(stack));
+            return true;
+        }
+
+        return false;
     }
 
     private static IConfigurableItem getTool(ItemStack stack) {

@@ -109,7 +109,20 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
 
     //region Attack Stats
 
-    protected double getMaxAttackAOE(ItemStack stack) {
+    @Override
+    public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
+        registry.register(stack, new DoubleConfigField("attackAOE", getMaxWeaponAOE(stack), 0, getMaxWeaponAOE(stack), "config.field.attackAOE.description", IItemConfigField.EnumControlType.SLIDER));
+        addEnchantConfig(stack, registry);
+        return registry;
+    }
+
+    @Override
+    public double getWeaponAOE(ItemStack stack) {
+        return ToolConfigHelper.getDoubleField("attackAOE", stack);
+    }
+
+    @Override
+    public double getMaxWeaponAOE(ItemStack stack) {
         int level = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.ATTACK_AOE);
         if (level == 0) return 0;
         else if (level == 1) return 1;
@@ -120,15 +133,8 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     }
 
     @Override
-    public ItemConfigFieldRegistry getFields(ItemStack stack, ItemConfigFieldRegistry registry) {
-        registry.register(stack, new DoubleConfigField("attackAOE", getMaxAttackAOE(stack), 0, getMaxAttackAOE(stack), "config.field.attackAOE.description", IItemConfigField.EnumControlType.SLIDER));
-        addEnchantConfig(stack, registry);
-        return registry;
-    }
-
-    @Override
-    public double getWeaponAOE(ItemStack stack) {
-        return ToolConfigHelper.getDoubleField("attackAOE", stack);
+    public void setWeaponAOE(ItemStack stack, double value) {
+        ToolConfigHelper.setDoubleField("attackAOE", stack, value);
     }
 
     @Override

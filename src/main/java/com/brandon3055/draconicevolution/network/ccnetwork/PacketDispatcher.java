@@ -18,4 +18,16 @@ public class PacketDispatcher {
         packet.writeBoolean(armor);
         packet.sendToServer();
     }
+
+    public static void dispatchCycleDigAOE(boolean depth) {
+        PacketCustom packet = new PacketCustom(NET_CHANNEL, 3);
+        packet.writeBoolean(depth);
+        packet.sendToServer();
+    }
+
+    public static void dispatchCycleAttackAOE(boolean reverse) {
+        PacketCustom packet = new PacketCustom(NET_CHANNEL, 4);
+        packet.writeBoolean(reverse);
+        packet.sendToServer();
+    }
 }
