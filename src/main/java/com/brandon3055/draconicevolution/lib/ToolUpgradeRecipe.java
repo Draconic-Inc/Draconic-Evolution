@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.SimpleFusionRecipe;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -27,12 +28,13 @@ public class ToolUpgradeRecipe extends SimpleFusionRecipe {
 
         if (catalyst.getItem() instanceof IEnergyContainerItem && catalyst.getItem() instanceof IEnergyContainerItem) {
             ItemNBTHelper.setInteger(stack, "Energy", ((IEnergyContainerItem) catalyst.getItem()).getEnergyStored(catalyst));
-//            ((ItemEnergyBase) stack.getItem()).setEnergy(stack, ((ItemEnergyBase) catalyst.getItem()).getEnergyStored(catalyst));
         }
 
         if (catalyst.getItem() instanceof IUpgradableItem && catalyst.getItem() instanceof IUpgradableItem) {
             UpgradeHelper.setUpgrades(stack, UpgradeHelper.getUpgrades(catalyst));
         }
+
+        EnchantmentHelper.setEnchantments(EnchantmentHelper.getEnchantments(catalyst), stack);
 
         return stack;
     }
