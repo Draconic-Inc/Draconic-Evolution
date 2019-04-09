@@ -455,12 +455,9 @@ public class GuiDislocator extends GuiScreen {
                     DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.ADDFUEL, 1, false));
                     this.fuel += DEConfig.dislocatorUsesPerPearl;
                 }
-                else if (hasPearls(16)) {
-                    DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.ADDFUEL, 16, false));
-                    this.fuel += DEConfig.dislocatorUsesPerPearl * 16;
-                }
                 else {
-                    player.sendMessage(new TextComponentTranslation("msg.teleporterOutOfPearls.txt"));
+                    DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.ADDFUEL, 64, false));
+                    this.fuel += DEConfig.dislocatorUsesPerPearl * 64;
                 }
             }
             else {
