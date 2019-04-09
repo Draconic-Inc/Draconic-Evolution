@@ -186,6 +186,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "grinderBlackList", comment = "This allows you to prevent the mob grinder from attempting to kill specific entities.")
     public static String[] grinderBlackList = {"evilcraft:vengeance_spirit"};
 
+    @ModConfigProperty(category = "Tweaks", name = "chestBlackList", comment = "This allows you to prevent certain items from being placed in the draconium chest using their registry name")
+    public static String[] chestBlackList = {};
+
     @ModConfigProperty(category = "Tweaks", name = "coreCapacity", comment = "Allows you to adjust the capacity of each energy core tier.\nWarning changing the number entries in this list will crash your game.")
     public static double[] coreCapacity = new double[]{45500000L, 273000000L, 1640000000L, 9880000000L, 59300000000L, 356000000000L, 2140000000000L, Long.MAX_VALUE};
 
@@ -241,6 +244,7 @@ public class DEConfig implements IModConfigHelper {
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
     public static Set<String> oreBlacklist = new HashSet<>();
     public static Set<String> grinderBlacklist = new HashSet<>();
+    public static Set<String> chestBlacklist = new HashSet<>();
 
     @Override
     public void onConfigLoaded() {
@@ -257,6 +261,7 @@ public class DEConfig implements IModConfigHelper {
 
         oreBlacklist = Sets.newHashSet(oreDoublingBlacklist);
         grinderBlacklist = Sets.newHashSet(grinderBlackList);
+        chestBlacklist = Sets.newHashSet(chestBlackList);
         loadToolStats();
     }
 

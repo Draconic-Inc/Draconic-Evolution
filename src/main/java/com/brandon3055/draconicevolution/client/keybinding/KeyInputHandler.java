@@ -50,7 +50,7 @@ public class KeyInputHandler {
         }
 
         onInput(player);
-        
+
         int change = event.getDwheel();
         if (change == 0 || !player.isSneaking()) return;
 

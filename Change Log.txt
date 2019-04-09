@@ -5,6 +5,7 @@
 -Fixed capacitor always charging baubles when in a baubles slot. (even when disabled)
 -Added optional key bindings to cycle tool AOE.
 -Added fully upgraded versions of all tools and armor to creative menu (and JEI).
+-Added item blacklist for draconium chest.
 
 ######## 2.3.20.333 ########
 -Fixed crash crashing/broken dislocators.

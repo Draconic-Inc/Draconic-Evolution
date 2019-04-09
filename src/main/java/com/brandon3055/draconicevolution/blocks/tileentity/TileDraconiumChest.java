@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.DataUtils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
@@ -429,7 +430,10 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     }
 
     @Override
-    public boolean isItemValidForSlot(int index,@Nonnull ItemStack stack) {
+    public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
+        if (!stack.isEmpty() && DEConfig.chestBlacklist.contains(stack.getItem().getRegistryName().toString())) {
+            return false;
+        }
         if (index >= FIRST_FURNACE_SLOT && index <= LAST_FURNACE_SLOT) {
             return !getSmeltResult(stack).isEmpty();
         }
@@ -446,7 +450,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
         return craftingStacks.get(i);
     }
 
-    public void setInventoryCraftingSlotContents(int i,@Nonnull ItemStack stack) {
+    public void setInventoryCraftingSlotContents(int i, @Nonnull ItemStack stack) {
         craftingStacks.set(i, stack);
 
         if (stack.getCount() > getInventoryStackLimit()) {
@@ -481,7 +485,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
         super.writeToItemStack(tileCompound, willHarvest);
         writeRegions(tileCompound);
-        if (colour.value != 0x640096){
+        if (colour.value != 0x640096) {
             tileCompound.setInteger("ChestColour", colour.value);
         }
     }
@@ -733,7 +737,10 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     //endregion
 
     public enum AutoSmeltMode {
-        OFF(false), FILL(false), LOCK(true), ALL(false);
+        OFF(false),
+        FILL(false),
+        LOCK(true),
+        ALL(false);
 
         public final boolean keep1Item;
 
@@ -743,26 +750,26 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     }
 
     /*
-    * ###### Bit Packing ######
-    *  N  S  W  E    D  U  F  UU
-    * [00 00 00 00] [00 00 00 00]
-    *
-    * 00 - Disabled
-    * 01 - In
-    * 10 - Out
-    * 11 - In/Out
-    *
-    * TODO
-    *
-    * ***Rendering first so i can get rotations worked out
-    * ***Side IO implementation
-    * ***Furnace IO Implementation
-    * ***Model Implementation
-    * ***-Gui model implementation
-    *
-    * ~Prevent NBT being sent to the client
-    * ***Ore doubling
-    * */
+     * ###### Bit Packing ######
+     *  N  S  W  E    D  U  F  UU
+     * [00 00 00 00] [00 00 00 00]
+     *
+     * 00 - Disabled
+     * 01 - In
+     * 10 - Out
+     * 11 - In/Out
+     *
+     * TODO
+     *
+     * ***Rendering first so i can get rotations worked out
+     * ***Side IO implementation
+     * ***Furnace IO Implementation
+     * ***Model Implementation
+     * ***-Gui model implementation
+     *
+     * ~Prevent NBT being sent to the client
+     * ***Ore doubling
+     * */
     public class SlotRegion {
         public int regionID;
         public int xPos = 0;
