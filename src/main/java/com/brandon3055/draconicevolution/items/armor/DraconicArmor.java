@@ -60,7 +60,7 @@ public class DraconicArmor extends WyvernArmor {
 
     @Override
     public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
-        return 3;
+        return 4;
     }
 
     //endregion
