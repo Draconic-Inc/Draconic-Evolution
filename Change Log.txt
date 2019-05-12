@@ -1,4 +1,10 @@
-######## 2.3.21.x ########
+######## 2.3.22.x ########
+-Fixed crash when Baubles is not installed.
+-Optimized retro gen a little.
+-Fixed some compounding residual particle lag.
+
+
+######## 2.3.21.342 ########
 -Fixed impossible null pointer exception in ExplosionFX
 -Added compatibility between ICustomArmor and Baubles (Allows other mods to add baubles DE armor abilities)
 -Fixed capacitor only charging baubles when in a baubles slot.

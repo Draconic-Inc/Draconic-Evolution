@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.Random;
 
 /**
@@ -32,7 +32,7 @@ import java.util.Random;
 public class DEWorldGenHandler implements IWorldGenerator {
     public static DEWorldGenHandler instance = new DEWorldGenHandler();
     private static String DATA_TAG = "DEWorldGen";
-    private static LinkedList<ChunkReference> retroGenerating = new LinkedList<ChunkReference>();
+    private static HashSet<ChunkReference> retroGenerating = new HashSet<ChunkReference>();
 
     //Pop Pre -> Pop Post -> Generate
     //Save/load are not directly linked load is not called when generating

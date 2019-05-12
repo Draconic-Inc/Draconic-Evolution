@@ -33,6 +33,7 @@ import net.minecraft.world.BossInfo;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -472,7 +473,10 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
     public void onCrystalTargeted(EntityPlayer player, boolean destroyed) {
         if (behaviour == EnumBehaviour.DEAD) return;
+
         target = player;
+        ForgeHooks.onLivingSetAttackTarget(this, player);
+
         if (destroyed || behaviour == EnumBehaviour.LOW_HEALTH_STRATEGY) {
             attackInProgress = ATTACK_CHAOS_CHASER;
             behaviour = EnumBehaviour.CHARGING;
@@ -663,7 +667,12 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
             switch (attackInProgress) {
                 case ATTACK_FIREBALL_CHARGE:
-                    if (target == null && behaviour == EnumBehaviour.CHARGING) target = attackTarget;
+                    if (target == null && behaviour == EnumBehaviour.CHARGING) {
+                        target = attackTarget;
+                        if (target instanceof EntityLivingBase) {
+                            ForgeHooks.onLivingSetAttackTarget(this, (EntityLivingBase) target);
+                        }
+                    }
                     if (Utils.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 10) {
                         if (attackTimer % 2 == 0) {
                             EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
@@ -699,7 +708,12 @@ public class EntityChaosGuardian extends EntityDragonOld {
                     }
                     break;
                 case ATTACK_TELEPORT:
-                    if (target == null) target = Utils.getClosestPlayer(world, posX, posY, posZ, 100, false);
+                    if (target == null) {
+                        target = Utils.getClosestPlayer(world, posX, posY, posZ, 100, false);
+                        if (target != null) {
+                            ForgeHooks.onLivingSetAttackTarget(this, (EntityLivingBase) target);
+                        }
+                    }
                     if (target == null) {
                         attackInProgress = -1;
                         return;
@@ -835,6 +849,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
             case CHARGING:
             case CIRCLE_PLAYER:
                 this.target = Utils.getClosestPlayer(world, homeX, homeY, homeZ, 200, false);
+                if (target != null) {
+                    ForgeHooks.onLivingSetAttackTarget(this, (EntityLivingBase) target);
+                }
                 break;
             case LOW_HEALTH_STRATEGY:
 
@@ -847,6 +864,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
                     EntityPlayer potentialTarget = targets.get(rand.nextInt(targets.size()));
                     if (world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(potentialTarget.posX, potentialTarget.posY, potentialTarget.posZ)) == null) {
                         target = potentialTarget;
+                        ForgeHooks.onLivingSetAttackTarget(this, (EntityLivingBase) target);
                     }
                     else targets.remove(potentialTarget);
                 }
@@ -914,6 +932,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 }
                 if (damageSource.getTrueSource() instanceof EntityPlayer && damageSource.getTrueSource() != target && world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getTrueSource().posX, damageSource.getTrueSource().posY, damageSource.getTrueSource().posZ)) == null) {
                     target = damageSource.getTrueSource();
+                    if (target instanceof EntityLivingBase) {
+                        ForgeHooks.onLivingSetAttackTarget(this, (EntityLivingBase) target);
+                    }
                 }
                 break;
             case DEAD:
@@ -935,25 +956,32 @@ public class EntityChaosGuardian extends EntityDragonOld {
         /**
          * Will roam around home until a player is spotted
          */
-        ROAMING(1F), /**
+        ROAMING(1F),
+        /**
          * Will head home
          */
-        GO_HOME(1.3F), /**
+        GO_HOME(1.3F),
+        /**
          * Will will fly around above home attacking players
          */
-        GUARDING(0.8F), /**
+        GUARDING(0.8F),
+        /**
          * Will charge players as the vanilla dragon dose
          */
-        CHARGING(2F), /**
+        CHARGING(2F),
+        /**
          * Will fly to centre of island and unleash hell
          */
-        FIREBOMB(1.5F), /**
+        FIREBOMB(1.5F),
+        /**
          * Will circle a player and shoot at that player
          */
-        CIRCLE_PLAYER(1.2F), /**
+        CIRCLE_PLAYER(1.2F),
+        /**
          * Will try to avoid players, will try to teleport players, will try to relight crystals
          */
-        LOW_HEALTH_STRATEGY(2F), /**
+        LOW_HEALTH_STRATEGY(2F),
+        /**
          * will die...
          */
         DEAD(0.5F);
