@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesItemHandler;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.EnergyHelper;
@@ -15,6 +14,8 @@ import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.integration.BaublesHelper;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -29,17 +30,12 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by brandon3055 on 31/05/2016.
@@ -191,8 +187,15 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
     @Override
     public void onUpdate(ItemStack container, World world, Entity entity, int itemSlot, boolean isSelected) {
-        if (!(entity instanceof EntityPlayer)) return;
-        updateEnergy(container, (EntityPlayer) entity, getBaubles(entity));
+        if (!(entity instanceof EntityPlayer)) {
+            return;
+        }
+        if (ModHelper.isBaublesInstalled) {
+            updateEnergy(container, (EntityPlayer) entity, getBaubles(entity));
+        }
+        else {
+            updateEnergy(container, (EntityPlayer) entity, new ArrayList<>());
+        }
     }
 
     public void updateEnergy(ItemStack capacitor, EntityPlayer player, List<ItemStack> stacks) {
@@ -297,19 +300,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         updateEnergy(itemstack, (EntityPlayer) player, getBaubles(player));
     }
 
-    /* BAUBLES */
-    @CapabilityInject(IBaublesItemHandler.class)
-    private static Capability<IBaublesItemHandler> CAPABILITY_BAUBLES = null;
-
     private static List<ItemStack> getBaubles(Entity entity) {
-        if (CAPABILITY_BAUBLES == null) {
-            return Collections.emptyList();
-        }
-        IBaublesItemHandler handler = entity.getCapability(CAPABILITY_BAUBLES, null);
-
-        if (handler == null) {
-            return Collections.emptyList();
-        }
-        return IntStream.range(0, handler.getSlots()).mapToObj(handler::getStackInSlot).filter(stack -> !stack.isEmpty()).collect(Collectors.toList());
+        return BaublesHelper.getBaubles(entity);
     }
 }

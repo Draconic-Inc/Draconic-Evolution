@@ -1,8 +1,10 @@
-######## 2.3.22.x ########
+######## 2.3.23.x ########
+-ReFixed Baubles crash. (Seems last fix got lost in the mail)
+
+######## 2.3.22.343 ########
 -Fixed crash when Baubles is not installed.
 -Optimized retro gen a little.
 -Fixed some compounding residual particle lag.
-
 
 ######## 2.3.21.342 ########
 -Fixed impossible null pointer exception in ExplosionFX
