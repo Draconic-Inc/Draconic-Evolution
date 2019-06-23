@@ -44,7 +44,7 @@ public interface IFusionRecipe {
     ItemStack getRecipeCatalyst();
 
     /**
-     * @param inventory The crafting inventory. Note this dose not extend IInventory because it should not need to
+     * @param inventory The crafting inventory. Note this does not extend IInventory because it should not need to
      * @param world     The world
      * @param pos       The position of the Fusion Crafting Core
      * @return true if the items in the IFusionCraftingInventory inventory match this recipe.
@@ -58,7 +58,7 @@ public interface IFusionRecipe {
      * Called at the end of the crafting process to actually craft the item. This is where you should consume the required
      * items and add the result to the output slot in the inventory. Remember to respect item containers when consuming items.
      *
-     * @param inventory The crafting inventory. Note this dose not extend IInventory because it should not need to
+     * @param inventory The crafting inventory. Note this does not extend IInventory because it should not need to
      * @param world     The world
      * @param pos       The position of the Fusion Crafting Core
      */
@@ -84,7 +84,7 @@ public interface IFusionRecipe {
     /**
      * This method is called every tick during the crafting process.
      *
-     * @param inventory The crafting inventory. Note this dose not extend IInventory because it should not need to
+     * @param inventory The crafting inventory. Note this does not extend IInventory because it should not need to
      * @param world     The world
      * @param pos       The position of the Fusion Crafting Core
      */

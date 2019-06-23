@@ -72,7 +72,7 @@ public class UpgradeHelper {
     /**
      * Applies a map of upgrades to a stack. If the upgrade already exists on the item its level whil be changed to whatever the new level is.
      * Any upgrades already applied and do not exist in the given map will not be affected.
-     * This will not apply an upgrade if the item dose not accept it.
+     * This will not apply an upgrade if the item does not accept it.
      *
      * @param stack    The stack.
      * @param upgrades A map of upgrates and their levels.

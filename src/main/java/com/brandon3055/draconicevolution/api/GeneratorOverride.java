@@ -11,7 +11,7 @@ public class GeneratorOverride {
 //		new WorldGenEnderComet().generate(world, rand, x, y, z);
 //	}
 //
-//	/**This nolonger dose anything!*/
+//	/**This nolonger does anything!*/
 //	@Deprecated
 //	public void spawnChaosIslendAt(World world, int x, int y, int z, Random rand) {
 //		new WorldGenEnderIsland().generate(world, rand, x, y, z);

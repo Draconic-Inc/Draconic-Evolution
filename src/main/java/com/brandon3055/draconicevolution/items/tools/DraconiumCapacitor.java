@@ -191,7 +191,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
             return;
         }
         if (ModHelper.isBaublesInstalled) {
-            updateEnergy(container, (EntityPlayer) entity, getBaubles(entity));
+            updateEnergy(container, (EntityPlayer) entity, getBaubles((EntityPlayer) entity));
         }
         else {
             updateEnergy(container, (EntityPlayer) entity, new ArrayList<>());
@@ -297,10 +297,10 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     @Optional.Method(modid = "baubles")
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
         if (!(player instanceof EntityPlayer)) return;
-        updateEnergy(itemstack, (EntityPlayer) player, getBaubles(player));
+        updateEnergy(itemstack, (EntityPlayer) player, getBaubles((EntityPlayer) player));
     }
 
-    private static List<ItemStack> getBaubles(Entity entity) {
+    private static List<ItemStack> getBaubles(EntityPlayer entity) {
         return BaublesHelper.getBaubles(entity);
     }
 }

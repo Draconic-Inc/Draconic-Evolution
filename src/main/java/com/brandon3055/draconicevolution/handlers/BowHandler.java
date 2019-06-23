@@ -228,7 +228,7 @@ public class BowHandler {
         }
 
         /**
-         * Consumes energy for the shot and also consumes an arrow if the bow dose not have infinity
+         * Consumes energy for the shot and also consumes an arrow if the bow does not have infinity
          * Returns true if an arrow was consumed.
          */
         public boolean consumeArrowAndEnergy() {

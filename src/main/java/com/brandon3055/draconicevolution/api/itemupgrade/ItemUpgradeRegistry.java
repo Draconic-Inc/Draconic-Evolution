@@ -13,7 +13,7 @@ public class ItemUpgradeRegistry {
 //
 //    /**
 //     * Adds an upgrade to the registry and reads its current value from the given item stack.
-//     * Will also write the default value to the stack if the stack dose not contain a tag for this upgrade.
+//     * Will also write the default value to the stack if the stack does not contain a tag for this upgrade.
 //     * */
 //    public ItemUpgradeRegistry register(ItemStack stack, IUpgrade upgrade){
 //        upgradeRegistry.put(index, upgrade);

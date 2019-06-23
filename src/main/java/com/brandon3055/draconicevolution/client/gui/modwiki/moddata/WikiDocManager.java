@@ -109,7 +109,7 @@ public class WikiDocManager {
                 return;
             }
             else {
-                LogHelper.error("Specified docs folder [%s] dose not exist and could not be created. Using config folder instead.", modDocsFolder.isDirectory());
+                LogHelper.error("Specified docs folder [%s] does not exist and could not be created. Using config folder instead.", modDocsFolder.isDirectory());
             }
         }
 

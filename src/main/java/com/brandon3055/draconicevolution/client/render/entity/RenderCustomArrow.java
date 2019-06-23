@@ -32,7 +32,7 @@ public class RenderCustomArrow extends Render<EntityCustomArrow> {
 
     @Override
     public void doRender(EntityCustomArrow entityArrow, double x, double y, double z, float f1, float f2) {
-        if (arrowModel == null) { //For some reason doing this in the constructor dose not work
+        if (arrowModel == null) { //For some reason doing this in the constructor does not work
             try {
                 arrowModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/item/tools/arrow_common.obj")).bake(TransformUtils.DEFAULT_ITEM, DefaultVertexFormats.ITEM, TextureUtils.bakedTextureGetter);
             }

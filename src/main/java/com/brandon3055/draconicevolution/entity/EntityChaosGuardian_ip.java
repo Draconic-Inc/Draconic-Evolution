@@ -913,7 +913,7 @@
 //         */
 //        GUARDING(0.8F),
 //        /**
-//         * Will charge players as the vanilla dragon dose
+//         * Will charge players as the vanilla dragon does
 //         */
 //        CHARGING(2F),
 //        /**

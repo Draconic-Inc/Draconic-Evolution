@@ -65,12 +65,12 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
     private int coolDown = 0;
 
     private void updateGrinding() {
-        //Create the fake player if it dose not already exist
+        //Create the fake player if it does not already exist
         if (fakePlayer == null) {
             fakePlayer = FakePlayerFactory.get((WorldServer) world, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
         }
 
-        //Create the kill box if it dose not already exist
+        //Create the kill box if it does not already exist
         if (killBox == null) {
             updateKillBox();
         }

@@ -107,7 +107,7 @@ public class UIAddBranch extends JFrame implements ActionListener {
         panel1.add(idField, new GridConstraints(1, 0, 1, 1, ANCHOR_WEST, FILL_HORIZONTAL, SIZEPOLICY_WANT_GROW, SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         JTextArea idDescription = new JTextArea();
         idDescription.setEditable(false);
-        idDescription.setText("Branch ID is an id that is completely uniqe to this branch.\nIt is made up of a combination of the modid and its parent branch id's \n(if it has parent branches) and the id you specify here. \nThat means the id you specify here dose not need to be too special \nas long as it dose not conflict with any other id's in this branch. \nFor items and blocks its a good idea to use the item or block's registry name\n(not including modid) You will get an error if the id you choos is already in use.");
+        idDescription.setText("Branch ID is an id that is completely uniqe to this branch.\nIt is made up of a combination of the modid and its parent branch id's \n(if it has parent branches) and the id you specify here. \nThat means the id you specify here does not need to be too special \nas long as it does not conflict with any other id's in this branch. \nFor items and blocks its a good idea to use the item or block's registry name\n(not including modid) You will get an error if the id you choos is already in use.");
         panel1.add(idDescription, new GridConstraints(2, 0, 1, 1, ANCHOR_CENTER, FILL_BOTH, SIZEPOLICY_WANT_GROW, SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         idLabel = new JLabel();
         idLabel.setText("");

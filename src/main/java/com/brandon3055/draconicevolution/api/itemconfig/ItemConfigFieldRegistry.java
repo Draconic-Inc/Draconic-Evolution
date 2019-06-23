@@ -16,7 +16,7 @@ public class ItemConfigFieldRegistry {
 
     /**
      * Adds a field to the registry and reads its current value from the given item stack.
-     * Will also write the default value to the stack if the stack dose not contain a tag for this field.
+     * Will also write the default value to the stack if the stack does not contain a tag for this field.
      */
     public ItemConfigFieldRegistry register(ItemStack stack, IItemConfigField field) {
         fields.put(field.getName(), field);
