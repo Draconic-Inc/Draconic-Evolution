@@ -21,7 +21,7 @@ tile.draconicevolution:draconium_block.name=Дракониевый блок
 tile.draconicevolution:draconium_block_charged.name=Заряженный дракониевый блок
 tile.draconicevolution:diss_enchanter.name=Дизенчантер
 tile.draconicevolution:dislocator_pedestal.name=Пьедестал телепортации
-tile.draconicevolution:draconium_chest.name=Дракониевый сундук
+tile.draconicevolution:draconium_chest.name=Сундук дракона
 tile.draconicevolution:draconic_block.name=Пробужденный дракониевый блок
 tile.draconicevolution:infused_obsidian.name=Заряженный обсидиан
 tile.draconicevolution:dislocator_receptacle.name=Телепортационный приёмник
@@ -222,7 +222,7 @@ info.teleporterInfSet2.txt=использований осталось
 info.de.rightClickToTeleport.txt=Нажмите ПКМ для телепортации
 info.de.draconiumBlockCapacitorCharge.txt=Держите предмет и присядьте, чтобы зарядиться от конденсатора.
 info.creativeCapacitor.txt=Can source or sink
-info.de.itemDislocationInhibitor.txt=Prevents items dropped within 5 block from being collected by Item Dislocators.
+info.de.itemDislocationInhibitor.txt=Предотвращает подбор предметов в пределах 5 блоков от Телепортационного магнита.
 
 info.draconicAxe1.txt=Древесина!!!!!!
 info.draconicAxe2.txt=Срубит все дерево
@@ -240,9 +240,9 @@ info.arrowInfo.txt=Болезненный аттракцион
 info.arrowInfo0.txt=Слишком тяжелая для обычного лука
 
 //ender_extraction_core
-info.de.ender_energy_manipulator.info.txt=Это немного жуткое мистическое устройство питается энергией исцеляющих Дракона кристаллов в Краю.
+info.de.ender_energy_manipulator.info.txt=Это немного жуткое мистическое устройство питается энергией исцеляющих Дракона кристаллов в Энде.
 info.de.ender_energy_manipulator.info2.txt=И вместе с душами близлежащих Эндерменов использует эту энергии для извлечения яйца у Эндер-Дракона
-info.de.ender_energy_manipulator.location.msg=Должен быть размещен на верхушке портала в Крае!
+info.de.ender_energy_manipulator.location.msg=Должен быть размещен на верхушке портала в Энде!
 info.de.ender_energy_manipulator.dead.msg=Эндер-дракон не был найден!
 info.de.ender_energy_manipulator.running.msg=Дождитесь окончания работы манипулятора!
 
@@ -298,7 +298,7 @@ achievement.draconicevolution.core2.desc=Создайте Ядро Виверн�
 achievement.draconicevolution.dislocator=У эндерменов ничего нет
 achievement.draconicevolution.dislocator.desc=Создайте Телепортер
 achievement.draconicevolution.chest=Никогда не хватает места!
-achievement.draconicevolution.chest.desc=Создайте Дракониевый Сундук
+achievement.draconicevolution.chest.desc=Создайте Сундук Дракона
 achievement.draconicevolution.particles=ОООО, сверкает!
 achievement.draconicevolution.particles.desc=Создайте Генератор частиц
 achievement.draconicevolution.weather=Кому нужна эта Мать-природа
@@ -406,7 +406,11 @@ entity.draconicevolution:lootCore.name=Loot Core
 key.placeItem=Поставить предмет в мир
 key.toolConfig=Открыть GUI настройки инструментов
 key.toolProfileChange=Сменить профиль инструмента
+key.armorProfileChange=Сменить профиль брони
 key.toggleFlight=Включить творческий полет
+key.toggleDislocator=Включить телепортационный магнит
+key.cycleDigAOE=Изменить область добычи
+key.cycleAttackAOE=Изменить радиус атаки
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s был разорван на куски Хранителем хаоса
@@ -422,6 +426,33 @@ death.attack.chaosImplosion=%1$s был втянут в энергетическ
 death.attack.chrystalMoved=%1$s был непослушным и потому был наказан модом Draconic Evolution!
 
 death.attack.administrative.kill=%1$s поражен непреодолимой силой
+
+death.attack.chaos=%1$s был разорван Хранителем Хаоса
+
+death.attack.customArrowEnergy=%1$s был застрелен %2$s
+death.attack.customArrowEnergy.item=%1$s был застрелен %2$s с помощью %3$s
+
+//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
+button.de.chestAutoFeed0.txt=ВЫКЛ.Отключить авто-закидывание в печь
+button.de.chestAutoFeed1.txt=ЗАПОЛН.Оставить этот стак нетронутым (Закинет в печь все предметы, кроме того, который Вы взяли)
+button.de.chestAutoFeed2.txt=ЗАБЛ.Закидывать в печь предметы из хранилища, только когда там находится такой же предмет
+button.de.chestAutoFeed3.txt=ВСЕ.Закидывать в печь все предметы из хранилища, которые можно переплавить
+button.de.chestLockOutput.txt=Блокировка выхода.Не даёт предметам вставляться в последние 5 слотов
+button.de.previous.txt=<==
+button.de.next.txt===>
+button.de.backToIndex.txt=Назад к оглавлению
+button.de.back.txt=Назад
+button.de.goToIndex.txt=Страница оглавления
+button.de.addNew.txt=Добавить новую
+button.de.rename.txt=Переименовать
+button.de.commit.txt=Принять
+button.de.setHere.txt=Устан. тек. коорд.
+button.de.remove.txt=Удалить
+button.de.addFuel.txt=Добавить топливо
+button.de.cancel.txt=Отмена
+button.de.UP.txt=ВВЕРХ
+button.de.DOWN.txt=ВНИЗ
+button.de.toggleHidden.txt=Спрятать
 
 //Item Config Buttons
 button.de.stats.txt=Стат.
@@ -464,7 +495,12 @@ gui.de.configureItem.txt=Настроить предмет
 gui.de.min.txt=Мин.
 gui.de.max.txt=Макс.
 
+gui.de.insert.txt=Вставить
+gui.de.extract.txt=Извлечь
+gui.de.fuel.txt=Топливо
 gui.de.itemInventory.txt=Инвентарь предмета
+gui.de.internalStorage.txt=Внутреннее хранилище
+gui.de.itemStorage.txt=Внутр. хранилище предмета
 gui.de.configureGuiElements.txt=Настроить элементы HUD
 gui.de.hudDisplaySettings.txt=Настройки отображения HUD
 gui.de.shieldDisplaySettings.txt=Настройки отображения щита
@@ -529,6 +565,8 @@ gui.jeiFusion.tier.0=Уровень: Базовый
 gui.jeiFusion.tier.1=Уровень: Виверна
 gui.jeiFusion.tier.2=Уровень: Дракон
 gui.jeiFusion.tier.3=Уровень: Хаос
+msg.craftingInjector.singleItemOn.txt=Режим "Одиночный предмет": Вкл.
+msg.craftingInjector.singleItemOff.txt=Режим "Одиночный предмет": Выкл.
 
 
 //---- Upgrades ----//
@@ -657,7 +695,7 @@ chat.dissEnchanter.notEnoughLevels.msg=Вам требуется %s уровне
 
 //---- GUI Buttons ----//
 gui.de.toolConfig.hud.txt=HUD
-gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
+gui.de.toolConfig.hudDesc.txt=Открыть интерфейс найстройки HUD
 button.de.open=Открыть
 
 //---- Celestial Manipulato ----//
@@ -753,7 +791,7 @@ eNet.de.clearLinks.gui=Очистить соединения
 eNet.de.clearReceivers.gui=Очистить приемники
 
 //---- Reactor ----//
-gui.reactor.draconicReactor.txt=Реактор Дракона
+gui.reactor.draconicReactor.txt=Дракониевый Реактор
 gui.reactor.fuelIn.txt=Топливо (вход)
 gui.reactor.chaosOut.txt=Хаотит (выход)
 gui.reactor.tempLoadFactor.txt=Показывает, какую нагрузку оказывает Температура реактора на Сдерживающее поле. Если темп-ра превысит 8000 градусов, этот показатель экспоненциально возрастёт
@@ -770,7 +808,7 @@ gui.reactor.rsMode_sat.txt=Will output a signal from 0 to 15 as the saturation l
 gui.reactor.rsMode_sat_inv.txt=This is the same as Saturation except the signal is inverted.
 gui.reactor.rsMode_fuel.txt=Will output a signal from 0 to 15 as the fuel conversion level increases from 0 to 100%, Signal of 15 => 90% Conversion.
 gui.reactor.rsMode_fuel_inv.txt=This is the same as Conversion except the signal is inverted.
-gui.reactor.failSafe.txt=После включения, когда температура упадет до 2500C, а насыщение достигнет 99%, реактор автоматически начнет выключаться. Это можно использовать для автоматического выключения реактора в случае неисправности или при необходимости заправки его топливом.
+gui.reactor.failSafe.txt=После включения, когда температура упадет до 2500, а насыщение достигнет 99%, реактор автоматически начнет выключаться. Это можно использовать для автоматического выключения реактора в случае неисправности или при необходимости заправки его топливом.
 
 gui.reactor.reactionTemp.info=Температура ядра
 gui.reactor.fieldStrength.info=Сила сдерживающего поля
@@ -816,7 +854,7 @@ msg.de.reactorRSMode.7.txt=Режим компаратора: Кол-во пре
 gui.de.coreMass.txt=Масса ядра
 
 //---- Draconium Chest ----//
-gui.draconiumChest.name=Дракониевый сундук
+gui.draconiumChest.name=Сундук дракона
 gui.draconiumChest.fMode.btn=Авто-закидывание
 gui.draconiumChest.fMode.info=Авто-закидывание позволяет автоматически переплавлять предметы в печи. Нажмите, чтобы просмотреть доступные режимы закидывания.
 gui.draconiumChest.fMode.off.btn=Выкл.
