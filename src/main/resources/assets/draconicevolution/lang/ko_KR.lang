@@ -89,7 +89,7 @@ item.draconicevolution:draconic_helm.name=드라코닉 투구
 item.draconicevolution:draconic_chest.name=드라코닉 흉갑
 item.draconicevolution:draconic_legs.name=드라코닉 각반
 item.draconicevolution:draconic_boots.name=드라코닉 부츠
-item.draconicevolution:draconic_staff_of_power.name=드라코닉 권력자
+item.draconicevolution:draconic_staff_of_power.name=드라코닉 스태프
 item.draconicevolution:mob_soul.name=영혼
 item.draconicevolution:ender_arrow.name=엔더 화살
 item.draconicevolution:safety_match.name=안전한 성냥
@@ -397,7 +397,7 @@ achievement.draconicevolution.dhoe=농사를 신나게 짓자!
 achievement.draconicevolution.dhoe.desc=드라코닉 괭이 제작
 
 achievement.draconicevolution.dstaff=힘 결합!
-achievement.draconicevolution.dstaff.desc=드라코닉 권력자 제작
+achievement.draconicevolution.dstaff.desc=드라코닉 스태프 제작
 
 achievement.draconicevolution.soul=저승사자다!!!!
 achievement.draconicevolution.soul.desc=의심하지 않는 몹의 영혼을 획득하세요.
