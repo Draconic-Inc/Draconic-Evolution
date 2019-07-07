@@ -150,6 +150,14 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     }
 
     @Override
+    public int getEnergyStored(ItemStack container) {
+        if (container.getItemDamage() == 2) {
+            return Integer.MAX_VALUE / 2;
+        }
+        return super.getEnergyStored(container);
+    }
+
+    @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
         if (container.getItemDamage() == 2) {
             return maxReceive;

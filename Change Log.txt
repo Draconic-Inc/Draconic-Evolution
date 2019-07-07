@@ -1,5 +1,6 @@
 ######## 2.3.23.x ########
 -ReFixed Baubles crash. (Seems last fix got lost in the mail)
+-Fixed broken creative flux capacitor
 
 ######## 2.3.22.343 ########
 -Fixed crash when Baubles is not installed.
