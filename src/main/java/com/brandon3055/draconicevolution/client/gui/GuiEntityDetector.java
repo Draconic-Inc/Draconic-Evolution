@@ -81,7 +81,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
         builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, "") {
             @Override
             public String getDisplayString() {
-                return I18n.format("gui.entityDetector.range") + ": " + tile.RANGE.value + " blocks.";
+                return I18n.format("gui.entityDetector.range") + ": " + tile.range.get() + " blocks.";
             }
         });
         element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.range.info")}, element).setHoverDelay(10));
@@ -91,7 +91,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
         builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, "") {
             @Override
             public String getDisplayString() {
-                return I18n.format("gui.entityDetector.pulseDelay") + ": " + tile.PULSE_RATE.value / 20D + " sec.";
+                return I18n.format("gui.entityDetector.pulseDelay") + ": " + tile.pulseRate.get() / 20D + " sec.";
             }
         });
         element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.pulseDelay.info")}, element).setHoverDelay(10));
@@ -101,7 +101,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
         builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, "") {
             @Override
             public String getDisplayString() {
-                return I18n.format("gui.entityDetector.rsMin") + ": " + tile.RS_MIN_DETECTION.value;
+                return I18n.format("gui.entityDetector.rsMin") + ": " + tile.rsMinDetection.get();
             }
         });
         element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.rsMin.info")}, element).setHoverDelay(10));
@@ -111,7 +111,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
         builder.add(element = new MGuiLabel(this, 0, 0, xSize - 45, 12, "") {
             @Override
             public String getDisplayString() {
-                return I18n.format("gui.entityDetector.rsMax") + ": " + tile.RS_MAX_DETECTION.value;
+                return I18n.format("gui.entityDetector.rsMax") + ": " + tile.rsMaxDetection.get();
             }
         });
         element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.rsMax.info")}, element).setHoverDelay(10));
@@ -122,12 +122,12 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
         manager.add(outputMode = new MGuiButtonToggle(this, guiLeft + 9, builder.builderEndY + 1, xSize - 18, 12, "") {
             @Override
             public String getDisplayString() {
-                return tile.PULSE_RS_MODE.value ? I18n.format("gui.entityDetector.outputPulse") : I18n.format("gui.entityDetector.outputContin");
+                return tile.pulseRsMode.get() ? I18n.format("gui.entityDetector.outputPulse") : I18n.format("gui.entityDetector.outputContin");
             }
 
             @Override
             public boolean isPressed() {
-                return tile.PULSE_RS_MODE.value;
+                return tile.pulseRsMode.get();
             }
         }, 1);
         outputMode.setToolTip(new String[]{I18n.format("gui.entityDetector.output.info")}).setToolTipDelay(10);

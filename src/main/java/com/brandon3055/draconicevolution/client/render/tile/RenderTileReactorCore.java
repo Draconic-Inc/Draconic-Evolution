@@ -88,18 +88,18 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
 
         setLighting(200);
         double diameter = te.getCoreDiameter();
-        float t = (float) (te.temperature.value / MAX_TEMPERATURE);
+        float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
         float intensity = t <= 0.2 ? (float) Utils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) Utils.map(t, 0.2, 0.8, 0.3, 1) : (float) Utils.map(t, 0.8, 1, 1, 1.3);
-        float shieldPower = (float) (te.maxShieldCharge.value > 0 ? te.shieldCharge.value / te.maxShieldCharge.value : 0);
+        float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
 
         if (MinecraftForgeClient.getRenderPass() == 0) {
-            float animation = (te.coreAnimation + (partialTicks * (float) te.shaderAnimationState.value)) / 20F;
+            float animation = (te.coreAnimation + (partialTicks * (float) te.shaderAnimationState.get())) / 20F;
             renderCore(x, y, z, partialTicks, intensity, animation, diameter, DEShaders.useShaders());
         } else if (te.shieldAnimationState > 0) {
             float animation = (te.shieldAnimation + (partialTicks * te.shieldAnimationState)) / 20F;
 
             float power = (0.7F * shieldPower) - (1 - te.shieldAnimationState);
-            if (te.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE) {
+            if (te.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
                 power = 0.05F;//0.05F + ((float) (Math.sin(ClientEventHandler.elapsedTicks / 5F) + 1) / 20F);
             }
 
@@ -132,13 +132,13 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         GlStateTracker.pushState();
 
         double diameter = 100;
-        float t = (float) (te.temperature.value / MAX_TEMPERATURE);
+        float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
         float intensity = t <= 0.2 ? (float) Utils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) Utils.map(t, 0.2, 0.8, 0.3, 1) : (float) Utils.map(t, 0.8, 1, 1, 1.3);
-        float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.value)) / 20F;
-        float shieldPower = (float) (te.maxShieldCharge.value > 0 ? te.shieldCharge.value / te.maxShieldCharge.value : 0);
+        float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
+        float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
 
         renderCore(x - 0.5, y, 100, 0, intensity, animation, diameter, DEShaders.useShaders());
-        renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.value), animation, diameter, DEShaders.useShaders());
+        renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.get()), animation, diameter, DEShaders.useShaders());
 
         GlStateTracker.popState();
         GlStateManager.popMatrix();

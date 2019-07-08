@@ -57,29 +57,29 @@ public class GuiParticleGenerator extends GuiScreen {
         switch (page) {
             default:
             case 1:
-                buttonList.add(new GuiRangeSliderI(0, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "red"), 0, 255, tile.RED.value, tile.RANDOM_RED.value));
-                buttonList.add(new GuiRangeSliderI(1, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "green"), 0, 255, tile.GREEN.value, tile.RANDOM_GREEN.value));
-                buttonList.add(new GuiRangeSliderI(2, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "blue"), 0, 255, tile.BLUE.value, tile.RANDOM_BLUE.value));
-                buttonList.add(new GuiRangeSliderI(3, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "alpha"), 0, 255, tile.ALPHA.value, tile.RANDOM_ALPHA.value));
+                buttonList.add(new GuiRangeSliderI(0, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "red"), 0, 255, tile.red.get(), tile.randomRed.get()));
+                buttonList.add(new GuiRangeSliderI(1, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "green"), 0, 255, tile.green.get(), tile.randomGreen.get()));
+                buttonList.add(new GuiRangeSliderI(2, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "blue"), 0, 255, tile.blue.get(), tile.randomBlue.get()));
+                buttonList.add(new GuiRangeSliderI(3, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "alpha"), 0, 255, tile.alpha.get(), tile.randomAlpha.get()));
                 break;
             case 2:
-                buttonList.add(new GuiRangeSlider(10, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "motionX"), -2, 2, tile.MOTION_X.value, tile.RANDOM_MOTION_X.value).setPrecision(3));
-                buttonList.add(new GuiRangeSlider(11, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "motionY"), -2, 2, tile.MOTION_Y.value, tile.RANDOM_MOTION_Y.value).setPrecision(3));
-                buttonList.add(new GuiRangeSlider(12, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "motionZ"), -2, 2, tile.MOTION_Z.value, tile.RANDOM_MOTION_Z.value).setPrecision(3));
-                buttonList.add(new GuiRangeSlider(6, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "gravity"), -0.2, 0.2, tile.GRAVITY.value, tile.RANDOM_GRAVITY.value).setPrecision(3));
+                buttonList.add(new GuiRangeSlider(10, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "motionX"), -2, 2, tile.motionX.get(), tile.randomMotionX.get()).setPrecision(3));
+                buttonList.add(new GuiRangeSlider(11, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "motionY"), -2, 2, tile.motionY.get(), tile.randomMotionY.get()).setPrecision(3));
+                buttonList.add(new GuiRangeSlider(12, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "motionZ"), -2, 2, tile.motionZ.get(), tile.randomMotionZ.get()).setPrecision(3));
+                buttonList.add(new GuiRangeSlider(6, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "gravity"), -0.2, 0.2, tile.gravity.get(), tile.randomGravity.get()).setPrecision(3));
                 break;
             case 3:
-                buttonList.add(new GuiRangeSlider(13, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "spawnX"), -10, 10, tile.SPAWN_X.value, tile.RANDOM_SPAWN_X.value));
-                buttonList.add(new GuiRangeSlider(14, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "spawnY"), -10, 10, tile.SPAWN_Y.value, tile.RANDOM_SPAWN_Y.value));
-                buttonList.add(new GuiRangeSlider(15, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "spawnZ"), -10, 10, tile.SPAWN_Z.value, tile.RANDOM_SPAWN_Z.value));
-                buttonList.add(new GuiRangeSlider(4, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "scale"), 0.01, 50, tile.SCALE.value, tile.RANDOM_SCALE.value));
+                buttonList.add(new GuiRangeSlider(13, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "spawnX"), -10, 10, tile.spawnX.get(), tile.randomSpawnX.get()));
+                buttonList.add(new GuiRangeSlider(14, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "spawnY"), -10, 10, tile.spawnY.get(), tile.randomSpawnY.get()));
+                buttonList.add(new GuiRangeSlider(15, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "spawnZ"), -10, 10, tile.spawnZ.get(), tile.randomSpawnZ.get()));
+                buttonList.add(new GuiRangeSlider(4, posX + 5, posY + 95, I18n.format(I18N_PREFIX + "scale"), 0.01, 50, tile.scale.get(), tile.randomScale.get()));
                 break;
             case 4:
-                buttonList.add(new GuiSliderI(16, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "delay"), 1, 200, tile.DELAY.value));
-                buttonList.add(new GuiRangeSliderI(5, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "life"), 0, 200, tile.LIFE.value, tile.RANDOM_LIFE.value));
-                buttonList.add(new GuiRangeSliderI(7, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "fade"), 0, 200, tile.FADE.value, tile.RANDOM_FADE.value));
-                buttonList.add(new GuiButtonToggle(8, posX + 5, posY + 95, 98, 20, I18n.format(I18N_PREFIX + "type"), tile.TYPE.value, I18n.format(I18N_PREFIX + "type0"), I18n.format(I18N_PREFIX + "type1"), I18n.format(I18N_PREFIX + "type2"), I18n.format(I18N_PREFIX + "type3"), I18n.format(I18N_PREFIX + "type4")));
-                buttonList.add(new GuiButtonToggle(9, posX + 107, posY + 95, 98, 20, I18n.format(I18N_PREFIX + "collision"), tile.COLLISION.value ? 1 : 0, I18n.format("options.off"), I18n.format("options.on")));
+                buttonList.add(new GuiSliderI(16, posX + 5, posY + 20, I18n.format(I18N_PREFIX + "delay"), 1, 200, tile.delay.get()));
+                buttonList.add(new GuiRangeSliderI(5, posX + 5, posY + 45, I18n.format(I18N_PREFIX + "life"), 0, 200, tile.life.get(), tile.randomLife.get()));
+                buttonList.add(new GuiRangeSliderI(7, posX + 5, posY + 70, I18n.format(I18N_PREFIX + "fade"), 0, 200, tile.fade.get(), tile.randomFade.get()));
+                buttonList.add(new GuiButtonToggle(8, posX + 5, posY + 95, 98, 20, I18n.format(I18N_PREFIX + "type"), tile.type.get(), I18n.format(I18N_PREFIX + "type0"), I18n.format(I18N_PREFIX + "type1"), I18n.format(I18N_PREFIX + "type2"), I18n.format(I18N_PREFIX + "type3"), I18n.format(I18N_PREFIX + "type4")));
+                buttonList.add(new GuiButtonToggle(9, posX + 107, posY + 95, 98, 20, I18n.format(I18N_PREFIX + "collision"), tile.collision.get() ? 1 : 0, I18n.format("options.off"), I18n.format("options.on")));
                 break;
         }
     }

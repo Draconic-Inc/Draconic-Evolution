@@ -32,6 +32,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.*;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_CONTAINER;
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
+
 /**
  * Created by brandon3055 on 19/11/2016.
  */
@@ -45,8 +48,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     protected List<LinkedDevice> slowList = new ArrayList<>();
     public LinkedList<int[]> receiverTransferRates = new LinkedList<>();
     public LinkedList<Byte> receiverFlowRates = new LinkedList<>();
-    public final ManagedBool useUpdateOptimisation = dataManager.register("transportState", new ManagedBool(true)).syncViaContainer().saveToTile().saveToItem().finish();
-    public final ManagedBool inputMode = dataManager.register("inputMode", new ManagedBool(false)).syncViaTile().saveToTile().saveToItem().finish();
+    public final ManagedBool useUpdateOptimisation = dataManager.register(new ManagedBool("transportState", true, SAVE_BOTH_SYNC_CONTAINER));
+    public final ManagedBool inputMode = dataManager.register(new ManagedBool("inputMode", SAVE_BOTH_SYNC_TILE));
 
 
     public TileCrystalWirelessIO() {}
@@ -116,7 +119,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @Override
     public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (player.isSneaking()) {
-            inputMode.value = !inputMode.value;
+            inputMode.invert();
             return true;
         }
         return super.onBlockActivated(state, player, hand, side, hitX, hitY, hitZ);
@@ -143,7 +146,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         int transfered;
-        if (inputMode.value) {
+        if (inputMode.get()) {
             transfered = EnergyHelper.extractEnergy(tile, energyStorage.receiveEnergy(getMaxWirelessTransfer(), true), receiver.side, false);
             energyStorage.receiveEnergy(transfered, false);
         }
@@ -209,7 +212,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             return true;
         }
 
-        if (inputMode.value) {
+        if (inputMode.get()) {
             if (!EnergyHelper.canExtractEnergy(tile, sideClicked)) {
                 if (EnergyHelper.isEnergyTile(tile)) {
                     ChatHelper.indexedTrans(player, "eNet.de.sideCanNotExtract.info", TextFormatting.RED);
@@ -331,8 +334,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
         displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudWirelessLinks.info") + ": " + getReceivers().size() + " / " + getMaxReceivers());
-        TextFormatting colour = !inputMode.value ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(I18n.format("eNet.de.IOOutput_" + !inputMode.value + ".info", colour));
+        TextFormatting colour = !inputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
+        displayList.add(I18n.format("eNet.de.IOOutput_" + !inputMode.get() + ".info", colour));
     }
 
     //endregion

@@ -48,7 +48,7 @@ public class Generator extends BlockBCore implements ITileEntityProvider {
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileGenerator tileGenerator = worldIn.getTileEntity(pos) instanceof TileGenerator ? (TileGenerator) worldIn.getTileEntity(pos) : null;
-        return state.withProperty(ACTIVE, tileGenerator != null && tileGenerator.active.value);
+        return state.withProperty(ACTIVE, tileGenerator != null && tileGenerator.active.get());
     }
 
     @Override

@@ -36,15 +36,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPDATE;
+
 /**
  * Created by brandon3055 on 30/3/2016.
  */
 public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, IMultiBlockPart, IMovableStructure {
 
-    public final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, -1, 0))).syncViaTile().saveToTile().finish();
-    public final ManagedBool hasCoreLock = register("hasCoreLock", new ManagedBool(false)).syncViaTile().saveToTile().finish();
-    public final ManagedBool isCoreActive = register("isCoreActive", new ManagedBool(false)).syncViaTile().saveToTile().finish();
-    public final ManagedBool isValidMultiBlock = register("isValidMultiBlock", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedVec3I coreOffset = register(new ManagedVec3I("coreOffset", new Vec3I(0, -1, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedBool hasCoreLock = register(new ManagedBool("hasCoreLock", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isCoreActive = register(new ManagedBool("isCoreActive", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isValidMultiBlock = register(new ManagedBool("isValidMultiBlock", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public EnumFacing.Axis multiBlockAxis = EnumFacing.Axis.Y;
     public EnumFacing coreDirection = EnumFacing.DOWN;
     public float rotation = 0;
@@ -56,7 +59,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     @Override
     public void update() {
         super.update();
-        if (world.isRemote && hasCoreLock.value && isCoreActive.value) {
+        if (world.isRemote && hasCoreLock.get() && isCoreActive.get()) {
             rotation = ClientEventHandler.elapsedTicks;
             updateVisual();
 //            if (isValidMultiBlock.value) {
@@ -74,9 +77,9 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
         double offsetX = Math.sin((ClientEventHandler.elapsedTicks / 180D * Math.PI) + randOffset);
         double offsetY = Math.cos((ClientEventHandler.elapsedTicks / 180D * Math.PI) + randOffset);
 
-        if (!isValidMultiBlock.value || world.rand.nextBoolean()) {
-            double d = isValidMultiBlock.value ? 1.1 : 0.25;
-            double inset = isValidMultiBlock.value ? 1 : 0;
+        if (!isValidMultiBlock.get() || world.rand.nextBoolean()) {
+            double d = isValidMultiBlock.get() ? 1.1 : 0.25;
+            double inset = isValidMultiBlock.get() ? 1 : 0;
             if (coreDirection.getAxis() == EnumFacing.Axis.Z) {
                 spawn.add(offsetX * d, offsetY * d, (world.rand.nextBoolean() ? -0.38 : 0.38) * inset);
             }
@@ -86,7 +89,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
             else if (coreDirection.getAxis() == EnumFacing.Axis.X) {
                 spawn.add((world.rand.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d, offsetX * d);
             }
-            BCEffectHandler.spawnFX(DEParticles.ENERGY_CORE_FX, world, spawn, new Vec3D(pos).subtract(coreOffset.vec.getPos()).add(0.5, 0.5, 0.5), 1, (int) (randOffset * 100D), isValidMultiBlock.value ? 1 : 0);
+            BCEffectHandler.spawnFX(DEParticles.ENERGY_CORE_FX, world, spawn, new Vec3D(pos).subtract(coreOffset.get().getPos()).add(0.5, 0.5, 0.5), 1, (int) (randOffset * 100D), isValidMultiBlock.get() ? 1 : 0);
         }
         else {
             if (coreDirection.getAxis() == EnumFacing.Axis.Z) {
@@ -123,10 +126,10 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     }
 
     public boolean isStabilizerValid(int coreTier, TileEnergyStorageCore core) {
-        if (coreTier < 5 && !isValidMultiBlock.value) {
+        if (coreTier < 5 && !isValidMultiBlock.get()) {
             return true;
         }
-        else if (coreTier >= 5 && isValidMultiBlock.value) {
+        else if (coreTier >= 5 && isValidMultiBlock.get()) {
             BlockPos offset = pos.subtract(core.getPos());
             EnumFacing direction = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ()).getOpposite();
             return direction.getAxis() == multiBlockAxis;
@@ -181,7 +184,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
      * @return true if structure was activated.
      */
     private boolean checkAndFormMultiBlock() {
-        if (hasCoreLock.value && getCore() != null && getCore().active.value) {
+        if (hasCoreLock.get() && getCore() != null && getCore().active.get()) {
             return false;
         }
 
@@ -201,13 +204,13 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
      * In the case of the structure already formed this should be called from the controller.
      */
     private boolean isAvailable(BlockPos pos) {
-        if (isValidMultiBlock.value) {
+        if (isValidMultiBlock.get()) {
             TileEntity tile = world.getTileEntity(pos);
             return tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).getController() == this;
         }
 
         TileEntity stabilizer = world.getTileEntity(pos);
-        return stabilizer instanceof TileEnergyCoreStabilizer && (!((TileEnergyCoreStabilizer) stabilizer).hasCoreLock.value || ((TileEnergyCoreStabilizer) stabilizer).getCore() == null || !((TileEnergyCoreStabilizer) stabilizer).getCore().active.value);
+        return stabilizer instanceof TileEnergyCoreStabilizer && (!((TileEnergyCoreStabilizer) stabilizer).hasCoreLock.get() || ((TileEnergyCoreStabilizer) stabilizer).getCore() == null || !((TileEnergyCoreStabilizer) stabilizer).getCore().active.get());
     }
 
     private void buildMultiBlock(EnumFacing.Axis axis) {
@@ -223,12 +226,12 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
             }
         }
 
-        isValidMultiBlock.value = true;
+        isValidMultiBlock.set(true);
         multiBlockAxis = axis;
     }
 
     public void deFormStructure() {
-        isValidMultiBlock.value = false;
+        isValidMultiBlock.set(false);
         if (world.getBlockState(pos).getBlock() == DEFeatures.particleGenerator) {
             world.setBlockState(pos, DEFeatures.particleGenerator.getDefaultState().withProperty(ParticleGenerator.TYPE, "stabilizer"));
         }
@@ -260,7 +263,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
 
     @Override
     public boolean isStructureValid() {
-        return isValidMultiBlock.value;
+        return isValidMultiBlock.get();
     }
 
     @Override
@@ -285,7 +288,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
                 if (tile instanceof TileEnergyStorageCore) {
                     TileEnergyStorageCore core = (TileEnergyStorageCore) tile;
                     core.validateStructure();
-                    if (core.active.value) {
+                    if (core.active.get()) {
                         continue;
                     }
                     return core;
@@ -297,26 +300,26 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     }
 
     public TileEnergyStorageCore getCore() {
-        if (hasCoreLock.value) {
+        if (hasCoreLock.get()) {
             TileEntity tile = world.getTileEntity(getCorePos());
             if (tile instanceof TileEnergyStorageCore) {
                 return (TileEnergyStorageCore) tile;
             }
             else {
-                hasCoreLock.value = false;
+                hasCoreLock.set(false);
             }
         }
         return null;
     }
 
     private BlockPos getCorePos() {
-        return pos.subtract(coreOffset.vec.getPos());
+        return pos.subtract(coreOffset.get().getPos());
     }
 
     public void setCore(TileEnergyStorageCore core) {
         BlockPos offset = pos.subtract(core.getPos());
-        coreOffset.vec = new Vec3I(offset);
-        hasCoreLock.value = true;
+        coreOffset.set(new Vec3I(offset));
+        hasCoreLock.set(true);
         coreDirection = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ()).getOpposite();
         updateBlock();
     }
@@ -380,7 +383,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     private Set<BlockPos> getStabilizerBlocks() {
         Set<BlockPos> blocks = new HashSet<>();
         blocks.add(pos);
-        if (isValidMultiBlock.value) {
+        if (isValidMultiBlock.get()) {
             for (BlockPos offset : FacingUtils.getAroundAxis(multiBlockAxis)) {
                 blocks.add(pos.add(offset));
             }
@@ -396,7 +399,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
             HashSet<BlockPos> blocks = new HashSet<>();
 
             for (ManagedVec3I offset : core.stabOffsets) {
-                BlockPos stabPos = core.getPos().subtract(offset.vec.getPos());
+                BlockPos stabPos = core.getPos().subtract(offset.get().getPos());
                 TileEntity tile = world.getTileEntity(stabPos);
                 if (tile instanceof TileEnergyCoreStabilizer) {
                     blocks.addAll(((TileEnergyCoreStabilizer) tile).getStabilizerBlocks());
@@ -404,8 +407,8 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
             }
 
             EnergyCoreStructure structure = core.coreStructure;
-            MultiBlockStorage storage = structure.getStorageForTier(core.tier.value);
-            BlockPos start = core.getPos().add(structure.getCoreOffset(core.tier.value));
+            MultiBlockStorage storage = structure.getStorageForTier(core.tier.get());
+            BlockPos start = core.getPos().add(structure.getCoreOffset(core.tier.get()));
             storage.forEachBlock(start, (e, e2) -> blocks.add(e));
 
             return blocks;
@@ -416,7 +419,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
     @Override
     public EnumActionResult canMove() {
         TileEnergyStorageCore core = getCore();
-        if (core != null && core.structureValid.value && core.active.value) {
+        if (core != null && core.structureValid.get() && core.active.get()) {
             if (core.isFrameMoving) {
                 return EnumActionResult.SUCCESS;
             }

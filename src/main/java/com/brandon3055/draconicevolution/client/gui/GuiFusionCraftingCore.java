@@ -147,10 +147,10 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
 
             //region Draw EnergyFX
 
-            if (tile.isCrafting.value && tile.craftingStage.value > 0) {
+            if (tile.isCrafting.get() && tile.craftingStage.get() > 0) {
 
                 GlStateManager.depthMask(false);
-                double charge = tile.craftingStage.value / 1000D;
+                double charge = tile.craftingStage.get() / 1000D;
                 if (charge > 1) {
                     charge = 1;
                 }
@@ -168,8 +168,8 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
             //endregion
 
             //Draw Progress
-            if (tile.isCrafting.value && tile.craftingStage.value >= 0) {
-                int state = tile.craftingStage.value;
+            if (tile.isCrafting.get() && tile.craftingStage.get() >= 0) {
+                int state = tile.craftingStage.get();
                 String status = state > 1000 ? I18n.format("gui.fusionCrafting.crafting.info") : I18n.format("gui.fusionCrafting.charging.info");
                 double d = state > 1000 ? (state - 1000F) / 1000D : state / 1000D;
                 String progress = ((int) (d * 100) + "%");
@@ -230,7 +230,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
                 }
             }
 
-            if (tile.craftingStage.value > 1000) {
+            if (tile.craftingStage.get() > 1000) {
                 double xPos = centerX - 8 + (rand.nextDouble() * 16);
                 double yTop = guiTop + 35 - 8 + (rand.nextDouble() * 16);
                 guiEffectRenderer.addEffect(new EnergyEffect(player.world, xPos, yTop, centerX, guiTop + 78, 1));

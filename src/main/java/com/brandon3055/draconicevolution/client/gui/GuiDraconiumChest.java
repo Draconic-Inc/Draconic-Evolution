@@ -61,7 +61,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         manager.add(new MGuiBackground(this, guiLeft() + 45, guiTop() + 227, 0, 282, 88, 0, "draconicevolution:" + DETextures.GUI_DRACONIUM_CHEST) {
             @Override
             public boolean onUpdate() {
-                double progress = tile.burnRate.value;
+                double progress = tile.burnRate.get();
                 ySize = (int) (14 * progress);
                 yPos = guiTop() + 227 + (int) (14 * (1 - progress));
                 textureY = 282 + (14 - ySize);
@@ -72,7 +72,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         manager.add(new MGuiBackground(this, guiLeft() + 44, guiTop() + 245, 0, 266, 0, 16, "draconicevolution:" + DETextures.GUI_DRACONIUM_CHEST) {
             @Override
             public boolean onUpdate() {
-                double progress = tile.energySync.value / (double) tile.energyStorage.getMaxEnergyStored();
+                double progress = tile.energySync.get() / (double) tile.energyStorage.getMaxEnergyStored();
                 xSize = (int) (90 * progress);
                 return super.onUpdate();
             }
@@ -82,8 +82,8 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             public List<String> getToolTip() {
                 List<String> list = new ArrayList<>();
                 list.add(InfoHelper.ITC() + I18n.format("gui.de.energyStorage.txt"));
-                list.add(InfoHelper.HITC() + Utils.formatNumber(tile.energySync.value) + " / " + Utils.formatNumber(tile.energyStorage.getMaxEnergyStored()));
-                list.add(I18n.format("gui.draconiumChest.energyConsumption.info") + ": " + Utils.addCommas(tile.smeltEnergyPerTick.value) + " RF/t");
+                list.add(InfoHelper.HITC() + Utils.formatNumber(tile.energySync.get()) + " / " + Utils.formatNumber(tile.energyStorage.getMaxEnergyStored()));
+                list.add(I18n.format("gui.draconiumChest.energyConsumption.info") + ": " + Utils.addCommas(tile.smeltEnergyPerTick.get()) + " RF/t");
                 return list;
             }
         }.setHoverDelay(0)));
@@ -91,7 +91,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         manager.add(new MGuiBackground(this, guiLeft() + 139, guiTop() + 202, 0, 297, 16, 0, "draconicevolution:" + DETextures.GUI_DRACONIUM_CHEST) {
             @Override
             public boolean onUpdate() {
-                double progress = Math.min(tile.smeltProgress.value / (double) tile.smeltTime.value, 1);
+                double progress = Math.min(tile.smeltProgress.get() / (double) tile.smeltTime.get(), 1);
                 ySize = (int) (22 * progress);
                 yPos = guiTop() + 202 + (int) (22 * (1 - progress));
                 textureY = 297 + (22 - ySize);
@@ -102,7 +102,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             @Override
             public List<String> getToolTip() {
                 List<String> list = new ArrayList<>();
-                list.add(I18n.format("gui.draconiumChest.processTime.info") + ": " + Utils.round(tile.smeltTime.value / 20D, 100) + "s");
+                list.add(I18n.format("gui.draconiumChest.processTime.info") + ": " + Utils.round(tile.smeltTime.get() / 20D, 100) + "s");
                 return list;
             }
         }.setHoverDelay(0)));
@@ -144,7 +144,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         manager.add(new MGuiButtonSolid(this, "PICK_COLOUR", guiLeft() + 390, guiTop() + 248, 84, 12, I18n.format("gui.draconiumChest.pickColour.btn")) {
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
-                return 0xFF000000 | tile.colour.value;
+                return 0xFF000000 | tile.colour.get();
             }
         }.setToolTip(new String[]{I18n.format("gui.draconiumChest.pickColour.info")}));
 
@@ -204,7 +204,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
                 }
             };
 
-            picker.setColour(tile.colour.value);
+            picker.setColour(tile.colour.get());
             picker.setListener(this);
             picker.setIncludeAlpha(false);
             picker.initElement();
@@ -321,9 +321,9 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
 
                     ResourceHelperDE.bindTexture(DETextures.DRACONIUM_CHEST);
 
-                    float red = (float) (50 + ((tile.colour.value >> 16) & 0xFF)) / 255f;
-                    float green = (float) (50 + ((tile.colour.value >> 8) & 0xFF)) / 255f;
-                    float blue = (float) (50 + (tile.colour.value & 0xFF)) / 255f;
+                    float red = (float) (50 + ((tile.colour.get() >> 16) & 0xFF)) / 255f;
+                    float green = (float) (50 + ((tile.colour.get() >> 8) & 0xFF)) / 255f;
+                    float blue = (float) (50 + (tile.colour.get() & 0xFF)) / 255f;
                     GlStateManager.color(red, green, blue);
 
                     float scale = 16;

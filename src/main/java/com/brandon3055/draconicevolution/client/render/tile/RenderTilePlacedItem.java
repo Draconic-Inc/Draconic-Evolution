@@ -57,9 +57,9 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
                     GlStateManager.rotate(180, 0, 1, 0);
                 }
 
-                GlStateManager.rotate((float) te.rotation[index].value * 22.5F, 0F, 0F, -1F);
+                GlStateManager.rotate((float) te.rotation[index].get() * 22.5F, 0F, 0F, -1F);
 
-                if ((stack.getItem().isEnchantable(stack) || (te.altRenderMode.value && !(stack.getItem() instanceof ItemBlock))) && cuboids.size() == 1) {
+                if ((stack.getItem().isEnchantable(stack) || (te.altRenderMode.get() && !(stack.getItem() instanceof ItemBlock))) && cuboids.size() == 1) {
                     GlStateManager.scale(0.8F, 0.8F, 0.8F);
                     GlStateManager.rotate(180, 0, 1, 0);
                     Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
@@ -67,7 +67,7 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
                 else if (stack.getItem() instanceof ItemBlock) {
                     float f = 0.72F;
                     GlStateManager.scale(f, f, f);
-                    if (te.altRenderMode.value) {
+                    if (te.altRenderMode.get()) {
 //                        GlStateManager.rotate(90, 1, 0, 0);
                         GlStateManager.translate(0, 0, -0.2);
                     }

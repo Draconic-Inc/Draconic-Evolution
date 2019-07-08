@@ -35,18 +35,20 @@ import org.lwjgl.opengl.GL11;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+
 /**
  * Created by brandon3055 on 28/09/2016.
  */
 public class TileCelestialManipulator extends TileEnergyBase implements ITickable, IEnergyReceiver, IChangeListener {
 
-    public final ManagedBool WEATHER_MODE = register("WEATHER_MODE", new ManagedBool(true)).syncViaTile().saveToTile().finish();
-    public final ManagedBool ACTIVE = register("ACTIVE", new ManagedBool(false)).syncViaTile().saveToTile().finish();
-    public final ManagedBool weatherToggleRunning = register("weatherToggleRunning", new ManagedBool(false)).syncViaTile().finish();
-    public final ManagedBool timeWarpRunning = register("timeWarpRunning", new ManagedBool(false)).syncViaTile().finish();
-    public final ManagedBool timeWarpStopping = register("timeWarpStopping", new ManagedBool(false)).syncViaTile().finish();
-    public final ManagedBool redstoneSignal = register("redstoneSignal", new ManagedBool(false)).syncViaTile().saveToTile().finish();
-    public final ManagedByte rsMode = register("rsMode", new ManagedByte(0)).syncViaContainer().saveToTile().finish();
+    public final ManagedBool weatherMode = register(new ManagedBool("weatherMode", true, SAVE_NBT_SYNC_TILE));
+    public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool weatherToggleRunning = register(new ManagedBool("weatherToggleRunning", SYNC_TILE));
+    public final ManagedBool timeWarpRunning = register(new ManagedBool("timeWarpRunning", SYNC_TILE));
+    public final ManagedBool timeWarpStopping = register(new ManagedBool("timeWarpStopping", SYNC_TILE));
+    public final ManagedBool redstoneSignal = register(new ManagedBool("redstoneSignal", SAVE_NBT_SYNC_TILE));
+    public final ManagedByte rsMode = register(new ManagedByte("rsMode", SAVE_NBT_SYNC_CONTAINER));
     public int timer = 0;
     public boolean storm = false;
     public boolean rain = false;
@@ -54,14 +56,14 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 
     public TileCelestialManipulator() {
         setCapacityAndTransfer(4000000, 4000000, 4000000);
-        setEnergySyncMode().syncViaContainer();
+        setEnergySyncMode(SYNC_CONTAINER);
     }
 
     @Override
     public void update() {
         super.update();
 
-        if (weatherToggleRunning.value) {
+        if (weatherToggleRunning.get()) {
             timer++;
             if (world.isRemote) {
                 updateWeatherEffects();
@@ -69,7 +71,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
             else {
                 if (timer >= 230) {
                     timer = 0;
-                    weatherToggleRunning.value = false;
+                    weatherToggleRunning.set(false);
                     world.getWorldInfo().setRaining(rain);
                     world.getWorldInfo().setThundering(storm);
                     int time = (10 * 60 * 20) + world.rand.nextInt(20 * 60 * 20);
@@ -78,7 +80,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 }
             }
         }
-        else if (timeWarpRunning.value) {
+        else if (timeWarpRunning.get()) {
             timer++;
             if (world.isRemote) {
                 updateSunEffect();
@@ -103,14 +105,14 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 }
             }
         }
-        else if (timeWarpStopping.value) {
+        else if (timeWarpStopping.get()) {
             if (timer > 100) {
                 timer = 100;
             }
 
             timer--;
             if (timer <= 0 && !world.isRemote) {
-                timeWarpStopping.value = false;
+                timeWarpStopping.set(false);
             }
 
             if (world.isRemote && timer >= 0) {
@@ -126,8 +128,8 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 }
             }
         }
-        else if (ACTIVE.value) {
-            ACTIVE.value = false;
+        else if (active.get()) {
+            active.set(false);
         }
         else if (world.isRemote) {
             standbyParticleEffect();
@@ -135,30 +137,30 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
     }
 
     public void toggleWeather(boolean rain, boolean storm) {
-        if (world.isRemote || ACTIVE.value) {
+        if (world.isRemote || active.get()) {
             return;
         }
 
         this.storm = storm;
         this.rain = rain;
         timer = 0;
-        weatherToggleRunning.value = true;
+        weatherToggleRunning.set(true);
 //        sendPacketToClients(new PacketTileMessage(this, (byte) 0, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
-        ACTIVE.value = true;
+        active.set(true);
     }
 
     public void startTimeWarp(long targetTime) {
-        ACTIVE.value = true;
+        active.set(true);
         this.targetTime = targetTime;
         timer = 0;
-        timeWarpRunning.value = true;
+        timeWarpRunning.set(true);
 //        sendPacketToClients(new PacketTileMessage(this, (byte) 1, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
     }
 
     public void stopTimeWarp() {
 //        sendPacketToClients(new PacketTileMessage(this, (byte) 2, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
-        timeWarpRunning.value = false;
-        timeWarpStopping.value = true;
+        timeWarpRunning.set(false);
+        timeWarpStopping.set(true);
     }
 
     //region Interact
@@ -172,28 +174,28 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         else if (id == 1) {
             int intValue = data.readInt();
             if (intValue >= 0 && intValue <= 9) {
-                rsMode.value = (byte) intValue;
+                rsMode.set((byte) intValue);
             }
         }
     }
 
     public void handleInteract(String action, EntityPlayer player) {
-        if (action.endsWith("STOP") && ACTIVE.value && timeWarpRunning.value) {
+        if (action.endsWith("STOP") && active.get() && timeWarpRunning.get()) {
             stopTimeWarp();
             return;
         }
 
-        if (ACTIVE.value) {
+        if (active.get()) {
             sendMessage(new TextComponentTranslation("msg.de.alreadyRunning.txt"), player);
             return;
         }
 
         switch (action) {
             case "WEATHER_MODE":
-                WEATHER_MODE.value = true;
+                weatherMode.set(true);
                 return;
             case "SUN_MODE":
-                WEATHER_MODE.value = false;
+                weatherMode.set(false);
                 return;
             case "STOP_RAIN":
                 if (!world.isRaining()) {
@@ -375,7 +377,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         if (timer >= 220) {
             world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.boom, SoundCategory.BLOCKS, DEConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
             timer = 0;
-            weatherToggleRunning.value = false;
+            weatherToggleRunning.set(false);
             effects.clear();
             sound.kill();
             sound = null;
@@ -388,8 +390,8 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 
     @SideOnly(Side.CLIENT)
     public void startSunEffect() {
-        timeWarpRunning.value = true;
-        timeWarpStopping.value = false;
+        timeWarpRunning.set(true);
+        timeWarpStopping.set(false);
         timer = 0;
 
         effects = new LinkedList<>();
@@ -503,7 +505,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
     @SideOnly(Side.CLIENT)
     public void renderEffects(float partialTicks) {
         if (effects != null) {
-            if (weatherToggleRunning.value) {
+            if (weatherToggleRunning.get()) {
                 ResourceHelperDE.bindTexture(DETextures.FUSION_PARTICLE);
             }
             else {
@@ -543,15 +545,15 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
     @Override
     public void onNeighborChange(BlockPos blockChanged) {
         if (world.isBlockPowered(pos)) {
-            if (!redstoneSignal.value) {
-                redstoneSignal.value = true;
-                handleInteract(ACTIONS[rsMode.value], null);
+            if (!redstoneSignal.get()) {
+                redstoneSignal.set(true);
+                handleInteract(ACTIONS[rsMode.get()], null);
             }
         }
         else {
-            if (redstoneSignal.value) {
-                redstoneSignal.value = false;
-                if (timeWarpRunning.value && rsMode.value == 9) {
+            if (redstoneSignal.get()) {
+                redstoneSignal.set(false);
+                if (timeWarpRunning.get() && rsMode.get() == 9) {
                     stopTimeWarp();
                 }
             }

@@ -13,6 +13,8 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+
 
 /**
  * Created by brandon3055 on 24/9/2015.
@@ -20,10 +22,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 public class TileChaosCrystal extends TileBCBase implements ITickable {
 
     public int tick = 0;
-    public final ManagedBool guardianDefeated = register("guardianDefeated", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedBool guardianDefeated = register(new ManagedBool("guardianDefeated", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     /**This is used to store the spawn location of the crystal so the crystal can tell if it gets moved*/
-    private final ManagedLong posLock = register("pos_lock", new ManagedLong(-1)).saveToTile().finish();
-    private final ManagedInt dimLock = register("dim_lock", new ManagedInt(1)).saveToTile().finish();
+    private final ManagedLong posLock = register(new ManagedLong("posLock", -1L, SAVE_NBT));
+    private final ManagedInt dimLock = register(new ManagedInt("dimLock", 1, SAVE_NBT));
     private int soundTimer;
 
     boolean validateOldHash = false;
@@ -57,7 +59,7 @@ public class TileChaosCrystal extends TileBCBase implements ITickable {
             world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESoundHandler.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, world.rand.nextFloat() * 0.4F + 0.8F, false);
         }
 
-        if (!world.isRemote && guardianDefeated.value && world.rand.nextInt(50) == 0) {
+        if (!world.isRemote && guardianDefeated.get() && world.rand.nextInt(50) == 0) {
             int x = 5 - world.rand.nextInt(11);
             int z = 5 - world.rand.nextInt(11);
             EntityLightningBolt bolt = new EntityLightningBolt(world, pos.getX() + x, world.getTopSolidOrLiquidBlock(pos.add(x, 0, z)).getY(), pos.getZ() + z, false);
@@ -82,7 +84,7 @@ public class TileChaosCrystal extends TileBCBase implements ITickable {
     }
 
     public void setDefeated() {
-        guardianDefeated.value = true;
+        guardianDefeated.set(true);
         super.update();
     }
 
@@ -98,12 +100,12 @@ public class TileChaosCrystal extends TileBCBase implements ITickable {
     }
 
     public void setLockPos() {
-        posLock.value = pos.toLong();
-        dimLock.value = world.provider.getDimension();
+        posLock.set(pos.toLong());
+        dimLock.set(world.provider.getDimension());
     }
 
     private boolean hasBeenMoved() {
-        return posLock.value != pos.toLong() || dimLock.value != world.provider.getDimension();
+        return posLock.get() != pos.toLong() || dimLock.get() != world.provider.getDimension();
     }
 
     @Override

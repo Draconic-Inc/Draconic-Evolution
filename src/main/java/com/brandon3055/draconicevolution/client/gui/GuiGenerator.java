@@ -46,8 +46,8 @@ public class GuiGenerator extends GuiContainer {
             drawTexturedModalRect(guiLeft + 63, guiTop + 34, 36, ySize, 18, 18);//fuel box
         }
 
-        float power = (float) tile.energySync.value / (float) tile.getMaxEnergyStored(EnumFacing.DOWN) * -1 + 1;
-        float fuel = tile.burnTimeRemaining.value / ((float) tile.burnTime.value) * -1 + 1;
+        float power = (float) tile.energySync.get() / (float) tile.getMaxEnergyStored(EnumFacing.DOWN) * -1 + 1;
+        float fuel = tile.burnTimeRemaining.get() / ((float) tile.burnTime.get()) * -1 + 1;
 
         drawTexturedModalRect(guiLeft + 83, guiTop + 11 + (int) (power * 40), xSize, (int) (power * 40), 12, 40 - (int) (power * 40));//Power bar
         drawTexturedModalRect(guiLeft + 100, guiTop + 37 + (int) (fuel * 13), xSize, 40 + (int) (fuel * 13), 18, 18 - (int) (fuel * 13));//Power bar
@@ -59,7 +59,7 @@ public class GuiGenerator extends GuiContainer {
         if (GuiHelper.isInRect(83, 10, 12, 40, x, y)) {
             ArrayList<String> internal = new ArrayList<>();
             internal.add(I18n.format("info.de.energyBuffer.txt"));
-            internal.add("" + TextFormatting.DARK_BLUE + tile.energySync.value + "/" + tile.getMaxEnergyStored(EnumFacing.UP));
+            internal.add("" + TextFormatting.DARK_BLUE + tile.energySync.get() + "/" + tile.getMaxEnergyStored(EnumFacing.UP));
             drawHoveringText(internal, x + guiLeft, y + guiTop, fontRenderer);
         }
     }

@@ -28,7 +28,7 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
     }
 
     public void setSlotState() {
-        fuelSlots = tile.reactorState.value == TileReactorCore.ReactorState.COLD;
+        fuelSlots = tile.reactorState.get() == TileReactorCore.ReactorState.COLD;
 
         inventorySlots.clear();
         inventoryItemStacks.clear();
@@ -56,7 +56,7 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-        if (tile.reactorState.value == TileReactorCore.ReactorState.COLD != fuelSlots) {
+        if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD != fuelSlots) {
             setSlotState();
         }
     }
@@ -65,7 +65,7 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
         int maxFuel = 10368 + 15;
-        int installedFuel = (int) (tile.reactableFuel.value + tile.convertedFuel.value);
+        int installedFuel = (int) (tile.reactableFuel.get() + tile.convertedFuel.get());
         int free = maxFuel - installedFuel;
 
         Slot slot = getSlot(slotId);
@@ -82,13 +82,13 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
                 if ((value = getFuelValue(copy)) > 0) {
                     int maxInsert = free / value;
                     int insert = Math.min(Math.min(heldStack.getCount(), maxInsert), dragType == 1 ? 1 : 64);
-                    tile.reactableFuel.value += insert * value;
+                    tile.reactableFuel.add((double)insert * value);
                     heldStack.shrink(insert);
                 }
 //                else if ((value = getChaosValue(copy)) > 0) {
 //                    int maxInsert = free / value;
 //                    int insert = Math.min(Math.min(heldStack.stackSize, maxInsert), dragType == 1 ? 1 : 64);
-//                    tile.convertedFuel.value += insert * value;
+//                    tile.convertedFuel.get() += insert * value;
 //                    heldStack.stackSize -= insert;
 //                }
 
@@ -97,8 +97,8 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
                 }
             }
             else if (!stackInSlot.isEmpty()) {
-                tile.reactableFuel.value -= getFuelValue(stackInSlot);
-                tile.convertedFuel.value -= getChaosValue(stackInSlot);
+                tile.reactableFuel.subtract((double) getFuelValue(stackInSlot));
+                tile.convertedFuel.subtract((double) getChaosValue(stackInSlot));
                 inventory.setItemStack(stackInSlot);
             }
 
@@ -174,7 +174,7 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
         public ItemStack getStack() {
             int index = getSlotIndex();
             if (index < 3) {
-                int fuel = MathHelper.floor(tile.reactableFuel.value);
+                int fuel = MathHelper.floor(tile.reactableFuel.get());
                 int block = fuel / 1296;
                 int ingot = (fuel % 1296) / 144;
                 int nugget = ((fuel % 1296) % 144) / 16;
@@ -190,7 +190,7 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
                 }
             }
             else {
-                int chaos = MathHelper.floor(tile.convertedFuel.value);
+                int chaos = MathHelper.floor(tile.convertedFuel.get());
                 int block = chaos / 1296;
                 int ingot = (chaos % 1296) / 144;
                 int nugget = ((chaos % 1296) % 144) / 16;
