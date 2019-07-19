@@ -170,7 +170,7 @@ public class ToolUpgrade extends ItemBCore implements IRenderOverride {
     public void registerRenderer(Feature feature) {
         for (Integer meta : ID_TO_NAME.keySet()) {
             String fullName = DraconicEvolution.MODID + ":" + feature.getName();
-            String variant = "type=" + ID_TO_NAME.get(meta).toLowerCase();
+            String variant = "type=" + ID_TO_NAME.get(meta).toLowerCase(Locale.ENGLISH);
             ModelLoader.setCustomModelResourceLocation(this, meta, new ModelResourceLocation(fullName, variant));
         }
     }

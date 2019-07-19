@@ -1,4 +1,6 @@
-######## 2.3.23.x ########
+######## 2.3.24.346 ########
+
+######## 2.3.23.345 ########
 -ReFixed Baubles crash. (Seems last fix got lost in the mail)
 -Fixed broken creative flux capacitor
 

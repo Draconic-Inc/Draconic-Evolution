@@ -29,6 +29,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 import static com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest.AutoSmeltMode;
@@ -125,7 +126,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         manager.add(new MGuiButtonSolid(this, "SELECT_MODE", guiLeft() + 44, guiTop() + 190, 90, 12, "") {
             @Override
             public String getDisplayString() {
-                return I18n.format("gui.draconiumChest.fMode.btn") + ": " + TextFormatting.GOLD + I18n.format("gui.draconiumChest.fMode." + tile.autoSmeltMode.toString().toLowerCase() + ".btn");
+                return I18n.format("gui.draconiumChest.fMode.btn") + ": " + TextFormatting.GOLD + I18n.format("gui.draconiumChest.fMode." + tile.autoSmeltMode.toString().toLowerCase(Locale.ENGLISH) + ".btn");
             }
         }.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.draconiumChest.fMode.info")}).setHoverDelay(10)), 1);
 //        manager.add(new MGuiSelectDialog(this, guiLeft() + 44, guiTop() + 190, 90, 12));
@@ -164,7 +165,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             List<MGuiElementBase> modeButtons = new ArrayList<>();
             for (AutoSmeltMode mode : AutoSmeltMode.values()) {
                 MGuiButtonSolid modeButton = new MGuiButtonSolid(this, mode.name(), 0, 0, dialog.xSize - 2, 12, mode.name().toLowerCase());
-                modeButton.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.draconiumChest.fMode." + mode.name().toLowerCase() + ".info")}));
+                modeButton.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.draconiumChest.fMode." + mode.name().toLowerCase(Locale.ENGLISH) + ".info")}));
                 modeButtons.add(modeButton);
             }
             selector.setOptions(modeButtons, false);

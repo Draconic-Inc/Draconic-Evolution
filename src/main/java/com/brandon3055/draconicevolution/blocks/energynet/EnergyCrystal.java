@@ -45,6 +45,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by brandon3055 on 19/11/2016.
@@ -60,7 +61,7 @@ public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegis
         this.setHarvestLevel("pickaxe", 0);
         for (CrystalType type : CrystalType.values()) {
             for (int i = 0; i < 3; i++) {
-                addName((type.getIndex() * 3) + i, "energy_crystal." + type.name().toLowerCase() + "." + (i == 0 ? "basic" : i == 1 ? "wyvern" : "draconic"));
+                addName((type.getIndex() * 3) + i, "energy_crystal." + type.name().toLowerCase(Locale.ENGLISH) + "." + (i == 0 ? "basic" : i == 1 ? "wyvern" : "draconic"));
             }
         }
     }
@@ -236,7 +237,7 @@ public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegis
 
         @Override
         public String getName() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ENGLISH);
         }
 
         public abstract TileEntity createTile();

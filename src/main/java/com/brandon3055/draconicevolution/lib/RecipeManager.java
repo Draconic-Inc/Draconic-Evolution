@@ -39,6 +39,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.brandon3055.draconicevolution.lib.RecipeManager.RecipeDifficulty.ALL;
 
@@ -388,7 +389,7 @@ public class RecipeManager {
             }
         }
 
-        if (rawString.toLowerCase().contains("x")) {
+        if (rawString.toLowerCase(Locale.ENGLISH).contains("x")) {
             try {
                 count = Integer.parseInt(rawString.substring(0, rawString.indexOf("x")));
             }
