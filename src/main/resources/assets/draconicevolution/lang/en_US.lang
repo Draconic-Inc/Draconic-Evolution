@@ -196,7 +196,7 @@ msg.draconiumChestEditL1.txt=Right click with red green or blue dye to adjust th
 msg.draconiumChestEditL2.txt=Click the top half of the chest to increase the value
 msg.draconiumChestEditL3.txt=Or the bottom half of the chest to decrease the value
 msg.draconiumChestEditL4.txt=Right click with paper to copy the colour to other chests
-msg.draconiumChestEdit2.txt=Please use a single peace of paper
+msg.draconiumChestEdit2.txt=Please use a single piece of paper
 msg.de.dragonDeath.txt=§5The heart is temporarily awakened by the dragons explosive §5death
 msg.de.baseSafeAOW.txt=§9(§aAOE §aSafe §aMode §ais §aenabled§9) §cOperation §cCanceled §cbecause §ca §ctile §centity §cwas §cdetected
 msg.de.guardianAttackBlocked.txt=Your attack is blocked by the guardians crystals!
@@ -711,7 +711,7 @@ config.field.junkNbtSens.entry=Junk NBT Sensitive
 config.field.junkNbtSens.description=When disabled the junk filter will ignore when filtering filtering items.
 
 config.field.hideArmor.entry=Hide Armor
-config.field.hideArmor.description=When enabled this armor peace will be completely invisible.
+config.field.hideArmor.description=When enabled this armor piece will be completely invisible.
 
 config.field.AOE.entry=A.O.E
 config.field.replaceSame.entry=Replace Same Blocks
