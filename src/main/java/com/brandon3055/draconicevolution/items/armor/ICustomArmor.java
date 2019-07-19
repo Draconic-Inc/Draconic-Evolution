@@ -43,7 +43,7 @@ public interface ICustomArmor extends IEnergyContainerItem {
     /**
      * Returns the fire resistance modifier for this armor
      * This is the percentage of fire damage this armor should absorb
-     * If the total resistance for all armor peaces the player is wearing is >= 1 the player will not be damaged by fire.
+     * If the total resistance for all armor pieces the player is wearing is >= 1 the player will not be damaged by fire.
      * Should return a number between 0 and 1
      */
     float getFireResistance(ItemStack stack);

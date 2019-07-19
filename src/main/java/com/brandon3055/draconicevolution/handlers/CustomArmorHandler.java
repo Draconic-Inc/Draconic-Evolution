@@ -71,12 +71,12 @@ public class CustomArmorHandler {
 
         float newEntropy = Math.min(summery.entropy + 1 + (hitAmount / 20), 100F);
 
-        //Divide the damage between the armor peaces based on how many of the protection points each peace has
+        //Divide the damage between the armor pieces based on how many of the protection points each piece has
         float totalAbsorbed = 0;
         int remainingPoints = 0;
         for (int i = 0; i < summery.allocation.length; i++) {
             if (summery.allocation[i] == 0) continue;
-            ItemStack armorPeace = summery.armorStacks.get(i);
+            ItemStack armorPiece = summery.armorStacks.get(i);
 
             float dmgShear = summery.allocation[i] / summery.protectionPoints;
             float dmg = dmgShear * hitAmount;
@@ -85,8 +85,8 @@ public class CustomArmorHandler {
             totalAbsorbed += absorbed;
             summery.allocation[i] -= absorbed;
             remainingPoints += summery.allocation[i];
-            ItemNBTHelper.setFloat(armorPeace, "ProtectionPoints", summery.allocation[i]);
-            ItemNBTHelper.setFloat(armorPeace, "ShieldEntropy", newEntropy);
+            ItemNBTHelper.setFloat(armorPiece, "ProtectionPoints", summery.allocation[i]);
+            ItemNBTHelper.setFloat(armorPiece, "ShieldEntropy", newEntropy);
         }
 
         summery.saveStacks(player);
@@ -204,14 +204,14 @@ public class CustomArmorHandler {
                 continue;
             }
 
-            float maxForPeace = ((ICustomArmor) stack.getItem()).getProtectionPoints(stack);
+            float maxForPiece = ((ICustomArmor) stack.getItem()).getProtectionPoints(stack);
             int energyAmount = ((ICustomArmor) summery.armorStacks.get(i).getItem()).getEnergyPerProtectionPoint();
             ((ICustomArmor) stack.getItem()).modifyEnergy(stack, -(int) (((double) summery.energyAllocation[i] / (double) summery.totalEnergyStored) * (totalPointsToAdd * energyAmount)));
-            float pointsForPeace = (summery.pointsDown[i] / Math.max(1, summery.maxProtectionPoints - summery.protectionPoints)) * totalPointsToAdd;
-            summery.allocation[i] += pointsForPeace;
+            float pointsForPiece = (summery.pointsDown[i] / Math.max(1, summery.maxProtectionPoints - summery.protectionPoints)) * totalPointsToAdd;
+            summery.allocation[i] += pointsForPiece;
 
-            if (summery.allocation[i] > maxForPeace || maxForPeace - summery.allocation[i] < 0.1F) {
-                summery.allocation[i] = maxForPeace;
+            if (summery.allocation[i] > maxForPiece || maxForPiece - summery.allocation[i] < 0.1F) {
+                summery.allocation[i] = maxForPiece;
             }
 
             ItemNBTHelper.setFloat(stack, "ProtectionPoints", summery.allocation[i]);
@@ -362,27 +362,27 @@ public class CustomArmorHandler {
     public static class ArmorSummery {
         /*---- Shield ----*/
         /**
-         * Max protection points from all equipped armor peaces
+         * Max protection points from all equipped armor pieces
          */
         public float maxProtectionPoints = 0F;
         /**
-         * Total protection points from all equipped armor peaces
+         * Total protection points from all equipped armor pieces
          */
         public float protectionPoints = 0F;
         /**
-         * Number of quipped armor peaces
+         * Number of quipped armor pieces
          */
-        public int peaces = 0;
+        public int pieces = 0;
         /**
-         * Point  Allocation, The number of points on each peace
+         * Point  Allocation, The number of points on each piece
          */
         public float[] allocation;
         /**
-         * How many points have been drained from each armor peace
+         * How many points have been drained from each armor piece
          */
         public float[] pointsDown;
         /**
-         * The armor peaces (Index will contain EMPTY if peace is not present)
+         * The armor pieces (Index will contain EMPTY if piece is not present)
          */
         public NonNullList<ItemStack> armorStacks;
 
@@ -404,7 +404,7 @@ public class CustomArmorHandler {
          */
         public long maxTotalEnergyStorage = 0;
         /**
-         * RF stored in each armor peace
+         * RF stored in each armor piece
          */
         public int[] energyAllocation;
         /*---- Effects ----*/
@@ -435,7 +435,7 @@ public class CustomArmorHandler {
                 ItemStack stack = armorStacks.get(i);
                 if (stack.isEmpty() || !(stack.getItem() instanceof ICustomArmor)) continue;
                 ICustomArmor armor = (ICustomArmor) stack.getItem();
-                peaces++;
+                pieces++;
                 allocation[i] = ItemNBTHelper.getFloat(stack, "ProtectionPoints", 0);
                 protectionPoints += allocation[i];
                 totalEntropy += ItemNBTHelper.getFloat(stack, "ShieldEntropy", 0);
@@ -490,12 +490,12 @@ public class CustomArmorHandler {
                 }
             }
 
-            if (peaces == 0) {
+            if (pieces == 0) {
                 return null;
             }
 
-            entropy = totalEntropy / peaces;
-            meanRecoveryPoints = totalRecoveryPoints / peaces;
+            entropy = totalEntropy / pieces;
+            meanRecoveryPoints = totalRecoveryPoints / pieces;
 
             return this;
         }
