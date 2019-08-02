@@ -275,7 +275,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
         autoFeedRun = true;
         boolean stacksInserted = false;
 
-        for (int i = 0; i < LAST_CHEST_SLOT; i++) {
+        for (int i = 0; i <= LAST_CHEST_SLOT; i++) {
             if (!furnaceInputs.contains(i)) {
                 continue;
             }
@@ -475,7 +475,41 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
         scheduleAutoFeed();
     }
 
-//    @Override
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        ItemStack ret = super.decrStackSize(index, count);
+
+        //Check if one of the smelting slots was modified and if so update the smelting state.
+        if ((index >= FIRST_FURNACE_SLOT && index <= LAST_FURNACE_SLOT) || index == CORE_SLOT) {
+            validateSmelting();
+        }
+        else if (furnaceOutputBlocked.value) {
+            furnaceOutputBlocked.value = false;
+        }
+
+        scheduleAutoFeed();
+
+        return ret;
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int index) {
+        ItemStack ret = super.removeStackFromSlot(index);
+
+        //Check if one of the smelting slots was modified and if so update the smelting state.
+        if ((index >= FIRST_FURNACE_SLOT && index <= LAST_FURNACE_SLOT) || index == CORE_SLOT) {
+            validateSmelting();
+        }
+        else if (furnaceOutputBlocked.value) {
+            furnaceOutputBlocked.value = false;
+        }
+
+        scheduleAutoFeed();
+
+        return ret;
+    }
+
+    //    @Override
 //    protected <T> T getItemHandler(Capability<T> capability, EnumFacing facing) {
 //        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemHandlers[facing.getIndex()]);
 //    }

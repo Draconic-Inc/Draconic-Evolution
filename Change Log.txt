@@ -1,4 +1,6 @@
 ######## 2.3.24.346 ########
+-Fixed Draconium chest furnace freezing when backed up.
+-Fixed furnace in Draconium chest not pulling from the last slot.
 
 ######## 2.3.23.345 ########
 -ReFixed Baubles crash. (Seems last fix got lost in the mail)
