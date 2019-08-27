@@ -70,7 +70,7 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
         TileEntity tile = worldIn.getTileEntity(pos);
 
         if (tile instanceof TileCraftingInjector) {
-            return state.withProperty(FACING, EnumFacing.getFront(((TileCraftingInjector) tile).facing.value));
+            return state.withProperty(FACING, EnumFacing.getFront(((TileCraftingInjector) tile).facing.get()));
         }
 
         return state;
@@ -102,7 +102,7 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileCraftingInjector) {
-            ((TileCraftingInjector) tile).facing.value = (byte) EnumFacing.getDirectionFromEntityLiving(pos, placer).getIndex();
+            ((TileCraftingInjector) tile).facing.set((byte) EnumFacing.getDirectionFromEntityLiving(pos, placer).getIndex());
         }
     }
 
@@ -130,8 +130,8 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
         TileCraftingInjector craftingPedestal = (TileCraftingInjector) tile;
 
         if (player.isSneaking()) {
-            craftingPedestal.singleItem.value = !craftingPedestal.singleItem.value;
-            ChatHelper.indexedTrans(player, "msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.value ? "On" : "Off") + ".txt", -30553055);
+            craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
+            ChatHelper.indexedTrans(player, "msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.get() ? "On" : "Off") + ".txt", -30553055);
             craftingPedestal.getDataManager().detectAndSendChanges();
             return true;
         }
@@ -207,7 +207,7 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
             return;
         }
 
-        displayList.add(InfoHelper.HITC() + I18n.format("msg.craftingInjector.singleItem" + (((TileCraftingInjector) te).singleItem.value ? "On" : "Off") + ".txt"));
+        displayList.add(InfoHelper.HITC() + I18n.format("msg.craftingInjector.singleItem" + (((TileCraftingInjector) te).singleItem.get() ? "On" : "Off") + ".txt"));
     }
 
     //endregion

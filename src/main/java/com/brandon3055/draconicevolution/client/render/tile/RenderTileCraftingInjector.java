@@ -17,7 +17,7 @@ public class RenderTileCraftingInjector extends TESRBase<TileCraftingInjector> {
         if (te.getStackInSlot(0) != null) {
             GlStateManager.pushMatrix();
 
-            EnumFacing facing = EnumFacing.getFront(te.facing.value);
+            EnumFacing facing = EnumFacing.getFront(te.facing.get());
             GlStateManager.translate(x + 0.5 + (facing.getFrontOffsetX() * 0.45), y + 0.5 + (facing.getFrontOffsetY() * 0.45), z + 0.5 + (facing.getFrontOffsetZ() * 0.45));
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
 

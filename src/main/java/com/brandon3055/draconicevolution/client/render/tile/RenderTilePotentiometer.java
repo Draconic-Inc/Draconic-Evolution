@@ -75,7 +75,7 @@ public class RenderTilePotentiometer extends FastTESR<TilePotentiometer> {
         mat.apply(new Translation(x, y, z));
         mat.apply(Rotation.sideOrientation(te.getState(DEFeatures.potentiometer).getValue(Potentiometer.FACING).getOpposite().getIndex(), 0).at(Vector3.center));
         mat.apply(new Translation(6 * pxl, pxl, 6 * pxl));
-        mat.apply(new Rotation(te.POWER.value * 22.5D * -MathHelper.torad, 0, 1, 0).at(new Vector3(pxl * 2, 0, pxl * 2)));
+        mat.apply(new Rotation(te.power.get() * 22.5D * -MathHelper.torad, 0, 1, 0).at(new Vector3(pxl * 2, 0, pxl * 2)));
 
         model.render(state, LightModel.standardLightModel, iconTransform, mat);
 

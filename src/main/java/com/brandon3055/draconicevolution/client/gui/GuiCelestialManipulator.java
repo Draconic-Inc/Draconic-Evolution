@@ -139,7 +139,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
     }
 
     private void updateControls() {
-        if (tile.WEATHER_MODE.value) {
+        if (tile.weatherMode.get()) {
             for (MGuiElementBase elementBase : sunControls) {
                 manager.remove(elementBase);
             }
@@ -185,7 +185,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
 
     @Override
     public void updateScreen() {
-        energyBar.setEnergy(tile.energySync.value);
+        energyBar.setEnergy(tile.energySync.get());
         int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 
@@ -221,7 +221,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy>
                 elementBase.setEnabled(elementBase.xPos < animRect.x + animRect.width - 18 && elementBase.yPos < animRect.y + animRect.height - 18);
                 MGuiElementBase e;
                 if (elementBase.childElements.size() > 0 && (e = elementBase.childElements.get(0)) instanceof MGuiButton) {
-                    ((MGuiButton) e).disabled = tile.rsMode.value == ((MGuiButton) e).buttonId;
+                    ((MGuiButton) e).disabled = tile.rsMode.get() == ((MGuiButton) e).buttonId;
                 }
             }
         }

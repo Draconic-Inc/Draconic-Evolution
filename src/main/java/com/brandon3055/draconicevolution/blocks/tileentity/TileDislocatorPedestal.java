@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import appeng.api.movable.IMovableTile;
 import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
@@ -27,7 +28,7 @@ import static com.brandon3055.draconicevolution.DEFeatures.dislocatorBound;
 @Optional.Interface(modid = "appliedenergistics2", iface = "appeng.api.movable.IMovableTile")
 public class TileDislocatorPedestal extends TileInventoryBase implements ITeleportEndPoint, IMovableTile {
 
-    public final ManagedInt rotation = register("rotation", new ManagedInt(0)).saveToTile().syncViaTile().trigerUpdate().finish();
+    public final ManagedInt rotation = register(new ManagedInt("rotation", 0, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
 
     public TileDislocatorPedestal() {
         setInventorySize(1);

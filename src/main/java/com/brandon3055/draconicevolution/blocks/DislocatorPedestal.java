@@ -41,7 +41,7 @@ public class DislocatorPedestal extends BlockBCore implements ITileEntityProvide
         TileEntity tile = worldIn.getTileEntity(pos);
         if (tile instanceof TileDislocatorPedestal) {
             float f = (float) MathHelper.floor((MathHelper.wrapDegrees(placer.rotationYaw - 180.0F) + 11.25F) / 22.5F);
-            ((TileDislocatorPedestal) tile).rotation.value = (int) f;
+            ((TileDislocatorPedestal) tile).rotation.set((int) f);
             if (!worldIn.isRemote) {
                 ((TileDislocatorPedestal) tile).getDataManager().forceSync();
             }

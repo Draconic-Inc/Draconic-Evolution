@@ -39,7 +39,7 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
         GlStateManager.translate((float) x, (float) y, (float) z);
 
-        if (!te.running.value) {
+        if (!te.running.get()) {
             partialTicks = 0;
         }
 

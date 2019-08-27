@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
@@ -19,9 +20,8 @@ import net.minecraft.util.SoundCategory;
  */
 public class TilePotentiometer extends TileBCBase implements IRedstoneEmitter, IActivatableTile {
 
-    public final ManagedByte ROTATION = register("ROTATION", new ManagedByte(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedByte POWER = register("POWER", new ManagedByte(0)).saveToTile().saveToItem().syncViaTile().finish();
-
+    public final ManagedByte rotation = register(new ManagedByte("rotation", DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedByte power = register(new ManagedByte("power", DataFlags.SAVE_BOTH_SYNC_TILE));
 
     @Override
     public boolean hasFastRenderer() {
@@ -29,44 +29,44 @@ public class TilePotentiometer extends TileBCBase implements IRedstoneEmitter, I
     }
 
     public EnumFacing getRotation() {
-        return EnumFacing.getFront(ROTATION.value);
+        return EnumFacing.getFront(rotation.get());
     }
 
     public void setRotation(EnumFacing rotation) {
-        this.ROTATION.value = (byte) rotation.getIndex();
+        this.rotation.set((byte) rotation.getIndex());
         super.update();
     }
 
     @Override
     public int getWeakPower(IBlockState blockState, EnumFacing side) {
-        return POWER.value;
+        return power.get();
     }
 
     @Override
     public int getStrongPower(IBlockState blockState, EnumFacing side) {
-        return POWER.value;
+        return power.get();
     }
 
     @Override
     public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (player.isSneaking()) {
-            POWER.value--;
-            if (POWER.value < 0) {
-                POWER.value = 15;
+            power.dec();
+            if (power.get() < 0) {
+                power.set((byte) 15);
             }
         }
         else {
-            POWER.value++;
-            if (POWER.value > 15) {
-                POWER.value = 0;
+            power.inc();
+            if (power.get() > 15) {
+                power.zero();
             }
         }
 
         if (world.isRemote) {
-            ChatHelper.indexedMsg(player, POWER.toString());
+            ChatHelper.indexedMsg(player, power.toString());
         }
         else {
-            world.playSound(null, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (POWER.value / 20F));
+            world.playSound(null, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));
         }
 
         world.notifyNeighborsOfStateChange(pos, getBlockType(), true);

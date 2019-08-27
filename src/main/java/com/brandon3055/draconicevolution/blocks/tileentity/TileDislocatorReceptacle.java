@@ -7,10 +7,7 @@ import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;
@@ -52,6 +49,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 import static com.brandon3055.draconicevolution.DEFeatures.dislocatorBound;
 
 /**
@@ -62,17 +60,17 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     //used to update existing portals to the new offset based portal positions
     //TODO change these names to lowercase in 1.13 (this is a breaking change)
-    public final ManagedBool NEW_OFFSETS = register("NEW_OFFSETS", new ManagedBool(false)).saveToTile().finish(); //This was to "reboot" existing portals after an update that broke them (Can be removed at some point)
-    public final ManagedBool ACTIVE = register("ACTIVE", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
-    public final ManagedBool CAMO = register("CAMO", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
-    public final ManagedBool LT_REDSTONE = register("LT_REDSTONE", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
-    public final ManagedVec3I SPAWN_POS = register("SPAWN_POS", new ManagedVec3I(new Vec3I(0, -999, 0))).saveToTile().syncViaTile().finish();
-    public final ManagedEnum<Axis> ACTIVE_AXIS = register("ACTIVE_AXIS", new ManagedEnum<>(Axis.X)).syncViaTile().saveToTile().finish();
-    public final ManagedBool IS_BOUND = register("IS_BOUND", new ManagedBool(false)).saveToTile().syncViaTile().finish();
-    public final ManagedVec3I LINKED_CRYSTAL = register("CRYSTAL_POS", new ManagedVec3I(new Vec3I(0, -999, 0))).saveToTile().syncViaTile().finish();
-    public final ManagedByte REMOTE_CRYSTAL_TIER = register("CRYSTAL_POS_TIER", new ManagedByte(0)).saveToTile().syncViaTile().finish();
-    public final ManagedByte LINKED_FLOW_RATE = register("LINKED_FLOW_RATE", new ManagedByte(0)).syncViaTile().finish();
-    public final ManagedVec3I CRYSTAL_LINK_POS = register("CRYSTAL_LINK_POS", new ManagedVec3I(new Vec3I(0, -999, 0))).saveToTile().syncViaTile().finish();
+    public final ManagedBool newOffsets = register(new ManagedBool("newOffsets", SAVE_NBT)); //This was to "reboot" existing portals after an update that broke them (Can be removed at some point)
+    public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool camo = register(new ManagedBool("camo", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool ltRedstone = register(new ManagedBool("ltRedstone", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedVec3I spawnPos = register(new ManagedVec3I("spawnPos", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<Axis> activeAxis = register(new ManagedEnum<>("activeAxis", Axis.X, SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isBound = register(new ManagedBool("isBound", SAVE_NBT_SYNC_TILE));
+    public final ManagedVec3I linkedCrystal = register(new ManagedVec3I("linkedCrystal", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedByte remoteCrystalTier = register(new ManagedByte("remoteCrystalTier", SAVE_NBT_SYNC_TILE));
+    public final ManagedByte linkedFlowRate = register(new ManagedByte("linkedFlowRate", SAVE_NBT));
+    public final ManagedVec3I crystalLinkPos = register(new ManagedVec3I("crystalLinkPos", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
 
     public int hiddenTime = 0;
     public boolean igniting = false;
@@ -94,18 +92,18 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         updateHidden(false);
         updateCrystalLogic();
 
-        if (world.isRemote && !ACTIVE.value) {
+        if (world.isRemote && !active.get()) {
             hiddenTime = 5;
         }
 
-        if (!world.isRemote && !NEW_OFFSETS.value && ACTIVE.value) {
+        if (!world.isRemote && !newOffsets.get() && active.get()) {
             deactivate();
             attemptIgnition();
-            NEW_OFFSETS.value = true;
+            newOffsets.set(true);
         }
 
         if (frameMoving) {
-            if (ACTIVE.value) {
+            if (active.get()) {
                 finishMove(pos, new HashSet<>());
             }
             frameMoving = false;
@@ -195,8 +193,8 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     private void updateCrystalLogic() {
         fxHandler.update();
 
-        boolean boundCrystals = ACTIVE.value && IS_BOUND.value && LINKED_CRYSTAL.vec.y != -999;
-        if (world.isRemote && boundCrystals && REMOTE_CRYSTAL_TIER.detectChanges()) {
+        boolean boundCrystals = active.get() && isBound.get() && linkedCrystal.get().y != -999;
+        if (world.isRemote && boundCrystals && remoteCrystalTier.isDirty(true)) {
             fxHandler.reloadConnections();
         }
 
@@ -208,22 +206,22 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
                     int i = remote.getLinks().indexOf(remoteTile.getPos());
                     List<Byte> rates = ((IENetEffectTile) remote).getFlowRates();
                     if (i >= 0 && i < rates.size()) {
-                        LINKED_FLOW_RATE.value = rates.get(i);
+                        linkedFlowRate.set(rates.get(i));
                     }
                     else {
-                        LINKED_FLOW_RATE.value = 0;
+                        linkedFlowRate.zero();
                     }
                 }
                 else {
-                    LINKED_FLOW_RATE.value = 0;
+                    linkedFlowRate.zero();
                 }
             }
-            if (LINKED_FLOW_RATE.value != 0 && DEEventHandler.serverTicks % 100 == 0) {
-                dataManager.forceSync(LINKED_FLOW_RATE);
+            if (linkedFlowRate.get() != 0 && DEEventHandler.serverTicks % 100 == 0) {
+                dataManager.forceSync(linkedFlowRate);
             }
         }
         else if (!world.isRemote) {
-            LINKED_FLOW_RATE.value = 0;
+            linkedFlowRate.zero();
         }
     }
 
@@ -243,7 +241,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
                 for (BlockPos checkPos : BlockPos.getAllInBox(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
                     TileEntity tile = world.getTileEntity(checkPos);
                     if (tile instanceof TilePortal) {
-                        BlockPos spawn = SPAWN_POS.vec.y == -999 ? pos : getSpawnPos();
+                        BlockPos spawn = spawnPos.get().y == -999 ? pos : getSpawnPos();
                         TilePortal tPortal = (TilePortal) tile;
                         if (tPortal.getMasterPos().equals(pos) && tPortal.updateTime != time) {
                             if (!setHidden) {
@@ -261,7 +259,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     public boolean onBlockActivated(EntityPlayer player) {
         if (world.isRemote) {
-            return !LT_REDSTONE.value;
+            return !ltRedstone.get();
         }
 
         InventoryUtils.handleHeldStackTransfer(0, this, player);
@@ -277,8 +275,8 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             DislocatorLinkHandler.removeLink(world, prev);
         }
 
-        IS_BOUND.value = false;
-        if (getStackInSlot(0).isEmpty() && ACTIVE.value) {
+        isBound.set(false);
+        if (getStackInSlot(0).isEmpty() && active.get()) {
             deactivate();
         }
         else if (!getStackInSlot(0).isEmpty()) {
@@ -296,8 +294,8 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             DislocatorLinkHandler.removeLink(world, prev);
         }
 
-        IS_BOUND.value = false;
-        if (getStackInSlot(0).isEmpty() && ACTIVE.value) {
+        isBound.set(false);
+        if (getStackInSlot(0).isEmpty() && active.get()) {
             deactivate();
         }
         else if (!getStackInSlot(0).isEmpty()) {
@@ -312,10 +310,10 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         ItemStack stack = getStackInSlot(0);
         if (dislocatorBound.isValid(stack) && !dislocatorBound.isPlayer(stack)) {
             DislocatorLinkHandler.updateLink(world, stack, pos, world.provider.getDimension());
-            IS_BOUND.value = true;
+            isBound.set(true);
         }
         else {
-            IS_BOUND.value = false;
+            isBound.set(false);
         }
     }
 
@@ -352,7 +350,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     public void deactivate() {
         if (!world.isRemote) {
-            ACTIVE.value = false;
+            active.set(false);
         }
 
         IBlockState state = world.getBlockState(pos);
@@ -370,11 +368,11 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     public boolean attemptIgnition() {
-        NEW_OFFSETS.value = true;
+        newOffsets.set(true);
         ItemStack stack = getStackInSlot(0);
 
         if (!(stack.getItem() instanceof Dislocator) || ((Dislocator) stack.getItem()).getLocation(stack, world) == null) {
-            if (!dislocatorBound.isValid(stack)){
+            if (!dislocatorBound.isValid(stack)) {
                 return false;
             }
         }
@@ -391,8 +389,8 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
                 }
             }
 
-            ACTIVE.value = true;
-            ACTIVE_AXIS.value = portalConfiguration.getKey();
+            active.set(true);
+            activeAxis.set(portalConfiguration.getKey());
 
             IBlockState state = world.getBlockState(pos);
             if (state.getBlock() == DEFeatures.dislocatorReceptacle) {
@@ -433,7 +431,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         }
 
         if (foundValid.isEmpty()) {
-            SPAWN_POS.vec = new Vec3I(0, -999, 0);
+            spawnPos.set(new Vec3I(0, -999, 0));
             return;
         }
 
@@ -471,7 +469,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     private void updateLinkBlock(List<BlockPos> rawBlocks) {
         if (rawBlocks.isEmpty()) {
-            CRYSTAL_LINK_POS.vec = new Vec3I(0, -999, 0);
+            crystalLinkPos.set(new Vec3I(0, -999, 0));
             return;
         }
 
@@ -586,11 +584,11 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     @Override
     public BlockPos getArrivalPos(String linkID) {
-        if (!ACTIVE.value || !dislocatorBound.isValid(getStackInSlot(0)) || !dislocatorBound.getLinkID(getStackInSlot(0)).equals(linkID)) {
+        if (!active.get() || !dislocatorBound.isValid(getStackInSlot(0)) || !dislocatorBound.getLinkID(getStackInSlot(0)).equals(linkID)) {
             return null;
         }
 
-        return SPAWN_POS.vec.y == -999 ? null : getSpawnPos();
+        return spawnPos.get().y == -999 ? null : getSpawnPos();
     }
 
     @Override
@@ -601,19 +599,19 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     public void setSpawnPos(BlockPos spawnPos) {
-        SPAWN_POS.vec.set(pos.subtract(spawnPos));
+        this.spawnPos.get().set(pos.subtract(spawnPos));
     }
 
     protected BlockPos getSpawnPos() {
-        return pos.subtract(SPAWN_POS.vec.getPos());
+        return pos.subtract(spawnPos.get().getPos());
     }
 
     public void setLinkPos(BlockPos spawnPos) {
-        CRYSTAL_LINK_POS.vec.set(pos.subtract(spawnPos));
+        crystalLinkPos.get().set(pos.subtract(spawnPos));
     }
 
     protected BlockPos getLinkPos() {
-        return pos.subtract(CRYSTAL_LINK_POS.vec.getPos());
+        return pos.subtract(crystalLinkPos.get().getPos());
     }
 
     @Override
@@ -651,12 +649,12 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     @Override
     public Iterable<BlockPos> getBlocksForFrameMove() {
-        if (ACTIVE.value) {
-            for (BlockPos offset : FacingUtils.getAroundAxis(ACTIVE_AXIS.value)) {
+        if (active.get()) {
+            for (BlockPos offset : FacingUtils.getAroundAxis(activeAxis.get())) {
                 BlockPos next = pos.add(offset);
                 if (world.getBlockState(next).getBlock() == DEFeatures.portal) {
                     HashSet<BlockPos> blocks = new HashSet<>();
-                    findActiveBlocksOnAxis(ACTIVE_AXIS.value, next, blocks);
+                    findActiveBlocksOnAxis(activeAxis.get(), next, blocks);
                     return blocks;
                 }
             }
@@ -697,7 +695,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     public void finishMove(BlockPos pos, HashSet<BlockPos> blocks) {
-        for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(ACTIVE_AXIS.value)) {
+        for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(activeAxis.get())) {
             BlockPos np = pos.offset(facing);
             if (blocks.contains(np)) continue;
             IBlockState state = world.getBlockState(np);
@@ -718,11 +716,11 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     //region F!@#$%^ Lasers through portals code for Morph
 
     protected void setCrystalPos(BlockPos crystalPos) {
-        LINKED_CRYSTAL.vec.set(pos.subtract(crystalPos));
+        linkedCrystal.get().set(pos.subtract(crystalPos));
     }
 
     protected BlockPos getCrystalPos() {
-        return pos.subtract(LINKED_CRYSTAL.vec.getPos());
+        return pos.subtract(linkedCrystal.get().getPos());
     }
 
     private BlockPos remotePosCache = null;
@@ -735,7 +733,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     private TileDislocatorReceptacle getRemoteReceptacle(boolean skipRemoteCheck) {
-        if (!IS_BOUND.value || !ACTIVE.value) return null;
+        if (!isBound.get() || !active.get()) return null;
 
         if (invalidLinkTime > 0) {
             invalidLinkTime--;
@@ -767,7 +765,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
                 if (skipRemoteCheck) {
                     return (TileDislocatorReceptacle) tile;
                 }
-                if (((TileDislocatorReceptacle) tile).ACTIVE.value && ((TileDislocatorReceptacle) tile).getRemoteReceptacle(true) == this) {
+                if (((TileDislocatorReceptacle) tile).active.get() && ((TileDislocatorReceptacle) tile).getRemoteReceptacle(true) == this) {
                     return (TileDislocatorReceptacle) tile;
                 }
             }
@@ -782,10 +780,10 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         TileDislocatorReceptacle tile = getRemoteReceptacle();
         if (tile != null) {
             MinecraftServer server = world.getMinecraftServer();
-            if (server != null && tile.LINKED_CRYSTAL.vec.y != -999) {
+            if (server != null && tile.linkedCrystal.get().y != -999) {
                 TileEntity crystal = server.getWorld(remoteDimCache).getTileEntity(tile.getCrystalPos());
                 if (crystal instanceof IENetEffectTile) {
-                    REMOTE_CRYSTAL_TIER.value = (byte) ((IENetEffectTile) crystal).getTier();
+                    remoteCrystalTier.set((byte) ((IENetEffectTile) crystal).getTier());
                     return (ICrystalLink) crystal;
                 }
                 return null;
@@ -797,7 +795,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     @Nonnull
     @Override
     public List<BlockPos> getLinks() {
-        if (LINKED_CRYSTAL.vec.y != -999) {
+        if (linkedCrystal.get().y != -999) {
             return Collections.singletonList(getCrystalPos());
         }
         return Collections.emptyList();
@@ -816,7 +814,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     @Override
     public void breakLink(BlockPos otherCrystal) {
-        LINKED_CRYSTAL.vec = new Vec3I(0, -999, 0);
+        linkedCrystal.set(new Vec3I(0, -999, 0));
     }
 
     @Override
@@ -857,15 +855,15 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     @Override
     public Vec3D getBeamLinkPos(BlockPos linkTo) {
-        double dist = FacingUtils.destanceInDirection(pos, linkTo, FacingUtils.getAxisFaces(ACTIVE_AXIS.value)[0]);
+        double dist = FacingUtils.destanceInDirection(pos, linkTo, FacingUtils.getAxisFaces(activeAxis.get())[0]);
         Vec3D vec = Vec3D.getCenter(getLinkPos());
 
         EnumFacing facing;
         if (dist > 0) {
-            facing = FacingUtils.getAxisFaces(ACTIVE_AXIS.value)[0];
+            facing = FacingUtils.getAxisFaces(activeAxis.get())[0];
         }
         else {
-            facing = FacingUtils.getAxisFaces(ACTIVE_AXIS.value)[1];
+            facing = FacingUtils.getAxisFaces(activeAxis.get())[1];
         }
 
         vec.add(facing.getFrontOffsetX() * 0.35, facing.getFrontOffsetY() * 0.35, facing.getFrontOffsetZ() * 0.35);
@@ -903,12 +901,12 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     @Override
     public LinkedList<Byte> getFlowRates() {
-        return new LinkedList<>(Collections.singletonList(LINKED_FLOW_RATE.value));
+        return new LinkedList<>(Collections.singletonList(linkedFlowRate.get()));
     }
 
     @Override
     public int getTier() {
-        return REMOTE_CRYSTAL_TIER.value;
+        return remoteCrystalTier.get();
     }
 
     boolean hashCached = false;

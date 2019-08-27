@@ -65,7 +65,7 @@ public class EnergyStorageCore extends BlockBCore implements ITileEntityProvider
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity core = worldIn.getTileEntity(pos);
-        return state.withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, core instanceof TileEnergyStorageCore && ((TileEnergyStorageCore) core).active.value);
+        return state.withProperty(RENDER_TYPE, 0).withProperty(ACTIVE, core instanceof TileEnergyStorageCore && ((TileEnergyStorageCore) core).active.get());
     }
 
     //endregion

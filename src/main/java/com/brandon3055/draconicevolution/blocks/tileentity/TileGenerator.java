@@ -11,6 +11,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+
 public class TileGenerator extends TileEnergyInventoryBase implements IEnergyProvider, ITickable, IChangeListener {
 
     private int burnSpeed = 6;
@@ -20,14 +22,15 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
     private int EPBT = 14;
 
     //Synced Fields
-    public final ManagedInt burnTime = register("burnTime", new ManagedInt(1)).saveToTile().saveToItem().syncViaContainer().finish();
-    public final ManagedInt burnTimeRemaining = register("burnTimeRemaining", new ManagedInt(0)).saveToTile().saveToItem().syncViaContainer().finish();
-    public final ManagedBool active = register("active", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().trigerUpdate().finish();
-    public final ManagedBool powered = register("powered", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().trigerUpdate().finish();
+    public final ManagedInt burnTime = register(new ManagedInt("burnTime", 1, SAVE_BOTH_SYNC_CONTAINER));
+
+    public final ManagedInt burnTimeRemaining = register(new ManagedInt("burnTimeRemaining", 0, SAVE_BOTH_SYNC_CONTAINER));
+    public final ManagedBool active = register(new ManagedBool("active", false, SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool powered = register(new ManagedBool("powered", false, SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
 
     public TileGenerator() {
         setInventorySize(1);
-        setEnergySyncMode().syncViaContainer();
+        setEnergySyncMode().addFlags(SYNC_TILE);
         setCapacityAndTransfer(100000, 0, 1000);
         setShouldRefreshOnBlockChange();
     }
@@ -39,14 +42,14 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
             return;
         }
 
-        active.value = burnTimeRemaining.value > 0 && getEnergyStored() < getMaxEnergyStored();
+        active.set(burnTimeRemaining.get() > 0 && getEnergyStored() < getMaxEnergyStored());
 
-        if (burnTimeRemaining.value > 0 && getEnergyStored() < getMaxEnergyStored()) {
-            burnTimeRemaining.value -= burnSpeed;
+        if (burnTimeRemaining.get() > 0 && getEnergyStored() < getMaxEnergyStored()) {
+            burnTimeRemaining.subtract(burnSpeed);
             energyStorage.modifyEnergyStored(burnSpeed * EPBT);
         }
 
-        if (burnTimeRemaining.value <= 0 && getEnergyStored() < getMaxEnergyStored() && !powered.value) {
+        if (burnTimeRemaining.get() <= 0 && getEnergyStored() < getMaxEnergyStored() && !powered.get()) {
             tryRefuel();
         }
 
@@ -54,7 +57,7 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
     }
 
     public void tryRefuel() {
-        if (burnTimeRemaining.value > 0 || getEnergyStored() >= getMaxEnergyStored()) return;
+        if (burnTimeRemaining.get() > 0 || getEnergyStored() >= getMaxEnergyStored()) return;
         ItemStack stack = getStackInSlot(0);
         if (!stack.isEmpty()) {
             int itemBurnTime = TileEntityFurnace.getItemBurnTime(stack);
@@ -67,8 +70,8 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
                     stack.shrink(1);
                 }
                 setInventorySlotContents(0, stack);
-                burnTime.value = itemBurnTime;
-                burnTimeRemaining.value = itemBurnTime;
+                burnTime.set(itemBurnTime);
+                burnTimeRemaining.set(itemBurnTime);
             }
         }
     }
@@ -102,6 +105,6 @@ public class TileGenerator extends TileEnergyInventoryBase implements IEnergyPro
 
     @Override
     public void onNeighborChange(BlockPos neighbor) {
-        powered.value = world.isBlockPowered(pos);
+        powered.set(world.isBlockPowered(pos));
     }
 }

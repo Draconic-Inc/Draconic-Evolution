@@ -13,20 +13,22 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SYNC_TILE;
+
 /**
  * Created by brandon3055 on 30/05/2016.
  */
 public class TileEnergyInfuser extends TileEnergyInventoryBase implements IEnergyReceiver, ITickable {
 
-    public final ManagedBool running = register("running", new ManagedBool(false)).syncViaTile().finish();
-    public final ManagedBool charging = register("charging", new ManagedBool(false)).syncViaTile().finish();
+    public final ManagedBool running = register(new ManagedBool("running", SYNC_TILE));
+    public final ManagedBool charging = register(new ManagedBool("charging", SYNC_TILE));
 
     public float rotation = 0;
 
     public TileEnergyInfuser() {
         this.setCapacityAndTransfer(10000000, 10000000, 10000000);
         this.setInventorySize(1);
-        setEnergySyncMode().syncViaContainer();
+        setEnergySyncMode().addFlags(SYNC_TILE);
     }
 
     //region Function
@@ -42,17 +44,17 @@ public class TileEnergyInfuser extends TileEnergyInventoryBase implements IEnerg
             if (EnergyHelper.canReceiveEnergy(stack)) {
 
                 int maxAccept = EnergyHelper.insertEnergy(stack, energyStorage.getMaxExtract(), true);
-                running.value = maxAccept > 0;
+                running.set(maxAccept > 0);
 
                 int transferred = energyStorage.extractEnergy(EnergyHelper.insertEnergy(stack, Math.min(energyStorage.getEnergyStored(), energyStorage.getMaxExtract()), false), false);
-                charging.value = transferred > 0;
+                charging.set(transferred > 0);
             }
             else {
-                running.value = charging.value = false;
+                running.set(charging.set(false));
             }
         }
 
-        if (running.value) {
+        if (running.get()) {
             rotation++;
         }
     }
@@ -68,7 +70,7 @@ public class TileEnergyInfuser extends TileEnergyInventoryBase implements IEnerg
 
     @SideOnly(Side.CLIENT)
     private void spawnParticles() {
-        if (world.isRemote && running.value && charging.value) {
+        if (world.isRemote && running.get() && charging.get()) {
             for (int i = 0; i < 4; i++) {
                 double rotation = (this.rotation / 180 * Math.PI) + (i * (Math.PI / 2));
 

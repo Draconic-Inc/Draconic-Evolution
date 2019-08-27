@@ -18,6 +18,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
+
 /**
  * Created by brandon3055 on 15/11/2016.
  */
@@ -25,11 +28,11 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
 
     protected int transferThisTick = 0;
 
-    public final ManagedInt minFlow = register("minFlow", new ManagedInt(0)).syncViaTile().saveToTile().saveToItem().finish();
-    public final ManagedInt maxFlow = register("maxFlow", new ManagedInt(0)).syncViaTile().saveToTile().saveToItem().finish();
-    public final ManagedInt flowOverride = register("flowOverride", new ManagedInt(0)).syncViaTile().saveToTile().finish();
-    public final ManagedBool flowOverridden = register("flowOverridden", new ManagedBool(false)).syncViaTile().saveToTile().finish();
-    public final ManagedByte rsSignal = register("rsSignal", new ManagedByte((byte) -1)).syncViaTile().saveToTile().finish();
+    public final ManagedInt minFlow = register(new ManagedInt("minFlow", SAVE_BOTH_SYNC_TILE ));
+    public final ManagedInt maxFlow = register(new ManagedInt("maxFlow", SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt flowOverride = register(new ManagedInt("flowOverride", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool flowOverridden = register(new ManagedBool("flowOverridden", SAVE_NBT_SYNC_TILE));
+    public final ManagedByte rsSignal = register(new ManagedByte("rsSignal", (byte) -1, SAVE_NBT_SYNC_TILE));
 
     public TileFlowGate() {
         setShouldRefreshOnBlockChange();
@@ -60,13 +63,13 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
     }
 
     public int getFlow() {
-        if (flowOverridden.value) {
-            return flowOverride.value;
+        if (flowOverridden.get()) {
+            return flowOverride.get();
         }
-        if (rsSignal.value == -1) {
-            rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
+        if (rsSignal.get() == -1) {
+            rsSignal.set((byte) world.isBlockIndirectlyGettingPowered(pos));
         }
-        return minFlow.value + (int) (((double) rsSignal.value / 15D) * (double) (maxFlow.value - minFlow.value));
+        return minFlow.get() + (int) (((double) rsSignal.get() / 15D) * (double) (maxFlow.get() - minFlow.get()));
     }
 
     //endregion
@@ -74,7 +77,7 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
 
     @Override
     public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
-        if (flowOverridden.value) {
+        if (flowOverridden.get()) {
             return;
         }
 
@@ -89,10 +92,10 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
             }
 
             if (id == 0) {
-                minFlow.value = (int) l;
+                minFlow.set((int) l);
             }
             else if (id == 1) {
-                maxFlow.value = (int) l;
+                maxFlow.set((int) l);
             }
         }
         catch (NumberFormatException ignored) {
@@ -110,7 +113,7 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
 
     @Override
     public void onNeighborChange(BlockPos neighbor) {
-        rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
+        rsSignal.set((byte) world.isBlockIndirectlyGettingPowered(pos));
     }
 
     //region Peripheral
@@ -126,23 +129,23 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
             case "getFlow":
                 return new Object[]{getFlow()};
             case "setOverrideEnabled":
-                flowOverridden.value = args.checkBoolean(0);
+                flowOverridden.set(args.checkBoolean(0));
                 break;
             case "getOverrideEnabled":
                 return new Object[]{flowOverridden};
             case "setFlowOverride":
-                flowOverride.value = args.checkInteger(0);
+                flowOverride.set(args.checkInteger(0));
                 break;
             case "setSignalHighFlow":
-                maxFlow.value = args.checkInteger(0);
+                maxFlow.set(args.checkInteger(0));
                 break;
             case "getSignalHighFlow":
-                return new Object[]{maxFlow.value};
+                return new Object[]{maxFlow.get()};
             case "setSignalLowFlow":
-                minFlow.value = args.checkInteger(0);
+                minFlow.set(args.checkInteger(0));
                 break;
             case "getSignalLowFlow":
-                return new Object[]{minFlow.value};
+                return new Object[]{minFlow.get()};
         }
 
         return new Object[0];

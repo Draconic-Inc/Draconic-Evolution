@@ -10,43 +10,45 @@ import net.minecraft.util.ITickable;
 
 import java.util.Random;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
+
 /**
  * Created by brandon3055 on 30/3/2016.
  */
 public class TileParticleGenerator extends TileBCBase implements ITickable {
 
     //@formatter:off
-    public final ManagedInt           RED       = register("RED", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt           GREEN     = register("GREEN", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt           BLUE      = register("BLUE", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt           ALPHA     = register("ALPHA", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt    RANDOM_RED       = register("RANDOM_RED", new ManagedInt(255)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt    RANDOM_GREEN     = register("RANDOM_GREEN", new ManagedInt(255)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt    RANDOM_BLUE      = register("RANDOM_BLUE", new ManagedInt(255)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt    RANDOM_ALPHA     = register("RANDOM_ALPHA", new ManagedInt(255)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble        SCALE     = register("SCALE", new ManagedDouble(0d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble RANDOM_SCALE     = register("RANDOM_SCALE", new ManagedDouble(10d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble        MOTION_X  = register("MOTION_X", new ManagedDouble(-.1d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble        MOTION_Y  = register("MOTION_Y", new ManagedDouble(-.1d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble        MOTION_Z  = register("MOTION_Z", new ManagedDouble(-.1d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble RANDOM_MOTION_X  = register("RANDOM_MOTION_X", new ManagedDouble(.2d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble RANDOM_MOTION_Y  = register("RANDOM_MOTION_Y", new ManagedDouble(.2d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble RANDOM_MOTION_Z  = register("RANDOM_MOTION_Z", new ManagedDouble(.2d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble        GRAVITY   = register("GRAVITY", new ManagedDouble(0d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble RANDOM_GRAVITY   = register("RANDOM_GRAVITY", new ManagedDouble(0d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble        SPAWN_X   = register("SPAWN_X", new ManagedDouble(-1d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble        SPAWN_Y   = register("SPAWN_Y", new ManagedDouble(-1d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble        SPAWN_Z   = register("SPAWN_Z", new ManagedDouble(-1d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble RANDOM_SPAWN_X   = register("RANDOM_SPAWN_X", new ManagedDouble(2d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble RANDOM_SPAWN_Y   = register("RANDOM_SPAWN_Y", new ManagedDouble(2d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble RANDOM_SPAWN_Z   = register("RANDOM_SPAWN_Z", new ManagedDouble(2d)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt           LIFE      = register("LIFE", new ManagedInt(20)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt    RANDOM_LIFE      = register("RANDOM_LIFE", new ManagedInt(20)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt           FADE      = register("FADE", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt    RANDOM_FADE      = register("RANDOM_FADE", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt           DELAY     = register("DELAY", new ManagedInt(40)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedInt           TYPE      = register("TYPE", new ManagedInt(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedBool          COLLISION = register("COLLISION", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().finish();
+    public final ManagedInt    red           = register(new ManagedInt("red", 0, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    green         = register(new ManagedInt("green", 0, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    blue          = register(new ManagedInt("blue", 0, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    alpha         = register(new ManagedInt("alpha", 0, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    randomRed     = register(new ManagedInt("randomRed", 255, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    randomGreen   = register(new ManagedInt("randomGreen", 255, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    randomBlue    = register(new ManagedInt("randomBlue", 255, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    randomAlpha   = register(new ManagedInt("randomAlpha", 255, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble scale         = register(new ManagedDouble("scale", 0d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble randomScale   = register(new ManagedDouble("randomScale", 10d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble motionX       = register(new ManagedDouble("motionX", -.1d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble motionY       = register(new ManagedDouble("motionY", -.1d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble motionZ       = register(new ManagedDouble("motionZ", -.1d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble randomMotionX = register(new ManagedDouble("randomMotionX", .2d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble randomMotionY = register(new ManagedDouble("randomMotionY", .2d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble randomMotionZ = register(new ManagedDouble("randomMotionZ", .2d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble gravity       = register(new ManagedDouble("gravity", 0d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble randomGravity = register(new ManagedDouble("randomGravity", 0d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble spawnX        = register(new ManagedDouble("spawnX", -1d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble spawnY        = register(new ManagedDouble("spawnY", -1d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble spawnZ        = register(new ManagedDouble("spawnZ", -1d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble randomSpawnX  = register(new ManagedDouble("randomSpawnX", 2d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble randomSpawnY  = register(new ManagedDouble("randomSpawnY", 2d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble randomSpawnZ  = register(new ManagedDouble("randomSpawnZ", 2d, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    life          = register(new ManagedInt("life", 20, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    randomLife    = register(new ManagedInt("randomLife", 20, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    fade          = register(new ManagedInt("fade", 0, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    randomFade    = register(new ManagedInt("randomFade", 0, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    delay         = register(new ManagedInt("delay", 40, SAVE_BOTH_SYNC_TILE));
+    public final ManagedInt    type          = register(new ManagedInt("type", 0, SAVE_BOTH_SYNC_TILE));
+    public final ManagedBool   collision     = register(new ManagedBool("collision", false, SAVE_BOTH_SYNC_TILE));
     //@formatter:on
 
     private int tick = 0;
@@ -60,25 +62,25 @@ public class TileParticleGenerator extends TileBCBase implements ITickable {
         super.update();
 
         if (world.isRemote && (getBlockMetadata() == 1 != world.isBlockIndirectlyGettingPowered(getPos()) > 0)) {
-            if (tick >= DELAY.value) {
+            if (tick >= delay.get()) {
                 Random rand = world.rand;
 
-                final double X = pos.getX() + SPAWN_X.value + RANDOM_SPAWN_X.value * rand.nextDouble() + .5D;
-                final double Y = pos.getY() + SPAWN_Y.value + RANDOM_SPAWN_Y.value * rand.nextDouble() + .5D;
-                final double Z = pos.getZ() + SPAWN_Z.value + RANDOM_SPAWN_Z.value * rand.nextDouble() + .5D;
-                final double MX = MOTION_X.value + RANDOM_MOTION_X.value * rand.nextDouble();
-                final double MY = MOTION_Y.value + RANDOM_MOTION_Y.value * rand.nextDouble();
-                final double MZ = MOTION_Z.value + RANDOM_MOTION_Z.value * rand.nextDouble();
-                final int R = RED.value + rand.nextInt(RANDOM_RED.value + 1);
-                final int G = GREEN.value + rand.nextInt(RANDOM_GREEN.value + 1);
-                final int B = BLUE.value + rand.nextInt(RANDOM_BLUE.value + 1);
-                final int alpha = ALPHA.value + rand.nextInt(RANDOM_ALPHA.value + 1);
-                final int scale = (int) Math.round((SCALE.value + RANDOM_SCALE.value * rand.nextDouble()) * 10000);
-                final int life = LIFE.value + rand.nextInt(RANDOM_LIFE.value + 1);
-                final int gravity = (int) Math.round((GRAVITY.value + RANDOM_GRAVITY.value * rand.nextDouble()) * 10000);
-                final int fade = FADE.value + rand.nextInt(RANDOM_FADE.value + 1);
+                final double X = pos.getX() + spawnX.get() + randomSpawnX.get() * rand.nextDouble() + .5D;
+                final double Y = pos.getY() + spawnY.get() + randomSpawnY.get() * rand.nextDouble() + .5D;
+                final double Z = pos.getZ() + spawnZ.get() + randomSpawnZ.get() * rand.nextDouble() + .5D;
+                final double MX = motionX.get() + randomMotionX.get() * rand.nextDouble();
+                final double MY = motionY.get() + randomMotionY.get() * rand.nextDouble();
+                final double MZ = motionZ.get() + randomMotionZ.get() * rand.nextDouble();
+                final int R = red.get() + rand.nextInt(randomRed.get() + 1);
+                final int G = green.get() + rand.nextInt(randomGreen.get() + 1);
+                final int B = blue.get() + rand.nextInt(randomBlue.get() + 1);
+                final int alpha = this.alpha.get() + rand.nextInt(randomAlpha.get() + 1);
+                final int scale = (int) Math.round((this.scale.get() + randomScale.get() * rand.nextDouble()) * 10000);
+                final int life = this.life.get() + rand.nextInt(randomLife.get() + 1);
+                final int gravity = (int) Math.round((this.gravity.get() + randomGravity.get() * rand.nextDouble()) * 10000);
+                final int fade = this.fade.get() + rand.nextInt(randomFade.get() + 1);
 
-                BCEffectHandler.spawnFX(DEParticles.CUSTOM, world, X, Y, Z, MX, MY, MZ, 32 * Math.max(1, SCALE.value), R, G, B, alpha, scale, life, gravity, fade, TYPE.value, COLLISION.value ? 1 : 0);
+                BCEffectHandler.spawnFX(DEParticles.CUSTOM, world, X, Y, Z, MX, MY, MZ, 32 * Math.max(1, this.scale.get()), R, G, B, alpha, scale, life, gravity, fade, type.get(), collision.get() ? 1 : 0);
 
                 tick = 0;
             }

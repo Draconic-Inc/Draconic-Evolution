@@ -28,16 +28,18 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import java.util.List;
 import java.util.UUID;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+
 public class TileGrinder extends TileEnergyInventoryBase implements IEnergyReceiver, ITickable {
 
-    public final ManagedBool active = register("active", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public static FakePlayer fakePlayer;
     private AxisAlignedBB killBox;
     public boolean powered = false;
 
     public TileGrinder() {
         setInventorySize(1);
-        setEnergySyncMode().syncViaContainer();
+        setEnergySyncMode(SYNC_CONTAINER);
         setCapacityAndTransfer(500000, 32000, 0);
         setShouldRefreshOnBlockChange();
     }
@@ -49,9 +51,9 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
             return;
         }
 
-        active.value = getEnergyStored() > 0 && !powered;
+        active.set(getEnergyStored() > 0 && !powered);
 
-        if (active.value) {
+        if (active.get()) {
             updateGrinding();
         }
 

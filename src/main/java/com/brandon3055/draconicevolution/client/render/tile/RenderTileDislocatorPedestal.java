@@ -48,7 +48,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         }
 
 
-        GlStateManager.rotate(-te.rotation.value * 22.5F, 0, 1, 0);
+        GlStateManager.rotate(-te.rotation.get() * 22.5F, 0, 1, 0);
         GlStateManager.translate(-0.5, 0, -0.5);
 
         TextureUtils.bindBlockTexture();

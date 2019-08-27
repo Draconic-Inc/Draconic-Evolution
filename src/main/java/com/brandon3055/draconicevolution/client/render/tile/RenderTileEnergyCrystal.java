@@ -106,7 +106,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
         ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_BASE);
         CCRenderState ccrs = CCRenderState.instance();
         Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 1, z + 0.5), new Rotation(0, 0, 0, 0), -0.5);
-        mat.apply(Rotation.sideOrientation(te.facing.value.getOpposite().getIndex(), 0).at(new Vector3(0, 1, 0)));
+        mat.apply(Rotation.sideOrientation(te.facing.get().getOpposite().getIndex(), 0).at(new Vector3(0, 1, 0)));
 
         if (destroyStage >= 0) {
             bindTexture(DESTROY_STAGES[destroyStage]);

@@ -51,6 +51,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+
 /**
  * Created by brandon3055 on 6/11/2016.
  */
@@ -64,9 +66,9 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
     public static final int COMPONENT_MAX_DISTANCE = 8;
     public final ManagedVec3I[] componentPositions = new ManagedVec3I[6]; //Invalid position is 0, 0, 0
-    private final ManagedEnum<Axis> stabilizerAxis = register("stabilizerAxis", new ManagedEnum<>(Axis.Y)).saveToTile().syncViaTile().finish();
-    public final ManagedBool structureValid = register("structureValid", new ManagedBool(false)).saveToTile().syncViaTile().finish();
-    public final ManagedString structureError = register("structureError", new ManagedString("")).saveToTile().syncViaTile().finish();
+    private final ManagedEnum<Axis> stabilizerAxis = register(new ManagedEnum<>("stabilizerAxis", Axis.Y, SAVE_NBT_SYNC_TILE));
+    public final ManagedBool structureValid = register(new ManagedBool("structureValid",false, SAVE_NBT_SYNC_TILE));
+    public final ManagedString structureError = register(new ManagedString("structureError", "", SAVE_NBT_SYNC_TILE));
 
     private int tick = 0;
     private Map<BlockPos, Integer> blockIntrusions = new HashMap<>();
@@ -78,41 +80,41 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     /**
      * This is the current operational state of the reactor.
      */
-    public final ManagedEnum<ReactorState> reactorState = register("reactorState", new ManagedEnum<>(ReactorState.INVALID)).saveToTile().syncViaTile().finish();
+    public final ManagedEnum<ReactorState> reactorState = register(new ManagedEnum<>("reactorState", ReactorState.INVALID, SAVE_NBT_SYNC_TILE));
 
     /**
      * Remaining fuel that is yet to be consumed by the reaction.
      */
-    public final ManagedDouble reactableFuel = register("reactableFuel", new ManagedDouble(0)).saveToTile().saveToItem().syncViaTile().finish();
+    public final ManagedDouble reactableFuel = register(new ManagedDouble("reactableFuel",  SAVE_BOTH_SYNC_TILE));
     /**
      * Fuel that has been converted to chaos by the reaction.
      */
-    public final ManagedDouble convertedFuel = register("convertedFuel", new ManagedDouble(0)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedDouble temperature = register("temperature", new ManagedDouble(20)).saveToTile().syncViaTile().finish();
+    public final ManagedDouble convertedFuel = register(new ManagedDouble("convertedFuel",  SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble temperature = register(new ManagedDouble("temperature", 20D, SAVE_NBT_SYNC_TILE));
     public static final double MAX_TEMPERATURE = 10000;
 
-    public final ManagedDouble shieldCharge = register("shieldCharge", new ManagedDouble(0)).saveToTile().syncViaTile().finish();
-    public final ManagedDouble maxShieldCharge = register("maxShieldCharge", new ManagedDouble(0)).saveToTile().syncViaTile().finish();
+    public final ManagedDouble shieldCharge = register(new ManagedDouble("shieldCharge", SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble maxShieldCharge = register(new ManagedDouble("maxShieldCharge", SAVE_NBT_SYNC_TILE));
 
     /**
      * This is how saturated the core is with energy.
      */
-    public final ManagedInt saturation = register("saturation", new ManagedInt(0)).saveToTile().syncViaContainer().finish();
-    public final ManagedInt maxSaturation = register("maxSaturation", new ManagedInt(0)).saveToTile().syncViaContainer().finish();
+    public final ManagedInt saturation = register(new ManagedInt("saturation",  SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedInt maxSaturation = register(new ManagedInt("maxSaturation", SAVE_NBT_SYNC_CONTAINER));
 
 
-    public final ManagedDouble tempDrainFactor = register("tempDrainFactor", new ManagedDouble(0)).saveToTile().syncViaContainer().finish();
-    public final ManagedDouble generationRate = register("generationRate", new ManagedDouble(0)).saveToTile().syncViaContainer().finish();
-    public final ManagedInt fieldDrain = register("fieldDrain", new ManagedInt(0)).saveToTile().syncViaContainer().finish();
-    public final ManagedDouble fieldInputRate = register("fieldInputRate", new ManagedDouble(0)).saveToTile().syncViaContainer().finish();
-    public final ManagedDouble fuelUseRate = register("fuelUseRate", new ManagedDouble(0)).saveToTile().syncViaContainer().finish();
+    public final ManagedDouble tempDrainFactor = register(new ManagedDouble("tempDrainFactor", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble generationRate = register(new ManagedDouble("generationRate", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedInt fieldDrain = register(new ManagedInt("fieldDrain",  SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble fieldInputRate = register(new ManagedDouble("fieldInputRate", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble fuelUseRate = register(new ManagedDouble("fuelUseRate", SAVE_NBT_SYNC_CONTAINER));
 
-    public final ManagedBool startupInitialized = register("startupInitialized", new ManagedBool(false)).saveToTile().syncViaContainer().finish();
-    public final ManagedBool failSafeMode = register("failSafeMode", new ManagedBool(false)).saveToTile().syncViaTile().finish();
+    public final ManagedBool startupInitialized = register(new ManagedBool("startupInitialized",  SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedBool failSafeMode = register(new ManagedBool("failSafeMode", SAVE_NBT_SYNC_TILE));
 
     //Explody Stuff!
     private ProcessExplosion explosionProcess = null;
-    public final ManagedInt explosionCountdown = register("explosionCountdown", new ManagedInt(-1)).saveToTile().syncViaContainer().finish();
+    public final ManagedInt explosionCountdown = register(new ManagedInt("explosionCountdown", -1, SAVE_NBT_SYNC_CONTAINER));
     private int minExplosionDelay = 0;
 
     //endregion ======================================
@@ -125,15 +127,15 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     /**
      * This controls the activation (fade in/fade out) of the beam and stabilizer animations.
      */
-    public final ManagedDouble shaderAnimationState = register("shaderAnimationState", new ManagedDouble(0)).saveToTile().syncViaTile().finish();
-    public final ManagedDouble animExtractState = register("animExtractState", new ManagedDouble(0)).saveToTile().syncViaTile().finish();
+    public final ManagedDouble shaderAnimationState = register(new ManagedDouble("shaderAnimationState", 0D, SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble animExtractState = register(new ManagedDouble("animExtractState", 0D, SAVE_NBT_SYNC_TILE));
     private final ReactorEffectHandler effectHandler;
 
     //endregion ======================================
 
     public TileReactorCore() {
         for (int i = 0; i < componentPositions.length; i++) {
-            componentPositions[i] = register("componentPosition" + i, new ManagedVec3I(new Vec3I(0, 0, 0))).saveToTile().syncViaTile().finish();
+            componentPositions[i] = register(new ManagedVec3I("componentPosition" + i, new Vec3I(0, 0, 0), SAVE_NBT_SYNC_TILE));
         }
 
         effectHandler = DraconicEvolution.proxy.createReactorFXHandler(this);
@@ -143,7 +145,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
     @Override
     public void update() {
-//        reactorState.value = ReactorState.COLD;
+//        reactorState.set(ReactorState.COLD);
 //        if (explosionProcess != null) {
 //            explosionProcess.isDead = true;
 //            explosionProcess = null;
@@ -193,24 +195,25 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     private void updateCoreLogic() {
         if (world.isRemote) {
             checkPlayerCollision();
-            coreAnimation += shaderAnimationState.value;
-            if (maxShieldCharge.value == 0) {
-                shaderAnimationState.value = shieldAnimation = 0;
+            coreAnimation += shaderAnimationState.get();
+            if (maxShieldCharge.get() == 0) {
+                shaderAnimationState.set(0D);
+                shieldAnimation = 0;
             }
             else {
-                shieldAnimationState = MathHelper.clip((float) (shieldCharge.value / maxShieldCharge.value) * 10, 0F, 1F);
+                shieldAnimationState = MathHelper.clip((float) (shieldCharge.get() / maxShieldCharge.get()) * 10, 0F, 1F);
                 shieldAnimation += shieldAnimationState;
             }
 
-            if (reactorState.value == ReactorState.BEYOND_HOPE) {
+            if (reactorState.get() == ReactorState.BEYOND_HOPE) {
                 shieldAnimationState = world.rand.nextInt(10) == 0 ? 0 : 1;
                 shieldAnimation += shieldAnimationState;
             }
             return;
         }
 
-        shaderAnimationState.value = Math.min(1D, (temperature.value - 20) / 1000D);
-        animExtractState.value = 0;
+        shaderAnimationState.set(Math.min(1D, (temperature.get() - 20) / 1000D));
+        animExtractState.set(0D);
 
 //        shieldCharge.value = 0;
 
@@ -219,7 +222,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 //        temperature.value = 2010;
 //saturation.value = maxSaturation.value;
 
-        switch (reactorState.value) {
+        switch (reactorState.get()) {
             case INVALID:
                 updateOfflineState();
                 break;
@@ -234,25 +237,25 @@ public class TileReactorCore extends TileBCBase implements ITickable {
                 updateOnlineState();
                 checkBlockIntrusions();
 
-                if (failSafeMode.value && temperature.value < 2500 && (double) saturation.value / (double) maxSaturation.value >= 0.99) {
+                if (failSafeMode.get() && temperature.get() < 2500 && (double) saturation.get() / (double) maxSaturation.get() >= 0.99) {
                     LogHelper.dev("Reactor: Initiating Fail-Safe Shutdown!");
                     shutdownReactor();
                 }
 
-                double sat = 1D - (saturation.value / (double) maxSaturation.value);
-                animExtractState.value = Math.min(1, sat * 10);
+                double sat = 1D - (saturation.get() / (double) maxSaturation.get());
+                animExtractState.set(Math.min(1, sat * 10));
                 break;
             case STOPPING:
                 updateOnlineState();
                 checkBlockIntrusions();
-                if (temperature.value <= 2000) {
-                    reactorState.value = ReactorState.COOLING;
+                if (temperature.get() <= 2000) {
+                    reactorState.set(ReactorState.COOLING);
                 }
                 break;
             case COOLING:
                 updateOfflineState();
-                if (temperature.value <= 100) {
-                    reactorState.value = ReactorState.COLD;
+                if (temperature.get() <= 100) {
+                    reactorState.set(ReactorState.COLD);
                 }
                 break;
             case BEYOND_HOPE:
@@ -269,20 +272,20 @@ public class TileReactorCore extends TileBCBase implements ITickable {
      * This is responsible for things like returning the core temperature to minimum and draining remaining charge after the reactor shuts down.
      */
     private void updateOfflineState() {
-        if (temperature.value > 20) {
-            temperature.value -= 0.5;
+        if (temperature.get() > 20) {
+            temperature.subtract(0.5);
         }
-        if (shieldCharge.value > 0) {
-            shieldCharge.value -= maxShieldCharge.value * 0.0005;
+        if (shieldCharge.get() > 0) {
+            shieldCharge.subtract(maxShieldCharge.get() * 0.0005 * world.rand.nextDouble());
         }
-        else if (shieldCharge.value < 0) {
-            shieldCharge.value = 0;
+        else if (shieldCharge.get() < 0) {
+            shieldCharge.zero();
         }
-        if (saturation.value > 0) {
-            saturation.value -= maxSaturation.value * 0.000001D;
+        if (saturation.get() > 0) {
+            saturation.subtract((int) (maxSaturation.get() * 0.000002D * world.rand.nextDouble()));
         }
-        else if (saturation.value < 0) {
-            saturation.value = 0;
+        else if (saturation.get() < 0) {
+            saturation.zero();
         }
     }
 
@@ -291,20 +294,20 @@ public class TileReactorCore extends TileBCBase implements ITickable {
      * The first time this method is fired if initializes all of the reactors key fields.
      */
     private void initializeStartup() {
-        if (!startupInitialized.value) {
-            double totalFuel = reactableFuel.value + convertedFuel.value;
-            maxShieldCharge.value = totalFuel * 96.45061728395062 * 100;
-            maxSaturation.value = (int) (totalFuel * 96.45061728395062 * 1000);
+        if (!startupInitialized.get()) {
+            double totalFuel = reactableFuel.get() + convertedFuel.get();
+            maxShieldCharge.set(totalFuel * 96.45061728395062 * 100);
+            maxSaturation.set((int) (totalFuel * 96.45061728395062 * 1000));
 
-            if (saturation.value > maxSaturation.value) {
-                saturation.value = maxSaturation.value;
+            if (saturation.get() > maxSaturation.get()) {
+                saturation.set(maxSaturation.get());
             }
 
-            if (shieldCharge.value > maxShieldCharge.value) {
-                shieldCharge.value = maxShieldCharge.value;
+            if (shieldCharge.get() > maxShieldCharge.get()) {
+                shieldCharge.set(maxShieldCharge.get());
             }
 
-            startupInitialized.value = true;
+            startupInitialized.set(true);
         }
     }
 
@@ -312,11 +315,11 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 ////        convertedFuel.value += reactableFuel.value;
 //        reactableFuel.value = 0;
 
-        double coreSat = (double) saturation.value / (double) maxSaturation.value;         //1 = Max Saturation
+        double coreSat = (double) saturation.get() / (double) maxSaturation.get();         //1 = Max Saturation
         double negCSat = (1D - coreSat) * 99D;                                             //99 = Min Saturation. I believe this tops out at 99 because at 100 things would overflow and break.
-        double temp50 = Math.min((temperature.value / MAX_TEMPERATURE) * 50, 99);          //50 = Max Temp. Why? TBD
-        double tFuel = convertedFuel.value + reactableFuel.value;                          //Total Fuel.
-        double convLVL = ((convertedFuel.value / tFuel) * 1.3D) - 0.3D;                    //Conversion Level sets how much the current conversion level boosts power gen. Range: -0.3 to 1.0
+        double temp50 = Math.min((temperature.get() / MAX_TEMPERATURE) * 50, 99);          //50 = Max Temp. Why? TBD
+        double tFuel = convertedFuel.get() + reactableFuel.get();                          //Total Fuel.
+        double convLVL = ((convertedFuel.get() / tFuel) * 1.3D) - 0.3D;                    //Conversion Level sets how much the current conversion level boosts power gen. Range: -0.3 to 1.0
 
         //region ============= Temperature Calculation =============
 
@@ -332,21 +335,21 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         double riseAmount = (tempRiseExpo - (tempRiseResist * (1D - convLVL)) + convLVL * 1000) / 10000;
 
         //Apply energy calculations.
-        if (reactorState.value == ReactorState.STOPPING && convLVL < 1) {
-            if (temperature.value <= 2001) {
-                reactorState.value = ReactorState.COOLING;
-                startupInitialized.value = false;
+        if (reactorState.get() == ReactorState.STOPPING && convLVL < 1) {
+            if (temperature.get() <= 2001) {
+                reactorState.set(ReactorState.COOLING);
+                startupInitialized.set(false);
                 return;
             }
-            if (saturation.value >= maxSaturation.value * 0.99D && reactableFuel.value > 0D) {
-                temperature.value -= 1D - convLVL;
+            if (saturation.get() >= maxSaturation.get() * 0.99D && reactableFuel.get() > 0D) {
+                temperature.subtract(1D - convLVL);
             }
             else {
-                temperature.value += riseAmount * 10;
+                temperature.add(riseAmount * 10);
             }
         }
         else {
-            temperature.value += riseAmount * 10;
+            temperature.add(riseAmount * 10);
         }
 
 //        temperature.value = 18000;
@@ -355,42 +358,42 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
         //region ============= Energy Calculation =============
 
-        int baseMaxRFt = (int) ((maxSaturation.value / 1000D) * DEConfig.reactorOutputMultiplier * 1.5D);
+        int baseMaxRFt = (int) ((maxSaturation.get() / 1000D) * DEConfig.reactorOutputMultiplier * 1.5D);
         int maxRFt = (int) (baseMaxRFt * (1D + (convLVL * 2)));
-        generationRate.value = (1D - coreSat) * maxRFt;
-        saturation.value += generationRate.value;
+        generationRate.set((1D - coreSat) * maxRFt);
+        saturation.add((int)generationRate.get());
 
         //endregion ===========================================
 
         //region ============= Shield Calculation =============
 
-        tempDrainFactor.value = temperature.value > 8000 ? 1 + ((temperature.value - 8000) * (temperature.value - 8000) * 0.0000025) : temperature.value > 2000 ? 1 : temperature.value > 1000 ? (temperature.value - 1000) / 1000 : 0;
+        tempDrainFactor.set(temperature.get() > 8000 ? 1 + ((temperature.get() - 8000) * (temperature.get() - 8000) * 0.0000025) : temperature.get() > 2000 ? 1 : temperature.get() > 1000 ? (temperature.get() - 1000) / 1000 : 0);
 //        double drain = Math.min(tempDrainFactor.value * Math.max(0.01, (1D - convLVL)) * (baseMaxRFt / 10.923556), Double.MAX_VALUE);
-        fieldDrain.value = (int) Math.min(tempDrainFactor.value * Math.max(0.01, (1D - coreSat)) * (baseMaxRFt / 10.923556), (double) Integer.MAX_VALUE); //<(baseMaxRFt/make smaller to increase field power drain)
+        fieldDrain.set((int) Math.min(tempDrainFactor.get() * Math.max(0.01, (1D - coreSat)) * (baseMaxRFt / 10.923556), (double) Integer.MAX_VALUE)); //<(baseMaxRFt/make smaller to increase field power drain)
 
-        double fieldNegPercent = 1D - (shieldCharge.value / maxShieldCharge.value);
-        fieldInputRate.value = fieldDrain.value / fieldNegPercent;
-        shieldCharge.value -= Math.min(fieldDrain.value, shieldCharge.value);
+        double fieldNegPercent = 1D - (shieldCharge.get() / maxShieldCharge.get());
+        fieldInputRate.set(fieldDrain.get() / fieldNegPercent);
+        shieldCharge.subtract(Math.min(fieldDrain.get(), shieldCharge.get()));
 
         //endregion ===========================================
 
         //region ============== Fuel Calculation ==============
 
-        fuelUseRate.value = tempDrainFactor.value * (1D - coreSat) * (0.001 * DEConfig.reactorFuelUsageMultiplier); //<Last number is base fuel usage rate
-        if (reactableFuel.value > 0) {
-            convertedFuel.value += fuelUseRate.value;
-            reactableFuel.value -= fuelUseRate.value;
+        fuelUseRate.set(tempDrainFactor.get() * (1D - coreSat) * (0.001 * DEConfig.reactorFuelUsageMultiplier)); //<Last number is base fuel usage rate
+        if (reactableFuel.get() > 0) {
+            convertedFuel.add(fuelUseRate.get());
+            reactableFuel.subtract(fuelUseRate.get());
         }
 
         //endregion ===========================================
 
         //region Explosion
-        if ((shieldCharge.value <= 0) && temperature.value > 2000 && reactorState.value != ReactorState.BEYOND_HOPE) {
-            reactorState.value = ReactorState.BEYOND_HOPE;
+        if ((shieldCharge.get() <= 0) && temperature.get() > 2000 && reactorState.get() != ReactorState.BEYOND_HOPE) {
+            reactorState.set(ReactorState.BEYOND_HOPE);
             for (int i = 0; i < componentPositions.length; i++) {
                 ManagedVec3I v = componentPositions[i];
-                if (v.vec.sum() > 0) {
-                    BlockPos p = getOffsetPos(v.vec).offset(EnumFacing.getFront(i).getOpposite());
+                if (v.get().sum() > 0) {
+                    BlockPos p = getOffsetPos(v.get()).offset(EnumFacing.getFront(i).getOpposite());
                     world.newExplosion(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, true);
                 }
             }
@@ -408,16 +411,16 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             return;
         }
 
-        shieldCharge.value = world.rand.nextInt(Math.max(1, (int) (maxShieldCharge.value * 0.01)));
-        animExtractState.value = 1;
-        temperature.value = MathHelper.approachExp(temperature.value, MAX_TEMPERATURE * 1.2, 0.0005);
+        shieldCharge.set((double) world.rand.nextInt(Math.max(1, (int) (maxShieldCharge.get() * 0.01))));
+        animExtractState.set(1D);
+        temperature.set(MathHelper.approachExp(temperature.get(), MAX_TEMPERATURE * 1.2, 0.0005));
 
         if (DEConfig.disableLargeReactorBoom) {
-            if (explosionCountdown.value == -1) {
-                explosionCountdown.value = 1200 + world.rand.nextInt(2400);
+            if (explosionCountdown.get() == -1) {
+                explosionCountdown.set(1200 + world.rand.nextInt(2400));
             }
 
-            if (explosionCountdown.value-- <= 0) {
+            if (explosionCountdown.dec() <= 0) {
                 minimalBoom();
             }
 
@@ -430,10 +433,10 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 //        LogHelper.dev("");
 
         if (explosionProcess == null) {
-            double radius = Utils.map(convertedFuel.value + reactableFuel.value, 144, 10368, 50D, 350D) * DEConfig.reactorExplosionScale;
+            double radius = Utils.map(convertedFuel.get() + reactableFuel.get(), 144, 10368, 50D, 350D) * DEConfig.reactorExplosionScale;
             explosionProcess = new ProcessExplosion(pos, (int) radius, (WorldServer) world, -1);
             ProcessHandler.addProcess(explosionProcess);
-            explosionCountdown.value = -1;
+            explosionCountdown.set(-1);
             minExplosionDelay = 1200 + world.rand.nextInt(2400);
             return;
         }
@@ -444,11 +447,11 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             return;
         }
 
-        if (explosionCountdown.value == -1) {
-            explosionCountdown.value = (60 * 20) + Math.max(0, minExplosionDelay);
+        if (explosionCountdown.get() == -1) {
+            explosionCountdown.set((60 * 20) + Math.max(0, minExplosionDelay));
         }
 
-        if (explosionCountdown.value-- <= 0) {
+        if (explosionCountdown.dec() <= 0) {
 //            explosionProcess = null;
             explosionProcess.detonate();
             world.setBlockToAir(pos);
@@ -459,30 +462,30 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         if (!world.isRemote && !validateStructure()) {
             return false;
         }
-        else if (reactorState.value == ReactorState.BEYOND_HOPE) {
+        else if (reactorState.get() == ReactorState.BEYOND_HOPE) {
             return false;
         }
 
-        return (reactorState.value == ReactorState.COLD || reactorState.value == ReactorState.COOLING) && reactableFuel.value + convertedFuel.value >= 144;
+        return (reactorState.get() == ReactorState.COLD || reactorState.get() == ReactorState.COOLING) && reactableFuel.get() + convertedFuel.get() >= 144;
     }
 
     public boolean canActivate() {
         if (!world.isRemote && !validateStructure()) {
             return false;
         }
-        else if (reactorState.value == ReactorState.BEYOND_HOPE) {
+        else if (reactorState.get() == ReactorState.BEYOND_HOPE) {
             return false;
         }
 
-        return (reactorState.value == ReactorState.WARMING_UP || reactorState.value == ReactorState.STOPPING) && temperature.value >= 2000 && ((saturation.value >= maxSaturation.value / 2 && shieldCharge.value >= maxShieldCharge.value / 2) || reactorState.value == ReactorState.STOPPING);
+        return (reactorState.get() == ReactorState.WARMING_UP || reactorState.get() == ReactorState.STOPPING) && temperature.get() >= 2000 && ((saturation.get() >= maxSaturation.get() / 2 && shieldCharge.get() >= maxShieldCharge.get() / 2) || reactorState.get() == ReactorState.STOPPING);
     }
 
     public boolean canStop() {
-        if (reactorState.value == ReactorState.BEYOND_HOPE) {
+        if (reactorState.get() == ReactorState.BEYOND_HOPE) {
             return false;
         }
 
-        return reactorState.value == ReactorState.RUNNING || reactorState.value == ReactorState.WARMING_UP;
+        return reactorState.get() == ReactorState.RUNNING || reactorState.get() == ReactorState.WARMING_UP;
     }
 
     //region Notes for V2 Logic
@@ -519,7 +522,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         }
         else if (canCharge()) {
             LogHelper.dev("Reactor: Start Charging");
-            reactorState.value = ReactorState.WARMING_UP;
+            reactorState.set(ReactorState.WARMING_UP);
         }
     }
 
@@ -530,7 +533,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         }
         else if (canActivate()) {
             LogHelper.dev("Reactor: Activate");
-            reactorState.value = ReactorState.RUNNING;
+            reactorState.set(ReactorState.RUNNING);
         }
     }
 
@@ -541,7 +544,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         }
         else if (canStop()) {
             LogHelper.dev("Reactor: Shutdown");
-            reactorState.value = ReactorState.STOPPING;
+            reactorState.set(ReactorState.STOPPING);
         }
     }
 
@@ -550,7 +553,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             sendPacketToServer(output -> output.writeByte(ID_FAIL_SAFE), 0);
         }
         else {
-            failSafeMode.value = !failSafeMode.value;
+            failSafeMode.set(!failSafeMode.get());
         }
     }
 
@@ -622,12 +625,12 @@ public class TileReactorCore extends TileBCBase implements ITickable {
      */
     public void pokeCore(TileReactorComponent component, EnumFacing pokeFrom) {
         LogHelper.dev("Reactor: Core Poked, StructValid: " + structureValid);
-        if (structureValid.value) {
+        if (structureValid.get()) {
             //If the component is an unbound injector and there is no component bound on the same side then bind it.
-            if (component instanceof TileReactorEnergyInjector && !component.isBound.value) {
-                TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[pokeFrom.getIndex()].vec));
+            if (component instanceof TileReactorEnergyInjector && !component.isBound.get()) {
+                TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[pokeFrom.getIndex()].get()));
                 if (tile == this) {
-                    componentPositions[pokeFrom.getIndex()].vec = getOffsetVec(component.getPos());
+                    componentPositions[pokeFrom.getIndex()].set(getOffsetVec(component.getPos()));
                     component.bindToCore(this);
                     LogHelper.dev("Reactor: Injector Added!");
                 }
@@ -644,36 +647,36 @@ public class TileReactorCore extends TileBCBase implements ITickable {
      * Called when a component is physically broken
      */
     public void componentBroken(TileReactorComponent component, EnumFacing componentSide) {
-        if (!structureValid.value || reactorState.value == ReactorState.BEYOND_HOPE) {
+        if (!structureValid.get() || reactorState.get() == ReactorState.BEYOND_HOPE) {
             return;
         }
 
         if (component instanceof TileReactorEnergyInjector) {
             LogHelper.dev("Reactor: Component broken! (Injector)");
-            TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[componentSide.getIndex()].vec));
+            TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[componentSide.getIndex()].get()));
 
             if (tile == component || tile == null) {
                 LogHelper.dev("Reactor: -Removed");
-                componentPositions[componentSide.getIndex()].vec.set(0, 0, 0);
+                componentPositions[componentSide.getIndex()].get().set(0, 0, 0);
             }
         }
-        else if (reactorState.value != ReactorState.COLD) {
+        else if (reactorState.get() != ReactorState.COLD) {
             LogHelper.dev("Reactor: Component broken, Structure Invalidated (Unsafe!!!!)");
-            if (temperature.value > 2000) {
-                reactorState.value = ReactorState.BEYOND_HOPE;
+            if (temperature.get() > 2000) {
+                reactorState.set(ReactorState.BEYOND_HOPE);
             }
-            else if (temperature.value >= 350) {
+            else if (temperature.get() >= 350) {
                 minimalBoom();
             }
             else {
-                reactorState.value = ReactorState.INVALID;
+                reactorState.set(ReactorState.INVALID);
             }
-            structureValid.value = false;
+            structureValid.set(false);
         }
         else {
             LogHelper.dev("Reactor: Component broken, Structure Invalidated (Safe)");
-            structureValid.value = false;
-            reactorState.value = ReactorState.INVALID;
+            structureValid.set(false);
+            reactorState.set(ReactorState.INVALID);
         }
     }
 
@@ -745,13 +748,13 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             return;
         }
 
-        structureValid.value = true;
-        if (reactorState.value == ReactorState.INVALID) {
-            if (temperature.value <= 100) {
-                reactorState.value = ReactorState.COLD;
+        structureValid.set(true);
+        if (reactorState.get() == ReactorState.INVALID) {
+            if (temperature.get() <= 100) {
+                reactorState.set(ReactorState.COLD);
             }
             else {
-                reactorState.value = ReactorState.COOLING;
+                reactorState.set(ReactorState.COOLING);
             }
         }
         LogHelper.dev("Reactor: Structure Successfully Initialized!\n");
@@ -766,7 +769,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         LogHelper.dev("Reactor: Find Components");
         int stabilizersFound = 0;
         for (EnumFacing facing : EnumFacing.VALUES) {
-            componentPositions[facing.getIndex()].vec.set(0, 0, 0);
+            componentPositions[facing.getIndex()].get().set(0, 0, 0);
             for (int i = 4; i < COMPONENT_MAX_DISTANCE; i++) {
                 BlockPos searchPos = pos.offset(facing, i);
 
@@ -774,9 +777,9 @@ public class TileReactorCore extends TileBCBase implements ITickable {
                     TileEntity searchTile = world.getTileEntity(searchPos);
                     LogHelper.dev("Reactor: -Found: " + searchTile);
 
-                    if (searchTile instanceof TileReactorComponent && ((TileReactorComponent) searchTile).facing.value == facing.getOpposite() && i >= 2) {
+                    if (searchTile instanceof TileReactorComponent && ((TileReactorComponent) searchTile).facing.get() == facing.getOpposite()) {
                         LogHelper.dev("Set " + facing.getIndex() + " " + getOffsetVec(searchPos));
-                        componentPositions[facing.getIndex()].vec = getOffsetVec(searchPos);
+                        componentPositions[facing.getIndex()].set(getOffsetVec(searchPos));
                         if (searchTile instanceof TileReactorStabilizer) {
                             stabilizersFound++;
                         }
@@ -801,16 +804,16 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         for (Axis axis : Axis.values()) {
             boolean axisValid = true;
             for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(axis)) {
-                TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[facing.getIndex()].vec));
+                TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[facing.getIndex()].get()));
                 //The facing check should not be needed here but does not heart to be to careful.
-                if (!(tile instanceof TileReactorStabilizer && ((TileReactorStabilizer) tile).facing.value == facing.getOpposite())) {
+                if (!(tile instanceof TileReactorStabilizer && ((TileReactorStabilizer) tile).facing.get() == facing.getOpposite())) {
                     axisValid = false;
                     break;
                 }
             }
 
             if (axisValid) {
-                stabilizerAxis.value = axis;
+                stabilizerAxis.set(axis);
                 LogHelper.dev("Reactor: -Found Valid Axis: " + axis);
                 return true;
             }
@@ -829,7 +832,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         LogHelper.dev("Reactor: Binding Components");
         int stabilizersBound = 0;
         for (int i = 0; i < 6; i++) {
-            TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[i].vec));
+            TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[i].get()));
             if (tile instanceof TileReactorComponent) {
                 ((TileReactorComponent) tile).bindToCore(this);
 
@@ -851,8 +854,8 @@ public class TileReactorCore extends TileBCBase implements ITickable {
      */
     public boolean validateStructure() {
         LogHelper.dev("Reactor: Validate Structure");
-        for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.value)) {
-            BlockPos pos = getOffsetPos(componentPositions[facing.getIndex()].vec);
+        for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.get())) {
+            BlockPos pos = getOffsetPos(componentPositions[facing.getIndex()].get());
             if (!world.getChunkFromBlockCoords(pos).isLoaded()) {
                 return true;
             }
@@ -865,14 +868,14 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             }
 
             for (ManagedVec3I vec : componentPositions) {
-                pos = getOffsetPos(vec.vec);
+                pos = getOffsetPos(vec.get());
                 tile = world.getTileEntity(pos);
 
-                if (tile instanceof TileReactorEnergyInjector && !((TileReactorEnergyInjector) tile).isBound.value) {
+                if (tile instanceof TileReactorEnergyInjector && !((TileReactorEnergyInjector) tile).isBound.get()) {
                     ((TileReactorEnergyInjector) tile).bindToCore(this);
                 }
 
-                if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).getCorePos().equals(this.pos) && !((TileReactorComponent) tile).isBound.value) {
+                if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).getCorePos().equals(this.pos) && !((TileReactorComponent) tile).isBound.get()) {
                     LogHelper.warn("Detected a reactor component in an invalid state. This is likely due to a recent bug that has since been fixed. The state of this component will now be corrected.");
                     ((TileReactorComponent) tile).bindToCore(this);
                 }
@@ -920,9 +923,9 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     }
 
     public TileReactorComponent getComponent(EnumFacing facing) {
-        TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[facing.getIndex()].vec));
+        TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[facing.getIndex()].get()));
 
-        if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).facing.value == facing.getOpposite()) {
+        if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).facing.get() == facing.getOpposite()) {
             return (TileReactorComponent) tile;
         }
 
@@ -937,40 +940,40 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
     public int injectEnergy(int rf) {
         int received = 0;
-        if (reactorState.value == ReactorState.WARMING_UP) {
-            if (!startupInitialized.value) {
+        if (reactorState.get() == ReactorState.WARMING_UP) {
+            if (!startupInitialized.get()) {
                 return 0;
             }
-            if (shieldCharge.value < (maxShieldCharge.value / 2)) {
-                received = Math.min(rf, (int) (maxShieldCharge.value / 2) - (int) shieldCharge.value + 1);
-                shieldCharge.value += received;
-                if (shieldCharge.value > (maxShieldCharge.value / 2)) {
-                    shieldCharge.value = (maxShieldCharge.value / 2);
+            if (shieldCharge.get() < (maxShieldCharge.get() / 2)) {
+                received = Math.min(rf, (int) (maxShieldCharge.get() / 2) - (int)shieldCharge.get() + 1);
+                shieldCharge.add((double)received);
+                if (shieldCharge.get() > (maxShieldCharge.get() / 2)) {
+                    shieldCharge.set(maxShieldCharge.get() / 2);
                 }
             }
-            else if (saturation.value < (maxSaturation.value / 2)) {
-                received = Math.min(rf, (maxSaturation.value / 2) - saturation.value);
-                saturation.value += received;
+            else if (saturation.get() < (maxSaturation.get() / 2)) {
+                received = Math.min(rf, (maxSaturation.get() / 2) - saturation.get());
+                saturation.add(received);
             }
-            else if (temperature.value < 2000) {
+            else if (temperature.get() < 2000) {
                 received = rf;
-                temperature.value += ((double) received / (1000D + (reactableFuel.value * 10)));
-                if (temperature.value > 2500) {
-                    temperature.value = 2500;
+                temperature.add((double) received / (1000D + (reactableFuel.get() * 10)));
+                if (temperature.get() > 2500) {
+                    temperature.set(2500D);
                 }
             }
         }
-        else if (reactorState.value == ReactorState.RUNNING || reactorState.value == ReactorState.STOPPING) {
+        else if (reactorState.get() == ReactorState.RUNNING || reactorState.get() == ReactorState.STOPPING) {
             double tempFactor = 1;
 
             //If the temperature goes past 15000 force the shield to drain by the time it hits 25000 regardless of input.
-            if (temperature.value > 15000) {
-                tempFactor = 1D - Math.min(1, (temperature.value - 15000D) / 10000D);
+            if (temperature.get() > 15000) {
+                tempFactor = 1D - Math.min(1, (temperature.get() - 15000D) / 10000D);
             }
 
-            shieldCharge.value += Math.min((rf * (1D - (shieldCharge.value / maxShieldCharge.value))), maxShieldCharge.value - shieldCharge.value) * tempFactor;
-            if (shieldCharge.value > maxShieldCharge.value) {
-                shieldCharge.value = maxShieldCharge.value;
+            shieldCharge.add(Math.min((rf * (1D - (shieldCharge.get() / maxShieldCharge.get()))), maxShieldCharge.get() - shieldCharge.get()) * tempFactor);
+            if (shieldCharge.get() > maxShieldCharge.get()) {
+                shieldCharge.set(maxShieldCharge.get());
             }
 
             return rf;
@@ -1003,8 +1006,8 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     }
 
     public double getCoreDiameter() {
-        double volume = (reactableFuel.value + convertedFuel.value) / 1296D;
-        volume *= 1 + (temperature.value / MAX_TEMPERATURE) * 10D;
+        double volume = (reactableFuel.get() + convertedFuel.get()) / 1296D;
+        volume *= 1 + (temperature.get() / MAX_TEMPERATURE) * 10D;
         double diameter = Math.cbrt(volume / (4 / 3 * Math.PI)) * 2;
         return Math.max(0.5, diameter);
     }

@@ -15,7 +15,7 @@ public class RenderTileDraconiumChest extends TESRBase<TileDraconiumChest> {
     @Override
     public void render(TileDraconiumChest te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         float lidAngle = te.prevLidAngle + (te.lidAngle - te.prevLidAngle) * partialTicks;
-        render(te.facing.value, te.colour.value, x, y, z, partialTicks, lidAngle, destroyStage);
+        render(te.facing.get(), te.colour.get(), x, y, z, partialTicks, lidAngle, destroyStage);
     }
 
     public static void render(EnumFacing facing, int colour, double x, double y, double z, float partialTicks, float lidAngle, int destroyStage) {

@@ -34,14 +34,17 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPDATE;
+
 /**
  * Created by brandon3055 on 25/07/2016.
  */
 public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
 
-    public final ManagedByte displayCount = register("displayCount", new ManagedByte(1)).saveToTile().syncViaTile().trigerUpdate().finish();
-    public final ManagedBool toolDisplay = register("toolDisplay", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
-    public final ManagedBool altRenderMode = register("altRenderMode", new ManagedBool(false)).saveToTile().syncViaTile().trigerUpdate().finish();
+    public final ManagedByte displayCount = register(new ManagedByte("displayCount", (byte)1, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool toolDisplay = register(new ManagedBool("toolDisplay", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool altRenderMode = register(new ManagedBool("altRenderMode", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public final ManagedByte[] rotation = new ManagedByte[4];
     public EnumFacing facing = EnumFacing.NORTH;
     private boolean[] isBlock = new boolean[]{false, false, false, false};
@@ -49,7 +52,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
 
     public TilePlacedItem() {
         for (int i = 0; i < rotation.length; i++) {
-            rotation[i] = register("rotation" + i, new ManagedByte(0)).saveToTile().syncViaTile().trigerUpdate().finish();
+            rotation[i] = register(new ManagedByte("rotation" + i, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
         }
     }
 
@@ -57,7 +60,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
 
     public void handleClick(int hit, EntityPlayer player) {
         if (!player.getHeldItemMainhand().isEmpty() && ModHelper.isWrench(player.getHeldItemMainhand())) {
-            altRenderMode.value = !altRenderMode.value;
+            altRenderMode.invert();
             LogHelper.dev(altRenderMode);
             super.update();
             return;
@@ -71,7 +74,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
             int index = hit - 1;
 
             if (index >= 0 && index < rotation.length) {
-                rotation[index].value++;
+                rotation[index].inc();
                 DESoundHandler.playSoundFromServer(world, Vec3D.getCenter(pos), SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + world.rand.nextFloat() * 0.2F, false, 24);
                 super.update();
             }
@@ -138,7 +141,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
         }
         indexedCuboids = new ArrayList<>();
 
-        double scale = displayCount.value == 1 && (toolDisplay.value || altRenderMode.value) ? 0.2 : 0.32;
+        double scale = displayCount.get() == 1 && (toolDisplay.get() || altRenderMode.get()) ? 0.2 : 0.32;
 
         Transformation rotation = rotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center);
 
@@ -146,19 +149,19 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
         double blockH = 0.36;
         double itemH = 0.03;
 
-        if (displayCount.value == 1) {
+        if (displayCount.get() == 1) {
             indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(rotation)));
         }
-        else if (displayCount.value == 2) {
+        else if (displayCount.get() == 2) {
             indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(-offset, 0, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(offset, 0, 0).with(rotation))));
         }
-        else if (displayCount.value == 3) {
+        else if (displayCount.get() == 3) {
             indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(0, offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(-offset, -offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(new Translation(offset, -offset, 0).with(rotation))));
         }
-        else if (displayCount.value == 4) {
+        else if (displayCount.get() == 4) {
             indexedCuboids.add(new IndexedCuboid6(1, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[0] ? blockH : itemH).apply(new Translation(-offset, offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(2, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[1] ? blockH : itemH).apply(new Translation(offset, offset, 0).with(rotation))));
             indexedCuboids.add(new IndexedCuboid6(3, new Cuboid6(scale, scale, 0, 1 - scale, 1 - scale, isBlock[2] ? blockH : itemH).apply(new Translation(-offset, -offset, 0).with(rotation))));
@@ -253,9 +256,9 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
                 tile.world.setBlockToAir(tile.getPos());
             }
             else {
-                tile.displayCount.value = (byte) count;
+                tile.displayCount.set((byte) count);
                 ItemStack stack0 = getStackInSlot(0);
-                tile.toolDisplay.value = count == 1 && stack0.getItem().isEnchantable(stack0);
+                tile.toolDisplay.set(count == 1 && stack0.getItem().isEnchantable(stack0));
                 tile.update();
                 tile.updateBlock();
             }

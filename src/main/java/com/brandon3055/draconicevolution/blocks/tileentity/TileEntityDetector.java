@@ -38,6 +38,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+
 /**
  * Created by brandon3055 on 28/09/2016.
  */
@@ -49,12 +51,12 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     public float ltyRot = 0;
 
     //    public final ManagedBool ADVANCED = new ManagedBool(true, true, false, true);
-    public final ManagedShort PULSE_RATE = register("PULSE_RATE", new ManagedShort(30)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedShort RANGE = register("RANGE", new ManagedShort(10)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedByte RS_MIN_DETECTION = register("RS_MIN_DETECTION", new ManagedByte(1)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedByte RS_MAX_DETECTION = register("RS_MAX_DETECTION", new ManagedByte(1)).saveToTile().saveToItem().syncViaTile().finish();
-    public final ManagedBool PULSE_RS_MODE = register("PULSE_RS_MODE", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().trigerUpdate().finish();
-    public final ManagedByte OUTPUT_STRENGTH = register("OUTPUT_STRENGTH", new ManagedByte(0)).saveToTile().finish();
+    public final ManagedShort pulseRate = register(new ManagedShort("pulseRate", (short) 30, SAVE_BOTH_SYNC_TILE));
+    public final ManagedShort range = register(new ManagedShort("range", (short) 10, SAVE_BOTH_SYNC_TILE));
+    public final ManagedByte rsMinDetection = register(new ManagedByte("rsMinDetection", (byte) 1, SAVE_BOTH_SYNC_TILE));
+    public final ManagedByte rsMaxDetection = register(new ManagedByte("rsMaxDetection", (byte) 1, SAVE_BOTH_SYNC_TILE));
+    public final ManagedBool pulseRsMode = register(new ManagedBool("pulseRsMode", SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedByte outputStrength = register(new ManagedByte("outputStrength", SAVE_NBT));
     private int pulseTimer = -1;
     private int pulseDuration = 0;
 
@@ -77,7 +79,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     public List<String> playerNames = new ArrayList<>();
 
     public TileEntityDetector() {
-        setEnergySyncMode().syncViaContainer();
+        setEnergySyncMode(SYNC_CONTAINER);
         setCapacityAndTransfer(512000, 32000, 0);
     }
 
@@ -92,22 +94,26 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
         }
 
         if (pulseTimer == -1) {
-            pulseTimer = PULSE_RATE.value;
-        } else if (pulseTimer > 0) {
+            pulseTimer = pulseRate.get();
+        }
+        else if (pulseTimer > 0) {
             pulseTimer--;
-        } else if (pulseTimer <= 0) {
+        }
+        else if (pulseTimer <= 0) {
             if (energyStorage.getEnergyStored() >= getPulseCost()) {
-                pulseTimer = PULSE_RATE.value;
+                pulseTimer = pulseRate.get();
                 doScanPulse();
-            } else {
+            }
+            else {
                 pulseTimer = 10;
             }
         }
 
-        if (OUTPUT_STRENGTH.value > 0 && PULSE_RS_MODE.value && pulseDuration <= 0) {
-            OUTPUT_STRENGTH.value = 0;
+        if (outputStrength.get() > 0 && pulseRsMode.get() && pulseDuration <= 0) {
+            outputStrength.zero();
             world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
-        } else {
+        }
+        else {
             pulseDuration--;
         }
     }
@@ -116,7 +122,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     private void updateAnimation() {
         //region Targeting
 
-        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(RANGE.value, RANGE.value, RANGE.value)));
+        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(range.get(), range.get(), range.get())));
         Entity closest = null;
         double closestDist = -1;
 
@@ -124,7 +130,8 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
             if (closest == null) {
                 closest = entity;
                 closestDist = entity.getDistanceSqToCenter(pos);
-            } else if (entity.getDistanceSqToCenter(pos) < closestDist) {
+            }
+            else if (entity.getDistanceSqToCenter(pos) < closestDist) {
                 closest = entity;
                 closestDist = entity.getDistanceSqToCenter(pos);
             }
@@ -153,15 +160,18 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
 
             if (hRot - lthRot > 0.5) {
                 hRot = lthRot + 0.5F;
-            } else if (hRot - lthRot < -0.5) {
+            }
+            else if (hRot - lthRot < -0.5) {
                 hRot = lthRot - 0.5F;
             }
             if (yRot - ltyRot > 0.1) {
                 yRot = ltyRot + 0.1F;
-            } else if (yRot - ltyRot < -0.1) {
+            }
+            else if (yRot - ltyRot < -0.1) {
                 yRot = ltyRot - 0.1F;
             }
-        } else {
+        }
+        else {
             hRot += 0.02;
             hRot = hRot % (float) (Math.PI * 2);
             if (hRot < 0 && lthRot > 0.5) {
@@ -199,7 +209,8 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
         spark.sparkSize = 0.15F;
         if (isAdvanced()) {
             spark.setColour(1, 0.7f, 0);
-        } else {
+        }
+        else {
             spark.setColour(0.3f, 0.0f, 1F);
         }
 
@@ -210,27 +221,29 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     }
 
     public void doScanPulse() {
-        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(RANGE.value, RANGE.value, RANGE.value)));
+        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(range.get(), range.get(), range.get())));
 
-        double min = RS_MIN_DETECTION.value - 1;
-        double max = RS_MAX_DETECTION.value;
+        double min = rsMinDetection.get() - 1;
+        double max = rsMaxDetection.get();
         int eCount = entities.size();
         int output;
 
         if (min == max) {
             output = eCount > min ? 15 : 0;
-        } else if (max - min == 15) {
+        }
+        else if (max - min == 15) {
             output = (int) Math.max(0, Math.min(15, eCount - min));
-        } else {
+        }
+        else {
             output = (int) Math.max(0, Math.min(15, Utils.map(eCount, min, max, 0, 15)));
         }
 
-        if (OUTPUT_STRENGTH.value != output) {
-            OUTPUT_STRENGTH.value = (byte) output;
+        if (outputStrength.get() != output) {
+            outputStrength.set((byte) output);
             world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
         }
 
-        if (PULSE_RS_MODE.value) {
+        if (pulseRsMode.get()) {
             pulseDuration = 2;
         }
 
@@ -270,52 +283,56 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
                     int min = isAdvanced() ? 5 : 30;
                     int max = 1200;
                     int change = shift ? 100 : 5;
-                    PULSE_RATE.value += decrement ? -change : change;
-                    if (PULSE_RATE.value < min) {
-                        PULSE_RATE.value = (short) min;
-                    } else if (PULSE_RATE.value > max) {
-                        PULSE_RATE.value = (short) max;
+                    pulseRate.add(decrement ? (short) -change : (short) change);
+                    if (pulseRate.get() < min) {
+                        pulseRate.set((short) min);
                     }
-                    pulseTimer = PULSE_RATE.value;
+                    else if (pulseRate.get() > max) {
+                        pulseRate.set((short) max);
+                    }
+                    pulseTimer = pulseRate.get();
                     break;
                 case 2:
                 case 3:
                     min = 1;
                     max = isAdvanced() ? 64 : 16;
                     change = shift ? 5 : 1;
-                    RANGE.value += decrement ? -change : change;
-                    if (RANGE.value < min) {
-                        RANGE.value = (short) min;
-                    } else if (RANGE.value > max) {
-                        RANGE.value = (short) max;
+                    range.add(decrement ? (short) -change : (short) change);
+                    if (range.get() < min) {
+                        range.set((short) min);
+                    }
+                    else if (range.get() > max) {
+                        range.set((short) max);
                     }
                     break;
                 case 4:
                 case 5:
                     change = shift ? 5 : 1;
-                    int value = RS_MIN_DETECTION.value + (decrement ? -change : change);
-                    max = RS_MAX_DETECTION.value;
+                    int value = rsMinDetection.add(decrement ? (byte) -change : (byte) change);
+                    max = rsMaxDetection.get();
                     if (value < 0) {
                         value = 0;
-                    } else if (value > max) {
+                    }
+                    else if (value > max) {
                         value = max;
                     }
-                    RS_MIN_DETECTION.value = (byte) value;
+                    rsMinDetection.set((byte) value);
                     break;
                 case 6:
                 case 7:
                     change = shift ? 5 : 1;
-                    value = RS_MAX_DETECTION.value + (decrement ? -change : change);
-                    min = RS_MIN_DETECTION.value;
+                    value = rsMaxDetection.get() + (decrement ? -change : change);
+                    min = rsMinDetection.get();
                     if (value < min) {
                         value = min;
-                    } else if (value > 127) {
+                    }
+                    else if (value > 127) {
                         value = 127;
                     }
-                    RS_MAX_DETECTION.value = (byte) value;
+                    rsMaxDetection.set((byte) value);
                     break;
                 case 8:
-                    PULSE_RS_MODE.value = !PULSE_RS_MODE.value;
+                    pulseRsMode.set(!pulseRsMode.get());
                     break;
             }
         }
@@ -350,12 +367,12 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
 
     @Override
     public int getWeakPower(IBlockState blockState, EnumFacing side) {
-        return OUTPUT_STRENGTH.value;
+        return outputStrength.get();
     }
 
     @Override
     public int getStrongPower(IBlockState blockState, EnumFacing side) {
-        return OUTPUT_STRENGTH.value;
+        return outputStrength.get();
     }
 
     //endregion
@@ -374,7 +391,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     }
 
     public int getPulseCost() {
-        return (int) (125 * Math.pow(RANGE.value, 1.5));
+        return (int) (125 * Math.pow(range.get(), 1.5));
     }
 
     @Override

@@ -3,10 +3,7 @@ package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileEnergyBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
@@ -27,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.COMPONENT_MAX_DISTANCE;
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.MAX_TEMPERATURE;
 
@@ -35,11 +33,11 @@ import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileRe
  */
 public abstract class TileReactorComponent extends TileEnergyBase implements ITickable, IDEPeripheral, IMovableStructure {
 
-    private final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, 0, 0))).saveToTile().syncViaTile().finish();
-    public final ManagedEnum<EnumFacing> facing = register("facing", new ManagedEnum<>(EnumFacing.UP)).saveToTile().syncViaTile().finish();
-    public final ManagedBool isBound = register("isBound", new ManagedBool(false)).saveToTile().syncViaTile().finish();
-    public final ManagedEnum<RSMode> rsMode = register("rsMode", new ManagedEnum<>(RSMode.TEMP)).saveToTile().syncViaTile().finish();
-    public final ManagedInt rsPower = register("rsPower", new ManagedInt(0)).saveToTile().syncViaTile().trigerUpdate().finish();
+    private final ManagedVec3I coreOffset       = register(new ManagedVec3I("coreOffset", SAVE_NBT));
+    public final ManagedEnum<EnumFacing> facing = register(new ManagedEnum<>("facing", EnumFacing.UP, SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isBound            = register(new ManagedBool("isBound", SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<RSMode> rsMode     = register(new ManagedEnum<>("rsMode", RSMode.TEMP, SAVE_NBT_SYNC_TILE));
+    public final ManagedInt rsPower             = register(new ManagedInt("rsPower", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public float animRotation = 0;
     public float animRotationSpeed = 0;
     private TileReactorCore cachedCore = null;
@@ -57,7 +55,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             TileReactorCore core = tryGetCore();
             if (core != null) {
                 animRotationSpeed = core.shieldAnimationState * 15F;
-                coreFalureIminent = core.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE;
+                coreFalureIminent = core.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE;
             }
             else {
                 coreFalureIminent = false;
@@ -79,9 +77,9 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             TileReactorCore core = getCachedCore();
 
             if (core != null) {
-                int rs = rsMode.value.getRSSignal(core);
-                if (rs != rsPower.value) {
-                    rsPower.value = rs;
+                int rs = rsMode.get().getRSSignal(core);
+                if (rs != rsPower.get()) {
+                    rsPower.set(rs);
                     world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
                 }
             }
@@ -99,8 +97,8 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
      */
     public void bindToCore(TileReactorCore core) {
         LogHelper.dev("Reactor-Comp: Bind To Core");
-        isBound.value = true;
-        coreOffset.vec = getCoreOffset(core.getPos());
+        isBound.set(true);
+        coreOffset.set(getCoreOffset(core.getPos()));
     }
 
     /**
@@ -108,17 +106,17 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
      */
     public void pokeCore() {
         LogHelper.dev("Reactor-Comp: Try Poke Core");
-        if (isBound.value) {
+        if (isBound.get()) {
             TileReactorCore core = checkAndGetCore();
             if (core != null) {
-                core.pokeCore(this, facing.value.getOpposite());
+                core.pokeCore(this, facing.get().getOpposite());
                 return;
             }
         }
 
         LogHelper.dev("Reactor-Comp: Try Poke Core | Find");
         for (int i = 1; i < COMPONENT_MAX_DISTANCE; i++) {
-            BlockPos searchPos = pos.offset(facing.value, i);
+            BlockPos searchPos = pos.offset(facing.get(), i);
             if (!world.isAirBlock(searchPos)) {
                 TileEntity tile = world.getTileEntity(searchPos);
                 LogHelper.dev("Reactor-Comp: Check: " + tile);
@@ -126,7 +124,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
 
                 if (tile instanceof TileReactorCore && i > 1) {
                     //I want this to poke the core regardless of weather or not the core structure is already valid in case this is an energy injector. The core will decide what to do.
-                    ((TileReactorCore) tile).pokeCore(this, facing.value.getOpposite());
+                    ((TileReactorCore) tile).pokeCore(this, facing.get().getOpposite());
                 }
                 return;
             }
@@ -134,7 +132,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     }
 
     public void invalidateComponent() {
-        isBound.value = false;
+        isBound.set(false);
     }
 
     //endregion ===================================
@@ -155,7 +153,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
 
         TileReactorCore core = checkAndGetCore();
         if (core != null) {
-            core.componentBroken(this, facing.value.getOpposite());
+            core.componentBroken(this, facing.get().getOpposite());
         }
     }
 
@@ -176,7 +174,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
         }
         else {
-            this.rsMode.value = rsMode;
+            this.rsMode.set(rsMode);
         }
     }
 
@@ -192,7 +190,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     //region Getters & Setters
 
     protected BlockPos getCorePos() {
-        return pos.subtract(coreOffset.vec.getPos());
+        return pos.subtract(coreOffset.get().getPos());
     }
 
     protected Vec3I getCoreOffset(BlockPos corePos) {
@@ -203,7 +201,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
      * @return The core this component is bound to or null if not bound or core is nolonger at bound position. Invalidates the block if the core could not be found.
      */
     protected TileReactorCore checkAndGetCore() {
-        if (!isBound.value) {
+        if (!isBound.get()) {
             LogHelper.dev("Reactor-Comp: Not Bound");
             return null;
         }
@@ -222,7 +220,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     }
 
     public TileReactorCore tryGetCore() {
-        if (!isBound.value) {
+        if (!isBound.get()) {
             return null;
         }
 
@@ -234,7 +232,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     }
 
     protected TileReactorCore getCachedCore() {
-        if (isBound.value) {
+        if (isBound.get()) {
             BlockPos corePos = getCorePos();
             Chunk coreChunk = world.getChunkFromBlockCoords(corePos);
 
@@ -252,7 +250,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
                 }
                 else {
                     cachedCore = null;
-                    isBound.value = false;
+                    isBound.set(false);
                 }
             }
         }
@@ -268,7 +266,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
 
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
-        return from == facing.value.getOpposite();
+        return from == facing.get().getOpposite();
     }
 
     //region Peripheral
@@ -293,18 +291,18 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
 
         if (method.equals("getReactorInfo")) {
             Map<Object, Object> map = new HashMap<Object, Object>();
-            map.put("temperature", Utils.round(reactor.temperature.value, 100));
-            map.put("fieldStrength", Utils.round(reactor.shieldCharge.value, 100));
-            map.put("maxFieldStrength", Utils.round(reactor.maxShieldCharge.value, 100));
-            map.put("energySaturation", reactor.saturation.value);
-            map.put("maxEnergySaturation", reactor.maxSaturation.value);
-            map.put("fuelConversion", Utils.round(reactor.convertedFuel.value, 1000));
-            map.put("maxFuelConversion", reactor.reactableFuel.value + reactor.convertedFuel.value);
-            map.put("generationRate", (int) reactor.generationRate.value);
-            map.put("fieldDrainRate", reactor.fieldDrain.value);
-            map.put("fuelConversionRate", (int) Math.round(reactor.fuelUseRate.value * 1000000D));
-            map.put("status", reactor.reactorState.value.name().toLowerCase());//reactor.reactorState.value == TileReactorCore.ReactorState.COLD ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
-            map.put("failSafe", reactor.failSafeMode.value);
+            map.put("temperature", Utils.round(reactor.temperature.get(), 100));
+            map.put("fieldStrength", Utils.round(reactor.shieldCharge.get(), 100));
+            map.put("maxFieldStrength", Utils.round(reactor.maxShieldCharge.get(), 100));
+            map.put("energySaturation", reactor.saturation.get());
+            map.put("maxEnergySaturation", reactor.maxSaturation.get());
+            map.put("fuelConversion", Utils.round(reactor.convertedFuel.get(), 1000));
+            map.put("maxFuelConversion", reactor.reactableFuel.get() + reactor.convertedFuel.get());
+            map.put("generationRate", (int)reactor.generationRate.get());
+            map.put("fieldDrainRate", reactor.fieldDrain.get());
+            map.put("fuelConversionRate", (int) Math.round(reactor.fuelUseRate.get() * 1000000D));
+            map.put("status", reactor.reactorState.get().name().toLowerCase());//reactor.reactorState.value == TileReactorCore.ReactorState.COLD ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
+            map.put("failSafe", reactor.failSafeMode.get());
             return new Object[]{map};
         }
         else if (method.equals("chargeReactor")) {
@@ -329,7 +327,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             else return new Object[]{false};
         }
         else if (method.equals("setFailSafe")) {
-            reactor.failSafeMode.value = args.checkBoolean(0);
+            reactor.failSafeMode.set(args.checkBoolean(0));
             return new Object[]{true};
         }
         return new Object[]{};
@@ -341,7 +339,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         TEMP {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                return (int) ((tile.temperature.value / MAX_TEMPERATURE) * 15D);
+                return (int) ((tile.temperature.get() / MAX_TEMPERATURE) * 15D);
             }
         },
         TEMP_INV {
@@ -353,7 +351,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         FIELD {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                double value = tile.shieldCharge.value / tile.maxShieldCharge.value;
+                double value = tile.shieldCharge.get() / tile.maxShieldCharge.get();
                 value -= 0.05;
                 value *= 1.2;
                 return (int) (value * 15);
@@ -368,7 +366,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         SAT {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                return (int) (((double) tile.saturation.value / (double) tile.maxSaturation.value) * 15D);
+                return (int) (((double) tile.saturation.get() / (double) tile.maxSaturation.get()) * 15D);
             }
         },
         SAT_INV {
@@ -380,7 +378,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         FUEL {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                double value = tile.convertedFuel.value / (tile.convertedFuel.value + tile.reactableFuel.value);
+                double value = tile.convertedFuel.get() / (tile.convertedFuel.get() + tile.reactableFuel.get());
                 value += 0.1;
                 value = Utils.map(value, 0.1, 1, 0, 1);
                 return (int) (value * 15);

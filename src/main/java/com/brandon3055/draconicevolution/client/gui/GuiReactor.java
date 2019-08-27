@@ -68,7 +68,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiBorderedRect(this, guiLeft + 12, guiTop + 138, 162, 77) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD;
             }
         });
 
@@ -80,77 +80,77 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 10, y, 162, 8, I18n.format("gui.reactor.coreVolume.info")) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.coreVolume.txt")}).setHoverDelay(2)));
         manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, "") {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
             public String getDisplayString() {
-                return Utils.round((tile.reactableFuel.value + tile.convertedFuel.value) / 1296D, 100) + "m^3";
+                return Utils.round((tile.reactableFuel.get() + tile.convertedFuel.get()) / 1296D, 100) + "m^3";
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
         manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.genRate.info")) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.genRate.txt")}).setHoverDelay(2)));
         manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, "") {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
             public String getDisplayString() {
-                return Utils.addCommas((int) tile.generationRate.value) + " RF/t";
+                return Utils.addCommas((int) tile.generationRate.get()) + " RF/t";
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
         manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.fieldInputRate.info")) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.inputRate.txt")}).setHoverDelay(2)));
         manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, "") {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
             public String getDisplayString() {
-                double inputRate = tile.fieldDrain.value / (1D - (tile.shieldCharge.value / tile.maxShieldCharge.value));
+                double inputRate = tile.fieldDrain.get() / (1D - (tile.shieldCharge.get() / tile.maxShieldCharge.get()));
                 return Utils.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + "RF/t";
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
         manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.fuelConversionRate.info")) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.conversionRate.txt")}).setHoverDelay(2)));
         manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, "") {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
             public String getDisplayString() {
-                return Utils.addCommas((int) Math.round(tile.fuelUseRate.value * 1000000D)) + "nb/t";
+                return Utils.addCommas((int) Math.round(tile.fuelUseRate.get() * 1000000D)) + "nb/t";
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
 
         manager.add(new MGuiLabel(this, guiLeft + 13, guiTop + 139, 161, 77, "Emergency shield reserve is now active but it wont last long! There is no way to stop the overload the stabilizers are fried. I suggest you run!") {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setWrap(true).setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
 
@@ -161,7 +161,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiElementBase(this) {
             @Override
             public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-                if (tile.reactorState.value == TileReactorCore.ReactorState.COLD) {
+                if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD) {
 //                    drawTexturedModalRect(guiLeft + 12, guiTop + 193, 10, 193, 162, 4);
                     GuiHelper.drawPlayerSlots(GuiReactor.this, guiLeft + 43 - 31, guiTop + 139, false);
                     ResourceHelperBC.bindTexture("textures/gui/bc_widgets.png");
@@ -181,23 +181,23 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 182, guiTop + 139, 54, 8, I18n.format("gui.reactor.fuelIn.txt")) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value == TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.get() == TileReactorCore.ReactorState.COLD;
             }
         }.setAlignment(EnumAlignment.CENTER));
         manager.add(new MGuiLabel(this, guiLeft + 182, guiTop + 170, 54, 8, I18n.format("gui.reactor.chaosOut.txt")) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value == TileReactorCore.ReactorState.COLD;
+                return tile.reactorState.get() == TileReactorCore.ReactorState.COLD;
             }
         }.setAlignment(EnumAlignment.CENTER));
         manager.add(new MGuiLabel(this, guiLeft + 7, guiTop + 127, xSize, 12, "") {
             @Override
             public String getDisplayString() {
-                String s = tile.reactorState.value.localize();
-                if (tile.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE && ClientEventHandler.elapsedTicks % 10 > 5) {
+                String s = tile.reactorState.get().localize();
+                if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && ClientEventHandler.elapsedTicks % 10 > 5) {
                     s = TextFormatting.DARK_RED + "**" + s + "**";
                 }
-                else if (tile.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE) {
+                else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
                     s = TextFormatting.DARK_RED + "--" + s + "--";
                 }
 
@@ -211,7 +211,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
 
             @Override
             public boolean getDropShadow() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
         }.setAlignment(EnumAlignment.LEFT));
@@ -219,7 +219,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiTexturedPointer(this, guiLeft + 11, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
-                return MathHelper.clip(tile.temperature.value / TileReactorCore.MAX_TEMPERATURE, 0, 1);
+                return MathHelper.clip(tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE, 0, 1);
             }
         }.addChild(new MGuiHoverPopup(this) {
             @Override
@@ -230,7 +230,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiTexturedPointer(this, guiLeft + 35, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
-                return MathHelper.clip(tile.shieldCharge.value / Math.max(tile.maxShieldCharge.value, 1), 0, 1);
+                return MathHelper.clip(tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1), 0, 1);
             }
         }.addChild(new MGuiHoverPopup(this) {
             @Override
@@ -242,7 +242,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiTexturedPointer(this, guiLeft + 199, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
-                return MathHelper.clip(tile.saturation.value / (double) Math.max(tile.maxSaturation.value, 1), 0, 1);
+                return MathHelper.clip(tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1), 0, 1);
             }
         }.addChild(new MGuiHoverPopup(this) {
             @Override
@@ -255,7 +255,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiTexturedPointer(this, guiLeft + 223, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
-                return MathHelper.clip(tile.convertedFuel.value / Math.max(tile.reactableFuel.value + tile.convertedFuel.value, 1), 0, 1);
+                return MathHelper.clip(tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1), 0, 1);
             }
         }.addChild(new MGuiHoverPopup(this) {
             @Override
@@ -289,7 +289,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiButtonSolid(this, "FAIL_SAFE", guiLeft + 182, guiTop + 165, 54, 14, I18n.format("gui.reactor.failSafe.btn")) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
 
             @Override
@@ -299,7 +299,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
 
             @Override
             public int getFillColour(boolean hovering, boolean disabled) {
-                if (tile.failSafeMode.value) {
+                if (tile.failSafeMode.get()) {
                     return 0xFF4040FF;
                 }
                 return super.getFillColour(hovering, disabled);
@@ -310,7 +310,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 180, guiTop + 138, 58, 24, I18n.format("gui.reactor.rsMode.btn").replaceAll("\\\\n", "\n")) {
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value != TileReactorCore.ReactorState.COLD && component != null && tile.reactorState.value != TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && component != null && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setWrap(true).addChild(new MGuiButtonSolid(this, "TOGGLE_COMP_P", guiLeft + 182, guiTop + 138, 54, 24, "") {
             @Override
@@ -322,12 +322,12 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         manager.add(new MGuiLabel(this, guiLeft + 175, guiTop + 138, 68, 80, "ETE") {
             @Override
             public String getDisplayString() {
-                return "Estimated\nTime\nUntil\nDetonation\n\n" + TextFormatting.UNDERLINE + (tile.explosionCountdown.value >= 0 ? (tile.explosionCountdown.value / 20) + "s" : "Calculating..");
+                return "Estimated\nTime\nUntil\nDetonation\n\n" + TextFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating..");
             }
 
             @Override
             public boolean isEnabled() {
-                return tile.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE;
+                return tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE;
             }
         }.setWrap(true).setTextColour(0xFF0000).setShadow(false));
 
@@ -341,7 +341,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
 
                 @Override
                 public int getFillColour(boolean hovering, boolean disabled) {
-                    if (component != null && component.rsMode.value == mode) {
+                    if (component != null && component.rsMode.get() == mode) {
                         return 0xFFAA0000;
                     }
                     else if (hovering) {
@@ -392,37 +392,37 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
     public List<String> getTempStats() {
         List<String> list = new ArrayList<>();
         list.add(I18n.format("gui.reactor.reactionTemp.info"));
-        list.add(Utils.round(tile.temperature.value, 10) + "C");
+        list.add(Utils.round(tile.temperature.get(), 10) + "C");
         return list;
     }
 
     public List<String> getShieldStats() {
         List<String> list = new ArrayList<>();
         list.add(I18n.format("gui.reactor.fieldStrength.info"));
-        if (tile.maxShieldCharge.value > 0) {
-            list.add(Utils.round(tile.shieldCharge.value / tile.maxShieldCharge.value * 100D, 100D) + "%");
+        if (tile.maxShieldCharge.get() > 0) {
+            list.add(Utils.round(tile.shieldCharge.get() / tile.maxShieldCharge.get() * 100D, 100D) + "%");
         }
-        list.add(Utils.addCommas((int) tile.shieldCharge.value) + " / " + Utils.addCommas((int) tile.maxShieldCharge.value));
+        list.add(Utils.addCommas((int) tile.shieldCharge.get()) + " / " + Utils.addCommas((int) tile.maxShieldCharge.get()));
         return list;
     }
 
     public List<String> getSaturationStats() {
         List<String> list = new ArrayList<>();
         list.add(I18n.format("gui.reactor.energySaturation.info"));
-        if (tile.maxSaturation.value > 0) {
-            list.add(Utils.round((double) tile.saturation.value / (double) tile.maxSaturation.value * 100D, 100D) + "%");
+        if (tile.maxSaturation.get() > 0) {
+            list.add(Utils.round((double) tile.saturation.get() / (double) tile.maxSaturation.get() * 100D, 100D) + "%");
         }
-        list.add(Utils.addCommas(tile.saturation.value) + " / " + Utils.addCommas(tile.maxSaturation.value));
+        list.add(Utils.addCommas(tile.saturation.get()) + " / " + Utils.addCommas(tile.maxSaturation.get()));
         return list;
     }
 
     public List<String> getFuelStats() {
         List<String> list = new ArrayList<>();
         list.add(I18n.format("gui.reactor.fuelConversion.info"));
-        if (tile.reactableFuel.value + tile.convertedFuel.value > 0) {
-            list.add(Utils.round(tile.convertedFuel.value / (tile.reactableFuel.value + tile.convertedFuel.value) * 100D, 100D) + "%");
+        if (tile.reactableFuel.get() + tile.convertedFuel.get() > 0) {
+            list.add(Utils.round(tile.convertedFuel.get() / (tile.reactableFuel.get() + tile.convertedFuel.get()) * 100D, 100D) + "%");
         }
-        list.add(Utils.round(tile.convertedFuel.value, 100) + " / " + Utils.round(tile.convertedFuel.value + tile.reactableFuel.value, 100));
+        list.add(Utils.round(tile.convertedFuel.get(), 100) + " / " + Utils.round(tile.convertedFuel.get() + tile.reactableFuel.get(), 100));
         return list;
     }
 
@@ -430,7 +430,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
     public void updateScreen() {
         super.updateScreen();
 
-        if (tile.reactorState.value == TileReactorCore.ReactorState.COLD != container.fuelSlots) {
+        if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD != container.fuelSlots) {
             container.setSlotState();
         }
 

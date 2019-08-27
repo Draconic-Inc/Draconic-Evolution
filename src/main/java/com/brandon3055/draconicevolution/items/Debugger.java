@@ -928,7 +928,7 @@ public class Debugger extends ItemBCore {
 
         if (tile instanceof TileFusionCraftingCore && !world.isRemote) {
             if (((TileFusionCraftingCore) tile).craftingInProgress()) {
-                ((TileFusionCraftingCore) tile).craftingStage.value = 2000;
+                ((TileFusionCraftingCore) tile).craftingStage.set((short)2000);
             }
             return EnumActionResult.FAIL;
         }
