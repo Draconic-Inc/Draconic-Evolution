@@ -4,12 +4,16 @@ import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.brandonscore.registry.ModFeatureParser;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.capabilities.IPlayerCapabilities;
+import com.brandon3055.draconicevolution.capabilities.PlayerCapabilitiesProvider;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
+import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -23,15 +27,20 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.feature.WorldGenEndPodium;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -363,5 +372,24 @@ public class DEEventHandler {
         if (event.getTarget() instanceof EntityGuardianCrystal) {
             event.setCanceled(true);
         }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onEntityConstructing(AttachCapabilitiesEvent<Entity> e) {
+    	Entity obj = e.getObject();
+    	if (obj instanceof EntityPlayer && !(obj instanceof FakePlayer)) {
+    		EntityPlayer player = (EntityPlayer) obj;
+    		e.addCapability(ResourceHelperDE.getResource("toggleShield"), new PlayerCapabilitiesProvider());
+    	}
+    }
+    
+    @SubscribeEvent
+    public void onPlayerClone(PlayerEvent.Clone event)
+    {
+    	EntityPlayer player = event.getEntityPlayer();
+    	IPlayerCapabilities newCap = player.getCapability(PlayerCapabilitiesProvider.PLAYER_CAP, null);
+    	IPlayerCapabilities oldCap = event.getOriginal().getCapability(PlayerCapabilitiesProvider.PLAYER_CAP, null);
+
+    	newCap.setShieldState(oldCap.getShieldState());
     }
 }

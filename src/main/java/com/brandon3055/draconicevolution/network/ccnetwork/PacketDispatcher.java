@@ -30,4 +30,8 @@ public class PacketDispatcher {
         packet.writeBoolean(reverse);
         packet.sendToServer();
     }
+    public static void dispatchToggleShields() {
+        PacketCustom packet = new PacketCustom(NET_CHANNEL, 5);
+        packet.sendToServer();
+    }
 }
