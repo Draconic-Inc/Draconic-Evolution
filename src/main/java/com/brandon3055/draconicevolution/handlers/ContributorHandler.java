@@ -258,8 +258,8 @@ public class ContributorHandler {
         public boolean isPatreonSupporter = false;
 
         /**
-         * As a big supporter of the lolnet.co.nz Minecraft Community i have offered to support
-         * their upcoming donation drive but offering lolnet badges and temporary contributor wings to everyone who donates.
+         * As a big supporter of the lolnet.co.nz Minecraft Community, I have offered to support their upcoming
+         * donation drive by offering lolnet badges and temporary contributor wings to everyone who donates.
          */
         public boolean lolnetBadgeEnabled = true;
         public boolean isLolnetContributor = false;

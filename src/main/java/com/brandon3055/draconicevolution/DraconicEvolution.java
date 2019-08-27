@@ -72,7 +72,7 @@ public class DraconicEvolution {
     }
 
     /**
-     * To register an itemstack to be doubled by the DE chest the message should be as followes
+     * To register an ItemStack to be doubled by the DE chest the message should be as follows
      * <p>
      * FMLInterModComms.sendMessage("draconicevolution", "addChestRecipe:minecraft:coal", new ItemStack(Items.diamond, 2));
      * <p>
