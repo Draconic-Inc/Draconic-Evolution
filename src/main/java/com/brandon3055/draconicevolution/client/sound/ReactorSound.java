@@ -69,7 +69,7 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
         }
 
 
-        if (tile.isInvalid() || !tile.getWorld().getChunkFromBlockCoords(tile.getPos()).isLoaded()) {// || player == null || tile.getDistanceFrom(player.posX, player.posY, player.posZ) > 512){
+        if (tile.isInvalid() || !tile.getWorld().getChunk(tile.getPos()).isLoaded()) {// || player == null || tile.getDistanceFrom(player.posX, player.posY, player.posZ) > 512){
 //            if (stopTimer++ == 60) {
                 donePlaying = true;
                 repeat = false;

@@ -52,7 +52,7 @@ public class GuiGenerator extends GuiContainer {
         drawTexturedModalRect(guiLeft + 83, guiTop + 11 + (int) (power * 40), xSize, (int) (power * 40), 12, 40 - (int) (power * 40));//Power bar
         drawTexturedModalRect(guiLeft + 100, guiTop + 37 + (int) (fuel * 13), xSize, 40 + (int) (fuel * 13), 18, 18 - (int) (fuel * 13));//Power bar
 
-        fontRenderer.drawStringWithShadow(I18n.format(DEFeatures.generator.getUnlocalizedName() + ".name"), guiLeft + 64, guiTop, 0x00FFFF);
+        fontRenderer.drawStringWithShadow(I18n.format(DEFeatures.generator.getTranslationKey() + ".name"), guiLeft + 64, guiTop, 0x00FFFF);
 
         int x = X - guiLeft;
         int y = Y - guiTop;

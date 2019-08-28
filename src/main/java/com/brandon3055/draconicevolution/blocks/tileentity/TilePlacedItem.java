@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.relauncher.Side;
@@ -213,7 +214,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
     @Override
     public void readExtraNBT(NBTTagCompound compound) {
         super.readExtraNBT(compound);
-        facing = EnumFacing.getFront(compound.getByte("Facing"));
+        facing = EnumFacing.VALUES[MathHelper.abs(compound.getByte("Facing") % EnumFacing.VALUES.length)];
         for (int i = 0; i < isBlock.length; i++) {
             isBlock[i] = compound.getBoolean("IsBlock" + i);
         }

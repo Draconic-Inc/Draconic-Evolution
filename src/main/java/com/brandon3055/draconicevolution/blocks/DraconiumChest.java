@@ -69,7 +69,7 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
             return false;
         }
         else if (!stack.isEmpty()) {
-            String name = stack.getUnlocalizedName().toLowerCase(Locale.ENGLISH);
+            String name = stack.getTranslationKey().toLowerCase(Locale.ENGLISH);
             if (name.contains("pouch") || name.contains("bag") || name.contains("strongbox") || name.contains("shulker_box")) {
                 return false;
             }
@@ -94,7 +94,7 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
 
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        EnumFacing enumfacing = EnumFacing.getHorizontal(MathHelper.floor((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3).getOpposite();
+        EnumFacing enumfacing = EnumFacing.HORIZONTALS[MathHelper.abs((MathHelper.floor((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3) % EnumFacing.HORIZONTALS.length)].getOpposite();
         TileEntity tile = worldIn.getTileEntity(pos);
 
         if (tile instanceof TileDraconiumChest) {

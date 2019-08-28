@@ -13,6 +13,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Created by brandon3055 on 28/09/2016.
@@ -29,7 +30,7 @@ public class TilePotentiometer extends TileBCBase implements IRedstoneEmitter, I
     }
 
     public EnumFacing getRotation() {
-        return EnumFacing.getFront(ROTATION.value);
+        return EnumFacing.VALUES[MathHelper.abs(ROTATION.value % EnumFacing.VALUES.length)];
     }
 
     public void setRotation(EnumFacing rotation) {

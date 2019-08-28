@@ -346,7 +346,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
             pedestal.setCraftingInventory(this);
             Vec3D spawn = new Vec3D(((TileEntity) pedestal).getPos());
-            spawn.add(0.5 + pedestal.getDirection().getFrontOffsetX() * 0.45, 0.5 + pedestal.getDirection().getFrontOffsetY() * 0.45, 0.5 + pedestal.getDirection().getFrontOffsetZ() * 0.45);
+            spawn.add(0.5 + pedestal.getDirection().getXOffset() * 0.45, 0.5 + pedestal.getDirection().getYOffset() * 0.45, 0.5 + pedestal.getDirection().getZOffset() * 0.45);
             effects.add(new EffectTrackerFusionCrafting(world, spawn, new Vec3D(pos), this, activeRecipe.getRecipeIngredients().size()));
 //            BCEffectHandler.effectRenderer.addEffect(ResourceHelperDE.getResource("textures/blocks/fusion_crafting/fusion_particle.png"), new ParticleFusionCrafting(world, spawn, new Vec3D(pos), this));
         }

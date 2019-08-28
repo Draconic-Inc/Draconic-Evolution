@@ -23,7 +23,7 @@ public class DETab extends CreativeTabs {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ItemStack getIconItemStack() {
+    public ItemStack createIcon() {
         if (tab == 0) {
             if (itemStackStaff.isEmpty()) {
                 itemStackStaff = new ItemStack(DEFeatures.draconicStaffOfPower);
@@ -38,11 +38,11 @@ public class DETab extends CreativeTabs {
         else return new ItemStack(Items.ENDER_EYE);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public ItemStack getTabIconItem() {
-        return getIconItemStack();
-    }
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public ItemStack getTabIconItem() {
+//        return createIcon();
+//    }
 
     @Override
     public String getTabLabel() {

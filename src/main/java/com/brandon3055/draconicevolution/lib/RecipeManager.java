@@ -538,7 +538,7 @@ public class RecipeManager {
             }
 
             ResourceLocation location = getNameForRecipe(result);
-            ShapelessRecipes shapelessRecipe = new ShapelessRecipes(location.getResourceDomain(), result, buildInput(recipe));
+            ShapelessRecipes shapelessRecipe = new ShapelessRecipes(location.getNamespace(), result, buildInput(recipe));
             shapelessRecipe.setRegistryName(location);
             GameData.register_impl(shapelessRecipe);
         }
@@ -604,12 +604,12 @@ public class RecipeManager {
 
     public static ResourceLocation getNameForRecipe(ItemStack output) {
         ModContainer activeContainer = Loader.instance().activeModContainer();
-        ResourceLocation baseLoc = new ResourceLocation(activeContainer.getModId(), output.getItem().getRegistryName().getResourcePath());
+        ResourceLocation baseLoc = new ResourceLocation(activeContainer.getModId(), output.getItem().getRegistryName().getNamespace());
         ResourceLocation recipeLoc = baseLoc;
         int index = 0;
         while (CraftingManager.REGISTRY.containsKey(recipeLoc)) {
             index++;
-            recipeLoc = new ResourceLocation(activeContainer.getModId(), baseLoc.getResourcePath() + "_" + index);
+            recipeLoc = new ResourceLocation(activeContainer.getModId(), baseLoc.getNamespace() + "_" + index);
         }
         return recipeLoc;
     }

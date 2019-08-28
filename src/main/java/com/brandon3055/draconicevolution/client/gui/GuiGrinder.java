@@ -47,7 +47,7 @@ public class GuiGrinder extends GuiContainer {
         float power = (float) tile.energySync.value / (float) tile.getMaxEnergyStored(EnumFacing.DOWN) * -1 + 1;
         drawTexturedModalRect(guiLeft + 68, guiTop + 12 + (int) (power * 40), xSize, (int) (power * 40), 12, 40 - (int) (power * 40));//Power bar
 
-        drawCenteredString(fontRenderer, I18n.format(DEFeatures.grinder.getUnlocalizedName() + ".name"), guiLeft + xSize / 2 + 2, guiTop, 0x00FFFF);
+        drawCenteredString(fontRenderer, I18n.format(DEFeatures.grinder.getTranslationKey() + ".name"), guiLeft + xSize / 2 + 2, guiTop, 0x00FFFF);
 
         int x = X - guiLeft;
         int y = Y - guiTop;

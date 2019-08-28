@@ -301,7 +301,7 @@ public abstract class MiningToolBase extends ToolBase {
 
             block.onBlockHarvested(world, pos, state, player);
             if (block.removedByPlayer(state, world, pos, player, false)) {
-                block.onBlockDestroyedByPlayer(world, pos, state);
+                block.onPlayerDestroy(world, pos, state);
             }
 
             if (!world.isRemote) {
@@ -327,7 +327,7 @@ public abstract class MiningToolBase extends ToolBase {
                 world.playEvent(2001, pos, Block.getStateId(state));
             }
             if (block.removedByPlayer(state, world, pos, player, true)) {
-                block.onBlockDestroyedByPlayer(world, pos, state);
+                block.onPlayerDestroy(world, pos, state);
             }
 
             stack.onBlockDestroyed(world, state, pos, player);

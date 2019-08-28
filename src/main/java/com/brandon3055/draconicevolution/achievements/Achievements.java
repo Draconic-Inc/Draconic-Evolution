@@ -24,7 +24,7 @@ public class Achievements {
 //            return;
 //        }
 //        achievementsList.put(name, achievement.registerStat());
-//        achievementItems.put(stack.getUnlocalizedName(), new AchievementCondition(name, triggerCondition));
+//        achievementItems.put(stack.getTranslationKey(), new AchievementCondition(name, triggerCondition));
     }
 
     public static void addAchievement(String name, Advancement achievement, String triggerCondition) {
@@ -112,8 +112,8 @@ public class Achievements {
     public void entityPickupEvent(EntityItemPickupEvent event) {
 //        ItemStack stack = event.getItem().getEntityItem().copy();
 //        stack.setCount(1);
-//        if (achievementItems.containsKey(stack.getUnlocalizedName()) && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("pickup")) {
-//            triggerAchievement(event.getEntityPlayer(), achievementItems.get(stack.getUnlocalizedName()).getName());
+//        if (achievementItems.containsKey(stack.getTranslationKey()) && achievementItems.get(stack.getTranslationKey()).isCorrectCondition("pickup")) {
+//            triggerAchievement(event.getEntityPlayer(), achievementItems.get(stack.getTranslationKey()).getName());
 //        }
     }
 
@@ -121,8 +121,8 @@ public class Achievements {
     public void craftEvent(PlayerEvent.ItemCraftedEvent event) {
         ItemStack stack = event.crafting.copy();
         stack.setCount(1);
-        if (achievementItems.containsKey(stack.getUnlocalizedName()) && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("craft")) {
-            triggerAchievement(event.player, achievementItems.get(stack.getUnlocalizedName()).getName());
+        if (achievementItems.containsKey(stack.getItem().getUnlocalizedNameInefficiently(stack)) && achievementItems.get(stack.getTranslationKey()).isCorrectCondition("craft")) {
+            triggerAchievement(event.player, achievementItems.get(stack.getTranslationKey()).getName());
         }
     }
 
@@ -130,8 +130,8 @@ public class Achievements {
     public void smeltEvent(PlayerEvent.ItemSmeltedEvent event) {
         ItemStack stack = event.smelting.copy();
         stack.setCount(1);
-        if (achievementItems.containsKey(stack.getUnlocalizedName()) && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("smelt")) {
-            triggerAchievement(event.player, achievementItems.get(stack.getUnlocalizedName()).getName());
+        if (achievementItems.containsKey(stack.getTranslationKey()) && achievementItems.get(stack.getTranslationKey()).isCorrectCondition("smelt")) {
+            triggerAchievement(event.player, achievementItems.get(stack.getTranslationKey()).getName());
         }
     }
 

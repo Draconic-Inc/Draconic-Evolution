@@ -48,9 +48,9 @@ public class MobSoul extends ItemBCore implements IRenderOverride {
         if (player.isSneaking()) {
 
             Entity entity = createEntity(world, stack);
-            double sX = pos.getX() + facing.getFrontOffsetX() + 0.5;
-            double sY = pos.getY() + facing.getFrontOffsetY() + 0.5;
-            double sZ = pos.getZ() + facing.getFrontOffsetZ() + 0.5;
+            double sX = pos.getX() + facing.getXOffset() + 0.5;
+            double sY = pos.getY() + facing.getYOffset() + 0.5;
+            double sZ = pos.getZ() + facing.getZOffset() + 0.5;
             if (entity == null) {
                 LogHelper.error("Mob Soul bound entity = null");
                 return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
@@ -156,7 +156,7 @@ public class MobSoul extends ItemBCore implements IRenderOverride {
                 else {
                     loadAdditionalEntityInfo(stack, entity);
                     if (entity instanceof EntityLiving) {
-                        if (!ForgeEventFactory.doSpecialSpawn((EntityLiving) entity, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ)) {
+                        if (!ForgeEventFactory.doSpecialSpawn((EntityLiving) entity, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ, null)) {
                             ((EntityLiving) entity).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entity)), null);
                         }
                     }

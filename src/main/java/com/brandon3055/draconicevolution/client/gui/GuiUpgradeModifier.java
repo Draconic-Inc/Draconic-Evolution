@@ -244,7 +244,7 @@ package com.brandon3055.draconicevolution.client.gui;
 ////
 ////            if (GuiHelper.isInRect(xPos, yPos, 24, 24, x, y)) {
 ////                List list = new ArrayList();
-////                list.add(I18n.format(upgrade.getUnlocalizedName()));
+////                list.add(I18n.format(upgrade.getTranslationKey()));
 ////                drawHoveringText(list, x, y, fontRendererObj);
 ////            }
 ////

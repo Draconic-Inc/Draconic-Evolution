@@ -291,7 +291,7 @@ public class DEEventHandler {
 //            }
 //        }
 
-//        if (DEConfig.showUnlocalizedNames) event.toolTip.add(event.itemStack.getUnlocalizedName());
+//        if (DEConfig.showUnlocalizedNames) event.toolTip.add(event.itemStack.getTranslationKey());
 //        if (DraconicEvolution.debug && event.itemStack.hasTagCompound()) {
 //            String s = event.itemStack.getTagCompound().toString();
 //            int escape = 0;

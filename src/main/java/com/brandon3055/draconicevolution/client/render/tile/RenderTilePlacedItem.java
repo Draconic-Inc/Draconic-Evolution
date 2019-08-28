@@ -48,10 +48,10 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
                 GlStateManager.translate(center.x - 0.5, center.y - 0.5, center.z - 0.5);
 
                 if (te.facing.getAxis() == EnumFacing.Axis.Y) {
-                    GlStateManager.rotate(90, te.facing.getFrontOffsetY(), 0, 0);
+                    GlStateManager.rotate(90, te.facing.getYOffset(), 0, 0);
                 }
                 else if (te.facing.getAxis() == EnumFacing.Axis.X) {
-                    GlStateManager.rotate(90, 0, -te.facing.getFrontOffsetX(), 0);
+                    GlStateManager.rotate(90, 0, -te.facing.getXOffset(), 0);
                 }
                 else if (te.facing == EnumFacing.SOUTH) {
                     GlStateManager.rotate(180, 0, 1, 0);

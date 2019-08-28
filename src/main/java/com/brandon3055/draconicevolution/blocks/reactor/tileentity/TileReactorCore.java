@@ -390,7 +390,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             for (int i = 0; i < componentPositions.length; i++) {
                 ManagedVec3I v = componentPositions[i];
                 if (v.vec.sum() > 0) {
-                    BlockPos p = getOffsetPos(v.vec).offset(EnumFacing.getFront(i).getOpposite());
+                    BlockPos p = getOffsetPos(v.vec).offset(EnumFacing.VALUES[net.minecraft.util.math.MathHelper.abs(i) % EnumFacing.VALUES.length].getOpposite());
                     world.newExplosion(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, true);
                 }
             }
@@ -853,7 +853,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         LogHelper.dev("Reactor: Validate Structure");
         for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.value)) {
             BlockPos pos = getOffsetPos(componentPositions[facing.getIndex()].vec);
-            if (!world.getChunkFromBlockCoords(pos).isLoaded()) {
+            if (!world.getChunk(pos).isLoaded()) {
                 return true;
             }
 

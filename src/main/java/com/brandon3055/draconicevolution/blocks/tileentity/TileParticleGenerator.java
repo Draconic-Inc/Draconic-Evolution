@@ -59,7 +59,7 @@ public class TileParticleGenerator extends TileBCBase implements ITickable {
     public void update() {
         super.update();
 
-        if (world.isRemote && (getBlockMetadata() == 1 != world.isBlockIndirectlyGettingPowered(getPos()) > 0)) {
+        if (world.isRemote && (getBlockMetadata() == 1 != world.getRedstonePowerFromNeighbors(getPos()) > 0)) {
             if (tick >= DELAY.value) {
                 Random rand = world.rand;
 

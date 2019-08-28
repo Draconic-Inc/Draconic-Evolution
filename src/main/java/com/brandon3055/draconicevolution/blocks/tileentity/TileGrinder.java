@@ -184,8 +184,8 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
         LogHelper.dev("Update Kill Box: " + facing);
         BlockPos pos1 = pos.add(-3, -3, -3);
         BlockPos pos2 = pos.add(4, 4, 4);
-        pos1 = pos1.add(facing.getFrontOffsetX() * 4, 0, facing.getFrontOffsetZ() * 4);
-        pos2 = pos2.add(facing.getFrontOffsetX() * 4, 0, facing.getFrontOffsetZ() * 4);
+        pos1 = pos1.add(facing.getXOffset() * 4, 0, facing.getZOffset() * 4);
+        pos2 = pos2.add(facing.getXOffset() * 4, 0, facing.getZOffset() * 4);
         killBox = new AxisAlignedBB(pos1, pos2);
     }
 

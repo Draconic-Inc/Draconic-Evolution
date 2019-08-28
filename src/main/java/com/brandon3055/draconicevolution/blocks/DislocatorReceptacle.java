@@ -107,7 +107,7 @@ public class DislocatorReceptacle extends BlockBCore implements ITileEntityProvi
         if (t instanceof TileDislocatorReceptacle) {
             TileDislocatorReceptacle tile = (TileDislocatorReceptacle) t;
 
-            boolean powered = world.isBlockIndirectlyGettingPowered(pos) > 0;
+            boolean powered = world.getRedstonePowerFromNeighbors(pos) > 0;
 
             if (!powered && tile.LT_REDSTONE.value) {
                 tile.LT_REDSTONE.value = false;

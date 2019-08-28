@@ -304,7 +304,7 @@ public class EntityCustomArrow extends EntityArrow {
             setIsCritical(false);
 
             if (iblockstate.getMaterial() != Material.AIR) {
-                inTile.onEntityCollidedWithBlock(world, blockpos, iblockstate, this);
+                inTile.onEntityCollision(world, blockpos, iblockstate, this);
             }
         }
     }

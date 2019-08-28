@@ -60,7 +60,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        EnumFacing enumfacing = EnumFacing.getFront(meta);
+        EnumFacing enumfacing = EnumFacing.byIndex(meta);  //TODO @FoxMcloud5655 Make sure this is right.
         return this.getDefaultState().withProperty(FACING, enumfacing);
     }
 

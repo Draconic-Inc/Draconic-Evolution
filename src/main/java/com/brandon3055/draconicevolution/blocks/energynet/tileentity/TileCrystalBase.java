@@ -620,7 +620,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
             }
         }
 
-        if (!list.hasNoTags()) {
+        if (list.tagCount() != 0) { //TODO @FoxMcloud5655 Make sure this works.
             NBTTagCompound compound = new NBTTagCompound();
             compound.setTag("L", list);
             sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(compound), 0));

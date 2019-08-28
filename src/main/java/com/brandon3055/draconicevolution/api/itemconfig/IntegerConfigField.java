@@ -127,6 +127,8 @@ public class IntegerConfigField implements IItemConfigField {
                 double pos = (data / 10000D) * range;
                 value = (int) (minValue + pos);
                 break;
+            default:
+            	return;
         }
 
         if (value > maxValue) {

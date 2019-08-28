@@ -371,13 +371,13 @@ public class GuiRecipeBuilder extends GuiContainer {
 
         Item item = stack.getItem();
 
-        if (item.getRegistryName().getResourceDomain().equals("minecraft")) {
+        if (item.getRegistryName().getNamespace().equals("minecraft")) {
             //return (item instanceof ItemBlock ? "Blocks." : "Items.") + item.getRegistryName().getResourcePath().toUpperCase();
-            return item.getRegistryName().getResourcePath().toUpperCase();
+            return item.getRegistryName().getNamespace().toUpperCase();
         }
-        if (item.getRegistryName().getResourceDomain().equals("draconicevolution")) {
+        if (item.getRegistryName().getNamespace().equals("draconicevolution")) {
             //return "DEFeatures." + item.getRegistryName().getResourcePath();
-            return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getRegistryName().getResourcePath());
+            return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, item.getRegistryName().getNamespace());
         }
 
         return "Unknown";

@@ -64,7 +64,7 @@ public interface IItemConfigField {
     double getFractionalValue();
 
     /**
-     * Called to handle a button press inside the config GUI. Note: This is called server side so you dont need
+     * Called to handle a button press inside the config GUI. Note: This is called server side so you don't need
      * to worry about client -> server synchronization.
      *
      * @param button The button that was pressed.
@@ -74,7 +74,7 @@ public interface IItemConfigField {
     void handleButton(EnumButton button, int data);
 
     /**
-     * Called to handle a button press inside the config GUI. Note: This is called server side so you dont need
+     * Called to handle a button press inside the config GUI. Note: This is called server side so you don't need
      * to worry about client -> server synchronization.
      *
      * @param button The button that was pressed.

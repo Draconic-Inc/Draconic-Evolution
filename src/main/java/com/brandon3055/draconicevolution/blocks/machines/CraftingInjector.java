@@ -28,6 +28,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -70,7 +71,7 @@ public class CraftingInjector extends BlockBCore implements ITileEntityProvider,
         TileEntity tile = worldIn.getTileEntity(pos);
 
         if (tile instanceof TileCraftingInjector) {
-            return state.withProperty(FACING, EnumFacing.getFront(((TileCraftingInjector) tile).facing.value));
+			return state.withProperty(FACING, EnumFacing.VALUES[MathHelper.abs(((TileCraftingInjector) tile).facing.value) % EnumFacing.VALUES.length]);
         }
 
         return state;

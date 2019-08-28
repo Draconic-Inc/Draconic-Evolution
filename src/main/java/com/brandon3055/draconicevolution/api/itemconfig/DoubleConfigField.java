@@ -1,11 +1,14 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.brandon3055.brandonscore.inventory.PlayerSlot;
 
 /**
  * Created by brandon3055 on 1/06/2016.
@@ -92,7 +95,7 @@ public class DoubleConfigField implements IItemConfigField {
         return (value - minValue) / (maxValue - minValue);
     }
 
-    @Override
+	@Override
     public void handleButton(EnumButton button, int data) {
         switch (button) {
             case MINUS1:
@@ -124,6 +127,8 @@ public class DoubleConfigField implements IItemConfigField {
                 double pos = (data / 10000D) * range;
                 value = minValue + pos;
                 break;
+            default:
+            	return;
         }
 
         if (value > maxValue) {

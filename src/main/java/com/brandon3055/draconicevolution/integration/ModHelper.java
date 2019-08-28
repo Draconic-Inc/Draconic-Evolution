@@ -78,7 +78,7 @@ public class ModHelper {
             return false;
         }
         ResourceLocation registry = stack.getItem().getRegistryName();
-        if (registry == null || registry.getResourceDomain().equals("tconstruct")) {
+        if (registry == null || registry.getNamespace().equals("tconstruct")) {
             return false;
         }
 

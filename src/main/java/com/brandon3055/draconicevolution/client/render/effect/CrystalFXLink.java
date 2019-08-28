@@ -38,7 +38,7 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
         this.linkTarget = linkTarget;
         EnumFacing face = tile instanceof TileCrystalWirelessIO ? ((TileCrystalWirelessIO) tile).getReceiversFaces().get(linkTarget.getPos()) : null;
         if (face != null) {
-            linkTarget.add(face.getFrontOffsetX() * 0.6, face.getFrontOffsetY() * 0.6, face.getFrontOffsetZ() * 0.6);
+            linkTarget.add(face.getXOffset() * 0.6, face.getYOffset() * 0.6, face.getZOffset() * 0.6);
         }
         this.terminateTarget = true;
     }

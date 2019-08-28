@@ -559,7 +559,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.startsWith("TOGGLE_FACE_")) {
                 if (editingRegion >= 0 || editingRegion < tile.slotRegions.length) {
                     int bID = ((MGuiButton) eventElement).buttonId;
-                    EnumFacing facing = bID == 6 ? null : EnumFacing.getFront(bID);
+                    EnumFacing facing = bID == 6 ? null : EnumFacing.VALUES[net.minecraft.util.math.MathHelper.abs(bID % EnumFacing.VALUES.length)];
                     int io = tile.slotRegions[editingRegion].getFaceIO(facing);
                     tile.slotRegions[editingRegion].setFaceIO(facing, io == 3 ? 0 : io + 1);
                     tile.setRegionState(editingRegion);

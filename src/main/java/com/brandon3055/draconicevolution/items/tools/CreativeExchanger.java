@@ -109,7 +109,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
             Item item = Item.getItemFromBlock(prevState.getBlock());
 
             if (item != null) {
-                player.sendMessage(new TextComponentString("Selected: " + new TextComponentTranslation(item.getUnlocalizedName(new ItemStack(item, 1, data)) + ".name").getFormattedText()).setStyle(new Style().setColor(TextFormatting.GREEN)));
+                player.sendMessage(new TextComponentString("Selected: " + new TextComponentTranslation(item.getUnlocalizedNameInefficiently(new ItemStack(item, 1, data)) + ".name").getFormattedText()).setStyle(new Style().setColor(TextFormatting.GREEN)));
             }
             return EnumActionResult.SUCCESS;
         }
@@ -243,7 +243,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
         String opMode = TextFormatting.DARK_RED + "Clear Mode";
 
         if (newBlock != Blocks.AIR) {
-            opMode = TextFormatting.GREEN + "Block: " + TextFormatting.GOLD + I18n.format(newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte) 0)).getBlock().getUnlocalizedName() + ".name");
+            opMode = TextFormatting.GREEN + "Block: " + TextFormatting.GOLD + I18n.format(newBlock.getStateFromMeta(ItemNBTHelper.getByte(stack, "BlockData", (byte) 0)).getBlock().getTranslationKey() + ".name");
         }
 
         displayList.add(TextFormatting.DARK_PURPLE + ToolConfigHelper.getProfileName(stack, ToolConfigHelper.getProfile(stack)));

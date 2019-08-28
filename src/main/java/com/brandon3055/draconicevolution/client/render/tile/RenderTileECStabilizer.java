@@ -36,7 +36,7 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
         }
 
         if (facing.getAxis() == EnumFacing.Axis.X || facing.getAxis() == EnumFacing.Axis.Y) {
-            GlStateManager.rotate(-90F, -facing.getFrontOffsetY(), facing.getFrontOffsetX(), 0);
+            GlStateManager.rotate(-90F, -facing.getYOffset(), facing.getXOffset(), 0);
         }
         else if (facing == EnumFacing.SOUTH) {
             GlStateManager.rotate(180F, 0, 1, 0);

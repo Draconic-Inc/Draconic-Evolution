@@ -40,7 +40,7 @@ public class PacketDislocatorUpdateRequest implements IMessage {
         linkID = ByteBufUtils.readUTF8String(buf);
         if (!isRequest) {
             NBTTagCompound compound = ByteBufUtils.readTag(buf);
-            if (compound == null || compound.hasNoTags()) {
+            if (compound == null || compound.isEmpty()) {
                 data = null;
             }
             else {

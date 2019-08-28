@@ -79,7 +79,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
     }
 
     @Override
-    public void onBlockDestroyedByExplosion(World worldIn, BlockPos pos, Explosion explosionIn) {
+    public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn) {
     }
 
     @Override
@@ -118,14 +118,14 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
             }
             if (!player.getHeldItemMainhand().isEmpty()) {
                 for (String s : naughtyList) {
-                    if (player.getHeldItemMainhand().getUnlocalizedName().equals(s)) {
+                    if (player.getHeldItemMainhand().getTranslationKey().equals(s)) {
                         player.attackEntityFrom(punishment, Float.MAX_VALUE);
                     }
                 }
             }
             if (!player.getHeldItemOffhand().isEmpty()) {
                 for (String s : naughtyList) {
-                    if (player.getHeldItemOffhand().getUnlocalizedName().equals(s)) {
+                    if (player.getHeldItemOffhand().getTranslationKey().equals(s)) {
                         player.attackEntityFrom(punishment, Float.MAX_VALUE);
                     }
                 }

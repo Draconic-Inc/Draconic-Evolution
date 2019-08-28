@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 
 public class RenderTileCraftingInjector extends TESRBase<TileCraftingInjector> {
     @Override
@@ -17,8 +18,8 @@ public class RenderTileCraftingInjector extends TESRBase<TileCraftingInjector> {
         if (te.getStackInSlot(0) != null) {
             GlStateManager.pushMatrix();
 
-            EnumFacing facing = EnumFacing.getFront(te.facing.value);
-            GlStateManager.translate(x + 0.5 + (facing.getFrontOffsetX() * 0.45), y + 0.5 + (facing.getFrontOffsetY() * 0.45), z + 0.5 + (facing.getFrontOffsetZ() * 0.45));
+            EnumFacing facing = EnumFacing.VALUES[MathHelper.abs(te.facing.value % EnumFacing.VALUES.length)];
+            GlStateManager.translate(x + 0.5 + (facing.getXOffset() * 0.45), y + 0.5 + (facing.getYOffset() * 0.45), z + 0.5 + (facing.getZOffset() * 0.45));
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
 
             if (facing.getAxis() == EnumFacing.Axis.Y) {
@@ -27,7 +28,7 @@ public class RenderTileCraftingInjector extends TESRBase<TileCraftingInjector> {
                 }
             }
             else {
-                GlStateManager.rotate(90, facing.getFrontOffsetZ(), 0, facing.getFrontOffsetX() * -1);
+                GlStateManager.rotate(90, facing.getZOffset(), 0, facing.getXOffset() * -1);
             }
 
             GlStateManager.rotate((ClientEventHandler.elapsedTicks + partialTicks) * 0.8F, 0F, -1F, 0F);

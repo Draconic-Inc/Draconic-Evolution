@@ -717,7 +717,7 @@ public class Debugger extends ItemBCore {
 //                    world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
 //
 //                    for (EnumFacing facing : EnumFacing.VALUES) {
-//                        BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
+//                        BlockPos pos = vec.getPos().add(facing.getXOffset(), facing.getYOffset(), facing.getZOffset());
 //                        if (world.isAirBlock(pos)) {
 //                            world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
 //                        }
@@ -753,7 +753,7 @@ public class Debugger extends ItemBCore {
 //                    world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
 //
 //                    for (EnumFacing facing : EnumFacing.VALUES) {
-//                        BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
+//                        BlockPos pos = vec.getPos().add(facing.getXOffset(), facing.getYOffset(), facing.getZOffset());
 //                        if (world.isAirBlock(pos)) {
 //                            world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
 //                        }
@@ -1037,7 +1037,7 @@ public class Debugger extends ItemBCore {
 //        }
 //        for (int x = -10; x < 2; x++) {
 //            for (int z = -10; z < 2; z++) {
-//                world.getChunkFromBlockCoords(new Vec3D(player).getPos().add(x * 16, 0, z * 16)).generateSkylightMap();
+//                world.getChunk(new Vec3D(player).getPos().add(x * 16, 0, z * 16)).generateSkylightMap();
 //            }
 //        }
 
@@ -1151,7 +1151,7 @@ public class Debugger extends ItemBCore {
 ////                world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
 ////
 ////                for (EnumFacing facing : EnumFacing.VALUES) {
-////                    BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
+////                    BlockPos pos = vec.getPos().add(facing.getXOffset(), facing.getYOffset(), facing.getZOffset());
 ////                    if (world.isAirBlock(pos)) {
 ////                        world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
 ////                    }
@@ -1187,7 +1187,7 @@ public class Debugger extends ItemBCore {
 ////                world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
 ////
 ////                for (EnumFacing facing : EnumFacing.VALUES){
-////                    BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
+////                    BlockPos pos = vec.getPos().add(facing.getXOffset(), facing.getYOffset(), facing.getZOffset());
 ////                    if (world.isAirBlock(pos)) {
 ////                        world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
 ////                    }

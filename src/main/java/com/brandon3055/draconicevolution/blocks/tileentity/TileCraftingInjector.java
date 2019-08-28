@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 
@@ -71,7 +72,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
-        return from != EnumFacing.getFront(facing.value);
+        return from != EnumFacing.VALUES[MathHelper.abs(facing.value % EnumFacing.VALUES.length)];
     }
 
     @Override
@@ -125,7 +126,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public EnumFacing getDirection() {
-        return EnumFacing.getFront(facing.value);
+        return EnumFacing.VALUES[MathHelper.abs(facing.value % EnumFacing.VALUES.length)];
     }
 
     @Override

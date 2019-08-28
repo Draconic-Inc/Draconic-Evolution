@@ -406,7 +406,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
             }
         }
 
-        if (!nbttaglist.hasNoTags()) {
+        if (nbttaglist.tagCount() != 0) {
             compound.setTag("CraftingItems", nbttaglist);
         }
 

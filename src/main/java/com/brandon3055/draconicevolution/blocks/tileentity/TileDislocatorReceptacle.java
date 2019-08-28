@@ -868,7 +868,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             facing = FacingUtils.getAxisFaces(ACTIVE_AXIS.value)[1];
         }
 
-        vec.add(facing.getFrontOffsetX() * 0.35, facing.getFrontOffsetY() * 0.35, facing.getFrontOffsetZ() * 0.35);
+        vec.add(facing.getXOffset() * 0.35, facing.getYOffset() * 0.35, facing.getZOffset() * 0.35);
 
         return vec;
     }

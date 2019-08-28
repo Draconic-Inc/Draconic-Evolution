@@ -213,7 +213,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             return (TileReactorCore) tile;
         }
 
-        if (world.getChunkFromBlockCoords(getCorePos()).isLoaded()) {
+        if (world.getChunk(getCorePos()).isLoaded()) {
             invalidateComponent();
         }
 
@@ -236,7 +236,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
     protected TileReactorCore getCachedCore() {
         if (isBound.value) {
             BlockPos corePos = getCorePos();
-            Chunk coreChunk = world.getChunkFromBlockCoords(corePos);
+            Chunk coreChunk = world.getChunk(corePos);
 
             if (!coreChunk.isLoaded()) {
                 cachedCore = null;

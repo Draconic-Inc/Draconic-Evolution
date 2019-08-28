@@ -71,13 +71,13 @@ public class OreDictHelper {
                 for (ItemStack stack : stacks) {
                     if (stack.getItem() instanceof ItemBlock) {
                         ResourceLocation name = Block.REGISTRY.getNameForObject(((ItemBlock) stack.getItem()).getBlock());
-                        if (name.getResourceDomain().equals("ThermalFoundation")) {
+                        if (name.getNamespace().equals("ThermalFoundation")) {
                             return stack;
                         }
                     }
                     else {
                         ResourceLocation name = Item.REGISTRY.getNameForObject(stack.getItem());
-                        if (name != null && name.getResourceDomain().equals("ThermalFoundation")) {
+                        if (name != null && name.getNamespace().equals("ThermalFoundation")) {
                             return stack;
                         }
                     }

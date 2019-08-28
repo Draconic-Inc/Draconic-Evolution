@@ -25,6 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -379,7 +380,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             byte[] offset = receiver.getByteArray("Offset");
             Vec3B vec = new Vec3B(offset[0], offset[1], offset[2]);
             linkedReceivers.add(vec);
-            receiverSideMap.put(vec, EnumFacing.getFront(receiver.getByte("Side")));
+            receiverSideMap.put(vec, EnumFacing.VALUES[MathHelper.abs(receiver.getByte("Side") % EnumFacing.VALUES.length)]);
         }
 
         receiverCache = null;
@@ -415,7 +416,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         NBTTagCompound compound = new NBTTagCompound();
-        if (!list.hasNoTags()) {
+        if (list.tagCount() != 0) {
             compound.setTag("L", list);
             sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(compound), 1));
         }
@@ -480,7 +481,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         public boolean isLinkValid(World world) {
             tileCache = world.getTileEntity(pos);
 
-            if ((tileCache == null || !EnergyHelper.isEnergyTile(tileCache, side)) && world.getChunkFromBlockCoords(pos).isLoaded()) {
+            if ((tileCache == null || !EnergyHelper.isEnergyTile(tileCache, side)) && world.getChunk(pos).isLoaded()) {
                 return false;
             }
 

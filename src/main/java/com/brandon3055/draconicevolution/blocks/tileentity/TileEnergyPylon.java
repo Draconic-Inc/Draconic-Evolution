@@ -95,7 +95,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     private TileEnergyStorageCore getCore() {
         if (hasCoreLock.value) {
             BlockPos corePos = pos.subtract(coreOffset.vec.getPos());
-            Chunk coreChunk = world.getChunkFromBlockCoords(corePos);
+            Chunk coreChunk = world.getChunk(corePos);
 
             if (!coreChunk.isLoaded()) {
                 core = null;

@@ -64,7 +64,7 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
             return flowOverride.value;
         }
         if (rsSignal.value == -1) {
-            rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
+            rsSignal.value = (byte) world.getRedstonePowerFromNeighbors(pos);
         }
         return minFlow.value + (int) (((double) rsSignal.value / 15D) * (double) (maxFlow.value - minFlow.value));
     }
@@ -110,7 +110,7 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
 
     @Override
     public void onNeighborChange(BlockPos neighbor) {
-        rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
+        rsSignal.value = (byte) world.getRedstonePowerFromNeighbors(pos);
     }
 
     //region Peripheral

@@ -25,6 +25,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -144,7 +145,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
         }
 
         for (EnumFacing facing1 : EnumFacing.VALUES) {
-            BlockPos search = pos.add(facing1.getFrontOffsetX(), facing1.getFrontOffsetY(), facing1.getFrontOffsetZ());
+            BlockPos search = pos.add(facing1.getXOffset(), facing1.getYOffset(), facing1.getZOffset());
 
             TileEntity stabilizer = world.getTileEntity(search);
 
@@ -154,7 +155,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
 
             for (EnumFacing facing2 : EnumFacing.VALUES) {
                 if (facing2 != facing1 && facing2 != facing1.getOpposite()) {
-                    BlockPos s2 = search.add(facing2.getFrontOffsetX(), facing2.getFrontOffsetY(), facing2.getFrontOffsetZ());
+                    BlockPos s2 = search.add(facing2.getXOffset(), facing2.getYOffset(), facing2.getZOffset());
                     stabilizer = world.getTileEntity(s2);
 
                     if (stabilizer instanceof TileEnergyCoreStabilizer && ((TileEnergyCoreStabilizer) stabilizer).checkAndFormMultiBlock()) {
@@ -281,7 +282,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
 
         for (EnumFacing facing : EnumFacing.VALUES) {
             for (int i = 0; i < 16; i++) {
-                TileEntity tile = world.getTileEntity(pos.add(facing.getFrontOffsetX() * i, facing.getFrontOffsetY() * i, facing.getFrontOffsetZ() * i));
+                TileEntity tile = world.getTileEntity(pos.add(facing.getXOffset() * i, facing.getYOffset() * i, facing.getZOffset() * i));
                 if (tile instanceof TileEnergyStorageCore) {
                     TileEnergyStorageCore core = (TileEnergyStorageCore) tile;
                     core.validateStructure();
@@ -342,7 +343,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
         EnumFacing.Axis[] values = EnumFacing.Axis.values();
         int i = compound.getByte("StructureAxis");
         multiBlockAxis = i >= 0 && i < values.length ? values[i] : EnumFacing.Axis.Y;
-        coreDirection = EnumFacing.getFront(compound.getByte("CoreDirection"));
+        coreDirection = EnumFacing.VALUES[MathHelper.abs(compound.getByte("CoreDirection") % EnumFacing.VALUES.length)];
     }
 
     @Override
@@ -370,7 +371,7 @@ public class TileEnergyCoreStabilizer extends TileBCBase implements ITickable, I
         EnumFacing.Axis[] values = EnumFacing.Axis.values();
         int i = compound.getByte("StructureAxis");
         multiBlockAxis = i >= 0 && i < values.length ? values[i] : EnumFacing.Axis.Y;
-        coreDirection = EnumFacing.getFront(compound.getByte("CoreDirection"));
+        coreDirection = EnumFacing.VALUES[MathHelper.abs(compound.getByte("CoreDirection") % EnumFacing.VALUES.length)];
     }
 
     //endregion
