@@ -61,8 +61,8 @@ public class Magnet extends ItemBCore implements IBauble {
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        return super.getUnlocalizedName(stack) + (stack.getItemDamage() == 0 ? ".basic" : ".advanced");
+    public String getTranslationKey(ItemStack stack) {
+        return super.getTranslationKey(stack) + (stack.getItemDamage() == 0 ? ".basic" : ".advanced");
     }
 
     @SuppressWarnings("unchecked")

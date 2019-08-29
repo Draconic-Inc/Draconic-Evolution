@@ -134,8 +134,8 @@ public class ToolUpgrade extends ItemBCore implements IRenderOverride {
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        return super.getUnlocalizedName(stack) + "." + ID_TO_NAME.get(stack.getItemDamage());
+    public String getTranslationKey(ItemStack stack) {
+        return super.getTranslationKey(stack) + "." + ID_TO_NAME.get(stack.getItemDamage());
     }
 
     private int tick;
