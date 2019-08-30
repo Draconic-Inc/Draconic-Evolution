@@ -94,7 +94,6 @@ public class CommonProxy {
         DETab.initialize();
         PotionHandler.init();
         CCOCIntegration.init();
-        ModHelper.init();
         DragonChunkLoader.init();
 
         LogHelper.info("Finished Initialization");
