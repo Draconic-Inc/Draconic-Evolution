@@ -379,7 +379,7 @@ public class DEEventHandler {
     	Entity obj = e.getObject();
     	if (obj instanceof EntityPlayer && !(obj instanceof FakePlayer)) {
     		EntityPlayer player = (EntityPlayer) obj;
-    		e.addCapability(ResourceHelperDE.getResource("toggleShield"), new ShieldStateProvider());
+    		e.addCapability(ResourceHelperDE.getResource("toggle_shield"), new ShieldStateProvider());
     	}
     }
     
