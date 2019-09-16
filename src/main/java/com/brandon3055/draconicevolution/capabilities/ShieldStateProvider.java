@@ -9,12 +9,12 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 /**
  * Created by FoxMcloud5655 on 27/08/2019.
  */
-public class PlayerCapabilitiesProvider implements ICapabilitySerializable<NBTBase> {
+public class ShieldStateProvider implements ICapabilitySerializable<NBTBase> {
 
-	@CapabilityInject(IPlayerCapabilities.class)
-	public static final Capability<IPlayerCapabilities> PLAYER_CAP = null;
+	@CapabilityInject(IShieldState.class)
+	public static final Capability<IShieldState> PLAYER_CAP = null;
 	
-	private IPlayerCapabilities instance = PLAYER_CAP.getDefaultInstance();
+	private IShieldState instance = PLAYER_CAP.getDefaultInstance();
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {

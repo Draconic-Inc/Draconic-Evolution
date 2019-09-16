@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.capabilities.PlayerCapabilitiesProvider;
+import com.brandon3055.draconicevolution.capabilities.ShieldStateProvider;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.ICustomArmor;
@@ -60,7 +60,7 @@ public class CustomArmorHandler {
             return;
         }
         
-        if (summery == null || summery.protectionPoints <= 0 || !player.getCapability(PlayerCapabilitiesProvider.PLAYER_CAP, null).getShieldState()) {
+        if (summery == null || summery.protectionPoints <= 0 || !player.getCapability(ShieldStateProvider.PLAYER_CAP, null).getShieldState()) {
             return;
         }
         event.setCanceled(true);
@@ -120,7 +120,7 @@ public class CustomArmorHandler {
             return;
         }
 
-        if (summery.protectionPoints > 500 && player.getCapability(PlayerCapabilitiesProvider.PLAYER_CAP, null).getShieldState()) {
+        if (summery.protectionPoints > 500 && player.getCapability(ShieldStateProvider.PLAYER_CAP, null).getShieldState()) {
             event.setCanceled(true);
             event.getEntityLiving().setHealth(10);
             return;

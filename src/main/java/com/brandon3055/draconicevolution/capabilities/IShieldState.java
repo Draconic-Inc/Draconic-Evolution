@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.capabilities;
 /**
  * Created by FoxMcloud5655 on 26/08/2019.
  */
-public interface IPlayerCapabilities {
+public interface IShieldState {
 	
 	/**
 	 * Gets the current shield state as a short.

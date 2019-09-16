@@ -8,8 +8,8 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.capabilities.IPlayerCapabilities;
-import com.brandon3055.draconicevolution.capabilities.PlayerCapabilitiesProvider;
+import com.brandon3055.draconicevolution.capabilities.IShieldState;
+import com.brandon3055.draconicevolution.capabilities.ShieldStateProvider;
 import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
@@ -379,7 +379,7 @@ public class DEEventHandler {
     	Entity obj = e.getObject();
     	if (obj instanceof EntityPlayer && !(obj instanceof FakePlayer)) {
     		EntityPlayer player = (EntityPlayer) obj;
-    		e.addCapability(ResourceHelperDE.getResource("toggleShield"), new PlayerCapabilitiesProvider());
+    		e.addCapability(ResourceHelperDE.getResource("toggleShield"), new ShieldStateProvider());
     	}
     }
     
@@ -387,8 +387,8 @@ public class DEEventHandler {
     public void onPlayerClone(PlayerEvent.Clone event)
     {
     	EntityPlayer player = event.getEntityPlayer();
-    	IPlayerCapabilities newCap = player.getCapability(PlayerCapabilitiesProvider.PLAYER_CAP, null);
-    	IPlayerCapabilities oldCap = event.getOriginal().getCapability(PlayerCapabilitiesProvider.PLAYER_CAP, null);
+    	IShieldState newCap = player.getCapability(ShieldStateProvider.PLAYER_CAP, null);
+    	IShieldState oldCap = event.getOriginal().getCapability(ShieldStateProvider.PLAYER_CAP, null);
 
     	newCap.setShieldState(oldCap.getShieldState());
     }

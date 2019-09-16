@@ -9,15 +9,15 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 /**
  * Created by FoxMcloud5655 on 26/08/2019.
  */
-public class PlayerCapabilitiesStorage implements IStorage<IPlayerCapabilities> {
+public class ShieldStateStorage implements IStorage<IShieldState> {
 
 	@Override
-	public NBTBase writeNBT(Capability capability, IPlayerCapabilities instance, EnumFacing side) {
+	public NBTBase writeNBT(Capability capability, IShieldState instance, EnumFacing side) {
 		return new NBTTagShort(instance.getShieldStateRAW());
 	}
 
 	@Override
-	public void readNBT(Capability capability, IPlayerCapabilities instance, EnumFacing side, NBTBase nbt) {
+	public void readNBT(Capability capability, IShieldState instance, EnumFacing side, NBTBase nbt) {
 		instance.setShieldStateRAW(((NBTTagShort)nbt).getShort());
 	}
 }
