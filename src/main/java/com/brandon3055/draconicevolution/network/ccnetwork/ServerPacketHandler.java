@@ -154,8 +154,8 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
     	ArmorSummery summery = new ArmorSummery().getSummery(player);
     	if (summery != null) {
     		IShieldState shieldToggle = player.getCapability(ShieldStateProvider.PLAYER_CAP, null);
-    		shieldToggle.setShieldState(!shieldToggle.getShieldState());
-            ChatHelper.indexedTrans(player, "chat.shields_" + (shieldToggle.getShieldState() ? "activated" : "deactivated") + ".msg", -30553055);
+    		shieldToggle.setShieldState((byte)(shieldToggle.getShieldState() == 0 ? 1 : 0));
+            ChatHelper.indexedTrans(player, "chat.shields_" + (shieldToggle.getShieldState() > 0 ? "activated" : "deactivated") + ".msg", -30553055);
         }
     }
 }

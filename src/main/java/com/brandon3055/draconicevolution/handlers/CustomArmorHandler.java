@@ -60,7 +60,7 @@ public class CustomArmorHandler {
             return;
         }
         
-        if (summery == null || summery.protectionPoints <= 0 || !player.getCapability(ShieldStateProvider.PLAYER_CAP, null).getShieldState()) {
+        if (summery == null || summery.protectionPoints <= 0 || player.getCapability(ShieldStateProvider.PLAYER_CAP, null).getShieldState() == 0) {
             return;
         }
         event.setCanceled(true);
@@ -120,7 +120,7 @@ public class CustomArmorHandler {
             return;
         }
 
-        if (summery.protectionPoints > 500 && player.getCapability(ShieldStateProvider.PLAYER_CAP, null).getShieldState()) {
+        if (summery.protectionPoints > 500 && player.getCapability(ShieldStateProvider.PLAYER_CAP, null).getShieldState() > 0) {
             event.setCanceled(true);
             event.getEntityLiving().setHealth(10);
             return;

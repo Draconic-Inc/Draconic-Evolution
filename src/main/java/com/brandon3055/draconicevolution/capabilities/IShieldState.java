@@ -6,22 +6,12 @@ package com.brandon3055.draconicevolution.capabilities;
 public interface IShieldState {
 	
 	/**
-	 * Gets the current shield state as a short.
-	 */
-	public short getShieldStateRAW();
-	
-	/**
-	 * Sets the current shield state as a short.
-	 */
-	public void setShieldStateRAW(short state);
-	
-	/**
 	 * Gets the current shield state.
 	 */
-	public boolean getShieldState();
+	public byte getShieldState();
 	
 	/**
 	 * Sets the current shield state.
 	 */
-	public void setShieldState(boolean state);
+	public void setShieldState(byte state);
 }
