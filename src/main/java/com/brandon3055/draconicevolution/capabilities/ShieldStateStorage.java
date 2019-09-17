@@ -13,11 +13,11 @@ public class ShieldStateStorage implements IStorage<IShieldState> {
 
 	@Override
 	public NBTBase writeNBT(Capability capability, IShieldState instance, EnumFacing side) {
-		return new NBTTagByte(instance.getShieldState());
+		return new NBTTagByte((byte)(instance.getShieldState() ? 1 : 0));
 	}
 
 	@Override
 	public void readNBT(Capability capability, IShieldState instance, EnumFacing side, NBTBase nbt) {
-		instance.setShieldState(((NBTTagByte)nbt).getByte());
+		instance.setShieldState(((NBTTagByte)nbt).getByte() > 0);
 	}
 }

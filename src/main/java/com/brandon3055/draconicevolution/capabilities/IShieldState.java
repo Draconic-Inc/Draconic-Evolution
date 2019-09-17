@@ -8,10 +8,10 @@ public interface IShieldState {
 	/**
 	 * Gets the current shield state.
 	 */
-	public byte getShieldState();
+	public boolean getShieldState();
 	
 	/**
 	 * Sets the current shield state.
 	 */
-	public void setShieldState(byte state);
+	public void setShieldState(boolean state);
 }

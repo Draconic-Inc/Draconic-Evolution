@@ -5,16 +5,15 @@ package com.brandon3055.draconicevolution.capabilities;
  */
 public class ShieldState implements IShieldState {
 	
-	private byte shieldState = 1;
+	private boolean shieldState = true;
 	
 	@Override
-	public byte getShieldState() {
+	public boolean getShieldState() {
 		return shieldState;
 	}
 	
 	@Override
-	public void setShieldState(byte state) {
-		if (state > 0) shieldState = 1;
-		else shieldState = 0;
+	public void setShieldState(boolean state) {
+		shieldState = state;
 	}
 }
