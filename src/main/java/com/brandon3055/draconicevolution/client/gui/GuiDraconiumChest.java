@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.*;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
@@ -29,6 +30,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 import static com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest.AutoSmeltMode;
@@ -102,7 +104,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             @Override
             public List<String> getToolTip() {
                 List<String> list = new ArrayList<>();
-                list.add(I18n.format("gui.draconiumChest.processTime.info") + ": " + Utils.round(tile.smeltTime.get() / 20D, 100) + "s");
+                list.add(I18n.format("gui.draconiumChest.processTime.info") + ": " + MathUtils.round(tile.smeltTime.get() / 20D, 100) + "s");
                 return list;
             }
         }.setHoverDelay(0)));
@@ -125,7 +127,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         manager.add(new MGuiButtonSolid(this, "SELECT_MODE", guiLeft() + 44, guiTop() + 190, 90, 12, "") {
             @Override
             public String getDisplayString() {
-                return I18n.format("gui.draconiumChest.fMode.btn") + ": " + TextFormatting.GOLD + I18n.format("gui.draconiumChest.fMode." + tile.autoSmeltMode.toString().toLowerCase() + ".btn");
+                return I18n.format("gui.draconiumChest.fMode.btn") + ": " + TextFormatting.GOLD + I18n.format("gui.draconiumChest.fMode." + tile.autoSmeltMode.get().toString().toLowerCase(Locale.ENGLISH) + ".btn");
             }
         }.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.draconiumChest.fMode.info")}).setHoverDelay(10)), 1);
 //        manager.add(new MGuiSelectDialog(this, guiLeft() + 44, guiTop() + 190, 90, 12));

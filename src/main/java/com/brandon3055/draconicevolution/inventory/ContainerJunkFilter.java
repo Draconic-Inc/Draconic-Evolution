@@ -123,12 +123,12 @@ public class ContainerJunkFilter extends Container {
 
     public void addPlayerSlots(int posX, int posY, int hotbarSpacing) {
         for (int x = 0; x < 9; x++) {
-            addSlotToContainer(new SlotCheckValid(player.inventory, x, posX + 18 * x, posY + 54 + hotbarSpacing));
+            addSlotToContainer(new SlotCheckValid.IInv(player.inventory, x, posX + 18 * x, posY + 54 + hotbarSpacing));
         }
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
-                addSlotToContainer(new SlotCheckValid(player.inventory, x + y * 9 + 9, posX + 18 * x, posY + y * 18));
+                addSlotToContainer(new SlotCheckValid.IInv(player.inventory, x + y * 9 + 9, posX + 18 * x, posY + y * 18));
             }
         }
     }

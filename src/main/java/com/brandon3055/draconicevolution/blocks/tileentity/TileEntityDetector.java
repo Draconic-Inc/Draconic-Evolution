@@ -12,6 +12,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
@@ -235,7 +236,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
             output = (int) Math.max(0, Math.min(15, eCount - min));
         }
         else {
-            output = (int) Math.max(0, Math.min(15, Utils.map(eCount, min, max, 0, 15)));
+            output = (int) Math.max(0, Math.min(15, MathUtils.map(eCount, min, max, 0, 15)));
         }
 
         if (outputStrength.get() != output) {
@@ -425,15 +426,15 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     }
 
     @Override
-    public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
-        super.writeToItemStack(tileCompound, willHarvest);
-        entityFilter.writeToNBT(tileCompound);
+    public void writeToItemStack(NBTTagCompound compound, boolean willHarvest) {
+        super.writeToItemStack(compound, willHarvest);
+        entityFilter.writeToNBT(compound);
     }
 
     @Override
-    public void readFromItemStack(NBTTagCompound tileCompound) {
-        super.readFromItemStack(tileCompound);
-        entityFilter.readFromNBT(tileCompound);
+    public void readFromItemStack(NBTTagCompound compound) {
+        super.readFromItemStack(compound);
+        entityFilter.readFromNBT(compound);
     }
 
     //endregion

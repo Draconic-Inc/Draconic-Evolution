@@ -5,7 +5,7 @@ import codechicken.lib.inventory.InventoryRange;
 import codechicken.lib.inventory.InventoryUtils;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
-import com.brandon3055.brandonscore.lib.EnergyHelper;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -227,8 +227,8 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     }
 
     private void updateEnergy() {
-        if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored() && EnergyHelper.canExtractEnergy(getStackInSlot(CAPACITOR_SLOT))) {
-            energyStorage.receiveEnergy(EnergyHelper.extractEnergy(getStackInSlot(CAPACITOR_SLOT), energyStorage.receiveEnergy(energyStorage.getMaxReceive(), true), false), false);
+        if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
+            EnergyUtils.transferEnergy(getStackInSlot(CAPACITOR_SLOT), EnergyUtils.getStorage(this, null)); //TODO change this to EnergyUtils.transferEnergy(getStackInSlot(CAPACITOR_SLOT), opStorage);
         }
     }
 
@@ -440,7 +440,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
             return !getSmeltResult(stack).isEmpty();
         }
         else if (index == CAPACITOR_SLOT) {
-            return EnergyHelper.canExtractEnergy(stack);
+            return EnergyUtils.canExtractEnergy(stack);
         }
         else if (index == CORE_SLOT) {
             return stack.getItem() instanceof ItemCore && stack.getItem() != DEFeatures.draconicCore;
@@ -484,18 +484,18 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
 
 
     @Override
-    public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
-        super.writeToItemStack(tileCompound, willHarvest);
-        writeRegions(tileCompound);
+    public void writeToItemStack(NBTTagCompound compound, boolean willHarvest) {
+        super.writeToItemStack(compound, willHarvest);
+        writeRegions(compound);
         if (colour.get() != 0x640096) {
-            tileCompound.setInteger("ChestColour", colour.get());
+            compound.setInteger("ChestColour", colour.get());
         }
     }
 
     @Override
-    public void readFromItemStack(NBTTagCompound tileCompound) {
-        super.readFromItemStack(tileCompound);
-        readRegions(tileCompound);
+    public void readFromItemStack(NBTTagCompound compound) {
+        super.readFromItemStack(compound);
+        readRegions(compound);
     }
 
     @Override

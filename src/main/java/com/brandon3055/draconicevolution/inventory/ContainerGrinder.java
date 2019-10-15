@@ -26,7 +26,7 @@ public class ContainerGrinder extends ContainerBCBase<TileGrinder> {
             }
         }
 
-        addSlotToContainer(new SlotCheckValid(tile, 0, 97, 36));
+        addSlotToContainer(new SlotCheckValid.IInv(tile, 0, 97, 36));
     }
 
     @Override

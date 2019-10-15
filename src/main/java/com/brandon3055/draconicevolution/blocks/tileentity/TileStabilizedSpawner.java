@@ -297,11 +297,11 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
     }
 
     @Override
-    public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
+    public void writeToItemStack(NBTTagCompound compound, boolean willHarvest) {
         if (willHarvest) {
             mobSoul.set(ItemStack.EMPTY);
         }
-        super.writeToItemStack(tileCompound, willHarvest);
+        super.writeToItemStack(compound, willHarvest);
     }
 
     //region Render

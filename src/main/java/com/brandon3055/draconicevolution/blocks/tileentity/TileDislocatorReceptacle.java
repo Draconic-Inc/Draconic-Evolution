@@ -834,19 +834,19 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     @Override
-    public int getEnergyStored() {
+    public long getEnergyStored() {
         ICrystalLink remote = getRemoteCrystal();
         return remote != null ? remote.getEnergyStored() : 0;
     }
 
     @Override
-    public int getMaxEnergyStored() {
+    public long getMaxEnergyStored() {
         ICrystalLink remote = getRemoteCrystal();
         return remote != null ? remote.getMaxEnergyStored() : 0;
     }
 
     @Override
-    public void modifyEnergyStored(int energy) {
+    public void modifyEnergyStored(long energy) {
         ICrystalLink remote = getRemoteCrystal();
         if (remote != null) {
             remote.modifyEnergyStored(energy);

@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
-import cofh.redstoneflux.api.IEnergyReceiver;
-import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
+import com.brandon3055.brandonscore.api.power.OPStorage;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
-import com.brandon3055.brandonscore.lib.EnergyHelper;
+import com.brandon3055.brandonscore.inventory.ItemStackHandlerExt;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ITickable;
@@ -18,17 +18,19 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SYNC_TILE;
 /**
  * Created by brandon3055 on 30/05/2016.
  */
-public class TileEnergyInfuser extends TileEnergyInventoryBase implements IEnergyReceiver, ITickable {
+public class TileEnergyInfuser extends TileBCore implements ITickable {
 
     public final ManagedBool running = register(new ManagedBool("running", SYNC_TILE));
     public final ManagedBool charging = register(new ManagedBool("charging", SYNC_TILE));
 
     public float rotation = 0;
+    public ItemStackHandlerExt itemHandler;
+    public OPStorage opStorage;
 
     public TileEnergyInfuser() {
-        this.setCapacityAndTransfer(10000000, 10000000, 10000000);
-        this.setInventorySize(1);
-        setEnergySyncMode().addFlags(SYNC_TILE);
+        itemHandler = addItemHandlerCap(new ItemStackHandlerExt(1)).syncTile(true).getData();
+        itemHandler.setStackValidator((integer, stack) -> EnergyUtils.getStorage(stack) != null);
+        opStorage = addEnergyCap(new OPStorage(10000000)).syncTile(true).getData();
     }
 
     //region Function
@@ -40,13 +42,12 @@ public class TileEnergyInfuser extends TileEnergyInventoryBase implements IEnerg
         }
         else {
             super.update();
-            ItemStack stack = getStackInSlot(0);
-            if (EnergyHelper.canReceiveEnergy(stack)) {
-
-                int maxAccept = EnergyHelper.insertEnergy(stack, energyStorage.getMaxExtract(), true);
+            ItemStack stack = itemHandler.getStackInSlot(0);
+            if (EnergyUtils.getStorage(stack) != null) {
+                long maxAccept = EnergyUtils.insertEnergy(stack, opStorage.getMaxExtract(), true);
                 running.set(maxAccept > 0);
 
-                int transferred = energyStorage.extractEnergy(EnergyHelper.insertEnergy(stack, Math.min(energyStorage.getEnergyStored(), energyStorage.getMaxExtract()), false), false);
+                long transferred = opStorage.extractOP(EnergyUtils.insertEnergy(stack, Math.min(opStorage.getOPStored(), opStorage.getMaxExtract()), false), false);
                 charging.set(transferred > 0);
             }
             else {
@@ -57,11 +58,6 @@ public class TileEnergyInfuser extends TileEnergyInventoryBase implements IEnerg
         if (running.get()) {
             rotation++;
         }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return stack.getItem() instanceof IEnergyContainerItem;
     }
 
     //endregion

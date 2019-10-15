@@ -1,10 +1,13 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
 import codechicken.lib.data.MCDataInput;
-import com.brandon3055.brandonscore.blocks.TileEnergyBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.*;
-import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
@@ -31,7 +34,7 @@ import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileRe
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public abstract class TileReactorComponent extends TileEnergyBase implements ITickable, IDEPeripheral, IMovableStructure {
+public abstract class TileReactorComponent extends TileBCore implements ITickable, IDEPeripheral, IMovableStructure {
 
     private final ManagedVec3I coreOffset       = register(new ManagedVec3I("coreOffset", SAVE_NBT));
     public final ManagedEnum<EnumFacing> facing = register(new ManagedEnum<>("facing", EnumFacing.UP, SAVE_NBT_SYNC_TILE));
@@ -264,10 +267,10 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
         return true;
     }
 
-    @Override
-    public boolean canConnectEnergy(EnumFacing from) {
-        return from == facing.get().getOpposite();
-    }
+//    @Override
+//    public boolean canConnectEnergy(EnumFacing from) {
+//        return from == facing.get().getOpposite();
+//    }
 
     //region Peripheral
 
@@ -291,12 +294,12 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
 
         if (method.equals("getReactorInfo")) {
             Map<Object, Object> map = new HashMap<Object, Object>();
-            map.put("temperature", Utils.round(reactor.temperature.get(), 100));
-            map.put("fieldStrength", Utils.round(reactor.shieldCharge.get(), 100));
-            map.put("maxFieldStrength", Utils.round(reactor.maxShieldCharge.get(), 100));
+            map.put("temperature", MathUtils.round(reactor.temperature.get(), 100));
+            map.put("fieldStrength", MathUtils.round(reactor.shieldCharge.get(), 100));
+            map.put("maxFieldStrength", MathUtils.round(reactor.maxShieldCharge.get(), 100));
             map.put("energySaturation", reactor.saturation.get());
             map.put("maxEnergySaturation", reactor.maxSaturation.get());
-            map.put("fuelConversion", Utils.round(reactor.convertedFuel.get(), 1000));
+            map.put("fuelConversion", MathUtils.round(reactor.convertedFuel.get(), 1000));
             map.put("maxFuelConversion", reactor.reactableFuel.get() + reactor.convertedFuel.get());
             map.put("generationRate", (int)reactor.generationRate.get());
             map.put("fieldDrainRate", reactor.fieldDrain.get());
@@ -380,7 +383,7 @@ public abstract class TileReactorComponent extends TileEnergyBase implements ITi
             public int getRSSignal(TileReactorCore tile) {
                 double value = tile.convertedFuel.get() / (tile.convertedFuel.get() + tile.reactableFuel.get());
                 value += 0.1;
-                value = Utils.map(value, 0.1, 1, 0, 1);
+                value = MathUtils.map(value, 0.1, 1, 0, 1);
                 return (int) (value * 15);
             }
         },

@@ -17,7 +17,7 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
     private BatchedCrystalUpdate batchedUpdate;
     private Map<Byte, Byte> lastTickIndexToFlow = new HashMap<>();
     private Map<Byte, Byte> lastTickIndexToRFlow = new HashMap<>();
-    private int lastTickEnergy = -1;
+    private long lastTickEnergy = -1;
 
 
     public ENetFXHandlerServerWireless(TileCrystalWirelessIO tile) {

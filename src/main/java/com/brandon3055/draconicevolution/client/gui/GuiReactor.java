@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui_old.lib.IMGuiListener;
 import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.*;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.IJEIClearence;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
@@ -90,7 +91,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
 
             @Override
             public String getDisplayString() {
-                return Utils.round((tile.reactableFuel.get() + tile.convertedFuel.get()) / 1296D, 100) + "m^3";
+                return MathUtils.round((tile.reactableFuel.get() + tile.convertedFuel.get()) / 1296D, 100) + "m^3";
             }
         }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
         manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.genRate.info")) {
@@ -391,7 +392,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
     public List<String> getTempStats() {
         List<String> list = new ArrayList<>();
         list.add(I18n.format("gui.reactor.reactionTemp.info"));
-        list.add(Utils.round(tile.temperature.get(), 10) + "C");
+        list.add(MathUtils.round(tile.temperature.get(), 10) + "C");
         return list;
     }
 
@@ -399,7 +400,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         List<String> list = new ArrayList<>();
         list.add(I18n.format("gui.reactor.fieldStrength.info"));
         if (tile.maxShieldCharge.get() > 0) {
-            list.add(Utils.round(tile.shieldCharge.get() / tile.maxShieldCharge.get() * 100D, 100D) + "%");
+            list.add(MathUtils.round(tile.shieldCharge.get() / tile.maxShieldCharge.get() * 100D, 100D) + "%");
         }
         list.add(Utils.addCommas((int) tile.shieldCharge.get()) + " / " + Utils.addCommas((int) tile.maxShieldCharge.get()));
         return list;
@@ -409,7 +410,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         List<String> list = new ArrayList<>();
         list.add(I18n.format("gui.reactor.energySaturation.info"));
         if (tile.maxSaturation.get() > 0) {
-            list.add(Utils.round((double) tile.saturation.get() / (double) tile.maxSaturation.get() * 100D, 100D) + "%");
+            list.add(MathUtils.round((double) tile.saturation.get() / (double) tile.maxSaturation.get() * 100D, 100D) + "%");
         }
         list.add(Utils.addCommas(tile.saturation.get()) + " / " + Utils.addCommas(tile.maxSaturation.get()));
         return list;
@@ -419,9 +420,9 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
         List<String> list = new ArrayList<>();
         list.add(I18n.format("gui.reactor.fuelConversion.info"));
         if (tile.reactableFuel.get() + tile.convertedFuel.get() > 0) {
-            list.add(Utils.round(tile.convertedFuel.get() / (tile.reactableFuel.get() + tile.convertedFuel.get()) * 100D, 100D) + "%");
+            list.add(MathUtils.round(tile.convertedFuel.get() / (tile.reactableFuel.get() + tile.convertedFuel.get()) * 100D, 100D) + "%");
         }
-        list.add(Utils.round(tile.convertedFuel.get(), 100) + " / " + Utils.round(tile.convertedFuel.get() + tile.reactableFuel.get(), 100));
+        list.add(MathUtils.round(tile.convertedFuel.get(), 100) + " / " + MathUtils.round(tile.convertedFuel.get() + tile.reactableFuel.get(), 100));
         return list;
     }
 

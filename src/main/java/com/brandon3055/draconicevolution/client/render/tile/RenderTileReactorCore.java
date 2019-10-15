@@ -12,6 +12,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.HolidayHelper;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
@@ -89,7 +90,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         setLighting(200);
         double diameter = te.getCoreDiameter();
         float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
-        float intensity = t <= 0.2 ? (float) Utils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) Utils.map(t, 0.2, 0.8, 0.3, 1) : (float) Utils.map(t, 0.8, 1, 1, 1.3);
+        float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
 
         if (MinecraftForgeClient.getRenderPass() == 0) {
@@ -133,7 +134,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
 
         double diameter = 100;
         float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
-        float intensity = t <= 0.2 ? (float) Utils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) Utils.map(t, 0.2, 0.8, 0.3, 1) : (float) Utils.map(t, 0.8, 1, 1, 1.3);
+        float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
         float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
 

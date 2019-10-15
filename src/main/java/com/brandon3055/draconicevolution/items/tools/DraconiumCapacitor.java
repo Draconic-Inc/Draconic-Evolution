@@ -4,7 +4,7 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.EnergyHelper;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -59,7 +59,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         if (isInCreativeTab(tab)) {
             subItems.add(new ItemStack(DEFeatures.draconiumCapacitor, 1, 0));
             ItemStack wyvernCharged = new ItemStack(DEFeatures.draconiumCapacitor, 1, 0);
-            setEnergy(wyvernCharged, getMaxEnergyStored(wyvernCharged));
+            setEnergy(wyvernCharged, getCapacity(wyvernCharged));
             subItems.add(wyvernCharged);
 
             ItemStack uberWyvern = new ItemStack(DEFeatures.draconiumCapacitor, 1, 0);
@@ -71,7 +71,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
             subItems.add(new ItemStack(DEFeatures.draconiumCapacitor, 1, 1));
             ItemStack draconicCharged = new ItemStack(DEFeatures.draconiumCapacitor, 1, 1);
-            setEnergy(draconicCharged, getMaxEnergyStored(wyvernCharged));
+            setEnergy(draconicCharged, getCapacity(draconicCharged));
             subItems.add(draconicCharged);
 
             ItemStack uberDraconic = new ItemStack(DEFeatures.draconiumCapacitor, 1, 1);
@@ -100,7 +100,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     //region Energy
 
     @Override
-    public int getCapacity(ItemStack stack) {
+    public long getCapacity(ItemStack stack) {
         int tier = stack.getItemDamage();
 
         int upgrade = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.RF_CAPACITY);
@@ -111,14 +111,14 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
             case 1:
                 return DEConfig.draconicFluxCapBaseCap + (upgrade * (DEConfig.draconicFluxCapBaseCap / 2));
             case 2:
-                return Integer.MAX_VALUE;
+                return Long.MAX_VALUE;
         }
 
         return 0;
     }
 
     @Override
-    public int getMaxReceive(ItemStack stack) {
+    public long getMaxReceive(ItemStack stack) {
         int tier = stack.getItemDamage();
 
         switch (tier) {
@@ -134,7 +134,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     }
 
     @Override
-    public int getMaxExtract(ItemStack stack) {
+    public long getMaxExtract(ItemStack stack) {
         int tier = stack.getItemDamage();
 
         switch (tier) {
@@ -143,31 +143,31 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
             case 1:
                 return draconicTransfer;
             case 2:
-                return Integer.MAX_VALUE;
+                return Long.MAX_VALUE;
         }
 
         return 0;
     }
 
     @Override
-    public int getEnergyStored(ItemStack container) {
-        if (container.getItemDamage() == 2) {
-            return Integer.MAX_VALUE / 2;
+    public long getEnergyStored(ItemStack stack, boolean isOPAsking) {
+        if (stack.getItemDamage() == 2) {
+            return isOPAsking ? Long.MAX_VALUE / 2 : Integer.MAX_VALUE / 2;
         }
-        return super.getEnergyStored(container);
+        return super.getEnergyStored(stack, isOPAsking);
     }
 
     @Override
-    public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-        if (container.getItemDamage() == 2) {
+    public long receiveEnergy(ItemStack stack, long maxReceive, boolean simulate) {
+        if (stack.getItemDamage() == 2) {
             return maxReceive;
         }
 
-        return super.receiveEnergy(container, maxReceive, simulate);
+        return super.receiveEnergy(stack, maxReceive, simulate);
     }
 
     @Override
-    public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+    public long extractEnergy(ItemStack container, long maxExtract, boolean simulate) {
         if (container.getItemDamage() == 2) {
             return maxExtract;
         }
@@ -232,16 +232,16 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         }
 
         for (ItemStack stack : stacks) {
-            int max = Math.min(getEnergyStored(capacitor), getMaxExtract(capacitor));
+            long max = Math.min(getEnergyStored(capacitor), getMaxExtract(capacitor));
 
-            if (EnergyHelper.canReceiveEnergy(stack)) {
+            if (EnergyUtils.canReceiveEnergy(stack)) {
                 Item item = stack.getItem();
 
                 if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player)) {
                     continue;
                 }
 
-                extractEnergy(capacitor, EnergyHelper.insertEnergy(stack, max, false), false);
+                extractEnergy(capacitor, EnergyUtils.insertEnergy(stack, max, false), false);
             }
         }
     }

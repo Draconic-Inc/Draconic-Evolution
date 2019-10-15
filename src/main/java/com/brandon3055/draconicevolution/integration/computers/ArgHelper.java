@@ -88,6 +88,17 @@ public class ArgHelper {
         throw new IllegalArgumentException("Expected integer at index: " + index);
     }
 
+    public long checkLong(int index) {
+        if (index >= count()) {
+            throw new IllegalArgumentException("Expected long at index: " + index);
+        }
+        else if (args[index] instanceof Double) {
+            double d = (Double) args[index];
+            return (long) d;
+        }
+        throw new IllegalArgumentException("Expected long at index: " + index);
+    }
+
     /**
      * Try to get a double value at the specified index.
      * <p/>

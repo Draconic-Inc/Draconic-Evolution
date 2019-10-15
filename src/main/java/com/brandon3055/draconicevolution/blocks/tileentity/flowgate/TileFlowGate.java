@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
-import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.draconicevolution.blocks.machines.FlowGate;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
@@ -24,15 +24,15 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SY
 /**
  * Created by brandon3055 on 15/11/2016.
  */
-public abstract class TileFlowGate extends TileBCBase implements ITickable, IChangeListener, IDEPeripheral {
+public abstract class TileFlowGate extends TileBCore implements ITickable, IChangeListener, IDEPeripheral {
 
-    protected int transferThisTick = 0;
+    protected long transferThisTick = 0;
 
-    public final ManagedInt minFlow = register(new ManagedInt("minFlow", SAVE_BOTH_SYNC_TILE ));
-    public final ManagedInt maxFlow = register(new ManagedInt("maxFlow", SAVE_BOTH_SYNC_TILE));
-    public final ManagedInt flowOverride = register(new ManagedInt("flowOverride", SAVE_NBT_SYNC_TILE));
-    public final ManagedBool flowOverridden = register(new ManagedBool("flowOverridden", SAVE_NBT_SYNC_TILE));
-    public final ManagedByte rsSignal = register(new ManagedByte("rsSignal", (byte) -1, SAVE_NBT_SYNC_TILE));
+    public final ManagedLong minFlow = register(new ManagedLong("min_flow", SAVE_BOTH_SYNC_TILE ));
+    public final ManagedLong maxFlow = register(new ManagedLong("max_flow", SAVE_BOTH_SYNC_TILE));
+    public final ManagedLong flowOverride = register(new ManagedLong("flow_override", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool flowOverridden = register(new ManagedBool("flow_overridden", SAVE_NBT_SYNC_TILE));
+    public final ManagedByte rsSignal = register(new ManagedByte("rs_signal", (byte) -1, SAVE_NBT_SYNC_TILE));
 
     public TileFlowGate() {
         setShouldRefreshOnBlockChange();
@@ -62,7 +62,7 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
         sendPacketToServer(output -> output.writeString(value), 1);
     }
 
-    public int getFlow() {
+    public long getFlow() {
         if (flowOverridden.get()) {
             return flowOverride.get();
         }
@@ -106,6 +106,10 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
         return world.getTileEntity(pos.offset(getDirection()));
     }
 
+    public TileEntity getSource() {
+        return world.getTileEntity(pos.offset(getDirection().getOpposite()));
+    }
+
     public EnumFacing getDirection() {
         IBlockState state = getState(getBlockType());
         return state.getValue(FlowGate.FACING);
@@ -134,15 +138,15 @@ public abstract class TileFlowGate extends TileBCBase implements ITickable, ICha
             case "getOverrideEnabled":
                 return new Object[]{flowOverridden};
             case "setFlowOverride":
-                flowOverride.set(args.checkInteger(0));
+                flowOverride.set(args.checkLong(0));
                 break;
             case "setSignalHighFlow":
-                maxFlow.set(args.checkInteger(0));
+                maxFlow.set(args.checkLong(0));
                 break;
             case "getSignalHighFlow":
                 return new Object[]{maxFlow.get()};
             case "setSignalLowFlow":
-                minFlow.set(args.checkInteger(0));
+                minFlow.set(args.checkLong(0));
                 break;
             case "getSignalLowFlow":
                 return new Object[]{minFlow.get()};

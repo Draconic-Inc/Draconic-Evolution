@@ -25,8 +25,8 @@ public class GuiFlowGate extends ModularGuiContainer implements IMGuiListener {
     public TileFlowGate tile;
     private MGuiTextField minField;
     private MGuiTextField maxField;
-    private int ltMin = -1;
-    private int ltMax = -1;
+    private long ltMin = -1;
+    private long ltMax = -1;
     //region Validator
     private Predicate<String> fieldValidator = new Predicate<String>() {
         @Override

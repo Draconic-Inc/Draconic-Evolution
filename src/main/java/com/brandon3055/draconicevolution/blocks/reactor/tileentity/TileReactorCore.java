@@ -10,6 +10,7 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.HolidayHelper;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
@@ -98,8 +99,8 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     /**
      * This is how saturated the core is with energy.
      */
-    public final ManagedInt saturation = register(new ManagedInt("saturation",  SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedInt maxSaturation = register(new ManagedInt("maxSaturation", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedLong saturation = register(new ManagedLong("saturation",  SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedLong maxSaturation = register(new ManagedLong("maxSaturation", SAVE_NBT_SYNC_CONTAINER));
 
 
     public final ManagedDouble tempDrainFactor = register(new ManagedDouble("tempDrainFactor", SAVE_NBT_SYNC_CONTAINER));
@@ -432,7 +433,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 //        LogHelper.dev("");
 
         if (explosionProcess == null) {
-            double radius = Utils.map(convertedFuel.get() + reactableFuel.get(), 144, 10368, 50D, 350D) * DEConfig.reactorExplosionScale;
+            double radius = MathUtils.map(convertedFuel.get() + reactableFuel.get(), 144, 10368, 50D, 350D) * DEConfig.reactorExplosionScale;
             explosionProcess = new ProcessExplosion(pos, (int) radius, (WorldServer) world, -1);
             ProcessHandler.addProcess(explosionProcess);
             explosionCountdown.set(-1);
@@ -937,25 +938,25 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
     //region ################# Other Logic ##################
 
-    public int injectEnergy(int rf) {
-        int received = 0;
+    public long injectEnergy(long energy) {
+        long received = 0;
         if (reactorState.get() == ReactorState.WARMING_UP) {
             if (!startupInitialized.get()) {
                 return 0;
             }
             if (shieldCharge.get() < (maxShieldCharge.get() / 2)) {
-                received = Math.min(rf, (int) (maxShieldCharge.get() / 2) - (int)shieldCharge.get() + 1);
+                received = Math.min(energy, (int) (maxShieldCharge.get() / 2) - (int)shieldCharge.get() + 1);
                 shieldCharge.add((double)received);
                 if (shieldCharge.get() > (maxShieldCharge.get() / 2)) {
                     shieldCharge.set(maxShieldCharge.get() / 2);
                 }
             }
             else if (saturation.get() < (maxSaturation.get() / 2)) {
-                received = Math.min(rf, (maxSaturation.get() / 2) - saturation.get());
+                received = Math.min(energy, (maxSaturation.get() / 2) - saturation.get());
                 saturation.add(received);
             }
             else if (temperature.get() < 2000) {
-                received = rf;
+                received = energy;
                 temperature.add((double) received / (1000D + (reactableFuel.get() * 10)));
                 if (temperature.get() > 2500) {
                     temperature.set(2500D);
@@ -970,12 +971,12 @@ public class TileReactorCore extends TileBCBase implements ITickable {
                 tempFactor = 1D - Math.min(1, (temperature.get() - 15000D) / 10000D);
             }
 
-            shieldCharge.add(Math.min((rf * (1D - (shieldCharge.get() / maxShieldCharge.get()))), maxShieldCharge.get() - shieldCharge.get()) * tempFactor);
+            shieldCharge.add(Math.min((energy * (1D - (shieldCharge.get() / maxShieldCharge.get()))), maxShieldCharge.get() - shieldCharge.get()) * tempFactor);
             if (shieldCharge.get() > maxShieldCharge.get()) {
                 shieldCharge.set(maxShieldCharge.get());
             }
 
-            return rf;
+            return energy;
         }
         return received;
     }

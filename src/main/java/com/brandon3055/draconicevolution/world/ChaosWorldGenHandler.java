@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.lib.PairXZ;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -196,7 +197,7 @@ public class ChaosWorldGenHandler {
 
 
     public static PairXZ<Integer, Integer> getClosestChaosSpawn(int chunkX, int chunkZ) {
-        return new PairXZ<>(Utils.getNearestMultiple(chunkX * 16, DEConfig.chaosIslandSeparation), Utils.getNearestMultiple(chunkZ * 16, DEConfig.chaosIslandSeparation));
+        return new PairXZ<>(MathUtils.getNearestMultiple(chunkX * 16, DEConfig.chaosIslandSeparation), MathUtils.getNearestMultiple(chunkZ * 16, DEConfig.chaosIslandSeparation));
     }
 
     private static void generateObelisks(World world, PairXZ<Integer, Integer> islandCenter, Random rand) {

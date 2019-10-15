@@ -98,20 +98,20 @@ public class CrystalUpdateBatcher extends PacketCompressible {
     public static class BatchedCrystalUpdate {
 
         public int crystalID;
-        public int crystalCapacity;
+        public long crystalCapacity;
         public Map<Byte, Byte> indexToFlowMap = new LinkedHashMap<>();
 
         public BatchedCrystalUpdate() {
         }
 
-        public BatchedCrystalUpdate(int crystalID, int crystalCapacity) {
+        public BatchedCrystalUpdate(int crystalID, long crystalCapacity) {
             this.crystalID = crystalID;
             this.crystalCapacity = crystalCapacity;
         }
 
         public void writeData(ByteBuf buf) {
             buf.writeInt(crystalID);
-            buf.writeInt(crystalCapacity);
+            buf.writeLong(crystalCapacity);
             buf.writeByte(indexToFlowMap.size());
             for (Byte index : indexToFlowMap.keySet()) {
                 buf.writeByte(index);
@@ -121,7 +121,7 @@ public class CrystalUpdateBatcher extends PacketCompressible {
 
         public void readData(ByteBuf buf) {
             crystalID = buf.readInt();
-            crystalCapacity = buf.readInt();
+            crystalCapacity = buf.readLong();
             byte count = buf.readByte();
             for (int i = 0; i < count; i++) {
                 byte index = buf.readByte();

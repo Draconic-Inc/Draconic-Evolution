@@ -504,8 +504,7 @@ button.de.fadeMode4.txt=Fade Out: Full
 button.de.rotate.txt=Rotate
 button.de.numeric.txt=Numeric:
 
-//Gui ----------------------------------------------------------------------------------------------------------------------------------------
-
+// Gui ----------------------------------------------------------------------------------------------------------------------------------------
 gui.de.flowGate.name=Flow Control
 gui.de.flowGatePartialSignal.name=The actual flow will vary between the two given values depending on the strength of the redstone signal being supplied to the block.
 gui.de.flowGateCurrentFlow.name=Flow
@@ -590,10 +589,13 @@ potion.de.jumpBoost.txt=Jump Boost
 
 //##################   Start of refactored (sane) localization   ##################
 
-//---- Gui Names ----//
-gui.de.energyStorageCore.name=Tier %s Energy Core
-gui.de.fusionCraftingCore.name=Fusion Crafting
-gui.de.dissEnchanter.name=Disenchanter
+//---- Gui Names ----//https://www.youtube.com/watch?v=jzGlRohAMVk
+gui.de.title.generator=Generator
+gui.de.title.grinder=Mob Grinder
+gui.de.title.energy_infuser=Energy Infuser
+gui.de.title.disenchanter=Disenchanter
+gui.de.title.fusion_crafting_core=Fusion Crafting
+gui.de.title.energy_storage_core_core=Tier %s Energy Core
 
 
 //---- Fusion Crafting ----//

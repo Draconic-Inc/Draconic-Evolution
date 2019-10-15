@@ -2,10 +2,13 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.packet.PacketCustom;
-import cofh.redstoneflux.api.IEnergyHandler;
-import cofh.redstoneflux.impl.EnergyStorage;
-import com.brandon3055.brandonscore.blocks.TileBCBase;
-import com.brandon3055.brandonscore.lib.*;
+import com.brandon3055.brandonscore.api.power.OPStorage;
+import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.lib.ChatHelper;
+import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.ITilePlaceListener;
+import com.brandon3055.brandonscore.lib.Vec3B;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -39,8 +42,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -54,7 +55,7 @@ import static com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.ID_
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceListener, ICrystalLink, ITickable, IActivatableTile, IEnergyHandler, IENetEffectTile {
+public abstract class TileCrystalBase extends TileBCore implements ITilePlaceListener, ICrystalLink, ITickable, IActivatableTile, IENetEffectTile {
 
     //region Stats
 
@@ -74,12 +75,14 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
     public LinkedList<int[]> transferRatesArrays = new LinkedList<>();
     public LinkedList<Byte> flowRates = new LinkedList<>();
     private LinkedList<BlockPos> linkedPosCache = null;
-    protected EnergyStorage energyStorage = new EnergyStorage(0);
+//    protected EnergyStorage energyStorage = new EnergyStorage(0);
+    protected OPStorage opStorage;
     protected ENetFXHandler fxHandler;
 
     public TileCrystalBase() {
         this.setShouldRefreshOnBlockChange();
         fxHandler = DraconicEvolution.proxy.createENetFXHandler(this);
+        opStorage = addInternalCap("energy_storage", new OPStorage(0)).syncTile(true).getData();
     }
 
     //region Energy Balance
@@ -150,7 +153,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
     }
 
     protected int balanceTransfer(ICrystalLink sendTo, double capDiff) {
-        int stored = getEnergyStored();
+        long stored = getEnergyStored();
 
         if (stored <= 0) {
             return 0;
@@ -169,7 +172,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
             transfer = (int) Math.min(minFlow, energyToEqual);
         }
 
-        sendTo.modifyEnergyStored((transfer = energyStorage.extractEnergy(transfer, false)));
+        sendTo.modifyEnergyStored((transfer = opStorage.extractEnergy(transfer, false)));
 
         return transfer;
     }
@@ -293,20 +296,20 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
 
     //region IEnergyHandler
 
-    @Override
-    public boolean canConnectEnergy(EnumFacing from) {
-        return false;
-    }
-
-    @Override
-    public int getEnergyStored(EnumFacing from) {
-        return getEnergyStored();
-    }
-
-    @Override
-    public int getMaxEnergyStored(EnumFacing from) {
-        return getMaxEnergyStored();
-    }
+//    @Override
+//    public boolean canConnectEnergy(EnumFacing from) {
+//        return false;
+//    }
+//
+//    @Override
+//    public int getEnergyStored(EnumFacing from) {
+//        return getEnergyStored();
+//    }
+//
+//    @Override
+//    public int getMaxEnergyStored(EnumFacing from) {
+//        return getMaxEnergyStored();
+//    }
 
     //endregion
 
@@ -336,18 +339,18 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
     }
 
     @Override
-    public int getEnergyStored() {
-        return energyStorage.getEnergyStored();
+    public long getEnergyStored() {
+        return opStorage.getEnergyStored();
     }
 
     @Override
-    public int getMaxEnergyStored() {
-        return energyStorage.getMaxEnergyStored();
+    public long getMaxEnergyStored() {
+        return opStorage.getMaxEnergyStored();
     }
 
     @Override
-    public void modifyEnergyStored(int energy) {
-        energyStorage.modifyEnergyStored(energy);
+    public void modifyEnergyStored(long energy) {
+        opStorage.modifyEnergyStored(energy);
     }
 
     @Override
@@ -465,7 +468,7 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
 
     @SideOnly(Side.CLIENT)
     public void addDisplayData(List<String> displayList) {
-        double charge = Utils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
+        double charge = MathUtils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
         displayList.add(TextFormatting.BLUE + I18n.format("eNet.de.hudCharge.info") + ": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]");
         displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudLinks.info") + ": " + getLinks().size() + " / " + maxLinks() + "");
 
@@ -506,7 +509,8 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
         }
         compound.setByteArray("FlowRates", array);
         compound.setByte("Tier", (byte) getTier());
-        energyStorage.writeToNBT(compound);
+//        energyStorage.writeToNBT(compound);
+        super.writeExtraNBT(compound);
     }
 
     @Override
@@ -530,34 +534,35 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
             }
         }
         int cap = getCapacityForTier(compound.getByte("Tier"));
-        energyStorage.setCapacity(cap).setMaxTransfer(cap);
-        energyStorage.readFromNBT(compound);
+        opStorage.setCapacity(cap).setMaxTransfer(cap);
+//        energyStorage.readFromNBT(compound);
+        super.readExtraNBT(compound);
     }
 
     @Override
-    public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
-        super.writeToItemStack(tileCompound, willHarvest);
-        if (energyStorage.getEnergyStored() > 0){
-            tileCompound.setByte("Tier", (byte) getTier());
-            energyStorage.writeToNBT(tileCompound);
-        }
+    public void writeToItemStack(NBTTagCompound compound, boolean willHarvest) {
+        super.writeToItemStack(compound, willHarvest);
+//        if (energyStorage.getEnergyStored() > 0){
+//            compound.setByte("Tier", (byte) getTier());
+//            energyStorage.writeToNBT(compound);
+//        }
     }
 
     @Nullable
     @Override
-    public void readFromItemStack(NBTTagCompound tileCompound) {
-        super.readFromItemStack(tileCompound);
-        if (tileCompound.hasKey("Tier")) {
-            int cap = getCapacityForTier(tileCompound.getByte("Tier"));
-            energyStorage.setCapacity(cap).setMaxTransfer(cap);
-            energyStorage.readFromNBT(tileCompound);
-        }
+    public void readFromItemStack(NBTTagCompound compound) {
+        super.readFromItemStack(compound);
+//        if (compound.hasKey("Tier")) {
+//            int cap = getCapacityForTier(compound.getByte("Tier"));
+//            energyStorage.setCapacity(cap).setMaxTransfer(cap);
+//            energyStorage.deserializeNBT(compound);
+//        }
     }
 
     @Override
     public void onTilePlaced(World world, BlockPos pos, EnumFacing placedAgainst, float hitX, float hitY, float hitZ, EntityPlayer placer, ItemStack stack) {
         int cap = getCapacityForTier(getTier());
-        energyStorage.setCapacity(cap).setMaxTransfer(cap);
+        opStorage.setCapacity(cap).setMaxTransfer(cap);
     }
 
     boolean hashCached = false;
@@ -696,19 +701,19 @@ public abstract class TileCrystalBase extends TileBCBase implements ITilePlaceLi
 
     //region Capability
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return (capability == CapabilityEnergy.ENERGY && (facing == null || canConnectEnergy(facing))) || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityEnergy.ENERGY && (facing == null || canConnectEnergy(facing))) {
-            return CapabilityEnergy.ENERGY.cast(new EnergyHandlerWrapper(this, facing));
-        }
-
-        return super.getCapability(capability, facing);
-    }
+//    @Override
+//    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+//        return (capability == CapabilityEnergy.ENERGY && (facing == null || canConnectEnergy(facing))) || super.hasCapability(capability, facing);
+//    }
+//
+//    @Override
+//    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+//        if (capability == CapabilityEnergy.ENERGY && (facing == null || canConnectEnergy(facing))) {
+//            return CapabilityEnergy.ENERGY.cast(new EnergyHandlerWrapper(this, facing));
+//        }
+//
+//        return super.getCapability(capability, facing);
+//    }
 
     //endregion
 

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.EnergyHelper;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
@@ -145,24 +145,24 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             return true;
         }
 
-        int transfered;
+        long transferred;
         if (inputMode.get()) {
-            transfered = EnergyHelper.extractEnergy(tile, energyStorage.receiveEnergy(getMaxWirelessTransfer(), true), receiver.side, false);
-            energyStorage.receiveEnergy(transfered, false);
+            transferred = EnergyUtils.extractEnergy(tile, opStorage.receiveEnergy(getMaxWirelessTransfer(), true), receiver.side, false);
+            opStorage.receiveOP(transferred, false);
         }
         else {
-            transfered = EnergyHelper.insertEnergy(tile, energyStorage.extractEnergy(getMaxWirelessTransfer(), true), receiver.side, false);
-            energyStorage.extractEnergy(transfered, false);
+            transferred = EnergyUtils.insertEnergy(tile, opStorage.extractEnergy(getMaxWirelessTransfer(), true), receiver.side, false);
+            opStorage.extractOP(transferred, false);
         }
 
-        if (transfered > 0) {
+        if (transferred > 0) {
             receiver.timeOut = 0;
         }
         else {
             receiver.timeOut++;
         }
 
-        receiverTransferRates.get(receiver.index)[tick % 20] = transfered;
+        receiverTransferRates.get(receiver.index)[tick % 20] = (int) Math.min(transferred, Integer.MAX_VALUE);
 
         return true;
     }
@@ -213,8 +213,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         if (inputMode.get()) {
-            if (!EnergyHelper.canExtractEnergy(tile, sideClicked)) {
-                if (EnergyHelper.isEnergyTile(tile)) {
+            if (!EnergyUtils.canExtractEnergy(tile, sideClicked)) {
+                if (EnergyUtils.getStorage(tile, sideClicked) != null) {
                     ChatHelper.indexedTrans(player, "eNet.de.sideCanNotExtract.info", TextFormatting.RED);
                     return false;
                 }
@@ -222,8 +222,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             }
         }
         else {
-            if (!EnergyHelper.canReceiveEnergy(tile, sideClicked)) {
-                if (EnergyHelper.isEnergyTile(tile)) {
+            if (!EnergyUtils.canReceiveEnergy(tile, sideClicked)) {
+                if (EnergyUtils.getStorage(tile, sideClicked) != null) {
                     ChatHelper.indexedTrans(player, "eNet.de.sideCanNotReceive.info", TextFormatting.RED);
                     return false;
                 }
@@ -483,7 +483,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         public boolean isLinkValid(World world) {
             tileCache = world.getTileEntity(pos);
 
-            if ((tileCache == null || !EnergyHelper.isEnergyTile(tileCache, side)) && world.getChunkFromBlockCoords(pos).isLoaded()) {
+            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && world.getChunkFromBlockCoords(pos).isLoaded()) {
                 return false;
             }
 

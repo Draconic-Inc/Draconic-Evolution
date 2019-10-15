@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.shaders;
 
 import codechicken.lib.render.shader.ShaderObject;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.brandonscore.BCConfig;
 import net.minecraft.client.renderer.OpenGlHelper;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class DEShaders {
     public static ShaderObject explosionCoreEffect;
 
     static {
-        if (OpenGlHelper.shadersSupported && DEConfig.useShaders) {
+        if (OpenGlHelper.shadersSupported && BCConfig.useShaders) {
             try {
                 initShaders();
             } catch (IOException e) {
@@ -78,7 +78,7 @@ public class DEShaders {
     }
 
     public static boolean useShaders() {
-        return OpenGlHelper.shadersSupported && DEConfig.useShaders;
+        return OpenGlHelper.shadersSupported && BCConfig.useShaders;
     }
 
     private static void dispose(ShaderObject object) {

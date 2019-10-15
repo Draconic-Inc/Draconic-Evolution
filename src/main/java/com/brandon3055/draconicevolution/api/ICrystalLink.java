@@ -79,18 +79,18 @@ public interface ICrystalLink {
     /**
      * Returns the amount of energy currently stored.
      */
-    int getEnergyStored();
+    long getEnergyStored();
 
     /**
      * Returns the maximum amount of energy that can be stored.
      */
-    int getMaxEnergyStored();
+    long getMaxEnergyStored();
 
     /**
-     * Simply pass this through to you {@link cofh.api.energy.EnergyStorage} modifyEnergyStored method.
+     * Simply pass this through to you {@link com.brandon3055.brandonscore.api.power.OPStorage} modifyEnergyStored method.
      * If you dont use cofh EnergyStorage then simply copy the behaviour of EnergyStorage.modifyEnergyStored with your energy implementation.
      */
-    void modifyEnergyStored(int energy);
+    void modifyEnergyStored(long energy);
 
     /**
      * Return the point which a beam connecting to this device from the given target device location should end.

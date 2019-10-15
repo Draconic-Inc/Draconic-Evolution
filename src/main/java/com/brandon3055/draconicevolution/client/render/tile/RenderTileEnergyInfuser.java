@@ -185,10 +185,10 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
     }
 
     public void renderChargingItem(TileEnergyInfuser tile, float partialTicks) {
-        if (tile.getStackInSlot(0) != null) {
+        if (!tile.itemHandler.getStackInSlot(0).isEmpty()) {
             GlStateManager.pushMatrix();
 //
-            ItemStack stack = tile.getStackInSlot(0);
+            ItemStack stack = tile.itemHandler.getStackInSlot(0);
 
 //
             GlStateManager.translate(0.5F, 0.7F, 0.5F);

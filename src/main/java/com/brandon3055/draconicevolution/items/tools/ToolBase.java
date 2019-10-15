@@ -303,7 +303,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     }
 
     @Override
-    public int getCapacity(ItemStack stack) {
+    public long getCapacity(ItemStack stack) {
         int level = UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.RF_CAPACITY);
 
         if (level == 0) {

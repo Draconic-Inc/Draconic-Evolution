@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -11,6 +12,13 @@ import net.minecraft.inventory.IInventory;
 public class ContainerDummy extends ContainerBCBase {
 
     public ContainerDummy(TileBCBase tile, EntityPlayer player, int invX, int invY) {
+        super(player, tile);
+        if (invX != -1) {
+            addPlayerSlots(invX, invY);
+        }
+    }
+
+    public ContainerDummy(TileBCore tile, EntityPlayer player, int invX, int invY) {
         super(player, tile);
         if (invX != -1) {
             addPlayerSlots(invX, invY);

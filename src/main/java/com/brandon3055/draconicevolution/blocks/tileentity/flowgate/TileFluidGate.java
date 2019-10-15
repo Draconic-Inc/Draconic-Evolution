@@ -37,7 +37,7 @@ public class TileFluidGate extends TileFlowGate implements IFluidHandler {
         if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite())) {
             IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
 
-            int transfer = Math.min(getFlow(), handler.fill(resource, false));
+            int transfer = (int) Math.min(getFlow(), handler.fill(resource, false));
             if (transfer < resource.amount) {
                 FluidStack newStack = resource.copy();
                 newStack.amount = transfer;

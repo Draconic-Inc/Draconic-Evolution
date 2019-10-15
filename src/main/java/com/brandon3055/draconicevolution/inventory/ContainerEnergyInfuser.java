@@ -15,12 +15,7 @@ public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
     public ContainerEnergyInfuser(EntityPlayer player, TileEnergyInfuser tile) {
         super(player, tile);
         this.addPlayerSlots(8, 58);
-        addSlotToContainer(new SlotCheckValid(tile, 0, 80, 22));
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
-        return tile.isUsableByPlayer(playerIn);
+        addSlotToContainer(new SlotCheckValid(tile.itemHandler, 0, 80, 22));
     }
 
     @Override
@@ -36,7 +31,7 @@ public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (!mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
+            else if (!mergeItemStack(stack, 36, 36 + tile.itemHandler.getSlots(), false)) {
                 return ItemStack.EMPTY;
             }
 

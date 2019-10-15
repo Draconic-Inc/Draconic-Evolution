@@ -19,9 +19,9 @@ public class ContainerDissEnchanter extends ContainerBCBase<TileDissEnchanter> {
 
         addPlayerSlots(8, 60);
 
-        addSlotToContainer(new SlotCheckValid(tile, 0, 27, 23));
-        addSlotToContainer(new SlotCheckValid(tile, 1, 76, 23));
-        addSlotToContainer(new SlotCheckValid(tile, 2, 134, 23));
+        addSlotToContainer(new SlotCheckValid.IInv(tile, 0, 27, 23));
+        addSlotToContainer(new SlotCheckValid.IInv(tile, 1, 76, 23));
+        addSlotToContainer(new SlotCheckValid.IInv(tile, 2, 134, 23));
 
     }
 

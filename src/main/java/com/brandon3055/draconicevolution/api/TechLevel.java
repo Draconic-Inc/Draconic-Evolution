@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.api;
 
-import com.brandon3055.brandonscore.api.power.PowerTier;
-
 /**
  * Created by brandon3055 on 8/02/19.
  */
@@ -29,9 +27,9 @@ public enum TechLevel {
         this.index = index;
     }
 
-    public PowerTier powerTier() {
-        return PowerTier.VALUES[index];
-    }
+//    public PowerDensity powerTier() {
+//        return PowerDensity.VALUES[index];
+//    }
 
     /**
      * @return the name used in localization / resource names

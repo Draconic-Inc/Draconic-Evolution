@@ -47,16 +47,16 @@ public class GuiEnergyinfuser extends GuiContainer {
         ResourceHelperDE.bindTexture(DETextures.GUI_ENERGY_INFUSER);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        if (tile.getStackInSlot(0).isEmpty()) {
+        if (tile.itemHandler.getStackInSlot(0).isEmpty()) {
             drawTexturedModalRect(guiLeft + 63, guiTop + 34, 36, ySize, 18, 18);
         }
 
-        float power = (float) tile.energySync.get() / (float) tile.energyStorage.getMaxEnergyStored() * -1F + 1F;
+        float power = (float) tile.opStorage.getOPStored() / (float) tile.opStorage.getMaxOPStored() * -1F + 1F;
         drawTexturedModalRect(guiLeft + 49, guiTop + 7 + (int) (power * 45), xSize, (int) (power * 45), 8, 45 - (int) (power * 45));//Power bar
 
-        if (tile.running.get() && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
-            IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
-            float charge = (float) item.getEnergyStored(tile.getStackInSlot(0)) / (float) item.getMaxEnergyStored(tile.getStackInSlot(0)) * -1F + 1F;
+        if (tile.running.get() && tile.itemHandler.getStackInSlot(0) != null && tile.itemHandler.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
+            IEnergyContainerItem item = (IEnergyContainerItem) tile.itemHandler.getStackInSlot(0).getItem();
+            float charge = (float) item.getEnergyStored(tile.itemHandler.getStackInSlot(0)) / (float) item.getMaxEnergyStored(tile.itemHandler.getStackInSlot(0)) * -1F + 1F;
             drawTexturedModalRect(guiLeft + 119, guiTop + 7 + (int) (charge * 45), xSize, (int) (charge * 45), 8, 45 - (int) (charge * 45));//Item Power bar
         }
 
@@ -73,15 +73,15 @@ public class GuiEnergyinfuser extends GuiContainer {
         if (GuiHelper.isInRect(48, 6, 9, 46, x, y)) {
             ArrayList<String> internal = new ArrayList<>();
             internal.add(I18n.translateToLocal("gui.de.internalStorage.txt"));
-            internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(tile.energySync.get()) + "/" + Utils.addCommas(tile.energyStorage.getMaxEnergyStored()));
+            internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(tile.opStorage.getOPStored()) + "/" + Utils.addCommas(tile.opStorage.getMaxOPStored()));
             drawHoveringText(internal, x, y, fontRenderer);
         }
 
-        if (GuiHelper.isInRect(118, 6, 10, 46, x, y) && tile.running.get() && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
-            IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
+        if (GuiHelper.isInRect(118, 6, 10, 46, x, y) && tile.running.get() && tile.itemHandler.getStackInSlot(0) != null && tile.itemHandler.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
+            IEnergyContainerItem item = (IEnergyContainerItem) tile.itemHandler.getStackInSlot(0).getItem();
             ArrayList<String> internal = new ArrayList<>();
             internal.add(I18n.translateToLocal("gui.de.itemStorage.txt"));
-            internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(item.getEnergyStored(tile.getStackInSlot(0))) + "/" + Utils.addCommas(item.getMaxEnergyStored(tile.getStackInSlot(0))));
+            internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(item.getEnergyStored(tile.itemHandler.getStackInSlot(0))) + "/" + Utils.addCommas(item.getMaxEnergyStored(tile.itemHandler.getStackInSlot(0))));
             drawHoveringText(internal, x, y, fontRenderer);
         }
     }

@@ -17,7 +17,7 @@ public class ENetFXHandlerServer extends ENetFXHandler<IENetEffectTile> {
 
     private BatchedCrystalUpdate batchedUpdate;
     private Map<Byte, Byte> lastTickIndexToFlow = new HashMap<>();
-    private int lastTickEnergy = -1;
+    private long lastTickEnergy = -1;
 
 
     public ENetFXHandlerServer(IENetEffectTile tile) {

@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileBCBase;
-import com.brandon3055.brandonscore.blocks.TileEnergyBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 
@@ -36,10 +35,10 @@ public class TileCreativeRFCapacitor extends TileBCBase implements IEnergyProvid
         if (world.isRemote) {
             return;
         }
-        int value = Integer.MAX_VALUE;
+        long value = Long.MAX_VALUE;
 
         for (EnumFacing direction : EnumFacing.VALUES) {
-            TileEnergyBase.sendEnergyTo(world, pos, value, direction);
+            sendEnergyTo(world, pos, value, direction);
         }
     }
 

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
-import com.brandon3055.brandonscore.lib.EnergyHelper;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
@@ -43,7 +43,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         //Slots 0 -> 259 Main Inventory
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 26; x++) {
-                Slot slot = new SlotCheckValid(tile, slotIndex++, 7 + (x * 18), 7 + (y * 18));
+                Slot slot = new SlotCheckValid.IInv(tile, slotIndex++, 7 + (x * 18), 7 + (y * 18));
                 mainInventorySlots.add(slot);
                 addSlotToContainer(slot);
             }
@@ -72,7 +72,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
 //                LogHelper.dev(inventorySlots.size());
-                addSlotToContainer(new SlotCheckValid(craftMatrix, x + (y * 3), 334 + (x * 18), 198 + (y * 18)));
+                addSlotToContainer(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 334 + (x * 18), 198 + (y * 18)));
             }
         }
 
@@ -185,7 +185,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         @Override
         public boolean isItemValid(ItemStack stack) {
             if (super.isItemValid(stack)) {
-                return EnergyHelper.canExtractEnergy(stack);
+                return EnergyUtils.canExtractEnergy(stack);
             }
             return false;
         }

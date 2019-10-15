@@ -27,7 +27,7 @@ public class DETab extends CreativeTabs {
         if (tab == 0) {
             if (itemStackStaff.isEmpty()) {
                 itemStackStaff = new ItemStack(DEFeatures.draconicStaffOfPower);
-                DEFeatures.draconicStaffOfPower.modifyEnergy(itemStackStaff, DEFeatures.draconicStaffOfPower.getMaxEnergyStored(itemStackStaff));
+                DEFeatures.draconicStaffOfPower.modifyEnergy(itemStackStaff, DEFeatures.draconicStaffOfPower.getCapacity(itemStackStaff));
             }
 
             return itemStackStaff;
