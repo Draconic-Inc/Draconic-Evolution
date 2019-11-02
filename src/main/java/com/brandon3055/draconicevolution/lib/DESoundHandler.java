@@ -38,6 +38,9 @@ public class DESoundHandler {
     public static final SoundEvent shieldStrike;
     public static final SoundEvent electricBuzz;
     public static final SoundEvent sunDialEffect;
+    public static final SoundEvent generator1;
+    public static final SoundEvent generator2;
+    public static final SoundEvent generator3;
     public static ObfMapping soundNameMapping = new ObfMapping("net/minecraft/util/SoundEvent", "field_187506_b");
 
     static {
@@ -61,6 +64,9 @@ public class DESoundHandler {
             shieldStrike = getRegisteredSoundEvent("draconicevolution:shield_strike");
             electricBuzz = getRegisteredSoundEvent("draconicevolution:electric_buzz");
             sunDialEffect = getRegisteredSoundEvent("draconicevolution:sun_dial_effect");
+            generator1 = getRegisteredSoundEvent("draconicevolution:generator1");
+            generator2 = getRegisteredSoundEvent("draconicevolution:generator2");
+            generator3 = getRegisteredSoundEvent("draconicevolution:generator3");
         }
     }
 

@@ -133,6 +133,33 @@
         "stream": false
       }
     ]
+  },
+  "generator1": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:generator1",
+        "stream": false
+      }
+    ]
+  },
+  "generator2": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:generator2",
+        "stream": false
+      }
+    ]
+  },
+  "generator3": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "draconicevolution:generator3",
+        "stream": false
+      }
+    ]
   }
 }
 

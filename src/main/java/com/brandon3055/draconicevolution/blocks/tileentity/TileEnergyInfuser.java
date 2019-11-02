@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
-import com.brandon3055.brandonscore.inventory.ItemStackHandlerExt;
+import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
@@ -24,11 +24,11 @@ public class TileEnergyInfuser extends TileBCore implements ITickable {
     public final ManagedBool charging = register(new ManagedBool("charging", SYNC_TILE));
 
     public float rotation = 0;
-    public ItemStackHandlerExt itemHandler;
+    public TileItemStackHandler itemHandler;
     public OPStorage opStorage;
 
     public TileEnergyInfuser() {
-        itemHandler = addItemHandlerCap(new ItemStackHandlerExt(1)).syncTile(true).getData();
+        itemHandler = addItemHandlerCap(new TileItemStackHandler(1)).syncTile(true).getData();
         itemHandler.setStackValidator((integer, stack) -> EnergyUtils.getStorage(stack) != null);
         opStorage = addEnergyCap(new OPStorage(10000000)).syncTile(true).getData();
     }

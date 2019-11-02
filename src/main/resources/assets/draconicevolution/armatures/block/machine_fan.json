@@ -1,0 +1,45 @@
+{
+    "joints": {
+        "fan": {
+            "0": [1.0],
+            "1": [1.0],
+            "2": [1.0],
+            "3": [1.0],
+            "4": [1.0]
+        }
+    },
+    "clips": {
+        "default": {
+            "loop": true,
+            "joint_clips": {
+                "fan": [
+                    {
+                        "variable": "axis_z",
+                        "type": "uniform",
+                        "interpolation": "nearest",
+                        "samples": [ 1 ]
+                    },
+                    {
+                        "variable": "origin_y",
+                        "type": "uniform",
+                        "interpolation": "nearest",
+                        "samples": [ 0.5 ]
+                    },
+                    {
+                        "variable": "origin_x",
+                        "type": "uniform",
+                        "interpolation": "nearest",
+                        "samples": [ 0.5 ]
+                    },
+                    {
+                        "variable": "angle",
+                        "type": "uniform",
+                        "interpolation": "linear",
+                        "samples": [ 0, -90, -180, -270 ]
+                    }
+                ]
+            },
+            "events": {}
+        }
+    }
+}

@@ -3,8 +3,10 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
+import com.brandon3055.brandonscore.client.utils.SimpleAnimHandler;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Predicate;
@@ -22,15 +24,26 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.model.animation.CapabilityAnimation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 public class TileGrinder extends TileEnergyInventoryBase implements IEnergyReceiver, ITickable {
+
+    //Animation Fields.
+//    private final IAnimationStateMachine asm;
+//    private final TimeValues.VariableValue fanPos = new TimeValues.VariableValue(0.25F);
+//    private final TimeValues.VariableValue fanSpeed = new TimeValues.VariableValue(0.25F);
+//    private final TimeValues.VariableValue worldTime = new TimeValues.VariableValue(0);
+    private SimpleAnimHandler animHandler;
 
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public static FakePlayer fakePlayer;
@@ -42,12 +55,18 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
         setEnergySyncMode(SYNC_CONTAINER);
         setCapacityAndTransfer(500000, 32000, 0);
         setShouldRefreshOnBlockChange();
+
+        animHandler = new SimpleAnimHandler(this, new ResourceLocation(DraconicEvolution.MODID, "asms/block/grinder.json"));
+//        asm = BrandonsCore.proxy.loadASM(new ResourceLocation(DraconicEvolution.MODID, "asms/block/grinder.json"), ImmutableMap.of("fan_pos", fanPos, "fan_speed", fanSpeed, "world_time", worldTime));
     }
+
 
     @Override
     public void update() {
         super.update();
         if (world.isRemote) {
+            animHandler.setSpeed(active.get() ? 1F : 0F, 1F);
+            animHandler.updateAnimation();
             return;
         }
 
@@ -61,6 +80,61 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
             energyStorage.receiveEnergy(extractEnergyFromItem(getStackInSlot(0), energyStorage.receiveEnergy(32000, true), false), false);
         }
     }
+
+
+    private void updateAnimation() {
+//        f += 1F;
+//        worldTime.setValue(world.getTotalWorldTime() / 20F);
+//        fanSpeed.setValue(1F);
+//        worldTime.setValue(Animation.getWorldTime(world) * 20F);
+//        fanPos.setValue(f);
+
+//        if (active.get()) {
+//            if (asm.currentState().equals("default")) {
+//                worldTime.setValue(Animation.getWorldTime(getWorld(), Animation.getPartialTickTime()));
+//                asm.transition("moving");
+//            }
+//        }
+//        else {
+//            if (asm.currentState().equals("moving")) {
+//                worldTime.setValue(Animation.getWorldTime(getWorld(), Animation.getPartialTickTime()));
+//                asm.transition("default");
+//            }
+//        }
+    }
+
+
+
+
+
+    @Override
+    public boolean hasFastRenderer() {
+        return true;
+    }
+
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing side) {
+        if (capability == CapabilityAnimation.ANIMATION_CAPABILITY) {
+            return true;
+        }
+        return super.hasCapability(capability, side);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing side) {
+        if (capability == CapabilityAnimation.ANIMATION_CAPABILITY) {
+            return CapabilityAnimation.ANIMATION_CAPABILITY.cast(animHandler.asm);
+        }
+        return super.getCapability(capability, side);
+    }
+
+
+    //#############################################################################################
+    //#############################################################################################
+    //#############################################################################################
+    //#############################################################################################
+    //#############################################################################################
 
     //region Killing Code
 
@@ -243,4 +317,6 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
             return !(input instanceof EntityPlayer) && input.isEntityAlive();
         }
     }
+
+
 }

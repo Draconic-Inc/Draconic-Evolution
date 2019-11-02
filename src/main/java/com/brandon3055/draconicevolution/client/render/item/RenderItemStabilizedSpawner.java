@@ -4,6 +4,7 @@ import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
+import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
@@ -66,8 +67,8 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
         Entity entity = null;
         SpawnerTier tier = SpawnerTier.BASIC;
 
-        if (stack.hasTagCompound() && stack.getOrCreateSubCompound("BCTileData").hasKey("BCManagedData", 10)) {
-            NBTTagCompound dataTag = stack.getOrCreateSubCompound("BCTileData").getCompoundTag("BCManagedData");
+        if (stack.hasTagCompound() && stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).hasKey(BlockBCore.BC_MANAGED_DATA_FLAG, 10)) {
+            NBTTagCompound dataTag = stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).getCompoundTag(BlockBCore.BC_MANAGED_DATA_FLAG);
             int tierIndex = dataTag.getByte("spawnerTier");
             if (tierIndex >= 0 && tierIndex < SpawnerTier.values().length) {
                 tier = SpawnerTier.values()[tierIndex];

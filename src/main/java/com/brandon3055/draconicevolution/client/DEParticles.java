@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client;
 
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import com.brandon3055.draconicevolution.client.render.effect.ParticleFlame;
 import com.brandon3055.draconicevolution.client.render.particle.*;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.util.ResourceLocation;
@@ -10,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
  * A list of all of DE's particles
  */
 public class DEParticles {
+    public static final ResourceLocation VANILLA_SHEET = new ResourceLocation("textures/particle/particles.png");
     public static final ResourceLocation DE_SHEET = ResourceHelperDE.getResource("textures/particle/particles.png");
     public static final ResourceLocation CUSTOM_SHEET = ResourceHelperDE.getResource("textures/particle/particle_generator.png");
 
@@ -25,6 +27,7 @@ public class DEParticles {
     public static int SOUL_EXTRACTION;
     public static int ARROW_SHOCKWAVE;
     public static int CUSTOM;
+    public static int FLAME;
 
     public static void registerClient() {
         ENERGY_PARTICLE = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergy.Factory());
@@ -39,6 +42,7 @@ public class DEParticles {
         SOUL_EXTRACTION = BCEffectHandler.registerFX(DE_SHEET, new ParticleSoulExtraction.Factory());
         ARROW_SHOCKWAVE = BCEffectHandler.registerFX(DE_SHEET, new ParticleArrowShockwave.Factory());
         CUSTOM = BCEffectHandler.registerFX(CUSTOM_SHEET, new ParticleCustom.Factory());
+        FLAME = BCEffectHandler.registerFX(VANILLA_SHEET, new ParticleFlame.Factory());
     }
 
     public static void registerServer() {
@@ -54,5 +58,6 @@ public class DEParticles {
         SOUL_EXTRACTION = BCEffectHandler.registerFXServer();
         ARROW_SHOCKWAVE = BCEffectHandler.registerFXServer();
         CUSTOM = BCEffectHandler.registerFXServer();
+        FLAME = BCEffectHandler.registerFXServer();
     }
 }

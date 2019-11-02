@@ -43,7 +43,7 @@ public class ParticleStarSpark extends BCParticle {
         if (ttd < 10) {
             particleScale = (ttd / 10F) * baseScale;
         }
-        if (ttd < 1) {
+        if (ttd < 0) {
             particleScale = sparkSize;
         }
 

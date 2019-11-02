@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items;
 
+import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
@@ -35,7 +36,7 @@ public class ItemCore extends ItemBCore {
 
                 ItemStack spawner = new ItemStack(DEFeatures.stabilizedSpawner);
                 NBTTagCompound managedData = new NBTTagCompound();
-                spawner.getOrCreateSubCompound("BCTileData").setTag("BCManagedData", managedData);
+                spawner.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).setTag(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
                 managedData.setTag("mobSoul", soul.serializeNBT());
                 managedData.setByte("spawnerTier", (byte) tier.ordinal());
 

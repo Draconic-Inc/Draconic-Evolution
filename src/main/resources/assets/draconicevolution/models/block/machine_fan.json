@@ -1,0 +1,72 @@
+{
+	"credit": "Made by brandon3055 with Blockbench",
+	"textures": {
+		"5": "draconicevolution:models/parts/machine_fan"
+	},
+	"elements": [
+		{
+			"name": "fan_hub",
+			"from": [7, 7, 13.25],
+			"to": [9, 9, 15.25],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, -0.75]},
+			"faces": {
+				"east": {"uv": [8, 0, 9, 1], "texture": "#5"},
+				"south": {"uv": [8, 0, 9, 1], "texture": "#5"},
+				"west": {"uv": [8, 0, 9, 1], "texture": "#5"},
+				"up": {"uv": [8, 0, 9, 1], "texture": "#5"},
+				"down": {"uv": [8, 0, 9, 1], "texture": "#5"}
+			}
+		},
+		{
+			"name": "fan_blade1",
+			"from": [1.5, 7, 14],
+			"to": [7, 9, 14.5],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 8, 14.25]},
+			"faces": {
+				"south": {"uv": [9, 0, 11.75, 1], "texture": "#5"},
+				"up": {"uv": [12, 0, 14.75, 0.25], "texture": "#5"},
+				"down": {"uv": [12, 0.5, 14.75, 0.75], "texture": "#5"}
+			}
+		},
+		{
+			"name": "fan_blade2",
+			"from": [7, 9, 14],
+			"to": [9, 14.5, 14.5],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 8, 14.25]},
+			"faces": {
+				"east": {"uv": [12, 0, 14.75, 0.25], "rotation": 90, "texture": "#5"},
+				"south": {"uv": [9, 0, 11.75, 1], "rotation": 90, "texture": "#5"},
+				"west": {"uv": [12, 0.5, 14.75, 0.75], "rotation": 90, "texture": "#5"}
+			}
+		},
+		{
+			"name": "fan_blade3",
+			"from": [9, 7, 14],
+			"to": [14.5, 9, 14.5],
+			"rotation": {"angle": -22.5, "axis": "x", "origin": [8, 8, 14.25]},
+			"faces": {
+				"south": {"uv": [9, 0, 11.75, 1], "rotation": 180, "texture": "#5"},
+				"up": {"uv": [12, 0.5, 14.75, 0.75], "rotation": 180, "texture": "#5"},
+				"down": {"uv": [12, 0, 14.75, 0.25], "rotation": 180, "texture": "#5"}
+			}
+		},
+		{
+			"name": "fan_blade4",
+			"from": [7, 1.5, 14],
+			"to": [9, 7, 14.5],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 8, 14.25]},
+			"faces": {
+				"east": {"uv": [12, 0.5, 14.75, 0.75], "rotation": 270, "texture": "#5"},
+				"south": {"uv": [9, 0, 11.75, 1], "rotation": 270, "texture": "#5"},
+				"west": {"uv": [12, 0, 14.75, 0.25], "rotation": 270, "texture": "#5"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "fan_rotor",
+			"origin": [8, 8, 8],
+			"children": [0, 1, 2, 3, 4]
+		}
+	]
+}

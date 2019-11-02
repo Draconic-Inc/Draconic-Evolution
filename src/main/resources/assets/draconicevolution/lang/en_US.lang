@@ -1,4 +1,4 @@
-//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
+#Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
 tile.draconicevolution:celestial_manipulator.name=Celestial Manipulator
 tile.draconicevolution:draconium_ore_normal.name=Draconium Ore
 tile.draconicevolution:draconium_ore_nether.name=Nether Draconium Ore
@@ -53,7 +53,7 @@ tile.draconicevolution:crafting_injector_chaotic.name=Chaotic Fusion Crafting In
 tile.draconicevolution:creative_rf_source.name=Creative RF Source
 
 
-//Item Information ----------------------------------------------------------------------------------------------------------------------------------------
+#Item Information ----------------------------------------------------------------------------------------------------------------------------------------
 item.draconicevolution:awakened_core.name=Awakened Core
 item.draconicevolution:draconium_ingot.name=Draconium Ingot
 item.draconicevolution:draconium_dust.name=Draconium Dust
@@ -141,11 +141,11 @@ item.draconicevolution:tool_upgrade.jumpBoost.name=Upgrade Key (Jump Boost)
 item.draconicevolution:creative_exchanger.name=Creative Block Exchanger
 item.draconicevolution:ender_energy_manipulator.name=Ender Energy Manipulator
 
-//Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
+#Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
 itemGroup.toolsAndWeapons=Draconic Evolution Tools & weapons
 itemGroup.blocksAndItems=Draconic Evolution Blocks & Items
 
-//Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
+#Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
 msg.size0.txt=Tool Mode: Single Block
 msg.size1.txt=Tool Mode: 3x3
 msg.size2.txt=Tool Mode: 5x5
@@ -212,7 +212,7 @@ msg.de.alreadyStorm.txt=Its already thundering!
 msg.de.insufficientPower.txt=Insufficient Power!
 msg.de.alreadyRunning.txt=Already Running!
 
-//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
+#Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=Unbound
 info.teleporterInfUnset2.txt=Shift right click to bind your current
 info.teleporterInfUnset3.txt=x, y, z coordinates
@@ -242,7 +242,7 @@ info.mobSoul3.txt=(Single Use)
 info.arrowInfo.txt=A Painful Ride
 info.arrowInfo0.txt=Too heavy for a regular bow
 
-//ender_extraction_core
+#ender_extraction_core
 info.de.ender_energy_manipulator.info.txt=This slightly creepy mystical device taps into the energy of the dragons own healing crystals.
 info.de.ender_energy_manipulator.info2.txt=And along with the souls of a few nearby Enderman uses that energy to extract an egg from the Ender Dragon.
 info.de.ender_energy_manipulator.location.msg=Must be placed on the end gateway!
@@ -306,7 +306,7 @@ info.de.manual.nav1.txt=Navigation Tips
 info.de.manual.nav2.txt=Press Backspace to go to the previous page.
 info.de.manual.nav3.txt=Hold shift to scroll faster.
 
-//Energy Net
+#Energy Net
 info.de.modeIn.txt=Mode: Input
 info.de.modeOut.txt=Mode: Output
 info.de.5xTransfer.txt= (5x Transfer)
@@ -319,7 +319,7 @@ info.infusedObsidian.txt=This block is wither resistant
 enchantment.draconicevolution.reaperEnchant=Reaper
 enchantment.draconicevolution.enchant_reaper.desc=When applied to a weapon this enchant increases that chance that a mob killed by sad weapon will drop their soul. This enchantment is best applied to Draconic Evolution weapons as it stacks with their built in reaper modifier.
 
-//Achievements ----------------------------------------------------------------------------------------------------------------------------------------
+#Achievements ----------------------------------------------------------------------------------------------------------------------------------------
 draconicevolution.achievementPage.name=Draconic Evolution
 
 achievement.draconicevolution.dust=The Start of something BIG!
@@ -407,7 +407,7 @@ achievement.draconicevolution.sundial.desc=Craft a sun dial and take control of 
 achievement.draconicevolution.manual=Knowledge to the Max!
 achievement.draconicevolution.manual.desc=Craft the Draconic Tablet
 
-//Lore ----------------------------------------------------------------------------------------------------------------------------------------
+#Lore ----------------------------------------------------------------------------------------------------------------------------------------
 item.draconicevolution:wyvernPick.lore=2Mundane picks are so weak\nthrough Draconium, you increase the area and speed to mine.
 item.draconicevolution:wyvernShovel.lore=2One block at a time? Not with Draconium!\nfaster, larger area, this is a start!
 item.draconicevolution:wyvernSword.lore=2Draconium begins to unlock the sword’s potential\nthe area and strength of the sword improves.
@@ -432,13 +432,13 @@ item.draconicevolution:draconicBoots.lore=2Stronger, faster, better than before\
 
 item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, true power!\none tool to do it all, mine, battle, and death!
 
-//Entity ----------------------------------------------------------------------------------------------------------------------------------------
+#Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.draconicevolution:EnderDragon.name=Ender Dragon
 entity.draconicevolution:ChaosGuardian.name=Chaos Guardian
 entity.draconicevolution:lootCore.name=Loot Core
 
 
-//KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
+#KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
 key.placeItem=Place Item in world
 key.toolConfig=Tool & Armor Config GUI
 key.toolProfileChange=Change Tool Config Profile
@@ -448,7 +448,7 @@ key.toggleDislocator=Toggle Item Dislocator
 key.cycleDigAOE=Cycle Dig AOE / Depth
 key.cycleAttackAOE=Cycle Attack AOE
 
-//Damage ----------------------------------------------------------------------------------------------------------------------------------------
+#Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian
 death.attack.damage.de.fusionExplode=%1$s was vaporized by a high energy fusion explosion
 death.attack.chaosBurst=%1$s was destroyed by dark energy
@@ -463,12 +463,11 @@ death.attack.chrystalMoved=%1$s was naughty and has been punished by Draconic Ev
 
 death.attack.administrative.kill=%1$s was struck down by an unsurvivable force
 
-death.attack.chaos=%1$s was torn apart by a Chaos Guardian
 
 death.attack.customArrowEnergy=%1$s was shot by %2$s
 death.attack.customArrowEnergy.item=%1$s was shot by %2$s using %3$s
 
-//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
+#Buttons ----------------------------------------------------------------------------------------------------------------------------------------
 button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
 button.de.chestAutoFeed1.txt=FILL.Keep the current stacks full
 button.de.chestAutoFeed2.txt=LOCK.Only pull the currently smelting items from the inventory
@@ -490,7 +489,7 @@ button.de.UP.txt=UP
 button.de.DOWN.txt=DOWN
 button.de.toggleHidden.txt=Toggle Hidden
 
-//Item Config Buttons
+#Item Config Buttons
 button.de.stats.txt=Stats
 button.de.statsShow.txt=Show
 button.de.statsHide.txt=Hide
@@ -504,7 +503,7 @@ button.de.fadeMode4.txt=Fade Out: Full
 button.de.rotate.txt=Rotate
 button.de.numeric.txt=Numeric:
 
-// Gui ----------------------------------------------------------------------------------------------------------------------------------------
+# Gui ----------------------------------------------------------------------------------------------------------------------------------------
 gui.de.flowGate.name=Flow Control
 gui.de.flowGatePartialSignal.name=The actual flow will vary between the two given values depending on the strength of the redstone signal being supplied to the block.
 gui.de.flowGateCurrentFlow.name=Flow
@@ -530,7 +529,6 @@ gui.de.cores.txt=Cores
 gui.de.cap.txt=Cap
 gui.de.installed.txt=Installed
 gui.de.free.txt=Free
-gui.de.max.txt=Max
 gui.de.on.txt=On
 gui.de.off.txt=Off
 gui.de.basePoints.txt=Base Points
@@ -576,7 +574,7 @@ gui.de.MoveSpeed.txt=Move Speed
 gui.de.JumpBoost.txt=Jump Boost
 
 
-//Potions ----------------------------------------------------------------------------------------------------------------------------------------
+#Potions ----------------------------------------------------------------------------------------------------------------------------------------
 potion.de.effect.txt=Effect
 potion.de.flight.txt=Flight
 potion.de.highStep.txt=High Step
@@ -587,18 +585,23 @@ potion.de.jumpBoost.txt=Jump Boost
 
 
 
-//##################   Start of refactored (sane) localization   ##################
+###################   Start of refactored localization   ##################
 
-//---- Gui Names ----//https://www.youtube.com/watch?v=jzGlRohAMVk
-gui.de.title.generator=Generator
+#---- Gui Names ----#
+#gui.de.title.generator=Generator
+tile.draconicevolution:generator.gui.title=Generator
 gui.de.title.grinder=Mob Grinder
 gui.de.title.energy_infuser=Energy Infuser
 gui.de.title.disenchanter=Disenchanter
 gui.de.title.fusion_crafting_core=Fusion Crafting
 gui.de.title.energy_storage_core_core=Tier %s Energy Core
 
+#---- GUI Buttons ----#
+gui.de.toolConfig.hud.txt=HUD
+gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
+button.de.open=Open
 
-//---- Fusion Crafting ----//
+#---- Fusion Crafting ----#
 gui.fusionCrafting.tierLow.info=Pedestal Tier Too Low
 gui.fusionCrafting.outputObstructed.info=Output Obstructed
 gui.fusionCrafting.crafting.info=Crafting
@@ -610,7 +613,7 @@ gui.jeiFusion.tier.3=Tier: Chaotic
 msg.craftingInjector.singleItemOn.txt=Single Item Mode: Active
 msg.craftingInjector.singleItemOff.txt=Single Item Mode: Inactive
 
-//---- Upgrades ----//
+#---- Upgrades ----#
 upgrade.de.upgrades.info=Upgrades
 upgrade.de.upgradeNA.info=Upgrade Not Applicable for this item
 upgrade.de.upgradeLevelToHigh.info=Upgrade level too high for this item
@@ -641,7 +644,7 @@ upgrade.level.2=Wyvern
 upgrade.level.3=Draconic
 upgrade.level.4=Chaotic
 
-//---- Tool Config ----//
+#---- Tool Config ----#
 config.field.on.state=On
 config.field.off.state=Off
 config.field.digSpeed.entry=Dig Speed Multiplier
@@ -753,27 +756,13 @@ config.de.armor_profile_1.msg=Chestplate Profile:
 config.de.armor_profile_2.msg=Leggings Profile:
 config.de.armor_profile_3.msg=Boots Profile:
 
-//---- Info Helper ----//TODO Move this to BrandonsCore
-info.bc.holdShiftForDetails.txt=Hold %sShift%s for Details
-info.bc.charge.txt=Charge
-
-info.bc.hold.txt=Hold
-info.bc.shift.txt=Shift
-info.bc.forDetails.txt=for Details
-info.bc.ctrl.txt=CTRL
-
-//---- Chat Messages ----//
+#---- Chat Messages ----#
 chat.toolConfig.thatItemNotConfigurable.msg=That item is not configurable
 chat.dissEnchanter.notEnoughLevels.msg=You require %s levels to extract that enchantment!
 chat.item_dislocator_activate.msg=Item Dislocator Activated
 chat.item_dislocator_deactivate.msg=Item Dislocator Deactivated
 
-//---- GUI Buttons ----//
-gui.de.toolConfig.hud.txt=HUD
-gui.de.toolConfig.hudDesc.txt=Open HUD Configuration GUI
-button.de.open=Open
-
-//---- Celestial Manipulato ----//
+#---- Celestial Manipulato ----#
 gui.de.celMod.weather=Weather
 gui.de.celMod.time=Time
 gui.de.celMod.stopRain=Stop Rain
@@ -800,28 +789,7 @@ gui.de.celMod.rs.7=Midnight
 gui.de.celMod.rs.8=Moon Set
 gui.de.celMod.rs.9=Cycle 1 full Minecraft day Or until restone signal stops.
 
-//---- Entity Detector ----//
-guiwiki.label.navigation=Navigation
-guiwiki.label.mods=Mods
-modwiki.label.style=Style
-
-modwiki.style.navWindow=Nav Window
-modwiki.style.mainWindow=Main Window
-modwiki.style.menu=Menu
-modwiki.style.presets=Presets
-modwiki.style.navText=Nav Text
-modwiki.style.text=Text
-
-modwiki.style.preset.intellij=Intellij
-modwiki.style.preset.black&white=Black & White
-modwiki.style.preset.white&black=White & Black
-modwiki.style.preset.purple=Purple
-modwiki.style.preset.draconic=Draconic
-modwiki.style.preset.transparent=Transparent
-
-guiwiki.button.home=Home
-
-//---- Entity Detector ----//
+#---- Entity Detector ----#
 gui.entityDetector.pulseDelay=Pulse Delay
 gui.entityDetector.pulseDelay.info=The delay between scanning pulses. The scanning pulse is when the block checks for nearby entities.
 gui.entityDetector.outputPulse=Pulse Output Mode
@@ -837,7 +805,7 @@ gui.entityDetector.energyCost=Energy Per Pulse
 gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse. The energy requires is 125 * range^1.5 This means the energy cost increases exponentially as you increase the range.
 gui.entityDetector.filter=Open Entity Filter Configurator
 
-//---- Energy Net ----//
+#---- Energy Net ----#
 eNet.de.posSavedToTool.info=Block Position saved to tool. (Sneak-Right click air to clear)
 eNet.de.posCleared.info=Position Cleared
 eNet.de.toolNotBound.info=Tool not bound! Sneak+Right click to bind.
@@ -859,7 +827,6 @@ eNet.de.IOOutput_false.info=I/O Mode:%s Input
 eNet.de.sideCanNotReceive.info=That tile can not receive energy on that side!.
 eNet.de.sideCanNotExtract.info=That tile can not supply energy on that side!.
 eNet.de.maxReceivers.info=Receiver Limit Reached!
-eNet.de.hudWirelessLinks.info=Wireless Links
 eNet.de.output.info=Output
 eNet.de.input.info=Input
 eNet.de.identify.gui=Identify
@@ -867,7 +834,7 @@ eNet.de.unlink.gui=UnLink
 eNet.de.clearLinks.gui=Clear Links
 eNet.de.clearReceivers.gui=Clear Receivers
 
-//---- Energy Core ----//
+#---- Energy Core ----#
 button.de.buildGuide.txt=Build Guide:
 button.de.assembleCore.txt=Assemble Core
 button.de.tierUp.txt=Tier Up
@@ -879,7 +846,7 @@ ecore.de.assemble_found_invalid.txt=Error found invalid block within build area!
 ecore.de.assemble_error_expected_air.txt=An error occurred while building structure! Expected air block at %s
 ecore.de.assemble_missing_required.txt=Unable to complete structure! Missing required block(s) %s
 
-//---- Reactor ----//
+#---- Reactor ----#
 gui.reactor.draconicReactor.txt=Draconic Reactor
 gui.reactor.fuelIn.txt=Fuel (in)
 gui.reactor.chaosOut.txt=Chaos (out)
@@ -942,7 +909,7 @@ msg.de.reactorRSMode.6.txt=Comparator Mode: Fuel Conversion
 msg.de.reactorRSMode.7.txt=Comparator Mode: Fuel Conversion [Inverted]
 gui.de.coreMass.txt=Core Mass
 
-//---- Draconium Chest ----//
+#---- Draconium Chest ----#
 gui.draconiumChest.name=Draconium Chest
 gui.draconiumChest.fMode.btn=Auto Feed
 gui.draconiumChest.fMode.info=Auto Feed allows you to automatically smelt items in the inventory. Click to view available feed modes.
@@ -980,7 +947,7 @@ gui.draconiumChest.ioState1.btn=Input Only
 gui.draconiumChest.ioState2.btn=Output Only
 gui.draconiumChest.ioState3.btn=Input & Output
 
-//---- Particle Generator ----//
+#---- Particle Generator ----#
 gui.particleGenerator.name=Particle Generator
 gui.particleGenerator.red=Red
 gui.particleGenerator.green=Green
@@ -1005,13 +972,13 @@ gui.particleGenerator.type2=Dark Orb
 gui.particleGenerator.type3=Orb 2
 gui.particleGenerator.type4=Star
 
-//---- Gui Junk Filter ----//
+#---- Gui Junk Filter ----#
 gui.de.junkFilter.name=Tool Junk Filter
 
-//---- Misc Info Text ----//
+#---- Misc Info Text ----#
 info.de.shiftReversePlaceLogic.txt=Hold Shift to reverse placement logic.
 
-//---- Bound Dislocators ----//
+#---- Bound Dislocators ----#
 info.de.bound_dislocator.key=Unique Key
 info.de.bound_dislocator.click_to_link=Right click to create bound pair
 info.de.bound_dislocator.click_to_link_self=Right click to bind to yourself
@@ -1021,3 +988,19 @@ info.de.bound_dislocator.in_player_inventory=The bound dislocator is in a player
 info.de.bound_dislocator.unknown_link=Unknown Location
 info.de.bound_dislocator.cant_find_player=The bound player is not online!
 info.de.bound_dislocator.cant_find_target=Could not find the bound dislocator!
+
+#---- Gui Generator ----#
+gui.de.generator.mode.eco_plus=Eco Plus
+gui.de.generator.mode.eco_plus.info=Eco Plus\nSignificantly increased fuel efficiency.\nSignificantly decreased output power.
+gui.de.generator.mode.eco=Eco
+gui.de.generator.mode.eco.info=Eco Mode\nIncreased fuel efficiency\nat the cost of output power.
+gui.de.generator.mode.normal=Normal
+gui.de.generator.mode.normal.info=Normal Mode\nStandard output and efficiency.\nSimilar to other basic generators.
+gui.de.generator.mode.performance=Performance
+gui.de.generator.mode.performance.info=Performance Mode\nProvides a worthwhile increase in output power\nfor a small fuel efficiency penalty.
+gui.de.generator.mode.performance_plus=Overdrive
+gui.de.generator.mode.performance_plus.info=Overdrive Mode\nNeed all the power you can get\nHave plenty of fuel to burn?\nThis is the mode for you!
+
+gui.de.generator.fuel_efficiency=Fuel Efficiency:
+gui.de.generator.output_power=Output Power:
+gui.de.generator.current_fuel_value=Current Fuel Value:

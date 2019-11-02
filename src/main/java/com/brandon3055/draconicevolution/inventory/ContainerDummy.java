@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * Created by brandon3055 on 17/10/2016.

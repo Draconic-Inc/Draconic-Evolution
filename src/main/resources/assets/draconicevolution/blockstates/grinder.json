@@ -1,38 +1,41 @@
 {
   "forge_marker": 1,
-  "defaults": {
-    "model": "minecraft:cube",
-    "textures": {
-      "particle": "draconicevolution:blocks/machine_side",
-      "down": "draconicevolution:blocks/machine_side",
-      "up": "draconicevolution:blocks/machine_top",
-      "north": "draconicevolution:blocks/grinder_front",
-      "south": "draconicevolution:blocks/machine_fan",
-      "east": "draconicevolution:blocks/machine_side",
-      "west": "draconicevolution:blocks/machine_side"
-    },
-    "transform": "forge:default-block"
-  },
-  "variants": {
+  "defaults":     {},
+  "variants":     {
     "active": {
-      "true": {
-        "textures": {
-          "north": "draconicevolution:blocks/animated/grinder_front_active",
-          "south": "draconicevolution:blocks/animated/machine_fan_active"
-        }
+      "true":  {
+        "textures": { "skull_glow": "draconicevolution:models/blocks/grinder" }
       },
-      "false": {}
+      "false": {
+        "textures": { "skull_glow": "draconicevolution:models/parts/black" }
+      }
     },
     "facing": {
       "north": {},
-      "south": {"y": 180},
-      "west": {"y": 270},
-      "east": {"y": 90}
+      "south": { "y": 180 },
+      "west":  { "y": 270 },
+      "east":  { "y": 90 }
     },
-    "normal": [{
-      "textures": {
-        "north": "draconicevolution:blocks/animated/grinder_front_active",
-        "south": "draconicevolution:blocks/animated/machine_fan_active"
+    "static": {
+      "true": {
+        "model": "draconicevolution:grinder"
+      },
+      "false": {
+        "model": "draconicevolution:machine_fan"
+      }
+    },
+    "entity": [{
+      "model": "draconicevolution:grinder",
+      "submodel": {
+        "fan": { "model": "draconicevolution:machine_fan" }
+      }
+    }],
+    "normal": [{}],
+    "inventory": [{
+      "transform": "forge:default-block",
+      "model": "draconicevolution:grinder",
+      "submodel": {
+        "fan": { "model": "draconicevolution:machine_fan" }
       }
     }]
   }

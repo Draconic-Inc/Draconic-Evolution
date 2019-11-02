@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import codechicken.lib.model.ModelRegistryHelper;
+import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.BlockMobSafe;
 import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.registry.IRenderOverride;
@@ -81,19 +82,19 @@ public class StabilizedSpawner extends BlockMobSafe implements ITileEntityProvid
     }
 
     public void setStackDataTier(ItemStack stack, TileStabilizedSpawner.SpawnerTier tier) {
-        NBTTagCompound managedData = stack.getOrCreateSubCompound("BCTileData").getCompoundTag("BCManagedData");
+        NBTTagCompound managedData = stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).getCompoundTag(BlockBCore.BC_MANAGED_DATA_FLAG);
         managedData.setByte("spawnerTier", (byte) tier.ordinal());
-        stack.getOrCreateSubCompound("BCTileData").setTag("BCManagedData", managedData);
+        stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).setTag(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
     }
 
     public void setStackDataEntity(ItemStack stack, String entityString) {
         if (entityString != null) {
             ItemStack soul = new ItemStack(DEFeatures.mobSoul);
             DEFeatures.mobSoul.setEntity(MobSoul.getCachedRegName(entityString), soul);
-            NBTTagCompound managedData = stack.getOrCreateSubCompound("BCTileData").getCompoundTag("BCManagedData");
-            stack.getOrCreateSubCompound("BCTileData").getCompoundTag("BCManagedData");
+            NBTTagCompound managedData = stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).getCompoundTag(BlockBCore.BC_MANAGED_DATA_FLAG);
+            stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).getCompoundTag(BlockBCore.BC_MANAGED_DATA_FLAG);
             managedData.setTag("mobSoul", soul.serializeNBT());
-            stack.getOrCreateSubCompound("BCTileData").setTag("BCManagedData", managedData);
+            stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).setTag(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
         }
     }
 

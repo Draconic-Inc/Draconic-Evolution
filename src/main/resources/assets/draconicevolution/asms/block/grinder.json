@@ -1,0 +1,11 @@
+{
+    "parameters":  {},
+    "clips":       {
+        "default": ["apply", "draconicevolution:block/machine_fan@default", "#anim_pos"]
+    },
+    "states":      [
+        "default"
+    ],
+    "transitions": {},
+    "start_state": "default"
+}
