@@ -4,10 +4,10 @@
   "variants":     {
     "active": {
       "true":  {
-        "textures": { "skull_glow": "draconicevolution:models/blocks/grinder" }
+        "textures": { "skull_eyes": "draconicevolution:models/blocks/grinder" }
       },
       "false": {
-        "textures": { "skull_glow": "draconicevolution:models/parts/black" }
+        "textures": { "skull_eyes": "draconicevolution:models/parts/black" }
       }
     },
     "facing": {

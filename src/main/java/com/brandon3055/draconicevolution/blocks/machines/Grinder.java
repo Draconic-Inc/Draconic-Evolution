@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -29,7 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.animation.AnimationTESR;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
@@ -48,7 +48,7 @@ public class Grinder extends BlockMobSafe implements ITileEntityProvider, IRende
 
     public Grinder() {
         super(Material.IRON);
-//        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
+        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
     }
 
     // Rendering
@@ -64,10 +64,26 @@ public class Grinder extends BlockMobSafe implements ITileEntityProvider, IRende
     }
 
     @Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void registerRenderer(Feature feature) {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(feature.getRegistryName(), "inventory"));
-        ClientRegistry.bindTileEntitySpecialRenderer(TileGrinder.class, new AnimationTESR<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileGrinder.class, new RenderTileGrinder());
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileGrinder.class, new AnimationTESR<TileGrinder>(){
+//
+//            @Override
+//            public void renderTileEntityFast(TileGrinder te, double x, double y, double z, float partialTick, int breakStage, float partial, BufferBuilder renderer) {
+//                super.renderTileEntityFast(te, x, y, z, partialTick, breakStage, partial, renderer);
+//
+////                blockRenderer.getModelForState()
+//            }
+//
+//
+//        });
     }
 
     //region BlockState
@@ -79,6 +95,12 @@ public class Grinder extends BlockMobSafe implements ITileEntityProvider, IRende
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileGrinder tileGrinder = worldIn.getTileEntity(pos) instanceof TileGrinder ? (TileGrinder) worldIn.getTileEntity(pos) : null;
+        return state.withProperty(ACTIVE, tileGrinder != null && tileGrinder.active.get());
+    }
+
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileGrinder tileGrinder = world.getTileEntity(pos) instanceof TileGrinder ? (TileGrinder) world.getTileEntity(pos) : null;
         return state.withProperty(ACTIVE, tileGrinder != null && tileGrinder.active.get());
     }
 

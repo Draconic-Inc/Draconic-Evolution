@@ -43,7 +43,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 //    private final TimeValues.VariableValue fanPos = new TimeValues.VariableValue(0.25F);
 //    private final TimeValues.VariableValue fanSpeed = new TimeValues.VariableValue(0.25F);
 //    private final TimeValues.VariableValue worldTime = new TimeValues.VariableValue(0);
-    private SimpleAnimHandler animHandler;
+    private final SimpleAnimHandler animHandler;
 
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public static FakePlayer fakePlayer;
@@ -56,7 +56,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
         setCapacityAndTransfer(500000, 32000, 0);
         setShouldRefreshOnBlockChange();
 
-        animHandler = new SimpleAnimHandler(this, new ResourceLocation(DraconicEvolution.MODID, "asms/block/grinder.json"));
+        animHandler = new SimpleAnimHandler(new ResourceLocation(DraconicEvolution.MODID, "asms/block/grinder.json"));
 //        asm = BrandonsCore.proxy.loadASM(new ResourceLocation(DraconicEvolution.MODID, "asms/block/grinder.json"), ImmutableMap.of("fan_pos", fanPos, "fan_speed", fanSpeed, "world_time", worldTime));
     }
 
@@ -79,28 +79,6 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
         if (getEnergyStored() < getMaxEnergyStored() && getStackInSlot(0) != null) {
             energyStorage.receiveEnergy(extractEnergyFromItem(getStackInSlot(0), energyStorage.receiveEnergy(32000, true), false), false);
         }
-    }
-
-
-    private void updateAnimation() {
-//        f += 1F;
-//        worldTime.setValue(world.getTotalWorldTime() / 20F);
-//        fanSpeed.setValue(1F);
-//        worldTime.setValue(Animation.getWorldTime(world) * 20F);
-//        fanPos.setValue(f);
-
-//        if (active.get()) {
-//            if (asm.currentState().equals("default")) {
-//                worldTime.setValue(Animation.getWorldTime(getWorld(), Animation.getPartialTickTime()));
-//                asm.transition("moving");
-//            }
-//        }
-//        else {
-//            if (asm.currentState().equals("moving")) {
-//                worldTime.setValue(Animation.getWorldTime(getWorld(), Animation.getPartialTickTime()));
-//                asm.transition("default");
-//            }
-//        }
     }
 
 

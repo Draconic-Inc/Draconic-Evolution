@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import com.brandon3055.brandonscore.client.utils.SimpleAnimHandler;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
@@ -17,7 +17,6 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -25,11 +24,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.animation.Animation;
-import net.minecraftforge.common.animation.TimeValues;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.animation.CapabilityAnimation;
-import net.minecraftforge.common.model.animation.IAnimationStateMachine;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,10 +37,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable {
 
-    //Animation Fields.
-    private final IAnimationStateMachine asm;
-    private final TimeValues.VariableValue fanSpeed = new TimeValues.VariableValue(0.25F);
-    private final TimeValues.VariableValue switchTime = new TimeValues.VariableValue(0);
+    private final SimpleAnimHandler animHandler;
     @SideOnly(Side.CLIENT)
     private GeneratorSoundHandler sound = new GeneratorSoundHandler(this);
 
@@ -79,15 +72,15 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
         installIOTracker(opStorage);
         setShouldRefreshOnBlockChange();
 
-        asm = BrandonsCore.proxy.loadASM(new ResourceLocation(DraconicEvolution.MODID, "asms/block/generator.json"), ImmutableMap.of("fan_speed", fanSpeed, "switch_time", switchTime));
-        mode.addValueListener((newVal) -> updateAnimation());
-        active.addValueListener((newVal) -> updateAnimation());
+        animHandler = new SimpleAnimHandler(new ResourceLocation(DraconicEvolution.MODID, "asms/block/generator.json"));
     }
 
     @Override
     public void update() {
         super.update();
         if (world.isRemote) {
+            animHandler.setSpeed(active.get() ? mode.get().animFanSpeed : 0F, 0.3F);
+            animHandler.updateAnimation();
             updateSoundAndFX();
             return;
         }
@@ -169,8 +162,6 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
         }
         Random rand = world.rand;
 
-        updateAnimation(); //Really need a better animation system because this should not be needed.
-
         double p = 0.0625;
         if (rand.nextInt(17 - (mode.get().index * 4)) == 0) {
             EnumFacing enumfacing = getState(DEFeatures.generator).getValue(Generator.FACING);
@@ -238,24 +229,6 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
         }
     }
 
-    private void updateAnimation() {
-        if (asm != null && world != null) {
-            if (active.get()) {
-                if (asm.currentState().equals("default")) {
-                    switchTime.setValue(Animation.getWorldTime(getWorld(), Animation.getPartialTickTime()));
-                    asm.transition("moving");
-                }
-                fanSpeed.setValue(mode.get().animFanSpeed);
-            }
-            else {
-                if (asm.currentState().equals("moving")) {
-                    switchTime.setValue(Animation.getWorldTime(getWorld(), Animation.getPartialTickTime()));
-                    asm.transition("default");
-                }
-            }
-        }
-    }
-
     @Override
     public boolean hasFastRenderer() {
         return true;
@@ -273,17 +246,17 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
     @Nullable
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing side) {
         if (capability == CapabilityAnimation.ANIMATION_CAPABILITY) {
-            return CapabilityAnimation.ANIMATION_CAPABILITY.cast(asm);
+            return CapabilityAnimation.ANIMATION_CAPABILITY.cast(animHandler.asm);
         }
         return super.getCapability(capability, side);
     }
 
     public enum Mode {
-        ECO_PLUS(0, 50, 5, 1F),
-        ECO(1, 15, 20, 1.5F),
-        NORMAL(2, 10, 40, 2.5F),
-        PERFORMANCE(3, 8, 80, 4F),
-        PERFORMANCE_PLUS(4, 5, 300, 6F);
+        ECO_PLUS(0, 50, 5, 0.3F),
+        ECO(1, 15, 20, 0.4F),
+        NORMAL(2, 10, 40, 0.6F),
+        PERFORMANCE(3, 8, 80, 0.8F),
+        PERFORMANCE_PLUS(4, 5, 300, 1.0F);
 
         public final int index;
         public final int energyPerFuelUnit;

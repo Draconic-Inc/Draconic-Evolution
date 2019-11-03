@@ -3,13 +3,13 @@
 	"textures": {
 		"1": "draconicevolution:models/blocks/generator/generator",
 		"2": "draconicevolution:models/blocks/generator/generator_2",
-		"particle": "draconicevolution:models/blocks/generator/generator"
+		"particle": "draconicevolution:models/blocks/generator/generator_2"
 	},
 	"elements": [
 		{
 			"name": "frame_front",
 			"from": [0, 0, 0],
-			"to": [16, 16, 1],
+			"to": [16, 16, 0.98],
 			"faces": {
 				"north": {"uv": [0, 0, 8, 8], "texture": "#1"},
 				"south": {"uv": [0, 0, 8, 8], "texture": "#1"}
@@ -17,7 +17,7 @@
 		},
 		{
 			"name": "frame_back",
-			"from": [0, 0, 15],
+			"from": [0, 0, 15.02],
 			"to": [16, 16, 16],
 			"faces": {
 				"north": {"uv": [0, 0, 8, 8], "texture": "#1"},
@@ -26,7 +26,7 @@
 		},
 		{
 			"name": "frame_top",
-			"from": [0, 15, 0],
+			"from": [0, 15.02, 0],
 			"to": [16, 16, 16],
 			"faces": {
 				"up": {"uv": [0, 0, 8, 8], "texture": "#1"},
@@ -36,7 +36,7 @@
 		{
 			"name": "frame_bottom",
 			"from": [0, 0, 0],
-			"to": [16, 1, 16],
+			"to": [16, 0.98, 16],
 			"faces": {
 				"up": {"uv": [0, 0, 8, 8], "texture": "#1"},
 				"down": {"uv": [0, 0, 8, 8], "texture": "#1"}
@@ -45,7 +45,7 @@
 		{
 			"name": "frame_right",
 			"from": [0, 0, 0],
-			"to": [1, 16, 16],
+			"to": [0.98, 16, 16],
 			"faces": {
 				"east": {"uv": [0, 0, 8, 8], "texture": "#1"},
 				"west": {"uv": [0, 0, 8, 8], "texture": "#1"}
@@ -53,7 +53,7 @@
 		},
 		{
 			"name": "frame_left",
-			"from": [15, 0, 0],
+			"from": [15.02, 0, 0],
 			"to": [16, 16, 16],
 			"faces": {
 				"east": {"uv": [0, 0, 8, 8], "texture": "#1"},

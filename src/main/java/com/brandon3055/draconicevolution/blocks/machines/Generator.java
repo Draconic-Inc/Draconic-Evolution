@@ -43,7 +43,7 @@ public class Generator extends BlockBCore implements ITileEntityProvider, IRende
 
     public Generator() {
         super(Material.IRON);
-//        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
+        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
     }
 
     @Override
@@ -74,6 +74,13 @@ public class Generator extends BlockBCore implements ITileEntityProvider, IRende
         TileGenerator tileGenerator = worldIn.getTileEntity(pos) instanceof TileGenerator ? (TileGenerator) worldIn.getTileEntity(pos) : null;
         return state.withProperty(ACTIVE, tileGenerator != null && tileGenerator.active.get());
     }
+
+//    @Override
+//    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+////        TileGenerator tileGenerator = world.getTileEntity(pos) instanceof TileGenerator ? (TileGenerator) world.getTileEntity(pos) : null;
+////        return state.withProperty(ACTIVE, tileGenerator != null && tileGenerator.active.get());
+//        return super.getExtendedState(state, world, pos);
+//    }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {

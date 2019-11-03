@@ -1,8 +1,7 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
-import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.registry.ModFeatureParser;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IJEIClearence;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
@@ -16,7 +15,8 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import mezz.jei.api.*;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
-import mezz.jei.api.recipe.*;
+import mezz.jei.api.recipe.IRecipeCategoryRegistration;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
 import net.minecraft.block.Block;
@@ -162,7 +162,7 @@ public class DEJEIPlugin implements IModPlugin {
         while (i.hasNext()) {
             ItemStack stack = i.next();
             if (!stack.isEmpty() && stack.getItem() instanceof IUpgradableItem) {
-                if ((stack.getItem() instanceof ItemEnergyBase || stack.getItem() instanceof WyvernArmor) && ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) == 0) {
+                if ((EnergyUtils.isEnergyItem(stack) || stack.getItem() instanceof WyvernArmor) && EnergyUtils.getEnergyStored(stack) == 0) {
                     continue;
                 }
 
