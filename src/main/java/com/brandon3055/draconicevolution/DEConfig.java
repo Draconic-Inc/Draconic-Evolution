@@ -197,6 +197,9 @@ public class DEConfig implements IModConfigHelper {
 
     @ModConfigProperty(category = "Tweaks", name = "draconicFluxCapBaseCap", comment = "This allows you to adjust the base capacity of the Draconic Flux Capacitor.")
     public static int draconicFluxCapBaseCap = 256000000;
+    
+    @ModConfigProperty(category = "Tweaks", name = "disableEntityDetectorEnergyConsumption", comment = "Disables the energy consumption of the Entity Detector and the Advanced Entity Detector.")
+    public static boolean disableEntityDetectorEnergyConsumption = false;
 
     //Category Client
 
