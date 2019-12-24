@@ -832,7 +832,7 @@ gui.entityDetector.rsMin.info=The minimum number of detected entities required t
 gui.entityDetector.rsMax=RS Max Threshold
 gui.entityDetector.rsMax.info=The minimum number of detected entities required to produce a redstone signal of 15.
 gui.entityDetector.energyCost=Energy Per Pulse
-gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse. The energy requires is 125 * range^1.5 This means the energy cost increases exponentially as you increase the range.
+gui.entityDetector.energyCost.info=This is the amount of energy required for each scanning pulse. The default energy required is 125 * range^1.5 This means the energy cost increases exponentially as you increase the range.
 gui.entityDetector.filter=Open Entity Filter Configurator
 
 //---- Energy Net ----//

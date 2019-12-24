@@ -375,10 +375,9 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     }
 
     public int getPulseCost() {
-        if (DEConfig.disableEntityDetectorEnergyConsumption) {
-            return 0;
-        }
-        return (int) (125 * Math.pow(RANGE.value, 1.5));
+        double multiplier = DEConfig.entityDetectorEnergyMultiplier;
+        double exponent = DEConfig.entityDetectorEnergyExponent;
+        return (int) (multiplier * Math.pow(RANGE.value, exponent));
     }
 
     @Override
