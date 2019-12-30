@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
@@ -177,7 +178,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     public int getMaxWirelessTransfer() {
-        return getTier() == 0 ? 32000 : getTier() == 1 ? 128000 : 512000;
+        return getTier() == 0 ? DEConfig.basicWirelessMaxTransfer : getTier() == 1 ? DEConfig.wyvernWirelessMaxTransfer : DEConfig.draconicWirelessMaxTransfer;
     }
 
     public int receiverTransfer(int index) {
