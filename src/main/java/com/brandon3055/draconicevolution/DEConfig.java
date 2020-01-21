@@ -198,6 +198,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "draconicFluxCapBaseCap", comment = "This allows you to adjust the base capacity of the Draconic Flux Capacitor.")
     public static int draconicFluxCapBaseCap = 256000000;
 
+    @ModConfigProperty(category = "Tweaks", name = "guardianCanKillCreative", comment = "Set to false if you dont want the guardian to be able to kill creative players.\nAlternatively... Just dont poke the guardian if you dont want to die!")
+    public static boolean guardianCanKillCreative = true;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.\nWarning: Changing the number of entries in this list will crash your game.")
