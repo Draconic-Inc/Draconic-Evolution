@@ -378,6 +378,9 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     @Override
     public float getNewFOV(EntityPlayer player, ItemStack stack, float currentFOV, float originalFOV, EntityEquipmentSlot slot) {
+        if (DEConfig.disableArmorFOVCorrection) {
+            return currentFOV;
+        }
         AttributeModifier modifier = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getModifier(WALK_SPEED_UUID);
         if (slot == EntityEquipmentSlot.LEGS && modifier != null) {
             boolean fly = player.capabilities.isFlying;
