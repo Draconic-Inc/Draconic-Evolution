@@ -451,13 +451,13 @@ public class GuiDislocator extends GuiScreen {
 
         if (button.id == 5) {
             if (player.inventory.hasItemStack(new ItemStack(Items.ENDER_PEARL))) {
-                if ((!Keyboard.isKeyDown(42)) && (!Keyboard.isKeyDown(54))) {
+                if (!isShiftKeyDown()) {
                     DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.ADDFUEL, 1, false));
                     this.fuel += DEConfig.dislocatorUsesPerPearl;
                 }
                 else {
                     DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.ADDFUEL, 64, false));
-                    this.fuel += DEConfig.dislocatorUsesPerPearl * 64;
+                    this.fuel += DEConfig.dislocatorUsesPerPearl * Math.min(64, numPearls());
                 }
             }
             else {
@@ -467,7 +467,7 @@ public class GuiDislocator extends GuiScreen {
         updateButtons();
     }
 
-    public boolean hasPearls(int number) {
+    public int numPearls() {
         int found = 0;
         ItemStack stack;
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
@@ -475,12 +475,8 @@ public class GuiDislocator extends GuiScreen {
             if (!stack.isEmpty() && stack.isItemEqual(new ItemStack(Items.ENDER_PEARL))) {
                 found += stack.getCount();
             }
-
-            if (found >= number) {
-                return true;
-            }
         }
-        return false;
+        return found;
     }
 
     @Override
