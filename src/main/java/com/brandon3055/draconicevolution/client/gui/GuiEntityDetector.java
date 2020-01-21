@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui_old.modularelements.*;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEntityDetector;
 import com.brandon3055.draconicevolution.inventory.ContainerDummy;
@@ -25,7 +26,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
     private EntityPlayer player;
     private TileEntityDetector tile;
     private MGuiEntityFilter filter;
-    private MGuiEnergyBar energyBar;
+    private MGuiEnergyBar energyBar = new MGuiEnergyBar(this); //To avoid null pointers when power req is disabled.
     private MGuiButton incrementRange;
     private MGuiButton decrementRange;
     private MGuiButton incrementPulse;
@@ -134,15 +135,18 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerDummy> imple
 
         manager.add(element = new MGuiButton(this, guiLeft + 9, outputMode.yPos + 13, xSize - 18, 12, I18n.format("gui.entityDetector.filter")).setButtonName("OPEN_FILTER"));
 
-        manager.add(element = new MGuiLabel(this, guiLeft + 9, element.yPos + 13, xSize - 18, 12, "") {
-            @Override
-            public String getDisplayString() {
-                return I18n.format("gui.entityDetector.energyCost") + ": " + Utils.formatNumber(tile.getPulseCost()) + " RF";
-            }
-        }, 1);
-        element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.energyCost.info")}, element).setHoverDelay(10));
+        if (DEConfig.entityDetectorPowerModifier > 0) {
+            manager.add(element = new MGuiLabel(this, guiLeft + 9, element.yPos + 13, xSize - 18, 12, "") {
+                @Override
+                public String getDisplayString() {
+                    return I18n.format("gui.entityDetector.energyCost") + ": " + Utils.formatNumber(tile.getPulseCost()) + " RF";
+                }
+            }, 1);
+            element.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.entityDetector.energyCost.info")}, element).setHoverDelay(10));
 
-        manager.add(energyBar = new MGuiEnergyBar(this, guiLeft + 9, guiTop() + 106, xSize - 18, 14).setEnergyHandler(tile).setHorizontal(true), 1);
+            manager.add(energyBar = new MGuiEnergyBar(this, guiLeft + 9, guiTop() + 106, xSize - 18, 14).setEnergyHandler(tile).setHorizontal(true), 1);
+        }
+
         manager.add(new MGuiElementBase(this) {
             @Override
             public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {

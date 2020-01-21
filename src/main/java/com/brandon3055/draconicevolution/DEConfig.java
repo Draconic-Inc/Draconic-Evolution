@@ -201,6 +201,10 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "guardianCanKillCreative", comment = "Set to false if you dont want the guardian to be able to kill creative players.\nAlternatively... Just dont poke the guardian if you dont want to die!")
     public static boolean guardianCanKillCreative = true;
 
+
+    @ModConfigProperty(category = "Tweaks", name = "entityDetectorPowerModifier", comment = "Allows you to adjust the power requirement of the entity detector.\nSet to 0 to disable completely", autoSync = true)
+    public static double entityDetectorPowerModifier = 1D;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.\nWarning: Changing the number of entries in this list will crash your game.")
