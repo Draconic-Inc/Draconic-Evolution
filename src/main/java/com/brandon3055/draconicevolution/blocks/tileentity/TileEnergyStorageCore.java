@@ -309,7 +309,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
                     for (int dist = 0; dist < 16; dist++) {
                         BlockPos pos1 = pos.add(facing.getFrontOffsetX() * dist, facing.getFrontOffsetY() * dist, facing.getFrontOffsetZ() * dist);
                         TileEntity stabilizer = world.getTileEntity(pos1);
-                        if (stabilizer instanceof TileEnergyCoreStabilizer && (!((TileEnergyCoreStabilizer) stabilizer).hasCoreLock.value || ((TileEnergyCoreStabilizer) stabilizer).getCore().equals(this)) && ((TileEnergyCoreStabilizer) stabilizer).isStabilizerValid(tier.value, this)) {
+                        if (stabilizer instanceof TileEnergyCoreStabilizer && (!((TileEnergyCoreStabilizer) stabilizer).hasCoreLock.value || ((TileEnergyCoreStabilizer) stabilizer).getCore() == this) && ((TileEnergyCoreStabilizer) stabilizer).isStabilizerValid(tier.value, this)) {
                             stabsFound.add((TileEnergyCoreStabilizer) stabilizer);
                             break;
                         }
