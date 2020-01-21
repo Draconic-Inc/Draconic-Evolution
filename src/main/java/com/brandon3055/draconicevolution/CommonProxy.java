@@ -6,6 +6,9 @@ import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.capabilities.IShieldState;
+import com.brandon3055.draconicevolution.capabilities.ShieldState;
+import com.brandon3055.draconicevolution.capabilities.ShieldStateStorage;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.entity.*;
 import com.brandon3055.draconicevolution.handlers.ContributorHandler;
@@ -23,6 +26,7 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -39,6 +43,7 @@ public class CommonProxy {
         initializeNetwork();
         EnchantmentReaper.init();
         AE2Compat.init();
+        CapabilityManager.INSTANCE.register(IShieldState.class, new ShieldStateStorage(), ShieldState.class);
 
         registerEntities();
 

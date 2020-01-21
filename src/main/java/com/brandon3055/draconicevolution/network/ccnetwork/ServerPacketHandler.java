@@ -9,6 +9,9 @@ import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.capabilities.IShieldState;
+import com.brandon3055.draconicevolution.capabilities.ShieldStateProvider;
+import com.brandon3055.draconicevolution.handlers.CustomArmorHandler.ArmorSummery;
 import com.brandon3055.draconicevolution.items.tools.IAOEWeapon;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
@@ -37,6 +40,9 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 break;
             case 4:
                 cycleAttackAOE(sender, packet.readBoolean());
+                break;
+            case 5:
+                toggleShields(sender);
                 break;
         }
     }
@@ -142,5 +148,14 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             weapon.setWeaponAOE(stack, value);
         }
 
+    }
+
+    private void toggleShields(EntityPlayer player) {
+    	ArmorSummery summery = new ArmorSummery().getSummery(player);
+    	if (summery != null) {
+    		IShieldState shieldToggle = player.getCapability(ShieldStateProvider.PLAYER_CAP, null);
+    		shieldToggle.setShieldState(!shieldToggle.getShieldState());
+            ChatHelper.indexedTrans(player, "chat.shields_" + (shieldToggle.getShieldState() ? "activated" : "deactivated") + ".msg", -30553055);
+        }
     }
 }

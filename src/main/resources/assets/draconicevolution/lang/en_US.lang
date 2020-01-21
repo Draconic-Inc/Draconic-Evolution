@@ -447,6 +447,7 @@ key.toggleFlight=Toggle Creative Flight
 key.toggleDislocator=Toggle Item Dislocator
 key.cycleDigAOE=Cycle Dig AOE / Depth
 key.cycleAttackAOE=Cycle Attack AOE
+key.toggleShields=Toggle Draconic Shielding
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian
@@ -761,10 +762,12 @@ info.bc.forDetails.txt=for Details
 info.bc.ctrl.txt=CTRL
 
 //---- Chat Messages ----//
-chat.toolConfig.thatItemNotConfigurable.msg=That item is not configurable
+chat.toolConfig.thatItemNotConfigurable.msg=That item is not configurable.
 chat.dissEnchanter.notEnoughLevels.msg=You require %s levels to extract that enchantment!
 chat.item_dislocator_activate.msg=Item Dislocator Activated
 chat.item_dislocator_deactivate.msg=Item Dislocator Deactivated
+chat.shields_activated.msg=Draconic Shields Activated
+chat.shields_deactivated.msg=Draconic Shields Deactivated
 
 //---- GUI Buttons ----//
 gui.de.toolConfig.hud.txt=HUD
@@ -796,7 +799,7 @@ gui.de.celMod.rs.5=Sun Set
 gui.de.celMod.rs.6=Moon Rise
 gui.de.celMod.rs.7=Midnight
 gui.de.celMod.rs.8=Moon Set
-gui.de.celMod.rs.9=Cycle 1 full Minecraft day Or until restone signal stops.
+gui.de.celMod.rs.9=Cycle 1 full MineCraft day or until redstone signal stops.
 
 //---- Entity Detector ----//
 guiwiki.label.navigation=Navigation
@@ -824,9 +827,9 @@ gui.entityDetector.pulseDelay=Pulse Delay
 gui.entityDetector.pulseDelay.info=The delay between scanning pulses. The scanning pulse is when the block checks for nearby entities.
 gui.entityDetector.outputPulse=Pulse Output Mode
 gui.entityDetector.outputContin=Fixed Output Mode
-gui.entityDetector.output.info=The strength of the output is determined by the number of valid entities detected and the RS Min and RS Max settings. Pulse mode will emmit a 1 tick pulse every scanning pulse.Fixed mode will emmit a continuous signal updating every scanning pulse.
+gui.entityDetector.output.info=The strength of the output is determined by the number of valid entities detected and the RS Min and RS Max settings. Pulse mode will emit a 1 tick pulse every scanning pulse. Fixed mode will emit a continuous signal updating every scanning pulse.
 gui.entityDetector.range=Range
-gui.entityDetector.range.info=The scanning range in blocks.Increasing the range increases the energy cost for each scanning pulse
+gui.entityDetector.range.info=The scanning range in blocks. Increasing the range increases the energy cost for each scanning pulse.
 gui.entityDetector.rsMin=RS Min Threshold
 gui.entityDetector.rsMin.info=The minimum number of detected entities required to produce a redstone signal of 1.
 gui.entityDetector.rsMax=RS Max Threshold
@@ -854,8 +857,8 @@ eNet.de.hudLinks.info=Links
 eNet.de.hudWirelessLinks.info=Wireless Links
 eNet.de.IOOutput_true.info=I/O Mode:%s Output
 eNet.de.IOOutput_false.info=I/O Mode:%s Input
-eNet.de.sideCanNotReceive.info=That tile can not receive energy on that side!.
-eNet.de.sideCanNotExtract.info=That tile can not supply energy on that side!.
+eNet.de.sideCanNotReceive.info=That tile can not receive energy on that side!
+eNet.de.sideCanNotExtract.info=That tile can not supply energy on that side!
 eNet.de.maxReceivers.info=Receiver Limit Reached!
 eNet.de.hudWirelessLinks.info=Wireless Links
 eNet.de.output.info=Output
@@ -873,25 +876,25 @@ button.de.tierDown.txt=Tier Down
 button.de.activate.txt=Activate
 button.de.deactivate.txt=Deactivate
 ecore.de.already_assembling.txt=Assembly already in progress!
-ecore.de.assemble_found_invalid.txt=Error found invalid block within build area! %s at %s
-ecore.de.assemble_error_expected_air.txt=An error occurred while building structure! Expected air block at %s
-ecore.de.assemble_missing_required.txt=Unable to complete structure! Missing required block(s) %s
+ecore.de.assemble_found_invalid.txt=Error: Found invalid block [%s at %s] within build area! 
+ecore.de.assemble_error_expected_air.txt=An error occurred while building structure! Expected air block at %s.
+ecore.de.assemble_missing_required.txt=Unable to complete structure! Missing required block(s) %s.
 
 //---- Reactor ----//
 gui.reactor.draconicReactor.txt=Draconic Reactor
 gui.reactor.fuelIn.txt=Fuel (in)
 gui.reactor.chaosOut.txt=Chaos (out)
-gui.reactor.tempLoadFactor.txt=This shows how much load is being placed on the containment field by the reactors temperature. If the reactor temp passes 8,000 this will increase exponentially.
-gui.reactor.coreVolume.txt=This show the total volume of matter within the reactor in cubic metres. That's the draconium + chaos so this value will only change when you add or remove fuel.
+gui.reactor.tempLoadFactor.txt=This shows how much load is being placed on the containment field by the reactors temperature. If the reactor temp passes 8,000, this will increase exponentially.
+gui.reactor.coreVolume.txt=This shows the total volume of matter within the reactor in cubic meters (Draconium + Chaos). This value will only change when you add or remove fuel.
 gui.reactor.genRate.txt=This is the current RF/t being generated by the reactor.
-gui.reactor.inputRate.txt=This is the exact RF/t input required to maintain the current field strength. As field strength increases this will increase exponentially.
-gui.reactor.conversionRate.txt=This is how fast the reactor is currently using fuel. As the reactor saturation increases this will go down.
+gui.reactor.inputRate.txt=This is the exact RF/t input required to maintain the current field strength. As field strength increases, this will increase exponentially.
+gui.reactor.conversionRate.txt=This is how fast the reactor is currently using fuel. As the reactor saturation increases, this will go down.
 gui.reactor.redstoneMode.txt=Configure the comparator output for this reactor component.
-gui.reactor.rsMode_temp.txt=Will output a signal from 0 to 15 as temperature rises up to 10000
+gui.reactor.rsMode_temp.txt=Will output a signal from 0 to 15 as temperature rises up to 10000.
 gui.reactor.rsMode_temp_inv.txt=This is the same as Temperature except the signal is inverted.
 gui.reactor.rsMode_field.txt=Will output a signal from 0 to 15 as the shield strength fluctuates between 0 and 100%, Signal of 1 = > 10% shield and Signal of 15 = >= 90% shield power.
 gui.reactor.rsMode_field_inv.txt=This is the same as Shield except the signal is inverted.
-gui.reactor.rsMode_sat.txt=Will output a signal from 0 to 15 as the saturation level fluctuates between 0 and 100%
+gui.reactor.rsMode_sat.txt=Will output a signal from 0 to 15 as the saturation level fluctuates between 0 and 100%.
 gui.reactor.rsMode_sat_inv.txt=This is the same as Saturation except the signal is inverted.
 gui.reactor.rsMode_fuel.txt=Will output a signal from 0 to 15 as the fuel conversion level increases from 0 to 100%, Signal of 15 = >= 90% Conversion.
 gui.reactor.rsMode_fuel_inv.txt=This is the same as Conversion except the signal is inverted.
@@ -949,7 +952,7 @@ gui.draconiumChest.fMode.off.info=Auto feed is disabled.
 gui.draconiumChest.fMode.fill.btn=Fill
 gui.draconiumChest.fMode.fill.info=Will fill any stacks that are already smelting from the chest inventory.
 gui.draconiumChest.fMode.lock.btn=Lock
-gui.draconiumChest.fMode.lock.info=Similar to fill except will not smelt the last item so as soon as more of that item are available they will be used to continue feeding the furnace.
+gui.draconiumChest.fMode.lock.info=Similar to fill except will not smelt the last item. As soon as more of that item becomes available, smelting will resume.
 gui.draconiumChest.fMode.all.btn=All
 gui.draconiumChest.fMode.all.info=Will auto smelt any and all smeltable items in the chest inventory.
 gui.draconiumChest.speedBoost.info=Insert a Wyvern or higher tier core to boost speed and double ore at the cost of significantly increased energy consumption.
@@ -961,9 +964,9 @@ gui.draconiumChest.enableRegion.btn=Enable Region
 gui.draconiumChest.disableRegion.btn=Disable Region
 gui.draconiumChest.regionSelect.info=Click and drag in the chest inventory to change which slots are assigned to this region. Region must be enabled first and regions can not overlap.
 gui.draconiumChest.ioRegions.btn=I/O Regions
-gui.draconiumChest.ioRegions.info=Click here to configure I/O regions. IO regions allow you to create groups of slots with configurable sided io. You can also specify which slots the built in furnace can use. An example usage: Items entering the left side of the chest go to region 1 and are smelted by the furnace, Furnace outputs to region 2 and can then be extracted from the right side of the chest.
-gui.draconiumChest.pickColour.btn=Chest Colour
-gui.draconiumChest.pickColour.info=Allows you to modify the colour of the chest.
+gui.draconiumChest.ioRegions.info=Click here to configure I/O regions. IO regions allow you to create groups of slots with configurable sided I/O. You can also specify which slots the built-in furnace can use. An example usage: Items entering the left side of the chest go to region 1 and are smelted by the furnace, Furnace outputs to region 2 and can then be extracted from the right side of the chest.
+gui.draconiumChest.pickColour.btn=Chest Color
+gui.draconiumChest.pickColour.info=Allows you to modify the color of the chest.
 
 gui.draconiumChest.toggleIOMode.down.btn=Toggle Bottom IO mode.
 gui.draconiumChest.toggleIOMode.up.btn=Toggle Top IO mode.
@@ -1011,8 +1014,8 @@ info.de.shiftReversePlaceLogic.txt=Hold Shift to reverse placement logic.
 
 //---- Bound Dislocators ----//
 info.de.bound_dislocator.key=Unique Key
-info.de.bound_dislocator.click_to_link=Right click to create bound pair
-info.de.bound_dislocator.click_to_link_self=Right click to bind to yourself
+info.de.bound_dislocator.click_to_link=Right click to create bound pair.
+info.de.bound_dislocator.click_to_link_self=Right click to bind to yourself.
 info.de.bound_dislocator.player_link=Bound to player
 info.de.bound_dislocator.bound_to=Bound To
 info.de.bound_dislocator.in_player_inventory=The bound dislocator is in a players inventory. Will teleport to player.
