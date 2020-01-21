@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -87,7 +88,7 @@ public class PacketPlaceItem implements IMessage {
                     BlockPos pos = posHit.offset(traceResult.sideHit);
                     BlockEvent.PlaceEvent event = ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(world, pos, DEFeatures.placedItem.getDefaultState()), traceResult.sideHit, player.getActiveHand());
 
-                    if (event.isCanceled()) {
+                    if (event.isCanceled() || ctx.getServerHandler().serverController.isBlockProtected(world, pos, player)) {
                         return null;
                     }
 
