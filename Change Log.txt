@@ -1,4 +1,14 @@
 ######## 2.3.25.x ########
+-Fixed world gen attempting to gen  chaos crystal when chaos crystal is disabled.
+-Fixed incorrect block resistance when reactor is is running.
+-Fixed edge case null pointer with energy core.
+-Added config option to disable guardian creative damage.
+-Fixed placed items bypassing vanilla spawn protection.
+-Added config option to remove entity detector power requirement.
+-Fixed crash related to bound dislocators (Theoretically)
+-Fixed player attributes not syncing when teleporting between dimensions. (BrandonsCore Change)
+-Added config option to disable armor FOV correction.
+-Fixed minor client de-sync when adding stacks of fuel to advanced dislocator.
 
 ######## 2.3.24.349 ########
 -Fixed Draconium chest furnace freezing when backed up.
