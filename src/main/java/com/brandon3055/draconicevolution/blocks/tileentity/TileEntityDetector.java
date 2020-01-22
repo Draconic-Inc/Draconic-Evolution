@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.machines.EntityDetector;
@@ -381,7 +382,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     }
 
     public int getPulseCost() {
-        return (int) (125 * Math.pow(RANGE.value, 1.5));
+        return (int) (125 * Math.pow(RANGE.value, 1.5) * DEConfig.entityDetectorPowerModifier);
     }
 
     @Override

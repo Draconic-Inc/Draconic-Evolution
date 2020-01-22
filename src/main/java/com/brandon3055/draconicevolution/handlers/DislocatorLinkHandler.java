@@ -174,6 +174,9 @@ public class DislocatorLinkHandler extends WorldSavedData {
         }
         PlayerList players = world.getMinecraftServer().getPlayerList();
         EntityPlayer player = players.getPlayerByUUID(UUID.fromString(link.playerUUID));
+        if (player == null) {
+            return null;
+        }
         boolean flag = DataUtils.firstMatch(player.inventory.mainInventory, stack -> dislocatorBound.isValid(stack) && dislocatorBound.getLinkID(stack).equals(linkID)) != null;
         flag = flag || DataUtils.firstMatch(player.inventory.offHandInventory, stack -> dislocatorBound.isValid(stack) && dislocatorBound.getLinkID(stack).equals(linkID)) != null;
         if (!flag) {

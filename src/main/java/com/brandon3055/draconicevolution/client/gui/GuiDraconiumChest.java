@@ -104,11 +104,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             @Override
             public List<String> getToolTip() {
                 List<String> list = new ArrayList<>();
-<<<<<<< HEAD
-                list.add(I18n.format("gui.draconiumChest.processTime.info") + ": " + MathUtils.round(tile.smeltTime.get() / 20D, 100) + "s");
-=======
                 list.add(I18n.format("gui.draconiumChest.processTime.info") + ": " + Utils.round(tile.smeltTime.value / 20D, 100) + "s");
->>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
                 return list;
             }
         }.setHoverDelay(0)));
@@ -131,7 +127,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         manager.add(new MGuiButtonSolid(this, "SELECT_MODE", guiLeft() + 44, guiTop() + 190, 90, 12, "") {
             @Override
             public String getDisplayString() {
-                return I18n.format("gui.draconiumChest.fMode.btn") + ": " + TextFormatting.GOLD + I18n.format("gui.draconiumChest.fMode." + tile.autoSmeltMode.get().toString().toLowerCase(Locale.ENGLISH) + ".btn");
+                return I18n.format("gui.draconiumChest.fMode.btn") + ": " + TextFormatting.GOLD + I18n.format("gui.draconiumChest.fMode." + tile.autoSmeltMode.toString().toLowerCase(Locale.ENGLISH) + ".btn");
             }
         }.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.draconiumChest.fMode.info")}).setHoverDelay(10)), 1);
 //        manager.add(new MGuiSelectDialog(this, guiLeft() + 44, guiTop() + 190, 90, 12));
@@ -170,7 +166,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             List<MGuiElementBase> modeButtons = new ArrayList<>();
             for (AutoSmeltMode mode : AutoSmeltMode.values()) {
                 MGuiButtonSolid modeButton = new MGuiButtonSolid(this, mode.name(), 0, 0, dialog.xSize - 2, 12, mode.name().toLowerCase());
-                modeButton.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.draconiumChest.fMode." + mode.name().toLowerCase() + ".info")}));
+                modeButton.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.draconiumChest.fMode." + mode.name().toLowerCase(Locale.ENGLISH) + ".info")}));
                 modeButtons.add(modeButton);
             }
             selector.setOptions(modeButtons, false);

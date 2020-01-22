@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.lib.PairXZ;
-import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.brandonscore.registry.ModFeatureParser;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -136,9 +136,11 @@ public class ChaosWorldGenHandler {
 
         BlockPos center = new BlockPos(islandCenter.x, shardY, islandCenter.z);
 
-        world.setBlockState(center, DEFeatures.chaosCrystal.getDefaultState());
-        TileChaosCrystal tileChaosShard = (TileChaosCrystal) world.getTileEntity(center);
-        tileChaosShard.setLockPos();
+        if (ModFeatureParser.isEnabled(DEFeatures.chaosCrystal)) {
+            world.setBlockState(center, DEFeatures.chaosCrystal.getDefaultState());
+            TileChaosCrystal tileChaosShard = (TileChaosCrystal) world.getTileEntity(center);
+            tileChaosShard.setLockPos();
+        }
 
         EntityChaosGuardian guardian = new EntityChaosGuardian(world);
         guardian.setPosition(islandCenter.x, shardY, islandCenter.z);

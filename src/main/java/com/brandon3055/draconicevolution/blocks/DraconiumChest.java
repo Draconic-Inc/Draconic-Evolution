@@ -34,6 +34,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Locale;
+
 /**
  * Created by brandon3055 on 25/09/2016.
  */
@@ -67,7 +69,7 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
             return false;
         }
         else if (!stack.isEmpty()) {
-            String name = stack.getUnlocalizedName().toLowerCase();
+            String name = stack.getUnlocalizedName().toLowerCase(Locale.ENGLISH);
             if (name.contains("pouch") || name.contains("bag") || name.contains("strongbox") || name.contains("shulker_box")) {
                 return false;
             }

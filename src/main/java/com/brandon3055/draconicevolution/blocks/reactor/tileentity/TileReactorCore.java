@@ -49,6 +49,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -1161,7 +1162,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         @SideOnly(Side.CLIENT)
         public String localize() {
             TextFormatting[] colours = {TextFormatting.RED, TextFormatting.DARK_AQUA, TextFormatting.LIGHT_PURPLE, TextFormatting.GREEN, TextFormatting.LIGHT_PURPLE, TextFormatting.LIGHT_PURPLE, TextFormatting.DARK_RED};
-            return colours[ordinal()] + I18n.format("gui.reactor.status." + name().toLowerCase() + ".info");
+            return colours[ordinal()] + I18n.format("gui.reactor.status." + name().toLowerCase(Locale.ENGLISH) + ".info");
         }
     }
 }

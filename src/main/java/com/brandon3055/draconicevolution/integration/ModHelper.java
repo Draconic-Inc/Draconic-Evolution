@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.ModContainer;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.brandon3055.draconicevolution.handlers.CustomArmorHandler.ArmorSummery;
@@ -125,7 +126,7 @@ public class ModHelper {
     }
 
     public static boolean isWrench(ItemStack stack) {
-        String name = String.valueOf(stack.getItem().getRegistryName()).toLowerCase();
+        String name = String.valueOf(stack.getItem().getRegistryName()).toLowerCase(Locale.ENGLISH);
         return name.contains("wrench") || name.contains("binder") || name.contains("hammer");
     }
 

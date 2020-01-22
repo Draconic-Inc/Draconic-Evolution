@@ -16,12 +16,14 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
+import java.util.Locale;
+
 @Mod(modid = DraconicEvolution.MODID, name = DraconicEvolution.MODNAME, version = DraconicEvolution.VERSION, guiFactory = DraconicEvolution.GUI_FACTORY, dependencies = DraconicEvolution.DEPENDENCIES)
 public class DraconicEvolution {
     public static final String MODID = "draconicevolution";
     public static final String MODNAME = "Draconic Evolution";
     public static final String VERSION = "${mod_version}";
-    public static final String MOD_PREFIX = MODID.toLowerCase() + ":";
+    public static final String MOD_PREFIX = MODID.toLowerCase(Locale.ENGLISH) + ":";
     public static final String PROXY_CLIENT = "com.brandon3055.draconicevolution.client.ClientProxy";
     public static final String PROXY_SERVER = "com.brandon3055.draconicevolution.CommonProxy";
     public static final String DEPENDENCIES = "before:thermalexpansion;after:thermalfoundation;required-after:brandonscore@[" + BrandonsCore.VERSION + ",);";

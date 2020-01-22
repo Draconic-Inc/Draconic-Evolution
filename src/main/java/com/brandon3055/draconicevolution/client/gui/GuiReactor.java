@@ -29,6 +29,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by brandon3055 on 10/02/2017.
@@ -337,7 +338,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
 
         y = 0;
         for (final RSMode mode : RSMode.values()) {
-            manager.add(new MGuiButtonSolid(this, "RS_T", guiLeft + xSize + 2, guiTop + 127 + y, 66, 10, I18n.format("gui.reactor.rsMode_" + mode.name().toLowerCase() + ".btn")) {
+            manager.add(new MGuiButtonSolid(this, "RS_T", guiLeft + xSize + 2, guiTop + 127 + y, 66, 10, I18n.format("gui.reactor.rsMode_" + mode.name().toLowerCase(Locale.ENGLISH) + ".btn")) {
                 @Override
                 public boolean isEnabled() {
                     return compPanelAnim == 1 && component != null;
@@ -366,7 +367,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> implements
                     }
                 }
 
-            }.setColours(0xFF454545, 0xFF454545, 0xFF454545).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.rsMode_" + mode.name().toLowerCase() + ".txt")})));
+            }.setColours(0xFF454545, 0xFF454545, 0xFF454545).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.rsMode_" + mode.name().toLowerCase(Locale.ENGLISH) + ".txt")})));
             y += 11;
         }
 

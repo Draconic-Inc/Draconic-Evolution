@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.tools.ToolBase;
 import com.brandon3055.draconicevolution.items.tools.ToolStats;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -171,7 +172,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
     }
 
     @SideOnly(Side.CLIENT)
-    public ModelBiped model;
+    public ModelWyvernArmor model;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -194,6 +195,7 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
             this.model.bipedRightLeg.showModel = (armorType == EntityEquipmentSlot.LEGS || armorType == EntityEquipmentSlot.FEET);
         }
 
+        model.entityModel = _default;
 
         if (entityLiving == null) {
             return model;
@@ -376,6 +378,9 @@ public class WyvernArmor extends ItemArmor implements IConfigurableItem, IUpgrad
 
     @Override
     public float getNewFOV(EntityPlayer player, ItemStack stack, float currentFOV, float originalFOV, EntityEquipmentSlot slot) {
+        if (DEConfig.disableArmorFOVCorrection) {
+            return currentFOV;
+        }
         AttributeModifier modifier = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getModifier(WALK_SPEED_UUID);
         if (slot == EntityEquipmentSlot.LEGS && modifier != null) {
             boolean fly = player.capabilities.isFlying;

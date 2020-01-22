@@ -99,6 +99,9 @@ public class KeyInputHandler {
         else if (KeyBindings.cycleAttackAOE.isPressed()) {
             PacketDispatcher.dispatchCycleAttackAOE(player.isSneaking());
         }
+        else if (KeyBindings.toggleShields.isPressed()) {
+            PacketDispatcher.dispatchToggleShields();
+        }
     }
 
     private int previouseSlot(int i, int c) {

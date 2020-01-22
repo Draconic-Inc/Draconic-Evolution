@@ -38,7 +38,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
 
     public ChaosCrystal() {
         this.setHardness(100.0F);
-        this.setResistance(4000.0F);
+        this.setResistance(6000000.0F);
         this.setBlockUnbreakable();
     }
 
