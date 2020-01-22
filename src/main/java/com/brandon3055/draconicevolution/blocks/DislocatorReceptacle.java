@@ -55,7 +55,7 @@ public class DislocatorReceptacle extends BlockBCore implements ITileEntityProvi
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = worldIn.getTileEntity(pos);
-        return state.withProperty(CAMO, tile instanceof TileDislocatorReceptacle && ((TileDislocatorReceptacle) tile).camo.get());
+        return state.withProperty(CAMO, tile instanceof TileDislocatorReceptacle && ((TileDislocatorReceptacle) tile).CAMO.value);
     }
 
     //endregion
@@ -69,7 +69,7 @@ public class DislocatorReceptacle extends BlockBCore implements ITileEntityProvi
         if (tile instanceof TileDislocatorReceptacle) {
             ItemStack stack = playerIn.getHeldItem(hand);
             if (stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() == DEFeatures.infusedObsidian) {
-                ((TileDislocatorReceptacle) tile).camo.set(!((TileDislocatorReceptacle) tile).camo.get());
+                ((TileDislocatorReceptacle) tile).CAMO.value = !((TileDislocatorReceptacle) tile).CAMO.value;
                 ((TileDislocatorReceptacle) tile).updateBlock();
                 return true;
             }
@@ -109,14 +109,14 @@ public class DislocatorReceptacle extends BlockBCore implements ITileEntityProvi
 
             boolean powered = world.isBlockIndirectlyGettingPowered(pos) > 0;
 
-            if (!powered && tile.ltRedstone.get()) {
-                tile.ltRedstone.set(false);
+            if (!powered && tile.LT_REDSTONE.value) {
+                tile.LT_REDSTONE.value = false;
                 tile.deactivate();
             }
-            else if (powered && !tile.ltRedstone.get()) {
-                tile.ltRedstone.set(true);
+            else if (powered && !tile.LT_REDSTONE.value) {
+                tile.LT_REDSTONE.value = true;
                 tile.updateBlock();
-                if (!tile.active.get()) {
+                if (!tile.ACTIVE.value) {
                     tile.attemptIgnition();
                 }
             }

@@ -157,7 +157,7 @@ public class InvisECoreBlock extends BlockBCore implements IRenderOverride, ITil
 
             if (controller instanceof TileEnergyCoreStabilizer) {
                 TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer) controller;
-                if (stabilizer.isValidMultiBlock.get()) {
+                if (stabilizer.isValidMultiBlock.value) {
                     AxisAlignedBB bb = new AxisAlignedBB(stabilizer.getPos());
 
                     if (stabilizer.multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {

@@ -44,7 +44,7 @@ public class GuiGrinder extends GuiContainer {
         ResourceHelperDE.bindTexture(DETextures.GUI_GRINDER);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        float power = (float) tile.energySync.get() / (float) tile.getMaxEnergyStored(EnumFacing.DOWN) * -1 + 1;
+        float power = (float) tile.energySync.value / (float) tile.getMaxEnergyStored(EnumFacing.DOWN) * -1 + 1;
         drawTexturedModalRect(guiLeft + 68, guiTop + 12 + (int) (power * 40), xSize, (int) (power * 40), 12, 40 - (int) (power * 40));//Power bar
 
         drawCenteredString(fontRenderer, I18n.format(DEFeatures.grinder.getUnlocalizedName() + ".name"), guiLeft + xSize / 2 + 2, guiTop, 0x00FFFF);
@@ -54,7 +54,7 @@ public class GuiGrinder extends GuiContainer {
         if (GuiHelper.isInRect(68, 10, 12, 40, x, y)) {
             ArrayList<String> internal = new ArrayList<>();
             internal.add(I18n.format("info.de.energyBuffer.txt"));
-            internal.add("" + TextFormatting.DARK_BLUE + tile.energySync.get() + "/" + tile.getMaxEnergyStored(EnumFacing.UP));
+            internal.add("" + TextFormatting.DARK_BLUE + tile.energySync.value + "/" + tile.getMaxEnergyStored(EnumFacing.UP));
             drawHoveringText(internal, x + guiLeft, y + guiTop, fontRenderer);
         }
     }

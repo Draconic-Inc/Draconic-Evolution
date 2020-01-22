@@ -7,7 +7,11 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+<<<<<<< HEAD
 import com.brandon3055.brandonscore.utils.MathUtils;
+=======
+import com.brandon3055.brandonscore.utils.Utils;
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
@@ -27,7 +31,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.COMPONENT_MAX_DISTANCE;
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.MAX_TEMPERATURE;
 
@@ -36,11 +39,11 @@ import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileRe
  */
 public abstract class TileReactorComponent extends TileBCore implements ITickable, IDEPeripheral, IMovableStructure {
 
-    private final ManagedVec3I coreOffset       = register(new ManagedVec3I("coreOffset", SAVE_NBT));
-    public final ManagedEnum<EnumFacing> facing = register(new ManagedEnum<>("facing", EnumFacing.UP, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool isBound            = register(new ManagedBool("isBound", SAVE_NBT_SYNC_TILE));
-    public final ManagedEnum<RSMode> rsMode     = register(new ManagedEnum<>("rsMode", RSMode.TEMP, SAVE_NBT_SYNC_TILE));
-    public final ManagedInt rsPower             = register(new ManagedInt("rsPower", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    private final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, 0, 0))).saveToTile().syncViaTile().finish();
+    public final ManagedEnum<EnumFacing> facing = register("facing", new ManagedEnum<>(EnumFacing.UP)).saveToTile().syncViaTile().finish();
+    public final ManagedBool isBound = register("isBound", new ManagedBool(false)).saveToTile().syncViaTile().finish();
+    public final ManagedEnum<RSMode> rsMode = register("rsMode", new ManagedEnum<>(RSMode.TEMP)).saveToTile().syncViaTile().finish();
+    public final ManagedInt rsPower = register("rsPower", new ManagedInt(0)).saveToTile().syncViaTile().trigerUpdate().finish();
     public float animRotation = 0;
     public float animRotationSpeed = 0;
     private TileReactorCore cachedCore = null;
@@ -58,7 +61,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             TileReactorCore core = tryGetCore();
             if (core != null) {
                 animRotationSpeed = core.shieldAnimationState * 15F;
-                coreFalureIminent = core.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE;
+                coreFalureIminent = core.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE;
             }
             else {
                 coreFalureIminent = false;
@@ -80,9 +83,9 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             TileReactorCore core = getCachedCore();
 
             if (core != null) {
-                int rs = rsMode.get().getRSSignal(core);
-                if (rs != rsPower.get()) {
-                    rsPower.set(rs);
+                int rs = rsMode.value.getRSSignal(core);
+                if (rs != rsPower.value) {
+                    rsPower.value = rs;
                     world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
                 }
             }
@@ -100,8 +103,8 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
      */
     public void bindToCore(TileReactorCore core) {
         LogHelper.dev("Reactor-Comp: Bind To Core");
-        isBound.set(true);
-        coreOffset.set(getCoreOffset(core.getPos()));
+        isBound.value = true;
+        coreOffset.vec = getCoreOffset(core.getPos());
     }
 
     /**
@@ -109,17 +112,17 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
      */
     public void pokeCore() {
         LogHelper.dev("Reactor-Comp: Try Poke Core");
-        if (isBound.get()) {
+        if (isBound.value) {
             TileReactorCore core = checkAndGetCore();
             if (core != null) {
-                core.pokeCore(this, facing.get().getOpposite());
+                core.pokeCore(this, facing.value.getOpposite());
                 return;
             }
         }
 
         LogHelper.dev("Reactor-Comp: Try Poke Core | Find");
         for (int i = 1; i < COMPONENT_MAX_DISTANCE; i++) {
-            BlockPos searchPos = pos.offset(facing.get(), i);
+            BlockPos searchPos = pos.offset(facing.value, i);
             if (!world.isAirBlock(searchPos)) {
                 TileEntity tile = world.getTileEntity(searchPos);
                 LogHelper.dev("Reactor-Comp: Check: " + tile);
@@ -127,7 +130,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
                 if (tile instanceof TileReactorCore && i > 1) {
                     //I want this to poke the core regardless of weather or not the core structure is already valid in case this is an energy injector. The core will decide what to do.
-                    ((TileReactorCore) tile).pokeCore(this, facing.get().getOpposite());
+                    ((TileReactorCore) tile).pokeCore(this, facing.value.getOpposite());
                 }
                 return;
             }
@@ -135,7 +138,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     }
 
     public void invalidateComponent() {
-        isBound.set(false);
+        isBound.value = false;
     }
 
     //endregion ===================================
@@ -156,7 +159,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
         TileReactorCore core = checkAndGetCore();
         if (core != null) {
-            core.componentBroken(this, facing.get().getOpposite());
+            core.componentBroken(this, facing.value.getOpposite());
         }
     }
 
@@ -177,7 +180,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
         }
         else {
-            this.rsMode.set(rsMode);
+            this.rsMode.value = rsMode;
         }
     }
 
@@ -193,7 +196,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     //region Getters & Setters
 
     protected BlockPos getCorePos() {
-        return pos.subtract(coreOffset.get().getPos());
+        return pos.subtract(coreOffset.vec.getPos());
     }
 
     protected Vec3I getCoreOffset(BlockPos corePos) {
@@ -204,7 +207,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
      * @return The core this component is bound to or null if not bound or core is nolonger at bound position. Invalidates the block if the core could not be found.
      */
     protected TileReactorCore checkAndGetCore() {
-        if (!isBound.get()) {
+        if (!isBound.value) {
             LogHelper.dev("Reactor-Comp: Not Bound");
             return null;
         }
@@ -223,7 +226,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     }
 
     public TileReactorCore tryGetCore() {
-        if (!isBound.get()) {
+        if (!isBound.value) {
             return null;
         }
 
@@ -235,7 +238,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     }
 
     protected TileReactorCore getCachedCore() {
-        if (isBound.get()) {
+        if (isBound.value) {
             BlockPos corePos = getCorePos();
             Chunk coreChunk = world.getChunkFromBlockCoords(corePos);
 
@@ -253,7 +256,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
                 }
                 else {
                     cachedCore = null;
-                    isBound.set(false);
+                    isBound.value = false;
                 }
             }
         }
@@ -267,10 +270,17 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         return true;
     }
 
+<<<<<<< HEAD
 //    @Override
 //    public boolean canConnectEnergy(EnumFacing from) {
 //        return from == facing.get().getOpposite();
 //    }
+=======
+    @Override
+    public boolean canConnectEnergy(EnumFacing from) {
+        return from == facing.value.getOpposite();
+    }
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
 
     //region Peripheral
 
@@ -294,6 +304,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
         if (method.equals("getReactorInfo")) {
             Map<Object, Object> map = new HashMap<Object, Object>();
+<<<<<<< HEAD
             map.put("temperature", MathUtils.round(reactor.temperature.get(), 100));
             map.put("fieldStrength", MathUtils.round(reactor.shieldCharge.get(), 100));
             map.put("maxFieldStrength", MathUtils.round(reactor.maxShieldCharge.get(), 100));
@@ -306,6 +317,20 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             map.put("fuelConversionRate", (int) Math.round(reactor.fuelUseRate.get() * 1000000D));
             map.put("status", reactor.reactorState.get().name().toLowerCase());//reactor.reactorState.value == TileReactorCore.ReactorState.COLD ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
             map.put("failSafe", reactor.failSafeMode.get());
+=======
+            map.put("temperature", Utils.round(reactor.temperature.value, 100));
+            map.put("fieldStrength", Utils.round(reactor.shieldCharge.value, 100));
+            map.put("maxFieldStrength", Utils.round(reactor.maxShieldCharge.value, 100));
+            map.put("energySaturation", reactor.saturation.value);
+            map.put("maxEnergySaturation", reactor.maxSaturation.value);
+            map.put("fuelConversion", Utils.round(reactor.convertedFuel.value, 1000));
+            map.put("maxFuelConversion", reactor.reactableFuel.value + reactor.convertedFuel.value);
+            map.put("generationRate", (int) reactor.generationRate.value);
+            map.put("fieldDrainRate", reactor.fieldDrain.value);
+            map.put("fuelConversionRate", (int) Math.round(reactor.fuelUseRate.value * 1000000D));
+            map.put("status", reactor.reactorState.value.name().toLowerCase());//reactor.reactorState.value == TileReactorCore.ReactorState.COLD ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
+            map.put("failSafe", reactor.failSafeMode.value);
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
             return new Object[]{map};
         }
         else if (method.equals("chargeReactor")) {
@@ -330,7 +355,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             else return new Object[]{false};
         }
         else if (method.equals("setFailSafe")) {
-            reactor.failSafeMode.set(args.checkBoolean(0));
+            reactor.failSafeMode.value = args.checkBoolean(0);
             return new Object[]{true};
         }
         return new Object[]{};
@@ -342,7 +367,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         TEMP {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                return (int) ((tile.temperature.get() / MAX_TEMPERATURE) * 15D);
+                return (int) ((tile.temperature.value / MAX_TEMPERATURE) * 15D);
             }
         },
         TEMP_INV {
@@ -354,7 +379,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         FIELD {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                double value = tile.shieldCharge.get() / tile.maxShieldCharge.get();
+                double value = tile.shieldCharge.value / tile.maxShieldCharge.value;
                 value -= 0.05;
                 value *= 1.2;
                 return (int) (value * 15);
@@ -369,7 +394,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         SAT {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                return (int) (((double) tile.saturation.get() / (double) tile.maxSaturation.get()) * 15D);
+                return (int) (((double) tile.saturation.value / (double) tile.maxSaturation.value) * 15D);
             }
         },
         SAT_INV {
@@ -381,7 +406,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         FUEL {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                double value = tile.convertedFuel.get() / (tile.convertedFuel.get() + tile.reactableFuel.get());
+                double value = tile.convertedFuel.value / (tile.convertedFuel.value + tile.reactableFuel.value);
                 value += 0.1;
                 value = MathUtils.map(value, 0.1, 1, 0, 1);
                 return (int) (value * 15);

@@ -105,7 +105,7 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
         TileEntity tile = source.getTileEntity(pos);
 
         if (tile instanceof TileReactorEnergyInjector) {
-            switch (((TileReactorEnergyInjector) tile).facing.get()) {
+            switch (((TileReactorEnergyInjector) tile).facing.value) {
                 case DOWN:
                     return AABB_INJ_DOWN;
                 case UP:
@@ -162,7 +162,7 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
         }
 
         if (te instanceof TileReactorComponent) {
-            ((TileReactorComponent) te).facing.set(facing);
+            ((TileReactorComponent) te).facing.value = facing;
             ((TileReactorComponent) te).onPlaced();
         }
     }
@@ -212,7 +212,7 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
         TileEntity tileEntity = worldIn.getTileEntity(pos);
 
         if (tileEntity instanceof TileReactorComponent) {
-            return ((TileReactorComponent) tileEntity).rsPower.get();
+            return ((TileReactorComponent) tileEntity).rsPower.value;
         }
 
         return 0;

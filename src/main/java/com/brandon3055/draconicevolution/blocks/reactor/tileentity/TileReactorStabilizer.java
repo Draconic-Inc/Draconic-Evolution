@@ -26,11 +26,19 @@ public class TileReactorStabilizer extends TileReactorComponent implements /*IEn
 
         TileReactorCore tile = getCachedCore();
 
+<<<<<<< HEAD
         if (tile != null && tile.reactorState.get() == TileReactorCore.ReactorState.RUNNING) {
             TileEntity output = world.getTileEntity(pos.offset(facing.get().getOpposite()));
             if (output != null && EnergyUtils.canReceiveEnergy(output, facing.get())) {
                 long sent = EnergyUtils.insertEnergy(output, tile.saturation.get(), facing.get(), false);
                 tile.saturation.subtract(sent);
+=======
+        if (tile != null && tile.reactorState.value == TileReactorCore.ReactorState.RUNNING) {
+            TileEntity output = world.getTileEntity(pos.offset(facing.value.getOpposite()));
+            if (output != null && EnergyHelper.canReceiveEnergy(output, facing.value)) {
+                int sent = EnergyHelper.insertEnergy(output, tile.saturation.value, facing.value, false);
+                tile.saturation.value -= sent;
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
             }
         }
     }

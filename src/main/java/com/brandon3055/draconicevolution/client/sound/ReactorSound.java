@@ -24,7 +24,7 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
         this.yPosF = (float) tile.getPos().getY() + 0.5F;
         this.zPosF = (float) tile.getPos().getZ() + 0.5F;
         this.repeat = true;
-        if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
+        if (tile.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE) {
             this.volume = 10F;
         }
         else {
@@ -53,13 +53,13 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
         }
 
         pitch = (float) MathHelper.approachExp(pitch, targetPitch, 0.05);
-        if (tile.reactorState.get() == TileReactorCore.ReactorState.WARMING_UP || tile.reactorState.get() == TileReactorCore.ReactorState.STOPPING || tile.reactorState.get() == TileReactorCore.ReactorState.COOLING) {
+        if (tile.reactorState.value == TileReactorCore.ReactorState.WARMING_UP || tile.reactorState.value == TileReactorCore.ReactorState.STOPPING || tile.reactorState.value == TileReactorCore.ReactorState.COOLING) {
             targetPitch = 0.5F + (tile.shieldAnimationState / 2F);
         }
-        else if (tile.reactorState.get() == TileReactorCore.ReactorState.RUNNING) {
-            targetPitch = 1F + (float) Math.max(0, Math.min(0.5, 1 - ((tile.shieldCharge.get() / tile.maxShieldCharge.get()) * 10)));
+        else if (tile.reactorState.value == TileReactorCore.ReactorState.RUNNING) {
+            targetPitch = 1F + (float) Math.max(0, Math.min(0.5, 1 - ((tile.shieldCharge.value / tile.maxShieldCharge.value) * 10)));
         }
-        else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
+        else if (tile.reactorState.value == TileReactorCore.ReactorState.BEYOND_HOPE) {
             if (volume == 1.5F) {
                 donePlaying = true;
             }

@@ -124,8 +124,8 @@ public class ReactorBeamFX extends BCParticle {
             beam_O.useShader(cache -> {
                 cache.glUniform1F("time", animation);
                 cache.glUniform1F("fade", 1);
-                cache.glUniform1F("power", (float) tile.animExtractState.get());
-                cache.glUniform1F("startup", (float) tile.animExtractState.get());
+                cache.glUniform1F("power", (float) tile.animExtractState.value);
+                cache.glUniform1F("startup", (float) tile.animExtractState.value);
             });
             renderShaderBeam(buffer, pos1, 0.263F, 0.263F, 0.8D, texOffset, 0, true, extractBeamColour);
             beam_O.useShader(cache -> cache.glUniform1F("fade", 0));

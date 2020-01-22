@@ -28,7 +28,7 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
 
         //region Rotate Renderer
         EnumFacing facing;
-        if (te.isCoreActive.get()) {
+        if (te.isCoreActive.value) {
             facing = te.coreDirection;
         }
         else {
@@ -50,13 +50,13 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
     }
 
     private void renderRing(TileEnergyCoreStabilizer te, float partialTicks) {
-        if (!te.isValidMultiBlock.get()) {
+        if (!te.isValidMultiBlock.value) {
             return;
         }
 
         GlStateManager.pushMatrix();
         ResourceHelperDE.bindTexture(DETextures.STABILIZER_LARGE);
-        GlStateManager.rotate(te.rotation + (te.isCoreActive.get() ? partialTicks : 0), 0, 0, 1);
+        GlStateManager.rotate(te.rotation + (te.isCoreActive.value ? partialTicks : 0), 0, 0, 1);
         largeModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F / 16F);
         GlStateManager.popMatrix();
     }

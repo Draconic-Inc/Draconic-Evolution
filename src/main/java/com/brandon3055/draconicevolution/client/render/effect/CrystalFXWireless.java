@@ -87,7 +87,7 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalWirelessIO> {
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         double scale = 0.08;// * powerLevel;
-        boolean output = !tile.inputMode.get();
+        boolean output = !tile.inputMode.value;
 
         float minU = (float) this.particleTextureIndexX / texturesPerRow;
         float maxU = minU + 1F / texturesPerRow;

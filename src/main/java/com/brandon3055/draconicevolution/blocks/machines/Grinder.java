@@ -79,7 +79,7 @@ public class Grinder extends BlockMobSafe implements ITileEntityProvider, IRende
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileGrinder tileGrinder = worldIn.getTileEntity(pos) instanceof TileGrinder ? (TileGrinder) worldIn.getTileEntity(pos) : null;
-        return state.withProperty(ACTIVE, tileGrinder != null && tileGrinder.active.get());
+        return state.withProperty(ACTIVE, tileGrinder != null && tileGrinder.active.value);
     }
 
     @Override

@@ -26,16 +26,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-
 /**
  * Created by brandon3055 on 19/11/2016.
  */
 public class TileCrystalDirectIO extends TileCrystalBase   {
 
-    public final ManagedEnum<EnumFacing> facing = dataManager.register(new ManagedEnum<>("facing", EnumFacing.DOWN, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool outputMode = dataManager.register(new ManagedBool("outputMode", SAVE_BOTH_SYNC_TILE));
+    public final ManagedEnum<EnumFacing> facing = dataManager.register("facing", new ManagedEnum<>(EnumFacing.DOWN)).syncViaTile().saveToTile().finish();
+    public final ManagedBool outputMode = dataManager.register("outputMode", new ManagedBool(false)).syncViaTile().saveToTile().saveToItem().finish();
 
     public TileCrystalDirectIO() {
     }
@@ -50,10 +47,15 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
             return;
         }
 
-        TileEntity tile = world.getTileEntity(pos.offset(facing.get()));
+        TileEntity tile = world.getTileEntity(pos.offset(facing.value));
 
+<<<<<<< HEAD
         if (outputMode.get() && tile != null) {
             opStorage.extractOP(EnergyUtils.insertEnergy(tile, opStorage.extractOP(opStorage.getMaxExtract(), true), facing.get().getOpposite(), false), false);
+=======
+        if (outputMode.value && tile != null) {
+            energyStorage.extractEnergy(EnergyHelper.insertEnergy(tile, energyStorage.extractEnergy(energyStorage.getMaxExtract(), true), facing.value.getOpposite(), false), false);
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
         }
     }
 
@@ -61,6 +63,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     //region EnergyIO
 
+<<<<<<< HEAD
 //    @Override
 //    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
 //        return from != null && !outputMode.get() && from.equals(facing.get()) ? energyStorage.receiveEnergy(maxReceive, simulate) : 0;
@@ -75,13 +78,29 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 //    public boolean canConnectEnergy(EnumFacing from) {
 //        return from != null && from.equals(facing.get());
 //    }
+=======
+    @Override
+    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+        return from != null && !outputMode.value && from.equals(facing.value) ? energyStorage.receiveEnergy(maxReceive, simulate) : 0;
+    }
+
+    @Override
+    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
+        return from != null && outputMode.value && from.equals(facing.value) ? energyStorage.extractEnergy(maxExtract, simulate) : 0;
+    }
+
+    @Override
+    public boolean canConnectEnergy(EnumFacing from) {
+        return from != null && from.equals(facing.value);
+    }
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
 
     //endregion
 
     @Override
     public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (player.isSneaking()) {
-            outputMode.invert();
+            outputMode.value = !outputMode.value;
             return true;
         }
         return super.onBlockActivated(state, player, hand, side, hitX, hitY, hitZ);
@@ -114,8 +133,8 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     @Override
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
-        TextFormatting colour = outputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(I18n.format("eNet.de.IOOutput_" + outputMode.get() + ".info", colour));
+        TextFormatting colour = outputMode.value ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
+        displayList.add(I18n.format("eNet.de.IOOutput_" + outputMode.value + ".info", colour));
     }
 
     //endregion
@@ -125,7 +144,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     @Override
     public void onTilePlaced(World world, BlockPos pos, EnumFacing placedAgainst, float hitX, float hitY, float hitZ, EntityPlayer placer, ItemStack stack) {
         super.onTilePlaced(world, pos, placedAgainst, hitX, hitY, hitZ, placer, stack);
-        facing.set(placedAgainst.getOpposite());
+        facing.value = placedAgainst.getOpposite();
     }
 
     //endregion

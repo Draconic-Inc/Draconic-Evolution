@@ -36,27 +36,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-
 /**
  * Created by brandon3055 on 28/09/2016.
  */
 public class TileDraconiumChest extends TileEnergyInventoryBase implements IEnergyReceiver, ITickable, ISidedInventory {
 
     private NonNullList<ItemStack> craftingStacks = NonNullList.withSize(10, ItemStack.EMPTY);
-    public ManagedEnum<AutoSmeltMode> autoSmeltMode = register(new ManagedEnum<>("autoSmeltMode", AutoSmeltMode.OFF, SAVE_BOTH_SYNC_CONTAINER));
-    public ManagedEnum<EnumFacing> facing = register(new ManagedEnum<>("facing", EnumFacing.NORTH, SAVE_NBT_SYNC_TILE));
-    public ManagedDouble burnRate = register(new ManagedDouble("burnRate", SAVE_BOTH_SYNC_CONTAINER));
-    public ManagedDouble smeltProgress = register(new ManagedDouble("smeltProgress", SAVE_BOTH_SYNC_CONTAINER));
-    public ManagedBool isSmelting = register(new ManagedBool("isSmelting", SAVE_BOTH));
-    public ManagedBool furnaceOutputBlocked = register(new ManagedBool("furnaceOutputBlocked", SAVE_BOTH));
-    public ManagedInt smeltEnergyPerTick = register(new ManagedInt("smeltEnergyPerTick", 256, SAVE_BOTH_SYNC_CONTAINER));
-    public ManagedInt colour = register(new ManagedInt("colour", 0x640096, SAVE_BOTH_SYNC_TILE));
-    public ManagedShort numPlayersUsing = register(new ManagedShort("numPlayersUsing", SYNC_TILE));
+    public ManagedEnum<AutoSmeltMode> autoSmeltMode = register("autoSmeltMode", new ManagedEnum<>(AutoSmeltMode.OFF)).syncViaContainer().saveToTile().saveToItem().finish();
+    public ManagedEnum<EnumFacing> facing = register("facing", new ManagedEnum<>(EnumFacing.NORTH)).saveToTile().syncViaTile().finish();
+    public ManagedDouble burnRate = register("burnRate", new ManagedDouble(0)).syncViaContainer().saveToTile().saveToItem().finish();
+    public ManagedDouble smeltProgress = register("smeltProgress", new ManagedDouble(0)).syncViaContainer().saveToTile().saveToItem().finish();
+    public ManagedBool isSmelting = register("isSmelting", new ManagedBool(false)).saveToTile().saveToItem().finish();
+    public ManagedBool furnaceOutputBlocked = register("furnaceOutputBlocked", new ManagedBool(false)).saveToTile().saveToItem().finish();
+    public ManagedInt smeltEnergyPerTick = register("smeltEnergyPerTick", new ManagedInt(256)).syncViaContainer().saveToTile().saveToItem().finish();
+    public ManagedInt colour = register("colour", new ManagedInt(0x640096)).syncViaTile().saveToTile().saveToItem().finish();
+    public ManagedShort numPlayersUsing = register("numPlayersUsing", new ManagedShort(0)).syncViaTile().finish();
     /**
      * The number of ticks it takes to complete 1 smelting operation.
      */
-    public ManagedByte smeltTime = register(new ManagedByte("smeltTime", (byte) 100, SAVE_BOTH_SYNC_CONTAINER));
+    public ManagedByte smeltTime = register("smeltTime", new ManagedByte(100)).syncViaContainer().saveToTile().saveToItem().finish();
 
     public float prevLidAngle;
     public float lidAngle;
@@ -93,7 +91,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     public TileDraconiumChest() {
         this.setCapacityAndTransfer(1000000, 32000, 0);//todo
         this.setInventorySize(267);
-        setEnergySyncMode(SYNC_CONTAINER);
+        setEnergySyncMode().syncViaContainer();
     }
 
     @Override
@@ -121,37 +119,37 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
      */
     public void updateSmelting() {
         //If the furnace output is blocked we wait for something in the inventory to change then try again.
-        if (furnaceOutputBlocked.get()) {
+        if (furnaceOutputBlocked.value) {
 //            LogHelper.dev("furnaceOutputBlocked");
-            burnRate.zero();
+            burnRate.value = 0;
             return;
         }
         //If not smelting then decrement smelt progress if greater than 0 and return.
-        else if (!isSmelting.get()) {
-            if (smeltProgress.get() >= 1) {
-                smeltProgress.dec();
+        else if (!isSmelting.value) {
+            if (smeltProgress.value >= 1) {
+                smeltProgress.value--;
             }
-            burnRate.zero();
+            burnRate.value = 0;
 //            LogHelper.dev("!isSmelting");
             return;
         }
         //Else if smelting increment the smelt timer and use energy.
-        else if (smeltProgress.get() < smeltTime.get()) {
-            burnRate.set(getSmeltingSpeed());
-            int energyUsage = Math.max((int) (burnRate.get() * smeltEnergyPerTick.get()), 8);
-            smeltProgress.add(burnRate.get());
+        else if (smeltProgress.value < smeltTime.value) {
+            burnRate.value = getSmeltingSpeed();
+            int energyUsage = Math.max((int) (burnRate.value * smeltEnergyPerTick.value), 8);
+            smeltProgress.value += burnRate.value;
             energyStorage.modifyEnergyStored(-energyUsage);
 //            LogHelper.dev("smeltProgress.value < smeltTime, Speed: " + burnRate.value);
             return;
         }
 
         if (!smeltItems()) {
-            furnaceOutputBlocked.set(true);
+            furnaceOutputBlocked.value = true;
 //            LogHelper.dev("!smeltItems()");
             return;
         }
-        smeltProgress.zero();
-        isSmelting.set(canSmelt());
+        smeltProgress.value = 0;
+        isSmelting.value = canSmelt();
     }
 
     int itemsSmelted = 0;
@@ -168,7 +166,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
                 ItemStack stack = getStackInSlot(i);
                 ItemStack result = getSmeltResult(stack);
 
-                if (!result.isEmpty() && (!autoSmeltMode.get().keep1Item || stack.getCount() > 1)) {
+                if (!result.isEmpty() && (!autoSmeltMode.value.keep1Item || stack.getCount() > 1)) {
                     InventoryRange range = new FurnaceIORange(this, furnaceOutputs);
                     //Given the size of the inventory this is probably a bit inefficient but i dont think there is a better option.
                     //If an item produces a result stack size greater than 1 i cant exactly just insert half the stack then smelt the other half of the stack later
@@ -201,7 +199,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     private boolean canSmelt() {
         for (int i = FIRST_FURNACE_SLOT; i <= LAST_FURNACE_SLOT; i++) {
             ItemStack stack = getStackInSlot(i);
-            if (!getSmeltResult(stack).isEmpty() && (!autoSmeltMode.get().keep1Item || stack.getCount() > 1)) {
+            if (!getSmeltResult(stack).isEmpty() && (!autoSmeltMode.value.keep1Item || stack.getCount() > 1)) {
                 return true;
             }
         }
@@ -236,28 +234,28 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
         ItemStack stack = getStackInSlot(CORE_SLOT);
         if (stack.getItem() instanceof ItemCore) {
             if (stack.getItem() == DEFeatures.wyvernCore) {
-                smeltEnergyPerTick.set(1024);
-                smeltTime.set((byte) 50);
+                smeltEnergyPerTick.value = 1024;
+                smeltTime.value = 50;
             }
             else if (stack.getItem() == DEFeatures.awakenedCore) {
-                smeltEnergyPerTick.set(4069);
-                smeltTime.set((byte) 25);
+                smeltEnergyPerTick.value = 4069;
+                smeltTime.value = 25;
             }
             else if (stack.getItem() == DEFeatures.chaoticCore) {
-                smeltEnergyPerTick.set(16384);
-                smeltTime.set((byte) 2);
+                smeltEnergyPerTick.value = 16384;
+                smeltTime.value = 2;
             }
             else {
-                smeltEnergyPerTick.set(256);
-                smeltTime.set((byte) 100);
+                smeltEnergyPerTick.value = 256;
+                smeltTime.value = 100;
             }
         }
         else {
-            smeltEnergyPerTick.set(256);
-            smeltTime.set((byte) 100);
+            smeltEnergyPerTick.value = 256;
+            smeltTime.value = 100;
         }
-        isSmelting.set(canSmelt());
-        furnaceOutputBlocked.set(false);
+        isSmelting.value = canSmelt();
+        furnaceOutputBlocked.value = false;
     }
 
     //endregion
@@ -269,7 +267,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     }
 
     public boolean attemptAutoFeed() {
-        if (autoSmeltMode.get() == AutoSmeltMode.OFF || autoFeedRun) {
+        if (autoSmeltMode.value == AutoSmeltMode.OFF || autoFeedRun) {
             return false;
         }
         checkIOCache();
@@ -287,7 +285,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
                 for (int f = FIRST_FURNACE_SLOT; f <= LAST_FURNACE_SLOT; f++) {
                     ItemStack stackInFernace = getStackInSlot(f);
 
-                    switch (autoSmeltMode.get()) {
+                    switch (autoSmeltMode.value) {
                         case FILL:
                         case LOCK:
                             if (ItemStack.areItemsEqual(stackInFernace, stack) && ItemStack.areItemStackTagsEqual(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
@@ -364,7 +362,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
         if (id == 0) {
             int index = data.readByte();
-            autoSmeltMode.set(AutoSmeltMode.values()[index]);
+            autoSmeltMode.value = AutoSmeltMode.values()[index];
             scheduleAutoFeed();
             validateSmelting();
         }
@@ -384,7 +382,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
             }
         }
         else if (id == 2) {
-            colour.set(data.readInt());
+            colour.value = data.readInt();
             markDirty();
         }
     }
@@ -470,8 +468,8 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
         if ((index >= FIRST_FURNACE_SLOT && index <= LAST_FURNACE_SLOT) || index == CORE_SLOT) {
             validateSmelting();
         }
-        else if (furnaceOutputBlocked.get()) {
-            furnaceOutputBlocked.set(false);
+        else if (furnaceOutputBlocked.value) {
+            furnaceOutputBlocked.value = false;
         }
 
         scheduleAutoFeed();
@@ -484,11 +482,19 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
 
 
     @Override
+<<<<<<< HEAD
     public void writeToItemStack(NBTTagCompound compound, boolean willHarvest) {
         super.writeToItemStack(compound, willHarvest);
         writeRegions(compound);
         if (colour.get() != 0x640096) {
             compound.setInteger("ChestColour", colour.get());
+=======
+    public void writeToItemStack(NBTTagCompound tileCompound, boolean willHarvest) {
+        super.writeToItemStack(tileCompound, willHarvest);
+        writeRegions(tileCompound);
+        if (colour.value != 0x640096) {
+            tileCompound.setInteger("ChestColour", colour.value);
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
         }
     }
 
@@ -625,7 +631,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
         }
 
 //        EnumFacing f = worldFacing;
-        int rotate = facing.get() == EnumFacing.NORTH ? 0 : facing.get() == EnumFacing.EAST ? 1 : facing.get() == EnumFacing.SOUTH ? 2 : 3;
+        int rotate = facing.value == EnumFacing.NORTH ? 0 : facing.value == EnumFacing.EAST ? 1 : facing.value == EnumFacing.SOUTH ? 2 : 3;
         for (int i = 0; i < rotate; i++) {
             worldFacing = worldFacing.rotateYCCW();
         }
@@ -661,14 +667,14 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
         int zCoord = this.pos.getZ();
         ++ticksSinceSync;
 
-        if (!world.isRemote && numPlayersUsing.get() != 0 && (ticksSinceSync + xCoord + yCoord + zCoord) % 200 == 0) {
-            numPlayersUsing.zero();
+        if (!world.isRemote && numPlayersUsing.value != 0 && (ticksSinceSync + xCoord + yCoord + zCoord) % 200 == 0) {
+            numPlayersUsing.value = 0;
 
             for (EntityPlayer entityplayer : this.world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB((double) ((float) xCoord - 5.0F), (double) ((float) yCoord - 5.0F), (double) ((float) zCoord - 5.0F), (double) ((float) (xCoord + 1) + 5.0F), (double) ((float) (yCoord + 1) + 5.0F), (double) ((float) (zCoord + 1) + 5.0F)))) {
                 if (entityplayer.openContainer instanceof ContainerDraconiumChest) {
                     TileDraconiumChest tile = ((ContainerDraconiumChest) entityplayer.openContainer).tile;
                     if (tile == this) {
-                        numPlayersUsing.inc();
+                        ++numPlayersUsing.value;
                     }
                 }
             }
@@ -676,16 +682,16 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
 
         this.prevLidAngle = this.lidAngle;
 
-        if (this.numPlayersUsing.get() > 0 && this.lidAngle == 0.0F) {
+        if (this.numPlayersUsing.value > 0 && this.lidAngle == 0.0F) {
             double d1 = (double) xCoord + 0.5D;
             double d2 = (double) zCoord + 0.5D;
             this.world.playSound((EntityPlayer) null, d1, (double) yCoord + 0.5D, d2, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
         }
 
-        if (this.numPlayersUsing.get() == 0 && this.lidAngle > 0.0F || this.numPlayersUsing.get() > 0 && this.lidAngle < 1.0F) {
+        if (this.numPlayersUsing.value == 0 && this.lidAngle > 0.0F || this.numPlayersUsing.value > 0 && this.lidAngle < 1.0F) {
             float f2 = this.lidAngle;
 
-            if (this.numPlayersUsing.get() > 0) {
+            if (this.numPlayersUsing.value > 0) {
                 this.lidAngle += 0.1F;
             }
             else {
@@ -711,11 +717,11 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     @Override
     public void openInventory(EntityPlayer player) {
         if (!player.isSpectator()) {
-            if (numPlayersUsing.get() < 0) {
-                numPlayersUsing.zero();
+            if (numPlayersUsing.value < 0) {
+                numPlayersUsing.value = 0;
             }
 
-            numPlayersUsing.inc();
+            ++numPlayersUsing.value;
 //            this.world.notifyNeighborsOfStateChange(this.pos, this.getBlockType());
 //            this.world.notifyNeighborsOfStateChange(this.pos.down(), this.getBlockType());
         }
@@ -724,7 +730,7 @@ public class TileDraconiumChest extends TileEnergyInventoryBase implements IEner
     @Override
     public void closeInventory(EntityPlayer player) {
         if (!player.isSpectator()) {
-            numPlayersUsing.dec();
+            --numPlayersUsing.value;
 //            this.world.addBlockEvent(this.pos, this.getBlockType(), 1, this.numPlayersUsing);
 //            this.world.notifyNeighborsOfStateChange(this.pos, this.getBlockType());
 //            this.world.notifyNeighborsOfStateChange(this.pos.down(), this.getBlockType());

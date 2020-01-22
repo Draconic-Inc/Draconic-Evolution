@@ -34,10 +34,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-
 public class TileGrinder extends TileEnergyInventoryBase implements IEnergyReceiver, ITickable {
 
+<<<<<<< HEAD
     //Animation Fields.
 //    private final IAnimationStateMachine asm;
 //    private final TimeValues.VariableValue fanPos = new TimeValues.VariableValue(0.25F);
@@ -46,13 +45,16 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
     private SimpleAnimHandler animHandler;
 
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+=======
+    public final ManagedBool active = register("active", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
     public static FakePlayer fakePlayer;
     private AxisAlignedBB killBox;
     public boolean powered = false;
 
     public TileGrinder() {
         setInventorySize(1);
-        setEnergySyncMode(SYNC_CONTAINER);
+        setEnergySyncMode().syncViaContainer();
         setCapacityAndTransfer(500000, 32000, 0);
         setShouldRefreshOnBlockChange();
 
@@ -70,9 +72,9 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
             return;
         }
 
-        active.set(getEnergyStored() > 0 && !powered);
+        active.value = getEnergyStored() > 0 && !powered;
 
-        if (active.get()) {
+        if (active.value) {
             updateGrinding();
         }
 

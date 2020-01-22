@@ -155,7 +155,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
         model.render(ccrs, mat);
         ccrs.draw();
 
-        if (!te.guardianDefeated.get()) {
+        if (!te.guardianDefeated.value) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, -4.5, 0);
             Tessellator tessellator = Tessellator.getInstance();

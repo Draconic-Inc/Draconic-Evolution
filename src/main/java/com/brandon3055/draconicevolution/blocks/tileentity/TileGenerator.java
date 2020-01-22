@@ -37,6 +37,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+<<<<<<< HEAD
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable {
@@ -47,6 +48,9 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
     private final TimeValues.VariableValue switchTime = new TimeValues.VariableValue(0);
     @SideOnly(Side.CLIENT)
     private GeneratorSoundHandler sound = new GeneratorSoundHandler(this);
+=======
+public class TileGenerator extends TileEnergyInventoryBase implements IEnergyProvider, ITickable, IChangeListener {
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
 
     /**
      * The fuel value of the last item that was consumed.
@@ -61,6 +65,7 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
     public final ManagedEnum<Mode> mode = register(new ManagedEnum<>("mode", Mode.NORMAL, SAVE_BOTH_SYNC_TILE, CLIENT_CONTROL));
     public final ManagedBool active = register(new ManagedBool("active", false, SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
 
+<<<<<<< HEAD
     //These are buffers for floating point to integer conversion.
     //I dont bother saving these because worst case you loose 0.99OP or 0.99fuel
     private double consumptionBuffer = 0;
@@ -77,6 +82,18 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
         addRawItemCap(new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
 
         installIOTracker(opStorage);
+=======
+    //Synced Fields
+    public final ManagedInt burnTime = register("burnTime", new ManagedInt(1)).saveToTile().saveToItem().syncViaContainer().finish();
+    public final ManagedInt burnTimeRemaining = register("burnTimeRemaining", new ManagedInt(0)).saveToTile().saveToItem().syncViaContainer().finish();
+    public final ManagedBool active = register("active", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().trigerUpdate().finish();
+    public final ManagedBool powered = register("powered", new ManagedBool(false)).saveToTile().saveToItem().syncViaTile().trigerUpdate().finish();
+
+    public TileGenerator() {
+        setInventorySize(1);
+        setEnergySyncMode().syncViaContainer();
+        setCapacityAndTransfer(100000, 0, 1000);
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
         setShouldRefreshOnBlockChange();
 
         asm = BrandonsCore.proxy.loadASM(new ResourceLocation(DraconicEvolution.MODID, "asms/block/generator.json"), ImmutableMap.of("fan_speed", fanSpeed, "switch_time", switchTime));
@@ -92,6 +109,7 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
             return;
         }
 
+<<<<<<< HEAD
         //Update active State
         active.set(fuelRemaining.get() > 0 && opStorage.getOPStored() < opStorage.getMaxOPStored() && isTileEnabled());
 
@@ -127,6 +145,16 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
         }
 
         if (fuelRemaining.get() <= 0 && opStorage.getOPStored() < opStorage.getMaxOPStored()) {
+=======
+        active.value = burnTimeRemaining.value > 0 && getEnergyStored() < getMaxEnergyStored();
+
+        if (burnTimeRemaining.value > 0 && getEnergyStored() < getMaxEnergyStored()) {
+            burnTimeRemaining.value -= burnSpeed;
+            energyStorage.modifyEnergyStored(burnSpeed * EPBT);
+        }
+
+        if (burnTimeRemaining.value <= 0 && getEnergyStored() < getMaxEnergyStored() && !powered.value) {
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
             tryRefuel();
         }
 
@@ -134,6 +162,7 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
     }
 
     public void tryRefuel() {
+<<<<<<< HEAD
         for (int i = 0; i < 3; i++) {
             ItemStack stack = itemHandler.getStackInSlot(i);
             if (!stack.isEmpty()) {
@@ -151,6 +180,23 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
                     fuelRemaining.add(itemBurnTime);
                     return;
                 }
+=======
+        if (burnTimeRemaining.value > 0 || getEnergyStored() >= getMaxEnergyStored()) return;
+        ItemStack stack = getStackInSlot(0);
+        if (!stack.isEmpty()) {
+            int itemBurnTime = TileEntityFurnace.getItemBurnTime(stack);
+
+            if (itemBurnTime > 0) {
+                if (stack.getCount() == 1) {
+                    stack = stack.getItem().getContainerItem(stack);
+                }
+                else {
+                    stack.shrink(1);
+                }
+                setInventorySlotContents(0, stack);
+                burnTime.value = itemBurnTime;
+                burnTimeRemaining.value = itemBurnTime;
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
             }
         }
     }
@@ -270,6 +316,7 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
     }
 
     @Override
+<<<<<<< HEAD
     @Nullable
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing side) {
         if (capability == CapabilityAnimation.ANIMATION_CAPABILITY) {
@@ -312,6 +359,10 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
             return "gui.de.generator.mode." + name().toLowerCase();
         }
 
+=======
+    public void onNeighborChange(BlockPos neighbor) {
+        powered.value = world.isBlockPowered(pos);
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
     }
 }
 

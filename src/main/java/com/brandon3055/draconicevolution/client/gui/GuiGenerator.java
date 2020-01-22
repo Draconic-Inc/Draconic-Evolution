@@ -55,6 +55,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerGenerator> {
     }
 
     @Override
+<<<<<<< HEAD
     public void addElements(GuiElementManager manager) {
         TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(tile));
 //        template.setTitle("gui.de.title.generator");//TODO move to tile? Or make the tile name override this?
@@ -83,6 +84,21 @@ public class GuiGenerator extends ModularGuiContainer<ContainerGenerator> {
         template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.de.generator.output_power"), 6, 11, () -> GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
         template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.de.generator.current_fuel_value"), 6, 11, () -> GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
     }
+=======
+    protected void drawGuiContainerBackgroundLayer(float f, int X, int Y) {
+        GL11.glColor4f(1, 1, 1, 1);
+
+        ResourceHelperDE.bindTexture(DETextures.GUI_GENERATOR);
+        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiLeft + 63, guiTop + 34, 0, ySize, 18, 18);//fuel box
+        drawTexturedModalRect(guiLeft + 97, guiTop + 34, 18, ySize, 18, 18);//flame box
+        if (tile.getStackInSlot(0).isEmpty()){
+            drawTexturedModalRect(guiLeft + 63, guiTop + 34, 36, ySize, 18, 18);//fuel box
+        }
+
+        float power = (float) tile.energySync.value / (float) tile.getMaxEnergyStored(EnumFacing.DOWN) * -1 + 1;
+        float fuel = tile.burnTimeRemaining.value / ((float) tile.burnTime.value) * -1 + 1;
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
 
     private class StorageRenderer extends MGuiElementBase {
 
@@ -91,8 +107,20 @@ public class GuiGenerator extends ModularGuiContainer<ContainerGenerator> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
 
+<<<<<<< HEAD
             GlStateManager.pushMatrix();
             GlStateManager.translate(guiLeft() + 90, guiTop() + 45, 50);
+=======
+        int x = X - guiLeft;
+        int y = Y - guiTop;
+        if (GuiHelper.isInRect(83, 10, 12, 40, x, y)) {
+            ArrayList<String> internal = new ArrayList<>();
+            internal.add(I18n.format("info.de.energyBuffer.txt"));
+            internal.add("" + TextFormatting.DARK_BLUE + tile.energySync.value + "/" + tile.getMaxEnergyStored(EnumFacing.UP));
+            drawHoveringText(internal, x + guiLeft, y + guiTop, fontRenderer);
+        }
+    }
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
 
             float mx = (((mouseX - guiLeft()) / (float) GuiGenerator.this.xSize()) - 0.5F) * .1F;
             float my = (((mouseY - guiTop()) / (float) GuiGenerator.this.ySize()) - 0.5F) * .1F;

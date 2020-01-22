@@ -37,13 +37,13 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
 
     @Override
     public void render(TileEnergyPylon te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
-        if (!te.structureValid.get()) {
+        if (!te.structureValid.value) {
             return;
         }
         CCRenderState ccrs = CCRenderState.instance();
         TextureUtils.bindBlockTexture();
         GlStateManager.pushMatrix();
-        Vector3 translateVector = new Vector3(x + 0.5, y + (te.sphereOnTop.get() ? 1.5 : -0.5), z + 0.5);
+        Vector3 translateVector = new Vector3(x + 0.5, y + (te.sphereOnTop.value ? 1.5 : -0.5), z + 0.5);
         translateVector.translation().glApply();
         IconTransformation iconTransform = new IconTransformation(DETextureCache.getDETexture("models/pylon_sphere_texture"));
         setLighting(200F);
@@ -62,7 +62,7 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
         else {
             float f = ((ClientEventHandler.elapsedTicks + partialTicks) % 30F) / 30F;
 
-            if (te.isOutputMode.get()) {
+            if (te.isOutputMode.value) {
                 f = 1F - f;
             }
 

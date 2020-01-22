@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.ParticleGenerator;
@@ -27,7 +26,7 @@ import java.util.Collections;
  */
 public class TileInvisECoreBlock extends TileBCBase implements IMultiBlockPart, IMovableStructure {
 
-    public final ManagedVec3I coreOffset = register(new ManagedVec3I("coreOffset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedVec3I coreOffset = register("coreOffset", new ManagedVec3I(new Vec3I(0, -1, 0))).syncViaContainer().saveToTile().trigerUpdate().finish();
     public String blockName = "";
 
 
@@ -73,7 +72,7 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlockPart, 
             ((TileEnergyStorageCore) controller).onStructureClicked(world, pos, state, player);
         }
         else if (controller instanceof TileEnergyPylon) {
-            ((TileEnergyPylon) controller).isOutputMode.invert();
+            ((TileEnergyPylon) controller).isOutputMode.value = !((TileEnergyPylon) controller).isOutputMode.value;
         }
 
         return true;
@@ -95,11 +94,11 @@ public class TileInvisECoreBlock extends TileBCBase implements IMultiBlockPart, 
     }
 
     public void setController(IMultiBlockPart controller) {
-        coreOffset.set(new Vec3I(pos.subtract(((TileEntity) controller).getPos())));
+        coreOffset.vec = new Vec3I(pos.subtract(((TileEntity) controller).getPos()));
     }
 
     private BlockPos getCorePos() {
-        return pos.add(-coreOffset.get().x, -coreOffset.get().y, -coreOffset.get().z);
+        return pos.add(-coreOffset.vec.x, -coreOffset.vec.y, -coreOffset.vec.z);
     }
 
     @Override

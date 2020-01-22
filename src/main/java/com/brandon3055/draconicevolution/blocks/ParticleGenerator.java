@@ -127,7 +127,7 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileEnergyCoreStabilizer) {
-            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
+            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.value) {
                 AxisAlignedBB bb = new AxisAlignedBB(tile.getPos());
 
                 if (((TileEnergyCoreStabilizer) tile).multiBlockAxis.getPlane() == EnumFacing.Plane.HORIZONTAL) {
@@ -191,7 +191,7 @@ public class ParticleGenerator extends BlockBCore implements ITileEntityProvider
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileEnergyCoreStabilizer) {
-            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
+            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.value) {
                 ((TileEnergyCoreStabilizer) tile).deFormStructure();
             }
             TileEnergyStorageCore core = ((TileEnergyCoreStabilizer) tile).getCore();

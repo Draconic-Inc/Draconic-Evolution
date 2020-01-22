@@ -155,7 +155,7 @@ public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegis
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         if (state.getValue(TYPE) == CrystalType.CRYSTAL_IO) {
             TileEntity tile = source.getTileEntity(pos);
-            EnumFacing facing = tile instanceof TileCrystalDirectIO ? ((TileCrystalDirectIO) tile).facing.get() : EnumFacing.DOWN;
+            EnumFacing facing = tile instanceof TileCrystalDirectIO ? ((TileCrystalDirectIO) tile).facing.value : EnumFacing.DOWN;
             Cuboid6 c = new Cuboid6(0.35, 0, 0.35, 0.65, 0.425, 0.65);
             c.apply(Rotation.sideRotations[facing.getIndex()].at(Vector3.center));
             return c.aabb();

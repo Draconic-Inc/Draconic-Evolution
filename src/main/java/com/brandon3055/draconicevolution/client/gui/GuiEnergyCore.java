@@ -54,8 +54,8 @@ public class GuiEnergyCore extends GuiContainer {
 
         buttonList.add(layerMinus = new GuiButtonAHeight(5, guiLeft + 5, guiTop - 13, 70, 12, "Layer-"));
         buttonList.add(layerPlus = new GuiButtonAHeight(6, guiLeft + 105, guiTop - 13, 70, 12, "Layer+"));
-        layerPlus.visible = tile.buildGuide.get();
-        layerMinus.visible = tile.buildGuide.get();
+        layerPlus.visible = tile.buildGuide.value;
+        layerMinus.visible = tile.buildGuide.value;
 
         updateButtonStates();
     }
@@ -66,9 +66,9 @@ public class GuiEnergyCore extends GuiContainer {
         GuiHelper.drawPlayerSlots(this, guiLeft + (xSize / 2), guiTop + 115, true);
         drawCenteredString(fontRenderer, I18n.format("gui.de.energyStorageCore.name", tile.tier.toString()), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
 
-        if (tile.active.get()) {
+        if (tile.active.value) {
             GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.de.capacity.txt"), guiLeft + xSize / 2, guiTop + 16, 0xFFAA00, true);
-            String capText = tile.tier.get() == 8 ? I18n.format("gui.de.almostInfinite.txt") : Utils.formatNumber(tile.getExtendedCapacity());
+            String capText = tile.tier.value == 8 ? I18n.format("gui.de.almostInfinite.txt") : Utils.formatNumber(tile.getExtendedCapacity());
             GuiHelper.drawCenteredString(fontRenderer, capText, guiLeft + xSize / 2, guiTop + 27, 0x555555, false);
 
             DecimalFormat energyValue = new DecimalFormat("###.###");
@@ -76,24 +76,24 @@ public class GuiEnergyCore extends GuiContainer {
             GuiHelper.drawCenteredString(fontRenderer, I18n.format("info.bc.charge.txt"), guiLeft + xSize / 2, guiTop + 38, 0xFFAA00, true);
             GuiHelper.drawCenteredString(fontRenderer, Utils.formatNumber(tile.getExtendedStorage()) + "RF [" + energyValue.format(percent) + "%]", guiLeft + xSize / 2, guiTop + 49, 0x555555, false);
 
-            int coreColour = tile.transferRate.get() > 0 ? 0x00FF00 : tile.transferRate.get() < 0 ? 0xFF0000 : 0x222222;
-            String transfer = (tile.transferRate.get() > 0 ? "+" : tile.transferRate.get() < 0 ? "-" : "") + Utils.formatNumber(Math.abs(tile.transferRate.get())) + " RF/t";
+            int coreColour = tile.transferRate.value > 0 ? 0x00FF00 : tile.transferRate.value < 0 ? 0xFF0000 : 0x222222;
+            String transfer = (tile.transferRate.value > 0 ? "+" : tile.transferRate.value < 0 ? "-" : "") + Utils.formatNumber(Math.abs(tile.transferRate.value)) + " RF/t";
             GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.de.transfer.txt"), guiLeft + xSize / 2, guiTop + 59, 0xFFAA00, true);
-            GuiHelper.drawCenteredString(fontRenderer, transfer, guiLeft + xSize / 2, guiTop + 70, coreColour, tile.transferRate.get() > 0);
+            GuiHelper.drawCenteredString(fontRenderer, transfer, guiLeft + xSize / 2, guiTop + 70, coreColour, tile.transferRate.value > 0);
         }
         else {
-            int stabColour = tile.stabilizersOK.get() ? 0x00FF00 : 0xFF0000;
-            String stabText = I18n.format("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.get() ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
-            GuiHelper.drawCenteredString(fontRenderer, stabText, guiLeft + xSize / 2, guiTop + 18, stabColour, tile.stabilizersOK.get());
-            if (tile.tier.get() >= 5) {
+            int stabColour = tile.stabilizersOK.value ? 0x00FF00 : 0xFF0000;
+            String stabText = I18n.format("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.value ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
+            GuiHelper.drawCenteredString(fontRenderer, stabText, guiLeft + xSize / 2, guiTop + 18, stabColour, tile.stabilizersOK.value);
+            if (tile.tier.value >= 5) {
                 GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.de.advancedStabilizersRequired.txt"), guiLeft + xSize / 2, guiTop + 28, 0x777777, false);
             }
 
-            int coreColour = tile.coreValid.get() ? 0x00FF00 : 0xFF0000;
-            String coreText = I18n.format("gui.de.core.txt") + ": " + (tile.coreValid.get() ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
-            GuiHelper.drawCenteredString(fontRenderer, coreText, guiLeft + xSize / 2, guiTop + 36, coreColour, tile.coreValid.get());
-            if (!tile.coreValid.get()) {
-                GuiHelper.drawCenteredSplitString(fontRenderer, tile.invalidMessage.get(), guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.get());
+            int coreColour = tile.coreValid.value ? 0x00FF00 : 0xFF0000;
+            String coreText = I18n.format("gui.de.core.txt") + ": " + (tile.coreValid.value ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
+            GuiHelper.drawCenteredString(fontRenderer, coreText, guiLeft + xSize / 2, guiTop + 36, coreColour, tile.coreValid.value);
+            if (!tile.coreValid.value) {
+                GuiHelper.drawCenteredSplitString(fontRenderer, tile.invalidMessage.value, guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.value);
             }
         }
     }
@@ -110,7 +110,7 @@ public class GuiEnergyCore extends GuiContainer {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        if (tile.active.get()) {
+        if (tile.active.value) {
             GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
 
             if (GuiHelper.isInRect(guiLeft + 40, guiTop + 27, xSize - 80, 8, mouseX, mouseY)) {
@@ -126,7 +126,7 @@ public class GuiEnergyCore extends GuiContainer {
             }
         }
 
-        if (tile.buildGuide.get()) {
+        if (tile.buildGuide.value) {
             drawCenteredString(fontRenderer, layer == -1 ? "All" : layer + "", guiLeft + (xSize / 2), guiTop - 10, 0xFFFFFF);
         }
 
@@ -140,23 +140,23 @@ public class GuiEnergyCore extends GuiContainer {
     }
 
     private void updateButtonStates() {
-        if (tile.active.get()) {
+        if (tile.active.value) {
             activate.displayString = I18n.format("button.de.deactivate.txt");
         }
         else {
             activate.displayString = I18n.format("button.de.activate.txt");
-            toggleGuide.displayString = I18n.format("button.de.buildGuide.txt") + " " + (tile.buildGuide.get() ? I18n.format("gui.de.active.txt") : I18n.format("gui.de.inactive.txt"));
-            tierUp.enabled = tile.tier.get() < 8;
-            tierDown.enabled = tile.tier.get() > 1;
+            toggleGuide.displayString = I18n.format("button.de.buildGuide.txt") + " " + (tile.buildGuide.value ? I18n.format("gui.de.active.txt") : I18n.format("gui.de.inactive.txt"));
+            tierUp.enabled = tile.tier.value < 8;
+            tierDown.enabled = tile.tier.value > 1;
         }
 
 
-        tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.get();
-        assembleCore.visible = !tile.coreValid.get();
-        activate.visible = tile.coreValid.get();
+        tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.value;
+        assembleCore.visible = !tile.coreValid.value;
+        activate.visible = tile.coreValid.value;
 
-        layerPlus.visible = tile.buildGuide.get();
-        layerMinus.visible = tile.buildGuide.get();
+        layerPlus.visible = tile.buildGuide.value;
+        layerMinus.visible = tile.buildGuide.value;
     }
 
     @Override

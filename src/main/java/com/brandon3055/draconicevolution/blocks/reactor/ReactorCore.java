@@ -49,7 +49,7 @@ public class ReactorCore extends BlockBCore implements ITileEntityProvider, IRen
     public float getBlockHardness(IBlockState blockState, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileReactorCore) {
-            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? Float.MAX_VALUE : super.getBlockHardness(blockState, world, pos);
+            return ((TileReactorCore) tile).reactorState.value.isShieldActive() ? Float.MAX_VALUE : super.getBlockHardness(blockState, world, pos);
         }
 
         return super.getBlockHardness(blockState, world, pos);
@@ -59,7 +59,7 @@ public class ReactorCore extends BlockBCore implements ITileEntityProvider, IRen
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileReactorCore) {
-            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? 6000000.0F : super.getExplosionResistance(world, pos, exploder, explosion);
+            return ((TileReactorCore) tile).reactorState.value.isShieldActive() ? 6000000.0F : super.getExplosionResistance(world, pos, exploder, explosion);
         }
 
         return super.getExplosionResistance(world, pos, exploder, explosion);
@@ -95,7 +95,7 @@ public class ReactorCore extends BlockBCore implements ITileEntityProvider, IRen
     public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
         TileEntity tile = worldIn.getTileEntity(pos);
 
-        if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.get().isShieldActive()) {
+        if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.value.isShieldActive()) {
             return NULL_AABB;
         }
 
@@ -105,7 +105,7 @@ public class ReactorCore extends BlockBCore implements ITileEntityProvider, IRen
     @Override
     public void onBlockExploded(World world, BlockPos pos, Explosion explosion) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.get().isShieldActive()) {
+        if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.value.isShieldActive()) {
             return;
         }
 
@@ -119,7 +119,7 @@ public class ReactorCore extends BlockBCore implements ITileEntityProvider, IRen
 
         if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
             TileEntity tile = worldIn.getTileEntity(pos);
-            if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.get().isShieldActive()) {
+            if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.value.isShieldActive()) {
                 result = new RayTraceResult(RayTraceResult.Type.MISS, result.hitVec, result.sideHit, pos);
             }
         }

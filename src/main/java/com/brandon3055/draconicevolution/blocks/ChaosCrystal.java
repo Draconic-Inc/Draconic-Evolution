@@ -50,7 +50,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
     @Override
     public float getBlockHardness(IBlockState blockState, World world, BlockPos pos) {
         TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
-        if (tile != null) return tile.guardianDefeated.get() ? 100F : -1F;
+        if (tile != null) return tile.guardianDefeated.value ? 100F : -1F;
         return super.getBlockHardness(blockState, world, pos);
     }
 
@@ -97,7 +97,7 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
             TileEntity tile = world.getTileEntity(pos);
             if (!world.isRemote && tile instanceof TileChaosCrystal) {
                 ((TileChaosCrystal) tile).setLockPos();
-                ((TileChaosCrystal) tile).guardianDefeated.set(true);
+                ((TileChaosCrystal) tile).guardianDefeated.value = true;
             }
         }
         else {

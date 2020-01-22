@@ -61,7 +61,7 @@ public class GuiFlowGate extends ModularGuiContainer implements IMGuiListener {
         manager.add(MGuiBackground.newGenericBackground(this, guiLeft(), guiTop(), xSize, ySize));
         manager.add(new MGuiLabel(this, guiLeft(), guiTop() + 4, xSize, 8, I18n.format(tile.getName())).setTextColour(InfoHelper.GUI_TITLE));
 
-        if (tile.flowOverridden.get()) {
+        if (tile.flowOverridden.value) {
             manager.add(new MGuiLabel(this, guiLeft(), guiTop(), xSize, ySize, I18n.format("gui.de.flowGateOverridden.txt")).setTextColour(0x00FF00));
         }
         else {
@@ -100,13 +100,13 @@ public class GuiFlowGate extends ModularGuiContainer implements IMGuiListener {
     public void updateScreen() {
         super.updateScreen();
 
-        if (tile.minFlow.get() != ltMin && minField != null) {
-            ltMin = tile.minFlow.get();
+        if (tile.minFlow.value != ltMin && minField != null) {
+            ltMin = tile.minFlow.value;
             minField.setText(String.valueOf(ltMin));
         }
 
-        if (tile.maxFlow.get() != ltMax && maxField != null) {
-            ltMax = tile.maxFlow.get();
+        if (tile.maxFlow.value != ltMax && maxField != null) {
+            ltMax = tile.maxFlow.value;
             maxField.setText(String.valueOf(ltMax));
         }
 

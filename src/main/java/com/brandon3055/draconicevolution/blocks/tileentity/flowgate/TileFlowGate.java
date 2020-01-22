@@ -18,9 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-
 /**
  * Created by brandon3055 on 15/11/2016.
  */
@@ -28,11 +25,19 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
 
     protected long transferThisTick = 0;
 
+<<<<<<< HEAD
     public final ManagedLong minFlow = register(new ManagedLong("min_flow", SAVE_BOTH_SYNC_TILE ));
     public final ManagedLong maxFlow = register(new ManagedLong("max_flow", SAVE_BOTH_SYNC_TILE));
     public final ManagedLong flowOverride = register(new ManagedLong("flow_override", SAVE_NBT_SYNC_TILE));
     public final ManagedBool flowOverridden = register(new ManagedBool("flow_overridden", SAVE_NBT_SYNC_TILE));
     public final ManagedByte rsSignal = register(new ManagedByte("rs_signal", (byte) -1, SAVE_NBT_SYNC_TILE));
+=======
+    public final ManagedInt minFlow = register("minFlow", new ManagedInt(0)).syncViaTile().saveToTile().saveToItem().finish();
+    public final ManagedInt maxFlow = register("maxFlow", new ManagedInt(0)).syncViaTile().saveToTile().saveToItem().finish();
+    public final ManagedInt flowOverride = register("flowOverride", new ManagedInt(0)).syncViaTile().saveToTile().finish();
+    public final ManagedBool flowOverridden = register("flowOverridden", new ManagedBool(false)).syncViaTile().saveToTile().finish();
+    public final ManagedByte rsSignal = register("rsSignal", new ManagedByte((byte) -1)).syncViaTile().saveToTile().finish();
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
 
     public TileFlowGate() {
         setShouldRefreshOnBlockChange();
@@ -62,14 +67,20 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
         sendPacketToServer(output -> output.writeString(value), 1);
     }
 
+<<<<<<< HEAD
     public long getFlow() {
         if (flowOverridden.get()) {
             return flowOverride.get();
+=======
+    public int getFlow() {
+        if (flowOverridden.value) {
+            return flowOverride.value;
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
         }
-        if (rsSignal.get() == -1) {
-            rsSignal.set((byte) world.isBlockIndirectlyGettingPowered(pos));
+        if (rsSignal.value == -1) {
+            rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
         }
-        return minFlow.get() + (int) (((double) rsSignal.get() / 15D) * (double) (maxFlow.get() - minFlow.get()));
+        return minFlow.value + (int) (((double) rsSignal.value / 15D) * (double) (maxFlow.value - minFlow.value));
     }
 
     //endregion
@@ -77,7 +88,7 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
 
     @Override
     public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
-        if (flowOverridden.get()) {
+        if (flowOverridden.value) {
             return;
         }
 
@@ -92,10 +103,10 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
             }
 
             if (id == 0) {
-                minFlow.set((int) l);
+                minFlow.value = (int) l;
             }
             else if (id == 1) {
-                maxFlow.set((int) l);
+                maxFlow.value = (int) l;
             }
         }
         catch (NumberFormatException ignored) {
@@ -117,7 +128,7 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
 
     @Override
     public void onNeighborChange(BlockPos neighbor) {
-        rsSignal.set((byte) world.isBlockIndirectlyGettingPowered(pos));
+        rsSignal.value = (byte) world.isBlockIndirectlyGettingPowered(pos);
     }
 
     //region Peripheral
@@ -133,23 +144,34 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
             case "getFlow":
                 return new Object[]{getFlow()};
             case "setOverrideEnabled":
-                flowOverridden.set(args.checkBoolean(0));
+                flowOverridden.value = args.checkBoolean(0);
                 break;
             case "getOverrideEnabled":
                 return new Object[]{flowOverridden};
             case "setFlowOverride":
+<<<<<<< HEAD
                 flowOverride.set(args.checkLong(0));
                 break;
             case "setSignalHighFlow":
                 maxFlow.set(args.checkLong(0));
+=======
+                flowOverride.value = args.checkInteger(0);
+                break;
+            case "setSignalHighFlow":
+                maxFlow.value = args.checkInteger(0);
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
                 break;
             case "getSignalHighFlow":
-                return new Object[]{maxFlow.get()};
+                return new Object[]{maxFlow.value};
             case "setSignalLowFlow":
+<<<<<<< HEAD
                 minFlow.set(args.checkLong(0));
+=======
+                minFlow.value = args.checkInteger(0);
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
                 break;
             case "getSignalLowFlow":
-                return new Object[]{minFlow.get()};
+                return new Object[]{minFlow.value};
         }
 
         return new Object[0];

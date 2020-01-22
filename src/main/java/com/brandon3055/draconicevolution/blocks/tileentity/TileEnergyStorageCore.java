@@ -30,7 +30,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 import static net.minecraft.util.text.TextFormatting.RED;
 
 /**
@@ -59,16 +58,16 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
     //endregion
 
     public final EnergyCoreStructure coreStructure = new EnergyCoreStructure().initialize(this);
-    public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool structureValid = register(new ManagedBool("structureValid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool coreValid = register(new ManagedBool("coreValid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedString invalidMessage = register(new ManagedString("invalidMessage", SAVE_NBT));
-    public final ManagedBool buildGuide = register(new ManagedBool("buildGuide", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizersOK", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedByte tier = register(new ManagedByte("tier", (byte)1, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool active = register("active", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedBool structureValid = register("structureValid", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedBool coreValid = register("coreValid", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedString invalidMessage = register("invalidMessage", new ManagedString("")).syncViaTile().finish();
+    public final ManagedBool buildGuide = register("buildGuide", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedBool stabilizersOK = register("stabilizersOK", new ManagedBool(false)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedByte tier = register("tier", new ManagedByte(1)).syncViaTile().saveToTile().trigerUpdate().finish();
+    public final ManagedLong energy = register("energy", new ManagedLong(0)).syncViaTile().saveToTile().finish();
     public final ManagedVec3I[] stabOffsets = new ManagedVec3I[4];
-    public final ManagedLong transferRate = register(new ManagedLong("transferRate", SYNC_CONTAINER));
+    public final ManagedLong transferRate = register("transferRate", new ManagedLong(0)).syncViaContainer().finish();
 
     private int ticksElapsed = 0;
     private long[] flowArray = new long[20];
@@ -79,19 +78,19 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
         setShouldRefreshOnBlockChange();
 
         for (int i = 0; i < stabOffsets.length; i++) {
-            stabOffsets[i] = register(new ManagedVec3I("stabOffset" + i, new Vec3I(0, -1, 0), SAVE_NBT_SYNC_TILE));
+            stabOffsets[i] = register("stabOffset" + i, new ManagedVec3I(new Vec3I(0, -1, 0))).saveToTile().syncViaTile().finish();
         }
     }
 
     @Override
     public void update() {
         if (!world.isRemote) {
-            flowArray[ticksElapsed % 20] = (energy.get() - energy.get());
+            flowArray[ticksElapsed % 20] = (energy.value - energy.lastTickValue);
             long total = 0;
             for (long i : flowArray) {
                 total += i;
             }
-            transferRate.set(total / 20L);
+            transferRate.value = total / 20L;
 
             if (activeBuilder != null) {
                 if (activeBuilder.isDead()) {
@@ -112,16 +111,16 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
 
         super.update();
 
-        if (ticksElapsed % 20 == 0 && !world.isRemote && transferRate.isDirty(true)) {
+        if (ticksElapsed % 20 == 0 && !world.isRemote && transferRate.detectChanges()) {
             dataManager.forceSync(transferRate);
         }
 
-        if (world.isRemote && active.get()) {
+        if (world.isRemote && active.value) {
             List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(10, 10, 10));
             for (EntityPlayer player : players) {
                 double dist = player.getDistance(pos.getX() + 0.5, pos.getY() - 0.4, pos.getZ() + 0.5);
                 double distNext = player.getDistance(pos.getX() + player.motionX + 0.5, pos.getY() + player.motionY - 0.4, pos.getZ() + player.motionZ + 0.5);
-                double threshold = tier.get() > 2 ? tier.get() - 0.5 : tier.get() + 0.5;
+                double threshold = tier.value > 2 ? tier.value - 0.5 : tier.value + 0.5;
                 double boundary = distNext - threshold;
                 double dir = dist - distNext;
 
@@ -158,13 +157,13 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
             return;
         }
 
-        if (energy.get() > getCapacity()) {
-            energy.set(getCapacity());
+        if (energy.value > getCapacity()) {
+            energy.value = getCapacity();
         }
 
-        buildGuide.set(false);
-        coreStructure.formTier(tier.get());
-        active.set(true);
+        buildGuide.value = false;
+        coreStructure.formTier(tier.value);
+        active.value = true;
         updateStabilizers(true);
     }
 
@@ -173,23 +172,23 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
             return;
         }
 
-        coreStructure.revertTier(tier.get());
-        active.set(false);
+        coreStructure.revertTier(tier.value);
+        active.value = false;
         updateStabilizers(false);
     }
 
     private long getCapacity() {
-        if (tier.get() <= 0 || tier.get() > 8) {
+        if (tier.value <= 0 || tier.value > 8) {
             LogHelper.error("Tier not valid! WTF!!!");
             return 0;
         }
-        return (long) DEConfig.coreCapacity[tier.get() - 1];
+        return (long) DEConfig.coreCapacity[tier.value - 1];
     }
 
     @Override
     public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
         if (id == 0) { //Activate
-            if (active.get()) {
+            if (active.value) {
                 deactivateCore();
             }
             else {
@@ -197,24 +196,24 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
             }
         }
         else if (id == 1) { //Tier Up
-            if (!active.get() && tier.get() < 8) {
-                tier.inc();
+            if (!active.value && tier.value < 8) {
+                tier.value++;
                 validateStructure();
             }
         }
         else if (id == 2) { //Tier Down
-            if (!active.get() && tier.get() > 1) {
-                tier.dec();
+            if (!active.value && tier.value > 1) {
+                tier.value--;
                 validateStructure();
             }
         }
         else if (id == 3) { //Toggle Guide
-            if (!active.get()) {
-                buildGuide.set(!buildGuide.get());
+            if (!active.value) {
+                buildGuide.value = !buildGuide.value;
             }
         }
         else if (id == 4) { //Build
-            if (!active.get()) {
+            if (!active.value) {
                 startBuilder(client);
             }
         }
@@ -234,11 +233,11 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
      */
     private void updateStabilizers(boolean coreActive) {
         for (ManagedVec3I offset : stabOffsets) {
-            BlockPos tilePos = pos.add(-offset.get().x, -offset.get().y, -offset.get().z);
+            BlockPos tilePos = pos.add(-offset.vec.x, -offset.vec.y, -offset.vec.z);
             TileEntity tile = world.getTileEntity(tilePos);
 
             if (tile instanceof TileEnergyCoreStabilizer) {
-                ((TileEnergyCoreStabilizer) tile).isCoreActive.set(coreActive);
+                ((TileEnergyCoreStabilizer) tile).isCoreActive.value = coreActive;
             }
         }
     }
@@ -254,21 +253,21 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
     public boolean validateStructure() {
         boolean valid = checkStabilizers();
 
-        if (!(coreValid.set(coreStructure.checkTier(tier.get())))) {
+        if (!(coreValid.value = coreStructure.checkTier(tier.value))) {
             BlockPos pos = coreStructure.invalidBlock;
-            invalidMessage.set("Error At: " + "x:" + pos.getX() + ", y:" + pos.getY() + ", z:" + pos.getZ() + " Expected: " + coreStructure.expectedBlock);
+            invalidMessage.value = "Error At: " + "x:" + pos.getX() + ", y:" + pos.getY() + ", z:" + pos.getZ() + " Expected: " + coreStructure.expectedBlock;
             valid = false;
         }
 
-        if (!valid && active.get()) {
-            active.set(false);
+        if (!valid && active.value) {
+            active.value = false;
             deactivateCore();
         }
 
-        structureValid.set(valid);
+        structureValid.value = valid;
 
         if (valid) {
-            invalidMessage.set("");
+            invalidMessage.value = "";
         }
 
         return valid;
@@ -280,19 +279,19 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
      */
     public boolean checkStabilizers() {
         boolean flag = true;
-        if (stabilizersOK.get()) {
+        if (stabilizersOK.value) {
             for (ManagedVec3I offset : stabOffsets) {
-                BlockPos tilePos = pos.subtract(offset.get().getPos());
+                BlockPos tilePos = pos.subtract(offset.vec.getPos());
                 TileEntity tile = world.getTileEntity(tilePos);
 
-                if (!(tile instanceof TileEnergyCoreStabilizer) || !((TileEnergyCoreStabilizer) tile).hasCoreLock.get() || ((TileEnergyCoreStabilizer) tile).getCore() != this || !((TileEnergyCoreStabilizer) tile).isStabilizerValid(tier.get(), this)) {
+                if (!(tile instanceof TileEnergyCoreStabilizer) || !((TileEnergyCoreStabilizer) tile).hasCoreLock.value || ((TileEnergyCoreStabilizer) tile).getCore() != this || !((TileEnergyCoreStabilizer) tile).isStabilizerValid(tier.value, this)) {
                     flag = false;
                     break;
                 }
             }
 
             if (!flag) {
-                stabilizersOK.set(false);
+                stabilizersOK.value = false;
                 releaseStabilizers();
             }
         }
@@ -310,7 +309,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
                     for (int dist = 0; dist < 16; dist++) {
                         BlockPos pos1 = pos.add(facing.getFrontOffsetX() * dist, facing.getFrontOffsetY() * dist, facing.getFrontOffsetZ() * dist);
                         TileEntity stabilizer = world.getTileEntity(pos1);
-                        if (stabilizer instanceof TileEnergyCoreStabilizer && (!((TileEnergyCoreStabilizer) stabilizer).hasCoreLock.get() || ((TileEnergyCoreStabilizer) stabilizer).getCore().equals(this)) && ((TileEnergyCoreStabilizer) stabilizer).isStabilizerValid(tier.get(), this)) {
+                        if (stabilizer instanceof TileEnergyCoreStabilizer && (!((TileEnergyCoreStabilizer) stabilizer).hasCoreLock.value || ((TileEnergyCoreStabilizer) stabilizer).getCore().equals(this)) && ((TileEnergyCoreStabilizer) stabilizer).isStabilizerValid(tier.value, this)) {
                             stabsFound.add((TileEnergyCoreStabilizer) stabilizer);
                             break;
                         }
@@ -319,10 +318,10 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
 
                 if (stabsFound.size() == 4) {
                     for (TileEnergyCoreStabilizer stab : stabsFound) {
-                        stabOffsets[stabsFound.indexOf(stab)].set(new Vec3I(pos.getX() - stab.getPos().getX(), pos.getY() - stab.getPos().getY(), pos.getZ() - stab.getPos().getZ()));
+                        stabOffsets[stabsFound.indexOf(stab)].vec = new Vec3I(pos.getX() - stab.getPos().getX(), pos.getY() - stab.getPos().getY(), pos.getZ() - stab.getPos().getZ());
                         stab.setCore(this);
                     }
-                    stabilizersOK.set(true);
+                    stabilizersOK.value = true;
                     break;
                 }
 
@@ -339,15 +338,15 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
      */
     private void releaseStabilizers() {
         for (ManagedVec3I offset : stabOffsets) {
-            BlockPos tilePos = pos.add(-offset.get().x, -offset.get().y, -offset.get().z);
+            BlockPos tilePos = pos.add(-offset.vec.x, -offset.vec.y, -offset.vec.z);
             TileEntity tile = world.getTileEntity(tilePos);
 
             if (tile instanceof TileEnergyCoreStabilizer) {
-                ((TileEnergyCoreStabilizer) tile).hasCoreLock.set(false);
-                ((TileEnergyCoreStabilizer) tile).coreOffset.get().y = 0;
+                ((TileEnergyCoreStabilizer) tile).hasCoreLock.value = false;
+                ((TileEnergyCoreStabilizer) tile).coreOffset.vec.y = 0;
             }
 
-            offset.set(new Vec3I(0, -1, 0));
+            offset.vec = new Vec3I(0, -1, 0);
         }
     }
 
@@ -359,10 +358,10 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
         if (world.isRemote) {
             return 0;
         }
-        long energyReceived = Math.min(getExtendedCapacity() - energy.get(), maxReceive);
+        long energyReceived = Math.min(getExtendedCapacity() - energy.value, maxReceive);
 
         if (!simulate) {
-            energy.add(energyReceived);
+            energy.value += energyReceived;
             markDirty();
         }
         return (int) energyReceived;
@@ -372,10 +371,10 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
         if (world.isRemote) {
             return 0;
         }
-        long energyExtracted = Math.min(energy.get(), maxExtract);
+        long energyExtracted = Math.min(energy.value, maxExtract);
 
         if (!simulate) {
-            energy.subtract(energyExtracted);
+            energy.value -= energyExtracted;
             markDirty();
         }
         return (int) energyExtracted;
@@ -383,7 +382,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
 
     @Override
     public long getExtendedStorage() {
-        return energy.get();
+        return energy.value;
     }
 
     @Override
@@ -397,7 +396,7 @@ public class TileEnergyStorageCore extends TileBCBase implements ITickable, IExt
 
     @Override
     public boolean isStructureValid() {
-        return structureValid.get();
+        return structureValid.value;
     }
 
     @Override

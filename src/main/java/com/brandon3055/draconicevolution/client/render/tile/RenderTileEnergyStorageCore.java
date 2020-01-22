@@ -36,28 +36,28 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     public void render(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         //region Build Guide
 
-        if (te.buildGuide.get() && MinecraftForgeClient.getRenderPass() == 0) {
+        if (te.buildGuide.value && MinecraftForgeClient.getRenderPass() == 0) {
             GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, z);
-            te.coreStructure.renderTier(te.tier.get());
+            te.coreStructure.renderTier(te.tier.value);
             GlStateManager.popMatrix();
         }
-        if (!te.active.get()) return;
+        if (!te.active.value) return;
 
         //endregion
 
         //region Do Calculations
         float rotation = (ClientEventHandler.elapsedTicks + partialTicks) / 2F;
         float brightness = (float) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
-        double scale = SCALES[te.tier.get() - 1];
+        double scale = SCALES[te.tier.value - 1];
 
         double colour = 1D - ((double) te.getExtendedStorage() / (double) te.getExtendedCapacity());
         float red = 1F;
         float green = (float) colour * 0.3f;
         float blue = (float) colour * 0.7f;
 
-        if (te.tier.get() == 8) {
+        if (te.tier.value == 8) {
             red = 1F;
             green = 0.28F;
             blue = 0.05F;
@@ -97,7 +97,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             translateScaleTranslate(0.5D, scale, scale, scale);
             translateRotateTranslate(0.5, rotation * 0.5F, 0F, -1F, -0.5F);
             List<BakedQuad> outerQuads = ModelUtils.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().withProperty(EnergyStorageCore.RENDER_TYPE, 2));
-            if (te.tier.get() == 8) {
+            if (te.tier.value == 8) {
                 ModelUtils.renderQuadsRGB(outerQuads, 0.95F, 0.45F, 0F);
             }
             else {
@@ -116,15 +116,15 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     }
 
     private void renderStabilizers(TileEnergyStorageCore te, boolean renderStage, float partialTick) {
-        if (!te.stabilizersOK.get()) {
+        if (!te.stabilizersOK.value) {
             return;
         }
 
         for (ManagedVec3I vec3I : te.stabOffsets) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
+            GlStateManager.translate(-vec3I.vec.x + 0.5, -vec3I.vec.y + 0.5, -vec3I.vec.z + 0.5);
 
-            EnumFacing facing = EnumFacing.getFacingFromVector(vec3I.get().x, vec3I.get().y, vec3I.get().z);//EnumFacing.getFacingFromAxis(EnumFacing.AxisDirection.POSITIVE, te.multiBlockAxis);
+            EnumFacing facing = EnumFacing.getFacingFromVector(vec3I.vec.x, vec3I.vec.y, vec3I.vec.z);//EnumFacing.getFacingFromAxis(EnumFacing.AxisDirection.POSITIVE, te.multiBlockAxis);
             if (facing.getAxis() == EnumFacing.Axis.X || facing.getAxis() == EnumFacing.Axis.Y) {
                 GlStateManager.rotate(-90F, -facing.getFrontOffsetY(), facing.getFrontOffsetX(), 0);
             }
@@ -133,8 +133,8 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             }
 
             GlStateManager.rotate(90, 1, 0, 0);
-            renderStabilizerBeam(te, vec3I.get(), renderStage, partialTick);
-            if (te.tier.get() >= 5) {
+            renderStabilizerBeam(te, vec3I.vec, renderStage, partialTick);
+            if (te.tier.value >= 5) {
                 GlStateManager.scale(1.2F, 0.5F, 1.2F);
             }
             else {
@@ -190,7 +190,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             double d28 = (double) (-1.0F + beamMotion);
             double texHeight = beamLength * (0.5D / scale) + d28;
 
-            if (te.tier.get() >= 5) {
+            if (te.tier.value >= 5) {
                 GlStateManager.scale(3.5, 1, 3.5);
             }
             GlStateManager.translate(-0.5, 0, -0.5);
@@ -259,9 +259,9 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
 
             int sides = 4;
             float enlarge = 0.35F;
-            if (te.tier.get() >= 5) {
+            if (te.tier.value >= 5) {
                 sides = 12;
-                enlarge = 0.5F + ((te.tier.get() - 5) * 0.1F);
+                enlarge = 0.5F + ((te.tier.value - 5) * 0.1F);
                 GlStateManager.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.6F, 0, 0, -1);
                 GlStateManager.scale(3.5, 3.5, 1);
             }

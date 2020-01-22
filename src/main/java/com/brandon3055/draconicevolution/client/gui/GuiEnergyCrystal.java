@@ -182,7 +182,7 @@ public class GuiEnergyCrystal extends ModularGuiContainer<ContainerEnergyCrystal
                     }
                     entry.addChild(new MGuiLabel(this, -2, 1, entry.xSize, 12, index + ": " + tileName).setAlignment(EnumAlignment.LEFT).setTextColour(0xFF4000).setTrim(true));
 
-                    String flow = I18n.format("eNet.de." + (te.inputMode.get() ? "input" : "output") + ".info") + ": " + Utils.formatNumber(te.containerReceiverFlow.get(index)) + " RF/t";
+                    String flow = I18n.format("eNet.de." + (te.inputMode.value ? "input" : "output") + ".info") + ": " + Utils.formatNumber(te.containerReceiverFlow.get(index)) + " RF/t";
                     entry.addChild(new MGuiLabel(this, -2, 12, entry.xSize, 12, flow).setAlignment(EnumAlignment.LEFT).setTextColour(0x00CCCC));
 
 

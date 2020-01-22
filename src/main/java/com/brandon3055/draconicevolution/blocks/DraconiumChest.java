@@ -96,7 +96,7 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
         TileEntity tile = worldIn.getTileEntity(pos);
 
         if (tile instanceof TileDraconiumChest) {
-            ((TileDraconiumChest) tile).facing.set(enumfacing);
+            ((TileDraconiumChest) tile).facing.value = enumfacing;
         }
 
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
@@ -107,7 +107,7 @@ public class DraconiumChest extends BlockBCore implements ITileEntityProvider, I
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileDraconiumChest) {
-            ((TileDraconiumChest) tile).facing.set(((TileDraconiumChest) tile).facing.get().rotateY());
+            ((TileDraconiumChest) tile).facing.value = ((TileDraconiumChest) tile).facing.value.rotateY();
             ((TileDraconiumChest) tile).ioCacheValid = false;
         }
 

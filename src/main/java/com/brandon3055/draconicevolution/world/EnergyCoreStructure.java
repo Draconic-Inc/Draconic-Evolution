@@ -197,7 +197,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private void renderBuildGuide(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
         Block block = Block.REGISTRY.getObject(new ResourceLocation(name));
 
-        Vec3D corePos = Vec3D.getCenter(startPos.subtract(getCoreOffset(core.tier.get())));
+        Vec3D corePos = Vec3D.getCenter(startPos.subtract(getCoreOffset(core.tier.value)));
         double dist = Utils.getDistanceAtoB(corePos, Vec3D.getCenter(pos));
         double pDist = Minecraft.getMinecraft().player.getDistance(corePos.x, corePos.y, corePos.z);
 
@@ -217,7 +217,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         }
 
         BlockPos translation = new BlockPos(pos.getX() - startPos.getX(), pos.getY() - startPos.getY(), pos.getZ() - startPos.getZ());
-        translation = translation.add(getCoreOffset(core.tier.get()));
+        translation = translation.add(getCoreOffset(core.tier.value));
 
         int alpha = 0xFF000000;
         if (invalid) {

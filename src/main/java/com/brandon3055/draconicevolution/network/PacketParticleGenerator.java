@@ -59,69 +59,69 @@ public class PacketParticleGenerator implements IMessage {
             if (gen != null) {
                 switch (message.key) {
                     case 0:
-                        gen.red.set(message.value);
-                        gen.randomRed.set(message.randomValue);
+                        gen.RED.value = message.value;
+                        gen.RANDOM_RED.value = message.randomValue;
                         break;
                     case 1:
-                        gen.green.set(message.value);
-                        gen.randomGreen.set(message.randomValue);
+                        gen.GREEN.value = message.value;
+                        gen.RANDOM_GREEN.value = message.randomValue;
                         break;
                     case 2:
-                        gen.blue.set(message.value);
-                        gen.randomBlue.set(message.randomValue);
+                        gen.BLUE.value = message.value;
+                        gen.RANDOM_BLUE.value = message.randomValue;
                         break;
                     case 3:
-                        gen.alpha.set(message.value);
-                        gen.randomAlpha.set(message.randomValue);
+                        gen.ALPHA.value = message.value;
+                        gen.RANDOM_ALPHA.value = message.randomValue;
                         break;
                     case 4:
-                        gen.scale.set(message.value / 10000D);
-                        gen.randomScale.set(message.randomValue / 10000D);
+                        gen.SCALE.value = message.value/10000D;
+                        gen.RANDOM_SCALE.value = message.randomValue/10000D;
                         break;
                     case 5:
-                        gen.life.set(message.value);
-                        gen.randomLife.set(message.randomValue);
+                        gen.LIFE.value = message.value;
+                        gen.RANDOM_LIFE.value = message.randomValue;
                         break;
                     case 6:
-                        gen.gravity.set(message.value / 10000D);
-                        gen.randomGravity.set(message.randomValue / 10000D);
+                        gen.GRAVITY.value = message.value/10000D;
+                        gen.RANDOM_GRAVITY.value = message.randomValue/10000D;
                         break;
                     case 7:
-                        gen.fade.set(message.value);
-                        gen.randomFade.set(message.randomValue);
+                        gen.FADE.value = message.value;
+                        gen.RANDOM_FADE.value = message.randomValue;
                         break;
                     case 8:
-                        gen.type.set(message.value);
+                        gen.TYPE.value = message.value;
                         break;
                     case 9:
-                        gen.collision.set(message.value == 1);
+                        gen.COLLISION.value = message.value == 1;
                         break;
                     case 10:
-                        gen.motionX.set(message.value / 10000D);
-                        gen.randomMotionX.set(message.randomValue / 10000D);
+                        gen.MOTION_X.value = message.value/10000D;
+                        gen.RANDOM_MOTION_X.value = message.randomValue/10000D;
                         break;
                     case 11:
-                        gen.motionY.set(message.value / 10000D);
-                        gen.randomMotionY.set(message.randomValue / 10000D);
+                        gen.MOTION_Y.value = message.value/10000D;
+                        gen.RANDOM_MOTION_Y.value = message.randomValue/10000D;
                         break;
                     case 12:
-                        gen.motionZ.set(message.value / 10000D);
-                        gen.randomMotionZ.set(message.randomValue / 10000D);
+                        gen.MOTION_Z.value = message.value/10000D;
+                        gen.RANDOM_MOTION_Z.value = message.randomValue/10000D;
                         break;
                     case 13:
-                        gen.spawnX.set(message.value / 10000D);
-                        gen.randomSpawnX.set(message.randomValue / 10000D);
+                        gen.SPAWN_X.value = message.value/10000D;
+                        gen.RANDOM_SPAWN_X.value = message.randomValue/10000D;
                         break;
                     case 14:
-                        gen.spawnY.set(message.value / 10000D);
-                        gen.randomSpawnY.set(message.randomValue / 10000D);
+                        gen.SPAWN_Y.value = message.value/10000D;
+                        gen.RANDOM_SPAWN_Y.value = message.randomValue/10000D;
                         break;
                     case 15:
-                        gen.spawnZ.set(message.value / 10000D);
-                        gen.randomSpawnZ.set(message.randomValue / 10000D);
+                        gen.SPAWN_Z.value = message.value/10000D;
+                        gen.RANDOM_SPAWN_Z.value = message.randomValue/10000D;
                         break;
                     case 16:
-                        gen.delay.set(message.value);
+                        gen.DELAY.value = message.value;
                         break;
                 }
             }

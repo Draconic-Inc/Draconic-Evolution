@@ -51,12 +51,21 @@ public class GuiEnergyinfuser extends GuiContainer {
             drawTexturedModalRect(guiLeft + 63, guiTop + 34, 36, ySize, 18, 18);
         }
 
+<<<<<<< HEAD
         float power = (float) tile.opStorage.getOPStored() / (float) tile.opStorage.getMaxOPStored() * -1F + 1F;
         drawTexturedModalRect(guiLeft + 49, guiTop + 7 + (int) (power * 45), xSize, (int) (power * 45), 8, 45 - (int) (power * 45));//Power bar
 
         if (tile.running.get() && tile.itemHandler.getStackInSlot(0) != null && tile.itemHandler.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
             IEnergyContainerItem item = (IEnergyContainerItem) tile.itemHandler.getStackInSlot(0).getItem();
             float charge = (float) item.getEnergyStored(tile.itemHandler.getStackInSlot(0)) / (float) item.getMaxEnergyStored(tile.itemHandler.getStackInSlot(0)) * -1F + 1F;
+=======
+        float power = (float) tile.energySync.value / (float) tile.energyStorage.getMaxEnergyStored() * -1F + 1F;
+        drawTexturedModalRect(guiLeft + 49, guiTop + 7 + (int) (power * 45), xSize, (int) (power * 45), 8, 45 - (int) (power * 45));//Power bar
+
+        if (tile.running.value && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
+            IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
+            float charge = (float) item.getEnergyStored(tile.getStackInSlot(0)) / (float) item.getMaxEnergyStored(tile.getStackInSlot(0)) * -1F + 1F;
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
             drawTexturedModalRect(guiLeft + 119, guiTop + 7 + (int) (charge * 45), xSize, (int) (charge * 45), 8, 45 - (int) (charge * 45));//Item Power bar
         }
 
@@ -73,12 +82,21 @@ public class GuiEnergyinfuser extends GuiContainer {
         if (GuiHelper.isInRect(48, 6, 9, 46, x, y)) {
             ArrayList<String> internal = new ArrayList<>();
             internal.add(I18n.translateToLocal("gui.de.internalStorage.txt"));
+<<<<<<< HEAD
             internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(tile.opStorage.getOPStored()) + "/" + Utils.addCommas(tile.opStorage.getMaxOPStored()));
             drawHoveringText(internal, x, y, fontRenderer);
         }
 
         if (GuiHelper.isInRect(118, 6, 10, 46, x, y) && tile.running.get() && tile.itemHandler.getStackInSlot(0) != null && tile.itemHandler.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
             IEnergyContainerItem item = (IEnergyContainerItem) tile.itemHandler.getStackInSlot(0).getItem();
+=======
+            internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(tile.energySync.value) + "/" + Utils.addCommas(tile.energyStorage.getMaxEnergyStored()));
+            drawHoveringText(internal, x, y, fontRenderer);
+        }
+
+        if (GuiHelper.isInRect(118, 6, 10, 46, x, y) && tile.running.value && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
+            IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
+>>>>>>> parent of 9cd2c6a8... Implement Tile Data system changes.
             ArrayList<String> internal = new ArrayList<>();
             internal.add(I18n.translateToLocal("gui.de.itemStorage.txt"));
             internal.add("" + TextFormatting.DARK_BLUE + Utils.addCommas(item.getEnergyStored(tile.itemHandler.getStackInSlot(0))) + "/" + Utils.addCommas(item.getMaxEnergyStored(tile.itemHandler.getStackInSlot(0))));
@@ -87,8 +105,8 @@ public class GuiEnergyinfuser extends GuiContainer {
     }
 
     private void drawAnimatedParts(float partial) {
-        if (!tile.running.get()) drawTexturedModalRect(guiLeft + 79, guiTop + 21, xSize, 45, 18, 18);
-        if (tile.running.get()) rotation += 0.2F;
+        if (!tile.running.value) drawTexturedModalRect(guiLeft + 79, guiTop + 21, xSize, 45, 18, 18);
+        if (tile.running.value) rotation += 0.2F;
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.translate(guiLeft + 62, guiTop + 4, 0);
@@ -98,7 +116,7 @@ public class GuiEnergyinfuser extends GuiContainer {
             GlStateManager.translate(-26, -26, 0);
             drawTexturedModalRect(0, 0, xSize, 63, 52, 52);
         }
-        if (tile.running.get() && tile.charging.get()) {
+        if (tile.running.value && tile.charging.value) {
             Random rand = tile.getWorld().rand;
             int boltL = rand.nextInt(4);
             int boltS = rand.nextInt(3);

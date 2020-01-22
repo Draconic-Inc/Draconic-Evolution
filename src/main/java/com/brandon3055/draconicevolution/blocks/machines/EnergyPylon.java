@@ -60,7 +60,7 @@ public class EnergyPylon extends BlockBCore implements ITileEntityProvider, IRen
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = worldIn.getTileEntity(pos);
-        return state.withProperty(OUTPUT, tile instanceof TileEnergyPylon && ((TileEnergyPylon) tile).isOutputMode.get());
+        return state.withProperty(OUTPUT, tile instanceof TileEnergyPylon && ((TileEnergyPylon) tile).isOutputMode.value);
     }
     //endregion
 
@@ -76,7 +76,7 @@ public class EnergyPylon extends BlockBCore implements ITileEntityProvider, IRen
             else {
                 ((TileEnergyPylon) tile).validateStructure();
             }
-            return ((TileEnergyPylon) tile).structureValid.get();
+            return ((TileEnergyPylon) tile).structureValid.value;
         }
 
         return false;

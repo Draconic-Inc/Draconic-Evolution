@@ -16,18 +16,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPDATE;
-
 /**
  * Created by brandon3055 on 10/06/2016.
  */
 public class TileCraftingInjector extends TileInventoryBase implements IEnergyReceiver, ICraftingInjector, IExtendedRFStorage {
 
-    public final ManagedByte facing = register(new ManagedByte("facing", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    private final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
-    private final ManagedVec3I lastCorePos = register(new ManagedVec3I("lastCorePos", new Vec3I(0, 0, 0), SAVE_NBT_SYNC_TILE));
-    public final ManagedBool singleItem = register(new ManagedBool("singleItem", SAVE_NBT_SYNC_TILE));
+    public final ManagedByte facing = register("facing", new ManagedByte(0)).syncViaTile().saveToTile().trigerUpdate().finish();
+    private final ManagedLong energy = register("energy", new ManagedLong(0)).syncViaTile().saveToTile().finish();
+    private final ManagedVec3I lastCorePos = register("lastCorePos", new ManagedVec3I(new Vec3I(0, 0, 0))).syncViaTile().saveToTile().finish();
+    public final ManagedBool singleItem = register("singleItem", new ManagedBool(false)).syncViaTile().saveToTile().finish();
     public IFusionCraftingInventory currentCraftingInventory = null;
     private int chargeSpeedModifier = 300;
 
@@ -49,10 +46,10 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
         validateCraftingInventory();
         if (currentCraftingInventory != null) {
             long maxRFPerTick = currentCraftingInventory.getIngredientEnergyCost() / chargeSpeedModifier;
-            long maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getIngredientEnergyCost() - energy.get(), maxRFPerTick));
+            long maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getIngredientEnergyCost() - energy.value, maxRFPerTick));
 
             if (!simulate) {
-                energy.add(maxAccept);
+                energy.value += maxAccept;
             }
 
             super.update();
@@ -74,7 +71,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
-        return from != EnumFacing.getFront(facing.get());
+        return from != EnumFacing.getFront(facing.value);
     }
 
     @Override
@@ -121,19 +118,19 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
             return false;
         }
         currentCraftingInventory = craftingInventory;
-        lastCorePos.set(new Vec3I(((TileEntity) craftingInventory).getPos()));
+        lastCorePos.vec = new Vec3I(((TileEntity) craftingInventory).getPos());
         chargeSpeedModifier = 300 - (getPedestalTier() * 80);
         return true;
     }
 
     @Override
     public EnumFacing getDirection() {
-        return EnumFacing.getFront(facing.get());
+        return EnumFacing.getFront(facing.value);
     }
 
     @Override
     public long getInjectorCharge() {
-        return energy.get();
+        return energy.value;
     }
 
     private boolean validateCraftingInventory() {
@@ -149,7 +146,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     @Override
     public void onCraft() {
         if (currentCraftingInventory != null) {
-            energy.zero();
+            energy.value = 0;
         }
     }
 
@@ -158,7 +155,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public int getInventoryStackLimit() {
-        return singleItem.get() ? 1 : 64;
+        return singleItem.value ? 1 : 64;
     }
 
     @Override
@@ -166,7 +163,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
         inventoryStacks.set(index, stack);
         markDirty();
 
-        TileEntity tile = world.getTileEntity(lastCorePos.get().getPos());
+        TileEntity tile = world.getTileEntity(lastCorePos.vec.getPos());
         if (tile instanceof IFusionCraftingInventory) {
             world.notifyNeighborsOfStateChange(tile.getPos(), tile.getBlockType(), true);
         }
@@ -176,7 +173,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public long getExtendedStorage() {
-        return energy.get();
+        return energy.value;
     }
 
     @Override
