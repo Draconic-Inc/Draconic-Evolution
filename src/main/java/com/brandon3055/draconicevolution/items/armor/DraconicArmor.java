@@ -107,7 +107,7 @@ public class DraconicArmor extends WyvernArmor {
     //region Rendering
 
     @SideOnly(Side.CLIENT)
-    public ModelBiped model;
+    public ModelDraconicArmor model;
     @SideOnly(Side.CLIENT)
     public ModelBiped model_invisible;
 
@@ -145,6 +145,7 @@ public class DraconicArmor extends WyvernArmor {
             this.model.bipedRightLeg.showModel = (armorType == LEGS || armorType == FEET);
         }
 
+        model.entityModel = _default;
 
         if (entityLiving == null) {
             return model;

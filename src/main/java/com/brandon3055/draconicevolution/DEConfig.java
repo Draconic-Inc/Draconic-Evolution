@@ -207,6 +207,12 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "draconicWirelessMaxTransfer", comment = "This allows you to adjust the maximum transfer rate of the Draconic Wireless Energy Crystal.")
     public static int draconicWirelessMaxTransfer = 512000;
 
+    @ModConfigProperty(category = "Tweaks", name = "guardianCanKillCreative", comment = "Set to false if you dont want the guardian to be able to kill creative players.\nAlternatively... Just dont poke the guardian if you dont want to die!")
+    public static boolean guardianCanKillCreative = true;
+
+    @ModConfigProperty(category = "Tweaks", name = "entityDetectorPowerModifier", comment = "Allows you to adjust the power requirement of the entity detector.\nSet to 0 to disable completely", autoSync = true)
+    public static double entityDetectorPowerModifier = 1D;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.\nWarning: Changing the number of entries in this list will crash your game.")
@@ -241,6 +247,9 @@ public class DEConfig implements IModConfigHelper {
 
     @ModConfigProperty(category = "Client Settings", name = "disableCustomArrowModel", comment = "If true, the custom arrow models used by DE will be replaced by the vanilla model.", requiresMCRestart = true)
     public static boolean disableCustomArrowModel = false;
+
+    @ModConfigProperty(category = "Client Settings", name = "disableArmorFOVCorrection", comment = "This option is mainly here in case there are conflicts with other mods.")
+    public static boolean disableArmorFOVCorrection = false;
 
     //Category Misc
 

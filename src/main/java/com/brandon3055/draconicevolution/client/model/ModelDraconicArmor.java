@@ -2,13 +2,17 @@ package com.brandon3055.draconicevolution.client.model;
 
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.model.ModelZombie;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.player.EntityPlayer;
 
 
 public class ModelDraconicArmor extends ModelBiped {
 
+    public ModelBiped entityModel;
     public ModelRenderOBJ head;
     public ModelRenderOBJ body;
     public ModelRenderOBJ rightArm;
@@ -193,28 +197,48 @@ public class ModelDraconicArmor extends ModelBiped {
             bipedRightLeg.rotateAngleZ = 0F;
 
             setRotationAngles(0, 0, 0, 0, 0, 0, null);
-        }
-        else {
+        } else {
             super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
         }
-
+//
+//        if (entityModel instanceof ModelZombie) {
+//            applyModelRotations(entityModel, this);
+//        }
 
         GlStateManager.pushMatrix();
 
-        if (entity.isSneaking()) {
-            GlStateManager.translate(0.0F, 0.2F, 0.0F);
-        }
+        if (this.isChild) {
+            float f = 2.0F;
+            GlStateManager.scale(0.75F, 0.75F, 0.75F);
+            GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
+            this.bipedHead.render(1F / 16F);
+            GlStateManager.popMatrix();
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
+            this.bipedHead.render(1F / 16F);
+            this.bipedRightArm.render(1F / 16F);
+            this.bipedLeftArm.render(1F / 16F);
+            this.bipedBody.render(1F / 16F);
+            this.bipedRightLeg.render(1F / 16F);
+            this.bipedLeftLeg.render(1F / 16F);
+        } else {
+            if (entity.isSneaking()) {
+                GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            }
 
-        this.bipedHead.render(1F / 16F);
-        this.bipedRightArm.render(1F / 16F);
-        this.bipedLeftArm.render(1F / 16F);
-        this.bipedBody.render(1F / 16F);
-        this.bipedRightLeg.render(1F / 16F);
-        this.bipedLeftLeg.render(1F / 16F);
+            this.bipedHead.render(1F / 16F);
+            this.bipedRightArm.render(1F / 16F);
+            this.bipedLeftArm.render(1F / 16F);
+            this.bipedBody.render(1F / 16F);
+            this.bipedRightLeg.render(1F / 16F);
+            this.bipedLeftLeg.render(1F / 16F);
+        }
 
         GlStateManager.popMatrix();
     }
 
+    @Override
     public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity p_78087_7_) {
         this.bipedRightArm.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
@@ -236,4 +260,28 @@ public class ModelDraconicArmor extends ModelBiped {
         this.bipedRightArm.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
     }
+
+//    protected static void applyModelRotations(ModelBiped source, ModelBiped target) {
+//        if (source != null && target != null) {
+//            applyModelPartRotation(source.bipedLeftArm, target.bipedLeftArm);
+//            applyModelPartRotation(source.bipedRightArm, target.bipedRightArm);
+////            applyModelPartRotation(source.bipedLeftLeg, target.bipedLeftLeg);
+////            applyModelPartRotation(source.bipedRightLeg, target.bipedRightLeg);
+////            applyModelPartRotation(source.bipedHead, target.bipedHead);
+////            applyModelPartRotation(source.bipedBody, target.bipedBody);
+////            applyModelPartRotation(source.bipedHeadwear, target.bipedHeadwear);
+//        }
+//    }
+//
+//    private static void applyModelPartRotation(ModelRenderer source, ModelRenderer target) {
+//        target.rotationPointX = source.rotationPointX;
+//        target.rotationPointY = source.rotationPointY;
+//        target.rotationPointZ = source.rotationPointZ;
+//        target.rotateAngleX = source.rotateAngleX;
+//        target.rotateAngleY = source.rotateAngleY;
+//        target.rotateAngleZ = source.rotateAngleZ;
+//        target.offsetX = source.offsetX;
+//        target.offsetY = source.offsetY;
+//        target.offsetZ = source.offsetZ;
+//    }
 }

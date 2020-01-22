@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.capabilities.ShieldStateProvider;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.ICustomArmor;
@@ -42,7 +43,7 @@ public class CustomArmorHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerAttacked(LivingAttackEvent event) {
-        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled() || event.getAmount() <= 0) {
+        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled() || event.getAmount() <= 0 || event.getSource() == ADMIN_KILL) {
             return;
         }
 
@@ -58,7 +59,8 @@ public class CustomArmorHandler {
         if (applyArmorDamageBlocking(event, summery)) {
             return;
         }
-        if (summery == null || summery.protectionPoints <= 0 || event.getSource() == ADMIN_KILL) {
+        
+        if (summery == null || summery.protectionPoints <= 0 || !player.getCapability(ShieldStateProvider.PLAYER_CAP, null).getShieldState()) {
             return;
         }
         event.setCanceled(true);
@@ -118,7 +120,7 @@ public class CustomArmorHandler {
             return;
         }
 
-        if (summery.protectionPoints > 500) {
+        if (summery.protectionPoints > 500 && player.getCapability(ShieldStateProvider.PLAYER_CAP, null).getShieldState()) {
             event.setCanceled(true);
             event.getEntityLiving().setHealth(10);
             return;
@@ -362,45 +364,45 @@ public class CustomArmorHandler {
     public static class ArmorSummery {
         /*---- Shield ----*/
         /**
-         * Max protection points from all equipped armor pieces
+         * Max protection points from all equipped armor pieces.
          */
         public float maxProtectionPoints = 0F;
         /**
-         * Total protection points from all equipped armor pieces
+         * Total protection points from all equipped armor pieces.
          */
         public float protectionPoints = 0F;
         /**
-         * Number of quipped armor pieces
+         * Number of equipped armor pieces.
          */
         public int pieces = 0;
         /**
-         * Point  Allocation, The number of points on each piece
+         * Point allocation, or the number of points on each piece.
          */
         public float[] allocation;
         /**
-         * How many points have been drained from each armor piece
+         * How many points have been drained from each armor piece.
          */
         public float[] pointsDown;
         /**
-         * The armor pieces (Index will contain EMPTY if piece is not present)
+         * The armor pieces themselves. Index will contain ItemStack.EMPTY in the appropriate slot if piece is not present.
          */
         public NonNullList<ItemStack> armorStacks;
 
         public NonNullList<ItemStack> baublesStacks = null;
         /**
-         * Mean Fatigue
+         * Mean fatigue of all armor pieces.
          */
         public float entropy = 0F;
         /**
-         * Mean Recovery Points
+         * Mean Recovery Points of all armor pieces.
          */
         public float meanRecoveryPoints = 0;
         /**
-         * Total RF stored in the armor
+         * Total RF stored in all armor pieces.
          */
         public long totalEnergyStored = 0;
         /**
-         * Total Max RF storage for the armor
+         * Total Max RF storage for all armor pieces.
          */
         public long maxTotalEnergyStorage = 0;
         /**
@@ -440,7 +442,7 @@ public class CustomArmorHandler {
                 protectionPoints += allocation[i];
                 totalEntropy += ItemNBTHelper.getFloat(stack, "ShieldEntropy", 0);
                 this.armorStacks.set(i, stack);
-                totalRecoveryPoints += armor.getRecoveryRate(stack);//UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY);
+                totalRecoveryPoints += armor.getRecoveryRate(stack); //UpgradeHelper.getUpgradeLevel(stack, ToolUpgrade.SHIELD_RECOVERY);
                 float maxPoints = armor.getProtectionPoints(stack);
                 pointsDown[i] = maxPoints - allocation[i];
                 maxProtectionPoints += maxPoints;

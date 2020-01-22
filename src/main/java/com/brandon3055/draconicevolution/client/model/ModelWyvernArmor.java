@@ -5,10 +5,12 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.player.EntityPlayer;
 
 
 public class ModelWyvernArmor extends ModelBiped {
 
+    public ModelBiped entityModel;
     public ModelRenderOBJ head;
     public ModelRenderOBJ body;
     public ModelRenderOBJ rightArm;
@@ -118,7 +120,7 @@ public class ModelWyvernArmor extends ModelBiped {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 
         if (entity == null || entity instanceof EntityArmorStand) {
             isSneak = false;
@@ -153,37 +155,42 @@ public class ModelWyvernArmor extends ModelBiped {
         }
         else {
             //super.render(entity, f, f1, f2, f3, f4, f5);
-            super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
         }
 
         GlStateManager.pushMatrix();
 
-        if (entity.isSneaking()) {
-            GlStateManager.translate(0.0F, 0.2F, 0.0F);
-        }
-
-        this.bipedHead.render(1F / 13F);
-
-        //       GlStateManager.pushMatrix();
-//
-//        if (entity.isSneaking() && )
-//        {
-//            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+//        if (entityModel != null && !(entity instanceof EntityPlayer)) {
+//            ModelDraconicArmor.applyModelRotations(entityModel, this);
 //        }
 
-        this.bipedRightArm.render(1F / 16F);
-        this.bipedLeftArm.render(1F / 16F);
-        //       GlStateManager.popMatrix();
-        this.bipedBody.render(1F / 16F);
-        this.bipedRightLeg.render(1F / 16F);
-        this.bipedLeftLeg.render(1F / 16F);
+        if (this.isChild) {
+            float f = 2.0F;
+            GlStateManager.scale(0.75F, 0.75F, 0.75F);
+            GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
+            this.bipedHead.render(1F / 16F);
+            GlStateManager.popMatrix();
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
+            this.bipedHead.render(1F / 16F);
+            this.bipedRightArm.render(1F / 16F);
+            this.bipedLeftArm.render(1F / 16F);
+            this.bipedBody.render(1F / 16F);
+            this.bipedRightLeg.render(1F / 16F);
+            this.bipedLeftLeg.render(1F / 16F);
+        } else {
+            if (entity.isSneaking()) {
+                GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            }
 
-//        this.bipedHead.render(1F / 13F);
-//        this.bipedRightArm.render(1F / 15F);
-//        this.bipedLeftArm.render(1F / 15F);
-//        this.bipedBody.render(1F / 15F);
-//        this.bipedRightLeg.render(1F / 16F);
-//        this.bipedLeftLeg.render(1F / 16F);
+            this.bipedHead.render(1F / 16F);
+            this.bipedRightArm.render(1F / 16F);
+            this.bipedLeftArm.render(1F / 16F);
+            this.bipedBody.render(1F / 16F);
+            this.bipedRightLeg.render(1F / 16F);
+            this.bipedLeftLeg.render(1F / 16F);
+        }
 
         GlStateManager.popMatrix();
 

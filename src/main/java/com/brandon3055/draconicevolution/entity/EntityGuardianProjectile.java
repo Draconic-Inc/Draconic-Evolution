@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.utils.FilterUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.entity.Entity;
@@ -45,9 +46,9 @@ public class EntityGuardianProjectile extends Entity {
     public boolean isChaser;
     private double lastTickTargetDistance = 100;
     private float heath = 5F;
-    private DamageSource damageFireball = new DamageSource("de.GuardianFireball").setDamageAllowedInCreativeMode().setMagicDamage().setExplosion();
-    private DamageSource damageEnergy = new DamageSource("de.GuardianEnergyBall").setDamageAllowedInCreativeMode().setDamageBypassesArmor();
-    private DamageSource damageChaos = new DamageSource("de.GuardianChaosBall").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
+    private DamageSource damageFireball = new DamageSource("de.GuardianFireball").setMagicDamage().setExplosion();
+    private DamageSource damageEnergy = new DamageSource("de.GuardianEnergyBall").setDamageBypassesArmor();
+    private DamageSource damageChaos = new DamageSource("de.GuardianChaosBall").setDamageBypassesArmor().setDamageIsAbsolute();
 
     //public static final int FIREBALL = 0; 			/** Generic fireball a lot more powerful then ghast fireball */
     public static final int FIREBOMB = 1;
@@ -112,6 +113,12 @@ public class EntityGuardianProjectile extends Entity {
             this.motionX *= speed;
             this.motionY *= speed;
             this.motionZ *= speed;
+        }
+
+        if (DEConfig.guardianCanKillCreative) {
+            damageFireball.setDamageAllowedInCreativeMode();
+            damageEnergy.setDamageAllowedInCreativeMode();
+            damageChaos.setDamageAllowedInCreativeMode();
         }
     }
 

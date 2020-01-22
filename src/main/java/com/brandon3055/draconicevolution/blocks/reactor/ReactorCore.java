@@ -49,7 +49,7 @@ public class ReactorCore extends BlockBCore implements ITileEntityProvider, IRen
     public float getBlockHardness(IBlockState blockState, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileReactorCore) {
-            return ((TileReactorCore) tile).reactorState.value.isShieldActive() ? Float.MAX_VALUE : super.getBlockHardness(blockState, world, pos);
+            return ((TileReactorCore) tile).reactorState.value.isShieldActive() ? -1 : super.getBlockHardness(blockState, world, pos);
         }
 
         return super.getBlockHardness(blockState, world, pos);
