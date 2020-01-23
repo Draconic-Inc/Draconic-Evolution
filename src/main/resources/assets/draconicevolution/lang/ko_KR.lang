@@ -1,5 +1,5 @@
 //Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
-tile.draconicevolution:celestial_manipulator.name=행성 조작기
+tile.draconicevolution:celestial_manipulator.name= 조작기
 tile.draconicevolution:draconium_ore_normal.name=드라코늄 광석
 tile.draconicevolution:draconium_ore_nether.name=네더 드라코늄 광석
 tile.draconicevolution:draconium_ore_end.name=엔더 드라코늄 광석
@@ -199,7 +199,7 @@ msg.draconiumChestEdit2.txt=한장의 종이를 사용하세요.
 msg.de.dragonDeath.txt=§5엔더 드래곤이 폭사하였습니다.
 msg.de.baseSafeAOW.txt=§9(§aAOE §a안전 §a모드가 §a활성화되었습니다.§9) §c엔티티가 §c차단되었기 §c때문에 §c가동이 §c정지되었습니다.
 msg.de.guardianAttackBlocked.txt=당신의 공격은 가디언의 수정에 의해 막혔습니다!
-msg.de.shieldDepleted.txt=집중 피해를 주의하세요!!!
+msg.de.shieldDepleted.txt=경고 심각한 손상을 입었습니다!!!
 msg.de.shockWaveForEnergyBoltsOnly.txt=드라코닉 불화살 활성 상태에서만 쇼크웨이브을 작동합니다.
 msg.de.explosiveNotForEnergyBolts.txt=드라코닉 불화살 비활성 상태에서만 폭발을 작동합니다.
 msg.de.insufficientPowerToFire.txt=전력 부족!
@@ -213,21 +213,21 @@ msg.de.alreadyRunning.txt=이미 작동하고 있습니다!
 
 //Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
 info.teleporterInfUnset1.txt=해방
-info.teleporterInfUnset2.txt=흐름을 멈추고 싶으면 쉬프트+우클릭을 하세요.
-info.teleporterInfUnset3.txt=x, y, z 조정
-info.teleporterInfUnset4.txt=당신이 바라보고 있는 방향 뿐만 아닙니다.
-info.teleporterInfUnset5.txt=당신이 현재 가지고 있는 차원
+info.teleporterInfUnset2.txt=쉬프트+우클릭으로
+info.teleporterInfUnset3.txt=x, y, z 좌표를 저장합니다.
+info.teleporterInfUnset4.txt=또한 당신이 바라보고 있는 방향도 저장합니다.
+info.teleporterInfUnset5.txt=마지막으로, 당신이 현재 위치한 차원 또한 저장합니다.
 info.teleporterInfDest.txt=목적지
 info.teleporterInfFuel.txt=연료:
-info.teleporterInfSet1.txt=구속
-info.teleporterInfSet2.txt=남은 것 사용
+info.teleporterInfSet1.txt=귀속
+info.teleporterInfSet2.txt=잔여 사용횟수
 info.de.rightClickToTeleport.txt=순간이동을 하려면 우클릭하세요.
-info.de.draconiumBlockCapacitorCharge.txt=아이템을 들고 쉬프트를 눌러 축전기에서 충전하세요.
+info.de.draconiumBlockCapacitorCharge.txt=아이템을 들고 쉬프트를 눌러 축전기로부터 충전하세요.
 info.creativeCapacitor.txt=소스 또는 싱크 가능
-info.de.itemDislocationInhibitor.txt=5블록 내에서 삭제된 아이템이 아이템 에 의해 수집되지 않도록 방지합니다.
+info.de.itemDislocationInhibitor.txt=5블록 내에 위치한 아이템이 아이템 이동기에 의해 수집되지 않도록 방지합니다.
 
-info.draconicAxe1.txt=목재!!!!!!
-info.draconicAxe2.txt=나무를 통째로 떨어뜨리거나
+info.draconicAxe1.txt=넘어갑니다!!!!!!
+info.draconicAxe2.txt=나무를 통째로 베거나
 info.draconicAxe3.txt=5x5x5크기의 목재를 부숩니다.
 info.draconicAxe4.txt=한 블록을 채굴하려면 쉬프트를 누르세요.
 
@@ -243,12 +243,12 @@ info.arrowInfo0.txt=일반적인 활로는 너무 무겁습니다.
 
 //ender_extraction_core
 info.de.ender_energy_manipulator.info.txt=약간 소름 끼치는 신비로운 장치는 드래곤의 치유 수정의 에너지를 빨아들입니다.
-info.de.ender_energy_manipulator.info2.txt=그리고 근처에 있는 엔더맨의 영혼들과 함께 그 에너지는 엔더 드래곤의 알을 추출하는 데 사용됩니다.
-info.de.ender_energy_manipulator.location.msg=엔더 복도에 배치해야 합니다!
+info.de.ender_energy_manipulator.info2.txt=그리고 근처에 있는 엔더맨의 영혼들과 함께 그 에너지는 엔더 드래곤으로부터 알을 추출하는 데 사용됩니다.
+info.de.ender_energy_manipulator.location.msg=엔더 게이트웨이에 배치해야 합니다!
 info.de.ender_energy_manipulator.dead.msg=엔더 드래곤을 찾을 수 없습니다!
 info.de.ender_energy_manipulator.running.msg=현재 조작기가 완료될 때까지 기다려야 합니다!
 
-info.de.obliterationMode.txt=경계 모드
+info.de.obliterationMode.txt=제거 모드
 info.de.obliterationModetrue.txt=활성화
 info.de.obliterationModefalse.txt=비활성화
 info.de.miningMode.txt=채굴 모드
@@ -262,12 +262,12 @@ info.de.toOpenConfigGUI.txt=GUI 환경설정 열기
 info.de.shiftToPause.txt=슬라이드를 일시정지하고 싶으면 쉬프트를 누르세요.
 info.de.power.txt=힘
 
-info.de.sword.txt=적의 힘이 이 칼날을 더 강하게 만들어요!
+info.de.sword.txt=적의 힘이 이 칼날을 더 강하게 만듭니다!
 
-info.de.safetyMatch.txt=당신의 집을 태우지 않을 불을 붙이세요!
+info.de.safetyMatch.txt=당신의 집을 태우지 '않을' 불을 붙이세요!
 
-info.draconiumChestInfo1.txt=아무 것도 가지지 않은 손에서 색상 설정으로 접속하고 싶으면
-info.draconiumChestInfo2.txt=쉬프트+우클릭하세요.
+info.draconiumChestInfo1.txt=빈 손으로 쉬프트 우클릭하여
+info.draconiumChestInfo2.txt=색상 설정에 들어갑니다.
 
 info.de.capacitorMode.txt=모드
 info.de.capacitorMode0.txt=비활성화
@@ -315,8 +315,8 @@ info.de.wirelessConnections.txt=무선 연결
 
 info.infusedObsidian.txt=이 블록은 저항이 약합니다.
 
-enchantment.draconicevolution.reaperEnchant=저승사자
-enchantment.draconicevolution.enchant_reaper.desc=이 인첸트를 무기에 적용하면 슬픈 무기에 의해 죽은 몹이 그들의 영혼을 떨어뜨릴 가능성이 증가합니다. 이 인첸트은 저승사자 방식으로 만들어진 수식어와 함께 쌓인 드라코닉 에볼루션 무기에 가장 잘 적용됩니다.
+enchantment.draconicevolution.reaperEnchant=영혼 수확
+enchantment.draconicevolution.enchant_reaper.desc=이 인첸트를 무기에 적용하면 무기에 의해 죽은 몹이 그들의 영혼을 떨어뜨릴 가능성이 증가합니다. 이 인첸트은 저승사자 방식으로 만들어진 수식어와 함께 쌓인 드라코닉 에볼루션 무기에 가장 잘 적용됩니다.
 
 //Achievements ----------------------------------------------------------------------------------------------------------------------------------------
 draconicevolution.achievementPage.name=드라코닉 에볼루션
@@ -325,20 +325,20 @@ achievement.draconicevolution.dust=통큰 시작!
 achievement.draconicevolution.dust.desc=드라코늄 가루 수집
 achievement.draconicevolution.ingot=다이아몬드보다 좋다!
 achievement.draconicevolution.ingot.desc=드라코늄 가루를 드라코늄괴로 제련하기
-achievement.draconicevolution.core=그것이 시작한 곳
+achievement.draconicevolution.core=모든것이 시작되는 곳
 achievement.draconicevolution.core.desc=드라코닉 코어 제작
-achievement.draconicevolution.core2=불충분하다!
+achievement.draconicevolution.core2=더 강하게!
 achievement.draconicevolution.core2.desc=드라코닉 코어를 와이번 코어로 업그레이드
 
-achievement.draconicevolution.dislocator=엔더맨 없다!
+achievement.draconicevolution.dislocator=엔더맨 따위야!
 achievement.draconicevolution.dislocator.desc=이동기 제작
-achievement.draconicevolution.chest=저장고가 충분치 않다!
+achievement.draconicevolution.chest=저장고는 많을수록 좋다!
 achievement.draconicevolution.chest.desc=드라코닉 상자 제작
-achievement.draconicevolution.particles=튀는데!
+achievement.draconicevolution.particles=번쩍번쩍
 achievement.draconicevolution.particles.desc=입자 발전기 제작
-achievement.draconicevolution.weather=진정한 자연을 원하는가?
+achievement.draconicevolution.weather=자연의 지배자
 achievement.draconicevolution.weather.desc=날씨 조절기 제작
-achievement.draconicevolution.dissenchanter=내가 원한 것이야!
+achievement.draconicevolution.dissenchanter=내가 원하는 것만을!
 achievement.draconicevolution.dissenchanter.desc=반인첸트기 제작.
 achievement.draconicevolution.ecore=계속 가자!
 achievement.draconicevolution.ecore.desc=에너지 코어 제작
@@ -400,15 +400,15 @@ achievement.draconicevolution.dstaff=힘 결합!
 achievement.draconicevolution.dstaff.desc=드라코닉 스태프 제작
 
 achievement.draconicevolution.soul=저승사자다!!!!
-achievement.draconicevolution.soul.desc=의심하지 않는 몹의 영혼을 획득하세요.
+achievement.draconicevolution.soul.desc=몹의 영혼을 획득하세요.
 achievement.draconicevolution.sundial=계시 기록기
 achievement.draconicevolution.sundial.desc=해 다이얼 제작 및 시간 조절
 achievement.draconicevolution.manual=최대 지식!
 achievement.draconicevolution.manual.desc=드라코닉 태블릿 제작
 
 //Lore ----------------------------------------------------------------------------------------------------------------------------------------
-item.draconicevolution:wyvernPick.lore=2알번 곡괭이는 약해요.\n드라코늄이라면 채굴 속도를 높이고, 채굴 구역을 넓힙니다.
-item.draconicevolution:wyvernShovel.lore=2시간당 한 블록인가요? 드라코늄없이는!\n빠른 속도, 넓은 구역, 이것은 시작입니다!
+item.draconicevolution:wyvernPick.lore=일반 곡괭이는 약합니다.\n하지만 드라코늄이라면 채굴 속도를 높이고, 채굴 구역을 넓힙니다.
+item.draconicevolution:wyvernShovel.lore=한번에 한 블럭밖에 못 캐신다고요? 드라코늄과 함께라면 아닙니다!\n빠른 속도, 넓은 구역, 이것은 시작에 불과합니다!
 item.draconicevolution:wyvernSword.lore=2드라코늄이 검의 잠재력을 보여주기 시작합니다.\n검의 구역과 강도가 강해집니다.
 item.draconicevolution:wyvernBow.lore=2일반 활에 드라코늄을 주입합니다.\n더 빠르게 쏘고, 더 많은 힘을 쓸 것입니다.
 
@@ -425,7 +425,7 @@ item.draconicevolution:draconicSword.lore=2와이번은 좋으나, 드라코닉 
 item.draconicevolution:draconicBow.lore=2최고의 순간은 더욱 빠른 공격을 할 수 있습니다,\n폭발 화살, 더 이상 원하는 것이 있나요?
 
 item.draconicevolution:draconicHelm.lore=2더 이상 밤을 두려워하지 마세요.\n당신은 지금 밖에 무엇이 있든지 간에 항상 볼 수 있습니다.
-item.draconicevolution:draconicChest.lore=2드래곤의 심장을 사용하면서\n더 강해지고 날 수 있습니다.
+item.draconicevolution:draconicChest.lore=2드래곤의 심장을 사용하면서\n당신은 더 강해졌으며 이제 날 수 있습니다.
 item.draconicevolution:draconicLeggs.lore=2더 강한 갑옷일수록\n드래곤의 영혼은 당신을 보호하고, 빠르게 움직입니다.
 item.draconicevolution:draconicBoots.lore=2전보다 더 강하고, 빠르고, 좋은 \n드래곤의 심장은 더 높게 점프하게 만듭니다.
 
@@ -446,16 +446,16 @@ key.toggleFlight=크리에이티브 비행 토글하기
 key.toggleDislocator=아이템 이동기 토글하기
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
-death.attack.chaos=%1$s이 카오스 가디언에게 끔살당했습니다.
-death.attack.damage.de.fusionExplode=%1$s이 고농축 에너지 폭발로 인해 산화되었습니다.
-death.attack.chaosBurst=%1$s이 다크 에너지에 의해 폭발되었습니다.
-death.attack.de.islandImplode=%1$s이 빨리 달리지 못해서 카오스 섬의 폭발로 인해 죽었습니다.
+death.attack.chaos=%1$s이(가) 카오스 가디언에게 살해당했습니다.
+death.attack.damage.de.fusionExplode=%1$s이(가) 고농축 에너지 폭발로 인해 산화되었습니다.
+death.attack.chaosBurst=%1$s이(가) 다크 에너지에 의해 폭사하였습니다.
+death.attack.de.islandImplode=%1$s이(가) 충분히 빨리 달리지 못해 카오스 섬의 폭발에 휘말렸습니다.
 
-death.attack.de.GuardianFireball=%1$s이 카오스 가디언에게 폭사당했습니다.
-death.attack.de.GuardianEnergyBall=%1$s이 카오스 가디언에게 끔찍하게 살해당했습니다.
-death.attack.de.GuardianChaosBall=%1$s이 카오스 가디언이 사용한 다크 에너지에 맞아 사망했습니다.
+death.attack.de.GuardianFireball=%1$s이(가) 카오스 가디언에게 폭사당했습니다.
+death.attack.de.GuardianEnergyBall=%1$s이(가) 카오스 가디언에게 끔찍하게 살해당했습니다.
+death.attack.de.GuardianChaosBall=%1$s이(가) 카오스 가디언이 사용한 다크 에너지에 맞아 사망했습니다.
 
-death.attack.chaosImplosion=%1$s는 에너지의 소용돌이로 빨려 들어가 망각 속으로 사라졌습니다.
+death.attack.chaosImplosion=%1$s는 에너지의 소용돌이로 빨려 들어가 공허 속으로 사라졌습니다.
 death.attack.chrystalMoved=%1$s는 버릇없는 사람이었고, 드라코닉 에볼루션에 의해 벌을 받았습니다!
 
 death.attack.administrative.kill=%1$s는 방어할 수 없는 힘에 맞아 쓰러졌습니다.
@@ -669,7 +669,7 @@ config.field.armorFlightLock.entry=비행 잠금
 config.field.armorFlightLock.description=크리에이티브 비행이 항상 활성화되도록 잠글 수 있습니다.
 config.field.armorVFSpeedModifier.entry=수직 상승
 config.field.armorVFSpeedModifier.description=이것은 당신이 비행 중에 상승하고 하강하는 속도를 증가시킬 수 있게 해줍니다.
-config.field.armorInertiaCancel.entry=관성 취소
+config.field.armorInertiaCancel.entry=관성 
 config.field.armorInertiaCancel.description=고속으로 비행할 때 이것은 당신이 이동 키를 놓았을 때 당신을 거의 즉시 멈추게 할 것입니다.
 config.field.armorHillStep.entry=스텝 어시스트
 config.field.armorHillStep.description=점프하지 않고도 1개의 전체 블록을 올릴 수 있습니다.
@@ -829,9 +829,9 @@ gui.entityDetector.energyCost.info=이것은 각 스캔하는 맥박에 필요�
 gui.entityDetector.filter=엔티티 필터 환경설정 열기
 
 //---- Energy Net ----//
-eNet.de.posSavedToTool.info=도구에 블록 위치가 저장되어 있습니다. (청소할 공기를 쉬프트+우클릭으로 클릭하여 제거)
+eNet.de.posSavedToTool.info=도구에 블록 위치가 저장되었습니다. (공기를 쉬프트+우클릭으로 클릭하여 좌표 제거)
 eNet.de.posCleared.info=위치가 삭제되었습니다.
-eNet.de.toolNotBound.info=도구가 묶어지지 않았습니다! 쉬프트+우클릭하여 묶읍니다.
+eNet.de.toolNotBound.info=도구가 귀속되지 않았습니다! 쉬프트+우클릭하여 귀속시킵니다.
 eNet.de.boundToInvalid.info=도구가 잘못된 블록에 묶어 있습니다!
 eNet.de.linkBroken.info=연결이 파괴되었습니다!
 eNet.de.devicesLinked.info=장치가 연결되었습니다!
@@ -862,7 +862,7 @@ eNet.de.clearReceivers.gui=수신기 삭제
 gui.reactor.draconicReactor.txt=드라코닉 원자로
 gui.reactor.fuelIn.txt=연료 (입력)
 gui.reactor.chaosOut.txt=혼돈 (출력)
-gui.reactor.tempLoadFactor.txt=이는 원자로 온도에 의해 원자로 건물에 얼마나 많은 무게가 배치되고 있는지를 보여 줍니다. 원자로 온도가 8,000도를 초과하면 이는 기하급수적으로 증가합니다.
+gui.reactor.tempLoadFactor.txt=이는 원자로 온도에 의해 원자로 격리 필드에 얼마나 많은 부하가 가해지고 있는지를 보여줍니다. 원자로 온도가 8,000도를 초과하면 이는 기하급수적으로 증가합니다.
 gui.reactor.coreVolume.txt=이것은 원자로 내 물질의 총량을 입방 미터로 나타냅니다. 이것은 드라코늄+혼돈이기 때문에 이 값은 연료를 추가하거나 제거할 때만 바뀝니다.
 gui.reactor.genRate.txt=이것은 원자로에 의해 생성되는 현재 RF/t입니다.
 gui.reactor.inputRate.txt=이것은 현재의 현장 강도를 유지하는 데 필요한 정확한 RF/t 입력입니다. 전계 강도가 증가하면 이것은 기하 급수적으로 증가할 것입니다.
@@ -870,13 +870,13 @@ gui.reactor.conversionRate.txt=이것이 원자로가 현재 연료를 얼마나
 gui.reactor.redstoneMode.txt=이 원자로 구성 요소에 대한 비교기 출력을 설정합니다.
 gui.reactor.rsMode_temp.txt=온도가 10000도까지 상승하면 신호가 0~15범위로 출력됩니다.
 gui.reactor.rsMode_temp_inv.txt=신호가 반전되는 것을 제외하고는 온도와 동일합니다.
-gui.reactor.rsMode_field.txt=방패 강도가 0~100%, 방패 신호가 1~10%, 방패 전원이 15~90%사이에서 변동할 때 0~15사이의 신호를 출력합니다.
-gui.reactor.rsMode_field_inv.txt=신호가 반전되는 것을 제외하고 방패와 동일합니다.
-gui.reactor.rsMode_sat.txt=포화도가 0~100%사이를 변동하면 신호가 0~15%출력됩니다.
-gui.reactor.rsMode_sat_inv.txt=이는 신호가 반전되는 것을 제외하고 포화와 동일합니다.
-gui.reactor.rsMode_fuel.txt=연료 변환 레벨이 0%에서 100%로 증가하면 신호가 0에서 15까지 출력됩니다. 신호는 15~90%로 변환됩니다.
-gui.reactor.rsMode_fuel_inv.txt=이는 신호가 반전되는 것을 제외하고는 변환과 동일합니다.
-gui.reactor.failSafe.txt=이를 활성화하면 온도가 2500도 이하로 떨어지고 포화도가 99%에 도달하면 원자로가 자동으로 정지합니다. 이것은 오작동이 발생하거나 연료를 주입해야 할 때 자동으로 원자로를 정지시키는 데 사용될 수 있습니다.
+gui.reactor.rsMode_field.txt=격리 필드 강도가 0~100% 사이에서 변동할때 레드스톤 신호를 출력하며, 10% 이하일 땐 신호 강도 1, 90% 이상일 때 신호 강도 15를 출력합니다.
+gui.reactor.rsMode_field_inv.txt=신호가 반전되는 것을 제외하고 필드와 동일합니다.
+gui.reactor.rsMode_sat.txt=포화도가 0~100% 사이에서 변동하면 0에서 15 사이의 레드스톤 신호가 출력됩니다
+gui.reactor.rsMode_sat_inv.txt=신호가 반전되는 것을 제외하고 포화도와 동일합니다.
+gui.reactor.rsMode_fuel.txt=연료 변환율이 0~100% 사이에서 변동하면 0에서 15 사이의 레드스톤 신호가 출력됩니다
+gui.reactor.rsMode_fuel_inv.txt=신호가 반전되는 것을 제외하고는 변환률과 동일합니다.
+gui.reactor.failSafe.txt=온도가 2500도 이하로 떨어지고 포화도가 99%에 도달하면 원자로가 자동으로 정지합니다. 이것은 오작동이 발생하거나 연료를 주입해야 할 때 자동으로 원자로를 정지시키는 데 사용될 수 있습니다.
 
 gui.reactor.reactionTemp.info=코어 온도
 gui.reactor.fieldStrength.info=격납장 강도
@@ -992,11 +992,11 @@ info.de.shiftReversePlaceLogic.txt=Shift키를 누른 상태에서 역 방향 �
 
 //---- Bound Dislocators ----//
 info.de.bound_dislocator.key=독특한 열쇠
-info.de.bound_dislocator.click_to_link=묶은 쌍을 형성하려면 우클릭하세요.
-info.de.bound_dislocator.click_to_link_self=스스로를 묶으려면 우클릭하세요.
-info.de.bound_dislocator.player_link=플레이어 묶기
-info.de.bound_dislocator.bound_to=묶기
-info.de.bound_dislocator.in_player_inventory=바운드 이동기는 플레이어 인벤토리에 있습니다. 플레이어를 순간이동할 것 입니다.
+info.de.bound_dislocator.click_to_link=귀속 쌍을 형성하려면 우클릭하세요.
+info.de.bound_dislocator.click_to_link_self=스스로를 귀속하려면 우클릭하세요.
+info.de.bound_dislocator.player_link=플레이어 귀속
+info.de.bound_dislocator.bound_to=귀속
+info.de.bound_dislocator.in_player_inventory=바운드 이동기는 플레이어 인벤토리에 있습니다. 플레이어를 순간이동합니다.
 info.de.bound_dislocator.unknown_link=불명의 위치
-info.de.bound_dislocator.cant_find_player=묶은 플레이어는 온라인에 없습니다!
+info.de.bound_dislocator.cant_find_player=귀속된 플레이어가 온라인 상태가 아닙니다!
 info.de.bound_dislocator.cant_find_target=바운드 이동기를 찾을 수 없습니다!
