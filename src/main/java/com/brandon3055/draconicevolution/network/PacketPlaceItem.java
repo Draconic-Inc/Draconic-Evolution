@@ -88,7 +88,7 @@ public class PacketPlaceItem implements IMessage {
                     BlockPos pos = posHit.offset(traceResult.sideHit);
                     BlockEvent.PlaceEvent event = ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(world, pos, DEFeatures.placedItem.getDefaultState()), traceResult.sideHit, player.getActiveHand());
 
-                    if (event.isCanceled() || ctx.getServerHandler().serverController.isBlockProtected(world, pos, player)) {
+                    if (event.isCanceled() || ctx.getServerHandler().player.getServer().isBlockProtected(world, pos, player)) {
                         return null;
                     }
 

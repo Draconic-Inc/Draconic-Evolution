@@ -133,6 +133,7 @@ uploadArchives {
                 } else {
                     println "Uploading to local maven."
                     repository(url: "file://${local_maven}")
+
                 }
                 pom {
                     groupId = project.group
