@@ -124,8 +124,16 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-            if (project.hasProperty("local_maven")) {
-                repository(url: "file://${local_maven}")
+            if (project.hasProperty("local_maven") || project.hasProperty("maven_pass")) {
+                if (project.hasProperty("maven_pass")) {
+                    println "Uploading to remote maven."
+                    repository(url: "http://maven-upload.covers1624.net/") {
+                        authentication(userName: "brandon3055", password: project.getProperty("maven_pass"))
+                    }
+                } else {
+                    println "Uploading to local maven."
+                    repository(url: "file://${local_maven}")
+                }
                 pom {
                     groupId = project.group
                     version = project.version
@@ -133,7 +141,7 @@ uploadArchives {
                     project {
                         name project.archivesBaseName
                         packaging 'jar'
-                        description 'DraconicEvolution'
+                        description 'Draconic-Evolution'
                         url 'https://github.com/brandon3055/Draconic-Evolution'
                         scm {
                             url 'https://github.com/brandon3055/Draconic-Evolution'
@@ -160,8 +168,6 @@ uploadArchives {
                         }
                     }
                 }
-            } else {
-                println 'Maven upload triggered but no local_maven property found!'
             }
         }
     }

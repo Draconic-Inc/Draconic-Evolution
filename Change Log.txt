@@ -9,6 +9,7 @@
 -Fixed player attributes not syncing when teleporting between dimensions. (BrandonsCore Change)
 -Added config option to disable armor FOV correction.
 -Fixed minor client de-sync when adding stacks of fuel to advanced dislocator.
+-Merge pull request #1352 from FoxMcloud5655/1.12.2-toggleshield (Added Togglable Shields and Performance Upgrades)
 
 ######## 2.3.24.349 ########
 -Fixed Draconium chest furnace freezing when backed up.
