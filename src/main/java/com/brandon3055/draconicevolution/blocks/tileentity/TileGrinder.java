@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.blocks.TileEnergyInventoryBase;
+import com.brandon3055.brandonscore.lib.EnergyHelper;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
@@ -229,7 +230,7 @@ public class TileGrinder extends TileEnergyInventoryBase implements IEnergyRecei
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return stack.getItem() instanceof IEnergyContainerItem;
+        return EnergyHelper.canExtractEnergy(stack);
     }
 
     private static GrinderPredicate grinderPredicate = new GrinderPredicate();
