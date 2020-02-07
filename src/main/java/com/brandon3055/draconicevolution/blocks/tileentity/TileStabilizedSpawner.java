@@ -41,57 +41,10 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
     public ManagedBool isPowered = register("isPowered", new ManagedBool(false)).saveToTile().syncViaTile().finish();
     public ManagedShort spawnDelay = register("spawnDelay", new ManagedShort(100)).saveToTile().syncViaTile().finish();
     public ManagedInt startSpawnDelay = register("startSpawnDelay", new ManagedInt(100)).saveToTile().syncViaTile().finish();
-    private MobSpawnerBaseLogic dummyLogic = new MobSpawnerBaseLogic() {
-        @Override
-        public void broadcastEvent(int id) {
-
-        }
-
-        @Override
-        public World getSpawnerWorld() {
-            return world;
-        }
-
-        @Override
-        public BlockPos getSpawnerPosition() {
-            return pos;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getEntityId() {
-            return new ResourceLocation(DEFeatures.mobSoul.getEntityString(mobSoul.value));
-        }
-
-        @Override
-        public void updateSpawner() {
-        }
-
-        @Override
-        public void setEntityId(@Nullable ResourceLocation id) {
-        }
-
-        @Override
-        public void readFromNBT(NBTTagCompound nbt) {
-        }
-
-        @Override
-        public NBTTagCompound writeToNBT(NBTTagCompound p_189530_1_) {
-            return p_189530_1_;
-        }
-
-        @Override
-        public boolean setDelayToMin(int delay) {
-            return false;
-        }
-
-        @Override
-        public void setNextSpawnData(WeightedSpawnerEntity p_184993_1_) {
-        }
-    };
+    public StabilizedSpawnerLogic spawnerLogic = new StabilizedSpawnerLogic(this);
 
     private int activatingRangeFromPlayer = 24;
-    private int spawnRange = 4;
+//    private int spawnRange = 4;
 
     //region Render Fields
 
@@ -103,107 +56,109 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
     @Override
     public void update() {
         super.update();
-
-        if (!isActive()) {
-            return;
-        }
-
-        if (world.isRemote) {
-            mobRotation += getRotationSpeed();
-
-            double d3 = (double) ((float) pos.getX() + world.rand.nextFloat());
-            double d4 = (double) ((float) pos.getY() + world.rand.nextFloat());
-            double d5 = (double) ((float) pos.getZ() + world.rand.nextFloat());
-            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d3, d4, d5, 0.0D, 0.0D, 0.0D);
-            world.spawnParticle(EnumParticleTypes.FLAME, d3, d4, d5, 0.0D, 0.0D, 0.0D);
-        }
-        else {
-            if (spawnDelay.value == -1) {
-                resetTimer();
-            }
-
-            if (spawnDelay.value > 0) {
-                spawnDelay.value--;
-                return;
-            }
-
-            boolean spawnedMob = false;
-
-            for (int i = 0; i < spawnerTier.value.getSpawnCount(); i++) {
-                double spawnX = pos.getX() + (world.rand.nextDouble() - world.rand.nextDouble()) * (double) this.spawnRange + 0.5D;
-                double spawnY = pos.getY() + world.rand.nextInt(3) - 1;
-                double spawnZ = pos.getZ() + (world.rand.nextDouble() - world.rand.nextDouble()) * (double) this.spawnRange + 0.5D;
-                Entity entity = DEFeatures.mobSoul.createEntity(world, mobSoul.value);
-                entity.setPositionAndRotation(spawnX, spawnY, spawnZ, 0, 0);
-
-                int nearby = world.getEntitiesWithinAABB(entity.getClass(), (new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), (pos.getX() + 1), (pos.getY() + 1), (pos.getZ() + 1))).grow(spawnRange)).size();
-
-                if (nearby >= spawnerTier.value.getMaxCluster()) {
-                    this.resetTimer();
-                    return;
-                }
-
-                EntityLiving entityliving = entity instanceof EntityLiving ? (EntityLiving) entity : null;
-                entity.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, world.rand.nextFloat() * 360.0F, 0.0F);
-
-                boolean canSpawn;
-                if (spawnerTier.value.ignoreSpawnReq) {
-                    Event.Result result = ForgeEventFactory.canEntitySpawn(entityliving, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ, dummyLogic);
-                    canSpawn = isNotColliding(entity) && (result == Event.Result.DEFAULT || result == Event.Result.ALLOW);
-                }
-                else {
-                    canSpawn = canEntitySpawnSpawner(entityliving, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ);
-                }
-
-                if (canSpawn) {
-                    if (!spawnerTier.value.requiresPlayer && entity instanceof EntityLiving) {
-                        ((EntityLiving) entity).enablePersistence();
-                        entity.getEntityData().setLong("DESpawnedMob", System.currentTimeMillis()); //Leaving this in case some mod wants to use it.
-                        DEEventHandler.onMobSpawnedBySpawner((EntityLiving) entity);
-                    }
-                    AnvilChunkLoader.spawnEntity(entity, world);
-                    world.playEvent(2004, pos, 0);
-                    if (entityliving != null) {
-                        entityliving.spawnExplosionParticle();
-
-                        if (spawnerTier.value == SpawnerTier.CHAOTIC) {
-                            double velocity = 2.5;
-                            entity.motionX = (world.rand.nextDouble() - 0.5) * velocity;
-                            entity.motionY = world.rand.nextDouble() * velocity;
-                            entity.motionZ = (world.rand.nextDouble() - 0.5) * velocity;
-                        }
-                    }
-
-                    spawnedMob = true;
-                }
-            }
-
-            if (spawnedMob) {
-                resetTimer();
-            }
-        }
+        spawnerLogic.updateSpawner();
+//        if (!isActive()) {
+//            return;
+//        }
+//
+//        if (world.isRemote) {
+//            mobRotation += getRotationSpeed();
+//
+//            double d3 = (double) ((float) pos.getX() + world.rand.nextFloat());
+//            double d4 = (double) ((float) pos.getY() + world.rand.nextFloat());
+//            double d5 = (double) ((float) pos.getZ() + world.rand.nextFloat());
+//            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d3, d4, d5, 0.0D, 0.0D, 0.0D);
+//            world.spawnParticle(EnumParticleTypes.FLAME, d3, d4, d5, 0.0D, 0.0D, 0.0D);
+//        }
+//        else {
+//            if (spawnDelay.value == -1) {
+//                resetTimer();
+//            }
+//
+//            if (spawnDelay.value > 60) spawnDelay.value = 60;
+//
+//            if (spawnDelay.value > 0) {
+//                spawnDelay.value--;
+//                return;
+//            }
+//
+//            boolean spawnedMob = false;
+//
+//            for (int i = 0; i < spawnerTier.value.getSpawnCount(); i++) {
+//                double spawnX = pos.getX() + (world.rand.nextDouble() - world.rand.nextDouble()) * (double) this.spawnRange + 0.5D;
+//                double spawnY = pos.getY() + world.rand.nextInt(3) - 1;
+//                double spawnZ = pos.getZ() + (world.rand.nextDouble() - world.rand.nextDouble()) * (double) this.spawnRange + 0.5D;
+//                Entity entity = DEFeatures.mobSoul.createEntity(world, mobSoul.value);
+//                entity.setPositionAndRotation(spawnX, spawnY, spawnZ, 0, 0);
+//
+//                int nearby = world.getEntitiesWithinAABB(entity.getClass(), (new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), (pos.getX() + 1), (pos.getY() + 1), (pos.getZ() + 1))).grow(spawnRange)).size();
+//
+//                if (nearby >= spawnerTier.value.getMaxCluster()) {
+//                    this.resetTimer();
+//                    return;
+//                }
+//
+//                EntityLiving entityliving = entity instanceof EntityLiving ? (EntityLiving) entity : null;
+//                entity.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, world.rand.nextFloat() * 360.0F, 0.0F);
+//
+//                boolean canSpawn;
+//                if (spawnerTier.value.ignoreSpawnReq) {
+//                    Event.Result result = ForgeEventFactory.canEntitySpawn(entityliving, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ, baseLogic);
+//                    canSpawn = isNotColliding(entity) && (result == Event.Result.DEFAULT || result == Event.Result.ALLOW);
+//                }
+//                else {
+//                    canSpawn = canEntitySpawnSpawner(entityliving, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ);
+//                }
+//
+//                if (canSpawn) {
+//                    if (!spawnerTier.value.requiresPlayer && entity instanceof EntityLiving) {
+//                        ((EntityLiving) entity).enablePersistence();
+//                        entity.getEntityData().setLong("DESpawnedMob", System.currentTimeMillis()); //Leaving this in case some mod wants to use it.
+//                        DEEventHandler.onMobSpawnedBySpawner((EntityLiving) entity);
+//                    }
+//                    AnvilChunkLoader.spawnEntity(entity, world);
+//                    world.playEvent(2004, pos, 0);
+//                    if (entityliving != null) {
+//                        entityliving.spawnExplosionParticle();
+//
+//                        if (spawnerTier.value == SpawnerTier.CHAOTIC) {
+//                            double velocity = 2.5;
+//                            entity.motionX = (world.rand.nextDouble() - 0.5) * velocity;
+//                            entity.motionY = world.rand.nextDouble() * velocity;
+//                            entity.motionZ = (world.rand.nextDouble() - 0.5) * velocity;
+//                        }
+//                    }
+//
+//                    spawnedMob = true;
+//                }
+//            }
+//
+//            if (spawnedMob) {
+//                resetTimer();
+//            }
+//        }
 
     }
 
-    private boolean canEntitySpawnSpawner(EntityLiving entity, World world, float x, float y, float z) {
-        Event.Result result = ForgeEventFactory.canEntitySpawn(entity, world, x, y, z, true);
-        if (result == Event.Result.DEFAULT) {
-            boolean isSlime = entity instanceof EntitySlime;
-            return (isSlime ||entity.getCanSpawnHere()) && entity.isNotColliding();
-        }
-        else return result == Event.Result.ALLOW;
-    }
+//    private boolean canEntitySpawnSpawner(EntityLiving entity, World world, float x, float y, float z) {
+//        Event.Result result = ForgeEventFactory.canEntitySpawn(entity, world, x, y, z, true);
+//        if (result == Event.Result.DEFAULT) {
+//            boolean isSlime = entity instanceof EntitySlime;
+//            return (isSlime ||entity.getCanSpawnHere()) && entity.isNotColliding();
+//        }
+//        else return result == Event.Result.ALLOW;
+//    }
 
-    public boolean isNotColliding(Entity entity) {
-        return !world.containsAnyLiquid(entity.getEntityBoundingBox()) && world.getCollisionBoxes(entity, entity.getEntityBoundingBox()).isEmpty() && world.checkNoEntityCollision(entity.getEntityBoundingBox(), entity);
-    }
+//    public boolean isNotColliding(Entity entity) {
+//        return !world.containsAnyLiquid(entity.getEntityBoundingBox()) && world.getCollisionBoxes(entity, entity.getEntityBoundingBox()).isEmpty() && world.checkNoEntityCollision(entity.getEntityBoundingBox(), entity);
+//    }
 
-    private void resetTimer() {
-        spawnDelay.value = (short) Math.min(spawnerTier.value.getRandomSpawnDelay(world.rand), Short.MAX_VALUE);
-        startSpawnDelay.value = spawnDelay.value;
-    }
+//    private void resetTimer() {
+//        spawnDelay.value = (short) Math.min(spawnerTier.value.getRandomSpawnDelay(world.rand), Short.MAX_VALUE);
+//        startSpawnDelay.value = spawnDelay.value;
+//    }
 
-    private boolean isActive() {
+    public boolean isActive() {
         if (isPowered.value || mobSoul.value.isEmpty()) {
             return false;
         }
@@ -303,16 +258,16 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
 
     //region Render
 
-    public Entity getRenderEntity() {
+    protected Entity getRenderEntity() {
         if (mobSoul.value.isEmpty()) {
             return null;
         }
         return DEFeatures.mobSoul.getRenderEntity(mobSoul.value);
     }
 
-    public double getRotationSpeed() {
-        return isActive() ? 0.5 + (1D - ((double) spawnDelay.value / (double) startSpawnDelay.value)) * 4.5 : 0;
-    }
+//    public double getRotationSpeed() {
+//        return isActive() ? 0.5 + (1D - ((double) spawnDelay.value / (double) startSpawnDelay.value)) * 4.5 : 0;
+//    }
 
     //endregion
 
@@ -352,8 +307,16 @@ public class TileStabilizedSpawner extends TileBCBase implements ITickable, IAct
             return spawnCount;
         }
 
+        public boolean ignoreSpawnReq() {
+            return ignoreSpawnReq;
+        }
+
+        public boolean requiresPlayer() {
+            return requiresPlayer;
+        }
+
         public int getMaxCluster() {
-            return (int) (spawnCount * 2.5D);
+            return (int) (spawnCount * 3D);
         }
 
         public static SpawnerTier getTierFromCore(ItemCore core) {
