@@ -143,6 +143,11 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
     @Override
     public void update() {
+
+//        reactableFuel.value = 10368 * .35;
+//        convertedFuel.value = 10368 * .65;
+//        temperature.value = 200;
+
 //        reactorState.value = ReactorState.COLD;
 //        if (explosionProcess != null) {
 //            explosionProcess.isDead = true;
