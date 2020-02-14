@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -68,7 +69,7 @@ public class StabilizedSpawnerLogic extends MobSpawnerBaseLogic {
                 }
 
                 this.prevMobRotation = this.mobRotation;
-                this.mobRotation = (this.mobRotation + (double) (1000.0F / ((float) tile.spawnDelay.value+ 200.0F))) % 360.0D;
+                this.mobRotation = (this.mobRotation + (double) (1000.0F / ((float) tile.spawnDelay.value + 200.0F))) % 360.0D;
             } else {
                 if (tile.spawnDelay.value == -1) {
                     this.resetTimer();
@@ -104,6 +105,12 @@ public class StabilizedSpawnerLogic extends MobSpawnerBaseLogic {
                     entity.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, world.rand.nextFloat() * 360.0F, 0.0F);
 
                     if (entityliving == null || canEntitySpawnSpawner(entityliving, getSpawnerWorld(), (float) entity.posX, (float) entity.posY, (float) entity.posZ, this)) {
+                        if (!tier.requiresPlayer() && entity instanceof EntityLiving) {
+                            ((EntityLiving) entity).enablePersistence();
+                            entity.getEntityData().setLong("DESpawnedMob", System.currentTimeMillis());
+                            DEEventHandler.onMobSpawnedBySpawner((EntityLiving) entity);
+                        }
+
                         AnvilChunkLoader.spawnEntity(entity, world);
                         world.playEvent(2004, blockpos, 0);
 
