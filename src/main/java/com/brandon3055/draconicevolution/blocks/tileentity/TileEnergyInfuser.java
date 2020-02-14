@@ -59,7 +59,7 @@ public class TileEnergyInfuser extends TileEnergyInventoryBase implements IEnerg
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return stack.getItem() instanceof IEnergyContainerItem;
+        return EnergyHelper.canReceiveEnergy(stack);
     }
 
     //endregion
