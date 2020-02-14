@@ -158,6 +158,9 @@ public class DERecipes {
         addShaped(ALL, new ItemStack(chaosShard, 1, 2), "AAA", "AAA", "AAA", 'A', new ItemStack(chaosShard, 1, 3));
         addShaped(ALL, new ItemStack(chaosShard, 1, 1), "AAA", "AAA", "AAA", 'A', new ItemStack(chaosShard, 1, 2));
         addShaped(ALL, chaosShard, "AAA", "AAA", "AAA", 'A', new ItemStack(chaosShard, 1, 1));
+        addShapeless(ALL, new ItemStack(chaosShard, 9, 1), new ItemStack(chaosShard, 1, 0));
+        addShapeless(ALL, new ItemStack(chaosShard, 9, 2), new ItemStack(chaosShard, 1, 1));
+        addShapeless(ALL, new ItemStack(chaosShard, 9, 3), new ItemStack(chaosShard, 1, 2));
         //Cores
         addShaped(ALL, draconicCore, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', "ingotGold", 'C', "gemDiamond");
         //addShaped(HARD, draconicCore, "ABA", "BCB", "ABA", 'A', "ingotDraconium", 'B', "gemDiamond", 'C', "netherStar");
