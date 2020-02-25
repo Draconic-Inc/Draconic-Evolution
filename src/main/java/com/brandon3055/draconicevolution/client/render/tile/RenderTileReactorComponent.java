@@ -2,15 +2,15 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
-import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorEnergyInjector;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.client.model.ModelReactorEnergyInjector;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumFacing;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.util.Direction;
 
 /**
  * Created by brandon3055 on 20/01/2017.
@@ -22,24 +22,24 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
     public static ModelReactorEnergyInjector injectorModel = new ModelReactorEnergyInjector();
 
     @Override
-    public void render(TileReactorComponent te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
+    public void render(TileReactorComponent te, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
+        GlStateManager.translated(x + 0.5, y + 0.5, z + 0.5);
 
-        if (te.facing.get() == EnumFacing.SOUTH) {
-            GlStateManager.rotate(180, 0, 1, 0);
+        if (te.facing.get() == Direction.SOUTH) {
+            GlStateManager.rotated(180, 0, 1, 0);
         }
-        else if (te.facing.get() == EnumFacing.EAST) {
-            GlStateManager.rotate(-90, 0, 1, 0);
+        else if (te.facing.get() == Direction.EAST) {
+            GlStateManager.rotated(-90, 0, 1, 0);
         }
-        else if (te.facing.get() == EnumFacing.WEST) {
-            GlStateManager.rotate(90, 0, 1, 0);
+        else if (te.facing.get() == Direction.WEST) {
+            GlStateManager.rotated(90, 0, 1, 0);
         }
-        else if (te.facing.get() == EnumFacing.UP) {
-            GlStateManager.rotate(90, 1, 0, 0);
+        else if (te.facing.get() == Direction.UP) {
+            GlStateManager.rotated(90, 1, 0, 0);
         }
-        else if (te.facing.get() == EnumFacing.DOWN) {
-            GlStateManager.rotate(-90, 1, 0, 0);
+        else if (te.facing.get() == Direction.DOWN) {
+            GlStateManager.rotated(-90, 1, 0, 0);
         }
 
         if (te instanceof TileReactorStabilizer) {
@@ -47,7 +47,7 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
             float ringRotation = coreRotation * -0.5F;//Remember Partial Ticks here
             renderStabilizer(coreRotation, ringRotation, te.animRotationSpeed / 15F, partialTicks, false, destroyStage);
         }
-        else if (te instanceof TileReactorEnergyInjector) {
+        else if (te instanceof TileReactorInjector) {
             renderInjector(te.animRotationSpeed / 15F, partialTicks, false, destroyStage);
         }
 
@@ -61,13 +61,13 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
         else {
             ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER);
         }
-        stabilizerModel.render(null, coreRotation, brightness, invRender ? 1 : 0, 0, 0, 1F / 16F);
+        stabilizerModel.render(coreRotation, brightness, invRender ? 1 : 0, 1F / 16F);
         ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER_RING);
-        GlStateManager.rotate(90, 1, 0, 0);
-        GlStateManager.translate(0, -0.58, 0);
-        GlStateManager.scale(0.95, 0.95, 0.95);
-        GlStateManager.rotate(ringRotation, 0, 1, 0);
-        stabilizerRingModel.render(null, -70F, brightness, invRender ? 1 : 0, 0, 0, 1F / 16F);
+        GlStateManager.rotated(90, 1, 0, 0);
+        GlStateManager.translated(0, -0.58, 0);
+        GlStateManager.scaled(0.95, 0.95, 0.95);
+        GlStateManager.rotated(ringRotation, 0, 1, 0);
+        stabilizerRingModel.render(-70F, brightness, invRender ? 1 : 0, 1F / 16F);
     }
 
     public static void renderInjector(float brightness, float partialTicks, boolean invRender, int destroyStage) {
@@ -77,7 +77,7 @@ public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
         else {
             ResourceHelperDE.bindTexture(DETextures.REACTOR_INJECTOR);
         }
-        injectorModel.render(null, brightness, invRender ? 1 : 0, 0, 0, 0, 1F / 16F);
+        injectorModel.render(brightness, invRender ? 1 : 0, 1F / 16F);
     }
 
 }

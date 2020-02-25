@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.client.model;
 
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ArmorStandEntity;
 
 
-public class ModelWyvernArmor extends ModelBiped {
+public class ModelWyvernArmor extends BipedModel<LivingEntity> {
 
     public ModelRenderOBJ head;
     public ModelRenderOBJ body;
@@ -118,11 +119,11 @@ public class ModelWyvernArmor extends ModelBiped {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(LivingEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 
-        if (entity == null || entity instanceof EntityArmorStand) {
+        if (entity == null || entity instanceof ArmorStandEntity) {
             isSneak = false;
-            isRiding = false;
+//            isRiding = false;
             isChild = false;
             //aimedBow = false;
 
@@ -153,13 +154,13 @@ public class ModelWyvernArmor extends ModelBiped {
         }
         else {
             //super.render(entity, f, f1, f2, f3, f4, f5);
-            super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+            setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         }
 
         GlStateManager.pushMatrix();
 
         if (entity.isSneaking()) {
-            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            GlStateManager.translatef(0.0F, 0.2F, 0.0F);
         }
 
         this.bipedHead.render(1F / 13F);

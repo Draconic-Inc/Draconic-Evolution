@@ -2,10 +2,10 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
@@ -22,10 +22,10 @@ public class RenderEnergyBolt {
         Tessellator tessellator = Tessellator.getInstance();
         Random random = new Random(boltSeed);
 
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200, 200);
+        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
         double distance = Utils.getDistanceAtoB(point1, point2);
@@ -98,7 +98,7 @@ public class RenderEnergyBolt {
 
         GlStateManager.disableBlend();
         GlStateManager.enableLighting();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
     }
 
     //WIP
@@ -106,10 +106,10 @@ public class RenderEnergyBolt {
         Tessellator tessellator = Tessellator.getInstance();
         Random random = new Random(boltSeed);
 
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200, 200);
+        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
         double distance = Utils.getDistanceAtoB(source, target);
@@ -154,7 +154,7 @@ public class RenderEnergyBolt {
 
         GlStateManager.disableBlend();
         GlStateManager.enableLighting();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
     }
 
 
@@ -162,7 +162,7 @@ public class RenderEnergyBolt {
         BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(p1.x, p1.y, p1.z);
+        GlStateManager.translated(p1.x, p1.y, p1.z);
 
         double dist = Utils.getDistanceAtoB(p1, p2);
         float xd = (float) (p1.x - p2.x);
@@ -172,9 +172,9 @@ public class RenderEnergyBolt {
         float rotYaw = (float) (Math.atan2((double) xd, (double) zd) * 180.0D / 3.141592653589793D);
         float rotPitch = (float) (Math.atan2((double) yd, var7) * 180.0D / 3.141592653589793D);
 
-        GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
-        GlStateManager.rotate(rotPitch, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotatef(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
+        GlStateManager.rotatef(rotPitch, 1.0F, 0.0F, 0.0F);
 
         buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR);
         for (int i = 0; i <= 9; i++) {

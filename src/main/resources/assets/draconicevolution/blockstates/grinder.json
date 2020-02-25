@@ -1,14 +1,15 @@
 {
   "forge_marker": 1,
-  "defaults":     {},
+  "defaults":     {
+    "transform": "forge:default-block",
+    "textures": { "skull_eyes": "draconicevolution:models/parts/black" }
+  },
   "variants":     {
     "active": {
       "true":  {
         "textures": { "skull_eyes": "draconicevolution:models/blocks/grinder" }
       },
-      "false": {
-        "textures": { "skull_eyes": "draconicevolution:models/parts/black" }
-      }
+      "false": {}
     },
     "facing": {
       "north": {},
@@ -18,22 +19,14 @@
     },
     "static": {
       "true": {
-        "model": "draconicevolution:grinder"
+        "model": "draconicevolution:grinder/grinder"
       },
       "false": {
         "model": "draconicevolution:machine_fan"
       }
     },
-    "entity": [{
-      "model": "draconicevolution:grinder",
-      "submodel": {
-        "fan": { "model": "draconicevolution:machine_fan" }
-      }
-    }],
-    "normal": [{}],
     "inventory": [{
-      "transform": "forge:default-block",
-      "model": "draconicevolution:grinder",
+      "model": "draconicevolution:grinder/grinder",
       "submodel": {
         "fan": { "model": "draconicevolution:machine_fan" }
       }

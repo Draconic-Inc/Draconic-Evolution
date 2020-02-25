@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import java.util.Map;
  * Created by brandon3055 on 7/06/2016.
  */
 public interface IItemConfigField {
+    Logger logger = LogManager.getLogger(DraconicEvolution.MODID);
 
     /**
      * Returns the name of the field. This will be used to reference the field in code.
@@ -28,7 +31,7 @@ public interface IItemConfigField {
      * Warning this is client side! Remember to keep that in mind when implementing and don't forget the @SideOnly
      * Returns the field value formatted for display to the user.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
 //Because they had to go and make life complicated by moving localization client side!
     String getReadableValue();
 
@@ -81,19 +84,19 @@ public interface IItemConfigField {
      * @param data   Data associated with the button if applicable (See the doc for each button in EnumButton for details)
      * @param player The player configuring the item.
      */
-    default void handleButton(EnumButton button, int data, EntityPlayer player, PlayerSlot itemSlot) {
+    default void handleButton(EnumButton button, int data, PlayerEntity player, PlayerSlot itemSlot) {
         handleButton(button, data);
     }
 
     /**
-     * Write this fields value to the given NBTTagCompound with the fields name as the key.
+     * Write this fields value to the given CompoundNBT with the fields name as the key.
      */
-    void writeToNBT(NBTTagCompound compound);
+    void writeToNBT(CompoundNBT compound);
 
     /**
-     * Read this fields value from the given NBTTagCompound with the fields name as the key.
+     * Read this fields value from the given CompoundNBT with the fields name as the key.
      */
-    void readFromNBT(NBTTagCompound compound);
+    void readFromNBT(CompoundNBT compound);
 
     /**
      * Return the control type for this field.
@@ -113,7 +116,7 @@ public interface IItemConfigField {
      */
     Map<Integer, String> getValues();
 
-    public enum EnumControlType {
+    enum EnumControlType {
         /**
          * Has a single plus and a single minus button. As well as a max and min button
          */
@@ -135,7 +138,7 @@ public interface IItemConfigField {
         TOGGLE
     }
 
-    public enum EnumButton {
+    enum EnumButton {
         /**
          * data field is not relevant for this button.
          */
@@ -175,13 +178,13 @@ public interface IItemConfigField {
         public final int index;
         private static final EnumButton[] buttons;
 
-        private EnumButton(int index) {
+        EnumButton(int index) {
             this.index = index;
         }
 
         public static EnumButton getButton(int index) {
             if (index < 0 || index >= buttons.length) {
-                FMLLog.bigWarning("[DraconicEvolution - API] EnumButton#getButton Attempt to get button for invalid index! [%s]", index);
+                logger.warn(String.format("[DraconicEvolution - API] EnumButton#getButton Attempt to get button for invalid index! [%s]", index));
                 return TOGGLE;
             }
             return buttons[index];

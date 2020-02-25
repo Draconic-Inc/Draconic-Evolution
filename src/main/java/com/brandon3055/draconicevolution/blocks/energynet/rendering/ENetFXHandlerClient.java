@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBeam;
@@ -30,7 +29,8 @@ public class ENetFXHandlerClient extends ENetFXHandler<IENetEffectTile> {
         if (tile.hasStaticFX()) {
             if (staticFX == null || !staticFX.isAlive()) {
                 staticFX = tile.createStaticFX();
-                BCEffectHandler.spawnGLParticle(staticFX.getFXHandler(), staticFX);
+                //TODO Particles
+//                BCEffectHandler.spawnGLParticle(staticFX.getFXHandler(), staticFX);
             }
             staticFX.updateFX(0.5F);
             staticFX.renderEnabled = renderCooldown > 0;
@@ -89,7 +89,8 @@ public class ENetFXHandlerClient extends ENetFXHandler<IENetEffectTile> {
             }
             CrystalFXBeam beam = new CrystalFXBeam(((TileEntity) tile).getWorld(), tile, (ICrystalLink) target);
             beamFXList.add(beam);
-            BCEffectHandler.spawnGLParticle(beam.getFXHandler(), beam);
+            //TODO Particles
+//            BCEffectHandler.spawnGLParticle(beam.getFXHandler(), beam);
         }
 
     }

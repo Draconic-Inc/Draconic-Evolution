@@ -2,7 +2,8 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.utils.SimpleAnimHandler;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
@@ -12,22 +13,33 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DEFeatures;
+
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ITickable;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
+import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.tileentity.ITickableTileEntity;
+
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+
+
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.animation.CapabilityAnimation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,10 +47,10 @@ import java.util.Random;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
-public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable {
+public class TileGenerator extends TileBCore implements ITickableTileEntity, IRSSwitchable {
 
     private final SimpleAnimHandler animHandler;
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private GeneratorSoundHandler sound = new GeneratorSoundHandler(this);
 
     /**
@@ -49,7 +61,7 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
      * The remaining fuel value from the last item that was consumed.
      */
     public final ManagedInt fuelRemaining = register(new ManagedInt("fuel_remaining", 0, SAVE_BOTH_SYNC_CONTAINER));
-    public final ManagedEnum<EnumFacing> facing = register(new ManagedEnum<>("facing", EnumFacing.NORTH, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedEnum<Direction> facing = register(new ManagedEnum<>("facing", Direction.NORTH, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public final ManagedInt productionRate = register(new ManagedInt("prod_rate", 0, SYNC_CONTAINER));
     public final ManagedEnum<Mode> mode = register(new ManagedEnum<>("mode", Mode.NORMAL, SAVE_BOTH_SYNC_TILE, CLIENT_CONTROL));
     public final ManagedBool active = register(new ManagedBool("active", false, SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
@@ -59,25 +71,29 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
     private double consumptionBuffer = 0;
     private double productionBuffer = 0;
 
-    public TileItemStackHandler itemHandler;
-    public OPStorage opStorage;
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(4);
+    public OPStorage opStorage = new OPStorage(100000, 0, 32000);
 
     public TileGenerator() {
-        opStorage = addEnergyCap(new OPStorage(100000, 0, 32000)).syncContainer(true).getData();
-        itemHandler = addInternalItemHandlerCap(new TileItemStackHandler(4)).getData();
-        itemHandler.setStackValidator((slot, stack) -> slot > 2 || TileEntityFurnace.getItemBurnTime(stack) > 0);
-        setupPowerSlot(itemHandler, 3, opStorage, true);
-        addRawItemCap(new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
+        super(DEContent.tile_generator);
 
+        //Power Cap
+        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+
+        //Inventory Cap
+        capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
+        itemHandler.setStackValidator((slot, stack) -> slot > 2 || ForgeHooks.getBurnTime(stack) > 0);
+        setupPowerSlot(itemHandler, 3, opStorage, true);
+        capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
         installIOTracker(opStorage);
-        setShouldRefreshOnBlockChange();
+
 
         animHandler = new SimpleAnimHandler(new ResourceLocation(DraconicEvolution.MODID, "asms/block/generator.json"));
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
         if (world.isRemote) {
             animHandler.setSpeed(active.get() ? mode.get().animFanSpeed : 0F, 0.3F);
             animHandler.updateAnimation();
@@ -114,12 +130,11 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
                 opStorage.modifyEnergyStored((int) productionBuffer);
                 productionBuffer = productionBuffer % 1D;
             }
-        }
-        else {
+        } else {
             productionRate.set(0);
         }
 
-        if (fuelRemaining.get() <= 0 && opStorage.getOPStored() < opStorage.getMaxOPStored()) {
+        if (isTileEnabled() && fuelRemaining.get() <= 0) {
             tryRefuel();
         }
 
@@ -130,13 +145,12 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
         for (int i = 0; i < 3; i++) {
             ItemStack stack = itemHandler.getStackInSlot(i);
             if (!stack.isEmpty()) {
-                int itemBurnTime = TileEntityFurnace.getItemBurnTime(stack);
+                int itemBurnTime = ForgeHooks.getBurnTime(stack);
 
                 if (itemBurnTime > 0) {
                     if (stack.getCount() == 1) {
                         stack = stack.getItem().getContainerItem(stack);
-                    }
-                    else {
+                    } else {
                         stack.shrink(1);
                     }
                     itemHandler.setStackInSlot(i, stack);
@@ -154,17 +168,17 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
 
     //Render Stuff
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void updateSoundAndFX() {
         sound.update();
-        if (!active.get() || Minecraft.getMinecraft().player.getDistanceSq(pos) > 16 * 16) {
+        if (!active.get() || pos.distanceSq(Minecraft.getInstance().player.getPosition()) > 16 * 16) {
             return;
         }
         Random rand = world.rand;
 
         double p = 0.0625;
         if (rand.nextInt(17 - (mode.get().index * 4)) == 0) {
-            EnumFacing enumfacing = getState(DEFeatures.generator).getValue(Generator.FACING);
+            Direction enumfacing = getBlockState().get(Generator.FACING);
 
             double pgx = (p * 7.5D) + (rand.nextInt(6) * (p));
             double pgy = 0.3D;
@@ -186,7 +200,7 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
             }
         }
         if (rand.nextInt(5 - mode.get().index) == 0) {
-            EnumFacing enumfacing = getState(DEFeatures.generator).getValue(Generator.FACING);
+            Direction enumfacing = getBlockState().get(Generator.FACING);
 
             double pex = (p * 3D) + (rand.nextInt(5) * p);
             double pey = p * 6.5;
@@ -210,22 +224,22 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void spawnGrillParticle(Random rand, double x, double y, double z) {
-        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, y, z, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
         if (mode.get() == Mode.PERFORMANCE_PLUS && rand.nextInt(8) == 0) {
-            BCEffectHandler.spawnFX(DEParticles.FLAME, world, new Vec3D(x, y, z), new Vec3D(), 127);
+            //ToDo
+//            BCEffectHandler.spawnFX(DEParticles.FLAME, world, new Vec3D(x, y, z), new Vec3D(), 127);
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void spawnExhaustParticle(Random rand, double x, double y, double z, Vec3D velocity) {
         if (rand.nextBoolean()) {
-            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, y, z, velocity.x, velocity.y, velocity.z);
-            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, y, z, velocity.x, velocity.y, velocity.z);
-        }
-        else {
-            BCEffectHandler.spawnFX(DEParticles.FLAME, world, new Vec3D(x, y, z), velocity, 32, (int) ((0.8 + (rand.nextDouble() * 0.2)) * 255));
+            world.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
+            world.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
+        } else {
+//            BCEffectHandler.spawnFX(DEParticles.FLAME, world, new Vec3D(x, y, z), velocity, 32, (int) ((0.8 + (rand.nextDouble() * 0.2)) * 255));
         }
     }
 
@@ -234,22 +248,15 @@ public class TileGenerator extends TileBCore implements ITickable, IRSSwitchable
         return true;
     }
 
-    @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing side) {
-        if (capability == CapabilityAnimation.ANIMATION_CAPABILITY) {
-            return true;
-        }
-        return super.hasCapability(capability, side);
-    }
+//    @Nonnull
+//    @Override
+//    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+//        if (capability == CapabilityAnimation.ANIMATION_CAPABILITY) {
+//            return CapabilityAnimation.ANIMATION_CAPABILITY.cast(animHandler.asm);
+//        }
+//        return super.getCapability(capability, side);
+//    }
 
-    @Override
-    @Nullable
-    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing side) {
-        if (capability == CapabilityAnimation.ANIMATION_CAPABILITY) {
-            return CapabilityAnimation.ANIMATION_CAPABILITY.cast(animHandler.asm);
-        }
-        return super.getCapability(capability, side);
-    }
 
     public enum Mode {
         ECO_PLUS(0, 50, 5, 0.3F),

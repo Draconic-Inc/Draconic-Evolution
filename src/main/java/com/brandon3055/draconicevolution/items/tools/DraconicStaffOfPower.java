@@ -1,32 +1,31 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.tool.ToolOverrideList;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.brandon3055.draconicevolution.client.model.tool.ToolTransforms.STAFF_STATE;
 
@@ -34,16 +33,20 @@ import static com.brandon3055.draconicevolution.client.model.tool.ToolTransforms
  * Created by brandon3055 on 5/06/2016.
  */
 public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, IReaperItem {
-    public DraconicStaffOfPower() {
-        super(/*ToolStats.DRA_STAFF_ATTACK_DAMAGE, ToolStats.DRA_STAFF_ATTACK_SPEED, */PICKAXE_OVERRIDES);
-//        this.baseMiningSpeed = (float) ToolStats.DRA_STAFF_MINING_SPEED;
-//        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE + 1;
-//        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY * 3, 16000000, 0);
-//        this.setHarvestLevel("all", 10);
-        this.setHarvestLevel("pickaxe", 10);
-        this.setHarvestLevel("axe", 10);
-        this.setHarvestLevel("shovel", 10);
+    public DraconicStaffOfPower(Properties properties) {
+        super(properties, MiningToolBase.PICKAXE_OVERRIDES);
     }
+
+    //    public DraconicStaffOfPower() {
+//        super(/*ToolStats.DRA_STAFF_ATTACK_DAMAGE, ToolStats.DRA_STAFF_ATTACK_SPEED, */PICKAXE_OVERRIDES);
+////        this.baseMiningSpeed = (float) ToolStats.DRA_STAFF_MINING_SPEED;
+////        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE + 1;
+////        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY * 3, 16000000, 0);
+////        this.setHarvestLevel("all", 10);
+//        this.setHarvestLevel("pickaxe", 10);
+//        this.setHarvestLevel("axe", 10);
+//        this.setHarvestLevel("shovel", 10);
+//    }
 
     @Override
     public double getBaseMinSpeedConfig() {
@@ -93,16 +96,16 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment.type == EnumEnchantmentType.WEAPON;
+        return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment.type == EnchantmentType.WEAPON;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
+    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player) {
         return super.onBlockStartBreak(itemstack, pos, player);
     }
 
@@ -144,13 +147,13 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
 
     //region Rendering
 
-    @Override
-    public void registerRenderer(Feature feature) {
-        super.registerRenderer(feature);
-        ToolOverrideList.putOverride(this, DraconicStaffOfPower::handleTransforms);
-    }
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        super.registerRenderer(feature);
+//        ToolOverrideList.putOverride(this, DraconicStaffOfPower::handleTransforms);
+//    }
 
-    @SideOnly (Side.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
+    @OnlyIn(Dist.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
     private static IModelState handleTransforms(TransformType transformType, IModelState state) {
         return transformType == TransformType.FIXED || transformType == TransformType.GROUND ? STAFF_STATE : state;
     }

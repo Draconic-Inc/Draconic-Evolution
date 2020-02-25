@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.effect;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -23,7 +24,7 @@ public abstract class CrystalGLFXBase<T extends IENetEffectTile> extends BCParti
         this.tile = tile;
         this.ticksTillDeath = 4;
         this.texturesPerRow = 8;
-        this.particleScale = 1.5F;
+        this.baseScale = 1.5F;
     }
 
     @Override
@@ -37,8 +38,8 @@ public abstract class CrystalGLFXBase<T extends IENetEffectTile> extends BCParti
     }
 
     @Override
-    public abstract void onUpdate();
+    public abstract void tick();
 
     @Override
-    public abstract void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ);
+    public abstract void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ);
 }

@@ -1,28 +1,16 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
-import codechicken.lib.render.RenderUtils;
-import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
-import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
@@ -47,72 +35,72 @@ public class ParticleArrowShockwave extends BCParticle {
         this(worldIn, pos);
     }
 
-    @Override
-    public void onUpdate() {
-        if (size == 0) {
-            for (int i = 0; i < 100; i++) {
-                double rotation = rand.nextFloat() * Math.PI * 2;
-                float renderRadius = rand.nextFloat() * 7;
-                double ox = Math.sin(rotation) * renderRadius;
-                double oy = (rand.nextGaussian() - 0.3) * 2;
-                double oz = Math.cos(rotation) * renderRadius;
-                world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, posX + ox, posY + oy, posZ + oz, ox * 0.05, oy * 0.05, oz * 0.05);
-            }
-        }
-        particleAge++;
-        size += 0.8;
-        if (size > maxSize * 1.2) {
-            setExpired();
-        }
-
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
-    }
-
-    @Override
-    public void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.draw();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.disableCull();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-        float a = (float) Math.max(0D, 0.5D - (((size + partialTicks) / (maxSize)) * 0.5D));
-        GlStateManager.color(1F, 0.1F, 0F, a);
-        GlStateManager.disableTexture2D();
-        GlStateManager.depthMask(false);
-
-        float xx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
-        float yy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
-        float zz = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
-
-
-        double baseScale = size + partialTicks;
-
-        GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
-
-        for (int i = 10; i > 0; i--) {
-            double scale = baseScale / i * 2D;
-
-            GlStateManager.color(1F - (i / 5F), 0.1F, i / 8F, a);
-
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-            Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
-            model.render(ccrs, mat);
-            ccrs.draw();
-
-        }
-
-
-        GlStateManager.depthMask(true);
-        GlStateManager.enableTexture2D();
-        GlStateManager.enableCull();
-        GlStateManager.popMatrix();
-
-        vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-
-    }
+//    @Override
+//    public void onUpdate() {
+//        if (size == 0) {
+//            for (int i = 0; i < 100; i++) {
+//                double rotation = rand.nextFloat() * Math.PI * 2;
+//                float renderRadius = rand.nextFloat() * 7;
+//                double ox = Math.sin(rotation) * renderRadius;
+//                double oy = (rand.nextGaussian() - 0.3) * 2;
+//                double oz = Math.cos(rotation) * renderRadius;
+//                world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, posX + ox, posY + oy, posZ + oz, ox * 0.05, oy * 0.05, oz * 0.05);
+//            }
+//        }
+//        particleAge++;
+//        size += 0.8;
+//        if (size > maxSize * 1.2) {
+//            setExpired();
+//        }
+//
+//        prevPosX = posX;
+//        prevPosY = posY;
+//        prevPosZ = posZ;
+//    }
+//
+//    @Override
+//    public void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+//        CCRenderState ccrs = CCRenderState.instance();
+//        ccrs.draw();
+//
+//        GlStateManager.pushMatrix();
+//        GlStateManager.disableCull();
+//        GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+//        float a = (float) Math.max(0D, 0.5D - (((size + partialTicks) / (maxSize)) * 0.5D));
+//        GlStateManager.color(1F, 0.1F, 0F, a);
+//        GlStateManager.disableTexture2D();
+//        GlStateManager.depthMask(false);
+//
+//        float xx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+//        float yy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+//        float zz = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
+//
+//
+//        double baseScale = size + partialTicks;
+//
+//        GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
+//
+//        for (int i = 10; i > 0; i--) {
+//            double scale = baseScale / i * 2D;
+//
+//            GlStateManager.color(1F - (i / 5F), 0.1F, i / 8F, a);
+//
+//            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//            Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
+//            model.render(ccrs, mat);
+//            ccrs.draw();
+//
+//        }
+//
+//
+//        GlStateManager.depthMask(true);
+//        GlStateManager.enableTexture2D();
+//        GlStateManager.enableCull();
+//        GlStateManager.popMatrix();
+//
+//        vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+//
+//    }
 
     public static class Factory implements IBCParticleFactory {
 

@@ -6,17 +6,15 @@ import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.client.DEParticles;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -73,7 +71,8 @@ public class EffectTrackerCelestialManipulator {
 
         renderBolt = 1;
         boltSeed = rand.nextLong();
-        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, effectFocus), 128, true);
+        //TODO Particles
+//        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, effectFocus), 128, true);
 
         rotationSpeed = -1F;
         rotation += rotationSpeed;
@@ -92,12 +91,12 @@ public class EffectTrackerCelestialManipulator {
         float correctZ = (float) (this.prevPos.z + (this.pos.z - this.prevPos.z) * (double) partialTicks);
 
         GlStateManager.pushMatrix();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200, 200);
+        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(red, green, blue, alpha);
-        GlStateManager.translate(relativeX, relativeY, relativeZ);
-        GlStateManager.rotate(rotation + (partialTicks * rotationSpeed), 0F, 1F, 0F);
-        GlStateManager.translate(-relativeX, -relativeY, -relativeZ);
+        GlStateManager.color4f(red, green, blue, alpha);
+        GlStateManager.translatef(relativeX, relativeY, relativeZ);
+        GlStateManager.rotatef(rotation + (partialTicks * rotationSpeed), 0F, 1F, 0F);
+        GlStateManager.translatef(-relativeX, -relativeY, -relativeZ);
         ccrs.reset();
         ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL, vertexbuffer);
         Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(relativeX, relativeY, relativeZ), new Rotation(0F, new Vector3(0, 0, 0)), 0.15 * scale);
@@ -105,12 +104,12 @@ public class EffectTrackerCelestialManipulator {
         CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
         tessellator.draw();
         GlStateManager.popMatrix();
-        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.color4f(1F, 1F, 1F, 1F);
 
         //endregion
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(relativeX, relativeY, relativeZ);
+        GlStateManager.translatef(relativeX, relativeY, relativeZ);
 
         int segments = Math.max(4, (int) (8 * scale));
         if (renderBolt > 0 && scale > 0 && renderBolts) {
@@ -137,69 +136,69 @@ public class EffectTrackerCelestialManipulator {
             this.motionY = (-0.5 + rand.nextDouble()) * speed;
             this.motionZ = (-0.5 + rand.nextDouble()) * speed;
 
-            this.particleMaxAge = 10 + rand.nextInt(10);
-            this.particleScale = 1F;
-            this.particleTextureIndexY = 1;
+            this.maxAge = 10 + rand.nextInt(10);
+            this.baseScale = 1F;
+//            this.particleTextureIndexY = 1;
 
             this.particleRed = 0;
         }
 
-        @Override
-        public BCParticle setScale(float scale) {
-            super.setScale(scale);
+//        @Override
+//        public BCParticle setScale(float scale) {
+//            super.setScale(scale);
+//
+//            double speed = 0.1 * scale;
+//            this.motionX = (-0.5 + rand.nextDouble()) * speed;
+//            this.motionY = (-0.5 + rand.nextDouble()) * speed;
+//            this.motionZ = (-0.5 + rand.nextDouble()) * speed;
+//            return this;
+//        }
 
-            double speed = 0.1 * scale;
-            this.motionX = (-0.5 + rand.nextDouble()) * speed;
-            this.motionY = (-0.5 + rand.nextDouble()) * speed;
-            this.motionZ = (-0.5 + rand.nextDouble()) * speed;
-            return this;
-        }
+//        @Override
+//        public boolean shouldDisableDepth() {
+//            return true;
+//        }
 
         @Override
-        public boolean shouldDisableDepth() {
-            return true;
-        }
-
-        @Override
-        public void onUpdate() {
+        public void tick() {
             this.prevPosX = this.posX;
             this.prevPosY = this.posY;
             this.prevPosZ = this.posZ;
 
-            particleTextureIndexX = rand.nextInt(5);
-            int ttd = particleMaxAge - particleAge;
+//            particleTextureIndexX = rand.nextInt(5);
+            int ttd = maxAge - age;
             if (ttd < 10) {
-                particleScale = ttd / 10F;
+                baseScale = ttd / 10F;
             }
 
             moveEntityNoClip(motionX, motionY, motionZ);
 
-            if (particleAge++ > particleMaxAge) {
+            if (age++ > maxAge) {
                 setExpired();
             }
         }
 
         @Override
-        public void renderParticle(BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            if (particleAge == 0) {
-                return;
-            }
-            float minU = (float) this.particleTextureIndexX / 8.0F;
-            float maxU = minU + 0.125F;
-            float minV = (float) this.particleTextureIndexY / 8.0F;
-            float maxV = minV + 0.125F;
-            float scale = 0.1F * this.particleScale;
-
-            float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
-            float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
-            float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
-            int brightnessForRender = this.getBrightnessForRender(partialTicks);
-            int j = brightnessForRender >> 16 & 65535;
-            int k = brightnessForRender & 65535;
-            vertexbuffer.pos((double) (renderX - rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double) (renderX - rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double) (renderX + rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double) (renderX + rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+//            if (age == 0) {
+//                return;
+//            }
+//            float minU = (float) this.particleTextureIndexX / 8.0F;
+//            float maxU = minU + 0.125F;
+//            float minV = (float) this.particleTextureIndexY / 8.0F;
+//            float maxV = minV + 0.125F;
+//            float scale = 0.1F * this.particleScale;
+//
+//            float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+//            float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+//            float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
+//            int brightnessForRender = this.getBrightnessForRender(partialTicks);
+//            int j = brightnessForRender >> 16 & 65535;
+//            int k = brightnessForRender & 65535;
+//            vertexbuffer.pos((double) (renderX - rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+//            vertexbuffer.pos((double) (renderX - rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+//            vertexbuffer.pos((double) (renderX + rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+//            vertexbuffer.pos((double) (renderX + rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         }
     }
 
@@ -217,31 +216,31 @@ public class EffectTrackerCelestialManipulator {
             this.motionY = (-0.5 + rand.nextDouble()) * speed;
             this.motionZ = (-0.5 + rand.nextDouble()) * speed;
 
-            this.particleMaxAge = 150 + rand.nextInt(10);
-            this.particleScale = 1F;
-            this.particleTextureIndexY = 1;
+            this.maxAge = 150 + rand.nextInt(10);
+            this.baseScale = 1F;
+//            this.particleTextureIndexY = 1;
 
             this.particleRed = 0;
         }
 
-        @Override
-        public BCParticle setScale(float scale) {
-            super.setScale(scale);
+//        @Override
+//        public BCParticle setScale(float scale) {
+//            super.setScale(scale);
+//
+//            double speed = 1;
+//            this.motionX = (-0.5 + rand.nextDouble()) * speed;
+//            this.motionY = (-0.5 + rand.nextDouble()) * speed;
+//            this.motionZ = (-0.5 + rand.nextDouble()) * speed;
+//            return this;
+//        }
 
-            double speed = 1;
-            this.motionX = (-0.5 + rand.nextDouble()) * speed;
-            this.motionY = (-0.5 + rand.nextDouble()) * speed;
-            this.motionZ = (-0.5 + rand.nextDouble()) * speed;
-            return this;
-        }
+//        @Override
+//        public boolean shouldDisableDepth() {
+//            return true;
+//        }
 
         @Override
-        public boolean shouldDisableDepth() {
-            return true;
-        }
-
-        @Override
-        public void onUpdate() {
+        public void tick() {
 //            float b = 1F - (world.getSunBrightness(0) - 0.2F) * 1.2F;
 //            particleGreen = particleBlue = b;
 
@@ -272,44 +271,44 @@ public class EffectTrackerCelestialManipulator {
                 motionZ = dir.z * 0.1;
             }
 
-            particleTextureIndexX = rand.nextInt(5);
-            int ttd = particleMaxAge - particleAge;
+//            particleTextureIndexX = rand.nextInt(5);
+            int ttd = maxAge - age;
             if (ttd < 10) {
-                particleScale = ttd / 10F;
+                baseScale = ttd / 10F;
             }
 
             moveEntityNoClip(motionX, motionY, motionZ);
 
             if (distance < 0.5) {
-                particleAge += 4;
+                age += 4;
             }
 
-            if (particleAge++ > particleMaxAge) {
+            if (age++ > maxAge) {
                 setExpired();
             }
         }
 
         @Override
-        public void renderParticle(BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            if (particleAge == 0) {
-                return;
-            }
-            float minU = (float) this.particleTextureIndexX / 8.0F;
-            float maxU = minU + 0.125F;
-            float minV = (float) this.particleTextureIndexY / 8.0F;
-            float maxV = minV + 0.125F;
-            float scale = 0.1F * this.particleScale;
-
-            float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
-            float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
-            float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
-            int brightnessForRender = this.getBrightnessForRender(partialTicks);
-            int j = brightnessForRender >> 16 & 65535;
-            int k = brightnessForRender & 65535;
-            vertexbuffer.pos((double) (renderX - rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double) (renderX - rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double) (renderX + rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            vertexbuffer.pos((double) (renderX + rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+//            if (age == 0) {
+//                return;
+//            }
+//            float minU = (float) this.particleTextureIndexX / 8.0F;
+//            float maxU = minU + 0.125F;
+//            float minV = (float) this.particleTextureIndexY / 8.0F;
+//            float maxV = minV + 0.125F;
+//            float scale = 0.1F * this.particleScale;
+//
+//            float renderX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+//            float renderY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+//            float renderZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
+//            int brightnessForRender = this.getBrightnessForRender(partialTicks);
+//            int j = brightnessForRender >> 16 & 65535;
+//            int k = brightnessForRender & 65535;
+//            vertexbuffer.pos((double) (renderX - rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+//            vertexbuffer.pos((double) (renderX - rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+//            vertexbuffer.pos((double) (renderX + rotationX * scale + rotationXY * scale), (double) (renderY + rotationZ * scale), (double) (renderZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+//            vertexbuffer.pos((double) (renderX + rotationX * scale - rotationXY * scale), (double) (renderY - rotationZ * scale), (double) (renderZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         }
     }
 }

@@ -5,8 +5,8 @@ import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 19/11/2016.
@@ -20,11 +20,11 @@ public class TileCrystalRelay extends TileCrystalBase {
     //region Rendering
 
     @Override
-    public EnergyCrystal.CrystalType getType() {
+    public EnergyCrystal.CrystalType getCrystalType() {
         return EnergyCrystal.CrystalType.RELAY;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalGLFXBase createStaticFX() {
         return new CrystalFXRing(world, this);

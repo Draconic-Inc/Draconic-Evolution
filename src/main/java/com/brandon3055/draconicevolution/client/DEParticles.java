@@ -1,8 +1,5 @@
 package com.brandon3055.draconicevolution.client;
 
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
-import com.brandon3055.draconicevolution.client.render.effect.ParticleFlame;
-import com.brandon3055.draconicevolution.client.render.particle.*;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.util.ResourceLocation;
 
@@ -30,34 +27,34 @@ public class DEParticles {
     public static int FLAME;
 
     public static void registerClient() {
-        ENERGY_PARTICLE = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergy.Factory());
-        ENERGY_CORE_FX = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergyCoreFX.Factory());
-        LINE_INDICATOR = BCEffectHandler.registerFX(DE_SHEET, new ParticleLineIndicator.Factory());
-        INFUSER = BCEffectHandler.registerFX(DE_SHEET, new ParticleInfuser.Factory());
-        GUARDIAN_PROJECTILE = BCEffectHandler.registerFX(DE_SHEET, new ParticleGuardianProjectile.Factory());
-        CHAOS_IMPLOSION = BCEffectHandler.registerFX(DE_SHEET, new ParticleChaosImplosion.Factory());
-        PORTAL = BCEffectHandler.registerFX(DE_SHEET, new ParticlePortal.Factory());
-        DRAGON_HEART = BCEffectHandler.registerFX(DE_SHEET, new ParticleDragonHeart.Factory());
-        AXE_SELECTION = BCEffectHandler.registerFX(new ResourceLocation("textures/items/diamond_axe.png"), new ParticleAxeSelection.Factory());
-        SOUL_EXTRACTION = BCEffectHandler.registerFX(DE_SHEET, new ParticleSoulExtraction.Factory());
-        ARROW_SHOCKWAVE = BCEffectHandler.registerFX(DE_SHEET, new ParticleArrowShockwave.Factory());
-        CUSTOM = BCEffectHandler.registerFX(CUSTOM_SHEET, new ParticleCustom.Factory());
-        FLAME = BCEffectHandler.registerFX(VANILLA_SHEET, new ParticleFlame.Factory());
+//        ENERGY_PARTICLE = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergy.Factory());
+//        ENERGY_CORE_FX = BCEffectHandler.registerFX(DE_SHEET, new ParticleEnergyCoreFX.Factory());
+//        LINE_INDICATOR = BCEffectHandler.registerFX(DE_SHEET, new ParticleLineIndicator.Factory());
+//        INFUSER = BCEffectHandler.registerFX(DE_SHEET, new ParticleInfuser.Factory());
+//        GUARDIAN_PROJECTILE = BCEffectHandler.registerFX(DE_SHEET, new ParticleGuardianProjectile.Factory());
+//        CHAOS_IMPLOSION = BCEffectHandler.registerFX(DE_SHEET, new ParticleChaosImplosion.Factory());
+//        PORTAL = BCEffectHandler.registerFX(DE_SHEET, new ParticlePortal.Factory());
+//        DRAGON_HEART = BCEffectHandler.registerFX(DE_SHEET, new ParticleDragonHeart.Factory());
+//        AXE_SELECTION = BCEffectHandler.registerFX(new ResourceLocation("textures/items/diamond_axe.png"), new ParticleAxeSelection.Factory());
+//        SOUL_EXTRACTION = BCEffectHandler.registerFX(DE_SHEET, new ParticleSoulExtraction.Factory());
+//        ARROW_SHOCKWAVE = BCEffectHandler.registerFX(DE_SHEET, new ParticleArrowShockwave.Factory());
+//        CUSTOM = BCEffectHandler.registerFX(CUSTOM_SHEET, new ParticleCustom.Factory());
+//        FLAME = BCEffectHandler.registerFX(VANILLA_SHEET, new ParticleFlame.Factory());
     }
 
     public static void registerServer() {
-        ENERGY_PARTICLE = BCEffectHandler.registerFXServer();
-        ENERGY_CORE_FX = BCEffectHandler.registerFXServer();
-        LINE_INDICATOR = BCEffectHandler.registerFXServer();
-        INFUSER = BCEffectHandler.registerFXServer();
-        GUARDIAN_PROJECTILE = BCEffectHandler.registerFXServer();
-        CHAOS_IMPLOSION = BCEffectHandler.registerFXServer();
-        PORTAL = BCEffectHandler.registerFXServer();
-        DRAGON_HEART = BCEffectHandler.registerFXServer();
-        AXE_SELECTION = BCEffectHandler.registerFXServer();
-        SOUL_EXTRACTION = BCEffectHandler.registerFXServer();
-        ARROW_SHOCKWAVE = BCEffectHandler.registerFXServer();
-        CUSTOM = BCEffectHandler.registerFXServer();
-        FLAME = BCEffectHandler.registerFXServer();
+//        ENERGY_PARTICLE = BCEffectHandler.registerFXServer();
+//        ENERGY_CORE_FX = BCEffectHandler.registerFXServer();
+//        LINE_INDICATOR = BCEffectHandler.registerFXServer();
+//        INFUSER = BCEffectHandler.registerFXServer();
+//        GUARDIAN_PROJECTILE = BCEffectHandler.registerFXServer();
+//        CHAOS_IMPLOSION = BCEffectHandler.registerFXServer();
+//        PORTAL = BCEffectHandler.registerFXServer();
+//        DRAGON_HEART = BCEffectHandler.registerFXServer();
+//        AXE_SELECTION = BCEffectHandler.registerFXServer();
+//        SOUL_EXTRACTION = BCEffectHandler.registerFXServer();
+//        ARROW_SHOCKWAVE = BCEffectHandler.registerFXServer();
+//        CUSTOM = BCEffectHandler.registerFXServer();
+//        FLAME = BCEffectHandler.registerFXServer();
     }
 }

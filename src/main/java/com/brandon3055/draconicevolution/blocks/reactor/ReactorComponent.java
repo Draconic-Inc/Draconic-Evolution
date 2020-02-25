@@ -1,63 +1,57 @@
 package com.brandon3055.draconicevolution.blocks.reactor;
 
-import codechicken.lib.model.ModelRegistryHelper;
+import codechicken.lib.block.property.PropertyString;
 import codechicken.lib.util.RotationUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.registry.Feature;
-import com.brandon3055.brandonscore.registry.IRegistryOverride;
-import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
-import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorEnergyInjector;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
-import com.brandon3055.draconicevolution.client.render.item.RenderItemReactorComponent;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorComponent;
-import com.brandon3055.draconicevolution.lib.PropertyStringTemp;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class ReactorComponent extends BlockBCore implements ITileEntityProvider, IRegistryOverride, IRenderOverride {
+public class ReactorComponent extends BlockBCore/* implements ITileEntityProvider, IRegistryOverride, IRenderOverride*/ {
 
-    public static final PropertyStringTemp TYPE = new PropertyStringTemp("type", "stabilizer", "injector");
-    private static final AxisAlignedBB AABB_INJ_DOWN = new AxisAlignedBB(0F, 0.885F, 0F, 1F, 1F, 1F);
-    private static final AxisAlignedBB AABB_INJ_UP = new AxisAlignedBB(0F, 0F, 0F, 1F, 0.125F, 1F);
-    private static final AxisAlignedBB AABB_INJ_NORTH = new AxisAlignedBB(0F, 0F, 0.885F, 1F, 1F, 1F);
-    private static final AxisAlignedBB AABB_INJ_SOUTH = new AxisAlignedBB(0F, 0F, 0F, 1F, 1F, 0.125F);
-    private static final AxisAlignedBB AABB_INJ_WEST = new AxisAlignedBB(0.885F, 0F, 0F, 1F, 1F, 1F);
-    private static final AxisAlignedBB AABB_INJ_EAST = new AxisAlignedBB(0F, 0F, 0F, 0.125F, 1F, 1F);
+    public static final PropertyString TYPE = new PropertyString("type", "stabilizer", "injector");
+    private static final VoxelShape SHAPE_INJ_DOWN  = VoxelShapes.create(0F, 0.885F, 0F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_UP    = VoxelShapes.create(0F, 0F, 0F, 1F, 0.125F, 1F);
+    private static final VoxelShape SHAPE_INJ_NORTH = VoxelShapes.create(0F, 0F, 0.885F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_SOUTH = VoxelShapes.create(0F, 0F, 0F, 1F, 1F, 0.125F);
+    private static final VoxelShape SHAPE_INJ_WEST  = VoxelShapes.create(0.885F, 0F, 0F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_EAST  = VoxelShapes.create(0F, 0F, 0F, 0.125F, 1F, 1F);
+    private final boolean injector;
 
-    public ReactorComponent() {
-        this.setHardness(25F);
-        this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "stabilizer"));
-        this.addName(0, "reactor_stabilizer");
-        this.addName(1, "reactor_injector");
+    public ReactorComponent(Properties properties, boolean injector) {
+        super(properties);
+        this.injector = injector;
+        this.setDefaultState(stateContainer.getBaseState().with(TYPE, "stabilizer"));
+//        this.addName(0, "reactor_stabilizer");
+//        this.addName(1, "reactor_injector");
     }
 
     @Override
@@ -65,87 +59,98 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
         return false;
     }
 
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(TYPE);
+    }
+
     //region Block & Registry
 
+//    @Override
+//    protected BlockStateContainer createBlockState() {
+//        return new BlockStateContainer(this, TYPE);
+//    }
+//
+//    @Override
+//    public int getMetaFromState(BlockState state) {
+//        return state.getValue(TYPE).equals("stabilizer") ? 0 : 1;
+//    }
+//
+//    @Override
+//    public BlockState getStateFromMeta(int meta) {
+//        return getDefaultState().withProperty(TYPE, meta == 0 ? "stabilizer" : "injector");
+//    }
+//
+//    @Override
+//    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
+//        list.add(new ItemStack(this, 1, 0));
+//        list.add(new ItemStack(this, 1, 1));
+//    }
+
+
     @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, TYPE);
+    public boolean hasTileEntity(BlockState state) {
+        return true;
     }
 
+    @Nullable
     @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(TYPE).equals("stabilizer") ? 0 : 1;
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return injector ? new TileReactorInjector() : new TileReactorStabilizer();
     }
 
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(TYPE, meta == 0 ? "stabilizer" : "injector");
-    }
-
-    @Override
-    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
-        list.add(new ItemStack(this, 1, 0));
-        list.add(new ItemStack(this, 1, 1));
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return meta == 0 ? new TileReactorStabilizer() : new TileReactorEnergyInjector();
-    }
-
-    @Override
-    public void handleCustomRegistration(Feature feature) {
-        GameRegistry.registerTileEntity(TileReactorStabilizer.class, feature.getRegistryName() + "_stabilizer");
-        GameRegistry.registerTileEntity(TileReactorEnergyInjector.class, feature.getRegistryName() + "_injector");
-    }
+//    @Override
+//    public void handleCustomRegistration(Feature feature) {
+//        GameRegistry.registerTileEntity(TileReactorStabilizer.class, feature.getRegistryName() + "_stabilizer");
+//        GameRegistry.registerTileEntity(TileReactorEnergyInjector.class, feature.getRegistryName() + "_injector");
+//    }
 
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        TileEntity tile = source.getTileEntity(pos);
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        TileEntity tile = world.getTileEntity(pos);
 
-        if (tile instanceof TileReactorEnergyInjector) {
-            switch (((TileReactorEnergyInjector) tile).facing.get()) {
+        if (tile instanceof TileReactorInjector) {
+            switch (((TileReactorInjector) tile).facing.get()) {
                 case DOWN:
-                    return AABB_INJ_DOWN;
+                    return SHAPE_INJ_DOWN;
                 case UP:
-                    return AABB_INJ_UP;
+                    return SHAPE_INJ_UP;
                 case NORTH:
-                    return AABB_INJ_NORTH;
+                    return SHAPE_INJ_NORTH;
                 case SOUTH:
-                    return AABB_INJ_SOUTH;
+                    return SHAPE_INJ_SOUTH;
                 case WEST:
-                    return AABB_INJ_WEST;
+                    return SHAPE_INJ_WEST;
                 case EAST:
-                    return AABB_INJ_EAST;
+                    return SHAPE_INJ_EAST;
             }
         }
-
-        return super.getBoundingBox(state, source, pos);
+        return super.getShape(state, world, pos, context);
     }
 
     //endregion
 
     //region Rendering
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerRenderer(Feature feature) {
-        StateMap deviceStateMap = new StateMap.Builder().ignore(TYPE).build();
-        ModelLoader.setCustomStateMapper(this, deviceStateMap);
-        ClientRegistry.bindTileEntitySpecialRenderer(TileReactorStabilizer.class, new RenderTileReactorComponent());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileReactorEnergyInjector.class, new RenderTileReactorComponent());
-        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemReactorComponent());
-    }
+//    @OnlyIn(Dist.CLIENT)
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        StateMap deviceStateMap = new StateMap.Builder().ignore(TYPE).build();
+//        ModelLoader.setCustomStateMapper(this, deviceStateMap);
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileReactorStabilizer.class, new RenderTileReactorComponent());
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileReactorEnergyInjector.class, new RenderTileReactorComponent());
+//        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemReactorComponent());
+//    }
+//
+//    @Override
+//    public boolean registerNormal(Feature feature) {
+//        return false;
+//    }
 
     @Override
-    public boolean registerNormal(Feature feature) {
-        return false;
-    }
-
-    @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.INVISIBLE;
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 
     //endregion
@@ -153,10 +158,10 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
     //region Place & Interact
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.onBlockPlacedBy(world, pos, state, placer, stack);
         TileEntity te = world.getTileEntity(pos);
-        EnumFacing facing = RotationUtils.getPlacedRotation(pos, placer);
+        Direction facing = RotationUtils.getPlacedRotation(pos, placer);
         if (placer.isSneaking()) {
             facing = facing.getOpposite();
         }
@@ -168,47 +173,47 @@ public class ReactorComponent extends BlockBCore implements ITileEntityProvider,
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         TileEntity te = world.getTileEntity(pos);
 
         if (te instanceof TileReactorComponent) {
-            ((TileReactorComponent) te).onActivated(playerIn);
+            ((TileReactorComponent) te).onActivated(player);
         }
         return true;
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         TileEntity te = worldIn.getTileEntity(pos);
 
         if (te instanceof TileReactorComponent) {
             ((TileReactorComponent) te).onBroken();
         }
-
-        super.breakBlock(worldIn, pos, state);
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
-        tooltip.add(I18n.format("info.de.shiftReversePlaceLogic.txt"));
+    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        tooltip.add(new TranslationTextComponent("info.de.shiftReversePlaceLogic.txt"));
+        super.addInformation(stack, worldIn, tooltip, flagIn);
     }
 
-    @Override
-    public int damageDropped(IBlockState state) {
-        return getMetaFromState(state);
-    }
+//    @Override
+//    public int damageDropped(BlockState state) {
+//        return getMetaFromState(state);
+//    }
 
     //endregion
 
 
     @Override
-    public boolean hasComparatorInputOverride(IBlockState state) {
+    public boolean hasComparatorInputOverride(BlockState state) {
         return true;
     }
 
     @Override
-    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
 
         if (tileEntity instanceof TileReactorComponent) {

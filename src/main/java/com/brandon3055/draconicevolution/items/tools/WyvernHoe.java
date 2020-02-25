@@ -7,24 +7,22 @@ import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.List;
 
@@ -36,16 +34,20 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.DIG_AOE;
 public abstract class WyvernHoe extends ToolBase {
     protected int baseAOE;
 
-//    public WyvernHoe(/*double attackDamage, double attackSpeed*/) {
+    public WyvernHoe(Properties properties) {
+        super(properties);
+    }
+
+    //    public WyvernHoe(/*double attackDamage, double attackSpeed*/) {
 ////        super(attackDamage, attackSpeed);
 //        this.baseAOE = 2;
 //    }
 
-    public WyvernHoe() {
-//        super(ToolStats.WYV_HOE_ATTACK_DAMAGE, ToolStats.WYV_HOE_ATTACK_SPEED);
-//        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
-        this.baseAOE = 1;
-    }
+//    public WyvernHoe() {
+////        super(ToolStats.WYV_HOE_ATTACK_DAMAGE, ToolStats.WYV_HOE_ATTACK_SPEED);
+////        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
+//        this.baseAOE = 1;
+//    }
 
     @Override
     public double getBaseAttackSpeedConfig() {
@@ -64,26 +66,31 @@ public abstract class WyvernHoe extends ToolBase {
 
     //region Hoe
 
+
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!hoeBlock(stack, player, world, pos, facing)) {
+    public ActionResultType onItemUse(ItemUseContext context) {
+        ItemStack stack = context.getItem();
+        PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
+        Direction facing = context.getFace();
+
+        if (!hoeBlock(stack, player, world, pos, facing, context)) {
             if (world.getBlockState(pos).getBlock() != Blocks.FARMLAND) {
-                return EnumActionResult.FAIL;
+                return ActionResultType.FAIL;
             }
-        }
-        else {
+        } else {
             modifyEnergy(stack, -energyPerOperation);
         }
 
         if (player.isSneaking()) {
-            return EnumActionResult.SUCCESS;
+            return ActionResultType.SUCCESS;
         }
 
         int AOE = ToolConfigHelper.getIntegerField("digAOE", stack);
         boolean fill = ToolConfigHelper.getBooleanField("landFill", stack);
 
-        Iterable<BlockPos> blocks = BlockPos.getAllInBox(pos.add(-AOE, 0, -AOE), pos.add(AOE, 0, AOE));
+        Iterable<BlockPos> blocks = BlockPos.getAllInBoxMutable(pos.add(-AOE, 0, -AOE), pos.add(AOE, 0, AOE));
 
         for (BlockPos aoePos : blocks) {
             if (aoePos.equals(pos)) {
@@ -94,69 +101,65 @@ public abstract class WyvernHoe extends ToolBase {
                 continue;
             }
 
-            boolean airOrReplaceable = world.isAirBlock(aoePos) || world.getBlockState(aoePos).getBlock().isReplaceable(world, aoePos);
-            boolean lowerBlockOk = world.isSideSolid(aoePos.down(), EnumFacing.UP) || world.getBlockState(aoePos.down()).getBlock() == Blocks.FARMLAND;
 
-            if (fill && airOrReplaceable && lowerBlockOk && (player.capabilities.isCreativeMode || player.inventory.hasItemStack(new ItemStack(Blocks.DIRT)))) {
-                BlockEvent.PlaceEvent event = ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(world, aoePos, Blocks.DIRT.getDefaultState()), EnumFacing.UP, player.getActiveHand());
+            boolean airOrReplaceable = world.isAirBlock(aoePos) || world.getBlockState(aoePos).getMaterial().isReplaceable();
+            //TODO Solid Stuff
+            boolean lowerBlockOk = world.getBlockState(aoePos.down()).isSolid() || world.getBlockState(aoePos.down()).getBlock() == Blocks.FARMLAND;
 
-                if (!event.isCanceled() && (player.capabilities.isCreativeMode || InventoryUtils.consumeStack(new ItemStack(Blocks.DIRT), player.inventory))) {
+            if (fill && airOrReplaceable && lowerBlockOk && (player.abilities.isCreativeMode || player.inventory.hasItemStack(new ItemStack(Blocks.DIRT)))) {
+                boolean canceled = ForgeEventFactory.onBlockPlace(player, new BlockSnapshot(world, aoePos, Blocks.DIRT.getDefaultState()), Direction.UP);
+
+                if (!canceled && (player.abilities.isCreativeMode || InventoryUtils.consumeStack(new ItemStack(Blocks.DIRT), player.inventory))) {
                     world.setBlockState(aoePos, Blocks.DIRT.getDefaultState());
                 }
             }
 
             boolean canDropAbove = world.getBlockState(aoePos.up()).getBlock() == Blocks.DIRT || world.getBlockState(aoePos.up()).getBlock() == Blocks.GRASS || world.getBlockState(aoePos.up()).getBlock() == Blocks.FARMLAND;
-            boolean canRemoveAbove = canDropAbove || world.getBlockState(aoePos.up()).getBlock().isReplaceable(world, aoePos.up());
-            boolean up2OK = world.isAirBlock(aoePos.up().up()) || world.getBlockState(aoePos.up().up()).getBlock().isReplaceable(world, aoePos.up().up());
+            boolean canRemoveAbove = canDropAbove || world.getBlockState(aoePos.up()).getMaterial().isReplaceable();
+            boolean up2OK = world.isAirBlock(aoePos.up().up()) || world.getBlockState(aoePos.up().up()).getMaterial().isReplaceable();
 
             if (fill && !world.isAirBlock(aoePos.up()) && canRemoveAbove && up2OK) {
                 if (canDropAbove) {
-                    world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Blocks.DIRT)));
+                    world.addEntity(new ItemEntity(world, player.posX, player.posY, player.posZ, new ItemStack(Blocks.DIRT)));
                 }
-                world.setBlockToAir(aoePos.up());
+                world.removeBlock(aoePos.up(), false);
             }
 
-            if (hoeBlock(stack, player, world, aoePos, facing)) {
+            if (hoeBlock(stack, player, world, aoePos, facing, context)) {
                 modifyEnergy(stack, -energyPerOperation);
             }
         }
 
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
-    private boolean hoeBlock(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing face) {
+    private boolean hoeBlock(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction face, ItemUseContext context) {
 
-        if (getEnergyStored(stack) < energyPerOperation && !player.capabilities.isCreativeMode) {
+        if (getEnergyStored(stack) < energyPerOperation && !player.abilities.isCreativeMode) {
             return false;
         }
 
         if (!player.canPlayerEdit(pos, face, stack)) {
             return false;
-        }
-        else {
-            int hook = ForgeEventFactory.onHoeUse(stack, player, world, pos);
+        } else {
+            int hook = ForgeEventFactory.onHoeUse(context);
             if (hook != 0) {
                 return hook > 0;
             }
 
-            IBlockState iblockstate = world.getBlockState(pos);
+            BlockState iblockstate = world.getBlockState(pos);
             Block block = iblockstate.getBlock();
 
-            if (face != EnumFacing.DOWN && world.isAirBlock(pos.up())) {
+            if (face != Direction.DOWN && world.isAirBlock(pos.up())) {
                 if (block == Blocks.GRASS || block == Blocks.GRASS_PATH) {
                     this.setBlock(player, world, pos, Blocks.FARMLAND.getDefaultState());
                     return true;
                 }
 
                 if (block == Blocks.DIRT) {
-                    switch (iblockstate.getValue(BlockDirt.VARIANT)) {
-                        case DIRT:
-                            this.setBlock(player, world, pos, Blocks.FARMLAND.getDefaultState());
-                            return true;
-                        case COARSE_DIRT:
-                            this.setBlock(player, world, pos, Blocks.DIRT.getDefaultState().withProperty(BlockDirt.VARIANT, BlockDirt.DirtType.DIRT));
-                            return true;
-                    }
+                    this.setBlock(player, world, pos, Blocks.FARMLAND.getDefaultState());
+                } else if (block == Blocks.COARSE_DIRT) {
+                    this.setBlock(player, world, pos, Blocks.DIRT.getDefaultState());
                 }
             }
 
@@ -164,7 +167,7 @@ public abstract class WyvernHoe extends ToolBase {
         }
     }
 
-    protected void setBlock(EntityPlayer player, World worldIn, BlockPos pos, IBlockState state) {
+    protected void setBlock(PlayerEntity player, World worldIn, BlockPos pos, BlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
         if (!worldIn.isRemote) {
@@ -201,7 +204,7 @@ public abstract class WyvernHoe extends ToolBase {
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return enchantment.type == EnumEnchantmentType.ALL;
+        return enchantment.type == EnchantmentType.ALL;
     }
 
     @Override

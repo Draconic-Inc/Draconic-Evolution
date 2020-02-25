@@ -1,11 +1,9 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
-import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
-import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,11 +55,12 @@ public class ENetFXHandlerServer extends ENetFXHandler<IENetEffectTile> {
     }
 
     private void sendUpdate() {
-        WorldServer worldServer = ((WorldServer) ((TileEntity) tile).getWorld());
-        PlayerChunkMapEntry playerChunkMap = worldServer.getPlayerChunkMap().getEntry(((TileEntity) tile).getPos().getX() >> 4, ((TileEntity) tile).getPos().getZ() >> 4);
-        if (playerChunkMap != null) {
-            playerChunkMap.players.forEach(playerMP -> CrystalUpdateBatcher.queData(batchedUpdate, playerMP));
-        }
+        ServerWorld worldServer = ((ServerWorld) ((TileEntity) tile).getWorld());
+        //TODO Packets CrystalUpdateBatcher
+//        PlayerChunkMapEntry playerChunkMap = worldServer.getPlayerChunkMap().getEntry(((TileEntity) tile).getPos().getX() >> 4, ((TileEntity) tile).getPos().getZ() >> 4);
+//        if (playerChunkMap != null) {
+//            playerChunkMap.players.forEach(playerMP -> CrystalUpdateBatcher.queData(batchedUpdate, playerMP));
+//        }
 
         batchedUpdate = null;
     }

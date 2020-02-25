@@ -13,12 +13,13 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -32,7 +33,7 @@ public class ReactorBeamFX extends BCParticle {
     private float powerState;
     private TileReactorCore tile;
     private boolean isInjectorEffect;
-    private final EnumFacing facing;
+    private final Direction facing;
     private double dist;
     private static Colour fieldBeamColour = new ColourARGB(0x00B0FF);
     private static Colour extractBeamColour = new ColourARGB(0xff6600);
@@ -43,7 +44,7 @@ public class ReactorBeamFX extends BCParticle {
     public static ShaderProgram beam_O;
     public static ShaderProgram beam_I;
 
-    public ReactorBeamFX(World worldIn, Vec3D pos, EnumFacing facing, TileReactorCore tile, boolean isInjectorEffect) {
+    public ReactorBeamFX(World worldIn, Vec3D pos, Direction facing, TileReactorCore tile, boolean isInjectorEffect) {
         super(worldIn, pos);
         this.facing = facing;
         this.tile = tile;
@@ -69,14 +70,14 @@ public class ReactorBeamFX extends BCParticle {
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         if (tile.roller != null) {
             return;
         }
@@ -219,8 +220,8 @@ public class ReactorBeamFX extends BCParticle {
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
 
             if (!DEShaders.useShaders() || !DEConfig.useReactorBeamShaders) {
-                GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
-                GlStateManager.glTexParameterf(3553, 10243, 10497.0F);
+                GlStateManager.texParameter(3553, 10242, 10497.0F);
+                GlStateManager.texParameter(3553, 10243, 10497.0F);
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             }

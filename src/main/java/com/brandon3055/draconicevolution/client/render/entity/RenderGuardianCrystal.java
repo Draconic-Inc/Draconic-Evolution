@@ -4,13 +4,11 @@ import com.brandon3055.draconicevolution.client.model.ModelGuardianCrystal;
 import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.model.ModelBase;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -19,10 +17,10 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by brandon3055 on 30/8/2015.
  */
-public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
-    private ModelBase model;
+public class RenderGuardianCrystal extends EntityRenderer<EntityGuardianCrystal> {
+    private ModelGuardianCrystal model;
 
-    public RenderGuardianCrystal(RenderManager renderManager) {
+    public RenderGuardianCrystal(EntityRendererManager renderManager) {
         super(renderManager);
         this.shadowSize = 0.5F;
         this.model = new ModelGuardianCrystal(true);
@@ -32,7 +30,7 @@ public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
     public void doRender(EntityGuardianCrystal crystal, double x, double y, double z, float entityYaw, float partialTicks) {
         float rotation = (float) crystal.innerRotation + (crystal.health > 0 ? partialTicks : 0);
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        GlStateManager.translated(x, y, z);
         ResourceHelperDE.bindTexture(DETextures.CHAOS_GUARDIAN_CRYSTAL);
         float r2 = MathHelper.sin(rotation * 0.2F) / 2.0F + 0.5F;
         r2 += r2 * r2;
@@ -42,16 +40,16 @@ public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
 
         if (crystal.shieldTime > 0) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(-0.5, -1.5, -0.5);
+            GlStateManager.translated(-0.5, -1.5, -0.5);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             ResourceHelperDE.bindTexture(ResourceHelperDE.getResourceRAW("textures/entity/beacon_beam.png"));
-            GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
-            GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
+            GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
+            GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
             GlStateManager.disableLighting();
             GlStateManager.disableCull();
             GlStateManager.enableBlend();
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            GlStateManager.blendFuncSeparate(770, 771, 1, 0);
             GlStateManager.depthMask(false);
 
             float f2 = (float) crystal.ticksExisted + partialTicks;
@@ -90,7 +88,7 @@ public class RenderGuardianCrystal extends Render<EntityGuardianCrystal> {
             buffer.pos(x + d30, y + d18, z + d4).tex(d20, d26).color(200, 0, 0, 32).endVertex();
             tessellator.draw();
             GlStateManager.enableLighting();
-            GlStateManager.enableTexture2D();
+            GlStateManager.enableTexture();
             GlStateManager.depthMask(true);
             GlStateManager.popMatrix();
         }

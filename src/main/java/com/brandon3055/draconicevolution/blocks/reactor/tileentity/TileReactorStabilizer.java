@@ -1,24 +1,26 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
+import com.brandon3055.draconicevolution.DEContent;
 import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class TileReactorStabilizer extends TileReactorComponent implements /*IEnergyProvider,*/ IMovableStructure {
+public class TileReactorStabilizer extends TileReactorComponent /*implements*/ /*IEnergyProvider,*/ /*IMovableStructure*/ {
 
     public TileReactorStabilizer() {
+        super(DEContent.tile_reactor_stabilizer);
         OPExtractor opExtractor = new OPExtractor(this);
-        addRawEnergyCap(opExtractor);
-        setCapSideValidator(opExtractor, face -> face == this.facing.get().getOpposite());
+        capManager.set(CapabilityOP.OP, opExtractor);
+        capManager.setCapSideValidator(opExtractor, face -> face == this.facing.get().getOpposite());
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
 
         if (world.isRemote) {
             return;

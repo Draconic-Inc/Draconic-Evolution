@@ -1,31 +1,28 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
 import com.brandon3055.brandonscore.handlers.HandHelper;
-import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiToolConfig;
-import com.brandon3055.draconicevolution.network.PacketDislocator;
-import com.brandon3055.draconicevolution.network.PacketPlaceItem;
-import com.brandon3055.draconicevolution.network.ccnetwork.PacketDispatcher;
+//import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiToolConfig;
+//import com.brandon3055.draconicevolution.network.PacketDispatcher;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.awt.event.MouseEvent;
 
 /**
  * Created by Brandon on 14/08/2014.
  */
 public class KeyInputHandler {
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
@@ -35,69 +32,70 @@ public class KeyInputHandler {
 
 
     private void handlePlaceItemKey() {
-        RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
-        if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
-            DraconicEvolution.network.sendToServer(new PacketPlaceItem());
+        RayTraceResult mop = Minecraft.getInstance().objectMouseOver;
+        if (mop != null && mop instanceof BlockRayTraceResult) {
+            //TODO Packet stuff
+//            DraconicEvolution.network.sendToServer(new PacketPlaceItem());
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onMouseInput(MouseEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
 
         onInput(player);
 
-        int change = event.getDwheel();
-        if (change == 0 || !player.isSneaking()) return;
-
-        ItemStack item = player.inventory.getStackInSlot(player.inventory.currentItem);
-        if (item.getItem() == DEFeatures.dislocatorAdvanced) {
-            event.setCanceled(true);
-            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, change < 0 ? -1 : 1, false));
-        }
+//        int change = event.getDwheel();
+//        if (change == 0 || !player.isSneaking()) return;
+//
+//        ItemStack item = player.inventory.getStackInSlot(player.inventory.currentItem);
+//        if (item.getItem() == DEFeatures.dislocatorAdvanced) {
+//            event.setCanceled(true);
+//            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, change < 0 ? -1 : 1, false));
+//        }
     }
 
-    private void onInput(EntityPlayer player) {
+    private void onInput(PlayerEntity player) {
         if (KeyBindings.placeItem.isPressed()) {
             handlePlaceItemKey();
         }
         else if (KeyBindings.toolConfig.isPressed()) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiToolConfig(player));
+//            Minecraft.getInstance().displayGuiScreen(new GuiToolConfig(player)); TODO PacketDispatcher stuff
         }
         else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
-            PacketDispatcher.dispatchToolProfileChange(false);
+//            PacketDispatcher.dispatchToolProfileChange(false);
         }
         else if (KeyBindings.toggleFlight.isPressed()) {
-            if (player.capabilities.allowFlying) {
-                if (player.capabilities.isFlying) {
-                    player.capabilities.isFlying = false;
+            if (player.abilities.allowFlying) {
+                if (player.abilities.isFlying) {
+                    player.abilities.isFlying = false;
                     player.sendPlayerAbilities();
                 }
                 else {
-                    player.capabilities.isFlying = true;
+                    player.abilities.isFlying = true;
                     if (player.onGround) {
                         player.setPosition(player.posX, player.posY + 0.05D, player.posZ);
-                        player.motionY = 0;
+                        player.setMotion(player.getMotion().x, 0, player.getMotion().z);
                     }
                     player.sendPlayerAbilities();
                 }
             }
         }
         else if (KeyBindings.toggleDislocator.isPressed()) {
-            PacketDispatcher.dispatchToggleDislocators();
+//            PacketDispatcher.dispatchToggleDislocators();
         }
         else if (KeyBindings.armorProfileChange.isPressed()) {
-            PacketDispatcher.dispatchToolProfileChange(true);
+//            PacketDispatcher.dispatchToolProfileChange(true);
         }
         else if (KeyBindings.cycleDigAOE.isPressed()) {
-            PacketDispatcher.dispatchCycleDigAOE(player.isSneaking());
+//            PacketDispatcher.dispatchCycleDigAOE(player.isSneaking());
         }
         else if (KeyBindings.cycleAttackAOE.isPressed()) {
-            PacketDispatcher.dispatchCycleAttackAOE(player.isSneaking());
+//            PacketDispatcher.dispatchCycleAttackAOE(player.isSneaking());
         }
     }
 

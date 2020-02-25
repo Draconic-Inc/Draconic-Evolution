@@ -1,25 +1,34 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.FacingUtils;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.Portal;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class TilePortal extends TileBCBase {
-    private final ManagedVec3I masterPos = register(new ManagedVec3I("masterPos", new Vec3I(0, -9999, 0), DataFlags.SAVE_NBT_SYNC_TILE));
+public class TilePortal extends TileBCore {
+    private final ManagedVec3I masterPos = register(new ManagedVec3I("master_pos", new Vec3I(0, -9999, 0), DataFlags.SAVE_NBT_SYNC_TILE));
     public boolean frameMoving = false;
     public boolean disabled = false;
     public long updateTime = 0;
+
+    public TilePortal(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
+
+    public TilePortal() {
+        super(DEContent.tile_portal);
+    }
 
     public void propRenderUpdate(long triggerTime, boolean reignite) {}
 
@@ -36,22 +45,22 @@ public class TilePortal extends TileBCBase {
             }
 
             if (!((TileDislocatorReceptacle) tile).active.get()) {
-                world.setBlockToAir(pos);
+                world.removeBlock(pos, false);
                 return;
             }
 
-            IBlockState state = world.getBlockState(pos);
-            for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(state.getValue(Portal.AXIS))) {
-                IBlockState checkPos = world.getBlockState(pos.offset(facing));
-                if (checkPos.getBlock() != DEFeatures.portal && checkPos.getBlock() != DEFeatures.infusedObsidian && checkPos.getBlock() != DEFeatures.dislocatorReceptacle) {
+            BlockState state = world.getBlockState(pos);
+            for (Direction facing : FacingUtils.getFacingsAroundAxis(state.get(Portal.AXIS))) {
+                BlockState checkPos = world.getBlockState(pos.offset(facing));
+                if (checkPos.getBlock() != DEContent.portal && checkPos.getBlock() != DEContent.infused_obsidian && checkPos.getBlock() != DEContent.dislocator_receptacle) {
                     ((TileDislocatorReceptacle) tile).deactivate();
-                    world.setBlockToAir(pos);
+                    world.removeBlock(pos, false);
                 }
             }
             dataManager.detectAndSendChanges();
         }
         else {
-            world.setBlockToAir(pos);
+            world.removeBlock(pos, false);
         }
     }
 

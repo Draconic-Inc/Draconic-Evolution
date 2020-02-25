@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * Created by brandon3055 on 1/06/2016.
@@ -12,26 +12,26 @@ public class ToolConfigHelper {
      * Returns the current selected config profile.
      */
     public static int getProfile(ItemStack stack) {
-        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey("ToolProfile")) {
+        if (stack.getTag() == null || !stack.getTag().contains("ToolProfile")) {
             return 0;
         }
-        return stack.getTagCompound().getByte("ToolProfile");
+        return stack.getTag().getByte("ToolProfile");
     }
 
     public static String getProfileName(ItemStack stack, int profile) {
-        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey("ToolProfileName" + profile)) {
+        if (stack.getTag() == null || !stack.getTag().contains("ToolProfileName" + profile)) {
             return "Profile " + (profile + 1);
         }
 
-        return stack.getTagCompound().getString("ToolProfileName" + profile);
+        return stack.getTag().getString("ToolProfileName" + profile);
     }
 
     public static void setProfileName(ItemStack stack, int profile, String name) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
+        if (stack.getTag() == null) {
+            stack.setTag(new CompoundNBT());
         }
 
-        stack.getTagCompound().setString("ToolProfileName" + profile, name);
+        stack.getTag().putString("ToolProfileName" + profile, name);
     }
 
 
@@ -51,19 +51,19 @@ public class ToolConfigHelper {
             profile = 0;
         }
 
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
+        if (stack.getTag() == null) {
+            stack.setTag(new CompoundNBT());
         }
 
-        stack.getTagCompound().setByte("ToolProfile", (byte) profile);
+        stack.getTag().putByte("ToolProfile", (byte) profile);
     }
 
     /**
      * Returns the compound to which the fields for the currently selected profile are saved.
      */
-    public static NBTTagCompound getFieldStorage(ItemStack stack) {
+    public static CompoundNBT getFieldStorage(ItemStack stack) {
         String tag = "Profile_" + getProfile(stack);
-        return stack.getOrCreateSubCompound(tag);
+        return stack.getOrCreateChildTag(tag);
     }
 
     /**

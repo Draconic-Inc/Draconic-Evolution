@@ -2,27 +2,27 @@ package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.RenderUtils;
-import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Cuboid6;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
-import net.minecraft.block.state.IBlockState;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ public class BinderHandler {
      *
      * @return true if an operation occurred (Cancels the right click event)
      */
-    public static boolean onBinderUse(EntityPlayer player, EnumHand hand, World world, BlockPos blockClicked, @Nonnull ItemStack binder, EnumFacing sideClicked) {
+    public static boolean onBinderUse(PlayerEntity player, Hand hand, World world, BlockPos blockClicked, @Nonnull ItemStack binder, Direction sideClicked) {
         TileEntity tile = world.getTileEntity(blockClicked);
         boolean isBound = isBound(binder);
 
@@ -84,21 +84,21 @@ public class BinderHandler {
     }
 
     private static boolean isBound(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().hasKey(ICrystalBinder.BINDER_TAG, 11);
+        return stack.hasTag() && stack.getTag().contains(ICrystalBinder.BINDER_TAG, 11);
     }
 
     private static void bind(ItemStack stack, BlockPos pos) {
-        ItemNBTHelper.getCompound(stack).setIntArray(ICrystalBinder.BINDER_TAG, new int[]{pos.getX(), pos.getY(), pos.getZ()});
+        ItemNBTHelper.getCompound(stack).putIntArray(ICrystalBinder.BINDER_TAG, new int[]{pos.getX(), pos.getY(), pos.getZ()});
     }
 
     private static BlockPos getBound(ItemStack stack) {
-        int[] intArray = stack.getTagCompound().getIntArray(ICrystalBinder.BINDER_TAG);
+        int[] intArray = stack.getTag().getIntArray(ICrystalBinder.BINDER_TAG);
         return new BlockPos(intArray[0], intArray[1], intArray[2]);
     }
 
-    public static boolean clearBinder(EntityPlayer player, @Nonnull ItemStack stack) {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(ICrystalBinder.BINDER_TAG)) {
-            stack.getTagCompound().removeTag(ICrystalBinder.BINDER_TAG);
+    public static boolean clearBinder(PlayerEntity player, @Nonnull ItemStack stack) {
+        if (stack.hasTag() && stack.getTag().contains(ICrystalBinder.BINDER_TAG)) {
+            stack.getTag().remove(ICrystalBinder.BINDER_TAG);
             ChatHelper.indexedTrans(player, "eNet.de.posCleared.info", TextFormatting.GREEN, -442611624);
             return true;
         }
@@ -107,8 +107,8 @@ public class BinderHandler {
 
     public static Map<AxisAlignedBB, CCModel> modelCache = new HashMap<>();
 
-    @SideOnly(Side.CLIENT)
-    public static void renderWorldOverlay(EntityPlayerSP player, World world, ItemStack stack, Minecraft mc, float partialTicks) {
+    @OnlyIn(Dist.CLIENT)
+    public static void renderWorldOverlay(ClientPlayerEntity player, World world, ItemStack stack, Minecraft mc, float partialTicks) {
         if (!isBound(stack)) {
             return;
         }
@@ -119,24 +119,24 @@ public class BinderHandler {
         double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
         double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
 
-        IBlockState state = world.getBlockState(pos);
-        Cuboid6 cuboid6 = new Cuboid6(state.getBlock().getBoundingBox(state, world, pos));
+        BlockState state = world.getBlockState(pos);
+        Cuboid6 cuboid6 = new Cuboid6(state.getShape(world, pos).getBoundingBox());
 
         GlStateManager.pushMatrix();
-        GlStateTracker.pushState();
-        GlStateManager.translate(pos.getX() - offsetX, pos.getY() - offsetY, pos.getZ() - offsetZ);
-        GlStateManager.disableTexture2D();
+//        GlStateTracker.pushState();
+        GlStateManager.translated(pos.getX() - offsetX, pos.getY() - offsetY, pos.getZ() - offsetZ);
+        GlStateManager.disableTexture();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
-        GlStateManager.disableDepth();
+        GlStateManager.color4f(valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
+        GlStateManager.disableDepthTest();
 
         RenderUtils.drawCuboidOutline(cuboid6);
 
-        GlStateManager.enableDepth();
+        GlStateManager.enableDepthTest();
         GlStateManager.disableBlend();
-        GlStateManager.enableTexture2D();
-        GlStateTracker.popState();
+        GlStateManager.enableTexture();
+//        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 

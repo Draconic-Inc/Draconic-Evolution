@@ -4,12 +4,13 @@ import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 
 public class RenderTileCelestialManipulator extends TESRBase<TileCelestialManipulator> {
+
     @Override
-    public void render(TileCelestialManipulator te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+    public void render(TileCelestialManipulator te, double x, double y, double z, float partialTicks, int destroyStage) {
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }

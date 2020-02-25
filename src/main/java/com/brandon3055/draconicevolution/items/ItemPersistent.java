@@ -11,6 +11,10 @@ import net.minecraft.world.World;
  */
 public class ItemPersistent extends ItemBCore {
 
+    public ItemPersistent(Properties properties) {
+        super(properties);
+    }
+
     @Override
     public boolean hasCustomEntity(ItemStack stack) {
         return true;

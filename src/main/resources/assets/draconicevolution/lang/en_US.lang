@@ -435,6 +435,7 @@ item.draconicevolution:draconicDistructionStaff.lore=2A long and ardous road, tr
 #Entity ----------------------------------------------------------------------------------------------------------------------------------------
 entity.draconicevolution:EnderDragon.name=Ender Dragon
 entity.draconicevolution:ChaosGuardian.name=Chaos Guardian
+entity.draconicevolution:GuardianCrystal.name=Guardian Crystal
 entity.draconicevolution:lootCore.name=Loot Core
 
 
@@ -588,9 +589,9 @@ potion.de.jumpBoost.txt=Jump Boost
 ###################   Start of refactored localization   ##################
 
 #---- Gui Names ----#
-#gui.de.title.generator=Generator
 tile.draconicevolution:generator.gui.title=Generator
-gui.de.title.grinder=Mob Grinder
+tile.draconicevolution:grinder.gui.title=Mob Grinder
+
 gui.de.title.energy_infuser=Energy Infuser
 gui.de.title.disenchanter=Disenchanter
 gui.de.title.fusion_crafting_core=Fusion Crafting
@@ -989,6 +990,8 @@ info.de.bound_dislocator.unknown_link=Unknown Location
 info.de.bound_dislocator.cant_find_player=The bound player is not online!
 info.de.bound_dislocator.cant_find_target=Could not find the bound dislocator!
 
+#==== 1.14+ Changes ====#
+
 #---- Gui Generator ----#
 gui.de.generator.mode.eco_plus=Eco Plus
 gui.de.generator.mode.eco_plus.info=Eco Plus\nSignificantly increased fuel efficiency.\nSignificantly decreased output power.
@@ -1000,7 +1003,21 @@ gui.de.generator.mode.performance=Performance
 gui.de.generator.mode.performance.info=Performance Mode\nProvides a worthwhile increase in output power\nfor a small fuel efficiency penalty.
 gui.de.generator.mode.performance_plus=Overdrive
 gui.de.generator.mode.performance_plus.info=Overdrive Mode\nNeed all the power you can get\nHave plenty of fuel to burn?\nThis is the mode for you!
-
 gui.de.generator.fuel_efficiency=Fuel Efficiency:
 gui.de.generator.output_power=Output Power:
 gui.de.generator.current_fuel_value=Current Fuel Value:
+
+#---- Gui Grinder ----#
+gui.de.grinder.aoe=AOE:
+gui.de.grinder.aoe.info=Increment's the grinder's Area Of Effect.\n(The area in which it will kill mobs)
+gui.de.grinder.show_aoe=Show AOE
+gui.de.grinder.collect.items=Collect Items
+gui.de.grinder.collect.items.info=If enabled will collect items within the kill area and insert them into an adjacent inventory.
+gui.de.grinder.collect.xp=Collect XP
+gui.de.grinder.collect.xp.info=If enabled will collect experiance dropped within the kill area and store itinternally.\nThis XP can then be claimed by a player or piped out if there is a mod installed that adds liquid XP.
+gui.de.grinder.claim.xp=Claim XP
+gui.de.grinder.claim.xp.info=Claim all stored XP
+gui.de.grinder.claim.xp.level.info=Claim 1 expireance level
+gui.de.grinder.claim.xp.levels.info=Claim %s expireance levels
+gui.de.generator.stored_xp=Stored Expireance:
+gui.de.generator.stored_xp.raw=(Raw XP)

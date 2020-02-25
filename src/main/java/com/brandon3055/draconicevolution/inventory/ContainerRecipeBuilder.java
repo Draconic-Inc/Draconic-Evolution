@@ -1,10 +1,11 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nullable;
 import java.util.LinkedList;
@@ -15,32 +16,37 @@ import java.util.List;
  */
 public class ContainerRecipeBuilder extends Container {
 
-    private EntityPlayer player;
+    private PlayerEntity player;
     public InventoryCache inventoryCache = new InventoryCache(20);
     private List<Slot> craftingSlots = new LinkedList<>();
 
-    public ContainerRecipeBuilder(EntityPlayer player) {
+    public ContainerRecipeBuilder(@Nullable ContainerType<?> type, int id, PlayerEntity player) {
+        super(type, id);
         this.player = player;
-        addSlots();
-        arangeCraftingSlots(0);
     }
+
+//    public ContainerRecipeBuilder(PlayerEntity player) {
+//        this.player = player;
+//        addSlots();
+//        arangeCraftingSlots(0);
+//    }
 
     public void addSlots() {
         int posX = 20;
         int posY = 145;
         for (int x = 0; x < 9; x++) {
-            addSlotToContainer(new Slot(player.inventory, x, posX + 18 * x, posY + 58));
+            addSlot(new Slot(player.inventory, x, posX + 18 * x, posY + 58));
         }
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
-                addSlotToContainer(new Slot(player.inventory, x + y * 9 + 9, posX + 18 * x, posY + y * 18));
+                addSlot(new Slot(player.inventory, x + y * 9 + 9, posX + 18 * x, posY + y * 18));
             }
         }
 
         for (int i = 0; i < inventoryCache.getSizeInventory(); i++) {
             Slot slot = new Slot(inventoryCache, i, 1000, 1000);
-            addSlotToContainer(slot);
+            addSlot(slot);
             craftingSlots.add(slot);
         }
     }
@@ -81,7 +87,7 @@ public class ContainerRecipeBuilder extends Container {
 
     @Nullable
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
         Slot slot = getSlot(index);
 
         if (slot.getHasStack()) {
@@ -93,7 +99,7 @@ public class ContainerRecipeBuilder extends Container {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (TileEntityFurnace.getItemBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + inventoryCache.getSizeInventory(), false)) {
+            else if (ForgeHooks.getBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + inventoryCache.getSizeInventory(), false)) {
                 return ItemStack.EMPTY;
             }
 
@@ -113,7 +119,7 @@ public class ContainerRecipeBuilder extends Container {
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
+    public boolean canInteractWith(PlayerEntity playerIn) {
         return true;
     }
 

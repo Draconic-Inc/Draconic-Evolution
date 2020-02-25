@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 1/06/2016.
@@ -24,19 +24,19 @@ public class BooleanConfigField extends IntegerConfigField {
         return this;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public String getReadableValue() {
         return getValue() == 1 ? I18n.format(onTxt) : I18n.format(offTxt);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        compound.setBoolean(name, value == 1);
+    public void writeToNBT(CompoundNBT compound) {
+        compound.putBoolean(name, value == 1);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
+    public void readFromNBT(CompoundNBT compound) {
         value = compound.getBoolean(name) ? 1 : 0;
     }
 

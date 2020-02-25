@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
@@ -13,39 +13,36 @@ import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.GuiHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
-import com.brandon3055.draconicevolution.client.gui.GuiReactor;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +53,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 /**
  * Created by brandon3055 on 6/11/2016.
  */
-public class TileReactorCore extends TileBCBase implements ITickable {
+public class TileReactorCore extends TileBCore implements ITickableTileEntity {
 
     //Frame Movement
     public int frameMoveContactPoints = 0;
@@ -66,9 +63,9 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
     public static final int COMPONENT_MAX_DISTANCE = 8;
     public final ManagedVec3I[] componentPositions = new ManagedVec3I[6]; //Invalid position is 0, 0, 0
-    private final ManagedEnum<Axis> stabilizerAxis = register(new ManagedEnum<>("stabilizerAxis", Axis.Y, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool structureValid = register(new ManagedBool("structureValid",false, SAVE_NBT_SYNC_TILE));
-    public final ManagedString structureError = register(new ManagedString("structureError", "", SAVE_NBT_SYNC_TILE));
+    private final ManagedEnum<Axis> stabilizerAxis = register(new ManagedEnum<>("stabilizer_axis", Axis.Y, SAVE_NBT_SYNC_TILE));
+    public final ManagedBool structureValid = register(new ManagedBool("structure_valid",false, SAVE_NBT_SYNC_TILE));
+    public final ManagedString structureError = register(new ManagedString("structure_error", "", SAVE_NBT_SYNC_TILE));
 
     private int tick = 0;
     private Map<BlockPos, Integer> blockIntrusions = new HashMap<>();
@@ -80,41 +77,41 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     /**
      * This is the current operational state of the reactor.
      */
-    public final ManagedEnum<ReactorState> reactorState = register(new ManagedEnum<>("reactorState", ReactorState.INVALID, SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<ReactorState> reactorState = register(new ManagedEnum<>("reactor_state", ReactorState.INVALID, SAVE_NBT_SYNC_TILE));
 
     /**
      * Remaining fuel that is yet to be consumed by the reaction.
      */
-    public final ManagedDouble reactableFuel = register(new ManagedDouble("reactableFuel",  SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble reactableFuel = register(new ManagedDouble("reactable_fuel",  SAVE_BOTH_SYNC_TILE));
     /**
      * Fuel that has been converted to chaos by the reaction.
      */
-    public final ManagedDouble convertedFuel = register(new ManagedDouble("convertedFuel",  SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble convertedFuel = register(new ManagedDouble("converted_fuel",  SAVE_BOTH_SYNC_TILE));
     public final ManagedDouble temperature = register(new ManagedDouble("temperature", 20D, SAVE_NBT_SYNC_TILE));
     public static final double MAX_TEMPERATURE = 10000;
 
-    public final ManagedDouble shieldCharge = register(new ManagedDouble("shieldCharge", SAVE_NBT_SYNC_TILE));
-    public final ManagedDouble maxShieldCharge = register(new ManagedDouble("maxShieldCharge", SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble shieldCharge = register(new ManagedDouble("shield_charge", SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble maxShieldCharge = register(new ManagedDouble("max_shield_charge", SAVE_NBT_SYNC_TILE));
 
     /**
      * This is how saturated the core is with energy.
      */
     public final ManagedLong saturation = register(new ManagedLong("saturation",  SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedLong maxSaturation = register(new ManagedLong("maxSaturation", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedLong maxSaturation = register(new ManagedLong("max_saturation", SAVE_NBT_SYNC_CONTAINER));
 
 
-    public final ManagedDouble tempDrainFactor = register(new ManagedDouble("tempDrainFactor", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedDouble generationRate = register(new ManagedDouble("generationRate", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedInt fieldDrain = register(new ManagedInt("fieldDrain",  SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedDouble fieldInputRate = register(new ManagedDouble("fieldInputRate", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedDouble fuelUseRate = register(new ManagedDouble("fuelUseRate", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble tempDrainFactor = register(new ManagedDouble("temp_drain_factor", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble generationRate = register(new ManagedDouble("generation_rate", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedInt fieldDrain = register(new ManagedInt("field_drain",  SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble fieldInputRate = register(new ManagedDouble("field_input_rate", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble fuelUseRate = register(new ManagedDouble("fuel_use_rate", SAVE_NBT_SYNC_CONTAINER));
 
-    public final ManagedBool startupInitialized = register(new ManagedBool("startupInitialized",  SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedBool failSafeMode = register(new ManagedBool("failSafeMode", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool startupInitialized = register(new ManagedBool("startup_initialized",  SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedBool failSafeMode = register(new ManagedBool("fail_safe_mode", SAVE_NBT_SYNC_TILE));
 
     //Explody Stuff!
     private ProcessExplosion explosionProcess = null;
-    public final ManagedInt explosionCountdown = register(new ManagedInt("explosionCountdown", -1, SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedInt explosionCountdown = register(new ManagedInt("explosion_countdown", -1, SAVE_NBT_SYNC_CONTAINER));
     private int minExplosionDelay = 0;
 
     //endregion ======================================
@@ -127,15 +124,16 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     /**
      * This controls the activation (fade in/fade out) of the beam and stabilizer animations.
      */
-    public final ManagedDouble shaderAnimationState = register(new ManagedDouble("shaderAnimationState", 0D, SAVE_NBT_SYNC_TILE));
-    public final ManagedDouble animExtractState = register(new ManagedDouble("animExtractState", 0D, SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble shaderAnimationState = register(new ManagedDouble("shader_animation_state", 0D, SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble animExtractState = register(new ManagedDouble("anim_extract_state", 0D, SAVE_NBT_SYNC_TILE));
     private final ReactorEffectHandler effectHandler;
 
     //endregion ======================================
 
     public TileReactorCore() {
+        super(DEContent.tile_reactor_core);
         for (int i = 0; i < componentPositions.length; i++) {
-            componentPositions[i] = register(new ManagedVec3I("componentPosition" + i, new Vec3I(0, 0, 0), SAVE_NBT_SYNC_TILE));
+            componentPositions[i] = register(new ManagedVec3I("component_position" + i, new Vec3I(0, 0, 0), SAVE_NBT_SYNC_TILE));
         }
 
         effectHandler = DraconicEvolution.proxy.createReactorFXHandler(this);
@@ -144,13 +142,13 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     //region Update Logic
 
     @Override
-    public void update() {
+    public void tick() {
 //        reactorState.set(ReactorState.COLD);
 //        if (explosionProcess != null) {
 //            explosionProcess.isDead = true;
 //            explosionProcess = null;
 //        }
-        super.update();
+        super.tick();
         updateCoreLogic();
         frameMoveContactPoints = 0;
         isFrameMoving = false;
@@ -393,8 +391,8 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             for (int i = 0; i < componentPositions.length; i++) {
                 ManagedVec3I v = componentPositions[i];
                 if (v.get().sum() > 0) {
-                    BlockPos p = getOffsetPos(v.get()).offset(EnumFacing.getFront(i).getOpposite());
-                    world.newExplosion(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, true);
+                    BlockPos p = getOffsetPos(v.get()).offset(Direction.byIndex(i).getOpposite());
+                    world.createExplosion(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Explosion.Mode.DESTROY);
                 }
             }
         }
@@ -407,7 +405,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     }
 
     public void updateCriticalState() {
-        if (!(world instanceof WorldServer)) {
+        if (!(world instanceof ServerWorld)) {
             return;
         }
 
@@ -434,7 +432,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
 
         if (explosionProcess == null) {
             double radius = MathUtils.map(convertedFuel.get() + reactableFuel.get(), 144, 10368, 50D, 350D) * DEConfig.reactorExplosionScale;
-            explosionProcess = new ProcessExplosion(pos, (int) radius, (WorldServer) world, -1);
+            explosionProcess = new ProcessExplosion(pos, (int) radius, (ServerWorld) world, -1);
             ProcessHandler.addProcess(explosionProcess);
             explosionCountdown.set(-1);
             minExplosionDelay = 1200 + world.rand.nextInt(2400);
@@ -454,7 +452,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         if (explosionCountdown.dec() <= 0) {
 //            explosionProcess = null;
             explosionProcess.detonate();
-            world.setBlockToAir(pos);
+            world.removeBlock(pos, false);
         }
     }
 
@@ -557,19 +555,20 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         }
     }
 
-    public void onComponentClicked(EntityPlayer player, TileReactorComponent component) {
+    public void onComponentClicked(PlayerEntity player, TileReactorComponent component) {
         if (!world.isRemote) {
-            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_REACTOR, world, pos.getX(), pos.getY(), pos.getZ());
-//            NBTTagCompound tag = new NBTTagCompound();
+            //TODO gui
+//            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_REACTOR, world, pos.getX(), pos.getY(), pos.getZ());
+//            CompoundNBT tag = new CompoundNBT();
 //            tag.setInteger("x", component.getPos().getX());
 //            tag.setInteger("y", component.getPos().getY());
 //            tag.setInteger("z", component.getPos().getZ());
-            sendPacketToClient((EntityPlayerMP) player, output -> output.writePos(component.getPos()), 1);
+            sendPacketToClient((ServerPlayerEntity) player, output -> output.writePos(component.getPos()), 1);
         }
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
         byte func = data.readByte();
         if (id == 0 && func == ID_CHARGE) {
             chargeReactor();
@@ -585,23 +584,23 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 1) {
             BlockPos pos = data.readPos();
             TileEntity tile = world.getTileEntity(pos);
-            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor) {
-                ((GuiReactor) screen).component = (TileReactorComponent) tile;
-            }
+            Screen screen = Minecraft.getInstance().currentScreen;
+//            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor) {TODO Gui Stuff
+//                ((GuiReactor) screen).component = (TileReactorComponent) tile;
+//            }
         }
     }
 
 
     private void checkPlayerCollision() {
-        EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
-        double distance = Math.min(Utils.getDistanceAtoB(new Vec3D(player).add(0, player.eyeHeight, 0), Vec3D.getCenter(pos)), Utils.getDistanceAtoB(new Vec3D(player), Vec3D.getCenter(pos)));
+        PlayerEntity player = BrandonsCore.proxy.getClientPlayer();
+        double distance = Math.min(Utils.getDistanceAtoB(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(pos)), Utils.getDistanceAtoB(new Vec3D(player), Vec3D.getCenter(pos)));
         if (distance < (getCoreDiameter() / 2) + 0.5) {
             double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter() / 2) + 0.5));
             double offsetX = player.posX - pos.getX() + 0.5;
@@ -623,11 +622,11 @@ public class TileReactorCore extends TileBCBase implements ITickable {
      *
      * @param component The component that poked the core.
      */
-    public void pokeCore(TileReactorComponent component, EnumFacing pokeFrom) {
+    public void pokeCore(TileReactorComponent component, Direction pokeFrom) {
         LogHelper.dev("Reactor: Core Poked, StructValid: " + structureValid);
         if (structureValid.get()) {
             //If the component is an unbound injector and there is no component bound on the same side then bind it.
-            if (component instanceof TileReactorEnergyInjector && !component.isBound.get()) {
+            if (component instanceof TileReactorInjector && !component.isBound.get()) {
                 TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[pokeFrom.getIndex()].get()));
                 if (tile == this) {
                     componentPositions[pokeFrom.getIndex()].set(getOffsetVec(component.getPos()));
@@ -646,12 +645,12 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     /**
      * Called when a component is physically broken
      */
-    public void componentBroken(TileReactorComponent component, EnumFacing componentSide) {
+    public void componentBroken(TileReactorComponent component, Direction componentSide) {
         if (!structureValid.get() || reactorState.get() == ReactorState.BEYOND_HOPE) {
             return;
         }
 
-        if (component instanceof TileReactorEnergyInjector) {
+        if (component instanceof TileReactorInjector) {
             LogHelper.dev("Reactor: Component broken! (Injector)");
             TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[componentSide.getIndex()].get()));
 
@@ -681,13 +680,13 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     }
 
     public void checkBlockIntrusions() {
-        if (!(world instanceof WorldServer)) {
+        if (!(world instanceof ServerWorld)) {
             return;
         }
 
         if (tick % 100 == 0) {
             double rad = (getCoreDiameter() * 1.05) / 2;
-            Iterable<BlockPos> inRange = BlockPos.getAllInBox(pos.add(-rad, -rad, -rad), pos.add(rad + 1, rad + 1, rad + 1));
+            Iterable<BlockPos> inRange = BlockPos.getAllInBoxMutable(pos.add(-rad, -rad, -rad), pos.add(rad + 1, rad + 1, rad + 1));
 
             for (BlockPos p : inRange) {
                 if (p.equals(pos) || Utils.getDistanceAtoB(p.getX(), p.getY(), p.getZ(), pos.getX(), pos.getY(), pos.getZ()) - 0.5 >= rad) {
@@ -708,14 +707,14 @@ public class TileReactorCore extends TileBCBase implements ITickable {
                 final Vec3D iPos = new Vec3D(entry.getKey());
 
                 if (world.rand.nextInt(10) == 0) {
-                    ((WorldServer) world).spawnParticle(EnumParticleTypes.FLAME, false, iPos.x, iPos.y, iPos.z, 5, world.rand.nextDouble(), world.rand.nextDouble(), world.rand.nextDouble(), 0.01D);
+                    ((ServerWorld) world).spawnParticle(ParticleTypes.FLAME,iPos.x, iPos.y, iPos.z, 5, world.rand.nextDouble(), world.rand.nextDouble(), world.rand.nextDouble(), 0.01D);
                 }
 
                 entry.setValue(entry.getValue() + 1);
                 if (entry.getValue() > 100) {
                     i.remove();
                     world.playEvent(2001, entry.getKey(), Block.getStateId(world.getBlockState(entry.getKey())));
-                    world.setBlockToAir(entry.getKey());
+                    world.removeBlock(entry.getKey(), false);
                 }
             }
 
@@ -768,7 +767,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     public boolean findComponents() {
         LogHelper.dev("Reactor: Find Components");
         int stabilizersFound = 0;
-        for (EnumFacing facing : EnumFacing.VALUES) {
+        for (Direction facing : Direction.values()) {
             componentPositions[facing.getIndex()].get().set(0, 0, 0);
             for (int i = 4; i < COMPONENT_MAX_DISTANCE; i++) {
                 BlockPos searchPos = pos.offset(facing, i);
@@ -803,7 +802,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         LogHelper.dev("Reactor: Check Stabilizer Axis");
         for (Axis axis : Axis.values()) {
             boolean axisValid = true;
-            for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(axis)) {
+            for (Direction facing : FacingUtils.getFacingsAroundAxis(axis)) {
                 TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[facing.getIndex()].get()));
                 //The facing check should not be needed here but does not heart to be to careful.
                 if (!(tile instanceof TileReactorStabilizer && ((TileReactorStabilizer) tile).facing.get() == facing.getOpposite())) {
@@ -854,11 +853,12 @@ public class TileReactorCore extends TileBCBase implements ITickable {
      */
     public boolean validateStructure() {
         LogHelper.dev("Reactor: Validate Structure");
-        for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.get())) {
+        for (Direction facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.get())) {
             BlockPos pos = getOffsetPos(componentPositions[facing.getIndex()].get());
-            if (!world.getChunkFromBlockCoords(pos).isLoaded()) {
+            if (!world.getChunkAt(pos).loaded) {
                 return true;
             }
+
 
             TileEntity tile = world.getTileEntity(pos);
             LogHelper.dev("Reactor: Validate Stabilizer: " + tile);
@@ -871,8 +871,8 @@ public class TileReactorCore extends TileBCBase implements ITickable {
                 pos = getOffsetPos(vec.get());
                 tile = world.getTileEntity(pos);
 
-                if (tile instanceof TileReactorEnergyInjector && !((TileReactorEnergyInjector) tile).isBound.get()) {
-                    ((TileReactorEnergyInjector) tile).bindToCore(this);
+                if (tile instanceof TileReactorInjector && !((TileReactorInjector) tile).isBound.get()) {
+                    ((TileReactorInjector) tile).bindToCore(this);
                 }
 
                 if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).getCorePos().equals(this.pos) && !((TileReactorComponent) tile).isBound.get()) {
@@ -889,26 +889,27 @@ public class TileReactorCore extends TileBCBase implements ITickable {
     //endregion
 
     private void minimalBoom() {
-        IBlockState lava = Blocks.FLOWING_LAVA.getDefaultState();
-        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
-        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
-            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
-            if (pyro.canBePlacedInWorld()) {
-                lava = pyro.getBlock().getDefaultState();
-            }
-        }
+        BlockState lava = Blocks.LAVA.getDefaultState();
+        //TODO pyrotheum
+//        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
+//        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
+//            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
+//            if (pyro.canBePlacedInWorld()) {
+//                lava = pyro.getBlock().getDefaultState();
+//            }
+//        }
 
         Vec3D vec = Vec3D.getCenter(pos);
-        world.setBlockToAir(pos);
-        world.createExplosion(null, vec.x, vec.y, vec.z, 8, true);
+        world.removeBlock(pos, false);
+        world.createExplosion(null, vec.x, vec.y, vec.z, 8, Explosion.Mode.BREAK);
         int c = 25 + world.rand.nextInt(25);
         for (int i = 0; i < c; i++) {
-            EntityFallingBlock entity = new EntityFallingBlock(world, vec.x, vec.y, vec.z, lava);
+            FallingBlockEntity entity = new FallingBlockEntity(world, vec.x, vec.y, vec.z, lava);
             entity.fallTime = 1;
             entity.shouldDropItem = false;
             double vMod = 0.5 + (2 * world.rand.nextDouble());
             entity.addVelocity((world.rand.nextDouble() - 0.5) * vMod, (world.rand.nextDouble() / 1.5) * vMod, (world.rand.nextDouble() - 0.5) * vMod);
-            world.spawnEntity(entity);
+            world.addEntity(entity);
         }
     }
 
@@ -922,7 +923,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         return new Vec3I(pos.subtract(offsetPos));
     }
 
-    public TileReactorComponent getComponent(EnumFacing facing) {
+    public TileReactorComponent getComponent(Direction facing) {
         TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[facing.getIndex()].get()));
 
         if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).facing.get() == facing.getOpposite()) {
@@ -990,10 +991,10 @@ public class TileReactorCore extends TileBCBase implements ITickable {
         return true;
     }
 
-    @Override
-    public boolean shouldRenderInPass(int pass) {
-        return true;
-    }
+//    @Override
+//    public boolean shouldRenderInPass(int pass) {
+//        return true;
+//    }
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -1043,8 +1044,8 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             double z = Math.sin(direction);
 
             BlockPos p = pos.getPos();
-            if (world.isAirBlock(p) || world.getBlockState(p).getBlock() == DEFeatures.reactorCore) {
-                while ((world.isAirBlock(p) || world.getBlockState(p).getBlock() == DEFeatures.reactorCore) && p.getY() > 0) {
+            if (world.isAirBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) {
+                while ((world.isAirBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) && p.getY() > 0) {
                     p = p.down();
                 }
             }
@@ -1121,7 +1122,7 @@ public class TileReactorCore extends TileBCBase implements ITickable {
             return shieldActive;
         }
 
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public String localize() {
             TextFormatting[] colours = {TextFormatting.RED, TextFormatting.DARK_AQUA, TextFormatting.LIGHT_PURPLE, TextFormatting.GREEN, TextFormatting.LIGHT_PURPLE, TextFormatting.LIGHT_PURPLE, TextFormatting.DARK_RED};
             return colours[ordinal()] + I18n.format("gui.reactor.status." + name().toLowerCase() + ".info");

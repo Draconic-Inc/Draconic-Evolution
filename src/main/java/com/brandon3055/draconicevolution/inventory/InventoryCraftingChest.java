@@ -1,15 +1,15 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 
 /**
  * Created by Brandon on 29/10/2014.
  */
-public class InventoryCraftingChest extends InventoryCrafting {
+public class InventoryCraftingChest extends CraftingInventory {
     /**
      * the width of the crafting inventory
      */
@@ -43,16 +43,16 @@ public class InventoryCraftingChest extends InventoryCrafting {
         return slot >= getSizeInventory() ? ItemStack.EMPTY : tile.getStackInCraftingSlot(slot + 1);
     }
 
-    @Override
-    public ItemStack getStackInRowAndColumn(int row, int column) {
-        if (row >= 0 && row < inventoryWidth) {
-            int k = row + column * inventoryWidth;
-            return getStackInSlot(k);
-        }
-        else {
-            return ItemStack.EMPTY;
-        }
-    }
+//    @Override
+//    public ItemStack getStackInRowAndColumn(int row, int column) {
+//        if (row >= 0 && row < inventoryWidth) {
+//            int k = row + column * inventoryWidth;
+//            return getStackInSlot(k);
+//        }
+//        else {
+//            return ItemStack.EMPTY;
+//        }
+//    }
 
     public String getInvName() {
         return "";
@@ -85,7 +85,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
                 return itemstack;
             }
             else {
-                itemstack = stack.splitStack(par2);
+                itemstack = stack.split(par2);
 
                 if (stack.getCount() == 0) {
                     stack = ItemStack.EMPTY;
@@ -131,7 +131,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
      * with Container
      */
     @Override
-    public boolean isUsableByPlayer(EntityPlayer par1EntityPlayer) {
+    public boolean isUsableByPlayer(PlayerEntity par1EntityPlayer) {
         return true;
     }
 

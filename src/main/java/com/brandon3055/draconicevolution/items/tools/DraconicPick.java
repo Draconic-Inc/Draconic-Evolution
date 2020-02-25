@@ -2,22 +2,33 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Set;
 
 /**
  * Created by brandon3055 on 5/06/2016.
  */
 public class DraconicPick extends WyvernPick {
+//    public DraconicPick(Set<Block> effectiveBlocks) {
+//        super(effectiveBlocks);
+//    }
 
-    public DraconicPick() {
-        super(/*ToolStats.DRA_PICK_ATTACK_DAMAGE, ToolStats.DRA_PICK_ATTACK_SPEED, */PICKAXE_OVERRIDES);
-//        this.baseMiningSpeed = (float) ToolStats.DRA_PICK_MINING_SPEED;
-//        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
-//        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
-        this.setHarvestLevel("pickaxe", 10);
+    public DraconicPick(Properties properties) {
+        super(properties);
     }
+
+
+    //    public DraconicPick() {
+//        super(/*ToolStats.DRA_PICK_ATTACK_DAMAGE, ToolStats.DRA_PICK_ATTACK_SPEED, */PICKAXE_OVERRIDES);
+////        this.baseMiningSpeed = (float) ToolStats.DRA_PICK_MINING_SPEED;
+////        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
+////        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
+//        this.setHarvestLevel("pickaxe", 10);
+//    }
 
     @Override
     public double getBaseMinSpeedConfig() {

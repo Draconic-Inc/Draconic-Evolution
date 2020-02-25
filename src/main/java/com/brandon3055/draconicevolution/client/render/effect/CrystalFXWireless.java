@@ -1,18 +1,17 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.DEParticles;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.block.state.IBlockState;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -37,24 +36,24 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalWirelessIO> {
 
     public CrystalFXWireless(World worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
         super(worldIn, tile);
-        this.particleTextureIndexX = 3 + tile.getTier();
-        this.particleAge = worldIn.rand.nextInt(1024);
+//        this.particleTextureIndexX = 3 + tile.getTier();
+        this.age = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget));
         this.linkTarget = linkTarget;
-        this.particleTextureIndexY = 1;
+//        this.particleTextureIndexY = 1;
         this.texturesPerRow = 8;
-        IBlockState state = worldIn.getBlockState(linkTarget);
-        targetBB = state.getBoundingBox(worldIn, linkTarget);
+        BlockState state = worldIn.getBlockState(linkTarget);
+        targetBB = state.getShape(worldIn, linkTarget).getBoundingBox();
         targetBB.shrink(0.05);
     }
 
-    @Override
-    public int getFXLayer() {
-        return 1;
-    }
+//    @Override
+//    public int getFXLayer() {
+//        return 1;
+//    }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
@@ -73,46 +72,46 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalWirelessIO> {
             }
         }
 
-        int ps = Minecraft.getMinecraft().gameSettings.particleSetting;
-        if (particleAge % 2 == 0 && powerLevel > rand.nextFloat() && (ps == 0 || (ps == 1 && rand.nextInt(3) == 0) || (ps == 2 && rand.nextInt(10) == 0))) {
+        int ps = Minecraft.getInstance().gameSettings.particles.func_216832_b() ;
+        if (age % 2 == 0 && powerLevel > rand.nextFloat() && (ps == 0 || (ps == 1 && rand.nextInt(3) == 0) || (ps == 2 && rand.nextInt(10) == 0))) {
             double travel = 50 + rand.nextInt(50);
             travel *= (1.4F - powerLevel);
             trackers.add(new PTracker((int) travel, new Vector3(targetBB.minX + (rand.nextDouble() * (targetBB.maxX - targetBB.minX)), targetBB.minY + (rand.nextDouble() * (targetBB.maxY - targetBB.minY)), targetBB.minZ + (rand.nextDouble() * (targetBB.maxZ - targetBB.minZ)))));
         }
 
-        particleTextureIndexX = ClientEventHandler.elapsedTicks % 5;
-        particleAge++;
+//        particleTextureIndexX = ClientEventHandler.elapsedTicks % 5;
+        age++;
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        double scale = 0.08;// * powerLevel;
-        boolean output = !tile.inputMode.get();
-
-        float minU = (float) this.particleTextureIndexX / texturesPerRow;
-        float maxU = minU + 1F / texturesPerRow;
-        float minV = (float) this.particleTextureIndexY / texturesPerRow;
-        float maxV = minV + 1F / texturesPerRow;
-
-        Vector3 source = new Vector3(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
-        Vector3 target = Vector3.fromBlockPos(linkTarget).subtract(interpPosX, interpPosY, interpPosZ);
-
-        for (PTracker tracker : trackers) {
-            double progress = ((double) tracker.ticksActive + partialTicks) / (double) tracker.travelTime;
-            if (!output) progress = 1 - progress;
-            if (progress >= 1 || progress <= 0) {
-                continue;
-            }
-            Vector3 pathVec = target.copy().subtract(source);
-            pathVec.add(tracker.tOffset);
-            pathVec.multiply(progress);
-            pathVec.add(source);
-
-            buffer.pos((pathVec.x - rotationX * scale - rotationXY * scale), (pathVec.y - rotationZ * scale), (pathVec.z - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
-            buffer.pos((pathVec.x - rotationX * scale + rotationXY * scale), (pathVec.y + rotationZ * scale), (pathVec.z - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
-            buffer.pos((pathVec.x + rotationX * scale + rotationXY * scale), (pathVec.y + rotationZ * scale), (pathVec.z + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
-            buffer.pos((pathVec.x + rotationX * scale - rotationXY * scale), (pathVec.y - rotationZ * scale), (pathVec.z + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
-        }
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+//        double scale = 0.08;// * powerLevel;
+//        boolean output = !tile.inputMode.get();
+//
+//        float minU = (float) this.particleTextureIndexX / texturesPerRow;
+//        float maxU = minU + 1F / texturesPerRow;
+//        float minV = (float) this.particleTextureIndexY / texturesPerRow;
+//        float maxV = minV + 1F / texturesPerRow;
+//
+//        Vector3 source = new Vector3(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
+//        Vector3 target = Vector3.fromBlockPos(linkTarget).subtract(interpPosX, interpPosY, interpPosZ);
+//
+//        for (PTracker tracker : trackers) {
+//            double progress = ((double) tracker.ticksActive + partialTicks) / (double) tracker.travelTime;
+//            if (!output) progress = 1 - progress;
+//            if (progress >= 1 || progress <= 0) {
+//                continue;
+//            }
+//            Vector3 pathVec = target.copy().subtract(source);
+//            pathVec.add(tracker.tOffset);
+//            pathVec.multiply(progress);
+//            pathVec.add(source);
+//
+//            buffer.pos((pathVec.x - rotationX * scale - rotationXY * scale), (pathVec.y - rotationZ * scale), (pathVec.z - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
+//            buffer.pos((pathVec.x - rotationX * scale + rotationXY * scale), (pathVec.y + rotationZ * scale), (pathVec.z - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
+//            buffer.pos((pathVec.x + rotationX * scale + rotationXY * scale), (pathVec.y + rotationZ * scale), (pathVec.z + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
+//            buffer.pos((pathVec.x + rotationX * scale - rotationXY * scale), (pathVec.y - rotationZ * scale), (pathVec.z + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
+//        }
     }
 
     private void bufferQuad(BufferBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, double anim, double dist) {
@@ -142,11 +141,11 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalWirelessIO> {
 
         @Override
         public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            GlStateManager.color(0.0F, 1.0F, 1.0F, 1.0F);
-            GlStateTracker.pushState();
+            GlStateManager.color4f(0.0F, 1.0F, 1.0F, 1.0F);
+//            GlStateTracker.pushState();
             GlStateManager.depthMask(false);
-            GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
-            GlStateManager.glTexParameterf(3553, 10243, 10497.0F);
+            GlStateManager.texParameter(3553, 10242, 10497.0F);
+            GlStateManager.texParameter(3553, 10243, 10497.0F);
             GlStateManager.disableCull();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
             ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
@@ -161,7 +160,7 @@ public class CrystalFXWireless extends CrystalGLFXBase<TileCrystalWirelessIO> {
         public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
             tessellator.draw();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlStateTracker.popState();
+//            GlStateTracker.popState();
         }
     }
 

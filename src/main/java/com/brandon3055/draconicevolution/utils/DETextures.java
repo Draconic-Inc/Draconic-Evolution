@@ -1,63 +1,72 @@
 package com.brandon3055.draconicevolution.utils;
 
-import codechicken.lib.texture.TextureUtils.IIconRegister;
+import codechicken.lib.texture.AtlasRegistrar;
+import codechicken.lib.texture.IIconRegister;
 import com.brandon3055.draconicevolution.client.model.GlassParticleDummyModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.resource.IResourceType;
+import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Created by brandon3055 on 31/08/2016.
  */
-public class DETextures implements IIconRegister, IResourceManagerReloadListener {
+public class DETextures implements IIconRegister, ISelectiveResourceReloadListener {
 
-    private static TextureMap map;
+    private static AtlasRegistrar map;
 
     @Override
-    public void registerIcons(TextureMap textureMap) {
-        map = textureMap;
+    public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+        GlassParticleDummyModel.INSTANCE.sprite = null;
+    }
+
+    @Override
+    public void registerIcons(AtlasRegistrar registrar) {
+        map = registrar;
 
         //@formatter:off
-        WYVERN_AXE =                register(TOOLS_ + "wyvern_axe");
-        WYVERN_BOW00 =              register(TOOLS_ + "wyvern_bow00");
-        WYVERN_BOW01 =              register(TOOLS_ + "wyvern_bow01");
-        WYVERN_BOW02 =              register(TOOLS_ + "wyvern_bow02");
-        WYVERN_BOW03 =              register(TOOLS_ + "wyvern_bow03");
-        WYVERN_PICKAXE =            register(TOOLS_ + "wyvern_pickaxe");
-        WYVERN_SHOVEL =             register(TOOLS_ + "wyvern_shovel");
-        WYVERN_SWORD =              register(TOOLS_ + "wyvern_sword");
-        DRACONIC_AXE =              register(TOOLS_ + "draconic_axe");
-        DRACONIC_BOW00 =            register(TOOLS_ + "draconic_bow00");
-        DRACONIC_BOW01 =            register(TOOLS_ + "draconic_bow01");
-        DRACONIC_BOW02 =            register(TOOLS_ + "draconic_bow02");
-        DRACONIC_BOW03 =            register(TOOLS_ + "draconic_bow03");
-        DRACONIC_HOE =              register(TOOLS_ + "draconic_hoe");
-        DRACONIC_PICKAXE =          register(TOOLS_ + "draconic_pickaxe");
-        DRACONIC_SHOVEL =           register(TOOLS_ + "draconic_shovel");
-        DRACONIC_STAFF_OF_POWER =   register(TOOLS_ + "draconic_staff_of_power");
-        DRACONIC_SWORD =            register(TOOLS_ + "draconic_sword");
+        register(TOOLS_ + "wyvern_axe", e -> WYVERN_AXE = e);
+        register(TOOLS_ + "wyvern_bow00", e -> WYVERN_BOW00 = e);
+        register(TOOLS_ + "wyvern_bow01", e -> WYVERN_BOW01 = e);
+        register(TOOLS_ + "wyvern_bow02", e -> WYVERN_BOW02 = e);
+        register(TOOLS_ + "wyvern_bow03", e -> WYVERN_BOW03 = e);
+        register(TOOLS_ + "wyvern_pickaxe", e -> WYVERN_PICKAXE = e);
+        register(TOOLS_ + "wyvern_shovel", e -> WYVERN_SHOVEL = e);
+        register(TOOLS_ + "wyvern_sword", e -> WYVERN_SWORD = e);
+        register(TOOLS_ + "draconic_axe", e -> DRACONIC_AXE = e);
+        register(TOOLS_ + "draconic_bow00", e -> DRACONIC_BOW00 = e);
+        register(TOOLS_ + "draconic_bow01", e -> DRACONIC_BOW01 = e);
+        register(TOOLS_ + "draconic_bow02", e -> DRACONIC_BOW02 = e);
+        register(TOOLS_ + "draconic_bow03", e -> DRACONIC_BOW03 = e);
+        register(TOOLS_ + "draconic_hoe", e -> DRACONIC_HOE = e);
+        register(TOOLS_ + "draconic_pickaxe", e -> DRACONIC_PICKAXE = e);
+        register(TOOLS_ + "draconic_shovel", e -> DRACONIC_SHOVEL = e);
+        register(TOOLS_ + "draconic_staff_of_power", e -> DRACONIC_STAFF_OF_POWER = e);
+        register(TOOLS_ + "draconic_sword", e -> DRACONIC_SWORD = e);
 
         //OBJ textures. Just need to be registered, never accessed by us through here.
-        register(TOOLS_OBJ_ + "wyvern_axe");
-        register(TOOLS_OBJ_ + "wyvern_bow00");
-        register(TOOLS_OBJ_ + "wyvern_bow01");
-        register(TOOLS_OBJ_ + "wyvern_bow02");
-        register(TOOLS_OBJ_ + "wyvern_bow03");
-        register(TOOLS_OBJ_ + "wyvern_pickaxe");
-        register(TOOLS_OBJ_ + "wyvern_shovel");
-        register(TOOLS_OBJ_ + "wyvern_sword");
-        register(TOOLS_OBJ_ + "draconic_axe");
-        register(TOOLS_OBJ_ + "draconic_bow00");
-        register(TOOLS_OBJ_ + "draconic_bow01");
-        register(TOOLS_OBJ_ + "draconic_bow02");
-        register(TOOLS_OBJ_ + "draconic_bow03");
-        register(TOOLS_OBJ_ + "draconic_hoe");
-        register(TOOLS_OBJ_ + "draconic_pickaxe");
-        register(TOOLS_OBJ_ + "draconic_shovel");
-        register(TOOLS_OBJ_ + "draconic_staff_of_power");
-        register(TOOLS_OBJ_ + "draconic_sword");
+        register(TOOLS_OBJ_ + "wyvern_axe", e -> {});
+        register(TOOLS_OBJ_ + "wyvern_bow00", e -> {});
+        register(TOOLS_OBJ_ + "wyvern_bow01", e -> {});
+        register(TOOLS_OBJ_ + "wyvern_bow02", e -> {});
+        register(TOOLS_OBJ_ + "wyvern_bow03", e -> {});
+        register(TOOLS_OBJ_ + "wyvern_pickaxe", e -> {});
+        register(TOOLS_OBJ_ + "wyvern_shovel", e -> {});
+        register(TOOLS_OBJ_ + "wyvern_sword", e -> {});
+        register(TOOLS_OBJ_ + "draconic_axe", e -> {});
+        register(TOOLS_OBJ_ + "draconic_bow00", e -> {});
+        register(TOOLS_OBJ_ + "draconic_bow01", e -> {});
+        register(TOOLS_OBJ_ + "draconic_bow02", e -> {});
+        register(TOOLS_OBJ_ + "draconic_bow03", e -> {});
+        register(TOOLS_OBJ_ + "draconic_hoe", e -> {});
+        register(TOOLS_OBJ_ + "draconic_pickaxe", e -> {});
+        register(TOOLS_OBJ_ + "draconic_shovel", e -> {});
+        register(TOOLS_OBJ_ + "draconic_staff_of_power", e -> {});
+        register(TOOLS_OBJ_ + "draconic_sword", e -> {});
 
         WYVERN_BOW = new TextureAtlasSprite[] {
                 WYVERN_BOW00,
@@ -75,9 +84,8 @@ public class DETextures implements IIconRegister, IResourceManagerReloadListener
     }
 
     // Bouncer to make the class readable.
-    private static TextureAtlasSprite register(String sprite) {
-
-        return map.registerSprite(new ResourceLocation(sprite));
+    private static void register(String sprite, Consumer<TextureAtlasSprite> onReady) {
+        map.registerSprite(new ResourceLocation(sprite), onReady);
     }
 
     //These are BELLOW register icons because readability.
@@ -145,9 +153,4 @@ public class DETextures implements IIconRegister, IResourceManagerReloadListener
     public static final String REACTOR_INJECTOR = "textures/models/model_reactor_power_injector.png";
 
     public static final String DRACONIUM_CHEST = "textures/models/draconium_chest.png";
-
-    @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
-        GlassParticleDummyModel.INSTANCE.sprite = null;
-    }
 }

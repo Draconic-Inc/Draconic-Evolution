@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import gnu.trove.map.hash.TIntObjectHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 
 import java.util.ArrayDeque;
 import java.util.Random;
@@ -17,18 +18,18 @@ import java.util.Random;
  * Handles World Ticks!
  */
 public class WorldTickHandler {
-    public static TIntObjectHashMap<ArrayDeque<ChunkPos>> chunksToGen = new TIntObjectHashMap<ArrayDeque<ChunkPos>>();
+    public static Object2ObjectArrayMap<DimensionType, ArrayDeque<ChunkPos>> chunksToGen = new Object2ObjectArrayMap<>();
 
     private int tick = 0;
 
     @SubscribeEvent
     public void tickEnd(TickEvent.WorldTickEvent event) {
-        if (event.side != Side.SERVER) {
+        if (event.side != LogicalSide.SERVER) {
             return;
         }
 
         World world = event.world;
-        int dimension = event.world.provider.getDimension();
+        DimensionType dimension = event.world.getDimension().getType();
 
         if (event.phase == TickEvent.Phase.END) {
             ArrayDeque<ChunkPos> chunks = chunksToGen.get(dimension);
@@ -45,7 +46,7 @@ public class WorldTickHandler {
                 long xSeed = rand.nextLong() >> 2 + 1L;
                 long zSeed = rand.nextLong() >> 2 + 1L;
                 rand.setSeed(xSeed * chunkPos.x + zSeed * chunkPos.z ^ worldSeed);
-                DEWorldGenHandler.instance.addOreGen(rand, chunkPos.x, chunkPos.z, world);
+//                DEWorldGenHandler.instance.addOreGen(rand, chunkPos.x, chunkPos.z, world);
                 DEWorldGenHandler.instance.retroGenComplete(dimension, chunkPos.x, chunkPos.z);
                 chunksToGen.put(dimension, chunks);
             }
@@ -57,8 +58,8 @@ public class WorldTickHandler {
 
     @SubscribeEvent
     public void worldUnload(WorldEvent.Unload event) {
-        if (chunksToGen.containsKey(event.getWorld().provider.getDimension())) {
-            chunksToGen.get(event.getWorld().provider.getDimension()).clear();
+        if (chunksToGen.containsKey(event.getWorld().getDimension().getType())) {
+            chunksToGen.get(event.getWorld().getDimension().getType()).clear();
         }
     }
 }

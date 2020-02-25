@@ -2,24 +2,39 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 31/05/2016.
  */
 public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
 
-    public ContainerEnergyInfuser(EntityPlayer player, TileEnergyInfuser tile) {
-        super(player, tile);
-        this.addPlayerSlots(8, 58);
-        addSlotToContainer(new SlotCheckValid(tile.itemHandler, 0, 80, 22));
+    public ContainerEnergyInfuser(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+        this(DEContent.container_energy_infuser, windowId, playerInv.player, getClientTile(extraData));
     }
 
+    public ContainerEnergyInfuser(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileEnergyInfuser tile) {
+        super(type, windowId, player, tile);
+        this.addPlayerSlots(8, 58);
+        addSlot(new SlotCheckValid(tile.itemHandler, 0, 80, 22));
+    }
+
+//    public ContainerEnergyInfuser(PlayerEntity player, TileEnergyInfuser tile) {
+//        super(player, tile);
+//
+//    }
+
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int i) {
         Slot slot = getSlot(i);
 
         if (slot != null && slot.getHasStack()) {

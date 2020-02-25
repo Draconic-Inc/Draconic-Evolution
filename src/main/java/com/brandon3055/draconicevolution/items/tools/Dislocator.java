@@ -1,28 +1,25 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -31,10 +28,14 @@ import java.util.List;
  */
 public class Dislocator extends ItemBCore {
 
-    public Dislocator() {
-        this.setMaxStackSize(1);
-        this.setMaxDamage(19);
+    public Dislocator(Properties properties) {
+        super(properties);
     }
+
+//    public Dislocator() {
+//        this.setMaxStackSize(1);
+//        this.setMaxDamage(19);
+//    }
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
@@ -42,27 +43,27 @@ public class Dislocator extends ItemBCore {
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
         if (getLocation(stack, player.world) == null) {
             if (player.world.isRemote) {
-                player.sendMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterUnSet.txt"));
             }
             return true;
         }
 
-        if (entity instanceof EntityPlayer && !(this instanceof DislocatorAdvanced)) {
+        if (entity instanceof PlayerEntity && !(this instanceof DislocatorAdvanced)) {
             if (player.world.isRemote) {
-                player.sendMessage(new TextComponentTranslation("msg.teleporterPlayerT1.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterPlayerT1.txt"));
             }
             return true;
         }
 
-        if (!entity.isNonBoss() || !(entity instanceof EntityLiving)) {
+        if (!entity.isNonBoss() || !(entity instanceof LivingEntity)) {
             return true;
         }
 
-        if (player.getHealth() > 2 || player.capabilities.isCreativeMode) {
-            if (!player.capabilities.isCreativeMode) {
+        if (player.getHealth() > 2 || player.abilities.isCreativeMode) {
+            if (!player.abilities.isCreativeMode) {
                 player.setHealth(player.getHealth() - 2);
             }
 
@@ -71,7 +72,7 @@ public class Dislocator extends ItemBCore {
             }
 
             getLocation(stack, player.world).teleport(entity);
-            stack.damageItem(1, player);
+            stack.damageItem(1, player, e -> {});
             if (stack.getCount() <= 0) {
                 player.inventory.deleteStack(stack);
             }
@@ -83,23 +84,23 @@ public class Dislocator extends ItemBCore {
 
             if (player.world.isRemote) {
                 TeleportLocation location = getLocation(stack, player.world);
-                player.sendMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()));
+                player.sendMessage(new StringTextComponent(I18n.format("msg.teleporterSentMob.txt") + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()));
             }
         }
         else if (player.world.isRemote) {
-            player.sendMessage(new TextComponentTranslation("msg.teleporterLowHealth.txt"));
+            player.sendMessage(new TranslationTextComponent("msg.teleporterLowHealth.txt"));
         }
 
         return true;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             if (getLocation(stack, world) == null) {
                 if (world.isRemote) {
-                    player.sendMessage(new TextComponentString(new TextComponentTranslation("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.world.provider.getDimensionType().getName() + "}"));
+//                    player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.world.getDimension().getType().getName() + "}"));
                 }
                 else {
                     ItemNBTHelper.setDouble(stack, "X", player.posX);
@@ -107,27 +108,27 @@ public class Dislocator extends ItemBCore {
                     ItemNBTHelper.setDouble(stack, "Z", player.posZ);
                     ItemNBTHelper.setFloat(stack, "Yaw", player.rotationYaw);
                     ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
-                    ItemNBTHelper.setInteger(stack, "Dimension", player.dimension);
+                    ItemNBTHelper.setString(stack, "Dimension", player.dimension.getRegistryName().toString());
                     ItemNBTHelper.setBoolean(stack, "IsSet", true);
-                    ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().getWorld(player.dimension).provider.getDimensionType().getName());//TODO Is this really needed?
+//                    ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().getWorld(player.dimension).getDimension().tra);//TODO Is this really needed?
                 }
-                return new ActionResult<>(EnumActionResult.PASS, stack);
+                return new ActionResult<>(ActionResultType.PASS, stack);
             }
             else if (world.isRemote) {
-                player.sendMessage(new TextComponentTranslation("msg.teleporterAlreadySet.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterAlreadySet.txt"));
             }
 
-            return new ActionResult<>(EnumActionResult.PASS, stack);
+            return new ActionResult<>(ActionResultType.PASS, stack);
         }
         else {
             if (getLocation(stack, world) == null) {
                 if (world.isRemote) {
-                    player.sendMessage(new TextComponentTranslation("msg.teleporterUnSet.txt"));
+                    player.sendMessage(new TranslationTextComponent("msg.teleporterUnSet.txt"));
                 }
-                return new ActionResult<>(EnumActionResult.PASS, stack);
+                return new ActionResult<>(ActionResultType.PASS, stack);
             }
 
-            if (player.getHealth() > 2 || player.capabilities.isCreativeMode) {
+            if (player.getHealth() > 2 || player.abilities.isCreativeMode) {
 
                 if (!world.isRemote) {
                     DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
@@ -139,34 +140,34 @@ public class Dislocator extends ItemBCore {
                     DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
 
-                stack.damageItem(1, player);
+                stack.damageItem(1, player, e -> {});
 
-                if (!player.capabilities.isCreativeMode) {
+                if (!player.abilities.isCreativeMode) {
                     player.setHealth(player.getHealth() - 2);
                 }
             }
             else if (world.isRemote) {
-                player.sendMessage(new TextComponentTranslation("msg.teleporterLowHealth.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterLowHealth.txt"));
             }
-            return new ActionResult<>(EnumActionResult.PASS, stack);
+            return new ActionResult<>(ActionResultType.PASS, stack);
         }
 
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag advanced) {
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!ItemNBTHelper.getBoolean(stack, "IsSet", false)) {
-            tooltip.add(TextFormatting.RED + I18n.format("info.teleporterInfUnset1.txt"));
-            tooltip.add(TextFormatting.WHITE + I18n.format("info.teleporterInfUnset2.txt"));
-            tooltip.add(TextFormatting.WHITE + I18n.format("info.teleporterInfUnset3.txt"));
-            tooltip.add(TextFormatting.WHITE + I18n.format("info.teleporterInfUnset4.txt"));
-            tooltip.add(TextFormatting.WHITE + I18n.format("info.teleporterInfUnset5.txt"));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset1.txt").setStyle(new Style().setColor(TextFormatting.RED)));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset2.txt").setStyle(new Style().setColor(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset3.txt").setStyle(new Style().setColor(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset4.txt").setStyle(new Style().setColor(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset5.txt").setStyle(new Style().setColor(TextFormatting.WHITE)));
         }
         else {
-            tooltip.add(TextFormatting.GREEN + I18n.format("info.teleporterInfSet1.txt"));
-            tooltip.add(TextFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + getLocation(stack, world).getDimensionName() + "}");
-            tooltip.add(TextFormatting.BLUE + String.valueOf(stack.getMaxDamage() - stack.getItemDamage() + 1) + " " + I18n.format("info.teleporterInfSet2.txt"));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfSet1.txt").setStyle(new Style().setColor(TextFormatting.GREEN)));
+//            tooltip.add(TextFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + getLocation(stack, world).getDimensionName() + "}");
+//            tooltip.add(TextFormatting.BLUE + String.valueOf(stack.getMaxDamage() - stack.getItemDamage() + 1) + " " + I18n.format("info.teleporterInfSet2.txt"));
         }
     }
 
@@ -176,23 +177,23 @@ public class Dislocator extends ItemBCore {
         }
 
         TeleportLocation location = new TeleportLocation();
-        location.readFromNBT(stack.getTagCompound());
+        location.readFromNBT(stack.getTag());
 
         return location;
     }
 
-    @Override
-    public boolean hasCustomEntity(ItemStack stack) {
-        return true;
-    }
+//    @Override
+//    public boolean hasCustomEntity(ItemStack stack) {
+//        return true;
+//    }
 
-    @Override
-    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-        return new EntityPersistentItem(world, location, itemstack);
-    }
+//    @Override
+//    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+//        return new EntityPersistentItem(world, location, itemstack);
+//    }
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        return repair != null && repair.getItem() == DEFeatures.draconiumIngot;
+        return repair != null && repair.getItem() == DEContent.ingot_draconium;
     }
 }

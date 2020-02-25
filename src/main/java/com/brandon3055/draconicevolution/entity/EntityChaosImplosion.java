@@ -1,16 +1,17 @@
 package com.brandon3055.draconicevolution.entity;
 
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.client.DEParticles;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -21,25 +22,38 @@ import java.util.List;
 public class EntityChaosImplosion extends Entity {
     protected static final DataParameter<Integer> TICKS = EntityDataManager.<Integer>createKey(EntityChaosImplosion.class, DataSerializers.VARINT);
 
-
-    public EntityChaosImplosion(World world) {
-        super(world);
-        this.noClip = true;
-        this.setSize(0F, 0F);
+    public EntityChaosImplosion(EntityType<?> entityTypeIn, World worldIn) {
+        super(entityTypeIn, worldIn);
     }
+
+    @Override
+    protected void registerData() {
+
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return null;
+    }
+
+    //    public EntityChaosImplosion(World world) {
+//        super(world);
+//        this.noClip = true;
+//        this.setSize(0F, 0F);
+//    }
 
     @Override
     public boolean isInRangeToRenderDist(double p_70112_1_) {
         return true;
     }
 
-    @Override
-    protected void entityInit() {
-        dataManager.register(TICKS, ticksExisted);
-    }
+//    @Override
+//    protected void entityInit() {
+//        dataManager.register(TICKS, ticksExisted);
+//    }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (!world.isRemote) {
             dataManager.set(TICKS, ticksExisted);
         }
@@ -47,11 +61,12 @@ public class EntityChaosImplosion extends Entity {
         Vec3D pos = new Vec3D(posX, posY, posZ);
 
         if (ticksExisted < 30 && ticksExisted % 5 == 0 && world.isRemote) {
-            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 1);
+            //TODO Particles
+//            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 1);
 //            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, false), 512);
         }
         if (ticksExisted >= 100 && ticksExisted < 130 && ticksExisted % 5 == 0 && world.isRemote) {
-            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 2);
+//            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 2);
 //            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, true), 512);
         }
         if (ticksExisted < 100) {
@@ -64,7 +79,7 @@ public class EntityChaosImplosion extends Entity {
                 double y = posY - 8 + rand.nextDouble() * 16;
                 double z = posZ - 18 + rand.nextDouble() * 36;
                 if (world.isRemote) {
-                    BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(x, y, z), pos, 512D, 0);
+//                    BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(x, y, z), pos, 512D, 0);
                 }
             }
 
@@ -74,12 +89,12 @@ public class EntityChaosImplosion extends Entity {
         }
 
         if (ticksExisted == 700 && !world.isRemote) {
-            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
+//            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
             ProcessHandler.addProcess(new ProcessChaosImplosion(world, (int) posX, (int) posY, (int) posZ));
         }
 
         if (ticksExisted > 720) {
-            setDead();
+            remove();
         }
     }
 
@@ -88,24 +103,24 @@ public class EntityChaosImplosion extends Entity {
         double intensity = (ticksExisted - 130) / 100D;
         if (intensity > 1D) intensity = 1D;
 
-        @SuppressWarnings("unchecked") List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().grow(200, 200, 200));
+        @SuppressWarnings("unchecked") List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, getBoundingBox().grow(200, 200, 200));
 
-        for (EntityPlayer player : players) {
+        for (PlayerEntity player : players) {
             double x = (rand.nextDouble() - 0.5) * 2 * intensity;
             double z = (rand.nextDouble() - 0.5) * 2 * intensity;
-            player.move(MoverType.SELF, x / 5D, 0, z / 5D);
+            player.move(MoverType.SELF, new Vec3d(x / 5D, 0, z / 5D));
             player.rotationYaw -= x * 2;
             player.rotationPitch -= z * 2;
         }
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
+    protected void readAdditional(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
+    protected void writeAdditional(CompoundNBT compound) {
 
     }
 }

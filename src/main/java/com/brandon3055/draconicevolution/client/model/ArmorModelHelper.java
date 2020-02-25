@@ -1,18 +1,18 @@
 package com.brandon3055.draconicevolution.client.model;
 
-import codechicken.lib.texture.TextureUtils;
-import com.brandon3055.draconicevolution.DEFeatures;
+import codechicken.lib.texture.AtlasRegistrar;
+import codechicken.lib.texture.IIconRegister;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import net.minecraft.client.renderer.texture.TextureMap;
 
 /**
  * Created by brandon3055 on 8/07/2016.
  */
-public class ArmorModelHelper implements TextureUtils.IIconRegister {
+public class ArmorModelHelper implements IIconRegister {
 
     @Override
-    public void registerIcons(TextureMap textureMap) {
+    public void registerIcons(AtlasRegistrar textureMap) {
 
         textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_helmet"));
         textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/wyvern_body"));
@@ -36,15 +36,15 @@ public class ArmorModelHelper implements TextureUtils.IIconRegister {
 
         textureMap.registerSprite(ResourceHelperDE.getResource("models/armor/shield_sphere"));
 
-        DEFeatures.draconicHelm.model = null;
-        DEFeatures.draconicChest.model = null;
-        DEFeatures.draconicLegs.model = null;
-        DEFeatures.draconicBoots.model = null;
-
-        DEFeatures.wyvernHelm.model = null;
-        DEFeatures.wyvernChest.model = null;
-        DEFeatures.wyvernLegs.model = null;
-        DEFeatures.wyvernBoots.model = null;
+//        DEContent.draconicHelm.model = null;
+//        DEContent.draconicChest.model = null;
+//        DEContent.draconicLegs.model = null;
+//        DEContent.draconicBoots.model = null;
+//
+//        DEContent.wyvernHelm.model = null;
+//        DEContent.wyvernChest.model = null;
+//        DEContent.wyvernLegs.model = null;
+//        DEContent.wyvernBoots.model = null;
 
         ClientEventHandler.shieldModel = null;
     }

@@ -5,10 +5,10 @@ import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileDraconiumChest;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.model.IModelState;
 
 /**
@@ -49,7 +49,7 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         int colour = ItemNBTHelper.getInteger(stack, "ChestColour", 0x640096);
 //        LogHelperBC.logNBT(stack);
-        RenderTileDraconiumChest.render(EnumFacing.NORTH, colour, 0, 0, 0, 0, 0, -1);
+        RenderTileDraconiumChest.render(Direction.NORTH, colour, 0, 0, 0, 0, 0, -1);
     }
 
 }

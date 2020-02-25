@@ -4,12 +4,12 @@ import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,17 +21,21 @@ import java.util.Set;
  */
 public class WyvernShovel extends MiningToolBase {
 
-    public WyvernShovel(/*double attackDamage, double attackSpeed, */Set<Block> effectiveBlocks) {
-        super(/*attackDamage, attackSpeed, */effectiveBlocks);
+    public WyvernShovel(Properties properties) {
+        super(properties, MiningToolBase.SHOVEL_OVERRIDES);
     }
 
-    public WyvernShovel() {
-        super(/*ToolStats.WYV_SHOVEL_ATTACK_DAMAGE, ToolStats.WYV_SHOVEL_ATTACK_SPEED, */SHOVEL_OVERRIDES);
-//        this.baseMiningSpeed = (float) ToolStats.WYV_SHOVEL_MINING_SPEED;
-//        this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
-//        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
-        this.setHarvestLevel("shovel", 10);
-    }
+    //    public WyvernShovel(/*double attackDamage, double attackSpeed, */Set<Block> effectiveBlocks) {
+//        super(/*attackDamage, attackSpeed, */effectiveBlocks);
+//    }
+//
+//    public WyvernShovel() {
+//        super(/*ToolStats.WYV_SHOVEL_ATTACK_DAMAGE, ToolStats.WYV_SHOVEL_ATTACK_SPEED, */SHOVEL_OVERRIDES);
+////        this.baseMiningSpeed = (float) ToolStats.WYV_SHOVEL_MINING_SPEED;
+////        this.baseAOE = ToolStats.BASE_WYVERN_MINING_AOE;
+////        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
+//        this.setHarvestLevel("shovel", 10);
+//    }
 
     @Override
     public double getBaseMinSpeedConfig() {
@@ -69,11 +73,16 @@ public class WyvernShovel extends MiningToolBase {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResultType onItemUse(ItemUseContext context) {
+        ItemStack stack = context.getItem();
+        PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
+        Direction facing = context.getFace();
+
         if (!flattenBlock(stack, player, world, pos, facing)) {
             if (world.getBlockState(pos).getBlock() != Blocks.GRASS_PATH) {
-                return EnumActionResult.FAIL;
+                return ActionResultType.FAIL;
             }
         }
         else {
@@ -81,19 +90,20 @@ public class WyvernShovel extends MiningToolBase {
         }
 
         if (player.isSneaking()) {
-            return EnumActionResult.SUCCESS;
+            return ActionResultType.SUCCESS;
         }
 
         int AOE = ToolConfigHelper.getIntegerField("digAOE", stack);
 
-        Iterable<BlockPos> blocks = BlockPos.getAllInBox(pos.add(-AOE, 0, -AOE), pos.add(AOE, 0, AOE));
+        Iterable<BlockPos> blocks = BlockPos.getAllInBoxMutable(pos.add(-AOE, 0, -AOE), pos.add(AOE, 0, AOE));
 
         for (BlockPos aoePos : blocks) {
             if (aoePos.equals(pos)) {
                 continue;
             }
 
-            boolean replaceable = world.getBlockState(aoePos.up()).getBlock().isReplaceable(world, aoePos.up());
+            BlockState repState = world.getBlockState(aoePos.up());
+            boolean replaceable = repState.getMaterial().isReplaceable();
             if (world.isAirBlock(aoePos) || !replaceable) {
                 continue;
             }
@@ -102,27 +112,26 @@ public class WyvernShovel extends MiningToolBase {
                 modifyEnergy(stack, -energyPerOperation);
             }
         }
-
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
-    private boolean flattenBlock(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing face) {
-        if (getEnergyStored(stack) < energyPerOperation && !player.capabilities.isCreativeMode) {
+    private boolean flattenBlock(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction face) {
+        if (getEnergyStored(stack) < energyPerOperation && !player.abilities.isCreativeMode) {
             return false;
         }
         else if (!player.canPlayerEdit(pos, face, stack)) {
             return false;
         }
         else {
-            IBlockState iblockstate = world.getBlockState(pos);
+            BlockState iblockstate = world.getBlockState(pos);
             Block block = iblockstate.getBlock();
 
-            if (face != EnumFacing.DOWN && block == Blocks.GRASS) {
+            if (face != Direction.DOWN && block == Blocks.GRASS) {
                 world.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
                 if (!world.isRemote) {
                     if (!world.isAirBlock(pos.up())) {
-                        world.setBlockToAir(pos.up());
+                        world.removeBlock(pos.up(), false);
                     }
                     setBlock(player, world, pos, Blocks.GRASS_PATH.getDefaultState());
                 }
@@ -134,7 +143,7 @@ public class WyvernShovel extends MiningToolBase {
         }
     }
 
-    protected void setBlock(EntityPlayer player, World worldIn, BlockPos pos, IBlockState state) {
+    protected void setBlock(PlayerEntity player, World worldIn, BlockPos pos, BlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
         if (!worldIn.isRemote) {

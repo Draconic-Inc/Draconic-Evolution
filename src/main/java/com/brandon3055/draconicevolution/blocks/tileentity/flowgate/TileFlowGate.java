@@ -6,17 +6,21 @@ import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.FlowGate;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
@@ -24,7 +28,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SY
 /**
  * Created by brandon3055 on 15/11/2016.
  */
-public abstract class TileFlowGate extends TileBCore implements ITickable, IChangeListener, IDEPeripheral {
+public abstract class TileFlowGate extends TileBCore implements ITickableTileEntity, IChangeListener, IDEPeripheral {
 
     protected long transferThisTick = 0;
 
@@ -34,30 +38,31 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
     public final ManagedBool flowOverridden = register(new ManagedBool("flow_overridden", SAVE_NBT_SYNC_TILE));
     public final ManagedByte rsSignal = register(new ManagedByte("rs_signal", (byte) -1, SAVE_NBT_SYNC_TILE));
 
-    public TileFlowGate() {
-        setShouldRefreshOnBlockChange();
+    public TileFlowGate(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
         transferThisTick = 0;
     }
 
     //region Gate
 
-    public String getName() {
-        return "tile.draconicevolution:" + (this instanceof TileFluxGate ? "flux_gate" : "fluid_gate") + ".name";
+    @Override
+    public ITextComponent getName() {
+        return new TranslationTextComponent("tile.draconicevolution:" + (this instanceof TileFluxGate ? "flux_gate" : "fluid_gate") + ".name");
     }
 
     public abstract String getUnits();
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void setMin(String value) {
         sendPacketToServer(output -> output.writeString(value), 0);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void setMax(String value) {
         sendPacketToServer(output -> output.writeString(value), 1);
     }
@@ -67,7 +72,7 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
             return flowOverride.get();
         }
         if (rsSignal.get() == -1) {
-            rsSignal.set((byte) world.isBlockIndirectlyGettingPowered(pos));
+            rsSignal.set((byte) world.getRedstonePowerFromNeighbors(pos));
         }
         return minFlow.get() + (int) (((double) rsSignal.get() / 15D) * (double) (maxFlow.get() - minFlow.get()));
     }
@@ -76,7 +81,7 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
 
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
         if (flowOverridden.get()) {
             return;
         }
@@ -110,14 +115,14 @@ public abstract class TileFlowGate extends TileBCore implements ITickable, IChan
         return world.getTileEntity(pos.offset(getDirection().getOpposite()));
     }
 
-    public EnumFacing getDirection() {
-        IBlockState state = getState(getBlockType());
-        return state.getValue(FlowGate.FACING);
+    public Direction getDirection() {
+        BlockState state = getBlockState();
+        return state.get(FlowGate.FACING);
     }
 
     @Override
     public void onNeighborChange(BlockPos neighbor) {
-        rsSignal.set((byte) world.isBlockIndirectlyGettingPowered(pos));
+        rsSignal.set((byte) world.getRedstonePowerFromNeighbors(pos));
     }
 
     //region Peripheral

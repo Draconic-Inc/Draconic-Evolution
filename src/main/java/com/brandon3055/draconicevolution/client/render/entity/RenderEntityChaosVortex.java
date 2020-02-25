@@ -4,8 +4,8 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.OBJParser;
 import com.brandon3055.draconicevolution.entity.EntityChaosImplosion;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
@@ -13,10 +13,10 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/10/2015.
  */
-public class RenderEntityChaosVortex extends Render<EntityChaosImplosion> {
+public class RenderEntityChaosVortex extends EntityRenderer<EntityChaosImplosion> {
     private static CCModel model;
 
-    public RenderEntityChaosVortex(RenderManager manager) {
+    public RenderEntityChaosVortex(EntityRendererManager manager) {
         super(manager);
         Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
         model = CCModel.combine(map.values());

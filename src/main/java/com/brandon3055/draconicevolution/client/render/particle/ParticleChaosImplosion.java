@@ -1,28 +1,14 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
-import codechicken.lib.render.RenderUtils;
-import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
-import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.client.DEParticles;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
@@ -57,118 +43,118 @@ public class ParticleChaosImplosion extends BCParticle {
         return true;
     }
 
-    @Override
-    public boolean shouldDisableDepth() {
-        return true;
-    }
-
-    @Override
-    public void onUpdate() {
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
-        particleAge++;
-
-        if (isOrigin) {
-            if (particleAge % 5 == 0) {
-
-                BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(posX, posY, posZ), target, 512D, contract ? 4 : 3);
-            }
-            if (particleAge > 20) {
-                setExpired();
-            }
-        }
-        else if (isTracer) {
-            double dist = Utils.getDistanceAtoB(target, new Vec3D(posX, posY, posZ));
-            if (particleAge > 200 || dist < 0.1) {
-                setExpired();
-            }
-
-            Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), target);
-            double speed = 0.5D;
-            motionX = dir.x * speed;
-            motionY = dir.y * speed;
-            motionZ = dir.z * speed;
-
-            moveEntityNoClip(motionX, motionY, motionZ);
-        }
-        else if (explosion) {
-            int max = 1000;
-            if (particleAge > max) {
-                setExpired();
-            }
-
-            particleAlpha = 0.4F;
-
-            float fadeOut = 400F;
-            if (particleAge > max - fadeOut) {
-                particleAlpha *= 1F - (particleAge - fadeOut) / fadeOut;
-            }
-
-            size++;
-        }
-        else {
-            if (size > 50) {
-                setExpired();
-            }
-            particleAlpha = contract ? (((float) size / 50F) * 0.5F) : 0.5F - (((float) size / 50F) * 0.5F);
-            size += 1;
-        }
-    }
-
-    @Override
-    public void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        CCRenderState ccrs = CCRenderState.instance();
-        if (isTracer) {
-            ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
-            vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-            super.renderParticle(vertexbuffer, entity, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
-            ccrs.draw();
-            return;
-        }
-
-        GlStateManager.pushMatrix();
-        GlStateManager.disableCull();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-        GlStateManager.color(particleRed, particleGreen, particleBlue, particleAlpha);
-        GlStateManager.disableTexture2D();
-        GlStateManager.depthMask(false);
-
-        float xx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
-        float yy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
-        float zz = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
-
-        if (!explosion && !isOrigin) {
-
-            double scale = (contract ? 50D - (size + partialTicks) : size + partialTicks) * 8D;
-            GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-            Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
-            model.render(ccrs, mat);
-            ccrs.draw();
-        }
-        else if (explosion) {
-            double baseScale = size + partialTicks;
-
-            GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-
-            for (int i = 40; i > 0; i--) {
-                double scale = baseScale / i * 4D;
-
-                Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
-                model.render(ccrs, mat);
-
-            }
-
-            ccrs.draw();
-        }
-
-        GlStateManager.depthMask(true);
-        GlStateManager.enableTexture2D();
-        GlStateManager.enableCull();
-        GlStateManager.popMatrix();
-    }
+//    @Override
+//    public boolean shouldDisableDepth() {
+//        return true;
+//    }
+//
+//    @Override
+//    public void onUpdate() {
+//        prevPosX = posX;
+//        prevPosY = posY;
+//        prevPosZ = posZ;
+//        particleAge++;
+//
+//        if (isOrigin) {
+//            if (particleAge % 5 == 0) {
+//
+//                BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(posX, posY, posZ), target, 512D, contract ? 4 : 3);
+//            }
+//            if (particleAge > 20) {
+//                setExpired();
+//            }
+//        }
+//        else if (isTracer) {
+//            double dist = Utils.getDistanceAtoB(target, new Vec3D(posX, posY, posZ));
+//            if (particleAge > 200 || dist < 0.1) {
+//                setExpired();
+//            }
+//
+//            Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), target);
+//            double speed = 0.5D;
+//            motionX = dir.x * speed;
+//            motionY = dir.y * speed;
+//            motionZ = dir.z * speed;
+//
+//            moveEntityNoClip(motionX, motionY, motionZ);
+//        }
+//        else if (explosion) {
+//            int max = 1000;
+//            if (particleAge > max) {
+//                setExpired();
+//            }
+//
+//            particleAlpha = 0.4F;
+//
+//            float fadeOut = 400F;
+//            if (particleAge > max - fadeOut) {
+//                particleAlpha *= 1F - (particleAge - fadeOut) / fadeOut;
+//            }
+//
+//            size++;
+//        }
+//        else {
+//            if (size > 50) {
+//                setExpired();
+//            }
+//            particleAlpha = contract ? (((float) size / 50F) * 0.5F) : 0.5F - (((float) size / 50F) * 0.5F);
+//            size += 1;
+//        }
+//    }
+//
+//    @Override
+//    public void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+//        CCRenderState ccrs = CCRenderState.instance();
+//        if (isTracer) {
+//            ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
+//            vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+//            super.renderParticle(vertexbuffer, entity, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+//            ccrs.draw();
+//            return;
+//        }
+//
+//        GlStateManager.pushMatrix();
+//        GlStateManager.disableCull();
+//        GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+//        GlStateManager.color(particleRed, particleGreen, particleBlue, particleAlpha);
+//        GlStateManager.disableTexture2D();
+//        GlStateManager.depthMask(false);
+//
+//        float xx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+//        float yy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+//        float zz = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
+//
+//        if (!explosion && !isOrigin) {
+//
+//            double scale = (contract ? 50D - (size + partialTicks) : size + partialTicks) * 8D;
+//            GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
+//            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//            Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
+//            model.render(ccrs, mat);
+//            ccrs.draw();
+//        }
+//        else if (explosion) {
+//            double baseScale = size + partialTicks;
+//
+//            GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
+//            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//
+//            for (int i = 40; i > 0; i--) {
+//                double scale = baseScale / i * 4D;
+//
+//                Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
+//                model.render(ccrs, mat);
+//
+//            }
+//
+//            ccrs.draw();
+//        }
+//
+//        GlStateManager.depthMask(true);
+//        GlStateManager.enableTexture2D();
+//        GlStateManager.enableCull();
+//        GlStateManager.popMatrix();
+//    }
 
     public static class Factory implements IBCParticleFactory {
 

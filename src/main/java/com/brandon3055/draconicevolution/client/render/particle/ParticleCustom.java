@@ -22,28 +22,28 @@ public class ParticleCustom extends BCParticle {
         texturesPerRow = 4;
     }
 
-    @Override
-    public void onUpdate() {
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
-
-        if (particleAge++ >= particleMaxAge)
-        {
-            if (fadeAge++ >= maxFade)
-                setExpired();
-            if (maxFade > 0)
-                setAlphaF(spawnAlpha - spawnAlpha * ((float)fadeAge / (float)maxFade));
-        }
-
-        motionY -= particleGravity;
-        move(motionX, motionY, motionZ);
-    }
-
-    @Override
-    public boolean shouldDisableDepth() {
-        return true;
-    }
+//    @Override
+//    public void onUpdate() {
+//        prevPosX = posX;
+//        prevPosY = posY;
+//        prevPosZ = posZ;
+//
+//        if (particleAge++ >= particleMaxAge)
+//        {
+//            if (fadeAge++ >= maxFade)
+//                setExpired();
+//            if (maxFade > 0)
+//                setAlphaF(spawnAlpha - spawnAlpha * ((float)fadeAge / (float)maxFade));
+//        }
+//
+//        motionY -= particleGravity;
+//        move(motionX, motionY, motionZ);
+//    }
+//
+//    @Override
+//    public boolean shouldDisableDepth() {
+//        return true;
+//    }
 
     public static class Factory implements IBCParticleFactory {
 
@@ -55,12 +55,12 @@ public class ParticleCustom extends BCParticle {
                 particle.setColour(args[0]/255f, args[1]/255f, args[2]/255f);
                 particle.setAlphaF(args[3]/255f);
                 particle.spawnAlpha = args[3]/255f;
-                particle.setScale(args[4]/10000F);
+//                particle.setScale(args[4]/10000F);
                 particle.setMaxAge(args[5]);
                 particle.setGravity(args[6]/10000D);
                 particle.maxFade = args[7];
-                particle.particleTextureIndexX = args[8] % 4;
-                particle.particleTextureIndexY = args[8] / 4;
+//                particle.particleTextureIndexX = args[8] % 4;
+//                particle.particleTextureIndexY = args[8] / 4;
                 particle.canCollide = args[9] == 1;
             }
 

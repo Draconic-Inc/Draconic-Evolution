@@ -4,22 +4,21 @@ import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.ModelUtils;
-import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.blocks.machines.EnergyStorageCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
+import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileStorageCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -27,23 +26,23 @@ import java.util.List;
 /**
  * Created by brandon3055 on 2/4/2016.
  */
-public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore> {
+public class RenderTileEnergyStorageCore extends TESRBase<TileStorageCore> {
     private static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
     public RenderTileEnergyStorageCore() {}
 
     @Override
-    public void render(TileEnergyStorageCore te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(TileStorageCore te, double x, double y, double z, float partialTicks, int destroyStage) {
         //region Build Guide
 
-        if (te.buildGuide.get() && MinecraftForgeClient.getRenderPass() == 0) {
-            GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
+//        if (te.buildGuide.get() && MinecraftForgeClient.getRenderPass() == 0) {
+            GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
             GlStateManager.pushMatrix();
-            GlStateManager.translate(x, y, z);
+            GlStateManager.translated(x, y, z);
             te.coreStructure.renderTier(te.tier.get());
             GlStateManager.popMatrix();
-        }
-        if (!te.active.get()) return;
+//        }
+//        if (!te.active.get()) return;
 
         //endregion
 
@@ -66,14 +65,14 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
 
         //region Render Core
 
-        GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
+        GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
-        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.translated(x, y, z);
+        GlStateManager.color4f(1F, 1F, 1F, 1F);
 
         //GlStateManager.disableCull();
 
-        if (MinecraftForgeClient.getRenderPass() == 0) {
+//        if (MinecraftForgeClient.getRenderPass() == 0) {
             GlStateManager.enableCull();
             GlStateManager.disableBlend();
             GlStateManager.depthMask(true);
@@ -82,30 +81,30 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             translateScaleTranslate(0.5D, scale, scale, scale);
             setLighting(80f + brightness);
             translateRotateTranslate(0.5, rotation, 0F, 1F, 0.5F);
-            List<BakedQuad> innerQuads = ModelUtils.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().withProperty(EnergyStorageCore.RENDER_TYPE, 1));
+            List<BakedQuad> innerQuads = ModelUtils.getModelQuads(DEContent.energy_core.getDefaultState().with(EnergyCore.RENDER_TYPE, 1));
             ModelUtils.renderQuadsRGB(innerQuads, red, green, blue);
             GlStateManager.popMatrix();
             setLighting(200F);
             renderStabilizers(te, false, partialTicks);
-        }
-        else {
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//        }
+//        else {
+//            GlStateManager.enableBlend();
+//            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//
+//            setLighting(200F);
+//            renderStabilizers(te, true, partialTicks);
+//            translateScaleTranslate(0.5D, scale, scale, scale);
+//            translateRotateTranslate(0.5, rotation * 0.5F, 0F, -1F, -0.5F);
+//            List<BakedQuad> outerQuads = ModelUtils.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().with(EnergyStorageCore.RENDER_TYPE, 2));
+//            if (te.tier.get() == 8) {
+//                ModelUtils.renderQuadsRGB(outerQuads, 0.95F, 0.45F, 0F);
+//            }
+//            else {
+//                ModelUtils.renderQuadsRGB(outerQuads, 0.2F, 1F, 1F);
+//            }
+//        }
 
-            setLighting(200F);
-            renderStabilizers(te, true, partialTicks);
-            translateScaleTranslate(0.5D, scale, scale, scale);
-            translateRotateTranslate(0.5, rotation * 0.5F, 0F, -1F, -0.5F);
-            List<BakedQuad> outerQuads = ModelUtils.getModelQuads(DEFeatures.energyStorageCore.getDefaultState().withProperty(EnergyStorageCore.RENDER_TYPE, 2));
-            if (te.tier.get() == 8) {
-                ModelUtils.renderQuadsRGB(outerQuads, 0.95F, 0.45F, 0F);
-            }
-            else {
-                ModelUtils.renderQuadsRGB(outerQuads, 0.2F, 1F, 1F);
-            }
-        }
-
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
         GlStateManager.depthMask(true);
         GlStateManager.disableBlend();
 
@@ -115,30 +114,30 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
         //endregion
     }
 
-    private void renderStabilizers(TileEnergyStorageCore te, boolean renderStage, float partialTick) {
+    private void renderStabilizers(TileStorageCore te, boolean renderStage, float partialTick) {
         if (!te.stabilizersOK.get()) {
             return;
         }
 
         for (ManagedVec3I vec3I : te.stabOffsets) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
+            GlStateManager.translated(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
 
-            EnumFacing facing = EnumFacing.getFacingFromVector(vec3I.get().x, vec3I.get().y, vec3I.get().z);//EnumFacing.getFacingFromAxis(EnumFacing.AxisDirection.POSITIVE, te.multiBlockAxis);
-            if (facing.getAxis() == EnumFacing.Axis.X || facing.getAxis() == EnumFacing.Axis.Y) {
-                GlStateManager.rotate(-90F, -facing.getFrontOffsetY(), facing.getFrontOffsetX(), 0);
+            Direction facing = Direction.getFacingFromVector(vec3I.get().x, vec3I.get().y, vec3I.get().z);//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
+            if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
+                GlStateManager.rotatef(-90F, -facing.getYOffset(), facing.getXOffset(), 0);
             }
-            else if (facing == EnumFacing.SOUTH) {
-                GlStateManager.rotate(180F, 0, 1, 0);
+            else if (facing == Direction.SOUTH) {
+                GlStateManager.rotatef(180F, 0, 1, 0);
             }
 
-            GlStateManager.rotate(90, 1, 0, 0);
+            GlStateManager.rotatef(90, 1, 0, 0);
             renderStabilizerBeam(te, vec3I.get(), renderStage, partialTick);
             if (te.tier.get() >= 5) {
-                GlStateManager.scale(1.2F, 0.5F, 1.2F);
+                GlStateManager.scalef(1.2F, 0.5F, 1.2F);
             }
             else {
-                GlStateManager.scale(0.45, 0.45, 0.45);
+                GlStateManager.scaled(0.45, 0.45, 0.45);
             }
 //            LogHelper.dev(vec3I);
             renderStabilizer(renderStage, partialTick);
@@ -148,26 +147,26 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
 
     private void renderStabilizer(boolean renderStage, float partialTick) {
         IBakedModel bakedModel = ModelUtils.loadBakedModel(ResourceHelperDE.getResource("block/obj_models/stabilizer_sphere.obj"));
-        List<BakedQuad> listQuads = bakedModel.getQuads(DEFeatures.energyStorageCore.getDefaultState(), null, 0);
-        GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
+        List<BakedQuad> listQuads = bakedModel.getQuads(DEContent.energy_core.getDefaultState(), null, ModelUtils.rand);
+        GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
         if (!renderStage) {
-            GlStateManager.scale(0.9F, 0.9F, 0.9F);
-            GlStateManager.rotate(ClientEventHandler.elapsedTicks + partialTick, 0, -1, 0);
+            GlStateManager.scalef(0.9F, 0.9F, 0.9F);
+            GlStateManager.rotated(ClientEventHandler.elapsedTicks + partialTick, 0, -1, 0);
             ModelUtils.renderQuadsARGB(listQuads, 0xFF00FFFF);
         }
         else {
-            GlStateManager.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.5F, 0, 1, 0);
-            GlStateManager.scale(1.1F, 1.1F, 1.1F);
+            GlStateManager.rotated((ClientEventHandler.elapsedTicks + partialTick) * 0.5F, 0, 1, 0);
+            GlStateManager.scalef(1.1F, 1.1F, 1.1F);
             ModelUtils.renderQuadsARGB(listQuads, 0x5000FFFF);
         }
     }
 
-    private void renderStabilizerBeam(TileEnergyStorageCore te, Vec3I vec, boolean renderStage, float partialTick) {
+    private void renderStabilizerBeam(TileStorageCore te, Vec3I vec, boolean renderStage, float partialTick) {
         ResourceHelperDE.bindTexture(DETextures.STABILIZER_BEAM);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuffer();
         GL11.glPushMatrix();
-        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotated(180, 0, 0, 1);
 
         double beamLength = Math.abs(vec.x + vec.y + vec.z) - 0.5;
         float time = ClientEventHandler.elapsedTicks + partialTick;
@@ -191,9 +190,9 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             double texHeight = beamLength * (0.5D / scale) + d28;
 
             if (te.tier.get() >= 5) {
-                GlStateManager.scale(3.5, 1, 3.5);
+                GlStateManager.scaled(3.5, 1, 3.5);
             }
-            GlStateManager.translate(-0.5, 0, -0.5);
+            GlStateManager.translated(-0.5, 0, -0.5);
 
             vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
             vertexBuffer.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
@@ -252,9 +251,9 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
         }
         else {
             //region Render Outer Beam
-            GlStateManager.rotate(90, -1, 0, 0);
-            GlStateManager.rotate(45, 0, 0, 1);
-            GlStateManager.translate(0, 0, 0.4);
+            GlStateManager.rotated(90, -1, 0, 0);
+            GlStateManager.rotated(45, 0, 0, 1);
+            GlStateManager.translated(0, 0, 0.4);
             GlStateManager.depthMask(true);
 
             int sides = 4;
@@ -262,8 +261,8 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             if (te.tier.get() >= 5) {
                 sides = 12;
                 enlarge = 0.5F + ((te.tier.get() - 5) * 0.1F);
-                GlStateManager.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.6F, 0, 0, -1);
-                GlStateManager.scale(3.5, 3.5, 1);
+                GlStateManager.rotatef((ClientEventHandler.elapsedTicks + partialTick) * 0.6F, 0, 0, -1);
+                GlStateManager.scaled(3.5, 3.5, 1);
             }
 
             vertexBuffer.begin(5, DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -288,7 +287,7 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEnergyStorageCore p_188185_1_) {
+    public boolean isGlobalRenderer(TileStorageCore p_188185_1_) {
         return true;
     }
 }

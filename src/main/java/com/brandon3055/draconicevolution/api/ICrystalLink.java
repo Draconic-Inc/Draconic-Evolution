@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
@@ -33,7 +33,7 @@ public interface ICrystalLink {
      * @param linkTarget The clicked block pos. (Can be any block. Whatever block the player clicked on)
      * @return true if a successful operation occurred. (Controls hand swing)
      */
-    boolean binderUsed(EntityPlayer player, BlockPos linkTarget, EnumFacing sideClicked);
+    boolean binderUsed(PlayerEntity player, BlockPos linkTarget, Direction sideClicked);
 
     /**
      * Used to create a ONE WAY link to another crystal. As one way links between ICrystalLink's are not allowed

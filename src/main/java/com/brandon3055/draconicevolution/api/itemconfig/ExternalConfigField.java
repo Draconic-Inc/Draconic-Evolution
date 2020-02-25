@@ -2,10 +2,10 @@ package com.brandon3055.draconicevolution.api.itemconfig;
 
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 1/06/2016.
@@ -24,20 +24,21 @@ public class ExternalConfigField extends IntegerConfigField {
         this.unloacalizedButtonText = buttonText;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public String getReadableValue() {
         return I18n.format(unloacalizedButtonText);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound) {}
+    public void writeToNBT(CompoundNBT compound) {}
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {}
+    public void readFromNBT(CompoundNBT compound) {}
 
     @Override
-    public void handleButton(EnumButton button, int data, EntityPlayer player, PlayerSlot slot) {
-        player.openGui(mod, guiID, player.world, slot.getSlotIndex(), slot.getCatIndex(), 0);
+    public void handleButton(EnumButton button, int data, PlayerEntity player, PlayerSlot slot) {
+        //TODO Gui Stuff
+//        player.openGui(mod, guiID, player.world, slot.getSlotIndex(), slot.getCatIndex(), 0);
     }
 }

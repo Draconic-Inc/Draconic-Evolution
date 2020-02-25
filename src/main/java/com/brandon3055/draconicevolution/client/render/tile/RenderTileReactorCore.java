@@ -5,7 +5,6 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
@@ -19,13 +18,12 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
@@ -53,14 +51,14 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
     }
 
     @Override
-    public void render(TileReactorCore te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
+    public void render(TileReactorCore te, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.pushMatrix();
-        GlStateTracker.pushState();
+//        GlStateTracker.pushState();
         GlStateManager.disableLighting();
 
         if (HolidayHelper.isAprilFools()) {
             Frustum frustum = new Frustum();
-            Minecraft mc = Minecraft.getMinecraft();
+            Minecraft mc = Minecraft.getInstance();
             Entity entity = mc.getRenderViewEntity();
             double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double) mc.getRenderPartialTicks();
             double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double) mc.getRenderPartialTicks();
@@ -81,9 +79,9 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
                 z += zOffset;
 
                 float travel = (float) Utils.getDistanceAtoB(te.getPos().getX(), te.getPos().getZ(), pos.x, pos.z);
-                GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
-                GlStateManager.rotate(travel * (360 / (float) (te.getCoreDiameter() * Math.PI)), (float) Math.sin(te.roller.direction), 0, (float) Math.cos(te.roller.direction) * -1);
-                GlStateManager.translate(-(x + 0.5), -(y + 0.5), -(z + 0.5));
+                GlStateManager.translated(x + 0.5, y + 0.5, z + 0.5);
+                GlStateManager.rotatef(travel * (360 / (float) (te.getCoreDiameter() * Math.PI)), (float) Math.sin(te.roller.direction), 0, (float) Math.cos(te.roller.direction) * -1);
+                GlStateManager.translated(-(x + 0.5), -(y + 0.5), -(z + 0.5));
             }
         }
 
@@ -93,28 +91,29 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
 
-        if (MinecraftForgeClient.getRenderPass() == 0) {
+        //TODO Render Pass
+//        if (MinecraftForgeClient.getRenderPass() == 0) {
             float animation = (te.coreAnimation + (partialTicks * (float) te.shaderAnimationState.get())) / 20F;
             renderCore(x, y, z, partialTicks, intensity, animation, diameter, DEShaders.useShaders());
-        } else if (te.shieldAnimationState > 0) {
-            float animation = (te.shieldAnimation + (partialTicks * te.shieldAnimationState)) / 20F;
-
-            float power = (0.7F * shieldPower) - (1 - te.shieldAnimationState);
-            if (te.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
-                power = 0.05F;//0.05F + ((float) (Math.sin(ClientEventHandler.elapsedTicks / 5F) + 1) / 20F);
-            }
-
-            renderShield(x, y, z, partialTicks, power, animation, diameter, DEShaders.useShaders());
-        }
+//        } else if (te.shieldAnimationState > 0) {
+//            float animation = (te.shieldAnimation + (partialTicks * te.shieldAnimationState)) / 20F;
+//
+//            float power = (0.7F * shieldPower) - (1 - te.shieldAnimationState);
+//            if (te.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
+//                power = 0.05F;//0.05F + ((float) (Math.sin(ClientEventHandler.elapsedTicks / 5F) + 1) / 20F);
+//            }
+//
+//            renderShield(x, y, z, partialTicks, power, animation, diameter, DEShaders.useShaders());
+//        }
 
         resetLighting();
-        GlStateTracker.popState();
+//        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 
     public void renderItem() {
         GlStateManager.pushMatrix();
-        GlStateTracker.pushState();
+//        GlStateTracker.pushState();
         GlStateManager.disableLighting();
         setLighting(200);
         float scale = 1.3F;
@@ -124,13 +123,13 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         renderCore(0, 0, 0, 0, intensity, animation, scale, DEShaders.useShaders());
 
         resetLighting();
-        GlStateTracker.popState();
+//        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 
     public static void renderGUI(TileReactorCore te, int x, int y) {
         GlStateManager.pushMatrix();
-        GlStateTracker.pushState();
+//        GlStateTracker.pushState();
 
         double diameter = 100;
         float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
@@ -141,7 +140,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         renderCore(x - 0.5, y, 100, 0, intensity, animation, diameter, DEShaders.useShaders());
         renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.get()), animation, diameter, DEShaders.useShaders());
 
-        GlStateTracker.popState();
+//        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 
@@ -186,7 +185,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
             float g = ff > 0.5F ? (ff - 0.5F) * 2 : 0;
             float b = ff * 2;
             float a = ff < 0.1F ? (ff * 10) : 1;
-            GlStateManager.color(r, g, b, a);
+            GlStateManager.color4f(r, g, b, a);
         }
 
         GlStateManager.enableBlend();

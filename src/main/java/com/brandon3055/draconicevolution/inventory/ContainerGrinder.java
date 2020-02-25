@@ -1,68 +1,46 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerSlotLayout.LayoutFactory;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 30/3/2016.
  */
 public class ContainerGrinder extends ContainerBCBase<TileGrinder> {
 
-    public ContainerGrinder(InventoryPlayer invPlayer, TileGrinder tile) {
-        super(invPlayer.player, tile);
-
-        for (int x = 0; x < 9; x++) {
-            addSlotToContainer(new Slot(invPlayer, x, 8 + 18 * x, 138));
-        }
-
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 9; x++) {
-                addSlotToContainer(new Slot(invPlayer, x + y * 9 + 9, 8 + 18 * x, 80 + y * 18));
-            }
-        }
-
-        addSlotToContainer(new SlotCheckValid.IInv(tile, 0, 97, 36));
+    public ContainerGrinder(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+        this(DEContent.container_grinder, windowId, playerInv.player, getClientTile(extraData));
     }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer player) {
-        return tile.isUsableByPlayer(player);
+    public ContainerGrinder(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileGrinder tile) {
+        super(type, windowId, player, tile);
     }
 
+    //    public ContainerGrinder(PlayerEntity player, TileGrinder tile, LayoutFactory<TileGrinder> factory) {
+//        super(player, tile, factory);
+//    }
+//
+//    public ContainerGrinder(PlayerEntity player, TileGrinder tile) {
+//        super(player, tile);
+//
+//        addPlayerSlots(8, 84);
+//        addSlot(new SlotCheckValid(tile.itemHandler, 0, 26, 52));
+//    }
+
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i) {
-        Slot slot = getSlot(i);
-
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stack = slot.getStack();
-            ItemStack result = stack.copy();
-
-            if (i >= 36) {
-                if (!mergeItemStack(stack, 0, 36, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-            else if (!tile.isItemValidForSlot(0, stack) || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (stack.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
-            }
-            else {
-                slot.onSlotChanged();
-            }
-
-            slot.onTake(player, stack);
-
-            return result;
-        }
-
-        return ItemStack.EMPTY;
+    public LazyOptional<IItemHandler> getItemHandler() {
+        return tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 }

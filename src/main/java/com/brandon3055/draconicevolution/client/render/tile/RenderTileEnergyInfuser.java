@@ -4,9 +4,9 @@ import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
@@ -34,10 +34,10 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
     private static float pxl = 1F / 128F;
 
     @Override
-    public void render(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.pushMatrix();
 
-        GlStateManager.translate((float) x, (float) y, (float) z);
+        GlStateManager.translatef((float) x, (float) y, (float) z);
 
         if (!te.running.get()) {
             partialTicks = 0;
@@ -55,7 +55,7 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
 //        tessellator.setColorRGBA(255, 255, 255, 255);
 
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 
         drawWings(tessellator, tile, partialTicks);
@@ -71,33 +71,33 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
         float srcXMax = 92F * pxl;  //iicon.getMinV();
         float srcYMax = 51F * pxl; //iicon.getMaxV();
 
-        GlStateManager.translate(-0.64F, 0.365F, 0.51F);
-        GlStateManager.scale(0.7F, 0.7F, 0.7F);
+        GlStateManager.translatef(-0.64F, 0.365F, 0.51F);
+        GlStateManager.scalef(0.7F, 0.7F, 0.7F);
         float xTrans = 0.025F;
 
 
         {
-            GlStateManager.translate(1.62F, 0F, -xTrans);
-            GlStateManager.rotate(tile.rotation + partialTicks, 0F, 1F, 0F);
-            GlStateManager.translate(-1.62F, 0F, xTrans);
+            GlStateManager.translatef(1.62F, 0F, -xTrans);
+            GlStateManager.rotatef(tile.rotation + partialTicks, 0F, 1F, 0F);
+            GlStateManager.translatef(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GlStateManager.translate(1.62F, 0F, -xTrans);
-            GlStateManager.rotate(90, 0F, 1F, 0F);
-            GlStateManager.translate(-1.62F, 0F, xTrans);
+            GlStateManager.translatef(1.62F, 0F, -xTrans);
+            GlStateManager.rotatef(90, 0F, 1F, 0F);
+            GlStateManager.translatef(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GlStateManager.translate(1.62F, 0F, -xTrans);
-            GlStateManager.rotate(90, 0F, 1F, 0F);
-            GlStateManager.translate(-1.62F, 0F, xTrans);
+            GlStateManager.translatef(1.62F, 0F, -xTrans);
+            GlStateManager.rotatef(90, 0F, 1F, 0F);
+            GlStateManager.translatef(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GlStateManager.translate(1.62F, 0F, -xTrans);
-            GlStateManager.rotate(90, 0F, 1F, 0F);
-            GlStateManager.translate(-1.62F, 0F, xTrans);
+            GlStateManager.translatef(1.62F, 0F, -xTrans);
+            GlStateManager.rotatef(90, 0F, 1F, 0F);
+            GlStateManager.translatef(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
@@ -105,12 +105,12 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
             srcYMin = 51F * pxl;  //iicon.getMaxU();
             srcXMax = 33F * pxl;  //iicon.getMinV();
             srcYMax = 83F * pxl; //iicon.getMaxV();
-            GlStateManager.translate(1.26F, 0F, 0.31F);
-            GlStateManager.translate(0F, 0F, 0F);
-            GlStateManager.rotate(90, 0F, 1F, 0F);
-            GlStateManager.rotate(90, 1F, 0F, 0F);
-            GlStateManager.translate(-0F, 0F, 0F);
-            GlStateManager.scale(1.4F, 1.4F, 1.4F);
+            GlStateManager.translatef(1.26F, 0F, 0.31F);
+            GlStateManager.translatef(0F, 0F, 0F);
+            GlStateManager.rotatef(90, 0F, 1F, 0F);
+            GlStateManager.rotatef(90, 1F, 0F, 0F);
+            GlStateManager.translatef(-0F, 0F, 0F);
+            GlStateManager.scalef(1.4F, 1.4F, 1.4F);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 32, 32, 0.0625F);
         }
         GlStateManager.popMatrix();
@@ -191,13 +191,13 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
             ItemStack stack = tile.itemHandler.getStackInSlot(0);
 
 //
-            GlStateManager.translate(0.5F, 0.7F, 0.5F);
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+            GlStateManager.translatef(0.5F, 0.7F, 0.5F);
+            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
 //            if (tile.getWorldObj().getWorldInfo().getGameRulesInstance().getGameRuleBooleanValue("doDaylightCycle"))
 //                GL11.rotate(tile.getWorldObj().getWorldTime(), 0F, -1F, 0F);
 //            else
-            GlStateManager.rotate(tile.rotation + partialTicks, 0F, -1F, 0F);
-//            if (stack.getItem() instanceof ItemBlock)
+            GlStateManager.rotatef(tile.rotation + partialTicks, 0F, -1F, 0F);
+//            if (stack.getItem() instanceof BlockItem)
 //            {
 //                GL11.scale(1F, 1F, 1F);
 //                GL11.translate(0F, 0.045F, 0.0f);

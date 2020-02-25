@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -21,8 +21,8 @@ public class ItemConfigFieldRegistry {
     public ItemConfigFieldRegistry register(ItemStack stack, IItemConfigField field) {
         fields.put(field.getName(), field);
 
-        NBTTagCompound fieldStorage = ToolConfigHelper.getFieldStorage(stack);
-        if (!fieldStorage.hasKey(field.getName())) {
+        CompoundNBT fieldStorage = ToolConfigHelper.getFieldStorage(stack);
+        if (!fieldStorage.contains(field.getName())) {
             field.writeToNBT(fieldStorage);
         }
         else {

@@ -3,15 +3,12 @@ package com.brandon3055.draconicevolution.lib;
 import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.reflect.ReflectionManager;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import com.brandon3055.draconicevolution.network.PacketPlaySound;
-import net.minecraft.init.Bootstrap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,30 +41,25 @@ public class DESoundHandler {
     public static ObfMapping soundNameMapping = new ObfMapping("net/minecraft/util/SoundEvent", "field_187506_b");
 
     static {
-        if (!Bootstrap.isRegistered()) {
-            throw new RuntimeException("Accessed Sounds before Bootstrap!");
-        }
-        else {
-            energyBolt = getRegisteredSoundEvent("draconicevolution:energy_bolt");
-            fusionComplete = getRegisteredSoundEvent("draconicevolution:fusion_complete");
-            fusionRotation = getRegisteredSoundEvent("draconicevolution:fusion_rotation");
+        energyBolt = getRegisteredSoundEvent("draconicevolution:energy_bolt");
+        fusionComplete = getRegisteredSoundEvent("draconicevolution:fusion_complete");
+        fusionRotation = getRegisteredSoundEvent("draconicevolution:fusion_rotation");
 
-            charge = getRegisteredSoundEvent("draconicevolution:charge");
-            discharge = getRegisteredSoundEvent("draconicevolution:discharge");
-            boom = getRegisteredSoundEvent("draconicevolution:boom");
-            beam = getRegisteredSoundEvent("draconicevolution:beam");
-            portal = getRegisteredSoundEvent("draconicevolution:portal");
-            shieldUp = getRegisteredSoundEvent("draconicevolution:shield_up");
-            fusionExplosion = getRegisteredSoundEvent("draconicevolution:fusion_explosion");
-            chaosChamberAmbient = getRegisteredSoundEvent("draconicevolution:chaos_chamber_ambient");
-            coreSound = getRegisteredSoundEvent("draconicevolution:core_sound");
-            shieldStrike = getRegisteredSoundEvent("draconicevolution:shield_strike");
-            electricBuzz = getRegisteredSoundEvent("draconicevolution:electric_buzz");
-            sunDialEffect = getRegisteredSoundEvent("draconicevolution:sun_dial_effect");
-            generator1 = getRegisteredSoundEvent("draconicevolution:generator1");
-            generator2 = getRegisteredSoundEvent("draconicevolution:generator2");
-            generator3 = getRegisteredSoundEvent("draconicevolution:generator3");
-        }
+        charge = getRegisteredSoundEvent("draconicevolution:charge");
+        discharge = getRegisteredSoundEvent("draconicevolution:discharge");
+        boom = getRegisteredSoundEvent("draconicevolution:boom");
+        beam = getRegisteredSoundEvent("draconicevolution:beam");
+        portal = getRegisteredSoundEvent("draconicevolution:portal");
+        shieldUp = getRegisteredSoundEvent("draconicevolution:shield_up");
+        fusionExplosion = getRegisteredSoundEvent("draconicevolution:fusion_explosion");
+        chaosChamberAmbient = getRegisteredSoundEvent("draconicevolution:chaos_chamber_ambient");
+        coreSound = getRegisteredSoundEvent("draconicevolution:core_sound");
+        shieldStrike = getRegisteredSoundEvent("draconicevolution:shield_strike");
+        electricBuzz = getRegisteredSoundEvent("draconicevolution:electric_buzz");
+        sunDialEffect = getRegisteredSoundEvent("draconicevolution:sun_dial_effect");
+        generator1 = getRegisteredSoundEvent("draconicevolution:generator1");
+        generator2 = getRegisteredSoundEvent("draconicevolution:generator2");
+        generator3 = getRegisteredSoundEvent("draconicevolution:generator3");
     }
 
     private static SoundEvent getRegisteredSoundEvent(String id) {
@@ -75,8 +67,7 @@ public class DESoundHandler {
 
         if (soundevent == null) {
             throw new IllegalStateException("Invalid Sound requested: " + id);
-        }
-        else {
+        } else {
             SOUND_EVENTS.put(id, soundevent);
             return soundevent;
         }
@@ -85,11 +76,9 @@ public class DESoundHandler {
     public static SoundEvent getSound(String id) {
         if (SOUND_EVENTS.containsKey(id)) {
             return SOUND_EVENTS.get(id);
-        }
-        else if (SoundEvent.REGISTRY.containsKey(ResourceHelperDE.getResourceRAW(id))) {
-            return SoundEvent.REGISTRY.getObject(ResourceHelperDE.getResourceRAW(id));
-        }
-        else {
+        } else if (ForgeRegistries.SOUND_EVENTS.containsKey(ResourceHelperDE.getResourceRAW(id))) {
+            return ForgeRegistries.SOUND_EVENTS.getValue(ResourceHelperDE.getResourceRAW(id));
+        } else {
             return null;
         }
     }
@@ -99,12 +88,13 @@ public class DESoundHandler {
     }
 
     public static void playSoundFromServer(World world, double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay, double range) {
-        ResourceLocation soundName = ReflectionManager.getField(soundNameMapping, soundIn, ResourceLocation.class);
+//        ResourceLocation soundName = ReflectionManager.getField(soundNameMapping, soundIn, ResourceLocation.class);
 
-        if (soundName != null) {
-            String soundId = soundName.toString();
-            String categoryName = category.getName();
-            DraconicEvolution.network.sendToAllAround(new PacketPlaySound(x, y, z, soundId, categoryName, volume, pitch, distanceDelay), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, range));
-        }
+//        if (soundName != null) {
+//            String soundId = soundName.toString();
+//            String categoryName = category.getName();
+//            TODO Packet Stuff
+//            DraconicEvolution.network.sendToAllAround(new PacketPlaySound(x, y, z, soundId, categoryName, volume, pitch, distanceDelay), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, range));
+//        }
     }
 }

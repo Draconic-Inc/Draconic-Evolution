@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.magic;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Created by Brandon on 17/11/2014.
@@ -14,8 +14,7 @@ public class EnchantmentReaper extends Enchantment {
     public static EnchantmentReaper instance;
 
     public EnchantmentReaper() {
-        super(Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
-        this.setName("draconicevolution.reaperEnchant");
+        super(Rarity.RARE, EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
         this.setRegistryName(new ResourceLocation("draconicevolution", "enchant_reaper"));
     }
 

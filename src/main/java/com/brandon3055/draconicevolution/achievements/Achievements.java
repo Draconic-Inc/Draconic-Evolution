@@ -2,11 +2,11 @@ package com.brandon3055.draconicevolution.achievements;
 
 
 import net.minecraft.advancements.Advancement;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
 
@@ -39,7 +39,7 @@ public class Achievements {
         return achievementsList.get(name);
     }
 
-    public static void triggerAchievement(EntityPlayer player, String name) {
+    public static void triggerAchievement(PlayerEntity player, String name) {
 
 //        Achievement ach = getAchievement(name);
 //
@@ -119,19 +119,19 @@ public class Achievements {
 
     @SubscribeEvent
     public void craftEvent(PlayerEvent.ItemCraftedEvent event) {
-        ItemStack stack = event.crafting.copy();
+        ItemStack stack = event.getCrafting().copy();
         stack.setCount(1);
-        if (achievementItems.containsKey(stack.getUnlocalizedName()) && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("craft")) {
-            triggerAchievement(event.player, achievementItems.get(stack.getUnlocalizedName()).getName());
+        if (achievementItems.containsKey(stack.getTranslationKey()) && achievementItems.get(stack.getTranslationKey()).isCorrectCondition("craft")) {
+            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getTranslationKey()).getName());
         }
     }
 
     @SubscribeEvent
     public void smeltEvent(PlayerEvent.ItemSmeltedEvent event) {
-        ItemStack stack = event.smelting.copy();
+        ItemStack stack = event.getSmelting().copy();
         stack.setCount(1);
-        if (achievementItems.containsKey(stack.getUnlocalizedName()) && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("smelt")) {
-            triggerAchievement(event.player, achievementItems.get(stack.getUnlocalizedName()).getName());
+        if (achievementItems.containsKey(stack.getTranslationKey()) && achievementItems.get(stack.getTranslationKey()).isCorrectCondition("smelt")) {
+            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getTranslationKey()).getName());
         }
     }
 

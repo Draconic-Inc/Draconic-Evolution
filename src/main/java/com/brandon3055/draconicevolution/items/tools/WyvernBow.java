@@ -1,38 +1,35 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import codechicken.lib.model.bakery.ModelBakery;
 import codechicken.lib.util.ItemNBTUtils;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IFOVModifierItem;
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.tool.ToolModelBakery;
 import com.brandon3055.draconicevolution.handlers.BowHandler;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemArrow;
+import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArrowItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.UseAction;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,11 +41,14 @@ import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.
  * Created by brandon3055 on 2/06/2016.
  */
 public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem {
+    public WyvernBow(Properties properties) {
+        super(properties);
+    }
 
-    public WyvernBow() {
+    //    public WyvernBow() {
 //        super(1, 0);
 //        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
-    }
+//    }
 
     @Override
     public double getBaseAttackSpeedConfig() {
@@ -67,12 +67,12 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
 
     //region Bow Stuff
 
-    private ItemStack findAmmo(EntityPlayer player) {
-        if (this.isArrow(player.getHeldItem(EnumHand.OFF_HAND))) {
-            return player.getHeldItem(EnumHand.OFF_HAND);
+    private ItemStack findAmmo(PlayerEntity player) {
+        if (this.isArrow(player.getHeldItem(Hand.OFF_HAND))) {
+            return player.getHeldItem(Hand.OFF_HAND);
         }
-        else if (this.isArrow(player.getHeldItem(EnumHand.MAIN_HAND))) {
-            return player.getHeldItem(EnumHand.MAIN_HAND);
+        else if (this.isArrow(player.getHeldItem(Hand.MAIN_HAND))) {
+            return player.getHeldItem(Hand.MAIN_HAND);
         }
         else {
             for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
@@ -88,13 +88,13 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     }
 
     protected boolean isArrow(@Nonnull ItemStack stack) {
-        return stack.getItem() instanceof ItemArrow;
+        return stack.getItem() instanceof ArrowItem;
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase entityLiving, int timeLeft) {
-        if (entityLiving instanceof EntityPlayer) {
-            BowHandler.onPlayerStoppedUsingBow(stack, world, (EntityPlayer) entityLiving, timeLeft);
+    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entityLiving, int timeLeft) {
+        if (entityLiving instanceof PlayerEntity) {
+            BowHandler.onPlayerStoppedUsingBow(stack, world, (PlayerEntity) entityLiving, timeLeft);
         }
     }
 
@@ -110,24 +110,24 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     }
 
     @Override
-    public int getMaxItemUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack) {
         return 72000;
     }
 
     @Override
-    public EnumAction getItemUseAction(ItemStack stack) {
-        return EnumAction.BOW;
+    public UseAction getUseAction(ItemStack stack) {
+        return UseAction.BOW;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         return BowHandler.onBowRightClick(player.getHeldItem(hand), world, player, hand);
     }
 
     @Override
-    public void onUsingTick(ItemStack stack, EntityLivingBase entityLivingBase, int count) {
-        if (entityLivingBase instanceof EntityPlayer) {
-            BowHandler.onBowUsingTick(stack, (EntityPlayer) entityLivingBase, count);
+    public void onUsingTick(ItemStack stack, LivingEntity entityLivingBase, int count) {
+        if (entityLivingBase instanceof PlayerEntity) {
+            BowHandler.onBowUsingTick(stack, (PlayerEntity) entityLivingBase, count);
         }
     }
 
@@ -135,11 +135,11 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
 
     //region Render
 
-    @Override
-    public void registerRenderer(Feature feature) {
-        super.registerRenderer(feature);
-        ToolModelBakery.registerItemKeyGenerator(this, stack -> ModelBakery.defaultItemKeyGenerator.generateKey(stack) + "|" + ItemNBTUtils.getByte(stack, "render:bow_pull"));
-    }
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        super.registerRenderer(feature);
+//        ToolModelBakery.registerItemKeyGenerator(this, stack -> ModelBakery.defaultItemKeyGenerator.generateKey(stack) + "|" + ItemNBTUtils.getByte(stack, "render:bow_pull"));
+//    }
 
     @Override
     public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
@@ -147,7 +147,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
         return new PairKV<>(DETextures.WYVERN_BOW[pull], new ResourceLocation("draconicevolution", String.format("models/item/tools/wyvern_bow0%s.obj", pull)));
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList)  {
         super.addDisplayData(stack, world, pos, displayList);
@@ -202,7 +202,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return enchantment.type == EnumEnchantmentType.BOW || enchantment.type == EnumEnchantmentType.ALL;
+        return enchantment.type == EnchantmentType.BOW || enchantment.type == EnchantmentType.ALL;
     }
 
     @Override
@@ -213,7 +213,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     //endregion
 
     @Override
-    public float getNewFOV(EntityPlayer player, ItemStack stack, float currentFOV, float originalFOV, EntityEquipmentSlot slot) {
+    public float getNewFOV(PlayerEntity player, ItemStack stack, float currentFOV, float originalFOV, EquipmentSlotType slot) {
         float zoom = ((10 + ToolConfigHelper.getIntegerField("bowZoomModifier", stack)) / 605F);
 
         if (player.getActiveItemStack() == stack) {

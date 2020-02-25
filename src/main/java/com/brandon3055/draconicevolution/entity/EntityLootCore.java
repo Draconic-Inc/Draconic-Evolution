@@ -1,19 +1,16 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.network.PacketLootSync;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -38,31 +35,45 @@ public class EntityLootCore extends Entity {
     private int lifespan = 6000;
     private boolean canDespawn = true;
 
-    public EntityLootCore(World world) {
-        super(world);
-        this.setSize(0.30F, 0.30F);
-        rotX = world.rand.nextDouble();
-        rotY = world.rand.nextDouble();
-        timeOffset = world.rand.nextInt(1000);
+    public EntityLootCore(EntityType<?> entityTypeIn, World worldIn) {
+        super(entityTypeIn, worldIn);
     }
 
-    public EntityLootCore(World world, InventoryDynamic inventory) {
-        super(world);
-        this.inventory = inventory;
-        updateStored();
+    @Override
+    protected void registerData() {
+
     }
+
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return null;
+    }
+
+    //    public EntityLootCore(World world) {
+//        super(world);
+////        this.setSize(0.30F, 0.30F);
+//        rotX = world.rand.nextDouble();
+//        rotY = world.rand.nextDouble();
+//        timeOffset = world.rand.nextInt(1000);
+//    }
+//
+//    public EntityLootCore(World world, InventoryDynamic inventory) {
+//        super(world);
+//        this.inventory = inventory;
+//        updateStored();
+//    }
 
     @Override
     public boolean canBeCollidedWith() {
         return true;
     }
 
-    @Override
-    protected void entityInit() {
-    }
+//    @Override
+//    protected void entityInit() {
+//    }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (world.isRemote) {
             if (isLooking && lookAnimation < 1F) {
                 lookAnimation += 0.05F;
@@ -72,40 +83,40 @@ public class EntityLootCore extends Entity {
             }
         }
         else if (canDespawn && despawnTimer++ > lifespan) {
-            setDead();
+            remove();
         }
 
-        super.onUpdate();
+        super.tick();
     }
 
+//    @Override
+//    public void onEntityUpdate() {
+//        this.prevPosX = this.posX;
+//        this.prevPosY = this.posY;
+//        this.prevPosZ = this.posZ;
+//
+//        if (!this.hasNoGravity()) {
+//            this.motionY -= 0.03999999910593033D;
+//        }
+//
+//        this.noClip = this.pushOutOfBlocks(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D, this.posZ);
+//        this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+//
+//        float f = 0.98F;
+//
+//        if (this.onGround) {
+//            f = this.world.getBlockState(new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ))).getBlock().slipperiness * 0.98F;
+//        }
+//
+//        this.motionX *= (double) f;
+//        this.motionY *= 0.9800000190734863D;
+//        this.motionZ *= (double) f;
+//
+//        super.onEntityUpdate();
+//    }
+
     @Override
-    public void onEntityUpdate() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-
-        if (!this.hasNoGravity()) {
-            this.motionY -= 0.03999999910593033D;
-        }
-
-        this.noClip = this.pushOutOfBlocks(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D, this.posZ);
-        this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-
-        float f = 0.98F;
-
-        if (this.onGround) {
-            f = this.world.getBlockState(new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ))).getBlock().slipperiness * 0.98F;
-        }
-
-        this.motionX *= (double) f;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= (double) f;
-
-        super.onEntityUpdate();
-    }
-
-    @Override
-    public void onCollideWithPlayer(EntityPlayer player) {
+    public void onCollideWithPlayer(PlayerEntity player) {
         if (world.isRemote) {
             return;
         }
@@ -118,7 +129,7 @@ public class EntityLootCore extends Entity {
         }
 
         if (inventory.xp > 0) {
-            player.addExperience(inventory.xp);
+            player.giveExperiencePoints(inventory.xp);
             inventory.xp = 0;
         }
 
@@ -130,12 +141,12 @@ public class EntityLootCore extends Entity {
             if (!stack.isEmpty()) {
                 int start = stack.getCount();
 
-                EntityItem item = new EntityItem(world, 0, 0, 0, stack);
+                ItemEntity item = new ItemEntity(world, 0, 0, 0, stack);
                 item.setPosition(posX, posY, posZ);
                 int result = ForgeEventFactory.onItemPickup(item, player);
 
                 if (result == 1 || stack.getCount() <= 0 || player.inventory.addItemStackToInventory(stack)) {
-                    if (item.isDead) {
+                    if (!item.isAlive()) {
                         stack.setCount(0);
                     }
 
@@ -161,7 +172,7 @@ public class EntityLootCore extends Entity {
         pickupDellay = 10;
 
         if (inventory.getSizeInventory() == 1 && inventory.getStackInSlot(0).isEmpty()) {
-            setDead();
+            remove();
         }
     }
 
@@ -192,40 +203,58 @@ public class EntityLootCore extends Entity {
             }
         }
 
-        for (EntityPlayerMP playerMP : trackingPlayers) {
-            DraconicEvolution.network.sendTo(new PacketLootSync(getEntityId(), displayMap), playerMP);
+        for (ServerPlayerEntity playerMP : trackingPlayers) {
+            //TODO Packets
+//            DraconicEvolution.network.sendTo(new PacketLootSync(getEntityId(), displayMap), playerMP);
         }
     }
 
-    private List<EntityPlayerMP> trackingPlayers = new ArrayList<>();
+    private List<ServerPlayerEntity> trackingPlayers = new ArrayList<>();
 
     @Override
-    public void addTrackingPlayer(EntityPlayerMP player) {
+    public void addTrackingPlayer(ServerPlayerEntity player) {
         trackingPlayers.add(player);
-        DraconicEvolution.network.sendTo(new PacketLootSync(getEntityId(), displayMap), player);
+//        DraconicEvolution.network.sendTo(new PacketLootSync(getEntityId(), displayMap), player);
         super.addTrackingPlayer(player);
     }
 
     @Override
-    public void removeTrackingPlayer(EntityPlayerMP player) {
+    public void removeTrackingPlayer(ServerPlayerEntity player) {
         trackingPlayers.remove(player);
         super.removeTrackingPlayer(player);
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {
+    protected void readAdditional(CompoundNBT compound) {
         inventory.readFromNBT(compound);
         updateStored();
-        despawnTimer = compound.getInteger("DespawnTimer");
-        lifespan = compound.getInteger("Lifespan");
+        despawnTimer = compound.getInt("DespawnTimer");
+        lifespan = compound.getInt("Lifespan");
         canDespawn = compound.getBoolean("CanDespawn");
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {
+    protected void writeAdditional(CompoundNBT compound) {
         inventory.writeToNBT(compound);
-        compound.setInteger("DespawnTimer", despawnTimer);
-        compound.setInteger("Lifespan", lifespan);
-        compound.setBoolean("CanDespawn", canDespawn);
+        compound.putInt("DespawnTimer", despawnTimer);
+        compound.putInt("Lifespan", lifespan);
+        compound.putBoolean("CanDespawn", canDespawn);
     }
+
+    //    @Override
+//    protected void readEntityFromNBT(CompoundNBT compound) {
+//        inventory.readFromNBT(compound);
+//        updateStored();
+//        despawnTimer = compound.getInt("DespawnTimer");
+//        lifespan = compound.getInt("Lifespan");
+//        canDespawn = compound.getBoolean("CanDespawn");
+//    }
+//
+//    @Override
+//    protected void writeEntityToNBT(CompoundNBT compound) {
+//        inventory.writeToNBT(compound);
+//        compound.putInt("DespawnTimer", despawnTimer);
+//        compound.putInt("Lifespan", lifespan);
+//        compound.putBoolean("CanDespawn", canDespawn);
+//    }
 }

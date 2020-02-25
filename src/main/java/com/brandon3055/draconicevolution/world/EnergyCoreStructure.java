@@ -6,24 +6,25 @@ import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.MultiBlockHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileInvisECoreBlock;
+import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileStorageCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileCoreStructure;
 import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -36,10 +37,10 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private final int FLAG_FORME = 1;
     private final int FLAG_REVERT = 2;
     private MultiBlockStorage[] structureTiers = new MultiBlockStorage[8];
-    private TileEnergyStorageCore core;
+    private TileStorageCore core;
     public static boolean coreForming = false;
 
-    public EnergyCoreStructure initialize(TileEnergyStorageCore core) {
+    public EnergyCoreStructure initialize(TileStorageCore core) {
         this.core = core;
         structureTiers[0] = buildTier1();
         structureTiers[1] = buildTier2();
@@ -171,11 +172,11 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Activate
 
         else if (flag == FLAG_FORME) {
-            world.setBlockState(pos, DEFeatures.invisECoreBlock.getDefaultState());
+            world.setBlockState(pos, DEContent.energy_core_structure.getDefaultState());
             TileEntity tile = world.getTileEntity(pos);
-            if (tile instanceof TileInvisECoreBlock) {
-                ((TileInvisECoreBlock) tile).blockName = name;
-                ((TileInvisECoreBlock) tile).setController(core);
+            if (tile instanceof TileCoreStructure) {
+                ((TileCoreStructure) tile).blockName = name;
+                ((TileCoreStructure) tile).setController(core);
             }
         }
 
@@ -185,27 +186,27 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         else if (flag == FLAG_REVERT) {
             TileEntity tile = world.getTileEntity(pos);
-            if (tile instanceof TileInvisECoreBlock) {
-                ((TileInvisECoreBlock) tile).revert();
+            if (tile instanceof TileCoreStructure) {
+                ((TileCoreStructure) tile).revert();
             }
         }
 
         //endregion
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void renderBuildGuide(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
-        Block block = Block.REGISTRY.getObject(new ResourceLocation(name));
+        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(name));
 
         Vec3D corePos = Vec3D.getCenter(startPos.subtract(getCoreOffset(core.tier.get())));
         double dist = Utils.getDistanceAtoB(corePos, Vec3D.getCenter(pos));
-        double pDist = Minecraft.getMinecraft().player.getDistance(corePos.x, corePos.y, corePos.z);
+        double pDist = corePos.distance(Minecraft.getInstance().player);
 
         if (GuiEnergyCore.layer != -1) {
             pDist = GuiEnergyCore.layer + 2;
         }
 
-        IBlockState atPos = world.getBlockState(pos);
+        BlockState atPos = world.getBlockState(pos);
         boolean invalid = !world.isAirBlock(pos) && (atPos.getBlock().getRegistryName() == null || !atPos.getBlock().getRegistryName().toString().equals(name));
 
         if (dist + 2 > pDist && !invalid) {
@@ -224,35 +225,36 @@ public class EnergyCoreStructure extends MultiBlockHelper {
             alpha = (int) (((Math.sin(ClientEventHandler.elapsedTicks / 20D) + 1D) / 2D) * 255D) << 24;
         }
 
-        IBlockState state = block.getDefaultState();
+        BlockState state = block.getDefaultState();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(translation.getX(), translation.getY(), translation.getZ());
+        GlStateManager.translated(translation.getX(), translation.getY(), translation.getZ());
         if (invalid) {
-            GlStateManager.disableDepth();
+            GlStateManager.disableDepthTest();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
             double s = Math.sin(ClientEventHandler.elapsedTicks / 10D) * 0.1D;
-            GlStateManager.scale(0.8 + s, 0.8 + s, 0.8 + s);
-            GlStateManager.translate(0.1 - s, 0.1 - s, 0.1 - s);
+            GlStateManager.scaled(0.8 + s, 0.8 + s, 0.8 + s);
+            GlStateManager.translated(0.1 - s, 0.1 - s, 0.1 - s);
         }
         else {
-            GlStateManager.scale(0.8, 0.8, 0.8);
-            GlStateManager.translate(0.1, 0.1, 0.1);
+            GlStateManager.scaled(0.8, 0.8, 0.8);
+            GlStateManager.translated(0.1, 0.1, 0.1);
         }
 
-        float brightnessX = OpenGlHelper.lastBrightnessX;
-        float brightnessY = OpenGlHelper.lastBrightnessY;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 150f, 150f);
+        float brightnessX = GLX.lastBrightnessX;
+        float brightnessY = GLX.lastBrightnessY;
+        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 150f, 150f);
 
         List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
 
         ModelUtils.renderQuadsARGB(blockQuads, (invalid ? 0x00500000 : 0x00404040) | alpha);
 
         if (invalid) {
-            GlStateManager.enableDepth();
+            GlStateManager.enableDepthTest();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         }
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
+
+        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, brightnessX, brightnessY);
         GlStateManager.popMatrix();
     }
 
@@ -1104,7 +1106,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     @Override
     public boolean checkBlock(String name, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileInvisECoreBlock && ((TileInvisECoreBlock) tile).blockName.equals(name)) {
+        if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.equals(name)) {
             return true;
         }
         else {

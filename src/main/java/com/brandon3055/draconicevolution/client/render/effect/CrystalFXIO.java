@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
-import codechicken.lib.render.state.GlStateTracker;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -22,18 +22,18 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
 
     public CrystalFXIO(World worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
-        this.particleTextureIndexX = 3 + tile.getTier();
-        this.particleAge = worldIn.rand.nextInt(1024);
+//        this.particleTextureIndexX = 3 + tile.getTier();
+        this.age = worldIn.rand.nextInt(1024);
         this.rSeed = tile.getPos().toLong();
     }
 
-    @Override
-    public int getFXLayer() {
-        return 2;
-    }
+//    @Override
+//    public int getFXLayer() {
+//        return 2;
+//    }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
@@ -48,7 +48,7 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
     }
 
     @Override
-    public void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         if (!renderEnabled) {
             return;
         }
@@ -57,13 +57,13 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
         float renderY = (float) (this.posY - interpPosY);
         float renderZ = (float) (this.posZ - interpPosZ);
 
-        particleScale = 0.2F;
+        baseScale = 0.2F;
 
 
-        vertexbuffer.pos((double) (renderX - rotationX * particleScale - rotationXY * particleScale), (double) (renderY - rotationZ * particleScale), (double) (renderZ - rotationYZ * particleScale - rotationXZ * particleScale)).tex(0.5, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
-        vertexbuffer.pos((double) (renderX - rotationX * particleScale + rotationXY * particleScale), (double) (renderY + rotationZ * particleScale), (double) (renderZ - rotationYZ * particleScale + rotationXZ * particleScale)).tex(0.5, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
-        vertexbuffer.pos((double) (renderX + rotationX * particleScale + rotationXY * particleScale), (double) (renderY + rotationZ * particleScale), (double) (renderZ + rotationYZ * particleScale + rotationXZ * particleScale)).tex(0.0, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
-        vertexbuffer.pos((double) (renderX + rotationX * particleScale - rotationXY * particleScale), (double) (renderY - rotationZ * particleScale), (double) (renderZ + rotationYZ * particleScale - rotationXZ * particleScale)).tex(0.0, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+//        vertexbuffer.pos((double) (renderX - rotationX * particleScale - rotationXY * particleScale), (double) (renderY - rotationZ * particleScale), (double) (renderZ - rotationYZ * particleScale - rotationXZ * particleScale)).tex(0.5, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+//        vertexbuffer.pos((double) (renderX - rotationX * particleScale + rotationXY * particleScale), (double) (renderY + rotationZ * particleScale), (double) (renderZ - rotationYZ * particleScale + rotationXZ * particleScale)).tex(0.5, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+//        vertexbuffer.pos((double) (renderX + rotationX * particleScale + rotationXY * particleScale), (double) (renderY + rotationZ * particleScale), (double) (renderZ + rotationYZ * particleScale + rotationXZ * particleScale)).tex(0.0, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+//        vertexbuffer.pos((double) (renderX + rotationX * particleScale - rotationXY * particleScale), (double) (renderY - rotationZ * particleScale), (double) (renderZ + rotationYZ * particleScale - rotationXZ * particleScale)).tex(0.0, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
 
     }
 
@@ -86,8 +86,8 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
 
         @Override
         public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateTracker.pushState();
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            GlStateTracker.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
@@ -98,7 +98,7 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
         @Override
         public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
             tessellator.draw();
-            GlStateTracker.popState();
+//            GlStateTracker.popState();
         }
     }
 }
@@ -134,7 +134,7 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
 //
 //                //region GLRender
 //
-//                double pCount = 100;//Minecraft.getMinecraft().gameSettings.fancyGraphics ? 35 : 15;
+//                double pCount = 100;//Minecraft.getInstance().gameSettings.fancyGraphics ? 35 : 15;
 //                for (int i = 0; i < pCount; i++) {
 //
 //        double rotation = i / pCount * (3.141 * 2D) + animTime / 80D;

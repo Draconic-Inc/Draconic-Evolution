@@ -2,10 +2,10 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
@@ -14,21 +14,22 @@ import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandle
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.*;
 
@@ -40,16 +41,16 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_S
  */
 public class TileCrystalWirelessIO extends TileCrystalBase {
 
-    protected Map<Vec3B, EnumFacing> receiverSideMap = new HashMap<>();
+    protected Map<Vec3B, Direction> receiverSideMap = new HashMap<>();
     protected LinkedList<Vec3B> linkedReceivers = new LinkedList<>();
     protected LinkedList<BlockPos> receiverCache = null;
-    protected Map<BlockPos, EnumFacing> receiverFaceCache = null;
+    protected Map<BlockPos, Direction> receiverFaceCache = null;
     protected List<LinkedDevice> fastList = new ArrayList<>();
     protected List<LinkedDevice> slowList = new ArrayList<>();
     public LinkedList<int[]> receiverTransferRates = new LinkedList<>();
     public LinkedList<Byte> receiverFlowRates = new LinkedList<>();
-    public final ManagedBool useUpdateOptimisation = dataManager.register(new ManagedBool("transportState", true, SAVE_BOTH_SYNC_CONTAINER));
-    public final ManagedBool inputMode = dataManager.register(new ManagedBool("inputMode", SAVE_BOTH_SYNC_TILE));
+    public final ManagedBool useUpdateOptimisation = dataManager.register(new ManagedBool("transport_state", true, SAVE_BOTH_SYNC_CONTAINER));
+    public final ManagedBool inputMode = dataManager.register(new ManagedBool("input_mode", SAVE_BOTH_SYNC_TILE));
 
 
     public TileCrystalWirelessIO() {}
@@ -57,12 +58,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     //region Energy Update
 
     @Override
-    public void update() {
+    public void tick() {
         if (!world.isRemote) {
             updateEnergyFlow();
         }
 
-        super.update();
+        super.tick();
     }
 
     private void updateEnergyFlow() {
@@ -117,12 +118,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player.isSneaking()) {
             inputMode.invert();
             return true;
         }
-        return super.onBlockActivated(state, player, hand, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(state, player, handIn, hit);
     }
 
     /**
@@ -198,7 +199,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     //region Linking
 
     @Override
-    public boolean binderUsed(EntityPlayer player, BlockPos linkTarget, EnumFacing sideClicked) {
+    public boolean binderUsed(PlayerEntity player, BlockPos linkTarget, Direction sideClicked) {
         TileEntity tile = world.getTileEntity(linkTarget);
         if (tile == null || tile instanceof ICrystalLink) {
             return super.binderUsed(player, linkTarget, sideClicked);
@@ -249,7 +250,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         return receiverCache;
     }
 
-    public Map<BlockPos, EnumFacing> getReceiversFaces() {
+    public Map<BlockPos, Direction> getReceiversFaces() {
         if (receiverCache == null || receiverCache.size() != linkedReceivers.size() || receiverFaceCache == null || receiverFaceCache.size() != linkedReceivers.size()) {
             reCachePositions();
         }
@@ -279,11 +280,11 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     //region Rendering
 
     @Override
-    public EnergyCrystal.CrystalType getType() {
+    public EnergyCrystal.CrystalType getCrystalType() {
         return EnergyCrystal.CrystalType.WIRELESS;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalGLFXBase createStaticFX() {
         return new CrystalFXRing(world, this);
@@ -323,14 +324,14 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         return new ENetFXHandlerServerWireless(this);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public ENetFXHandler createClientFXHandler() {
         return new ENetFXHandlerClientWireless(this);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
         displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudWirelessLinks.info") + ": " + getReceivers().size() + " / " + getMaxReceivers());
@@ -342,7 +343,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     //region sync/save
 
-    public void addReceiver(BlockPos pos, EnumFacing side) {
+    public void addReceiver(BlockPos pos, Direction side) {
         Vec3B offset = getOffset(pos);
         linkedReceivers.add(offset);
         receiverSideMap.put(offset, side);
@@ -359,30 +360,30 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public void writeExtraNBT(NBTTagCompound compound) {
+    public void writeExtraNBT(CompoundNBT compound) {
         super.writeExtraNBT(compound);
-        NBTTagList list = new NBTTagList();
+        ListNBT list = new ListNBT();
         for (Vec3B vec : linkedReceivers) {
-            NBTTagCompound receiver = new NBTTagCompound();
-            receiver.setByteArray("Offset", new byte[]{vec.x, vec.y, vec.z});
-            receiver.setByte("Side", (byte) receiverSideMap.get(vec).getIndex());
-            list.appendTag(receiver);
+            CompoundNBT receiver = new CompoundNBT();
+            receiver.putByteArray("offset", new byte[]{vec.x, vec.y, vec.z});
+            receiver.putByte("side", (byte) receiverSideMap.get(vec).getIndex());
+            list.add(receiver);
         }
-        compound.setTag("LinkedReceivers", list);
+        compound.put("linked_receivers", list);
     }
 
     @Override
-    public void readExtraNBT(NBTTagCompound compound) {
+    public void readExtraNBT(CompoundNBT compound) {
         super.readExtraNBT(compound);
-        NBTTagList list = compound.getTagList("LinkedReceivers", 10);
+        ListNBT list = compound.getList("linked_receivers", 10);
         linkedReceivers.clear();
         receiverSideMap.clear();
-        for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound receiver = list.getCompoundTagAt(i);
-            byte[] offset = receiver.getByteArray("Offset");
+        for (int i = 0; i < list.size(); i++) {
+            CompoundNBT receiver = list.getCompound(i);
+            byte[] offset = receiver.getByteArray("offset");
             Vec3B vec = new Vec3B(offset[0], offset[1], offset[2]);
             linkedReceivers.add(vec);
-            receiverSideMap.put(vec, EnumFacing.getFront(receiver.getByte("Side")));
+            receiverSideMap.put(vec, Direction.byIndex(receiver.getByte("side")));
         }
 
         receiverCache = null;
@@ -403,28 +404,28 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         List<BlockPos> positions = getReceivers();
-        NBTTagList list = new NBTTagList();
+        ListNBT list = new ListNBT();
 
         for (BlockPos lPos : positions) {
             int index = positions.indexOf(lPos);
 
             if (!containerReceiverFlow.containsKey(index) || containerReceiverFlow.get(index) != receiverTransfer(index)) {
                 containerReceiverFlow.put(index, receiverTransfer(index));
-                NBTTagCompound data = new NBTTagCompound();
-                data.setByte("I", (byte) index);
-                data.setInteger("E", receiverTransfer(index));
-                list.appendTag(data);
+                CompoundNBT data = new CompoundNBT();
+                data.putByte("I", (byte) index);
+                data.putInt("E", receiverTransfer(index));
+                list.add(data);
             }
         }
 
-        NBTTagCompound compound = new NBTTagCompound();
-        if (!list.hasNoTags()) {
-            compound.setTag("L", list);
-            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(compound), 1));
+        CompoundNBT compound = new CompoundNBT();
+        if (!list.isEmpty()) {
+            compound.put("L", list);
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeCompoundNBT(compound), 1));
         }
         else if (containerReceiverFlow.size() > linkedReceivers.size()) {
             containerReceiverFlow.clear();
-            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeNBTTagCompound(compound), 1));
+            sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeCompoundNBT(compound), 1));
         }
     }
 
@@ -433,18 +434,18 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         super.receivePacketFromServer(data, id);
 
         if (id == 1) {
-            NBTTagCompound compound = data.readNBTTagCompound();
-            NBTTagList list = compound.getTagList("L", 10);
+            CompoundNBT compound = data.readCompoundNBT();
+            ListNBT list = compound.getList("L", 10);
 
-            for (int i = 0; i < list.tagCount(); i++) {
-                NBTTagCompound tagData = list.getCompoundTagAt(i);
-                containerReceiverFlow.put((int) tagData.getByte("I"), tagData.getInteger("E"));
+            for (int i = 0; i < list.size(); i++) {
+                CompoundNBT tagData = list.getCompound(i);
+                containerReceiverFlow.put((int) tagData.getByte("I"), tagData.getInt("E"));
             }
         }
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
         super.receivePacketFromClient(data, client, id);
 
         if (id == 11) {
@@ -469,12 +470,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     private class LinkedDevice {
         public final int index;
         public final BlockPos pos;
-        private EnumFacing side;
+        private Direction side;
         public int timeOut = 0;
         private TileEntity tileCache = null;
         private int invalidTime = 0;
 
-        public LinkedDevice(int index, BlockPos pos, EnumFacing side) {
+        public LinkedDevice(int index, BlockPos pos, Direction side) {
             this.index = index;
             this.pos = pos;
             this.side = side;
@@ -483,7 +484,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         public boolean isLinkValid(World world) {
             tileCache = world.getTileEntity(pos);
 
-            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && world.getChunkFromBlockCoords(pos).isLoaded()) {
+            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && world.getChunkAt(pos).loaded) {
                 return false;
             }
 

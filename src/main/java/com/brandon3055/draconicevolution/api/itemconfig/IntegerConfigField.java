@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.itemconfig;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -56,7 +56,7 @@ public class IntegerConfigField implements IItemConfigField {
         return "config.field." + getName() + ".entry";
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public String getReadableValue() {
         return prefix + String.valueOf(value) + extension;
@@ -138,13 +138,13 @@ public class IntegerConfigField implements IItemConfigField {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        compound.setInteger(name, value);
+    public void writeToNBT(CompoundNBT compound) {
+        compound.putInt(name, value);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        value = compound.getInteger(name);
+    public void readFromNBT(CompoundNBT compound) {
+        value = compound.getInt(name);
         if (value > maxValue) {
             value = maxValue;
             writeToNBT(compound);

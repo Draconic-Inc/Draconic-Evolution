@@ -1,14 +1,11 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
-import com.brandon3055.brandonscore.registry.ModFeatureParser;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
-import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
@@ -16,40 +13,35 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.gen.feature.WorldGenEndPodium;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class DEEventHandler {
 
-    private static WeakHashMap<EntityLiving, Long> deSpawnedMobs = new WeakHashMap<>();
+    private static WeakHashMap<MobEntity, Long> deSpawnedMobs = new WeakHashMap<>();
     private static Random random = new Random();
 
     public static int serverTicks = 0;
@@ -64,7 +56,7 @@ public class DEEventHandler {
             serverTicks++;
 
             if (!deSpawnedMobs.isEmpty()) {
-                List<EntityLiving> toRemove = new ArrayList<>();
+                List<LivingEntity> toRemove = new ArrayList<>();
                 long time = System.currentTimeMillis();
 
                 deSpawnedMobs.forEach((entity, aLong) -> {
@@ -79,7 +71,7 @@ public class DEEventHandler {
         }
     }
 
-    public static void onMobSpawnedBySpawner(EntityLiving entity) {
+    public static void onMobSpawnedBySpawner(MobEntity entity) {
         deSpawnedMobs.put(entity, System.currentTimeMillis());
     }
 
@@ -109,32 +101,32 @@ public class DEEventHandler {
             event.setCanceled(true);
             return;
         }
-        if (!event.getEntity().world.isRemote && ((event.getEntity() instanceof EntityDragon || event.getEntity() instanceof EntityChaosGuardian) || (EntityList.getEntityString(event.getEntity()) != null && !EntityList.getEntityString(event.getEntity()).isEmpty() && EntityList.getEntityString(event.getEntity()).equals("HardcoreEnderExpansion.Dragon")))) {
-            deadDragons.add(event.getEntity().getUniqueID());
-            if (ModFeatureParser.isEnabled(DEFeatures.dragonHeart)) {
-                EntityDragonHeart heart = new EntityDragonHeart(event.getEntity().world, event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ);
-                event.getEntity().world.spawnEntity(heart);
-            }
-
-            if (event.getEntity() instanceof EntityDragon) {
-                DragonFightManager manager = ((EntityDragon) event.getEntity()).getFightManager();
-                if (DEConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
-                    event.getEntity().world.setBlockState(event.getEntity().world.getHeight(WorldGenEndPodium.END_PODIUM_LOCATION).add(0, 0, -4), Blocks.DRAGON_EGG.getDefaultState());
-                }
-            }
-
-            if (ModFeatureParser.isEnabled(DEFeatures.draconiumDust) && DEConfig.dragonDustLootModifier > 0) {
-                double count = (DEConfig.dragonDustLootModifier * 0.9D) + (event.getEntity().world.rand.nextDouble() * (DEConfig.dragonDustLootModifier * 0.2));
-                for (int i = 0; i < (int) count; i++) {
-                    float mm = 0.3F;
-                    EntityItem item = new EntityItem(event.getEntity().world, event.getEntity().posX - 2 + event.getEntity().world.rand.nextInt(4), event.getEntity().posY - 2 + event.getEntity().world.rand.nextInt(4), event.getEntity().posZ - 2 + event.getEntity().world.rand.nextInt(4), new ItemStack(DEFeatures.draconiumDust));
-                    item.motionX = mm * ((((float) event.getEntity().world.rand.nextInt(100)) / 100F) - 0.5F);
-                    item.motionY = mm * ((((float) event.getEntity().world.rand.nextInt(100)) / 100F) - 0.5F);
-                    item.motionZ = mm * ((((float) event.getEntity().world.rand.nextInt(100)) / 100F) - 0.5F);
-                    event.getEntity().world.spawnEntity(item);
-                }
-            }
-        }
+//        if (!event.getEntity().world.isRemote && ((event.getEntity() instanceof EnderDragonEntity || event.getEntity() instanceof EnderDragonEntity) || (EntityList.getEntityString(event.getEntity()) != null && !EntityList.getEntityString(event.getEntity()).isEmpty() && EntityList.getEntityString(event.getEntity()).equals("HardcoreEnderExpansion.Dragon")))) {
+//            deadDragons.add(event.getEntity().getUniqueID());
+//            if (ModFeatureParser.isEnabled(DEFeatures.dragonHeart)) {
+//                EntityDragonHeart heart = new EntityDragonHeart(event.getEntity().world, event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ);
+//                event.getEntity().world.spawnEntity(heart);
+//            }
+//
+//            if (event.getEntity() instanceof EntityDragon) {
+//                DragonFightManager manager = ((EntityDragon) event.getEntity()).getFightManager();
+//                if (DEConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
+//                    event.getEntity().world.setBlockState(event.getEntity().world.getHeight(WorldGenEndPodium.END_PODIUM_LOCATION).add(0, 0, -4), Blocks.DRAGON_EGG.getDefaultState());
+//                }
+//            }
+//
+//            if (ModFeatureParser.isEnabled(DEFeatures.draconiumDust) && DEConfig.dragonDustLootModifier > 0) {
+//                double count = (DEConfig.dragonDustLootModifier * 0.9D) + (event.getEntity().world.rand.nextDouble() * (DEConfig.dragonDustLootModifier * 0.2));
+//                for (int i = 0; i < (int) count; i++) {
+//                    float mm = 0.3F;
+//                    ItemEntity item = new ItemEntity(event.getEntity().world, event.getEntity().posX - 2 + event.getEntity().world.rand.nextInt(4), event.getEntity().posY - 2 + event.getEntity().world.rand.nextInt(4), event.getEntity().posZ - 2 + event.getEntity().world.rand.nextInt(4), new ItemStack(DEFeatures.draconiumDust));
+//                    item.motionX = mm * ((((float) event.getEntity().world.rand.nextInt(100)) / 100F) - 0.5F);
+//                    item.motionY = mm * ((((float) event.getEntity().world.rand.nextInt(100)) / 100F) - 0.5F);
+//                    item.motionZ = mm * ((((float) event.getEntity().world.rand.nextInt(100)) / 100F) - 0.5F);
+//                    event.getEntity().world.spawnEntity(item);
+//                }
+//            }
+//        }
     }
 
     private void handleSoulDrops(LivingDropsEvent event) {
@@ -142,14 +134,14 @@ public class DEEventHandler {
             return;
         }
 
-        EntityLivingBase entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntityLiving();
         Entity attacker = event.getSource().getTrueSource();
 
-        if (attacker == null || !(attacker instanceof EntityPlayer)) {
+        if (attacker == null || !(attacker instanceof PlayerEntity)) {
             return;
         }
 
-        int dropChanceModifier = getDropChanceFromItem(((EntityPlayer) attacker).getHeldItemMainhand());
+        int dropChanceModifier = getDropChanceFromItem(((PlayerEntity) attacker).getHeldItemMainhand());
 
         if (dropChanceModifier == 0) {
             return;
@@ -158,12 +150,12 @@ public class DEEventHandler {
         World world = entity.world;
         int rand = random.nextInt(Math.max(DEConfig.soulDropChance / dropChanceModifier, 1));
         int rand2 = random.nextInt(Math.max(DEConfig.passiveSoulDropChance / dropChanceModifier, 1));
-        boolean isAnimal = entity instanceof EntityAnimal;
+        boolean isAnimal = entity instanceof AnimalEntity;
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
-            ItemStack soul = DEFeatures.mobSoul.getSoulFromEntity(entity, false);
-            world.spawnEntity(new EntityItem(world, entity.posX, entity.posY, entity.posZ, soul));
-            Achievements.triggerAchievement((EntityPlayer) attacker, "draconicevolution.soul");
+            ItemStack soul = DEContent.mob_soul.getSoulFromEntity(entity, false);
+            world.addEntity(new ItemEntity(world, entity.posX, entity.posY, entity.posZ, soul));
+            Achievements.triggerAchievement((PlayerEntity) attacker, "draconicevolution.soul");
         }
     }
 
@@ -181,7 +173,7 @@ public class DEEventHandler {
         return chance;
     }
 
-    private boolean isValidEntity(EntityLivingBase entity) {
+    private boolean isValidEntity(LivingEntity entity) {
         if (!entity.isNonBoss() && !DEConfig.allowBossSouls) {
             return false;
         }
@@ -200,10 +192,10 @@ public class DEEventHandler {
 
     @SubscribeEvent
     public void itemToss(ItemTossEvent event) {
-        EntityItem item = event.getEntityItem();
-        EntityPlayer player = event.getPlayer();
-        if (DEConfig.forceDroppedItemOwner && player != null && (item.getThrower() == null || item.getThrower().isEmpty())){
-            item.setThrower(player.getName());
+        ItemEntity item = event.getEntityItem();
+        PlayerEntity player = event.getPlayer();
+        if (DEConfig.forceDroppedItemOwner && player != null && (item.getThrowerId() == null)){
+            item.setThrowerId(player.getUniqueID());
         }
     }
 
@@ -215,27 +207,27 @@ public class DEEventHandler {
             return;
         }
 
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         ItemStack stack = event.getItemStack();
 
         //region Hacky check to compensate for the completely f***ing stupid interact event handling.
         //If you cancel the right click event for one hand the event will still fire for the other hand!
         //This check ensures that if the event was cancels by a binder in the other hand the event for this hand will also be canceled.
         //@Forge THIS IS HOW IT SHOULD WORK BY DEFAULT!!!!!!
-        ItemStack other = player.getHeldItem(event.getHand() == EnumHand.OFF_HAND ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
+        ItemStack other = player.getHeldItem(event.getHand() == Hand.OFF_HAND ? Hand.MAIN_HAND : Hand.OFF_HAND);
         if (stack.getItem() instanceof ICrystalBinder && other.getItem() instanceof ICrystalBinder) {
-            if (event.getHand() == EnumHand.OFF_HAND) {
+            if (event.getHand() == Hand.OFF_HAND) {
                 event.setCanceled(true);
                 return;
             }
         }
         else {
-            if (event.getHand() == EnumHand.OFF_HAND&& other.getItem() instanceof ICrystalBinder) {
+            if (event.getHand() == Hand.OFF_HAND&& other.getItem() instanceof ICrystalBinder) {
                 event.setCanceled(true);
                 return;
             }
 
-            if (event.getHand() == EnumHand.MAIN_HAND && other.getItem() instanceof ICrystalBinder) {
+            if (event.getHand() == Hand.MAIN_HAND && other.getItem() instanceof ICrystalBinder) {
                 event.setCanceled(true);
                 return;
             }
@@ -257,9 +249,9 @@ public class DEEventHandler {
             return;
         }
 
-        RayTraceResult traceResult = RayTracer.retrace(event.getEntityPlayer());
+        BlockRayTraceResult traceResult = RayTracer.retrace(event.getEntityPlayer());
 
-        if (traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
+        if (traceResult != null) {
             return;
         }
 
@@ -270,18 +262,18 @@ public class DEEventHandler {
 
     //endregion
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void itemTooltipEvent(ItemTooltipEvent event) {
         if (DEConfig.expensiveDragonRitual && !event.getItemStack().isEmpty() && event.getItemStack().getItem() == Items.END_CRYSTAL) {
-            event.getToolTip().add(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution.");
+            event.getToolTip().add(new StringTextComponent(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution."));
         }
 
 //        ItemStack stack = event.getItemStack();
 //        if (stack != null) {
 //            int[] ids = OreDictionary.getOreIDs(stack);
 //
-//            event.getToolTip().add("Is Block: " + (stack.getItem() instanceof ItemBlock));
+//            event.getToolTip().add("Is Block: " + (stack.getItem() instanceof BlockItem));
 //            event.getToolTip().add(stack.getItem().getRegistryName() + "");
 //            LogHelper.info(Item.REGISTRY.getObject(new ResourceLocation("dragonmounts:dragon_egg")));
 //            LogHelper.info(Block.REGISTRY.getObject(new ResourceLocation("dragonmounts:dragon_egg")));
@@ -315,17 +307,17 @@ public class DEEventHandler {
                 return;
             }
 
-            if (event.getEntityPlayer().isInsideOfMaterial(Material.WATER)) {
-                if (summery.armorStacks.get(3).getItem() == DEFeatures.draconicHelm) {
-                    newDigSpeed *= 5f;
-                }
-            }
-
-            if (!event.getEntityPlayer().onGround) {
-                if (summery.armorStacks.get(2).getItem() == DEFeatures.draconicChest) {
-                    newDigSpeed *= 5f;
-                }
-            }
+//            if (event.getPlayer().world.isMaterialInBB(event.getPlayer().getBoundingBox(), Material.WATER)) {
+//                if (summery.armorStacks.get(3).getItem() == DEContent.draconicHelm) {
+//                    newDigSpeed *= 5f;
+//                }
+//            }
+//
+//            if (!event.getEntityPlayer().onGround) {
+//                if (summery.armorStacks.get(2).getItem() == DEContent.draconicChest) {
+//                    newDigSpeed *= 5f;
+//                }
+//            }
 
             if (newDigSpeed != event.getOriginalSpeed()) {
                 event.setNewSpeed(newDigSpeed);
@@ -335,25 +327,25 @@ public class DEEventHandler {
 
 
     @SubscribeEvent
-    public void login(PlayerLoggedInEvent event) {
-//        if (event.player instanceof EntityPlayerMP && event.player.getGameProfile().getId().toString().equals("97b8ec48-96ea-48aa-aaf8-b9f12a4e3aa2")) {
+    public void login(PlayerEvent.PlayerLoggedInEvent event) {
+//        if (event.player instanceof ServerPlayerEntity && event.player.getGameProfile().getId().toString().equals("97b8ec48-96ea-48aa-aaf8-b9f12a4e3aa2")) {
 //            MinecraftServer server = event.player.getServer();
 //            if (server != null) {
 //                String msg = "Warning! User " + event.player.getName() + " (UUID: 97b8ec48-96ea-48aa-aaf8-b9f12a4e3aa2) is known to have impersonated brandon3055. You have been warned!";
 //                LogHelper.warn("Sketchy player just logged in! " + event.player + ", UUID: 97b8ec48-96ea-48aa-aaf8-b9f12a4e3aa2 This player is known to have impersonated brandon300 the creator of Draconic Evolution");
-//                for (EntityPlayer player : server.getPlayerList().getPlayers()) {
+//                for (PlayerEntity player : server.getPlayerList().getPlayers()) {
 //                    if (!player.getGameProfile().getId().equals(event.player.getGameProfile().getId())) {
-//                        player.sendMessage(new TextComponentString(msg).setStyle(new Style().setColor(TextFormatting.RED)));
+//                        player.sendMessage(new StringTextComponent(msg).setStyle(new Style().setColor(TextFormatting.RED)));
 //                    }
 //                }
 //            }
 //        }
 
-        if (!event.player.onGround) {
-            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.player);
+        if (!event.getPlayer().onGround) {
+            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.getPlayer());
             if (summery != null && summery.flight[0]) {
-                event.player.capabilities.isFlying = true;
-                event.player.sendPlayerAbilities();
+                event.getPlayer().abilities.isFlying = true;
+                event.getPlayer().sendPlayerAbilities();
             }
         }
     }

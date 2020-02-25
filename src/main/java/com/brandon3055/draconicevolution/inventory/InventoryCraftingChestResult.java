@@ -1,14 +1,15 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryCraftResult;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftResultInventory;
+
 import net.minecraft.item.ItemStack;
 
 /**
  * Created by Brandon on 29/10/2014.
  */
-public class InventoryCraftingChestResult extends InventoryCraftResult {
+public class InventoryCraftingChestResult extends CraftResultInventory {
     private TileDraconiumChest tile;
 
     public InventoryCraftingChestResult(TileDraconiumChest tile) {
@@ -65,7 +66,7 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
 
     /**
      * When some containers are closed they call this on each slot, then drop
-     * whatever it returns as an EntityItem - like when you close a workbench
+     * whatever it returns as an ItemEntity - like when you close a workbench
      * GUI.
      */
     @Override
@@ -103,7 +104,7 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
      * with Container
      */
     @Override
-    public boolean isUsableByPlayer(EntityPlayer par1EntityPlayer) {
+    public boolean isUsableByPlayer(PlayerEntity par1EntityPlayer) {
         return true;
     }
 

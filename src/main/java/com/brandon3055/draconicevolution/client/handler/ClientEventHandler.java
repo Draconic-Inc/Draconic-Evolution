@@ -6,8 +6,6 @@ import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.reflect.ReflectionManager;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.texture.TextureUtils;
-import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
@@ -17,43 +15,43 @@ import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +61,7 @@ import java.util.Random;
  * Created by Brandon on 28/10/2014.
  */
 public class ClientEventHandler {
-    public static Map<EntityPlayer, PairKV<Float, Integer>> playerShieldStatus = new HashMap<EntityPlayer, PairKV<Float, Integer>>();
+    public static Map<PlayerEntity, PairKV<Float, Integer>> playerShieldStatus = new HashMap<PlayerEntity, PairKV<Float, Integer>>();
     public static ObfMapping splashTextMapping = new ObfMapping("net/minecraft/client/gui/GuiMainMenu", "field_110353_x");
     public static FloatBuffer winPos = GLAllocation.createDirectFloatBuffer(3);
     public static volatile int elapsedTicks;
@@ -83,14 +81,14 @@ public class ClientEventHandler {
         HudHandler.drawHUD(event);
 
         if (explosionPos != null && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            mc = Minecraft.getMinecraft();
-            updateExplosionAnimation(mc, mc.world, event.getResolution(), mc.getRenderPartialTicks());
+            mc = Minecraft.getInstance();
+            updateExplosionAnimation(mc, mc.world, event.getWindow(), mc.getRenderPartialTicks());
         }
     }
 
     @SubscribeEvent
     public void tickEnd(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT) {
+        if (event.phase != TickEvent.Phase.END || event.type != TickEvent.Type.CLIENT || event.side != LogicalSide.CLIENT) {
             return;
         }
 
@@ -103,7 +101,7 @@ public class ClientEventHandler {
 
         playerShieldStatus.entrySet().removeIf(entry -> elapsedTicks - entry.getValue().getValue() > 5);
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
             playerHoldingWrench = (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ICrystalBinder) || (!player.getHeldItemOffhand().isEmpty() && player.getHeldItemOffhand().getItem() instanceof ICrystalBinder);
         }
@@ -114,7 +112,7 @@ public class ClientEventHandler {
         if (!DEConfig.disableShieldHitEffect &&  playerShieldStatus.containsKey(event.getEntityPlayer())) {
             if (shieldModel == null) {
                 try {
-                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils.bakedTextureGetter);
+//                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils::getTexture);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -125,13 +123,13 @@ public class ClientEventHandler {
             GlStateManager.pushMatrix();
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
-            GlStateManager.disableAlpha();
+            GlStateManager.disableAlphaTest();
             GlStateManager.enableBlend();
             GlStateManager.disableLighting();
 
             float p = playerShieldStatus.get(event.getEntityPlayer()).getKey();
 
-            EntityPlayer viewingPlayer = Minecraft.getMinecraft().player;
+            PlayerEntity viewingPlayer = Minecraft.getInstance().player;
 
             int i = 5 - (elapsedTicks - playerShieldStatus.get(event.getEntityPlayer()).getValue());
 
@@ -146,21 +144,21 @@ public class ClientEventHandler {
                 double translationY = translationYLT + (((event.getEntityPlayer().posY - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());
                 double translationZ = translationZLT + (((event.getEntityPlayer().posZ - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
 
-                GlStateManager.translate(translationX, translationY + 1.1, translationZ);
+                GlStateManager.translated(translationX, translationY + 1.1, translationZ);
             }
             else {
                 //GL11.glTranslated(0, -0.5, 0);
-                GlStateManager.translate(0, 1.15, 0);
+                GlStateManager.translated(0, 1.15, 0);
             }
 
-            GlStateManager.scale(1, 1.5, 1);
+            GlStateManager.scaled(1, 1.5, 1);
 
-            GlStateManager.bindTexture(Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
+            GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
 
-            ModelUtils.renderQuadsARGB(shieldModel.getQuads(null, null, 0), new ColourRGBA(1D - p, 0D, p, i / 5D).argb());
+            ModelUtils.renderQuadsARGB(shieldModel.getQuads(null, null, rand), new ColourRGBA(1D - p, 0D, p, i / 5D).argb());
 
             GlStateManager.enableCull();
-            GlStateManager.enableAlpha();
+            GlStateManager.enableAlphaTest();
             GlStateManager.disableBlend();
             GlStateManager.enableLighting();
             GlStateManager.depthMask(true);
@@ -170,7 +168,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void guiOpenEvent(GuiOpenEvent event) {
-        if (event.getGui() instanceof GuiMainMenu && rand.nextInt(150) == 0) {
+        if (event.getGui() instanceof MainMenuScreen && rand.nextInt(150) == 0) {
             try {
                 String s = rand.nextBoolean() ? "Icosahedrons proudly brought to you by CCL!!!" : Utils.addCommas(Long.MAX_VALUE) + " RF!!!!";
                 ReflectionManager.setField(splashTextMapping, event.getGui(), s);
@@ -185,11 +183,11 @@ public class ClientEventHandler {
             return;
         }
 
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         World world = player.getEntityWorld();
         ItemStack stack = player.getHeldItemMainhand();
         ItemStack offStack = player.getHeldItemOffhand();
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         float partialTicks = event.getPartialTicks();
 
         if (!stack.isEmpty() && stack.getItem() instanceof ICrystalBinder) {
@@ -202,13 +200,13 @@ public class ClientEventHandler {
         }
 
 
-        if (mc.objectMouseOver == null || mc.objectMouseOver.typeOfHit != RayTraceResult.Type.BLOCK) {
+        if (!(mc.objectMouseOver instanceof BlockRayTraceResult)) {
             return;
         }
 
-        if (!stack.isEmpty() && stack.getItem() == DEFeatures.creativeExchanger) {
+        if (!stack.isEmpty() && stack.getItem() == DEContent.creative_exchanger) {
 
-            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, mc.objectMouseOver.getBlockPos(), world, mc.objectMouseOver.sideHit);
+            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, ((BlockRayTraceResult)mc.objectMouseOver).getPos(), world, ((BlockRayTraceResult)mc.objectMouseOver).getFace());
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
@@ -218,10 +216,10 @@ public class ClientEventHandler {
             double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
 
             GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.color(1F, 1F, 1F, 1F);
-            GlStateManager.glLineWidth(2.0F);
-            GlStateManager.disableTexture2D();
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.color4f(1F, 1F, 1F, 1F);
+            GlStateManager.lineWidth(2.0F);
+            GlStateManager.disableTexture();
 
             for (BlockPos block : blocks) {
                 if (world.isAirBlock(block)) {
@@ -234,20 +232,20 @@ public class ClientEventHandler {
 
                 Cuboid6 box = new Cuboid6(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
                 float colour = 1F;
-                if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))) {
-                    GlStateManager.disableDepth();
+                if (!world.getBlockState(block.offset(((BlockRayTraceResult)mc.objectMouseOver).getFace())).getMaterial().isReplaceable()) {
+                    GlStateManager.disableDepthTest();
                     colour = 0.2F;
                 }
                 GL11.glColor4f(colour, colour, colour, colour);
 
                 RenderUtils.drawCuboidOutline(box);
 
-                if (!world.getBlockState(block.offset(mc.objectMouseOver.sideHit)).getBlock().isReplaceable(world, block.offset(mc.objectMouseOver.sideHit))) {
-                    GlStateManager.enableDepth();
+                if (!world.getBlockState(block.offset(((BlockRayTraceResult) mc.objectMouseOver).getFace())).getMaterial().isReplaceable()) {
+                    GlStateManager.enableDepthTest();
                 }
             }
 
-            GlStateManager.enableTexture2D();
+            GlStateManager.enableTexture();
             GlStateManager.disableBlend();
         }
 
@@ -255,8 +253,8 @@ public class ClientEventHandler {
             return;
         }
 
-        BlockPos pos = mc.objectMouseOver.getBlockPos();
-        IBlockState state = world.getBlockState(pos);
+        BlockPos pos = ((BlockRayTraceResult) mc.objectMouseOver).getPos();
+        BlockState state = world.getBlockState(pos);
         MiningToolBase tool = (MiningToolBase) stack.getItem();
 
         if (!tool.isToolEffective(stack, state)) {
@@ -266,10 +264,10 @@ public class ClientEventHandler {
         renderMiningAOE(world, stack, pos, player, partialTicks);
     }
 
-    private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, EntityPlayerSP player, float partialTicks) {
+    private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, ClientPlayerEntity player, float partialTicks) {
         MiningToolBase tool = (MiningToolBase) stack.getItem();
         PairKV<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
-        List<BlockPos> blocks = Lists.newArrayList(BlockPos.getAllInBox(aoe.getKey(), aoe.getValue()));
+        List<BlockPos> blocks = Lists.newArrayList(BlockPos.getAllInBoxMutable(aoe.getKey(), aoe.getValue()));
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -278,17 +276,17 @@ public class ClientEventHandler {
         double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
 
         GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(1F, 1F, 1F, 1F);
-        GlStateManager.glLineWidth(2.0F);
-        GlStateManager.disableTexture2D();
-        GlStateManager.disableDepth();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color4f(1F, 1F, 1F, 1F);
+        GlStateManager.lineWidth(2.0F);
+        GlStateManager.disableTexture();
+        GlStateManager.disableDepthTest();
 
 
         buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
         for (BlockPos block : blocks) {
-            IBlockState state = world.getBlockState(block);
+            BlockState state = world.getBlockState(block);
 
             if (!tool.isToolEffective(stack, state)) {
                 continue;
@@ -333,8 +331,8 @@ public class ClientEventHandler {
 
         tessellator.draw();
 
-        GlStateManager.enableDepth();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableDepthTest();
+        GlStateManager.enableTexture();
         GlStateManager.disableBlend();
     }
 
@@ -347,13 +345,13 @@ public class ClientEventHandler {
         ProcessHandlerClient.addProcess(new DelayedExecutor(5) {
             @Override
             public void execute(Object[] args) {
-                FMLClientHandler.instance().reloadRenderers();
+//                FMLClientHandler.instance().reloadRenderers();TODO Reload
             }
         });
     }
 
     private void updateExplosion() {
-        if (Minecraft.getMinecraft().isGamePaused()) {
+        if (Minecraft.getInstance().isGamePaused()) {
             return;
         }
         explosionTime++;
@@ -374,8 +372,15 @@ public class ClientEventHandler {
         }
     }
 
-    private void updateExplosionAnimation(Minecraft mc, World world, ScaledResolution resolution, float partialTick) {
+    public static final IntBuffer VIEWPORT = GLAllocation.createDirectByteBuffer(16 << 2).asIntBuffer();
+    public static final FloatBuffer MODELVIEW = GLAllocation.createDirectFloatBuffer(16);
+    public static final FloatBuffer PROJECTION = GLAllocation.createDirectFloatBuffer(16);
+    private void updateExplosionAnimation(Minecraft mc, World world, MainWindow resolution, float partialTick) {
         //region TargetPoint Calculation
+
+        GL11.glGetFloatv(2982, MODELVIEW);
+        GL11.glGetFloatv(2983, PROJECTION);
+        GlStateManager.getInteger(2978, VIEWPORT);
 
         Entity entity = mc.getRenderViewEntity();
         float x = (float) (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick);
@@ -383,11 +388,11 @@ public class ClientEventHandler {
         float z = (float) (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick);
         Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
         targetPos.subtract(x, y, z);
-        GLU.gluProject((float) targetPos.x, (float) targetPos.y, (float) targetPos.z, ActiveRenderInfo.MODELVIEW, ActiveRenderInfo.PROJECTION, ActiveRenderInfo.VIEWPORT, winPos);
+        gluProject((float) targetPos.x, (float) targetPos.y, (float) targetPos.z, MODELVIEW, PROJECTION, VIEWPORT, winPos);
 
         boolean behind = winPos.get(2) > 1;
-        float screenX = behind ? -1 : winPos.get(0) / mc.displayWidth;
-        float screenY = behind ? -1 : winPos.get(1) / mc.displayHeight;
+        float screenX = behind ? -1 : winPos.get(0) / resolution.getWidth();
+        float screenY = behind ? -1 : winPos.get(1) / resolution.getHeight();
 
         //endregion
 
@@ -416,7 +421,7 @@ public class ClientEventHandler {
             explosionShader.useShader(cache -> {
                 cache.glUniform2F("screenPos", screenX, screenY);
                 cache.glUniform1F("intensity", (float) explosionAnimation);
-                cache.glUniform2F("screenSize", mc.displayWidth, mc.displayHeight);
+                cache.glUniform2F("screenSize", resolution.getWidth(), resolution.getHeight());
             });
 
             GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0xFFFFFFFF);
@@ -424,5 +429,57 @@ public class ClientEventHandler {
             explosionShader.releaseShader();
         }
 
+    }
+
+    private static final float[] in = new float[4];
+    private static final float[] out = new float[4];
+
+    public static boolean gluProject(
+            float objx,
+            float objy,
+            float objz,
+            FloatBuffer modelMatrix,
+            FloatBuffer projMatrix,
+            IntBuffer viewport,
+            FloatBuffer win_pos) {
+
+        float[] in = ClientEventHandler.in;
+        float[] out = ClientEventHandler.out;
+
+        in[0] = objx;
+        in[1] = objy;
+        in[2] = objz;
+        in[3] = 1.0f;
+
+        __gluMultMatrixVecf(modelMatrix, in, out);
+        __gluMultMatrixVecf(projMatrix, out, in);
+
+        if (in[3] == 0.0)
+            return false;
+
+        in[3] = (1.0f / in[3]) * 0.5f;
+
+        // Map x, y and z to range 0-1
+        in[0] = in[0] * in[3] + 0.5f;
+        in[1] = in[1] * in[3] + 0.5f;
+        in[2] = in[2] * in[3] + 0.5f;
+
+        // Map x,y to viewport
+        win_pos.put(0, in[0] * viewport.get(viewport.position() + 2) + viewport.get(viewport.position() + 0));
+        win_pos.put(1, in[1] * viewport.get(viewport.position() + 3) + viewport.get(viewport.position() + 1));
+        win_pos.put(2, in[2]);
+
+        return true;
+    }
+
+    private static void __gluMultMatrixVecf(FloatBuffer m, float[] in, float[] out) {
+        for (int i = 0; i < 4; i++) {
+            out[i] =
+                    in[0] * m.get(m.position() + 0*4 + i)
+                            + in[1] * m.get(m.position() + 1*4 + i)
+                            + in[2] * m.get(m.position() + 2*4 + i)
+                            + in[3] * m.get(m.position() + 3*4 + i);
+
+        }
     }
 }

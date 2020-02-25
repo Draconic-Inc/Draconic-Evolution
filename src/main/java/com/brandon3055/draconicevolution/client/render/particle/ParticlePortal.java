@@ -25,33 +25,33 @@ public class ParticlePortal extends BCParticle {
         this.motionX = (target.x - start.x) * speed;
         this.motionY = (target.y - start.y) * speed;
         this.motionZ = (target.z - start.z) * speed;
-        this.particleMaxAge = 120;
-        this.particleRed = this.particleGreen = this.particleBlue = 1.0f;
-        float baseSize = 0.05F + ((float) Minecraft.getMinecraft().player.getDistance(pos.x, pos.y, pos.z)) * 0.007F;
-        this.baseScale = baseSize + (rand.nextFloat() * (baseSize * 2F));
-        this.particleScale = 0;
-        texturesPerRow = 8F;
-        particleTextureIndexX = 6;
+//        this.particleMaxAge = 120;
+//        this.particleRed = this.particleGreen = this.particleBlue = 1.0f;
+//        float baseSize = 0.05F + ((float) Minecraft.getInstance().player.getDistance(pos.x, pos.y, pos.z)) * 0.007F;
+//        this.baseScale = baseSize + (rand.nextFloat() * (baseSize * 2F));
+//        this.particleScale = 0;
+//        texturesPerRow = 8F;
+//        particleTextureIndexX = 6;
     }
 
-    @Override
-    public void onUpdate() {
-        double distToTarget = Utils.getDistanceAtoB(new Vec3D(posX, posY, posZ), target);
-
-        if (particleAge >= particleMaxAge || distToTarget < 0.15) {
-            setExpired();
-        }
-
-        double startDist = Utils.getDistanceAtoB(start, target);
-
-        particleScale = ((float) (distToTarget / startDist)) * baseScale;
-
-        particleAge++;
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
-        moveEntityNoClip(motionX, motionY, motionZ);
-    }
+//    @Override
+//    public void onUpdate() {
+//        double distToTarget = Utils.getDistanceAtoB(new Vec3D(posX, posY, posZ), target);
+//
+//        if (particleAge >= particleMaxAge || distToTarget < 0.15) {
+//            setExpired();
+//        }
+//
+//        double startDist = Utils.getDistanceAtoB(start, target);
+//
+//        particleScale = ((float) (distToTarget / startDist)) * baseScale;
+//
+//        particleAge++;
+//        prevPosX = posX;
+//        prevPosY = posY;
+//        prevPosZ = posZ;
+//        moveEntityNoClip(motionX, motionY, motionZ);
+//    }
 
     public static class Factory implements IBCParticleFactory {
 

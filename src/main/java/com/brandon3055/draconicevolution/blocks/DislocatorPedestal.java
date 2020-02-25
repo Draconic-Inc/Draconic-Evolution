@@ -1,34 +1,33 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.registry.Feature;
-import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileDislocatorPedestal;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class DislocatorPedestal extends BlockBCore implements ITileEntityProvider, IRenderOverride {
+public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
+    protected static final VoxelShape SHAPE = Block.makeCuboidShape(5.6f, 0f, 5.6f, 10.4f, 12.8f, 10.4f);
 
-    public DislocatorPedestal() {
+    public DislocatorPedestal(Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -37,56 +36,63 @@ public class DislocatorPedestal extends BlockBCore implements ITileEntityProvide
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntity tile = worldIn.getTileEntity(pos);
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileDislocatorPedestal) {
             float f = (float) MathHelper.floor((MathHelper.wrapDegrees(placer.rotationYaw - 180.0F) + 11.25F) / 22.5F);
             ((TileDislocatorPedestal) tile).rotation.set((int) f);
-            if (!worldIn.isRemote) {
+            if (!world.isRemote) {
                 ((TileDislocatorPedestal) tile).getDataManager().forceSync();
             }
         }
-        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+        super.onBlockPlacedBy(world, pos, state, placer, stack);
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileDislocatorPedestal();
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+//        TileEntity tileEntity = worldIn.getTileEntity(pos);
 
-        if (tileEntity instanceof TileDislocatorPedestal) {
-            return ((TileDislocatorPedestal) tileEntity).onBlockActivated(playerIn);
-        }
-
-        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
+//        if (tileEntity instanceof TileDislocatorPedestal) {//TODO switch to tile interface
+//            return ((TileDislocatorPedestal) tileEntity).onBlockActivated(player);
+//        }
+        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
     }
+
 
     //region Render
 
+
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return new AxisAlignedBB(0.35f, 0f, 0.35f, 0.65f, 0.8f, 0.65f);
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return SHAPE;
     }
 
     @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.INVISIBLE;
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerRenderer(Feature feature) {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileDislocatorPedestal.class, new RenderTileDislocatorPedestal());
-    }
-
-    @Override
-    public boolean registerNormal(Feature feature) {
-        return true;
-    }
+//
+//    @OnlyIn(Dist.CLIENT)
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileDislocatorPedestal.class, new RenderTileDislocatorPedestal());
+//    }
+//
+//    @Override
+//    public boolean registerNormal(Feature feature) {
+//        return true;
+//    }
 
     //endregion
 }

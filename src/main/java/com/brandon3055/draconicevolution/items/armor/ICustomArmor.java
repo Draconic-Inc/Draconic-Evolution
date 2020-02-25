@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.armor;
 
 import cofh.redstoneflux.api.IEnergyContainerItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -28,17 +28,17 @@ public interface ICustomArmor extends IEnergyContainerItem {
     /**
      * Returns the movement speed modifier for this armor
      */
-    float getSpeedModifier(ItemStack stack, EntityPlayer player);
+    float getSpeedModifier(ItemStack stack, PlayerEntity player);
 
     /**
      * Returns the jump ySize modifier for this armor
      */
-    float getJumpModifier(ItemStack stack, EntityPlayer player);
+    float getJumpModifier(ItemStack stack, PlayerEntity player);
 
     /**
      * Returns true if this armor has up-hill step enabled
      */
-    boolean hasHillStep(ItemStack stack, EntityPlayer player);
+    boolean hasHillStep(ItemStack stack, PlayerEntity player);
 
     /**
      * Returns the fire resistance modifier for this armor
@@ -56,12 +56,12 @@ public interface ICustomArmor extends IEnergyContainerItem {
      *///TODO (DE3) make this more sane
     boolean[] hasFlight(ItemStack stack);
 
-    float getFlightSpeedModifier(ItemStack stack, EntityPlayer player);
+    float getFlightSpeedModifier(ItemStack stack, PlayerEntity player);
 
     /**
      * Returns the vertical acceleration speed
      */
-    float getFlightVModifier(ItemStack stack, EntityPlayer player);
+    float getFlightVModifier(ItemStack stack, PlayerEntity player);
 
     /**
      * Returns amount of energy, required to restore protection point

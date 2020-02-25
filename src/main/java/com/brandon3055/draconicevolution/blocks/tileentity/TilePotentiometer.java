@@ -1,54 +1,61 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockRayTraceResult;
 
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TilePotentiometer extends TileBCBase implements IRedstoneEmitter, IActivatableTile {
+public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IActivatableTile {
 
-    public final ManagedByte rotation = register(new ManagedByte("rotation", DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedEnum<Direction> rotation = register(new ManagedEnum<>("rotation", Direction.NORTH, DataFlags.SAVE_BOTH_SYNC_TILE));
     public final ManagedByte power = register(new ManagedByte("power", DataFlags.SAVE_BOTH_SYNC_TILE));
+
+    public TilePotentiometer() {
+        super(DEContent.tile_potentiometer);
+    }
 
     @Override
     public boolean hasFastRenderer() {
         return true;
     }
 
-    public EnumFacing getRotation() {
-        return EnumFacing.getFront(rotation.get());
+    public Direction getRotation() {
+        return rotation.get();
     }
 
-    public void setRotation(EnumFacing rotation) {
-        this.rotation.set((byte) rotation.getIndex());
-        super.update();
+    public void setRotation(Direction rotation) {
+        this.rotation.set(rotation);
+        super.tick();
     }
 
     @Override
-    public int getWeakPower(IBlockState blockState, EnumFacing side) {
+    public int getWeakPower(BlockState blockState, Direction side) {
         return power.get();
     }
 
     @Override
-    public int getStrongPower(IBlockState blockState, EnumFacing side) {
+    public int getStrongPower(BlockState blockState, Direction side) {
         return power.get();
     }
 
     @Override
-    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player.isSneaking()) {
             power.dec();
             if (power.get() < 0) {
@@ -69,9 +76,9 @@ public class TilePotentiometer extends TileBCBase implements IRedstoneEmitter, I
             world.playSound(null, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));
         }
 
-        world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
-        world.notifyNeighborsOfStateChange(pos.offset(getState(DEFeatures.potentiometer).getValue(Potentiometer.FACING).getOpposite()), getBlockType(), true);
-        super.update();
+        world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+        world.notifyNeighborsOfStateChange(pos.offset(getBlockState().get(Potentiometer.FACING).getOpposite()), getBlockState().getBlock());
+        super.tick();
 
         return true;
     }

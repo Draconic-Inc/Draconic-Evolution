@@ -3,17 +3,25 @@ package com.brandon3055.draconicevolution.inventory;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import invtweaks.api.container.ChestContainer;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.api.container.ContainerSectionCallback;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.CraftingResultSlot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -27,15 +35,18 @@ import java.util.Map;
 @ChestContainer(isLargeChest = true, rowSize = 26)
 public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest> {
 
-    public InventoryCrafting craftMatrix;
+    public CraftingInventory craftMatrix;
     public IInventory craftResult;
     private List<Slot> mainInventorySlots = new ArrayList<>();
 
+    public ContainerDraconiumChest(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+        this(DEContent.container_draconium_chest, windowId, playerInv.player, getClientTile(extraData));
+    }
 
-    public ContainerDraconiumChest(EntityPlayer player, TileDraconiumChest tile) {
-        super(player, tile);
+    public ContainerDraconiumChest(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileDraconiumChest tile) {
+        super(type, windowId, player, tile);
 
-        tile.openInventory(player);
+        tile.onPlayerOpenContainer(player);
 
         //region Main Inventory
 
@@ -43,21 +54,21 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         //Slots 0 -> 259 Main Inventory
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 26; x++) {
-                Slot slot = new SlotCheckValid.IInv(tile, slotIndex++, 7 + (x * 18), 7 + (y * 18));
+                Slot slot = new SlotCheckValid(tile.itemHandler, slotIndex++, 7 + (x * 18), 7 + (y * 18));
                 mainInventorySlots.add(slot);
-                addSlotToContainer(slot);
+                addSlot(slot);
             }
         }
 
         //Slots 260 -> 264 Furnace Inventory
         for (int x = 0; x < 5; x++) {
-            addSlotToContainer(new SlotSmeltable(tile, slotIndex++, 45 + (x * 18), 207));
+            addSlot(new SlotSmeltable(tile.itemHandler, slotIndex++, 45 + (x * 18), 207));
         }
 
         //Capacitor Slot 265
-        addSlotToContainer(new SlotRFCapacitor(tile, slotIndex++, 8, 245));
+        addSlot(new SlotRFCapacitor(tile.itemHandler, slotIndex++, 8, 245));
         //Core Slot 266
-        addSlotToContainer(new SlotCore(tile, slotIndex, 17, 207));
+        addSlot(new SlotCore(tile.itemHandler, slotIndex, 17, 207));
 
         //endregion
 
@@ -67,12 +78,12 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         this.craftResult = new InventoryCraftingChestResult(tile);
 
 //        LogHelper.dev(inventorySlots.size());
-        addSlotToContainer(new SlotCrafting(player, craftMatrix, craftResult, 0, 428, 216));
+        addSlot(new CraftingResultSlot(player, craftMatrix, craftResult, 0, 428, 216));
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
 //                LogHelper.dev(inventorySlots.size());
-                addSlotToContainer(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 334 + (x * 18), 198 + (y * 18)));
+                addSlot(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 334 + (x * 18), 198 + (y * 18)));
             }
         }
 
@@ -83,12 +94,12 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
 
     @Override
     public void onCraftMatrixChanged(IInventory inventory) {
-        craftResult.setInventorySlotContents(0, CraftingManager.findMatchingResult(craftMatrix, tile.getWorld()));
+//        craftResult.setInventorySlotContents(0, RecipeMatcher.findMatches(craftMatrix, tile.getWorld()));
     }
 
     @Nullable
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
@@ -142,7 +153,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
 
     @Nullable
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
         ItemStack stack = super.slotClick(slotId, dragType, clickTypeIn, player);
 
         if (dragType == 1 && clickTypeIn == ClickType.PICKUP && slotId >= 260 && slotId <= 264) {
@@ -153,9 +164,9 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer playerIn) {
+    public void onContainerClosed(PlayerEntity playerIn) {
         super.onContainerClosed(playerIn);
-        tile.closeInventory(playerIn);
+        tile.onPlayerCloseContainer(playerIn);
     }
 
     @ContainerSectionCallback
@@ -165,8 +176,8 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         return map;
     }
 
-    public class SlotSmeltable extends Slot {
-        public SlotSmeltable(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) {
+    public class SlotSmeltable extends SlotItemHandler {
+        public SlotSmeltable(IItemHandler p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) {
             super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
         }
 
@@ -176,8 +187,8 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         }
     }
 
-    public class SlotRFCapacitor extends Slot {
-        public SlotRFCapacitor(IInventory inventory, int id, int x, int y) {
+    public class SlotRFCapacitor extends SlotItemHandler {
+        public SlotRFCapacitor(IItemHandler inventory, int id, int x, int y) {
             super(inventory, id, x, y);
 
         }
@@ -196,8 +207,8 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         }
     }
 
-    public class SlotCore extends Slot {
-        public SlotCore(IInventory inventory, int id, int x, int y) {
+    public class SlotCore extends SlotItemHandler {
+        public SlotCore(IItemHandler inventory, int id, int x, int y) {
             super(inventory, id, x, y);
 
         }
@@ -205,7 +216,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         @Override
         public boolean isItemValid(ItemStack stack) {
             if (super.isItemValid(stack)) {
-                return !stack.isEmpty() && stack.getItem() instanceof ItemCore && stack.getItem() != DEFeatures.draconicCore;
+                return !stack.isEmpty() && stack.getItem() instanceof ItemCore /*&& stack.getItem() != DEContent.draconicCore*/;
             }
             return false;
         }

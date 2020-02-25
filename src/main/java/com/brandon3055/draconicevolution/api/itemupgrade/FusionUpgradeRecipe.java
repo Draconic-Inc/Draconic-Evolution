@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api.itemupgrade;
 
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
@@ -26,7 +26,7 @@ public class FusionUpgradeRecipe implements IFusionRecipe {
     protected List<Object> ingredients;
     protected long energyCost;
     protected int craftingTier;
-    private static Item[] tools = new Item[]{DEFeatures.wyvernAxe, DEFeatures.draconicAxe, DEFeatures.wyvernShovel, DEFeatures.draconicShovel, DEFeatures.wyvernPick, DEFeatures.draconicPick, DEFeatures.wyvernSword, DEFeatures.draconicSword, DEFeatures.wyvernBow, DEFeatures.draconicBow, DEFeatures.draconicStaffOfPower};
+    private static Item[] tools = new Item[]{DEContent.axe_wyvern, DEContent.axe_draconic, DEContent.shovel_wyvern, DEContent.shovel_draconic, DEContent.pickaxe_wyvern, DEContent.pickaxe_draconic, DEContent.sword_wyvern, DEContent.sword_draconic, DEContent.bow_wyvern, DEContent.bow_draconic, DEContent.staff_draconic};
     private static Random rand = new Random();
 
     public FusionUpgradeRecipe(String upgrade, ItemStack upgradeKey, long energyCost, int craftingTier, int upgradeLevel, Object... ingredients) {

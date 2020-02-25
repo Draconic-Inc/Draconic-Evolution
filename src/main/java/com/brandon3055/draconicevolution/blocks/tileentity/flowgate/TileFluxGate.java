@@ -3,8 +3,10 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DEContent;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 
@@ -16,30 +18,34 @@ public class TileFluxGate extends TileFlowGate {
     private OPRegulator inputReg = new OPRegulator(this, true);
     private OPRegulator outputReg = new OPRegulator(this, false);
 
+    public TileFluxGate() {
+        super(DEContent.tile_flux_gate);
+    }
+
     @Override
     public String getUnits() {
         return "RF/t";
     }
 
-//    public boolean canConnectEnergy(EnumFacing from) {
+//    public boolean canConnectEnergy(Direction from) {
 //        return from == getDirection() || from == getDirection().getOpposite();
 //    }
 
-    public long getEnergyStored(EnumFacing from) {
+    public long getEnergyStored(Direction from) {
         if (getTarget() == null) {
             return 0;
         }
         return EnergyUtils.getEnergyStored(getTarget(), getDirection().getOpposite());
     }
 
-    public long getMaxEnergyStored(EnumFacing from) {
+    public long getMaxEnergyStored(Direction from) {
         if (getTarget() == null) {
             return 0;
         }
         return EnergyUtils.getMaxEnergyStored(getTarget(), getDirection().getOpposite());
     }
 
-    public long receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+    public long receiveEnergy(Direction from, int maxReceive, boolean simulate) {
         if (from != getDirection().getOpposite()) {
             return 0;
         }
@@ -61,32 +67,32 @@ public class TileFluxGate extends TileFlowGate {
 
     //region Capability
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (facing == getDirection() || facing == getDirection().getOpposite()) {
-            if (capability == CapabilityEnergy.ENERGY || capability == CapabilityOP.OP) {
-                return true;
-            }
-        }
-
-        return super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        EnumFacing dir = getDirection();
-        if (facing == dir || facing == dir.getOpposite()) {
-            if (capability == CapabilityEnergy.ENERGY) {
-                return CapabilityEnergy.ENERGY.cast(facing != dir ? outputReg : inputReg);
-            }
-            else if (capability == CapabilityOP.OP) {
-                return CapabilityOP.OP.cast(facing == dir ? outputReg : inputReg);
-
-            }
-        }
-
-        return super.getCapability(capability, facing);
-    }
+//    @Override
+//    public boolean hasCapability(Capability<?> capability, Direction facing) {
+//        if (facing == getDirection() || facing == getDirection().getOpposite()) {
+//            if (capability == CapabilityEnergy.ENERGY || capability == CapabilityOP.OP) {
+//                return true;
+//            }
+//        }
+//
+//        return super.hasCapability(capability, facing);
+//    }
+//
+//    @Override
+//    public <T> T getCapability(Capability<T> capability, Direction facing) {
+//        Direction dir = getDirection();
+//        if (facing == dir || facing == dir.getOpposite()) {
+//            if (capability == CapabilityEnergy.ENERGY) {
+//                return CapabilityEnergy.ENERGY.cast(facing != dir ? outputReg : inputReg);
+//            }
+//            else if (capability == CapabilityOP.OP) {
+//                return CapabilityOP.OP.cast(facing == dir ? outputReg : inputReg);
+//
+//            }
+//        }
+//
+//        return super.getCapability(capability, facing);
+//    }
 
     //endregion
 
@@ -114,7 +120,7 @@ public class TileFluxGate extends TileFlowGate {
                     return 0;
                 }
 
-                EnumFacing tInputSide = tile.getDirection().getOpposite();
+                Direction tInputSide = tile.getDirection().getOpposite();
                 long sim = EnergyUtils.insertEnergy(target, maxReceive, tInputSide, true);
                 long transfer = EnergyUtils.insertEnergy(target, Math.min(Math.max(0, tile.getFlow() - tile.transferThisTick), sim), tInputSide, simulate);
 
@@ -136,7 +142,7 @@ public class TileFluxGate extends TileFlowGate {
                     return 0;
                 }
 
-                EnumFacing tExtractSide = tile.getDirection();
+                Direction tExtractSide = tile.getDirection();
                 long sim = EnergyUtils.extractEnergy(source, maxExtract, tExtractSide, true);
                 long transfer = EnergyUtils.extractEnergy(source, Math.min(Math.max(0, tile.getFlow() - tile.transferThisTick), sim), tExtractSide, simulate);
 

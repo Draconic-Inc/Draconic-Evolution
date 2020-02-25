@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.utils;
 
 import codechicken.lib.reflect.ObfMapping;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -35,7 +36,7 @@ public class LogHelper {
     //Standard log entries.
 
     public static void dev(Object object) {
-        if (!ObfMapping.obfuscated || DEConfig.devLog) {
+        if (BrandonsCore.inDev || DEConfig.devLog) {
             log(Level.INFO, "[DEV]: " + object);
         }
     }
@@ -75,7 +76,7 @@ public class LogHelper {
     //log with format.
 
     public static void dev(String object, Object... format) {
-        if (!ObfMapping.obfuscated || DEConfig.devLog) {
+        if (BrandonsCore.inDev || DEConfig.devLog) {
             log(Level.INFO, "[DEV]: " + String.format(object, format));
         }
     }
@@ -182,7 +183,7 @@ public class LogHelper {
     //Log with trace element.
 
     public static void bigDev(String format, Object... data) {
-        if (!ObfMapping.obfuscated || DEConfig.devLog) {
+        if (BrandonsCore.inDev || DEConfig.devLog) {
             StackTraceElement[] trace = Thread.currentThread().getStackTrace();
             dev("****************************************");
             dev("* " + format, data);

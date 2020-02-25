@@ -2,36 +2,43 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.network.PacketBuffer;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 30/3/2016.
  */
 public class ContainerDissEnchanter extends ContainerBCBase<TileDissEnchanter> {
 
-    public ContainerDissEnchanter(InventoryPlayer invPlayer, TileDissEnchanter tile) {
-        super(invPlayer.player, tile);
+    public ContainerDissEnchanter(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+        this(DEContent.container_dissenchanter, windowId, playerInv.player, getClientTile(extraData));
+    }
 
+    public ContainerDissEnchanter(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileDissEnchanter tile) {
+        super(type, windowId, player, tile);
         addPlayerSlots(8, 60);
 
-        addSlotToContainer(new SlotCheckValid.IInv(tile, 0, 27, 23));
-        addSlotToContainer(new SlotCheckValid.IInv(tile, 1, 76, 23));
-        addSlotToContainer(new SlotCheckValid.IInv(tile, 2, 134, 23));
-
+        addSlot(new SlotCheckValid(tile.itemHandler, 0, 27, 23));
+        addSlot(new SlotCheckValid(tile.itemHandler, 1, 76, 23));
+        addSlot(new SlotCheckValid(tile.itemHandler, 2, 134, 23));
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer player) {
-        return tile.isUsableByPlayer(player);
+    public boolean canInteractWith(PlayerEntity player) {
+        return true;//tile.isUsableByPlayer(player);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int i) {
         Slot slot = getSlot(i);
 
         if (slot != null && slot.getHasStack()) {
@@ -44,12 +51,12 @@ public class ContainerDissEnchanter extends ContainerBCBase<TileDissEnchanter> {
                 }
             }
             else {
-                if (stack.getItem() == Items.BOOK) {
+                if (stack.getItem() == Items .BOOK) {
                     if (!mergeItemStack(stack, 36, 36 + 2, false)) {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if (!tile.isItemValidForSlot(0, stack) || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
+                else if (!tile.isItemValidForSlot(0, stack) || !mergeItemStack(stack, 36, 36 + tile.itemHandler.getSlots(), false)) {
                     return ItemStack.EMPTY;
                 }
             }

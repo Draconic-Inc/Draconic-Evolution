@@ -12,10 +12,9 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
@@ -60,7 +59,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 //                //Reset - Clears operations
 //                //Set Oipelone Loads
 //                //
-//                Minecraft mc = Minecraft.getMinecraft();
+//                Minecraft mc = Minecraft.getInstance();
 //                int width = 2;//mc.displayWidth;
 //                int height = 2;//mc.displayHeight;
 //
@@ -145,9 +144,8 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 //        });
 //    }
 
-
     @Override
-    public void render(TileChaosCrystal te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(TileChaosCrystal te, double x, double y, double z, float partialTicks, int destroyStage) {
         CCRenderState ccrs = CCRenderState.instance();
         ResourceHelperDE.bindTexture(DETextures.CHAOS_CRYSTAL);
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
@@ -157,19 +155,19 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 
         if (!te.guardianDefeated.get()) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0, -4.5, 0);
+            GlStateManager.translated(0, -4.5, 0);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             ResourceHelperDE.bindTexture(ResourceHelperDE.getResourceRAW("textures/entity/beacon_beam.png"));
-            GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
-            GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
+            GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
+            GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
             GlStateManager.disableLighting();
             GlStateManager.disableCull();
-            OpenGlHelper.glBlendFunc(770, 1, 1, 0);
+            GlStateManager.blendFuncSeparate(770, 1, 1, 0);
             float f2 = (float) ClientEventHandler.elapsedTicks + partialTicks;
             float f3 = -f2 * 0.2F - (float) MathHelper.floor(-f2 * 0.1F);
             GlStateManager.enableBlend();
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            GlStateManager.blendFuncSeparate(770, 771, 1, 0);
             GlStateManager.depthMask(false);
 
             double size = 0.7F;

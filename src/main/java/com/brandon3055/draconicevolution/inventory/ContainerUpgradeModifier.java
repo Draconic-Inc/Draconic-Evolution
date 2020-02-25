@@ -8,7 +8,7 @@ package com.brandon3055.draconicevolution.inventory;
 //
 //    private boolean slotsActive = true;
 //
-//    public ContainerUpgradeModifier(EntityPlayer player, TileUpgradeModifier tile){
+//    public ContainerUpgradeModifier(PlayerEntity player, TileUpgradeModifier tile){
 //        super(player, tile);
 //
 //        for (int x = 0; x < 9; x++) {
@@ -59,12 +59,12 @@ package com.brandon3055.draconicevolution.inventory;
 //    }
 //
 //    @Override
-//    public boolean canInteractWith(EntityPlayer playerIn) {
+//    public boolean canInteractWith(PlayerEntity playerIn) {
 //        return tile.isUseableByPlayer(playerIn);
 //    }
 //
 //    @Override
-//    public ItemStack transferStackInSlot(EntityPlayer player, int i)
+//    public ItemStack transferStackInSlot(PlayerEntity player, int i)
 //    {
 //        Slot slot = getSlot(i);
 //

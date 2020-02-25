@@ -4,14 +4,14 @@ import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ParticleFlame extends BCParticle {
     public float flameScale;
     public float lift = 0F;
@@ -24,12 +24,12 @@ public class ParticleFlame extends BCParticle {
         this.posX += (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.05F);
         this.posY += (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.05F);
         this.posZ += (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.05F);
-        this.flameScale = this.particleScale;
+        this.flameScale = this.baseScale;
         this.particleRed = 1.0F;
         this.particleGreen = 1.0F;
         this.particleBlue = 1.0F;
-        this.particleMaxAge = (int) (8.0D / (Math.random() * 0.8D + 0.2D)) + 4;
-        this.setParticleTextureIndex(48);
+        this.maxAge = (int) (8.0D / (Math.random() * 0.8D + 0.2D)) + 4;
+//        this.setParticleTextureIndex(48);
     }
 
     public void move(double x, double y, double z) {
@@ -37,14 +37,15 @@ public class ParticleFlame extends BCParticle {
         this.resetPositionToBB();
     }
 
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        float f = ((float) this.particleAge + partialTicks) / (float) this.particleMaxAge;
-        this.particleScale = this.flameScale * (1.0F - f * f * 0.5F);
+    @Override
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        float f = ((float) this.age + partialTicks) / (float) this.maxAge;
+        this.baseScale = this.flameScale * (1.0F - f * f * 0.5F);
         super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
     }
 
     public int getBrightnessForRender(float p_189214_1_) {
-        float f = ((float) this.particleAge + p_189214_1_) / (float) this.particleMaxAge;
+        float f = ((float) this.age + p_189214_1_) / (float) this.maxAge;
         f = MathHelper.clamp(f, 0.0F, 1.0F);
         int i = super.getBrightnessForRender(p_189214_1_);
         int j = i & 255;
@@ -63,7 +64,7 @@ public class ParticleFlame extends BCParticle {
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
 
-        if (this.particleAge++ >= this.particleMaxAge) {
+        if (this.age++ >= this.maxAge) {
             this.setExpired();
         }
 
@@ -80,13 +81,13 @@ public class ParticleFlame extends BCParticle {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static class Factory implements IBCParticleFactory {
         @Override
         public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
             ParticleFlame flame = new ParticleFlame(world, pos, speed);
             if (args.length >= 1) {
-                flame.flameScale = flame.particleScale = args[0] / 255F;
+                flame.flameScale = flame.baseScale = args[0] / 255F;
             }
             if (args.length >= 2) {
                 flame.lift = args[1] / 255F;

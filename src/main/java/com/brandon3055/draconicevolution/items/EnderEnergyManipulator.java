@@ -1,29 +1,28 @@
 package com.brandon3055.draconicevolution.items;
 
-import codechicken.lib.model.ModelRegistryHelper;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.registry.Feature;
-import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.client.render.item.RenderItemEnderEnergyManipulator;
 import com.brandon3055.draconicevolution.entity.EntityEnderEnergyManipulator;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -31,54 +30,65 @@ import java.util.List;
 /**
  * Created by brandon3055 on 9/05/2017.
  */
-public class EnderEnergyManipulator extends ItemBCore implements IRenderOverride {
+public class EnderEnergyManipulator extends ItemBCore /*implements IRenderOverride*/ {
 
-    public EnderEnergyManipulator() {
-        this.setMaxStackSize(8);
+    public EnderEnergyManipulator(Properties properties) {
+        super(properties);
+//        this.setMaxStackSize(8);
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        ItemStack stack = player.getHeldItem(hand);
-        IBlockState state = world.getBlockState(pos);
-        List<EntityEnderEnergyManipulator> list = world.getEntities(EntityEnderEnergyManipulator.class, EntitySelectors.IS_ALIVE);
-        if (world.provider.getDimension() == 1 && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, pos.getY(), 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
+    public ActionResultType onItemUse(ItemUseContext context) {
+        assert false; //Not Implemented
+        PlayerEntity player = context.getPlayer();
+        World cWorld = context.getWorld();
+        Hand hand = context.getHand();
+        BlockPos pos = context.getPos();
+
+        if (cWorld instanceof ServerWorld) {
+            ServerWorld world = (ServerWorld) cWorld;
+
+            ItemStack stack = context.getItem();
+            BlockState state = world.getBlockState(pos);
+            List<Entity> list = world.getEntities(null, Entity::isAlive);
+            if (world.getDimension().getType() == DimensionType.THE_END && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, pos.getY(), 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
+                if (!world.isRemote) {
+//                    EntityEnderEnergyManipulator entity = new EntityEnderEnergyManipulator(world);
+//                    entity.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+//                    world.addEntity(entity);
+                }
+
+                InventoryUtils.consumeHeldItem(player, stack, hand);
+                return ActionResultType.SUCCESS;
+            }
+
             if (!world.isRemote) {
-                EntityEnderEnergyManipulator entity = new EntityEnderEnergyManipulator(world);
-                entity.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-                world.spawnEntity(entity);
-            }
-
-            InventoryUtils.consumeHeldItem(player, stack, hand);
-            return EnumActionResult.SUCCESS;
-        }
-
-        if (!world.isRemote) {
-            if (!list.isEmpty()) {
-                player.sendMessage(new TextComponentTranslation("info.de.ender_energy_manipulator.running.msg"));
-            }
-            else {
-                player.sendMessage(new TextComponentTranslation("info.de.ender_energy_manipulator.location.msg"));
+                if (!list.isEmpty()) {
+                    player.sendMessage(new TranslationTextComponent("info.de.ender_energy_manipulator.running.msg"));
+                } else {
+                    player.sendMessage(new TranslationTextComponent("info.de.ender_energy_manipulator.location.msg"));
+                }
             }
         }
-        return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+        return super.onItemUse(context);
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerRenderer(Feature feature) {
-        ModelRegistryHelper.registerItemRenderer(this, new RenderItemEnderEnergyManipulator());
-    }
+//    @OnlyIn(Dist.CLIENT)
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        ModelRegistryHelper.registerItemRenderer(this, new RenderItemEnderEnergyManipulator());
+//    }
+//
+//    @Override
+//    public boolean registerNormal(Feature feature) {
+//        return false;
+//    }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean registerNormal(Feature feature) {
-        return false;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
-        tooltip.add(I18n.format("info.de.ender_energy_manipulator.info.txt"));
-        tooltip.add(I18n.format("info.de.ender_energy_manipulator.info2.txt"));
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TranslationTextComponent("info.de.ender_energy_manipulator.info.txt"));
+        tooltip.add(new TranslationTextComponent("info.de.ender_energy_manipulator.info2.txt"));
     }
 }

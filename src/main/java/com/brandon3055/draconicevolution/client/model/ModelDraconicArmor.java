@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.client.model;
 
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ArmorStandEntity;
 
 
-public class ModelDraconicArmor extends ModelBiped {
+public class ModelDraconicArmor extends BipedModel<LivingEntity> {
 
     public ModelRenderOBJ head;
     public ModelRenderOBJ body;
@@ -162,10 +163,10 @@ public class ModelDraconicArmor extends ModelBiped {
     }
 
     @Override
-    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (entity == null || entity instanceof EntityArmorStand) {
+    public void render(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if (entity == null || entity instanceof ArmorStandEntity) {
             isSneak = false;
-            isRiding = false;
+//            isRiding = false;
             isChild = false;
             //aimedBow = false;
 
@@ -195,14 +196,14 @@ public class ModelDraconicArmor extends ModelBiped {
             setRotationAngles(0, 0, 0, 0, 0, 0, null);
         }
         else {
-            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+//            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
         }
 
 
         GlStateManager.pushMatrix();
 
         if (entity.isSneaking()) {
-            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            GlStateManager.translatef(0.0F, 0.2F, 0.0F);
         }
 
         this.bipedHead.render(1F / 16F);

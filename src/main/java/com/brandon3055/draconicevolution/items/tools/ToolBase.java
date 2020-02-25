@@ -1,10 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import codechicken.lib.model.ModelRegistryHelper;
-import codechicken.lib.model.bakedmodels.OverrideListModel;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
-import com.brandon3055.brandonscore.registry.Feature;
-import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
@@ -12,36 +8,36 @@ import com.brandon3055.draconicevolution.api.itemconfig.*;
 import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.tool.IToolModelProvider;
-import com.brandon3055.draconicevolution.client.model.tool.ToolOverrideList;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.google.common.collect.Multimap;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -54,16 +50,15 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.ATTACK_DAMAGE;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
-public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride, IUpgradableItem, IConfigurableItem, IHudDisplay, IToolModelProvider {
+public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverride,*/ IUpgradableItem, IConfigurableItem, IHudDisplay, IToolModelProvider {
 
     private float baseAttackDamage;
     private float baseAttackSpeed;
     protected int energyPerOperation = 1024;//TODO Energy Cost
 
-    public ToolBase(/*double attackDamage, double attackSpeed*/) {
-//        this.baseAttackDamage = (float) attackDamage;
-//        this.baseAttackSpeed = (float) attackSpeed;
-        setMaxStackSize(1);
+    public ToolBase(Properties properties) {
+        super(properties);
+//        setMaxStackSize(1);
     }
 
     public abstract double getBaseAttackSpeedConfig();
@@ -78,21 +73,21 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
         loadEnergyStats();
     }
 
-    @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-        super.getSubItems(tab, subItems);
-
-        if (isInCreativeTab(tab)) {
-            ItemStack uberStack = new ItemStack(this);
-
-            for (String upgrade : getValidUpgrades(uberStack)) {
-                UpgradeHelper.setUpgradeLevel(uberStack, upgrade, getMaxUpgradeLevel(uberStack, upgrade));
-            }
-
-            setEnergy(uberStack, getCapacity(uberStack));
-            subItems.add(uberStack);
-        }
-    }
+//    @Override
+//    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
+//        super.getSubItems(tab, subItems);
+//
+//        if (isInCreativeTab(tab)) {
+//            ItemStack uberStack = new ItemStack(this);
+//
+//            for (String upgrade : getValidUpgrades(uberStack)) {
+//                UpgradeHelper.setUpgradeLevel(uberStack, upgrade, getMaxUpgradeLevel(uberStack, upgrade));
+//            }
+//
+//            setEnergy(uberStack, getCapacity(uberStack));
+//            subItems.add(uberStack);
+//        }
+//    }
 
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
@@ -134,20 +129,20 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
         Map<Enchantment, Integer> enchants = getAllEnchants(stack);
         Map<Enchantment, Integer> disEnchants = getDisabledEnchants(stack);
         enchants.forEach((enchantment, integer) -> {
-            ToolConfigHelper.getFieldStorage(stack).removeTag(enchantment.getName());
-            registry.register(stack, new BooleanConfigField(enchantment.getRegistryName() + "", false/*!disEnchants.containsKey(enchantment)*/, "config.field.toggleEnchant.description"){
+            ToolConfigHelper.getFieldStorage(stack).remove(enchantment.getName());
+            registry.register(stack, new BooleanConfigField(enchantment.getRegistryName() + "", false/*!disEnchants.containsKey(enchantment)*/, "config.field.toggleEnchant.description") {
                 @Override
                 public String getUnlocalizedName() {
-                    return enchantment.getTranslatedName(integer);
+                    return enchantment.getDisplayName(integer).getFormattedText();
                 }
 
                 @Override
-                public void readFromNBT(NBTTagCompound compound) {
+                public void readFromNBT(CompoundNBT compound) {
                     super.readFromNBT(compound);
                 }
 
                 @Override
-                public void writeToNBT(NBTTagCompound compound) {
+                public void writeToNBT(CompoundNBT compound) {
                     super.writeToNBT(compound);
                 }
 
@@ -166,11 +161,11 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     }
 
     public Map<Enchantment, Integer> getDisabledEnchants(ItemStack stack) {
-        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+        ListNBT list = ItemNBTHelper.getCompound(stack).getList("disableEnchants", 10);
         Map<Enchantment, Integer> disEnch = new HashMap<>();
-        for (int i = 0; i < list.tagCount(); i++) {
-            Enchantment enchantment = Enchantment.getEnchantmentByID(list.getCompoundTagAt(i).getShort("id"));
-            int level = list.getCompoundTagAt(i).getShort("lvl");
+        for (int i = 0; i < list.size(); i++) {
+            Enchantment enchantment = Enchantment.getEnchantmentByID(list.getCompound(i).getShort("id"));
+            int level = list.getCompound(i).getShort("lvl");
             disEnch.put(enchantment, level);
         }
         return disEnch;
@@ -186,41 +181,40 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     @Override
     public void onFieldChanged(ItemStack stack, IItemConfigField field) {
         if (field instanceof BooleanConfigField && field.getDescription().equals("config.field.toggleEnchant.description")) {
-            Enchantment target = Enchantment.REGISTRY.getObject(new ResourceLocation(field.getName()));
+            Enchantment target = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(field.getName()));
 
             if (EnchantmentHelper.getEnchantments(stack).containsKey(target)) {
                 Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
                 for (Enchantment enchantment : enchants.keySet()) {
                     if (enchantment == target) {
-                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
-                        NBTTagCompound ench = new NBTTagCompound();
-                        ench.setShort("id", (short) Enchantment.getEnchantmentID(enchantment));
-                        ench.setShort("lvl", enchants.get(enchantment).shortValue());
-                        list.appendTag(ench);
-                        ItemNBTHelper.getCompound(stack).setTag("disableEnchants", list);
+                        ListNBT list = ItemNBTHelper.getCompound(stack).getList("disableEnchants", 10);
+                        CompoundNBT ench = new CompoundNBT();
+                        ench.putString("id", enchantment.getRegistryName().toString());
+                        ench.putShort("lvl", enchants.get(enchantment).shortValue());
+                        list.add(ench);
+                        ItemNBTHelper.getCompound(stack).put("disableEnchants", list);
                         enchants.remove(enchantment);
                         EnchantmentHelper.setEnchantments(enchants, stack);
 
-                        ToolConfigHelper.getFieldStorage(stack).setBoolean(field.getName(), false);
+                        ToolConfigHelper.getFieldStorage(stack).putBoolean(field.getName(), false);
                         return;
                     }
                 }
-            }
-            else {
+            } else {
                 Map<Enchantment, Integer> enchants = getDisabledEnchants(stack);
                 for (Enchantment enchantment : enchants.keySet()) {
                     if (enchantment == target) {
-                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
-                        for (int i = 0; i < list.tagCount(); i++) {
-                            Enchantment e = Enchantment.getEnchantmentByID(list.getCompoundTagAt(i).getShort("id"));
+                        ListNBT list = ItemNBTHelper.getCompound(stack).getList("disableEnchants", 10);
+                        for (int i = 0; i < list.size(); i++) {
+                            Enchantment e = Enchantment.getEnchantmentByID(list.getCompound(i).getShort("id"));
                             if (e == enchantment) {
-                                list.removeTag(i);
+                                list.remove(i);
                                 break;
                             }
                         }
 
                         stack.addEnchantment(enchantment, enchants.get(enchantment));
-                        ToolConfigHelper.getFieldStorage(stack).setBoolean(field.getName(), true);
+                        ToolConfigHelper.getFieldStorage(stack).putBoolean(field.getName(), true);
                         return;
                     }
                 }
@@ -231,8 +225,8 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
 //                Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 //                for (Enchantment enchantment : enchants.keySet()) {
 //                    if (enchantment.getName().equals(target)) {
-//                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
-//                        NBTTagCompound ench = new NBTTagCompound();
+//                        ListNBT list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+//                        CompoundNBT ench = new CompoundNBT();
 //                        ench.setShort("id", (short) Enchantment.getEnchantmentID(enchantment));
 //                        ench.setShort("lvl", enchants.get(enchantment).shortValue());
 //                        list.appendTag(ench);
@@ -249,7 +243,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
 //                Map<Enchantment, Integer> enchants = getDisabledEnchants(stack);
 //                for (Enchantment enchantment : enchants.keySet()) {
 //                    if (enchantment.getName().equals(target)) {
-//                        NBTTagList list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
+//                        ListNBT list = ItemNBTHelper.getCompound(stack).getTagList("disableEnchants", 10);
 //                        for (int i = 0; i < list.tagCount(); i++) {
 //                            Enchantment e = Enchantment.getEnchantmentByID(list.getCompoundTagAt(i).getShort("id"));
 //                            if (e == enchantment) {
@@ -286,19 +280,20 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     @Override
     public abstract int getMaxUpgradeLevel(ItemStack stack, String upgrade);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         holdCTRLForUpgrades(tooltip, stack);
-        super.addInformation(stack, playerIn, tooltip, advanced);
+        super.addInformation(stack, worldIn, tooltip, flagIn);
     }
 
-    public static void holdCTRLForUpgrades(List<String> list, ItemStack stack) {
+    public static void holdCTRLForUpgrades(List<ITextComponent> list, ItemStack stack) {
         if (!(stack.getItem() instanceof IUpgradableItem)) return;
-        if (!InfoHelper.isCtrlKeyDown()) list.add(I18n.format("upgrade.de.holdCtrlForUpgrades.info", TextFormatting.AQUA + "" + TextFormatting.ITALIC, TextFormatting.RESET + "" + TextFormatting.GRAY));
-        else {
-            list.add(TextFormatting.GOLD + I18n.format("upgrade.de.upgrades.info"));
-            list.addAll(UpgradeHelper.getUpgradeStats(stack));
+        if (!Screen.hasControlDown()) {
+            list.add(new TranslationTextComponent("upgrade.de.holdCtrlForUpgrades.info", TextFormatting.AQUA + "" + TextFormatting.ITALIC, TextFormatting.RESET + "" + TextFormatting.GRAY));
+        } else {
+            list.add(new TranslationTextComponent("upgrade.de.upgrades.info").setStyle(new Style().setColor(TextFormatting.GOLD)));
+//            list.addAll(UpgradeHelper.getUpgradeStats(stack));//TODO Maybe?
         }
     }
 
@@ -308,8 +303,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
 
         if (level == 0) {
             return super.getCapacity(stack);
-        }
-        else {
+        } else {
             return super.getCapacity(stack) * (int) Math.pow(2, level + 1);
         }
     }
@@ -318,26 +312,25 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
 
     //region Custom Item Rendering
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerRenderer(Feature feature) {
-        ModelResourceLocation modelLocation = new ModelResourceLocation("draconicevolution:" + feature.getName(), "inventory");
-        ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
-        ModelLoader.setCustomMeshDefinition(this, stack -> modelLocation);
-        ModelRegistryHelper.register(modelLocation, new OverrideListModel(new ToolOverrideList()));
-    }
+//    @OnlyIn(Dist.CLIENT)
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        ModelResourceLocation modelLocation = new ModelResourceLocation("draconicevolution:" + feature.getName(), "inventory");
+//        ModelLoader.setCustomModelResourceLocation(this, 0, modelLocation);
+//        ModelLoader.setCustomMeshDefinition(this, stack -> modelLocation);
+//        ModelRegistryHelper.register(modelLocation, new OverrideListModel(new ToolOverrideList()));
+//    }
 
     //endregion
 
     //region Attack
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
         if (this instanceof IAOEWeapon && player.getCooledAttackStrength(0.5F) >= 0.95F && ((IAOEWeapon) this).getWeaponAOE(stack) > 0) {
+            List<LivingEntity> entities = player.world.getEntitiesWithinAABB(LivingEntity.class, entity.getBoundingBox().grow(((IAOEWeapon) this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon) this).getWeaponAOE(stack)));
 
-            List<EntityLivingBase> entities = player.world.getEntitiesWithinAABB(EntityLivingBase.class, entity.getEntityBoundingBox().grow(((IAOEWeapon) this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon) this).getWeaponAOE(stack)));
-
-            for (EntityLivingBase aoeEntity : entities) {
+            for (LivingEntity aoeEntity : entities) {
                 if (aoeEntity != player && aoeEntity != entity && !player.isOnSameTeam(entity) && extractAttackEnergy(stack, aoeEntity, player)) {
                     aoeEntity.knockBack(player, 0.4F, (double) MathHelper.sin(player.rotationYaw * 0.017453292F), (double) (-MathHelper.cos(player.rotationYaw * 0.017453292F)));
                     aoeEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), getAttackDamage(stack));
@@ -352,7 +345,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
         return super.onLeftClickEntity(stack, player, entity);
     }
 
-    protected boolean extractAttackEnergy(ItemStack stack, Entity entity, EntityPlayer player) {
+    protected boolean extractAttackEnergy(ItemStack stack, Entity entity, PlayerEntity player) {
         if (getEnergyStored(stack) > energyPerOperation) {
             modifyEnergy(stack, -energyPerOperation);
             return true;
@@ -373,12 +366,12 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
     }
 
     @Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot equipmentSlot, ItemStack stack) {
+    public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot, ItemStack stack) {
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
 
-        if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) getAttackDamage(stack) - 1, 0));
-            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double) getAttackSpeed(stack), 0));
+        if (equipmentSlot == EquipmentSlotType.MAINHAND) {
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) getAttackDamage(stack) - 1, AttributeModifier.Operation.ADDITION));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double) getAttackSpeed(stack), AttributeModifier.Operation.ADDITION));
         }
 
         return multimap;
@@ -390,7 +383,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
 
     public abstract int getToolTier(ItemStack stack);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
         ItemConfigFieldRegistry registry = new ItemConfigFieldRegistry();

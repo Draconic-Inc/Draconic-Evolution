@@ -2,13 +2,14 @@ package com.brandon3055.draconicevolution.integration;
 
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.integration.jei.DEJEIPlugin;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,40 +34,40 @@ public class ModHelper {
     private static Item bedrockSword;
 
     public static void init() {
-        isTConInstalled = Loader.isModLoaded("tconstruct");
-        isAvaritiaInstalled = Loader.isModLoaded("avaritia");
-        isRotaryCraftInstalled = Loader.isModLoaded("rotarycraft");
-        isJEIInstalled = Loader.isModLoaded("jei");
-        isBaublesInstalled = Loader.isModLoaded("baubles");
+        isTConInstalled = ModList.get().isLoaded("tconstruct");
+        isAvaritiaInstalled = ModList.get().isLoaded("avaritia");
+        isRotaryCraftInstalled = ModList.get().isLoaded("rotarycraft");
+        isJEIInstalled = ModList.get().isLoaded("jei");
+        isBaublesInstalled = ModList.get().isLoaded("baubles");
     }
 
-    public static boolean isHoldingCleaver(EntityPlayer player) {
+    public static boolean isHoldingCleaver(PlayerEntity player) {
         if (!isTConInstalled) {
             return false;
         }
         else if (cleaver == null) {
-            cleaver = Item.REGISTRY.getObject(new ResourceLocation("tconstruct", "cleaver"));
+            cleaver = ForgeRegistries.ITEMS.getValue(new ResourceLocation("tconstruct", "cleaver"));
         }
         return cleaver != null && HandHelper.getItem(player, cleaver) != null;
     }
 
-    public static boolean isHoldingAvaritiaSword(EntityPlayer player) {
+    public static boolean isHoldingAvaritiaSword(PlayerEntity player) {
         if (!isAvaritiaInstalled) {
             return false;
         }
         else if (avaritiaSword == null) {
-            avaritiaSword = Item.REGISTRY.getObject(new ResourceLocation("Avaritia", "Infinity_Sword"));
+            avaritiaSword = ForgeRegistries.ITEMS.getValue(new ResourceLocation("avaritia", "infinity_sword"));
         }
 
-        return avaritiaSword != null && player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem().equals(avaritiaSword);
+        return avaritiaSword != null && !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem().equals(avaritiaSword);
     }
 
-    public static boolean isHoldingBedrockSword(EntityPlayer player) {
+    public static boolean isHoldingBedrockSword(PlayerEntity player) {
         if (!isRotaryCraftInstalled) {
             return false;
         }
         else if (bedrockSword == null) {
-            bedrockSword = Item.REGISTRY.getObject(new ResourceLocation("rotarycraft", "rotarycraft_item_bedsword"));
+            bedrockSword =  ForgeRegistries.ITEMS.getValue(new ResourceLocation("rotarycraft", "rotarycraft_item_bedsword"));
         }
 
         return bedrockSword != null && !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem().equals(bedrockSword);
@@ -77,7 +78,7 @@ public class ModHelper {
             return false;
         }
         ResourceLocation registry = stack.getItem().getRegistryName();
-        if (registry == null || registry.getResourceDomain().equals("tconstruct")) {
+        if (registry == null || registry.getNamespace().equals("tconstruct")) {
             return false;
         }
 
@@ -86,7 +87,7 @@ public class ModHelper {
 
     public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event) {
         if (summery == null) return event.getAmount();
-        EntityPlayer attacker = event.getSource().getTrueSource() instanceof EntityPlayer ? (EntityPlayer) event.getSource().getTrueSource() : null;
+        PlayerEntity attacker = event.getSource().getTrueSource() instanceof PlayerEntity ? (PlayerEntity) event.getSource().getTrueSource() : null;
 
         if (attacker == null) {
             return event.getAmount();
@@ -134,9 +135,9 @@ public class ModHelper {
      */
     public static Map<String, String> getLoadedMods() {
         if (loadedMods == null) {
-            loadedMods = Collections.synchronizedMap(new HashMap<String, String>());
-            for (ModContainer mod : Loader.instance().getModList()) {
-                loadedMods.put(mod.getModId(), mod.getName());
+            loadedMods = Collections.synchronizedMap(new HashMap<>());
+            for (ModInfo mod : ModList.get().getMods()) {
+                loadedMods.put(mod.getModId(), mod.getDisplayName());
             }
         }
         return loadedMods;

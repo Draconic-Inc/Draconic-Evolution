@@ -3,28 +3,19 @@ package com.brandon3055.draconicevolution.items;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
-import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
-import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,28 +41,33 @@ public class Debugger extends ItemBCore {
         MODES.put(8, "Light");
     }
 
+    public Debugger(Properties properties) {
+        super(properties);
+    }
+
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
         World world = player.world;
-        EntityChaosGuardian guardian = DataUtils.firstMatch(world.getEntitiesWithinAABB(EntityChaosGuardian.class, player.getEntityBoundingBox().grow(300)), entityChaosGuardian -> true);
-        if (guardian != null) {
-            guardian.removePassengers();
-            if (entity instanceof EntityCreeper) {
-                ((EntityCreeper) entity).enablePersistence();
-            }
-            entity.startRiding(guardian, true);
-            LogHelper.dev("Success");
-        }
+//        EntityChaosGuardian guardian = DataUtils.firstMatch(world.getEntitiesWithinAABB(EntityChaosGuardian.class, player.getEntityBoundingBox().grow(300)), entityChaosGuardian -> true);
+//        if (guardian != null) {
+//            guardian.removePassengers();
+//            if (entity instanceof CreeperEntity) {
+//                ((CreeperEntity) entity).enablePersistence();
+//            }
+//            entity.startRiding(guardian, true);
+//            LogHelper.dev("Success");
+//        }
 
 
         return super.onLeftClickEntity(stack, player, entity);
     }
 
+
     @Override
-    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 
 //        if (!worldIn.isRemote % 500 == 0) {
-//            EntityPlayerMP player = (EntityPlayerMP) entityIn;
+//            ServerPlayerEntity player = (ServerPlayerEntity) entityIn;
 //
 //            for (StatBase stat : StatList.ALL_STATS) {
 //                int value = player.getStatFile().readStat(stat);
@@ -117,14 +113,14 @@ public class Debugger extends ItemBCore {
 
     //region Item Junk
 
-    @Override
-    public NBTTagCompound getNBTShareTag(ItemStack stack) {
-        return super.getNBTShareTag(stack);
-    }
-
-    @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-    }
+//    @Override
+//    public CompoundNBT getNBTShareTag(ItemStack stack) {
+//        return super.getNBTShareTag(stack);
+//    }
+//
+//    @Override
+//    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
+//    }
 
     @Override
     public boolean hasEffect(ItemStack stack) {
@@ -134,7 +130,7 @@ public class Debugger extends ItemBCore {
 //    private
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
         //if (!world.isRemote) {
         double posX = player.posX - (player.posX % 16) + 8;
@@ -203,7 +199,7 @@ public class Debugger extends ItemBCore {
 //            LogHelper.dev("Sent Size: " + packet.toPacket().payload().readableBytes());
 //            packet.sendToPlayer(player);
 //
-////            DraconicEvolution.network.sendTo(new PacketCompressionTest(), (EntityPlayerMP) player);
+////            DraconicEvolution.network.sendTo(new PacketCompressionTest(), (ServerPlayerEntity) player);
 //        }
 
 
@@ -220,7 +216,7 @@ public class Debugger extends ItemBCore {
 //                    LogHelper.dev("Passengers: " + e.getPassengers());
 //                }
 //                entity.startRiding(e, true);
-//                ((EntityPlayerMP) player).connection.sendPacket(new SPacketSetPassengers(e));
+//                ((ServerPlayerEntity) player).connection.sendPacket(new SPacketSetPassengers(e));
 //                break;
 //            }
 //
@@ -299,8 +295,8 @@ public class Debugger extends ItemBCore {
 //            return new ActionResult(EnumActionResult.FAIL, itemStack);
 //        }
 
-//        if (!world.isRemote && world instanceof WorldServer) {
-//            BlockPlacementBatcher batcher = new BlockPlacementBatcher((WorldServer)world);
+//        if (!world.isRemote && world instanceof ServerWorld) {
+//            BlockPlacementBatcher batcher = new BlockPlacementBatcher((ServerWorld)world);
 //
 //            int range = 100;
 //
@@ -319,8 +315,8 @@ public class Debugger extends ItemBCore {
 //
 ////            batcher.finish();
 ////            SPacketChunkData data = new SPacketChunkData(chunk, 65535);
-////            if (player instanceof EntityPlayerMP) {
-////                  ((EntityPlayerMP) player).connection.sendPacket(data);
+////            if (player instanceof ServerPlayerEntity) {
+////                  ((ServerPlayerEntity) player).connection.sendPacket(data);
 ////            }
 //        }
 
@@ -347,8 +343,8 @@ public class Debugger extends ItemBCore {
 //
 //
 ////                    SPacketChunkData data = new SPacketChunkData(chunk, 65535);
-////                    if (player instanceof EntityPlayerMP) {
-////                        ((EntityPlayerMP) player).connection.sendPacket(data);
+////                    if (player instanceof ServerPlayerEntity) {
+////                        ((ServerPlayerEntity) player).connection.sendPacket(data);
 ////                    }
 //                }
 //            }
@@ -388,8 +384,8 @@ public class Debugger extends ItemBCore {
 //
 //
 //                    SPacketChunkData data = new SPacketChunkData(chunk, 65535);
-//                    if (player instanceof EntityPlayerMP) {
-//                        ((EntityPlayerMP) player).connection.sendPacket(data);
+//                    if (player instanceof ServerPlayerEntity) {
+//                        ((ServerPlayerEntity) player).connection.sendPacket(data);
 //                    }
 //                }
 //            }
@@ -634,7 +630,7 @@ public class Debugger extends ItemBCore {
         return super.onItemRightClick(world, player, hand);
     }
 
-    public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, PlayerEntity player, Hand hand) {
 
 //
 ////
@@ -677,7 +673,7 @@ public class Debugger extends ItemBCore {
 //
 //                    world.setBlockState(pos, Blocks.LOG.getDefaultState());
 //
-//                    for (EnumFacing facing : EnumFacing.VALUES) {
+//                    for (Direction facing : Direction.values()) {
 //                        BlockPos pos2 = pos.offset(facing);
 //                        if (world.isAirBlock(pos2)) {
 //                            world.setBlockState(pos2, Blocks.LEAVES.getDefaultState());
@@ -716,7 +712,7 @@ public class Debugger extends ItemBCore {
 //
 //                    world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
 //
-//                    for (EnumFacing facing : EnumFacing.VALUES) {
+//                    for (Direction facing : Direction.values()) {
 //                        BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
 //                        if (world.isAirBlock(pos)) {
 //                            world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
@@ -752,7 +748,7 @@ public class Debugger extends ItemBCore {
 //
 //                    world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
 //
-//                    for (EnumFacing facing : EnumFacing.VALUES) {
+//                    for (Direction facing : Direction.values()) {
 //                        BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
 //                        if (world.isAirBlock(pos)) {
 //                            world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
@@ -772,10 +768,10 @@ public class Debugger extends ItemBCore {
                 mode = 0;
             }
             if (!world.isRemote) {
-                player.sendMessage(new TextComponentString(MODES.get(mode)));
+                player.sendMessage(new StringTextComponent(MODES.get(mode)));
             }
             ItemNBTHelper.setInteger(stack, "mode", mode);
-            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+            return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
 
         switch (mode) {
@@ -797,7 +793,7 @@ public class Debugger extends ItemBCore {
                 break;
             case 4:
                 if (!world.isRemote) {
-                    player.openGui(DraconicEvolution.instance, 2016, world, 0, 0, 0);
+//                    player.openGui(DraconicEvolution.instance, 2016, world, 0, 0, 0);
                 }
                 break;
 
@@ -818,13 +814,16 @@ public class Debugger extends ItemBCore {
                 break;
         }
 
-        return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+        return new ActionResult<ItemStack>(ActionResultType.PASS, stack);
     }
 
-
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
+        Direction side = context.getFace();
+
+//        ItemStack stack = player.getHeldItem(hand);
         //        if (world.isRemote) return EnumActionResult.PASS;
 //
 //        WorldGenMinableCluster cluster = new WorldGenMinableCluster(BlockOre.oreCopper, 100);
@@ -845,7 +844,7 @@ public class Debugger extends ItemBCore {
 //            LogHelper.dev(StackReference.fromString(s));
 //            LogHelper.dev(StackReference.fromString(s).createStack());
 //            LogHelper.dev(StackReference.fromString(s).createStack().getTagCompound().getString("SomeTag"));
-////            NBTTagCompound c = new NBTTagCompound();
+////            CompoundNBT c = new CompoundNBT();
 ////            c.setString("TestS", "What?");
 ////            c.setString("Test2", "Why?");
 ////            c.setString("Test3", "I Dont Get It...");
@@ -872,7 +871,7 @@ public class Debugger extends ItemBCore {
 ////            for (int i = 0; i < inventory.getSizeInventory(); i++) {
 ////                ItemStack s = inventory.removeStackFromSlot(i);
 ////                if (s != null) {
-////                    EntityItem item = new EntityItem(world, player.posX, player.posY - 10, player.posZ, s);
+////                    ItemEntity item = new ItemEntity(world, player.posX, player.posY - 10, player.posZ, s);
 ////                    world.spawnEntityInWorld(item);
 ////                }
 ////            }
@@ -885,58 +884,58 @@ public class Debugger extends ItemBCore {
 
         switch (mode) {
             case 0:
-                return finishCraft(world, pos);
+//                return finishCraft(world, pos);
 
             case 1:
             case 2:
                 TileEntity tile = world.getTileEntity(pos);
                 if (mode == 1 && tile instanceof IEnergyReceiver) {
                     if (!world.isRemote) {
-                        LogHelper.info(((IEnergyReceiver) tile).receiveEnergy(side, Integer.MAX_VALUE, false));
+//                        LogHelper.info(((IEnergyReceiver) tile).receiveEnergy(side, Integer.MAX_VALUE, false));
                     }
-                    return EnumActionResult.PASS;
-                }
-                else if (mode == 2 && tile instanceof IEnergyProvider) {
+                    return ActionResultType.PASS;
+                } else if (mode == 2 && tile instanceof IEnergyProvider) {
                     if (!world.isRemote) {
-                        ((IEnergyProvider) tile).extractEnergy(side, Integer.MAX_VALUE, false);
+//                        ((IEnergyProvider) tile).extractEnergy(side, Integer.MAX_VALUE, false);
                     }
-                    return EnumActionResult.PASS;
+                    return ActionResultType.PASS;
                 }
                 break;
 
         }
 
-        return miscFunctions(stack, player, world, pos, side, hitX, hitY, hitZ, hand, mode);
+//        return miscFunctions(stack, context.getPlayer(), world, pos, side, hitX, hitY, hitZ, hand, mode);
+        return ActionResultType.PASS;
     }
 
     //endregion
 
-    public EnumActionResult miscFunctions(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand, int mode) {
-        IBlockState state = world.getBlockState(pos);
-
-        return EnumActionResult.PASS;
-    }
+//    public EnumActionResult miscFunctions(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand, int mode) {
+//        BlockState state = world.getBlockState(pos);
+//
+//        return EnumActionResult.PASS;
+//    }
 
     //region Functions
 
     private void openWiki() {
-//        Minecraft.getMinecraft().displayGuiScreen(new GuiModWiki());
+//        Minecraft.getInstance().displayGuiScreen(new GuiModWiki());
     }
 
-    public EnumActionResult finishCraft(World world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
+//    public EnumActionResult finishCraft(World world, BlockPos pos) {
+//        TileEntity tile = world.getTileEntity(pos);
+//
+//        if (tile instanceof TileFusionCraftingCore && !world.isRemote) {
+//            if (((TileFusionCraftingCore) tile).craftingInProgress()) {
+//                ((TileFusionCraftingCore) tile).craftingStage.set((short) 2000);
+//            }
+//            return EnumActionResult.FAIL;
+//        }
+//
+//        return EnumActionResult.PASS;
+//    }
 
-        if (tile instanceof TileFusionCraftingCore && !world.isRemote) {
-            if (((TileFusionCraftingCore) tile).craftingInProgress()) {
-                ((TileFusionCraftingCore) tile).craftingStage.set((short)2000);
-            }
-            return EnumActionResult.FAIL;
-        }
-
-        return EnumActionResult.PASS;
-    }
-
-    private void destroyUniverse(EntityPlayer player) {
+    private void destroyUniverse(PlayerEntity player) {
         /*
          * == Logic Design ideas ==
          * Zones:
@@ -980,33 +979,33 @@ public class Debugger extends ItemBCore {
 //
 //        }
 
-//        ProcessExplosion explosion = new ProcessExplosion(new Vec3D(player).getPos(), 350, (WorldServer) player.world, 10);
+//        ProcessExplosion explosion = new ProcessExplosion(new Vec3D(player).getPos(), 350, (ServerWorld) player.world, 10);
 //        ProcessHandler.addProcess(explosion);
 
-        IBlockState lava = Blocks.FLOWING_LAVA.getDefaultState();
-        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
-        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
-            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
-            if (pyro.canBePlacedInWorld()) {
-                lava = pyro.getBlock().getDefaultState();
-            }
-        }
-
-        World world = player.world;
-        world.createExplosion(null, player.posX, player.posY, player.posZ, 8, true);
-        int c = 25 + world.rand.nextInt(25);
-        for (int i = 0; i < c; i++) {
-            EntityFallingBlock entity = new EntityFallingBlock(world, ((int) player.posX) + 0.5, (int) player.posY, ((int) player.posZ) + 0.5, lava);
-            entity.fallTime = 1;
-            entity.shouldDropItem = false;
-            double vMod = 0.5 + (2 * world.rand.nextDouble());
-            entity.addVelocity((world.rand.nextDouble() - 0.5) * vMod, (world.rand.nextDouble() / 1.5) * vMod, (world.rand.nextDouble() - 0.5) * vMod);
-            world.spawnEntity(entity);
-        }
+//        BlockState lava = Blocks.FLOWING_LAVA.getDefaultState();
+//        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
+//        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
+//            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
+//            if (pyro.canBePlacedInWorld()) {
+//                lava = pyro.getBlock().getDefaultState();
+//            }
+//        }
+//
+//        World world = player.world;
+//        world.createExplosion(null, player.posX, player.posY, player.posZ, 8, true);
+//        int c = 25 + world.rand.nextInt(25);
+//        for (int i = 0; i < c; i++) {
+//            EntityFallingBlock entity = new EntityFallingBlock(world, ((int) player.posX) + 0.5, (int) player.posY, ((int) player.posZ) + 0.5, lava);
+//            entity.fallTime = 1;
+//            entity.shouldDropItem = false;
+//            double vMod = 0.5 + (2 * world.rand.nextDouble());
+//            entity.addVelocity((world.rand.nextDouble() - 0.5) * vMod, (world.rand.nextDouble() / 1.5) * vMod, (world.rand.nextDouble() - 0.5) * vMod);
+//            world.spawnEntity(entity);
+//        }
 
 
 //        for (BlockPos pos : BlockPos.getAllInBox(new Vec3D(player).getPos().add(-20, -20, -20), new Vec3D(player).getPos().add(20, 20, 20))) {
-//            IBlockState state = player.world.getBlockState(pos);
+//            BlockState state = player.world.getBlockState(pos);
 //            if (state.getBlock() instanceof BlockFalling) {
 //                state.getBlock().updateTick(player.world, pos, state, player.world.rand);
 //            }
@@ -1018,7 +1017,7 @@ public class Debugger extends ItemBCore {
 //            explosion.updateProcess();
 //        }
 //
-//        WorldServer world = (WorldServer) player.world;
+//        ServerWorld world = (ServerWorld) player.world;
 //        LogHelper.dev("Finding Chunks to relight");
 //        List<ChunkPos> chunks = new LinkedHashList<>();
 //        for (BlockPos pos : explosion.destroyedCache) {
@@ -1073,7 +1072,7 @@ public class Debugger extends ItemBCore {
 //LogHelper.info(centuries+" "+years+" "+Integer.MAX_VALUE);
 
 
-////    private void generate(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+////    private void generate(ItemStack itemStack, World world, PlayerEntity player, Hand hand) {
 ////
 ////        int posX = (int)player.posX;
 ////        double posY = (int)player.posY;
@@ -1111,7 +1110,7 @@ public class Debugger extends ItemBCore {
 ////
 ////                world.setBlockState(pos, Blocks.LOG.getDefaultState());
 ////
-////                for (EnumFacing facing : EnumFacing.VALUES){
+////                for (Direction facing : Direction.values()){
 ////                    BlockPos pos2 = pos.offset(facing);
 ////                    if (world.isAirBlock(pos2)) {
 ////                        world.setBlockState(pos2, Blocks.LEAVES.getDefaultState());
@@ -1150,7 +1149,7 @@ public class Debugger extends ItemBCore {
 ////
 ////                world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
 ////
-////                for (EnumFacing facing : EnumFacing.VALUES) {
+////                for (Direction facing : Direction.values()) {
 ////                    BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
 ////                    if (world.isAirBlock(pos)) {
 ////                        world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
@@ -1186,7 +1185,7 @@ public class Debugger extends ItemBCore {
 ////
 ////                world.setBlockState(vec.getPos(), Blocks.LOG.getDefaultState());
 ////
-////                for (EnumFacing facing : EnumFacing.VALUES){
+////                for (Direction facing : Direction.values()){
 ////                    BlockPos pos = vec.getPos().add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
 ////                    if (world.isAirBlock(pos)) {
 ////                        world.setBlockState(pos, Blocks.LEAVES.getDefaultState());
@@ -1205,13 +1204,13 @@ public class Debugger extends ItemBCore {
 //
 //
 ////        for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, -1, -1), position.add(1, -1, 1))) {
-////            IBlockState state = worldIn.getBlockState(pos);
+////            BlockState state = worldIn.getBlockState(pos);
 ////            if (!(state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS)) {
 ////                return false;
 ////            }
 ////        }
 //        //for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, 1, 1))) {
-//        //    IBlockState state = worldIn.getBlockState(pos);
+//        //    BlockState state = worldIn.getBlockState(pos);
 //        //    Block block = state.getBlock();
 //        //    if (!block.isLeaves(state, worldIn, pos) && !block.isWood(worldIn, pos) && block != Blocks.tallgrass && block != Blocks.grass && block != Blocks.vine) {
 //        //        return false;
@@ -1224,7 +1223,7 @@ public class Debugger extends ItemBCore {
 //        for (BlockPos pos : BlockPos.getAllInBox(position.add(-1, 0, -1), position.add(1, trunkHeight, 1))) {
 //            worldIn.setBlockState(pos, Blocks.LOG.getDefaultState());
 //        }
-//        for (EnumFacing dir : EnumFacing.HORIZONTALS) {
+//        for (Direction dir : Direction.HORIZONTALS) {
 //            BlockPos edgePos = position.offset(dir, 2);
 //            switch (dir) {
 //                case NORTH:
@@ -1240,7 +1239,7 @@ public class Debugger extends ItemBCore {
 //                    generateVines(worldIn, rand, dir, edgePos.add(0, 0, -1), edgePos.add(0, trunkHeight, 1));
 //                    continue;
 //                default:
-//                    LogHelper.info("Invalid side in EnumFacing.HORIZONTALS [%s]", dir.getName());
+//                    LogHelper.info("Invalid side in Direction.HORIZONTALS [%s]", dir.getName());
 //            }
 //        }
 //        BlockPos rayStartPos = position.add(0, trunkHeight - 3, 0);
@@ -1362,7 +1361,7 @@ public class Debugger extends ItemBCore {
 //        return true;
 //    }
 //
-//    private void generateVines(World world, Random rand, EnumFacing dir, BlockPos from, BlockPos to) {
+//    private void generateVines(World world, Random rand, Direction dir, BlockPos from, BlockPos to) {
 //        for (BlockPos pos : BlockPos.getAllInBox(from, to)) {
 ////            if (rand.nextInt(5) == 1 && world.getBlockState(pos).getBlock() == Blocks.air) {
 ////                world.setBlockState(pos, Blocks.vine.getDefaultState().withProperty(BlockVine.getPropertyFor(dir.getOpposite()), true));
@@ -1375,7 +1374,7 @@ public class Debugger extends ItemBCore {
 //
 ////        //for (BlockPos pos : l) {
 ////            world.setBlockState(pos, Blocks.log.getDefaultState());
-////            for (EnumFacing side : EnumFacing.VALUES) {
+////            for (Direction side : Direction.values()) {
 ////                BlockPos leavesPos = pos.offset(side);
 ////                if (world.isAirBlock(leavesPos)) {
 ////                    world.setBlockState(leavesPos, Blocks.leaves.getDefaultState());

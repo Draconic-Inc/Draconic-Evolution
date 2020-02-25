@@ -1,12 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCBase;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedDouble;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
-import com.brandon3055.draconicevolution.client.DEParticles;
-import net.minecraft.util.ITickable;
+import com.brandon3055.draconicevolution.DEContent;
+import net.minecraft.tileentity.ITickableTileEntity;
 
 import java.util.Random;
 
@@ -15,7 +14,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_S
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileParticleGenerator extends TileBCBase implements ITickable {
+public class TileParticleGenerator extends TileBCBase implements ITickableTileEntity {
 
     //@formatter:off
     public final ManagedInt    red           = register(new ManagedInt("red", 0, SAVE_BOTH_SYNC_TILE));
@@ -49,19 +48,21 @@ public class TileParticleGenerator extends TileBCBase implements ITickable {
     public final ManagedInt    delay         = register(new ManagedInt("delay", 40, SAVE_BOTH_SYNC_TILE));
     public final ManagedInt    type          = register(new ManagedInt("type", 0, SAVE_BOTH_SYNC_TILE));
     public final ManagedBool   collision     = register(new ManagedBool("collision", false, SAVE_BOTH_SYNC_TILE));
+
+    public final ManagedBool   inverted      = register(new ManagedBool("inverted", false, SAVE_BOTH_SYNC_TILE));
     //@formatter:on
 
     private int tick = 0;
 
     public TileParticleGenerator() {
-        setShouldRefreshOnBlockChange();
+        super(DEContent.tile_particle_generator);
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
 
-        if (world.isRemote && (getBlockMetadata() == 1 != world.isBlockIndirectlyGettingPowered(getPos()) > 0)) {
+        if (world.isRemote && (inverted.get() != world.isBlockPowered(pos))) {
             if (tick >= delay.get()) {
                 Random rand = world.rand;
 
@@ -80,7 +81,7 @@ public class TileParticleGenerator extends TileBCBase implements ITickable {
                 final int gravity = (int) Math.round((this.gravity.get() + randomGravity.get() * rand.nextDouble()) * 10000);
                 final int fade = this.fade.get() + rand.nextInt(randomFade.get() + 1);
 
-                BCEffectHandler.spawnFX(DEParticles.CUSTOM, world, X, Y, Z, MX, MY, MZ, 32 * Math.max(1, this.scale.get()), R, G, B, alpha, scale, life, gravity, fade, type.get(), collision.get() ? 1 : 0);
+//                BCEffectHandler.spawnFX(DEParticles.CUSTOM, world, X, Y, Z, MX, MY, MZ, 32 * Math.max(1, this.scale.get()), R, G, B, alpha, scale, life, gravity, fade, type.get(), collision.get() ? 1 : 0);
 
                 tick = 0;
             }

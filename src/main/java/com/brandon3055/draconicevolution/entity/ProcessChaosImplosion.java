@@ -95,7 +95,7 @@ public class ProcessChaosImplosion implements IProcess {
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
 
-                if (energy >= 0) world.setBlockToAir(new BlockPos(xCoord, y, zCoord));
+                if (energy >= 0) world.removeBlock(new BlockPos(xCoord, y, zCoord), false);
                 energy -= 0.5F + (0.1F * (yCoord - y));
             }
 
@@ -109,7 +109,7 @@ public class ProcessChaosImplosion implements IProcess {
                 }
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
-                if (energy >= 0) world.setBlockToAir(new BlockPos(xCoord, y, zCoord));
+                if (energy >= 0) world.removeBlock(new BlockPos(xCoord, y, zCoord), false);
 
                 energy -= 0.5F + (0.1F * (y - yCoord));
             }

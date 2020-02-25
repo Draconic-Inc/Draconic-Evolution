@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.api;
 /**
  * Created by Brandon on 11/7/2015.
  */
-@Deprecated //This is going to be replaced by something else. Im just keeping it here as a reminder.
+@Deprecated //TODO This is going to be replaced by something else. Im just keeping it here as a reminder.
 public class GeneratorOverride {
 //
 //	/**Spawns a comet at the given x y z coordinates*/

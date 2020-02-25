@@ -6,17 +6,28 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Set;
+
 /**
  * Created by brandon3055 on 5/06/2016.
  */
 public class DraconicAxe extends WyvernAxe {
-    public DraconicAxe() {
-        super(/*ToolStats.DRA_AXE_ATTACK_DAMAGE, ToolStats.DRA_AXE_ATTACK_SPEED, */AXE_OVERRIDES);
-//        this.baseMiningSpeed = (float) ToolStats.DRA_AXE_MINING_SPEED;
-//        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
-//        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
-        this.setHarvestLevel("axe", 10);
+//    public DraconicAxe(Set effectiveBlocks) {
+//        super(effectiveBlocks);
+//    }
+
+    public DraconicAxe(Properties properties) {
+        super(properties);
     }
+
+
+    //    public DraconicAxe() {
+//        super(/*ToolStats.DRA_AXE_ATTACK_DAMAGE, ToolStats.DRA_AXE_ATTACK_SPEED, */AXE_OVERRIDES);
+////        this.baseMiningSpeed = (float) ToolStats.DRA_AXE_MINING_SPEED;
+////        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
+////        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
+//        this.setHarvestLevel("axe", 10);
+//    }
 
     @Override
     public double getBaseMinSpeedConfig() {

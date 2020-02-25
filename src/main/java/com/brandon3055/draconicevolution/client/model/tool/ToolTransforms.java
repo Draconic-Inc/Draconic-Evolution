@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.model.tool;
 
 import codechicken.lib.render.CCModelState;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import static codechicken.lib.util.TransformUtils.create;

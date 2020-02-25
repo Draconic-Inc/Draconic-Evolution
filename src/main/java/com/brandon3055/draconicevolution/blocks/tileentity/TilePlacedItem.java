@@ -1,34 +1,31 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import codechicken.lib.raytracer.ICuboidProvider;
 import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.*;
-import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.utils.FeatureUtils;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.PlacedItem;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,17 +37,19 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPD
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
+//TODO talk/yell at covers
+public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
 
-    public final ManagedByte displayCount = register(new ManagedByte("displayCount", (byte)1, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool toolDisplay = register(new ManagedBool("toolDisplay", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool altRenderMode = register(new ManagedBool("altRenderMode", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedByte displayCount = register(new ManagedByte("display_count", (byte)1, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool toolDisplay = register(new ManagedBool("tool_display", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool altRenderMode = register(new ManagedBool("alt_render_mode", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public final ManagedByte[] rotation = new ManagedByte[4];
-    public EnumFacing facing = EnumFacing.NORTH;
+    public Direction facing = Direction.NORTH;
     private boolean[] isBlock = new boolean[]{false, false, false, false};
     public PlacedItemInventory inventory = new PlacedItemInventory(this);
 
     public TilePlacedItem() {
+        super(DEContent.tile_placed_item);
         for (int i = 0; i < rotation.length; i++) {
             rotation[i] = register(new ManagedByte("rotation" + i, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
         }
@@ -58,11 +57,11 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
 
     //region Bounds / Interaction
 
-    public void handleClick(int hit, EntityPlayer player) {
+    public void handleClick(int hit, PlayerEntity player) {
         if (!player.getHeldItemMainhand().isEmpty() && ModHelper.isWrench(player.getHeldItemMainhand())) {
             altRenderMode.invert();
             LogHelper.dev(altRenderMode);
-            super.update();
+            super.tick();
             return;
         }
 
@@ -75,8 +74,8 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
 
             if (index >= 0 && index < rotation.length) {
                 rotation[index].inc();
-                DESoundHandler.playSoundFromServer(world, Vec3D.getCenter(pos), SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + world.rand.nextFloat() * 0.2F, false, 24);
-                super.update();
+                DESoundHandler.playSoundFromServer(world, Vec3D.getCenter(pos), SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + world.rand.nextFloat() * 0.2F, false, 24);
+                super.tick();
             }
 
             return;
@@ -87,7 +86,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
                 FeatureUtils.dropItemNoDellay(inventory.getStackInSlot(i), world, Vector3.fromEntity(player));
             }
             inventory.stacks.clear();
-            world.setBlockToAir(pos);
+            world.removeBlock(pos, false);
         }
         else {
             if (!inventory.getStackInSlot(hit - 1).isEmpty()) {
@@ -109,8 +108,8 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
 
     private synchronized void calculateBounds() {
 
-        IBlockState state = getState(DEFeatures.placedItem);//world.getBlockState(getPos());
-        Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center));
+        BlockState state = getBlockState();//world.getBlockState(getPos());
+        Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.get(PlacedItem.FACING).getIndex()].at(Vector3.center));
 
         int i = 0;
         for (Cuboid6 cuboid : indexedCuboids) {
@@ -118,7 +117,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
             box.enclose(cuboid);
         }
 
-        if (facing.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE) {
+        if (facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
             box.setSide(facing.getIndex() ^ 1, 0.01);
         }
         else {
@@ -127,23 +126,23 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
 
 
         if (i > 1) {
-            EnumFacing.Axis axis = facing.getAxis();
-            box.expand(new Vector3(axis == EnumFacing.Axis.X ? -0.02 : 0.03, axis == EnumFacing.Axis.Y ? -0.02 : 0.03, axis == EnumFacing.Axis.Z ? -0.02 : 0.03));
+            Direction.Axis axis = facing.getAxis();
+            box.expand(new Vector3(axis == Direction.Axis.X ? -0.02 : 0.03, axis == Direction.Axis.Y ? -0.02 : 0.03, axis == Direction.Axis.Z ? -0.02 : 0.03));
         }
 
         blockBounds = new IndexedCuboid6(0, box);
     }
 
     private synchronized void recalculateCuboids() {
-        IBlockState state = world.getBlockState(getPos());
-        if (state.getBlock() != DEFeatures.placedItem) {
+        BlockState state = world.getBlockState(getPos());
+        if (state.getBlock() != DEContent.placed_item) {
             return;
         }
         indexedCuboids = new ArrayList<>();
 
         double scale = displayCount.get() == 1 && (toolDisplay.get() || altRenderMode.get()) ? 0.2 : 0.32;
 
-        Transformation rotation = rotations[state.getValue(PlacedItem.FACING).getIndex()].at(Vector3.center);
+        Transformation rotation = rotations[state.get(PlacedItem.FACING).getIndex()].at(Vector3.center);
 
         double offset = 0.225;
         double blockH = 0.36;
@@ -179,6 +178,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
         return indexedCuboids;
     }
 
+/*
     @Override
     public synchronized List<IndexedCuboid6> getIndexedCuboids() {
         recalculateCuboids();
@@ -188,6 +188,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
         list.addAll(indexedCuboids);
         return list;
     }
+*/
 
     //endregion
 
@@ -204,19 +205,19 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
     //region save
 
     @Override
-    public void writeExtraNBT(NBTTagCompound compound) {
+    public void writeExtraNBT(CompoundNBT compound) {
         super.writeExtraNBT(compound);
-        compound.setByte("Facing", (byte) facing.getIndex());
+        compound.putByte("Facing", (byte) facing.getIndex());
         for (int i = 0; i < isBlock.length; i++) {
-            compound.setBoolean("IsBlock" + i, isBlock[i]);
+            compound.putBoolean("IsBlock" + i, isBlock[i]);
         }
         inventory.toNBT(compound);
     }
 
     @Override
-    public void readExtraNBT(NBTTagCompound compound) {
+    public void readExtraNBT(CompoundNBT compound) {
         super.readExtraNBT(compound);
-        facing = EnumFacing.getFront(compound.getByte("Facing"));
+        facing = Direction.byIndex(compound.getByte("Facing"));
         for (int i = 0; i < isBlock.length; i++) {
             isBlock[i] = compound.getBoolean("IsBlock" + i);
         }
@@ -226,7 +227,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
     //endregion
 
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(pos.add(-1, -1, -1), pos.add(2, 2, 2));
@@ -247,19 +248,19 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
             int count = 0;
             for (int i = 0; i < getSizeInventory(); i++) {
                 if (!getStackInSlot(i).isEmpty()) {
-                    tile.isBlock[i] = getStackInSlot(i).getItem() instanceof ItemBlock;
+                    tile.isBlock[i] = getStackInSlot(i).getItem() instanceof BlockItem;
                     count++;
                 }
             }
 
             if (count == 0) {
-                tile.world.setBlockToAir(tile.getPos());
+                tile.world.removeBlock(tile.getPos(), false);
             }
             else {
                 tile.displayCount.set((byte) count);
                 ItemStack stack0 = getStackInSlot(0);
                 tile.toolDisplay.set(count == 1 && stack0.getItem().isEnchantable(stack0));
-                tile.update();
+                tile.tick();
                 tile.updateBlock();
             }
         }
@@ -294,25 +295,25 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
             markDirty();
         }
 
-        protected void toNBT(NBTTagCompound compound) {
-            NBTTagList itemList = new NBTTagList();
+        protected void toNBT(CompoundNBT compound) {
+            ListNBT itemList = new ListNBT();
 
             for (ItemStack stack : stacks) {
                 if (stack.isEmpty()) {
                     continue;
                 }
-                itemList.appendTag(stack.writeToNBT(new NBTTagCompound()));
+                itemList.add(stack.write(new CompoundNBT()));
             }
 
-            compound.setTag("InventoryStacks", itemList);
+            compound.put("InventoryStacks", itemList);
         }
 
-        protected void fromNBT(NBTTagCompound compound) {
+        protected void fromNBT(CompoundNBT compound) {
             stacks.clear();
-            NBTTagList itemList = compound.getTagList("InventoryStacks", 10);
+            ListNBT itemList = compound.getList("InventoryStacks", 10);
 
-            for (int i = 0; i < itemList.tagCount(); i++) {
-                stacks.add(new ItemStack(itemList.getCompoundTagAt(i)));
+            for (int i = 0; i < itemList.size(); i++) {
+                stacks.add(ItemStack.read(itemList.getCompound(i)));
             }
         }
 
@@ -333,7 +334,7 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
             ItemStack stack;
 
             if (index >= 0 && index < stacks.size() && !stacks.get(index).isEmpty() && count > 0) {
-                stack = stacks.get(index).splitStack(count);
+                stack = stacks.get(index).split(count);
             }
             else {
                 stack = ItemStack.EMPTY;
@@ -358,17 +359,17 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
         }
 
         @Override
-        public boolean isUsableByPlayer(EntityPlayer player) {
+        public boolean isUsableByPlayer(PlayerEntity player) {
             return true;
         }
 
         @Override
-        public void openInventory(EntityPlayer player) {
+        public void openInventory(PlayerEntity player) {
 
         }
 
         @Override
-        public void closeInventory(EntityPlayer player) {
+        public void closeInventory(PlayerEntity player) {
 
         }
 
@@ -378,39 +379,11 @@ public class TilePlacedItem extends TileBCBase implements ICuboidProvider {
         }
 
         @Override
-        public int getField(int id) {
-            return 0;
-        }
-
-        @Override
-        public void setField(int id, int value) {
-
-        }
-
-        @Override
-        public int getFieldCount() {
-            return 0;
-        }
-
-        @Override
         public void clear() {
             stacks.clear();
-            tile.world.setBlockToAir(tile.getPos());
+            tile.world.removeBlock(tile.getPos(), false);
         }
 
-        @Override
-        public String getName() {
-            return "";
-        }
 
-        @Override
-        public boolean hasCustomName() {
-            return false;
-        }
-
-        @Override
-        public ITextComponent getDisplayName() {
-            return new TextComponentString("");
-        }
     }
 }

@@ -2,24 +2,18 @@ package com.brandon3055.draconicevolution.handlers;
 
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.entity.EntityCustomArrow;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.tools.WyvernBow;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -27,7 +21,7 @@ import java.util.Random;
 
 public class BowHandler {
 
-    public static ActionResult<ItemStack> onBowRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public static ActionResult<ItemStack> onBowRightClick(ItemStack stack, World world, PlayerEntity player, Hand hand) {
         BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, player);
         if (properties.canFire()) {
             ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(stack, world, player, hand, true);
@@ -38,22 +32,22 @@ public class BowHandler {
             player.setActiveHand(hand);
         }
 
-        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
-    public static void onBowUsingTick(ItemStack stack, EntityPlayer player, int count) {
+    public static void onBowUsingTick(ItemStack stack, PlayerEntity player, int count) {
         BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, player);
         int j = 72000 - count;
         if (properties.autoFire && j >= properties.getDrawTicks()) player.stopActiveHand();
     }
 
-    public static void onPlayerStoppedUsingBow(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
+    public static void onPlayerStoppedUsingBow(ItemStack stack, World world, PlayerEntity player, int timeLeft) {
         BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, player);
         if (!properties.canFire() || !(stack.getItem() instanceof IEnergyContainerItem)) {
             return;
         }
 
-        int charge = stack.getMaxItemUseDuration() - timeLeft;
+        int charge = stack.getUseDuration() - timeLeft;
         charge = ForgeEventFactory.onArrowLoose(stack, world, player, charge, true);
 
         if (charge < 0) {
@@ -68,29 +62,29 @@ public class BowHandler {
 
         float velocity = properties.arrowSpeed * drawArrowSpeedModifier * 3F; //2F is the speed of a vanilla arrow
 
-        EntityCustomArrow customArrow = new EntityCustomArrow(properties, world, player);
-        customArrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, velocity, 1.0F);
-        customArrow.bowProperties = properties;
-
-        if (drawArrowSpeedModifier == 1.0F) {
-            customArrow.setIsCritical(true);
-        }
-
-        if (properties.consumeArrowAndEnergy()) {
-            customArrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
-        }
-        else {
-            customArrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
-        }
-
-        if (!world.isRemote) {
-            world.spawnEntity(customArrow);
-        }
+//        EntityCustomArrow customArrow = new EntityCustomArrow(properties, world, player); TODO entity stuff
+//        customArrow.shoot(player.rotationPitch, player.rotationYaw, 0.0F, velocity, 1.0F);
+//        customArrow.bowProperties = properties;
+//
+//        if (drawArrowSpeedModifier == 1.0F) {
+//            customArrow.setIsCritical(true);
+//        }
+//
+//        if (properties.consumeArrowAndEnergy()) {
+//            customArrow.pickupStatus = ArrowEntity.PickupStatus.ALLOWED;
+//        }
+//        else {
+//            customArrow.pickupStatus = ArrowEntity.PickupStatus.CREATIVE_ONLY;
+//        }
+//
+//        if (!world.isRemote) {
+//            world.addEntity(customArrow);
+//        }
 
         world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, (1.0F / (world.rand.nextFloat() * 0.4F + 1.2F) + (drawArrowSpeedModifier + (velocity / 40F)) * 0.5F));
     }
 
-    public static void enderShot(ItemStack stack, World world, EntityPlayer player, int count, Random itemRand, float pullSpeedModifier, float speedModifier, float soundPitchModifier, int minRelease) {
+    public static void enderShot(ItemStack stack, World world, PlayerEntity player, int count, Random itemRand, float pullSpeedModifier, float speedModifier, float soundPitchModifier, int minRelease) {
 //        int j = 72000 - count;
 //        ArrowLooseEvent event = new ArrowLooseEvent(player, stack, j);
 //        MinecraftForge.EVENT_BUS.post(event);
@@ -129,7 +123,7 @@ public class BowHandler {
 
     public static class BowProperties {
         public ItemStack bow;
-        public EntityPlayer player;
+        public PlayerEntity player;
 
         public float arrowDamage = 0F;
         public float arrowSpeed = 0F;
@@ -143,11 +137,11 @@ public class BowHandler {
         public String cantFireMessage = null;
 
         public BowProperties() {
-            this.bow = new ItemStack(DEFeatures.wyvernBow);
+            this.bow = new ItemStack(DEContent.bow_wyvern);
             this.player = null;
         }
 
-        public BowProperties(ItemStack bow, EntityPlayer player) {
+        public BowProperties(ItemStack bow, PlayerEntity player) {
             this.bow = bow;
             this.player = player;
             updateValues();
@@ -188,11 +182,11 @@ public class BowHandler {
                 cantFireMessage = "msg.de.explosiveNotForEnergyBolts.txt";
                 return false;
             }
-            else if (calculateEnergyCost() > ((IEnergyContainerItem) bow.getItem()).getEnergyStored(bow) && !player.capabilities.isCreativeMode) {
+            else if (calculateEnergyCost() > ((IEnergyContainerItem) bow.getItem()).getEnergyStored(bow) && !player.abilities.isCreativeMode) {
                 cantFireMessage = "msg.de.insufficientPowerToFire.txt";
                 return false;
             }
-            else if (!energyBolt && !player.inventory.hasItemStack(ammo) && EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("infinity"), bow) == 0 && !player.capabilities.isCreativeMode) {
+            else if (!energyBolt && !player.inventory.hasItemStack(ammo) && EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, bow) == 0 && !player.abilities.isCreativeMode) {
                 cantFireMessage = "msg.de.outOfArrows.txt";
                 return false;
             }
@@ -233,11 +227,11 @@ public class BowHandler {
          */
         public boolean consumeArrowAndEnergy() {
 
-            if (!player.capabilities.isCreativeMode) {
+            if (!player.abilities.isCreativeMode) {
                 ((WyvernBow) bow.getItem()).modifyEnergy(bow, -calculateEnergyCost());
             }
 
-            if (!energyBolt && EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("infinity"), bow) == 0 && !player.capabilities.isCreativeMode) {
+            if (!energyBolt && EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, bow) == 0 && !player.abilities.isCreativeMode) {
                 InventoryUtils.consumeStack(new ItemStack(Items.ARROW), player.inventory);
                 return true;
             }
@@ -245,14 +239,14 @@ public class BowHandler {
             return false;
         }
 
-        public void writeToNBT(NBTTagCompound compound) {
-            compound.setFloat("ArrowDamage", arrowDamage);
-            compound.setFloat("ArrowExplosive", explosionPower);
-            compound.setFloat("ArrowShock", shockWavePower);
-            compound.setBoolean("ArrowEnergy", energyBolt);
+        public void writeToNBT(CompoundNBT compound) {
+            compound.putFloat("ArrowDamage", arrowDamage);
+            compound.putFloat("ArrowExplosive", explosionPower);
+            compound.putFloat("ArrowShock", shockWavePower);
+            compound.putBoolean("ArrowEnergy", energyBolt);
         }
 
-        public void readFromNBT(NBTTagCompound compound) {
+        public void readFromNBT(CompoundNBT compound) {
             arrowDamage = compound.getFloat("ArrowDamage");
             explosionPower = compound.getFloat("ArrowExplosive");
             shockWavePower = compound.getFloat("ArrowShock");

@@ -5,9 +5,10 @@ import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,7 +26,7 @@ public class TreeCollector {
     private boolean breakDown;
     private int connectionRadius;
     private ItemStack stack;
-    private EntityPlayer player;
+    private PlayerEntity player;
     private WyvernAxe axe;
     private boolean collectionComplete = false;
     private boolean isKilled = false;
@@ -35,7 +36,7 @@ public class TreeCollector {
     public int collected = 0;
     public int energyUsed = 0;
 
-    public TreeCollector(World world, boolean breakDown, int connectionRadius, ItemStack stack, EntityPlayer player, WyvernAxe axe) {
+    public TreeCollector(World world, boolean breakDown, int connectionRadius, ItemStack stack, PlayerEntity player, WyvernAxe axe) {
         this.world = world;
         this.breakDown = breakDown;
         this.connectionRadius = connectionRadius;
@@ -109,14 +110,14 @@ public class TreeCollector {
                 return;
             }
 
-            if ((collector.axe.getEnergyStored(collector.stack) - collector.energyUsed) < collector.axe.energyPerOperation && !collector.player.capabilities.isCreativeMode) {
+            if ((collector.axe.getEnergyStored(collector.stack) - collector.energyUsed) < collector.axe.energyPerOperation && !collector.player.abilities.isCreativeMode) {
                 isDead = true;
                 return;
             }
 
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
 
-            if (!ForgeHooks.canHarvestBlock(state.getBlock(), collector.player, world, pos)) {
+            if (!ForgeHooks.canHarvestBlock(state, collector.player, world, pos)) {
                 isDead = true;
                 return;
             }
@@ -125,7 +126,7 @@ public class TreeCollector {
                 collector.collectionCallback.call(pos);
             }
 
-            int xp = ForgeHooks.onBlockBreakEvent(world, ((EntityPlayerMP) collector.player).interactionManager.getGameType(), (EntityPlayerMP) collector.player, pos);
+            int xp = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayerEntity) collector.player).interactionManager.getGameType(), (ServerPlayerEntity) collector.player, pos);
             if (xp == -1) {
                 isDead = true;
                 return;
@@ -140,7 +141,7 @@ public class TreeCollector {
             collector.collected++;
 
             int rad = collector.connectionRadius;
-            Iterable<BlockPos> blocks = BlockPos.getAllInBox(pos.add(-rad, collector.breakDown ? -rad : 0, -rad), pos.add(rad, rad, rad));
+            Iterable<BlockPos> blocks = BlockPos.getAllInBoxMutable(pos.add(-rad, collector.breakDown ? -rad : 0, -rad), pos.add(rad, rad, rad));
             for (BlockPos newPos : blocks) {
 
                 if (processedBlocks.contains(newPos)) {
@@ -148,9 +149,9 @@ public class TreeCollector {
                 }
 
                 processedBlocks.add(newPos);
-                IBlockState newState = world.getBlockState(newPos);
+                BlockState newState = world.getBlockState(newPos);
 
-                if (newState.getBlock().isWood(world, newPos)) {
+                if (newState.getMaterial() == Material.WOOD) {
                     ProcessHandler.addProcess(new CollectTreeProcess(collector, newPos, inventory, processedBlocks));
                 }
             }

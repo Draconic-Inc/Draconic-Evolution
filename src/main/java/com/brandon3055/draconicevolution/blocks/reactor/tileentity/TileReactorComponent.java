@@ -10,21 +10,18 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
-import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ITickable;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
@@ -34,24 +31,28 @@ import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileRe
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public abstract class TileReactorComponent extends TileBCore implements ITickable, IDEPeripheral, IMovableStructure {
+public abstract class TileReactorComponent extends TileBCore implements ITickableTileEntity, IDEPeripheral {
 
-    private final ManagedVec3I coreOffset       = register(new ManagedVec3I("coreOffset", SAVE_NBT));
-    public final ManagedEnum<EnumFacing> facing = register(new ManagedEnum<>("facing", EnumFacing.UP, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool isBound            = register(new ManagedBool("isBound", SAVE_NBT_SYNC_TILE));
-    public final ManagedEnum<RSMode> rsMode     = register(new ManagedEnum<>("rsMode", RSMode.TEMP, SAVE_NBT_SYNC_TILE));
-    public final ManagedInt rsPower             = register(new ManagedInt("rsPower", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    private final ManagedVec3I coreOffset       = register(new ManagedVec3I("core_offset", SAVE_NBT));
+    public final ManagedEnum<Direction> facing  = register(new ManagedEnum<>("facing", Direction.UP, SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isBound            = register(new ManagedBool("is_bound", SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<RSMode> rsMode     = register(new ManagedEnum<>("rs_mode", RSMode.TEMP, SAVE_NBT_SYNC_TILE));
+    public final ManagedInt rsPower             = register(new ManagedInt("rs_power", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public float animRotation = 0;
     public float animRotationSpeed = 0;
     private TileReactorCore cachedCore = null;
     public boolean coreFalureIminent = false;
     private boolean moveCheckComplete = false;
 
+    public TileReactorComponent(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
+
     //region update
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
         moveCheckComplete = false;
 
         if (world.isRemote) {
@@ -69,10 +70,10 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             if (coreFalureIminent && world.rand.nextInt(10) == 0) {
                 animRotation += (world.rand.nextDouble() - 0.5) * 360;
                 if (world.rand.nextBoolean()) {
-                    world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), 0, 0, 0);
+                    world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), 0, 0, 0);
                 }
                 else {
-                    world.spawnParticle(EnumParticleTypes.CLOUD, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), 0, 0, 0);
+                    world.addParticle(ParticleTypes.CLOUD, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), 0, 0, 0);
                 }
             }
         }
@@ -83,7 +84,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
                 int rs = rsMode.get().getRSSignal(core);
                 if (rs != rsPower.get()) {
                     rsPower.set(rs);
-                    world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
+                    world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
                 }
             }
         }
@@ -160,7 +161,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         }
     }
 
-    public void onActivated(EntityPlayer player) {
+    public void onActivated(PlayerEntity player) {
         if (world.isRemote) {
             return;
         }
@@ -172,7 +173,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         }
     }
 
-    public void setRSMode(EntityPlayer player, RSMode rsMode) {
+    public void setRSMode(PlayerEntity player, RSMode rsMode) {
         if (world.isRemote) {
             sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
         }
@@ -182,7 +183,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
         if (id == 0) {
             setRSMode(client, RSMode.valueOf(data.readString()));
         }
@@ -214,7 +215,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             return (TileReactorCore) tile;
         }
 
-        if (world.getChunkFromBlockCoords(getCorePos()).isLoaded()) {
+        if (world.isAreaLoaded(getCorePos(), 16)) {
             invalidateComponent();
         }
 
@@ -237,15 +238,15 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     protected TileReactorCore getCachedCore() {
         if (isBound.get()) {
             BlockPos corePos = getCorePos();
-            Chunk coreChunk = world.getChunkFromBlockCoords(corePos);
+            Chunk coreChunk = world.getChunkAt(corePos);
 
-            if (!coreChunk.isLoaded()) {
+            if (!coreChunk.loaded) {
                 cachedCore = null;
                 return null;
             }
 
-            TileEntity tileAtPos = coreChunk.getTileEntity(corePos, Chunk.EnumCreateEntityType.CHECK);
-            if (tileAtPos == null || cachedCore == null || tileAtPos != cachedCore || tileAtPos.isInvalid()) {
+            TileEntity tileAtPos = coreChunk.getTileEntity(corePos, Chunk.CreateEntityType.CHECK);
+            if (tileAtPos == null || cachedCore == null || tileAtPos != cachedCore || tileAtPos.isRemoved()) {
                 TileEntity tile = world.getTileEntity(corePos);
 
                 if (tile instanceof TileReactorCore) {
@@ -268,7 +269,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     }
 
 //    @Override
-//    public boolean canConnectEnergy(EnumFacing from) {
+//    public boolean canConnectEnergy(Direction from) {
 //        return from == facing.get().getOpposite();
 //    }
 
@@ -399,51 +400,51 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
     //Frame movement
 
-    @Override
-    public Iterable<BlockPos> getBlocksForFrameMove() {
-        TileReactorCore core = getCachedCore();
-        if (core != null && !core.moveBlocksProvided) {
-            HashSet<BlockPos> blocks = new HashSet<>();
-            for (EnumFacing facing : EnumFacing.values()) {
-                TileReactorComponent comp = core.getComponent(facing);
-                if (comp != null) {
-                    blocks.add(comp.getPos());
-                }
-            }
+//    @Override
+//    public Iterable<BlockPos> getBlocksForFrameMove() {
+//        TileReactorCore core = getCachedCore();
+//        if (core != null && !core.moveBlocksProvided) {
+//            HashSet<BlockPos> blocks = new HashSet<>();
+//            for (Direction facing : Direction.values()) {
+//                TileReactorComponent comp = core.getComponent(facing);
+//                if (comp != null) {
+//                    blocks.add(comp.getPos());
+//                }
+//            }
+//
+//            blocks.add(core.getPos());
+//            core.moveBlocksProvided = true;
+//            return blocks;
+//        }
+//        return Collections.emptyList();
+//    }
 
-            blocks.add(core.getPos());
-            core.moveBlocksProvided = true;
-            return blocks;
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public EnumActionResult canMove() {
-        TileReactorCore core = getCachedCore();
-        if (core != null) {
-            if (core.isFrameMoving) {
-                return EnumActionResult.SUCCESS;
-            }
-            if (!moveCheckComplete) {
-                core.frameMoveContactPoints++;
-            }
-            HashSet<BlockPos> blocks = new HashSet<>();
-            for (EnumFacing facing : EnumFacing.values()) {
-                TileReactorComponent comp = core.getComponent(facing);
-                if (comp != null) {
-                    blocks.add(comp.getPos());
-                }
-            }
-
-            moveCheckComplete = true;
-            if (core.frameMoveContactPoints == blocks.size()) {
-                core.frameMoveContactPoints = 0;
-                core.isFrameMoving = true;
-                return EnumActionResult.SUCCESS;
-            }
-        }
-
-        return EnumActionResult.FAIL;
-    }
+//    @Override
+//    public EnumActionResult canMove() {
+//        TileReactorCore core = getCachedCore();
+//        if (core != null) {
+//            if (core.isFrameMoving) {
+//                return EnumActionResult.SUCCESS;
+//            }
+//            if (!moveCheckComplete) {
+//                core.frameMoveContactPoints++;
+//            }
+//            HashSet<BlockPos> blocks = new HashSet<>();
+//            for (Direction facing : Direction.values()) {
+//                TileReactorComponent comp = core.getComponent(facing);
+//                if (comp != null) {
+//                    blocks.add(comp.getPos());
+//                }
+//            }
+//
+//            moveCheckComplete = true;
+//            if (core.frameMoveContactPoints == blocks.size()) {
+//                core.frameMoveContactPoints = 0;
+//                core.isFrameMoving = true;
+//                return EnumActionResult.SUCCESS;
+//            }
+//        }
+//
+//        return EnumActionResult.FAIL;
+//    }
 }

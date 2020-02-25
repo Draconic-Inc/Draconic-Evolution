@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
-import cofh.redstoneflux.api.IEnergyReceiver;
-import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.blocks.TileEnergyBase;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import codechicken.lib.packet.PacketCustom;
+import com.brandon3055.brandonscore.api.power.OPStorage;
+import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
 import com.brandon3055.brandonscore.lib.TileEntityFilter;
@@ -12,82 +12,107 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
+import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
+import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.GuiHandler;
-import com.brandon3055.draconicevolution.blocks.machines.EntityDetector;
-import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleStarSpark;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+import static com.brandon3055.brandonscore.lib.entityfilter.FilterType.*;
+import static com.brandon3055.brandonscore.lib.entityfilter.FilterType.PLAYER;
 
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileEntityDetector extends TileEnergyBase implements IActivatableTile, IRedstoneEmitter, ITickable, IEnergyReceiver {
+public class TileEntityDetector extends TileBCore implements IActivatableTile, IRedstoneEmitter, ITickableTileEntity {
 
+    private final boolean advanced;
     public float hRot = 0;
     public float yRot = (float) Math.PI / 2;
     public float lthRot = 0;
     public float ltyRot = 0;
 
     //    public final ManagedBool ADVANCED = new ManagedBool(true, true, false, true);
-    public final ManagedShort pulseRate = register(new ManagedShort("pulseRate", (short) 30, SAVE_BOTH_SYNC_TILE));
+    public final ManagedShort pulseRate = register(new ManagedShort("pulse_rate", (short) 30, SAVE_BOTH_SYNC_TILE));
     public final ManagedShort range = register(new ManagedShort("range", (short) 10, SAVE_BOTH_SYNC_TILE));
-    public final ManagedByte rsMinDetection = register(new ManagedByte("rsMinDetection", (byte) 1, SAVE_BOTH_SYNC_TILE));
-    public final ManagedByte rsMaxDetection = register(new ManagedByte("rsMaxDetection", (byte) 1, SAVE_BOTH_SYNC_TILE));
-    public final ManagedBool pulseRsMode = register(new ManagedBool("pulseRsMode", SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedByte outputStrength = register(new ManagedByte("outputStrength", SAVE_NBT));
+    public final ManagedByte rsMinDetection = register(new ManagedByte("rs_min_detection", (byte) 1, SAVE_BOTH_SYNC_TILE));
+    public final ManagedByte rsMaxDetection = register(new ManagedByte("rs_max_detection", (byte) 1, SAVE_BOTH_SYNC_TILE));
+    public final ManagedBool pulseRsMode = register(new ManagedBool("pulse_rs_mode", SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedByte outputStrength = register(new ManagedByte("output_strength", SAVE_NBT));
     private int pulseTimer = -1;
     private int pulseDuration = 0;
 
-    public TileEntityFilter entityFilter = new TileEntityFilter(this, (byte) 32) {
-        @Override
-        public boolean isListEnabled() {
-            return isAdvanced();
-        }
+    public OPStorage opStorage = new OPStorage(512000, 32000, 0);
+    public EntityFilter entityFilter;
 
-        @Override
-        public boolean isOtherSelectorEnabled() {
-            return isAdvanced();
-        }
+//    public TileEntityFilter entityFilter = new TileEntityFilter(this, (byte) 32) {
+//        @Override
+//        public boolean isListEnabled() {
+//            return isAdvanced();
+//        }
+//
+//        @Override
+//        public boolean isOtherSelectorEnabled() {
+//            return isAdvanced();
+//        }
+//
+//        @Override
+//        public boolean isTypeSelectionEnabled() {
+//            return true;
+//        }
+//    };
+    public List<String> playerNames = new ArrayList<>();//TODO Need this?
 
-        @Override
-        public boolean isTypeSelectionEnabled() {
-            return true;
-        }
-    };
-    public List<String> playerNames = new ArrayList<>();
 
     public TileEntityDetector() {
-        setEnergySyncMode(SYNC_CONTAINER);
-        setCapacityAndTransfer(512000, 32000, 0);
+        super(DEContent.tile_entity_detector);
+        this.advanced = false;
+    }
+
+    public TileEntityDetector(boolean advanced) {
+        super(DEContent.tile_entity_detector);
+        this.advanced = advanced;
+        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+
+        entityFilter = new EntityFilter(true, FilterType.values());
+        entityFilter.setDirtyHandler(this::markDirty);
+        entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
+        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), PacketCustom::sendToServer);
+        setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
+        setServerSidePacketHandler(0, (input, player) -> entityFilter.receivePacketFromClient(input));
+        setSavedDataObject("entity_filter", entityFilter);
+        setItemSavedDataObject("entity_filter", entityFilter);
     }
 
 
+
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
 
         if (world.isRemote) {
             updateAnimation();
@@ -101,7 +126,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
             pulseTimer--;
         }
         else if (pulseTimer <= 0) {
-            if (energyStorage.getEnergyStored() >= getPulseCost()) {
+            if (opStorage.getEnergyStored() >= getPulseCost()) {
                 pulseTimer = pulseRate.get();
                 doScanPulse();
             }
@@ -112,14 +137,14 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
 
         if (outputStrength.get() > 0 && pulseRsMode.get() && pulseDuration <= 0) {
             outputStrength.zero();
-            world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
+            world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
         }
         else {
             pulseDuration--;
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void updateAnimation() {
         //region Targeting
 
@@ -130,11 +155,11 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
         for (Entity entity : entities) {
             if (closest == null) {
                 closest = entity;
-                closestDist = entity.getDistanceSqToCenter(pos);
+                closestDist = entity.getDistanceSq(new Vec3d(pos));
             }
-            else if (entity.getDistanceSqToCenter(pos) < closestDist) {
+            else if (entity.getDistanceSq(new Vec3d(pos)) < closestDist) {
                 closest = entity;
-                closestDist = entity.getDistanceSqToCenter(pos);
+                closestDist = entity.getDistanceSq(new Vec3d(pos));
             }
         }
 
@@ -198,7 +223,8 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
         spark.setGravity(0.0002D);
         spark.setAirResistance(0.02F);
         spark.setColour(0, 1, 1);
-        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, spark);
+        //TODO particles
+//        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, spark);
 
         int i = world.rand.nextInt(4);
         double x = i / 2;
@@ -215,7 +241,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
             spark.setColour(0.3f, 0.0f, 1F);
         }
 
-        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, spark);
+//        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, spark);
 
 
         //endregion
@@ -241,14 +267,14 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
 
         if (outputStrength.get() != output) {
             outputStrength.set((byte) output);
-            world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
+            world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
         }
 
         if (pulseRsMode.get()) {
             pulseDuration = 2;
         }
 
-        energyStorage.modifyEnergyStored(-getPulseCost());
+        opStorage.modifyEnergyStored(-getPulseCost());
     }
 
     //region GuiInteraction
@@ -274,7 +300,7 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
         if (id <= 8) {
             boolean decrement = data.readBoolean();
             boolean shift = id % 2 == 1;
@@ -338,9 +364,9 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
             }
         }
 
-        if (id == entityFilter.packetID) {
-            entityFilter.receiveConfigFromClient(data.readNBTTagCompound());
-        }
+//        if (id == entityFilter.packetID) {
+//            entityFilter.receiveConfigFromClient(data.readCompoundNBT());
+//        }
     }
 
     //endregion
@@ -348,31 +374,31 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     //region Interfaces
 
     @Override
-    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (!world.isRemote) {
-            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENTITY_DETECTOR, world, pos.getX(), pos.getY(), pos.getZ());
+//            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENTITY_DETECTOR, world, pos.getX(), pos.getY(), pos.getZ());
 
-            MinecraftServer server = BrandonsCore.proxy.getMCServer();
+            MinecraftServer server = player.getServer();
             if (server != null) {
-                NBTTagList list = new NBTTagList();
+                ListNBT list = new ListNBT();
                 for (String name : server.getPlayerList().getOnlinePlayerNames()) {
-                    list.appendTag(new NBTTagString(name));
+                    list.add(new StringNBT(name));
                 }
-                NBTTagCompound compound = new NBTTagCompound();
-                compound.setTag("List", list);
-                sendPacketToClient((EntityPlayerMP) player, output -> output.writeNBTTagCompound(compound), 16);
+                CompoundNBT compound = new CompoundNBT();
+                compound.put("List", list);
+                sendPacketToClient((ServerPlayerEntity) player, output -> output.writeCompoundNBT(compound), 16);
             }
         }
         return true;
     }
 
     @Override
-    public int getWeakPower(IBlockState blockState, EnumFacing side) {
+    public int getWeakPower(BlockState blockState, Direction side) {
         return outputStrength.get();
     }
 
     @Override
-    public int getStrongPower(IBlockState blockState, EnumFacing side) {
+    public int getStrongPower(BlockState blockState, Direction side) {
         return outputStrength.get();
     }
 
@@ -383,10 +409,10 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
     @Override
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 16) {
-            NBTTagList list = data.readNBTTagCompound().getTagList("List", 8);
+            ListNBT list = data.readCompoundNBT().getList("List", 8);
             playerNames.clear();
-            for (int i = 0; i < list.tagCount(); i++) {
-                playerNames.add(list.getStringTagAt(i));
+            for (int i = 0; i < list.size(); i++) {
+                playerNames.add(list.getString(i));
             }
         }
     }
@@ -400,48 +426,16 @@ public class TileEntityDetector extends TileEnergyBase implements IActivatableTi
         return false;
     }
 
-    private boolean hasCheckedAdvanced = false;
-    private boolean advanced = false;
 
     public boolean isAdvanced() {
-        if (!hasCheckedAdvanced && world != null) {
-            IBlockState state = world.getBlockState(pos);
-            advanced = state.getValue(EntityDetector.ADVANCED);
-            hasCheckedAdvanced = true;
-        }
-
         return advanced;
-    }
-
-    @Override
-    public void writeExtraNBT(NBTTagCompound compound) {
-        super.writeExtraNBT(compound);
-        entityFilter.writeToNBT(compound);
-    }
-
-    @Override
-    public void readExtraNBT(NBTTagCompound compound) {
-        super.readExtraNBT(compound);
-        entityFilter.readFromNBT(compound);
-    }
-
-    @Override
-    public void writeToItemStack(NBTTagCompound compound, boolean willHarvest) {
-        super.writeToItemStack(compound, willHarvest);
-        entityFilter.writeToNBT(compound);
-    }
-
-    @Override
-    public void readFromItemStack(NBTTagCompound compound) {
-        super.readFromItemStack(compound);
-        entityFilter.readFromNBT(compound);
     }
 
     //endregion
 
     private AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(pos, pos.add(1, 1, 1));

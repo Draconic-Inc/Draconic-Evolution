@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.helpers;
 
+import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -18,7 +19,7 @@ public class ResourceHelperDE {
     public static final String RESOURCE_PREFIX = DraconicEvolution.MODID.toLowerCase() + ":";
 
     public static void bindTexture(ResourceLocation texture) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+        Minecraft.getInstance().getTextureManager().bindTexture(texture);
     }
 
     public static ResourceLocation getResource(String rs) {

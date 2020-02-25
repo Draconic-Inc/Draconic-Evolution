@@ -1,15 +1,15 @@
 package com.brandon3055.draconicevolution.blocks.itemblock;
 
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -22,7 +22,7 @@ import static net.minecraft.client.resources.I18n.format;
 public class ItemDraconiumBlock extends ItemBlockBCore {
 
     public ItemDraconiumBlock(Block block) {
-        super(block);
+        super(block, null);
     }
 
     //region IEnergyContainerItem
@@ -43,7 +43,7 @@ public class ItemDraconiumBlock extends ItemBlockBCore {
 //		}
 //		if (getEnergyStored(container) == getMaxEnergyStored(container)) {
 //			container.setItemDamage(1);
-//			container.setTagCompound(null);
+//			container.setTag(null);
 //		}
 //		return energyReceived * container.stackSize;
 //	}
@@ -72,23 +72,23 @@ public class ItemDraconiumBlock extends ItemBlockBCore {
     //endregion
 
 //    @Override
-//    public boolean canCharge(ItemStack stack, EntityPlayer player) {
+//    public boolean canCharge(ItemStack stack, PlayerEntity player) {
 //        return HandHelper.getItemStack(player, stack) != null && player.isSneaking();
 //    }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List list, ITooltipFlag p_77624_4_) {
 //        if (stack.hasTagCompound()) {
 //            list.add(Utils.addCommas(getEnergyStored(stack)) + " / " + Utils.addCommas(getMaxEnergyStored(stack)) + "RF");
 //        }
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
 
 
-        if (player != null && (Minecraft.getMinecraft().player.inventory.hasItemStack(DEFeatures.wyvernCapacitor) || player.inventory.hasItemStack(DEFeatures.draconicCapacitor) || player.inventory.hasItemStack(DEFeatures.creativeCapacitor))) {
-            list.add(format("info.de.draconiumBlockCapacitorCharge.txt"));
-        }
+//        if (player != null && (Minecraft.getInstance().player.inventory.hasItemStack(DEContent.wyvernCapacitor) || player.inventory.hasItemStack(DEContent.draconicCapacitor) || player.inventory.hasItemStack(DEContent.creativeCapacitor))) {
+//            list.add(format("info.de.draconiumBlockCapacitorCharge.txt"));
+//        }
     }
 
 }

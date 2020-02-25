@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.fusioncrafting;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 
@@ -45,7 +45,7 @@ public interface ICraftingInjector {
     /**
      * Return the direction this pedestal is facing.
      */
-    EnumFacing getDirection();
+    Direction getDirection();
 
     /**
      * @return the current charge stored in this pedestal.

@@ -69,9 +69,10 @@ dependencies {
     compile "com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:deobf"
     compile "com.brandon3055.projectintelligence:ProjectIntelligence:${config.mc_version}-${config.pi_version}:deobf"
     compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
-    compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
-    compile "mezz.jei:jei_${config.mc_version}:${config.jei_version}"
-	compile "cofh:RedstoneFlux:${config.rf_mc_version}-${config.rf_version}:deobf"
+//    compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
+//    compile "mezz.jei:jei_${config.mc_version}:${config.jei_version}"
+    deobfCompile "mezz.jei:jei-1.14.4:6.0.0.18"
+//	compile "cofh:RedstoneFlux:${config.rf_mc_version}-${config.rf_version}:deobf"
 }
 
 processResources

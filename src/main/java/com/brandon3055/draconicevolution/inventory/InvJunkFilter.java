@@ -2,9 +2,10 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.LogHelperBC;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -21,6 +22,11 @@ public class InvJunkFilter implements IItemHandlerModifiable {
     public InvJunkFilter(ItemStack stack, int filterSize) {
         this.stack = stack;
         stacks = NonNullList.withSize(filterSize, ItemStack.EMPTY);
+    }
+
+    @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        return stack.getItem() instanceof BlockItem;
     }
 
     /**
@@ -124,18 +130,18 @@ public class InvJunkFilter implements IItemHandlerModifiable {
             return;
         }
 
-        NBTTagCompound compound = ItemNBTHelper.getCompound(stack);
-        NBTTagList list = new NBTTagList();
+        CompoundNBT compound = ItemNBTHelper.getCompound(stack);
+        ListNBT list = new ListNBT();
 
         for (ItemStack stack : stacks) {
             if (stack != null && stack.getCount() > 0) {
-                NBTTagCompound tag = new NBTTagCompound();
-                stack.writeToNBT(tag);
-                list.appendTag(tag);
+                CompoundNBT tag = new CompoundNBT();
+                stack.write(tag);
+                list.add(tag);
             }
         }
 
-        compound.setTag("InvItems", list);
+        compound.put("InvItems", list);
     }
 
     public void loadItems() {
@@ -144,12 +150,12 @@ public class InvJunkFilter implements IItemHandlerModifiable {
             return;
         }
 
-        NBTTagCompound compound = ItemNBTHelper.getCompound(stack);
-        NBTTagList list = compound.getTagList("InvItems", 10);
+        CompoundNBT compound = ItemNBTHelper.getCompound(stack);
+        ListNBT list = compound.getList("InvItems", 10);
         stacks.clear();
 
-        for (int i = 0; i < list.tagCount(); i++) {
-            stacks.add(new ItemStack(list.getCompoundTagAt(i)));
+        for (int i = 0; i < list.size(); i++) {
+            stacks.add(ItemStack.read(list.getCompound(i)));
         }
     }
 }

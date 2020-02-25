@@ -1,5 +1,5 @@
-@API(owner = "Baubles", apiVersion = "1.4.0.2", provides = "Baubles|API")
+//@API(owner = "Baubles", apiVersion = "1.4.0.2", provides = "Baubles|API")
 package baubles.api;
 
-import net.minecraftforge.fml.common.API;
+//import net.minecraftforge.fml.common.API;
 

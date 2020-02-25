@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
@@ -36,7 +35,8 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         if (tile.hasStaticFX()) {
             if (staticFX == null || !staticFX.isAlive()) {
                 staticFX = tile.createStaticFX();
-                BCEffectHandler.spawnGLParticle(staticFX.getFXHandler(), staticFX);
+                //TODO Particles
+//                BCEffectHandler.spawnGLParticle(staticFX.getFXHandler(), staticFX);
             }
             staticFX.updateFX(0.5F);
             staticFX.renderEnabled = renderCooldown > 0;
@@ -91,7 +91,8 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
                 for (BlockPos receiver : tile.getReceivers()) {
                     CrystalFXLink link = new CrystalFXLink(tile.getWorld(), tile, Vec3D.getCenter(receiver));
                     linkFX.add(link);
-                    BCEffectHandler.spawnGLParticle(link.getFXHandler(), link);
+                    //TODO Particles
+//                    BCEffectHandler.spawnGLParticle(link.getFXHandler(), link);
                 }
             }
         }
@@ -142,13 +143,15 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
             }
             CrystalFXBeam beam = new CrystalFXBeam(tile.getWorld(), tile, (ICrystalLink) target);
             beamFXList.add(beam);
-            BCEffectHandler.spawnGLParticle(beam.getFXHandler(), beam);
+            //TODO Particles
+//            BCEffectHandler.spawnGLParticle(beam.getFXHandler(), beam);
         }
 
         for (BlockPos pos : tile.getReceivers()) {
             CrystalFXWireless wirelessFX = new CrystalFXWireless(tile.getWorld(), tile, pos);
             transferFXList.add(wirelessFX);
-            BCEffectHandler.spawnGLParticle(wirelessFX.getFXHandler(), wirelessFX);
+            //TODO Particles
+//            BCEffectHandler.spawnGLParticle(wirelessFX.getFXHandler(), wirelessFX);
         }
     }
 

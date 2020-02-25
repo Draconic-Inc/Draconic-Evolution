@@ -3,9 +3,9 @@ package com.brandon3055.draconicevolution.api.itemupgrade;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import java.util.Map;
  * Created by brandon3055 on 31/05/2016.
  * This class contains useful helper methods for use with the upgrade system.
  */
+@Deprecated //TODO New Upgrade System
 public class UpgradeHelper {
     public static final String UPGRADE_TAG = "DEUpgrades";
 
@@ -25,11 +26,11 @@ public class UpgradeHelper {
      * @return the upgrade level.
      */
     public static int getUpgradeLevel(ItemStack stack, String upgrade) {
-        if (!stack.hasTagCompound() || !stack.getTagCompound().hasKey(UPGRADE_TAG)) {
+        if (!stack.hasTag() || !stack.getTag().contains(UPGRADE_TAG)) {
             return 0;
         }
 
-        NBTTagCompound upgradeTag = stack.getOrCreateSubCompound(UPGRADE_TAG);
+        CompoundNBT upgradeTag = stack.getOrCreateChildTag(UPGRADE_TAG);
         return upgradeTag.getByte(upgrade);
     }
 
@@ -42,8 +43,8 @@ public class UpgradeHelper {
      * @param level   the level
      */
     public static void setUpgradeLevel(ItemStack stack, String upgrade, int level) {
-        NBTTagCompound upgradeTag = stack.getOrCreateSubCompound(UPGRADE_TAG);
-        upgradeTag.setByte(upgrade, (byte) level);
+        CompoundNBT upgradeTag = stack.getOrCreateChildTag(UPGRADE_TAG);
+        upgradeTag.putByte(upgrade, (byte) level);
     }
 
     /**
@@ -54,14 +55,14 @@ public class UpgradeHelper {
      */
     public static Map<String, Integer> getUpgrades(ItemStack stack) {
         Map<String, Integer> upgrades = new HashMap<>();
-        if (!stack.hasTagCompound() || !stack.getTagCompound().hasKey(UPGRADE_TAG)) {
+        if (!stack.hasTag() || !stack.getTag().contains(UPGRADE_TAG)) {
             return upgrades;
         }
 
-        NBTTagCompound upgradeTag = stack.getOrCreateSubCompound(UPGRADE_TAG);
+        CompoundNBT upgradeTag = stack.getOrCreateChildTag(UPGRADE_TAG);
 
-        for (String upgrade : upgradeTag.getKeySet()) {
-            if (upgradeTag.hasKey(upgrade, 1)) {
+        for (String upgrade : upgradeTag.keySet()) {
+            if (upgradeTag.contains(upgrade, 1)) {
                 upgrades.put(upgrade, (int) upgradeTag.getByte(upgrade));
             }
         }
@@ -90,7 +91,7 @@ public class UpgradeHelper {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static List<String> getUpgradeStats(ItemStack stack) {
         ArrayList<String> list = new ArrayList<String>();
 

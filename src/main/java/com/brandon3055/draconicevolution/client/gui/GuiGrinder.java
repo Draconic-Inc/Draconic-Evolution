@@ -1,68 +1,167 @@
-package com.brandon3055.draconicevolution.client.gui;
-
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
-import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import com.brandon3055.draconicevolution.inventory.ContainerGrinder;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-
-/**
- * Created by brandon3055 on 30/3/2016.
- */
-@SideOnly(Side.CLIENT)
-public class GuiGrinder extends GuiContainer {
-
-    public EntityPlayer player;
-    private TileGrinder tile;
-
-    public GuiGrinder(InventoryPlayer invPlayer, TileGrinder tile) {
-        super(new ContainerGrinder(invPlayer, tile));
-
-        xSize = 176;
-        ySize = 162;
-
-        this.tile = tile;
-        this.player = invPlayer.player;
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int X, int Y) {
-        GlStateManager.color(1, 1, 1, 1);
-
-        ResourceHelperDE.bindTexture(DETextures.GUI_GRINDER);
-        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-
-        float power = (float) tile.energySync.get() / (float) tile.getMaxEnergyStored(EnumFacing.DOWN) * -1 + 1;
-        drawTexturedModalRect(guiLeft + 68, guiTop + 12 + (int) (power * 40), xSize, (int) (power * 40), 12, 40 - (int) (power * 40));//Power bar
-
-        drawCenteredString(fontRenderer, I18n.format(DEFeatures.grinder.getUnlocalizedName() + ".name"), guiLeft + xSize / 2 + 2, guiTop, 0x00FFFF);
-
-        int x = X - guiLeft;
-        int y = Y - guiTop;
-        if (GuiHelper.isInRect(68, 10, 12, 40, x, y)) {
-            ArrayList<String> internal = new ArrayList<>();
-            internal.add(I18n.format("info.de.energyBuffer.txt"));
-            internal.add("" + TextFormatting.DARK_BLUE + tile.energySync.get() + "/" + tile.getMaxEnergyStored(EnumFacing.UP));
-            drawHoveringText(internal, x + guiLeft, y + guiTop, fontRenderer);
-        }
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
-    }
-}
+//package com.brandon3055.draconicevolution.client.gui;
+//
+//import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+//import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
+//import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+//import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
+//import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+//import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
+//import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiPopUpDialogBase.PopoutDialog;
+//import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
+//import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiEntityFilter;
+//import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
+//import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
+//import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+//import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+//import com.brandon3055.brandonscore.inventory.ContainerSlotLayout.LayoutFactory;
+//import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
+//import net.minecraft.client.resources.I18n;
+//import net.minecraft.entity.player.PlayerEntity;
+//
+//import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.EXTRA_WIDE_TALL;
+//import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
+//import static net.minecraft.util.text.TextFormatting.GOLD;
+//import static net.minecraft.util.text.TextFormatting.GRAY;
+//
+///**
+// * Created by brandon3055 on 30/3/2016.
+// */
+//public class GuiGrinder extends ModularGuiContainer<ContainerBCBase> {
+//
+//    private PlayerEntity player;
+//    private TileGrinder tile;
+//    private LayoutFactory<TileGrinder> factory; //Temp for reload button
+//
+//    protected GuiToolkit<GuiGrinder> toolkit = new GuiToolkit<>(this, EXTRA_WIDE_TALL);
+//
+//    public GuiGrinder(PlayerEntity player, TileGrinder tile, LayoutFactory<TileGrinder> factory) {
+//        super(new ContainerBCBase<>(player, tile, factory));
+//        this.player = player;
+//        this.tile = tile;
+//        this.factory = factory;
+//    }
+//
+//    @Override
+//    public void addElements(GuiElementManager manager) {
+//        manager.addChild(new GuiButton("Reload").setSize(50, 16).setVanillaButtonRender(true).onPressed(() -> mc.displayGuiScreen(new GuiGrinder(player, tile, factory))));
+//
+//        //Show Kill Zone
+//        //Kill Zone Size
+////        Grinder Grinding Logic!
+//
+//        TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(tile, container.getSlotLayout()));
+//        GuiElement bg = template.background;
+//
+//        GuiEntityFilter filterUI = new GuiEntityFilter(tile.entityFilter);
+//        filterUI.setNodeBackgroundBuilder(() -> new GuiBorderedRect().set3DGetters(() -> Palette.Ctrl.fill(false), () -> Palette.Ctrl.accentLight(false), () -> Palette.Ctrl.accentDark(false)));
+//        filterUI.setScrollBarCustomizer(bar -> bar.setSliderElement(new GuiBorderedRect().setGetters(Palette.SubItem::accentDark, () -> 0)).getBackgroundElement().setEnabled(false));
+//        filterUI.setNodeTitleColour(Palette.Slot::text);
+//        filterUI.setRelPos(bg, 25, 14).setMaxPos(bg.maxXPos() - 16, template.playerSlots.yPos() - 4, true);
+//        bg.addChild(filterUI);
+//
+//        GuiBorderedRect filterBG = new GuiBorderedRect();
+//        filterBG.set3DGetters(Palette.Slot::fill, Palette.Slot::accentDark, Palette.Slot::accentLight);
+//        filterBG.setBorderColourL(Palette.Slot::border3D);
+//        filterBG.setPosAndSize(filterUI);
+//        filterUI.addBackGroundChild(filterBG);
+//
+//        template.playerSlots.setMaxXPos(bg.maxXPos() - 7, false);
+////        template.playerSlots.setMaxXPos(filterUI.maxXPos() - 2, false);
+//        GuiBorderedRect invBG = new GuiBorderedRect().set3DGetters(Palette.SubItem::fill, Palette.SubItem::accentLight, Palette.SubItem::accentDark);
+//        invBG.setRelPos(template.playerSlots, -2, -2).setSize(template.playerSlots.xSize() + 4, template.playerSlots.ySize() + 4);
+//        template.playerSlots.addBackGroundChild(invBG);
+//
+//        //Power
+//        template.addEnergyBar(tile.opStorage);
+//        template.addEnergyItemSlot(false, true, container.getSlotLayout().getSlotData(TILE_INV, 0));
+//        template.powerSlot.setMaxYPos(filterUI.maxYPos(), false).setXPos(bg.xPos() + 5);
+//        template.energyBar.setYPos(filterUI.yPos()).setMaxYPos(template.powerSlot.yPos() - 12, true).setXPos(template.powerSlot.xPos() + 2);
+//
+//        //Large/Popout view
+//        PopoutDialog popOutDialog = new PopoutDialog(bg);
+//        popOutDialog.onReload(e -> e.setPosAndSize(bg));
+//        popOutDialog.addChild(filterUI);
+//        popOutDialog.addChild(new GuiLabel(I18n.format("bc.guitoolkit.large_view.close")).onReload(e -> e.setYPos(bg.maxYPos()).setXPos(bg.xPos()).setSize(200, 12)).setAlignment(GuiAlign.LEFT));
+//
+//        GuiButton largeView = toolkit.createLargeViewButton();
+//        largeView.setPos(filterBG.maxXPos() + 2, filterBG.maxYPos() - 10);
+//        bg.addChild(largeView);
+//
+//        //Remove the filterUI from the main background, Update its pos and size then display the dialog.
+//        largeView.onPressed(() -> {
+//            bg.removeChild(filterUI);
+//            popOutDialog.setPosAndSize(bg);
+//            filterUI.setRelPos(bg, 4, 4).setSize(bg.xSize() - 8, bg.ySize() - 8);
+//            filterBG.setPosAndSize(filterUI);
+//            popOutDialog.show(100);
+//        });
+//
+//        //Return the filterUI to the main background and reset its pos and size
+//        popOutDialog.setCloseCallback(() -> {
+//            filterUI.setRelPos(bg, 25, 14).setMaxPos(bg.maxXPos() - 16, template.playerSlots.yPos() - 4, true);
+//            filterBG.setPosAndSize(filterUI);
+//            bg.addChild(filterUI);
+//        });
+//
+//        //UI Buttons
+//        GuiButton aoeSize = toolkit.createButton("", bg);
+//        aoeSize.setHoverText(I18n.format("gui.de.grinder.aoe.info"));
+//        aoeSize.setDisplaySupplier(() -> I18n.format("gui.de.grinder.aoe") + " " + getAOEString());
+//        aoeSize.setButtonListener((b, i) -> modifyAOE(i == 1 || isShiftKeyDown()));
+//        aoeSize.setPos(template.powerSlot.xPos(), invBG.yPos()).setYSize(14).setMaxXPos(invBG.xPos() - 2, true);
+//
+//        GuiButton showAOE = toolkit.createButton("gui.de.grinder.show_aoe", bg);
+//        showAOE.onPressed(tile.showAOE::invert);
+//        showAOE.setToggleMode(true).setToggleStateSupplier(tile.showAOE::get);
+//        showAOE.setPos(template.powerSlot.xPos(), aoeSize.maxYPos() + 2).setSize(aoeSize);
+//
+//        GuiButton collectItems = toolkit.createButton("gui.de.grinder.collect.items", bg);
+//        collectItems.setHoverText(I18n.format("gui.de.grinder.collect.items.info"));
+//        collectItems.onPressed(tile.collectItems::invert);
+//        collectItems.setToggleMode(true).setToggleStateSupplier(tile.collectItems::get);
+//        collectItems.setPos(template.powerSlot.xPos(), showAOE.maxYPos() + 2).setSize(aoeSize);
+//
+//        GuiButton collectXP = toolkit.createButton("gui.de.grinder.collect.xp", bg);
+//        collectXP.setHoverText(I18n.format("gui.de.grinder.collect.xp.info"));
+//        collectXP.onPressed(tile.collectXP::invert);
+//        collectXP.setToggleMode(true).setToggleStateSupplier(tile.collectXP::get);
+//        collectXP.setPos(template.powerSlot.xPos(), collectItems.maxYPos() + 2).setSize(aoeSize);
+//
+//        GuiButton claimXP = toolkit.createButton("gui.de.grinder.claim.xp", bg);
+//        claimXP.onPressed(() -> tile.sendPacketToServer(output -> output.writeByte(0), 1));
+//        claimXP.setHoverText(I18n.format("gui.de.grinder.claim.xp.info"));
+//        claimXP.setPos(template.powerSlot.xPos(), collectXP.maxYPos() + 2).setSize(aoeSize).setYSize(14);
+//
+//        GuiButton level = toolkit.createButton("1L", bg);
+//        level.onPressed(() -> tile.sendPacketToServer(output -> output.writeByte(1), 1));
+//        level.setSize(claimXP.xSize() / 3, 12).setTrim(false);
+//        level.setHoverText(I18n.format("gui.de.grinder.claim.xp.level.info"));
+//        toolkit.placeOutside(level, claimXP, GuiToolkit.LayoutPos.BOTTOM_LEFT, level.xSize(), 0);
+//
+//        GuiButton level5 = toolkit.createButton("5L", bg);
+//        level5.onPressed(() -> tile.sendPacketToServer(output -> output.writeByte(2), 1));
+//        level5.setSize(claimXP.xSize() / 3, 12).setTrim(false);
+//        level5.setHoverText(I18n.format("gui.de.grinder.claim.xp.levels.info", "5"));
+//        toolkit.placeOutside(level5, claimXP, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 0);
+//
+//        GuiButton level10 = toolkit.createButton("10L", bg);
+//        level10.onPressed(() -> tile.sendPacketToServer(output -> output.writeByte(3), 1));
+//        level10.setSize(claimXP.xSize() / 3, 12).setTrim(false);
+//        level10.setHoverText(I18n.format("gui.de.grinder.claim.xp.levels.info", "10"));
+//        toolkit.placeOutside(level10, claimXP, GuiToolkit.LayoutPos.BOTTOM_RIGHT, -level10.xSize(), 0);
+//
+//        //Info Panel
+//        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.de.generator.stored_xp"), 6, 11, () -> GRAY + "" + tile.storedXP.get() + " " + I18n.format("gui.de.generator.stored_xp.raw"), true);
+//
+//    }
+//
+//    private String getAOEString() {
+//        int aoe = 1 + (tile.aoe.get() - 1) * 2;
+//        return aoe + "x" + aoe;
+//    }
+//
+//    private void modifyAOE(boolean dec) {
+//        byte aoe = tile.aoe.get();
+//        tile.aoe.set((byte) (dec ? aoe == 1 ? tile.getMaxAOE() : aoe - 1 : aoe == tile.getMaxAOE() ? 1 : aoe + 1));
+//    }
+//}

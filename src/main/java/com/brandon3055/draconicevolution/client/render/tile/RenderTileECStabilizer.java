@@ -1,17 +1,17 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.brandonscore.client.render.TESRBase;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileCoreStabilizer;
 import com.brandon3055.draconicevolution.client.model.ModelLargeECStabilizer;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumFacing;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.util.Direction;
 
 /**
  * Created by brandon3055 on 19/4/2016.
  */
-public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
+public class RenderTileECStabilizer extends TESRBase<TileCoreStabilizer> {
 
     private static ModelLargeECStabilizer largeModel;
 
@@ -20,26 +20,26 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
     }
 
     @Override
-    public void render(TileEnergyCoreStabilizer te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
+    public void render(TileCoreStabilizer te, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
+        GlStateManager.translated(x + 0.5, y + 0.5, z + 0.5);
         GlStateManager.disableBlend();
         setLighting(200F);
 
         //region Rotate Renderer
-        EnumFacing facing;
+        Direction facing;
         if (te.isCoreActive.get()) {
             facing = te.coreDirection;
         }
         else {
-            facing = EnumFacing.getFacingFromAxis(EnumFacing.AxisDirection.POSITIVE, te.multiBlockAxis);
+            facing = Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
         }
 
-        if (facing.getAxis() == EnumFacing.Axis.X || facing.getAxis() == EnumFacing.Axis.Y) {
-            GlStateManager.rotate(-90F, -facing.getFrontOffsetY(), facing.getFrontOffsetX(), 0);
+        if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
+            GlStateManager.rotatef(-90F, -facing.getYOffset(), facing.getXOffset(), 0);
         }
-        else if (facing == EnumFacing.SOUTH) {
-            GlStateManager.rotate(180F, 0, 1, 0);
+        else if (facing == Direction.SOUTH) {
+            GlStateManager.rotatef(180F, 0, 1, 0);
         }
         //endregion
 
@@ -49,15 +49,15 @@ public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
         GlStateManager.popMatrix();
     }
 
-    private void renderRing(TileEnergyCoreStabilizer te, float partialTicks) {
+    private void renderRing(TileCoreStabilizer te, float partialTicks) {
         if (!te.isValidMultiBlock.get()) {
             return;
         }
 
         GlStateManager.pushMatrix();
         ResourceHelperDE.bindTexture(DETextures.STABILIZER_LARGE);
-        GlStateManager.rotate(te.rotation + (te.isCoreActive.get() ? partialTicks : 0), 0, 0, 1);
-        largeModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F / 16F);
+        GlStateManager.rotatef(te.rotation + (te.isCoreActive.get() ? partialTicks : 0), 0, 0, 1);
+        largeModel.render(1F / 16F);
         GlStateManager.popMatrix();
     }
 }

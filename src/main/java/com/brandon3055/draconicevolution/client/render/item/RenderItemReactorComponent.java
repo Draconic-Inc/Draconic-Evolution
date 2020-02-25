@@ -1,16 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.render.item.IItemRenderer;
-import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.util.TransformUtils;
-import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorComponent;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.item.Item;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.model.IModelState;
 
@@ -44,29 +37,34 @@ public class RenderItemReactorComponent implements IItemRenderer {
     }
 
     @Override
-    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
-        boolean isCore = item.getItem() == Item.getItemFromBlock(DEFeatures.reactorCore);
-        boolean isStabilizer = !isCore && item.getItemDamage() == 0;
+    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
 
-
-        GlStateManager.pushMatrix();
-        GlStateTracker.pushState();
-
-        if (isCore) {
-            coreRenderer.renderItem();
-        }
-        else if (isStabilizer) {
-            GlStateManager.translate(0.5, 0.5, 0.5);
-            float partial = Minecraft.getMinecraft().getRenderPartialTicks();
-            RenderTileReactorComponent.renderStabilizer(ClientEventHandler.elapsedTicks + partial, (ClientEventHandler.elapsedTicks + partial) * 0.6F, 1F, 0, true, -1);
-        }
-        else {
-            GlStateManager.translate(0.5, 0.5, 0.5);
-            GlStateManager.rotate(90, 1, 0, 0);
-            RenderTileReactorComponent.renderInjector(1F, 0, true, -1);
-        }
-
-        GlStateTracker.popState();
-        GlStateManager.popMatrix();
     }
+
+    //    @Override
+//    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
+//        boolean isCore = item.getItem() == Item.getItemFromBlock(DEFeatures.reactorCore);
+//        boolean isStabilizer = !isCore && item.getItemDamage() == 0;
+//
+//
+//        GlStateManager.pushMatrix();
+//        GlStateTracker.pushState();
+//
+//        if (isCore) {
+//            coreRenderer.renderItem();
+//        }
+//        else if (isStabilizer) {
+//            GlStateManager.translate(0.5, 0.5, 0.5);
+//            float partial = Minecraft.getInstance().getRenderPartialTicks();
+//            RenderTileReactorComponent.renderStabilizer(ClientEventHandler.elapsedTicks + partial, (ClientEventHandler.elapsedTicks + partial) * 0.6F, 1F, 0, true, -1);
+//        }
+//        else {
+//            GlStateManager.translate(0.5, 0.5, 0.5);
+//            GlStateManager.rotate(90, 1, 0, 0);
+//            RenderTileReactorComponent.renderInjector(1F, 0, true, -1);
+//        }
+//
+//        GlStateTracker.popState();
+//        GlStateManager.popMatrix();
+//    }
 }

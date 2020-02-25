@@ -10,14 +10,14 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -28,9 +28,9 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Brandon on 21/11/2014.
  */
-public class RenderLootCore extends Render<EntityLootCore> {
+public class RenderLootCore extends EntityRenderer<EntityLootCore> {
 
-    public RenderLootCore(RenderManager renderManager) {
+    public RenderLootCore(EntityRendererManager renderManager) {
         super(renderManager);
     }
 
@@ -43,11 +43,11 @@ public class RenderLootCore extends Render<EntityLootCore> {
         ccrs.reset();
         ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         float yOffset = MathHelper.sin(((float) ClientEventHandler.elapsedTicks + partialTicks) / 10.0F) * 0.1F + 0.1F;
-        Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y + (entity.height / 2) + yOffset, z), new Rotation(((float) (ClientEventHandler.elapsedTicks + entity.timeOffset) + partialTicks) / 30F, new Vector3(entity.rotX, entity.rotY, 0).normalize()), 0.1);
+        Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y + (entity.getHeight() / 2) + yOffset, z), new Rotation(((float) (ClientEventHandler.elapsedTicks + entity.timeOffset) + partialTicks) / 30F, new Vector3(entity.rotX, entity.rotY, 0).normalize()), 0.1);
         CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
         ccrs.draw();
 
-        entity.isLooking = Minecraft.getMinecraft().entityRenderer.pointedEntity == entity;
+        entity.isLooking = Minecraft.getInstance().getRenderManager().pointedEntity == entity;
 
         if (entity.lookAnimation > 0F) {
             float f = this.renderManager.playerViewY;
@@ -59,20 +59,20 @@ public class RenderLootCore extends Render<EntityLootCore> {
 
     public void renderLabel(EntityLootCore lootCore, FontRenderer renderer, float x, float y, float z, float viewY, float viewX, boolean thirdPerson) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
-        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-viewY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((float) (thirdPerson ? -1 : 1) * viewX, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scale(-0.025F, -0.025F, 0.025F);
+        GlStateManager.translated(x, y, z);
+        GlStateManager.normal3f(0.0F, 1.0F, 0.0F);
+        GlStateManager.rotatef(-viewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotatef((float) (thirdPerson ? -1 : 1) * viewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scalef(-0.025F, -0.025F, 0.025F);
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
-        GlStateManager.disableDepth();
+        GlStateManager.disableDepthTest();
         GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
         int rows = lootCore.displayMap.size();
 
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -92,27 +92,27 @@ public class RenderLootCore extends Render<EntityLootCore> {
         renderBox(vertexbuffer, xPos, yPos, width, height, 0x60000000);
 
         tessellator.draw();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
 
         if (lootCore.lookAnimation >= 1F) {
 
             GlStateManager.pushMatrix();
-            GlStateManager.translate(-5, 0, 0);
-            GlStateManager.scale(9, 9, 9);
-            GlStateManager.rotate(180, 1, 0, 0);
+            GlStateManager.translated(-5, 0, 0);
+            GlStateManager.scaled(9, 9, 9);
+            GlStateManager.rotated(180, 1, 0, 0);
             GlStateManager.popMatrix();
             String name = I18n.format("entity.draconicevolution:lootCore.name");
             int w = renderer.getStringWidth(name);
-            renderer.drawString(name, 11 - (w / 2), (int) yPos - 10, -1);
+            renderer.drawString(name, 11 - (w / 2F), (int) yPos - 10, -1);
 
             int row = 0;
             for (ItemStack stack : lootCore.displayMap.keySet()) {
                 int rowY = (int) yPos + row * 8 + 4;
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(-5, rowY, 0);
-                GlStateManager.scale(9, 9, 9);
-                GlStateManager.rotate(180, 1, 0, 0);
-                Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+                GlStateManager.translated(-5, rowY, 0);
+                GlStateManager.scaled(9, 9, 9);
+                GlStateManager.rotated(180, 1, 0, 0);
+                Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
                 GlStateManager.popMatrix();
                 renderer.drawString("x" + lootCore.displayMap.get(stack), 0, -4 + rowY, -1);
                 row++;
@@ -121,10 +121,10 @@ public class RenderLootCore extends Render<EntityLootCore> {
 
 
         GlStateManager.depthMask(true);
-        GlStateManager.enableDepth();
+        GlStateManager.enableDepthTest();
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
     }
 

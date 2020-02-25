@@ -15,8 +15,9 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -54,7 +55,7 @@ public class ExplosionFX extends BCParticle {
     public ExplosionFX(World worldIn, Vec3D pos, int radius) {
         super(worldIn, pos);
         this.radius = radius;
-        particleMaxAge = 20 * 12;
+        maxAge = 20 * 12;
         coreEffect = new CoreEffect(0);
     }
 
@@ -64,7 +65,7 @@ public class ExplosionFX extends BCParticle {
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (effectParts.size() > 0) {
             Iterator<EffectPart> i = effectParts.iterator();
             while (i.hasNext()) {
@@ -80,11 +81,11 @@ public class ExplosionFX extends BCParticle {
 
         coreEffect.update();
 
-        if (particleAge > particleMaxAge) {
+        if (age > maxAge) {
             setExpired();
         }
 
-        int age = particleAge;
+        int age = maxAge;
         if (age == 0) {
             coreEffect = new CoreEffect(0);
             ClientEventHandler.triggerExplosionEffect(getPos().getPos());
@@ -100,20 +101,20 @@ public class ExplosionFX extends BCParticle {
             world.playSound(posX, posY, posZ, DESoundHandler.fusionExplosion, SoundCategory.PLAYERS, 100, 0.9F, false);
         }
 
-        particleAge++;
+        age++;
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         Vec3D pos = new Vec3D(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
         CCRenderState ccrs = CCRenderState.instance();
-        float ttl = 1F - (((float) particleAge + partialTicks) / (float) particleMaxAge);
+        float ttl = 1F - (((float) age + partialTicks) / (float) maxAge);
         ttl = Math.min(1, ttl * 5);
 
         double od = 1200;
         double id = radius / 100D;
 
-        GlStateManager.color(1F, 1F, 1F, 0.15F * ttl * Math.min(1, particleMaxAge / 25F));
+        GlStateManager.color4f(1F, 1F, 1F, 0.15F * ttl * Math.min(1, maxAge / 25F));
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
         for (int i = 0; i < 8; i++) {
             Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(od, id * i, od));
@@ -122,7 +123,7 @@ public class ExplosionFX extends BCParticle {
             od += id * i;
         }
         ccrs.draw();
-        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.color4f(1F, 1F, 1F, 1F);
 
         if (!coreEffect.isDead()) {
             coreEffect.render(pos, ccrs, partialTicks);
@@ -141,14 +142,14 @@ public class ExplosionFX extends BCParticle {
     public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
         @Override
         public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            GlStateManager.color(1F, 1F, 1F, 1F);
+            GlStateManager.color4f(1F, 1F, 1F, 1F);
             GlStateManager.depthMask(false);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-            GlStateManager.disableTexture2D();
+            GlStateManager.disableTexture();
 
             if (!DEShaders.useShaders()) {
-                GlStateManager.glTexParameterf(3553, 10242, 10497.0F);
-                GlStateManager.glTexParameterf(3553, 10243, 10497.0F);
+                GlStateManager.texParameter(3553, 10242, 10497.0F);
+                GlStateManager.texParameter(3553, 10243, 10497.0F);
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             }
@@ -158,7 +159,7 @@ public class ExplosionFX extends BCParticle {
         public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 
-            GlStateManager.enableTexture2D();
+            GlStateManager.enableTexture();
 
             GlStateManager.enableCull();
             if (!DEShaders.useShaders()) {

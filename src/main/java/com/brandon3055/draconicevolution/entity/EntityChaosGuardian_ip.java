@@ -7,19 +7,19 @@
 //import com.google.common.base.Optional;
 //import com.google.common.collect.Lists;
 //import net.minecraft.block.Block;
-//import net.minecraft.block.state.IBlockState;
+//import net.minecraft.block.state.BlockState;
 //import net.minecraft.entity.Entity;
-//import net.minecraft.entity.EntityLivingBase;
+//import net.minecraft.entity.LivingEntity;
 //import net.minecraft.entity.SharedMonsterAttributes;
 //import net.minecraft.entity.boss.EntityDragon;
 //import net.minecraft.entity.boss.EntityDragonPart;
 //import net.minecraft.entity.boss.dragon.phase.PhaseList;
 //import net.minecraft.entity.effect.EntityLightningBolt;
 //import net.minecraft.entity.item.EntityXPOrb;
-//import net.minecraft.entity.player.EntityPlayer;
-//import net.minecraft.entity.player.EntityPlayerMP;
+//import net.minecraft.entity.player.PlayerEntity;
+//import net.minecraft.entity.player.ServerPlayerEntity;
 //import net.minecraft.init.SoundEvents;
-//import net.minecraft.nbt.NBTTagCompound;
+//import net.minecraft.nbt.CompoundNBT;
 //import net.minecraft.network.datasync.DataParameter;
 //import net.minecraft.network.datasync.DataSerializers;
 //import net.minecraft.network.datasync.EntityDataManager;
@@ -438,7 +438,7 @@
 //        getPhaseManager().setPhase(PhaseList.HOLDING_PATTERN);
 //    }
 //
-//    public void onCrystalTargeted(EntityPlayer player, boolean destroyed) {
+//    public void onCrystalTargeted(PlayerEntity player, boolean destroyed) {
 //        if (behaviour == EnumBehaviour.DEAD) return;
 //        target = player;
 //        if (destroyed || behaviour == EnumBehaviour.LOW_HEALTH_STRATEGY) {
@@ -582,7 +582,7 @@
 //                }
 //
 //                if (ticksExisted % 2 == 0) {
-//                    EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, target instanceof EntityLivingBase ? (EntityLivingBase) target : null, 5F + (rand.nextFloat() * 8F), this);
+//                    EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, target instanceof LivingEntity ? (LivingEntity) target : null, 5F + (rand.nextFloat() * 8F), this);
 //                    projectile.setPosition(dragonPartHead.posX + Math.cos((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2, dragonPartHead.posY + 1.5, dragonPartHead.posZ + Math.sin((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2);
 //                    world.spawnEntityInWorld(projectile);
 //                }
@@ -593,10 +593,10 @@
 //        else if (nextAttackTimer == 0) {
 //
 //            Entity attackTarget = target;
-//            @SuppressWarnings("unchecked") List<EntityPlayer> targets = attackTarget == null ? world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(100, 100, 100)) : null;
+//            @SuppressWarnings("unchecked") List<PlayerEntity> targets = attackTarget == null ? world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(homeX, homeY, homeZ, homeX, homeY, homeZ).expand(100, 100, 100)) : null;
 //
 //            if (targets != null && targets.size() > 0) {
-//                Iterator<EntityPlayer> i = targets.iterator();
+//                Iterator<PlayerEntity> i = targets.iterator();
 //                while (i.hasNext()) {
 //                    if (i.next().capabilities.isCreativeMode) i.remove();
 //                }
@@ -637,7 +637,7 @@
 //                    if (target == null && behaviour == EnumBehaviour.CHARGING) target = attackTarget;
 //                    if (Utils.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 10) {
 //                        if (attackTimer % 2 == 0) {
-//                            EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
+//                            EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
 //                            projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
 //                            world.spawnEntityInWorld(projectile);
 //                        }
@@ -650,21 +650,21 @@
 //                    break;
 //                case ATTACK_FIREBALL_CHASER:
 //                    if (attackTimer % 10 == 0) {
-//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIRE_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 2F), this);
+//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIRE_CHASER, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 2F), this);
 //                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
 //                        world.spawnEntityInWorld(projectile);
 //                    }
 //                    break;
 //                case ATTACK_ENERGY_CHASER:
 //                    if (attackTimer % 10 == 0) {
-//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.ENERGY_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
+//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.ENERGY_CHASER, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
 //                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
 //                        world.spawnEntityInWorld(projectile);
 //                    }
 //                    break;
 //                case ATTACK_CHAOS_CHASER:
 //                    if (attackTimer % 10 == 0) {
-//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.CHAOS_CHASER, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
+//                        EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.CHAOS_CHASER, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
 //                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
 //                        world.spawnEntityInWorld(projectile);
 //                    }
@@ -677,7 +677,7 @@
 //                    }
 //                    if (Utils.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 15) {
 //                        if (attackTimer % 2 == 0) {
-//                            EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.TELEPORT, attackTarget instanceof EntityLivingBase ? (EntityLivingBase) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
+//                            EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.TELEPORT, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
 //                            projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
 //                            world.spawnEntityInWorld(projectile);
 //                        }
@@ -811,10 +811,10 @@
 //
 //                break;
 //            case FIREBOMB:
-//                @SuppressWarnings("unchecked") List<EntityPlayer> targets = world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox().expand(150, 150, 150), EntitySelectors.CAN_AI_TARGET);
+//                @SuppressWarnings("unchecked") List<PlayerEntity> targets = world.getEntitiesWithinAABB(PlayerEntity.class, getEntityBoundingBox().expand(150, 150, 150), EntitySelectors.CAN_AI_TARGET);
 //                target = null;
 //                while (targets.size() > 0 && target == null) {
-//                    EntityPlayer potentialTarget = targets.get(rand.nextInt(targets.size()));
+//                    PlayerEntity potentialTarget = targets.get(rand.nextInt(targets.size()));
 //                    if (world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(potentialTarget.posX, potentialTarget.posY, potentialTarget.posZ)) == null) {
 //                        target = potentialTarget;
 //                    } else targets.remove(potentialTarget);
@@ -861,7 +861,7 @@
 //                if (rand.nextInt(6) == 0 && getHealth() >= getMaxHealth() * 0.2F) {
 //                    selectNewBehaviour();
 //                }
-//                if (damageSource.getEntity() instanceof EntityPlayer && attackInProgress != ATTACK_TELEPORT) {
+//                if (damageSource.getEntity() instanceof PlayerEntity && attackInProgress != ATTACK_TELEPORT) {
 //                    int escape = 0;
 //                    boolean flag = false;
 //                    while (!flag && escape < 50) {
@@ -881,7 +881,7 @@
 //                if ((target == null && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0) {
 //                    selectNewBehaviour();
 //                }
-//                if (damageSource.getEntity() instanceof EntityPlayer && damageSource.getEntity() != target && world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getEntity().posX, damageSource.getEntity().posY, damageSource.getEntity().posZ)) == null) {
+//                if (damageSource.getEntity() instanceof PlayerEntity && damageSource.getEntity() != target && world.rayTraceBlocks(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getEntity().posX, damageSource.getEntity().posY, damageSource.getEntity().posZ)) == null) {
 //                    target = damageSource.getEntity();
 //                }
 //                break;
@@ -889,11 +889,11 @@
 //                break;
 //        }
 //
-//        if ((damageSource.getEntity() instanceof EntityPlayer || damageSource.isExplosion()) && healingChaosCrystal == null)//tod reanable this
+//        if ((damageSource.getEntity() instanceof PlayerEntity || damageSource.isExplosion()) && healingChaosCrystal == null)//tod reanable this
 //        {
 //            super.attackDragonFrom(damageSource, dmg);
-//        } else if (damageSource.getEntity() instanceof EntityPlayer) {
-//            ((EntityPlayer) damageSource.getEntity()).addChatComponentMessage(new TextComponentTranslation("msg.de.guardianAttackBlocked.txt").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)));
+//        } else if (damageSource.getEntity() instanceof PlayerEntity) {
+//            ((PlayerEntity) damageSource.getEntity()).addChatComponentMessage(new TextComponentTranslation("msg.de.guardianAttackBlocked.txt").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)));
 //        }
 //
 //        return true;
@@ -1039,16 +1039,16 @@
 ////		while (iterator.hasNext()) {
 ////			Entity entity = (Entity) iterator.next();
 ////
-////			if (entity instanceof EntityLivingBase) {
+////			if (entity instanceof LivingEntity) {
 ////				double d2 = entity.posX - d0;
 ////				double d3 = entity.posZ - d1;
 ////				double d4 = d2 * d2 + d3 * d3;
 ////				if (rand.nextInt(isUber ? 3 : 10) == 0) entity.addVelocity(d2 / d4 * 8.0D, 5.20000000298023224D, d3 / d4 * 8.0D);
 ////				entity.velocityChanged = true;
-////				((EntityLivingBase)entity).setLastAttacker(this);
+////				((LivingEntity)entity).setLastAttacker(this);
 ////			}
-////			if (entity instanceof EntityLivingBase && isUber){
-////				((EntityLivingBase)entity).setLastAttacker(this);
+////			if (entity instanceof LivingEntity && isUber){
+////				((LivingEntity)entity).setLastAttacker(this);
 ////				entity.attackEntityFrom(new DamageSourceChaos(this), 20F);
 ////			}
 ////		}
@@ -1060,8 +1060,8 @@
 //            for (int i = 0; i < par1List.size(); ++i) {
 //                Entity entity = (Entity) par1List.get(i);
 //
-//                if (entity instanceof EntityPlayer) {
-//                    ((EntityLivingBase) entity).setLastAttacker(this);
+//                if (entity instanceof PlayerEntity) {
+//                    ((LivingEntity) entity).setLastAttacker(this);
 //                    entity.attackEntityFrom(new DEDamageSources.DamageSourceChaos(this), 50F);
 //                    hasAttacked = true;
 //                }
@@ -1144,7 +1144,7 @@
 //            for (int y = j; y <= i1; ++y) {
 //                for (int z = k; z <= j1; ++z) {
 //                    BlockPos pos = new BlockPos(x, y, z);
-//                    IBlockState state = this.world.getBlockState(pos);
+//                    BlockState state = this.world.getBlockState(pos);
 //                    Block block = state.getBlock();
 //
 //                    if (!world.isAirBlock(pos)) {
@@ -1249,22 +1249,22 @@
 //    }
 //
 //    @Override
-//    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+//    public CompoundNBT writeToNBT(CompoundNBT compound) {
 //        super.writeToNBT(compound);
-//        compound.setInteger("HomeXCoord", homeX);
-//        compound.setInteger("HomeYCoord", homeY);
-//        compound.setInteger("HomeZCoord", homeZ);
-//        compound.setString("Behaviour", behaviour.name());
-//        compound.setBoolean("HomeSet", homeSet);
+//        compound.putInt("HomeXCoord", homeX);
+//        compound.putInt("HomeYCoord", homeY);
+//        compound.putInt("HomeZCoord", homeZ);
+//        compound.putString("Behaviour", behaviour.name());
+//        compound.putBoolean("HomeSet", homeSet);
 //        return compound;
 //    }
 //
 //    @Override
-//    public void readFromNBT(NBTTagCompound compound) {
+//    public void readFromNBT(CompoundNBT compound) {
 //        super.readFromNBT(compound);
-//        homeX = compound.getInteger("HomeXCoord");
-//        homeY = compound.getInteger("HomeYCoord");
-//        homeZ = compound.getInteger("HomeZCoord");
+//        homeX = compound.getInt("HomeXCoord");
+//        homeY = compound.getInt("HomeYCoord");
+//        homeZ = compound.getInt("HomeZCoord");
 //        if (compound.hasKey("Behaviour")) behaviour = EnumBehaviour.valueOf(compound.getString("Behaviour"));
 //        homeSet = compound.getBoolean("HomeSet");
 //        targetX = homeX;
@@ -1303,13 +1303,13 @@
 //    }
 //
 //    @Override
-//    public void addTrackingPlayer(EntityPlayerMP player) {
+//    public void addTrackingPlayer(ServerPlayerEntity player) {
 //        super.addTrackingPlayer(player);
 //        bossInfo.addPlayer(player);
 //    }
 //
 //    @Override
-//    public void removeTrackingPlayer(EntityPlayerMP player) {
+//    public void removeTrackingPlayer(ServerPlayerEntity player) {
 //        super.removeTrackingPlayer(player);
 //        bossInfo.removePlayer(player);
 //    }

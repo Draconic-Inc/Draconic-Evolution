@@ -1,22 +1,20 @@
 package com.brandon3055.draconicevolution.handlers;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.handlers.FileHandler;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.network.PacketContributor;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Charsets;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.io.File;
 import java.io.FileReader;
@@ -61,7 +59,7 @@ public class ContributorHandler {
             }
         };
 
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+        if (EffectiveSide.get().isClient()) {
             ProcessHandlerClient.addProcess(process);
         }
         else {
@@ -69,18 +67,19 @@ public class ContributorHandler {
         }
     }
 
-    public static boolean isPlayerContributor(EntityPlayer player) {
+    public static boolean isPlayerContributor(PlayerEntity player) {
         return contributors.containsKey(player.getName()) && contributors.get(player.getName()).isUserValid(player);
     }
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.player instanceof EntityPlayerMP) {
+        if (event.getPlayer() instanceof ServerPlayerEntity) {
             for (String contribName : ContributorHandler.contributors.keySet()) {
-                for (String name : FMLCommonHandler.instance().getMinecraftServerInstance().getOnlinePlayerNames()) {
+                for (String name : BrandonsCore.proxy.getMCServer().getOnlinePlayerNames()) {
                     if (name.equals(contribName)) {
                         ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(contribName);
-                        DraconicEvolution.network.sendTo(new PacketContributor(contribName, contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled, contributor.lolnetBadgeEnabled), (EntityPlayerMP) event.player);
+                        //Packet Stuff
+//                        DraconicEvolution.network.sendTo(new PacketContributor(contribName, contributor.contributorWingsEnabled, contributor.patreonBadgeEnabled, contributor.lolnetBadgeEnabled), (ServerPlayerEntity) event.player);
                     }
                 }
             }
@@ -266,7 +265,7 @@ public class ContributorHandler {
         public Contributor() {
         }
 
-        public boolean isUserValid(EntityPlayer player) {
+        public boolean isUserValid(PlayerEntity player) {
             if (player == null) {
                 return false;
             }

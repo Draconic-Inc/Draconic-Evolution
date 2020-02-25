@@ -1,16 +1,15 @@
 package com.brandon3055.draconicevolution.blocks.reactor;
 
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorEnergyInjector;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.client.render.effect.ReactorBeamFX;
 import com.brandon3055.draconicevolution.client.sound.ReactorSound;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 11/02/2017.
@@ -18,17 +17,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ReactorEffectHandler {
 
     private TileReactorCore reactor;
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private ReactorBeamFX[] effects;
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private ReactorSound reactorSound;
 
     public ReactorEffectHandler(TileReactorCore reactor) {
         this.reactor = reactor;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void updateEffects() {
         if (effects == null) {
             effects = new ReactorBeamFX[6];
@@ -36,9 +35,9 @@ public class ReactorEffectHandler {
 
 //        reactorSound.donePlaying = true;
 //        reactorSound = null;;
-        if ((reactorSound == null || reactorSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(reactorSound)) && reactor.reactorState.get().isShieldActive() && reactor.shieldCharge.get() > 0) {
+        if ((reactorSound == null || reactorSound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(reactorSound)) && reactor.reactorState.get().isShieldActive() && reactor.shieldCharge.get() > 0) {
             reactorSound = new ReactorSound(reactor);
-            Minecraft.getMinecraft().getSoundHandler().playSound(reactorSound);
+            Minecraft.getInstance().getSoundHandler().play(reactorSound);
         }
         else if (reactorSound != null && (!reactor.reactorState.get().isShieldActive() || reactor.shieldCharge.get() <= 0)) {
             reactorSound.donePlaying = true;
@@ -48,7 +47,7 @@ public class ReactorEffectHandler {
             return;
         }
 
-        for (EnumFacing facing : EnumFacing.values()) {
+        for (Direction facing : Direction.values()) {
             int index = facing.getIndex();
             TileReactorComponent component = reactor.getComponent(facing);
 
@@ -65,9 +64,10 @@ public class ReactorEffectHandler {
                 continue;
             }
 
-            ReactorBeamFX beamFX = new ReactorBeamFX(reactor.getWorld(), Vec3D.getCenter(component.getPos()), component.facing.get(), reactor, component instanceof TileReactorEnergyInjector);
+            ReactorBeamFX beamFX = new ReactorBeamFX(reactor.getWorld(), Vec3D.getCenter(component.getPos()), component.facing.get(), reactor, component instanceof TileReactorInjector);
             effects[index] = beamFX;
-            BCEffectHandler.spawnGLParticle(ReactorBeamFX.FX_HANDLER, beamFX);
+            //TODO particles
+//            BCEffectHandler.spawnGLParticle(ReactorBeamFX.FX_HANDLER, beamFX);
         }
     }
 

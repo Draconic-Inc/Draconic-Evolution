@@ -19,7 +19,7 @@ public class ItemUpgradeRegistry {
 //        upgradeRegistry.put(index, upgrade);
 //        nameToIndexMap.put(upgrade.getName(), index);
 //
-//        NBTTagCompound upgradeTag = stack.getSubCompound(UPGRADE_TAG, true);
+//        CompoundNBT upgradeTag = stack.getSubCompound(UPGRADE_TAG, true);
 //        if (!upgradeTag.hasKey(upgrade.getName())){
 //            upgrade.writeToNBT(upgradeTag);
 //        }

@@ -1,32 +1,27 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.brandonscore.registry.Feature;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.tool.ToolOverrideList;
-import com.brandon3055.draconicevolution.client.model.tool.ToolTransforms;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.network.play.server.SChangeBlockPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -34,15 +29,19 @@ import java.util.List;
  * Created by brandon3055 on 2/06/2016.
  */
 public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
+    public WyvernSword(Properties properties) {
+        super(properties);
+    }
 
-//    public WyvernSword(double attackDamage, double attackSpeed) {
+
+    //    public WyvernSword(double attackDamage, double attackSpeed) {
 //        super(attackDamage, attackSpeed);
 //    }
 
-    public WyvernSword() {
+//    public WyvernSword() {
 //        super(ToolStats.WYV_SWORD_ATTACK_DAMAGE, ToolStats.WYV_SWORD_ATTACK_SPEED);
 //        setEnergyStats(ToolStats.WYVERN_BASE_CAPACITY, 512000, 0);
-    }
+//    }
 
     @Override
     public double getBaseAttackSpeedConfig() {
@@ -60,14 +59,14 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     }
 
     @Override
-    public float getDestroySpeed(ItemStack stack, IBlockState state) {
-        return canHarvestBlock(state, stack) ? 25F : 1;
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
+        return canHarvestBlock(stack, state) ? 25F : 1;
     }
 
     @Override
-    public boolean canHarvestBlock(IBlockState state, ItemStack stack) {
+    public boolean canHarvestBlock(ItemStack stack, BlockState state) {
         Material mat = state.getMaterial();
-        return mat.isReplaceable() || mat == Material.WEB || mat == Material.CLOTH || mat == Material.CARPET || mat == Material.LEAVES || mat == Material.PLANTS;
+        return mat.isReplaceable() || mat == Material.WEB || mat == Material.WOOL || mat == Material.CARPET || mat == Material.LEAVES || mat == Material.PLANTS;
     }
 
     @Override
@@ -88,7 +87,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return enchantment.type == EnumEnchantmentType.WEAPON || enchantment.type == EnumEnchantmentType.ALL;
+        return enchantment.type == EnchantmentType.WEAPON || enchantment.type == EnchantmentType.ALL;
     }
 
     @Override
@@ -97,11 +96,11 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
-        boolean cancel = super.onBlockStartBreak(itemstack, pos, player) || player.capabilities.isCreativeMode;
+    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player) {
+        boolean cancel = super.onBlockStartBreak(itemstack, pos, player) || player.abilities.isCreativeMode;
 
-        if (cancel && player instanceof EntityPlayerMP) {
-            ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(player.world, pos));
+        if (cancel && player instanceof ServerPlayerEntity) {
+            ((ServerPlayerEntity) player).connection.sendPacket(new SChangeBlockPacket(player.world, pos));
         }
 
         return cancel;
@@ -146,22 +145,23 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
 
     //region Rendering
 
-    @Override
-    public void registerRenderer(Feature feature) {
-        super.registerRenderer(feature);
-        ToolOverrideList.putOverride(this, WyvernSword::handleTransforms);
-    }
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        super.registerRenderer(feature);
+//        ToolOverrideList.putOverride(this, WyvernSword::handleTransforms);
+//    }
+//
+//    @OnlyIn(Dist.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
+//    private static IModelState handleTransforms(TransformType transformType, IModelState state) {
+//        return transformType == TransformType.FIXED || transformType == TransformType.GROUND ? ToolTransforms.WY_SWORD_STATE : state;
+//    }
 
-    @SideOnly(Side.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
-    private static IModelState handleTransforms(TransformType transformType, IModelState state) {
-        return transformType == TransformType.FIXED || transformType == TransformType.GROUND ? ToolTransforms.WY_SWORD_STATE : state;
-    }
-
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
         return new PairKV<>(DETextures.WYVERN_SWORD, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_sword.obj"));
     }
+
 
     //endregion
 }

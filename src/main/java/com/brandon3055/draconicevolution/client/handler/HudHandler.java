@@ -1,23 +1,24 @@
 package com.brandon3055.draconicevolution.client.handler;
 
-import codechicken.lib.render.state.GlStateTracker;
+
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
-import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiHudConfig;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.block.state.IBlockState;
+
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
+
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
@@ -46,16 +47,15 @@ public class HudHandler {
 
     public static void drawHUD(RenderGameOverlayEvent.Post event) {
         //LogHelper.info(event.getType());
-        Minecraft mc = Minecraft.getMinecraft();
-        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL || mc.gameSettings.showDebugInfo || mc.currentScreen instanceof GuiChat) {
+        Minecraft mc = Minecraft.getInstance();
+        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL || mc.gameSettings.showDebugInfo || mc.currentScreen instanceof ChatScreen) {
             return;
         }
 
-        GlStateTracker.pushState();
+//        GlStateTracker.pushState();
         GlStateManager.pushMatrix();
-        ScaledResolution resolution = event.getResolution();
-        width = resolution.getScaledWidth();
-        height = resolution.getScaledHeight();
+        width = mc.mainWindow.getScaledWidth();
+        height = mc.mainWindow.getScaledWidth();
         FontRenderer fontRenderer = mc.fontRenderer;
 
         if (DEConfig.hudSettings[10] == 1 && hudList != null && toolTipFadeOut > 0) {
@@ -74,7 +74,7 @@ public class HudHandler {
         }
 
         GlStateManager.popMatrix();
-        GlStateTracker.popState();
+//        GlStateTracker.popState();
     }
 
 
@@ -94,7 +94,7 @@ public class HudHandler {
 
         ltHudList = hudList;
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
 
         if (mc == null || mc.player == null) {
             return;
@@ -103,37 +103,38 @@ public class HudHandler {
         hudList = new ArrayList<String>();
 
         if (mc.currentScreen != null) {
-            if (mc.currentScreen instanceof GuiHudConfig) {
-                hudList.add(I18n.format("info.de.hudDisplayConfigTxt1.txt"));
-                hudList.add("");
-                hudList.add("");
-                hudList.add("");
-                hudList.add(I18n.format("info.de.hudDisplayConfigTxt3.txt"));
-                toolTipFadeOut = 1F;
-                armorStatsFadeOut = 1F;
-            }
+//            if (mc.currentScreen instanceof GuiHudConfig) {TODO Gui Stuff
+//                hudList.add(I18n.format("info.de.hudDisplayConfigTxt1.txt"));
+//                hudList.add("");
+//                hudList.add("");
+//                hudList.add("");
+//                hudList.add(I18n.format("info.de.hudDisplayConfigTxt3.txt"));
+//                toolTipFadeOut = 1F;
+//                armorStatsFadeOut = 1F;
+//            }
         }
         else {
 
-            RayTraceResult traceResult = mc.player.rayTrace(5, 0);
-            IBlockState state = null;
+            RayTraceResult traceResult = mc.player.func_213324_a(5, 0, false);
+            BlockState state = null;
 
-            if (traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
-                state = mc.world.getBlockState(traceResult.getBlockPos());
-            }
-
-            if (state != null && state.getBlock() instanceof IHudDisplay) {
-                ((IHudDisplay) state.getBlock()).addDisplayData(null, mc.world, traceResult.getBlockPos(), hudList);
-            }
-            else {
-                ItemStack stack = mc.player.getHeldItemMainhand();
-
-                if (stack.isEmpty() || !(stack.getItem() instanceof IHudDisplay)) {
-                    stack = mc.player.getHeldItemOffhand();
+            if (traceResult instanceof BlockRayTraceResult) {
+                if (traceResult != null) {
+                    state = mc.world.getBlockState(((BlockRayTraceResult) traceResult).getPos());
                 }
 
-                if (!stack.isEmpty() && stack.getItem() instanceof IHudDisplay) {
-                    ((IHudDisplay) stack.getItem()).addDisplayData(stack, mc.world, null, hudList);
+                if (state != null && state.getBlock() instanceof IHudDisplay) {
+                    ((IHudDisplay) state.getBlock()).addDisplayData(null, mc.world, ((BlockRayTraceResult) traceResult).getPos(), hudList);
+                } else {
+                    ItemStack stack = mc.player.getHeldItemMainhand();
+
+                    if (stack.isEmpty() || !(stack.getItem() instanceof IHudDisplay)) {
+                        stack = mc.player.getHeldItemOffhand();
+                    }
+
+                    if (!stack.isEmpty() && stack.getItem() instanceof IHudDisplay) {
+                        ((IHudDisplay) stack.getItem()).addDisplayData(stack, mc.world, null, hudList);
+                    }
                 }
             }
         }
@@ -158,22 +159,22 @@ public class HudHandler {
 
     private static void drawArmorHUD(int x, int y, boolean rotated, double scale) {
         GlStateManager.pushMatrix();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.enableBlend();
-        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+        GLX.glBlendFuncSeparate(770, 771, 1, 0);
         ResourceHelperDE.bindTexture(DETextures.GUI_HUD);
 
-        GlStateManager.translate(x, y, 0);
-        GlStateManager.scale(scale, scale, 1);
-        GlStateManager.translate(-x, -y, 0);
-        GlStateManager.color(1F, 1F, 1F, Math.min(armorStatsFadeOut, 1F));
+        GlStateManager.translated(x, y, 0);
+        GlStateManager.scaled(scale, scale, 1);
+        GlStateManager.translated(-x, -y, 0);
+        GlStateManager.color4f(1F, 1F, 1F, Math.min(armorStatsFadeOut, 1F));
 
         if (rotated) {
             GuiHelper.drawTexturedRect(x - 15, y + 1, 14, 16, 2, 0, 13, 15, 0, GuiHelper.PXL128);
             x += 104;
-            GlStateManager.translate(x, y, 0);
-            GlStateManager.rotate(-90, 0, 0, -1);
-            GlStateManager.translate(-x, -y, 0);
+            GlStateManager.translated(x, y, 0);
+            GlStateManager.rotated(-90, 0, 0, -1);
+            GlStateManager.translated(-x, -y, 0);
         }
         else GuiHelper.drawTexturedRect(x + 1, y + 105, 15, 17, 2, 0, 13, 15, 0, GuiHelper.PXL128);
 
@@ -184,10 +185,10 @@ public class HudHandler {
 
 
         if (DEConfig.hudSettings[9] == 1) {
-            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-            GlStateManager.translate(x, y, 0);
-            if (rotated) GlStateManager.rotate(90, 0, 0, -1);
-            GlStateManager.translate(-x, -y, 0);
+            FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+            GlStateManager.translated(x, y, 0);
+            if (rotated) GlStateManager.rotated(90, 0, 0, -1);
+            GlStateManager.translated(-x, -y, 0);
             String shield = (int) shieldPoints + "/" + (int) maxShieldPoints;
             String entropy = "EN: " + (int) shieldEntropy + "%";
             String energy = "RF: " + Utils.formatNumber(rfTotal);
@@ -205,9 +206,9 @@ public class HudHandler {
         }
 
         ResourceHelperDE.bindTexture(ResourceHelperDE.getResourceRAW("minecraft:textures/gui/icons.png"));
-        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.color4f(1F, 1F, 1F, 1F);
         GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
         GlStateManager.popMatrix();
     }
 }

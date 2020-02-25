@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import codechicken.lib.util.ArrayUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -48,7 +48,7 @@ public class InventoryCache implements IInventory {
                 setInventorySlotContents(index, ItemStack.EMPTY);
             }
             else {
-                itemstack = itemstack.splitStack(count);
+                itemstack = itemstack.split(count);
                 if (itemstack.getCount() == 0) {
                     setInventorySlotContents(index, ItemStack.EMPTY);
                 }
@@ -93,17 +93,17 @@ public class InventoryCache implements IInventory {
     }
 
     @Override
-    public boolean isUsableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(PlayerEntity player) {
         return true;
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(PlayerEntity player) {
 
     }
 
     @Override
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(PlayerEntity player) {
 
     }
 
@@ -113,39 +113,24 @@ public class InventoryCache implements IInventory {
     }
 
     @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
     public void clear() {
         for (int i = 0; i < inventoryStacks.length; i++) {
             inventoryStacks[i] = ItemStack.EMPTY;
         }
     }
 
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Override
-    public ITextComponent getDisplayName() {
-        return null;
-    }
+//    @Override
+//    public String getName() {
+//        return null;
+//    }
+//
+//    @Override
+//    public boolean hasCustomName() {
+//        return false;
+//    }
+//
+//    @Override
+//    public ITextComponent getDisplayName() {
+//        return null;
+//    }
 }

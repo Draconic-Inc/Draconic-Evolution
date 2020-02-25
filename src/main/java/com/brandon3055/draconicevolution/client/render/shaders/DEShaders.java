@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.shaders;
 
 import codechicken.lib.render.shader.ShaderObject;
-import com.brandon3055.brandonscore.BCConfig;
-import net.minecraft.client.renderer.OpenGlHelper;
 
 import java.io.IOException;
 
@@ -33,7 +31,7 @@ public class DEShaders {
     public static ShaderObject explosionCoreEffect;
 
     static {
-        if (OpenGlHelper.shadersSupported && BCConfig.useShaders) {
+        if (useShaders()) {
             try {
                 initShaders();
             } catch (IOException e) {
@@ -77,8 +75,8 @@ public class DEShaders {
         explosionCoreEffect = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/explosion_core_effect.frag")));
     }
 
-    public static boolean useShaders() {
-        return OpenGlHelper.shadersSupported && BCConfig.useShaders;
+    public static boolean useShaders() { //TODO Shader stuff?
+        return true;//OpenGlHelper.shadersSupported && BCConfigOld.useShaders;
     }
 
     private static void dispose(ShaderObject object) {

@@ -6,7 +6,6 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
@@ -21,11 +20,10 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
@@ -50,10 +48,10 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
     }
 
     @Override
-    public void render(TileCrystalBase te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
+    public void render(TileCrystalBase te, double x, double y, double z, float partialTicks, int destroyStage) {
         te.getFxHandler().renderCooldown = 5;
         GlStateManager.pushMatrix();
-        GlStateTracker.pushState();
+//        GlStateTracker.pushState();
         GlStateManager.disableLighting();
         setLighting(200);
 
@@ -65,12 +63,12 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
         }
 
         resetLighting();
-        GlStateTracker.popState();
+//        GlStateTracker.popState();
         GlStateManager.popMatrix();
     }
 
     public void renderCrystal(TileCrystalBase te, double x, double y, double z, float partialTicks, int destroyStage, int tier) {
-        boolean trans = MinecraftForgeClient.getRenderPass() == 1;
+        boolean trans = false;//MinecraftForgeClient.getRenderPass() == 1;
         CCRenderState ccrs = CCRenderState.instance();
         Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation(180 * MathHelper.torad, 1, 0, 0), -0.5);
         mat.apply(new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0));
@@ -102,7 +100,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
     }
 
     public void renderHalfCrystal(TileCrystalDirectIO te, double x, double y, double z, float partialTicks, int destroyStage, int tier) {
-        boolean trans = MinecraftForgeClient.getRenderPass() == 1;
+        boolean trans = false;//MinecraftForgeClient.getRenderPass() == 1;
         ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_BASE);
         CCRenderState ccrs = CCRenderState.instance();
         Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 1, z + 0.5), new Rotation(0, 0, 0, 0), -0.5);
@@ -156,7 +154,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
         if (DEShaders.useShaders() && DEConfig.useCrystalShaders && mm < 1) {
 
             float xrot = (float) Math.atan2(x + 0.5, z + 0.5);
-            float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posZ);
+            float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getInstance().player.posX, Minecraft.getInstance().player.posZ);
             float yrot = (float) net.minecraft.util.math.MathHelper.atan2(dist, y + 0.5);
 
             if (shaderProgram == null) {
@@ -175,7 +173,7 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
         else {
             ResourceHelperDE.bindTexture(DETextures.ENERGY_CRYSTAL_NO_SHADER);
             GlStateManager.disableLighting();
-            GlStateManager.color(r[tier], g[tier], b[tier], 0.5F);
+            GlStateManager.color4f(r[tier], g[tier], b[tier], 0.5F);
         }
     }
 

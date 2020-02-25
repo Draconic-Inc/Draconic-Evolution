@@ -2,23 +2,21 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 
 /**
  * Created by brandon3055 on 25/11/2016.
  */
 public class CrystalBinder extends ItemBCore implements ICrystalBinder {
-
-    public CrystalBinder() {
-        this.setMaxStackSize(1);
+    public CrystalBinder(Properties properties) {
+        super(properties);
     }
+
+    //    public CrystalBinder() {
+//        this.setMaxStackSize(1);
+//    }
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
@@ -26,13 +24,15 @@ public class CrystalBinder extends ItemBCore implements ICrystalBinder {
     }
 
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-        IBlockState state = world.getBlockState(pos);
-
-        if (state.getBlock().rotateBlock(world, pos, side)) {
-            return world.isRemote ? EnumActionResult.PASS : EnumActionResult.SUCCESS;
-        }
-
-        return super.onItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+//        BlockState state = context.getWorld().getBlockState(context.getPos());
+//        World world = context.getWorld();
+//        BlockPos pos = context.getPos();
+//        Direction side = context.getFace();
+//
+//        if (state.getBlock().rotate(state, world, pos, Rotation.CLOCKWISE_90)) {
+//            return world.isRemote ? ActionResultType.PASS : ActionResultType.SUCCESS;
+//        }
+        return ActionResultType.PASS;
     }
 }

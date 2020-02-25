@@ -1,21 +1,28 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
+import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * Created by brandon3055 on 15/11/2016.
  */
 public class TileFluidGate extends TileFlowGate implements IFluidHandler {
 
+    public TileFluidGate() {
+        super(DEContent.tile_fluid_gate);
+    }
+
     //region Gate
+
+    //TODO validate this logic
 
     @Override
     public String getUnits() {
@@ -27,56 +34,92 @@ public class TileFluidGate extends TileFlowGate implements IFluidHandler {
     //region IFluidHandler
 
     @Override
-    public IFluidTankProperties[] getTankProperties() {
-        return new IFluidTankProperties[0];
-    }
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
+    public int getTanks() {
         TileEntity tile = getTarget();
-        if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite())) {
-            IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+        if (tile != null) {
+            LazyOptional<IFluidHandler> opHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
 
-            int transfer = (int) Math.min(getFlow(), handler.fill(resource, false));
-            if (transfer < resource.amount) {
-                FluidStack newStack = resource.copy();
-                newStack.amount = transfer;
-                resource.amount -= transfer;
-                return handler.fill(newStack, doFill);
+            if (opHandler.isPresent()) {
+                opHandler.orElseThrow(WTFException::new).getTanks();
             }
-            return handler.fill(resource, doFill);
         }
         return 0;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public FluidStack drain(FluidStack resource, boolean doDrain) {
-        return null;
+    public FluidStack getFluidInTank(int tank) {
+        return FluidStack.EMPTY;
     }
 
-    @Nullable
     @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        return null;
+    public int getTankCapacity(int tank) {
+        TileEntity tile = getTarget();
+        if (tile != null) {
+            LazyOptional<IFluidHandler> opHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+
+            if (opHandler.isPresent()) {
+                opHandler.orElseThrow(WTFException::new).getTankCapacity(tank);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+        return false;
+    }
+
+    @Override
+    public int fill(FluidStack resource, FluidAction action) {
+        TileEntity tile = getTarget();
+        if (tile != null) {
+            LazyOptional<IFluidHandler> opHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+
+            if (opHandler.isPresent()) {
+                IFluidHandler handler = opHandler.orElseThrow(WTFException::new);
+
+                int transfer = (int) Math.min(getFlow(), handler.fill(resource, action));
+
+                if (transfer < resource.getAmount()) {
+                    FluidStack newStack = resource.copy();
+                    newStack.setAmount(transfer);
+                    resource.shrink(transfer);
+                    return handler.fill(newStack, action);
+                }
+                return handler.fill(resource, action);
+            }
+        }
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack drain(FluidStack resource, FluidAction action) {
+        return FluidStack.EMPTY;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack drain(int maxDrain, FluidAction action) {
+        return FluidStack.EMPTY;
     }
 
     //endregion
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing == getDirection().getOpposite()) || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing == getDirection().getOpposite()) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-        }
-
-        return super.getCapability(capability, facing);
-    }
-
+//    @Override
+//    public boolean hasCapability(Capability<?> capability, Direction facing) {
+//        return (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing == getDirection().getOpposite()) || super.hasCapability(capability, facing);
+//    }
+//
+//    @Override
+//    public <T> T getCapability(Capability<T> capability, Direction facing) {
+//        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing == getDirection().getOpposite()) {
+//            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
+//        }
+//
+//        return super.getCapability(capability, facing);
+//    }
 
     @Override
     public String getPeripheralName() {

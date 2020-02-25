@@ -1,54 +1,34 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
-import com.brandon3055.brandonscore.blocks.BlockMobSafe;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
-import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.registry.Feature;
-import com.brandon3055.brandonscore.registry.IRenderOverride;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.GuiHandler;
+import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
-import com.brandon3055.draconicevolution.client.DEParticles;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileGrinder;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.common.property.Properties;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.IBlockReader;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Brandon on 23/07/2014.
  * Block for DE Generator
  */
-public class Grinder extends BlockMobSafe implements ITileEntityProvider, IRenderOverride {
-    public static final PropertyDirection FACING = BlockHorizontal.FACING;
-    public static final PropertyBool ACTIVE = PropertyBool.create("active");
+public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    public static final BooleanProperty STATIC = BooleanProperty.create("static");
 
-    public Grinder() {
-        super(Material.IRON);
-        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
+    public Grinder(Properties properties) {
+        super(properties);
+        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, false).with(STATIC, true)); //TODO figure out if/when set default is actually needed.
+        setMobResistant(true);
     }
 
     // Rendering
@@ -59,165 +39,139 @@ public class Grinder extends BlockMobSafe implements ITileEntityProvider, IRende
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer() {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(FACING, ACTIVE, STATIC);
+    }
+
+    @Override
+    public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }
-
-    @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerRenderer(Feature feature) {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(feature.getRegistryName(), "inventory"));
-        ClientRegistry.bindTileEntitySpecialRenderer(TileGrinder.class, new RenderTileGrinder());
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileGrinder.class, new AnimationTESR<TileGrinder>(){
 //
-//            @Override
-//            public void renderTileEntityFast(TileGrinder te, double x, double y, double z, float partialTick, int breakStage, float partial, BufferBuilder renderer) {
-//                super.renderTileEntityFast(te, x, y, z, partialTick, breakStage, partial, renderer);
+//    @Override
+//    @OnlyIn(Dist.CLIENT)
+//    public void registerRenderer(Feature feature) {
+//        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(feature.getRegistryName(), "inventory"));
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileGrinder.class, new RenderTileGrinder());
+//    }
 //
-////                blockRenderer.getModelForState()
-//            }
+//    //region BlockState
 //
+//    @Override
+//    protected BlockStateContainer createBlockState() {
+//        return new BlockStateContainer(this, ACTIVE, FACING, STATIC);
+//    }
 //
-//        });
-    }
-
-    //region BlockState
-    @Override
-    protected ExtendedBlockState createBlockState() {
-        return new ExtendedBlockState(this, new IProperty[] {FACING, ACTIVE, Properties.StaticProperty}, new IUnlistedProperty[]{Properties.AnimationProperty});
-    }
-
-    @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileGrinder tileGrinder = worldIn.getTileEntity(pos) instanceof TileGrinder ? (TileGrinder) worldIn.getTileEntity(pos) : null;
-        return state.withProperty(ACTIVE, tileGrinder != null && tileGrinder.active.get());
-    }
-
-    @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileGrinder tileGrinder = world.getTileEntity(pos) instanceof TileGrinder ? (TileGrinder) world.getTileEntity(pos) : null;
-        return state.withProperty(ACTIVE, tileGrinder != null && tileGrinder.active.get());
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        EnumFacing enumfacing = EnumFacing.getFront(meta);
-
-        if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
-            enumfacing = EnumFacing.NORTH;
-        }
-
-        return this.getDefaultState().withProperty(FACING, enumfacing);
-    }
-
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return super.getBoundingBox(state, source, pos);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(FACING).getIndex();
-    }
-
-    @Override
-    public IBlockState withRotation(IBlockState state, Rotation rot) {
-        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    @Override
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
-        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
-    }
-
-    @Override
-    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
-        boolean b = super.rotateBlock(world, pos, axis);
-
-        TileEntity tile = world.getTileEntity(pos);
-        if (b && tile instanceof TileGrinder) {
-            ((TileGrinder) tile).updateKillBox();
-        }
-
-        return b;
-    }
-
-    @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-    }
-
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing()), 2);
-        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-    }
+//    @Override
+//    public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos) {
+//        TileGrinder tileGrinder = worldIn.getTileEntity(pos) instanceof TileGrinder ? (TileGrinder) worldIn.getTileEntity(pos) : null;
+//        return state.withProperty(ACTIVE, tileGrinder != null && tileGrinder.active.get());
+//    }
+//
+//    @Override
+//    public BlockState getStateFromMeta(int meta) {
+//        Direction enumfacing = Direction.getFront(meta);
+//
+//        if (enumfacing.getAxis() == Direction.Axis.Y) {
+//            enumfacing = Direction.NORTH;
+//        }
+//
+//        return this.getDefaultState().withProperty(FACING, enumfacing);
+//    }
+//
+//    @Override
+//    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
+//        return super.getBoundingBox(state, source, pos);
+//    }
+//
+//    @Override
+//    public int getMetaFromState(BlockState state) {
+//        return state.getValue(FACING).getIndex();
+//    }
+//
+//    @Override
+//    public BlockState withRotation(BlockState state, Rotation rot) {
+//        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
+//    }
+//
+//    @Override
+//    public BlockState withMirror(BlockState state, Mirror mirrorIn) {
+//        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
+//    }
+//
+//    @Override
+//    public boolean rotateBlock(World world, BlockPos pos, Direction axis) {
+//        boolean b = super.rotateBlock(world, pos, axis);
+//
+//        TileEntity tile = world.getTileEntity(pos);
+//        if (b && tile instanceof TileGrinder) {
+//            ((TileGrinder) tile).validateKillZone(true);
+//        }
+//
+//        return b;
+//    }
+//
+//    @Override
+//    public BlockState getStateForPlacement(World world, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer, Hand hand) {
+//        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+//    }
+//
+//    @Override
+//    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+//        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing()), 2);
+//        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+//    }
     //endregion
 
+
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileGrinder();
     }
 
+//    @Override
+//    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+//        if (player.isSneaking()) {
+////            TileEntity tile = world.getTileEntity(pos);
+////            if (tile instanceof TileGrinder && world.isRemote) {
+////                AxisAlignedBB bb = ((TileGrinder) tile).getKillBoxForRender();
+////
+////                for (double i = 0; i <= 7; i += 0.01) {
+////                    Vec3D minX = new Vec3D(bb.minX + i, bb.minY, bb.minZ);
+////                    Vec3D minY = new Vec3D(bb.minX, bb.minY + i, bb.minZ);
+////                    Vec3D minZ = new Vec3D(bb.minX, bb.minY, bb.minZ + i);
+////
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minX, new Vec3D(), 0, 255, 255, 130);
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minY, new Vec3D(), 0, 255, 255, 130);
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minZ, new Vec3D(), 0, 255, 255, 130);
+////
+////                    Vec3D maxX = new Vec3D(bb.maxX - i, bb.maxY, bb.maxZ);
+////                    Vec3D maxY = new Vec3D(bb.maxX, bb.maxY - i, bb.maxZ);
+////                    Vec3D maxZ = new Vec3D(bb.maxX, bb.maxY, bb.maxZ - i);
+////
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxX, new Vec3D(), 0, 255, 255, 130);
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxY, new Vec3D(), 0, 255, 255, 130);
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxZ, new Vec3D(), 0, 255, 255, 130);
+////                }
+////
+////
+////            }
+//        }
+//        else if (!world.isRemote) {
+//            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GRINDER, world, pos.getX(), pos.getY(), pos.getZ());
+//        }
+//        return true;
+//    }
+
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if (player.isSneaking()) {
-            TileEntity tile = world.getTileEntity(pos);
-            if (tile instanceof TileGrinder && world.isRemote) {
-                AxisAlignedBB bb = ((TileGrinder) tile).getKillBoxForRender();
-
-                for (double i = 0; i <= 7; i += 0.01) {
-                    Vec3D minX = new Vec3D(bb.minX + i, bb.minY, bb.minZ);
-                    Vec3D minY = new Vec3D(bb.minX, bb.minY + i, bb.minZ);
-                    Vec3D minZ = new Vec3D(bb.minX, bb.minY, bb.minZ + i);
-
-                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minX, new Vec3D(), 0, 255, 255, 130);
-                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minY, new Vec3D(), 0, 255, 255, 130);
-                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minZ, new Vec3D(), 0, 255, 255, 130);
-
-                    Vec3D maxX = new Vec3D(bb.maxX - i, bb.maxY, bb.maxZ);
-                    Vec3D maxY = new Vec3D(bb.maxX, bb.maxY - i, bb.maxZ);
-                    Vec3D maxZ = new Vec3D(bb.maxX, bb.maxY, bb.maxZ - i);
-
-                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxX, new Vec3D(), 0, 255, 255, 130);
-                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxY, new Vec3D(), 0, 255, 255, 130);
-                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxZ, new Vec3D(), 0, 255, 255, 130);
-                }
-
-
-            }
-        }
-        else if (!world.isRemote) {
-            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GRINDER, world, pos.getX(), pos.getY(), pos.getZ());
-        }
+    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side) {
         return true;
-    }
-
-    @Override
-    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        return true;
-    }
-
-    @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileGrinder) {
-            ((TileGrinder) tileEntity).updateKillBox();
-            ((TileGrinder) tileEntity).powered = world.isBlockPowered(pos);
-        }
-    }
-
-    @Override
-    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileGrinder) {
-            ((TileGrinder) tileEntity).updateKillBox();
-        }
     }
 }
 

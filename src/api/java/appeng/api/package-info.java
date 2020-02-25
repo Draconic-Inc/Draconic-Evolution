@@ -22,8 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-@API( apiVersion = "@aeversion@", owner = "appliedenergistics2", provides = "appliedenergistics2|API" )
+//@API( apiVersion = "@aeversion@", owner = "appliedenergistics2", provides = "appliedenergistics2|API" )
 package appeng.api;
 
 
-import net.minecraftforge.fml.common.API;
+//import net.minecraftforge.fml.common.API;

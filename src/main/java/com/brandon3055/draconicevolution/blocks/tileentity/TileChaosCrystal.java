@@ -1,17 +1,20 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedString;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.entity.EntityChaosImplosion;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
-import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
+import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.server.ServerWorld;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
@@ -19,39 +22,40 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 /**
  * Created by brandon3055 on 24/9/2015.
  */
-public class TileChaosCrystal extends TileBCBase implements ITickable {
+public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
 
     public int tick = 0;
-    public final ManagedBool guardianDefeated = register(new ManagedBool("guardianDefeated", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool guardianDefeated = register(new ManagedBool("guardian_defeated", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     /**This is used to store the spawn location of the crystal so the crystal can tell if it gets moved*/
-    private final ManagedLong posLock = register(new ManagedLong("posLock", -1L, SAVE_NBT));
-    private final ManagedInt dimLock = register(new ManagedInt("dimLock", 1, SAVE_NBT));
+    private final ManagedLong posLock = register(new ManagedLong("pos_lock", -1L, SAVE_NBT));
+    private final ManagedString dimLock = register(new ManagedString("dim_lock", "", SAVE_NBT));
     private int soundTimer;
 
     boolean validateOldHash = false;
     int oldhash = 0;
 
     public TileChaosCrystal() {
+        super(DEContent.tile_chaos_crystal);
     }
 
     @Override
-    public void update() {
+    public void tick() {
         tick++;
 
         //Prevent existing crystals breaking due to update
         if (validateOldHash) {
-            int hash = (pos.toString() + String.valueOf(world.provider.getDimension())).hashCode();
+            int hash = (pos.toString() + world.dimension.getType()).hashCode();
             if (hash == oldhash) {
                 setLockPos();
             }
             else {
-                world.setBlockToAir(pos);
+                world.removeBlock(pos, false);
             }
             validateOldHash = false;
         }
 
         if (tick > 1 && !world.isRemote && hasBeenMoved()) {
-            world.setBlockToAir(pos);
+            world.removeBlock(pos, false);
         }
 
         if (world.isRemote && soundTimer-- <= 0) {
@@ -59,12 +63,12 @@ public class TileChaosCrystal extends TileBCBase implements ITickable {
             world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESoundHandler.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, world.rand.nextFloat() * 0.4F + 0.8F, false);
         }
 
-        if (!world.isRemote && guardianDefeated.get() && world.rand.nextInt(50) == 0) {
+        if (!world.isRemote && world instanceof ServerWorld && guardianDefeated.get() && world.rand.nextInt(50) == 0) {
             int x = 5 - world.rand.nextInt(11);
             int z = 5 - world.rand.nextInt(11);
-            EntityLightningBolt bolt = new EntityLightningBolt(world, pos.getX() + x, world.getTopSolidOrLiquidBlock(pos.add(x, 0, z)).getY(), pos.getZ() + z, false);
+            LightningBoltEntity bolt = new LightningBoltEntity(world, pos.getX() + x, world.getHeight(Heightmap.Type.WORLD_SURFACE, pos).getY(), pos.getZ() + z, false);
             bolt.ignoreFrustumCheck = true;
-            world.addWeatherEffect(bolt);
+            ((ServerWorld) world).addLightningBolt(bolt);
         }
     }
 
@@ -74,38 +78,38 @@ public class TileChaosCrystal extends TileBCBase implements ITickable {
         }
 
         if (DEConfig.disableChaosIslandExplosion || hasBeenMoved()) {
-            world.setBlockToAir(pos);
+            world.removeBlock(pos, false);
         }
         else {
-            EntityChaosImplosion vortex = new EntityChaosImplosion(world);
-            vortex.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-            world.spawnEntity(vortex);
+//            EntityChaosImplosion vortex = new EntityChaosImplosion(world); TODO Implosion
+//            vortex.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+//            world.addEntity(vortex);
         }
     }
 
     public void setDefeated() {
         guardianDefeated.set(true);
-        super.update();
+        super.tick();
     }
 
     @Override
-    public void readExtraNBT(NBTTagCompound compound) {
+    public void readExtraNBT(CompoundNBT compound) {
         super.readExtraNBT(compound);
 
         //Prevent existing crystals breaking due to update
-        if (compound.hasKey("LocationHash")) {
-            oldhash = compound.getInteger("LocationHash");
+        if (compound.contains("LocationHash")) {
+            oldhash = compound.getInt("LocationHash");
             validateOldHash = true;
         }
     }
 
     public void setLockPos() {
         posLock.set(pos.toLong());
-        dimLock.set(world.provider.getDimension());
+        dimLock.set(world.getDimension().getType().getRegistryName().toString());
     }
 
     private boolean hasBeenMoved() {
-        return posLock.get() != pos.toLong() || dimLock.get() != world.provider.getDimension();
+        return posLock.get() != pos.toLong() || !dimLock.get().equals(world.getDimension().getType().getRegistryName().toString());
     }
 
     @Override

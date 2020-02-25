@@ -6,14 +6,11 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEFeatures;
-import com.brandon3055.draconicevolution.blocks.DraconiumOre;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
-import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
-import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -104,9 +101,9 @@ public class ChaosWorldGenHandler {
                         density = centerFalloff * plateauFalloff * heightMapFalloff;
 
                         BlockPos pos = new BlockPos(x + closestSpawn.x, y + 64 + DEConfig.chaosIslandYOffset, z + closestSpawn.z);
-                        if (density > 0.1 && (world.isAirBlock(pos) && world.getBlockState(pos).getBlock() != DEFeatures.chaosShardAtmos)) {
-                            world.setBlockState(pos, (dist > 60 || dist > random.nextInt(60)) ? Blocks.END_STONE.getDefaultState() : Blocks.OBSIDIAN.getDefaultState());
-                        }
+//                        if (density > 0.1 && (world.isAirBlock(pos) && world.getBlockState(pos).getBlock() != DEContent.chaosShardAtmos)) {
+//                            world.setBlockState(pos, (dist > 60 || dist > random.nextInt(60)) ? Blocks.END_STONE.getDefaultState() : Blocks.OBSIDIAN.getDefaultState());
+//                        }
 
                     }
                 }
@@ -136,14 +133,16 @@ public class ChaosWorldGenHandler {
 
         BlockPos center = new BlockPos(islandCenter.x, shardY, islandCenter.z);
 
-        world.setBlockState(center, DEFeatures.chaosCrystal.getDefaultState());
-        TileChaosCrystal tileChaosShard = (TileChaosCrystal) world.getTileEntity(center);
-        tileChaosShard.setLockPos();
+//        if (ModFeatureParser.isEnabled(DEFeatures.chaosCrystal)) { TODO Features?
+            world.setBlockState(center, DEContent.chaos_crystal.getDefaultState());
+            TileChaosCrystal tileChaosShard = (TileChaosCrystal) world.getTileEntity(center);
+            tileChaosShard.setLockPos();
+//        }
 
-        EntityChaosGuardian guardian = new EntityChaosGuardian(world);
-        guardian.setPosition(islandCenter.x, shardY, islandCenter.z);
-        guardian.homeY = shardY;
-        world.spawnEntity(guardian);
+//        EntityChaosGuardian guardian = new EntityChaosGuardian(world);
+//        guardian.setPosition(islandCenter.x, shardY, islandCenter.z);
+//        guardian.homeY = shardY;
+//        world.addEntity(guardian);
 
         //Gen Ring
         int rings = 4;
@@ -161,7 +160,7 @@ public class ChaosWorldGenHandler {
                             world.setBlockState(pos, Blocks.END_STONE.getDefaultState());
                         }
                         if (0.001F > random.nextFloat() && !DEConfig.disableOreSpawnEnd) {
-                            world.setBlockState(pos, DraconiumOre.getEnd());
+                            world.setBlockState(pos, DEContent.draconium_ore_end.getDefaultState());
                         }
                     }
                 }
@@ -180,15 +179,15 @@ public class ChaosWorldGenHandler {
                 if (dist > oRad - 3D && rand.nextDouble() * 3D < dist - (oRad - 3D)) continue;
 
                 if (fillIn && (int) (Utils.getDistanceAtoB(x, z, xi, zi)) <= ringRadius) {
-                    if ((int) dist < 9) world.setBlockState(new BlockPos(x, yi, z), DEFeatures.infusedObsidian.getDefaultState());
+                    if ((int) dist < 9) world.setBlockState(new BlockPos(x, yi, z), DEContent.infused_obsidian.getDefaultState());
                     else world.setBlockState(new BlockPos(x, yi, z), Blocks.OBSIDIAN.getDefaultState());
                 }
                 else if (!fillIn && (int) (Utils.getDistanceAtoB(x, z, xi, zi)) >= ringRadius) {
                     world.setBlockState(new BlockPos(x, yi, z), Blocks.OBSIDIAN.getDefaultState());
                 }
                 else if (!fillIn && (int) Utils.getDistanceAtoB(x, z, xi, zi) <= ringRadius) {
-                    Block b = world.getBlockState(new BlockPos(x, yi, z)).getBlock();
-                    if (b == Blocks.AIR || b == Blocks.END_STONE || b == Blocks.OBSIDIAN) world.setBlockState(new BlockPos(x, yi, z), DEFeatures.chaosShardAtmos.getDefaultState());
+//                    Block b = world.getBlockState(new BlockPos(x, yi, z)).getBlock();
+//                    if (b == Blocks.AIR || b == Blocks.END_STONE || b == Blocks.OBSIDIAN) world.setBlockState(new BlockPos(x, yi, z), DEContent.chaosShardAtmos.getDefaultState());
                 }
 
             }
@@ -220,11 +219,11 @@ public class ChaosWorldGenHandler {
 
     private static void generateObelisk(World world, int x1, int y1, int z1, boolean outer, Random rand) {
         if (!outer) {
-            world.setBlockState(new BlockPos(x1, y1 + 20, z1), DEFeatures.infusedObsidian.getDefaultState());
+            world.setBlockState(new BlockPos(x1, y1 + 20, z1), DEContent.infused_obsidian.getDefaultState());
             if (!world.isRemote) {
-                EntityGuardianCrystal crystal = new EntityGuardianCrystal(world);
-                crystal.setPosition(x1 + 0.5, y1 + 21, z1 + 0.5);
-                world.spawnEntity(crystal);
+//                EntityGuardianCrystal crystal = new EntityGuardianCrystal(world);TODO Entity Stuff
+//                crystal.setPosition(x1 + 0.5, y1 + 21, z1 + 0.5);
+//                world.addEntity(crystal);
             }
             if (DEConfig.chaosIslandVoidMode) return;
             for (int y = y1; y < y1 + 20; y++) {
@@ -240,11 +239,11 @@ public class ChaosWorldGenHandler {
             }
         }
         else {
-            world.setBlockState(new BlockPos(x1, y1 + 40, z1), DEFeatures.infusedObsidian.getDefaultState());
+            world.setBlockState(new BlockPos(x1, y1 + 40, z1), DEContent.infused_obsidian.getDefaultState());
             if (!world.isRemote) {
-                EntityGuardianCrystal crystal = new EntityGuardianCrystal(world);
-                crystal.setPosition(x1 + 0.5, y1 + 41, z1 + 0.5);
-                world.spawnEntity(crystal);
+//                EntityGuardianCrystal crystal = new EntityGuardianCrystal(world);
+//                crystal.setPosition(x1 + 0.5, y1 + 41, z1 + 0.5);
+//                world.addEntity(crystal); T
             }
             if (DEConfig.chaosIslandVoidMode) return;
             int diff = 0;
@@ -306,13 +305,13 @@ public class ChaosWorldGenHandler {
                             Block block = entity.world.getBlockState(new BlockPos(x, y, z)).getBlock();
                             if (block == Blocks.BEDROCK || block == Blocks.OBSIDIAN) {
                                 flag = true;
-                                entity.world.setBlockToAir(new BlockPos(x, y, z));
+                                entity.world.removeBlock(new BlockPos(x, y, z), false);
                             }
                         }
                     }
                     if (flag) y--;
                 }
-                entity.setDead();
+                entity.remove();
                 this.dead = true;
             }
         }

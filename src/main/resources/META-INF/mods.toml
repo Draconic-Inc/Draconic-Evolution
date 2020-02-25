@@ -1,0 +1,22 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+
+[[mods]]
+	modId="draconicevolution"
+	displayName="Draconic Evolution"
+	version="3.0.0"
+	authors="brandon3055"
+	description=''''''
+[[dependencies.draconicevolution]]
+	modId="forge"
+	mandatory=true
+	versionRange="[28,)"
+	ordering="NONE"
+	side="BOTH"
+[[dependencies.draconicevolution]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+

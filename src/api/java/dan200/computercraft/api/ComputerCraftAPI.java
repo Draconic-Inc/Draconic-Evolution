@@ -18,7 +18,7 @@ import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -226,7 +226,7 @@ public final class ComputerCraftAPI
      * If there is no block capable of emitting bundled redstone at the location, -1 will be returned.
      * @see dan200.computercraft.api.redstone.IBundledRedstoneProvider
      */
-    public static int getBundledRedstoneOutput( @Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side )
+    public static int getBundledRedstoneOutput( @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Direction side )
     {
         findCC();
         if( computerCraft_getDefaultBundledRedstoneOutput != null )
@@ -341,7 +341,7 @@ public final class ComputerCraftAPI
                     IBundledRedstoneProvider.class
                 } );
                 computerCraft_getDefaultBundledRedstoneOutput = findCCMethod( "getDefaultBundledRedstoneOutput", new Class<?>[] {
-                    World.class, BlockPos.class, EnumFacing.class
+                    World.class, BlockPos.class, Direction.class
                 } );
                 computerCraft_registerMediaProvider = findCCMethod( "registerMediaProvider", new Class<?>[] {
                     IMediaProvider.class

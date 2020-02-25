@@ -5,7 +5,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.PositionedSound;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 
@@ -39,12 +39,12 @@ public class GeneratorSoundHandler {
         if (activeSound == null || activeSound.isDonePlaying()) {
             if (mode.index >= 2) {
                 activeSound = new GeneratorSound(tile, DESoundHandler.generator2, startHigh ? 1.5F : 0.5F);
-                Minecraft.getMinecraft().getSoundHandler().playSound(activeSound);
+                Minecraft.getInstance().getSoundHandler().play(activeSound);
                 currentHigh = true;
             }
             else {
                 activeSound = new GeneratorSound(tile, DESoundHandler.generator1, startHigh ? 1F : 0.5F);
-                Minecraft.getMinecraft().getSoundHandler().playSound(activeSound);
+                Minecraft.getInstance().getSoundHandler().play(activeSound);
                 currentHigh = false;
             }
         }
@@ -69,7 +69,7 @@ public class GeneratorSoundHandler {
         }
     }
 
-    public class GeneratorSound extends PositionedSound implements ITickableSound {
+    public class GeneratorSound extends SimpleSound implements ITickableSound {
         public boolean donePlaying = false;
         private TileGenerator tile;
         private float targetPitch;
@@ -77,13 +77,9 @@ public class GeneratorSoundHandler {
         boolean fadeDown = false;
 
         public GeneratorSound(TileGenerator tile, SoundEvent sound, float startPitch) {
-            super(sound, SoundCategory.BLOCKS);
+            super(sound, SoundCategory.BLOCKS, 0.3F, 1F, tile.getPos());
             this.tile = tile;
-            this.xPosF = (float) tile.getPos().getX() + 0.5F;
-            this.yPosF = (float) tile.getPos().getY() + 0.5F;
-            this.zPosF = (float) tile.getPos().getZ() + 0.5F;
             this.repeat = true;
-            this.volume = 0.3F;
             this.pitch = startPitch;
             this.targetPitch = startPitch;
         }
@@ -94,10 +90,10 @@ public class GeneratorSoundHandler {
         }
 
         @Override
-        public void update() {
-            xPosF = (float) tile.getPos().getX() + 0.5F;
-            yPosF = (float) tile.getPos().getY() + 0.5F;
-            zPosF = (float) tile.getPos().getZ() + 0.5F;
+        public void tick() {
+            x = (float) tile.getPos().getX() + 0.5F;
+            y = (float) tile.getPos().getY() + 0.5F;
+            z = (float) tile.getPos().getZ() + 0.5F;
 
             if (fadeUp) {
                 targetPitch = 1.5F;
@@ -106,7 +102,7 @@ public class GeneratorSoundHandler {
                 targetPitch = 0.5F;
             }
 
-            if (((fadeUp && pitch >= 1) || (fadeDown && pitch <= 0.55)) || tile.isInvalid() || !tile.getWorld().getChunkFromBlockCoords(tile.getPos()).isLoaded()) {
+            if (((fadeUp && pitch >= 1) || (fadeDown && pitch <= 0.55)) || tile.isRemoved() || !tile.getWorld().getChunkAt(tile.getPos()).loaded) {
                 donePlaying = true;
                 repeat = false;
             }

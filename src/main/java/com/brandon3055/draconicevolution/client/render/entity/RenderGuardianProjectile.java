@@ -3,11 +3,11 @@ package com.brandon3055.draconicevolution.client.render.entity;
 import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -15,16 +15,16 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by brandon3055 on 24/8/2015.
  */
-public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
+public class RenderGuardianProjectile extends EntityRenderer<EntityGuardianProjectile> {
 
-    public RenderGuardianProjectile(RenderManager renderManager) {
+    public RenderGuardianProjectile(EntityRendererManager renderManager) {
         super(renderManager);
     }
 
     @Override
     public void doRender(EntityGuardianProjectile projectile, double x, double y, double z, float entityYaw, float partialTicks) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x, (float) y, (float) z);
+        GlStateManager.translatef((float) x, (float) y, (float) z);
         float height = (projectile.ticksExisted) % 8 * 1F / 8F;
         switch (projectile.type) {
             case EntityGuardianProjectile.FIREBOMB:
@@ -47,7 +47,7 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
         GlStateManager.disableLighting();
 
         float f2 = projectile.type == EntityGuardianProjectile.MINI_CHAOS_CHASER ? projectile.power / 10 : projectile.power / 5;
-        GlStateManager.scale(f2 / 1.0F, f2 / 1.0F, f2 / 1.0F);
+        GlStateManager.scalef(f2 / 1.0F, f2 / 1.0F, f2 / 1.0F);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         float f3 = 0;
@@ -58,13 +58,13 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
         float f8 = 0.5F;
         float f9 = 0.25F;
 
-        GlStateManager.rotate(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotatef(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 
         if (projectile.type == EntityGuardianProjectile.FIREBOMB || projectile.type == EntityGuardianProjectile.FIRE_CHASER) {
-            GlStateManager.translate(0, 0.25, 0);
-            GlStateManager.rotate((projectile.ticksExisted * 40 + partialTicks * 40), 0, 0, 1);
-            GlStateManager.translate(0, -0.25, 0);
+            GlStateManager.translated(0, 0.25, 0);
+            GlStateManager.rotatef((projectile.ticksExisted * 40 + partialTicks * 40), 0, 0, 1);
+            GlStateManager.translated(0, -0.25, 0);
         }
         else if (projectile.type == EntityGuardianProjectile.TELEPORT) {
             f5 = 0;
@@ -73,10 +73,10 @@ public class RenderGuardianProjectile extends Render<EntityGuardianProjectile> {
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
-        buffer.pos((double) (0.0F - f8), (double) (0.0F - f9), 0.0D).tex((double) f3, (double) f6).endVertex();
-        buffer.pos((double) (f7 - f8), (double) (0.0F - f9), 0.0D).tex((double) f4, (double) f6).endVertex();
-        buffer.pos((double) (f7 - f8), (double) (1.0F - f9), 0.0D).tex((double) f4, (double) f5).endVertex();
-        buffer.pos((double) (0.0F - f8), (double) (1.0F - f9), 0.0D).tex((double) f3, (double) f5).endVertex();
+        buffer.pos(0.0F - f8, 0.0F - f9, 0.0D).tex(f3, f6).endVertex();
+        buffer.pos(f7 - f8, 0.0F - f9, 0.0D).tex(f4, f6).endVertex();
+        buffer.pos(f7 - f8, 1.0F - f9, 0.0D).tex(f4, f5).endVertex();
+        buffer.pos(0.0F - f8, 1.0F - f9, 0.0D).tex(f3, f5).endVertex();
         tessellator.draw();
 
         GlStateManager.enableLighting();

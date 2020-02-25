@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client;
 
-import codechicken.lib.texture.TextureUtils.IIconRegister;
+import codechicken.lib.texture.AtlasRegistrar;
+import codechicken.lib.texture.IIconRegister;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -20,21 +20,20 @@ public class DETextureCache implements IIconRegister {
     private static ArrayList<ResourceLocation> locations = new ArrayList<ResourceLocation>();
 
     static {
-        locations.add(new ResourceLocation(DraconicEvolution.MOD_PREFIX + "models/pylon_sphere_texture"));
-        locations.add(new ResourceLocation(DraconicEvolution.MOD_PREFIX + "items/tools/obj/arrow_common"));
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere_texture"));
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "items/tools/obj/arrow_common"));
     }
 
     @Override
-    public void registerIcons(TextureMap textureMap) {
+    public void registerIcons(AtlasRegistrar registrar) {
         textureCache.clear();
         for (ResourceLocation location : locations) {
-            textureCache.put(location, textureMap.registerSprite(location));
+//            textureCache.put(location, registrar.registerSprite(location));//TODO texture stuff
         }
     }
 
-
     public static TextureAtlasSprite getDETexture(String texture) {
-        return textureCache.get(new ResourceLocation(DraconicEvolution.MOD_PREFIX + texture));
+        return textureCache.get(new ResourceLocation(DraconicEvolution.MODID, texture));
     }
 
 }

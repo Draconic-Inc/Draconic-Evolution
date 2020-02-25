@@ -1,47 +1,27 @@
 package com.brandon3055.draconicevolution.blocks.energynet;
 
-import codechicken.lib.model.ModelRegistryHelper;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.registry.Feature;
-import com.brandon3055.brandonscore.registry.IRegistryOverride;
-import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalRelay;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
-import com.brandon3055.draconicevolution.client.model.GlassParticleDummyModel;
-import com.brandon3055.draconicevolution.client.render.item.RenderItemEnergyCrystal;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCrystal;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,15 +29,15 @@ import java.util.List;
 /**
  * Created by brandon3055 on 19/11/2016.
  */
-public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegistryOverride, IHudDisplay {
+public class EnergyCrystal extends BlockBCore implements /*IRenderOverride, IRegistryOverride,*/ IHudDisplay {
 
-    public static final PropertyEnum<CrystalType> TYPE = PropertyEnum.create("type", CrystalType.class);
-    public static final PropertyInteger TIER = PropertyInteger.create("tier", 0, 2);
+    public static final EnumProperty<CrystalType> TYPE = EnumProperty.create("type", CrystalType.class);
+    public static final IntegerProperty TIER = IntegerProperty.create("tier", 0, 2);
 
-    public EnergyCrystal() {
-        super(Material.GLASS);
-        this.setDefaultState(blockState.getBaseState().withProperty(TYPE, CrystalType.RELAY).withProperty(TIER, 0));
-        this.setHarvestLevel("pickaxe", 0);
+    public EnergyCrystal(Properties properties) {
+        super(properties);
+        this.setDefaultState(stateContainer.getBaseState().with(TYPE, CrystalType.RELAY).with(TIER, 0));
+//        this.setHarvestLevel("pickaxe", 0);
         for (CrystalType type : CrystalType.values()) {
             for (int i = 0; i < 3; i++) {
                 addName((type.getIndex() * 3) + i, "energy_crystal." + type.name().toLowerCase() + "." + (i == 0 ? "basic" : i == 1 ? "wyvern" : "draconic"));
@@ -73,107 +53,114 @@ public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegis
     }
 
     @Override
-    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
-        for (int i = 0; i < 9; i++) {
-            list.add(new ItemStack(this, 1, i));
-        }
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(TIER);
+    }
+
+//    @Override
+//    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
+//        for (int i = 0; i < 9; i++) {
+//            list.add(new ItemStack(this, 1, i));
+//        }
+//    }
+
+//    @Override
+//    public int damageDropped(BlockState state) {
+//        return getMetaFromState(state);
+//    }
+//
+//    //endregion
+//
+//    //region Blockstate
+//
+//    @Override
+//    protected BlockStateContainer createBlockState() {
+//        return new BlockStateContainer(this, TYPE, TIER);
+//    }
+//
+//    @Override
+//    public BlockState getStateFromMeta(int meta) {
+//        return getDefaultState().withProperty(TYPE, CrystalType.fromMeta(meta)).withProperty(TIER, CrystalType.getTier(meta));
+//    }
+//
+//    @Override
+//    public int getMetaFromState(BlockState state) {
+//        return state.getValue(TYPE).getMeta(state.getValue(TIER));
+//    }
+//
+//    @Override
+//    public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos) {
+//        return super.getActualState(state, worldIn, pos);
+//    }
+//
+//    //endregion
+//
+//    //region Render/Tile
+//
+//    @OnlyIn(Dist.CLIENT)
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalRelay.class, new RenderTileEnergyCrystal());
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalDirectIO.class, new RenderTileEnergyCrystal());
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalWirelessIO.class, new RenderTileEnergyCrystal());
+//        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemEnergyCrystal());
+//        ModelRegistryHelper.register(new ModelResourceLocation(feature.getRegistryName(), "normal"), GlassParticleDummyModel.INSTANCE);
+//        StateMap deviceStateMap = new StateMap.Builder().ignore(TIER).ignore(TYPE).build();
+//        ModelLoader.setCustomStateMapper(this, deviceStateMap);
+//    }
+//
+//    @Override
+//    public boolean registerNormal(Feature feature) {
+//        return false;
+//    }
+
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 
     @Override
-    public int damageDropped(IBlockState state) {
-        return getMetaFromState(state);
-    }
-
-    //endregion
-
-    //region Blockstate
-
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, TYPE, TIER);
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(TYPE, CrystalType.fromMeta(meta)).withProperty(TIER, CrystalType.getTier(meta));
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(TYPE).getMeta(state.getValue(TIER));
-    }
-
-    @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        return super.getActualState(state, worldIn, pos);
-    }
-
-    //endregion
-
-    //region Render/Tile
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerRenderer(Feature feature) {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalRelay.class, new RenderTileEnergyCrystal());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalDirectIO.class, new RenderTileEnergyCrystal());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalWirelessIO.class, new RenderTileEnergyCrystal());
-        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemEnergyCrystal());
-        ModelRegistryHelper.register(new ModelResourceLocation(feature.getRegistryName(), "normal"), GlassParticleDummyModel.INSTANCE);
-        StateMap deviceStateMap = new StateMap.Builder().ignore(TIER).ignore(TYPE).build();
-        ModelLoader.setCustomStateMapper(this, deviceStateMap);
-    }
-
-    @Override
-    public boolean registerNormal(Feature feature) {
-        return false;
-    }
-
-    @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.INVISIBLE;
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state) {
+    public boolean hasTileEntity(BlockState state) {
         return true;
     }
 
+    @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
-        return state.getValue(TYPE).createTile();
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return state.get(TYPE).createTile();
     }
 
-    @Override
-    public void handleCustomRegistration(Feature feature) {
-        GameRegistry.registerTileEntity(TileCrystalRelay.class, feature.getModid() + ":energy_relay");
-        GameRegistry.registerTileEntity(TileCrystalDirectIO.class, feature.getModid() + ":energy_io");
-        GameRegistry.registerTileEntity(TileCrystalWirelessIO.class, feature.getModid() + ":energy_wireless");
-    }
+//    @Override
+//    public void handleCustomRegistration(Feature feature) {
+//        GameRegistry.registerTileEntity(TileCrystalRelay.class, feature.getModid() + ":energy_relay");
+//        GameRegistry.registerTileEntity(TileCrystalDirectIO.class, feature.getModid() + ":energy_io");
+//        GameRegistry.registerTileEntity(TileCrystalWirelessIO.class, feature.getModid() + ":energy_wireless");
+//    }
 
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        if (state.getValue(TYPE) == CrystalType.CRYSTAL_IO) {
-            TileEntity tile = source.getTileEntity(pos);
-            EnumFacing facing = tile instanceof TileCrystalDirectIO ? ((TileCrystalDirectIO) tile).facing.get() : EnumFacing.DOWN;
-            Cuboid6 c = new Cuboid6(0.35, 0, 0.35, 0.65, 0.425, 0.65);
-            c.apply(Rotation.sideRotations[facing.getIndex()].at(Vector3.center));
-            return c.aabb();
-        }
-        return new AxisAlignedBB(0.375, 0.125, 0.375, 0.625, 0.875, 0.625); //Crystal
-    }
+//    @Override
+//    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
+//        if (state.getValue(TYPE) == CrystalType.CRYSTAL_IO) {
+//            TileEntity tile = source.getTileEntity(pos);
+//            Direction facing = tile instanceof TileCrystalDirectIO ? ((TileCrystalDirectIO) tile).facing.get() : Direction.DOWN;
+//            Cuboid6 c = new Cuboid6(0.35, 0, 0.35, 0.65, 0.425, 0.65);
+//            c.apply(Rotation.sideRotations[facing.getIndex()].at(Vector3.center));
+//            return c.aabb();
+//        }
+//        return new AxisAlignedBB(0.375, 0.125, 0.375, 0.625, 0.875, 0.625); //Crystal
+//    }
 
-    @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
-        return super.getSelectedBoundingBox(state, worldIn, pos);
-//        return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
-    }
+//    @Override
+//    public AxisAlignedBB getSelectedBoundingBox(BlockState state, World worldIn, BlockPos pos) {
+//        return super.getSelectedBoundingBox(state, worldIn, pos);
+////        return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+//    }
 
     //endregion
 
     //region Info
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
         TileEntity te = world.getTileEntity(pos);
@@ -182,8 +169,8 @@ public class EnergyCrystal extends BlockBCore implements IRenderOverride, IRegis
             return;
         }
 
-        IBlockState state = world.getBlockState(pos);
-        displayList.add(InfoHelper.HITC() + I18n.format("tile.draconicevolution:" + nameOverrides.get(state.getValue(TYPE).getMeta(state.getValue(TIER))) + ".name"));
+        BlockState state = world.getBlockState(pos);
+        displayList.add(InfoHelper.HITC() + I18n.format("tile.draconicevolution:" + nameOverrides.get(state.get(TYPE).getMeta(state.get(TIER))) + ".name"));
         TileCrystalBase tile = (TileCrystalBase) te;
         tile.addDisplayData(displayList);
     }

@@ -2,13 +2,17 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import com.brandon3055.draconicevolution.DEContent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -21,11 +25,16 @@ import java.util.List;
 public class ContainerJunkFilter extends Container {
 
     private final ItemStack stack;
-    private final EntityPlayer player;
+    private final PlayerEntity player;
     private final PlayerSlot slot;
     private final IItemHandler itemHandler;
 
-    public ContainerJunkFilter(EntityPlayer player, PlayerSlot slot, IItemHandler itemHandler) {
+//    public ContainerJunkFilter(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+//        this(DEContent.container_junk_filter, windowId, playerInv.player, getClientTile(extraData));
+//    }
+
+    public ContainerJunkFilter(@Nullable ContainerType<?> type, int id, PlayerEntity player, PlayerSlot slot, IItemHandler itemHandler) {
+        super(type, id);
         this.player = player;
         this.slot = slot;
         this.itemHandler = itemHandler;
@@ -33,6 +42,15 @@ public class ContainerJunkFilter extends Container {
         addPlayerSlots(8, 29 + ((itemHandler.getSlots() / 9) * 18), 4);
         addJunkSlots(8, 21);
     }
+
+//    public ContainerJunkFilter(PlayerEntity player, PlayerSlot slot, IItemHandler itemHandler) {
+//        this.player = player;
+//        this.slot = slot;
+//        this.itemHandler = itemHandler;
+//        this.stack = slot.getStackInSlot(player);
+//        addPlayerSlots(8, 29 + ((itemHandler.getSlots() / 9) * 18), 4);
+//        addJunkSlots(8, 21);
+//    }
 
     @Override
     public void detectAndSendChanges() {
@@ -43,7 +61,7 @@ public class ContainerJunkFilter extends Container {
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
         if (slotId >= 0 && slotId < inventorySlots.size() && inventorySlots.get(slotId).getStack() == stack) {
             return ItemStack.EMPTY;
         }
@@ -51,13 +69,13 @@ public class ContainerJunkFilter extends Container {
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
+    public boolean canInteractWith(PlayerEntity playerIn) {
         return true;
     }
 
     @Nullable
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int i) {
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int i) {
         Slot slot = getSlot(i);
 
         if (slot != null && slot.getHasStack()) {
@@ -111,7 +129,7 @@ public class ContainerJunkFilter extends Container {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void setAll(List<ItemStack> stacks) {
         for (int i = 0; i < stacks.size(); ++i) {
             Slot slot = getSlot(i);
@@ -123,12 +141,12 @@ public class ContainerJunkFilter extends Container {
 
     public void addPlayerSlots(int posX, int posY, int hotbarSpacing) {
         for (int x = 0; x < 9; x++) {
-            addSlotToContainer(new SlotCheckValid.IInv(player.inventory, x, posX + 18 * x, posY + 54 + hotbarSpacing));
+            addSlot(new SlotCheckValid.IInv(player.inventory, x, posX + 18 * x, posY + 54 + hotbarSpacing));
         }
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
-                addSlotToContainer(new SlotCheckValid.IInv(player.inventory, x + y * 9 + 9, posX + 18 * x, posY + y * 18));
+                addSlot(new SlotCheckValid.IInv(player.inventory, x + y * 9 + 9, posX + 18 * x, posY + y * 18));
             }
         }
     }
@@ -137,7 +155,7 @@ public class ContainerJunkFilter extends Container {
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             int x = i % 9 * 18;
             int y = i / 9 * 18;
-            addSlotToContainer(new SlotItemHandler(itemHandler, i, posX + x, posY + y));//x + y * 9 + 9
+            addSlot(new SlotItemHandler(itemHandler, i, posX + x, posY + y));//x + y * 9 + 9
         }
     }
 }

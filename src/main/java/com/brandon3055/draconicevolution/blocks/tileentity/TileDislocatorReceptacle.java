@@ -1,18 +1,20 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import appeng.api.movable.IMovableTile;
-import codechicken.lib.packet.PacketCustom;
-import com.brandon3055.brandonscore.blocks.TileInventoryBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.*;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEFeatures;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
@@ -25,52 +27,49 @@ import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandle
 import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler;
-import com.brandon3055.draconicevolution.integration.funkylocomotion.IMovableStructure;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-import static com.brandon3055.draconicevolution.DEFeatures.dislocatorBound;
+import static com.brandon3055.draconicevolution.DEContent.dislocator_p2p;
 
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-@Optional.Interface(modid = "appliedenergistics2", iface = "appeng.api.movable.IMovableTile")
-public class TileDislocatorReceptacle extends TileInventoryBase implements ITickable, ITeleportEndPoint, IMovableStructure, ICrystalLink, IENetEffectTile, IMovableTile {
-
-    //used to update existing portals to the new offset based portal positions
-    //TODO change these names to lowercase in 1.13 (this is a breaking change)
-    public final ManagedBool newOffsets = register(new ManagedBool("newOffsets", SAVE_NBT)); //This was to "reboot" existing portals after an update that broke them (Can be removed at some point)
+public class TileDislocatorReceptacle extends TileBCore implements ITickableTileEntity, ITeleportEndPoint, ICrystalLink, IENetEffectTile {
+//    used to update existing portals to the new offset based portal positions
+//    public final ManagedBool newOffsets = register(new ManagedBool("new_offsets", SAVE_NBT)); //This was to "reboot" existing portals after an update that broke them (Can be removed at some point)
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public final ManagedBool camo = register(new ManagedBool("camo", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool ltRedstone = register(new ManagedBool("ltRedstone", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedVec3I spawnPos = register(new ManagedVec3I("spawnPos", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
-    public final ManagedEnum<Axis> activeAxis = register(new ManagedEnum<>("activeAxis", Axis.X, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool isBound = register(new ManagedBool("isBound", SAVE_NBT_SYNC_TILE));
-    public final ManagedVec3I linkedCrystal = register(new ManagedVec3I("linkedCrystal", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
-    public final ManagedByte remoteCrystalTier = register(new ManagedByte("remoteCrystalTier", SAVE_NBT_SYNC_TILE));
-    public final ManagedByte linkedFlowRate = register(new ManagedByte("linkedFlowRate", SAVE_NBT));
-    public final ManagedVec3I crystalLinkPos = register(new ManagedVec3I("crystalLinkPos", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedBool ltRedstone = register(new ManagedBool("lt_redstone", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedVec3I spawnPos = register(new ManagedVec3I("spawn_pos", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<Axis> activeAxis = register(new ManagedEnum<>("active_axis", Axis.X, SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isBound = register(new ManagedBool("is_bound", SAVE_NBT_SYNC_TILE));
+    public final ManagedVec3I linkedCrystal = register(new ManagedVec3I("linked_crystal", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedByte remoteCrystalTier = register(new ManagedByte("remote_crystal_tier", SAVE_NBT_SYNC_TILE));
+    public final ManagedByte linkedFlowRate = register(new ManagedByte("linked_flow_rate", SAVE_NBT));
+    public final ManagedVec3I crystalLinkPos = register(new ManagedVec3I("crystal_link+pos", new Vec3I(0, -999, 0), SAVE_NBT_SYNC_TILE));
 
     public int hiddenTime = 0;
     public boolean igniting = false;
@@ -79,15 +78,20 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     private Map<Integer, Integer> coolDownMap = new HashMap<>();
     private Map<Integer, Integer> arrivalsMap = new HashMap<>();
 
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
+
     public TileDislocatorReceptacle() {
-        setInventorySize(1);
-        setShouldRefreshOnBlockChange();
+        super(DEContent.tile_dislocator_receptacle);
+        capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
+        itemHandler.setContentsChangeListener(this::onInventoryChange);
+        itemHandler.setSlotValidator(0, (stack) -> stack.getItem() instanceof Dislocator);
+
         fxHandler = DraconicEvolution.proxy.createENetFXHandler(this);
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
 
         updateHidden(false);
         updateCrystalLogic();
@@ -96,11 +100,12 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             hiddenTime = 5;
         }
 
-        if (!world.isRemote && !newOffsets.get() && active.get()) {
-            deactivate();
-            attemptIgnition();
-            newOffsets.set(true);
-        }
+        //Offset fix implemented in 1.12 to avoid a breaking change
+//        if (!world.isRemote && !newOffsets.get() && active.get()) {
+//            deactivate();
+//            attemptIgnition();
+//            newOffsets.set(true);
+//        }
 
         if (frameMoving) {
             if (active.get()) {
@@ -111,7 +116,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         }
 
         for (Entity entity : teleportQ) {
-            ItemStack stack = getStackInSlot(0);
+            ItemStack stack = itemHandler.getStackInSlot(0);
 
             if (!(stack.getItem() instanceof Dislocator)) {
                 deactivate();
@@ -119,22 +124,22 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             }
 
             Teleporter.TeleportLocation location = ((Dislocator) stack.getItem()).getLocation(stack, world);
-            if (dislocatorBound.isValid(stack) && location != null) {
+            if (dislocator_p2p.isValid(stack) && location != null) {
                 location.setYaw(entity.rotationYaw);
                 location.setPitch(entity.rotationPitch);
             }
 
             if (location == null) {
-                if (!dislocatorBound.isValid(stack)) {
+                if (!dislocator_p2p.isValid(stack)) {
                     deactivate();
                 }
                 else {
-                    if (entity instanceof EntityPlayer) {
-                        if (dislocatorBound.isPlayer(stack)) {
-                            ChatHelper.translate(entity, "info.de.bound_dislocator.cant_find_player", TextFormatting.RED);
+                    if (entity instanceof PlayerEntity) {
+                        if (dislocator_p2p.isPlayer(stack)) {
+                            ChatHelper.translate((PlayerEntity) entity, "info.de.bound_dislocator.cant_find_player", TextFormatting.RED);
                         }
                         else {
-                            ChatHelper.translate(entity, "info.de.bound_dislocator.cant_find_target", TextFormatting.RED);
+                            ChatHelper.translate((PlayerEntity) entity, "info.de.bound_dislocator.cant_find_target", TextFormatting.RED);
                         }
                     }
                 }
@@ -143,7 +148,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
                 return;
             }
 
-            dislocatorBound.notifyArriving(stack, world, entity);
+            dislocator_p2p.notifyArriving(stack, world, entity);
             DESoundHandler.playSoundFromServer(entity.world, entity.posX, entity.posY, entity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             location.teleport(entity);
             DESoundHandler.playSoundFromServer(entity.world, entity.posX, entity.posY, entity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
@@ -238,14 +243,14 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             hiddenTime--;
             if (hiddenTime == 0 || setHidden) {
                 long time = System.nanoTime();
-                for (BlockPos checkPos : BlockPos.getAllInBox(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
+                for (BlockPos checkPos : BlockPos.getAllInBoxMutable(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
                     TileEntity tile = world.getTileEntity(checkPos);
                     if (tile instanceof TilePortal) {
                         BlockPos spawn = spawnPos.get().y == -999 ? pos : getSpawnPos();
                         TilePortal tPortal = (TilePortal) tile;
                         if (tPortal.getMasterPos().equals(pos) && tPortal.updateTime != time) {
                             if (!setHidden) {
-                                world.playSound(spawn.getX() + 0.5, spawn.getY() + 0.5, spawn.getZ() + 0.5, SoundEvents.ENTITY_FIREWORK_LARGE_BLAST, SoundCategory.BLOCKS, 2, 0.5F + (world.rand.nextFloat() * 0.1F), false);
+                                world.playSound(spawn.getX() + 0.5, spawn.getY() + 0.5, spawn.getZ() + 0.5, SoundEvents.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, SoundCategory.BLOCKS, 2, 0.5F + (world.rand.nextFloat() * 0.1F), false);
                             }
                             ((TilePortal) tile).propRenderUpdate(time, !setHidden);
                         }
@@ -257,59 +262,57 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     //region Activation & Inventory
 
-    public boolean onBlockActivated(EntityPlayer player) {
+    public boolean onBlockActivated(PlayerEntity player) {
         if (world.isRemote) {
             return !ltRedstone.get();
         }
 
-        InventoryUtils.handleHeldStackTransfer(0, this, player);
+        InventoryUtils.handleHeldStackTransfer(0, itemHandler, player);
         return true;
     }
 
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        ItemStack prev = getStackInSlot(0);
-        super.setInventorySlotContents(index, stack);
+    public void onInventoryChange(int index) {
+        ItemStack prev = itemHandler.getListenerPrevStack();
 
-        if (dislocatorBound.isValid(prev) && !dislocatorBound.isPlayer(prev)) {
+        if (dislocator_p2p.isValid(prev) && !dislocator_p2p.isPlayer(prev)) {
             DislocatorLinkHandler.removeLink(world, prev);
         }
 
         isBound.set(false);
-        if (getStackInSlot(0).isEmpty() && active.get()) {
+        if (itemHandler.getStackInSlot(0).isEmpty() && active.get()) {
             deactivate();
         }
-        else if (!getStackInSlot(0).isEmpty()) {
+        else if (!itemHandler.getStackInSlot(0).isEmpty()) {
             attemptIgnition();
             checkIn();
         }
     }
 
-    @Override
-    public ItemStack decrStackSize(int index, int count) {
-        ItemStack prev = getStackInSlot(0);
-        ItemStack ret = super.decrStackSize(index, count);
-
-        if (dislocatorBound.isValid(prev) && !dislocatorBound.isPlayer(prev)) {
-            DislocatorLinkHandler.removeLink(world, prev);
-        }
-
-        isBound.set(false);
-        if (getStackInSlot(0).isEmpty() && active.get()) {
-            deactivate();
-        }
-        else if (!getStackInSlot(0).isEmpty()) {
-            attemptIgnition();
-            checkIn();
-        }
-
-        return ret;
-    }
+//    @Override
+//    public ItemStack decrStackSize(int index, int count) {
+//        ItemStack prev = getStackInSlot(0);
+//        ItemStack ret = super.decrStackSize(index, count);
+//
+//        if (dislocator_p2p.isValid(prev) && !dislocator_p2p.isPlayer(prev)) {
+//            DislocatorLinkHandler.removeLink(world, prev);
+//        }
+//
+//        isBound.set(false);
+//        if (getStackInSlot(0).isEmpty() && active.get()) {
+//            deactivate();
+//        }
+//        else if (!getStackInSlot(0).isEmpty()) {
+//            attemptIgnition();
+//            checkIn();
+//        }
+//
+//        return ret;
+//    }
 
     private void checkIn() {
-        ItemStack stack = getStackInSlot(0);
-        if (dislocatorBound.isValid(stack) && !dislocatorBound.isPlayer(stack)) {
-            DislocatorLinkHandler.updateLink(world, stack, pos, world.provider.getDimension());
+        ItemStack stack = itemHandler.getStackInSlot(0);
+        if (dislocator_p2p.isValid(stack) && !dislocator_p2p.isPlayer(stack)) {
+            DislocatorLinkHandler.updateLink(world, stack, pos, world.getDimension().getType());
             isBound.set(true);
         }
         else {
@@ -317,10 +320,10 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         }
     }
 
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return stack.getItem() instanceof Dislocator;
-    }
+//    @Override
+//    public boolean isItemValidForSlot(int index, ItemStack stack) {
+//        return stack.getItem() instanceof Dislocator;
+//    }
 
     //endregion
 
@@ -333,8 +336,9 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
         //TODO in 1.13 use entity.portalCooldown
         if (arrivalsMap.containsKey(entity.getEntityId())) {
-            if (entity instanceof EntityPlayer && arrivalsMap.get(entity.getEntityId()) < 10) {
-                new PacketCustom("DEPCChannel", 1).writePos(pos).sendToPlayer((EntityPlayer) entity);
+            if (entity instanceof PlayerEntity && arrivalsMap.get(entity.getEntityId()) < 10) {
+                //TODO Packet Stuff
+//                new PacketCustom("DEPCChannel", 1).writePos(pos).sendToPlayer((PlayerEntity) entity);
             }
             arrivalsMap.put(entity.getEntityId(), 10);
             return;
@@ -353,26 +357,26 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             active.set(false);
         }
 
-        IBlockState state = world.getBlockState(pos);
-        if (state.getBlock() == DEFeatures.dislocatorReceptacle) {
-            world.setBlockState(pos, state.withProperty(DislocatorReceptacle.ACTIVE, false));
+        BlockState state = world.getBlockState(pos);
+        if (state.getBlock() == DEContent.dislocator_receptacle) {
+            world.setBlockState(pos, state.with(DislocatorReceptacle.ACTIVE, false));
         }
 
-        for (BlockPos checkPos : BlockPos.getAllInBox(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
+        for (BlockPos checkPos : BlockPos.getAllInBoxMutable(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
             TileEntity tile = world.getTileEntity(checkPos);
             if (tile instanceof TilePortal && ((TilePortal) tile).getMasterPos().equals(pos)) {
-                world.setBlockToAir(tile.getPos());
+                world.removeBlock(tile.getPos(), false);
             }
         }
         updateBlock();
     }
 
     public boolean attemptIgnition() {
-        newOffsets.set(true);
-        ItemStack stack = getStackInSlot(0);
+//        newOffsets.set(true);
+        ItemStack stack = itemHandler.getStackInSlot(0);
 
         if (!(stack.getItem() instanceof Dislocator) || ((Dislocator) stack.getItem()).getLocation(stack, world) == null) {
-            if (!dislocatorBound.isValid(stack)) {
+            if (!dislocator_p2p.isValid(stack)) {
                 return false;
             }
         }
@@ -382,7 +386,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             igniting = true;
 
             for (BlockPos portalBlock : portalConfiguration.getValue()) {
-                world.setBlockState(portalBlock, DEFeatures.portal.getDefaultState().withProperty(Portal.AXIS, portalConfiguration.getKey()));
+                world.setBlockState(portalBlock, DEContent.portal.getDefaultState().with(Portal.AXIS, portalConfiguration.getKey()));
                 TileEntity tile = world.getTileEntity(portalBlock);
                 if (tile instanceof TilePortal) {
                     ((TilePortal) tile).setMasterPos(pos);
@@ -392,15 +396,15 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             active.set(true);
             activeAxis.set(portalConfiguration.getKey());
 
-            IBlockState state = world.getBlockState(pos);
-            if (state.getBlock() == DEFeatures.dislocatorReceptacle) {
-                world.setBlockState(pos, state.withProperty(DislocatorReceptacle.ACTIVE, true));
+            BlockState state = world.getBlockState(pos);
+            if (state.getBlock() == DEContent.dislocator_receptacle) {
+                world.setBlockState(pos, state.with(DislocatorReceptacle.ACTIVE, true));
             }
 
             updateBlock();
             igniting = false;
 
-            if (dislocatorBound.isValid(stack) && !dislocatorBound.isPlayer(stack)) {
+            if (dislocator_p2p.isValid(stack) && !dislocator_p2p.isPlayer(stack)) {
                 updateSpawnBlock(portalConfiguration.getValue());
                 updateLinkBlock(portalConfiguration.getValue());
             }
@@ -421,7 +425,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         for (int level : levels) {
             List<BlockPos> blocks = levelMap.get(level);
             for (BlockPos pos : blocks) {
-                if (world.isAirBlock(pos.up()) || world.getBlockState(pos.up()).getBlock() == DEFeatures.portal) {
+                if (world.isAirBlock(pos.up()) || world.getBlockState(pos.up()).getBlock() == DEContent.portal) {
                     foundValid.add(pos);
                 }
             }
@@ -555,7 +559,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
         scanList.add(scanPos);
 
-        for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(scanAxis)) {
+        for (Direction facing : FacingUtils.getFacingsAroundAxis(scanAxis)) {
             BlockPos nextPos = scanPos.offset(facing);
             if (scanList.contains(nextPos) || isFrame(nextPos)) {
                 continue;
@@ -574,8 +578,8 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     private boolean isFrame(BlockPos pos) {
-        IBlockState state = world.getBlockState(pos);
-        return state.getBlock() == DEFeatures.infusedObsidian || state.getBlock() == DEFeatures.dislocatorReceptacle;
+        BlockState state = world.getBlockState(pos);
+        return state.getBlock() == DEContent.infused_obsidian || state.getBlock() == DEContent.dislocator_receptacle;
     }
 
     //endregion
@@ -584,7 +588,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     @Override
     public BlockPos getArrivalPos(String linkID) {
-        if (!active.get() || !dislocatorBound.isValid(getStackInSlot(0)) || !dislocatorBound.getLinkID(getStackInSlot(0)).equals(linkID)) {
+        if (!active.get() || !dislocator_p2p.isValid(itemHandler.getStackInSlot(0)) || !dislocator_p2p.getLinkID(itemHandler.getStackInSlot(0)).equals(linkID)) {
             return null;
         }
 
@@ -614,17 +618,17 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         return pos.subtract(crystalLinkPos.get().getPos());
     }
 
-    @Override
-    @Optional.Method(modid = "appliedenergistics2")
-    public boolean prepareToMove() {
-        return true;
-    }
+//    @Override
+//    @Optional.Method(modid = "appliedenergistics2")
+//    public boolean prepareToMove() {
+//        return true;
+//    }
 
-    @Override
-    @Optional.Method(modid = "appliedenergistics2")
-    public void doneMoving() {
-        checkIn();
-    }
+//    @Override
+//    @Optional.Method(modid = "appliedenergistics2")
+//    public void doneMoving() {
+//        checkIn();
+//    }
 
     private static class PassengerHelper {
         public Entity entity;
@@ -647,60 +651,60 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
 
     //region Frame Movement
 
-    @Override
-    public Iterable<BlockPos> getBlocksForFrameMove() {
-        if (active.get()) {
-            for (BlockPos offset : FacingUtils.getAroundAxis(activeAxis.get())) {
-                BlockPos next = pos.add(offset);
-                if (world.getBlockState(next).getBlock() == DEFeatures.portal) {
-                    HashSet<BlockPos> blocks = new HashSet<>();
-                    findActiveBlocksOnAxis(activeAxis.get(), next, blocks);
-                    return blocks;
-                }
-            }
-        }
-        else {
-            PairKV<Axis, List<BlockPos>> config = scanConfigurations();
-            if (config != null) {
-                HashSet<BlockPos> blocks = new HashSet<>();
-                for (BlockPos ppos : config.getValue()) {
-                    for (BlockPos offset : FacingUtils.getAroundAxis(config.getKey())) {
-                        BlockPos next = ppos.add(offset);
-                        if (blocks.contains(next)) continue;
-                        if (world.getBlockState(next).getBlock() == DEFeatures.infusedObsidian) {
-                            blocks.add(next);
-                        }
-                    }
-                }
-                return blocks;
-            }
-        }
-        return Collections.emptyList();
-    }
+//    @Override
+//    public Iterable<BlockPos> getBlocksForFrameMove() {
+//        if (active.get()) {
+//            for (BlockPos offset : FacingUtils.getAroundAxis(activeAxis.get())) {
+//                BlockPos next = pos.add(offset);
+//                if (world.getBlockState(next).getBlock() == DEFeatures.portal) {
+//                    HashSet<BlockPos> blocks = new HashSet<>();
+//                    findActiveBlocksOnAxis(activeAxis.get(), next, blocks);
+//                    return blocks;
+//                }
+//            }
+//        }
+//        else {
+//            PairKV<Axis, List<BlockPos>> config = scanConfigurations();
+//            if (config != null) {
+//                HashSet<BlockPos> blocks = new HashSet<>();
+//                for (BlockPos ppos : config.getValue()) {
+//                    for (BlockPos offset : FacingUtils.getAroundAxis(config.getKey())) {
+//                        BlockPos next = ppos.add(offset);
+//                        if (blocks.contains(next)) continue;
+//                        if (world.getBlockState(next).getBlock() == DEFeatures.infusedObsidian) {
+//                            blocks.add(next);
+//                        }
+//                    }
+//                }
+//                return blocks;
+//            }
+//        }
+//        return Collections.emptyList();
+//    }
 
-    public void findActiveBlocksOnAxis(Axis axis, BlockPos pos, HashSet<BlockPos> blocks) {
-        blocks.add(pos);
-        for (BlockPos offset : FacingUtils.getAroundAxis(axis)) {
-            BlockPos next = pos.add(offset);
-            if (blocks.contains(next)) continue;
-
-            IBlockState state = world.getBlockState(next);
-            if (state.getBlock() == DEFeatures.portal) {
-                findActiveBlocksOnAxis(axis, next, blocks);
-            }
-            else if (state.getBlock() == DEFeatures.infusedObsidian) {
-                blocks.add(next);
-            }
-        }
-    }
+//    public void findActiveBlocksOnAxis(Axis axis, BlockPos pos, HashSet<BlockPos> blocks) {
+//        blocks.add(pos);
+//        for (BlockPos offset : FacingUtils.getAroundAxis(axis)) {
+//            BlockPos next = pos.add(offset);
+//            if (blocks.contains(next)) continue;
+//
+//            BlockState state = world.getBlockState(next);
+//            if (state.getBlock() == DEFeatures.portal) {
+//                findActiveBlocksOnAxis(axis, next, blocks);
+//            }
+//            else if (state.getBlock() == DEFeatures.infusedObsidian) {
+//                blocks.add(next);
+//            }
+//        }
+//    }
 
     public void finishMove(BlockPos pos, HashSet<BlockPos> blocks) {
-        for (EnumFacing facing : FacingUtils.getFacingsAroundAxis(activeAxis.get())) {
+        for (Direction facing : FacingUtils.getFacingsAroundAxis(activeAxis.get())) {
             BlockPos np = pos.offset(facing);
             if (blocks.contains(np)) continue;
-            IBlockState state = world.getBlockState(np);
+            BlockState state = world.getBlockState(np);
 
-            if (state.getBlock() == DEFeatures.portal) {
+            if (state.getBlock() == DEContent.portal) {
                 TileEntity tile = world.getTileEntity(np);
                 if (tile instanceof TilePortal) {
                     ((TilePortal) tile).frameMoving = false;
@@ -724,7 +728,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     private BlockPos remotePosCache = null;
-    private int remoteDimCache = 0;
+    private DimensionType remoteDimCache = DimensionType.OVERWORLD;
     private int invalidLinkTime = 0;
     protected ENetFXHandler fxHandler;
 
@@ -741,12 +745,12 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         }
 
         if (remotePosCache == null) {
-            ItemStack stack = getStackInSlot(0);
-            if (dislocatorBound.isValid(stack) && !dislocatorBound.isPlayer(stack)) {
+            ItemStack stack = itemHandler.getStackInSlot(0);
+            if (dislocator_p2p.isValid(stack) && !dislocator_p2p.isPlayer(stack)) {
                 TileEntity tile = DislocatorLinkHandler.getTargetTile(world, stack);
                 if (tile instanceof TileDislocatorReceptacle) {
                     remotePosCache = tile.getPos();
-                    remoteDimCache = tile.getWorld().provider.getDimension();
+                    remoteDimCache = tile.getWorld().getDimension().getType();
                 }
                 else {
                     invalidLinkTime = 100;
@@ -758,7 +762,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             }
         }
 
-        MinecraftServer server = world.getMinecraftServer();
+        MinecraftServer server = world.getServer();
         if (server != null) {
             TileEntity tile = server.getWorld(remoteDimCache).getTileEntity(remotePosCache);
             if (tile instanceof TileDislocatorReceptacle) {
@@ -779,7 +783,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     private ICrystalLink getRemoteCrystal() {
         TileDislocatorReceptacle tile = getRemoteReceptacle();
         if (tile != null) {
-            MinecraftServer server = world.getMinecraftServer();
+            MinecraftServer server = world.getServer();
             if (server != null && tile.linkedCrystal.get().y != -999) {
                 TileEntity crystal = server.getWorld(remoteDimCache).getTileEntity(tile.getCrystalPos());
                 if (crystal instanceof IENetEffectTile) {
@@ -802,7 +806,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     @Override
-    public boolean binderUsed(EntityPlayer player, BlockPos linkTarget, EnumFacing sideClicked) {
+    public boolean binderUsed(PlayerEntity player, BlockPos linkTarget, Direction sideClicked) {
         return false;
     }
 
@@ -858,7 +862,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
         double dist = FacingUtils.destanceInDirection(pos, linkTo, FacingUtils.getAxisFaces(activeAxis.get())[0]);
         Vec3D vec = Vec3D.getCenter(getLinkPos());
 
-        EnumFacing facing;
+        Direction facing;
         if (dist > 0) {
             facing = FacingUtils.getAxisFaces(activeAxis.get())[0];
         }
@@ -866,7 +870,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
             facing = FacingUtils.getAxisFaces(activeAxis.get())[1];
         }
 
-        vec.add(facing.getFrontOffsetX() * 0.35, facing.getFrontOffsetY() * 0.35, facing.getFrontOffsetZ() * 0.35);
+        vec.add(facing.getXOffset() * 0.35, facing.getYOffset() * 0.35, facing.getZOffset() * 0.35);
 
         return vec;
     }
@@ -884,7 +888,7 @@ public class TileDislocatorReceptacle extends TileInventoryBase implements ITick
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public ENetFXHandler createClientFXHandler() {
         return new ENetFXHandlerClient(this);
     }

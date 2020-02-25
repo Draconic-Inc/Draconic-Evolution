@@ -9,14 +9,13 @@ import codechicken.lib.vec.*;
 import codechicken.lib.vec.uv.IconTransformation;
 import codechicken.lib.vec.uv.UV;
 import codechicken.lib.vec.uv.UVTransformation;
-import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraftforge.client.model.animation.FastTESR;
+import net.minecraftforge.client.model.animation.TileEntityRendererFast;
 
-public class RenderTilePotentiometer extends FastTESR<TilePotentiometer> {
+public class RenderTilePotentiometer extends TileEntityRendererFast<TilePotentiometer> {
 
     private static CCModel model;
 
@@ -61,8 +60,9 @@ public class RenderTilePotentiometer extends FastTESR<TilePotentiometer> {
         model.computeLightCoords();
     }
 
+
     @Override
-    public void renderTileEntityFast(TilePotentiometer te, double x, double y, double z, float partialTicks, int destroyStage, float partial, BufferBuilder buffer) {
+    public void renderTileEntityFast(TilePotentiometer te, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer) {
         TextureAtlasSprite stoneTex = TextureUtils.getBlockTexture("planks_oak");
         UVTransformation iconTransform = new IconTransformation(stoneTex);
         CCRenderState state = CCRenderState.instance();
@@ -73,11 +73,10 @@ public class RenderTilePotentiometer extends FastTESR<TilePotentiometer> {
 
         Matrix4 mat = new Matrix4();
         mat.apply(new Translation(x, y, z));
-        mat.apply(Rotation.sideOrientation(te.getState(DEFeatures.potentiometer).getValue(Potentiometer.FACING).getOpposite().getIndex(), 0).at(Vector3.center));
+        mat.apply(Rotation.sideOrientation(te.getBlockState().get(Potentiometer.FACING).getOpposite().getIndex(), 0).at(Vector3.center));
         mat.apply(new Translation(6 * pxl, pxl, 6 * pxl));
         mat.apply(new Rotation(te.power.get() * 22.5D * -MathHelper.torad, 0, 1, 0).at(new Vector3(pxl * 2, 0, pxl * 2)));
 
         model.render(state, LightModel.standardLightModel, iconTransform, mat);
-
     }
 }

@@ -8,26 +8,21 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.lib.ExplosionHelper;
-import com.brandon3055.draconicevolution.network.PacketExplosionFX;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFalling;
-import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FallingBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -45,7 +40,7 @@ public class ProcessExplosion implements IProcess {
      * The origin of the explosion.
      */
     public final Vec3D origin;
-    private final WorldServer world;
+    private final ServerWorld world;
     private final MinecraftServer server;
     private final int minimumDelay;
     public double[] angularResistance;
@@ -72,7 +67,7 @@ public class ProcessExplosion implements IProcess {
 //    public File cacheFile;
 //    public BufferedWriter writer;
 
-    private IBlockState lavaState;
+    private BlockState lavaState;
 
 //    private ProcessThread thread;
 
@@ -88,11 +83,11 @@ public class ProcessExplosion implements IProcess {
      *                         If the explosion calculation completes before this time is up the process will wait till this amount of time has based before detonating.
      *                         Use -1 for manual detonation.
      */
-    public ProcessExplosion(BlockPos origin, int radius, WorldServer world, int minimumDelayTime) {
+    public ProcessExplosion(BlockPos origin, int radius, ServerWorld world, int minimumDelayTime) {
         this.origin = Vec3D.getCenter(origin);
         this.shortPos = new ShortPos(origin);
         this.world = world;
-        this.server = world.getMinecraftServer();
+        this.server = world.getServer();
         this.minimumDelay = minimumDelayTime;
         this.angularResistance = new double[121];
         Arrays.fill(angularResistance, 100);
@@ -100,19 +95,20 @@ public class ProcessExplosion implements IProcess {
         LogHelper.info("Explosion Calculation Started for " + radius + " Block radius detonation!");
         maxRadius = radius;
 
-        lavaState = Blocks.FLOWING_LAVA.getDefaultState();
-        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
-        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
-            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
-            if (pyro.canBePlacedInWorld()) {
-                lavaState = pyro.getBlock().getDefaultState();
-            }
-        }
+        lavaState = Blocks.LAVA.getDefaultState();
+        //TODO pyrotheum
+//        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
+//        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
+//            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
+//            if (pyro.canBePlacedInWorld()) {
+//                lavaState = pyro.getBlock().getDefaultState();
+//            }
+//        }
     }
 
     @Override
     public void updateProcess() {
-        server.currentTime = MinecraftServer.getCurrentTimeMillis();
+        server.serverTime = Util.milliTime();
         if (startTime == -1) {
             startTime = System.currentTimeMillis();
         }
@@ -274,13 +270,13 @@ public class ProcessExplosion implements IProcess {
 
         double r = 1;
 
-        IBlockState state = world.getBlockState(pos);
+        BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
         if (!block.isAir(state, world, pos)) {
             Material mat = state.getMaterial();
             double effectivePower = (power / 10) * ((double) dist / (dist + travel));
 
-            r = block.getExplosionResistance(null);
+            r = block.getExplosionResistance();
 
             if (effectivePower >= r) {
                 destroyedCache.add(iPos);
@@ -295,7 +291,7 @@ public class ProcessExplosion implements IProcess {
                 r = 10;
             }
             else {
-                if (mat == Material.LAVA || mat == Material.WATER || block instanceof BlockLiquid || block instanceof IFluidBlock || block instanceof BlockFalling) {
+                if (block instanceof IFluidBlock || block instanceof FallingBlock) {
                     blocksToUpdate.add(iPos);
                 }
                 scannedCache.add(iPos);
@@ -375,8 +371,9 @@ public class ProcessExplosion implements IProcess {
         detonated = true;
 
         final BlockPos pos = origin.getPos();
-        PacketExplosionFX packet = new PacketExplosionFX(pos, radius, false);
-        DraconicEvolution.network.sendToAllAround(packet, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), radius * 4));
+//        PacketExplosionFX packet = new PacketExplosionFX(pos, radius, false);
+        //TODO packet stuff
+//        DraconicEvolution.network.sendToAllAround(packet, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), radius * 4));
 
         new DelayedExecutor(30) {
             @Override
@@ -384,7 +381,7 @@ public class ProcessExplosion implements IProcess {
                 List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(radius * 2.5, radius * 2.5, radius * 2.5));
 
                 for (Entity e : list) {
-                    double dist = e.getDistance(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                    double dist = Vec3D.getCenter(pos).distance(e);
                     float dmg = 10000F * (1F - (float) (dist / (radius * 1.2D)));
                     e.attackEntityFrom(fusionExplosion, dmg);
                 }
@@ -401,9 +398,9 @@ public class ProcessExplosion implements IProcess {
     }
 
 //    private class ProcessThread extends Thread {
-//        private WorldServer world;
+//        private ServerWorld world;
 //
-//        public ProcessThread(WorldServer world) {
+//        public ProcessThread(ServerWorld world) {
 //            super("DE Explosion Calculator");
 //            this.world = world;
 //            this.setDaemon(true);

@@ -1,18 +1,30 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCreativeRFCapacitor;
-import net.minecraft.block.ITileEntityProvider;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileCreativeOPCapacitor;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 19/07/2016.
  */
-public class CreativeRFSource extends BlockBCore implements ITileEntityProvider {
+public class CreativeRFSource extends BlockBCore {
+
+    public CreativeRFSource(Properties properties) {
+        super(properties);
+    }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileCreativeRFCapacitor();
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new TileCreativeOPCapacitor();
     }
 }

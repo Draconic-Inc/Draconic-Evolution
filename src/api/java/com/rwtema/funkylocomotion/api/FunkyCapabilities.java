@@ -1,10 +1,11 @@
 package com.rwtema.funkylocomotion.api;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -27,7 +28,7 @@ public class FunkyCapabilities {
 
 	@CapabilityInject(IItemHandler.class)
 	public static <T> void initializeCapabilities(Capability<T> ignore) {
-		register(IMoveCheck.class, () -> (worldObj, pos, profile) -> EnumActionResult.PASS);
+		register(IMoveCheck.class, () -> (worldObj, pos, profile) -> ActionResultType.PASS);
 		register(IStickyBlock.class, () -> (world, pos, side) -> false);
 		register(ISlipperyBlock.class, () -> (world, pos, dir) -> false);
 		register(IAdvStickyBlock.class, () -> (world, pos) -> ImmutableList.of(pos));
@@ -37,12 +38,12 @@ public class FunkyCapabilities {
 		CapabilityManager.INSTANCE.register(clazz, new Capability.IStorage<T>() {
 
 			@Override
-			public NBTBase writeNBT(Capability<T> capability, T instance, EnumFacing side) {
-				return new NBTTagByte((byte) 0);
+			public INBT writeNBT(Capability<T> capability, T instance, Direction side) {
+				return new ByteNBT((byte) 0);
 			}
 
 			@Override
-			public void readNBT(Capability<T> capability, T instance, EnumFacing side, NBTBase nbt) {
+			public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt) {
 
 			}
 		}, callable);

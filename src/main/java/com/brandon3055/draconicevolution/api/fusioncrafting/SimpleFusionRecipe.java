@@ -87,7 +87,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
         }
 
         //Check for catalyst NBT data
-        if (catalyst.hasTagCompound() && !ItemStack.areItemStackTagsEqual(catalyst, inventory.getStackInCore(0))) {
+        if (catalyst.hasTag() && !ItemStack.areItemStackTagsEqual(catalyst, inventory.getStackInCore(0))) {
             return false;
         }
 
@@ -98,7 +98,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
             for (ICraftingInjector pedestal : pedestals) {
                 if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal())) {
                     ItemStack i = OreDictHelper.resolveObject(ingredient);
-                    if (i.hasTagCompound() && !ItemStack.areItemStackTagsEqual(i, pedestal.getStackInPedestal())) {
+                    if (i.hasTag() && !ItemStack.areItemStackTagsEqual(i, pedestal.getStackInPedestal())) {
                         continue;
                     }
 

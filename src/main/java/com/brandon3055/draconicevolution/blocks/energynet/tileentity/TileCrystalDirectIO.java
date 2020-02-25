@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
-import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
@@ -8,22 +7,19 @@ import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXIO;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
@@ -34,7 +30,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SY
  */
 public class TileCrystalDirectIO extends TileCrystalBase   {
 
-    public final ManagedEnum<EnumFacing> facing = dataManager.register(new ManagedEnum<>("facing", EnumFacing.DOWN, SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<Direction> facing = dataManager.register(new ManagedEnum<>("facing", Direction.DOWN, SAVE_NBT_SYNC_TILE));
     public final ManagedBool outputMode = dataManager.register(new ManagedBool("outputMode", SAVE_BOTH_SYNC_TILE));
 
     public TileCrystalDirectIO() {
@@ -43,8 +39,8 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     //region Update Energy IO
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
 
         if (world.isRemote) {
             return;
@@ -62,39 +58,39 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     //region EnergyIO
 
 //    @Override
-//    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+//    public int receiveEnergy(Direction from, int maxReceive, boolean simulate) {
 //        return from != null && !outputMode.get() && from.equals(facing.get()) ? energyStorage.receiveEnergy(maxReceive, simulate) : 0;
 //    }
 //
 //    @Override
-//    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
+//    public int extractEnergy(Direction from, int maxExtract, boolean simulate) {
 //        return from != null && outputMode.get() && from.equals(facing.get()) ? energyStorage.extractEnergy(maxExtract, simulate) : 0;
 //    }
 //
 //    @Override
-//    public boolean canConnectEnergy(EnumFacing from) {
+//    public boolean canConnectEnergy(Direction from) {
 //        return from != null && from.equals(facing.get());
 //    }
 
     //endregion
 
     @Override
-    public boolean onBlockActivated(IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player.isSneaking()) {
             outputMode.invert();
             return true;
         }
-        return super.onBlockActivated(state, player, hand, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(state, player, handIn, hit);
     }
 
     //region Rendering
 
     @Override
-    public EnergyCrystal.CrystalType getType() {
+    public EnergyCrystal.CrystalType getCrystalType() {
         return EnergyCrystal.CrystalType.CRYSTAL_IO;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalGLFXBase createStaticFX() {
         return new CrystalFXIO(world, this);
@@ -110,7 +106,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
@@ -122,36 +118,37 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     //region Misc
 
+
     @Override
-    public void onTilePlaced(World world, BlockPos pos, EnumFacing placedAgainst, float hitX, float hitY, float hitZ, EntityPlayer placer, ItemStack stack) {
-        super.onTilePlaced(world, pos, placedAgainst, hitX, hitY, hitZ, placer, stack);
-        facing.set(placedAgainst.getOpposite());
+    public void onTilePlaced(BlockItemUseContext context, BlockState state) {
+        super.onTilePlaced(context, state);
+        facing.set(context.getFace().getOpposite());
     }
 
     //endregion
 
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        if (facing == this.facing.get() && (capability == CapabilityEnergy.ENERGY || capability == CapabilityOP.OP)) {
-            return true;
-        }
+//    @Override
+//    public boolean hasCapability(Capability<?> capability, @Nullable Direction facing) {
+//        if (facing == this.facing.get() && (capability == CapabilityEnergy.ENERGY || capability == CapabilityOP.OP)) {
+//            return true;
+//        }
+//
+//        return super.hasCapability(capability, facing);
+//    }
 
-        return super.hasCapability(capability, facing);
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if (facing == this.facing.get()) {
-            if (capability == CapabilityEnergy.ENERGY) {
-                return CapabilityEnergy.ENERGY.cast(opStorage);
-            }
-            else if (capability == CapabilityOP.OP) {
-                return CapabilityOP.OP.cast(opStorage);
-            }
-        }
-
-        return super.getCapability(capability, facing);
-    }
+//    @Nullable
+//    @Override
+//    public <T> T getCapability(Capability<T> capability, @Nullable Direction facing) {
+//        if (facing == this.facing.get()) {
+//            if (capability == CapabilityEnergy.ENERGY) {
+//                return CapabilityEnergy.ENERGY.cast(opStorage);
+//            }
+//            else if (capability == CapabilityOP.OP) {
+//                return CapabilityOP.OP.cast(opStorage);
+//            }
+//        }
+//
+//        return super.getCapability(capability, facing);
+//    }
 }

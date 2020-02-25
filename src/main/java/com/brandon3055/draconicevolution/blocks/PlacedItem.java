@@ -1,45 +1,46 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import codechicken.lib.raytracer.ICuboidProvider;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.registry.Feature;
-import com.brandon3055.brandonscore.registry.IRenderOverride;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTilePlacedItem;
-import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRenderOverride {
+public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRenderOverride*/ {
 
-    public static final PropertyDirection FACING = PropertyDirection.create("facing");
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
-    public PlacedItem() {
-        super(Material.ROCK);
-        this.setHarvestLevel("pickaxe", 0);
-        this.setHardness(1.5F).setResistance(10.0F);
-        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.UP));
+    public PlacedItem(Properties properties) {
+        super(properties);
+        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.UP));
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
     }
 
     //region Block state and stuff...
@@ -50,37 +51,44 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
     }
 
     @Override
-    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
-    }
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
+
+
+//    @Override
+//    protected BlockStateContainer createBlockState() {
+//        return new BlockStateContainer(this, FACING);
+//    }
+//
+//    @Override
+//    public BlockState getStateFromMeta(int meta) {
+//        Direction enumfacing = Direction.getFront(meta);
+//        return this.getDefaultState().withProperty(FACING, enumfacing);
+//    }
+//
+//    @Override
+//    public int getMetaFromState(BlockState state) {
+//        return state.getValue(FACING).getIndex();
+//    }
+//
+//    @Override
+//    public BlockState withRotation(BlockState state, Rotation rot) {
+//        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
+//    }
+//
+//    @Override
+//    public BlockState withMirror(BlockState state, Mirror mirrorIn) {
+//        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
+//    }
+
 
     @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING);
+    public boolean hasTileEntity(BlockState state) {
+        return true;
     }
 
+    @Nullable
     @Override
-    public IBlockState getStateFromMeta(int meta) {
-        EnumFacing enumfacing = EnumFacing.getFront(meta);
-        return this.getDefaultState().withProperty(FACING, enumfacing);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(FACING).getIndex();
-    }
-
-    @Override
-    public IBlockState withRotation(IBlockState state, Rotation rot) {
-        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    @Override
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
-        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TilePlacedItem();
     }
 
@@ -88,28 +96,29 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
 
     //region Render
 
-    @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.INVISIBLE;
-    }
 
     @Override
-    public boolean registerNormal(Feature feature) {
-        return false;
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerRenderer(Feature feature) {
-        ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, new RenderTilePlacedItem());
-    }
+//    @Override
+//    public boolean registerNormal(Feature feature) {
+//        return false;
+//    }
+//
+//    @OnlyIn(Dist.CLIENT)
+//    @Override
+//    public void registerRenderer(Feature feature) {
+//        ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, new RenderTilePlacedItem());
+//    }
 
     //endregion
 
     //region Interact
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hitIIn) {
         if (world.isRemote) {
             return true;
         }
@@ -118,7 +127,7 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
         if (tile instanceof TilePlacedItem) {
 
             RayTraceResult hit = RayTracer.retraceBlock(world, player, pos);
-            RayTraceResult subHitResult = RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), pos, ((TilePlacedItem) tile).getIndexedCuboids());
+            RayTraceResult subHitResult = null;//TODO RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), pos, ((TilePlacedItem) tile).getIndexedCuboids());
 
             if (subHitResult != null) {
                 hit = subHitResult;
@@ -132,46 +141,47 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
         return true;
     }
 
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        if (!(source instanceof World)) {
-            return FULL_BLOCK_AABB;
-        }
+//    @Override
+//    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
+//        if (!(source instanceof World)) {
+//            return FULL_BLOCK_AABB;
+//        }
+//
+//        TileEntity tile = source.getTileEntity(pos);
+//
+//        if (tile instanceof ICuboidProvider) {
+//            return ((ICuboidProvider) tile).getIndexedCuboids().get(0).aabb();
+////            return ((TilePlacedItem) tile).getBlockBounds().aabb();
+//        }
+//
+//        return super.getBoundingBox(state, source, pos);
+//    }
 
-        TileEntity tile = source.getTileEntity(pos);
+//    public RayTraceResult collisionRayTrace(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end) {
+//        TileEntity tile = world.getTileEntity(pos);
+//        if (tile instanceof ICuboidProvider) {
+//            return RayTracer.rayTraceCuboidsClosest(start, end, pos, ((ICuboidProvider) tile).getIndexedCuboids());
+//        }
+//        return super.collisionRayTrace(state, world, pos, start, end);
+//    }
 
-        if (tile instanceof ICuboidProvider) {
-            return ((ICuboidProvider) tile).getIndexedCuboids().get(0).aabb();
-//            return ((TilePlacedItem) tile).getBlockBounds().aabb();
-        }
-
-        return super.getBoundingBox(state, source, pos);
-    }
-
-    public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof ICuboidProvider) {
-            return RayTracer.rayTraceCuboidsClosest(start, end, pos, ((ICuboidProvider) tile).getIndexedCuboids());
-        }
-        return super.collisionRayTrace(state, world, pos, start, end);
-    }
-
-    @Override
-    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
-        return false;
-    }
+//    @Override
+//    public boolean rotateBlock(World world, BlockPos pos, Direction axis) {
+//        return false;
+//    }
 
     //endregion
 
     //region Harvest
 
+
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TilePlacedItem) {
 
             RayTraceResult hit = target;
-            RayTraceResult subHitResult = RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), pos, ((TilePlacedItem) tile).getIndexedCuboids());
+            RayTraceResult subHitResult = null;//TODO RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), pos, ((TilePlacedItem) tile).getIndexedCuboids());
 
             if (subHitResult != null) {
                 hit = subHitResult;
@@ -182,8 +192,8 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
 
             if (hit.subHit > 0 && ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1) != null) {
                 ItemStack stack = ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1).copy();
-                if (stack.hasTagCompound()) {
-                    stack.getTagCompound().removeTag("BlockEntityTag");
+                if (stack.hasTag()) {
+                    stack.getTag().remove("BlockEntityTag");
                 }
                 return stack;
             }
@@ -193,18 +203,17 @@ public class PlacedItem extends BlockBCore implements ITileEntityProvider, IRend
     }
 
     @Override
-    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, ItemStack heldStack) {
+    public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack heldStack) {
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TilePlacedItem) {
             ((TilePlacedItem) tile).breakBlock();
         }
-
-        super.breakBlock(world, pos, state);
+        super.onReplaced(state, world, pos, newState, isMoving);
     }
 
     //endregion

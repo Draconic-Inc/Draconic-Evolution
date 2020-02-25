@@ -4,13 +4,15 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.PositionedSound;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundCategory;
+
+import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.ReactorState.BEYOND_HOPE;
 
 /**
  * Created by brandon3055 on 4/10/2015.
  */
-public class ReactorSound extends PositionedSound implements ITickableSound {
+public class ReactorSound extends SimpleSound implements ITickableSound {
     public boolean donePlaying = false;
     private TileReactorCore tile;
     private float targetPitch;
@@ -18,19 +20,9 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
     private int stopTimer = 0;
 
     public ReactorSound(TileReactorCore tile) {
-        super(DESoundHandler.coreSound, SoundCategory.BLOCKS);
+        super(DESoundHandler.coreSound, SoundCategory.BLOCKS, tile.reactorState.get() == BEYOND_HOPE ? 10F : 1.5F, 1, tile.getPos());
         this.tile = tile;
-        this.xPosF = (float) tile.getPos().getX() + 0.5F;
-        this.yPosF = (float) tile.getPos().getY() + 0.5F;
-        this.zPosF = (float) tile.getPos().getZ() + 0.5F;
         this.repeat = true;
-        if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
-            this.volume = 10F;
-        }
-        else {
-            this.volume = 1.5F;
-//            this.volume = 3.5F;
-        }
         this.targetPitch = 1F;
     }
 
@@ -40,16 +32,16 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
     }
 
     @Override
-    public void update() {
+    public void tick() {
         if (tile.roller != null) {
-            xPosF = (float) tile.roller.pos.x;
-            yPosF = (float) tile.roller.pos.y;
-            zPosF = (float) tile.roller.pos.z;
+            x = (float) tile.roller.pos.x;
+            y = (float) tile.roller.pos.y;
+            z = (float) tile.roller.pos.z;
         }
         else {
-            xPosF = (float) tile.getPos().getX() + 0.5F;
-            yPosF = (float) tile.getPos().getY() + 0.5F;
-            zPosF = (float) tile.getPos().getZ() + 0.5F;
+            x = (float) tile.getPos().getX() + 0.5F;
+            y = (float) tile.getPos().getY() + 0.5F;
+            z = (float) tile.getPos().getZ() + 0.5F;
         }
 
         pitch = (float) MathHelper.approachExp(pitch, targetPitch, 0.05);
@@ -59,7 +51,7 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
         else if (tile.reactorState.get() == TileReactorCore.ReactorState.RUNNING) {
             targetPitch = 1F + (float) Math.max(0, Math.min(0.5, 1 - ((tile.shieldCharge.get() / tile.maxShieldCharge.get()) * 10)));
         }
-        else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
+        else if (tile.reactorState.get() == BEYOND_HOPE) {
             if (volume == 1.5F) {
                 donePlaying = true;
             }
@@ -69,7 +61,7 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
         }
 
 
-        if (tile.isInvalid() || !tile.getWorld().getChunkFromBlockCoords(tile.getPos()).isLoaded()) {// || player == null || tile.getDistanceFrom(player.posX, player.posY, player.posZ) > 512){
+        if (tile.isRemoved() || !tile.getWorld().getChunkAt(tile.getPos()).loaded) {// || player == null || tile.getDistanceFrom(player.posX, player.posY, player.posZ) > 512){
 //            if (stopTimer++ == 60) {
                 donePlaying = true;
                 repeat = false;

@@ -1,15 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
-import codechicken.lib.render.state.GlStateTracker;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -24,13 +24,13 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
 
     public CrystalFXRing(World worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
-        this.particleTextureIndexX = 3 + tile.getTier();
-        this.particleAge = worldIn.rand.nextInt(1024);
+//        this.particleTextureIndexX = 3 + tile.getTier();
+        this.age = worldIn.rand.nextInt(1024);
         this.rSeed = tile.getPos().toLong();
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
@@ -45,28 +45,28 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
     }
 
     @Override
-    public void renderParticle(BufferBuilder vertexbuffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         if (!renderEnabled) {
             return;
         }
 
-        boolean wierless = tile.getType() == EnergyCrystal.CrystalType.WIRELESS;
+        boolean wierless = tile.getCrystalType() == EnergyCrystal.CrystalType.WIRELESS;
 
         rand.setSeed(rSeed);
-        float animTime = ClientEventHandler.elapsedTicks + particleAge + partialTicks;
+        float animTime = ClientEventHandler.elapsedTicks + age + partialTicks;
 
         //region variables
 
         float renderX = (float) (this.posX - interpPosX);
         float renderY = (float) (this.posY - interpPosY);
         float renderZ = (float) (this.posZ - interpPosZ);
-        double mipLevel = Math.max(0, Math.min(1, (entity.getDistanceSq(posX, posY, posZ) - 20) / 600D));
+        double mipLevel = Math.max(0, Math.min(1, (entity.getBlockPos().distanceSq(posX, posY, posZ, true) - 20) / 600D));
 
         //endregion
 
         //region GLRender
 
-        double pCount = 20 + (80 * (1 - mipLevel));//Minecraft.getMinecraft().gameSettings.fancyGraphics ? 35 : 15;TODO?
+        double pCount = 20 + (80 * (1 - mipLevel));//Minecraft.getInstance().gameSettings.fancyGraphics ? 35 : 15;TODO?
         for (int i = 0; i < pCount; i++) {
             double rotation = i / pCount * (3.141 * 2D) + animTime / 80D;
 
@@ -102,16 +102,16 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             float drawZ = renderZ + (float) oz;
             //endregion
 
-            particleTextureIndexX = (ClientEventHandler.elapsedTicks) % 5;
-            particleTextureIndexY = 1;
-            float minU = (float) this.particleTextureIndexX / texturesPerRow;
-            float maxU = minU + 1F / texturesPerRow;
-            float minV = (float) this.particleTextureIndexY / texturesPerRow;
-            float maxV = minV + 1F / texturesPerRow;
-            vertexbuffer.pos((double) (drawX - rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(r, g, b, a).endVertex();
-            vertexbuffer.pos((double) (drawX - rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(r, g, b, a).endVertex();
-            vertexbuffer.pos((double) (drawX + rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(r, g, b, a).endVertex();
-            vertexbuffer.pos((double) (drawX + rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(r, g, b, a).endVertex();
+//            particleTextureIndexX = (ClientEventHandler.elapsedTicks) % 5;
+//            particleTextureIndexY = 1;
+//            float minU = (float) this.particleTextureIndexX / texturesPerRow;
+//            float maxU = minU + 1F / texturesPerRow;
+//            float minV = (float) this.particleTextureIndexY / texturesPerRow;
+//            float maxV = minV + 1F / texturesPerRow;
+//            vertexbuffer.pos((double) (drawX - rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(r, g, b, a).endVertex();
+//            vertexbuffer.pos((double) (drawX - rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(r, g, b, a).endVertex();
+//            vertexbuffer.pos((double) (drawX + rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(r, g, b, a).endVertex();
+//            vertexbuffer.pos((double) (drawX + rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(r, g, b, a).endVertex();
 
             //region Inner
             scale = 0.01F + (rFloat4 * 0.04F) * (float) Math.sin((animTime + i) / 30) + ((float) mipLevel * 0.05F);
@@ -129,16 +129,16 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             g = wierless ? 0 : 1;
             b = wierless ? 0 : 1;
 
-            particleTextureIndexX = 0;
-            particleTextureIndexY = 0;
-            minU = (float) this.particleTextureIndexX / texturesPerRow;
-            maxU = minU + 1F / texturesPerRow;
-            minV = (float) this.particleTextureIndexY / texturesPerRow;
-            maxV = minV + 1F / texturesPerRow;
-            vertexbuffer.pos((double) (drawX - rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(r, g, b, a).endVertex();
-            vertexbuffer.pos((double) (drawX - rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(r, g, b, a).endVertex();
-            vertexbuffer.pos((double) (drawX + rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(r, g, b, a).endVertex();
-            vertexbuffer.pos((double) (drawX + rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(r, g, b, a).endVertex();
+//            particleTextureIndexX = 0;
+//            particleTextureIndexY = 0;
+//            minU = (float) this.particleTextureIndexX / texturesPerRow;
+//            maxU = minU + 1F / texturesPerRow;
+//            minV = (float) this.particleTextureIndexY / texturesPerRow;
+//            maxV = minV + 1F / texturesPerRow;
+//            vertexbuffer.pos((double) (drawX - rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(r, g, b, a).endVertex();
+//            vertexbuffer.pos((double) (drawX - rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(r, g, b, a).endVertex();
+//            vertexbuffer.pos((double) (drawX + rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(r, g, b, a).endVertex();
+//            vertexbuffer.pos((double) (drawX + rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(r, g, b, a).endVertex();
 
             //endregion
         }
@@ -154,8 +154,8 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
     public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
         @Override
         public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateTracker.pushState();
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            GlStateTracker.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
@@ -167,7 +167,7 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
         public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
             tessellator.getBuffer().sortVertexData(0, 0, 0);
             tessellator.draw();
-            GlStateTracker.popState();
+//            GlStateTracker.popState();
         }
     };
 }

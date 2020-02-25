@@ -1,33 +1,29 @@
 package com.brandon3055.draconicevolution.handlers;
 
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.ICustomArmor;
 import com.brandon3055.draconicevolution.items.tools.ToolStats;
-import com.brandon3055.draconicevolution.network.PacketShieldHit;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
 
@@ -37,16 +33,16 @@ import java.util.*;
 public class CustomArmorHandler {
     public static final UUID WALK_SPEED_UUID = UUID.fromString("0ea6ce8e-d2e8-11e5-ab30-625662870761");
     private static final DamageSource ADMIN_KILL = new DamageSource("administrative.kill").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
-    public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
-    public static List<String> playersWithUphillStep = new ArrayList<String>();  //TODO Switch to UUID
+    public static Map<PlayerEntity, Boolean> playersWithFlight = new WeakHashMap<PlayerEntity, Boolean>();
+    public static List<UUID> playersWithUphillStep = new ArrayList<>();
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerAttacked(LivingAttackEvent event) {
-        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled() || event.getAmount() <= 0) {
+        if (!(event.getEntityLiving() instanceof PlayerEntity) || event.isCanceled() || event.getAmount() <= 0) {
             return;
         }
 
-        EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+        PlayerEntity player = (PlayerEntity) event.getEntityLiving();
         if (player.world.isRemote) {
             return;
         }
@@ -91,23 +87,23 @@ public class CustomArmorHandler {
 
         summery.saveStacks(player);
 
-        DraconicEvolution.network.sendToAllAround(new PacketShieldHit(player, remainingPoints / summery.maxProtectionPoints), new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 64));
+        //TODO Packet Stuff
+//        DraconicEvolution.network.sendToAllAround(new PacketShieldHit(player, remainingPoints / summery.maxProtectionPoints), new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 64));
 
         if (remainingPoints > 0) {
             player.hurtResistantTime = 20;
-        }
-        else if (hitAmount - totalAbsorbed > 0) {
+        } else if (hitAmount - totalAbsorbed > 0) {
             player.attackEntityFrom(event.getSource(), hitAmount - totalAbsorbed);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(LivingDeathEvent event) {
-        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled()) {
+        if (!(event.getEntityLiving() instanceof PlayerEntity) || event.isCanceled()) {
             return;
         }
 
-        EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+        PlayerEntity player = (PlayerEntity) event.getEntityLiving();
         if (!player.isServerWorld()) {
             return;
         }
@@ -149,7 +145,7 @@ public class CustomArmorHandler {
 
         summery.saveStacks(player);
 
-        player.sendMessage(new TextComponentTranslation("msg.de.shieldDepleted.txt").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
+        player.sendMessage(new TranslationTextComponent("msg.de.shieldDepleted.txt").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
         event.setCanceled(true);
         player.setHealth(1);
     }
@@ -158,7 +154,7 @@ public class CustomArmorHandler {
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
 
-        EntityPlayer player = event.player;
+        PlayerEntity player = event.player;
         ArmorSummery summery = new ArmorSummery().getSummery(player);
 
         tickShield(summery, player);
@@ -167,26 +163,26 @@ public class CustomArmorHandler {
 
     @SubscribeEvent
     public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
-        if (!(event.getEntity() instanceof EntityPlayer)) {
+        if (!(event.getEntity() instanceof PlayerEntity)) {
             return;
         }
 
-        EntityPlayer player = (EntityPlayer) event.getEntity();
+        PlayerEntity player = (PlayerEntity) event.getEntity();
         CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(player);
 
         if (summery != null && summery.jumpModifier > 0) {
-            player.motionY += (double) (summery.jumpModifier * 0.135F);
+            player.addVelocity(0, summery.jumpModifier * 0.135F, 0);
         }
     }
 
-    public static void tickShield(ArmorSummery summery, EntityPlayer player) {
+    public static void tickShield(ArmorSummery summery, PlayerEntity player) {
         if (summery == null || (summery.maxProtectionPoints - summery.protectionPoints < 0.01 && summery.entropy == 0) || player.world.isRemote) {
             return;
         }
 
         float totalPointsToAdd = Math.min(summery.maxProtectionPoints - summery.protectionPoints, summery.maxProtectionPoints / 60F);
         totalPointsToAdd *= (1F - (summery.entropy / 100F));
-        totalPointsToAdd = Math.min(totalPointsToAdd, summery.totalEnergyStored / 1000);
+        totalPointsToAdd = Math.min(totalPointsToAdd, summery.totalEnergyStored / 1000F);
 
         if (totalPointsToAdd < 0F) {
             totalPointsToAdd = 0F;
@@ -225,39 +221,38 @@ public class CustomArmorHandler {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static void tickArmorEffects(ArmorSummery summery, EntityPlayer player) {
+    public static void tickArmorEffects(ArmorSummery summery, PlayerEntity player) {
 
         //region/*----------------- Flight ------------------*/
         if (DEConfig.enableFlight) {
             if (summery != null && summery.flight[0]) {
                 playersWithFlight.put(player, true);
-                player.capabilities.allowFlying = true;
-                if (summery.flight[1]) player.capabilities.isFlying = true;
+                player.abilities.allowFlying = true;
+                if (summery.flight[1]) player.abilities.isFlying = true;
 
                 if (player.world.isRemote) {
                     setPlayerFlySpeed(player, 0.05F + (0.05F * summery.flightSpeedModifier * (float) ToolStats.FLIGHT_SPEED_MODIFIER));
                 }
 
-                if ((!player.onGround && player.capabilities.isFlying) && player.motionY != 0 && summery.flightVModifier > 0) {
+                Vec3d motion = player.getMotion();
+                if ((!player.onGround && player.abilities.isFlying) && player.getMotion().y != 0 && summery.flightVModifier > 0) {
 //				float percentIncrease = summery.flightVModifier;
 
                     if (BrandonsCore.proxy.isJumpKeyDown() && !BrandonsCore.proxy.isSneakKeyDown()) {
                         //LogHelper.info(player.motionY);
-                        player.motionY = 0.225F * summery.flightVModifier;
+                        player.setVelocity(motion.x, 0.225F * summery.flightVModifier, motion.z);
                     }
 
                     if (BrandonsCore.proxy.isSneakKeyDown() && !BrandonsCore.proxy.isJumpKeyDown()) {
-                        player.motionY = -0.225F * summery.flightVModifier;
+                        player.setVelocity(motion.x, -0.225F * summery.flightVModifier, motion.z);
                     }
                 }
 
-                if (summery.flight[2] && player.moveForward == 0 && player.moveStrafing == 0 && player.capabilities.isFlying) {
-                    player.motionX *= 0.5;
-                    player.motionZ *= 0.5;
+                if (summery.flight[2] && player.moveForward == 0 && player.moveStrafing == 0 && player.abilities.isFlying) {
+                    player.setVelocity(motion.x * 0.5, motion.y, motion.z * 0.5);
                 }
 
-            }
-            else {
+            } else {
                 if (!playersWithFlight.containsKey(player)) {
                     playersWithFlight.put(player, false);
                 }
@@ -265,18 +260,18 @@ public class CustomArmorHandler {
                 if (playersWithFlight.get(player) && !player.world.isRemote) {
                     playersWithFlight.put(player, false);
 
-                    if (!player.capabilities.isCreativeMode) {
-                        player.capabilities.allowFlying = false;
-                        player.capabilities.isFlying = false;
+                    if (!player.abilities.isCreativeMode) {
+                        player.abilities.allowFlying = false;
+                        player.abilities.isFlying = false;
                         player.sendPlayerAbilities();
                     }
                 }
 
                 if (player.world.isRemote && playersWithFlight.get(player)) {
                     playersWithFlight.put(player, false);
-                    if (!player.capabilities.isCreativeMode) {
-                        player.capabilities.allowFlying = false;
-                        player.capabilities.isFlying = false;
+                    if (!player.abilities.isCreativeMode) {
+                        player.abilities.allowFlying = false;
+                        player.abilities.isFlying = false;
                     }
                     setPlayerFlySpeed(player, 0.05F);
                 }
@@ -289,44 +284,42 @@ public class CustomArmorHandler {
         IAttribute speedAttr = SharedMonsterAttributes.MOVEMENT_SPEED;
         if (summery != null && summery.speedModifier > 0) {
             double value = summery.speedModifier;
-            if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID) == null) {
-                player.getEntityAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), value, 1));
-            }
-            else if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID).getAmount() != value) {
-                player.getEntityAttribute(speedAttr).removeModifier(player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID));
-                player.getEntityAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), value, 1));
+            if (player.getAttribute(speedAttr).getModifier(WALK_SPEED_UUID) == null) {
+                player.getAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), value, AttributeModifier.Operation.MULTIPLY_BASE));
+            } else if (player.getAttribute(speedAttr).getModifier(WALK_SPEED_UUID).getAmount() != value) {
+                player.getAttribute(speedAttr).removeModifier(player.getAttribute(speedAttr).getModifier(WALK_SPEED_UUID));
+                player.getAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), value, AttributeModifier.Operation.MULTIPLY_BASE));
             }
 
             if (!player.onGround && player.getRidingEntity() == null) {
                 player.jumpMovementFactor = 0.02F + (0.02F * summery.speedModifier);
             }
-        }
-        else if (player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID) != null) {
-            player.getEntityAttribute(speedAttr).removeModifier(player.getEntityAttribute(speedAttr).getModifier(WALK_SPEED_UUID));
+        } else if (player.getAttribute(speedAttr).getModifier(WALK_SPEED_UUID) != null) {
+            player.getAttribute(speedAttr).removeModifier(player.getAttribute(speedAttr).getModifier(WALK_SPEED_UUID));
         }
 
         //endregion
 
         //region/*---------------- HillStep -----------------*/
         if (summery != null && player.world.isRemote) {
-            boolean highStepListed = playersWithUphillStep.contains(player.getDisplayNameString()) && player.stepHeight >= 1f;
+            boolean highStepListed = playersWithUphillStep.contains(player.getUniqueID()) && player.stepHeight >= 1f;
             boolean hasHighStep = summery.hasHillStep;
 
             if (hasHighStep && !highStepListed) {
-                playersWithUphillStep.add(player.getDisplayNameString());
+                playersWithUphillStep.add(player.getUniqueID());
                 player.stepHeight = 1.0625f;
             }
 
             if (!hasHighStep && highStepListed) {
-                playersWithUphillStep.remove(player.getDisplayNameString());
+                playersWithUphillStep.remove(player.getUniqueID());
                 player.stepHeight = 0.6F;
             }
         }
         //endregion
     }
 
-    private static void setPlayerFlySpeed(EntityPlayer player, float speed) {
-        player.capabilities.setFlySpeed(speed);
+    private static void setPlayerFlySpeed(PlayerEntity player, float speed) {
+        player.abilities.setFlySpeed(speed);
     }
 
     /**
@@ -417,7 +410,7 @@ public class CustomArmorHandler {
         public boolean hasHillStep = false;
         public boolean hasDraconic = false;
 
-        public ArmorSummery getSummery(EntityPlayer player) {
+        public ArmorSummery getSummery(PlayerEntity player) {
             List<ItemStack> armorStacks = new ArrayList<>(player.inventory.armorInventory);
             float totalEntropy = 0;
             float totalRecoveryPoints = 0;
@@ -500,29 +493,29 @@ public class CustomArmorHandler {
             return this;
         }
 
-        private void getBaubles(EntityPlayer player, List<ItemStack> stacks) {
-            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-            baublesStacks = NonNullList.withSize(baubles.getSlots(), ItemStack.EMPTY);
-            for (int i = 0; i < baubles.getSlots(); i++) {
-                //Not allowed to directly modify a stack returned by IItemHandler.getStackInSlot so we copy the stack and replace it with the new stack later.
-                baublesStacks.set(i, baubles.getStackInSlot(i).copy());
-            }
-            stacks.addAll(baublesStacks);
+        private void getBaubles(PlayerEntity player, List<ItemStack> stacks) {
+//            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+//            baublesStacks = NonNullList.withSize(baubles.getSlots(), ItemStack.EMPTY);
+//            for (int i = 0; i < baubles.getSlots(); i++) {
+//                //Not allowed to directly modify a stack returned by IItemHandler.getStackInSlot so we copy the stack and replace it with the new stack later.
+//                baublesStacks.set(i, baubles.getStackInSlot(i).copy());
+//            }
+//            stacks.addAll(baublesStacks);
         }
 
-        public void saveStacks(EntityPlayer player) {
+        public void saveStacks(PlayerEntity player) {
             if (ModHelper.isBaublesInstalled) {
                 saveBaubles(player);
             }
         }
 
-        private void saveBaubles(EntityPlayer player) {
-            if (baublesStacks != null) {
-                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-                for (int i = 0; i < baubles.getSlots(); i++) {
-                    baubles.setStackInSlot(i, baublesStacks.get(i));
-                }
-            }
+        private void saveBaubles(PlayerEntity player) {
+//            if (baublesStacks != null) {
+//                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+//                for (int i = 0; i < baubles.getSlots(); i++) {
+//                    baubles.setStackInSlot(i, baublesStacks.get(i));
+//                }
+//            }
         }
     }
 }

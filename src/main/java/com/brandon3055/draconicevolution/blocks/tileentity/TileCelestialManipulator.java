@@ -1,15 +1,15 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
-import cofh.redstoneflux.api.IEnergyReceiver;
-import com.brandon3055.brandonscore.blocks.TileEnergyBase;
-import com.brandon3055.brandonscore.client.particle.BCEffectHandler;
+import com.brandon3055.brandonscore.api.power.OPStorage;
+import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator.SubParticle;
 import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
@@ -17,19 +17,19 @@ import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
 import com.brandon3055.draconicevolution.lib.DESoundHandler;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ITickable;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.util.LinkedList;
@@ -40,28 +40,30 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileCelestialManipulator extends TileEnergyBase implements ITickable, IEnergyReceiver, IChangeListener {
+public class TileCelestialManipulator extends TileBCore implements ITickableTileEntity, IChangeListener {
 
-    public final ManagedBool weatherMode = register(new ManagedBool("weatherMode", true, SAVE_NBT_SYNC_TILE));
+    public final ManagedBool weatherMode = register(new ManagedBool("weather_mode", true, SAVE_NBT_SYNC_TILE));
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE));
-    public final ManagedBool weatherToggleRunning = register(new ManagedBool("weatherToggleRunning", SYNC_TILE));
-    public final ManagedBool timeWarpRunning = register(new ManagedBool("timeWarpRunning", SYNC_TILE));
-    public final ManagedBool timeWarpStopping = register(new ManagedBool("timeWarpStopping", SYNC_TILE));
-    public final ManagedBool redstoneSignal = register(new ManagedBool("redstoneSignal", SAVE_NBT_SYNC_TILE));
-    public final ManagedByte rsMode = register(new ManagedByte("rsMode", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedBool weatherToggleRunning = register(new ManagedBool("weather_toggle_running", SYNC_TILE));
+    public final ManagedBool timeWarpRunning = register(new ManagedBool("time_warp_running", SYNC_TILE));
+    public final ManagedBool timeWarpStopping = register(new ManagedBool("time_warp_stopping", SYNC_TILE));
+    public final ManagedBool redstoneSignal = register(new ManagedBool("redstone_signal", SAVE_NBT_SYNC_TILE));
+    public final ManagedByte rsMode = register(new ManagedByte("rs_mode", SAVE_NBT_SYNC_CONTAINER));
     public int timer = 0;
     public boolean storm = false;
     public boolean rain = false;
     public long targetTime;
 
+    public OPStorage opStorage = new OPStorage(8000000, 4000000, 4000000);
+
     public TileCelestialManipulator() {
-        setCapacityAndTransfer(4000000, 4000000, 4000000);
-        setEnergySyncMode(SYNC_CONTAINER);
+        super(DEContent.tile_celestial_manipulator);
+        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
 
         if (weatherToggleRunning.get()) {
             timer++;
@@ -76,7 +78,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                     world.getWorldInfo().setThundering(storm);
                     int time = (10 * 60 * 20) + world.rand.nextInt(20 * 60 * 20);
                     world.getWorldInfo().setRainTime(rain ? time : 0);
-                    world.getWorldInfo().setCleanWeatherTime(rain ? 0 : time);
+                    world.getWorldInfo().setClearWeatherTime(rain ? 0 : time);
                 }
             }
         }
@@ -91,15 +93,15 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 //            }
 
             if (timer > 100) {
-                if (getEnergyStored() > 320) {
-                    int extracted = energyStorage.extractEnergy(16000, true);
+                if (opStorage.getEnergyStored() > 320) {
+                    int extracted = opStorage.extractEnergy(16000, true);
                     int ticks = extracted / 320;
-                    energyStorage.extractEnergy(ticks * 320, false);
-                    world.setWorldTime(world.getWorldTime() + ticks);
+                    opStorage.extractEnergy(ticks * 320, false);
+                    world.setGameTime(world.getGameTime() + ticks); //ToDo test time adjustment. May need world.setDayTime();
                 }
 
                 if (!world.isRemote) {
-                    if (world.getWorldTime() >= targetTime) {
+                    if (world.getGameTime() >= targetTime) {
                         stopTimeWarp();
                     }
                 }
@@ -167,7 +169,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, EntityPlayerMP client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
         if (id == 0) {
             handleInteract(data.readString(), client);
         }
@@ -179,14 +181,14 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         }
     }
 
-    public void handleInteract(String action, EntityPlayer player) {
+    public void handleInteract(String action, PlayerEntity player) {
         if (action.endsWith("STOP") && active.get() && timeWarpRunning.get()) {
             stopTimeWarp();
             return;
         }
 
         if (active.get()) {
-            sendMessage(new TextComponentTranslation("msg.de.alreadyRunning.txt"), player);
+            sendMessage(new TranslationTextComponent("msg.de.alreadyRunning.txt"), player);
             return;
         }
 
@@ -199,96 +201,96 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
                 return;
             case "STOP_RAIN":
                 if (!world.isRaining()) {
-                    sendMessage(new TextComponentTranslation("msg.de.notRaining.txt"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.notRaining.txt"), player);
                     return;
                 }
-                if (getEnergyStored() < 256000) {
-                    sendMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (256000RF)"), player);
+                if (opStorage.getEnergyStored() < 256000) {
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendText(" (256000RF)"), player);
                     return;
                 }
-                energyStorage.modifyEnergyStored(-256000);
+                opStorage.modifyEnergyStored(-256000);
                 toggleWeather(false, false);
                 LogHelper.info("Stopped rain! Cause: " + pos);
                 return;
             case "START_RAIN":
                 if (world.isRaining()) {
-                    sendMessage(new TextComponentTranslation("msg.de.alreadyRaining.txt"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.alreadyRaining.txt"), player);
                     return;
                 }
-                if (getEnergyStored() < 256000) {
-                    sendMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (256000RF)"), player);
+                if (opStorage.getEnergyStored() < 256000) {
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendText(" (256000RF)"), player);
                     return;
                 }
-                energyStorage.modifyEnergyStored(-256000);
+                opStorage.modifyEnergyStored(-256000);
                 toggleWeather(true, false);
                 LogHelper.info("Started rain! Cause: " + pos);
                 return;
             case "START_STORM":
                 if (world.isRaining() && world.isThundering()) {
-                    sendMessage(new TextComponentTranslation("msg.de.alreadyStorm.txt"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.alreadyStorm.txt"), player);
                     return;
                 }
-                if (getEnergyStored() < 384000) {
-                    sendMessage(new TextComponentTranslation("msg.de.insufficientPower.txt").appendText(" (384000RF)"), player);
+                if (opStorage.getEnergyStored() < 384000) {
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendText(" (384000RF)"), player);
                     return;
                 }
-                energyStorage.modifyEnergyStored(-384000);
+                opStorage.modifyEnergyStored(-384000);
                 toggleWeather(true, true);
                 LogHelper.info("Started storm! Cause: " + pos);
                 return;
             case "SUN_RISE":
-                startTimeWarp(world.getWorldTime() + calculateTimeTill(0));
+                startTimeWarp(world.getGameTime() + calculateTimeTill(0));
                 LogHelper.info("Set time to sunrise! Cause: " + pos);
                 break;
             case "MID_DAY":
-                startTimeWarp(world.getWorldTime() + calculateTimeTill(5900));
+                startTimeWarp(world.getGameTime() + calculateTimeTill(5900));
                 LogHelper.info("Set time to midday! Cause: " + pos);
                 break;
             case "SUN_SET":
-                startTimeWarp(world.getWorldTime() + calculateTimeTill(12000));
+                startTimeWarp(world.getGameTime() + calculateTimeTill(12000));
                 LogHelper.info("Set time to sunset! Cause: " + pos);
                 break;
             case "MOON_RISE":
-                startTimeWarp(world.getWorldTime() + calculateTimeTill(13000));
+                startTimeWarp(world.getGameTime() + calculateTimeTill(13000));
                 LogHelper.info("Set time to moonrise! Cause: " + pos);
                 break;
             case "MIDNIGHT":
-                startTimeWarp(world.getWorldTime() + calculateTimeTill(17900));
+                startTimeWarp(world.getGameTime() + calculateTimeTill(17900));
                 LogHelper.info("Set time to midnight! Cause: " + pos);
                 break;
             case "MOON_SET":
-                startTimeWarp(world.getWorldTime() + calculateTimeTill(22500));
+                startTimeWarp(world.getGameTime() + calculateTimeTill(22500));
                 LogHelper.info("Set time to moonset! Cause: " + pos);
                 break;
             case "SKIP_24":
-                startTimeWarp(world.getWorldTime() + 24000);
+                startTimeWarp(world.getGameTime() + 24000);
                 LogHelper.info("Skipped one day! Cause: " + pos);
                 break;
         }
     }
 
-    private void sendMessage(ITextComponent message, EntityPlayer player) {
+    private void sendMessage(ITextComponent message, PlayerEntity player) {
         if (player != null) {
             player.sendMessage(message);
         }
     }
 
     private int calculateTimeTill(int time) {
-        int currentTime = (int) (world.getWorldTime() % 24000);
+        int currentTime = (int) (world.getGameTime() % 24000);
         return currentTime > time ? (24000 - (currentTime - time)) : time - currentTime;
     }
 
     //endregion
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private CelestialModifierSound sound;
 
     //region Weather Effect
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private List<EffectTrackerCelestialManipulator> effects;
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void startWeatherEffect() {
         timer = 0;
 
@@ -298,13 +300,13 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         }
 
         Vec3D vec = Vec3D.getCenter(pos.add(0, 1, 0));
-        sound = new CelestialModifierSound(DESoundHandler.electricBuzz);
+        sound = new CelestialModifierSound(DESoundHandler.electricBuzz, pos);
         sound.updateSound(vec, 0.01F, 0.5F);
-        FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
+        Minecraft.getInstance().getSoundHandler().play(sound);
         world.playSound(vec.x, vec.y, vec.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, getSoundVolume(), 0.5F, false);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void updateWeatherEffects() {
         if (effects == null || effects.size() < 8 || sound == null) {
             startWeatherEffect();
@@ -340,8 +342,9 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
             for (int i = 0; i < 100; i++) {
                 try {
                     SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
-                    particle.setScale(2);
-                    BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle, 128, true);
+//                    particle.setScale(2);
+                    //TODO particles
+//                    BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle, 128, true);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -388,7 +391,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 
     //region Sun Effect
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void startSunEffect() {
         timeWarpRunning.set(true);
         timeWarpStopping.set(false);
@@ -409,12 +412,12 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         effects.get(1).blue = 1F;
         effects.get(1).renderBolts = false;
 
-        sound = new CelestialModifierSound(DESoundHandler.sunDialEffect);
+        sound = new CelestialModifierSound(DESoundHandler.sunDialEffect, pos);
         sound.updateSound(Vec3D.getCenter(pos), getSoundVolume(), 0.5F);
-        FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
+        Minecraft.getInstance().getSoundHandler().play(sound);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void stopSunEffect() {
 //        timeWarpRunning.value = false;
 //        timeWarpStopping.value = true;
@@ -423,7 +426,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 //        }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void updateSunEffect() {
         if (effects == null || effects.size() < 2 || sound == null) {
             startSunEffect();
@@ -437,12 +440,13 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 
         if (timer % 4 == 0) {
             for (int i = 0; i < (timer % 20 <= 10 ? 10 : 2); i++) {
-                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerCelestialManipulator.SubParticle2(world, focus, effects.get(i % 2)), 128, true);
+                //TODO particles
+                //                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerCelestialManipulator.SubParticle2(world, focus, effects.get(i % 2)), 128, true);
             }
         }
 
 
-        double rotation = (world.getWorldTime() % 24000) / 24000D;
+        double rotation = (world.getGameTime() % 24000) / 24000D;
         double offset;
         double offsetX;
         double offsetY;
@@ -492,17 +496,18 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
 
     //region Rendering
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void standbyParticleEffect() {
         SubParticle particle = new SubParticle(world, Vec3D.getCenter(pos));
-        particle.setScale(0.2F);
-        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle);
+//        particle.setScale(0.2F);
+        //TODO particles
+//        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle);
         if (effects != null) {
             effects = null;
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void renderEffects(float partialTicks) {
         if (effects != null) {
             if (weatherToggleRunning.get()) {
@@ -532,7 +537,7 @@ public class TileCelestialManipulator extends TileEnergyBase implements ITickabl
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
