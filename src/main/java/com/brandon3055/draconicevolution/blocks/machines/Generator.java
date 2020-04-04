@@ -100,6 +100,11 @@ public class Generator extends BlockBCore implements ITileEntityProvider {
     }
 
     @Override
+    public int getLightValue(IBlockState state) {
+        return state.getValue(ACTIVE) ? 13 : 0;
+    }
+
+    @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GENERATOR, world, pos.getX(), pos.getY(), pos.getZ());

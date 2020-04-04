@@ -11,7 +11,7 @@ public class RenderTileDissEnchanter extends TESRBase<TileDissEnchanter> {
     public void render(TileDissEnchanter te, double x, double y, double z, float partialTicks, int destroyStage, float a) {
         ItemStack input = te.getStackInSlot(0);
 
-        if (input != null) {
+        if (!input.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(x + 0.5, y + 0.75 + 0.3, z + 0.5);
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
@@ -22,7 +22,7 @@ public class RenderTileDissEnchanter extends TESRBase<TileDissEnchanter> {
 
         ItemStack books = te.getStackInSlot(1);
 
-        if (books != null) {
+        if (!books.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(x + 0.5, y + 0.76, z + 0.5);
             GlStateManager.scale(0.5F, 0.5F, 0.5F);

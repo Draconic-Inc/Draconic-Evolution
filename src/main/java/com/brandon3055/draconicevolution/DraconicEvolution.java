@@ -30,8 +30,8 @@ public class DraconicEvolution {
     public static final String GUI_FACTORY = "com.brandon3055.draconicevolution.DEGuiFactory";
     public static final String networkChannelName = "DEvolutionNC";
     //region Misc Fields
-    public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "toolsAndWeapons", 0);
-    public static CreativeTabs tabBlocksItems = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "blocksAndItems", 1);
+    public static CreativeTabs tabToolsWeapons = new DETab(DraconicEvolution.MODID, "toolsAndWeapons", 0);
+    public static CreativeTabs tabBlocksItems = new DETab(DraconicEvolution.MODID, "blocksAndItems", 1);
     public static SimpleNetworkWrapper network;
     //endregion
 

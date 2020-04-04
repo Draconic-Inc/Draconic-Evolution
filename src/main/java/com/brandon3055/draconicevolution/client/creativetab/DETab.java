@@ -15,8 +15,8 @@ public class DETab extends CreativeTabs {
 
     static ItemStack itemStackStaff = ItemStack.EMPTY;
 
-    public DETab(int id, String modid, String label, int tab) {
-        super(id, modid);
+    public DETab(String modid, String label, int tab) {
+        super(modid);
         this.label = label;
         this.tab = tab;
     }
