@@ -7,11 +7,11 @@ import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.ITeleportEndPoint;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
-import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import static com.brandon3055.draconicevolution.DEContent.dislocator_p2p;
+import static com.brandon3055.draconicevolution.init.DEContent.dislocator_p2p;
 
 /**
  * Created by brandon3055 on 27/09/2016.

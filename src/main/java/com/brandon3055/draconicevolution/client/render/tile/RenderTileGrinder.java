@@ -4,15 +4,16 @@ import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
+import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.*;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.brandonscore.client.render.TESRBase;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
@@ -24,21 +25,24 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/11/19.
  */
-public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
+public class RenderTileGrinder extends TESRBase<TileGrinder> {
 
-    private static ResourceLocation MODEL_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/models/blocks/grinder.png");
+    private static ResourceLocation MODEL_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/grinder.png");
     private static CCModel storageModel;
     private static final double[] ROTATION_MAP = new double[]{0, 180, 90, -90};
 
+    private static CCModel fanModel;
+
     public RenderTileGrinder() {
-        if (storageModel == null) {
-            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/grinder/grinder_sword.obj"));
-            storageModel = CCModel.combine(map.values());
-            storageModel.computeNormals();
-            storageModel.apply(new Scale(-1 / 16F));
-            storageModel.apply(new Rotation(180 * MathHelper.torad, 0, 0, 1));
-            storageModel.apply(new Rotation(90 * MathHelper.torad, 0, 1, 0));
-        }
+        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/grinder/grinder_fan.obj"), GL11.GL_QUADS, null);
+        fanModel = CCModel.combine(map.values());
+
+        map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/grinder/grinder_sword.obj"));
+        storageModel = CCModel.combine(map.values());
+        storageModel.computeNormals();
+        storageModel.apply(new Scale(-1 / 16F));
+        storageModel.apply(new Rotation(180 * MathHelper.torad, 0, 0, 1));
+        storageModel.apply(new Rotation(90 * MathHelper.torad, 0, 1, 0));
     }
 
     @Override
@@ -51,15 +55,43 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-
-
             Vector3 tilePos = Vector3.fromTileCenter(te);
             Vector3 vecA = te.targetA == null ? null : getEntityMovingVec(te.targetA, partialTicks);
             Vector3 vecB = te.targetB == null ? null : getEntityMovingVec(te.targetB, partialTicks);
             renderSword(ccrs, facing, 0.34, tilePos, vecA, Math.min(te.animA + (partialTicks * te.getAnimSpeed()), 1), partialTicks);
             renderSword(ccrs, facing, -0.34, tilePos, vecB, Math.min(te.animB + (partialTicks * te.getAnimSpeed()), 1), partialTicks);
-
             ccrs.draw();
+
+            ResourceHelperDE.bindTexture("textures/models/parts/machine_fan.png");
+            ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
+            Matrix4 mat = new Matrix4();
+            mat.apply(new Translation(.5, .5, .5));
+            mat.apply(new Rotation(facing.getHorizontalAngle() * -MathHelper.torad, 0, 1, 0));
+            mat.apply(new Scale(-0.0625));
+            mat.apply(new Rotation((te.fanRotation + (te.fanSpeed * partialTicks)), 0, 0, 1));
+            fanModel.render(ccrs, mat);
+            ccrs.draw();
+
+            if (te.aoeDisplay > 0.51) {
+                te.validateKillZone(true);
+                GlStateManager.enableBlend();
+                GlStateManager.color4f(0F, 1F, 1F, 0.2F);
+                GlStateManager.disableTexture();
+                GlStateManager.disableCull();
+                GlStateManager.depthMask(false);
+                GlStateManager.lineWidth(4);
+                GlStateManager.disableLighting();
+                Cuboid6 box = new Cuboid6(te.killZone.offset(Vector3.fromTile(te).multiply(-1).pos()).shrink(0.01).shrink(te.aoe.get() - te.aoeDisplay));
+                RenderUtils.drawCuboidSolid(box);
+                GlStateManager.color4f(0F, 0F, 0F, 1F);
+                RenderUtils.drawCuboidOutline(box);
+                GlStateManager.enableLighting();
+                GlStateManager.depthMask(true);
+                GlStateManager.enableCull();
+                GlStateManager.enableTexture();
+                GlStateManager.disableBlend();
+            }
+
             GlStateManager.translated(-x, -y, -z);
         }
     }

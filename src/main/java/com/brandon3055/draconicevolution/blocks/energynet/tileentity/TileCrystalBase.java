@@ -14,12 +14,12 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
-import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
+import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerClient;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerServer;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import io.netty.buffer.ByteBuf;
@@ -34,6 +34,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -67,20 +68,26 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     //endregion
 
     protected int tick = 0;
-    private int crystalTier = -1;
+    //    private int crystalTier = -1;
     protected LinkedList<Vec3B> linkedCrystals = new LinkedList<>();
     public LinkedList<int[]> transferRatesArrays = new LinkedList<>();
     public LinkedList<Byte> flowRates = new LinkedList<>();
     private LinkedList<BlockPos> linkedPosCache = null;
-//    protected EnergyStorage energyStorage = new EnergyStorage(0);
+    //    protected EnergyStorage energyStorage = new EnergyStorage(0);
     protected OPStorage opStorage = new OPStorage(0);
     protected ENetFXHandler fxHandler;
+    protected TechLevel techLevel;
 
-    public TileCrystalBase() {
-        super(null);
+    public TileCrystalBase(TileEntityType<?> tileEntityTypeIn) {
+        this(tileEntityTypeIn, TechLevel.DRACONIUM);
+    }
+
+    public TileCrystalBase(TileEntityType<?> tileEntityTypeIn, TechLevel techLevel) {
+        super(tileEntityTypeIn);
+        this.techLevel = techLevel;
         fxHandler = DraconicEvolution.proxy.createENetFXHandler(this);
 
-        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+        capManager.setInternalManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
     }
 
     //region Energy Balance
@@ -125,8 +132,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
                 if (world.isBlockLoaded(linkedPos)) {
                     breakLink(linkedPos);
                     return;
-                }
-                else {
+                } else {
                     continue;
                 }
             }
@@ -170,7 +176,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
             transfer = (int) Math.min(minFlow, energyToEqual);
         }
 
-        sendTo.modifyEnergyStored((transfer = opStorage.extractEnergy(transfer, false)));
+        sendTo.modifyEnergyStored((transfer = (int)opStorage.modifyEnergyStored(-transfer)));
 
         return transfer;
     }
@@ -229,8 +235,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         if (getLinks().size() >= maxLinks()) {
             ChatHelper.indexedTrans(player, "eNet.de.linkLimitReachedThis.info", TextFormatting.RED, -442611624);
             return false;
-        }
-        else if (target.getLinks().size() >= target.maxLinks()) {
+        } else if (target.getLinks().size() >= target.maxLinks()) {
             ChatHelper.indexedTrans(player, "eNet.de.linkLimitReachedTarget.info", TextFormatting.RED, -442611624);
             return false;
         }
@@ -240,8 +245,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         if (!Utils.inRangeSphere(pos, linkTarget, maxLinkRange())) {
             ChatHelper.indexedTrans(player, "eNet.de.thisRangeLimit.info", TextFormatting.RED, -442611624);
             return false;
-        }
-        else if (!Utils.inRangeSphere(pos, linkTarget, target.maxLinkRange())) {
+        } else if (!Utils.inRangeSphere(pos, linkTarget, target.maxLinkRange())) {
             ChatHelper.indexedTrans(player, "eNet.de.targetRangeLimit.info", TextFormatting.RED, -442611624);
             return false;
         }
@@ -315,7 +319,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     @Override
     public int maxLinks() {
-        return MAX_LINKS.get(getType())[getTier()];
+        return MAX_LINKS.get(getCrystalType())[getTier()];
     }
 
     @Override
@@ -353,11 +357,11 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     @Override
     public int getTier() {
-        if (crystalTier == -1) {
-            //TODO 1.13. REMOVE ALL BLOCK STATE USAGE FROM TILE ENTITIES! The number of stupid crashes caused by stupid mods doing stupid things is ridiculous. Not to mention the vanilla issues...
-            crystalTier = getBlockState().get(EnergyCrystal.TIER);
-        }
-        return crystalTier;
+//        if (crystalTier == -1) {
+//            TODO 1.13. REMOVE ALL BLOCK STATE USAGE FROM TILE ENTITIES! The number of stupid crashes caused by stupid mods doing stupid things is ridiculous. Not to mention the vanilla issues...
+//            crystalTier = getBlockState().get(EnergyCrystal.TIER);
+//        }
+        return techLevel.index;
     }
 
     public abstract CrystalType getCrystalType();
@@ -457,7 +461,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public abstract CrystalGLFXBase createStaticFX();
+    public abstract CrystalFXBase createStaticFX();
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -469,7 +473,6 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         double charge = MathUtils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
         displayList.add(TextFormatting.BLUE + I18n.format("eNet.de.hudCharge.info") + ": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]");
         displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudLinks.info") + ": " + getLinks().size() + " / " + maxLinks() + "");
-
 //        if (BrandonsCore.proxy.getClientPlayer().isSneaking()) {
 //            for (BlockPos lPos : getLinks()) {
 //                displayList.add(TextFormatting.GRAY + " " + String.format("[x:%s, y:%s, z:%s]", lPos.getX(), lPos.getY(), lPos.getZ()));
@@ -494,25 +497,26 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     @Override
     public void writeExtraNBT(CompoundNBT compound) {
+        compound.putByte("tech_level", (byte) techLevel.ordinal());
         ListNBT list = new ListNBT();
         for (Vec3B vec : linkedCrystals) {
             list.add(new ByteArrayNBT(new byte[]{vec.x, vec.y, vec.z}));
         }
-        compound.put("LinkedCrystals", list);
+        compound.put("linked_crystals", list);
         fxHandler.writeToNBT(compound);
 
         byte[] array = new byte[flowRates.size()];
         for (int i = 0; i < array.length; i++) {
             array[i] = flowRates.get(i);
         }
-        compound.putByteArray("FlowRates", array);
-        compound.putByte("Tier", (byte) getTier());
+        compound.putByteArray("flow_rates", array);
         super.writeExtraNBT(compound);
     }
 
     @Override
     public void readExtraNBT(CompoundNBT compound) {
-        ListNBT list = compound.getList("LinkedCrystals", 7);
+        techLevel = TechLevel.values()[compound.getInt("tech_level")];
+        ListNBT list = compound.getList("linked_crystals", 7);
         linkedCrystals.clear();
         for (int i = 0; i < list.size(); i++) {
             byte[] data = ((ByteArrayNBT) list.get(i)).getByteArray();
@@ -523,37 +527,27 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         }
         fxHandler.readFromNBT(compound);
 
-        if (compound.contains("FlowRates")) {
-            byte[] array = compound.getByteArray("FlowRates");
+        if (compound.contains("flow_rates")) {
+            byte[] array = compound.getByteArray("flow_rates");
             flowRates.clear();
             for (byte b : array) {
                 flowRates.add(b);
             }
         }
-        int cap = getCapacityForTier(compound.getByte("Tier"));
+        int cap = getCapacityForTier(getTier());
         opStorage.setCapacity(cap).setMaxTransfer(cap);
-//        energyStorage.readFromNBT(compound);
         super.readExtraNBT(compound);
     }
 
     @Override
     public void writeToItemStack(CompoundNBT compound, boolean willHarvest) {
         super.writeToItemStack(compound, willHarvest);
-//        if (energyStorage.getEnergyStored() > 0){
-//            compound.putByte("Tier", (byte) getTier());
-//            energyStorage.writeToNBT(compound);
-//        }
     }
 
     @Nullable
     @Override
     public void readFromItemStack(CompoundNBT compound) {
         super.readFromItemStack(compound);
-//        if (compound.hasKey("Tier")) {
-//            int cap = getCapacityForTier(compound.getByte("Tier"));
-//            energyStorage.setCapacity(cap).setMaxTransfer(cap);
-//            energyStorage.deserializeNBT(compound);
-//        }
     }
 
     @Override
@@ -625,8 +619,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
             CompoundNBT compound = new CompoundNBT();
             compound.put("L", list);
             sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeCompoundNBT(compound), 0));
-        }
-        else if (containerEnergyFlow.size() > linkedCrystals.size()) {
+        } else if (containerEnergyFlow.size() > linkedCrystals.size()) {
             containerEnergyFlow.clear();
             sendUpdateToListeners(listeners, sendPacketToClient(output -> {
             }, 1));
@@ -668,8 +661,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
                     ((ICrystalLink) targetTile).breakLink(pos);
                 }
             }
-        }
-        else if (id == 20) {
+        } else if (id == 20) {
             List<BlockPos> links = new ArrayList<>(getLinks());
             for (BlockPos target : links) {
                 breakLink(target);

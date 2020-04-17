@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorSt
 import com.brandon3055.draconicevolution.client.model.ModelReactorEnergyInjector;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.util.Direction;

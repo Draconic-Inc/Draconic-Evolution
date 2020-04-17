@@ -46,7 +46,7 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
     //region Block state and stuff...
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

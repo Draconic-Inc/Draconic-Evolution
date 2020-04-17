@@ -2,7 +2,7 @@
 //
 //import com.brandon3055.brandonscore.lib.DelayedTask;
 //import com.brandon3055.draconicevolution.integration.jei.DEJEIPlugin;
-//import com.brandon3055.draconicevolution.lib.RecipeManager;
+//import com.brandon3055.draconicevolution.init.RecipeManager;
 //import net.minecraft.command.CommandBase;
 //import net.minecraft.command.CommandException;
 //import net.minecraft.command.ICommandSender;

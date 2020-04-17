@@ -46,7 +46,7 @@ public class Portal extends BlockBCore {
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

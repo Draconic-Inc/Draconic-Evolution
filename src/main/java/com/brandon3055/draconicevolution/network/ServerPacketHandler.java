@@ -4,7 +4,7 @@ import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.items.tools.IAOEWeapon;

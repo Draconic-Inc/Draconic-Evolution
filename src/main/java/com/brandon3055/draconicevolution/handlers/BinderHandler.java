@@ -11,6 +11,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -19,6 +21,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -115,16 +120,23 @@ public class BinderHandler {
 
         BlockPos pos = getBound(stack);
         boolean valid = world.getTileEntity(pos) instanceof ICrystalLink;
-        double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks;
-        double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
-        double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
+        ActiveRenderInfo renderInfo = mc.gameRenderer.getActiveRenderInfo();
+        double projectedX = renderInfo.getProjectedView().x;
+        double projectedY = renderInfo.getProjectedView().y;
+        double projectedZ = renderInfo.getProjectedView().z;
 
         BlockState state = world.getBlockState(pos);
-        Cuboid6 cuboid6 = new Cuboid6(state.getShape(world, pos).getBoundingBox());
+
+        VoxelShape shape = state.getShape(world, pos);
+        if (shape.isEmpty()) {
+            shape = VoxelShapes.fullCube();
+        }
+
+        Cuboid6 cuboid6 = new Cuboid6(shape.getBoundingBox());
 
         GlStateManager.pushMatrix();
 //        GlStateTracker.pushState();
-        GlStateManager.translated(pos.getX() - offsetX, pos.getY() - offsetY, pos.getZ() - offsetZ);
+        GlStateManager.translated((double)pos.getX() - projectedX, (double)pos.getY() - projectedY, (double)pos.getZ() - projectedZ);
         GlStateManager.disableTexture();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);

@@ -1,8 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.energynet;
 
+import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Rotation;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
+import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalRelay;
@@ -11,13 +15,21 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,75 +41,49 @@ import java.util.List;
 /**
  * Created by brandon3055 on 19/11/2016.
  */
-public class EnergyCrystal extends BlockBCore implements /*IRenderOverride, IRegistryOverride,*/ IHudDisplay {
+public class EnergyCrystal extends BlockBCore implements IHudDisplay {
+    private final TechLevel techLevel;
+    private final CrystalType crystalType;
+    private static VoxelShape CRYSTAL_SHAPE = VoxelShapes.create(new AxisAlignedBB(0.375, 0.125, 0.375, 0.625, 0.875, 0.625));
+    private static VoxelShape[] IO_CRYSTAL_SHAPES = new VoxelShape[6];
 
-    public static final EnumProperty<CrystalType> TYPE = EnumProperty.create("type", CrystalType.class);
-    public static final IntegerProperty TIER = IntegerProperty.create("tier", 0, 2);
-
-    public EnergyCrystal(Properties properties) {
-        super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(TYPE, CrystalType.RELAY).with(TIER, 0));
-//        this.setHarvestLevel("pickaxe", 0);
-        for (CrystalType type : CrystalType.values()) {
-            for (int i = 0; i < 3; i++) {
-                addName((type.getIndex() * 3) + i, "energy_crystal." + type.name().toLowerCase() + "." + (i == 0 ? "basic" : i == 1 ? "wyvern" : "draconic"));
-            }
+    static {
+        for (Direction dir : Direction.values()) {
+            Cuboid6 c = new Cuboid6(0.35, 0, 0.35, 0.65, 0.425, 0.65);
+            c.apply(Rotation.sideRotations[dir.getIndex()].at(Vector3.center));
+            IO_CRYSTAL_SHAPES[dir.getIndex()] = VoxelShapes.create(c.aabb());
         }
+    }
+
+    public EnergyCrystal(Properties properties, TechLevel techLevel, CrystalType crystalType) {
+        super(properties);
+        this.techLevel = techLevel;
+        this.crystalType = crystalType;
     }
 
     //region Block
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(TIER);
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
     }
 
-//    @Override
-//    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
-//        for (int i = 0; i < 9; i++) {
-//            list.add(new ItemStack(this, 1, i));
-//        }
-//    }
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        if (crystalType == CrystalType.CRYSTAL_IO) {
+            TileEntity tile = world.getTileEntity(pos);
+            Direction facing = tile instanceof TileCrystalDirectIO ? ((TileCrystalDirectIO) tile).facing.get() : Direction.DOWN;
+            return IO_CRYSTAL_SHAPES[facing.getIndex()];
+        }
+        return CRYSTAL_SHAPE; //Crystal
+    }
 
-//    @Override
-//    public int damageDropped(BlockState state) {
-//        return getMetaFromState(state);
-//    }
-//
-//    //endregion
-//
-//    //region Blockstate
-//
-//    @Override
-//    protected BlockStateContainer createBlockState() {
-//        return new BlockStateContainer(this, TYPE, TIER);
-//    }
-//
-//    @Override
-//    public BlockState getStateFromMeta(int meta) {
-//        return getDefaultState().withProperty(TYPE, CrystalType.fromMeta(meta)).withProperty(TIER, CrystalType.getTier(meta));
-//    }
-//
-//    @Override
-//    public int getMetaFromState(BlockState state) {
-//        return state.getValue(TYPE).getMeta(state.getValue(TIER));
-//    }
-//
-//    @Override
-//    public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos) {
-//        return super.getActualState(state, worldIn, pos);
-//    }
-//
-//    //endregion
-//
-//    //region Render/Tile
-//
-//    @OnlyIn(Dist.CLIENT)
+    //    @OnlyIn(Dist.CLIENT)
 //    @Override
 //    public void registerRenderer(Feature feature) {
 //        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalRelay.class, new RenderTileEnergyCrystal());
@@ -108,16 +94,15 @@ public class EnergyCrystal extends BlockBCore implements /*IRenderOverride, IReg
 //        StateMap deviceStateMap = new StateMap.Builder().ignore(TIER).ignore(TYPE).build();
 //        ModelLoader.setCustomStateMapper(this, deviceStateMap);
 //    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return false;
-//    }
-
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.INVISIBLE;
+    }
+
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
@@ -128,33 +113,8 @@ public class EnergyCrystal extends BlockBCore implements /*IRenderOverride, IReg
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return state.get(TYPE).createTile();
+        return crystalType.createTile(techLevel);
     }
-
-//    @Override
-//    public void handleCustomRegistration(Feature feature) {
-//        GameRegistry.registerTileEntity(TileCrystalRelay.class, feature.getModid() + ":energy_relay");
-//        GameRegistry.registerTileEntity(TileCrystalDirectIO.class, feature.getModid() + ":energy_io");
-//        GameRegistry.registerTileEntity(TileCrystalWirelessIO.class, feature.getModid() + ":energy_wireless");
-//    }
-
-//    @Override
-//    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
-//        if (state.getValue(TYPE) == CrystalType.CRYSTAL_IO) {
-//            TileEntity tile = source.getTileEntity(pos);
-//            Direction facing = tile instanceof TileCrystalDirectIO ? ((TileCrystalDirectIO) tile).facing.get() : Direction.DOWN;
-//            Cuboid6 c = new Cuboid6(0.35, 0, 0.35, 0.65, 0.425, 0.65);
-//            c.apply(Rotation.sideRotations[facing.getIndex()].at(Vector3.center));
-//            return c.aabb();
-//        }
-//        return new AxisAlignedBB(0.375, 0.125, 0.375, 0.625, 0.875, 0.625); //Crystal
-//    }
-
-//    @Override
-//    public AxisAlignedBB getSelectedBoundingBox(BlockState state, World worldIn, BlockPos pos) {
-//        return super.getSelectedBoundingBox(state, worldIn, pos);
-////        return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
-//    }
 
     //endregion
 
@@ -169,8 +129,7 @@ public class EnergyCrystal extends BlockBCore implements /*IRenderOverride, IReg
             return;
         }
 
-        BlockState state = world.getBlockState(pos);
-        displayList.add(InfoHelper.HITC() + I18n.format("tile.draconicevolution:" + nameOverrides.get(state.get(TYPE).getMeta(state.get(TIER))) + ".name"));
+        displayList.add(InfoHelper.HITC() + asItem().getName().getFormattedText());
         TileCrystalBase tile = (TileCrystalBase) te;
         tile.addDisplayData(displayList);
     }
@@ -180,18 +139,18 @@ public class EnergyCrystal extends BlockBCore implements /*IRenderOverride, IReg
     public enum CrystalType implements IStringSerializable {
         RELAY(0) {
             @Override
-            public TileEntity createTile() {
-                return new TileCrystalRelay();
+            public TileEntity createTile(TechLevel techLevel) {
+                return new TileCrystalRelay(techLevel);
             }
         }, CRYSTAL_IO(1) {
             @Override
-            public TileEntity createTile() {
-                return new TileCrystalDirectIO();
+            public TileEntity createTile(TechLevel techLevel) {
+                return new TileCrystalDirectIO(techLevel);
             }
         }, WIRELESS(2) {
             @Override
-            public TileEntity createTile() {
-                return new TileCrystalWirelessIO();
+            public TileEntity createTile(TechLevel techLevel) {
+                return new TileCrystalWirelessIO(techLevel);
             }
         };
 
@@ -226,6 +185,6 @@ public class EnergyCrystal extends BlockBCore implements /*IRenderOverride, IReg
             return name().toLowerCase();
         }
 
-        public abstract TileEntity createTile();
+        public abstract TileEntity createTile(TechLevel techLevel);
     }
 }

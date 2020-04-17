@@ -3,7 +3,7 @@
 //
 //import com.brandon3055.draconicevolution.client.model.ModelChaosGuardian;
 //import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
-//import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+//import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 //import com.brandon3055.draconicevolution.utils.DETextures;
 //import net.minecraft.client.renderer.*;
 //import net.minecraft.client.renderer.entity.RenderLiving;

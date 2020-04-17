@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
 public class ContainerFusionCraftingCore extends ContainerBCBase<TileCraftingCore> {
 
     public ContainerFusionCraftingCore(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
-        this(DEContent.container_fusion_crafting_core, windowId, playerInv.player, getClientTile(extraData));
+        this(DEContent.container_fusion_crafting_core, windowId, playerInv, getClientTile(extraData));
     }
 
-    public ContainerFusionCraftingCore(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileCraftingCore tile) {
+    public ContainerFusionCraftingCore(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, TileCraftingCore tile) {
         super(type, windowId, player, tile);
 
         addPlayerSlots(10, 116);

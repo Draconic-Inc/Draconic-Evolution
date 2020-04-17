@@ -1,0 +1,78 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder"
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "facing": "north"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder_eyes"
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "facing": "south"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder_eyes",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "facing": "west"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder_eyes",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "facing": "east"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder_eyes",
+        "y": 90
+      }
+    }
+  ]
+}

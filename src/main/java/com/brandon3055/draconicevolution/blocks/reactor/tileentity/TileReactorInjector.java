@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 
 /**
  * Created by brandon3055 on 18/01/2017.

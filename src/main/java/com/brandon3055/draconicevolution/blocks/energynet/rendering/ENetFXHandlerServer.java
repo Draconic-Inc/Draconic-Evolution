@@ -1,8 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
+import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.HashMap;
@@ -11,20 +14,19 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class ENetFXHandlerServer extends ENetFXHandler<IENetEffectTile> {
+public class ENetFXHandlerServer<T extends TileEntity & IENetEffectTile> extends ENetFXHandler<T> {
 
     private BatchedCrystalUpdate batchedUpdate;
     private Map<Byte, Byte> lastTickIndexToFlow = new HashMap<>();
     private long lastTickEnergy = -1;
 
 
-    public ENetFXHandlerServer(IENetEffectTile tile) {
+    public ENetFXHandlerServer(T tile) {
         super(tile);
     }
 
     @Override
-    public void update() {
-    }
+    public void update() {}
 
     @Override
     public void detectAndSendChanges() {
@@ -45,7 +47,7 @@ public class ENetFXHandlerServer extends ENetFXHandler<IENetEffectTile> {
         }
 
         if (batchedUpdate != null) {
-            sendUpdate();
+            queUpdate();
         }
     }
 
@@ -54,13 +56,12 @@ public class ENetFXHandlerServer extends ENetFXHandler<IENetEffectTile> {
         lastTickIndexToFlow.clear();
     }
 
-    private void sendUpdate() {
-        ServerWorld worldServer = ((ServerWorld) ((TileEntity) tile).getWorld());
-        //TODO Packets CrystalUpdateBatcher
-//        PlayerChunkMapEntry playerChunkMap = worldServer.getPlayerChunkMap().getEntry(((TileEntity) tile).getPos().getX() >> 4, ((TileEntity) tile).getPos().getZ() >> 4);
-//        if (playerChunkMap != null) {
-//            playerChunkMap.players.forEach(playerMP -> CrystalUpdateBatcher.queData(batchedUpdate, playerMP));
-//        }
+    private void queUpdate() {
+        ServerWorld serverWorld = ((ServerWorld) tile.getWorld());
+
+        if (serverWorld != null){
+            serverWorld.getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(tile.getPos()), false).forEach(player -> CrystalUpdateBatcher.queData(batchedUpdate, player));
+        }
 
         batchedUpdate = null;
     }

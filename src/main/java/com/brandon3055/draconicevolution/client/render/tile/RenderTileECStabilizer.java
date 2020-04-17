@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.brandonscore.client.render.TESRBase;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCoreStabilizer;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.client.model.ModelLargeECStabilizer;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.util.Direction;
@@ -11,7 +11,7 @@ import net.minecraft.util.Direction;
 /**
  * Created by brandon3055 on 19/4/2016.
  */
-public class RenderTileECStabilizer extends TESRBase<TileCoreStabilizer> {
+public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
 
     private static ModelLargeECStabilizer largeModel;
 
@@ -19,8 +19,9 @@ public class RenderTileECStabilizer extends TESRBase<TileCoreStabilizer> {
         largeModel = new ModelLargeECStabilizer();
     }
 
+
     @Override
-    public void render(TileCoreStabilizer te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileEnergyCoreStabilizer te, double x, double y, double z, float partialTicks, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translated(x + 0.5, y + 0.5, z + 0.5);
         GlStateManager.disableBlend();
@@ -29,10 +30,10 @@ public class RenderTileECStabilizer extends TESRBase<TileCoreStabilizer> {
         //region Rotate Renderer
         Direction facing;
         if (te.isCoreActive.get()) {
-            facing = te.coreDirection;
+            facing = te.coreDirection.get();
         }
         else {
-            facing = Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
+            facing = Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis.get());
         }
 
         if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
@@ -49,14 +50,16 @@ public class RenderTileECStabilizer extends TESRBase<TileCoreStabilizer> {
         GlStateManager.popMatrix();
     }
 
-    private void renderRing(TileCoreStabilizer te, float partialTicks) {
+    private void renderRing(TileEnergyCoreStabilizer te, float partialTicks) {
         if (!te.isValidMultiBlock.get()) {
             return;
         }
 
         GlStateManager.pushMatrix();
+//        ResourceHelperDE.bindTexture(DETextures.STABILIZER_LARGE);
         ResourceHelperDE.bindTexture(DETextures.STABILIZER_LARGE);
         GlStateManager.rotatef(te.rotation + (te.isCoreActive.get() ? partialTicks : 0), 0, 0, 1);
+        GlStateManager.depthMask(true);
         largeModel.render(1F / 16F);
         GlStateManager.popMatrix();
     }

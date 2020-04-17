@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "draconicevolution:block/stabilized_spawner"
+    }
+  }
+}

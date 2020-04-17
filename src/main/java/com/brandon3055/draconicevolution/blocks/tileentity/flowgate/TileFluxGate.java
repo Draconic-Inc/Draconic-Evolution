@@ -1,14 +1,10 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 /**
  * Created by brandon3055 on 15/11/2016.

@@ -11,9 +11,10 @@ import codechicken.lib.vec.Vector3;
 import codechicken.lib.vec.uv.IconTransformation;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
-import com.brandon3055.draconicevolution.client.DETextureCache;
+
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
@@ -30,10 +31,9 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
     public RenderTileEnergyPylon() {
         Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/pylon_sphere.obj")); //Note dont generate the model evey render frame move this to constructor
         model = CCModel.combine(map.values());
-        model.apply(new Scale(0.35, 0.35, 0.35));
+        model.apply(new Scale(-0.35, -0.35, -0.35));
         model.computeNormals();
     }
-
 
 
     @Override
@@ -41,46 +41,46 @@ public class RenderTileEnergyPylon extends TESRBase<TileEnergyPylon> {
         if (!te.structureValid.get()) {
             return;
         }
+//        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/pylon_sphere.obj")); //Note dont generate the model evey render frame move this to constructor
+//        model = CCModel.combine(map.values());
+//        model.apply(new Scale(-0.35, -0.35, -0.35));
+//        model.computeNormals();
+
         CCRenderState ccrs = CCRenderState.instance();
+        ccrs.reset();
+
         TextureUtils.bindBlockTexture();
         GlStateManager.pushMatrix();
         Vector3 translateVector = new Vector3(x + 0.5, y + (te.sphereOnTop.get() ? 1.5 : -0.5), z + 0.5);
         translateVector.translation().glApply();
-        IconTransformation iconTransform = new IconTransformation(DETextureCache.getDETexture("models/pylon_sphere_texture"));
+        IconTransformation iconTransform = new IconTransformation(DETextures.getDETexture("models/pylon_sphere_texture"));
         setLighting(200F);
 
-//        if (MinecraftForgeClient.getRenderPass() == 0) {
-            GlStateManager.disableCull();
+        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
+        Rotation rotY = new Rotation(((ClientEventHandler.elapsedTicks + partialTicks) * 2F) * MathHelper.torad, new Vector3(0, 1, 0.5).normalize());
+        model.render(ccrs, iconTransform, rotY);
+        ccrs.draw();
 
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            Rotation rotY = new Rotation(((ClientEventHandler.elapsedTicks + partialTicks) * 2F) * MathHelper.torad, new Vector3(0, 1, 0.5).normalize());
-            model.render(ccrs, iconTransform, rotY);
-            ccrs.draw();
+        float f = ((ClientEventHandler.elapsedTicks + partialTicks) % 30F) / 30F;
 
-            GlStateManager.enableCull();
+        if (te.isOutputMode.get()) {
+            f = 1F - f;
+        }
 
-//        }
-//        else {
-//            float f = ((ClientEventHandler.elapsedTicks + partialTicks) % 30F) / 30F;
-//
-//            if (te.isOutputMode.get()) {
-//                f = 1F - f;
-//            }
-//
-//            GlStateManager.enableBlend();
-//            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-//            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-//            GlStateManager.color4f(1F, 1F, 1F, 1F - f);
-//            GlStateManager.enableBlend();
-//
-//            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-//            model.render(ccrs, iconTransform, new Scale(1 + f, 1 + f, 1 + f));
-//            ccrs.draw();
-//
-//            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-//            GlStateManager.disableBlend();
-//        }
-//
-//        GlStateManager.popMatrix();
+        GlStateManager.depthMask(false);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+        GlStateManager.color4f(1F, 1F, 1F, 1F - f);
+
+        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
+        model.render(ccrs, iconTransform, new Scale(1 + f, 1 + f, 1 + f).with(rotY));
+        ccrs.draw();
+
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        GlStateManager.disableBlend();
+
+        GlStateManager.popMatrix();
+        GlStateManager.depthMask(true);
     }
 }

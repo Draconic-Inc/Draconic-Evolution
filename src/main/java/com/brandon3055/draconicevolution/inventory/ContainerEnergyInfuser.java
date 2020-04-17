@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -19,10 +19,10 @@ import javax.annotation.Nullable;
 public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
 
     public ContainerEnergyInfuser(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
-        this(DEContent.container_energy_infuser, windowId, playerInv.player, getClientTile(extraData));
+        this(DEContent.container_energy_infuser, windowId, playerInv, getClientTile(extraData));
     }
 
-    public ContainerEnergyInfuser(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileEnergyInfuser tile) {
+    public ContainerEnergyInfuser(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, TileEnergyInfuser tile) {
         super(type, windowId, player, tile);
         this.addPlayerSlots(8, 58);
         addSlot(new SlotCheckValid(tile.itemHandler, 0, 80, 22));

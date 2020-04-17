@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.inventory;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import com.brandon3055.draconicevolution.items.ItemCore;
@@ -40,13 +40,13 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
     private List<Slot> mainInventorySlots = new ArrayList<>();
 
     public ContainerDraconiumChest(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
-        this(DEContent.container_draconium_chest, windowId, playerInv.player, getClientTile(extraData));
+        this(DEContent.container_draconium_chest, windowId, playerInv, getClientTile(extraData));
     }
 
-    public ContainerDraconiumChest(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileDraconiumChest tile) {
-        super(type, windowId, player, tile);
+    public ContainerDraconiumChest(@Nullable ContainerType<?> type, int windowId, PlayerInventory playerInv, TileDraconiumChest tile) {
+        super(type, windowId, playerInv, tile);
 
-        tile.onPlayerOpenContainer(player);
+        tile.onPlayerOpenContainer(playerInv.player);
 
         //region Main Inventory
 
@@ -78,7 +78,7 @@ public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest>
         this.craftResult = new InventoryCraftingChestResult(tile);
 
 //        LogHelper.dev(inventorySlots.size());
-        addSlot(new CraftingResultSlot(player, craftMatrix, craftResult, 0, 428, 216));
+        addSlot(new CraftingResultSlot(playerInv.player, craftMatrix, craftResult, 0, 428, 216));
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {

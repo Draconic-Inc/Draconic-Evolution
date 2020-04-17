@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
@@ -16,12 +16,12 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
     private static ItemStack[] CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEContent.core_draconium), new ItemStack(DEContent.core_wyvern), new ItemStack(DEContent.core_awakened), new ItemStack(DEContent.core_chaotic)};
     private IBakedModel baseModel;
 
-//    public RenderItemStabilizedSpawner(Function<IRegistry<ModelResourceLocation, IBakedModel>, IBakedModel> getter) {
-//        ModelRegistryHelper.registerPreBakeCallback(modelRegistry -> baseModel = getter.apply(modelRegistry));
-////        syncableEnum.setIndex(0);
-////        syncableStack.setIndex(1);
-//    }
-
+    public RenderItemStabilizedSpawner() {
+//        new ModelResourceLocation(DEContent.stabilized_spawner.getRegistryName())
+//        ClientProxy.modelHelper.registerPreBakeCallback(modelRegistry -> baseModel = modelRegistry.getModelLoader().);
+//        syncableEnum.setIndex(0);
+//        syncableStack.setIndex(1);
+    }
 
 
     //region Unused

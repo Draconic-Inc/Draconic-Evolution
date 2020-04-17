@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.Portal;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;

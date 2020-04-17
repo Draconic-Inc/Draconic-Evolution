@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;

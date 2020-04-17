@@ -1,0 +1,17 @@
+{
+	"parent": "block/block",
+	"credit": "Made by brandon3055 with Blockbench",
+	"textures": {
+		"skull_eyes": "draconicevolution:models/block/grinder"
+	},
+	"elements": [
+		{
+			"name": "skull_glow",
+			"from": [4.5, 5, 1],
+			"to": [11.5, 12, 2],
+			"faces": {
+				"north": {"uv": [12, 6.5, 16, 10.5], "texture": "#skull_eyes"}
+			}
+		}
+	]
+}

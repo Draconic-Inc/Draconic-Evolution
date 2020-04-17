@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.client.render.entity;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.OBJParser;
 import com.brandon3055.draconicevolution.entity.EntityChaosImplosion;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;

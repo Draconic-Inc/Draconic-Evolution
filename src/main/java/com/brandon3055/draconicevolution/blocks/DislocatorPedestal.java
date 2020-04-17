@@ -31,7 +31,7 @@ public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvi
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

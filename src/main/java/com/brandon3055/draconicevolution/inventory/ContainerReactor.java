@@ -2,14 +2,13 @@ package com.brandon3055.draconicevolution.inventory;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
@@ -24,10 +23,10 @@ public class ContainerReactor extends ContainerBCBase<TileReactorCore> {
     public boolean fuelSlots = false;
 
     public ContainerReactor(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
-        this(DEContent.container_reactor, windowId, playerInv.player, getClientTile(extraData));
+        this(DEContent.container_reactor, windowId, playerInv, getClientTile(extraData));
     }
 
-    public ContainerReactor(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileReactorCore tile) {
+    public ContainerReactor(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, TileReactorCore tile) {
         super(type, windowId, player, tile);
     }
 

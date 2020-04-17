@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.itemblock;
 
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
-import com.brandon3055.draconicevolution.DEContent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -13,8 +12,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
-
-import static net.minecraft.client.resources.I18n.format;
 
 /**
  * Created by brandon3055 on 22/3/2016.

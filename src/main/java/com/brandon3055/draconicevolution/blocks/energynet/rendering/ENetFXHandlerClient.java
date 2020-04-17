@@ -2,9 +2,11 @@ package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBeam;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -14,12 +16,12 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class ENetFXHandlerClient extends ENetFXHandler<IENetEffectTile> {
+public class ENetFXHandlerClient<T extends TileEntity & IENetEffectTile> extends ENetFXHandler<T> {
 
-    protected CrystalGLFXBase staticFX;
-    protected LinkedList<CrystalGLFXBase> beamFXList = new LinkedList<>();
+    protected CrystalFXBase staticFX;
+    protected LinkedList<CrystalFXBase> beamFXList = new LinkedList<>();
 
-    public ENetFXHandlerClient(IENetEffectTile tile) {
+    public ENetFXHandlerClient(T tile) {
         super(tile);
     }
 
@@ -29,8 +31,7 @@ public class ENetFXHandlerClient extends ENetFXHandler<IENetEffectTile> {
         if (tile.hasStaticFX()) {
             if (staticFX == null || !staticFX.isAlive()) {
                 staticFX = tile.createStaticFX();
-                //TODO Particles
-//                BCEffectHandler.spawnGLParticle(staticFX.getFXHandler(), staticFX);
+                DEParticles.addParticleDirect(tile.getWorld(), staticFX);
             }
             staticFX.updateFX(0.5F);
             staticFX.renderEnabled = renderCooldown > 0;
@@ -42,7 +43,7 @@ public class ENetFXHandlerClient extends ENetFXHandler<IENetEffectTile> {
 
         //region Update Beams
         boolean requiresUpdate = false;
-        for (CrystalGLFXBase beam : beamFXList) {
+        for (CrystalFXBase beam : beamFXList) {
             if (!beam.isAlive()) {
                 requiresUpdate = true;
             }
@@ -83,14 +84,13 @@ public class ENetFXHandlerClient extends ENetFXHandler<IENetEffectTile> {
         beamFXList.clear();
 
         for (BlockPos pos : tile.getLinks()) {
-            TileEntity target = ((TileEntity) tile).getWorld().getTileEntity(pos);
+            TileEntity target = tile.getWorld().getTileEntity(pos);
             if (!(target instanceof ICrystalLink)) {
                 continue;
             }
-            CrystalFXBeam beam = new CrystalFXBeam(((TileEntity) tile).getWorld(), tile, (ICrystalLink) target);
+            CrystalFXBeam beam = new CrystalFXBeam(tile.getWorld(), tile, (ICrystalLink) target);
             beamFXList.add(beam);
-            //TODO Particles
-//            BCEffectHandler.spawnGLParticle(beam.getFXHandler(), beam);
+            DEParticles.addParticleDirect(tile.getWorld(), beam);
         }
 
     }

@@ -3,11 +3,12 @@ package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBeam;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXLink;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXWireless;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -20,10 +21,10 @@ import java.util.Map;
  */
 public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirelessIO> {
 
-    protected CrystalGLFXBase staticFX;
-    protected LinkedList<CrystalGLFXBase> beamFXList = new LinkedList<>();
-    protected LinkedList<CrystalGLFXBase> transferFXList = new LinkedList<>();
-    protected LinkedList<CrystalGLFXBase> linkFX = null;
+    protected CrystalFXBase staticFX;
+    protected LinkedList<CrystalFXBase> beamFXList = new LinkedList<>();
+    protected LinkedList<CrystalFXBase> transferFXList = new LinkedList<>();
+    protected LinkedList<CrystalFXBase> linkFX = null;
 
     public ENetFXHandlerClientWireless(TileCrystalWirelessIO tile) {
         super(tile);
@@ -35,8 +36,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         if (tile.hasStaticFX()) {
             if (staticFX == null || !staticFX.isAlive()) {
                 staticFX = tile.createStaticFX();
-                //TODO Particles
-//                BCEffectHandler.spawnGLParticle(staticFX.getFXHandler(), staticFX);
+                DEParticles.addParticleDirect(tile.getWorld(), staticFX);
             }
             staticFX.updateFX(0.5F);
             staticFX.renderEnabled = renderCooldown > 0;
@@ -49,7 +49,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         //region Update Beams
         boolean requiresUpdate = false;
 
-        for (CrystalGLFXBase beam : beamFXList) {
+        for (CrystalFXBase beam : beamFXList) {
             if (!beam.isAlive()) {
                 requiresUpdate = true;
             }
@@ -63,7 +63,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         //endregion
 
         //region Update ReceiverFX
-        for (CrystalGLFXBase transFX : transferFXList) {
+        for (CrystalFXBase transFX : transferFXList) {
             if (!transFX.isAlive()) {
                 requiresUpdate = true;
             }
@@ -74,7 +74,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
             }
         }
 
-        if (requiresUpdate || tile.getReceivers().size() != transferFXList.size()) {
+        if (requiresUpdate || tile.getReceivers().size() != transferFXList.size() || tile.getLinks().size() != beamFXList.size()) {
             reloadConnections();//TODO Make This Better. If needed...
         }
         //endregion
@@ -82,7 +82,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         if (ClientEventHandler.playerHoldingWrench) {
             if (linkFX == null || linkFX.size() != tile.getReceivers().size()) {
                 if (linkFX != null) {
-                    for (CrystalGLFXBase fx : linkFX) {
+                    for (CrystalFXBase fx : linkFX) {
                         fx.setExpired();
                     }
                 }
@@ -91,12 +91,10 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
                 for (BlockPos receiver : tile.getReceivers()) {
                     CrystalFXLink link = new CrystalFXLink(tile.getWorld(), tile, Vec3D.getCenter(receiver));
                     linkFX.add(link);
-                    //TODO Particles
-//                    BCEffectHandler.spawnGLParticle(link.getFXHandler(), link);
+                    DEParticles.addParticleDirect(tile.getWorld(), link);
                 }
             }
-        }
-        else if (linkFX != null) {
+        } else if (linkFX != null) {
             linkFX = null;
         }
     }
@@ -124,8 +122,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         for (byte b : flowMap.keySet()) {
             if ((b & 0xFF) >= 128) {
                 tile.receiverFlowRates.add(flowMap.get(b));
-            }
-            else {
+            } else {
                 tile.flowRates.add(flowMap.get(b));
             }
         }
@@ -143,15 +140,13 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
             }
             CrystalFXBeam beam = new CrystalFXBeam(tile.getWorld(), tile, (ICrystalLink) target);
             beamFXList.add(beam);
-            //TODO Particles
-//            BCEffectHandler.spawnGLParticle(beam.getFXHandler(), beam);
+            DEParticles.addParticleDirect(tile.getWorld(), beam);
         }
 
         for (BlockPos pos : tile.getReceivers()) {
             CrystalFXWireless wirelessFX = new CrystalFXWireless(tile.getWorld(), tile, pos);
             transferFXList.add(wirelessFX);
-            //TODO Particles
-//            BCEffectHandler.spawnGLParticle(wirelessFX.getFXHandler(), wirelessFX);
+            DEParticles.addParticleDirect(tile.getWorld(), wirelessFX);
         }
     }
 

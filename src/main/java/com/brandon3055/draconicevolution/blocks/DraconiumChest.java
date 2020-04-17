@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -30,7 +30,7 @@ public class DraconiumChest extends BlockBCore/* implements ITileEntityProvider,
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

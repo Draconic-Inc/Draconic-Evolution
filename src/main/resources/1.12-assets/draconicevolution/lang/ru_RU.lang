@@ -1,0 +1,934 @@
+Translated by Byteg
+//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
+tile.draconicevolution:celestial_manipulator.name=Контроллер погоды
+tile.draconicevolution:draconium_ore_normal.name=Дракониевая руда
+tile.draconicevolution:draconium_ore_nether.name=Дракониевая руда Незера
+tile.draconicevolution:draconium_ore_end.name=Дракониевая руда Эндера
+tile.draconicevolution:grinder.name=Молотилка
+tile.draconicevolution:potentiometer.name=Потенциометр
+tile.draconicevolution:rain_sensor.name=Датчик дождя
+tile.draconicevolution:particle_generator.name=Генератор частиц
+tile.draconicevolution:energy_core_stabilizer.name=Стабилизатор энергетического ядра
+tile.draconicevolution:entity_detector.name=Детектор существ
+tile.draconicevolution:entity_detector_basic.name=Детектор существ
+tile.draconicevolution:entity_detector_advanced.name=Улучшенный детектор существ
+tile.draconicevolution:energy_infuser.name=Энергетический наполнитель
+tile.draconicevolution:draconic_spawner.name=Стабилизированный спаунер
+tile.draconicevolution:generator.name=Генератор
+tile.draconicevolution:energy_storage_core.name=Энергетическое ядро
+tile.draconicevolution:energy_pylon.name=Энергетический пилон
+tile.draconicevolution:draconium_block.name=Дракониевый блок
+tile.draconicevolution:draconium_block_charged.name=Заряженный дракониевый блок
+tile.draconicevolution:diss_enchanter.name=Дизенчантер
+tile.draconicevolution:dislocator_pedestal.name=Пьедестал телепортации
+tile.draconicevolution:draconium_chest.name=Сундук дракона
+tile.draconicevolution:draconic_block.name=Пробужденный дракониевый блок
+tile.draconicevolution:infused_obsidian.name=Заряженный обсидиан
+tile.draconicevolution:dislocator_receptacle.name=Телепортационный приёмник
+tile.draconicevolution:portal.name=Портал
+tile.draconicevolution:flux_gate.name=Энергетический ограничитель
+tile.draconicevolution:fluid_gate.name=Жидкостный ограничитель
+tile.draconicevolution:reactor_core.name=Ядро дракониевого реактора
+tile.draconicevolution:reactor_stabilizer.name=Стабилизатор реактора
+tile.draconicevolution:reactor_injector.name=Энергетический инжектор реактора
+tile.draconicevolution:chaos_crystal.name=Кристалл хаоса
+tile.draconicevolution:item_dislocation_inhibitor.name=Dislocation Normalization Field Projector
+
+tile.draconicevolution:energy_crystal.relay.basic.name=Базовый энергетический реле-кристалл
+tile.draconicevolution:energy_crystal.relay.wyvern.name=Энергетический реле-кристалл Виверны
+tile.draconicevolution:energy_crystal.relay.draconic.name=Энергетический реле-кристалл Дракона
+tile.draconicevolution:energy_crystal.crystal_io.basic.name=Базовый энергетический кристалл входа/выхода
+tile.draconicevolution:energy_crystal.crystal_io.wyvern.name=Энергетический кристалл входа/выхода Виверны
+tile.draconicevolution:energy_crystal.crystal_io.draconic.name=Энергетический кристалл входа/выхода Дракона
+tile.draconicevolution:energy_crystal.wireless.basic.name=Базовый беспроводной энергетический кристалл
+tile.draconicevolution:energy_crystal.wireless.wyvern.name=Беспроводной энергетический кристалл Виверны
+tile.draconicevolution:energy_crystal.wireless.draconic.name=Беспроводной энергетический кристалл Дракона
+
+
+tile.draconicevolution:fusion_crafting_core.name=Ядро слияния
+tile.draconicevolution:crafting_injector_basic.name=Базовый инжектор слияния
+tile.draconicevolution:crafting_injector_wyvern.name=Инжектор слияния Виверны
+tile.draconicevolution:crafting_injector_draconic.name=Инжектор слияния Дракона
+tile.draconicevolution:crafting_injector_chaotic.name=Инжектор слияния хаоса
+
+tile.draconicevolution:creative_rf_source.name=Творческий источник RF
+
+
+//Item Information ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:awakened_core.name=Пробужденное ядро
+item.draconicevolution:draconium_ingot.name=Дракониевый слиток
+item.draconicevolution:draconium_dust.name=Дракониевая пыль
+item.draconicevolution:draconium_blend.name=Дракониевая смесь (Отключена)
+item.draconicevolution:dragon_heart.name=Сердце Дракона
+item.draconicevolution:wyvern_core.name=Ядро Виверны
+item.draconicevolution:sun_focus.name=Solar Focus
+item.draconicevolution:draconic_core.name=Ядро Дракона
+item.draconicevolution:dislocator.name=Телепортер
+item.draconicevolution:dislocator_advanced.name=Улучшенный телепортер
+item.draconicevolution:dislocator_bound.bound.name=Связывающий телепортер
+item.draconicevolution:dislocator_bound.player.name=Связывающий телепортер (Игрок)
+item.draconicevolution:dislocator_bound.p2p.name=Связывающий телепортер (С точки на точку)
+
+info.teleporterInfGUI.txt=Чтобы открыть GUI, нажмите Shift+ПКМ
+info.teleporterInfScroll.txt=Чтобы выбрать точки телепортации, удерживайте Shift и крутите колесико мыши
+
+item.draconicevolution:wyvern_pick.name=Кирка Виверны
+item.draconicevolution:wyvern_axe.name=Топор Виверны
+item.draconicevolution:wyvern_shovel.name=Лопата Виверны
+item.draconicevolution:wyvern_sword.name=Меч Виверны
+item.draconicevolution:wyvern_bow.name=Лук Виверны
+item.draconicevolution:wyvern_helm.name=Шлем Виверны
+item.draconicevolution:wyvern_chest.name=Нагрудник Виверны
+item.draconicevolution:wyvern_legs.name=Поножи Виверны
+item.draconicevolution:wyvern_boots.name=Ботинки Виверны
+item.draconicevolution:draconic_pick.name=Кирка Дракона
+item.draconicevolution:draconic_axe.name=Топор Дракона
+item.draconicevolution:draconic_shovel.name=Лопата Дракона
+item.draconicevolution:draconic_hoe.name=Мотыга Дракона
+item.draconicevolution:draconic_sword.name=Меч Дракона
+item.draconicevolution:draconic_bow.name=Лук Дракона
+item.draconicevolution:draconic_helm.name=Шлем Дракона
+item.draconicevolution:draconic_chest.name=Нагрудник Дракона
+item.draconicevolution:draconic_legs.name=Поножи Дракона
+item.draconicevolution:draconic_boots.name=Ботинки Дракона
+item.draconicevolution:draconic_staff_of_power.name=Посох силы 
+item.draconicevolution:mob_soul.name=(Душа)
+item.draconicevolution:ender_arrow.name=Стрела Эндера
+item.draconicevolution:safety_match.name=Безопасная спичка
+item.draconicevolution:safety_match_box.name=Коробок безопасных спичек
+item.draconicevolution:key.name=Ключ
+item.draconicevolution:wyvern_energy_core.name=Энергетическое ядро Виверны
+item.draconicevolution:draconic_energy_core.name=Энергетическое ядро Дракона
+
+item.draconicevolution:draconium_capacitor.wyvern.name=Флаксовый конденсатор Виверны
+item.draconicevolution:draconium_capacitor.draconic.name=Флаксовый конденсатор Дракона
+item.draconicevolution:draconium_capacitor.creative.name=Творческий флаксовый конденсатор
+
+item.draconicevolution:draconic_ingot.name=Пробужденный дракониевый слиток
+item.draconicevolution:creative_structure_spawner_comet.name=Заспаунить комету
+item.draconicevolution:creative_structure_spawner_ender_island.name=Заспаунить остров Эндера
+item.draconicevolution:info_tablet.name=Информационный планшет Draconic Evolution
+item.draconicevolution:crystal_binder.name=Связыватель кристаллов
+item.draconicevolution:dezils_marshmallow.name=Маршмеллоу Дезила
+item.draconicevolution:reactor_part.stabilizer_frame.name=Рамка стабилизатора реактора
+item.draconicevolution:reactor_part.inner_rotor.name=Внутренний ротор стабилизатора реактора
+item.draconicevolution:reactor_part.outer_rotor.name=Внешний ротор стабилизатора реактора
+item.draconicevolution:reactor_part.rotor_assembly.name=Собранный ротор стабилизатора реактора
+item.draconicevolution:reactor_part.focus_ring.name=Фокусирующее кольцо стабилизатора реактора
+item.draconicevolution:chaotic_core.name=Ядро хаоса
+item.draconicevolution:chaos_shard.shard.name=Осколок хаоса
+item.draconicevolution:chaos_shard.fragSmall.name=Крошечный осколок Хаоса
+item.draconicevolution:chaos_shard.fragMedium.name=Маленький осколок Хаоса
+item.draconicevolution:chaos_shard.fragLarge.name=Большой осколок Хаоса
+item.draconicevolution:nugget.draconium.name=Кусочек дракония
+item.draconicevolution:nugget.awakened.name=Кусочек пробужденного дракония
+item.draconicevolution:magnet.basic.name=Телепортационный магнит
+item.draconicevolution:magnet.advanced.name=Пробуждённый телепортационный магнит
+
+item.draconicevolution:tool_upgrade.rfCap.name=Ядро улучшения (Ёмкость RF )
+item.draconicevolution:tool_upgrade.digSpeed.name=Ядро улучшения (Скорость копания)
+item.draconicevolution:tool_upgrade.digAOE.name=Ядро улучшения (Область копания)
+item.draconicevolution:tool_upgrade.digDepth.name=Ядро улучшения (Глубина копания)
+item.draconicevolution:tool_upgrade.attackDmg.name=Ядро улучшения (Урон)
+item.draconicevolution:tool_upgrade.attackAOE.name=Ядро улучшения (Область атаки)
+item.draconicevolution:tool_upgrade.arrowDmg.name=Ядро улучшения (Урон стрелы)
+item.draconicevolution:tool_upgrade.drawSpeed.name=Ядро улучшения (Скорость натяжения)
+item.draconicevolution:tool_upgrade.arrowSpeed.name=Ядро улучшения (Скорость стрелы)
+item.draconicevolution:tool_upgrade.shieldCap.name=Ядро улучшения (Емкость щита)
+item.draconicevolution:tool_upgrade.shieldRec.name=Ядро улучшения (Восстановление щита)
+item.draconicevolution:tool_upgrade.moveSpeed.name=Ядро улучшения (Скорость передвижения)
+item.draconicevolution:tool_upgrade.jumpBoost.name=Ядро улучшения (Увеличение прыжка)
+
+item.draconicevolution:creative_exchanger.name=Творческий заменитель блоков
+item.draconicevolution:ender_energy_manipulator.name=Манипулятор эндер-энергией
+
+//Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
+itemGroup.toolsAndWeapons=DE: Инструменты и оружие
+itemGroup.blocksAndItems=DE: Блоки и предметы
+
+//Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
+msg.size0.txt=Режим инструмента: Один блок
+msg.size1.txt=Режим инструмента: 3x3
+msg.size2.txt=Режим инструмента: 5x5
+msg.size3.txt=Режим инструмента: 7x7
+msg.size4.txt=Режим инструмента: 9x9
+msg.bowmoderapidfire.txt=§3Режим стрельбы: §6Быстрая стрельба
+msg.bowmodeexplosive.txt=§3Режим стрельбы: §6Взрыв
+msg.bowoutofgunpowder.txt=§4Чтобы использовать режим Взрыва, Вам нужно 4 пороха
+msg.teleporterUnSet.txt=§cПрежде чем телепортироваться, задайте точку назначения (Shift + ПКМ)
+msg.teleporterBound.txt=§aТелепортер привязан к: 
+msg.teleporterLowHealth.txt=§cУ вас слишком маленькое здоровье!
+msg.teleporterSentMob.txt=Существо было отправлено на
+msg.teleporterEntityDimensional.txt=§cВы не можете перемещать существ сквозь измерения!
+msg.teleporterAlreadySet.txt=§cОшибка. Этот амулет можно привязать только к одному местоположению.
+msg.teleporterOutOfFuel.txt=§cНЕТ ТОПЛИВА!!!
+msg.teleporterOutOfPearls.txt=§cНет жемчуга Эндера!!!
+msg.teleporterPlayerT1.txt=Для этого Вам нужен более мощный телепортер.
+msg.teleporterPlayerConsent.txt=Игрок должен дать свое согласие, нажав Shift.
+msg.spawnerInfo1.txt=Тип существа
+msg.spawnerInfo2.txt=Требует присутствия игрока
+msg.spawnerInfo3.txt=Игнорирует правила спауна
+msg.spawnerInfo4.txt=Уровень спаунера
+msg.spawnerInfo5.txt=§3Удерживайте Shift для информации по улучшениям
+msg.spawnerInfo6.txt=Не требует присутствия игрока: §3Адская звезда
+msg.spawnerInfo7.txt=Игнорирует правила спауна: §3Яблоко Нотча (из блоков)
+msg.spawnerInfo8.txt=Уровень 2: §3Ядро Виверны
+msg.spawnerInfo9.txt=Уровень 3:§3 Пробужденное ядро
+msg.dislocatorUnsafe.txt=Место назначения небезопасно. Попробуйте еще раз.
+msg.dislocatorNoGround.txt=Ошибка. Мир не найден.
+msg.range.txt=Радиус действия:
+msg.energyStorageCoreUTA.txt=Невозможно активировать (Неправильная структура)
+msg.SpawnDragonToFarFrom00.txt=[ОШИБКА] Вы слишком далеко от координат 0,0
+msg.SpawnDragonMustBeInTheEnd.txt=Этот ритуал можно провести только в Краю!
+msg.wrongKey.txt=Ключ не подходит к этому замку
+msg.cKeyStoneType0.txt=Активируется навсегда (При нажатии забирает ключ)
+msg.cKeyStoneType1.txt=Работает подобно кнопке
+msg.cKeyStoneType2.txt=Работает подобно переключателю
+msg.cKeyStoneType3.txt=Работает подобно кнопке (При нажатии забирает ключ)
+msg.draconiumChestEditmode.txt=ежим редактирования цвета =
+msg.draconiumChestRed.txt=Красный =
+msg.draconiumChestGreen.txt=Зеленый =
+msg.draconiumChestBlue.txt=Синий =
+msg.draconiumChestEditL1.txt=Кликните ПКМ красным, зеленым или синим красителем, чтобы отрегулировать цвет
+msg.draconiumChestEditL2.txt=Чтобы увеличить показатель цвета, кликните по верхней стороне сундука
+msg.draconiumChestEditL3.txt=А чтобы уменьшить показатель - кликните по нижней стороне
+msg.draconiumChestEditL4.txt=Чтобы скопировать цвет и перенести его на другие сундуки, нажмите по нему ПКМ бумагой
+msg.draconiumChestEdit2.txt=Просьба пользоваться только одним листом бумаги!
+msg.de.dragonDeath.txt=§5Сердце временно пробудилось от §5взрыва дракона.
+msg.de.baseSafeAOW.txt=§9(§aВключён §aбезопасный §aрежим§9) §cДействие §cбыло §cотменено, §cтак §cкак §cобнаружена §cтайл-сущность!
+msg.de.guardianAttackBlocked.txt=Ваши атаки блокируются кристаллами Хранителя!
+msg.de.shieldDepleted.txt=Предупреждение: Критический урон!!!
+msg.de.shockWaveForEnergyBoltsOnly.txt=Ударная волна доступна только со стрелой Драконьего огня
+msg.de.explosiveNotForEnergyBolts.txt=Взрывная сила не доступна с включенной стрелой Драконьего огня
+msg.de.insufficientPowerToFire.txt=Недостаточно энергии для выстрела
+msg.de.outOfArrows.txt=Нет стрел!!!
+msg.de.coreNotFound.txt=[Ошибка: 404] Ядро не найдено!
+msg.de.notRaining.txt=Сейчас не идет дождь!
+msg.de.alreadyRaining.txt=Дождь начался!
+msg.de.alreadyStorm.txt=Гроза уже началась!
+msg.de.insufficientPower.txt=Недостаточно энергии!
+msg.de.alreadyRunning.txt=Процесс уже запущен!
+
+//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
+info.teleporterInfUnset1.txt=Не привязан
+info.teleporterInfUnset2.txt=Нажмите Shift+ПКМ, чтобы привязать амулет к вашим текущим
+info.teleporterInfUnset3.txt=координатам x, y, z.
+info.teleporterInfUnset4.txt=После телепортации игрок будет смотреть туда,
+info.teleporterInfUnset5.txt=куда он смотрел во время привязки координат
+info.teleporterInfDest.txt=Место назначения
+info.teleporterInfFuel.txt=Топливо:
+info.teleporterInfSet1.txt=Привязан к
+info.teleporterInfSet2.txt=использований осталось
+info.de.rightClickToTeleport.txt=Нажмите ПКМ для телепортации
+info.de.draconiumBlockCapacitorCharge.txt=Держите предмет и присядьте, чтобы зарядиться от конденсатора.
+info.creativeCapacitor.txt=Can source or sink
+info.de.itemDislocationInhibitor.txt=Предотвращает подбор предметов в пределах 5 блоков от Телепортационного магнита.
+
+info.draconicAxe1.txt=Древесина!!!!!!
+info.draconicAxe2.txt=Срубит все дерево
+info.draconicAxe3.txt=или очистит территорию 5х5х5 от всего дерева.
+info.draconicAxe4.txt=Зажмите Shift, чтобы срубить только один блок.
+
+info.draconicCore.txt=Основной компонент многих рецептов в Draconic Evolution.
+info.draconicCore1.txt=Можно использовать для стабилизации спаунеров.
+
+info.mobSoul1.txt=Можно кликнуть им по стабилизированному спаунеру, чтобы установить этот тип существа
+info.mobSoul2.txt=Или нажать Shift+ПКМ, чтобы заспаунить это существо
+info.mobSoul3.txt=(Одноразовая)
+
+info.arrowInfo.txt=Болезненный аттракцион
+info.arrowInfo0.txt=Слишком тяжелая для обычного лука
+
+//ender_extraction_core
+info.de.ender_energy_manipulator.info.txt=Это немного жуткое мистическое устройство питается энергией исцеляющих Дракона кристаллов в Энде.
+info.de.ender_energy_manipulator.info2.txt=И вместе с душами близлежащих Эндерменов использует эту энергии для извлечения яйца у Эндер-Дракона
+info.de.ender_energy_manipulator.location.msg=Должен быть размещен на верхушке портала в Энде!
+info.de.ender_energy_manipulator.dead.msg=Эндер-дракон не был найден!
+info.de.ender_energy_manipulator.running.msg=Дождитесь окончания работы манипулятора!
+
+info.de.miningMode.txt=Режим добычи
+info.de.attackDamage.txt=Урон
+info.de.bonusHealthDamage.txt=От здоровья существа
+info.de.press.txt=Нажмите
+info.de.toOpenConfigGUI.txt=для открытия настроек GUI
+info.de.shiftToPause.txt=Удерж. Shift, чтобы приост. переключ. слайдов
+info.de.power.txt=Натяжение
+
+info.draconiumChestInfo1.txt=Нажмите по нему Shift+ПКМ пустой рукой
+info.draconiumChestInfo2.txt=чтобы получить доступ к редактированию цвета
+
+info.de.capacitorMode.txt=Режим
+info.de.capacitorMode0.txt=Бездействовать
+info.de.capacitorMode1.txt=Заряжать броню
+info.de.capacitorMode2.txt=Заряжать предмет в руке
+info.de.capacitorMode3.txt=Заряжать броню и предмет в руке
+info.de.changwMode.txt=Для смены режима нажмите Shift + ПКМ
+
+info.de.toolInventoryOblit.txt=Фильтр предметов и Зачарования
+info.de.toolInventoryEnch.txt=Зачарования
+
+info.de.hudDisplayConfigTxt1.txt=#### Отображение HUD ####
+info.de.hudDisplayConfigTxt2.txt=Нажмите и тащите, чтобы переместить
+info.de.hudDisplayConfigTxt3.txt=###################
+info.de.hudDisplayConfigInfo1.txt=Нажмите и тащите HUD
+info.de.hudDisplayConfigInfo2.txt=что сменить его местоположение
+
+info.de.shiftRightClickToActivate.txt=Для активации нажмите Shift+ПКМ.
+info.de.blockRange.txt=блоков в радиусе.
+info.de.hasSavedData.txt=Содержимое сохранено!
+info.de.energyBuffer.txt=Буфер энергии
+
+info.infusedObsidian.txt=Не разрушается Визером
+
+enchantment.draconicevolution.reaperEnchant=Жнец
+enchantment.draconicevolution.enchant_reaper.desc=Зачарование жнец увеличивает шанс того, что при убийстве существа упадёт его душа. Это зачарование лучше всего применять к оружию из Draconic Evolution, чтобы увеличить шанс выбить душу.
+
+//Achievements ----------------------------------------------------------------------------------------------------------------------------------------
+draconicevolution.achievementPage.name=Draconic Evolution
+
+achievement.draconicevolution.dust=Начало чего-то БОЛЬШОГО!
+achievement.draconicevolution.dust.desc=Соберите Дракониевую пыль
+achievement.draconicevolution.ingot=Лучше алмаза!
+achievement.draconicevolution.ingot.desc=Переплавьте Дракониевую пыль в Дракониевый слиток
+achievement.draconicevolution.core=Вот где он начинается...
+achievement.draconicevolution.core.desc=Создайте Ядро Дракона
+achievement.draconicevolution.core2=Он был недостаточно хорош!
+achievement.draconicevolution.core2.desc=Создайте Ядро Виверны
+
+achievement.draconicevolution.dislocator=У эндерменов ничего нет
+achievement.draconicevolution.dislocator.desc=Создайте Телепортер
+achievement.draconicevolution.chest=Никогда не хватает места!
+achievement.draconicevolution.chest.desc=Создайте Сундук Дракона
+achievement.draconicevolution.particles=ОООО, сверкает!
+achievement.draconicevolution.particles.desc=Создайте Генератор частиц
+achievement.draconicevolution.weather=Кому нужна эта Мать-природа
+achievement.draconicevolution.weather.desc=Создайте Контроллер погоды
+achievement.draconicevolution.dissenchanter=Только то, чего хочу я!
+achievement.draconicevolution.dissenchanter.desc=Создайте Дизенчантер
+achievement.draconicevolution.ecore=Все больше, и больше, и больше
+achievement.draconicevolution.ecore.desc=Создайте Энергетическое ядро
+achievement.draconicevolution.wpick=Ничего общего с алмазной!
+achievement.draconicevolution.wpick.desc=Создайте Кирку Виверны
+achievement.draconicevolution.wshovel=Копатель-профи!
+achievement.draconicevolution.wshovel.desc=Создайте Лопату Виверны
+achievement.draconicevolution.wsword=Лучшее вооружение
+achievement.draconicevolution.wsword.desc=Создайте Меч Виверны
+achievement.draconicevolution.wbow=Снайперы наготове!
+achievement.draconicevolution.wbow.desc=Создайте лук Виверны
+achievement.draconicevolution.whelm=Свободное дыхание!
+achievement.draconicevolution.whelm.desc=Создайте Шлем Виверны
+achievement.draconicevolution.wchest=Высокое сопротивление
+achievement.draconicevolution.wchest.desc=Создайте Нагрудник Виверны
+achievement.draconicevolution.wleggs=Беги словно ветер
+achievement.draconicevolution.wleggs.desc=Создайте Поножи Виверны
+achievement.draconicevolution.wboots=Падение перышка
+achievement.draconicevolution.wboots.desc=Создайте Ботинки Виверны
+achievement.draconicevolution.resurrection=Преисполнен предвкушением!
+achievement.draconicevolution.resurrection.desc=Создайте Камень воскрешения
+achievement.draconicevolution.dislocator2=Правитель Эндера!
+achievement.draconicevolution.dislocator2.desc=Создайте Улучшенный Телепортер
+achievement.draconicevolution.flux=1.21 Джиггаватт!
+achievement.draconicevolution.flux.desc=Создайте Флаксовый конденсатор Виверны
+
+achievement.draconicevolution.heart=Сердце Дракона!
+achievement.draconicevolution.heart.desc=Убейте Дракона и завладейте его сердцем.
+achievement.draconicevolution.awakenedblock=Все дело в ритуале!
+achievement.draconicevolution.awakenedblock.desc=Создайте Пробужденный драконий
+achievement.draconicevolution.core3=Расходы против мощности
+achievement.draconicevolution.core3.desc=Создайте Пробужденное ядро
+
+achievement.draconicevolution.dhelm=Обуздаем воду!
+achievement.draconicevolution.dhelm.desc=Создайте Шлем Дракона
+achievement.draconicevolution.dChest=Летай словно орел!
+achievement.draconicevolution.dChest.desc=Создайте Нагрудник Дракона
+achievement.draconicevolution.dleggs=Кружись как бабочка!
+achievement.draconicevolution.dleggs.desc=Создайте Поножи Дракона
+achievement.draconicevolution.dboots=Все выше и выше!
+achievement.draconicevolution.dboots.desc=Создайте Ботинки Дракона
+
+achievement.draconicevolution.dpick=Добывай с авторитетом!
+achievement.draconicevolution.dpick.desc=Создайте Кирку Дракона
+achievement.draconicevolution.dshovel=Передвигая горы
+achievement.draconicevolution.dshovel.desc=Создайте Лопату Дракона
+achievement.draconicevolution.daxe=Гигантский Удар для всего Дерева!
+achievement.draconicevolution.daxe.desc=Создайте Топор Дракона
+achievement.draconicevolution.dsword=Жаль как пчела!
+achievement.draconicevolution.dsword.desc=Создайте Меч Дракона
+achievement.draconicevolution.dbow=Теперь ты играешь с мощью!
+achievement.draconicevolution.dbow.desc=Создайте Лук Дракона
+achievement.draconicevolution.flux2=Феноменальная космическая мощь! и крооохотное жилье.
+achievement.draconicevolution.flux2.desc=Создайте Флаксовый конденсатор Дракона
+achievement.draconicevolution.dhoe=Мы новый уровень возьмем! -БАМ-
+achievement.draconicevolution.dhoe.desc=Создайте Мотыгу Дракона
+
+achievement.draconicevolution.dstaff=Объединив усилия!
+achievement.draconicevolution.dstaff.desc=Создайте Посох Силы
+
+achievement.draconicevolution.soul=Жнец!!!!
+achievement.draconicevolution.soul.desc=Украдите душу у ничего не подозревающего существа.
+achievement.draconicevolution.sundial=Хронометр
+achievement.draconicevolution.sundial.desc=Создайте солнечные часы и контролируйте день и ночь!
+achievement.draconicevolution.manual=Знания на максимум!
+achievement.draconicevolution.manual.desc=Создайте Информационный планшет
+
+//Lore ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:wyvernPick.lore=2Обычные кирки столь слабы...\nИспользуя драконий, Вы увеличили скорость и область копания кирки.
+item.draconicevolution:wyvernShovel.lore=2Один блок за раз? Не с драконием!\nБыстрее! Больше область копания! И это только начало!
+item.draconicevolution:wyvernSword.lore=2Драконий начинает раскрывать потенциал меча:\nего сила и область удара увеличивается.
+item.draconicevolution:wyvernBow.lore=2Наполнение обычного лука драконием\nпозволяет Вам стрелять быстрее и с большей силой.
+
+item.draconicevolution:wyvernHelm.lore=2Прочнее алмазного!\nТеперь Вы выдержите еще больше ударов.
+item.draconicevolution:wyvernChest.lore=2Добавив в броню драконий,\nВы значительно улучшили ее сопротивление.
+item.draconicevolution:wyvernLeggs.lore=2Теперь Вы чувствуете себя сильнее и быстрее,\nА все потому, что Вы наполнили алмазные поножи драконием.
+item.draconicevolution:wyvernBoots.lore=2Вы учитесь улучшать ботинки.\nДраконий, кажется, сделал Вас проворнее.
+
+item.draconicevolution:draconicPick.lore=2Новые исследования и большая осторожность\nпозволили Вам выкапывать даже большие территории.
+item.draconicevolution:draconicAxe.lore=2После большого количества проб и ошибок\nВы наконец-то осязаете его с одной попытки.
+item.draconicevolution:draconicShovel.lore=2Теперь Вы можете выкапывать даже большие территории\nнамного эффективнее.
+item.draconicevolution:draconicHoe.lore=2Драконий улучшает фермерство!\nТеперь целые поля можно обработать и вспахать всего за один клик!
+item.draconicevolution:draconicSword.lore=2Меч Виверны - это, конечно, хорошо, но оружие Дракона намного мощнее\nи способно нанести удар большему количеству врагов.
+item.draconicevolution:draconicBow.lore=2Вы достигли идеала дальнего боя: ускоренная стрельба,\nвзрывные стрелы, чего еще можно желать?
+
+item.draconicevolution:draconicHelm.lore=2Вы больше не боитесь ночи. Ведь теперь Вы в любое время\nсможете разглядеть все, что угодно.
+item.draconicevolution:draconicChest.lore=2Благодаря сердцу дракона,\nВы стали сильнее и получили в подарок полет.
+item.draconicevolution:draconicLeggs.lore=2Ещё мощнее!\nДуша дракона защитит Вас и сделает Ваш бег быстрее.
+item.draconicevolution:draconicBoots.lore=2Мощнее, быстрее, ну и, конечно, лучше прежних!\nСердце Дракона дало Вам возможность прыгать выше, чем когда-либо.
+
+item.draconicevolution:draconicDistructionStaff.lore=2Долгий и трудный путь привел Вас к истинной мощи!\nОдин инструмент, чтобы делать все: добывать, сражаться и умирать!
+
+//Entity ----------------------------------------------------------------------------------------------------------------------------------------
+entity.draconicevolution:EnderDragon.name=Эндер-дракон
+entity.draconicevolution:ChaosGuardian.name=Хранитель хаоса
+entity.draconicevolution:lootCore.name=Loot Core
+
+
+//KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
+key.placeItem=Поставить предмет в мир
+key.toolConfig=Открыть GUI настройки инструментов
+key.toolProfileChange=Сменить профиль инструмента
+key.armorProfileChange=Сменить профиль брони
+key.toggleFlight=Включить творческий полет
+key.toggleDislocator=Включить телепортационный магнит
+key.cycleDigAOE=Изменить область добычи
+key.cycleAttackAOE=Изменить радиус атаки
+
+//Damage ----------------------------------------------------------------------------------------------------------------------------------------
+death.attack.chaos=%1$s был разорван на куски Хранителем хаоса
+death.attack.damage.de.fusionExplode=%1$s был испепелен взрывом от сверхмощной реакции
+death.attack.chaosBurst=%1$s был уничтожен темной энергией
+death.attack.de.islandImplode=%1$s бежал недостаточно быстро и был поглощен взрывом Острова хаоса
+
+death.attack.de.GuardianFireball=%1$s был взорван Хранителем хаоса
+death.attack.de.GuardianEnergyBall=%1$s был раздавлен Хранителем хаоса словно букашка
+death.attack.de.GuardianChaosBall=%1$s был уничтожен Хранителем хаоса при помощи темной энергии
+
+death.attack.chaosImplosion=%1$s был втянут в энергетический вихрь и канул в забвение
+death.attack.chrystalMoved=%1$s был непослушным и потому был наказан модом Draconic Evolution!
+
+death.attack.administrative.kill=%1$s поражен непреодолимой силой
+
+death.attack.chaos=%1$s был разорван Хранителем Хаоса
+
+death.attack.customArrowEnergy=%1$s был застрелен %2$s
+death.attack.customArrowEnergy.item=%1$s был застрелен %2$s с помощью %3$s
+
+//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
+button.de.chestAutoFeed0.txt=ВЫКЛ.Отключить авто-закидывание в печь
+button.de.chestAutoFeed1.txt=ЗАПОЛН.Оставить этот стак нетронутым (Закинет в печь все предметы, кроме того, который Вы взяли)
+button.de.chestAutoFeed2.txt=ЗАБЛ.Закидывать в печь предметы из хранилища, только когда там находится такой же предмет
+button.de.chestAutoFeed3.txt=ВСЕ.Закидывать в печь все предметы из хранилища, которые можно переплавить
+button.de.chestLockOutput.txt=Блокировка выхода.Не даёт предметам вставляться в последние 5 слотов
+button.de.previous.txt=<==
+button.de.next.txt===>
+button.de.backToIndex.txt=Назад к оглавлению
+button.de.back.txt=Назад
+button.de.goToIndex.txt=Страница оглавления
+button.de.addNew.txt=Добавить новую
+button.de.rename.txt=Переименовать
+button.de.commit.txt=Принять
+button.de.setHere.txt=Устан. тек. коорд.
+button.de.remove.txt=Удалить
+button.de.addFuel.txt=Добавить топливо
+button.de.cancel.txt=Отмена
+button.de.UP.txt=ВВЕРХ
+button.de.DOWN.txt=ВНИЗ
+button.de.toggleHidden.txt=Спрятать
+
+//Item Config Buttons
+button.de.stats.txt=Стат.
+button.de.statsShow.txt=Показать
+button.de.statsHide.txt=Спрятать
+button.de.scaleUp.txt=Масштаб +
+button.de.scaleDown.txt=Масштаб -
+button.de.fadeMode0.txt=Прозрачность: Выкл.
+button.de.fadeMode1.txt=Прозрачность: 25%%
+button.de.fadeMode2.txt=Прозрачность: 50%%
+button.de.fadeMode3.txt=Прозрачность: 75%%
+button.de.fadeMode4.txt=Прозрачность: Полная
+button.de.rotate.txt=Повернуть
+button.de.numeric.txt=Отображ. чисел:
+button.de.buildGuide.txt=Руководство по строительству:
+button.de.tierUp.txt=На уровень позже
+button.de.tierDown.txt=На уровень раньше
+button.de.assembleCore.txt=Собрать ядро
+
+button.de.activate.txt=3апустить
+button.de.deactivate.txt=Выключить
+ecore.de.already_assembling.txt=Сборка уже началась!
+ecore.de.assemble_found_invalid.txt=Обнаружен недопустимый блок в области сборки! %s на %s
+ecore.de.assemble_error_expected_air.txt=Произошла ошибка при построении структуры! Expected air block at %s
+ecore.de.assemble_missing_required.txtНевозможно завершить структуру! Отсутствует необходимый блок(и) на %s
+
+//Gui ----------------------------------------------------------------------------------------------------------------------------------------
+
+gui.de.flowGate.name=Контроль потока
+gui.de.flowGatePartialSignal.name=Поток будет варьироваться в пределах двух заданных значений в зависимости от силы редстоун-сигнала, подключенного к устройству.
+gui.de.flowGateCurrentFlow.name=Поток
+gui.de.flowGateRSLow.name=Слабый сигнал редстоуна
+gui.de.flowGateRSHigh.name=Сильный сигнал редстоуна
+gui.de.flowGateOverridden.txt=Передача на компьютер включена
+gui.de.increment.name=Увеличить значение на
+gui.de.decrement.name=Уменьшить значение на
+gui.de.ctrlAndShift.name=Чтобы быстрее увеличивать/уменьшать значение, можно воспользоваться клавишами Ctrl или Shift.
+gui.de.pressOrScroll.name=Нажмите или прокрутите колесико мыши
+gui.de.configureItem.txt=Настроить предмет
+gui.de.min.txt=Мин.
+gui.de.max.txt=Макс.
+
+gui.de.insert.txt=Вставить
+gui.de.extract.txt=Извлечь
+gui.de.fuel.txt=Топливо
+gui.de.itemInventory.txt=Инвентарь предмета
+gui.de.internalStorage.txt=Внутреннее хранилище
+gui.de.itemStorage.txt=Внутр. хранилище предмета
+gui.de.configureGuiElements.txt=Настроить элементы HUD
+gui.de.hudDisplaySettings.txt=Настройки отображения HUD
+gui.de.shieldDisplaySettings.txt=Настройки отображения щита
+gui.de.clickAndDragPurpleBoxes.txt=Нажмите и двигайте фиолетовые квадраты, чтобы переместить дисплей
+gui.de.profile.txt=Профиль
+gui.de.maxDamage.txt=Макс. урон
+gui.de.rfPerShot.txt=RF за выстрел
+gui.de.tier.txt=Уровень
+gui.de.inactive.txt=Не активно
+gui.de.active.txt=Активно
+gui.de.energyStorage.txt=Энергии накоплено
+gui.de.capacity.txt=Ёмкость
+gui.de.maxStorage.txt=>> Макс. вместимость <<
+gui.de.stabilizers.txt=Стабилизаторы
+gui.de.invalid.txt=Неправильная структура!
+gui.de.valid.txt=Структура найдена!
+gui.de.advancedStabilizersRequired.txt=Требуются дополнительные стабилизаторы
+gui.de.core.txt=Ядро
+gui.de.almostInfinite.txt=Почти бесконечно!
+gui.de.transfer.txt=Передача
+
+gui.de.RFCapacity.txt=Емкость RF
+gui.de.DigSpeed.txt=Скорость копания
+gui.de.DigAOE.txt=Область копания
+gui.de.DigDepth.txt=Глубина копания
+gui.de.AttackDamage.txt=Урон
+gui.de.AttackAOE.txt=Область атаки
+gui.de.ArrowDamage.txt=Урон стрелы
+gui.de.DrawSpeed.txt=Скорость натяжения
+gui.de.ArrowSpeed.txt=Скорость стрелы
+gui.de.ShieldCapacity.txt=Емкость щита
+gui.de.ShieldRecovery.txt=Восстановление щита
+gui.de.MoveSpeed.txt=Скорость передвижения
+gui.de.JumpBoost.txt=Увеличение прыжка
+
+
+//Potions ----------------------------------------------------------------------------------------------------------------------------------------
+potion.de.effect.txt=Эффект
+potion.de.flight.txt=Полет
+potion.de.highStep.txt=Авто-подъем
+potion.de.swiftness.txt=Ускорение
+potion.de.fireImmune.txt=Иммунитет к огню
+potion.de.jumpBoost.txt=Увеличение прыжка
+
+
+
+
+//##################   Start of refactored (sane) localization   ##################
+
+//---- Gui Names ----//
+gui.de.energyStorageCore.name=Энергетическое ядро %s-го уровня
+gui.de.fusionCraftingCore.name=Слияние
+gui.de.dissEnchanter.name=Дизенчантер
+
+
+//---- Gui Fusion Crafting Info ----//
+gui.fusionCrafting.tierLow.info=Уровень пьедестала слишком мал
+gui.fusionCrafting.outputObstructed.info=Выходной слот занят
+gui.fusionCrafting.crafting.info=Создание
+gui.fusionCrafting.charging.info=Зарядка
+gui.jeiFusion.tier.0=Уровень: Базовый
+gui.jeiFusion.tier.1=Уровень: Виверна
+gui.jeiFusion.tier.2=Уровень: Дракон
+gui.jeiFusion.tier.3=Уровень: Хаос
+msg.craftingInjector.singleItemOn.txt=Режим "Одиночный предмет": Вкл.
+msg.craftingInjector.singleItemOff.txt=Режим "Одиночный предмет": Выкл.
+
+
+//---- Upgrades ----//
+upgrade.de.upgrades.info=Улучшения
+upgrade.de.upgradeNA.info=Улучшение не применимо для этого предмета
+upgrade.de.upgradeLevelToHigh.info=Этот уровень улучшения слишком высок для этого предмета
+upgrade.de.upgradeApplied.info=Улучшение применено
+upgrade.de.upgradePrevLevelRequired.info=Требуется предыдущий уровень улучшения
+upgrade.de.holdCtrlForUpgrades.info=Нажм. %sCTRL%s для просмотра улучшений
+upgrade.de.holdShiftForRecipes.info=Нажм. %sShift%s для просмотра рецептов
+upgrade.de.holdCTRLToPause.info=CTRL для паузы
+upgrade.de.level.info=Уровень
+
+upgrade.de.rfCap.name=Емкость RF
+upgrade.de.digSpeed.name=Скорость копания
+upgrade.de.digAOE.name=Область добычи
+upgrade.de.digDepth.name=Глубина добычи
+upgrade.de.attackDmg.name=Урон
+upgrade.de.attackAOE.name=Область атаки
+upgrade.de.arrowDmg.name=Урон стрелы
+upgrade.de.drawSpeed.name=Скорость натяжения
+upgrade.de.arrowSpeed.name=Скорость стрелы
+upgrade.de.shieldCap.name=Емкость щита
+upgrade.de.shieldRec.name=Восстановление щита
+upgrade.de.moveSpeed.name=Скорость передвижения
+upgrade.de.jumpBoost.name=Увеличение прыжка
+
+upgrade.level.0=-
+upgrade.level.1=Базовый
+upgrade.level.2=Виверна
+upgrade.level.3=Дракон
+upgrade.level.4=Хаос
+
+//---- Tool Config ----//
+config.field.on.state=Вкл.
+config.field.off.state=Выкл.
+config.field.digSpeed.entry=Коэффициент скорости добычи
+config.field.digSpeed.description=Позволяет настроить скорость, с которой этот инструмент будет разрушать блоки. Полезно, когда требуется аккуратно подобрать нужную скорость.
+config.field.digAOE.entry=Область добычи
+config.field.digAOE.description=Позволяет настроить область действия этого инструмента.
+config.field.aoeSafeMode.entry=Безопасный режим
+config.field.aoeSafeMode.description=Если эта опция включена, инструмент будет проверять наличие тайл-сущностей (например, механизмов) в пределах своей области действия. Это не даст Вам случайно разрушить полбазы, нечаянно нажав кнопку мыши.
+config.field.digDepth.entry=Глубина добычи
+config.field.digDepth.description=Эта опция работает только с областью копания 3х3, или выше.
+config.field.showDigAOE.entry=Показывать область добычи
+config.field.showDigAOE.description=Если эта опция включена, Вы увидите, какие блоки будут затронуты инструментом при добыче по области.
+
+config.field.toggleEnchant.description=Позволяет отключать/включать ранее наложенные зачарования. Примечание: этот параметр не относится к конкретному профилю, а это означает, что у вас не может быть разных профилей с разными настройками зачарований.
+
+config.field.armorSpeedModifier.entry=Модификатор скорости
+config.field.armorSpeedModifier.description=Позволяет регулировать скорость у данной части брони.
+config.field.armorSpeedFOVWarp.entry=Disable FOV Warp
+config.field.armorSpeedFOVWarp.description=When enabled the FOV warp created by this armors speed effect will be removed.
+config.field.armorJumpModifier.entry=Увеличение высоты прыжка
+config.field.armorJumpModifier.description=Позволяет настроить высоту прыжка у данной части брони.
+config.field.sprintBoost.entry=Ослабление эффекта при ходьбе
+config.field.sprintBoost.description=При включении данной опции, все остальные активированные опции будут автоматически отключаться, когда вы НЕ бежите.
+config.field.armorNV.entry=Ночное зрение
+config.field.armorNV.description=Активирует или отключает ночное зрение. По умолчанию ночное зрение будет активироваться только в неосвещённых областях.
+config.field.armorNVLock.entry=Автом. включение ночного зрения
+config.field.armorNVLock.description=При включении активирует ночное зрение независимо от уровня освещения, в котором вы находитесь.
+config.field.armorFSpeedModifier.entry=Модификатор скорости полёта
+config.field.armorFSpeedModifier.description=Позволяет регулировать скорость полёта для данной части брони.
+config.field.armorFlightLock.entry=Автом. включение полёта
+config.field.armorFlightLock.description=При включении творческий полёт будет всегда активен.
+config.field.armorVFSpeedModifier.entry=Вертикальное ускорение
+config.field.armorVFSpeedModifier.description=Позволяет увеличить скорость, с которой вы поднимаетесь/опускаетесь во время полета.
+config.field.armorInertiaCancel.entry=Погашение иннерции
+config.field.armorInertiaCancel.description=При включении этой опции, во время полёта, вы можете остановиться почти мгновенно, отпустив клавишу передвижения.
+config.field.armorHillStep.entry=Авто-подъём
+config.field.armorHillStep.description=Позволяет увеличить высоту шага до полного блока без прыжка.
+config.field.armorAutoFeed.entry=Авто-утоление голода
+config.field.armorAutoFeed.description=Когда эта опция включена, ваш шлем будет автоматически брать еду из вашего инвентаря и утолять ваш голод!
+
+config.field.bowArrowDamage.entry=Базовый урон стрелы
+config.field.bowArrowDamage.description=Позволяет настроить базовый урон, который будут наносить стрелы. Обратите внимание на то, что фактический урон вычисляется путем умножения базового урона на скорость стрелы.
+config.field.bowArrowSpeedModifier.entry=Модификатор скорости стрелы
+config.field.bowArrowSpeedModifier.description=Изменяет скорость Ваших стрел. Это влияет на урон и на дальность.
+config.field.bowAutoFire.entry=Автоматическая стрельба
+config.field.bowAutoFire.description=Стреляет автоматически, если полностью заряжен.
+config.field.bowExplosionPower.entry=Взрывная сила
+config.field.bowExplosionPower.description=Регулирует силу взрыва Ваших стрел.
+config.field.bowZoomModifier.entry=Приближение камеры
+config.field.bowZoomModifier.description=Используется для того, чтобы делать точные выстрелы на большом расстоянии.
+config.field.bowFireArrow.entry=Стрела драконьего огня
+config.field.bowFireArrow.description=Будет выпускать стрелы, созданные из чистой энергии. Устранит необходимость в боеприпасах, а также разблокирует эффект Ударной волны.
+config.field.bowShockPower.entry=Сила ударной волны
+config.field.bowShockPower.description=При столкновении порождает мощную ударную волну, которая наносит существам даже больше урона, чем эквивалентный взрыв, но при этом не разрушает блоки.
+config.field.attackAOE.entry=Радиус атаки
+config.field.attackAOE.description=Позволяет настроить размер области, которая будет затронута взмахом меча.
+config.field.showHarvestIndicator.entry=Индикатор срубания
+config.field.showHarvestIndicator.description=Показывает, где в данный момент топор срубает блоки.
+config.field.landFill.entry=Заполнение землей
+config.field.landFill.description=Будет использовать землю из Вашего инвентаря для автоматического заполнения дыр глубиной в 1 блок, для того чтобы выравнять территорию при вспахивании. Также будет разрушать землю, находящуюся на 1 блок выше зоны вспахивания, если это необходимо.
+
+config.field.junkFilter.entry=Настроить фильтр мусора
+config.field.junkFilter.description=Открывает фильтр мусора, позволяющий Вам указывать блоки, которые будут удаляться при добыче. Фильтр привязывается к профилю инструмента и работает только в режиме добычи по области.
+config.field.junkFilter.button=Открыть фильтр мусора
+config.field.enableJunkFilter.entry=Включить фильтр мусора
+config.field.enableJunkFilter.description=Позволяет Вам включать/выключать фильтр мусора.
+config.field.junkNbtSens.entry=Чувствительность фильтра к NBT
+config.field.junkNbtSens.description=Если опция отключена, фильтр будет игнорировать NBT предметов при их фильтрации.
+
+config.field.hideArmor.entry=Спрятать броню
+config.field.hideArmor.description=Если включено, эта часть брони будет полностью невидимой.
+
+config.field.AOE.entry=Область
+config.field.replaceSame.entry=Замена одинаковых блоков
+config.field.replaceVisible.entry=Замена видимых
+config.field.fillLogic.entry=Использовать логику
+
+
+//---- Info Helper ----//TODO Move this to BrandonsCore
+info.bc.holdShiftForDetails.txt=Удерживайте %sShift%s для просмотра доп. информации
+info.bc.charge.txt=Заряд
+
+info.bc.hold.txt=Удерживайте
+info.bc.shift.txt=Shift
+info.bc.forDetails.txt=для просмотра доп. информации
+info.bc.ctrl.txt=CTRL
+
+//---- Chat Messages ----//
+chat.toolConfig.thatItemNotConfigurable.msg=Этот предмет нельзя настроить
+chat.dissEnchanter.notEnoughLevels.msg=Вам требуется %s уровней, чтобы извлечь это зачарование!
+
+
+//---- GUI Buttons ----//
+gui.de.toolConfig.hud.txt=HUD
+gui.de.toolConfig.hudDesc.txt=Открыть интерфейс найстройки HUD
+button.de.open=Открыть
+
+//---- Celestial Manipulato ----//
+gui.de.celMod.weather=Погода
+gui.de.celMod.time=Время
+gui.de.celMod.stopRain=Выключение дождя
+gui.de.celMod.startRain=Включение дождя
+gui.de.celMod.startStorm=Грозовые бури
+gui.de.celMod.skipTo=Пропустить...
+gui.de.celMod.sunRise=Восход Солнца
+gui.de.celMod.midDay=Середина дня
+gui.de.celMod.sunSet=Заход Солнца
+gui.de.celMod.moonRise=Восход Луны
+gui.de.celMod.midnight=Полночь
+gui.de.celMod.moonSet=Заход Луны
+gui.de.celMod.skipToTime=Пропустить время
+gui.de.celMod.skip24=Пропустить 24 часа
+gui.de.celMod.stop=Выключить
+gui.de.celMod.rs.0=Выключение дождя
+gui.de.celMod.rs.1=Включение дождя
+gui.de.celMod.rs.2=Грозовые бури
+gui.de.celMod.rs.3=Восход Солнца
+gui.de.celMod.rs.4=Середина дня
+gui.de.celMod.rs.5=Заход Солнца
+gui.de.celMod.rs.6=Восход Луны
+gui.de.celMod.rs.7=Полночь
+gui.de.celMod.rs.8=Заход Луны
+gui.de.celMod.rs.9=Cycle 1 full Minecraft day Or until redstone signal stops.
+
+//---- Entity Detector ----//
+guiwiki.label.navigation=Навигация
+guiwiki.label.mods=Моды
+modwiki.label.style=Стиль
+
+modwiki.style.navWindow=Окно навигации
+modwiki.style.mainWindow=Главное окно
+modwiki.style.menu=Меню
+modwiki.style.presets=Пресеты
+modwiki.style.navText=Навигация по тексту
+modwiki.style.text=Текст
+
+modwiki.style.preset.intellij=По умолчанию
+modwiki.style.preset.black&white=Черный и белый
+modwiki.style.preset.white&black=Белый и чёрный
+modwiki.style.preset.purple=Фиолетовый
+modwiki.style.preset.draconic=Дракониевый
+modwiki.style.preset.transparent=Прозрачный
+
+guiwiki.button.home=Домой
+
+//---- Entity Detector ----//
+gui.entityDetector.pulseDelay=Задержка пульсации
+gui.entityDetector.pulseDelay.info=Задержка между сканирующими импульсами. Импульс сканирования - это когда блок проверяет наличие соседних объектов рядом с ним.
+gui.entityDetector.outputPulse=Режим импульсного выхода
+gui.entityDetector.outputContin=Режим постоянного вывода
+gui.entityDetector.output.info=Выходная мощность зависит от обнаруженного действительного объекта, а также минимального и максимального порога сигнала редстоуна. Импульсный режим излучает 1 импульс за тик во время импульса сканирования. Постоянный режим будет излучать непрерывный сигнал редстоуна для каждого импульса сканирования.
+gui.entityDetector.range=Радиус
+gui.entityDetector.range.info=Радиус сканирования в блоках. Увеличение радиуса увеличивает стоимость энергии для каждого импульса сканирования
+gui.entityDetector.rsMin=Мин. порог сигнала редстоуна
+gui.entityDetector.rsMin.info=Минимальное количество обнаруженных объектов, необходимое для получения сигнала редстоуна, составляет 1.
+gui.entityDetector.rsMax=Макс. порог сигнала редстоуна
+gui.entityDetector.rsMax.info=Минимальное количество обнаруженных объектов, необходимое для получения сигнала редстоуна, составляет 15.
+gui.entityDetector.energyCost=Потребл. энергии за импульс
+gui.entityDetector.energyCost.info=Это количество энергии, необходимое для каждого импульса сканирования. Потребность энергии составляет 125 * радиус^1.5 Это означает, что стоимость энергии возрастает по мере увеличения радиуса.
+gui.entityDetector.filter=Открыть фильтр существ
+
+//---- Energy Net ----//
+eNet.de.posSavedToTool.info=Местоположение блока сохранено в инструменте. (Нажмите Shift+ПКМ, чтобы очистить）)
+eNet.de.posCleared.info=Местоположение очищено.
+eNet.de.toolNotBound.info=Инструмент не связан! Нажмите ПКМ, чтобы связать.
+eNet.de.boundToInvalid.info=Инструмент привязан к недействительному блоку!
+eNet.de.linkBroken.info=Соединение разорвано!
+eNet.de.devicesLinked.info=Устройства связаны!
+eNet.de.linkLimitReachedThis.info=Это устройство достигло лимина соединений!
+eNet.de.linkLimitReachedTarget.info=Целевое устройство достигло лимита соединий!
+eNet.de.thisRangeLimit.info=Целевое устройство слишком далеко!
+eNet.de.targetRangeLimit.info=Это устройство находится слишком далеко от целевого устройства!
+eNet.de.deviceInvalid.info=Это недействительное устройство!
+eNet.de.linkFailedUnknown.info=Попытка соединения не удалась! [Причина Неизвестна...]
+eNet.de.linkToSelf.info=Вы не можете привязать устройство к самому себе...
+eNet.de.hudCharge.info=Заряжать
+eNet.de.hudLinks.info=Соединения
+eNet.de.hudWirelessLinks.info=Беспроводные соединения
+eNet.de.IOOutput_true.info=Режим входа/выхода:%s Принимать
+eNet.de.IOOutput_false.info=Режим входа/выхода:%s Отдавать
+eNet.de.sideCanNotReceive.info=Не удаётся подключиться к той стороне целевого устройства!
+eNet.de.maxReceivers.info=Лимит приёмника достигнут!
+eNet.de.hudWirelessLinks.info=Беспроводные соединения
+eNet.de.output.info=Выход
+eNet.de.identify.gui=Идентификация
+eNet.de.unlink.gui=Не подключено
+eNet.de.clearLinks.gui=Очистить соединения
+eNet.de.clearReceivers.gui=Очистить приемники
+
+//---- Reactor ----//
+gui.reactor.draconicReactor.txt=Дракониевый Реактор
+gui.reactor.fuelIn.txt=Топливо (вход)
+gui.reactor.chaosOut.txt=Хаотит (выход)
+gui.reactor.tempLoadFactor.txt=Показывает, какую нагрузку оказывает Температура реактора на Сдерживающее поле. Если темп-ра превысит 8000 градусов, этот показатель экспоненциально возрастёт
+gui.reactor.coreVolume.txt=Показывает общее количество массы в реакторе в куб. метрах. Иными словами, это драконий + хаотит. Этот показатель меняется только при добавлении/удалении топлива.
+gui.reactor.genRate.txt=Показывает текущее количество энергии (RF/t), которая вырабатывается реактором.
+gui.reactor.inputRate.txt=Показывает точное количество энергии (RF/t), которая нужна для поддержания текущей силы Сдерживающего поля. По мере увеличения силы поля, этот показатель будет экспоненциально возрастать.
+gui.reactor.conversionRate.txt=Показывает, насколько быстро реактор тратит топливо. По мере увеличения индикатора Насыщения энергией, этот показатель будет падать.
+gui.reactor.redstoneMode.txt=Настройте выход компаратора для этого компонента реактора.
+gui.reactor.rsMode_temp.txt=Будет выводить сигнал от 0 до 15 при повышении температуры до 10000
+gui.reactor.rsMode_temp_inv.txt=Это то же самое, что и температура, за исключением того, что сигнал инвертирован.
+gui.reactor.rsMode_field.txt=Выводит сигнал от 0 до 15, когда мощность сдерживающего поля колеблется от 0 до 100%,  сила сигнала 1 => соответствует 10% мощности сдерживающего поля; сила сигнала 15 => соответствует 90% мощности сдерживающего поля.
+gui.reactor.rsMode_field_inv.txt=This is the same as Shield except the signal is inverted.
+gui.reactor.rsMode_sat.txt=Will output a signal from 0 to 15 as the saturation level fluctuates between 0 and 100%
+gui.reactor.rsMode_sat_inv.txt=This is the same as Saturation except the signal is inverted.
+gui.reactor.rsMode_fuel.txt=Will output a signal from 0 to 15 as the fuel conversion level increases from 0 to 100%, Signal of 15 => 90% Conversion.
+gui.reactor.rsMode_fuel_inv.txt=This is the same as Conversion except the signal is inverted.
+gui.reactor.failSafe.txt=После включения, когда температура упадет до 2500, а насыщение достигнет 99%, реактор автоматически начнет выключаться. Это можно использовать для автоматического выключения реактора в случае неисправности или при необходимости заправки его топливом.
+
+gui.reactor.reactionTemp.info=Температура ядра
+gui.reactor.fieldStrength.info=Сила сдерживающего поля
+gui.reactor.energySaturation.info=Насыщение энергией
+gui.reactor.fuelConversion.info=Кол-во преобразованного топлива
+gui.reactor.tempLoad.info=Нагрузка от температуры:
+gui.reactor.coreVolume.info=Масса ядра:
+gui.reactor.genRate.info=Выработка энергии:
+gui.reactor.fieldInputRate.info=Энергия для Сдерж. поля:
+gui.reactor.fuelConversionRate.info=Преобразование топлива:
+gui.reactor.status.info=Статус
+gui.reactor.status.invalid.info=НЕВЕРНАЯ УСТАНОВКА
+gui.reactor.status.cold.info=ВЫКЛЮЧЕН
+gui.reactor.status.warming_up.info=ЗАРЯЖАЕТСЯ
+gui.reactor.status.running.info=ВКЛЮЧЕН
+gui.reactor.status.stopping.info=ВЫКЛЮЧАЕТСЯ
+gui.reactor.status.cooling.info=Охлаждение
+gui.reactor.status.beyond_hope.info=Взрыв Неизбежен!!!
+
+gui.reactor.charge.btn=Заряжен
+gui.reactor.activate.btn=Включен
+gui.reactor.shutdown.btn=Выключен
+gui.reactor.rsMode.btn=Режим\nредстоуна
+gui.reactor.failSafe.btn=Отказоустойчив.
+
+gui.reactor.rsMode_temp.btn=Темп.
+gui.reactor.rsMode_temp_inv.btn=-Темп.
+gui.reactor.rsMode_field.btn=Щит
+gui.reactor.rsMode_field_inv.btn=-Щит
+gui.reactor.rsMode_sat.btn=Насыщение
+gui.reactor.rsMode_sat_inv.btn=-Насыщение
+gui.reactor.rsMode_fuel.btn=Преобразование
+gui.reactor.rsMode_fuel_inv.btn=-Преобразование
+
+msg.de.reactorRSMode.0.txt=Режим компаратора: Температура
+msg.de.reactorRSMode.1.txt=Режим компаратора: Температура [Инвертированный]
+msg.de.reactorRSMode.2.txt=Режим компаратора: Сдерживающее поле
+msg.de.reactorRSMode.3.txt=Режим компаратора: Сдерживающее поле [Инвертированный]
+msg.de.reactorRSMode.4.txt=Режим компаратора: Насыщение энергией
+msg.de.reactorRSMode.5.txt=Режим компаратора: Насыщение энергией [Инвертированный]
+msg.de.reactorRSMode.6.txt=Режим компаратора: Кол-во преобразованного топлива
+msg.de.reactorRSMode.7.txt=Режим компаратора: Кол-во преобразованного топлива [Инвертированный]
+gui.de.coreMass.txt=Масса ядра
+
+//---- Draconium Chest ----//
+gui.draconiumChest.name=Сундук дракона
+gui.draconiumChest.fMode.btn=Авто-закидывание
+gui.draconiumChest.fMode.info=Авто-закидывание позволяет автоматически переплавлять предметы в печи. Нажмите, чтобы просмотреть доступные режимы закидывания.
+gui.draconiumChest.fMode.off.btn=Выкл.
+gui.draconiumChest.fMode.off.info=Отключить авто-закидывание в печь.
+gui.draconiumChest.fMode.fill.btn=ЗАПОЛН.
+gui.draconiumChest.fMode.fill.info=Оставить этот стак нетронутым (Закинет в печь все предметы, кроме того, который Вы взяли)
+gui.draconiumChest.fMode.lock.btn=ЗАБЛ.
+gui.draconiumChest.fMode.lock.info=Закидывать в печь предметы из хранилища, только когда там находится такой же предмет
+gui.draconiumChest.fMode.all.btn=ВСЕ
+gui.draconiumChest.fMode.all.info=Закидывать в печь все предметы из хранилища, которые можно переплавить
+gui.draconiumChest.speedBoost.info=Вставьте Ядро Виверны или более продвинутое ядро, чтобы повысить скорость плавки и удвоить количество слитков на выходе,  за счет значительного увеличения потребления энергии.
+gui.draconiumChest.energyConsumption.info=Потребление энергии
+gui.draconiumChest.processTime.info=Скорость плавки
+gui.draconiumChest.editRegion.btn=Редактировать область
+gui.draconiumChest.editDefaultRegion.btn=Edit IO for unassigned Slots
+gui.draconiumChest.enableRegion.btn=Enable Region
+gui.draconiumChest.disableRegion.btn=Disable Region
+gui.draconiumChest.regionSelect.info=Click and drag in the chest inventory to change which slots are assigned to this region. Region must be enabled first and regions can not overlap.
+gui.draconiumChest.ioRegions.btn=I/O Regions
+gui.draconiumChest.ioRegions.info=Click here to configure I/O regions. IO regions allow you to create groups of slots with configurable sided io. You can also specify which slots the built in furnace can use. An example usage: Items entering the left side of the chest go to region 1 and are smelted by the furnace, Furnace outputs to region 2 and can then be extracted from the right side of the chest.
+gui.draconiumChest.pickColour.btn=Цвет сундука
+gui.draconiumChest.pickColour.info=Позволяет изменить цвет сундука.
+
+gui.draconiumChest.toggleIOMode.down.btn=Toggle Bottom IO mode.
+gui.draconiumChest.toggleIOMode.up.btn=Toggle Top IO mode.
+gui.draconiumChest.toggleIOMode.north.btn=Toggle Front IO mode.
+gui.draconiumChest.toggleIOMode.south.btn=Toggle Back IO mode.
+gui.draconiumChest.toggleIOMode.west.btn=Toggle Right IO mode.
+gui.draconiumChest.toggleIOMode.east.btn=Toggle Left IO mode.
+gui.draconiumChest.toggleIOMode.furnace.btn=Toggle Furnace IO mode.
+
+gui.draconiumChest.ioState0.btn=Отключено
+gui.draconiumChest.ioState1.btn=Только вход
+gui.draconiumChest.ioState2.btn=Только выход
+gui.draconiumChest.ioState3.btn=И вход и выход
+
+//---- Particle Generator ----//
+gui.particleGenerator.name=Генератор частиц
+gui.particleGenerator.red=Красный
+gui.particleGenerator.green=Зелёный
+gui.particleGenerator.blue=Синий
+gui.particleGenerator.alpha=Альфа
+gui.particleGenerator.spawnX=Генерация по X
+gui.particleGenerator.spawnY=Генерация по Y
+gui.particleGenerator.spawnZ=Генерация по Z
+gui.particleGenerator.motionX=Скорость по X 
+gui.particleGenerator.motionY=Скорость по Y 
+gui.particleGenerator.motionZ=Скорость по Z 
+gui.particleGenerator.gravity=Гравитация
+gui.particleGenerator.scale=Масштаб
+gui.particleGenerator.delay=Замедление
+gui.particleGenerator.life=Жизнь
+gui.particleGenerator.fade=Исчезновение
+gui.particleGenerator.collision=Коллизия
+gui.particleGenerator.type=Тип
+gui.particleGenerator.type0=Сфера
+gui.particleGenerator.type1=Квадрат
+gui.particleGenerator.type2=Тёмная сфера
+gui.particleGenerator.type3=Сфера 2
+gui.particleGenerator.type4=Звезда
+
+//---- Gui Junk Filter ----//
+gui.de.junkFilter.name=Фильтр мусора
+
+//---- Misc Info Text ----//
+info.de.shiftReversePlaceLogic.txt=Удерживайте Shift, чтобы изменить логику размещения.
+
+//---- Bound Dislocators ----//
+info.de.bound_dislocator.key=Уникальный ключ
+info.de.bound_dislocator.click_to_link=Щёлкните ПКМ, чтобы создать связанную пару.
+info.de.bound_dislocator.click_to_link_self=Щелкните ПКМ, чтобы привязать к себе
+info.de.bound_dislocator.player_link=Привязан к игроку
+info.de.bound_dislocator.bound_to=Привязан к
+info.de.bound_dislocator.in_player_inventory=Связывающий телепортер находится в инвентаре игрока. Буду телепортировать вас к игроку.
+info.de.bound_dislocator.unknown_link=Неизвестное местоположение
+info.de.bound_dislocator.cant_find_player=Связанный игрок не в сети!
+info.de.bound_dislocator.cant_find_target=Не удалось найти связывающий телепортер.

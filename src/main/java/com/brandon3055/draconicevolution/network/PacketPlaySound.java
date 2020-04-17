@@ -2,7 +2,7 @@
 //
 //import com.brandon3055.brandonscore.BrandonsCore;
 //import com.brandon3055.brandonscore.network.MessageHandlerWrapper;
-//import com.brandon3055.draconicevolution.lib.DESoundHandler;
+//import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 //import com.brandon3055.draconicevolution.utils.LogHelper;
 //import io.netty.buffer.ByteBuf;
 //import net.minecraft.util.SoundCategory;

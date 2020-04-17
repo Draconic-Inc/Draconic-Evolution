@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by brandon3055 on 17/11/2016.
  */
+@Deprecated
 public class ToolUpgradeRecipe extends SimpleFusionRecipe {
 
     /**

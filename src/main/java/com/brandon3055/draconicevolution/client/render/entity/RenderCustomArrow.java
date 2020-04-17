@@ -4,7 +4,7 @@ import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.brandonscore.lib.FullAtlasSprite;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.entity.EntityCustomArrow;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.entity.EntityRenderer;

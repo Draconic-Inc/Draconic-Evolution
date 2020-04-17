@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -10,7 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
  * The server side is responsible for monitoring the crystal and sending any needed updates to the client via {@link com.brandon3055.draconicevolution.network.CrystalUpdateBatcher}
  * The client side is responsible for creating and updating the render FX.
  */
-public abstract class ENetFXHandler<T extends IENetEffectTile> {
+public abstract class ENetFXHandler<T extends TileEntity & IENetEffectTile> {
 
     protected final T tile;
     public int renderCooldown;

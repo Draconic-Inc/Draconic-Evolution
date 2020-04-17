@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.items.tools;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -39,33 +39,11 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
         this.range = range;
     }
 
-//    public Magnet() {
-//        this.setMaxStackSize(1);
-//        this.setHasSubtypes(true);
-//    }
-
-
-//    @OnlyIn(Dist.CLIENT)
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
-//        if (isInCreativeTab(tab)) {
-//            list.add(new ItemStack(this, 1, 0));
-//            list.add(new ItemStack(this, 1, 1));
-//        }
-//    }
-
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
         return isEnabled(stack);
     }
-
-//    @Override
-//    public String getUnlocalizedName(ItemStack stack) {
-//        return super.getUnlocalizedName(stack) + (stack.getItemDamage() == 0 ? ".basic" : ".advanced");
-//    }
-
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entity, int itemSlot, boolean isSelected) {
@@ -75,7 +53,6 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     private void updateMagnet(ItemStack stack, Entity entity) {
         if (!entity.isSneaking() && entity.ticksExisted % 10 == 0 && isEnabled(stack) && entity instanceof PlayerEntity) {
             World world = entity.getEntityWorld();
-//            int range = stack.getItemDamage() == 0 ? 8 : 32;
 
             List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(range, range, range));
 

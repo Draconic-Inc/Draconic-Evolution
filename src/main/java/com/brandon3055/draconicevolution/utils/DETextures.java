@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.utils;
 
 import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.texture.IIconRegister;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.model.GlassParticleDummyModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
@@ -9,6 +10,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -17,7 +20,28 @@ import java.util.function.Predicate;
  */
 public class DETextures implements IIconRegister, ISelectiveResourceReloadListener {
 
+    private static final String ITEMS_ = "draconicevolution:items/";
+    private static final String PARTICLES_ = "draconicevolution:particle/";
+    private static final String TOOLS_ = ITEMS_ + "tools/";
+    private static final String TOOLS_OBJ_ = TOOLS_ + "obj/";
+
     private static AtlasRegistrar map;
+    private static HashMap<ResourceLocation, TextureAtlasSprite> textureCache = new HashMap<ResourceLocation, TextureAtlasSprite>();
+    private static ArrayList<ResourceLocation> locations = new ArrayList<ResourceLocation>();
+
+    static {
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere_texture"));
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_base"));
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_overlay"));
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/stabilizer_sphere"));
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "items/tools/obj/arrow_common"));
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_2"));
+        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder"));
+    }
+
+    public static TextureAtlasSprite getDETexture(String texture) {
+        return textureCache.get(new ResourceLocation(DraconicEvolution.MODID, texture));
+    }
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
@@ -81,17 +105,23 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
                 DRACONIC_BOW03
         };
         //@formatter:on
+
+        for (ResourceLocation location : locations) {
+            registrar.registerSprite(location, sprite -> textureCache.put(location, sprite));
+        }
+
+        ENERGY_PARTICLE = new TextureAtlasSprite[5];
+        for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
+            int finalI = i;
+            register(PARTICLES_ + "energy_" + i, sprite -> ENERGY_PARTICLE[finalI] = sprite);
+        }
+        register(PARTICLES_ + "white_orb", sprite -> ORB_PARTICLE = sprite);
     }
 
     // Bouncer to make the class readable.
     private static void register(String sprite, Consumer<TextureAtlasSprite> onReady) {
         map.registerSprite(new ResourceLocation(sprite), onReady);
     }
-
-    //These are BELLOW register icons because readability.
-    private static final String ITEMS_ = "draconicevolution:items/";
-    private static final String TOOLS_ = ITEMS_ + "tools/";
-    private static final String TOOLS_OBJ_ = TOOLS_ + "obj/";
 
     public static TextureAtlasSprite WYVERN_AXE;
     public static TextureAtlasSprite WYVERN_BOW00;
@@ -115,10 +145,13 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static TextureAtlasSprite[] WYVERN_BOW;
     public static TextureAtlasSprite[] DRACONIC_BOW;
 
+    public static TextureAtlasSprite[] ENERGY_PARTICLE;
+    public static TextureAtlasSprite ORB_PARTICLE;
+
     //TODO in 1.11 or 1.12 make there full names with mod prefix and ether remove texture cache or have it auto detect when the modid is already present.
-    public static final String ENERGY_INFUSER_DECORATION = "textures/blocks/energy_infuser/energy_infuser_decoration.png";
-    public static final String FUSION_PARTICLE = "textures/blocks/fusion_crafting/fusion_particle.png";
-    public static final String STABILIZER_LARGE = "textures/blocks/particle_gen/stabilizer_large.png";
+    public static final String ENERGY_INFUSER_DECORATION = "textures/block/energy_infuser/energy_infuser_decoration.png";
+    public static final String FUSION_PARTICLE = "textures/block/fusion_crafting/fusion_particle.png";
+    public static final String STABILIZER_LARGE = "textures/block/stabilizer_large.png";
     public static final String CHAOS_GUARDIAN = "textures/entity/chaos_guardian.png";
     public static final String CHAOS_GUARDIAN_CRYSTAL = "textures/entity/guardian_crystal.png";
     public static final String PROJECTILE_CHAOS = "textures/entity/projectile_chaos.png";
@@ -142,7 +175,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String REACTOR_SHIELD = "textures/models/reactor_shield.png";
     public static final String STABILIZER_BEAM = "textures/models/stabilizer_beam.png";
     public static final String CELESTIAL_PARTICLE = "textures/particle/celestial_manipulator.png";
-    public static final String ENERGY_CRYSTAL_BASE = "textures/models/crystal_purple_transparent.png";
+    public static final String ENERGY_CRYSTAL_BASE = "textures/models/crystal_base.png";
     public static final String ENERGY_CRYSTAL_NO_SHADER = "textures/models/crystal_no_shader.png";
     public static final String ENERGY_BEAM_BASIC = "textures/particle/energy_beam_basic.png";
     public static final String ENERGY_BEAM_WYVERN = "textures/particle/energy_beam_wyvern.png";

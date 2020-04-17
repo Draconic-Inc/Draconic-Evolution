@@ -1,30 +1,32 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
-import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
-import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.DETextures;
+import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
+public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
     private long rSeed = 0;
 
     public CrystalFXRing(World worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
-//        this.particleTextureIndexX = 3 + tile.getTier();
         this.age = worldIn.rand.nextInt(1024);
         this.rSeed = tile.getPos().toLong();
     }
@@ -76,7 +78,7 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             //region Shadow
 
             float scale = 0.01F + (rFloat4 * 0.05F) + ((float) mipLevel * 0.2F);
-            float a = 1;//sd + 0.1F;
+            float a = 1;
             float r = particleRed;
             float g = particleGreen;
             float b = particleBlue;
@@ -102,16 +104,17 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             float drawZ = renderZ + (float) oz;
             //endregion
 
-//            particleTextureIndexX = (ClientEventHandler.elapsedTicks) % 5;
-//            particleTextureIndexY = 1;
-//            float minU = (float) this.particleTextureIndexX / texturesPerRow;
-//            float maxU = minU + 1F / texturesPerRow;
-//            float minV = (float) this.particleTextureIndexY / texturesPerRow;
-//            float maxV = minV + 1F / texturesPerRow;
-//            vertexbuffer.pos((double) (drawX - rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(r, g, b, a).endVertex();
-//            vertexbuffer.pos((double) (drawX - rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(r, g, b, a).endVertex();
-//            vertexbuffer.pos((double) (drawX + rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(r, g, b, a).endVertex();
-//            vertexbuffer.pos((double) (drawX + rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(r, g, b, a).endVertex();
+            int texIndex = (ClientEventHandler.elapsedTicks) % DETextures.ENERGY_PARTICLE.length;
+            TextureAtlasSprite sprite = DETextures.ENERGY_PARTICLE[texIndex];
+            float minU = sprite.getMinU();
+            float maxU = sprite.getMaxU();
+            float minV = sprite.getMinV();
+            float maxV = sprite.getMaxV();
+
+            buffer.pos(drawX - rotationX * scale - rotationXY * scale, drawY - rotationZ * scale, drawZ - rotationYZ * scale - rotationXZ * scale).tex(maxU, maxV).color(r, g, b, a).lightmap(200, 200).endVertex();
+            buffer.pos(drawX - rotationX * scale + rotationXY * scale, drawY + rotationZ * scale, drawZ - rotationYZ * scale + rotationXZ * scale).tex(maxU, minV).color(r, g, b, a).lightmap(200, 200).endVertex();
+            buffer.pos(drawX + rotationX * scale + rotationXY * scale, drawY + rotationZ * scale, drawZ + rotationYZ * scale + rotationXZ * scale).tex(minU, minV).color(r, g, b, a).lightmap(200, 200).endVertex();
+            buffer.pos(drawX + rotationX * scale - rotationXY * scale, drawY - rotationZ * scale, drawZ + rotationYZ * scale - rotationXZ * scale).tex(minU, maxV).color(r, g, b, a).lightmap(200, 200).endVertex();
 
             //region Inner
             scale = 0.01F + (rFloat4 * 0.04F) * (float) Math.sin((animTime + i) / 30) + ((float) mipLevel * 0.05F);
@@ -129,16 +132,14 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
             g = wierless ? 0 : 1;
             b = wierless ? 0 : 1;
 
-//            particleTextureIndexX = 0;
-//            particleTextureIndexY = 0;
-//            minU = (float) this.particleTextureIndexX / texturesPerRow;
-//            maxU = minU + 1F / texturesPerRow;
-//            minV = (float) this.particleTextureIndexY / texturesPerRow;
-//            maxV = minV + 1F / texturesPerRow;
-//            vertexbuffer.pos((double) (drawX - rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV).color(r, g, b, a).endVertex();
-//            vertexbuffer.pos((double) (drawX - rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV).color(r, g, b, a).endVertex();
-//            vertexbuffer.pos((double) (drawX + rotationX * scale + rotationXY * scale), (double) (drawY + rotationZ * scale), (double) (drawZ + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV).color(r, g, b, a).endVertex();
-//            vertexbuffer.pos((double) (drawX + rotationX * scale - rotationXY * scale), (double) (drawY - rotationZ * scale), (double) (drawZ + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV).color(r, g, b, a).endVertex();
+            minU = DETextures.ORB_PARTICLE.getMinU();
+            maxU = DETextures.ORB_PARTICLE.getMaxU();
+            minV = DETextures.ORB_PARTICLE.getMinV();
+            maxV = DETextures.ORB_PARTICLE.getMaxV();
+            buffer.pos(drawX - rotationX * scale - rotationXY * scale, drawY - rotationZ * scale, drawZ - rotationYZ * scale - rotationXZ * scale).tex(maxU, maxV).color(r, g, b, a).lightmap(200, 200).endVertex();
+            buffer.pos(drawX - rotationX * scale + rotationXY * scale, drawY + rotationZ * scale, drawZ - rotationYZ * scale + rotationXZ * scale).tex(maxU, minV).color(r, g, b, a).lightmap(200, 200).endVertex();
+            buffer.pos(drawX + rotationX * scale + rotationXY * scale, drawY + rotationZ * scale, drawZ + rotationYZ * scale + rotationXZ * scale).tex(minU, minV).color(r, g, b, a).lightmap(200, 200).endVertex();
+            buffer.pos(drawX + rotationX * scale - rotationXY * scale, drawY - rotationZ * scale, drawZ + rotationYZ * scale - rotationXZ * scale).tex(minU, maxV).color(r, g, b, a).lightmap(200, 200).endVertex();
 
             //endregion
         }
@@ -147,27 +148,30 @@ public class CrystalFXRing extends CrystalGLFXBase<TileCrystalBase> {
     }
 
     @Override
-    public IGLFXHandler getFXHandler() {
-        return FX_HANDLER;
+    public IParticleRenderType getRenderType() {
+        return RENDER_TYPE;
     }
 
-    public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
+    public static final IParticleRenderType RENDER_TYPE = new IParticleRenderType() {
         @Override
-        public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void beginRender(BufferBuilder builder, TextureManager textureManager) {
             GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            GlStateTracker.pushState();
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569f);
+            textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.depthMask(false);
-            GlStateManager.disableCull();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-            ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
-            vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.disableLighting();
+//            textureManager.getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(true, false);
+//            textureManager.getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+
+            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
         }
 
         @Override
-        public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
+        public void finishRender(Tessellator tessellator) {
             tessellator.getBuffer().sortVertexData(0, 0, 0);
             tessellator.draw();
-//            GlStateTracker.popState();
         }
     };
 }

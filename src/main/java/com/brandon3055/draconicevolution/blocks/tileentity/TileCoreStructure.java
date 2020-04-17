@@ -2,27 +2,30 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedString;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Created by brandon3055 on 13/4/2016.
  */
-public class TileCoreStructure extends TileBCore implements IMultiBlockPart/*, IMovableStructure*/ {
+public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IActivatableTile {
 
-    public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_CONTAINER));
-    public String blockName = "";
+    public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
+    public final ManagedString blockName = register(new ManagedString("block_name", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
 
     public TileCoreStructure() {
         super(DEContent.tile_core_structure);
@@ -41,7 +44,7 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart/*, I
         if (tile instanceof IMultiBlockPart) {
             return (IMultiBlockPart) tile;
         }
-        else {
+        else if (!world.isRemote) {
             revert();
         }
 
@@ -60,29 +63,27 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart/*, I
 
     //endregion
 
-    public boolean onTileClicked(PlayerEntity player, BlockState state) {
-//        IMultiBlockPart controller = getController();
-//
-//        if (controller instanceof TileEnergyCoreStabilizer) {
-//            ((TileEnergyCoreStabilizer) controller).onTileClicked(world, pos, state, player);
-//        }
-//        else if (controller instanceof TileEnergyStorageCore) {
-//            ((TileEnergyStorageCore) controller).onStructureClicked(world, pos, state, player);
-//        }
-//        else if (controller instanceof TileEnergyPylon) {
-//            ((TileEnergyPylon) controller).isOutputMode.invert();
-//        }
+
+    @Override
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        IMultiBlockPart controller = getController();
+
+        if (controller instanceof TileEnergyCoreStabilizer) {
+            ((TileEnergyCoreStabilizer) controller).onBlockActivated(state, player, handIn, hit);
+        }
+        else if (controller instanceof TileEnergyCore) {
+            ((TileEnergyCore) controller).onStructureClicked(world, pos, state, player);
+        }
+        else if (controller instanceof TileEnergyPylon) {
+            ((TileEnergyPylon) controller).invertIO();
+        }
 
         return true;
     }
 
     public void revert() {
-        if (blockName.equals("draconicevolution:particle_generator")) {
-//            world.setBlockState(pos, DEFeatures.particleGenerator.getDefaultState().with(ParticleGenerator.TYPE, "stabilizer"));
-            return;
-        }
-
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName));
+        if (world.isRemote) return;
+        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName.get()));
         if (block != Blocks.AIR) {
             world.setBlockState(pos, block.getDefaultState());
         }
@@ -93,6 +94,8 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart/*, I
 
     public void setController(IMultiBlockPart controller) {
         coreOffset.set(new Vec3I(pos.subtract(((TileEntity) controller).getPos())));
+//        DelayedTask.run(100, () -> dataManager.forceSync());
+//        ProcessHandler.addProcess(new DelayedTask.Task(10, () -> dataManager.forceSync()));
     }
 
     private BlockPos getCorePos() {

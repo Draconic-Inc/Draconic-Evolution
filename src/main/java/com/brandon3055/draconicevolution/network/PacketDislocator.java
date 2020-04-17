@@ -7,7 +7,7 @@
 //import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
 //import com.brandon3055.draconicevolution.DEConfig;
 //import com.brandon3055.draconicevolution.DEFeatures;
-//import com.brandon3055.draconicevolution.lib.DESoundHandler;
+//import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 //import io.netty.buffer.ByteBuf;
 //import net.minecraft.init.Items;
 //import net.minecraft.item.ItemStack;

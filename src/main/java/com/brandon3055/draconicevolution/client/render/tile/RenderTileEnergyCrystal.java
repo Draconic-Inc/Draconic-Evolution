@@ -18,7 +18,7 @@ import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystal
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -40,9 +40,9 @@ public class RenderTileEnergyCrystal extends TESRBase<TileCrystalBase> {
     private static ShaderProgram shaderProgram;
 
     public RenderTileEnergyCrystal() {
-        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/crystal.obj"));
+        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/crystal.obj"));
         crystalFull = CCModel.combine(map.values());
-        map = OBJParser.parseModels(ResourceHelperDE.getResource("models/crystal_half.obj"));
+        map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/crystal_half.obj"));
         crystalHalf = map.get("Crystal");
         crystalBase = map.get("Base");
     }

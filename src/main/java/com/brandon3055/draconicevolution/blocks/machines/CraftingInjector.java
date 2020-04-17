@@ -4,9 +4,10 @@ import codechicken.lib.block.property.PropertyString;
 import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.EnumTechLevel;
+
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
+import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -49,7 +50,7 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 
@@ -118,7 +119,7 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCraftingInjector(EnumTechLevel.DRACONIUM);
+        return new TileCraftingInjector(TechLevel.DRACONIUM);
     }
 
     @Override

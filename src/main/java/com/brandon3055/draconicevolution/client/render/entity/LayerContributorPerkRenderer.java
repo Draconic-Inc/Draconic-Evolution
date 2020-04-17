@@ -3,7 +3,7 @@
 //import com.brandon3055.draconicevolution.client.model.ModelContributorWings;
 //import com.brandon3055.draconicevolution.handlers.ContributorHandler;
 //import com.brandon3055.draconicevolution.handlers.ContributorHandler.Contributor;
-//import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+//import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 //import com.mojang.blaze3d.platform.GlStateManager;
 //import net.minecraft.client.Minecraft;
 //import net.minecraft.client.entity.AbstractClientPlayer;

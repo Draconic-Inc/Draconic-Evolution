@@ -18,7 +18,7 @@ public class EnergyInfuser extends BlockBCore/* implements ITileEntityProvider, 
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

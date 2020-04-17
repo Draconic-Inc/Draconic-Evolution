@@ -1,7 +1,10 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
+import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +25,7 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
     }
 
     @Override
-    public void update() {
-    }
+    public void update() {}
 
     @Override
     public void detectAndSendChanges() {
@@ -52,7 +54,7 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
         }
 
         if (batchedUpdate != null) {
-            sendUpdate();
+            queUpdate();
         }
     }
 
@@ -61,12 +63,12 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
         lastTickIndexToFlow.clear();
     }
 
-    private void sendUpdate() {
-        //TODO Update Batcher
-//        PlayerChunkMapEntry playerChunkMap = ((ServerWorld) tile.getWorld()).getPlayerChunkMap().getEntry(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4);
-//        if (playerChunkMap != null) {
-//            playerChunkMap.players.forEach(playerMP -> CrystalUpdateBatcher.queData(batchedUpdate, playerMP));
-//        }
+    private void queUpdate() {
+        ServerWorld serverWorld = ((ServerWorld) tile.getWorld());
+
+        if (serverWorld != null) {
+            serverWorld.getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(tile.getPos()), false).forEach(player -> CrystalUpdateBatcher.queData(batchedUpdate, player));
+        }
 
         batchedUpdate = null;
     }

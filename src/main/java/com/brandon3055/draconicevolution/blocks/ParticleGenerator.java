@@ -7,7 +7,7 @@ import net.minecraft.block.Block;
  * Created by brandon3055 on 30/3/2016.
  */
 //TODO Split into multiple blocks
-public class ParticleGenerator extends BlockBCore /*implements ITileEntityProvider, IRegistryOverride, IRenderOverride*/ {
+public class ParticleGenerator extends BlockBCore {
 //    public static final PropertyString TYPE = new PropertyString("type", "normal", "inverted", "stabilizer", "stabilizer2");
 
     public ParticleGenerator(Block.Properties properties) {
@@ -18,7 +18,7 @@ public class ParticleGenerator extends BlockBCore /*implements ITileEntityProvid
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

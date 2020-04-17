@@ -14,7 +14,7 @@ import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
@@ -24,11 +24,11 @@ import com.brandon3055.draconicevolution.blocks.Portal;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerClient;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerServer;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
-import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,7 +52,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-import static com.brandon3055.draconicevolution.DEContent.dislocator_p2p;
+import static com.brandon3055.draconicevolution.init.DEContent.dislocator_p2p;
 
 /**
  * Created by brandon3055 on 16/07/2016.
@@ -899,7 +899,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     @Override
-    public CrystalGLFXBase createStaticFX() {
+    public CrystalFXBase createStaticFX() {
         return null;
     }
 

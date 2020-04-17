@@ -7,7 +7,9 @@ import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
+import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
+import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
@@ -15,8 +17,9 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
+import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.BlockState;
@@ -25,23 +28,26 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +55,7 @@ import java.util.UUID;
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 import static com.brandon3055.brandonscore.lib.entityfilter.FilterType.*;
 
-public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSwitchable {
+public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IActivatableTile {
 
     private static FakePlayer cachedFakePlayer;
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
@@ -64,10 +70,14 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
     //Client side rendering fields
     public Entity targetA = null;
-    public float animA = 0F;
+    public float animA = 0.8F;
     public Entity targetB = null;
-    public float animB = 0F;
+    public float animB = 0.8F;
     private boolean swordFlipFlop = false;
+    public float fanRotation = 0;
+    public float fanSpeed = 0;
+    public float aoeDisplay = 0;
+
 
     //Grinding logic fields
     public AxisAlignedBB killZone;
@@ -120,11 +130,28 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             else targetA = null;
             if (animB < 1) animB += getAnimSpeed();
             else targetB = null;
+
+            fanRotation += fanSpeed;
+            if (active.get() && fanSpeed < 1) {
+                fanSpeed = Math.min(fanSpeed + 0.03F, 1F);
+            }
+            else if (!active.get() && fanSpeed > 0) {
+                fanSpeed = Math.max(fanSpeed - 0.08F, 0F);
+            }
+
+            if (showAOE.get()) {
+                aoeDisplay = (float) MathHelper.approachExp(aoeDisplay, aoe.get(), 0.1F);
+            }
+            else {
+                aoeDisplay = MathHelper.approachLinear(aoeDisplay, 0.5F, 0.15F);
+            }
+
             return;
         }
 
         if (updateActiveState()) {
             if (onInterval(20)) {
+                validateKillZone(false);
                 handleLootCollection();
             }
 
@@ -148,6 +175,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             isActive = false;
         }
 
+        world.setBlockState(pos, world.getBlockState(pos).with(Grinder.ACTIVE, isActive));
         return active.set(isActive);
     }
 
@@ -201,6 +229,9 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             return true;
         }
         LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getName().getFormattedText() + " Waiting 3 ticks...");
+        if (!killZone.intersects(nextTarget.getBoundingBox())) {
+            nextTarget = null;
+        }
 
         return false;
     }
@@ -220,19 +251,21 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
                     nextTarget = randEntity;
                     //Throw the sword!
                     sendPacketToChunk(output -> output.writeInt(nextTarget.getEntityId()), 1);
+                    world.playSound(null, pos, SoundEvents.ITEM_TRIDENT_THROW, SoundCategory.BLOCKS, 1, 0.55F + (world.rand.nextFloat() * 0.1F));
                     coolDown = killRate;
                     return;
                 }
             }
         }
 
-        LogHelper.dev("Grinder: No attackable entities in range. Waiting 5 seconds.");
+//        LogHelper.dev("Grinder: No attackable entities in range. Waiting 5 seconds.");
         coolDown = foundInvulnerable ? 5 : 100;
         nextTarget = null;
     }
 
     private boolean isValidEntity(LivingEntity livingBase) {
         if (!livingBase.isAlive()) return false;
+        if (livingBase instanceof PlayerEntity && !DEConfig.allowGrindingPlayers) return false;
         if (DEConfig.grinderBlacklist.isEmpty()) return true;
         ResourceLocation reg = livingBase.getType().getRegistryName();
         return !(reg != null && DEConfig.grinderBlacklist.contains(reg.toString()));
@@ -336,7 +369,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
     public FakePlayer getFakePlayer() {
         if (cachedFakePlayer == null) {
-            cachedFakePlayer = FakePlayerFactory.get((ServerWorld) world, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
+            cachedFakePlayer = FakePlayerFactory.get((ServerWorld) world, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "Draconic Evolution Grinder"));
         }
         return cachedFakePlayer;
     }
@@ -344,8 +377,87 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     @Override
     public void onNeighborChange(BlockPos neighbor) {
         super.onNeighborChange(neighbor);
-        updateActiveState();
-        validateKillZone(true);
-        coolDown = killRate;
+
+        if (coolDown > killRate) {
+            updateActiveState();
+            validateKillZone(true);
+            coolDown = killRate;
+        }
     }
+
+    @Nullable
+    @Override
+    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+        return new ContainerBCBase<>(DEContent.container_grinder, currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
+    }
+
+    @Override
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (player instanceof ServerPlayerEntity) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+        } else if (world.isRemote && player.isSneaking()) {
+//            AxisAlignedBB bb = getKillBoxForRender();
+
+            for (double i = 0; i <= 7; i += 0.01) {
+//                Vec3D minX = new Vec3D(bb.minX + i, bb.minY, bb.minZ);
+//                Vec3D minY = new Vec3D(bb.minX, bb.minY + i, bb.minZ);
+//                Vec3D minZ = new Vec3D(bb.minX, bb.minY, bb.minZ + i);
+
+//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minX, new Vec3D(), 0, 255, 255, 130);
+//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minY, new Vec3D(), 0, 255, 255, 130);
+//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minZ, new Vec3D(), 0, 255, 255, 130);
+
+//                Vec3D maxX = new Vec3D(bb.maxX - i, bb.maxY, bb.maxZ);
+//                Vec3D maxY = new Vec3D(bb.maxX, bb.maxY - i, bb.maxZ);
+//                Vec3D maxZ = new Vec3D(bb.maxX, bb.maxY, bb.maxZ - i);
+
+//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxX, new Vec3D(), 0, 255, 255, 130);
+//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxY, new Vec3D(), 0, 255, 255, 130);
+//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxZ, new Vec3D(), 0, 255, 255, 130);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        if (showAOE.get()) {
+            return INFINITE_EXTENT_AABB;
+        }
+        return super.getRenderBoundingBox();
+    }
+
+    //    @Override
+//    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    //        if (player.isSneaking()) {
+////            TileEntity tile = world.getTileEntity(pos);
+////            if (tile instanceof TileGrinder && world.isRemote) {
+////                AxisAlignedBB bb = ((TileGrinder) tile).getKillBoxForRender();
+////
+////                for (double i = 0; i <= 7; i += 0.01) {
+////                    Vec3D minX = new Vec3D(bb.minX + i, bb.minY, bb.minZ);
+////                    Vec3D minY = new Vec3D(bb.minX, bb.minY + i, bb.minZ);
+////                    Vec3D minZ = new Vec3D(bb.minX, bb.minY, bb.minZ + i);
+////
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minX, new Vec3D(), 0, 255, 255, 130);
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minY, new Vec3D(), 0, 255, 255, 130);
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minZ, new Vec3D(), 0, 255, 255, 130);
+////
+////                    Vec3D maxX = new Vec3D(bb.maxX - i, bb.maxY, bb.maxZ);
+////                    Vec3D maxY = new Vec3D(bb.maxX, bb.maxY - i, bb.maxZ);
+////                    Vec3D maxZ = new Vec3D(bb.maxX, bb.maxY, bb.maxZ - i);
+////
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxX, new Vec3D(), 0, 255, 255, 130);
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxY, new Vec3D(), 0, 255, 255, 130);
+////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxZ, new Vec3D(), 0, 255, 255, 130);
+////                }
+////
+////
+////            }
+//        }
+//        else if (!world.isRemote) {
+//            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GRINDER, world, pos.getX(), pos.getY(), pos.getZ());
+//        }
+//        return true;
+//    }
 }

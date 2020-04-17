@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner;
+import com.brandon3055.draconicevolution.items.MobSoul;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -13,14 +15,13 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.lang3.NotImplementedException;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class StabilizedSpawner extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
+public class StabilizedSpawner extends BlockBCore {
 
     public StabilizedSpawner(Properties properties) {
         super(properties);
@@ -28,7 +29,7 @@ public class StabilizedSpawner extends BlockBCore/* implements ITileEntityProvid
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 
@@ -84,15 +85,14 @@ public class StabilizedSpawner extends BlockBCore/* implements ITileEntityProvid
 
     //TODO
     public void setStackDataEntity(ItemStack stack, String entityString) {
-        throw new NotImplementedException("setStackDataEntity");
-        //        if (entityString != null) {
-//            ItemStack soul = new ItemStack(DEFeatures.mobSoul);
-//            DEFeatures.mobSoul.setEntity(MobSoul.getCachedRegName(entityString), soul);
-//            CompoundNBT managedData = stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).getCompoundTag(BlockBCore.BC_MANAGED_DATA_FLAG);
-//            stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).getCompoundTag(BlockBCore.BC_MANAGED_DATA_FLAG);
-//            managedData.setTag("mob_soul", soul.serializeNBT());
-//            stack.getOrCreateSubCompound(BlockBCore.BC_TILE_DATA_TAG).setTag(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
-//        }
+        if (entityString != null) {
+            ItemStack soul = new ItemStack(DEContent.mob_soul);
+            DEContent.mob_soul.setEntity(MobSoul.getCachedRegName(entityString), soul);
+            CompoundNBT managedData = stack.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
+            stack.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
+            managedData.put("mob_soul", soul.serializeNBT());
+            stack.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
+        }
     }
 
     @Override
@@ -100,9 +100,8 @@ public class StabilizedSpawner extends BlockBCore/* implements ITileEntityProvid
         return true;
     }
 
-
-    //    @Override
-//    public boolean isSideSolid(BlockState base_state, IBlockAccess world, BlockPos pos, Direction side) {
-//        return true;
-//    }
+    @Override
+    public boolean isSolid(BlockState state) {
+        return false;
+    }
 }

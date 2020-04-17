@@ -21,7 +21,7 @@ import java.util.Random;
  * Created by brandon3055 on 18/3/2016.
  */
 public class DraconiumOre extends BlockBCore {
-    //TODO Split into different blocks
+
     public DraconiumOre(Properties properties) {
         super(properties);
     }
@@ -120,39 +120,39 @@ public class DraconiumOre extends BlockBCore {
 //        }
 //    }
 
-    public enum EnumType implements IStringSerializable {
-        NORMAL(0, "normal"), NETHER(1, "nether"), END(2, "end");
-
-        private static final EnumType[] META_LOOKUP = new EnumType[values().length];
-        private final int meta;
-        private final String name;
-
-        EnumType(int meta, String name) {
-            this.meta = meta;
-            this.name = name;
-        }
-
-        public int getMeta() {
-            return meta;
-        }
-
-        public static EnumType byMetadata(int meta) {
-            if (meta < 0 || meta >= META_LOOKUP.length) {
-                meta = 0;
-            }
-
-            return META_LOOKUP[meta];
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        static {
-            for (EnumType type : values()) {
-                META_LOOKUP[type.getMeta()] = type;
-            }
-        }
-    }
+//    public enum EnumType implements IStringSerializable {
+//        NORMAL(0, "normal"), NETHER(1, "nether"), END(2, "end");
+//
+//        private static final EnumType[] META_LOOKUP = new EnumType[values().length];
+//        private final int meta;
+//        private final String name;
+//
+//        EnumType(int meta, String name) {
+//            this.meta = meta;
+//            this.name = name;
+//        }
+//
+//        public int getMeta() {
+//            return meta;
+//        }
+//
+//        public static EnumType byMetadata(int meta) {
+//            if (meta < 0 || meta >= META_LOOKUP.length) {
+//                meta = 0;
+//            }
+//
+//            return META_LOOKUP[meta];
+//        }
+//
+//        @Override
+//        public String getName() {
+//            return this.name;
+//        }
+//
+//        static {
+//            for (EnumType type : values()) {
+//                META_LOOKUP[type.getMeta()] = type;
+//            }
+//        }
+//    }
 }

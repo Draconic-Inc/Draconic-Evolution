@@ -24,7 +24,7 @@ public class FlowGate extends BlockBCore/* implements IRegistryOverride*/ {
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

@@ -4,7 +4,7 @@ import com.brandon3055.brandonscore.blocks.TileBCBase;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedDouble;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.tileentity.ITickableTileEntity;
 
 import java.util.Random;

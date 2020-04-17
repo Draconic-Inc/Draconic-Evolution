@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import mezz.jei.api.*;

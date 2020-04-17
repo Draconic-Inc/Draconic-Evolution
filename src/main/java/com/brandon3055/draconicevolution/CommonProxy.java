@@ -5,8 +5,10 @@ import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandle
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.audio.ISound;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
@@ -16,6 +18,7 @@ public class CommonProxy {
 
     public void commonSetup(FMLCommonSetupEvent event) {
         DraconicNetwork.init();
+        MinecraftForge.EVENT_BUS.register(new DEEventHandler());
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
@@ -79,7 +82,7 @@ public class CommonProxy {
 //    }
 //
 //    public void registerEventListeners(Side s) {
-//        MinecraftForge.EVENT_BUS.register(new DEEventHandler());
+//
 //        MinecraftForge.EVENT_BUS.register(new Achievements());
 //        MinecraftForge.EVENT_BUS.register(new CustomArmorHandler());
 //    }
@@ -101,9 +104,9 @@ public class CommonProxy {
 //        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "EnderEnergyManipulator"), EntityEnderEnergyManipulator.class, "draconicevolution:EnderEnergyManipulator", 13, DraconicEvolution.instance, 128, 5, true);
 //    }
 
-    public void registerParticles() {
-        DEParticles.registerServer();
-    }
+//    public void registerParticles() {
+//        DEParticles.registerServer();
+//    }
 
     public ENetFXHandler createENetFXHandler(IENetEffectTile tile) {
         return tile.createServerFXHandler();

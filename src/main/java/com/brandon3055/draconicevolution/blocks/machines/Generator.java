@@ -2,9 +2,12 @@ package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -17,7 +20,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -26,22 +31,34 @@ import javax.annotation.Nullable;
  * Block for DE Generator
  */
 public class Generator extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public Generator(Properties properties) {
         super(properties);
+
         this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, false));
     }
 
+//    @Override
+//    public boolean uberIsBlockFullCube() {
+//        return true;
+//    }
+
+
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isSolid(BlockState state) {
         return false;
     }
 
     @Override
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return super.getRenderType(state);
     }
 
     @Override
@@ -61,35 +78,6 @@ public class Generator extends BlockBCore/* implements ITileEntityProvider, IRen
 //        ClientRegistry.bindTileEntitySpecialRenderer(TileGenerator.class, new AnimationTESR<>());
 //    }
 
-    //region BlockState
-//    @Override
-//    protected ExtendedBlockState createBlockState() {
-//        return new ExtendedBlockState(this, new IProperty[] {FACING, ACTIVE, Properties.StaticProperty}, new IUnlistedProperty[]{Properties.AnimationProperty});
-//    }
-
-//    @Override
-//    public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos) {
-//        TileGenerator tileGenerator = worldIn.getTileEntity(pos) instanceof TileGenerator ? (TileGenerator) worldIn.getTileEntity(pos) : null;
-//        return state.withProperty(ACTIVE, tileGenerator != null && tileGenerator.active.get());
-//    }
-
-//    @Override
-//    public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos) {
-////        TileGenerator tileGenerator = world.getTileEntity(pos) instanceof TileGenerator ? (TileGenerator) world.getTileEntity(pos) : null;
-////        return state.withProperty(ACTIVE, tileGenerator != null && tileGenerator.active.get());
-//        return super.getExtendedState(state, world, pos);
-//    }
-//
-//    @Override
-//    public BlockState getStateFromMeta(int meta) {
-//        Direction enumfacing = Direction.getFront(meta);
-//
-//        if (enumfacing.getAxis() == Direction.Axis.Y) {
-//            enumfacing = Direction.NORTH;
-//        }
-//
-//        return this.getDefaultState().withProperty(FACING, enumfacing);
-//    }
 
 //    @Override
 //    public int getMetaFromState(BlockState state) {
@@ -106,16 +94,12 @@ public class Generator extends BlockBCore/* implements ITileEntityProvider, IRen
 //        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
 //    }
 //
-//    @Override
-//    public BlockState getStateForPlacement(World world, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer, Hand hand) {
-//        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-//    }
 
-//    @Override
-//    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-//        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
-//        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-//    }
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+    }
+
     //endregion
 
 
@@ -131,16 +115,8 @@ public class Generator extends BlockBCore/* implements ITileEntityProvider, IRen
     }
 
     @Override
-    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
-        return 0; //TODO Light Level  //state.getActualState(world, pos).getValue(ACTIVE) ? 13 : 0;
-    }
-
-    @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-//        if (!world.isRemote) {
-//            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GENERATOR, world, pos.getX(), pos.getY(), pos.getZ());
-//        }
-        return true;
+    public int getLightValue(BlockState state) {
+        return state.get(ACTIVE) ? 13 : 0;
     }
 }
 

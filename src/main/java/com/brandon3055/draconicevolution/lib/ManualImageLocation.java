@@ -1,6 +1,6 @@
 //package com.brandon3055.draconicevolution.lib;
 //
-//import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+//import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 //import net.minecraft.util.ResourceLocation;
 //
 ///**

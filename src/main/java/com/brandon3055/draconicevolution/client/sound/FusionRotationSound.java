@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.sound;
 
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
-import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundCategory;

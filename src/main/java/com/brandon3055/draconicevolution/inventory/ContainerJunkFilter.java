@@ -2,15 +2,12 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
-import com.brandon3055.draconicevolution.DEContent;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;

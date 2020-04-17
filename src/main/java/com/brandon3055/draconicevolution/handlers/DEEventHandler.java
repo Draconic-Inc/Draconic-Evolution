@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
@@ -10,7 +10,6 @@ import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

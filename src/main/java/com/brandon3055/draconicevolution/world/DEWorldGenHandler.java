@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
@@ -61,7 +61,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
 
         if (type == DimensionType.OVERWORLD) {
             if (!DEConfig.disableOreSpawnOverworld) {
-                addOreSpawn(DEContent.draconium_ore_overworld.getDefaultState(), FillerBlockType.NATURAL_STONE, chunkGenerator, world, random, chunkX * 16, chunkZ * 16, 6, 10, 2, 2, 8);
+                addOreSpawn(DEContent.ore_draconium_overworld.getDefaultState(), FillerBlockType.NATURAL_STONE, chunkGenerator, world, random, chunkX * 16, chunkZ * 16, 6, 10, 2, 2, 8);
             }
         } else if (type == DimensionType.THE_END) {
             int actualX = chunkX * 16;
@@ -76,11 +76,11 @@ public class DEWorldGenHandler implements IWorldGenerator {
                 ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, null, random);
             }
             if (!DEConfig.disableOreSpawnEnd) {
-                addOreSpawn(DEContent.draconium_ore_end.getDefaultState(), END_FILLER_TYPE, chunkGenerator, world, random, actualX, actualZ, 4, 5, 10, 1, 70);
+                addOreSpawn(DEContent.ore_draconium_end.getDefaultState(), END_FILLER_TYPE, chunkGenerator, world, random, actualX, actualZ, 4, 5, 10, 1, 70);
             }
         } else if (type == DimensionType.THE_NETHER) {
             if (!DEConfig.disableOreSpawnNether) {
-                addOreSpawn(DEContent.draconium_ore_nether.getDefaultState(), FillerBlockType.NETHERRACK, chunkGenerator, world, random, chunkX * 16, chunkZ * 16, 5, 7, 5, 1, 125);
+                addOreSpawn(DEContent.ore_draconium_nether.getDefaultState(), FillerBlockType.NETHERRACK, chunkGenerator, world, random, chunkX * 16, chunkZ * 16, 5, 7, 5, 1, 125);
             }
         } else {
             for (String name : DEConfig.oreGenDimentionBlacklist) {
@@ -88,7 +88,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
                     return;
                 }
             }
-            addOreSpawn(DEContent.draconium_ore_overworld.getDefaultState(), FillerBlockType.NATURAL_STONE, chunkGenerator, world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
+            addOreSpawn(DEContent.ore_draconium_overworld.getDefaultState(), FillerBlockType.NATURAL_STONE, chunkGenerator, world, random, chunkX * 16, chunkZ * 16, 3, 4, 2, 2, 8);
         }
     }
 

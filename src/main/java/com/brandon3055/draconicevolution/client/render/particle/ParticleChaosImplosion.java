@@ -6,7 +6,7 @@ import codechicken.lib.vec.Scale;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.World;
 

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
 import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;

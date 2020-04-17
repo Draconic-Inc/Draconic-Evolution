@@ -1,16 +1,20 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXIO;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -34,6 +38,11 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public final ManagedBool outputMode = dataManager.register(new ManagedBool("outputMode", SAVE_BOTH_SYNC_TILE));
 
     public TileCrystalDirectIO() {
+        super(DEContent.tile_crystal_io);
+    }
+
+    public TileCrystalDirectIO(TechLevel techLevel) {
+        super(DEContent.tile_crystal_io, techLevel);
     }
 
     //region Update Energy IO
@@ -78,6 +87,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player.isSneaking()) {
             outputMode.invert();
+            updateRotation(facing.get());
             return true;
         }
         return super.onBlockActivated(state, player, handIn, hit);
@@ -92,7 +102,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public CrystalGLFXBase createStaticFX() {
+    public CrystalFXBase createStaticFX() {
         return new CrystalFXIO(world, this);
     }
 
@@ -116,39 +126,32 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     //endregion
 
-    //region Misc
-
-
     @Override
     public void onTilePlaced(BlockItemUseContext context, BlockState state) {
         super.onTilePlaced(context, state);
-        facing.set(context.getFace().getOpposite());
+        updateRotation(context.getFace().getOpposite());
     }
 
-    //endregion
+    public void updateRotation(Direction newDirection) {
+        facing.set(newDirection);
+        capManager.remove(CapabilityOP.OP);
+        opStorage.setIOMode(!outputMode.get());
+        capManager.setSide(CapabilityOP.OP, opStorage, newDirection);
+    }
 
+    @Override
+    public void readExtraNBT(CompoundNBT compound) {
+        super.readExtraNBT(compound);
+        updateRotation(facing.get());
+    }
 
-//    @Override
-//    public boolean hasCapability(Capability<?> capability, @Nullable Direction facing) {
-//        if (facing == this.facing.get() && (capability == CapabilityEnergy.ENERGY || capability == CapabilityOP.OP)) {
-//            return true;
-//        }
-//
-//        return super.hasCapability(capability, facing);
+    //    public void updateRotation(Direction newDirection) {
+//        facing.set(newDirection);
+//        updateCapabilityIO();
 //    }
-
-//    @Nullable
-//    @Override
-//    public <T> T getCapability(Capability<T> capability, @Nullable Direction facing) {
-//        if (facing == this.facing.get()) {
-//            if (capability == CapabilityEnergy.ENERGY) {
-//                return CapabilityEnergy.ENERGY.cast(opStorage);
-//            }
-//            else if (capability == CapabilityOP.OP) {
-//                return CapabilityOP.OP.cast(opStorage);
-//            }
-//        }
 //
-//        return super.getCapability(capability, facing);
+//    public void updateCapabilityIO() {
+//        capManager.remove(CapabilityOP.OP);
+//        capManager.setSide(CapabilityOP.OP, new OPIOControl(opStorage).setIOMode(!outputMode.get()), facing.get());
 //    }
 }

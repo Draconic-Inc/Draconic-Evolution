@@ -2,9 +2,8 @@ package com.brandon3055.draconicevolution.client.model;
 
 import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.texture.IIconRegister;
-import com.brandon3055.draconicevolution.DEContent;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 
 /**
  * Created by brandon3055 on 8/07/2016.

@@ -7,8 +7,7 @@ import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
-import com.brandon3055.draconicevolution.entity.EntityLootCore;
-import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.BlockState;
@@ -24,8 +23,6 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-
-import java.util.Set;
 
 /**
  * Created by brandon3055 on 2/06/2016.

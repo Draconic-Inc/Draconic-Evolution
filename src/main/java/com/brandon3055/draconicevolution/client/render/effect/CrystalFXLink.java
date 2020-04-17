@@ -2,19 +2,19 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -22,7 +22,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
+public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
 
     private final Vec3D linkTarget;
     private final boolean terminateSource;
@@ -31,7 +31,6 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
 
     public CrystalFXLink(World worldIn, TileCrystalBase tile, Vec3D linkTarget) {
         super(worldIn, tile);
-//        this.particleTextureIndexX = 3 + tile.getTier();
         this.age = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget.getPos()));
         this.terminateSource = true;
@@ -128,20 +127,18 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
     }
 
     @Override
-    public IGLFXHandler getFXHandler() {
+    public IParticleRenderType getRenderType() {
         return HANDLER;
     }
 
-    private static final FXHandler HANDLER = new FXHandler();
+    private static final IParticleRenderType HANDLER = new FXHandler();
 
-    public static class FXHandler implements IGLFXHandler {
+    public static class FXHandler implements IParticleRenderType {
 
-        public FXHandler() {
-        }
+        public FXHandler() {}
 
         @Override
-        public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-//            GlStateTracker.pushState();
+        public void beginRender(BufferBuilder builder, TextureManager p_217600_2_) {
             GlStateManager.depthMask(false);
             GlStateManager.texParameter(3553, 10242, 10497.0F);
             GlStateManager.texParameter(3553, 10243, 10497.0F);
@@ -153,16 +150,14 @@ public class CrystalFXLink extends CrystalGLFXBase<TileCrystalBase> {
 //            GlStateManager.disableTexture2D();
             GlStateManager.color4f(1, 0, 0, 1);
 
-
-            vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         }
 
         @Override
-        public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
+        public void finishRender(Tessellator tessellator) {
             tessellator.draw();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 //            GlStateManager.enableTexture2D();
-//            GlStateTracker.popState();
         }
     }
 }

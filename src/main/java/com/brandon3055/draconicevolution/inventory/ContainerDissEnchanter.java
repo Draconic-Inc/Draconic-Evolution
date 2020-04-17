@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCBase;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
 public class ContainerDissEnchanter extends ContainerBCBase<TileDissEnchanter> {
 
     public ContainerDissEnchanter(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
-        this(DEContent.container_dissenchanter, windowId, playerInv.player, getClientTile(extraData));
+        this(DEContent.container_dissenchanter, windowId, playerInv, getClientTile(extraData));
     }
 
-    public ContainerDissEnchanter(@Nullable ContainerType<?> type, int windowId, PlayerEntity player, TileDissEnchanter tile) {
+    public ContainerDissEnchanter(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, TileDissEnchanter tile) {
         super(type, windowId, player, tile);
         addPlayerSlots(8, 60);
 

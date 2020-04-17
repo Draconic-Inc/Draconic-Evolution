@@ -9,8 +9,8 @@
 //import net.minecraftforge.fml.common.registry.GameRegistry;
 //
 //import static com.brandon3055.draconicevolution.DEFeatures.*;
-//import static com.brandon3055.draconicevolution.lib.RecipeManager.RecipeDifficulty.*;
-//import static com.brandon3055.draconicevolution.lib.RecipeManager.*;
+//import static com.brandon3055.draconicevolution.init.RecipeManager.RecipeDifficulty.*;
+//import static com.brandon3055.draconicevolution.init.RecipeManager.*;
 //import static net.minecraft.init.Blocks.*;
 //import static net.minecraft.init.Items.*;
 //import static net.minecraft.init.Items.SKULL;

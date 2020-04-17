@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mod docRevision="0" lang="en_US" modName="pi" modid="PI">
+    <content index="4" type="textArea">Project Intelligence AKA "Project Intel" or "PI" is an ingame documentation mod i am currently building as a part of Draconic Evolution. 
+
+At first this will just be used for Draconic Evolution but once it is complete it will be split off into its own separate mod. 
+
+My goal for this mod is for it to one day have documentation for almost all mods in existence. 
+
+But obviously there is no way one person could handle that much work so i will be leaving it up to the community to document as many mods as possible.
+
+(Project intelligence downloads all of its content (Not including this page) from github. So if this is the only page you see check that you are connected to the internet. You can also check the console for errors.)</content>
+    <content index="3" size="8" type="vSpacer"/>
+    <content index="1" size="4" type="vSpacer"/>
+    <content alignment="CENTER" index="2" shadow="true" size="0" type="heading">Document All The Things!!!!</content>
+    <content alignment="CENTER" index="0" shadow="true" size="2" type="heading">§o§nProject Intelligence</content>
+</mod>

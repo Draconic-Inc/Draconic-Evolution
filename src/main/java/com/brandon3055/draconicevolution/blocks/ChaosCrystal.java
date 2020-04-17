@@ -34,7 +34,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
 
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

@@ -1,6 +1,6 @@
 //package com.brandon3055.draconicevolution.integration.jei;
 //
-//import com.brandon3055.draconicevolution.DEContent;
+//import com.brandon3055.draconicevolution.init.DEContent;
 //import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier;
 //import com.brandon3055.draconicevolution.items.ItemCore;
 //import mezz.jei.api.IGuiHelper;

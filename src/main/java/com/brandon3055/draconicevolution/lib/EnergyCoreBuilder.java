@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.lib;
 
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.lib.MultiBlockStorage;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileStorageCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.world.EnergyCoreStructure;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -31,14 +31,14 @@ import java.util.Map;
  */
 public class EnergyCoreBuilder implements IProcess {
 
-    private final TileStorageCore core;
+    private final TileEnergyCore core;
     private final PlayerEntity player;
     private boolean isDead = false;
     private Map<BlockPos, BlockState> workList = new HashMap<>();
     private LinkedList<BlockPos> workOrder = new LinkedList<>();
     private World world;
 
-    public EnergyCoreBuilder(TileStorageCore core, PlayerEntity player) {
+    public EnergyCoreBuilder(TileEnergyCore core, PlayerEntity player) {
         this.core = core;
         this.player = player;
         this.world = core.getWorld();

@@ -6,13 +6,15 @@ import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
+import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerClientWireless;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerServerWireless;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
@@ -52,8 +54,13 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     public final ManagedBool useUpdateOptimisation = dataManager.register(new ManagedBool("transport_state", true, SAVE_BOTH_SYNC_CONTAINER));
     public final ManagedBool inputMode = dataManager.register(new ManagedBool("input_mode", SAVE_BOTH_SYNC_TILE));
 
+    public TileCrystalWirelessIO() {
+        super(DEContent.tile_crystal_wireless);
+    }
 
-    public TileCrystalWirelessIO() {}
+    public TileCrystalWirelessIO(TechLevel techLevel) {
+        super(DEContent.tile_crystal_wireless, techLevel);
+    }
 
     //region Energy Update
 
@@ -286,7 +293,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public CrystalGLFXBase createStaticFX() {
+    public CrystalFXBase createStaticFX() {
         return new CrystalFXRing(world, this);
     }
 

@@ -5,7 +5,7 @@
 //import com.brandon3055.brandonscore.network.MessageHandlerWrapper;
 //import com.brandon3055.draconicevolution.DEConfig;
 //import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-//import com.brandon3055.draconicevolution.lib.DESoundHandler;
+//import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 //import io.netty.buffer.ByteBuf;
 //import net.minecraft.entity.Entity;
 //import net.minecraft.entity.player.PlayerEntity;

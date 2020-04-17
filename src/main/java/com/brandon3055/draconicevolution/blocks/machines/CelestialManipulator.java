@@ -25,7 +25,7 @@ public class CelestialManipulator extends BlockBCore /*implements ITileEntityPro
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

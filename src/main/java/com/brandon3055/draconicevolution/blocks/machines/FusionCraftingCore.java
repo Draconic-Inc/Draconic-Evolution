@@ -24,7 +24,7 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

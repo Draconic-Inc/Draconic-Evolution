@@ -3,9 +3,8 @@ package com.brandon3055.draconicevolution.items.tools;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
-import com.brandon3055.draconicevolution.DEContent;
-import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
-import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -166,8 +165,8 @@ public class Dislocator extends ItemBCore {
         }
         else {
             tooltip.add(new TranslationTextComponent("info.teleporterInfSet1.txt").setStyle(new Style().setColor(TextFormatting.GREEN)));
-//            tooltip.add(TextFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + getLocation(stack, world).getDimensionName() + "}");
-//            tooltip.add(TextFormatting.BLUE + String.valueOf(stack.getMaxDamage() - stack.getItemDamage() + 1) + " " + I18n.format("info.teleporterInfSet2.txt"));
+            tooltip.add(new StringTextComponent(TextFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + getLocation(stack, world).getDimensionName() + "}"));
+            tooltip.add(new StringTextComponent(TextFormatting.BLUE + String.valueOf(stack.getMaxDamage() - stack.getDamage() + 1) + " " + I18n.format("info.teleporterInfSet2.txt")));
         }
     }
 

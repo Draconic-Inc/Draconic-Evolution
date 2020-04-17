@@ -2,7 +2,7 @@
 //
 //import com.brandon3055.draconicevolution.DraconicEvolution;
 //import com.brandon3055.draconicevolution.blocks.tileentity.TileParticleGenerator;
-//import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+//import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 //import com.brandon3055.draconicevolution.network.PacketParticleGenerator;
 //import com.brandon3055.draconicevolution.utils.DETextures;
 //import net.minecraft.client.Minecraft;

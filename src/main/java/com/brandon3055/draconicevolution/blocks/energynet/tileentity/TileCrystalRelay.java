@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,7 +16,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TileCrystalRelay extends TileCrystalBase {
 
     public TileCrystalRelay() {
-        super();
+        super(DEContent.tile_crystal_relay);
+    }
+
+    public TileCrystalRelay(TechLevel techLevel) {
+        super(DEContent.tile_crystal_relay, techLevel);
     }
 
     //region Rendering
@@ -26,7 +32,7 @@ public class TileCrystalRelay extends TileCrystalBase {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public CrystalGLFXBase createStaticFX() {
+    public CrystalFXBase createStaticFX() {
         return new CrystalFXRing(world, this);
     }
 

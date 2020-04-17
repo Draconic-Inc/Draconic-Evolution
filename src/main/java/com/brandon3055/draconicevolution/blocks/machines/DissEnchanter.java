@@ -25,7 +25,7 @@ public class DissEnchanter extends BlockBCore/* implements ITileEntityProvider, 
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

@@ -7,7 +7,6 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
-import com.brandon3055.brandonscore.lib.TileEntityFilter;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
@@ -16,8 +15,7 @@ import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleStarSpark;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -28,7 +26,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -42,8 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-import static com.brandon3055.brandonscore.lib.entityfilter.FilterType.*;
-import static com.brandon3055.brandonscore.lib.entityfilter.FilterType.PLAYER;
 
 /**
  * Created by brandon3055 on 28/09/2016.

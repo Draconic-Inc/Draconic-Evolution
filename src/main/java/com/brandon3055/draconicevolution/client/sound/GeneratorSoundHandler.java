@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.sound;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
-import com.brandon3055.draconicevolution.lib.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;

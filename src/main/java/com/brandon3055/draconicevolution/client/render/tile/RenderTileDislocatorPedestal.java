@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;

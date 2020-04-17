@@ -8,7 +8,7 @@
 //import com.brandon3055.draconicevolution.DEConfig;
 //import com.brandon3055.draconicevolution.DEFeatures;
 //import com.brandon3055.draconicevolution.DraconicEvolution;
-//import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+//import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 //import com.brandon3055.draconicevolution.network.PacketDislocator;
 //import com.brandon3055.draconicevolution.utils.DETextures;
 //import net.minecraft.client.gui.GuiButton;

@@ -3,14 +3,11 @@ package com.brandon3055.draconicevolution.items;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -63,10 +60,10 @@ public class MobSoul extends ItemBCore {
             entity.setLocationAndAngles(sX, sY, sZ, player.rotationYaw, 0F);
 
             if (!world.isRemote) {
-//                CompoundNBT compound = ItemNBTHelper.getCompound(stack);
-//                if (!compound.hasKey("EntityData") && entity instanceof LivingEntity) {
-//                    ((EntityLiving) entity).onInitialSpawn(world.getDifficultyForLocation(pos) ,null);
-//                }
+                CompoundNBT compound = ItemNBTHelper.getCompound(stack);
+                if (!compound.contains("EntityData") && entity instanceof MobEntity) {
+                    ((MobEntity) entity).onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
+                }
                 world.addEntity(entity);
                 if (!player.abilities.isCreativeMode) {
                     InventoryUtils.consumeHeldItem(player, stack, context.getHand());

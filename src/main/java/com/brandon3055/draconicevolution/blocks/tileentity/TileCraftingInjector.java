@@ -4,19 +4,18 @@ import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
-import com.brandon3055.brandonscore.lib.EnumTechLevel;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
+import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -37,13 +36,13 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
     private int chargeSpeedModifier = 300;
 
     public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
-    private EnumTechLevel techLevel;
+    private TechLevel techLevel;
 
     public TileCraftingInjector() {
         super(DEContent.tile_crafting_injector);
     }
 
-    public TileCraftingInjector(EnumTechLevel techLevel) {
+    public TileCraftingInjector(TechLevel techLevel) {
         super(DEContent.tile_crafting_injector);
         this.techLevel = techLevel;
 

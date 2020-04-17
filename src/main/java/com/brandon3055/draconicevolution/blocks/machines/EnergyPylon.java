@@ -112,19 +112,4 @@ public class EnergyPylon extends BlockBCore/* implements ITileEntityProvider, IR
     }
 
     //endregion
-
-    //region Registry
-
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, new RenderTileEnergyPylon());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return true;
-//    }
-
-    //endregion
 }

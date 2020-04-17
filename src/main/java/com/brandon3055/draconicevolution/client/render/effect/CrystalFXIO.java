@@ -1,36 +1,30 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
-import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
+public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
 
     private long rSeed = 0;
 
     public CrystalFXIO(World worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
-//        this.particleTextureIndexX = 3 + tile.getTier();
         this.age = worldIn.rand.nextInt(1024);
         this.rSeed = tile.getPos().toLong();
     }
-
-//    @Override
-//    public int getFXLayer() {
-//        return 2;
-//    }
 
     @Override
     public void tick() {
@@ -57,26 +51,27 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
         float renderY = (float) (this.posY - interpPosY);
         float renderZ = (float) (this.posZ - interpPosZ);
 
-        baseScale = 0.2F;
+//        baseScale = 0.2F;
+        float scale = 0.2F;
 
 
-//        vertexbuffer.pos((double) (renderX - rotationX * particleScale - rotationXY * particleScale), (double) (renderY - rotationZ * particleScale), (double) (renderZ - rotationYZ * particleScale - rotationXZ * particleScale)).tex(0.5, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
-//        vertexbuffer.pos((double) (renderX - rotationX * particleScale + rotationXY * particleScale), (double) (renderY + rotationZ * particleScale), (double) (renderZ - rotationYZ * particleScale + rotationXZ * particleScale)).tex(0.5, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
-//        vertexbuffer.pos((double) (renderX + rotationX * particleScale + rotationXY * particleScale), (double) (renderY + rotationZ * particleScale), (double) (renderZ + rotationYZ * particleScale + rotationXZ * particleScale)).tex(0.0, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
-//        vertexbuffer.pos((double) (renderX + rotationX * particleScale - rotationXY * particleScale), (double) (renderY - rotationZ * particleScale), (double) (renderZ + rotationYZ * particleScale - rotationXZ * particleScale)).tex(0.0, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).endVertex();
+        buffer.pos(renderX - rotationX * scale - rotationXY * scale, renderY - rotationZ * scale, renderZ - rotationYZ * scale - rotationXZ * scale).tex(0.5, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(200, 200).endVertex();
+        buffer.pos(renderX - rotationX * scale + rotationXY * scale, renderY + rotationZ * scale, renderZ - rotationYZ * scale + rotationXZ * scale).tex(0.5, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(200, 200).endVertex();
+        buffer.pos(renderX + rotationX * scale + rotationXY * scale, renderY + rotationZ * scale, renderZ + rotationYZ * scale + rotationXZ * scale).tex(0.0, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(200, 200).endVertex();
+        buffer.pos(renderX + rotationX * scale - rotationXY * scale, renderY - rotationZ * scale, renderZ + rotationYZ * scale - rotationXZ * scale).tex(0.0, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(200, 200).endVertex();
 
     }
 
     @Override
-    public IGLFXHandler getFXHandler() {
+    public IParticleRenderType getRenderType() {
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final FXHandler BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final FXHandler WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final FXHandler DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final IParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
+    private static final IParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
+    private static final IParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
 
-    public static class FXHandler implements IGLFXHandler {
+    public static class FXHandler implements IParticleRenderType {
 
         private String texture;
 
@@ -85,20 +80,22 @@ public class CrystalFXIO extends CrystalGLFXBase<TileCrystalBase> {
         }
 
         @Override
-        public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void beginRender(BufferBuilder builder, TextureManager textureManager) {
             GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            GlStateTracker.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
             ResourceHelperDE.bindTexture(texture);
-            vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.disableLighting();
+
+            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
         }
 
         @Override
-        public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
+        public void finishRender(Tessellator tessellator) {
             tessellator.draw();
-//            GlStateTracker.popState();
         }
     }
 }

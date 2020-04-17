@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -23,24 +24,23 @@ import javax.annotation.Nullable;
 public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-    public static final BooleanProperty STATIC = BooleanProperty.create("static");
 
     public Grinder(Properties properties) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, false).with(STATIC, true)); //TODO figure out if/when set default is actually needed.
+        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
         setMobResistant(true);
     }
 
     // Rendering
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, ACTIVE, STATIC);
+        builder.add(FACING, ACTIVE);
     }
 
     @Override
@@ -110,12 +110,12 @@ public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRende
 //
 //        return b;
 //    }
-//
-//    @Override
-//    public BlockState getStateForPlacement(World world, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer, Hand hand) {
-//        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-//    }
-//
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+    }
+
 //    @Override
 //    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 //        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing()), 2);

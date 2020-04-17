@@ -2,21 +2,21 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.ICrystalLink;
 import com.brandon3055.draconicevolution.api.IENetEffectTile;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
+public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends CrystalFXBase<T> {
 
     private final Vec3D linkTarget;
     private final boolean terminateSource;
@@ -33,9 +33,8 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
     private boolean bolt = false;
     private float powerLevel = 0;
 
-    public CrystalFXBeam(World worldIn, IENetEffectTile tile, ICrystalLink linkTarget) {
+    public CrystalFXBeam(World worldIn, T tile, ICrystalLink linkTarget) {
         super(worldIn, tile);
-//        this.particleTextureIndexX = 3 + tile.getTier();
         this.age = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(((TileEntity) linkTarget).getPos()));
         this.terminateSource = tile.renderBeamTermination();
@@ -43,18 +42,12 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
         this.terminateTarget = linkTarget.renderBeamTermination();
     }
 
-//    @Override
-//    public int getFXLayer() {
-//        return 1;
-//    }
-
     @Override
     public void tick() {
         BCProfiler.TICK.start("crystal_beam_fx_update");
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }
-//        setExpired();
 
         float[] r = {0.0F, 0.8F, 1.0F};
         float[] g = {0.8F, 0.1F, 0.7F};
@@ -151,16 +144,15 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
     }
 
     @Override
-    public IGLFXHandler getFXHandler() {
+    public IParticleRenderType getRenderType() {
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final FXHandler BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final FXHandler WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final FXHandler DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final IParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
+    private static final IParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
+    private static final IParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
 
-    public static class FXHandler implements IGLFXHandler {
-
+    public static class FXHandler implements IParticleRenderType {
         private String texture;
         private float green;
 
@@ -170,14 +162,13 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
         }
 
         @Override
-        public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        public void beginRender(BufferBuilder builder, TextureManager p_217600_2_) {
             GlStateManager.color4f(1.0F, green, 1.0F, 1.0F);
-//            GlStateTracker.pushState();
             GlStateManager.depthMask(false);
             GlStateManager.texParameter(3553, 10242, 10497.0F);
             GlStateManager.texParameter(3553, 10243, 10497.0F);
             GlStateManager.disableCull();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569f);
             ResourceHelperDE.bindTexture(texture);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
@@ -186,14 +177,13 @@ public class CrystalFXBeam extends CrystalGLFXBase<IENetEffectTile> {
                 GlStateManager.color4f(0, 0, 1, 1);
             }
 
-            vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         }
 
         @Override
-        public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
+        public void finishRender(Tessellator tessellator) {
             tessellator.draw();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//            GlStateTracker.popState();
         }
     }
 }

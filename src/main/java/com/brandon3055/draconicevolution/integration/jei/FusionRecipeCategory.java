@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;

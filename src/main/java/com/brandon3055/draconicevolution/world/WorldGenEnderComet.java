@@ -150,7 +150,7 @@ public class WorldGenEnderComet /*extends WorldGenerator*/ {
                 popPos = null;
             }
             else {
-                popPos = ReflectionManager.getField(mapping, null, ChunkPos.class);
+                popPos = ReflectionManager.getField(mapping, null);
                 ReflectionManager.setField(mapping, null, null);
             }
         } catch (Throwable ignored) {

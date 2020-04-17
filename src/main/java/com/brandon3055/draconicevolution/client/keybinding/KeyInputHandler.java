@@ -41,7 +41,7 @@ public class KeyInputHandler {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onMouseInput(MouseEvent event) {
+    public void onMouseInput(InputEvent.MouseInputEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return;

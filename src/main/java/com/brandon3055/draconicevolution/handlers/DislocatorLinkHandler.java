@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.brandon3055.draconicevolution.DEContent.dislocator_p2p;
+import static com.brandon3055.draconicevolution.init.DEContent.dislocator_p2p;
 
 /**
  * Created by brandon3055 on 27/2/2018.

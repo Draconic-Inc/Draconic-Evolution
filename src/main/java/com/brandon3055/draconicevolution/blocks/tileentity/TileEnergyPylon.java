@@ -3,15 +3,17 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
+import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.block.Blocks;
@@ -39,7 +41,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     public final ManagedBool sphereOnTop = register(new ManagedBool("sphere_on_top", true, SAVE_NBT_SYNC_TILE));
     private final ManagedBool hasCoreLock = register(new ManagedBool("has_core_lock", SAVE_NBT_SYNC_TILE));
     private final ManagedByte particleRate = register(new ManagedByte("particle_rate", SAVE_NBT_SYNC_TILE));
-    private TileStorageCore core = null;
+    private TileEnergyCore core = null;
     private int coreSelection = 0;
     private int tick = 0;
     private int lastCompOverride = 0;
@@ -133,7 +135,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         }
 
         if (!world.isRemote && isOutputMode.get()) {
-            long extracted = getCore().extractEnergy(sendEnergyToAll(opAdapter.getEnergyStored(), opAdapter.getEnergyStored()), false);
+            long extracted = getCore().extractEnergy(sendEnergyToAll(opAdapter.getOPStored(), opAdapter.getOPStored()), false);
             if (extracted > 0) {
                 particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
             }
@@ -158,8 +160,12 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
 
     //region MultiBlock Handling
 
+    public void invertIO() {
+        isOutputMode.invert();
+        world.setBlockState(pos, world.getBlockState(pos).with(EnergyPylon.OUTPUT, isOutputMode.get()));
+    }
 
-    private TileStorageCore getCore() {
+    private TileEnergyCore getCore() {
         if (hasCoreLock.get()) {
             BlockPos corePos = pos.subtract(coreOffset.get().getPos());
             Chunk coreChunk = world.getChunkAt(corePos);
@@ -173,8 +179,8 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
             if (tileAtPos == null || core == null || tileAtPos != core) {
                 TileEntity tile = world.getTileEntity(corePos);
 
-                if (tile instanceof TileStorageCore) {
-                    core = (TileStorageCore) tile;
+                if (tile instanceof TileEnergyCore) {
+                    core = (TileEnergyCore) tile;
                 } else {
                     core = null;
                     hasCoreLock.set(false);
@@ -184,8 +190,8 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         return core;
     }
 
-    private List<TileStorageCore> findActiveCores() {
-        List<TileStorageCore> list = new LinkedList<>();
+    private List<TileEnergyCore> findActiveCores() {
+        List<TileEnergyCore> list = new LinkedList<>();
         int yMod = sphereOnTop.get() ? 18 : -18;
         int range = 18;
 
@@ -194,8 +200,8 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         for (BlockPos blockPos : positions) {
             if (world.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
                 TileEntity tile = world.getTileEntity(blockPos);
-                if (tile instanceof TileStorageCore && ((TileStorageCore) tile).active.get()) {
-                    list.add(((TileStorageCore) tile));
+                if (tile instanceof TileEnergyCore && ((TileEnergyCore) tile).active.get()) {
+                    list.add(((TileEnergyCore) tile));
                 }
             }
         }
@@ -207,7 +213,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         if (world.isRemote) {
             return;
         }
-        List<TileStorageCore> cores = findActiveCores();
+        List<TileEnergyCore> cores = findActiveCores();
         if (cores.size() == 0) {
             core = null;
             hasCoreLock.set(false);
@@ -218,7 +224,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
             coreSelection = 0;
         }
 
-        TileStorageCore selectedCore = cores.get(coreSelection);
+        TileEnergyCore selectedCore = cores.get(coreSelection);
         coreOffset.set(new Vec3I(pos.subtract(selectedCore.getPos())));
         core = selectedCore;
         hasCoreLock.set(true);
@@ -239,7 +245,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
                 world.setBlockState(pos.add(0, 1, 0), DEContent.energy_core_structure.getDefaultState());
                 TileEntity tile = world.getTileEntity(pos.add(0, 1, 0));
                 if (tile instanceof TileCoreStructure) {
-                    ((TileCoreStructure) tile).blockName = "minecraft:glass";
+                    ((TileCoreStructure) tile).blockName.set("minecraft:glass");
                     ((TileCoreStructure) tile).setController(this);
                 }
                 sphereOnTop.set(true);
@@ -248,7 +254,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
                 world.setBlockState(pos.add(0, -1, 0), DEContent.energy_core_structure.getDefaultState());
                 TileEntity tile = world.getTileEntity(pos.add(0, -1, 0));
                 if (tile instanceof TileCoreStructure) {
-                    ((TileCoreStructure) tile).blockName = "minecraft:glass";
+                    ((TileCoreStructure) tile).blockName.set("minecraft:glass");
                     ((TileCoreStructure) tile).setController(this);
                 }
                 sphereOnTop.set(false);
@@ -280,7 +286,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
 
     private boolean isGlass(BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
-        return tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.equals("minecraft:glass");
+        return tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals("minecraft:glass");
     }
 
     //endregion
@@ -304,8 +310,9 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
             double randX = world.rand.nextDouble() - 0.5D;
             double randY = world.rand.nextDouble() - 0.5D;
             double randZ = world.rand.nextDouble() - 0.5D;
-            //TODO Particles
-//            BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, particlePos.add(randX * offset, randY * offset, randZ * offset), new Vec3D(randX * speed, randY * speed, randZ * speed), 150, 0, 255);
+            particlePos.add(randX * offset, randY * offset, randZ * offset);
+
+            world.addParticle(new IntParticleType.IntParticleData(DEParticles.line_indicator, 150, 0, 255), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
         }
     }
 
@@ -322,14 +329,15 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
             for (int i = 0; i <= particleRate.get() / 10; i++) {
                 spawn = getParticleSpawn(rand);
                 dest = getParticleDest(rand);
-
 //                BCEffectHandler.spawnFX(DEParticles.ENERGY_PARTICLE, world, spawn, dest, 0, 200, 255, 200);
+                world.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+
             }
         } else if (rand.nextInt(Math.max(1, 10 - particleRate.get())) == 0) {
             spawn = getParticleSpawn(rand);
             dest = getParticleDest(rand);
-
 //            BCEffectHandler.spawnFX(DEParticles.ENERGY_PARTICLE, world, spawn, dest, 0, 200, 255, 200);
+            world.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
         }
     }
 

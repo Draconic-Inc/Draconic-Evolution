@@ -1,0 +1,967 @@
+//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
+tile.draconicevolution:celestial_manipulator.name=Manipulador Celestial
+tile.draconicevolution:draconium_ore_normal.name=Minério de Dracônio
+tile.draconicevolution:draconium_ore_nether.name=Minério de Dracônio do Nether
+tile.draconicevolution:draconium_ore_end.name=Minério de Dracônio do End
+tile.draconicevolution:grinder.name=Mob Grinder
+tile.draconicevolution:potentiometer.name=Potenciômetro
+tile.draconicevolution:rain_sensor.name=Sensor de Chuva
+tile.draconicevolution:particle_generator.name=Gerador de Partículas
+tile.draconicevolution:energy_core_stabilizer.name=Energy Core Stabilizer
+tile.draconicevolution:entity_detector.name=Detector de Entidades
+tile.draconicevolution:entity_detector_basic.name=Detector de Entidades
+tile.draconicevolution:entity_detector_advanced.name=Detector de Entidades Avançado
+tile.draconicevolution:energy_infuser.name=Infusor Energético
+tile.draconicevolution:draconic_spawner.name=Mob Spawner Estabilizado
+tile.draconicevolution:generator.name=Gerador
+tile.draconicevolution:energy_storage_core.name=Núcleo de Energia
+tile.draconicevolution:energy_pylon.name=Pilão de Energia
+tile.draconicevolution:draconium_block.name=Bloco de Dracônio
+tile.draconicevolution:draconium_block_charged.name=Bloco de Dracônio Carregado
+tile.draconicevolution:diss_enchanter.name=Desencantador
+tile.draconicevolution:dislocator_pedestal.name=Pedestal Dislocador
+tile.draconicevolution:draconium_chest.name=Baú Draconiano
+tile.draconicevolution:draconic_block.name=Bloco de Dracônio Evoluído
+tile.draconicevolution:infused_obsidian.name=Obsidiana Infundida em Dracônio
+tile.draconicevolution:dislocator_receptacle.name=Receptáculo de Dislocador
+tile.draconicevolution:portal.name=Portal
+tile.draconicevolution:flux_gate.name=Controlador de Flux
+tile.draconicevolution:fluid_gate.name=Controlador de Flúidos
+tile.draconicevolution:reactor_core.name=Núcleo do Reator Draconiano
+tile.draconicevolution:reactor_stabilizer.name=Estabilizador
+tile.draconicevolution:reactor_injector.name=Injetor de Energia
+tile.draconicevolution:chaos_crystal.name=Cristal do Caos
+tile.draconicevolution:item_dislocation_inhibitor.name=Inibidor de Dislocação
+
+tile.draconicevolution:energy_crystal.relay.basic.name=Cristal Transmissor de Energia
+tile.draconicevolution:energy_crystal.relay.wyvern.name=Cristal Wyvern Transmissor de Energia
+tile.draconicevolution:energy_crystal.relay.draconic.name=Cristal Draconiano Transmissor de Energia
+tile.draconicevolution:energy_crystal.crystal_io.basic.name=Cristal de Entrada e Saída de Energia
+tile.draconicevolution:energy_crystal.crystal_io.wyvern.name=Cristal Wyvern de Entrada e Saída de Energia
+tile.draconicevolution:energy_crystal.crystal_io.draconic.name=Cristal Draconiano de Entrada e Saída de Energia
+tile.draconicevolution:energy_crystal.wireless.basic.name=Cristal Transmissor de Energia sem Fio
+tile.draconicevolution:energy_crystal.wireless.wyvern.name=Cristal Wyvern Transmissor de Energia sem Fio
+tile.draconicevolution:energy_crystal.wireless.draconic.name=Cristal Draconiano Transm. de Energ. sem Fio
+
+
+tile.draconicevolution:fusion_crafting_core.name=Núcleo de Fabricação por Fusão
+tile.draconicevolution:crafting_injector_basic.name=Injetor para Fabricação por Fusão
+tile.draconicevolution:crafting_injector_wyvern.name=Injetor Wyvern para Fabricação por Fusão
+tile.draconicevolution:crafting_injector_draconic.name=Injetor Draconiano para Fabricação por Fusão 
+tile.draconicevolution:crafting_injector_chaotic.name=Injetor Caótico para Fabricação por Fusão
+
+tile.draconicevolution:creative_rf_source.name=Fonte de RF Criativa
+
+
+//Item Information ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:awakened_core.name=Núcleo Draconiano
+item.draconicevolution:draconium_ingot.name=Lingote de Dracônio
+item.draconicevolution:draconium_dust.name=Pó de Dracônio
+item.draconicevolution:draconium_blend.name=Mistura de Dracônio (Depreciada)
+item.draconicevolution:dragon_heart.name=Coração de Dragão
+item.draconicevolution:wyvern_core.name=Núcleo Wyvern
+item.draconicevolution:sun_focus.name=Foco Solar
+item.draconicevolution:draconic_core.name=Núcleo Evoluído
+item.draconicevolution:dislocator.name=Esfera de Dislocamento
+item.draconicevolution:dislocator_advanced.name=Esfera de Dislocamento Melhorada
+
+info.teleporterInfGUI.txt=Shift + clique direito para abrir a GUI
+info.teleporterInfScroll.txt=Shift + scroll do mouse para mudar o destino
+
+item.draconicevolution:wyvern_pick.name=Picareta Wyvern
+item.draconicevolution:wyvern_axe.name=Machado Wyvern
+item.draconicevolution:wyvern_shovel.name=Pá Wyvern
+item.draconicevolution:wyvern_sword.name=Espada Wyvern
+item.draconicevolution:wyvern_bow.name=Arco Wyvern
+item.draconicevolution:wyvern_helm.name=Elmo Wyvern
+item.draconicevolution:wyvern_chest.name=Armadura Wyvern
+item.draconicevolution:wyvern_legs.name=Calças Wyvern
+item.draconicevolution:wyvern_boots.name=Botas Wyvern
+item.draconicevolution:draconic_pick.name=Picareta Draconiana
+item.draconicevolution:draconic_axe.name=Machado Draconiano
+item.draconicevolution:draconic_shovel.name=Pá Draconiana
+item.draconicevolution:draconic_hoe.name=Enxada Draconiana
+item.draconicevolution:draconic_sword.name=Espada Draconiana
+item.draconicevolution:draconic_bow.name=Arco Draconiano
+item.draconicevolution:draconic_helm.name=Elmo Draconiano
+item.draconicevolution:draconic_chest.name=Armadura Draconiana
+item.draconicevolution:draconic_legs.name=Calças Draconianas
+item.draconicevolution:draconic_boots.name=Botas Draconianas
+item.draconicevolution:draconic_staff_of_power.name=Cajado Draconiano do Poder
+item.draconicevolution:mob_soul.name=(Alma)
+item.draconicevolution:ender_arrow.name=Flecha do End
+item.draconicevolution:safety_match.name=Palito de Fósforo
+item.draconicevolution:safety_match_box.name=Caixa de Palitos de Fósforo
+item.draconicevolution:key.name=Chave
+item.draconicevolution:wyvern_energy_core.name=Núcleo de Energia Wyvern
+item.draconicevolution:draconic_energy_core.name=Núcleo de Energia Draconiano
+
+item.draconicevolution:draconium_capacitor.wyvern.name=Capacitor de Flux Wyvern
+item.draconicevolution:draconium_capacitor.draconic.name=Capacitor de Flux Draconiano
+item.draconicevolution:draconium_capacitor.creative.name=Capacitor de Flux Criativo
+
+item.draconicevolution:draconic_ingot.name=Lingote de Dracônio Evoluído
+item.draconicevolution:creative_structure_spawner_comet.name=Spawnar Cometa
+item.draconicevolution:creative_structure_spawner_ender_island.name=Spawnar Ilha do End
+item.draconicevolution:info_tablet.name=Tablet Informativo Draconic Evolution
+item.draconicevolution:crystal_binder.name=Chave de Cristal
+item.draconicevolution:dezils_marshmallow.name=Marshmallow do Dezil
+item.draconicevolution:reactor_part.stabilizer_frame.name=Frame do Estabilizador do Reator
+item.draconicevolution:reactor_part.inner_rotor.name=Rotor Interno do Estabilizador do Reator
+item.draconicevolution:reactor_part.outer_rotor.name=Rotor Externo do Estabilizador do Reator
+item.draconicevolution:reactor_part.rotor_assembly.name=Conjunto de Rotor do Estabilizador do Reator
+item.draconicevolution:reactor_part.focus_ring.name=Anel de Foco do Estabilizador do Reator
+item.draconicevolution:chaotic_core.name=Núcleo Caótico
+item.draconicevolution:chaos_shard.shard.name=Fragmento de Caos
+item.draconicevolution:chaos_shard.fragSmall.name=Fragmento Minúsculo de Caos
+item.draconicevolution:chaos_shard.fragMedium.name=Pequeno Fragmento de Caos
+item.draconicevolution:chaos_shard.fragLarge.name=Grande Fragmento de Caos
+item.draconicevolution:nugget.draconium.name=Pepita de Dracônio
+item.draconicevolution:nugget.awakened.name=Pepita de Dracônio Evoluído
+item.draconicevolution:magnet.basic.name=Dislocador de Itens
+item.draconicevolution:magnet.advanced.name=Dislocador de Itens Draconiano
+
+item.draconicevolution:tool_upgrade.rfCap.name=Chave de Upgrade (Capacidade de RF)
+item.draconicevolution:tool_upgrade.digSpeed.name=Chave de Upgrade (Vel. de Escavação)
+item.draconicevolution:tool_upgrade.digAOE.name=Chave de Upgrade (Área de Escavação)
+item.draconicevolution:tool_upgrade.digDepth.name=Chave de Upgrade (Prof. de Escavação)
+item.draconicevolution:tool_upgrade.attackDmg.name=Chave de Upgrade (Dano de Ataque)
+item.draconicevolution:tool_upgrade.attackAOE.name=Chave de Upgrade (Área de Ataque)
+item.draconicevolution:tool_upgrade.arrowDmg.name=Chave de Upgrade (Dano de Flecha)
+item.draconicevolution:tool_upgrade.drawSpeed.name=Chave de Upgrade (Vel. de Saque)
+item.draconicevolution:tool_upgrade.arrowSpeed.name=Chave de Upgrade (Vel. da Flecha)
+item.draconicevolution:tool_upgrade.shieldCap.name=Chave de Upgrade (Capac. do Escudo)
+item.draconicevolution:tool_upgrade.shieldRec.name=Chave de Upgrade (Recup. do Escudo)
+item.draconicevolution:tool_upgrade.moveSpeed.name=Chave de Upgrade (Vel. de Movimento)
+item.draconicevolution:tool_upgrade.jumpBoost.name=Chave de Upgrade (Altura do Pulo)
+
+item.draconicevolution:creative_exchanger.name=Creative Block Exchanger
+item.draconicevolution:ender_energy_manipulator.name=Manipulador de Energia do End
+
+//Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
+itemGroup.toolsAndWeapons=Armas e Ferramentas Draconic Evolution
+itemGroup.blocksAndItems=Blocos e Itens Draconic Evolution
+
+//Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
+msg.size0.txt=Modo: Bloco único
+msg.size1.txt=Modo: 3x3
+msg.size2.txt=Modo: 5x5
+msg.size3.txt=Modo: 7x7
+msg.size4.txt=Modo: 9x9
+msg.oblittrue.txt=§aModo Obliterar: §4Ativo
+msg.oblitfalse.txt=§aModo Obliterar: §2Inativo
+msg.bowmoderapidfire.txt=§3Modo de Tiro: §6Tiro Rápido
+msg.bowmodesharpshooter.txt=§3Modo de Tiro: §6Atirador de Elite
+msg.bowmodeexplosive.txt=§3Modo de Tiro: §6Explosivo
+msg.bowmodedevistation.txt=§3Modo de Tiro: §6Devastação!!! (Apenas no Modo Criativo)
+msg.bowoutofgunpowder.txt=§4Você precisa de 4 pólvoras para usar o modo explosivo
+msg.teleporterUnSet.txt=§cPrimeiro você precisa marcar o destino antes de poder teleportar (Shift + Clique Direito)
+msg.teleporterBound.txt=§aTeletransportador ligado a:
+msg.teleporterLowHealth.txt=§cSua vida está baixa!
+msg.teleporterSentMob.txt=A entidade foi enviada para
+msg.teleporterEntityDimensional.txt=§cNão é possível enviar mobs em toda dimensão!
+msg.teleporterAlreadySet.txt=§cErro. Essa esfera só pode levar a um local
+msg.teleporterOutOfFuel.txt=§cSEM COMBUSTÍVEL!!!
+msg.teleporterOutOfPearls.txt=§cSem pérolas do End!!!
+msg.teleporterPlayerT1.txt=Você precisa de um dislocador mais forte para fazer isso
+msg.teleporterPlayerConsent.txt=O jogador deve dar o seu consentimento agachando
+msg.spawnerInfo1.txt=Tipo de Mob
+msg.spawnerInfo2.txt=Requer Player
+msg.spawnerInfo3.txt=Ignorar Requerimentos do Spawner
+msg.spawnerInfo4.txt=Tier do Spawner
+msg.spawnerInfo5.txt=§3Segure shift para mais informações
+msg.spawnerInfo6.txt=Requer players: §3Estrela do Nether
+msg.spawnerInfo7.txt=Ignorar Requerimentos do Spawners: §3Maçã Dourada do Notch
+msg.spawnerInfo8.txt=Tier 2: §3Núcleo Wyvern
+msg.spawnerInfo9.txt=Tier 3:§3 Núcleo Draconiano
+msg.dislocatorUnsafe.txt=Destino não está seguro. Tente novamente
+msg.dislocatorNoGround.txt=Erro. Mundo não encontrado
+msg.range.txt=Alcançe:
+msg.energyStorageCoreUTA.txt=Impossível de ativar (Configuração inválida)
+msg.SpawnDragonToFarFrom00.txt=[ERRO] muito longe de 0,0
+msg.SpawnDragonMustBeInTheEnd.txt=Você precisa fazer esse ritual na dimensão do End!
+msg.wrongKey.txt=Essa chave não é dessa fechadura
+msg.cKeyStoneType0.txt=Ativação permanente (Consome a chave)
+msg.cKeyStoneType1.txt=Ativação do botão
+msg.cKeyStoneType2.txt=Alterar ativação
+msg.cKeyStoneType3.txt=Ativação do botão (Consome a chave)
+msg.draconiumChestEditmode.txt=Modo de edição de cor =
+msg.draconiumChestRed.txt=Vermelho =
+msg.draconiumChestGreen.txt=Verde =
+msg.draconiumChestBlue.txt=Azul =
+msg.draconiumChestEditL1.txt=Clique direito com uma tintura verde, vermelha ou azul para mudar a cor
+msg.draconiumChestEditL2.txt=Clique na parte de cima de uma das laterais para aumentar o valor
+msg.draconiumChestEditL3.txt=Ou clique na parte de baixo de uma das laterais para diminuir o valor
+msg.draconiumChestEditL4.txt=Clique direito com papel para copiar a cor para outro baú
+msg.draconiumChestEdit2.txt=Use um papel
+msg.de.dragonDeath.txt=§5O coração está temporariamente despertado devido a morte explosiva do §5dragão
+msg.de.baseSafeAOW.txt=§9(§aModo §ade §aAOE §aSegura §aativado§9) §cOperação §cCancelada §cporque §cum §ctile §centity §cfoi §cdetectado
+msg.de.guardianAttackBlocked.txt=Seu ataque é bloqueado pelos cristais guardiões!
+msg.de.shieldDepleted.txt=Aviso: Dano Crítico!!!
+msg.de.shockWaveForEnergyBoltsOnly.txt=Onda de Choque só é possível com Flecha de Fogo Draconiana
+msg.de.explosiveNotForEnergyBolts.txt=Modo Explosivo não é possível com Flecha de Fogo Draconiana
+msg.de.insufficientPowerToFire.txt=Energia insuficiente
+msg.de.outOfArrows.txt=Sem flechas!!!!
+msg.de.coreNotFound.txt=[Error: 404] Core Not Found!
+msg.de.notRaining.txt=Its not currently raining!
+msg.de.alreadyRaining.txt=Its already raining!
+msg.de.alreadyStorm.txt=Its already thundering!
+msg.de.insufficientPower.txt=Insufficient Power!
+msg.de.alreadyRunning.txt=Already Running!
+
+//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
+info.teleporterInfUnset1.txt=Desconectado
+info.teleporterInfUnset2.txt=Shift + clique direito para conectar suas
+info.teleporterInfUnset3.txt=coordenadas x, y, z atuais,
+info.teleporterInfUnset4.txt=como também a direção em que está olhando
+info.teleporterInfUnset5.txt=e a dimensão em que está.
+info.teleporterInfDest.txt=Destino
+info.teleporterInfFuel.txt=Pérolas do End:
+info.teleporterInfSet1.txt=Ligado a
+info.teleporterInfSet2.txt=Usos restantes
+info.de.rightClickToTeleport.txt=Clique direito para teleportar
+info.de.draconiumBlockCapacitorCharge.txt=Hold item and sneak to charge from capacitor.
+info.creativeCapacitor.txt=Can source or sink
+info.de.itemDislocationInhibitor.txt=Previne que itens dropados em até 5 blocos sejam sugados por um Dislocador de Itens.
+
+info.draconicAxe1.txt=Madeira!!!!!!
+info.draconicAxe2.txt=Corta uma árvore inteira
+info.draconicAxe3.txt=ou quebra uma área de 5x5x5 de tudo que for de madeira.
+info.draconicAxe4.txt=Segure shift para quebrar apenas um bloco.
+
+info.draconicCore.txt=O componente de crafting central do Draconic Evolution
+info.draconicCore1.txt=Pode ser usado para estabilizar mob spawners
+
+info.mobSoul1.txt=Pode ser usado em um mob spawners estabilizado para definir o tipo
+info.mobSoul2.txt=ou shift+clique direito para spawnar o mob
+info.mobSoul3.txt=(Uso único)
+
+info.arrowInfo.txt=Um passeio doloroso
+info.arrowInfo0.txt=Muito pesado para um arco comum
+
+//ender_extraction_core
+info.de.ender_energy_manipulator.info.txt=Este dispositivo místico ligeiramente assustador aproveita a energia dos próprios cristais de cura do dragão.
+info.de.ender_energy_manipulator.info2.txt=E junto com as almas de alguns Enderman, nas proximidades, usa essa energia para extrair um ovo do Dragão do End.
+info.de.ender_energy_manipulator.location.msg=Deve ser colocado no portal do End!
+info.de.ender_energy_manipulator.dead.msg=O Dragão do End não pôde ser encontrado!
+info.de.ender_energy_manipulator.running.msg=Você tem que esperar até que o manipulador atual termine!
+
+info.de.obliterationMode.txt=Modo obliteração
+info.de.obliterationModetrue.txt=Ativo
+info.de.obliterationModefalse.txt=Inativo
+info.de.miningMode.txt=Modo mineração
+info.de.changeMiningMode.txt=Shift+clique direito para alterar o modo de mineração
+info.de.toggleOblit.txt=Clique direito para alternar o modo de obliteração
+info.de.oblitInfo.txt=O modo obliteração destrói blocos de baixo valor
+info.de.attackDamage.txt=Dano de ataque
+info.de.bonusHealthDamage.txt=Mob Health
+info.de.press.txt=Pressione
+info.de.toOpenConfigGUI.txt=Para abrir a GUI de configuração
+info.de.shiftToPause.txt=Segure shift para pausar
+info.de.power.txt=Power
+
+info.de.sword.txt=A força de seu inimigo torna essa lâmina mais forte!
+
+info.de.safetyMatch.txt=Acenda um fogo que NÃO queime sua casa!
+
+info.draconiumChestInfo1.txt=Shift+clique direito com a mão vazia
+info.draconiumChestInfo2.txt=para acessar as opções de cor
+
+info.de.capacitorMode.txt=Modo
+info.de.capacitorMode0.txt=Inativo
+info.de.capacitorMode1.txt=Carregar Armadura
+info.de.capacitorMode2.txt=Carregar Itens Segurados
+info.de.capacitorMode3.txt=Carregar Armadura e Itens Segurados
+info.de.changwMode.txt=Shift+clique direito para mudar os modos
+
+info.de.toolInventoryOblit.txt=Filtro de Lixo e Encantamentos
+info.de.toolInventoryEnch.txt=Encantamentos
+
+info.de.hudDisplayConfigTxt1.txt=###### HUD Display ######
+info.de.hudDisplayConfigTxt2.txt=Clique e arraste para mover
+info.de.hudDisplayConfigTxt3.txt=#######################
+info.de.hudDisplayConfigInfo1.txt=Clique e arraste a HUD
+info.de.hudDisplayConfigInfo2.txt=para mudar a posição
+
+
+info.de.manual.introTxt.txt=Tudo que você precisa saber. Tudo em um só lugar.
+info.de.manual.indexButton.txt=Índice
+info.de.manual.indexButtonTip.txt=Ir para a página de índice
+info.de.manual.contributors.txt=Contribuidores do Draconic Evolution
+info.de.manual.name.txt=Nome
+info.de.manual.contribution.txt=Contribuição
+info.de.manual.clickToGoToSite.txt=(Clique no nome para abrir o website)
+info.de.manual.contributorsButton.txt=Contribuidores
+info.de.manual.contributorsButtonInfo.txt=Uma lista de pessoas que contribuíram com o Draconic Evolution
+info.de.shiftRightClickToActivate.txt=Shift+clique direito para ativar.
+info.de.blockRange.txt=Alcance.
+info.de.hasSavedData.txt=Conteúdo Salvo!
+info.de.energyBuffer.txt=Reserva de Energia
+
+info.de.manual.nav1.txt=Dicas de Navegação
+info.de.manual.nav2.txt=Pressione Backspace para ir à página anterior.
+info.de.manual.nav3.txt=Segure shift para rolar mais rápido.
+
+//Energy Net
+info.de.modeIn.txt=Modo: Saída
+info.de.modeOut.txt=Modo: Entrada
+info.de.5xTransfer.txt= (5x Transferência)
+info.de.connections.txt=Conexões
+info.de.wirelessConnections.txt=Conexões sem Fio
+
+
+info.infusedObsidian.txt=Este bloco é resistente ao Whiter
+
+enchantment.draconicevolution.reaperEnchant=Ceifeiro de Almas
+
+//Achievements ----------------------------------------------------------------------------------------------------------------------------------------
+draconicevolution.achievementPage.name=Draconic Evolution
+
+achievement.draconicevolution.dust=O começo de algo GRANDE!
+achievement.draconicevolution.dust.desc=Colete pó de Dracônio
+achievement.draconicevolution.ingot=Melhor que diamante!
+achievement.draconicevolution.ingot.desc=Faça ligotes de dracônio
+achievement.draconicevolution.core=E é aqui que a coisa começa
+achievement.draconicevolution.core.desc=Faça um núcleo evoluído
+achievement.draconicevolution.core2=Não é bom o suficiente!
+achievement.draconicevolution.core2.desc=Atualize o núcleo evoluído para Wyvern
+
+achievement.draconicevolution.dislocator=Endermen não conseguiu nada
+achievement.draconicevolution.dislocator.desc=Criar um dislocador
+achievement.draconicevolution.chest=Sem armazenamento o suficiente
+achievement.draconicevolution.chest.desc=Faça um baú draconiano
+achievement.draconicevolution.particles=OOOOH! Brilha!
+achievement.draconicevolution.particles.desc=Crie um gerador de partículas
+achievement.draconicevolution.weather=Quem precisa da mãe natureza?
+achievement.draconicevolution.weather.desc=Crie um controlador de clima
+achievement.draconicevolution.dissenchanter=Só o que eu quero!
+achievement.draconicevolution.dissenchanter.desc=Crie um desencantador.
+achievement.draconicevolution.ecore=Ele vai enchendo, enchendo, enchendo...
+achievement.draconicevolution.ecore.desc=Construa o núcleo de energia
+achievement.draconicevolution.wpick=Nada como diamante
+achievement.draconicevolution.wpick.desc=Atualize para uma picareta Wyvern
+achievement.draconicevolution.wshovel=Escavador profissional!
+achievement.draconicevolution.wshovel.desc=Crie uma Pá Wyrven
+achievement.draconicevolution.wsword=Armamento melhor
+achievement.draconicevolution.wsword.desc=Crie uma espada Wyvern
+achievement.draconicevolution.wbow=Sniper prontos!
+achievement.draconicevolution.wbow.desc=Crie um arco Wyvern
+achievement.draconicevolution.whelm=Fôlego grátis
+achievement.draconicevolution.whelm.desc=Crie um elmo Wyvern
+achievement.draconicevolution.wchest=Alta resistência
+achievement.draconicevolution.wchest.desc=Crie uma armadura Wyvern
+achievement.draconicevolution.wleggs=Corra como o vento
+achievement.draconicevolution.wleggs.desc=Crie uma calça Wyvern
+achievement.draconicevolution.wboots=Cair como uma pena
+achievement.draconicevolution.wboots.desc=Crie botas Wyvern
+achievement.draconicevolution.resurrection=Brimming with Antici-pation!
+achievement.draconicevolution.resurrection.desc=Craft the Resurrection Stone
+achievement.draconicevolution.dislocator2=Governando o End
+achievement.draconicevolution.dislocator2.desc=Crie um Dislocador Avançado
+achievement.draconicevolution.flux=1.21 Gigawatts!
+achievement.draconicevolution.flux.desc=Crie um Capacitor de Flux Wyvern
+
+achievement.draconicevolution.heart=Coração de Dragão!
+achievement.draconicevolution.heart.desc=Mate um dragão e reclame seu coração
+achievement.draconicevolution.awakenedblock=Tá tudo nessa Fabricação por Fusão
+achievement.draconicevolution.awakenedblock.desc=Crie Dracônio Evoluído
+achievement.draconicevolution.core3=Preço vc Poder
+achievement.draconicevolution.core3.desc=Melhore um Núcleo de Wyvern para Draconiano
+
+achievement.draconicevolution.dhelm=Deslizando pela água!
+achievement.draconicevolution.dhelm.desc=Melhore um elmo Wyvern
+achievement.draconicevolution.dChest=Voe como um pássaro
+achievement.draconicevolution.dChest.desc=Crie uma armadura Evoluída
+achievement.draconicevolution.dleggs=Dance como uma borboleta!
+achievement.draconicevolution.dleggs.desc=Crie calças Evoluídas
+achievement.draconicevolution.dboots=Mais e mais alto!
+achievement.draconicevolution.dboots.desc=Avançe para Botas Evoluídas
+
+achievement.draconicevolution.dpick=Minere com Autoridade!
+achievement.draconicevolution.dpick.desc=Crie uma picareta Evoluída
+achievement.draconicevolution.dshovel=Movendo montanhas
+achievement.draconicevolution.dshovel.desc=Melhore a pá Wyvern
+achievement.draconicevolution.daxe=Arrancando pedaços de árvores wy
+achievement.draconicevolution.daxe.desc=Faça o machado Draconiano
+achievement.draconicevolution.dsword=Ferroe como uma abelha!
+achievement.draconicevolution.dsword.desc=Melhore uma pá Wyvern
+achievement.draconicevolution.dbow=Agora você está brincando com o poder...
+achievement.draconicevolution.dbow.desc=Crie um arco Draconiano
+achievement.draconicevolution.flux2=Poder Cósmico Fenomenal! Um pouquinho de espaço de vida.
+achievement.draconicevolution.flux2.desc=Crie um capacitor de flux Draconiano
+achievement.draconicevolution.dhoe=Chute o Notch! -BAM-
+achievement.draconicevolution.dhoe.desc=Crie a enxada Evoluída
+
+achievement.draconicevolution.dstaff=Com os poderes combinados!
+achievement.draconicevolution.dstaff.desc=Crie o Cajado Draconiano
+
+achievement.draconicevolution.soul=Ceifador de Almas!!!
+achievement.draconicevolution.soul.desc=Adquira a alma de um mob desavisado.
+achievement.draconicevolution.sundial=Cronometrista
+achievement.draconicevolution.sundial.desc=Crie um Acelerador do Tempo e controle o dia e a noite
+achievement.draconicevolution.manual=Conhecimento ao Máximo!
+achievement.draconicevolution.manual.desc=Crie o Tablet Draconiano
+
+//Lore ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:wyvernPick.lore=2Picaretas mundanas são tão fracas\ncom Dracônio, você aumenta a área e a velocidade de mineração.
+item.draconicevolution:wyvernShovel.lore=2Um bloco de cada vez? Não com Dracônio!\nmais rápido, maior área... Já é um começo!
+item.draconicevolution:wyvernSword.lore=2O Dracônio destrava o potencial da espada\na área e a força dela aumentam.
+item.draconicevolution:wyvernBow.lore=2Fundindo dracônio num arco normal\nlhe permite atirar mais rápido e com mais força.
+
+item.draconicevolution:wyvernHelm.lore=2Mais forte que diamante\nvocê agora tem um fôlego maior
+item.draconicevolution:wyvernChest.lore=2Fundindo a armadura com dracônio\nvocê vastamente aumenta sua resistência
+item.draconicevolution:wyvernLeggs.lore=2Você se sente ainda mais forte e mais rápido agora\nque você fundiu calças de diamante com dracônio
+item.draconicevolution:wyvernBoots.lore=2Você aprendeu a melhorar as botas\nO dracônio parece que te deu maior agilidade
+
+item.draconicevolution:draconicPick.lore=2Grande dedicação e pesquisa lhe\npermitiram minerar áreas ainda maiores
+item.draconicevolution:draconicAxe.lore=2Depois de muitas tentativas\nvocê agora derruba uma árvore inteira de uma vez
+item.draconicevolution:draconicShovel.lore=2Ainda mais eficiente\nvocê pode cavar áreas ainda maiores
+item.draconicevolution:draconicHoe.lore=2O Dracônio melhora até as plantações\nPlantações inteiras podem ser criadas com um único clique
+item.draconicevolution:draconicSword.lore=2Wyvern foi bom, mas armas Evoluídas\nsão ainda mais poderosas e acertam mais inimigos
+item.draconicevolution:draconicBow.lore=2O ápice da perfeição do longo alcançe!\nTiros mais rápidos, flechas explosivas... O que mais você quer?
+
+item.draconicevolution:draconicHelm.lore=2Agora você não teme mais a noite\nvocê vê tudo, independente do que está lá fora
+item.draconicevolution:draconicChest.lore=2Usando o coração do dragão\nvocê é mais forte e tem o dom de voar
+item.draconicevolution:draconicLeggs.lore=2Armadura ainda mais forte\na alma de um dragão te protege e te move ainda mais rápido
+item.draconicevolution:draconicBoots.lore=2Mais forte, mais rápido, melhor do que antes\no coração de dragão te garante pulos mais altos
+
+item.draconicevolution:draconicDistructionStaff.lore=2Um longo e árdu caminho: Verdadeiro poder!\nUma ferramenta pra tudo: Minerar, batalhar e exterminar!
+
+//Entity ----------------------------------------------------------------------------------------------------------------------------------------
+entity.draconicevolution:EnderDragon.name=Dragão do End
+entity.draconicevolution:ChaosGuardian.name=Guardião do Caos
+entity.draconicevolution:lootCore.name=Loot Core
+
+
+//KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
+key.placeItem=Colocar item no mundo
+key.toolConfig=GUI de configuração
+key.toolProfileChange=Mudar perfil de Arma/Ferramenta
+
+//Damage ----------------------------------------------------------------------------------------------------------------------------------------
+death.attack.chaos=%1$s foi despedaçado por um Guardião do Caos
+death.attack.damage.de.fusionExplode=%1$s foi vaporizado por uma explosão de fusão de alta energia
+death.attack.chaosBurst=%1$s foi destruído pela energia negra
+death.attack.de.islandImplode=%1$s não rápido o suficiente e foi vaporizado pela explosão de uma ilha do End
+
+death.attack.de.GuardianFireball=%1$s foi bombardeado por um Guardião do Caos
+death.attack.de.GuardianEnergyBall=%1$s foi esmagado como um inseto por um Guardião do Caos
+death.attack.de.GuardianChaosBall=%1$s foi aniquilado por um Guardião do Caos usando energia negra
+
+death.attack.chaosImplosion=%1$s foi puxado para um vórtice de energia e esmagado no esquecimento
+death.attack.chrystalMoved=%1$s foi impertinente e foi punido pelo Draconic Evolution!
+
+death.attack.administrative.kill=%1$s foi atingido por uma força insustentável
+
+//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
+button.de.chestAutoFeed0.txt=OFF.Auto Feed Disabled
+button.de.chestAutoFeed1.txt=FILL.Keep the current stacks full
+button.de.chestAutoFeed2.txt=LOCK.Only pull the currently smelting items from the inventory
+button.de.chestAutoFeed3.txt=ALL.Pull any smeltable items from the inventory
+button.de.chestLockOutput.txt=Lock Output.Blocks items being inserted into the last 5 slots
+button.de.previous.txt=<==
+button.de.next.txt===>
+button.de.backToIndex.txt=Voltar ao índice
+button.de.back.txt=Voltar
+button.de.goToIndex.txt=Índice
+button.de.addNew.txt=Adicionar
+button.de.rename.txt=Renomear
+button.de.commit.txt=Aceitar
+button.de.setHere.txt=Marcar aqui
+button.de.remove.txt=Remover
+button.de.addFuel.txt=Combustível
+button.de.cancel.txt=Cancelar
+button.de.UP.txt=PRA CIMA
+button.de.DOWN.txt=PRA BAIXO
+button.de.toggleHidden.txt=Esconder
+
+//Item Config Buttons
+button.de.stats.txt=Status
+button.de.statsShow.txt=Mostrar
+button.de.statsHide.txt=Esconder
+button.de.scaleUp.txt=Escala +
+button.de.scaleDown.txt=Escala -
+button.de.fadeMode0.txt=Transparência: Off
+button.de.fadeMode1.txt=Transparência: 25%%
+button.de.fadeMode2.txt=Transparência: 50%%
+button.de.fadeMode3.txt=Transparência: 75%%
+button.de.fadeMode4.txt=Transparência: Nenhuma
+button.de.rotate.txt=Girar
+button.de.numeric.txt=Números:
+button.de.buildGuide.txt=Guia de Construção:
+button.de.tierUp.txt=Aumentar Nível
+button.de.tierDown.txt=Diminuir Nível
+
+button.de.activate.txt=Ativar
+button.de.deactivate.txt=Desativar
+
+//Gui ----------------------------------------------------------------------------------------------------------------------------------------
+
+gui.de.flowGate.name=Controle de Fluxo
+gui.de.flowGatePartialSignal.name=O fluxo real varia entre os dois valores dados, dependendo da intensidade do sinal redstone sendo fornecido ao bloco.
+gui.de.flowGateCurrentFlow.name=Fluxo
+gui.de.flowGateRSLow.name=Com o Sinal de Redstone Baixo
+gui.de.flowGateRSHigh.name=Com o Sinal de Redstone Alto
+gui.de.flowGateOverridden.txt=Controle por Computador Ativado
+gui.de.increment.name=Valor de Incremento
+gui.de.decrement.name=Valor de Decremento
+gui.de.ctrlAndShift.name=Você pode usar Ctrl e Shift para mudar o incremento.
+gui.de.pressOrScroll.name=Press Or Scroll
+gui.de.configureItem.txt=Configure Item
+gui.de.min.txt=Min
+gui.de.max.txt=Máx
+
+gui.de.insert.txt=Inserir
+gui.de.extract.txt=Extrair
+gui.de.fuel.txt=Combustível
+gui.de.internalStorage.txt=Armazenamento Interno
+gui.de.itemStorage.txt=Armazenamento de Itens
+gui.de.addCore.txt=Adicionar Núcleo
+gui.de.removeCore.txt=Remover Núcleo
+gui.de.cores.txt=Núcleos
+gui.de.cap.txt=Capac.
+gui.de.installed.txt=Instalados
+gui.de.free.txt=Livre
+gui.de.max.txt=Max
+gui.de.on.txt=On
+gui.de.off.txt=Off
+gui.de.basePoints.txt=Pontos Base
+gui.de.maxPoints.txt=Max. de Pontos
+gui.de.pointCost.txt=Custo de Pontos
+gui.de.value.txt=Valor
+gui.de.points.txt=Pontos
+gui.de.point.txt=Ponto
+gui.de.itemInventory.txt=Inventário de Itens
+gui.de.configureGuiElements.txt=Configure os Elementos da HUD
+gui.de.hudDisplaySettings.txt=Opções de HUD
+gui.de.shieldDisplaySettings.txt=Opções de Escudo
+gui.de.clickAndDragPurpleBoxes.txt=Clique e arraste as caixas púpuras para mover
+gui.de.profile.txt=Perfil
+gui.de.maxDamage.txt=Dano Máximo
+gui.de.rfPerShot.txt=RF por Tiro
+gui.de.tier.txt=Nível
+gui.de.inactive.txt=Inativo
+gui.de.active.txt=Ativo
+gui.de.energyStorage.txt=Armazenamento de Energia
+gui.de.capacity.txt=Capacidade
+gui.de.maxStorage.txt=>> Armazenamento Máximo <<
+gui.de.stabilizers.txt=Estabilizadores
+gui.de.invalid.txt=Invalido
+gui.de.valid.txt=Valido
+gui.de.advancedStabilizersRequired.txt=Necessário Estabilizadores Avançados
+gui.de.core.txt=Núcleo
+gui.de.almostInfinite.txt=Quase Infinito!
+gui.de.transfer.txt=Transferência
+
+gui.de.RFCapacity.txt=Capacidade de RF
+gui.de.DigSpeed.txt=Vel. de Escavação
+gui.de.DigAOE.txt=Área de Escavação
+gui.de.DigDepth.txt=Prof. de Escavação
+gui.de.AttackDamage.txt=Dano de Ataque
+gui.de.AttackAOE.txt=Área de Ataque
+gui.de.ArrowDamage.txt=Dano Base
+gui.de.DrawSpeed.txt=Vel. de Saque
+gui.de.ArrowSpeed.txt=Vel. da Flecha
+gui.de.ShieldCapacity.txt=Capac. do Escudo
+gui.de.ShieldRecovery.txt=Recup. do Escudo
+gui.de.MoveSpeed.txt=Vel. de Movimento
+gui.de.JumpBoost.txt=Melhoria no Salto
+
+
+//Potions ----------------------------------------------------------------------------------------------------------------------------------------
+potion.de.effect.txt=Efeito
+potion.de.flight.txt=Voo
+potion.de.highStep.txt=Passos Largos
+potion.de.swiftness.txt=Rapidez
+potion.de.fireImmune.txt=Imunidade ao Fogo
+potion.de.jumpBoost.txt=Melhoria no Salto
+
+
+
+
+//##################   Start of refactored (sane) localization   ##################
+
+//---- Gui Names ----//
+gui.de.energyStorageCore.name=Núcleo de Energia Nível %s
+gui.de.fusionCraftingCore.name=Fabricação por Fusão
+gui.de.dissEnchanter.name=Desencantador
+
+
+//---- Gui Fusion Crafting Info ----//
+gui.fusionCrafting.tierLow.info=Nível dos pedestais\nmuito baixo
+gui.fusionCrafting.outputObstructed.info=Saída obstruída
+gui.fusionCrafting.crafting.info=Fabricando
+gui.fusionCrafting.charging.info=Carregando
+gui.jeiFusion.tier.0=Nível: Evoluído
+gui.jeiFusion.tier.1=Nível: Wyvern
+gui.jeiFusion.tier.2=Nível: Draconiano
+gui.jeiFusion.tier.3=Nível: Caótico
+
+
+//---- Upgrades ----//
+upgrade.de.upgrades.info=Melhorias
+upgrade.de.upgradeNA.info=Melhoria não aplicável a este item
+upgrade.de.upgradeLevelToHigh.info=Nível de melhoria muito alto para este item
+upgrade.de.upgradeApplied.info=Melhoria aplicada
+upgrade.de.upgradePrevLevelRequired.info=O nível anterior deve ser aplicado primeiro
+upgrade.de.holdCtrlForUpgrades.info=Segure %sCTRL%s para ver melhorias
+upgrade.de.holdShiftForRecipes.info=Segure %sShift%s para receitas
+upgrade.de.holdCTRLToPause.info=CTRL para pausar
+upgrade.de.level.info=Nível
+
+upgrade.de.rfCap.name=Capacidade de RF
+upgrade.de.digSpeed.name=Vel. de Escavação
+upgrade.de.digAOE.name=Área de Escavação
+upgrade.de.digDepth.name=Prof. de Escavação
+upgrade.de.attackDmg.name=Dano de Ataque
+upgrade.de.attackAOE.name=Área de Ataque
+upgrade.de.arrowDmg.name=Dano da Flecha
+upgrade.de.drawSpeed.name=Vel. de Saque
+upgrade.de.arrowSpeed.name=Vel. da Flecha
+upgrade.de.shieldCap.name=Capac. do Escudo
+upgrade.de.shieldRec.name=Recup. do Escudo
+upgrade.de.moveSpeed.name=Vel. de Movimento
+upgrade.de.jumpBoost.name=Melhoria no Salto
+
+upgrade.level.0=-
+upgrade.level.1=Evoluído
+upgrade.level.2=Wyvern
+upgrade.level.3=Draconiano
+upgrade.level.4=Caótico
+
+//---- Tool Config ----//
+config.field.on.state=On
+config.field.off.state=Off
+config.field.digSpeed.entry=Velocidade de Escavação
+config.field.digSpeed.description=Permite ajustar o quão rápido esta ferramenta quebra um bloco. Últil quando se quer precisão, ao invés de velocidade.
+config.field.digAOE.entry=Área de Escavação
+config.field.digAOE.description=Permite ajustar o tamanho da área de mineração desta ferramenta
+config.field.aoeSafeMode.entry=Área de Escavação Segura
+config.field.aoeSafeMode.description=Quando ativada, esta ferramenta não quebra nada se detectar uma tile entity (e.g. máquinas, etc.) em sua área de escavação. Isso impede que você destrua metade da sua base por um simples clique errado.
+config.field.digDepth.entry=Profundidade de Escavação
+config.field.digDepth.description=Isso só funciona com
+config.field.showDigAOE.entry=Mostrar Área de Escavação
+config.field.showDigAOE.description=Quando ativada, isso mostra todos os blocos que serão afetados quando esta ferramente minerar.
+
+config.field.toggleEnchant.description=Permite ativar/desativar um encantamento previamente aplicado. Nota: Essa opção não muda com os perfis, ou seja, você não pode ter diferentes perfis com diferentes encantamentos.
+
+config.field.armorSpeedModifier.entry=Modificador de Velocidade
+config.field.armorSpeedModifier.description=Isso permite ajustar o aumento da velocidade que esta parte de armadura te dá.
+config.field.armorJumpModifier.entry=Modificador de Pulo
+config.field.armorJumpModifier.description=Te permite ajustar a altura do pulo que esta parte de armadura te dá.
+config.field.sprintBoost.entry=Ativo ao Correr
+config.field.sprintBoost.description=Quando ativada, as melhorias feitas serão reduzidas quando você NÃO estiver correndo.
+config.field.armorNV.entry=Visão Noturna
+config.field.armorNV.description=Habilita ou desabilita a visão noturna. Por padrão, a visão noturna só ativa quando você estiver em um local escuro.
+config.field.armorNVLock.entry=Travar Visão Noturna
+config.field.armorNVLock.description=Isso trava a visão noturna em "ligada" independente do nível de luz de onde estiver.
+config.field.armorFSpeedModifier.entry=Velocidade de Voo
+config.field.armorFSpeedModifier.description=Permite ajustar a velocidade que esta parte de armadura te dá quando voando.
+config.field.armorFlightLock.entry=Travar Voo
+config.field.armorFlightLock.description=Permite travar o modo voo para ser sempre ativo.
+config.field.armorVFSpeedModifier.entry=Aceleração Vertical
+config.field.armorVFSpeedModifier.description=Permite ajustar a velocidade vetical que esta parte de armadura te dá quando voando.
+config.field.armorInertiaCancel.entry=Cancelar Inércia
+config.field.armorInertiaCancel.description=Ao voar em altas velocidades, isto lhe permite parar quase instataneamente ao soltar a tecla de andar.
+config.field.armorHillStep.entry=Passos Largos
+config.field.armorHillStep.description=Lhe permite subir um bloco sem ter que pular.
+
+config.field.bowArrowDamage.entry=Dano Base da Flecha
+config.field.bowArrowDamage.description=Permite ajustar o dano base causado aos inimigos pela flecha. Note que este valor é multiplicado pela velocidade da flecha para se ter o real dano de ataque.
+config.field.bowArrowSpeedModifier.entry=Velocidade da Flecha
+config.field.bowArrowSpeedModifier.description=Modifica a velocidade se suas flechas. Isso afeta o dano e a distância.
+config.field.bowAutoFire.entry=Tiro Automático
+config.field.bowAutoFire.description=Atira automaticamente quando carregado
+config.field.bowExplosionPower.entry=Poder de Explosão
+config.field.bowExplosionPower.description=Ajusta o poder de explosão de suas flechas.
+config.field.bowZoomModifier.entry=Magnificação
+config.field.bowZoomModifier.description=Pode ser usado para se ter um tiro de longo alcance com alta precisão
+config.field.bowFireArrow.entry=Flecha de Fogo Draconiano
+config.field.bowFireArrow.description=Atira uma flecha de pura energia. Remove a necessidade de munção e destrava a onda de choque.
+config.field.bowShockPower.entry=Poder da Onda de Choque
+config.field.bowShockPower.description=Cria uma poderosa onda de choque que causa tanto dano quanto uma explosão, porém sem destruir blocos.
+
+config.field.attackAOE.entry=Área de Acerto
+config.field.attackAOE.description=Permite ajustar a área de alcance dessa arma quando balança.
+
+config.field.showHarvestIndicator.entry=Indicador de Corte
+config.field.showHarvestIndicator.description=Mostra a área que o machado vai cortar.
+
+config.field.landFill.entry=Preencher Terra
+config.field.landFill.description=Usa automaticamente os blocos de terra do seu inventário para preencher um buraco de até 1 bloco de profundidade para criar uma área reta para a plantação. E também remove até 1 bloco de altura se necessário.
+
+config.field..entry=
+config.field..description=
+
+config.field.AOE.entry=Área de Efeito
+config.field.replaceSame.entry=Substitui os mesmosm blocos
+config.field.replaceVisible.entry=Substitui os visíveis
+config.field.fillLogic.entry=Lógica completa
+
+
+button.de.ArmorNVActive.name=Visão Noturna
+button.de.ArmorNVLock.name=Travar Visão Noturna
+button.de.ArmorFlightLock.name=Travar Voo
+button.de.ArmorInertiaCancellation.name=Cancelar Inércia
+button.de.ArmorSpeedMult.name=Velocidade de Movimento
+button.de.ArmorJumpMult.name=Altura de Salto
+button.de.ArmorHillStep.name=Passos Largos
+button.de.ArmorSprintOnly.name=Reduz Enquanto Caminha
+button.de.ArmorFlightSpeedMult.name=Velocidade de Voo
+button.de.ToolDigMultiplier.name=Velocidade de Escavação
+button.de.ToolDigAOE.name=Tamanho
+button.de.ToolDigDepth.name=Profundidade de Escavação
+button.de.WeaponAttackAOE.name=Área de Ataque
+button.de.ToolVoidJunk.name=Nulificar Lixo
+button.de.AxeTreeMode.name=Modo Árvore
+button.de.BaseSafeAOE.name=Área de Efeito Segura
+button.de.VerticalAcceleration.name=Aceleração Vertical
+button.de.EffectiveOnSprint.name=Efetivo Enquanto Correndo
+button.de.GogglesOfRevealing.name=Sentido Mágico
+button.de.BowArrowSpeedModifier.name=Velocidade da Flecha
+button.de.BowAutoFire.name=Tiro Automático
+button.de.BowArrowDamage.name=Dano Base
+button.de.BowExplosionPower.name=Poder Explosivo
+button.de.BowShockWavePower.name=Poder da Onda de Choque
+button.de.BowEnergyBolt.name=Flecha de Fogo Draconiano
+button.de.BowZoomModifier.name=Magnificação
+
+
+//---- Info Helper ----//TODO Move this to BrandonsCore
+info.bc.holdShiftForDetails.txt=Segure %sShift%s para Detalhes
+info.bc.charge.txt=Carga
+
+info.bc.hold.txt=Segure
+info.bc.shift.txt=Shift
+info.bc.forDetails.txt=para Detalhes
+info.bc.ctrl.txt=CTRL
+
+//---- Chat Messages ----//
+chat.toolConfig.thatItemNotConfigurable.msg=Esse item não é configurável
+chat.dissEnchanter.notEnoughLevels.msg=Você precisa de %s níveis para extraír o encantamento!
+
+
+//---- GUI Buttons ----//
+gui.de.toolConfig.hud.txt=HUD
+gui.de.toolConfig.hudDesc.txt=Abrir Configuração da HUD
+
+//---- Celestial Manipulato ----//
+gui.de.celMod.weather=Clima
+gui.de.celMod.time=Tempo
+gui.de.celMod.stopRain=Parar Chuva
+gui.de.celMod.startRain=Fazer Chover
+gui.de.celMod.startStorm=Fazer Tempestade
+gui.de.celMod.skipTo=Avançar para...
+gui.de.celMod.sunRise=Nasc. do Sol
+gui.de.celMod.midDay=Meio-dia
+gui.de.celMod.sunSet=Pôr-do-Sol
+gui.de.celMod.moonRise=Crepúsculo
+gui.de.celMod.midnight=Meia-noite
+gui.de.celMod.moonSet=Alva
+gui.de.celMod.skipToTime=Skip To Time
+gui.de.celMod.skip24=Avançar 24h
+gui.de.celMod.stop=Parar
+gui.de.celMod.rs.0=Parar Chuva
+gui.de.celMod.rs.1=Fazer Chover
+gui.de.celMod.rs.2=Fazer Tempestade
+gui.de.celMod.rs.3=Nascer do Sol
+gui.de.celMod.rs.4=Meio-dia
+gui.de.celMod.rs.5=Pôr-do-sol
+gui.de.celMod.rs.6=Crepúsculo
+gui.de.celMod.rs.7=Meia-noite
+gui.de.celMod.rs.8=Alva
+gui.de.celMod.rs.9=Avançar 1 dia no Minecraft ou até ficar sem sinal de redstone.
+
+//---- Entity Detector ----//
+guiwiki.label.navigation=Navegação
+guiwiki.label.mods=Mods
+modwiki.label.style=Estilo
+
+modwiki.style.navWindow=Jan. de Navegação
+modwiki.style.mainWindow=Jan. Principal
+modwiki.style.menu=Menu
+modwiki.style.presets=Presets
+modwiki.style.navText=Nav Text
+modwiki.style.text=Text
+
+modwiki.style.preset.intellij=Intellij
+modwiki.style.preset.black&white=Preto e Branco
+modwiki.style.preset.white&black=Branco e Preto
+modwiki.style.preset.purple=Púrpura
+modwiki.style.preset.draconic=Draconiano
+modwiki.style.preset.transparent=Transparente
+
+guiwiki.button.home=Home
+
+//---- Entity Detector ----//
+gui.entityDetector.pulseDelay=Delay de Pulsos
+gui.entityDetector.pulseDelay.info=O delay entre pulsos de escaneamento. O pulso de escaneamento é quando o bloco procura por entidades próximas.
+gui.entityDetector.outputPulse=Pulso de Redstone
+gui.entityDetector.outputContin=Sinal Contínuo de Redstone
+gui.entityDetector.output.info=O modo pulso de redstone emite um sinal de redstone durante 1 tick em cada pulso de escaneamento. O modo contínuo emite um sinal contínuo que se atualiza a cada pulso de escaneamento. A força do sinal de saída é determinado pelo número de entidades válidas e pelas configurações de limite mín. e max.
+gui.entityDetector.range=Área
+gui.entityDetector.range.info=O alcance do escaneamento em blocos. Aumentar o alcaçe, aumenta o custo de energia para cada pulso de escaneamento.
+gui.entityDetector.rsMin=Limite Min. de Redstone
+gui.entityDetector.rsMin.info=A quantidade mínima de entidades detectadas necessária para emitir um sinal de redstone de 1.
+gui.entityDetector.rsMax=Limite Max. de Redstone
+gui.entityDetector.rsMax.info=A quantidade mínima de entidades detectadas necessária para emitir um sinal de redstone de 15.
+gui.entityDetector.energyCost=Consumindo por Pulso:
+gui.entityDetector.energyCost.info=Essa é a quantidade de energia necessária para cada pulso de escaneamento. A energia necessária é de 125 * alcance^1.5. Isso significa que o custo aumenta exponencialmente conforme você aumenta o alcance.
+gui.entityDetector.filter=Configurar de entidades
+
+//---- Energy Net ----//
+eNet.de.posSavedToTool.info=Posição salva. (Shift+Clique direito do mouse no ar para limpar)
+eNet.de.posCleared.info=Posição limpa
+eNet.de.toolNotBound.info=Não conectado! Shift+Clique direito do mouse para conectar.
+eNet.de.boundToInvalid.info=Conectado a um bloco inválido!
+eNet.de.linkBroken.info=Conexão desfeita!
+eNet.de.devicesLinked.info=Dispositivos conectados!
+eNet.de.linkLimitReachedThis.info=Limite de conexões atingido!
+eNet.de.linkLimitReachedTarget.info=O dispositivo alvo alcançou seu limite de conexões!
+eNet.de.thisRangeLimit.info=Dispositivo muito longe!
+eNet.de.targetRangeLimit.info=O dispositivo está muito distante do dispositivo alvo!
+eNet.de.deviceInvalid.info=Isso não é um dispositivo válido!
+eNet.de.linkFailedUnknown.info=Conexão falhou! [Rasão desconhecida...]
+eNet.de.linkToSelf.info=Você não pode conectar um dispositivo consigo mesmo...
+eNet.de.hudCharge.info=Carga
+eNet.de.hudLinks.info=Conex.
+eNet.de.hudWirelessLinks.info=Conexões sem fio
+eNet.de.IOOutput_true.info=Modo:%s Entrada
+eNet.de.IOOutput_false.info=Modo:%s Saída
+eNet.de.sideCanNotReceive.info=Não é possível receber energia por esse lado!.
+eNet.de.maxReceivers.info=Limite de Receptores Atingido!
+eNet.de.hudWirelessLinks.info=Conexões sem Fio
+eNet.de.output.info=Saída
+eNet.de.identify.gui=Identificar
+eNet.de.unlink.gui=Desconectar
+eNet.de.clearLinks.gui=Limpar Conex.
+eNet.de.clearReceivers.gui=Limpar Recep.
+
+//---- Reactor ----//
+gui.reactor.draconicReactor.txt=Reator Draconiano
+gui.reactor.fuelIn.txt=Combustível (entrada)
+gui.reactor.chaosOut.txt=Caos (saída)
+gui.reactor.tempLoadFactor.txt=Isso mostra quanta carga está sendo colocada no campo de contenção pela temperatura do reator. Se a temperatura do reator ultrapassa 8 000°C, esse valor aumenta exponencialmente.
+gui.reactor.coreVolume.txt=Isso mostra o volume total de matéria presente no reator em métros cúbicos... Isto é, dracônio+caos. Então este valor só muda quando você adiciona ou remove combustível.
+gui.reactor.genRate.txt=Essa é a quantidade atual de RF/t sendo gerada pelo reator.
+gui.reactor.inputRate.txt=Essa é a quantidade exata de RF/t necessária para manter a força atual do campo de contenção. Conforme essa força aumenta, este valor aumenta exponencialmente.
+gui.reactor.conversionRate.txt=Aqui mostra o quão rápido o reator está usando combustível. Conforme a saturação do reator aumenta, isto diminui.
+gui.reactor.redstoneMode.txt=Configure com base em quê ESTE COMPONENTE do reator emitirá um sinal de comparador.
+gui.reactor.rsMode_temp.txt=Emite um sinal de 0 a 15 conforme a temperatura passar de 10000°C.
+gui.reactor.rsMode_temp_inv.txt=O mesmo que na temperatura, porém, invertido.
+gui.reactor.rsMode_field.txt=Emite um sinal de redstone de 0 a 15 conforme a força do campo de contenção flutua entre 0 e 100% Sendo um sinal de 1 quando a força do campo de contenção for >= 10% e sinal de 15 quando for >= 90% no campo de contenção.
+gui.reactor.rsMode_field_inv.txt=O mesmo que no anterior, porém, invertido. (Sinal de 15 quando for <= 10%, etc.)
+gui.reactor.rsMode_sat.txt=Emite um sinal de 0 a 15 conforme a saturação flutua entre 0 e 100%
+gui.reactor.rsMode_sat_inv.txt=O mesmo que o anterior, porém, invertido.
+gui.reactor.rsMode_fuel.txt=Emite um sinal de 0 a 15 conforme o nível de conversão varia de 0 a 100%. Sinal de 15 quando o nível de conversão for >= 90%
+gui.reactor.rsMode_fuel_inv.txt=O mesmo que no anterior, porém, invertido.
+gui.reactor.failSafe.txt=Quando ativado, o reator inicia um desligamento automático quando a temperatura passa abaixo de 2500°C e a saturação alcança os 99% Isso pode ser usado para desligar automaticamente seu reator no caso de mal funcionamento, ou quando precisar reabastecer.
+
+gui.reactor.reactionTemp.info=Temperatura do Núcleo
+gui.reactor.fieldStrength.info=Força do Campo de Contenção
+gui.reactor.energySaturation.info=Nível de Saturação de Energia
+gui.reactor.fuelConversion.info=Nível da Conversão de Combustível
+gui.reactor.tempLoad.info=Temperature Load Factor
+gui.reactor.coreVolume.info=Volume do Núcleo
+gui.reactor.genRate.info=Taxa de Geração
+gui.reactor.fieldInputRate.info=Campo de Contenção
+gui.reactor.fuelConversionRate.info=Conversão de Combustível
+gui.reactor.status.info=Status
+gui.reactor.status.invalid.info=Setup inválido
+gui.reactor.status.cold.info=Desligado
+gui.reactor.status.warming_up.info=Aquecendo
+gui.reactor.status.running.info=Ligado
+gui.reactor.status.stopping.info=Parando
+gui.reactor.status.cooling.info=Esfriando
+gui.reactor.status.beyond_hope.info=Explosão Eminente!!!
+
+gui.reactor.charge.btn=Carrregar
+gui.reactor.activate.btn=Ativar
+gui.reactor.shutdown.btn=Desligar
+gui.reactor.rsMode.btn=Modo de\nRedstone
+gui.reactor.failSafe.btn=Anti-Falha
+
+gui.reactor.rsMode_temp.btn=Temp.
+gui.reactor.rsMode_temp_inv.btn=-Temp.
+gui.reactor.rsMode_field.btn=Camp. Cont.
+gui.reactor.rsMode_field_inv.btn=-Camp. Cont.
+gui.reactor.rsMode_sat.btn=Saturação
+gui.reactor.rsMode_sat_inv.btn=-Saturação
+gui.reactor.rsMode_fuel.btn=Conversão
+gui.reactor.rsMode_fuel_inv.btn=-Conversão
+
+msg.de.reactorRSMode.0.txt=Modo de Comparador: Temperatura
+msg.de.reactorRSMode.1.txt=Modo de Comparador: Temperatura [Invertido]
+msg.de.reactorRSMode.2.txt=Modo de Comparador: Campo de Contenção
+msg.de.reactorRSMode.3.txt=Modo de Comparador: Campo de Contenção [Invertido]
+msg.de.reactorRSMode.4.txt=Modo de Comparador: Saturação de Energia
+msg.de.reactorRSMode.5.txt=Modo de Comparador: Saturação de Energia [Invertido]
+msg.de.reactorRSMode.6.txt=Modo de Comparador: Conversão de combustível
+msg.de.reactorRSMode.7.txt=Modo de Comparador: Conversão de combustível [Invertido]
+gui.de.coreMass.txt=Core Mass
+
+//---- Draconium Chest ----//
+gui.draconiumChest.name=Baú Draconiano
+gui.draconiumChest.fMode.btn=Auto-Fundir
+gui.draconiumChest.fMode.info=Auto-Fundir permite fundir automaticamente itens do inventário. Clique para ver os modos disponíveis.
+gui.draconiumChest.fMode.off.btn=Não
+gui.draconiumChest.fMode.off.info=Desabilita o Auto-Fundir.
+gui.draconiumChest.fMode.fill.btn=Encher
+gui.draconiumChest.fMode.fill.info=Encher qualquer stack de itens que já estiver sendo fundido.
+gui.draconiumChest.fMode.lock.btn=Travado
+gui.draconiumChest.fMode.lock.info=Similar ao modo encher, porém, não funde o último item. Então assim que mais daquele item estiver disponível ele será preenchido para continuar a alimentar a fornalha.
+gui.draconiumChest.fMode.all.btn=Tudo
+gui.draconiumChest.fMode.all.info=Vai auto-fundir tudo que for possível ser fundido numa fornalha.
+gui.draconiumChest.speedBoost.info=Insira um núcleo do nível Wyver ou maior para aumentar a velocidade e duplicar os minérios, ao custo de um significamente aumento no consumo de energia.
+gui.draconiumChest.energyConsumption.info=Consumo de Energia
+gui.draconiumChest.processTime.info=Velocidade do Processo
+gui.draconiumChest.editRegion.btn=Região
+gui.draconiumChest.editDefaultRegion.btn=Editar Slots Não-marcados
+gui.draconiumChest.enableRegion.btn=Habilitar Regiões
+gui.draconiumChest.disableRegion.btn=Desabilitar Regiões
+gui.draconiumChest.regionSelect.info=Clique e arrasta no inventário do baú para marca quais slots são para essa região. O modo regiões deve estar habilitado e elas não podem se sobrepor.
+gui.draconiumChest.ioRegions.btn=Regiões
+gui.draconiumChest.ioRegions.info=Clique aqui para configurar a entrada e saída das regiões. O modo Regiões lhe permite criar grupos de slots com entrada e saídas configuráveis. Você também pode especificar quais slots as fornalhas internas pode usar. Por exemplo: Itens que entram pelos lados do baú vão para a região 1 e são fundidos na fornalha. A fornalha os coloca na região dois 2 e então eles pode ser extraídos pelo lado direito do baú.
+gui.draconiumChest.pickColour.btn=Cor do baú
+gui.draconiumChest.pickColour.info=Permite modificar a cor do baú.
+
+gui.draconiumChest.toggleIOMode.down.btn=Entrada/Saída por Baixo.
+gui.draconiumChest.toggleIOMode.up.btn=Entrada/Saída por cima.
+gui.draconiumChest.toggleIOMode.north.btn=Entrada/Saída pela Frente.
+gui.draconiumChest.toggleIOMode.south.btn=Entrada/Saída por trás.
+gui.draconiumChest.toggleIOMode.west.btn=Entrada/Saída pela Direita.
+gui.draconiumChest.toggleIOMode.east.btn=Entrada/Saída pela Esquerda.
+gui.draconiumChest.toggleIOMode.furnace.btn=Entrada/Saída das Fornalhas.
+
+gui.draconiumChest.ioState0.btn=Desabilitado
+gui.draconiumChest.ioState1.btn=Somente Entrada
+gui.draconiumChest.ioState2.btn=Saída Apenas
+gui.draconiumChest.ioState3.btn=Entrada e Saída
+
+//---- Particle Generator ----//
+gui.particleGenerator.name=Gerador de Partículas
+gui.particleGenerator.red=Vermelho
+gui.particleGenerator.green=Verde
+gui.particleGenerator.blue=Azul
+gui.particleGenerator.alpha=Transparência
+gui.particleGenerator.spawnX=Posição X
+gui.particleGenerator.spawnY=Posição Y
+gui.particleGenerator.spawnZ=Posição Z
+gui.particleGenerator.motionX=Velocidade X
+gui.particleGenerator.motionY=Velocidade Y
+gui.particleGenerator.motionZ=Velocidade Z
+gui.particleGenerator.gravity=Gravidade
+gui.particleGenerator.scale=Escala
+gui.particleGenerator.delay=Tempo
+gui.particleGenerator.life=Vida
+gui.particleGenerator.fade=Desvanecimento
+gui.particleGenerator.collision=Colisão
+gui.particleGenerator.type=Tipo
+gui.particleGenerator.type0=Orbe
+gui.particleGenerator.type1=Quadrado
+gui.particleGenerator.type2=Orbe Negra
+gui.particleGenerator.type3=Orbe 2
+gui.particleGenerator.type4=Estrela
+
+//---- Misc Info Text ----//
+info.de.shiftReversePlaceLogic.txt=Segure Shift para reverter a Lógica de Colocamento.

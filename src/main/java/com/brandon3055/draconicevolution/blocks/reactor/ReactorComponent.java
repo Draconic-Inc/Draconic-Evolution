@@ -55,7 +55,7 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
     }
 
     @Override
-    public boolean uberIsBlockFullCube() {
+    public boolean isBlockFullCube() {
         return false;
     }
 

@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
-import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.utils.DETextures;
 
 import com.mojang.blaze3d.platform.GLX;
@@ -16,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
 import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -55,7 +54,7 @@ public class HudHandler {
 //        GlStateTracker.pushState();
         GlStateManager.pushMatrix();
         width = mc.mainWindow.getScaledWidth();
-        height = mc.mainWindow.getScaledWidth();
+        height = mc.mainWindow.getScaledHeight();
         FontRenderer fontRenderer = mc.fontRenderer;
 
         if (DEConfig.hudSettings[10] == 1 && hudList != null && toolTipFadeOut > 0) {
@@ -103,7 +102,7 @@ public class HudHandler {
         hudList = new ArrayList<String>();
 
         if (mc.currentScreen != null) {
-//            if (mc.currentScreen instanceof GuiHudConfig) {TODO Gui Stuff
+//            if (mc.currentScreen instanceof GuiHudConfig) {//TODO Gui Stuff
 //                hudList.add(I18n.format("info.de.hudDisplayConfigTxt1.txt"));
 //                hudList.add("");
 //                hudList.add("");

@@ -1,0 +1,1002 @@
+//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
+tile.draconicevolution:celestial_manipulator.name=행성 조작기
+tile.draconicevolution:draconium_ore_normal.name=드라코늄 광석
+tile.draconicevolution:draconium_ore_nether.name=네더 드라코늄 광석
+tile.draconicevolution:draconium_ore_end.name=엔더 드라코늄 광석
+tile.draconicevolution:grinder.name=몹 분쇄기
+tile.draconicevolution:potentiometer.name=가변 저항기
+tile.draconicevolution:rain_sensor.name=비 감지기
+tile.draconicevolution:particle_generator.name=입자 발전기
+tile.draconicevolution:energy_core_stabilizer.name=에너지코어 안정기
+tile.draconicevolution:entity_detector.name=엔티티 감지기
+tile.draconicevolution:entity_detector_basic.name=기본 엔티티 감지기
+tile.draconicevolution:entity_detector_advanced.name=고급 엔티티 감지기
+tile.draconicevolution:energy_infuser.name=에너지 주입기
+tile.draconicevolution:draconic_spawner.name=안정된 몹 스폰기
+tile.draconicevolution:generator.name=발전기
+tile.draconicevolution:energy_storage_core.name=에너지 코어
+tile.draconicevolution:energy_pylon.name=에너지 파일론
+tile.draconicevolution:draconium_block.name=드라코늄 블록
+tile.draconicevolution:draconium_block_charged.name=충전된 드라코늄 블록
+tile.draconicevolution:diss_enchanter.name=반인첸트기
+tile.draconicevolution:dislocator_pedestal.name=이동기 받침대
+tile.draconicevolution:draconium_chest.name=드라코늄 상자
+tile.draconicevolution:draconic_block.name깨어난 드라코늄 블록
+tile.draconicevolution:infused_obsidian.name=드라코늄이 주입된 흑요석
+tile.draconicevolution:dislocator_receptacle.name=분산기 장치
+tile.draconicevolution:portal.name=포탈
+tile.draconicevolution:flux_gate.name=플럭스 문
+tile.draconicevolution:fluid_gate.name=유체 문
+tile.draconicevolution:reactor_core.name=드라코닉 원자 코어
+tile.draconicevolution:reactor_stabilizer.name=원자로 안정기
+tile.draconicevolution:reactor_injector.name=원자로 에너지 주입기
+tile.draconicevolution:chaos_crystal.name=카오스 수정
+tile.draconicevolution:item_dislocation_inhibitor.name=분산 정규화 필드 프로젝터
+
+tile.draconicevolution:energy_crystal.relay.basic.name=기본 에너지 중계 수정
+tile.draconicevolution:energy_crystal.relay.wyvern.name=와이번 에너지 중계 수정
+tile.draconicevolution:energy_crystal.relay.draconic.name=드라코닉 에너지 중계 수정
+tile.draconicevolution:energy_crystal.crystal_io.basic.name=기본 에너지 입출력 수정
+tile.draconicevolution:energy_crystal.crystal_io.wyvern.name=와이번 에너지 입출력 수정
+tile.draconicevolution:energy_crystal.crystal_io.draconic.name=드라코닉 에너지 입출력 수정
+tile.draconicevolution:energy_crystal.wireless.basic.name=기본 무선 에너지 수정
+tile.draconicevolution:energy_crystal.wireless.wyvern.name=와이번 무선 에너지 수정
+tile.draconicevolution:energy_crystal.wireless.draconic.name=드라코닉 무선 에너지 크리스탈
+
+
+tile.draconicevolution:fusion_crafting_core.name=융합 조합 코어
+tile.draconicevolution:crafting_injector_basic.name=기본 융합 제조 주입기
+tile.draconicevolution:crafting_injector_wyvern.name=와이번 융합 제조 주입기
+tile.draconicevolution:crafting_injector_draconic.name=드라코닉 융합 제조 주입기
+tile.draconicevolution:crafting_injector_chaotic.name=카오틱 융합 제조 주입기
+
+tile.draconicevolution:creative_rf_source.name=크리에이티브 RF 소스
+
+//Item Information ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:awakened_core.name=깨어난 코어
+item.draconicevolution:draconium_ingot.name=드라코늄괴
+item.draconicevolution:draconium_dust.name=드라코늄 가루
+item.draconicevolution:draconium_blend.name=드라코늄 가루뭉치
+item.draconicevolution:dragon_heart.name=드래곤의 심장
+item.draconicevolution:wyvern_core.name=와이번 코어
+item.draconicevolution:sun_focus.name=태양광 초점기
+item.draconicevolution:draconic_core.name=드라코닉 코어
+item.draconicevolution:dislocator.name=이동기
+item.draconicevolution:dislocator_advanced.name=고급 이동기
+item.draconicevolution:dislocator_bound.bound.name=바운드 이동기
+item.draconicevolution:dislocator_bound.player.name=플레이어용 바운드 이동기
+item.draconicevolution:dislocator_bound.p2p.name=지점간 바운드 이동기
+
+info.teleporterInfGUI.txt=GUI를 열고 싶으면 Shift + 우클릭을 하세요.
+info.teleporterInfScroll.txt=목적지를 확인하고 싶다면 Shift + 스크롤을 하세요.
+
+item.draconicevolution:wyvern_pick.name=와이번 곡괭이
+item.draconicevolution:wyvern_axe.name=와이번 도끼
+item.draconicevolution:wyvern_shovel.name=와이번 삽
+item.draconicevolution:wyvern_sword.name=와이번 검
+item.draconicevolution:wyvern_bow.name=와이번 활
+item.draconicevolution:wyvern_helm.name=와이번 투구
+item.draconicevolution:wyvern_chest.name=와이번 흉갑
+item.draconicevolution:wyvern_legs.name=와이번 각반
+item.draconicevolution:wyvern_boots.name=와이번 부츠
+item.draconicevolution:draconic_pick.name=드라코닉 곡괭이
+item.draconicevolution:draconic_axe.name=드라코닉 도끼
+item.draconicevolution:draconic_shovel.name=드라코닉 삽
+item.draconicevolution:draconic_hoe.name=드라코닉 활
+item.draconicevolution:draconic_sword.name=드라코닉 검
+item.draconicevolution:draconic_bow.name=드라코닉 활
+item.draconicevolution:draconic_helm.name=드라코닉 투구
+item.draconicevolution:draconic_chest.name=드라코닉 흉갑
+item.draconicevolution:draconic_legs.name=드라코닉 각반
+item.draconicevolution:draconic_boots.name=드라코닉 부츠
+item.draconicevolution:draconic_staff_of_power.name=드라코닉 스태프
+item.draconicevolution:mob_soul.name=영혼
+item.draconicevolution:ender_arrow.name=엔더 화살
+item.draconicevolution:safety_match.name=안전한 성냥
+item.draconicevolution:safety_match_box.name=안전한 성냥묶음
+item.draconicevolution:key.name=열쇠
+item.draconicevolution:wyvern_energy_core.name=와이번 에너지 코어
+item.draconicevolution:draconic_energy_core.name=드라코닉 에너지 코어
+
+item.draconicevolution:draconium_capacitor.wyvern.name=와이번 플럭스 축전기
+item.draconicevolution:draconium_capacitor.draconic.name=드라코닉 플럭스 축전기
+item.draconicevolution:draconium_capacitor.creative.name=크리에이티브 플럭스 축전기
+
+item.draconicevolution:draconic_ingot.name=깨어난 드라코늄괴
+item.draconicevolution:creative_structure_spawner_comet.name=혜성 생성
+item.draconicevolution:creative_structure_spawner_ender_island.name=엔더섬 생성
+item.draconicevolution:info_tablet.name=드라코닉 에볼루션 안내책자
+item.draconicevolution:crystal_binder.name=수정 제본기
+item.draconicevolution:dezils_marshmallow.name=마시멜로
+item.draconicevolution:reactor_part.stabilizer_frame.name=원자로 안정화 장치
+item.draconicevolution:reactor_part.inner_rotor.name=원자로 안정화 입력 순환기
+item.draconicevolution:reactor_part.outer_rotor.name=원자로 안정화 출력 순환기
+item.draconicevolution:reactor_part.rotor_assembly.name=원자로 안정화 순환기 조립
+item.draconicevolution:reactor_part.focus_ring.name=원자로 안정화 초점 조절 고리
+item.draconicevolution:chaotic_core.name=카오틱 코어
+item.draconicevolution:chaos_shard.shard.name=혼돈의 조각
+item.draconicevolution:chaos_shard.fragSmall.name=아주 작은 혼돈의 조각
+item.draconicevolution:chaos_shard.fragMedium.name=작은 혼돈의 조각
+item.draconicevolution:chaos_shard.fragLarge.name=큰 혼돈의 조각
+item.draconicevolution:nugget.draconium.name=드라코늄 조각
+item.draconicevolution:nugget.awakened.name=깨어난 드라코늄 조각
+item.draconicevolution:magnet.basic.name=아이템 이동기
+item.draconicevolution:magnet.advanced.name=깨어난 아이템 이동기
+
+item.draconicevolution:tool_upgrade.rfCap.name=업그레이드 키 (RF 용량)
+item.draconicevolution:tool_upgrade.digSpeed.name=업그레이드 키 (채굴 속도)
+item.draconicevolution:tool_upgrade.digAOE.name=업그레이드 키 (채굴 AOE)
+item.draconicevolution:tool_upgrade.digDepth.name=업그레이드 키 (채굴 깊이)
+item.draconicevolution:tool_upgrade.attackDmg.name=업그레이드 키 (공격 피해)
+item.draconicevolution:tool_upgrade.attackAOE.name=업그레이드 키 (공격 AOE)
+item.draconicevolution:tool_upgrade.arrowDmg.name=업그레이드 키 (화살 피해)
+item.draconicevolution:tool_upgrade.drawSpeed.name=업그레이드 키 (당김 속도)
+item.draconicevolution:tool_upgrade.arrowSpeed.name=업그레이드 키 (화살 속도)
+item.draconicevolution:tool_upgrade.shieldCap.name=업그레이드 키 (방패 용량)
+item.draconicevolution:tool_upgrade.shieldRec.name=업그레이드 키 (방패 복원)
+item.draconicevolution:tool_upgrade.moveSpeed.name=업그레이드 키 (운동 속도)
+item.draconicevolution:tool_upgrade.jumpBoost.name=업그레이드 키 (점프 부스트)
+
+item.draconicevolution:creative_exchanger.name=크리에이티브 블록 교체기
+item.draconicevolution:ender_energy_manipulator.name=엔더 에너지 조작기
+
+//Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
+itemGroup.toolsAndWeapons=드라코닉 에볼루션(도구와 무기)
+itemGroup.blocksAndItems=드라코닉 에볼루션(블록과 아이템)
+
+//Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
+msg.size0.txt=채굴 모드: 1x1
+msg.size1.txt=채굴 모드: 3x3
+msg.size2.txt=채굴 모드: 5x5
+msg.size3.txt=채굴 모드: 7x7
+msg.size4.txt=채굴 모드: 9x9
+msg.oblittrue.txt=§a경계 모드: §4활성화
+msg.oblitfalse.txt=§a화살 모드: §2비활성화
+msg.bowmoderapidfire.txt=§3방화 모드: §6쾌속 방화
+msg.bowmodesharpshooter.txt=§3방화 모드: §6예리한 발사
+msg.bowmodeexplosive.txt=§3방화 모드: §6폭발
+msg.bowmodedevistation.txt=§3방화 모드: §6대학살 (크리에이티브 한정)
+msg.bowoutofgunpowder.txt=§4폭발 모드에 4개의 화약이 필요합니다.
+msg.teleporterUnSet.txt=§c순간이동 전에 목적지를 설정해주세요. (Shift + 우클릭)
+msg.teleporterBound.txt=§a순간이동 목적지:
+msg.teleporterLowHealth.txt=§c체력이 너무 낮습니다!
+msg.teleporterSentMob.txt=엔티티 전송:
+msg.teleporterEntityDimensional.txt=§c다른 차원에 몹을 보낼 수 없습니다!
+msg.teleporterAlreadySet.txt=§c이 장치는 한 위치만 설정 가능합니다.
+msg.teleporterOutOfFuel.txt=§c연료 부족!!!
+msg.teleporterOutOfPearls.txt=§c엔더 진주가 부족합니다!!!
+msg.teleporterPlayerT1.txt=더 강력한 이동기가 필요합니다.
+msg.teleporterPlayerConsent.txt=쉬프트 키를 누르세요.
+msg.spawnerInfo1.txt=몹 유형
+msg.spawnerInfo2.txt=플레이어 요구
+msg.spawnerInfo3.txt=스폰 요구 무시
+msg.spawnerInfo4.txt=스포너 티어
+msg.spawnerInfo5.txt=§3쉬프트를 눌러 정보를 확인하세요.
+msg.spawnerInfo6.txt=플레이어 요구: §3네더의 별
+msg.spawnerInfo7.txt=스폰 요구 무시: §3노치 사과
+msg.spawnerInfo8.txt=2티어: §3와이번 코어
+msg.spawnerInfo9.txt=3티어: §3깨어난 코어
+msg.dislocatorUnsafe.txt=목적지가 안전하지 않습니다. 다시 시도해보세요.
+msg.dislocatorNoGround.txt=세계를 찾을 수 없습니다.
+msg.range.txt=범위:
+msg.energyStorageCoreUTA.txt=활성화 할 수 없습니다. (잘못된 구성)
+msg.SpawnDragonToFarFrom00.txt=[오류] 0,0좌표에서 멉니다.
+msg.SpawnDragonMustBeInTheEnd.txt=엔더월드에서 의식을 수행해야 합니다!
+msg.wrongKey.txt=이 열쇠는이 자물쇠에 맞지 않습니다.
+msg.cKeyStoneType0.txt=영구 활성화 (열쇠 소비)
+msg.cKeyStoneType1.txt=버튼 활성화
+msg.cKeyStoneType2.txt=토글 활성화
+msg.cKeyStoneType3.txt=버튼 활성화 (열쇠 소비)
+msg.draconiumChestEditmode.txt=색상 편집 모드 =
+msg.draconiumChestRed.txt=적색 =
+msg.draconiumChestGreen.txt=녹색 =
+msg.draconiumChestBlue.txt=청색 =
+msg.draconiumChestEditL1.txt=빨간색, 초록색, 파란색 염료로 우클릭하여 색상을 조정할 수 있습니다.
+msg.draconiumChestEditL2.txt=상자 위쪽 클릭시 값이 상승합니다.
+msg.draconiumChestEditL3.txt=상자 아래쪽 클릭시 값이 하락합니다.
+msg.draconiumChestEditL4.txt=종이를 우클릭하여 다른 상자로 색을 복사하세요.
+msg.draconiumChestEdit2.txt=한장의 종이를 사용하세요.
+msg.de.dragonDeath.txt=§5엔더 드래곤이 폭사하였습니다.
+msg.de.baseSafeAOW.txt=§9(§aAOE §a안전 §a모드가 §a활성화되었습니다.§9) §c엔티티가 §c차단되었기 §c때문에 §c가동이 §c정지되었습니다.
+msg.de.guardianAttackBlocked.txt=당신의 공격은 가디언의 수정에 의해 막혔습니다!
+msg.de.shieldDepleted.txt=집중 피해를 주의하세요!!!
+msg.de.shockWaveForEnergyBoltsOnly.txt=드라코닉 불화살 활성 상태에서만 쇼크웨이브을 작동합니다.
+msg.de.explosiveNotForEnergyBolts.txt=드라코닉 불화살 비활성 상태에서만 폭발을 작동합니다.
+msg.de.insufficientPowerToFire.txt=전력 부족!
+msg.de.outOfArrows.txt=화살 부족!
+msg.de.coreNotFound.txt=[에러: 404] 코어가 없습니다!
+msg.de.notRaining.txt=지금은 화창합니다!
+msg.de.alreadyRaining.txt=이미 비가 내리고 있습니다!
+msg.de.alreadyStorm.txt=이미 천둥번개가 치고 있습니다!
+msg.de.insufficientPower.txt=전력이 부족합니다!
+msg.de.alreadyRunning.txt=이미 작동하고 있습니다!
+
+//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
+info.teleporterInfUnset1.txt=해방
+info.teleporterInfUnset2.txt=흐름을 멈추고 싶으면 쉬프트+우클릭을 하세요.
+info.teleporterInfUnset3.txt=x, y, z 조정
+info.teleporterInfUnset4.txt=당신이 바라보고 있는 방향 뿐만 아닙니다.
+info.teleporterInfUnset5.txt=당신이 현재 가지고 있는 차원
+info.teleporterInfDest.txt=목적지
+info.teleporterInfFuel.txt=연료:
+info.teleporterInfSet1.txt=구속
+info.teleporterInfSet2.txt=남은 것 사용
+info.de.rightClickToTeleport.txt=순간이동을 하려면 우클릭하세요.
+info.de.draconiumBlockCapacitorCharge.txt=아이템을 들고 쉬프트를 눌러 축전기에서 충전하세요.
+info.creativeCapacitor.txt=소스 또는 싱크 가능
+info.de.itemDislocationInhibitor.txt=5블록 내에서 삭제된 아이템이 아이템 에 의해 수집되지 않도록 방지합니다.
+
+info.draconicAxe1.txt=목재!!!!!!
+info.draconicAxe2.txt=나무를 통째로 떨어뜨리거나
+info.draconicAxe3.txt=5x5x5크기의 목재를 부숩니다.
+info.draconicAxe4.txt=한 블록을 채굴하려면 쉬프트를 누르세요.
+
+info.draconicCore.txt=드라코닉 에볼루션의 핵심 구성 요소
+info.draconicCore1.txt=몹 스폰기를 안정시키는데 사용됩니다.
+
+info.mobSoul1.txt=안정된 스폰기를 설치하는데 사용되거나
+info.mobSoul2.txt=몹을 스폰하기 위해 쉬프트+우클릭을 합니다.
+info.mobSoul3.txt=(싱글 사용)
+
+info.arrowInfo.txt=고통스러운 놀이 기구
+info.arrowInfo0.txt=일반적인 활로는 너무 무겁습니다.
+
+//ender_extraction_core
+info.de.ender_energy_manipulator.info.txt=약간 소름 끼치는 신비로운 장치는 드래곤의 치유 수정의 에너지를 빨아들입니다.
+info.de.ender_energy_manipulator.info2.txt=그리고 근처에 있는 엔더맨의 영혼들과 함께 그 에너지는 엔더 드래곤의 알을 추출하는 데 사용됩니다.
+info.de.ender_energy_manipulator.location.msg=엔더 복도에 배치해야 합니다!
+info.de.ender_energy_manipulator.dead.msg=엔더 드래곤을 찾을 수 없습니다!
+info.de.ender_energy_manipulator.running.msg=현재 조작기가 완료될 때까지 기다려야 합니다!
+
+info.de.obliterationMode.txt=경계 모드
+info.de.obliterationModetrue.txt=활성화
+info.de.obliterationModefalse.txt=비활성화
+info.de.miningMode.txt=채굴 모드
+info.de.changeMiningMode.txt=채굴 모드로 전환하려면 쉬프트+우클릭을 하세요.
+info.de.toggleOblit.txt=경계 모드로 토글하려면 우클릭하세요.
+info.de.oblitInfo.txt=경계 모드는 저급 블록을 파괴합니다.
+info.de.attackDamage.txt=공격 피해
+info.de.bonusHealthDamage.txt=몹 건강
+info.de.press.txt=압력
+info.de.toOpenConfigGUI.txt=GUI 환경설정 열기
+info.de.shiftToPause.txt=슬라이드를 일시정지하고 싶으면 쉬프트를 누르세요.
+info.de.power.txt=힘
+
+info.de.sword.txt=적의 힘이 이 칼날을 더 강하게 만들어요!
+
+info.de.safetyMatch.txt=당신의 집을 태우지 않을 불을 붙이세요!
+
+info.draconiumChestInfo1.txt=아무 것도 가지지 않은 손에서 색상 설정으로 접속하고 싶으면
+info.draconiumChestInfo2.txt=쉬프트+우클릭하세요.
+
+info.de.capacitorMode.txt=모드
+info.de.capacitorMode0.txt=비활성화
+info.de.capacitorMode1.txt=갑옷 충전
+info.de.capacitorMode2.txt=사용하지 않은 아이템 충전
+info.de.capacitorMode3.txt=갑옷 및 사용하지 않은 아이템 충전
+info.de.capacitorMode4.txt=모두 충전
+info.de.changwMode.txt=모드를 바꾸고 싶으면 쉬프트+우클릭하세요.
+
+info.de.toolInventoryOblit.txt=쓰레기 필터 및 인첸트
+info.de.toolInventoryEnch.txt=인첸트
+
+info.de.hudDisplayConfigTxt1.txt=#### HUD 디스플레이 ####
+info.de.hudDisplayConfigTxt2.txt=움직이고 싶으면 클릭하고 드래그하세요.
+info.de.hudDisplayConfigTxt3.txt=###################
+info.de.hudDisplayConfigInfo1.txt=위치를 바꾸고 싶다면 
+info.de.hudDisplayConfigInfo2.txt=HUD를 클릭하고 드래그하세요.
+
+
+info.de.manual.introTxt.txt=당신이 알아야 할 모든 것은 모두 한 곳에 있습니다.
+info.de.manual.indexButton.txt=색인
+info.de.manual.indexButtonTip.txt=색인 페이지로 가기
+info.de.manual.contributors.txt=드라코닉 에볼루션 기여자
+info.de.manual.name.txt=이름
+info.de.manual.contribution.txt=기여
+info.de.manual.clickToGoToSite.txt=(이름을 클릭하여 웹사이트 가기)
+info.de.manual.contributorsButton.txt=기여자
+info.de.manual.contributorsButtonInfo.txt=드라코닉 에볼루션에 기여한 사람들
+info.de.shiftRightClickToActivate.txt=활성화하려면 쉬프트+우클릭을 하세요.
+info.de.blockRange.txt=블록 범위
+info.de.hasSavedData.txt=내용물이 저장되었습니다!
+info.de.energyBuffer.txt=에너지 완충
+
+info.de.manual.nav1.txt=내비게이션 안내사항
+info.de.manual.nav2.txt=이전 페이지로 이동하려면 백 스페이스를 누르세요.
+info.de.manual.nav3.txt=쉬프트키를 누른 채로 더 빨리 스크롤 합니다.
+
+//Energy Net
+info.de.modeIn.txt=모드: 입력
+info.de.modeOut.txt=모드: 출력
+info.de.5xTransfer.txt= (5배 전송)
+info.de.connections.txt=연결
+info.de.wirelessConnections.txt=무선 연결
+
+
+info.infusedObsidian.txt=이 블록은 저항이 약합니다.
+
+enchantment.draconicevolution.reaperEnchant=저승사자
+enchantment.draconicevolution.enchant_reaper.desc=이 인첸트를 무기에 적용하면 슬픈 무기에 의해 죽은 몹이 그들의 영혼을 떨어뜨릴 가능성이 증가합니다. 이 인첸트은 저승사자 방식으로 만들어진 수식어와 함께 쌓인 드라코닉 에볼루션 무기에 가장 잘 적용됩니다.
+
+//Achievements ----------------------------------------------------------------------------------------------------------------------------------------
+draconicevolution.achievementPage.name=드라코닉 에볼루션
+
+achievement.draconicevolution.dust=통큰 시작!
+achievement.draconicevolution.dust.desc=드라코늄 가루 수집
+achievement.draconicevolution.ingot=다이아몬드보다 좋다!
+achievement.draconicevolution.ingot.desc=드라코늄 가루를 드라코늄괴로 제련하기
+achievement.draconicevolution.core=그것이 시작한 곳
+achievement.draconicevolution.core.desc=드라코닉 코어 제작
+achievement.draconicevolution.core2=불충분하다!
+achievement.draconicevolution.core2.desc=드라코닉 코어를 와이번 코어로 업그레이드
+
+achievement.draconicevolution.dislocator=엔더맨 없다!
+achievement.draconicevolution.dislocator.desc=이동기 제작
+achievement.draconicevolution.chest=저장고가 충분치 않다!
+achievement.draconicevolution.chest.desc=드라코닉 상자 제작
+achievement.draconicevolution.particles=튀는데!
+achievement.draconicevolution.particles.desc=입자 발전기 제작
+achievement.draconicevolution.weather=진정한 자연을 원하는가?
+achievement.draconicevolution.weather.desc=날씨 조절기 제작
+achievement.draconicevolution.dissenchanter=내가 원한 것이야!
+achievement.draconicevolution.dissenchanter.desc=반인첸트기 제작.
+achievement.draconicevolution.ecore=계속 가자!
+achievement.draconicevolution.ecore.desc=에너지 코어 제작
+achievement.draconicevolution.wpick=다이아몬드 같지 않은데
+achievement.draconicevolution.wpick.desc=와이번 곡괭이로 업그레이드
+achievement.draconicevolution.wshovel=프로 채굴꾼!
+achievement.draconicevolution.wshovel.desc=와이번 삽 제작
+achievement.draconicevolution.wsword=더 좋은 싸움꾼
+achievement.draconicevolution.wsword.desc=와이번 검 제작
+achievement.draconicevolution.wbow=준비된 스나이퍼
+achievement.draconicevolution.wbow.desc=와이번 활 제작
+achievement.draconicevolution.whelm=자유로운 호흡
+achievement.draconicevolution.whelm.desc=와이번 투구 제작
+achievement.draconicevolution.wchest=높은 저항
+achievement.draconicevolution.wchest.desc=와이번 흉갑 제작
+achievement.draconicevolution.wleggs=바람같이 달리다
+achievement.draconicevolution.wleggs.desc=와이번 각반 제작
+achievement.draconicevolution.wboots=깃털처럼
+achievement.draconicevolution.wboots.desc=와이번 부츠 제작
+achievement.draconicevolution.resurrection=기대에 부풀어 있습니다!
+achievement.draconicevolution.resurrection.desc=부활석 제작
+achievement.draconicevolution.dislocator2=엔더를 지배하는 자!
+achievement.draconicevolution.dislocator2.desc=고급 이동기 제작
+achievement.draconicevolution.flux=1.21GW!
+achievement.draconicevolution.flux.desc=와이번 플럭스 축전기 제작
+
+achievement.draconicevolution.heart=드래곤의 심장!
+achievement.draconicevolution.heart.desc=드래곤 사살 및 심장 획득
+achievement.draconicevolution.awakenedblock=이것은 의식일뿐!
+achievement.draconicevolution.awakenedblock.desc=깨어난 드라코늄 제작
+achievement.draconicevolution.core3=존재 VS 힘
+achievement.draconicevolution.core3.desc=와이번 코어를 깨어난 드라코닉 코어로 업그레이드
+
+achievement.draconicevolution.dhelm=물을 가르며!
+achievement.draconicevolution.dhelm.desc=드라코닉 투구로 업그레이드
+achievement.draconicevolution.dChest=독수리처럼 날자!
+achievement.draconicevolution.dChest.desc=드라코닉 흉갑 제작
+achievement.draconicevolution.dleggs=나비처럼 춤추자!
+achievement.draconicevolution.dleggs.desc=드라코닉 각반 제작
+achievement.draconicevolution.dboots=높게 더 높게!
+achievement.draconicevolution.dboots.desc=드라코닉 부츠 제작
+
+achievement.draconicevolution.dpick=더 깊게 채굴하자!
+achievement.draconicevolution.dpick.desc=드라코닉 곡괭이 제작
+achievement.draconicevolution.dshovel=산을 움직이다
+achievement.draconicevolution.dshovel.desc=드라코닉 삽 제작
+achievement.draconicevolution.daxe=나무를 신나게 베자!
+achievement.draconicevolution.daxe.desc=드라코닉 도끼 제작
+achievement.draconicevolution.dsword=벌처럼 쏘자!
+achievement.draconicevolution.dsword.desc=드라코닉 검으로 업그레이드
+achievement.draconicevolution.dbow=힘으로 놀자!
+achievement.draconicevolution.dbow.desc=드라코닉 활 제작
+achievement.draconicevolution.flux2=우주 파워!
+achievement.draconicevolution.flux2.desc=드라코닉 플럭스 축전기 제작
+achievement.draconicevolution.dhoe=농사를 신나게 짓자!
+achievement.draconicevolution.dhoe.desc=드라코닉 괭이 제작
+
+achievement.draconicevolution.dstaff=힘 결합!
+achievement.draconicevolution.dstaff.desc=드라코닉 스태프 제작
+
+achievement.draconicevolution.soul=저승사자다!!!!
+achievement.draconicevolution.soul.desc=의심하지 않는 몹의 영혼을 획득하세요.
+achievement.draconicevolution.sundial=계시 기록기
+achievement.draconicevolution.sundial.desc=해 다이얼 제작 및 시간 조절
+achievement.draconicevolution.manual=최대 지식!
+achievement.draconicevolution.manual.desc=드라코닉 태블릿 제작
+
+//Lore ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:wyvernPick.lore=2알번 곡괭이는 약해요.\n드라코늄이라면 채굴 속도를 높이고, 채굴 구역을 넓힙니다.
+item.draconicevolution:wyvernShovel.lore=2시간당 한 블록인가요? 드라코늄없이는!\n빠른 속도, 넓은 구역, 이것은 시작입니다!
+item.draconicevolution:wyvernSword.lore=2드라코늄이 검의 잠재력을 보여주기 시작합니다.\n검의 구역과 강도가 강해집니다.
+item.draconicevolution:wyvernBow.lore=2일반 활에 드라코늄을 주입합니다.\n더 빠르게 쏘고, 더 많은 힘을 쓸 것입니다.
+
+item.draconicevolution:wyvernHelm.lore=2다이아몬드보다 강합니다.\n어떠한 바람에도 끄덕없습니다.
+item.draconicevolution:wyvernChest.lore=2드라코늄을 갑옷에 주입합니다.\n저항력을 높일 수 있습니다.
+item.draconicevolution:wyvernLeggs.lore=2지금보다 강하고 빠르게 느낍니다.\n다이아몬드 각반에 드라코늄을 주입했습니다.
+item.draconicevolution:wyvernBoots.lore=2부츠가 강해집니다.\n드라코늄은 민첩성을 강하게 합니다.
+
+item.draconicevolution:draconicPick.lore=2더 좋은 관리와 연구는 \n더 넓은 구역에서 채굴하게 만듭니다.
+item.draconicevolution:draconicAxe.lore=2수많은 에러가 발생한 뒤에,\n한번의 시도로 나무 전체를 느낄 수 있습니다.
+item.draconicevolution:draconicShovel.lore=2더 효율적으로,\n더 넓은 구역에서 팔 수 있습니다.
+item.draconicevolution:draconicHoe.lore=2드라코늄은 농사를 더 잘 짓게 합니다.\n클릭 한번으로 전체 구역의 크기를 조정하고 배치할 수 있습니다.
+item.draconicevolution:draconicSword.lore=2와이번은 좋으나, 드라코닉 무기들이\n더 강합니다.
+item.draconicevolution:draconicBow.lore=2최고의 순간은 더욱 빠른 공격을 할 수 있습니다,\n폭발 화살, 더 이상 원하는 것이 있나요?
+
+item.draconicevolution:draconicHelm.lore=2더 이상 밤을 두려워하지 마세요.\n당신은 지금 밖에 무엇이 있든지 간에 항상 볼 수 있습니다.
+item.draconicevolution:draconicChest.lore=2드래곤의 심장을 사용하면서\n더 강해지고 날 수 있습니다.
+item.draconicevolution:draconicLeggs.lore=2더 강한 갑옷일수록\n드래곤의 영혼은 당신을 보호하고, 빠르게 움직입니다.
+item.draconicevolution:draconicBoots.lore=2전보다 더 강하고, 빠르고, 좋은 \n드래곤의 심장은 더 높게 점프하게 만듭니다.
+
+item.draconicevolution:draconicDistructionStaff.lore=2길고 험한 길, 진정한 힘!\n나의 모든 것을 할 수 있는 하나의 도구는 채굴과 전쟁 그리고 죽음입니다!
+
+//Entity ----------------------------------------------------------------------------------------------------------------------------------------
+entity.draconicevolution:EnderDragon.name=엔더 드래곤
+entity.draconicevolution:ChaosGuardian.name=카오스 가디언
+entity.draconicevolution:lootCore.name=루트 코어
+
+
+//KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
+key.placeItem=아이템을 세계에 두기
+key.toolConfig=GUI 도구 및 갑옷 환경설정
+key.toolProfileChange=도구 환경설정 프로필 바꾸기
+key.armorProfileChange=갑옷 환경설정 프로필 바꾸기
+key.toggleFlight=크리에이티브 비행 토글하기
+key.toggleDislocator=아이템 이동기 토글하기
+
+//Damage ----------------------------------------------------------------------------------------------------------------------------------------
+death.attack.chaos=%1$s이 카오스 가디언에게 끔살당했습니다.
+death.attack.damage.de.fusionExplode=%1$s이 고농축 에너지 폭발로 인해 산화되었습니다.
+death.attack.chaosBurst=%1$s이 다크 에너지에 의해 폭발되었습니다.
+death.attack.de.islandImplode=%1$s이 빨리 달리지 못해서 카오스 섬의 폭발로 인해 죽었습니다.
+
+death.attack.de.GuardianFireball=%1$s이 카오스 가디언에게 폭사당했습니다.
+death.attack.de.GuardianEnergyBall=%1$s이 카오스 가디언에게 끔찍하게 살해당했습니다.
+death.attack.de.GuardianChaosBall=%1$s이 카오스 가디언이 사용한 다크 에너지에 맞아 사망했습니다.
+
+death.attack.chaosImplosion=%1$s는 에너지의 소용돌이로 빨려 들어가 망각 속으로 사라졌습니다.
+death.attack.chrystalMoved=%1$s는 버릇없는 사람이었고, 드라코닉 에볼루션에 의해 벌을 받았습니다!
+
+death.attack.administrative.kill=%1$s는 방어할 수 없는 힘에 맞아 쓰러졌습니다.
+
+//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
+button.de.chestAutoFeed0.txt=OFF.자동 피드 비활성화
+button.de.chestAutoFeed1.txt=FILL.현재 스택을 가득 채워 둡니다.
+button.de.chestAutoFeed2.txt=LOCK.인벤토리에서 현재 제련되고 있는 아이템만 끌어다 놓으세요.
+button.de.chestAutoFeed3.txt=ALL.인벤토리에서 제련될만한 아이템을 모두 꺼냅니다.
+button.de.chestLockOutput.txt=LOCK 출력.최근 5개 슬롯에 삽입되는 아이템을 차단합니다.
+button.de.previous.txt=<==
+button.de.next.txt===>
+button.de.backToIndex.txt=색인으로 돌아가기
+button.de.back.txt=돌아가기
+button.de.goToIndex.txt=색인 페이지
+button.de.addNew.txt=새로 추가하기
+button.de.rename.txt이름 바꾸기
+button.de.commit.txt=실행하기
+button.de.setHere.txt=설치하기
+button.de.remove.txt=제거하기
+button.de.addFuel.txt=연료 추가하기
+button.de.cancel.txt=취소하기
+button.de.UP.txt=올리기
+button.de.DOWN.txt=내리기
+button.de.toggleHidden.txt=토글을 숨기기
+
+//Item Config Buttons
+button.de.stats.txt=통계
+button.de.statsShow.txt=보이기
+button.de.statsHide.txt=숨기기
+button.de.scaleUp.txt=규모 +
+button.de.scaleDown.txt=규모 -
+button.de.fadeMode0.txt=페이드 아웃: Off
+button.de.fadeMode1.txt=페이드 아웃: 25%%
+button.de.fadeMode2.txt=페이드 아웃: 50%%
+button.de.fadeMode3.txt=페이드 아웃: 75%%
+button.de.fadeMode4.txt=페이드 아웃: Full
+button.de.rotate.txt=회전하기
+button.de.numeric.txt=숫자:
+button.de.buildGuide.txt=빌드 가이드:
+button.de.tierUp.txt=티어 올리기
+button.de.tierDown.txt=티어 내리기
+
+button.de.activate.txt=활성화
+button.de.deactivate.txt=비활성화
+
+//Gui ----------------------------------------------------------------------------------------------------------------------------------------
+
+gui.de.flowGate.name=바람 조절
+gui.de.flowGatePartialSignal.name=실제 흐름은 블록에 공급되는 레드스톤 신호의 강도에 따라 두 값 사이에서 달라집니다.
+gui.de.flowGateCurrentFlow.name=바람
+gui.de.flowGateRSLow.name=레드스톤 신호 낮음
+gui.de.flowGateRSHigh.name=레드스톤 신호 높음
+gui.de.flowGateOverridden.txt=컴퓨터 기각 허용
+gui.de.increment.name=증가값
+gui.de.decrement.name=감소값
+gui.de.ctrlAndShift.name=증가값을 바꾸고 싶으면 Ctrl과 Shift를 누르세요.
+gui.de.pressOrScroll.name=누르거나 스크롤하기
+gui.de.configureItem.txt=아이템 환경설정
+gui.de.min.txt=최소
+gui.de.max.txt=최대
+
+gui.de.insert.txt=삽입
+gui.de.extract.txt=추출
+gui.de.fuel.txt=연료
+gui.de.internalStorage.txt=내부 저장
+gui.de.itemStorage.txt=아이템 저장
+gui.de.addCore.txt=코어 추가하기
+gui.de.removeCore.txt=코어 제거하기
+gui.de.cores.txt=코어
+gui.de.cap.txt=뚜껑
+gui.de.installed.txt=설치
+gui.de.free.txt=자유
+gui.de.max.txt=최대
+gui.de.on.txt=ON
+gui.de.off.txt=OFF
+gui.de.basePoints.txt=기준점
+gui.de.maxPoints.txt=최대점
+gui.de.pointCost.txt=점값
+gui.de.value.txt=값
+gui.de.points.txt=포인트
+gui.de.point.txt=포인트
+gui.de.itemInventory.txt=아이템 인벤토리
+gui.de.configureGuiElements.txt=HUD 요소 환경설정
+gui.de.hudDisplaySettings.txt=HUD 디스플레이 설정
+gui.de.shieldDisplaySettings.txt=방패 디스플레이 설정
+gui.de.clickAndDragPurpleBoxes.txt=디스플레이를 움직이려면 보라색 상자를 클릭하고 드래그하세요.
+gui.de.profile.txt=프로필
+gui.de.maxDamage.txt=최대 피해
+gui.de.rfPerShot.txt=RF/Shot
+gui.de.tier.txt=티어
+gui.de.inactive.txt=비활성화
+gui.de.active.txt=활성화
+gui.de.energyStorage.txt=에너지 저장
+gui.de.capacity.txt=용량
+gui.de.maxStorage.txt=>> 최대 저장 <<
+gui.de.stabilizers.txt=안정기
+gui.de.invalid.txt=무효
+gui.de.valid.txt=유효
+gui.de.advancedStabilizersRequired.txt=고급 안정기 필요
+gui.de.core.txt=코어
+gui.de.almostInfinite.txt=무한에 가까움!
+gui.de.transfer.txt=수송
+
+gui.de.RFCapacity.txt=RF 용량
+gui.de.DigSpeed.txt=채굴 속도
+gui.de.DigAOE.txt=채굴 AOE
+gui.de.DigDepth.txt=채굴 깊이
+gui.de.AttackDamage.txt=공격 피해
+gui.de.AttackAOE.txt=공격 AOE
+gui.de.ArrowDamage.txt=기본 피해
+gui.de.DrawSpeed.txt=뛰기 속도
+gui.de.ArrowSpeed.txt=화살 속도
+gui.de.ShieldCapacity.txt=방패 용량
+gui.de.ShieldRecovery.txt=방패 복원
+gui.de.MoveSpeed.txt=이동 속도
+gui.de.JumpBoost.txt=점프 부스트
+
+
+//Potions ----------------------------------------------------------------------------------------------------------------------------------------
+potion.de.effect.txt=효과
+potion.de.flight.txt=비행
+potion.de.highStep.txt=고스텝
+potion.de.swiftness.txt=신속
+potion.de.fireImmune.txt=화염 저항
+potion.de.jumpBoost.txt=도약
+
+
+
+
+//##################   Start of refactored (sane) localization   ##################
+
+//---- Gui Names ----//
+gui.de.energyStorageCore.name=%s티어 에너지 코어
+gui.de.fusionCraftingCore.name=융합 제작
+gui.de.dissEnchanter.name=반인첸트기
+
+
+//---- Fusion Crafting ----//
+gui.fusionCrafting.tierLow.info=받침대 티어 매우 낮음
+gui.fusionCrafting.outputObstructed.info=출력 중단
+gui.fusionCrafting.crafting.info=제작
+gui.fusionCrafting.charging.info=충전
+gui.jeiFusion.tier.0=Tier: 기본
+gui.jeiFusion.tier.1=Tier: 와이번
+gui.jeiFusion.tier.2=Tier: 드라코닉
+gui.jeiFusion.tier.3=Tier: 혼돈의
+msg.craftingInjector.singleItemOn.txt=싱글 아이템 모드: 활성화
+msg.craftingInjector.singleItemOff.txt=싱글 아이템 모드: 비활성화
+
+//---- Upgrades ----//
+upgrade.de.upgrades.info=업그레이드
+upgrade.de.upgradeNA.info=이 아이템은 업그레이드 할 수 없습니다.
+upgrade.de.upgradeLevelToHigh.info=이 아이템은 업그레이드 레벨이 매우 높습니다.
+upgrade.de.upgradeApplied.info=업그레이드가 필요합니다.
+upgrade.de.upgradePrevLevelRequired.info=이전 레벨이 필요합니다.
+upgrade.de.holdCtrlForUpgrades.info=업그레이드를 하고 싶다면 %sCTRL%s을 누르세요.
+upgrade.de.holdShiftForRecipes.info=조합법을 알고 싶다면 %sShift%s를 누르세요.
+upgrade.de.holdCTRLToPause.info=일시정지하고 싶으면 CTRL을 누르세요.
+upgrade.de.level.info=레벨
+
+upgrade.de.rfCap.name=RF 용량
+upgrade.de.digSpeed.name=채굴 속도
+upgrade.de.digAOE.name=채굴 AOE
+upgrade.de.digDepth.name=채굴 깊이
+upgrade.de.attackDmg.name=공격 피해
+upgrade.de.attackAOE.name=공격 AOE
+upgrade.de.arrowDmg.name=화살 피해
+upgrade.de.drawSpeed.name=뛰기 속도
+upgrade.de.arrowSpeed.name=화살 속도
+upgrade.de.shieldCap.name=방패 용량
+upgrade.de.shieldRec.name=방패 복원
+upgrade.de.moveSpeed.name=이동 속도
+upgrade.de.jumpBoost.name=점프 부스트
+
+upgrade.level.0=-
+upgrade.level.1=기본
+upgrade.level.2=와이번
+upgrade.level.3=드라코닉
+upgrade.level.4=혼돈의
+
+//---- Tool Config ----//
+config.field.on.state=ON
+config.field.off.state=OFF
+config.field.digSpeed.entry=채굴 속도 조작기
+config.field.digSpeed.description=이 도구가 블록을 분할하는 속도를 조정할 수 있습니다. 만약 당신이 속도를 넘어선 정확성이 필요하다면 유용합니.
+config.field.digAOE.entry=채굴 AOE
+config.field.digAOE.description=이 도구 채굴 적용 구역을 조정할 수 있습니다.
+config.field.aoeSafeMode.entry=AOE 안전 모드
+config.field.aoeSafeMode.description=활성화된 경우 이 도구는 AOE범위 내에서 타일 도면 요소를 감지해도 아무 것도 파손하지 않습니다. 이렇게 하면 클릭 한번으로 실수로 베이스의 절반을 부수는 것을 방지할 수 있습니다.
+config.field.digDepth.entry=채굴 깊이
+config.field.digDepth.description=이 기능은 다음에서만 작동합니다.
+config.field.showDigAOE.entry=채굴 AOE 보이기
+config.field.showDigAOE.description=활성화되면 이 도구의 채굴 AOE에 포함된 모든 블록이 표시됩니다.
+
+config.field.toggleEnchant.description=이전에 적용된 기계를 활성화/비활성화할 수 있습니다. 참고: 이 설정은 프로필에 특정한 의미가 아니며, 내용 설정이 서로 다른 프로필을 가질 수 없습니다.
+
+config.field.armorSpeedModifier.entry=속도계
+config.field.armorSpeedModifier.description=이렇게 하면 이 갑옷 조각의 속도 상승을 조정할 수 있습니다.
+config.field.armorJumpModifier.entry=점프 조작기
+config.field.armorJumpModifier.description=이렇게 하면 이 갑옷 조각의 점프 부스트를 조정할 수 있습니다.
+config.field.sprintBoost.entry=스프린트 향상
+config.field.sprintBoost.description=설정한 수정 기호를 활성화하면 단거리 주행을 하지 않을 때는 사용자가 설정한 수식어가 줄어듭니다.
+config.field.armorNV.entry=야간 투시
+config.field.armorNV.description=야간 투시를 활성화하거나 비활성화합니다. 야간 시야는 어두운 영역에 있을 때만 적용됩니다.
+config.field.armorNVLock.entry=야간 투시 잠금
+config.field.armorNVLock.description=이것은 여러분이 속해 있는 조명 수준에 관계 없이 야간 투시가 활성화되도록 합니다.
+config.field.armorFSpeedModifier.entry=비행 속도 조작기
+config.field.armorFSpeedModifier.description=이 갑옷이 적용하는 속도 상승을 조정할 수 있습니다.
+config.field.armorFlightLock.entry=비행 잠금
+config.field.armorFlightLock.description=크리에이티브 비행이 항상 활성화되도록 잠글 수 있습니다.
+config.field.armorVFSpeedModifier.entry=수직 상승
+config.field.armorVFSpeedModifier.description=이것은 당신이 비행 중에 상승하고 하강하는 속도를 증가시킬 수 있게 해줍니다.
+config.field.armorInertiaCancel.entry=관성 취소
+config.field.armorInertiaCancel.description=고속으로 비행할 때 이것은 당신이 이동 키를 놓았을 때 당신을 거의 즉시 멈추게 할 것입니다.
+config.field.armorHillStep.entry=스텝 어시스트
+config.field.armorHillStep.description=점프하지 않고도 1개의 전체 블록을 올릴 수 있습니다.
+
+config.field.bowArrowDamage.entry=화살 베이스 손상
+config.field.bowArrowDamage.description=화살로 인한 베이스 손상을 조정할 수 있습니다. 실제 손상을 얻기 위해 베이스 손상에 화살 속도를 곱한 것에 주목합니다.
+config.field.bowArrowSpeedModifier.entry=화살 속도계
+config.field.bowArrowSpeedModifier.description=화살의 속도를 수정합니다. 이는 손상 및 거리에 영향을 미칩니다.
+config.field.bowAutoFire.entry=오토 파이어
+config.field.bowAutoFire.description=완전히 충전되면 자동으로 화재가 발생합니다.
+config.field.bowExplosionPower.entry=폭발력
+config.field.bowExplosionPower.description=화살의 폭발력을 정합니다.
+config.field.bowZoomModifier.entry=확대
+config.field.bowZoomModifier.description=정밀한 장거리 발사에 사용할 수 있습니다.
+config.field.bowFireArrow.entry=드라코닉 불화살
+config.field.bowFireArrow.description=순수한 에너지로 만든 화살을 발사합니다. 탄약의 필요성을 제거하고 충격 파도 효과의 잠금을 해제합니다.
+config.field.bowShockPower.entry=충격 파도력
+config.field.bowShockPower.description=충격에 대한 강력한 충격 파형을 생성하여 등가 폭발보다 더 많은 손상을 입히지만 블록은 손상시키지 않습니다.
+config.field.attackAOE.entry=공격 반경
+config.field.attackAOE.description=이 무기의 스윙으로 덮인 영역을 조정할 수 있습니다.
+config.field.showHarvestIndicator.entry=수확 지표
+config.field.showHarvestIndicator.description=도끼가 현재 블록을 수확하고 있는 곳을 표시합니다.
+config.field.landFill.entry=땅 채우기
+config.field.landFill.description=평평하게 정돈된 영역을 만들기 위해 인벤토리의 흙을 자동으로 사용하여 1블록 깊이의 구멍까지 채웁니다. 또한 필요한 경우 해당 영역 위에서 최대 1블록을 수확하여 적정합니다.
+
+config.field.junkFilter.entry=쓰레기 필터 설정하기
+config.field.junkFilter.description=압축을 풀었을 때 삭제할 블록을 지정할 수 있는 쓰레기 필터를 엽니다. 쓰레기 필터는 구성 프로필 간에 영구적이며 AOE모드에서만 작동합니다.
+config.field.junkFilter.button=쓰레기 필터 열기
+config.field.enableJunkFilter.entry=쓰레기 필터 활성화하기
+config.field.enableJunkFilter.description=쓰레기 필터를 활성화/비활성화하게 합니다.
+config.field.junkNbtSens.entry=쓰레기 NBT 감지
+config.field.junkNbtSens.description=실행 중지하면 필터링 아이템을 필터링 할 때 쓰레기 필터가 무시됩니다.
+
+config.field.hideArmor.entry=갑옷 숨기기
+config.field.hideArmor.description=이 갑옷이 활성화되면 평화는 완전히 보이지 않게 됩니다.
+
+config.field.AOE.entry=AOE
+config.field.replaceSame.entry=같은 블록으로 대체하기
+config.field.replaceVisible.entry=보이는 것으로 대체하기
+config.field.fillLogic.entry=논리로 채우기
+
+
+button.de.ArmorNVActive.name=야간 투시
+button.de.ArmorNVLock.name=야간 투시 잠금
+button.de.ArmorFlightLock.name=비행 잠금
+button.de.ArmorInertiaCancellation.name=관성 취소
+button.de.ArmorSpeedMult.name=이동 속도계
+button.de.ArmorJumpMult.name=점프 무게 조작기
+button.de.ArmorHillStep.name=힐 스텝
+button.de.ArmorSprintOnly.name=걸을 때 감소
+button.de.ArmorFlightSpeedMult.name=비행 속도계
+button.de.ToolDigMultiplier.name=채굴 속도
+button.de.ToolDigAOE.name=규모
+button.de.ToolDigDepth.name=채굴 깊이
+button.de.WeaponAttackAOE.name=공격 AOE
+button.de.ToolVoidJunk.name=빈 쓰레기
+button.de.AxeTreeMode.name=나무 모드
+button.de.BaseSafeAOE.name=AOE 안전 모드
+button.de.VerticalAcceleration.name=수직 상승
+button.de.EffectiveOnSprint.name=단거리 주행 시 유효
+button.de.GogglesOfRevealing.name=마법 감각
+button.de.BowArrowSpeedModifier.name=화살 속도계
+button.de.BowAutoFire.name=오토 파이어
+button.de.BowArrowDamage.name=기본 피해
+button.de.BowExplosionPower.name=폭발력
+button.de.BowShockWavePower.name=충격 파도력
+button.de.BowEnergyBolt.name=드라코닉 불화살
+button.de.BowZoomModifier.name=확대
+
+config.de.armor_profile_0.msg=투구 프로필:
+config.de.armor_profile_1.msg=흉갑 프로필:
+config.de.armor_profile_2.msg=각반 프로필:
+config.de.armor_profile_3.msg=부츠 프로필:
+
+//---- Info Helper ----//TODO Move this to BrandonsCore
+info.bc.holdShiftForDetails.txt=자세히 알고 싶으면 %sShift%s을 누르세요.
+info.bc.charge.txt=충천
+
+info.bc.hold.txt=누루기
+info.bc.shift.txt=Shift
+info.bc.forDetails.txt=세부사항
+info.bc.ctrl.txt=CTRL
+
+//---- Chat Messages ----//
+chat.toolConfig.thatItemNotConfigurable.msg=이 아이템은 설정할 수 없습니다.
+chat.dissEnchanter.notEnoughLevels.msg=인첸트를 추출하기 위해서는 %s레벨이 필요합니다!
+chat.item_dislocator_activate.msg=아이템 이동기 활성화됨
+chat.item_dislocator_deactivate.msg=아이템 이동기 비활성화됨
+
+//---- GUI Buttons ----//
+gui.de.toolConfig.hud.txt=HUD
+gui.de.toolConfig.hudDesc.txt=HUD 설정 GUI 열기
+button.de.open=열기
+
+//---- Celestial Manipulato ----//
+gui.de.celMod.weather=날씨
+gui.de.celMod.time=시간
+gui.de.celMod.stopRain=비 정지하기
+gui.de.celMod.startRain=비 시작하기
+gui.de.celMod.startStorm=폭풍 시작하기
+gui.de.celMod.skipTo=건너뛰기
+gui.de.celMod.sunRise=일출
+gui.de.celMod.midDay=일중
+gui.de.celMod.sunSet=일몰
+gui.de.celMod.moonRise=월출
+gui.de.celMod.midnight=월중
+gui.de.celMod.moonSet=원몰
+gui.de.celMod.skipToTime=시간 건너뛰기
+gui.de.celMod.skip24=하루 건너뛰기
+gui.de.celMod.stop=정지하기
+gui.de.celMod.rs.0=비 정지하기
+gui.de.celMod.rs.1=비 시작하기
+gui.de.celMod.rs.2=폭풍 시작하기
+gui.de.celMod.rs.3=일출
+gui.de.celMod.rs.4=일중
+gui.de.celMod.rs.5=일몰
+gui.de.celMod.rs.6=월출
+gui.de.celMod.rs.7=월중
+gui.de.celMod.rs.8=월몰
+gui.de.celMod.rs.9=마인크래프트 데이 순환하거나 레드스톤 신호가 멈출 때까지
+
+//---- Entity Detector ----//
+guiwiki.label.navigation=내비게이션
+guiwiki.label.mods=모드
+modwiki.label.style=방식
+
+modwiki.style.navWindow=내비게이션 창
+modwiki.style.mainWindow=주요 창
+modwiki.style.menu=메뉴
+modwiki.style.presets=사전 설정
+modwiki.style.navText=내비게이션 텍스트
+modwiki.style.text=텍스트
+
+modwiki.style.preset.intellij=이텔리지
+modwiki.style.preset.black&white=흑백
+modwiki.style.preset.white&black=백흑
+modwiki.style.preset.purple=보라색
+modwiki.style.preset.draconic=드라코닉
+modwiki.style.preset.transparent=이송
+
+guiwiki.button.home=홈
+
+//---- Entity Detector ----//
+gui.entityDetector.pulseDelay=맥박 지연
+gui.entityDetector.pulseDelay.info=스캔하는 맥박 간 지연: 스캔하는 맥박은 블록이 주변 도면 요소를 확인할 때 발생합니다.
+gui.entityDetector.outputPulse=맥박 출력 모드
+gui.entityDetector.outputContin=고쳐진 출력 모드
+gui.entityDetector.output.info=출력 강도는 감지된 유효한 엔티티 수와 레드스톤 최소 및 레드스톤 최대 설정에 따라 결정됩니다. 맥박 모드는 스캔하는 맥발마다 1눈금 맥박을 허용합니다. 고정 모드에서는 모든 스캔하는 맥박을 업데이트하는 연속 신호를 보냅니다.
+gui.entityDetector.range=범위
+gui.entityDetector.range.info=검색 범위(블록 단위: 범위를 늘리면 각 스캔하는 맥박의 에너지 비용이 증가합니다.
+gui.entityDetector.rsMin=레드스톤 최소 임계값
+gui.entityDetector.rsMin.info=레드스톤 신호 1을 생성하는 데 필요한 탐지된 엔티티의 최소 수입니다.
+gui.entityDetector.rsMax=RS Max Threshold
+gui.entityDetector.rsMax.info=레드스톤 신호 15를 생성하는 데 필요한 탐지된 엔티티의 최소 수입니다.
+gui.entityDetector.energyCost=맥박 당 에너지
+gui.entityDetector.energyCost.info=이것은 각 스캔하는 맥박에 필요한 에너지의 양입니다. 에너지 요구량은 125 * 범위 ^ 1.5로 범위를 늘리면 에너지 비용이 기하 급수적으로 증가합니다.
+gui.entityDetector.filter=엔티티 필터 환경설정 열기
+
+//---- Energy Net ----//
+eNet.de.posSavedToTool.info=도구에 블록 위치가 저장되어 있습니다. (청소할 공기를 쉬프트+우클릭으로 클릭하여 제거)
+eNet.de.posCleared.info=위치가 삭제되었습니다.
+eNet.de.toolNotBound.info=도구가 묶어지지 않았습니다! 쉬프트+우클릭하여 묶읍니다.
+eNet.de.boundToInvalid.info=도구가 잘못된 블록에 묶어 있습니다!
+eNet.de.linkBroken.info=연결이 파괴되었습니다!
+eNet.de.devicesLinked.info=장치가 연결되었습니다!
+eNet.de.linkLimitReachedThis.info=이 장치는 연결 제한에 도달했습니다!
+eNet.de.linkLimitReachedTarget.info=대상 장치가 연결 제한에 도달했습니다!
+eNet.de.thisRangeLimit.info=대상 장치가 너무 멀리 떨어져 있습니다!
+eNet.de.targetRangeLimit.info=이 장치는 대상 장치에서 너무 멀리 떨어져 있습니다!
+eNet.de.deviceInvalid.info=유효한 장치가 아닙니다!
+eNet.de.linkFailedUnknown.info=연결에 실패했습니다! [이유 불명]
+eNet.de.linkToSelf.info=장치를 장치 자체에 연결할 수 없습니다.
+eNet.de.hudCharge.info=충전
+eNet.de.hudLinks.info=연결
+eNet.de.hudWirelessLinks.info=무선 연결
+eNet.de.IOOutput_true.info=입출력 모드:%s 출력
+eNet.de.IOOutput_false.info=입출력 모드:%s 입력
+eNet.de.sideCanNotReceive.info=저 타일은 에너지를 받을 수 없습니다!
+eNet.de.sideCanNotExtract.info=저 타일은 에너지를 공급할 수 없습니다!
+eNet.de.maxReceivers.info=수신기가 한계에 이르렀습니다!
+eNet.de.hudWirelessLinks.info=무선 연결
+eNet.de.output.info=출력
+eNet.de.input.info=입력
+eNet.de.identify.gui=확인
+eNet.de.unlink.gui=연결 해제
+eNet.de.clearLinks.gui=연결 삭제
+eNet.de.clearReceivers.gui=수신기 삭제
+
+//---- Reactor ----//
+gui.reactor.draconicReactor.txt=드라코닉 원자로
+gui.reactor.fuelIn.txt=연료 (입력)
+gui.reactor.chaosOut.txt=혼돈 (출력)
+gui.reactor.tempLoadFactor.txt=이는 원자로 온도에 의해 원자로 건물에 얼마나 많은 무게가 배치되고 있는지를 보여 줍니다. 원자로 온도가 8,000도를 초과하면 이는 기하급수적으로 증가합니다.
+gui.reactor.coreVolume.txt=이것은 원자로 내 물질의 총량을 입방 미터로 나타냅니다. 이것은 드라코늄+혼돈이기 때문에 이 값은 연료를 추가하거나 제거할 때만 바뀝니다.
+gui.reactor.genRate.txt=이것은 원자로에 의해 생성되는 현재 RF/t입니다.
+gui.reactor.inputRate.txt=이것은 현재의 현장 강도를 유지하는 데 필요한 정확한 RF/t 입력입니다. 전계 강도가 증가하면 이것은 기하 급수적으로 증가할 것입니다.
+gui.reactor.conversionRate.txt=이것이 원자로가 현재 연료를 얼마나 빨리 사용하고 있는지를 보여 주는 것입니다. 원자로 포화도가 증가함에 따라 이것은 감소할 것입니다.
+gui.reactor.redstoneMode.txt=이 원자로 구성 요소에 대한 비교기 출력을 설정합니다.
+gui.reactor.rsMode_temp.txt=온도가 10000도까지 상승하면 신호가 0~15범위로 출력됩니다.
+gui.reactor.rsMode_temp_inv.txt=신호가 반전되는 것을 제외하고는 온도와 동일합니다.
+gui.reactor.rsMode_field.txt=방패 강도가 0~100%, 방패 신호가 1~10%, 방패 전원이 15~90%사이에서 변동할 때 0~15사이의 신호를 출력합니다.
+gui.reactor.rsMode_field_inv.txt=신호가 반전되는 것을 제외하고 방패와 동일합니다.
+gui.reactor.rsMode_sat.txt=포화도가 0~100%사이를 변동하면 신호가 0~15%출력됩니다.
+gui.reactor.rsMode_sat_inv.txt=이는 신호가 반전되는 것을 제외하고 포화와 동일합니다.
+gui.reactor.rsMode_fuel.txt=연료 변환 레벨이 0%에서 100%로 증가하면 신호가 0에서 15까지 출력됩니다. 신호는 15~90%로 변환됩니다.
+gui.reactor.rsMode_fuel_inv.txt=이는 신호가 반전되는 것을 제외하고는 변환과 동일합니다.
+gui.reactor.failSafe.txt=이를 활성화하면 온도가 2500도 이하로 떨어지고 포화도가 99%에 도달하면 원자로가 자동으로 정지합니다. 이것은 오작동이 발생하거나 연료를 주입해야 할 때 자동으로 원자로를 정지시키는 데 사용될 수 있습니다.
+
+gui.reactor.reactionTemp.info=코어 온도
+gui.reactor.fieldStrength.info=격납장 강도
+gui.reactor.energySaturation.info=에너지 포화
+gui.reactor.fuelConversion.info=연로 변환도
+gui.reactor.tempLoad.info=온도 부하 계수
+gui.reactor.coreVolume.info=코어 용량
+gui.reactor.genRate.info=발전량
+gui.reactor.fieldInputRate.info=입력량
+gui.reactor.fuelConversionRate.info=연료 변환량
+gui.reactor.status.info=상태
+gui.reactor.status.invalid.info=잘못된 설정
+gui.reactor.status.cold.info=오프라인
+gui.reactor.status.warming_up.info=위험
+gui.reactor.status.running.info=온라인
+gui.reactor.status.stopping.info=정지
+gui.reactor.status.cooling.info=냉각
+gui.reactor.status.beyond_hope.info=폭발 임박!!!
+
+gui.reactor.charge.btn=충전
+gui.reactor.activate.btn=활성화
+gui.reactor.shutdown.btn=정지
+gui.reactor.rsMode.btn=레드스톤\n모드
+gui.reactor.failSafe.btn=안전 해제
+
+gui.reactor.rsMode_temp.btn=고온도
+gui.reactor.rsMode_temp_inv.btn=저온도
+gui.reactor.rsMode_field.btn=고방패
+gui.reactor.rsMode_field_inv.btn=저방패
+gui.reactor.rsMode_sat.btn=고포화
+gui.reactor.rsMode_sat_inv.btn=저포화
+gui.reactor.rsMode_fuel.btn=고변환
+gui.reactor.rsMode_fuel_inv.btn=저변환
+
+msg.de.reactorRSMode.0.txt=비교기 모드: 온도
+msg.de.reactorRSMode.1.txt=비교기 모드: 온도 [역행]
+msg.de.reactorRSMode.2.txt=비교기 모드: 격납장
+msg.de.reactorRSMode.3.txt=비교기 모드: 격납장 [역행]
+msg.de.reactorRSMode.4.txt=비교기 모드: 에너지 포화
+msg.de.reactorRSMode.5.txt=비교기 모드: 에너지 포화 [역행]
+msg.de.reactorRSMode.6.txt=비교기 모드: 연료 변환
+msg.de.reactorRSMode.7.txt=비교기 모드: 연료 변환 [역행]
+gui.de.coreMass.txt=Core Mass
+
+//---- Draconium Chest ----//
+gui.draconiumChest.name=드라코늄 상자
+gui.draconiumChest.fMode.btn=자동 피드
+gui.draconiumChest.fMode.info=자동 피드를 사용하면 인벤토리의 아이템을 자동으로 녹일 수 있습니다. 클릭해서 사용 가능한 피드 모드를 봅니다.
+gui.draconiumChest.fMode.off.btn=OFF
+gui.draconiumChest.fMode.off.info=자동 피드를 비활성화합니다.
+gui.draconiumChest.fMode.fill.btn=채우기
+gui.draconiumChest.fMode.fill.info=상자 인벤토리에서 이미 흘러나온 모든 스택을 채웁니다.
+gui.draconiumChest.fMode.lock.btn=잠금기
+gui.draconiumChest.fMode.lock.info=마지막 아이템을 더 많이 사용할 수 있게 되면 마지막 아이템에서 녹지 않고 화로에 계속 공급하는 데 사용됩니다.
+gui.draconiumChest.fMode.all.btn=모두하기
+gui.draconiumChest.fMode.all.info=자동으로 제련하고 제련가능한 아이템을 상자 인벤토리에 넣습니다.
+gui.draconiumChest.speedBoost.info=속도 상승을 위해 와이번이나 높은 티어의 코어와 광석 2개를 삽입하고 에너지 소비를 증가시킵니다.
+gui.draconiumChest.energyConsumption.info=에너지 소비
+gui.draconiumChest.processTime.info=속도 증가
+gui.draconiumChest.editRegion.btn=영역 편집
+gui.draconiumChest.editDefaultRegion.btn=빈 슬롯의 입출력 수정
+gui.draconiumChest.enableRegion.btn=영역 활성화
+gui.draconiumChest.disableRegion.btn=영역 비활성화
+gui.draconiumChest.regionSelect.info=상자 인벤토리를 클릭하고 드래그하여 이 영역에 할당된 슬롯을 변경합니다. 영역을 먼저 활성화해야 하며 영역은 중첩될 수 없습니다.
+gui.draconiumChest.ioRegions.btn=입출력 영역
+gui.draconiumChest.ioRegions.info=입출력 영역을 구성하려면 여기를 클릭하십시오. 입출력 영역을 사용하면 측면을 구성할 수 있는 슬롯 그룹을 만들 수 있습니다. 또한 내장 화로에서 사용할 수 있는 슬롯을 지정할 수도 있습니다. 사용 예제:상자의 왼쪽으로 들어가는 아이템은 1 영역로 이동하여 화로에서 화로 출력물로 추출한 후, 2 영역으로 이동하여 상자 오른쪽에서 추출할 수 있습니다.
+gui.draconiumChest.pickColour.btn=상자 색상
+gui.draconiumChest.pickColour.info=상자의 색을 수정할 수 있습니다.
+
+gui.draconiumChest.toggleIOMode.down.btn=아랫쪽 입출력 모드를 토글하기
+gui.draconiumChest.toggleIOMode.up.btn=윗쪽 입출력 모드를 토글하기
+gui.draconiumChest.toggleIOMode.north.btn=앞쪽 입출력 모드를 토글하기
+gui.draconiumChest.toggleIOMode.south.btn=뒤쪽 입출력 모드를 토글하기
+gui.draconiumChest.toggleIOMode.west.btn=오른쪽 입출력 모드를 토글하기
+gui.draconiumChest.toggleIOMode.east.btn=왼쪽 입출력 모드를 토글하기
+gui.draconiumChest.toggleIOMode.furnace.btn=화로 입출력 모드를 토글하기
+
+gui.draconiumChest.ioState0.btn=비활성화
+gui.draconiumChest.ioState1.btn=입력 한정
+gui.draconiumChest.ioState2.btn=출력 한정
+gui.draconiumChest.ioState3.btn=입력 및 출력
+
+//---- Particle Generator ----//
+gui.particleGenerator.name=입자 발전기
+gui.particleGenerator.red=적색
+gui.particleGenerator.green=녹색
+gui.particleGenerator.blue=파란색
+gui.particleGenerator.alpha=알파선
+gui.particleGenerator.spawnX=X 스폰
+gui.particleGenerator.spawnY=Y 스폰
+gui.particleGenerator.spawnZ=Z 스폰
+gui.particleGenerator.motionX=X 속도
+gui.particleGenerator.motionY=Y 속도
+gui.particleGenerator.motionZ=Z 속도
+gui.particleGenerator.gravity=중력
+gui.particleGenerator.scale=규모
+gui.particleGenerator.delay=지연
+gui.particleGenerator.life=삶
+gui.particleGenerator.fade=희미
+gui.particleGenerator.collision=충돌
+gui.particleGenerator.type=유형
+gui.particleGenerator.type0=구
+gui.particleGenerator.type1=정사각형
+gui.particleGenerator.type2=어두운 구
+gui.particleGenerator.type3=2형 구
+gui.particleGenerator.type4=별
+
+//---- Gui Junk Filter ----//
+gui.de.junkFilter.name=도구 쓰레기 필터
+
+//---- Misc Info Text ----//
+info.de.shiftReversePlaceLogic.txt=Shift키를 누른 상태에서 역 방향 배치 로직을 선택합니다.
+
+//---- Bound Dislocators ----//
+info.de.bound_dislocator.key=독특한 열쇠
+info.de.bound_dislocator.click_to_link=묶은 쌍을 형성하려면 우클릭하세요.
+info.de.bound_dislocator.click_to_link_self=스스로를 묶으려면 우클릭하세요.
+info.de.bound_dislocator.player_link=플레이어 묶기
+info.de.bound_dislocator.bound_to=묶기
+info.de.bound_dislocator.in_player_inventory=바운드 이동기는 플레이어 인벤토리에 있습니다. 플레이어를 순간이동할 것 입니다.
+info.de.bound_dislocator.unknown_link=불명의 위치
+info.de.bound_dislocator.cant_find_player=묶은 플레이어는 온라인에 없습니다!
+info.de.bound_dislocator.cant_find_target=바운드 이동기를 찾을 수 없습니다!

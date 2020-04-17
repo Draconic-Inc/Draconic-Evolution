@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api;
 
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalGLFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,7 +18,7 @@ public interface IENetEffectTile extends ICrystalLink {
     ENetFXHandler createClientFXHandler();
 
     @OnlyIn(Dist.CLIENT)
-    CrystalGLFXBase createStaticFX();
+    CrystalFXBase createStaticFX();
 
     LinkedList<Byte> getFlowRates();
 

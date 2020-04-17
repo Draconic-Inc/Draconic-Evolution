@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEContent;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -160,7 +160,7 @@ public class ChaosWorldGenHandler {
                             world.setBlockState(pos, Blocks.END_STONE.getDefaultState());
                         }
                         if (0.001F > random.nextFloat() && !DEConfig.disableOreSpawnEnd) {
-                            world.setBlockState(pos, DEContent.draconium_ore_end.getDefaultState());
+                            world.setBlockState(pos, DEContent.ore_draconium_end.getDefaultState());
                         }
                     }
                 }

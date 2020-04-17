@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down,output=false": {
+      "model": "draconicevolution:block/energy_pylon_input"
+    },
+    "facing=null,output=false": {
+      "model": "draconicevolution:block/energy_pylon_input"
+    },
+    "facing=up,output=false": {
+      "model": "draconicevolution:block/energy_pylon_input"
+    },
+    "facing=down,output=true": {
+      "model": "draconicevolution:block/energy_pylon_output"
+    },
+    "facing=null,output=true": {
+      "model": "draconicevolution:block/energy_pylon_output"
+    },
+    "facing=up,output=true": {
+      "model": "draconicevolution:block/energy_pylon_output"
+    }
+  }
+}

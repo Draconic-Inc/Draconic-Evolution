@@ -1,44 +1,129 @@
+package com.brandon3055.draconicevolution.client.gui;
+
+import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
+import codechicken.lib.vec.Rotation;
+import codechicken.lib.vec.Scale;
+import codechicken.lib.vec.TransformationList;
+import com.brandon3055.brandonscore.client.BCTextures;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit.SpriteData;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
+import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
+import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Map;
+
+import static codechicken.lib.math.MathHelper.torad;
+import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.DEFAULT;
+import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GRAY;
+
+public class GuiGenerator extends ModularGuiContainer<ContainerBCBase<TileGenerator>> {
+    public PlayerEntity player;
+    private TileGenerator tile;
+
+    protected GuiToolkit<GuiGenerator> toolkit = new GuiToolkit<>(this, DEFAULT);
+
+    public GuiGenerator(ContainerBCBase<TileGenerator> container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.tile = container.tile;
+        this.player = playerInventory.player;
+    }
+
+    @Override
+    public void addElements(GuiElementManager manager) {
+        TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(tile));
+
+
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+//        LogHelper.dev(playerInventory.getItemStack());
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        super.render(mouseX, mouseY, partialTicks);
+        if (mouseX < width / 3) {
+
+        }
+    }
+
+    @Override
+    public void drawItemStack(ItemStack stack, int x, int y, String altText) {
+        if (stack == playerInventory.getItemStack()) {
+
+        }
+        super.drawItemStack(stack, x, y, altText);
+    }
+}
+
+
 //package com.brandon3055.draconicevolution.client.gui;
 //
-//import codechicken.lib.render.CCModel;
-//import codechicken.lib.render.CCRenderState;
-//import codechicken.lib.render.OBJParser;
-//import codechicken.lib.vec.Rotation;
-//import codechicken.lib.vec.Scale;
-//import codechicken.lib.vec.TransformationList;
-//import com.brandon3055.brandonscore.client.BCTextures;
-//import com.brandon3055.brandonscore.client.gui.GuiToolkit;
-//import com.brandon3055.brandonscore.client.gui.GuiToolkit.SpriteData;
-//import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
-//import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
-//import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-//import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
-//import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
-//import com.brandon3055.brandonscore.inventory.ContainerBCBase;
-//import com.brandon3055.brandonscore.inventory.ContainerSlotLayout.LayoutFactory;
-//import com.brandon3055.draconicevolution.DraconicEvolution;
-//import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
-//import com.brandon3055.draconicevolution.helpers.ResourceHelperDE;
-//import net.minecraft.client.Minecraft;
-//import net.minecraft.client.renderer.GlStateManager;
-//import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-//import net.minecraft.client.resources.I18n;
-//import net.minecraft.entity.player.PlayerEntity;
-//import net.minecraft.util.ResourceLocation;
-//import net.minecraft.util.text.TextFormatting;
-//import org.lwjgl.opengl.GL11;
+//        import codechicken.lib.render.CCModel;
+//        import codechicken.lib.render.CCRenderState;
+//        import codechicken.lib.render.OBJParser;
+//        import codechicken.lib.vec.Rotation;
+//        import codechicken.lib.vec.Scale;
+//        import codechicken.lib.vec.TransformationList;
+//        import com.brandon3055.brandonscore.client.BCTextures;
+//        import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+//        import com.brandon3055.brandonscore.client.gui.GuiToolkit.SpriteData;
+//        import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+//        import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
+//        import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+//        import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
+//        import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+//        import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+//        import com.brandon3055.draconicevolution.DraconicEvolution;
+//        import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
+//        import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+//        import com.mojang.blaze3d.platform.GlStateManager;
+//        import net.minecraft.client.Minecraft;
+//        import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+//        import net.minecraft.client.resources.I18n;
+//        import net.minecraft.entity.player.PlayerEntity;
+//        import net.minecraft.entity.player.PlayerInventory;
+//        import net.minecraft.util.ResourceLocation;
+//        import net.minecraft.util.text.ITextComponent;
+//        import net.minecraft.util.text.TextFormatting;
+//        import org.lwjgl.opengl.GL11;
 //
-//import java.util.Map;
+//        import java.util.Map;
 //
-//import static codechicken.lib.math.MathHelper.torad;
-//import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.DEFAULT;
-//import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
-//import static net.minecraft.util.text.TextFormatting.GOLD;
-//import static net.minecraft.util.text.TextFormatting.GRAY;
+//        import static codechicken.lib.math.MathHelper.torad;
+//        import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.DEFAULT;
+//        import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
+//        import static net.minecraft.util.text.TextFormatting.GOLD;
+//        import static net.minecraft.util.text.TextFormatting.GRAY;
 //
-//public class GuiGenerator extends ModularGuiContainer<ContainerBCBase> {
+//public class GuiGenerator extends ModularGuiContainer<ContainerBCBase<TileGenerator>> {
 //
-//    private static ResourceLocation MODEL_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/models/blocks/generator/generator_2.png");
+//    private static ResourceLocation MODEL_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/generator/generator_2.png");
 //    private static CCModel storageModel;
 //
 //    static {
@@ -54,10 +139,10 @@
 //
 //    protected GuiToolkit<GuiGenerator> toolkit = new GuiToolkit<>(this, DEFAULT);
 //
-//    public GuiGenerator(PlayerEntity player, TileGenerator tile, LayoutFactory<TileGenerator> factory) {
-//        super(new ContainerBCBase<>(player, tile, factory));
-//        this.tile = tile;
-//        this.player = player;
+//    public GuiGenerator(ContainerBCBase<TileGenerator> container, PlayerInventory playerInventory, ITextComponent title) {
+//        super(container, playerInventory, title);
+//        this.tile = container.tile;
+//        this.player = playerInventory.player;
 //    }
 //
 //    @Override
@@ -78,7 +163,7 @@
 //        GuiButton modeButton = toolkit.createButton("", template.background);
 //        modeButton.setDisplaySupplier(() -> I18n.format(tile.mode.get().unlocalizedName()));
 //        modeButton.setHoverText(element -> TextFormatting.BLUE + I18n.format(tile.mode.get().unlocalizedName() + ".info"));
-//        modeButton.setButtonListener((guiButton, pressed) -> tile.mode.set(tile.mode.get().next(isShiftKeyDown() || pressed == 1)));
+//        modeButton.onButtonPressed((pressed) -> tile.mode.set(tile.mode.get().next(hasShiftDown() || pressed == 1)));
 //        modeButton.setSize(80, 14);
 //        modeButton.zOffset += 100;
 //        modeButton.getChildElements().forEach(e -> e.zOffset += 100);
@@ -90,7 +175,8 @@
 //        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.de.generator.current_fuel_value"), 6, 11, () -> GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
 //    }
 //
-//    private class StorageRenderer extends GuiElement {
+//
+//    private class StorageRenderer extends GuiElement<StorageRenderer> {
 //
 //        @Override
 //        public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
@@ -98,7 +184,7 @@
 //            ccrs.reset();
 //
 //            GlStateManager.pushMatrix();
-//            GlStateManager.translate(guiLeft() + 90, guiTop() + 45, 50);
+//            GlStateManager.translated(guiLeft() + 90, guiTop() + 45, 50);
 //
 //            float mx = (((mouseX - guiLeft()) / (float) GuiGenerator.this.xSize()) - 0.5F) * .1F;
 //            float my = (((mouseY - guiTop()) / (float) GuiGenerator.this.ySize()) - 0.5F) * .1F;
