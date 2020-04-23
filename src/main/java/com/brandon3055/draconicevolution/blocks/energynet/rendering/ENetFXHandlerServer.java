@@ -1,11 +1,10 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
-import com.brandon3055.draconicevolution.api.IENetEffectTile;
+import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.HashMap;

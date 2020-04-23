@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
@@ -16,7 +17,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 31/05/2016.
  */
-public class ContainerEnergyInfuser extends ContainerBCBase<TileEnergyInfuser> {
+public class ContainerEnergyInfuser extends ContainerBCTile<TileEnergyInfuser> {
 
     public ContainerEnergyInfuser(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
         this(DEContent.container_energy_infuser, windowId, playerInv, getClientTile(extraData));

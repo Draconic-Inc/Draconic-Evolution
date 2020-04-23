@@ -1,0 +1,85 @@
+package com.brandon3055.draconicevolution.api.modules.capability;
+
+import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
+import com.brandon3055.draconicevolution.api.modules.ModuleType;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Streams;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.INBTSerializable;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.NO;
+import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.ONLY_WHEN_OVERRIDEN;
+
+/**
+ * Created by brandon3055 and covers1624 on 4/16/20.
+ */
+public interface IModuleHost extends INBTSerializable<CompoundNBT> {
+
+    /**
+     * @return a list of installed modules.
+     */
+    Stream<IModule<?>> getModules();
+
+    /**
+     * @return a list of module entities for all installed modules.
+     */
+    List<ModuleEntity> getModuleEntities();
+
+    /**
+     * @return a list of module types supported by this host.
+     */
+    List<ModuleType<?>> getSupportedTypes();
+
+    /**
+     * Only modules with this tech level or lower will be accepted by this host.
+     */
+    TechLevel getHostTechLevel();
+
+    /**
+     * @return the width of this {@link IModuleHost}'s module grid.
+     */
+    int getGridWidth();
+
+    /**
+     * @return the height of this {@link IModuleHost}'s module grid.
+     */
+    int getGridHeight();
+
+    default InstallResult checkAddModule(IModule<?> newModule) {
+        Collection<IModule<?>> view = Collections.unmodifiableList(getModules().collect(Collectors.toList()));
+        Optional<InstallResult> opt = view.stream()//
+                .map(other -> newModule.areModulesCompatible(other).getBlockingResult(other.areModulesCompatible(newModule)))//
+                .filter(e -> e.resultType == NO || e.resultType == ONLY_WHEN_OVERRIDEN)//
+                .findFirst();
+        if (opt.isPresent()) {
+            return opt.get();
+        }
+
+        Iterable<IModule<?>> newModules = Iterables.concat(view, Collections.singleton(newModule));
+        opt = Streams.stream(newModules).parallel()//
+                .map(module -> {
+                    int max = module.maxInstallable();
+                    if (max == -1) {
+                        return null;
+                    }
+                    int installed = (int) Streams.stream(newModules)//
+                            .filter(e -> e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
+                            .count();
+                    if (installed > max) {
+                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslationTextComponent("too_complex"));//TODO Localize
+                    }
+                    return null;
+                })//
+                .filter(Objects::nonNull)//
+                .findFirst();
+        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, newModule, null, null));
+    }
+}

@@ -4,9 +4,10 @@ import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
+import com.brandon3055.draconicevolution.client.gui.GuiModularItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.IENetEffectTile;
+import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalRelay;
@@ -56,6 +57,7 @@ public class ClientProxy extends CommonProxy {
         ScreenManager.registerFactory(DEContent.container_generator, GuiGenerator::new);
         ScreenManager.registerFactory(DEContent.container_grinder, GuiGrinder::new);
         ScreenManager.registerFactory(DEContent.container_energy_core, GuiEnergyCore::new);
+        ScreenManager.registerFactory(DEContent.container_modular_item, GuiModularItem::new);
 
 //        ScreenManager.registerFactory(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
 //        ScreenManager.registerFactory(DEContent.container_dissenchanter, ::new);

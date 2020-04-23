@@ -11,7 +11,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
+import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;

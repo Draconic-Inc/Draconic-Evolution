@@ -5,18 +5,16 @@ import com.brandon3055.brandonscore.client.gui.GuiButtonAHeight;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -27,7 +25,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 7/4/2016.
  */
-public class GuiEnergyCore extends ModularGuiContainer<ContainerBCBase<TileEnergyCore>> {
+public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnergyCore>> {
 
     public PlayerEntity player;
     public TileEnergyCore tile;
@@ -40,7 +38,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCBase<TileEnerg
     private Button layerMinus;
     public static int layer = -1;
 
-    public GuiEnergyCore(ContainerBCBase<TileEnergyCore> container, PlayerInventory playerInventory, ITextComponent title) {
+    public GuiEnergyCore(ContainerBCTile<TileEnergyCore> container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.tile = container.tile;
         this.xSize = 180;

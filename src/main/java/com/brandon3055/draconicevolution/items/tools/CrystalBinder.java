@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.draconicevolution.api.ICrystalBinder;
+import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;

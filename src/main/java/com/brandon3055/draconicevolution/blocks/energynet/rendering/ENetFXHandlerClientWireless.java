@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.api.ICrystalLink;
+import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;

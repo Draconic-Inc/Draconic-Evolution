@@ -12,8 +12,8 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiEntityF
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
-import com.brandon3055.brandonscore.inventory.ContainerSlotLayout.LayoutFactory;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,7 +28,7 @@ import static net.minecraft.util.text.TextFormatting.GRAY;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class GuiGrinder extends ModularGuiContainer<ContainerBCBase<TileGrinder>> {
+public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>> {
 
     private PlayerEntity player;
     private TileGrinder tile;
@@ -36,7 +36,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCBase<TileGrinder>
 
     protected GuiToolkit<GuiGrinder> toolkit = new GuiToolkit<>(this, EXTRA_WIDE_TALL);
 
-    public GuiGrinder(ContainerBCBase<TileGrinder> container, PlayerInventory playerInventory, ITextComponent title) {
+    public GuiGrinder(ContainerBCTile<TileGrinder> container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.player = playerInventory.player;
         this.tile = container.tile;
@@ -51,7 +51,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCBase<TileGrinder>
         //Kill Zone Size
 //        Grinder Grinding Logic!
 
-        TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(tile, container.getSlotLayout()));
+        TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(this, tile, container.getSlotLayout()));
         GuiElement bg = template.background;
 
         GuiEntityFilter filterUI = new GuiEntityFilter(tile.entityFilter);

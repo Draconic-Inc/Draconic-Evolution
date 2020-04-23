@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 31/05/2016.
  */
+@Deprecated
 public interface IUpgradableItem {
 
 //    /**

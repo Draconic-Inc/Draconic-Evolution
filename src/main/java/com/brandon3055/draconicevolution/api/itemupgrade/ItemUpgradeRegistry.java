@@ -4,6 +4,7 @@ package com.brandon3055.draconicevolution.api.itemupgrade;
  * Created by brandon3055 on 8/06/2016.
  * A simple map wrapper for handling IUpgrade's
  */
+@Deprecated
 public class ItemUpgradeRegistry {
 //    public static final String UPGRADE_TAG = "DEUpgrades";
 //

@@ -4,7 +4,7 @@ import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.achievements.Achievements;
-import com.brandon3055.draconicevolution.api.ICrystalBinder;
+import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;

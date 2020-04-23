@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +18,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class ContainerFusionCraftingCore extends ContainerBCBase<TileCraftingCore> {
+public class ContainerFusionCraftingCore extends ContainerBCTile<TileCraftingCore> {
 
     public ContainerFusionCraftingCore(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
         this(DEContent.container_fusion_crafting_core, windowId, playerInv, getClientTile(extraData));

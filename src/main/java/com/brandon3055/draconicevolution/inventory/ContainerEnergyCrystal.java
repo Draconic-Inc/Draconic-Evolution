@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import net.minecraft.entity.player.PlayerInventory;
@@ -12,7 +13,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 21/12/2016.
  */
-public class ContainerEnergyCrystal extends ContainerBCBase<TileCrystalBase> {
+public class ContainerEnergyCrystal extends ContainerBCTile<TileCrystalBase> {
 
     public ContainerEnergyCrystal(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
         this(DEContent.container_energy_crystal, windowId, playerInv, getClientTile(extraData));

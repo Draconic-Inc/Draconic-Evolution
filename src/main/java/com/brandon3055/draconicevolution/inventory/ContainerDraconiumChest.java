@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -33,7 +34,7 @@ import java.util.Map;
  * Created by brandon3055 on 4/06/2017.
  */
 @ChestContainer(isLargeChest = true, rowSize = 26)
-public class ContainerDraconiumChest extends ContainerBCBase<TileDraconiumChest> {
+public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest> {
 
     public CraftingInventory craftMatrix;
     public IInventory craftResult;

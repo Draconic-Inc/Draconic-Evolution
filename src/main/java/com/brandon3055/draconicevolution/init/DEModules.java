@@ -1,64 +1,101 @@
-//package com.brandon3055.draconicevolution.init;
-//
-//import com.brandon3055.draconicevolution.DraconicEvolution;
-//import com.brandon3055.draconicevolution.api.TechLevel;
-//import com.brandon3055.draconicevolution.api.modules_old.IModule;
-//import com.brandon3055.draconicevolution.api.modules_old.ModuleType;
-//import com.brandon3055.draconicevolution.items.modules.ModuleItemTest;
-//import net.minecraft.item.Item;
-//import net.minecraft.item.ItemGroup;
-//import net.minecraft.item.ItemStack;
-//import net.minecraft.item.Items;
-//import net.minecraftforge.event.RegistryEvent;
-//import net.minecraftforge.eventbus.api.SubscribeEvent;
-//import net.minecraftforge.fml.common.Mod;
-//import net.minecraftforge.registries.ObjectHolder;
-//
-//import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
-//
-///**
-// * Created by brandon3055 on 18/3/2016.
-// * This class contains a reference to all blocks and items in Draconic Evolution
-// */
-//@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = MOD)
-//@ObjectHolder(DraconicEvolution.MODID)
-//public class DEModules {
-//
-//    //@formatter:off
-//    @ObjectHolder("module_test1")             public static ModuleItemTest                      module_test1;
-//    @ObjectHolder("module_test2")             public static ModuleItemTest                      module_test2;
-//    @ObjectHolder("module_test3")             public static ModuleItemTest                      module_test3;
-//    @ObjectHolder("module_test4")             public static ModuleItemTest                      module_test4;
-//    @ObjectHolder("module_test5")             public static ModuleItemTest                      module_test5;
-//
-//    //@formatter:on
-//
-//
-//    @SubscribeEvent
-//    public static void registerItems(RegistryEvent.Register<Item> event) {
-//        ItemGroup moduleGroup = new ItemGroup("draconic.modules") {
-//            @Override
-//            public ItemStack createIcon() {
-//                return new ItemStack(Items.APPLE);
-//            }
-//        };
-//
-//
-//
-//        registerModule(event, new ModuleItemTest(new Item.Properties().group(moduleGroup), ModuleType.ENERGY_STORAGE, TechLevel.DRACONIUM), "module_test1");
-//        registerModule(event, new ModuleItemTest(new Item.Properties().group(moduleGroup), ModuleType.AREA_OF_EFFECT, TechLevel.WYVERN), "module_test2");
-//        registerModule(event, new ModuleItemTest(new Item.Properties().group(moduleGroup), ModuleType.ELYTRA_FLIGHT, TechLevel.DRACONIC), "module_test3");
-//        registerModule(event, new ModuleItemTest(new Item.Properties().group(moduleGroup), ModuleType.LAST_STAND, TechLevel.CHAOTIC), "module_test4");
-//        registerModule(event, new ModuleItemTest(new Item.Properties().group(moduleGroup), ModuleType.CREATIVE_FLIGHT, TechLevel.DRACONIUM), "module_test5");
-//
-//
-//    }
-//
-//    private static <T extends Item & IModule<T>> void registerModule(RegistryEvent.Register<Item> event, T moduleItem, String registryName) {
-//        moduleItem.setRegistryName(registryName);
-//        event.getRegistry().register(moduleItem);
-//
-//
-//        ModuleRegistry.INSTANCE.registerModule(moduleItem.getModuleType(), moduleItem);
-//    }
-//}
+package com.brandon3055.draconicevolution.init;
+
+import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+
+import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.properties.EnergyModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.modules.properties.ShieldModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
+import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleImpl;
+import com.brandon3055.draconicevolution.items.modules.TestModuleHost;
+import net.minecraft.item.Item;
+import net.minecraft.item.Item.Properties;
+import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.RegistryBuilder;
+
+import java.util.ArrayList;
+
+import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.ENERGY_STORAGE;
+import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.SHIELD;
+import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
+
+/**
+ * Created by brandon3055 on 18/4/20.
+ * This class contains a reference to all blocks and items in Draconic Evolution
+ */
+@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = MOD)
+@ObjectHolder(DraconicEvolution.MODID)
+public class DEModules {
+    public static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
+    public static ForgeRegistry<IModule<?>> MODULE_REGISTRY;
+
+    @SubscribeEvent
+    public static void createRegistries(RegistryEvent.NewRegistry event) {
+        MODULE_REGISTRY = SneakyUtils.unsafeCast(new RegistryBuilder<>()//
+                .setName(new ResourceLocation(DraconicEvolution.MODID, "modules"))//
+                .setType(SneakyUtils.unsafeCast(IModule.class))//
+                .disableSaving()//
+                .create()//
+        );
+    }
+
+    //@formatter:off
+//    @ObjectHolder("test_module_host")       public static Item                          test_module_host;
+
+    @ObjectHolder("test_module_1")          public static Item                          test_module_item_1;
+    @ObjectHolder("test_module_2")          public static Item                          test_module_item_2;
+    @ObjectHolder("test_module_3")          public static Item                          test_module_item_3;
+    //@formatter:on
+
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        CyclingItemGroup moduleGroup = new CyclingItemGroup("draconic.modules", 20, () -> new Object[]{Items.APPLE, Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE}, ITEM_REGISTRY_ORDER);
+
+        registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 5, 5).setRegistryName("test_module_host_5x5"));
+        registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 10, 10).setRegistryName("test_module_host_10x10"));
+        registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 15, 15).setRegistryName("test_module_host_15x15"));
+        registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 20, 20).setRegistryName("test_module_host_20x20"));
+
+        registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 10, 5).setRegistryName("test_module_host_10x5"));
+        registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 15, 5).setRegistryName("test_module_host_15x5"));
+        registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 20, 5).setRegistryName("test_module_host_20x5"));
+        registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 20, 10).setRegistryName("test_module_host_20x10"));
+
+        registerItem(event, new ModuleItem<>(new Properties().group(moduleGroup), () -> test_module_1).setRegistryName("test_module_1"));
+        registerItem(event, new ModuleItem<>(new Properties().group(moduleGroup), () -> test_module_2).setRegistryName("test_module_2"));
+        registerItem(event, new ModuleItem<>(new Properties().group(moduleGroup), () -> test_module_3).setRegistryName("test_module_3"));
+    }
+
+    //@formatter:off
+    @ObjectHolder("test_module_1")        public static SimpleModuleImpl<?>          test_module_1;
+    @ObjectHolder("test_module_2")        public static SimpleModuleImpl<?>          test_module_2;
+    @ObjectHolder("test_module_3")        public static SimpleModuleImpl<?>          test_module_3;
+    //@formatter:on
+
+    @SubscribeEvent
+    public static void registerModules(RegistryEvent.Register<IModule<?>> event) {
+
+        event.getRegistry().register(new SimpleModuleImpl<>(ENERGY_STORAGE, new EnergyModuleProperties(TechLevel.DRACONIUM, 100000L), test_module_item_1).setRegistryName("test_module_1"));
+        event.getRegistry().register(new SimpleModuleImpl<>(ENERGY_STORAGE, new EnergyModuleProperties(TechLevel.WYVERN, 100000L), test_module_item_2).setRegistryName("test_module_2"));
+        event.getRegistry().register(new SimpleModuleImpl<>(SHIELD, new ShieldModuleProperties(TechLevel.WYVERN, 1000, 0), test_module_item_3).setRegistryName("test_module_3"));
+    }
+
+
+//    Maybe add some more module types just to get them oout of the way.
+//    Then work on ModuleHost and ModuleGrid ModuleHost should probably be a basic shell that ModuleGrid can load and save data to.
+
+
+    private static void registerItem(RegistryEvent.Register<Item> event, Item item) {
+        event.getRegistry().register(item);
+        ITEM_REGISTRY_ORDER.add(item.getRegistryName());
+    }
+}

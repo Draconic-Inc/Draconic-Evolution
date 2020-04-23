@@ -7,7 +7,8 @@ import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
@@ -388,7 +389,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     @Nullable
     @Override
     public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
-        return new ContainerBCBase<>(DEContent.container_grinder, currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
+        return new ContainerBCTile<>(DEContent.container_grinder, currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
     }
 
     @Override

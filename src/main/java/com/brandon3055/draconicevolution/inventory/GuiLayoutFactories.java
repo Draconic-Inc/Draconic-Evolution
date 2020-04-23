@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
@@ -12,4 +13,5 @@ public class GuiLayoutFactories {
     public static final ContainerSlotLayout.LayoutFactory<TileGenerator> GENERATOR_LAYOUT = (player, tile) -> new ContainerSlotLayout().playerMain(player).allTile(tile.itemHandler);
     public static final ContainerSlotLayout.LayoutFactory<TileGrinder> GRINDER_LAYOUT = (player, tile) -> new ContainerSlotLayout().playerMain(player).allTile(tile.itemHandler);
     public static final ContainerSlotLayout.LayoutFactory<TileEnergyCore> ENERGY_CORE_LAYOUT = (player, tile) -> new ContainerSlotLayout().playerMain(player);
+    public static final ContainerSlotLayout.LayoutFactory<TileBCore> MODULAR_ITEM_LAYOUT = (player, nullData) -> new ContainerSlotLayout().playerMain(player);
 }

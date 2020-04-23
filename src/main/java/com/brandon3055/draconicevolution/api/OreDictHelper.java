@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by brandon3055 on 21/06/2016.
  */
+@Deprecated
 public class OreDictHelper {
 
 

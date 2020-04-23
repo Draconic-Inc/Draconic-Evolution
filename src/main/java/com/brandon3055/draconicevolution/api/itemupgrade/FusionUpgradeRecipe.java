@@ -18,6 +18,7 @@ import java.util.*;
  * This is the recipe class used for upgrading items. If uoi would like to add a custom upgrade recipe please extend
  * this so it can be identified as an upgrade recipe.
  */
+@Deprecated
 public class FusionUpgradeRecipe implements IFusionRecipe {
 
     public final int upgradeLevel;

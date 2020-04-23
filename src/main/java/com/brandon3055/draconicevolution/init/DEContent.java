@@ -1,13 +1,11 @@
 package com.brandon3055.draconicevolution.init;
 
-import codechicken.lib.gui.SimpleItemGroup;
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
@@ -28,15 +26,12 @@ import com.brandon3055.draconicevolution.items.InfoTablet;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import com.brandon3055.draconicevolution.items.MobSoul;
 import com.brandon3055.draconicevolution.items.tools.*;
-import com.brandon3055.draconicevolution.modules_temp.impl.TestModuleHost;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.Properties;
 import net.minecraft.block.material.Material;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -46,7 +41,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -150,9 +144,9 @@ public class DEContent {
     //#################################################################
 
     //@formatter:off
-    @ObjectHolder("generator")              public static ContainerType<ContainerBCBase<TileGenerator>>             container_generator;
-    @ObjectHolder("grinder")                public static ContainerType<ContainerBCBase<TileGrinder>>               container_grinder;
-    @ObjectHolder("energy_core")            public static ContainerType<ContainerBCBase<TileEnergyCore>>            container_energy_core;
+    @ObjectHolder("generator")              public static ContainerType<ContainerBCTile<TileGenerator>>             container_generator;
+    @ObjectHolder("grinder")                public static ContainerType<ContainerBCTile<TileGrinder>>               container_grinder;
+    @ObjectHolder("energy_core")            public static ContainerType<ContainerBCTile<TileEnergyCore>>            container_energy_core;
     @ObjectHolder("dissenchanter")          public static ContainerType<ContainerDissEnchanter>                     container_dissenchanter;
     @ObjectHolder("draconium_chest")        public static ContainerType<ContainerDraconiumChest>                    container_draconium_chest;
     @ObjectHolder("celestial_manipulator")  public static ContainerType<ContainerDummy<TileCelestialManipulator>>   container_celestial_manipulator;
@@ -160,14 +154,15 @@ public class DEContent {
     @ObjectHolder("energy_infuser")         public static ContainerType<ContainerEnergyInfuser>                     container_energy_infuser;
     @ObjectHolder("fusion_crafting_core")   public static ContainerType<ContainerFusionCraftingCore>                container_fusion_crafting_core;
     @ObjectHolder("reactor")                public static ContainerType<ContainerReactor>                           container_reactor;
+    @ObjectHolder("modular_item")           public static ContainerType<ContainerModularItem>                       container_modular_item;
     //@formatter:on
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCBase<>(container_generator, id, playerInv, extraData, GENERATOR_LAYOUT)).setRegistryName("generator"));
-        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCBase<>(container_grinder, id, playerInv, extraData, GRINDER_LAYOUT)).setRegistryName("grinder"));
+        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_generator, id, playerInv, extraData, GENERATOR_LAYOUT)).setRegistryName("generator"));
+        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_grinder, id, playerInv, extraData, GRINDER_LAYOUT)).setRegistryName("grinder"));
 
-        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCBase<>(container_energy_core, id, playerInv, extraData, ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
+        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_energy_core, id, playerInv, extraData, ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
 
         event.getRegistry().register(IForgeContainerType.create(ContainerDissEnchanter::new).setRegistryName("dissenchanter"));
         event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerDummy<TileCelestialManipulator>(container_celestial_manipulator, windowId, inv, data)).setRegistryName("celestial_manipulator"));
@@ -176,6 +171,7 @@ public class DEContent {
         event.getRegistry().register(IForgeContainerType.create(ContainerEnergyInfuser::new).setRegistryName("energy_infuser"));
         event.getRegistry().register(IForgeContainerType.create(ContainerFusionCraftingCore::new).setRegistryName("fusion_crafting_core"));
         event.getRegistry().register(IForgeContainerType.create(ContainerReactor::new).setRegistryName("reactor"));
+        event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerModularItem(windowId, playerInv, extraData, MODULAR_ITEM_LAYOUT)).setRegistryName("modular_item"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerDummy::new).setRegistryName("container_dummy"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerJunkFilter::new).setRegistryName("container_junk_filter"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerRecipeBuilder::new).setRegistryName("container_recipe_builder"));
@@ -394,9 +390,6 @@ public class DEContent {
     @ObjectHolder("armor_wyvern")               public static Item                      armor_wyvern;
     @ObjectHolder("armor_draconic")             public static Item                      armor_draconic;
     @ObjectHolder("armor_chaotic")              public static Item                      armor_chaotic;
-
-
-    @ObjectHolder("test_module_host")           public static Item                      test_module_host;
     //@formatter:on
 
     public static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
@@ -488,7 +481,6 @@ public class DEContent {
 //        registerItem(event, new CreativeExchanger(new Item.Properties().group(itemGroup)).setRegistryName("creative_exchanger"));
         registerItem(event, new MobSoul(new Item.Properties().group(itemGroup)).setRegistryName("mob_soul"));
 
-        registerItem(event, new TestModuleHost(new Item.Properties().group(itemGroup)).setRegistryName("test_module_host"));
 //        //Tools
 //        registerItem(event, new DraconiumCapacitor(new Item.Properties().group(itemGroup)).setRegistryName("capacitor_wyvern"));
 //        registerItem(event, new DraconiumCapacitor(new Item.Properties().group(itemGroup)).setRegistryName("capacitor_draconic"));

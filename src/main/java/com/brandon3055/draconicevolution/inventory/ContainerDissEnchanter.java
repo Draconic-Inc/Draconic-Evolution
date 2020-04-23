@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
@@ -17,7 +18,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class ContainerDissEnchanter extends ContainerBCBase<TileDissEnchanter> {
+public class ContainerDissEnchanter extends ContainerBCTile<TileDissEnchanter> {
 
     public ContainerDissEnchanter(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
         this(DEContent.container_dissenchanter, windowId, playerInv, getClientTile(extraData));

@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.utils;
 
 import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.texture.IIconRegister;
+import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.model.GlassParticleDummyModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -186,4 +187,11 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String REACTOR_INJECTOR = "textures/models/model_reactor_power_injector.png";
 
     public static final String DRACONIUM_CHEST = "textures/models/draconium_chest.png";
+
+    //Added / updated / still used in 1.14+
+
+    public static final ResourceLocation GUI_BG_DYNAMIC_DARK = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/background_dynamic.png");
+    public static final ResourceLocation GUI_BG_DYNAMIC_LIGHT = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/background_dynamic.png");
+
+    public static ResourceLocation getBGDynamic() { return BCConfig.darkMode ? GUI_BG_DYNAMIC_DARK : GUI_BG_DYNAMIC_LIGHT; }
 }

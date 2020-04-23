@@ -2,13 +2,14 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
+import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.EnergyCoreBuilder;
@@ -169,7 +170,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     @Nullable
     @Override
     public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
-        return new ContainerBCBase<>(DEContent.container_energy_core, currentWindowIndex, player.inventory, this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
+        return new ContainerBCTile<>(DEContent.container_energy_core, currentWindowIndex, player.inventory, this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
     }
 
     public void onStructureClicked(World world, BlockPos blockClicked, BlockState state, PlayerEntity player) {

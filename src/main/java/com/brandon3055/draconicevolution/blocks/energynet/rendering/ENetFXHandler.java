@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
-import com.brandon3055.draconicevolution.api.IENetEffectTile;
+import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;

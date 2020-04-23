@@ -1,7 +1,7 @@
 //package com.brandon3055.draconicevolution.integration.computers.oc;
 //
 //
-//import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
+//import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 //import li.cil.oc.api.Network;
 //import li.cil.oc.api.driver.NamedBlock;
 //import li.cil.oc.api.machine.Arguments;

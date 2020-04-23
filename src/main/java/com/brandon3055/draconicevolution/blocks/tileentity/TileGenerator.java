@@ -4,7 +4,8 @@ import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
-import com.brandon3055.brandonscore.inventory.ContainerBCBase;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
@@ -250,7 +251,7 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
     @Nullable
     @Override
     public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
-        return new ContainerBCBase<>(DEContent.container_generator, currentWindowIndex, player.inventory, this, GuiLayoutFactories.GENERATOR_LAYOUT);
+        return new ContainerBCTile<>(DEContent.container_generator, currentWindowIndex, player.inventory, this, GuiLayoutFactories.GENERATOR_LAYOUT);
     }
 
     @Override

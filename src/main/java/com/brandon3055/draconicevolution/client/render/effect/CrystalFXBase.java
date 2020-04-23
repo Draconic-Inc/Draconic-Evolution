@@ -1,12 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
-import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.api.IENetEffectTile;
+import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
